@@ -196,9 +196,9 @@ const loginData = reactive({
   captchaEnable: import.meta.env.VITE_APP_CAPTCHA_ENABLE !== 'false',
   tenantEnable: import.meta.env.VITE_APP_TENANT_ENABLE !== 'false',
   loginForm: {
-    tenantName: '芋道源码',
+    tenantName: '开州区鲁渝协作乡村振兴示范村数字化赋能',
     username: 'admin',
-    password: 'admin123',
+    password: 'Y123456a?',
     captchaVerification: '',
     rememberMe: false
   }

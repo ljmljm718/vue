@@ -133,7 +133,7 @@ const loginData = reactive({
   },
   loginForm: {
     uuid: '',
-    tenantName: '芋道源码',
+    tenantName: '开州区鲁渝协作乡村振兴示范村数字化赋能',
     mobileNumber: '',
     code: ''
   }
