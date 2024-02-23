@@ -4,18 +4,21 @@
         ref="formRef"
         :model="formData"
         :rules="formRules"
-        label-width="100px"
+        label-width="150px"
         v-loading="formLoading"
     >
-      <el-form-item label="园区id" prop="parkId">
-        <el-input v-model="formData.parkId" placeholder="请输入园区id" />
+      <el-form-item label="计划编码" prop="plantCode">
+        <el-input v-model="formData.plantCode" disabled placeholder="系统自动生成...." />
       </el-form-item>
+<!--      <el-form-item label="园区id" prop="parkId">-->
+<!--        <el-input v-model="formData.parkId" placeholder="请输入园区id" />-->
+<!--      </el-form-item>-->
       <el-form-item label="园区名称" prop="parkName">
         <el-input v-model="formData.parkName" placeholder="请输入园区名称" />
       </el-form-item>
-      <el-form-item label="地块id" prop="plotId">
-        <el-input v-model="formData.plotId" placeholder="请输入地块id" />
-      </el-form-item>
+<!--      <el-form-item label="地块id" prop="plotId">-->
+<!--        <el-input v-model="formData.plotId" placeholder="请输入地块id" />-->
+<!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
         <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
       </el-form-item>
@@ -58,12 +61,10 @@
             placeholder="选择种植结束时间"
         />
       </el-form-item>
-      <el-form-item label="作物id" prop="cropId">
-        <el-input v-model="formData.cropId" placeholder="请输入作物id" />
-      </el-form-item>
-      <el-form-item label="计划编码" prop="plantCode">
-        <el-input v-model="formData.plantCode" placeholder="请输入计划编码" />
-      </el-form-item>
+<!--      <el-form-item label="作物id" prop="cropId">-->
+<!--        <el-input v-model="formData.cropId" placeholder="请输入作物id" />-->
+<!--      </el-form-item>-->
+
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -87,9 +88,9 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  parkId: undefined,
+  parkId: '1',
   parkName: undefined,
-  plotId: undefined,
+  plotId: '1',
   plotName: undefined,
   plantVariety: undefined,
   plantCategory: undefined,
@@ -98,20 +99,20 @@ const formData = ref({
   plantPerson: undefined,
   plantStarttime: undefined,
   plantEndtime: undefined,
-  cropId: undefined,
+  cropId: '1',
   plantCode: undefined,
 })
 const formRules = reactive({
-  parkId: [{ required: true, message: '园区id不能为空', trigger: 'blur' }],
-  plotId: [{ required: true, message: '地块id不能为空', trigger: 'blur' }],
+  parkName: [{ required: true, message: '园区名称不能为空', trigger: 'blur' }],
+  plotName: [{ required: true, message: '地块名称不能为空', trigger: 'blur' }],
   plantVariety: [{ required: true, message: '种植作物品种名称不能为空', trigger: 'blur' }],
   plantCategory: [{ required: true, message: '类别不能为空', trigger: 'blur' }],
   plantStatus: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
   area: [{ required: true, message: '面积不能为空', trigger: 'blur' }],
   plantStarttime: [{ required: true, message: '种植开始时间不能为空', trigger: 'blur' }],
   plantEndtime: [{ required: true, message: '种植结束时间不能为空', trigger: 'blur' }],
-  cropId: [{ required: true, message: '作物id不能为空', trigger: 'blur' }],
-  plantCode: [{ required: true, message: '计划编码不能为空', trigger: 'blur' }],
+  // cropId: [{ required: true, message: '作物id不能为空', trigger: 'blur' }],
+  // plantCode: [{ required: true, message: '计划编码不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 

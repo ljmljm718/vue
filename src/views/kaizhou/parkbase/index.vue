@@ -213,6 +213,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
+    console.log(formRef.value.open,2222222222)
   formRef.value.open(type, id)
 }
 

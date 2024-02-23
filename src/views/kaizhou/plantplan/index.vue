@@ -8,6 +8,15 @@
       :inline="true"
       label-width="68px"
     >
+      <el-form-item label="计划编码" prop="plantCode">
+        <el-input
+            v-model="queryParams.plantCode"
+            placeholder="请输入计划编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="园区名称" prop="parkName">
         <el-input
           v-model="queryParams.parkName"
@@ -59,15 +68,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="计划编码" prop="plantCode">
-        <el-input
-          v-model="queryParams.plantCode"
-          placeholder="请输入计划编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -95,20 +95,18 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="园区id" align="center" prop="parkId" />
+      <el-table-column label="计划编码" align="center" prop="plantCode" width="200" />
       <el-table-column label="园区名称" align="center" prop="parkName" />
-      <el-table-column label="地块id" align="center" prop="plotId" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
-      <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" />
+      <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" width="200" />
       <el-table-column label="类别" align="center" prop="plantCategory" />
       <el-table-column label="状态" align="center" prop="plantStatus">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="面积" align="center" prop="area" />
-      <el-table-column label="负责人" align="center" prop="plantPerson" />
+      <el-table-column label="面积" align="center" prop="area"  width="100"/>
+      <el-table-column label="负责人" align="center" prop="plantPerson"  width="100"/>
       <el-table-column
         label="种植开始时间"
         align="center"
@@ -123,15 +121,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="作物id" align="center" prop="cropId" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="计划编码" align="center" prop="plantCode" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
