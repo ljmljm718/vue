@@ -24,13 +24,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="图片" prop="imgId">
-        <el-input v-model="formData.imgId" placeholder="请输入图片" />
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input type="textarea" v-model="formData.remark" placeholder="请输入备注" />
+        <UploadImg :is-show-tip="false" v-model="formData.imgId" :limit="1" />
       </el-form-item>
       <el-form-item label="描述" prop="cropDesc">
-        <el-input v-model="formData.cropDesc" placeholder="请输入描述" />
+        <el-input type="textarea" v-model="formData.cropDesc" placeholder="请输入描述" />
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
     <template #footer>
