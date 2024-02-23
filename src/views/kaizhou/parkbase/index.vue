@@ -27,13 +27,19 @@
         />
       </el-form-item>
       <el-form-item label="分类" prop="grade">
-        <el-input
+        <el-select
           v-model="queryParams.grade"
-          placeholder="请输入分类"
+          placeholder="请选择分类"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
+        >
+        <el-option
+          v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_GRADE)"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
         />
+        </el-select>
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select
@@ -50,17 +56,17 @@
           />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>-->
+      <!--      <el-form-item label="创建时间" prop="createTime">
+              <el-date-picker
+                v-model="queryParams.createTime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+                class="!w-240px"
+              />
+            </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -70,7 +76,7 @@
           @click="openForm('create')"
           v-hasPermi="['kaizhou:park-base:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" /> 新增基地
         </el-button>
         <el-button
           type="success"
@@ -88,8 +94,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="编号" align="center" prop="code" />
-      <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="编号" align="center" prop="code" width="200"/>
+      <el-table-column label="名称" align="center" prop="name" width="200"/>
       <el-table-column label="分类" align="center" prop="grade" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_GRADE" :value="scope.row.grade" />
@@ -115,8 +121,23 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="300">
         <template #default="scope">
+          <el-button
+            link
+            type="success"
+            v-hasPermi="['kaizhou:park-base:create']"
+          >
+            查询下属地块
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('add', scope.row.id)"
+            v-hasPermi="['kaizhou:park-base:create']"
+          >
+            添加地块
+          </el-button>
           <el-button
             link
             type="primary"
@@ -170,7 +191,7 @@ const queryParams = reactive({
   pageSize: 10,
   code: undefined,
   name: undefined,
-  grade: undefined,
+  grade: '0',
   type: undefined,
   altitude: undefined,
   latitude: undefined,
@@ -212,13 +233,12 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-    console.log(formRef.value.open,2222222222)
+const openForm = (type: string, id?: string) => {
   formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (id: number) => {
+const handleDelete = async (id: string) => {
   try {
     // 删除的二次确认
     await message.delConfirm()

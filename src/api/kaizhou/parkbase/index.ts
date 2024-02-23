@@ -26,7 +26,7 @@ export const ParkBaseApi = {
   },
 
   // 查询园区/地块基本信息详情
-  getParkBase: async (id: number) => {
+  getParkBase: async (id: string) => {
     return await request.get({ url: `/kaizhou/park-base/get?id=` + id })
   },
 
@@ -41,7 +41,7 @@ export const ParkBaseApi = {
   },
 
   // 删除园区/地块基本信息
-  deleteParkBase: async (id: number) => {
+  deleteParkBase: async (id: string) => {
     return await request.delete({ url: `/kaizhou/park-base/delete?id=` + id })
   },
 
@@ -49,4 +49,4 @@ export const ParkBaseApi = {
   exportParkBase: async (params) => {
     return await request.download({ url: `/kaizhou/park-base/export-excel`, params })
   },
-}
+}

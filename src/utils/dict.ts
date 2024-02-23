@@ -214,6 +214,7 @@ export enum DICT_TYPE {
   KAIZHOU_PARK_BASE_TYPE = 'kaizhou_park_base_type', // 园区种植类型
   KAIZHOU_AGRICULTURAL_TYPE = 'kaizhou_agricultural_type', // 农资类型
   KAIZHOU_AGRICULTURAL_ORDER_STATUS = 'kaizhou_agricultural_order_status', // 农资采购订单状态
-  KAIZHOU_FARM_WORK = 'kaizhou_farm_work'// 园区类型
+  KAIZHOU_FARM_WORK = 'kaizhou_farm_work', // 园区类型
+  KAIZHOU_CROP_CULTIVARS = 'kaizhou_crop_cultivars' // 作物品种
 
 }

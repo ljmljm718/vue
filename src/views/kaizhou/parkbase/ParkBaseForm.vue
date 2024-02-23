@@ -13,8 +13,8 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名称" />
       </el-form-item>
-      <el-form-item label="分类" prop="grade">
-        <el-select v-model="formData.grade" placeholder="请选择分类" style="width: 100%">
+<!--      <el-form-item label="分类" prop="grade">
+        <el-select v-model="formData.grade" placeholder="请选择分类" style="width: 100%" disabled>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_GRADE)"
             :key="dict.value"
@@ -22,7 +22,7 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择类型" style="width: 100%">
           <el-option
@@ -54,8 +54,8 @@
       <el-form-item label="面积" prop="area">
         <el-input v-model="formData.area" placeholder="请输入面积" />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
+      <el-form-item label="简介" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入简介" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -82,7 +82,7 @@ const formData = ref({
   id: undefined,
   code: undefined,
   name: undefined,
-  grade: undefined,
+  grade: "0",
   type: undefined,
   altitude: undefined,
   latitude: undefined,
@@ -91,7 +91,7 @@ const formData = ref({
   contact: undefined,
   tel: undefined,
   area: undefined,
-  parentId: '0',
+  parentId: "0",
   remark: undefined,
 })
 const formRules = reactive({
@@ -101,19 +101,24 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: string) => {
   dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
+  if (type === 'add')
+    dialogTitle.value = '添加地块'
+  else dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
   // 修改时，设置数据
-  if (id) {
+  if (id && formType.value === 'update') {
     formLoading.value = true
     try {
       formData.value = await ParkBaseApi.getParkBase(id)
     } finally {
       formLoading.value = false
     }
+  }else if (id && formType.value === 'add') {
+    formData.value.grade = "10"
+    formData.value.parentId = id
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -128,6 +133,9 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as ParkBaseVO
     if (formType.value === 'create') {
+      await ParkBaseApi.createParkBase(data)
+      message.success(t('common.createSuccess'))
+    } else if (formType.value === 'add'){
       await ParkBaseApi.createParkBase(data)
       message.success(t('common.createSuccess'))
     } else {
@@ -148,7 +156,7 @@ const resetForm = () => {
     id: undefined,
     code: undefined,
     name: undefined,
-    grade: undefined,
+    grade: "0",
     type: undefined,
     altitude: undefined,
     latitude: undefined,
@@ -157,7 +165,7 @@ const resetForm = () => {
     contact: undefined,
     tel: undefined,
     area: undefined,
-    parentId: '0',
+    parentId: "0",
     remark: undefined,
   }
   formRef.value?.resetFields()
