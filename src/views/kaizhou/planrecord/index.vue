@@ -8,10 +8,10 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="计划编码" prop="recodeCode">
+      <el-form-item label="记录编码" prop="recodeCode">
         <el-input
           v-model="queryParams.recodeCode"
-          placeholder="请输入计划编码"
+          placeholder="请输入记录编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -70,9 +70,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="种植计划id" align="center" prop="plantId" />
-      <el-table-column label="计划编码" align="center" prop="recodeCode" />
+      <el-table-column label="记录编码" align="center" prop="recodeCode" />
+      <el-table-column label="种植计划编码" align="center" prop="plantId" />
       <el-table-column label="农事定义" align="center" prop="farmWork">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_WORK" :value="scope.row.farmWork" />
@@ -86,8 +85,10 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="数值" align="center" prop="recordValue" />
-      <el-table-column label="单位" align="center" prop="recordUnit" />
+      <el-table-column label="数值" align="center" prop="recordValue">
+        <template #default="scope">{{ scope.row.recordValue +scope.row.recordUnit}}</template>
+      </el-table-column>
+<!--      <el-table-column label="单位" align="center" prop="recordUnit" />-->
       <el-table-column
         label="创建时间"
         align="center"

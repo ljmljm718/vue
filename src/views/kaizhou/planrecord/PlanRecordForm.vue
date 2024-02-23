@@ -7,11 +7,11 @@
       label-width="100px"
       v-loading="formLoading"
     >
+      <el-form-item label="计划编码" prop="recodeCode">
+        <el-input v-model="formData.recodeCode" disabled placeholder="系统自动生成...." />
+      </el-form-item>
       <el-form-item label="种植计划id" prop="plantId">
         <el-input v-model="formData.plantId" placeholder="请输入种植计划id" />
-      </el-form-item>
-      <el-form-item label="计划编码" prop="recodeCode">
-        <el-input v-model="formData.recodeCode" placeholder="请输入计划编码" />
       </el-form-item>
       <el-form-item label="农事定义" prop="farmWork">
         <el-select v-model="formData.farmWork" placeholder="请选择农事定义">
