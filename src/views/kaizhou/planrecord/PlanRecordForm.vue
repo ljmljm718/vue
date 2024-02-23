@@ -29,7 +29,7 @@
       <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker
           v-model="formData.recordTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择记录时间"
         />
