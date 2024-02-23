@@ -22,7 +22,7 @@
       <el-form-item label="采购日期" prop="purchaseTime">
         <el-date-picker
           v-model="formData.purchaseTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择采购日期"
         />

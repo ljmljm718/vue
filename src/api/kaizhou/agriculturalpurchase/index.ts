@@ -7,14 +7,14 @@ export interface AgriculturalPurchaseVO {
   agriculturalName: string // 农资名称
   agriculturalSize: string // 农资规格
   purchaseId: string // 采购单号
-  purchaseTime: string // 采购日期
+  purchaseTime: Date // 采购日期
   supplierName: string // 供应商
   purchasePrice: string // 采购单价
   purchaseNum: string // 采购数量
   totalPrice: string // 采购金额
   orderStatus: string // 订单状态
-  productionDate: string // 生产日期
-  expirationDate: string // 有效日期
+  productionDate: Date // 生产日期
+  expirationDate: Date // 有效日期
   remark: string // 备注
 }
 
@@ -49,4 +49,4 @@ export const AgriculturalPurchaseApi = {
   exportAgriculturalPurchase: async (params) => {
     return await request.download({ url: `/kaizhou/agricultural-purchase/export-excel`, params })
   },
-}
+}
