@@ -76,7 +76,18 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
-      <el-table-column label="图片" align="center" prop="imgId" />
+      <el-table-column label="图片" align="center" prop="imgId">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.imgId"
+            :preview-src-list="[row.imgId]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="描述" align="center" prop="cropDesc" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px"/>
