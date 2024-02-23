@@ -211,7 +211,7 @@ export enum DICT_TYPE {
 
   // ========== KAIZHOU - 开州区鲁渝协作乡村振兴示范村数字化赋能  ==========
   KAIZHOU_PARK_BASE_GRADE = 'kaizhou_park_base_grade', // 园区类型
-  KAIZHOU_PARK_BASE_TYPE = 'kaizhou_park_base_type' // 园区种植类型
-
-
+  KAIZHOU_PARK_BASE_TYPE = 'kaizhou_park_base_type', // 园区种植类型
+  KAIZHOU_AGRICULTURAL_TYPE = 'kaizhou_agricultural_type', // 农资类型
+  KAIZHOU_AGRICULTURAL_ORDER_STATUS = 'kaizhou_agricultural_order_status', // 农资采购订单状态
 }
