@@ -13,7 +13,7 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名称" />
       </el-form-item>
-<!--      <el-form-item label="分类" prop="grade">
+      <el-form-item label="分类" prop="grade">
         <el-select v-model="formData.grade" placeholder="请选择分类" style="width: 100%" disabled>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_GRADE)"
@@ -22,11 +22,11 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择类型" style="width: 100%">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE)"
+            v-for="dict in formData.grade === '0' ? getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,4) === 'park') : getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
