@@ -49,7 +49,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE)"
+            v-for="dict in queryParams.grade === '0' ? getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,4) === 'park') : getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -127,6 +127,8 @@
             link
             type="success"
             v-hasPermi="['kaizhou:park-base:create']"
+            @click="openParkBaseMassifList(scope.row.id)"
+            v-show="scope.row.parentId === '0'"
           >
             查询下属地块
           </el-button>
@@ -135,6 +137,7 @@
             type="primary"
             @click="openForm('add', scope.row.id)"
             v-hasPermi="['kaizhou:park-base:create']"
+            v-show="scope.row.parentId === '0'"
           >
             添加地块
           </el-button>
@@ -168,6 +171,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ParkBaseForm ref="formRef" @success="getList" />
+
+  <!-- 下属地块列表 -->
+  <ParkBaseMassifList ref="parkBaseMassifListRef"/>
 </template>
 
 <script setup lang="ts">
@@ -176,6 +182,7 @@ import download from '@/utils/download'
 import { ParkBaseApi, ParkBaseVO } from '@/api/kaizhou/parkbase'
 import ParkBaseForm from './ParkBaseForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import ParkBaseMassifList from '@/views/kaizhou/parkbase/ParkBaseMassifList.vue'
 
 /** 园区/地块基本信息 列表 */
 defineOptions({ name: 'ParkBase' })
@@ -264,7 +271,11 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-
+/** 打开【下属地块】弹窗 */
+const parkBaseMassifListRef = ref() // 可出库的订单列表 Ref
+const openParkBaseMassifList = (id: string) => {
+  parkBaseMassifListRef.value.open(id)
+}
 /** 初始化 **/
 onMounted(() => {
   getList()
