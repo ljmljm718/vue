@@ -223,5 +223,10 @@ export enum DICT_TYPE {
   KAIZHOU_DEVICE_STATUS = 'kaizhou_device_status', // 设备状态
   KAIZHOU_DEVICE_DATA_TYPE = 'kaizhou_device_data_type', //设备监测数据类型
   KAIZHOU_FARM_TASK_STATUS='kaizhou_farm_task_status',//农事认证状态
-  KAIZHOU_PRODUCT_CERTIFY_STATUS='kaizhou_product_certify_status'//产品认证状态
+  KAIZHOU_PRODUCT_CERTIFY_STATUS='kaizhou_product_certify_status',//产品认证状态
+  KAIZHOU_WARN_STATUS='kaizhou_warn_status',//预警状态
+  KAIZHOU_WARN_MSG_LEVEL='kaizhou_warn_msg_level',//预警消息级别
+  KAIZHOU_MSG_TYPE='kaizhou_msg_type',//预警消息类型
+  KAIZHOU_WARN_RULE_TYPE='kaizhou_warn_rule_type',//预警规则类型
+  KAIZHOU_WARN_RULE_STATUS='kaizhou_warn_rule_status',//预警规则生效状态
 }
