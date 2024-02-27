@@ -31,6 +31,9 @@ import router, { setupRouter } from '@/router'
 // 权限
 import { setupAuth } from '@/directives'
 
+//引入element-plus图标
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
 import { createApp } from 'vue'
 
 import App from './App.vue'
@@ -45,9 +48,11 @@ import VueDOMPurifyHTML from 'vue-dompurify-html' // 解决v-html 的安全隐�
 // 创建实例
 const setupAll = async () => {
   const app = createApp(App)
-
+  
   await setupI18n(app)
-
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
   setupStore(app)
 
   setupGlobCom(app)

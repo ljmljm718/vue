@@ -62,6 +62,7 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
+          <i class="el-icon-Platform bigscreen-frame"></i>
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
@@ -91,5 +92,14 @@ $prefix-cls: #{$namespace}-tool-header;
 
 .#{$prefix-cls} {
   transition: left var(--transition-time-02);
+}
+
+.bigscreen-frame {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.5);
+  margin: 0 6px 0 6px;
+  position: relative;
+  z-index: 999;
 }
 </style>
