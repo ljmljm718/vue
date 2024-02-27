@@ -218,9 +218,10 @@ export enum DICT_TYPE {
   KAIZHOU_CROP_CULTIVARS = 'kaizhou_crop_cultivars', // 作物品种
   APPROVE_STATUS = 'approve_status',//认证状态
   KAIZHOU_IDENTIFICATION_BINDING = 'kaizhou_identification_binding',//绑定状态
-  KAIZHOU_FARM_TASK_STATUS='kaizhou_farm_task_status',
   KAIZHOU_DEVICE_KINDS = 'kaizhou_device_kinds', // 设备种类
   KAIZHOU_DEVICE_TYPE = 'kaizhou_device_type', // 设备类型
   KAIZHOU_DEVICE_STATUS = 'kaizhou_device_status', // 设备状态
-  KAIZHOU_DEVICE_DATA_TYPE = 'kaizhou_device_data_type' //设备监测数据类型
+  KAIZHOU_DEVICE_DATA_TYPE = 'kaizhou_device_data_type', //设备监测数据类型
+  KAIZHOU_FARM_TASK_STATUS='kaizhou_farm_task_status',//农事认证状态
+  KAIZHOU_PRODUCT_CERTIFY_STATUS='kaizhou_product_certify_status'//产品认证状态
 }

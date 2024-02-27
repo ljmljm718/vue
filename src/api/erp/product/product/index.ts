@@ -10,6 +10,7 @@ export interface ProductVO {
   unitName?: string // 单位名字
   status: number // 产品状态
   standard: string // 产品规格
+  certifyStatus: string,//认证状态
   remark: string // 产品备注
   expiryDay: number // 保质期天数
   weight: number // 重量（kg）
@@ -53,5 +54,10 @@ export const ProductApi = {
   // 导出产品 Excel
   exportProduct: async (params) => {
     return await request.download({ url: `/erp/product/export-excel`, params })
+  },
+  //提交认证与审核认证
+  certifyProduct:async (id: number,certifyStatus:string) =>{
+      return await request.get({ url: `/erp/product/certify?id=` + id +`&certifyStatus=`+certifyStatus})
   }
+
 }
