@@ -218,4 +218,5 @@ export enum DICT_TYPE {
   KAIZHOU_CROP_CULTIVARS = 'kaizhou_crop_cultivars', // 作物品种
   APPROVE_STATUS = 'approve_status',//认证状态
   KAIZHOU_IDENTIFICATION_BINDING = 'kaizhou_identification_binding',//绑定状态
+  KAIZHOU_FARM_TASK_STATUS='kaizhou_farm_task_status'
 }

@@ -26,7 +26,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="任务开始时间" prop="taskStartdate">
+      <el-form-item label="任务开始时间" prop="taskStartdate" label-width="100">
         <el-date-picker
           v-model="queryParams.taskStartdate"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -45,7 +45,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_TASK_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -97,8 +97,14 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="任务编码" align="center" prop="taskCode" />
+      <el-table-column label="任务编码" align="center" prop="taskCode" width="200" />
+      <el-table-column label="任务名称" align="center" prop="taskName" />
+      <el-table-column label="任务状态" align="center" prop="taskStastus">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_TASK_STATUS" :value="scope.row.taskStastus" />
+        </template>
+      </el-table-column>
+      <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="任务人员" align="center" prop="taskPerson" />
       <el-table-column label="任务完成要求" align="center" prop="taskDemand" />
       <el-table-column
@@ -115,14 +121,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="任务状态" align="center" prop="taskStastus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.SYSTEM_OPERATE_TYPE" :value="scope.row.taskStastus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="任务名称" align="center" prop="taskName" />
-      <el-table-column label="地块id" align="center" prop="plotId" />
-      <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="验收标准" align="center" prop="checkStandard" />
       <el-table-column
         label="创建时间"
@@ -131,8 +129,16 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right">
         <template #default="scope">
+          <el-button
+            link
+            type="danger"
+            @click="handlePublish(scope.row.id)"
+            v-hasPermi="['kaizhou:farm-task:publish']"
+          >
+            发布
+          </el-button>
           <el-button
             link
             type="primary"
@@ -236,6 +242,15 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {}
+}
+const handlePublish =async (id: number) =>{
+  try {
+    await message.confirm('请确定是否发布?')
+    await FarmTaskApi.publishFarmTask(id)
+    message.success('发布成功!')
+  }catch {
+
+  }
 }
 
 /** 导出按钮操作 */

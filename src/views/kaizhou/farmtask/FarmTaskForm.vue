@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="100px"
+      label-width="120px"
       v-loading="formLoading"
     >
       <el-form-item label="任务编码" prop="taskCode">
@@ -19,7 +19,7 @@
       <el-form-item label="任务开始时间" prop="taskStartdate">
         <el-date-picker
           v-model="formData.taskStartdate"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择任务开始时间"
         />
@@ -27,7 +27,7 @@
       <el-form-item label="任务截止时间" prop="taskEnddate">
         <el-date-picker
           v-model="formData.taskEnddate"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择任务截止时间"
         />
@@ -35,7 +35,7 @@
       <el-form-item label="任务状态" prop="taskStastus">
         <el-select v-model="formData.taskStastus" placeholder="请选择任务状态">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_TASK_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
