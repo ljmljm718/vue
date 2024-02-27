@@ -1,4 +1,6 @@
 <template>
+  <div style="display:flex;flex-direction: column;align-items: center;">
+  <LoginFormTitle style="width: 140%;margin-bottom:30px;"/>
   <el-form
     v-show="getShow"
     ref="formLogin"
@@ -8,16 +10,13 @@
     label-position="top"
     label-width="120px"
     size="large"
+    style="background: #fff;padding:40px 20px 10px 20px"
   >
-    <el-row style="margin-right: -10px; margin-left: -10px">
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
-        <el-form-item>
-          <LoginFormTitle style="width: 100%" />
-        </el-form-item>
-      </el-col>
+    <el-row style="margin-right: -10px; margin-left: -10px;color:#000;">
+     
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
-          <el-input
+          <el-input 
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
@@ -35,7 +34,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px;">
         <el-form-item prop="password">
           <el-input
             v-model="loginData.loginForm.password"
@@ -49,7 +48,7 @@
       </el-col>
       <el-col
         :span="24"
-        style="padding-right: 10px; padding-left: 10px; margin-top: -20px; margin-bottom: -20px"
+        style="padding-right: 10px; padding-left: 10px; margin-top: -20px;"
       >
         <el-form-item>
           <el-row justify="space-between" style="width: 100%">
@@ -83,7 +82,7 @@
         @success="handleLogin"
       />
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
-        <el-form-item>
+        <!-- <el-form-item>
           <el-row :gutter="5" justify="space-between" style="width: 100%">
             <el-col :span="8">
               <XButton
@@ -107,7 +106,7 @@
               />
             </el-col>
           </el-row>
-        </el-form-item>
+        </el-form-item> -->
       </el-col>
 <!--      <el-divider content-position="center">{{ t('login.otherLogin') }}</el-divider>-->
 <!--      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">-->
@@ -142,6 +141,9 @@
 <!--      </el-col>-->
     </el-row>
   </el-form>
+  
+  </div>
+  
 </template>
 <script lang="ts" setup>
 import { ElLoading } from 'element-plus'
@@ -338,6 +340,7 @@ onMounted(() => {
   height: 38px;
 
   img {
+    
     width: 100%;
     height: auto;
     max-width: 100px;

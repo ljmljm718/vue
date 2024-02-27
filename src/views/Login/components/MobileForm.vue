@@ -8,6 +8,7 @@
     label-position="top"
     label-width="120px"
     size="large"
+    style="background: #fff;"
   >
     <el-row style="margin-right: -10px; margin-left: -10px">
       <!-- 租户名 -->

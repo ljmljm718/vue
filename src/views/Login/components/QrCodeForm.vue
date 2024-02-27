@@ -1,5 +1,5 @@
 <template>
-  <el-row v-show="getShow" style="margin-right: -10px; margin-left: -10px">
+  <el-row v-show="getShow" style="margin-right: -10px; margin-left: -10px;background: #fff;" >
     <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
       <LoginFormTitle style="width: 100%" />
     </el-col>

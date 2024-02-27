@@ -8,6 +8,7 @@
     label-position="top"
     size="large"
     @register="register"
+    style="background: #fff;"
   >
     <template #title>
       <LoginFormTitle style="width: 100%" />
