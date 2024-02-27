@@ -14,17 +14,7 @@
   >
     <el-row style="margin-right: -10px; margin-left: -10px;color:#000;">
      
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
-        <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
-          <el-input 
-            v-model="loginData.loginForm.tenantName"
-            :placeholder="t('login.tenantNamePlaceholder')"
-            :prefix-icon="iconHouse"
-            link
-            type="primary"
-          />
-        </el-form-item>
-      </el-col>
+     
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item prop="username">
           <el-input
