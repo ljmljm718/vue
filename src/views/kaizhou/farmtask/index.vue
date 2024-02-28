@@ -143,9 +143,9 @@
           <el-button
             link
             type="success"
-            v-if="scope.row.taskStastus=='待完成'"
+            v-if="scope.row.taskStastus=='待完成'||scope.row.taskStastus=='已驳回'"
             @click="handleSuccess(scope.row.id)"
-            v-hasPermi="['kaizhou:farm-task:publish']"
+            v-hasPermi="['kaizhou:farm-task:audit']"
           >
               完成
           </el-button>
@@ -154,7 +154,7 @@
             type="success"
             v-if="scope.row.taskStastus=='待审核'"
             @click="handlePass(scope.row.id)"
-            v-hasPermi="['kaizhou:farm-task:publish']"
+            v-hasPermi="['kaizhou:farm-task:audit']"
           >
               通过
           </el-button>
@@ -163,7 +163,7 @@
             type="danger"
             v-if="scope.row.taskStastus=='待审核'"
             @click="handleBack(scope.row.id)"
-            v-hasPermi="['kaizhou:farm-task:publish']"
+            v-hasPermi="['kaizhou:farm-task:audit']"
           >
               驳回
           </el-button>
@@ -284,7 +284,7 @@ const handlePublish =async (id: number) =>{
 const handleSuccess =async (id: number) =>{
     try {
         await message.confirm('请确定是否完成该任务?')
-        await FarmTaskApi.publishFarmTask(id,'待审核')
+        await FarmTaskApi.auditFarmTask(id,'待审核','完成任务')
         message.success('任务完成!')
         await getList()
     }catch {
@@ -293,7 +293,7 @@ const handleSuccess =async (id: number) =>{
 const handlePass =async (id: number) =>{
     try {
         await message.confirm('请确定是否通过该任务?')
-        await FarmTaskApi.publishFarmTask(id,'已完成')
+        await FarmTaskApi.auditFarmTask(id,'已完成','审核通过')
         message.success('通过成功!')
         await getList()
     }catch {
@@ -302,7 +302,7 @@ const handlePass =async (id: number) =>{
 const handleBack =async (id: number) =>{
     try {
         await message.confirm('请确定是否驳回该任务?')
-        await FarmTaskApi.publishFarmTask(id,'待完成')
+        await FarmTaskApi.auditFarmTask(id,'已驳回','审核驳回')
         message.success('驳回成功!')
         await getList()
     }catch {
