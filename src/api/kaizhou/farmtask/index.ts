@@ -46,7 +46,7 @@ export const FarmTaskApi = {
   exportFarmTask: async (params) => {
     return await request.download({ url: `/kaizhou/farm-task/export-excel`, params })
   },
-  publishFarmTask: async (id:number)=>{
-    return await request.get({ url: `/kaizhou/farm-task/publish?id=` + id })
+  publishFarmTask: async (id:number,taskStastus:string )=>{
+    return await request.get({ url: `/kaizhou/farm-task/publish?id=` + id+`&taskStastus=`+taskStastus })
   }
 }

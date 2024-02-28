@@ -122,22 +122,50 @@
         width="180px"
       />
       <el-table-column label="验收标准" align="center" prop="checkStandard" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="操作" align="center" fixed="right">
+<!--      <el-table-column-->
+<!--        label="创建时间"-->
+<!--        align="center"-->
+<!--        prop="createTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
+      <el-table-column label="操作" align="center" fixed="right" width="200">
         <template #default="scope">
           <el-button
             link
-            type="danger"
+            type="success"
+            v-if="scope.row.taskStastus=='待发布'"
             @click="handlePublish(scope.row.id)"
             v-hasPermi="['kaizhou:farm-task:publish']"
           >
-            发布
+              发布
+          </el-button>
+          <el-button
+            link
+            type="success"
+            v-if="scope.row.taskStastus=='待完成'"
+            @click="handleSuccess(scope.row.id)"
+            v-hasPermi="['kaizhou:farm-task:publish']"
+          >
+              完成
+          </el-button>
+          <el-button
+            link
+            type="success"
+            v-if="scope.row.taskStastus=='待审核'"
+            @click="handlePass(scope.row.id)"
+            v-hasPermi="['kaizhou:farm-task:publish']"
+          >
+              通过
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            v-if="scope.row.taskStastus=='待审核'"
+            @click="handleBack(scope.row.id)"
+            v-hasPermi="['kaizhou:farm-task:publish']"
+          >
+              驳回
           </el-button>
           <el-button
             link
@@ -155,6 +183,7 @@
           >
             删除
           </el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -245,14 +274,40 @@ const handleDelete = async (id: number) => {
 }
 const handlePublish =async (id: number) =>{
   try {
-    await message.confirm('请确定是否发布?')
-    await FarmTaskApi.publishFarmTask(id)
+    await message.confirm('请确定是否发布该任务?')
+    await FarmTaskApi.publishFarmTask(id,'待完成')
     message.success('发布成功!')
+    await getList()
   }catch {
-
   }
 }
-
+const handleSuccess =async (id: number) =>{
+    try {
+        await message.confirm('请确定是否完成该任务?')
+        await FarmTaskApi.publishFarmTask(id,'待审核')
+        message.success('任务完成!')
+        await getList()
+    }catch {
+    }
+}
+const handlePass =async (id: number) =>{
+    try {
+        await message.confirm('请确定是否通过该任务?')
+        await FarmTaskApi.publishFarmTask(id,'已完成')
+        message.success('通过成功!')
+        await getList()
+    }catch {
+    }
+}
+const handleBack =async (id: number) =>{
+    try {
+        await message.confirm('请确定是否驳回该任务?')
+        await FarmTaskApi.publishFarmTask(id,'待完成')
+        message.success('驳回成功!')
+        await getList()
+    }catch {
+    }
+}
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
