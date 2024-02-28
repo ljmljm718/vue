@@ -47,38 +47,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="数据值" prop="dataValue">
-        <el-input
-          v-model="queryParams.dataValue"
-          placeholder="请输入数据值"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="unit">
-        <el-input
-          v-model="queryParams.unit"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="采集时间" prop="collectTime">
         <el-date-picker
           v-model="queryParams.collectTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -114,7 +85,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键id" align="center" prop="id" />
       <el-table-column label="设备编号" align="center" prop="deviceCode" />
       <el-table-column label="设备类型" align="center" prop="deviceType">
         <template #default="scope">
@@ -129,13 +99,13 @@
       <el-table-column label="数据值" align="center" prop="dataValue" />
       <el-table-column label="单位" align="center" prop="unit" />
       <el-table-column label="采集时间" align="center" prop="collectTime" />
-      <el-table-column
+<!--      <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
+      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
