@@ -14,7 +14,7 @@
         <el-input v-model="formData.msgContent" type="textarea" placeholder="请输入消息内容" />
       </el-form-item>
       <el-form-item label="消息类型" prop="msgType">
-        <el-select v-model="formData.msgType" placeholder="请选择消息类型">
+        <el-select v-model="formData.msgType" placeholder="请选择消息类型" style="width: 100%">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_MSG_TYPE)"
             :key="dict.value"
@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="消息级别" prop="msgLevel">
-        <el-select v-model="formData.msgLevel" placeholder="请选择消息级别">
+        <el-select v-model="formData.msgLevel" placeholder="请选择消息级别" style="width: 100%">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL)"
             :key="dict.value"
@@ -33,9 +33,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
-      </el-form-item>
+<!--      <el-form-item label="备注" prop="remark">-->
+<!--        <el-input v-model="formData.remark" placeholder="请输入备注" />-->
+<!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

@@ -26,7 +26,14 @@
         <el-input v-model="formData.currentValue" placeholder="请输入当前值" />
       </el-form-item>
       <el-form-item label="单位" prop="unit">
-        <el-input v-model="formData.unit" placeholder="请输入单位" />
+        <el-select v-model="formData.unit" placeholder="请选择单位" style="width: 100%;">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_VALUE_UNIT)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="阈值" prop="threshold">
         <el-input v-model="formData.threshold" placeholder="请输入阈值" />

@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="60%">
     <el-form
       ref="formRef"
       :model="formData"
@@ -7,42 +7,92 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="规则类型" prop="ruleType">
-        <el-select v-model="formData.ruleType" placeholder="请选择规则类型">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_RULE_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="预警下限" prop="warnLowValue">
-        <el-input v-model="formData.warnLowValue" placeholder="请输入预警下限" />
-      </el-form-item>
-      <el-form-item label="预警上限" prop="warnHighValue">
-        <el-input v-model="formData.warnHighValue" placeholder="请输入预警上限" />
-      </el-form-item>
-      <el-form-item label="单位" prop="warnUnit">
-        <el-input v-model="formData.warnUnit" placeholder="请输入单位" />
-      </el-form-item>
-      <el-form-item label="低位预警消息模板" prop="lowMsgTemplateId">
-        <el-input v-model="formData.lowMsgTemplateId" placeholder="请输入低位预警消息模板" />
-      </el-form-item>
-      <el-form-item label="高位预警消息模板" prop="highMsgTemplateId">
-        <el-input v-model="formData.highMsgTemplateId" placeholder="请输入高位预警消息模板" />
-      </el-form-item>
-      <el-form-item label="责任人编号" prop="responsiblePersonId">
-        <el-input v-model="formData.responsiblePersonId" placeholder="请输入责任人编号" />
-      </el-form-item>
-      <el-form-item label="责任人" prop="responsiblePerson">
-        <el-input v-model="formData.responsiblePerson" placeholder="请输入责任人" />
-      </el-form-item>
-      <el-form-item label="生效状态（0-未生效，1-生效）" prop="effectiveStatus">
-        <el-radio-group v-model="formData.effectiveStatus">
-          <el-radio label="1">请选择字典生成</el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="规则类型" prop="ruleType">
+            <el-select v-model="formData.ruleType" placeholder="请选择规则类型" style="width: 100%;">
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_RULE_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="责任人" prop="responsiblePerson">
+            <el-input v-model="formData.responsiblePerson" placeholder="请输入责任人" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="生效状态" prop="effectiveStatus">
+            <el-radio-group v-model="formData.effectiveStatus">
+              <el-radio
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_RULE_STATUS)"
+                :key="dict.value"
+                :label="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="预警下限" prop="warnLowValue">
+            <el-input v-model="formData.warnLowValue" placeholder="请输入预警下限">
+              <template #append>
+                <el-select
+                  v-model="formData.warnUnit"
+                  placeholder="单位"
+                  style="width: 80px;"
+                >
+                  <el-option
+                    v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_VALUE_UNIT)"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </el-select>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item :label="'低位预警\n消息模板'" prop="lowMsgTemplateId" class="msg-template-label">
+            <el-input v-model="formData.lowMsgTemplateId" placeholder="请输入低位预警消息模板" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="预警上限" prop="warnHighValue">
+            <el-input v-model="formData.warnHighValue" placeholder="请输入预警上限">
+              <template #append>
+                <el-select
+                  v-model="formData.warnUnit"
+                  placeholder="单位"
+                  style="width: 80px;"
+                >
+                  <el-option
+                    v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_VALUE_UNIT)"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </el-select>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item :label="'高位预警\n消息模板'" prop="highMsgTemplateId" class="msg-template-label">
+            <el-input v-model="formData.highMsgTemplateId" placeholder="请输入高位预警消息模板" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -148,3 +198,13 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+
+
+<style scoped lang="scss">
+:deep(.el-form-item.msg-template-label .el-form-item__label) {
+  white-space: pre-line; /*换行显示*/
+  height: 36px; /*设置lable高度，与input高度一样*/
+  line-height: 18px !important; /*设置行高为label高度的一半（有n行就是label高度的1/n）*/
+}
+
+</style>
