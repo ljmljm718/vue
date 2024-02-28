@@ -39,8 +39,9 @@
       <el-form-item label="采集时间" prop="collectTime">
         <el-date-picker
           v-model="formData.collectTime"
-          type="date"
-          value-format="x"
+          type="datetime"
+          format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           placeholder="选择采集时间"
         />
       </el-form-item>

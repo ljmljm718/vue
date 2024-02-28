@@ -126,12 +126,8 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="审核状态" align="center" prop="auditStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.INFRA_CONFIG_TYPE" :value="scope.row.auditStatus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="审核意见" align="center" prop="auditOpinion" />
+      <el-table-column label="审核状态" align="center" prop="auditStatus"/>
+        <el-table-column label="审核意见" align="center" prop="auditOpinion" />
       <el-table-column label="审核人员" align="center" prop="auditPerson" />
       <el-table-column label="任务人员" align="center" prop="taskPerson" />
       <el-table-column

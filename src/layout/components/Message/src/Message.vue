@@ -35,12 +35,13 @@ onMounted(() => {
   // 首次加载小红点
   getUnreadCount()
   // 轮询刷新小红点
-  setInterval(
-    () => {
-      getUnreadCount()
-    },
-    1000 * 60 * 2
-  )
+  // TODO 每隔2分钟刷新站内未读消息，先注释
+  // setInterval(
+  //   () => {
+  //     getUnreadCount()
+  //   },
+  //   1000 * 60 * 2
+  // )
 })
 </script>
 <template>

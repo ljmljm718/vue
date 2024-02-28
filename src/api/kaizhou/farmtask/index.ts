@@ -13,6 +13,7 @@ export interface FarmTaskVO {
   plotId: number // 地块id
   plotName: string // 地块名称
   checkStandard: string // 验收标准
+  Opinion:string //审核意见
 }
 
 // 农事任务 API
@@ -46,7 +47,10 @@ export const FarmTaskApi = {
   exportFarmTask: async (params) => {
     return await request.download({ url: `/kaizhou/farm-task/export-excel`, params })
   },
-  publishFarmTask: async (id:number)=>{
-    return await request.get({ url: `/kaizhou/farm-task/publish?id=` + id })
+  publishFarmTask: async (id:number,taskStastus:string )=>{
+    return await request.get({ url: `/kaizhou/farm-task/publish?id=` + id+`&taskStastus=`+taskStastus })
+  },
+  auditFarmTask: async (id:number,taskStastus:string,Opinion:string)=> {
+    return await request.get({url: `/kaizhou/farm-task/audit?id=` + id + `&taskStastus=` + taskStastus + `&Opinion=` + Opinion})
   }
 }

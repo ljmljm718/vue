@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请先选择种类">
+        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE).filter(item => item.value.toString().substring(0,6) === formData.kinds)"
             :key="dict.value"

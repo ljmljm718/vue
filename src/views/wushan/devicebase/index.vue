@@ -8,14 +8,38 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="设备号" prop="deviceCode">
         <el-input
           v-model="queryParams.deviceCode"
-          placeholder="请输入设备编号"
+          placeholder="请输入设备号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
+      </el-form-item>
+      <el-form-item label="名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="种类" prop="kinds">
+        <el-select
+          v-model="queryParams.kinds"
+          placeholder="请选择种类"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_KINDS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceType">
         <el-select
@@ -32,29 +56,36 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="监测类型" prop="type">
+      <el-form-item label="状态" prop="deviceStatus">
         <el-select
-          v-model="queryParams.type"
-          placeholder="请选择监测类型"
+          v-model="queryParams.deviceStatus"
+          placeholder="请选择状态"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="采集时间" prop="collectTime">
-        <el-date-picker
-          v-model="queryParams.collectTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+      <el-form-item label="所属基地" prop="belongPark">
+        <el-input
+          v-model="queryParams.belongPark"
+          placeholder="请输入所属基地"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="所属地块" prop="belongPlot">
+        <el-input
+          v-model="queryParams.belongPlot"
+          placeholder="请输入所属地块"
+          clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
@@ -65,7 +96,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['kaizhou:device-data:create']"
+          v-hasPermi="['kaizhou:device-base:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -74,7 +105,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['kaizhou:device-data:export']"
+          v-hasPermi="['kaizhou:device-base:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -85,34 +116,43 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备编号" align="center" prop="deviceCode" />
+      <el-table-column label="设备号" align="center" prop="deviceCode" />
+      <el-table-column label="名称" align="center" prop="deviceName" />
+      <el-table-column label="种类" align="center" prop="kinds">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_KINDS" :value="scope.row.kinds" />
+        </template>
+      </el-table-column>
       <el-table-column label="设备类型" align="center" prop="deviceType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
         </template>
       </el-table-column>
-      <el-table-column label="监测类型" align="center" prop="type">
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="状态" align="center" prop="deviceStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.type" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="数据值" align="center" prop="dataValue" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="采集时间" align="center" prop="collectTime" />
-<!--      <el-table-column
+      <el-table-column label="所属基地" align="center" prop="belongPark" />
+      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+<!--      <el-table-column label="URL" align="center" prop="url" />-->
+      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />-->
-      <el-table-column label="操作" align="center">
+      />
+      <el-table-column label="操作" align="center" fixed="right" width="120">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:update']"
+            v-hasPermi="['kaizhou:device-base:update']"
           >
             编辑
           </el-button>
@@ -120,7 +160,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:delete']"
+            v-hasPermi="['kaizhou:device-base:delete']"
           >
             删除
           </el-button>
@@ -137,34 +177,39 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceDataForm ref="formRef" @success="getList" />
+  <DeviceBaseForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DeviceDataApi, DeviceDataVO } from '@/api/kaizhou/devicedata'
-import DeviceDataForm from './DeviceDataForm.vue'
+import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
+import DeviceBaseForm from './DeviceBaseForm.vue'
 
-/** 设备数据 列表 */
-defineOptions({ name: 'DeviceData' })
+/** 设备管理 列表 */
+defineOptions({ name: 'DeviceBase' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<DeviceDataVO[]>([]) // 列表的数据
+const list = ref<DeviceBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   deviceCode: undefined,
+  deviceName: undefined,
+  kinds: undefined,
   deviceType: undefined,
-  type: undefined,
-  dataValue: undefined,
-  unit: undefined,
-  collectTime: [],
+  longitude: undefined,
+  latitude: undefined,
+  deviceStatus: undefined,
+  belongPark: undefined,
+  belongPlot: undefined,
+  url: undefined,
+  remark: undefined,
   createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
@@ -174,7 +219,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await DeviceDataApi.getDeviceDataPage(queryParams)
+    const data = await DeviceBaseApi.getDeviceBasePage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -206,7 +251,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await DeviceDataApi.deleteDeviceData(id)
+    await DeviceBaseApi.deleteDeviceBase(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -220,8 +265,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await DeviceDataApi.exportDeviceData(queryParams)
-    download.excel(data, '设备数据.xls')
+    const data = await DeviceBaseApi.exportDeviceBase(queryParams)
+    download.excel(data, '设备管理.xls')
   } catch {
   } finally {
     exportLoading.value = false
