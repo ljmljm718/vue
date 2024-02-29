@@ -33,9 +33,9 @@
           />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="备注" prop="remark">-->
-<!--        <el-input v-model="formData.remark" placeholder="请输入备注" />-->
-<!--      </el-form-item>-->
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入备注" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

@@ -50,6 +50,7 @@
     "fast-xml-parser": "^4.3.2",
     "highlight.js": "^11.9.0",
     "jsencrypt": "^3.3.2",
+    "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "min-dash": "^4.1.1",
     "mitt": "^3.0.1",

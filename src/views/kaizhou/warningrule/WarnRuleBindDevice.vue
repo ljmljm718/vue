@@ -5,7 +5,7 @@
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
-    width="1080"
+    width="1150"
   >
     <ContentWrap>
       <!-- 搜索工作栏 -->
@@ -113,7 +113,7 @@
     <ContentWrap>
       <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
                 :row-key="getRowKeys" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" :reserve-selection="true"/>
+        <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>
         <el-table-column label="设备号" align="center" prop="deviceCode"/>
         <el-table-column label="名称" align="center" prop="deviceName"/>
         <el-table-column label="种类" align="center" prop="kinds">
@@ -172,11 +172,14 @@ defineOptions({name: 'WarnRuleBindDevice'})
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
-const multipleSelection = ref([])
-const ruleId = defineProps({
+const props = defineProps({
   warnRuleId: {
     type: String,
     default: ''
+  },
+  deviceId: {
+    type: Array,
+    default: () => []
   },
 })// 绑定的规则id
 const ids = ref([]) // 绑定的设备id
@@ -202,6 +205,7 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 
+const multipleSelection: any = ref([])
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
@@ -209,6 +213,7 @@ const getList = async () => {
     const data = await DeviceBaseApi.getDeviceBasePage(queryParams)
     list.value = data.list
     total.value = data.total
+    multipleSelection.value = props.deviceId
   } finally {
     loading.value = false
   }
@@ -219,6 +224,7 @@ const getRowKeys = (row) => {
   //记录每行的key值
   return row.id;
 }
+
 //当表格选择项发生变化时会触发该事件
 const handleSelectionChange = (val) => {
   // 解决来回切换页面，也无法清除上次选中情况
@@ -240,7 +246,7 @@ const handleSelectionChange = (val) => {
 const handleBindDevice = async () => {
   loading.value = true
   try {
-    const temp = reactive({warnRuleId: ruleId, deviceId: ids})
+    const temp = reactive({warnRuleId: props.warnRuleId, deviceId: ids})
     const data = temp as any
     await WarningRuleDeviceApi.WarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))

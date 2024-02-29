@@ -62,7 +62,13 @@
         </el-col>
         <el-col :span="16">
           <el-form-item :label="'低位预警\n消息模板'" prop="lowMsgTemplateId" class="msg-template-label">
-            <el-input v-model="formData.lowMsgTemplateId" placeholder="请输入低位预警消息模板" />
+            <el-input v-model="formData.lowMsgTemplate" placeholder="请选择低位预警消息模板" readonly>
+              <template #append>
+                <el-button @click="openWarnMsgTemplateList">
+                  <Icon icon="ep:search" /> 选择
+                </el-button>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,7 +95,13 @@
         </el-col>
         <el-col :span="16">
           <el-form-item :label="'高位预警\n消息模板'" prop="highMsgTemplateId" class="msg-template-label">
-            <el-input v-model="formData.highMsgTemplateId" placeholder="请输入高位预警消息模板" />
+            <el-input v-model="formData.highMsgTemplate" placeholder="请选择高位预警消息模板" readonly>
+              <template #append>
+                <el-button @click="openWarnMsgTemplateList2">
+                  <Icon icon="ep:search" /> 选择
+                </el-button>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -99,10 +111,21 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+<!--  选择预警消息模板-->
+  <SelectWarnMsgTemplate
+    ref="selectWarnMsgTemplateRef"
+    @success="handleSelectWarnMsgTemplate"
+  />
+  <SelectWarnMsgTemplate
+    ref="selectWarnMsgTemplateRef2"
+    @success="handleSelectWarnMsgTemplate2"
+  />
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { WarningRuleApi, WarningRuleVO } from '@/api/kaizhou/warningrule'
+import {WarningMsgTemplateVO} from "@/api/kaizhou/warningmsgtemplate";
 
 /** 预警规则 表单 */
 defineOptions({ name: 'WarningRuleForm' })
@@ -125,15 +148,16 @@ const formData = ref({
   responsiblePersonId: undefined,
   responsiblePerson: undefined,
   effectiveStatus: undefined,
+  lowMsgTemplate: undefined,
+  highMsgTemplate: undefined,
 })
 const formRules = reactive({
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
   warnHighValue: [{ required: true, message: '预警上限不能为空', trigger: 'blur' }],
   warnUnit: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
-  lowMsgTemplateId: [{ required: true, message: '低位预警消息模板不能为空', trigger: 'blur' }],
-  highMsgTemplateId: [{ required: true, message: '高位预警消息模板不能为空', trigger: 'blur' }],
-  responsiblePersonId: [{ required: true, message: '责任人编号不能为空', trigger: 'blur' }],
+  lowMsgTemplate: [{ required: true, message: '低位预警消息模板不能为空', trigger: 'blur' }],
+  highMsgTemplate: [{ required: true, message: '高位预警消息模板不能为空', trigger: 'blur' }],
   responsiblePerson: [{ required: true, message: '责任人不能为空', trigger: 'blur' }],
   effectiveStatus: [{ required: true, message: '生效状态（0-未生效，1-生效）不能为空', trigger: 'blur' }],
 })
@@ -194,8 +218,33 @@ const resetForm = () => {
     responsiblePersonId: undefined,
     responsiblePerson: undefined,
     effectiveStatus: undefined,
+    lowMsgTemplate: undefined,
+    highMsgTemplate: undefined,
   }
   formRef.value?.resetFields()
+}
+
+const selectWarnMsgTemplateRef = ref() // 选择的预警消息模板
+const openWarnMsgTemplateList = () => {
+  selectWarnMsgTemplateRef.value.open()
+}
+
+const handleSelectWarnMsgTemplate = (template: WarningMsgTemplateVO) => {
+  console.log('template', template[0].id)
+  // 传回选择的模板id
+  formData.value.lowMsgTemplateId = String(template[0].id)
+  formData.value.lowMsgTemplate = String(template[0].msgTitle)
+}
+
+const selectWarnMsgTemplateRef2 = ref() // 选择的预警消息模板
+const openWarnMsgTemplateList2 = () => {
+  selectWarnMsgTemplateRef2.value.open()
+}
+
+const handleSelectWarnMsgTemplate2 = (template: WarningMsgTemplateVO) => {
+  // 传回选择的模板id
+  formData.value.highMsgTemplateId = String(template[0].id)
+  formData.value.highMsgTemplate = String(template[0].msgTitle)
 }
 </script>
 

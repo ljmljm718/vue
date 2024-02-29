@@ -102,17 +102,17 @@
       </el-table-column>
       <el-table-column label="预警下限" align="center" width="120">
         <template #default="scope">
-          <div> {{ scope.row["warnLowValue"] }}{{ scope.row["unit"] }}</div>
+          <div> {{ scope.row["warnLowValue"] }}{{ scope.row["warnUnit"] }}</div>
         </template>
       </el-table-column>
       <el-table-column label="预警上限" align="center" width="120">
         <template #default="scope">
-          <div> {{ scope.row["warnHighValue"] }}{{ scope.row["unit"] }}</div>
+          <div> {{ scope.row["warnHighValue"] }}{{ scope.row["warnUnit"] }}</div>
         </template>
       </el-table-column>
 <!--      <el-table-column label="单位" align="center" prop="warnUnit" />-->
-      <el-table-column label="低位预警消息模板" align="center" prop="lowMsgTemplateId" />
-      <el-table-column label="高位预警消息模板" align="center" prop="highMsgTemplateId" />
+      <el-table-column label="低位预警消息模板" align="center" prop="lowMsgTemplate" />
+      <el-table-column label="高位预警消息模板" align="center" prop="highMsgTemplate" />
 <!--      <el-table-column label="责任人编号" align="center" prop="responsiblePersonId" />-->
       <el-table-column label="责任人" align="center" prop="responsiblePerson" width="110"/>
       <el-table-column label="生效状态" align="center" width="100">
@@ -175,7 +175,7 @@
   <WarningRuleForm ref="formRef" @success="getList" />
 
   <!-- 绑定设备列表 -->
-  <WarnRuleBindDevice ref="parkBaseMassifListRef"/>
+  <WarnRuleBindDevice ref="warnRuleBindDeviceRef" :warnRuleId="warnRuleId" :deviceId="deviceId"/>
 </template>
 
 <script setup lang="ts">
@@ -185,6 +185,7 @@ import download from '@/utils/download'
 import { WarningRuleApi, WarningRuleVO } from '@/api/kaizhou/warningrule'
 import WarningRuleForm from './WarningRuleForm.vue'
 import WarnRuleBindDevice from "@/views/kaizhou/warningrule/WarnRuleBindDevice.vue";
+import {WarningRuleDeviceApi} from "@/api/kaizhou/warningruledevice";
 
 /** 预警规则 列表 */
 defineOptions({ name: 'WarningRule' })
@@ -215,6 +216,8 @@ const formData = ref({
   responsiblePersonId: undefined,
   responsiblePerson: undefined,
   effectiveStatus: undefined,
+  lowMsgTemplate: undefined,
+  highMsgTemplate: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -249,10 +252,22 @@ const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
 }
 
+const deviceId = ref([]) // 已绑定的设备id
+const warnRuleId = ref()
+const warnRuleBindDeviceRef = ref()
 /** 绑定设备操作 */
-// const bindDevice = (id: number) => {
-//
-// }
+const bindDevice = async (id: number) => {
+  try{
+    console.log("id",id)
+    const data = await WarningRuleDeviceApi.selectDeviceByWarnRuleId(String(id))
+    console.log("data", data)
+    deviceId.value = data.list.map(item => (item.deviceId))
+    warnRuleId.value = id
+
+    warnRuleBindDeviceRef.value.open()
+  } catch{
+  }
+}
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {

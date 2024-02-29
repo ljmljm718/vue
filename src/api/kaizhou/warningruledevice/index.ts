@@ -47,4 +47,9 @@ export const WarningRuleDeviceApi = {
   WarnRuleBindDevice: async (data: RuleDeviceDTO) => {
     return await request.post({ url: `/kaizhou/warning-rule-device/bind`, data })
   },
+
+  // 根据预警规则查询设备
+  selectDeviceByWarnRuleId: async (warnRuleId: string) => {
+    return await request.get({ url: `/kaizhou/warning-rule-device/list?warnRuleId=` + warnRuleId })
+  },
 }
