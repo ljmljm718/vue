@@ -97,6 +97,11 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column label="序号" width="80" align="center">
+        <template v-slot="scope">
+          <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="标识码" align="center" prop="identificationCode"/>
       <el-table-column label="二维码" align="center" prop="qrCode">
         <template #default="scope">
@@ -122,7 +127,7 @@
         width="180px"
       >
         <template #default="scope">
-          <span v-if="scope.row.uniqueCodeTime == null">无</span>
+          <span v-if="scope.row.uniqueCodeTime == null">未赋码</span>
         </template>
       </el-table-column>
       <el-table-column label="是否绑定" align="center" prop="isBinding">
@@ -154,7 +159,7 @@
             @click="uniqueCode(scope.row)"
             v-hasPermi="['kaizhou:basic-identification:update']"
           >
-            赋码
+            {{scope.row.qrCode != undefined && scope.row.qrCode != null ? '重新赋码' : '赋码'}}
           </el-button>
         </template>
       </el-table-column>
@@ -214,6 +219,7 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const dialogVisible = ref(false) // 图片预览弹出框
 const dialogImageUrl = ref('') // 图片地址
+const formData = ref('')
 
 /** 查询列表 */
 const getList = async () => {
@@ -263,12 +269,18 @@ const handleDelete = async (id: number) => {
 /** 赋码按钮操作 */
 const uniqueCode = async (data: BasicIdentificationVO) => {
   try {
-    let formCode = data
-    formCode.qrCode = window.location.origin + "/QRCode?qrCode="
-    // 删除的二次确认
+    formData.value = {
+      id: data.id,
+      identificationCode: data.identificationCode,
+      qrCode: window.location.origin + "/QRCode?qrCode=",
+      uniqueCodeTime: data.uniqueCodeTime,
+      isBinding: data.isBinding,
+      isUniqueCode: data.isUniqueCode,
+    }
+    // 赋码的二次确认
     await message.delConfirm("是否确认赋码所选中数据")
-    // 发起删除
-    await BasicIdentificationApi.uniqueCodeIdentification(formCode)
+    // 发起赋码
+    await BasicIdentificationApi.uniqueCodeIdentification(formData.value)
     message.success(t('common.uniqueCodeSuccess'))
     // 刷新列表
     await getList()
