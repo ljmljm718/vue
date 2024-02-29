@@ -12,10 +12,11 @@
     size="large"
     style="background: #fff;padding:40px 20px 10px 20px"
   >
-    <el-row style="margin-right: -10px; margin-left: -10px;color:#000;">
+    <el-row style="margin-right: -10px; margin-left: -10px;">
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input 
+          class="login-input"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
@@ -340,12 +341,14 @@ onMounted(() => {
   height: 38px;
 
   img {
-    
     width: 100%;
     height: auto;
     max-width: 100px;
     vertical-align: middle;
     cursor: pointer;
   }
+}
+.el-input{
+  --el-input-text-color:#000 !important;
 }
 </style>
