@@ -1,5 +1,6 @@
 <template>
   <ContentWrap>
+    <!-- 搜索工作栏 -->
     <el-form
       class="-mb-15px"
       :model="queryParams"
@@ -7,34 +8,40 @@
       :inline="true"
       label-width="68px"
     >
-      <!-- <el-form-item label="字典名称" prop="dictType">
-        <el-select v-model="queryParams.dictType" class="!w-240px">
-          <el-option
-            v-for="item in dictTypeList"
-            :key="item.type"
-            :label="item.name"
-            :value="item.type"
-          />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item label="字典标签" prop="label">
+      <el-form-item label="记录编码" prop="recodeCode">
         <el-input
-          v-model="queryParams.label"
-          placeholder="请输入字典标签"
+          v-model="queryParams.recodeCode"
+          placeholder="请输入记录编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="数据状态" clearable class="!w-240px">
+      <el-form-item label="农事定义" prop="farmWork">
+        <el-select
+          v-model="queryParams.farmWork"
+          placeholder="请选择农事定义"
+          clearable
+          class="!w-240px"
+        >
           <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="记录时间" prop="recordTime">
+        <el-date-picker
+          v-model="queryParams.recordTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -43,7 +50,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['system:dict:create']"
+          v-hasPermi="['kaizhou:plan-record:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -52,7 +59,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['system:dict:export']"
+          v-hasPermi="['kaizhou:plan-record:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -62,41 +69,48 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list">
-      <el-table-column label="字典编码" align="center" prop="id" />
-      <el-table-column label="字典标签" align="center" prop="label" />
-      <el-table-column label="字典键值" align="center" prop="value" />
-      <el-table-column label="字典排序" align="center" prop="sort" />
-      <el-table-column label="状态" align="center" prop="status">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column label="记录编码" align="center" prop="recodeCode" />
+      <el-table-column label="种植计划编码" align="center" prop="plantId" />
+      <el-table-column label="农事定义" align="center" prop="farmWork">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_WORK" :value="scope.row.farmWork" />
         </template>
       </el-table-column>
-      <el-table-column label="颜色类型" align="center" prop="colorType" />
-      <el-table-column label="CSS Class" align="center" prop="cssClass" />
-      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip />
+      <el-table-column label="描述" align="center" prop="remark" />
       <el-table-column
+        label="记录时间"
+        align="center"
+        prop="recordTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="数值" align="center" prop="recordValue">
+        <template #default="scope">{{ scope.row.recordValue + scope.row.recordUnit }}</template>
+      </el-table-column>
+      <!-- <el-table-column label="单位" align="center" prop="recordUnit" /> -->
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
-        width="180"
         :formatter="dateFormatter"
-      />
+        width="180px"
+      /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['system:dict:update']"
+            v-hasPermi="['kaizhou:plan-record:update']"
           >
-            修改
+            编辑
           </el-button>
           <el-button
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['system:dict:delete']"
+            v-hasPermi="['kaizhou:plan-record:delete']"
           >
             删除
           </el-button>
@@ -113,41 +127,40 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DictDataForm ref="formRef" @success="getList" />
+  <PlanRecordForm ref="formRef" @success="getList" />
 </template>
-<script lang="ts" setup>
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+
+<script setup lang="ts">
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import * as DictDataApi from '@/api/system/dict/dict.data'
-import * as DictTypeApi from '@/api/system/dict/dict.type'
-import DictDataForm from './DictDataForm.vue'
+import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
+import PlanRecordForm from './PlanRecordForm.vue'
 
-defineOptions({ name: 'SystemDictData' })
+/** 农事记录 列表 */
+defineOptions({ name: 'PlanRecord' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-const route = useRoute() // 路由
 
 const loading = ref(true) // 列表的加载中
+const list = ref<PlanRecordVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  label: '',
-  status: undefined,
-  dictType: 'kaizhou_farm_work'
+  recodeCode: undefined,
+  farmWork: undefined,
+  recordTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const dictTypeList = ref<DictTypeApi.DictTypeVO[]>() // 字典类型的列表
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await DictDataApi.getDictDataPage(queryParams)
+    const data = await PlanRecordApi.getPlanRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -170,7 +183,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id, queryParams.dictType)
+  formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
@@ -179,7 +192,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await DictDataApi.deleteDictData(id)
+    await PlanRecordApi.deletePlanRecord(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -193,8 +206,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await DictDataApi.exportDictData(queryParams)
-    download.excel(data, '字典数据.xls')
+    const data = await PlanRecordApi.exportPlanRecord(queryParams)
+    download.excel(data, '农事记录.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -202,9 +215,7 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(async () => {
-  await getList()
-  // 查询字典（精简)列表
-  dictTypeList.value = await DictTypeApi.getSimpleDictTypeList()
+onMounted(() => {
+  getList()
 })
 </script>
