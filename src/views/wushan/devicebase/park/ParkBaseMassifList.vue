@@ -171,7 +171,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
-    const data = await ParkBaseApi.getParkBasePage(queryParams)
+    const data = await ParkBaseApi.getParkBaseList(queryParams)
     console.log(data)
     list.value = data.list
     total.value = data.total
