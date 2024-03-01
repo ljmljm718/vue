@@ -4,7 +4,7 @@
             <div class="header-left-part-wrapper">
                 <!-- <BigScreenTime /> -->
             </div>
-            <div class="header-title-wrapper">鲁渝协作乡村振兴示范村</div>
+            <div class="header-title-wrapper">黑水镇鲁渝协作乡村振兴示范村数字化赋能</div>
             <div class="header-right-part-wrapper"></div>
         </div>
         <div class="content-main-wrapper">
@@ -28,28 +28,28 @@
                         <div class="left-warper">
                             <div style="width: 50%;height: 50%;display:flex;align-items:center;">
                                 <div :class="['left2-icon','left2-1']"></div>
-                                <div>
+                                <div @click="$router.push('/basic/parkbase')" style="cursor: pointer;">
                                     <div style="font-size:12px;color:#c1c1c1;margin-bottom:15px">种植园区</div>
                                     <div style="font-size:16px;">{{plantInfo.parkNum}}</div>
                                 </div>
                             </div>
                             <div style="width: 50%;height: 50%;display:flex;align-items:center;">
                                 <div :class="['left2-icon','left2-2']"></div>
-                                <div>
+                                <div  @click="$router.push('/basic/parkbase')" style="cursor: pointer;">
                                     <div style="font-size:12px;color:#c1c1c1;margin-bottom:15px">种植地块</div>
                                     <div style="font-size:16px;">{{plantInfo.plotNum}}</div>
                                 </div>
                             </div>
                             <div style="width: 50%;height: 50%;display:flex;align-items:center;">
                                 <div :class="['left2-icon','left2-3']"></div>
-                                <div>
+                                <div  @click="$router.push('/smartAgri/plant-plan')" style="cursor: pointer;">
                                     <div style="font-size:12px;color:#c1c1c1;margin-bottom:15px">作物品种</div>
                                     <div style="font-size:16px;">{{plantInfo.cropNum}}</div>
                                 </div>
                             </div>
                             <div style="width: 50%;height: 50%;display:flex;align-items:center;">
                                 <div :class="['left2-icon','left2-4']"></div>
-                                <div>
+                                <div  @click="$router.push('/smartAgri/plant-plan')" style="cursor: pointer;">
                                     <div style="font-size:12px;color:#c1c1c1;margin-bottom:15px">种植面积</div>
                                     <div style="font-size:16px;">{{plantInfo.plantArea}} <span style="font-size:12px">亩</span> </div>
                                 </div>
@@ -63,13 +63,11 @@
                 <div class="left3">
                     <div class="box-title">物联设备数据</div>
                     <div class="left3-select">
-                      <select name="" id="123" class="select1">
-                        <option value="123">1号茶园</option>
-                        <option value="123">2号茶园</option>
+                      <select name="" id="1" class="select1" @change="selectCli1">
+                        <option :value="item.id" v-for="item,index in select" :key="index">{{item.name}}</option>
                       </select>
-                      <select name="" id="456" class="select2">
-                        <option value="123">D3地块</option>
-                        <option value="123">D4地块</option>
+                      <select name="" id="2" class="select2" @change="selectCli2">
+                        <option v:value="item.id" v-for="item,index in select2" :key="index">{{item.name}}</option>
                       </select>
                     </div>
                     <div class="left3-item">
@@ -126,11 +124,16 @@
                         >{{ column.label }}</div>
                         </div>
                         <div class="table-data-row" v-for="item,index in leftArr.tableData1" :key="index">
-                        <div
+                        <div v-show="item[column.key]!= item.warnStatus"
                             class="table-data-cell"
                             v-for="column,inde in leftArr.tableColumns1" :key="inde"
                             :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-                        >{{ item[column.key] }}</div>
+                        >{{ item[column.key]}}</div>
+                        <div v-show="item[column.key]== item.warnStatus"
+                            class="table-data-cell"
+                            v-for="column,inde in leftArr.tableColumns1" :key="inde"
+                            :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                        >{{ item[column.key]==0?'未处理':'已处理'}}</div>
                         </div>
               </div>
                 </div>
@@ -171,11 +174,40 @@
                 <div class="middle-main-item">
                       <div class='sxt' v-for="item,index in webcam" :key="index" @click="webcamCli(index)" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
                          <div v-show="webcamIndex==index" class="message">
-                            <div class="message-item"></div>
+                            <div class="message-item">
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
+                            </div>
+                            <div v-show="item.deviceStatus=='online'" style="font-size:15px"> 设备状态：<span style="color:#00ffdd;">在线</span></div>
+                            <div v-show="item.deviceStatus=='offline'" style="font-size:15px"> 设备状态：<span style="color:#c1c1c1;">离线</span></div>
+                            <div v-show="item.deviceStatus=='fault'" style="font-size:15px"> 设备状态：<span style="color:red;">故障</span></div>
+                            <div class="messageJk">查看监控</div>
                          </div>
                       </div>
-                      <div class='cgq' v-for="item,index in sensor" :key="index" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}"></div>
-                      <div class='alarm' v-for="item,index in warn" :key="index" :style="{left:item.latitude>100?item.latitude/13+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}"></div> 
+                      <div class='cgq' v-for="item,index in sensor" :key="index" @click="sensorCli(index)" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
+                        <div v-show="sensorIndex==index" class="message">
+                            <div class="message-item">
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
+                            </div>
+                            <div v-for="itm,inde in item.vlaues" :key="inde">
+                              <div>
+                                {{item.key}}：{{item.values}}
+                              </div>
+                            </div>
+                         </div>
+                      </div>
+                      <div class='alarm' v-for="item,index in warn" @click="warnCli(index)" :key="index" :style="{left:item.latitude>100?item.latitude/13+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
+                        <div v-show="warnIndex==index" class="message" ref="alarm">
+                            <div class="message-item">
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
+                            </div>
+                            <div style="color:red;">
+                                {{item.warnTitle}}({{item.threshold}}),阈值{{item.currentValue}}
+                            </div>
+                         </div>
+                      </div> 
                 </div>
                 <div class="middle-main-footer">
                     <div class="box-title3">柑橘生产数据分析</div>
@@ -210,20 +242,20 @@
                         </div>
                         <div :class="['right1-warper','right1Item-2']">
                              <div style="margin-top:80px;">
-                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">12</div>
+                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.deviceNum}}</div>
                                 <div style="text-align:center;color:#8bc4db;font-size:13px;">产线设备</div>
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-3']">
                              <div style="margin-top:80px;">
-                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">1867</div>
+                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.yield}}</div>
                                 <div style="text-align:center;color:#8bc4db;font-size:13px">柑橘总量(万斤)</div>
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-4']">
                              <div style="margin-top:80px;">
-                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">32.6</div>
-                                <div style="text-align:center;color:#8bc4db; font-size:13px">销售总额(亿)</div>
+                                <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.price}}</div>
+                                <div style="text-align:center;color:#8bc4db; font-size:13px">销售总额(万元)</div>
                             </div>
                         </div>
                     </div>
@@ -239,19 +271,19 @@
                     <div class="right3-item">
                         <div class="right3-top">
                             <div class="right3-top-item">
-                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">5</div>
+                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.productKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">特色产品</div>
                             </div>
                             <div class="right3-top-item">
-                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">32</div>
+                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.brandKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">品牌认证</div>
                             </div>
                             <div class="right3-top-item">
-                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">89</div>
+                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.supplier}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">注册商户</div>
                             </div>
                             <div class="right3-top-item">
-                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">4784</div>
+                                <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.productCode}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">产品赋码</div>
                             </div>
                         </div>
@@ -281,51 +313,25 @@ import {
 import {
   deviceStatistics,
   ParkBaseInfo,
+  ParkBaseInfo2,
   IoTLatestData,
   cropBase,
   PlantInfo,
   PlantArea,
-  DeviceAndWarn
+  DeviceAndWarn,
+  ProductionData,
+  WarnInfo,
+  YearSaleData,
+  MonthSaleData,
+  LuYu,
+  IndustryData
   
-} from '@/api/bigscreen/index'
+} from '@/api/kaizhou/bigscreen/index'
 import * as echarts from "echarts"
 import {ref,reactive,onMounted} from 'vue'
-let leftArr=reactive<Object>({
-    tableColumns1: [
-        {
-          key: 'name',
-          label: '预警信息',
-          width: '50%',
-        },
-        {
-          key: 'time',
-          label: '报警时间',
-          width: '40%',
-        },
-        {
-          key: 'status',
-          label: '状态',
-          width: '10%',
-        },
-      ],
-      tableData1: [
-        {
-          name: '1号茶园D3地块土堰湿度偏低,当前...',
-          time: '2024-2-1 13:12:31',
-          status: '未处理'
-        },
-        {
-          name: '1号茶园D3地块土堰湿度偏低,当前...',
-          time: '2024-2-1 13:12:31',
-          status: '未处理'
-        },
-        {
-          name: '1号茶园D3地块土堰湿度偏低,当前...',
-          time: '2024-2-1 13:12:31',
-          status: '未处理'
-        },
-      ],
-})
+import { object } from 'vue-types';
+import { resetSize } from '@/components/Verifition/src/utils/util';
+
 //种植资源面积
 const initChart1=async ()=> {
   let res= await PlantArea()
@@ -375,7 +381,11 @@ const initChart1=async ()=> {
         })
       );
 }
-const initChart2=()=>{
+const initChart2= async ()=>{
+  let res =await YearSaleData()
+  let bar1=[res.yields[0],res.sales[0]];
+  let bar2=[res.yields[1],res.sales[1]]
+ 
       initChartStatic(
         "chart2",
         generateBaseOptions({
@@ -420,11 +430,12 @@ const initChart2=()=>{
           },
           series: [
             {
-              name: "2022",
-              data: [36,140,],
+              name: res.years[0],
+              data: bar1,
               type: "bar",
               barWidth: "20",
               smooth: false,
+              barGap:'70%',
               label: {
                 show: true, //开启显示
                 position: "top", //在上方显示
@@ -436,8 +447,8 @@ const initChart2=()=>{
               },
             },
             {
-              name: "2023",
-              data: [48,154,],
+              name: res.years[1],
+              data: bar2,
               type: "bar",
               barWidth: "20",
               smooth: false,
@@ -453,7 +464,7 @@ const initChart2=()=>{
             },
           ],
           grid: {
-            left: "10%",
+            left: "20%",
             right: "4%",
             top: "15%",
             bottom: "15%",
@@ -462,19 +473,22 @@ const initChart2=()=>{
       );
     
 }
-const initChart3=()=>{
+const initChart3=async ()=>{
+  let res = await MonthSaleData()  
       initChartStatic(
         "chart3",
         generateBaseOptions({
           xAxis: {
-            data: [ "2023-9",'2023-10','2023-11','2023-12','2024-1','2024-2'],
-            interval:0,
+            data: res.Months.reverse(),
             axisLine: {
               show: true,
               lineStyle: {
                 color: "#fff",
               },
             },
+            axisLabel: {
+            interval:0,
+            }
           },
           legend: { 
             show: false, 
@@ -509,13 +523,13 @@ const initChart3=()=>{
           {
             type: "value",
             min:0,
-            max:100000
+            max:Math.max(...res.sales)
           }
         ],
           series: [
             {
               name: "2022",
-              data: [8709,10923,8821,15321,13289,20231],
+              data: res.yields,
               type: "bar",
               barWidth: "20",
               smooth: false,
@@ -531,14 +545,14 @@ const initChart3=()=>{
             },
             {
               name: "2023",
-              data: [8709,10923,8821,15321,13289,20231],
+              data: res.sales,
               type: "line",
               smooth: false,
             },
           ],
           grid: {
-            left: "13%",
-            right: "13%",
+            left: "19%",
+            right: "20%",
             top: "10%",
             bottom: "15%",
           },
@@ -546,12 +560,14 @@ const initChart3=()=>{
       );
     
 }
-const initChart4=()=>{
+//柑橘数据分析
+const initChart4= async ()=>{
+  let res= await ProductionData()
     initChartStatic(
         "chart4",
         generateBaseOptions({
           xAxis: {
-            data: ['2024/2/24','2024/2/25','2024/2/26','2024/2/27','2024/2/28'],
+            data:res.dates,
             interval:0,
             axisLine: {
               show: true,
@@ -593,7 +609,7 @@ const initChart4=()=>{
           series: [
             {
               name: "采摘柑橘",
-              data: [35,29,38,31,41,39],
+              data: res.pick,
               type: "bar",
               barWidth: "20",
               smooth: false,
@@ -609,7 +625,7 @@ const initChart4=()=>{
             },
             {
               name: "洗选过程",
-              data: [29,34,27,30,39,43],
+              data: res.wash,
               type: "bar",
               barWidth: "20",
               smooth: false,
@@ -625,7 +641,7 @@ const initChart4=()=>{
             },
             {
               name: "盛具标识",
-              data: [32,47,32,41,35,38],
+              data: res.markers,
               type: "bar",
               barWidth: "20",
               smooth: false,
@@ -641,13 +657,13 @@ const initChart4=()=>{
             },
             {
               name: "仓库库存",
-              data: [85,75,69,77,83,88],
+              data: res.stash,
               type: "bar",
               barWidth: "20",
               smooth: false,
               label: {
-                show: true, //开启显示
                 position: "top", //在上方显示
+                show: true, //开启显示
                 textStyle: {
                   //数值样式
                   color: "#eee",
@@ -666,6 +682,7 @@ const initChart4=()=>{
         })
       );
 }
+
 onMounted(()=>{
     initChart1()
     initChart2()
@@ -681,20 +698,42 @@ const getDeviceStatistics=()=>{
 }
 getDeviceStatistics()
 // 选择园区
-const getParkBaseInfo=()=>{
-  ParkBaseInfo().then(res=>{
-    console.log(res,'选择园区');
-  })
+let select=ref<any>([])
+let selectId=ref<any>('')
+let select2Id=ref<any>('')
+let select2=ref<any>([])
+//园区
+const getParkBaseInfo=async (params)=>{
+  let res= await ParkBaseInfo(params)  
+  select.value=res
+  getParkBaseInfo2({parentId:select.value[0].id})
 }
-getParkBaseInfo()
+getParkBaseInfo({parentId:'0'})
+//地块
+const getParkBaseInfo2=async (params)=>{
+  let res= await ParkBaseInfo2(params)
+  select2.value=res
+  getIoTLatestData({plotId:res[0].id})
+}
+const selectCli1=(val:any)=>{
+  getParkBaseInfo2({parentId:val.target.value})
+}
 // 物联设备数据 设备数据
 let IoTLates=ref<object>({})
-const getIoTLatestData=()=>{
-  IoTLatestData().then(res=>{
+const getIoTLatestData=(params)=>{
+  IoTLatestData(params).then(res=>{
       IoTLates.value=res
   })
 }
-getIoTLatestData()
+
+const selectCli2=(val:any)=>{
+  if(typeof(val)=='string'){
+    getIoTLatestData({plotId:selectId.value})
+  }else{
+    getIoTLatestData({plotId:val.target.value}) 
+  }
+}
+selectCli2(selectId.value)
 //产品介绍
 const cropList=ref<any>([])
 const getCropBase=()=>{
@@ -738,8 +777,6 @@ const getDeviceAndWarn=()=>{
       item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
-    console.log(a,b,b,'修改');
-    
     webcam.value=a
     sensor.value=b
     warn.value=c
@@ -749,6 +786,68 @@ getDeviceAndWarn()
 const webcamCli=(val:any)=>{
   webcamIndex.value=val
 }
+const sensorCli=(val:any)=>{
+  sensorIndex.value=val
+}
+const warnCli=(val:any)=>{
+  warnIndex.value=val
+}
+//预警信息
+let leftArr=reactive<Object>({
+    tableColumns1: [
+        {
+          key: 'warnInfo',
+          label: '预警信息',
+          width: '50%',
+        },
+        {
+          key: 'warnTime',
+          label: '报警时间',
+          width: '40%',
+        },
+        {
+          key: 'warnStatus',
+          label: '状态',
+          width: '10%',
+        },
+      ],
+      tableData1: [
+        {
+          name: '1号茶园D3地块土堰湿度偏低,当前...',
+          time: '2024-2-1 13:12:31',
+          status: '未处理'
+        },
+        {
+          name: '1号茶园D3地块土堰湿度偏低,当前...',
+          time: '2024-2-1 13:12:31',
+          status: '未处理'
+        },
+        {
+          name: '1号茶园D3地块土堰湿度偏低,当前...',
+          time: '2024-2-1 13:12:31',
+          status: '未处理'
+        },
+      ],
+})
+const getWarnInfo=async ()=>{
+  let res= await WarnInfo()
+  leftArr.tableData1=res
+}
+getWarnInfo()
+//鲁渝有礼
+let lyObj=ref<any>({})
+const getLuYu=async ()=>{
+  let res= await LuYu()
+  lyObj.value=res
+}
+getLuYu()
+//产业数据
+let Industry=ref<any>({})
+const getIndustryData=async ()=>{
+  let res = await IndustryData()
+  Industry.value=res
+}
+getIndustryData()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -997,34 +1096,98 @@ const webcamCli=(val:any)=>{
         position: relative;
         .message{
           position: absolute;
+          padding: 10px 15px 15px;
+          box-sizing: border-box;
           z-index: 9999;
-          right: -200px;
-          top: -180px;
-          width: 200px;
-          height: 200px;
+          left:-50px;
+          top: -150px;
           background-size: 100% 100%;
           background-image:url('./assets/middleBg.png');
           .message-item{
-            width: 150%;
-            height: 50px;
+            width: 105%;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            margin-top: -10px;
+            margin-left: -25px;
             background-size: 100% 100%;
             background-image:url('./assets/middle-top.png');
           }
+          .messageJk{
+              margin: 15px 0 ;
+              padding: 5px ;
+              text-align: center;
+              background-size: 100% 100%;
+              background-image: url('./assets/messageJk.png');
+            }
         }
       }
       .cgq{
         position: absolute;
         width: 3rem;
+        cursor: pointer;
         height: 5rem;
         background-size: 100% 100%;
         background-image: url('./assets/cgq.png');
+        .message{
+          position: absolute;
+          padding: 10px 15px 15px;
+          box-sizing: border-box;
+          z-index: 9999;
+          left:-50px;
+          top: -130px;
+          background-size: 100% 100%;
+          background-image:url('./assets/middleBg.png');
+          .message-item{
+            width: 105%;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            margin-top: -10px;
+            margin-left: -25px;
+            background-size: 100% 100%;
+            background-image:url('./assets/middle-top.png');
+          }
+          .messageJk{
+              margin: 15px 0 ;
+              padding: 5px ;
+              text-align: center;
+              background-size: 100% 100%;
+              background-image: url('./assets/messageJk.png');
+            }
+        }
       }
       .alarm{
+        cursor: pointer;
         position: absolute;
         width: 3rem;
         height: 6rem;
         background-size: 100% 100%;
         background-image: url('./assets/alarm.png');
+        .message{
+          position: absolute;
+          padding: 10px 15px 15px;
+          box-sizing: border-box;
+          z-index: 9999;
+          left:-50px;
+          top: -150px;
+          background-size: 100% 100%;
+          background-image:url('./assets/middleBg.png');
+          .message-item{
+            width: 105%;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            margin-top: -10px;
+            margin-left: -25px;
+            background-size: 100% 100%;
+            background-image:url('./assets/middle-top.png');
+          }
+          .messageJk{
+              margin: 15px 0 ;
+              padding: 5px ;
+              text-align: center;
+              background-size: 100% 100%;
+              background-image: url('./assets/messageJk.png');
+            }
+        }
       }
        
     }
