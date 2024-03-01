@@ -152,7 +152,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { WarningRecordApi, WarningRecordVO } from '@/api/kaizhou/warningrecord'
 import WarningRecordForm from './WarningRecordForm.vue'
-
+import { useRouter } from "vue-router";
 /** 预警记录 列表 */
 defineOptions({ name: 'WarningRecord' })
 
@@ -167,11 +167,17 @@ const queryParams = reactive({
   pageSize: 10,
   deviceCode: undefined,
   warnTime: [],
-  warnStatus: undefined,
+  warnStatus: '',
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const { currentRoute } = useRouter()
+const route = currentRoute.value
 
+onMounted(()=>{
+  if (route.query.warnStatus)
+    queryParams.warnStatus = route.query.warnStatus as string
+})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
