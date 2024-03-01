@@ -51,10 +51,24 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+        <el-input v-model="formData.belongPark" placeholder="点击右侧按钮选择所属基地" readonly>
+          <template #append>
+            <el-button @click="openParkBaseHelper('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+        <el-input v-model="formData.belongPlot" placeholder="点击右侧按钮选择所属地块" readonly>
+          <template #append>
+            <el-button @click="openParkBaseHelper(formData.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--      <el-form-item label="URL" prop="url">
         <el-input v-model="formData.url" placeholder="请输入URL" />
@@ -68,10 +82,17 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <!-- 基地/地块列表 -->
+  <ParkBaseHelper
+    ref="parkBaseHelperRef"
+    @success="handleParkBaseChange"
+  />
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
+import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import ParkBaseHelper from "@/views/kaizhou/parkbase/components/ParkBaseHelper.vue";
 
 /** 设备管理 表单 */
 defineOptions({ name: 'DeviceBaseForm' })
@@ -92,8 +113,8 @@ const formData = ref({
   longitude: undefined,
   latitude: undefined,
   deviceStatus: undefined,
-  belongPark: undefined,
-  belongPlot: undefined,
+  belongPark: '',
+  belongPlot: '',
   url: undefined,
   remark: undefined,
 })
@@ -119,7 +140,19 @@ const open = async (type: string, id?: number) => {
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+const parkBaseHelperRef = ref()
+const openType = ref('')
+const openParkBaseHelper = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined){
+    message.error("请选择基地")
+  }else parkBaseHelperRef.value.open(id)
+}
 
+const handleParkBaseChange = (order: ParkBaseVO) => {
+  if (openType.value === '0') formData.value.belongPark = String(order[0].id)
+  else formData.value.belongPlot = String(order[0].id)
+}
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
@@ -155,8 +188,8 @@ const resetForm = () => {
     longitude: undefined,
     latitude: undefined,
     deviceStatus: undefined,
-    belongPark: undefined,
-    belongPlot: undefined,
+    belongPark: '',
+    belongPlot: '',
     url: undefined,
     remark: undefined,
   }
