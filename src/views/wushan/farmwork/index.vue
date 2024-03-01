@@ -7,7 +7,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="字典名称" prop="dictType">
+      <!-- <el-form-item label="字典名称" prop="dictType">
         <el-select v-model="queryParams.dictType" class="!w-240px">
           <el-option
             v-for="item in dictTypeList"
@@ -16,7 +16,7 @@
             :value="item.type"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="字典标签" prop="label">
         <el-input
           v-model="queryParams.label"
@@ -137,8 +137,7 @@ const queryParams = reactive({
   pageSize: 10,
   label: '',
   status: undefined,
-  dictType: 'wushan_farm_work',
-  creator:130
+  dictType: 'kaizhou_farm_work'
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
