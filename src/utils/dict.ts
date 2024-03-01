@@ -134,6 +134,7 @@ export enum DICT_TYPE {
   INFRA_CODEGEN_FRONT_TYPE = 'infra_codegen_front_type',
   INFRA_CODEGEN_SCENE = 'infra_codegen_scene',
   INFRA_FILE_STORAGE = 'infra_file_storage',
+  INFRA_INTEGER_STRING = 'infra_integer_string',
 
   // ========== BPM 模块 ==========
   BPM_MODEL_CATEGORY = 'bpm_model_category',
@@ -230,4 +231,5 @@ export enum DICT_TYPE {
   KAIZHOU_WARN_RULE_TYPE='kaizhou_warn_rule_type',//预警规则类型
   KAIZHOU_WARN_RULE_STATUS='kaizhou_warn_rule_status',//预警规则生效状态
   KAIZHOU_VALUE_UNIT='kaizhou_value_unit',//数据单位
+  WUSHAN_FARM_WORK = 'wushan_farm_work', // 巫山园区类型
 }

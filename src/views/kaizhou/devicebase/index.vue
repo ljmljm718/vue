@@ -187,6 +187,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
 import DeviceBaseForm from './DeviceBaseForm.vue'
+import { useRouter } from "vue-router";
 
 /** 设备管理 列表 */
 defineOptions({ name: 'DeviceBase' })
@@ -206,7 +207,7 @@ const queryParams = reactive({
   deviceType: undefined,
   longitude: undefined,
   latitude: undefined,
-  deviceStatus: undefined,
+  deviceStatus: '',
   belongPark: undefined,
   belongPlot: undefined,
   url: undefined,
@@ -215,7 +216,13 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const { currentRoute } = useRouter()
+const route = currentRoute.value
 
+onMounted(()=>{
+  if (route.query.deviceStatus)
+    queryParams.deviceStatus = route.query.deviceStatus as string
+})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true

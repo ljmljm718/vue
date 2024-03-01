@@ -8,10 +8,10 @@
       v-loading="formLoading"
     >
       <el-form-item label="设备号" prop="deviceCode">
-        <el-input v-model="formData.deviceCode" placeholder="请输入设备号" />
+        <el-input v-model="formData.deviceCode" placeholder="请输入设备号"/>
       </el-form-item>
       <el-form-item label="名称" prop="deviceName">
-        <el-input v-model="formData.deviceName" placeholder="请输入名称" />
+        <el-input v-model="formData.deviceName" placeholder="请输入名称"/>
       </el-form-item>
       <el-form-item label="种类" prop="kinds">
         <el-select v-model="formData.kinds" placeholder="请选择种类">
@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
+        <el-select v-model="formData.deviceType" placeholder="请先选择种类">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE).filter(item => item.value.toString().substring(0,6) === formData.kinds)"
             :key="dict.value"
@@ -34,10 +34,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="经度" prop="longitude">
-        <el-input v-model="formData.longitude" placeholder="请输入经度" />
+        <el-input v-model="formData.longitude" placeholder="请输入经度"/>
       </el-form-item>
       <el-form-item label="纬度" prop="latitude">
-        <el-input v-model="formData.latitude" placeholder="请输入纬度" />
+        <el-input v-model="formData.latitude" placeholder="请输入纬度"/>
       </el-form-item>
       <el-form-item label="状态" prop="deviceStatus">
         <el-radio-group v-model="formData.deviceStatus">
@@ -50,17 +50,27 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+      <!--      <el-form-item label="所属基地" prop="belongPark">-->
+      <!--        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />-->
+      <!--      </el-form-item>-->
+      <el-form-item label="所属地块" prop="belongPark">
+        <el-input v-model="formData.belongPark" readonly>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+      <el-form-item label="所属园区" prop="belongPlot">
+        <el-input v-model="formData.belongPlot" placeholder="请输入所属园区" disabled/>
       </el-form-item>
-<!--      <el-form-item label="URL" prop="url">
-        <el-input v-model="formData.url" placeholder="请输入URL" />
-      </el-form-item>-->
+      <!--      <el-form-item label="URL" prop="url">
+              <el-input v-model="formData.url" placeholder="请输入URL" />
+            </el-form-item>-->
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
+        <el-input v-model="formData.remark" placeholder="请输入备注"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -68,15 +78,25 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!-- 可入库的订单列表 -->
+  <ParkBaseMassifList
+    ref="purchaseOrderInEnableListRef"
+    @success="handlePurchaseOrderChange"
+  />
+
 </template>
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {DeviceBaseApi, DeviceBaseVO} from '@/api/kaizhou/devicebase'
+import ParkBaseMassifList from '@/views/wushan/devicebase/park/ParkBaseMassifList.vue'
+import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+
 
 /** 设备管理 表单 */
-defineOptions({ name: 'DeviceBaseForm' })
+defineOptions({name: 'DeviceBaseForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -98,7 +118,11 @@ const formData = ref({
   remark: undefined,
 })
 const formRules = reactive({
-  deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
+  deviceName: [{required: true, message: '设备名称不能为空', trigger: 'blur'}],
+  belongPlot: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
+  belongPark: [{required: true, message: '所属园区不能为空', trigger: 'blur'}],
+  kinds: [{required: true, message: '种类不能为空', trigger: 'blur'}],
+  deviceType: [{required: true, message: '设备类型不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
@@ -118,7 +142,20 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+}
+
+const handlePurchaseOrderChange = (order: ParkBaseVO) => {
+  // 将订单设置到入库单
+  console.log(order)
+  formData.value.belongPlot = String(order[0].code)
+  formData.value.belongPark = String(order[0].parentId)
+}
+
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调

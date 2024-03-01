@@ -24,6 +24,9 @@ export const ParkBaseApi = {
   getParkBasePage: async (params: any) => {
     return await request.get({ url: `/kaizhou/park-base/page`, params })
   },
+  getParkBaseList: async (params: any) => {
+    return await request.get({ url: `/kaizhou/park-base/list`, params })
+  },
 
   // 查询园区/地块基本信息详情
   getParkBase: async (id: string) => {

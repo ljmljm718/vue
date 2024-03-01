@@ -26,6 +26,7 @@ export default {
   },
   post: async <T = any>(option: any) => {
     const res = await request({ method: 'POST', ...option })
+    if (!res.data) return res
     return res.data as unknown as T
   },
   postOriginal: async (option: any) => {
@@ -34,10 +35,12 @@ export default {
   },
   delete: async <T = any>(option: any) => {
     const res = await request({ method: 'DELETE', ...option })
+    if (!res.data) return res
     return res.data as unknown as T
   },
   put: async <T = any>(option: any) => {
     const res = await request({ method: 'PUT', ...option })
+    if (!res.data) return res
     return res.data as unknown as T
   },
   download: async <T = any>(option: any) => {
