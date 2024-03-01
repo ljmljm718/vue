@@ -10,8 +10,8 @@
       <el-form-item label="字典类型" prop="type">
         <el-input
           v-model="formData.dictType"
-          :disabled="typeof formData.id !== 'undefined'"
           placeholder="请输入参数名称"
+          :disabled="true"
         />
       </el-form-item>
       <el-form-item label="数据标签" prop="label">
