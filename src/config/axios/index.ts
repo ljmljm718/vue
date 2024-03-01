@@ -21,6 +21,7 @@ const request = (option: any) => {
 export default {
   get: async <T = any>(option: any) => {
     const res = await request({ method: 'GET', ...option })
+    if (!res.data) return res
     return res.data as unknown as T
   },
   post: async <T = any>(option: any) => {

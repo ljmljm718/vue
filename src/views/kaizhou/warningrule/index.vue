@@ -261,9 +261,8 @@ const bindDevice = async (id: number) => {
     console.log("id",id)
     const data = await WarningRuleDeviceApi.selectDeviceByWarnRuleId(String(id))
     console.log("data", data)
-    deviceId.value = data.list.map(item => (item.deviceId))
+    deviceId.value = data.map(item => (item.deviceId))
     warnRuleId.value = id
-
     warnRuleBindDeviceRef.value.open()
   } catch{
   }
