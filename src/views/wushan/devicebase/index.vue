@@ -44,12 +44,13 @@
       <el-form-item label="设备类型" prop="deviceType">
         <el-select
           v-model="queryParams.deviceType"
-          placeholder="请选择设备类型"
+          placeholder="请先选择种类"
           clearable
           class="!w-240px"
+          :disabled="queryParams.kinds === undefined"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE).filter(item => item.value.toString().substring(0,6) === queryParams.kinds)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"

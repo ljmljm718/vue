@@ -94,20 +94,28 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="规则类型" align="center" prop="ruleType">
+      <el-table-column label="规则编号" align="center" prop="id" width="200"/>
+      <el-table-column label="规则类型" align="center" prop="ruleType" width="200">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_RULE_TYPE" :value="scope.row.ruleType" />
         </template>
       </el-table-column>
-      <el-table-column label="预警下限" align="center" prop="warnLowValue" />
-      <el-table-column label="预警上限" align="center" prop="warnHighValue" />
-      <el-table-column label="单位" align="center" prop="warnUnit" />
-      <el-table-column label="低位预警消息模板" align="center" prop="lowMsgTemplateId" />
-      <el-table-column label="高位预警消息模板" align="center" prop="highMsgTemplateId" />
-      <el-table-column label="责任人编号" align="center" prop="responsiblePersonId" />
-      <el-table-column label="责任人" align="center" prop="responsiblePerson" />
-      <el-table-column label="生效状态" align="center" prop="effectiveStatus">
+      <el-table-column label="预警下限" align="center" width="120">
+        <template #default="scope">
+          <div> {{ scope.row["warnLowValue"] }}{{ scope.row["warnUnit"] }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="预警上限" align="center" width="120">
+        <template #default="scope">
+          <div> {{ scope.row["warnHighValue"] }}{{ scope.row["warnUnit"] }}</div>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="单位" align="center" prop="warnUnit" />-->
+      <el-table-column label="低位预警消息模板" align="center" prop="lowMsgTemplate" />
+      <el-table-column label="高位预警消息模板" align="center" prop="highMsgTemplate" />
+<!--      <el-table-column label="责任人编号" align="center" prop="responsiblePersonId" />-->
+      <el-table-column label="责任人" align="center" prop="responsiblePerson" width="110"/>
+      <el-table-column label="生效状态" align="center" width="100">
         <template #default="scope">
           <el-switch
             v-model="scope.row.effectiveStatus"
@@ -126,8 +134,15 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="180">
         <template #default="scope">
+          <el-button
+            link
+            type="success"
+            @click="bindDevice(scope.row.id)"
+          >
+            绑定设备
+          </el-button>
           <el-button
             link
             type="primary"
@@ -158,6 +173,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <WarningRuleForm ref="formRef" @success="getList" />
+
+  <!-- 绑定设备列表 -->
+  <WarnRuleBindDevice ref="warnRuleBindDeviceRef" :warnRuleId="warnRuleId" :deviceId="deviceId"/>
 </template>
 
 <script setup lang="ts">
@@ -166,6 +184,8 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { WarningRuleApi, WarningRuleVO } from '@/api/kaizhou/warningrule'
 import WarningRuleForm from './WarningRuleForm.vue'
+import WarnRuleBindDevice from "@/views/kaizhou/warningrule/WarnRuleBindDevice.vue";
+import {WarningRuleDeviceApi} from "@/api/kaizhou/warningruledevice";
 
 /** 预警规则 列表 */
 defineOptions({ name: 'WarningRule' })
@@ -196,6 +216,8 @@ const formData = ref({
   responsiblePersonId: undefined,
   responsiblePerson: undefined,
   effectiveStatus: undefined,
+  lowMsgTemplate: undefined,
+  highMsgTemplate: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -228,6 +250,23 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+const deviceId = ref([]) // 已绑定的设备id
+const warnRuleId = ref()
+const warnRuleBindDeviceRef = ref()
+/** 绑定设备操作 */
+const bindDevice = async (id: number) => {
+  try{
+    console.log("id",id)
+    const data = await WarningRuleDeviceApi.selectDeviceByWarnRuleId(String(id))
+    console.log("data", data)
+    deviceId.value = data.list.map(item => (item.deviceId))
+    warnRuleId.value = id
+
+    warnRuleBindDeviceRef.value.open()
+  } catch{
+  }
 }
 
 /** 删除按钮操作 */

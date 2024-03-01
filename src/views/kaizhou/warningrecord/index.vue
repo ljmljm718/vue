@@ -70,15 +70,22 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="园区编号" align="center" prop="parkCode" />
-      <el-table-column label="地块编号" align="center" prop="plotCode" />
-      <el-table-column label="设备编号" align="center" prop="deviceCode" />
-      <el-table-column label="预警信息" align="center" prop="warnInfo" />
-      <el-table-column label="预警标题" align="center" prop="warnTitle" />
-      <el-table-column label="当前值" align="center" prop="currentValue" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="阈值" align="center" prop="threshold" />
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
+<!--      <el-table-column label="园区编号" align="center" prop="parkCode" />-->
+<!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
+      <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
+      <el-table-column label="预警标题" align="center" prop="warnTitle" width="140"/>
+      <el-table-column label="预警信息" align="center" prop="warnInfo" width="320"/>
+      <el-table-column label="当前值" align="center" prop="currentValue" width="100">
+        <template #default="scope">
+          <div> {{ scope.row["currentValue"] }}{{ scope.row["unit"] }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="阈值" align="center" prop="threshold" width="100">
+        <template #default="scope">
+          <div> {{ scope.row["threshold"] }}{{ scope.row["unit"] }}</div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="预警时间"
         align="center"
@@ -91,6 +98,7 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_STATUS" :value="scope.row.warnStatus" />
         </template>
       </el-table-column>
+      <el-table-column label="处理人" align="center" prop="dealPerson" width="110"/>
       <el-table-column
         label="处理时间"
         align="center"
@@ -98,15 +106,13 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="处理人" align="center" prop="dealPerson" />
-      <el-table-column label="处理人编号" align="center" prop="dealPersonId" />
-      <el-table-column label="处理信息" align="center" prop="dealInfo" />
-      <el-table-column label="设备类型" align="center" prop="deviceType">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="处理信息" align="center" prop="dealInfo" width="150"/>
+<!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button
             link
@@ -146,7 +152,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { WarningRecordApi, WarningRecordVO } from '@/api/kaizhou/warningrecord'
 import WarningRecordForm from './WarningRecordForm.vue'
-
+import { useRouter } from "vue-router";
 /** 预警记录 列表 */
 defineOptions({ name: 'WarningRecord' })
 
@@ -161,11 +167,17 @@ const queryParams = reactive({
   pageSize: 10,
   deviceCode: undefined,
   warnTime: [],
-  warnStatus: undefined,
+  warnStatus: '',
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const { currentRoute } = useRouter()
+const route = currentRoute.value
 
+onMounted(()=>{
+  if (route.query.warnStatus)
+    queryParams.warnStatus = route.query.warnStatus as string
+})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true

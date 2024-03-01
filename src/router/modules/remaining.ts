@@ -549,6 +549,16 @@ const remainingRouter: AppRouteRecordRaw[] = [
         component: () => import('@/views/crm/product/detail/index.vue')
       }
     ]
+  },
+  {
+    path: '/QRCode',
+    component: () => import('@/views/kaizhou/qrCode/index.vue'),
+    name: 'scanCode',
+    meta: {
+      hidden: true,
+      title: '标识码',
+      noTagsView: true
+    }
   }
 ]
 

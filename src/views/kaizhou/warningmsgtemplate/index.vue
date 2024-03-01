@@ -47,15 +47,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="备注" prop="remark">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.remark"-->
+<!--          placeholder="请输入备注"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -83,20 +83,20 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="消息标题" align="center" prop="msgTitle" />
+      <el-table-column label="主键" align="center" prop="id" width="200"/>
+      <el-table-column label="消息标题" align="center" prop="msgTitle" width="200"/>
       <el-table-column label="消息内容" align="center" prop="msgContent" />
-      <el-table-column label="消息类型" align="center" prop="msgType">
+      <el-table-column label="消息类型" align="center" prop="msgType" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_MSG_TYPE" :value="scope.row.msgType" />
         </template>
       </el-table-column>
-      <el-table-column label="消息级别" align="center" prop="msgLevel">
+      <el-table-column label="消息级别" align="center" prop="msgLevel" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL" :value="scope.row.msgLevel" />
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+<!--      <el-table-column label="备注" align="center" prop="remark" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -104,7 +104,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="160">
         <template #default="scope">
           <el-button
             link
