@@ -16,18 +16,25 @@
         />
       </el-form-item>
       <el-form-item label="农事记录编码" prop="agriculturalRecordCode">
-        <el-input v-model="formData.agriculturalRecordCode" placeholder="请输入农事记录编码" />
+        <el-input v-model="formData.agriculturalRecordCode" placeholder="请输入农事记录编码" :disabled="true">
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="产量(KG)" prop="output">
-        <el-input v-model="formData.output" placeholder="请输入产量(KG)" />
+        <el-input v-model="formData.wushanOutput" placeholder="请输入产量(KG)" />
       </el-form-item>
-      <el-form-item label="单价(元)" prop="unitPrice">
+      <el-form-item label="单价(KG/元)" prop="unitPrice">
         <el-input v-model="formData.unitPrice" placeholder="请输入单价(元)" />
       </el-form-item>
       <el-form-item label="收入(元)" prop="income">
-        <el-input v-model="formData.income" placeholder="请输入收入(元)" />
+        <el-input v-model="formData.wushanIncome" placeholder="请输入收入,如果不写会自动计算并填入" />
       </el-form-item>
-      <!-- <el-form-item label="备用一" prop="reserveOne">
+<!--      <el-form-item label="备用一" prop="reserveOne">
         <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
       </el-form-item>
       <el-form-item label="备用二" prop="reserveTwo">
@@ -35,16 +42,20 @@
       </el-form-item>
       <el-form-item label="备用三" prop="reserveThree">
         <el-input v-model="formData.reserveThree" placeholder="请输入备用三" />
-      </el-form-item> -->
+      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
+                          @success="handlePurchaseOrderChange"/>
+
 </template>
 <script setup lang="ts">
 import { FarmRecordApi, FarmRecordVO } from '@/api/wushan/farmrecord'
+import AgriculturalBaseList from '@/views/wushan/planrecord/SelectList.vue'
 
 /** 巫山农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -60,9 +71,9 @@ const formData = ref({
   id: undefined,
   statisticalTime: undefined,
   agriculturalRecordCode: undefined,
-  output: undefined,
+  wushanOutput: undefined,
   unitPrice: undefined,
-  income: undefined,
+  wushanIncome: undefined,
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -70,6 +81,25 @@ const formData = ref({
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
+
+
+
+/** 新加方法 */
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+  
+}
+
+const handlePurchaseOrderChange = (order: FarmRecordVO) => {
+  // 将订单设置到入库单
+  console.log("--->>查看查到的农资信息",order)
+  formData.value.agriculturalRecordCode = String(order[0].id)
+  /*formData.value.agriculturalName = String(order[0].name)
+  formData.value.agriculturalSize = String(order[0].size)*/
+}
+
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {

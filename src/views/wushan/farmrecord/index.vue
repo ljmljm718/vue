@@ -28,9 +28,9 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="产量(KG)" prop="output">
+      <el-form-item label="产量(KG)" prop="wushanOutput">
         <el-input
-          v-model="queryParams.output"
+          v-model="queryParams.wushanOutput"
           placeholder="请输入产量(KG)"
           clearable
           @keyup.enter="handleQuery"
@@ -46,42 +46,42 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="收入(元)" prop="income">
+      <el-form-item label="收入(元)" prop="wushanIncome">
         <el-input
-          v-model="queryParams.income"
+          v-model="queryParams.wushanIncome"
           placeholder="请输入收入(元)"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <!-- <el-form-item label="备用一" prop="reserveOne">
-        <el-input
-          v-model="queryParams.reserveOne"
-          placeholder="请输入备用一"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备用二" prop="reserveTwo">
-        <el-input
-          v-model="queryParams.reserveTwo"
-          placeholder="请输入备用二"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备用三" prop="reserveThree">
-        <el-input
-          v-model="queryParams.reserveThree"
-          placeholder="请输入备用三"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
+      <!--      <el-form-item label="备用一" prop="reserveOne">
+              <el-input
+                v-model="queryParams.reserveOne"
+                placeholder="请输入备用一"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>
+            <el-form-item label="备用二" prop="reserveTwo">
+              <el-input
+                v-model="queryParams.reserveTwo"
+                placeholder="请输入备用二"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>
+            <el-form-item label="备用三" prop="reserveThree">
+              <el-input
+                v-model="queryParams.reserveThree"
+                placeholder="请输入备用三"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>-->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -94,15 +94,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['wushan:farm-record:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -111,7 +118,8 @@
           :loading="exportLoading"
           v-hasPermi="['wushan:farm-record:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -120,15 +128,17 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="编码" align="center" prop="id" />
-      <el-table-column label="统计时间" align="center" prop="statisticalTime" />
-      <el-table-column label="农事记录编码" align="center" prop="agriculturalRecordCode" />
-      <el-table-column label="产量(KG)" align="center" prop="output" />
-      <el-table-column label="单价(元)" align="center" prop="unitPrice" />
-      <el-table-column label="收入(元)" align="center" prop="income" />
-      <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
-      <el-table-column label="备用二" align="center" prop="reserveTwo" />
-      <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
+      <el-table-column label="编码" align="center" prop="id"/>
+      <!--      <el-table-column label="统计时间" align="center" prop="statisticalTime" />-->
+      <el-table-column label="统计时间" align="center" prop="statisticalTime" width="180" :formatter="dateFormatter"/>
+
+      <el-table-column label="农事记录编码" align="center" prop="agriculturalRecordCode"/>
+      <el-table-column label="产量(KG)" align="center" prop="wushanOutput"/>
+      <el-table-column label="单价(KG/元)" align="center" prop="unitPrice"/>
+      <el-table-column label="收入(元)" align="center" prop="wushanIncome"/>
+      <!--      <el-table-column label="备用一" align="center" prop="reserveOne" />
+            <el-table-column label="备用二" align="center" prop="reserveTwo" />
+            <el-table-column label="备用三" align="center" prop="reserveThree" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -167,20 +177,20 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <FarmRecordForm ref="formRef" @success="getList" />
+  <FarmRecordForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { FarmRecordApi, FarmRecordVO } from '@/api/wushan/farmrecord'
+import {FarmRecordApi, FarmRecordVO} from '@/api/wushan/farmrecord'
 import FarmRecordForm from './FarmRecordForm.vue'
 
 /** 巫山农事记录 列表 */
-defineOptions({ name: 'FarmRecord' })
+defineOptions({name: 'FarmRecord'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<FarmRecordVO[]>([]) // 列表的数据
@@ -190,9 +200,9 @@ const queryParams = reactive({
   pageSize: 10,
   statisticalTime: [],
   agriculturalRecordCode: undefined,
-  output: undefined,
+  wushanOutput: undefined,
   unitPrice: undefined,
-  income: undefined,
+  wushanIncome: undefined,
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -241,7 +251,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
