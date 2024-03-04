@@ -83,7 +83,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" width="200"/>
+<!--      <el-table-column label="主键" align="center" prop="id" width="200"/>-->
       <el-table-column label="消息标题" align="center" prop="msgTitle" width="200"/>
       <el-table-column label="消息内容" align="center" prop="msgContent" />
       <el-table-column label="消息类型" align="center" prop="msgType" width="100">
