@@ -63,8 +63,13 @@
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
-                @selection-change="handleSelectionChange">
+      <el-table
+          v-loading="loading" :data="list"
+          border
+          :show-overflow-tooltip="true" :stripe="true"
+          @selection-change="handleSelectionChange"
+      >
+        <el-table-column width="30" label="选择" type="selection" align="center"/>
         <el-table-column label="编号" align="center" prop="cropCode" />
         <el-table-column label="名称" align="center" prop="cropName" />
         <el-table-column label="品种" align="center" prop="cropType">
@@ -137,11 +142,11 @@ const handleSelectionChange = (rows: CropBaseVO[]) => {
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: CropBaseVO[]): void
+  (e: 'setCropInfo', value: CropBaseVO[]): void
 }>()
 const submitForm = () => {
   try {
-    emits('success', selectionList.value)
+    emits('setCropInfo', selectionList.value)
   } finally {
     // 关闭弹窗
     dialogVisible.value = false
