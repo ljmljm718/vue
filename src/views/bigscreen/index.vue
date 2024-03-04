@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="left3">
-                    <div class="box-title">物联设备数据</div>
+                    <div class="box-title" style="cursor: pointer;" @click="$router.push('/basic/device/device-data')">物联设备数据</div>
                     <div class="left3-select">
                       <select name="" id="1" class="select1" @change="selectCli1">
                         <option :value="item.id" v-for="item,index in select" :key="index">{{item.name}}</option>
