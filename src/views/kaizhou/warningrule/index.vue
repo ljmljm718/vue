@@ -94,7 +94,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="规则编号" align="center" prop="id" width="200"/>
+<!--      <el-table-column label="规则编号" align="center" prop="id" width="200"/>-->
       <el-table-column label="规则类型" align="center" prop="ruleType" width="200">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_RULE_TYPE" :value="scope.row.ruleType" />
@@ -114,8 +114,8 @@
       <el-table-column label="低位预警消息模板" align="center" prop="lowMsgTemplate" />
       <el-table-column label="高位预警消息模板" align="center" prop="highMsgTemplate" />
 <!--      <el-table-column label="责任人编号" align="center" prop="responsiblePersonId" />-->
-      <el-table-column label="责任人" align="center" prop="responsiblePerson" width="110"/>
-      <el-table-column label="生效状态" align="center" width="100">
+      <el-table-column label="责任人" align="center" prop="responsiblePerson" width="150"/>
+      <el-table-column label="生效状态" align="center" width="130">
         <template #default="scope">
           <el-switch
             v-model="scope.row.effectiveStatus"
@@ -134,7 +134,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="180">
+      <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button
             link
