@@ -42,4 +42,9 @@ export const ProjectCategoryApi = {
   exportProjectCategory: async (params) => {
     return await request.download({ url: `/portal/project-category/export-excel`, params })
   },
-}
+
+  // 查询项目分类树
+  getProjectCategoryTree: async (params) => {
+    return await request.get({ url: `/portal/project-category/tree`, params })
+  },
+}

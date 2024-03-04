@@ -26,6 +26,9 @@
       <el-form-item label="分类标签" prop="label">
         <el-input v-model="formData.label" placeholder="请输入分类标签" />
       </el-form-item>
+      <el-form-item label="分类排序" prop="sort">
+        <el-input v-model="formData.sort" placeholder="请输入分类排序"/>
+      </el-form-item>
       <el-form-item label="是否显示" prop="status">
         <el-radio-group v-model="formData.status">
           <el-radio
@@ -37,9 +40,11 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-
-      <el-form-item label="分类排序" prop="sort">
-        <el-input v-model="formData.sort" placeholder="请输入分类排序" />
+      <el-form-item label="图片" prop="pic">
+        <UploadImg v-model="formData.pic" />
+      </el-form-item>
+      <el-form-item label="描述" prop="description">
+        <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -49,9 +54,12 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { ProjectCategoryApi, ProjectCategoryVO } from '@/api/portal/projectcategory'
-import { defaultProps, handleTree } from '@/utils/tree'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
+import {ProjectCategoryApi, ProjectCategoryVO} from '@/api/portal/projectcategory'
+import {defaultProps, handleTree} from '@/utils/tree'
+
+/** 初始赋值 */
+const status = 1;
 
 /** 项目分类 表单 */
 defineOptions({ name: 'ProjectCategoryForm' })
@@ -67,17 +75,22 @@ const formData = ref({
   code: undefined,
   name: undefined,
   label: undefined,
-  status: undefined,
+  status: status,
   id: undefined,
   parentId: undefined,
   sort: undefined,
+  pic: undefined,
+  description: undefined,
 })
 const formRules = reactive({
   code: [{ required: true, message: '分类编码不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '分类名称不能为空', trigger: 'blur' }],
   label: [{ required: true, message: '分类标签不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '是否显示不能为空', trigger: 'blur' }],
-  parentId: [{ required: true, message: '父结点i不能为空', trigger: 'blur' }],
+  parentId: [{required: true, message: '父结点不能为空', trigger: 'blur'}],
+  sort: [{required: true, message: '排序不能为空', trigger: 'blur'}],
+  pic: [{required: true, message: '图片不能为空', trigger: 'blur'}],
+  description: [{required: true, message: '分类描述不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 const projectCategoryTree = ref() // 树形结构
@@ -131,10 +144,12 @@ const resetForm = () => {
     code: undefined,
     name: undefined,
     label: undefined,
-    status: undefined,
+    status: status,
     id: undefined,
     parentId: undefined,
     sort: undefined,
+    pic: undefined,
+    description: undefined,
   }
   formRef.value?.resetFields()
 }

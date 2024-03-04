@@ -232,4 +232,7 @@ export enum DICT_TYPE {
   KAIZHOU_WARN_RULE_STATUS='kaizhou_warn_rule_status',//预警规则生效状态
   KAIZHOU_VALUE_UNIT='kaizhou_value_unit',//数据单位
   WUSHAN_FARM_WORK = 'wushan_farm_work', // 巫山园区类型
+
+  // ========== PORTAL - 门户  ==========
+  PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型
 }
