@@ -187,14 +187,14 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
 import DeviceBaseForm from './DeviceBaseForm.vue'
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 
 /** 设备管理 列表 */
 defineOptions({ name: 'DeviceBase' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-
+let route2=useRoute()
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -218,7 +218,6 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const { currentRoute } = useRouter()
 const route = currentRoute.value
-
 onMounted(()=>{
   if (route.query.deviceStatus)
     queryParams.deviceStatus = route.query.deviceStatus as string
@@ -233,6 +232,15 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+let location=route2.query
+console.log(location,'路由');
+if(location.kinds){
+  queryParams.kinds=location.kinds
+  getList()
+}
+else{
+  getList()
 }
 
 /** 搜索按钮操作 */
