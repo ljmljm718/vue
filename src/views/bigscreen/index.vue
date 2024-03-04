@@ -763,18 +763,21 @@ const getDeviceAndWarn=()=>{
     let i=7
     let i2=6
     let a= res.webcam
-    let b= res.sensor
+    let b= res.sensor    
     let c= res.warn
     a.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+      if(typeof(item.latitude)!='string') return
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
     b.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+      if(typeof(item.latitude)!='string') return
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
     c.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+      if(typeof(item.latitude)!='string') return
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
     webcam.value=a
