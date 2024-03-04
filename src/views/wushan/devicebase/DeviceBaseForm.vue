@@ -79,7 +79,7 @@
     </template>
   </Dialog>
 
-  <!-- 可入库的订单列表 -->
+  <!-- 园区列表 -->
   <ParkBaseMassifList
     ref="purchaseOrderInEnableListRef"
     @success="handlePurchaseOrderChange"
