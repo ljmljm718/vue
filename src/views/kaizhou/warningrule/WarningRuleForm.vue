@@ -126,6 +126,7 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { WarningRuleApi, WarningRuleVO } from '@/api/kaizhou/warningrule'
 import {WarningMsgTemplateVO} from "@/api/kaizhou/warningmsgtemplate";
+import SelectWarnMsgTemplate from "@/views/kaizhou/warningrule/component/SelectWarnMsgTemplate.vue";
 
 /** 预警规则 表单 */
 defineOptions({ name: 'WarningRuleForm' })
@@ -150,7 +151,7 @@ const formData = ref({
   effectiveStatus: undefined,
   lowMsgTemplate: undefined,
   highMsgTemplate: undefined,
-})
+} as any)
 const formRules = reactive({
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
@@ -226,6 +227,7 @@ const resetForm = () => {
 
 const selectWarnMsgTemplateRef = ref() // 选择的预警消息模板
 const openWarnMsgTemplateList = () => {
+  console.log('selectWarnMsgTemplateRef', selectWarnMsgTemplateRef.value)
   selectWarnMsgTemplateRef.value.open()
 }
 

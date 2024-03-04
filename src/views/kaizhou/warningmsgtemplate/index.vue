@@ -86,12 +86,12 @@
 <!--      <el-table-column label="主键" align="center" prop="id" width="200"/>-->
       <el-table-column label="消息标题" align="center" prop="msgTitle" width="200"/>
       <el-table-column label="消息内容" align="center" prop="msgContent" />
-      <el-table-column label="消息类型" align="center" prop="msgType" width="100">
+      <el-table-column label="消息类型" align="center" prop="msgType" width="130">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_MSG_TYPE" :value="scope.row.msgType" />
         </template>
       </el-table-column>
-      <el-table-column label="消息级别" align="center" prop="msgLevel" width="100">
+      <el-table-column label="消息级别" align="center" prop="msgLevel" width="130">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL" :value="scope.row.msgLevel" />
         </template>
