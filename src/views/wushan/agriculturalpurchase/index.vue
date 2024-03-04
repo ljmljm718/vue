@@ -88,7 +88,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="农资主键" align="center" prop="agriculturalId" />
       <el-table-column label="农资名称" align="center" prop="agriculturalName" />
       <el-table-column label="农资规格" align="center" prop="agriculturalSize" />

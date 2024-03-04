@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-<!--      <el-form-item label="农资主键" prop="agriculturalId">-->
-<!--        <el-input v-model="formData.agriculturalId" placeholder="请输入农资主键" />-->
-<!--      </el-form-item>-->
+      <el-form-item label="农资主键" prop="agriculturalId">
+        <el-input v-model="formData.agriculturalId" placeholder="请输入农资主键" />
+      </el-form-item>
       <el-form-item label="农资名称" prop="agriculturalName">
         <el-input v-model="formData.agriculturalName" placeholder="请输入农资名称" >
           <template #append>
@@ -121,7 +121,7 @@ const formData = ref({
   remark: undefined,
 })
 const formRules = reactive({
-  // agriculturalId: [{ required: true, message: '农资主键不能为空', trigger: 'blur' }],
+  agriculturalId: [{ required: true, message: '农资主键不能为空', trigger: 'blur' }],
   agriculturalName: [{ required: true, message: '农资名称不能为空', trigger: 'blur' }],
   agriculturalSize: [{ required: true, message: '农资规格不能为空', trigger: 'blur' }],
 })
@@ -136,7 +136,7 @@ const openPurchaseOrderInEnableList = () => {
 const handlePurchaseOrderChange = (order: AgriculturalBaseVO) => {
   // 将订单设置到入库单
   console.log("--->>查看查到的农资信息",order)
-  // formData.value.agriculturalId = String(order[0].id)
+  formData.value.agriculturalId = String(order[0].code)
   formData.value.agriculturalName = String(order[0].name)
   formData.value.agriculturalSize = String(order[0].size)
 }
