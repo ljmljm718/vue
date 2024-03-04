@@ -152,7 +152,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { WarningRecordApi, WarningRecordVO } from '@/api/kaizhou/warningrecord'
 import WarningRecordForm from './WarningRecordForm.vue'
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 /** 预警记录 列表 */
 defineOptions({ name: 'WarningRecord' })
 
@@ -191,6 +191,11 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+let route2=useRoute()
+let location=route2.query
+if(location.id){
+  
 }
 
 /** 搜索按钮操作 */

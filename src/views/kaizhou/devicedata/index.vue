@@ -146,6 +146,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DeviceDataApi, DeviceDataVO } from '@/api/kaizhou/devicedata'
 import DeviceDataForm from './DeviceDataForm.vue'
+import { useRoute } from "vue-router";
 
 /** 设备数据 列表 */
 defineOptions({ name: 'DeviceData' })
@@ -180,6 +181,16 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+let route=useRoute()
+let location=route.query
+console.log(location,'路由');
+if(location.deviceType){
+  queryParams.deviceType=location.deviceType
+  getList()
+}
+else{
+  getList()
 }
 
 /** 搜索按钮操作 */
