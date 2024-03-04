@@ -111,8 +111,8 @@
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
-                :row-key="getRowKeys" @selection-change="handleSelectionChange">
+      <el-table ref="dialogTable" v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
+                :row-key="getRowKeys" @selection-change="handleSelectionChange" >
         <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>
         <el-table-column label="设备号" align="center" prop="deviceCode"/>
         <el-table-column label="名称" align="center" prop="deviceName"/>
@@ -206,12 +206,30 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 
 const multipleSelection: any = ref([])
+
+const open = async (id: string) => {
+  dialogVisible.value = true
+  console.log("id:"+ id)
+  await nextTick() // 等待，避免 queryFormRef 为空
+  // 加载下属地块列表
+  await resetQuery()
+}
+defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+
 /** 加载列表  */
+const dialogTable = ref()
 const getList = async () => {
   loading.value = true
   try {
     const data = await DeviceBaseApi.getDeviceBasePage(queryParams)
     list.value = data.list
+    list.value.forEach(row => {
+      if (Array.isArray(props.deviceId)) props.deviceId.forEach(ele => {
+        if (row.deviceCode == ele) dialogTable.value.toggleRowSelection(row, true)
+      })
+    })
+
     total.value = data.total
     multipleSelection.value = props.deviceId
   } finally {
@@ -246,7 +264,8 @@ const handleSelectionChange = (val) => {
 const handleBindDevice = async () => {
   loading.value = true
   try {
-    const temp = reactive({warnRuleId: props.warnRuleId, deviceId: ids})
+    console.log("ids", ids)
+    const temp = reactive({warnRuleId: props.warnRuleId, deviceId: ids.value})
     const data = temp as any
     await WarningRuleDeviceApi.WarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))

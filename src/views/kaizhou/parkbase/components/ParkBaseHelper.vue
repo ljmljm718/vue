@@ -1,7 +1,7 @@
-<!-- 下属地块列表 -->
+<!-- 基地/地块列表 -->
 <template>
   <Dialog
-    title="地块"
+    title="选择基地/地块"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -34,7 +34,7 @@
             class="!w-160px"
           />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
+<!--        <el-form-item label="类型" prop="type">
           <el-select
             v-model="queryParams.type"
             placeholder="请选择类型"
@@ -42,13 +42,13 @@
             class="!w-160px"
           >
             <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
+              v-for="dict in queryParams.grade === '0' ? getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,4) === 'park') : getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-button @click="handleQuery">
             <Icon icon="ep:search" class="mr-5px"/>
@@ -78,7 +78,7 @@
             <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_TYPE" :value="scope.row.type"/>
           </template>
         </el-table-column>
-        <el-table-column label="园区id" align="center" prop="parentId"/>
+<!--        <el-table-column label="园区id" align="center" prop="parentId"/>-->
         <!--        <el-table-column label="纬度" align="center" prop="latitude"/>-->
         <!--        <el-table-column label="经度" align="center" prop="longitude"/>-->
         <!--        <el-table-column label="通讯地址" align="center" prop="address"/>-->
@@ -108,9 +108,8 @@
 import {ElTable} from 'element-plus'
 import {ParkBaseApi, ParkBaseVO} from '@/api/kaizhou/parkbase'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
-import {PurchaseInVO} from "@/api/erp/purchase/in";
 
-defineOptions({name: 'ParkBaseMassifList'})
+defineOptions({name: 'ParkBaseHelper'})
 const list = ref<ParkBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
@@ -121,7 +120,7 @@ const queryParams = reactive({
   pageSize: 10,
   code: undefined,
   name: undefined,
-  grade: '10',
+  grade: undefined,
   type: undefined,
   altitude: undefined,
   latitude: undefined,
@@ -171,8 +170,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
-    const data = await ParkBaseApi.getParkBaseList(queryParams)
-    console.log(data)
+    const data = await ParkBaseApi.getParkBasePage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
