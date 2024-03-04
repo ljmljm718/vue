@@ -8,10 +8,10 @@
       v-loading="formLoading"
     >
       <el-form-item label="编号" prop="code">
-        <el-input v-model="formData.code" placeholder="请输入编号" />
+        <el-input v-model="formData.code" placeholder="请输入编号"/>
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入名称" />
+        <el-input v-model="formData.name" placeholder="请输入名称"/>
       </el-form-item>
       <el-form-item label="分类" prop="grade">
         <el-select v-model="formData.grade" placeholder="请选择分类" style="width: 100%" disabled>
@@ -34,28 +34,32 @@
         </el-select>
       </el-form-item>
       <el-form-item label="海拔" prop="altitude">
-        <el-input v-model="formData.altitude" placeholder="请输入海拔" />
+        <el-input v-model="formData.altitude" placeholder="请输入海拔">
+          <template #append>米</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="纬度" prop="latitude">
-        <el-input v-model="formData.latitude" placeholder="请输入纬度" />
+        <el-input v-model="formData.latitude" placeholder="请输入纬度"/>
       </el-form-item>
       <el-form-item label="经度" prop="longitude">
-        <el-input v-model="formData.longitude" placeholder="请输入经度" />
+        <el-input v-model="formData.longitude" placeholder="请输入经度"/>
       </el-form-item>
       <el-form-item label="通讯地址" prop="address">
-        <el-input v-model="formData.address" placeholder="请输入通讯地址" />
+        <el-input v-model="formData.address" placeholder="请输入通讯地址"/>
       </el-form-item>
       <el-form-item label="联系人" prop="contact">
-        <el-input v-model="formData.contact" placeholder="请输入联系人" />
+        <el-input v-model="formData.contact" placeholder="请输入联系人"/>
       </el-form-item>
       <el-form-item label="联系电话" prop="tel">
-        <el-input v-model="formData.tel" placeholder="请输入联系电话" />
+        <el-input v-model="formData.tel" placeholder="请输入联系电话"/>
       </el-form-item>
       <el-form-item label="面积" prop="area">
-        <el-input v-model="formData.area" placeholder="请输入面积" />
+        <el-input v-model="formData.area" placeholder="请输入面积">
+          <template #append>亩</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="简介" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入简介" />
+        <el-input v-model="formData.remark" placeholder="请输入简介"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -65,13 +69,13 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { ParkBaseApi, ParkBaseVO } from '@/api/kaizhou/parkbase'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {ParkBaseApi, ParkBaseVO} from '@/api/kaizhou/parkbase'
 
 /** 园区/地块基本信息 表单 */
-defineOptions({ name: 'ParkBaseForm' })
+defineOptions({name: 'ParkBaseForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -95,8 +99,8 @@ const formData = ref({
   remark: undefined,
 })
 const formRules = reactive({
-  name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-  type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
+  name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+  type: [{required: true, message: '类型不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
 
@@ -116,12 +120,12 @@ const open = async (type: string, id?: string) => {
     } finally {
       formLoading.value = false
     }
-  }else if (id && formType.value === 'add') {
+  } else if (id && formType.value === 'add') {
     formData.value.grade = "10"
     formData.value.parentId = id
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -135,7 +139,7 @@ const submitForm = async () => {
     if (formType.value === 'create') {
       await ParkBaseApi.createParkBase(data)
       message.success(t('common.createSuccess'))
-    } else if (formType.value === 'add'){
+    } else if (formType.value === 'add') {
       await ParkBaseApi.createParkBase(data)
       message.success(t('common.createSuccess'))
     } else {

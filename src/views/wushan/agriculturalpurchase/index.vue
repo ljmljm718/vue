@@ -8,54 +8,59 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="消息标题" prop="msgTitle">
+      <el-form-item label="农资名称" prop="agriculturalName">
         <el-input
-          v-model="queryParams.msgTitle"
-          placeholder="请输入消息标题"
+          v-model="queryParams.agriculturalName"
+          placeholder="请输入农资名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="消息类型" prop="msgType">
+      <el-form-item label="采购单号" prop="purchaseId">
+        <el-input
+          v-model="queryParams.purchaseId"
+          placeholder="请输入采购单号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="采购日期" prop="purchaseTime">
+        <el-date-picker
+          v-model="queryParams.purchaseTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="供应商" prop="supplierName">
+        <el-input
+          v-model="queryParams.supplierName"
+          placeholder="请输入供应商"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="订单状态" prop="orderStatus">
         <el-select
-          v-model="queryParams.msgType"
-          placeholder="请选择消息类型"
+          v-model="queryParams.orderStatus"
+          placeholder="请选择订单状态"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_MSG_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_AGRICULTURAL_ORDER_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="消息级别" prop="msgLevel">
-        <el-select
-          v-model="queryParams.msgLevel"
-          placeholder="请选择消息级别"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-<!--      <el-form-item label="备注" prop="remark">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.remark"-->
-<!--          placeholder="请输入备注"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -63,7 +68,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['kaizhou:warning-msg-template:create']"
+          v-hasPermi="['kaizhou:agricultural-purchase:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -72,7 +77,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['kaizhou:warning-msg-template:export']"
+          v-hasPermi="['kaizhou:agricultural-purchase:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -83,20 +88,23 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id" width="200"/>-->
-      <el-table-column label="消息标题" align="center" prop="msgTitle" width="200"/>
-      <el-table-column label="消息内容" align="center" prop="msgContent" />
-      <el-table-column label="消息类型" align="center" prop="msgType" width="130">
+      <el-table-column label="农资主键" align="center" prop="agriculturalId" />
+      <el-table-column label="农资名称" align="center" prop="agriculturalName" />
+      <el-table-column label="农资规格" align="center" prop="agriculturalSize" />
+      <el-table-column label="采购单号" align="center" prop="purchaseId" />
+      <el-table-column label="采购日期" align="center" prop="purchaseTime" />
+      <el-table-column label="供应商" align="center" prop="supplierName" />
+      <el-table-column label="采购单价" align="center" prop="purchasePrice" />
+      <el-table-column label="采购数量" align="center" prop="purchaseNum" />
+      <el-table-column label="采购金额" align="center" prop="totalPrice" />
+      <el-table-column label="订单状态" align="center" prop="orderStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_MSG_TYPE" :value="scope.row.msgType" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_AGRICULTURAL_ORDER_STATUS" :value="scope.row.orderStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="消息级别" align="center" prop="msgLevel" width="130">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL" :value="scope.row.msgLevel" />
-        </template>
-      </el-table-column>
-<!--      <el-table-column label="备注" align="center" prop="remark" />-->
+      <el-table-column label="生产日期" align="center" prop="productionDate" />
+      <el-table-column label="有效日期" align="center" prop="expirationDate" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -104,13 +112,13 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="160">
+      <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:warning-msg-template:update']"
+            v-hasPermi="['kaizhou:agricultural-purchase:update']"
           >
             编辑
           </el-button>
@@ -118,7 +126,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['kaizhou:warning-msg-template:delete']"
+            v-hasPermi="['kaizhou:agricultural-purchase:delete']"
           >
             删除
           </el-button>
@@ -135,33 +143,33 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <WarningMsgTemplateForm ref="formRef" @success="getList" />
+  <AgriculturalPurchaseForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { WarningMsgTemplateApi, WarningMsgTemplateVO } from '@/api/kaizhou/warningmsgtemplate'
-import WarningMsgTemplateForm from './WarningMsgTemplateForm.vue'
+import { AgriculturalPurchaseApi, AgriculturalPurchaseVO } from '@/api/kaizhou/agriculturalpurchase'
+import AgriculturalPurchaseForm from './AgriculturalPurchaseForm.vue'
 
-/** 预警消息模板 列表 */
-defineOptions({ name: 'WarningMsgTemplate' })
+/** 农资采购信息 列表 */
+defineOptions({ name: 'WushanAgriculturalPurchase' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<WarningMsgTemplateVO[]>([]) // 列表的数据
+const list = ref<AgriculturalPurchaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  msgTitle: undefined,
-  msgContent: undefined,
-  msgType: undefined,
-  msgLevel: undefined,
-  remark: undefined,
+  agriculturalName: undefined,
+  purchaseId: undefined,
+  purchaseTime: [],
+  supplierName: undefined,
+  orderStatus: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -170,7 +178,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await WarningMsgTemplateApi.getWarningMsgTemplatePage(queryParams)
+    const data = await AgriculturalPurchaseApi.getAgriculturalPurchasePage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -202,7 +210,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await WarningMsgTemplateApi.deleteWarningMsgTemplate(id)
+    await AgriculturalPurchaseApi.deleteAgriculturalPurchase(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -216,8 +224,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await WarningMsgTemplateApi.exportWarningMsgTemplate(queryParams)
-    download.excel(data, '预警消息模板.xls')
+    const data = await AgriculturalPurchaseApi.exportAgriculturalPurchase(queryParams)
+    download.excel(data, '农资采购信息.xls')
   } catch {
   } finally {
     exportLoading.value = false

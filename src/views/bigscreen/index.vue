@@ -12,7 +12,7 @@
                 <div class="left1">
                     <div class="box-title">产品介绍</div>
                     <div class="left1-item">
-                      <el-carousel :interval="3000" indicator-position='none' :autoplay='true' arrow="always" style="width: 100%;height: 100%;">
+                      <el-carousel @click="$router.push('/basic/cropbase')" :interval="3000" indicator-position='none' :autoplay='true' arrow="always" style="width: 100%;height: 100%;cursor: pointer;">
                         <el-carousel-item v-for="item in cropList" :key="item" style="width: 100%;height: 50%;display:flex;align-items:center;justify-content:space-between;">
                           <img :src="item.imgId" alt="" style="width: 30%;height: 100%;"/>
                           <div style="width: 67%;height: 100%;font-size:12px;color:#c1c1c1;">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="left3">
-                    <div class="box-title">物联设备数据</div>
+                    <div class="box-title" style="cursor: pointer;" @click="$router.push('/basic/device/device-data')">物联设备数据</div>
                     <div class="left3-select">
                       <select name="" id="1" class="select1" @change="selectCli1">
                         <option :value="item.id" v-for="item,index in select" :key="index">{{item.name}}</option>
@@ -114,8 +114,8 @@
                     </div>
                 </div>
                 <div class="left4">
-                    <div class="box-title">预警信息</div>
-                    <div class="table-wrapper">
+                    <div class="box-title" @click="$router.push('/warning/warning-record')" style="cursor: pointer;">预警信息</div>
+                    <div class="table-wrapper" v-if="leftArr.tableData1.length>0">
                         <div class="table-header-row">
                         <div
                             class="table-header-cell"
@@ -123,7 +123,7 @@
                             :style="`width: ${column.width};`" :key="index"
                         >{{ column.label }}</div>
                         </div>
-                        <div class="table-data-row" v-for="item,index in leftArr.tableData1" :key="index">
+                        <div class="table-data-row" v-for="item,index in leftArr.tableData1" :key="index" @click="$router.push(`/warning/warning-record?id=${item.id}`)" style="cursor: pointer;">
                         <div v-show="item[column.key]!= item.warnStatus"
                             class="table-data-cell"
                             v-for="column,inde in leftArr.tableColumns1" :key="inde"
@@ -136,36 +136,39 @@
                         >{{ item[column.key]==0?'未处理':'已处理'}}</div>
                         </div>
               </div>
+              <div v-else>
+                <div style="width: 100%;margin-top:40px; text-align:center; font-size:20px;font-family:'TitleFont';color:#ccc;">暂无预警...</div>
+              </div>
                 </div>
             </div>
             <div class="content-main-item middle-main-wrapper">
                 <div class="main-top">
                     <div class="main-top-warper main-top-1">
-                        <div style="display:flex;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
+                        <div @click="$router.push('/basic/device/devicebase')" style="display:flex;flex-direction:column;cursor: pointer; align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
                             <div style="color:#63ccd2;font-size:25px;margin-left:-20px">{{device.deviceTotal}}</div>
                             <div style="color:#c1c1c1;font-size:14px">设备数量</div>
                         </div>
                     </div>
                     <div class="main-top-warper main-top-2">
-                        <div style="display:flex;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
+                        <div @click="$router.push('/basic/device/devicebase?deviceStatus=online')" style="display:flex; cursor: pointer;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
                             <div style="color:#63ccd2;font-size:25px;margin-left:-20px">{{device.online}}</div>
                             <div style="color:#c1c1c1;font-size:14px">在线设备</div>
                         </div>
                     </div>
                     <div class="main-top-warper main-top-3">
-                        <div style="display:flex;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
+                        <div @click="$router.push('/basic/device/devicebase?deviceStatus=offline')" style="display:flex; cursor: pointer;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
                             <div style="color:#63ccd2;font-size:25px;margin-left:-20px">{{device.offline}}</div>
                             <div style="color:#c1c1c1;font-size:14px">离线设备</div>
                         </div>
                     </div>
                     <div class="main-top-warper main-top-4">
-                        <div style="display:flex;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
+                        <div @click="$router.push('/basic/device/devicebase?deviceStatus=fault')" style="display:flex; cursor: pointer;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
                             <div style="color:#63ccd2;font-size:25px;margin-left:-20px">{{device.fault}}</div>
                             <div style="color:#c1c1c1;font-size:14px">故障设备</div>
                         </div>
                     </div>
                     <div class="main-top-warper main-top-5">
-                        <div style="display:flex;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
+                        <div @click="$router.push('/warning/warning-record?warnStatus=0')" style="display:flex; cursor: pointer;flex-direction:column;align-items:center;width: 100%;height: 100%;justify-content:center;margin-left:20px;">
                             <div style="color:#63ccd2;font-size:25px;margin-left:-20px">{{device.warn}}</div>
                             <div style="color:#c1c1c1;font-size:14px">预警信息</div>
                         </div>
@@ -241,19 +244,19 @@
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-2']">
-                             <div style="margin-top:80px;">
+                             <div style="margin-top:80px;cursor: pointer;" @click="$router.push('/basic/device/devicebase?kinds=produc')">
                                 <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.deviceNum}}</div>
                                 <div style="text-align:center;color:#8bc4db;font-size:13px;">产线设备</div>
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-3']">
-                             <div style="margin-top:80px;">
+                             <div style="margin-top:80px;cursor: pointer;"  @click="$router.push('/basic/device/device-data?deviceType=produc_storage')">
                                 <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.yield}}</div>
                                 <div style="text-align:center;color:#8bc4db;font-size:13px">柑橘总量(万斤)</div>
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-4']">
-                             <div style="margin-top:80px;">
+                             <div style="margin-top:80px;cursor: pointer;"  @click="$router.push('/erp/sale/order')">
                                 <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.price}}</div>
                                 <div style="text-align:center;color:#8bc4db; font-size:13px">销售总额(万元)</div>
                             </div>
@@ -270,7 +273,7 @@
                     <div class="box-title">鲁渝有礼</div>
                     <div class="right3-item">
                         <div class="right3-top">
-                            <div class="right3-top-item">
+                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/basic/product/product')">
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.productKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">特色产品</div>
                             </div>
@@ -278,11 +281,11 @@
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.brandKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">品牌认证</div>
                             </div>
-                            <div class="right3-top-item">
+                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/erp/purchase/supplier')">
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.supplier}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">注册商户</div>
                             </div>
-                            <div class="right3-top-item">
+                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/basic/identification/qrCode')">
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.productCode}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">产品赋码</div>
                             </div>
@@ -528,7 +531,7 @@ const initChart3=async ()=>{
         ],
           series: [
             {
-              name: "2022",
+              name: "柑橘产量",
               data: res.yields,
               type: "bar",
               barWidth: "20",
@@ -544,9 +547,10 @@ const initChart3=async ()=>{
               },
             },
             {
-              name: "2023",
+              name: "柑橘销售趋势",
               data: res.sales,
               type: "line",
+              yAxisIndex:1,
               smooth: false,
             },
           ],
@@ -763,18 +767,21 @@ const getDeviceAndWarn=()=>{
     let i=7
     let i2=6
     let a= res.webcam
-    let b= res.sensor
+    let b= res.sensor    
     let c= res.warn
-    a.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+    a.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return  a.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
-    b.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+    b.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
-    c.forEach(item=>{
-      item.latitude=item.latitude.substring(i2)
+    c.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return c.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
     webcam.value=a
@@ -784,13 +791,16 @@ const getDeviceAndWarn=()=>{
 }
 getDeviceAndWarn()
 const webcamCli=(val:any)=>{
-  webcamIndex.value=val
+  if(webcamIndex.value==val) webcamIndex.value=-1
+  else  webcamIndex.value=val
 }
 const sensorCli=(val:any)=>{
-  sensorIndex.value=val
+  if(sensorIndex.value==val) sensorIndex.value=-1
+  else  sensorIndex.value=val
 }
 const warnCli=(val:any)=>{
-  warnIndex.value=val
+  if(warnIndex.value==val) warnIndex.value=-1
+  else  warnIndex.value=val
 }
 //预警信息
 let leftArr=reactive<Object>({

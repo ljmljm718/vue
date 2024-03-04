@@ -20,6 +20,22 @@ export interface WarningRecordVO {
   deviceType: string // 设备类型
 }
 
+// 设备管理 VO
+export interface DeviceBaseVO {
+  id: string // 主键id
+  deviceCode: string // 设备号
+  deviceName: string // 名称
+  kinds: string // 种类
+  deviceType: string // 设备类型
+  longitude: string // 经度
+  latitude: string // 纬度
+  deviceStatus: string // 状态
+  belongPark: string // 所属基地
+  belongPlot: string // 所属地块
+  url: string // URL
+  remark: string // 备注
+}
+
 // 预警记录 API
 export const WarningRecordApi = {
   // 查询预警记录分页
@@ -51,4 +67,9 @@ export const WarningRecordApi = {
   exportWarningRecord: async (params) => {
     return await request.download({ url: `/kaizhou/warning-record/export-excel`, params })
   },
-}
+
+  // 查询设备管理分页
+  getDeviceBasePage: async (params: any) => {
+    return await request.get({ url: `/kaizhou/warning-record/device/page`, params })
+  },
+}

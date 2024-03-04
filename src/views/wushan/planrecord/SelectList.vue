@@ -1,4 +1,9 @@
 <template>
+  <Dialog     title="农资基本信息"
+              v-model="dialogVisible"
+              :appendToBody="true"
+              :scroll="true"
+              width="1300">
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -8,48 +13,33 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="记录编码" prop="recodeCode">
         <el-input
-          v-model="queryParams.deviceCode"
-          placeholder="请输入设备编号"
+          v-model="queryParams.recodeCode"
+          placeholder="请输入记录编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
+      <el-form-item label="农事定义" prop="farmWork">
         <el-select
-          v-model="queryParams.deviceType"
-          placeholder="请选择设备类型"
+          v-model="queryParams.farmWork"
+          placeholder="请选择农事定义"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="监测类型" prop="type">
-        <el-select
-          v-model="queryParams.type"
-          placeholder="请选择监测类型"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="采集时间" prop="collectTime">
+      <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker
-          v-model="queryParams.collectTime"
+          v-model="queryParams.recordTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -61,58 +51,48 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['kaizhou:device-data:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['kaizhou:device-data:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备编号" align="center" prop="deviceCode" />
-      <el-table-column label="设备类型" align="center" prop="deviceType">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"  @selection-change="handleSelectionChange">
+      <el-table-column width="30" label="选择" type="selection"/>
+      <el-table-column label="记录编码" align="center" prop="recodeCode" />
+      <el-table-column label="种植计划编码" align="center" prop="plantId" />
+      <el-table-column label="农事定义" align="center" prop="farmWork">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_WORK" :value="scope.row.farmWork" />
         </template>
       </el-table-column>
-      <el-table-column label="监测类型" align="center" prop="type">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.type" />
-        </template>
+      <el-table-column label="描述" align="center" prop="remark" />
+      <el-table-column
+        label="记录时间"
+        align="center"
+        prop="recordTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="数值" align="center" prop="recordValue">
+        <template #default="scope">{{ scope.row.recordValue + scope.row.recordUnit }}</template>
       </el-table-column>
-      <el-table-column label="数据值" align="center" prop="dataValue" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="采集时间" align="center" prop="collectTime" />
-<!--      <el-table-column
+      <!-- <el-table-column label="单位" align="center" prop="recordUnit" /> -->
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />-->
-      <el-table-column label="操作" align="center">
+      /> -->
+<!--      <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:update']"
+            v-hasPermi="['kaizhou:plan-record:update']"
           >
             编辑
           </el-button>
@@ -120,12 +100,12 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:delete']"
+            v-hasPermi="['kaizhou:plan-record:delete']"
           >
             删除
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -135,62 +115,86 @@
       @pagination="getList"
     />
   </ContentWrap>
-
+    <template #footer>
+      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+        确 定
+      </el-button>
+      <el-button @click="dialogVisible = false">取 消</el-button>
+    </template>
+  </Dialog>
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceDataForm ref="formRef" @success="getList" />
+<!--  <PlanRecordForm ref="formRef" @success="getList" />-->
 </template>
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DeviceDataApi, DeviceDataVO } from '@/api/kaizhou/devicedata'
-import DeviceDataForm from './DeviceDataForm.vue'
-import { useRoute } from "vue-router";
+import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
+import PlanRecordForm from './PlanRecordForm.vue'
+import {AgriculturalBaseVO} from "@/api/kaizhou/agriculturalbase";
 
-/** 设备数据 列表 */
-defineOptions({ name: 'DeviceData' })
+/** 农事记录 列表 */
+defineOptions({ name: 'PlanRecord' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<DeviceDataVO[]>([]) // 列表的数据
+const list = ref<PlanRecordVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  deviceCode: undefined,
-  deviceType: undefined,
-  type: undefined,
-  dataValue: undefined,
-  unit: undefined,
-  collectTime: [],
-  createTime: [],
+  recodeCode: undefined,
+  farmWork: undefined,
+  recordTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+
+
+/** 选中操作 */
+const dialogVisible = ref(false) // 弹窗的是否展示
+const selectionList = ref<PlanRecordVO[]>([])
+const handleSelectionChange = (rows: PlanRecordVO[]) => {
+  selectionList.value = rows
+}
+
+/** 提交选择 */
+const emits = defineEmits<{
+  (e: 'success', value: PlanRecordVO[]): void
+}>()
+const submitForm = () => {
+  try {
+    emits('success', selectionList.value)
+  } finally {
+    // 关闭弹窗
+    dialogVisible.value = false
+  }
+}
+/** 打开弹窗 */
+const open = async (id: string) => {
+  dialogVisible.value = true
+  console.log("id:" + id)
+  await nextTick() // 等待，避免 queryFormRef 为空
+  // 加载下属地块列表
+  await resetQuery()
+}
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await DeviceDataApi.getDeviceDataPage(queryParams)
+    const data = await PlanRecordApi.getPlanRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
     loading.value = false
   }
-}
-let route=useRoute()
-let location=route.query
-console.log(location,'路由');
-if(location.deviceType){
-  queryParams.deviceType=location.deviceType
-  getList()
-}
-else{
-  getList()
 }
 
 /** 搜索按钮操作 */
@@ -217,7 +221,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await DeviceDataApi.deleteDeviceData(id)
+    await PlanRecordApi.deletePlanRecord(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -231,8 +235,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await DeviceDataApi.exportDeviceData(queryParams)
-    download.excel(data, '设备数据.xls')
+    const data = await PlanRecordApi.exportPlanRecord(queryParams)
+    download.excel(data, '农事记录.xls')
   } catch {
   } finally {
     exportLoading.value = false
