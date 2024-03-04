@@ -14,16 +14,40 @@
 <!--        <el-input v-model="formData.parkId" placeholder="请输入园区id" />-->
 <!--      </el-form-item>-->
       <el-form-item label="园区名称" prop="parkName">
-        <el-input v-model="formData.parkName" placeholder="请输入园区名称" />
+        <el-input v-model="formData.parkId" v-if="false"  placeholder="请输入园区id" />
+        <el-input v-model="formData.parkName" placeholder="请输入园区名称" disabled>
+          <template #append>
+            <el-button @click="openParkTemplateHelper">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--      <el-form-item label="地块id" prop="plotId">-->
 <!--        <el-input v-model="formData.plotId" placeholder="请输入地块id" />-->
 <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+        <el-input v-model="formData.plotId" v-if="false"  placeholder="请输入地块id" />
+        <el-input v-model="formData.plotName"  placeholder="请输入地块名称" disabled>
+          <template #append>
+            <el-button @click="openPlotTemplateHelper">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="种植作物品种名称" prop="plantVariety">
-        <el-input v-model="formData.plantVariety" placeholder="请输入种植作物品种名称" />
+        <el-input v-model="formData.cropId" v-if="false" placeholder="请输入作物id" />
+        <el-input v-model="formData.plantVariety" disabled placeholder="请输入种植作物品种名称" >
+          <template #append>
+            <el-button @click="openCropTemplateHelper">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="类别" prop="plantCategory">
         <el-input v-model="formData.plantCategory" placeholder="请输入类别" />
@@ -71,10 +95,15 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <ParkTemplateHelper ref="parkTemplateHelper" @setParkInfo="setParkInfo"/>
+  <CropTemplateHelper ref="cropTemplateHelper" @setCropInfo="setCropInfo"/>
+  <PlotTemplateHelper ref="plotTemplateHelper" @setPlotInfo="setPlotInfo"/>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { PlantPlanApi, PlantPlanVO } from '@/api/kaizhou/plantplan'
+import ParkTemplateHelper from "@/views/kaizhou/templateHelper/ParkTemplateHelper.vue";
 
 /** 种植计划 表单 */
 defineOptions({ name: 'PlantPlanForm' })
@@ -156,6 +185,27 @@ const submitForm = async () => {
   } finally {
     formLoading.value = false
   }
+}
+const parkTemplateHelper=ref()
+const openParkTemplateHelper = async () => {
+    parkTemplateHelper.value.open()
+}
+const cropTemplateHelper=ref()
+const openCropTemplateHelper = async () => {
+    cropTemplateHelper.value.open()
+}
+const plotTemplateHelper=ref()
+const openPlotTemplateHelper = async () => {
+    plotTemplateHelper.value.open()
+}
+const setPlotInfo = async () => {
+
+}
+const setParkInfo = async () => {
+
+}
+const setCropInfo = async () => {
+
 }
 
 /** 重置表单 */
