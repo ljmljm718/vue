@@ -104,6 +104,8 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { PlantPlanApi, PlantPlanVO } from '@/api/kaizhou/plantplan'
 import ParkTemplateHelper from "@/views/kaizhou/templateHelper/ParkTemplateHelper.vue";
+import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import {CropBaseVO} from "@/api/kaizhou/cropbase";
 
 /** 种植计划 表单 */
 defineOptions({ name: 'PlantPlanForm' })
@@ -198,14 +200,17 @@ const plotTemplateHelper=ref()
 const openPlotTemplateHelper = async () => {
     plotTemplateHelper.value.open()
 }
-const setPlotInfo = async () => {
-
+const setPlotInfo = async (order:ParkBaseVO) => {
+  formData.value.plotId=String(order[0].code)
+  formData.value.plotName=String(order[0].name)
 }
-const setParkInfo = async () => {
-
+const setParkInfo = async (order:order) => {
+  formData.value.parkId=String(order[0].code)
+  formData.value.parkName=String(order[0].name)
 }
-const setCropInfo = async () => {
-
+const setCropInfo = async (order:CropBaseVO) => {
+  formData.value.cropId=String(order[0].cropCode)
+  formData.value.plantVariety=String(order[0].cropName)
 }
 
 /** 重置表单 */

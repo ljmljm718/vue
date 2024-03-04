@@ -63,7 +63,15 @@
     </ContentWrap>
 
     <ContentWrap>
-        <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"  @selection-change="handleSelectionChange">
+        <el-table
+            v-loading="loading"
+            :data="list"
+            border
+            :stripe="true"
+            :show-overflow-tooltip="true"
+            @selection-change="handleSelectionChange"
+        >
+          <el-table-column width="30" label="选择" type="selection" align="center"/>
           <el-table-column label="编号" align="center" prop="code" width="200"/>
           <el-table-column label="名称" align="center" prop="name" width="200"/>
           <el-table-column label="分类" align="center" prop="grade" >
@@ -139,11 +147,11 @@ const handleSelectionChange = (rows: ParkBaseVO[]) => {
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: ParkBaseVO[]): void
+  (e: 'setParkInfo', value: ParkBaseVO[]): void
 }>()
 const submitForm = () => {
   try {
-    emits('success', selectionList.value)
+    emits('setParkInfo', selectionList.value)
   } finally {
     // 关闭弹窗
     dialogVisible.value = false
