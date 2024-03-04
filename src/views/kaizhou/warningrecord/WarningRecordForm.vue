@@ -68,22 +68,22 @@
       <el-form-item label="处理人" prop="dealPerson">
         <el-input v-model="formData.dealPerson" placeholder="请输入处理人" />
       </el-form-item>
-      <el-form-item label="处理人编号" prop="dealPersonId">
-        <el-input v-model="formData.dealPersonId" placeholder="请输入处理人编号" />
-      </el-form-item>
+<!--      <el-form-item label="处理人编号" prop="dealPersonId">-->
+<!--        <el-input v-model="formData.dealPersonId" placeholder="请输入处理人编号" />-->
+<!--      </el-form-item>-->
       <el-form-item label="处理信息" prop="dealInfo">
         <el-input v-model="formData.dealInfo" placeholder="请输入处理信息" />
       </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="设备类型" prop="deviceType">-->
+<!--        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

@@ -93,7 +93,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="预警状态" align="center" prop="warnStatus">
+      <el-table-column label="预警状态" align="center" prop="warnStatus" width="110">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_STATUS" :value="scope.row.warnStatus" />
         </template>
@@ -106,14 +106,22 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="处理信息" align="center" prop="dealInfo" width="150"/>
+      <el-table-column label="处理信息" align="center" prop="dealInfo"/>
 <!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
 <!--        <template #default="scope">-->
 <!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <el-table-column label="操作" align="center" width="150">
+      <el-table-column label="操作" align="center" width="170" fixed="right">
         <template #default="scope">
+          <el-button
+            link
+            type="success"
+            @click="handleDeal(scope.row.id)"
+            v-show="scope.row.warnStatus === '0'"
+          >
+            处理
+          </el-button>
           <el-button
             link
             type="primary"
@@ -144,6 +152,22 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <WarningRecordForm ref="formRef" @success="getList" />
+
+  <!-- 处理预警信息对话框 -->
+  <el-dialog :title="title" v-model="openDeal" :rules="dealDataRules" width="40%" append-to-body :close-on-click-modal="false">
+    <el-form :model="dealData" size="small" label-width="68px">
+      <el-form-item label="处理人" prop="dealPerson">
+        <el-input v-model="dealData.dealPerson" placeholder="请输入处理人" />
+      </el-form-item>
+      <el-form-item label="处理信息" prop="dealInfo">
+        <el-input v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息" clearable/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="submitDialog" type="primary">确 定</el-button>
+      <el-button @click="openDeal = false">取 消</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -206,6 +230,86 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+const dealData = ref({
+  id: undefined,
+  parkCode: undefined,
+  plotCode: undefined,
+  deviceCode: undefined,
+  warnInfo: undefined,
+  warnTitle: undefined,
+  currentValue: undefined,
+  unit: undefined,
+  threshold: undefined,
+  warnTime: undefined,
+  warnStatus: undefined,
+  dealTime: undefined,
+  dealPerson: undefined,
+  dealPersonId: undefined,
+  dealInfo: undefined,
+  deviceType: undefined,
+} as any)
+const dealDataRules = reactive({
+  dealPerson: [{ required: true, message: '处理人不能为空', trigger: 'blur' }],
+  dealInfo: [{ required: true, message: '处理信息不能为空', trigger: 'blur' }],
+})
+const title = ref('')
+const openDeal = ref(false)
+/** 处理按钮操作 */
+const handleDeal = async (id: number) => {
+  openDeal.value = true
+  title.value = '预警处理'
+  resetForm()
+  // 修改时，设置数据
+  console.log("ID", id)
+  if (id) {
+    try {
+      dealData.value = await WarningRecordApi.getWarningRecord(id)
+      console.log("111", dealData.value)
+    } finally {
+    }
+  }
+}
+/** 提交表单 */
+const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const submitDialog = async () => {
+  try {
+    console.log("dealData", dealData.value)
+    dealData.value.dealTime = new Date().valueOf()
+    dealData.value.warnStatus = '1'
+    const data = dealData.value as unknown as WarningRecordVO
+    await WarningRecordApi.updateWarningRecord(data)
+    message.success(t('common.updateSuccess'))
+    openDeal.value = false
+    // 发送操作成功的事件
+    emit('success')
+  } finally {
+    resetQuery()
+  }
+}
+
+/** 重置表单 */
+const resetForm = () => {
+  dealData.value = {
+    id: undefined,
+    parkCode: undefined,
+    plotCode: undefined,
+    deviceCode: undefined,
+    warnInfo: undefined,
+    warnTitle: undefined,
+    currentValue: undefined,
+    unit: undefined,
+    threshold: undefined,
+    warnTime: undefined,
+    warnStatus: undefined,
+    dealTime: undefined,
+    dealPerson: undefined,
+    dealPersonId: undefined,
+    dealInfo: undefined,
+    deviceType: undefined,
+  }
+  // formRef.value?.resetFields()
 }
 
 /** 删除按钮操作 */
