@@ -106,13 +106,13 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_TYPE" :value="scope.row.type" />
         </template>
       </el-table-column>
-      <el-table-column label="海拔" align="center" prop="altitude" />
+      <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="通讯地址" align="center" prop="address" />
       <el-table-column label="联系人" align="center" prop="contact" />
       <el-table-column label="联系电话" align="center" prop="tel" />
-      <el-table-column label="面积" align="center" prop="area" />
+      <el-table-column label="面积（亩）" align="center" prop="area" width="100"/>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
