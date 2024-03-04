@@ -12,7 +12,7 @@
                 <div class="left1">
                     <div class="box-title">产品介绍</div>
                     <div class="left1-item">
-                      <el-carousel :interval="3000" indicator-position='none' :autoplay='true' arrow="always" style="width: 100%;height: 100%;">
+                      <el-carousel @click="$router.push('/basic/cropbase')" :interval="3000" indicator-position='none' :autoplay='true' arrow="always" style="width: 100%;height: 100%;cursor: pointer;">
                         <el-carousel-item v-for="item in cropList" :key="item" style="width: 100%;height: 50%;display:flex;align-items:center;justify-content:space-between;">
                           <img :src="item.imgId" alt="" style="width: 30%;height: 100%;"/>
                           <div style="width: 67%;height: 100%;font-size:12px;color:#c1c1c1;">
@@ -137,7 +137,7 @@
                         </div>
               </div>
               <div v-else>
-                <div style="width: 100%;margin-top:40px; text-align:center; font-size:20px;font-family:'TitleFont';color:#ccc;">暂无数据...</div>
+                <div style="width: 100%;margin-top:40px; text-align:center; font-size:20px;font-family:'TitleFont';color:#ccc;">暂无预警...</div>
               </div>
                 </div>
             </div>
