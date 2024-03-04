@@ -168,6 +168,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   warnTime: [],
   warnStatus: '',
+  id: ''
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -177,6 +178,8 @@ const route = currentRoute.value
 onMounted(()=>{
   if (route.query.warnStatus)
     queryParams.warnStatus = route.query.warnStatus as string
+  if (route.query.id)
+    queryParams.id = route.query.id as string
 })
 /** 查询列表 */
 const getList = async () => {
