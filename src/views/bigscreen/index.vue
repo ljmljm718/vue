@@ -531,7 +531,7 @@ const initChart3=async ()=>{
         ],
           series: [
             {
-              name: "2022",
+              name: "柑橘产量",
               data: res.yields,
               type: "bar",
               barWidth: "20",
@@ -547,9 +547,10 @@ const initChart3=async ()=>{
               },
             },
             {
-              name: "2023",
+              name: "柑橘销售趋势",
               data: res.sales,
               type: "line",
+              yAxisIndex:1,
               smooth: false,
             },
           ],
@@ -768,18 +769,18 @@ const getDeviceAndWarn=()=>{
     let a= res.webcam
     let b= res.sensor    
     let c= res.warn
-    a.forEach(item=>{
-      if(typeof(item.latitude)!='string') return
+    a.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return  a.splice(index, 1)
       else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
-    b.forEach(item=>{
-      if(typeof(item.latitude)!='string') return
+    b.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
       else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
-    c.forEach(item=>{
-      if(typeof(item.latitude)!='string') return
+    c.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return c.splice(index, 1)
       else  item.latitude=item.latitude.substring(i2)
       item.longitude=item.longitude.substring(i)
     })
@@ -790,13 +791,16 @@ const getDeviceAndWarn=()=>{
 }
 getDeviceAndWarn()
 const webcamCli=(val:any)=>{
-    webcamIndex.value=val
+  if(webcamIndex.value==val) webcamIndex.value=-1
+  else  webcamIndex.value=val
 }
 const sensorCli=(val:any)=>{
-  sensorIndex.value=val
+  if(sensorIndex.value==val) sensorIndex.value=-1
+  else  sensorIndex.value=val
 }
 const warnCli=(val:any)=>{
-  warnIndex.value=val
+  if(warnIndex.value==val) warnIndex.value=-1
+  else  warnIndex.value=val
 }
 //预警信息
 let leftArr=reactive<Object>({

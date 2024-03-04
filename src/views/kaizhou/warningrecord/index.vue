@@ -219,7 +219,10 @@ const getList = async () => {
 let route2=useRoute()
 let location=route2.query
 if(location.id){
-  
+  queryParams.id=location.id
+  getList()
+}else{
+  getList()
 }
 
 /** 搜索按钮操作 */
