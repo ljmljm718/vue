@@ -57,6 +57,7 @@
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {BasicIdentificationApi, BasicIdentificationVO} from '@/api/kaizhou/basicidentification'
+import { getTenantId } from '@/utils/auth'
 
 /** 标识管理 表单 */
 defineOptions({name: 'BasicIdentificationForm'})
@@ -120,11 +121,13 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as BasicIdentificationVO
+    //获取租户id
+    const tenantId = getTenantId()
+    data.qrCode = window.location.origin + "/QRCode?qrCode=" + data.identificationCode + "&tenantId=" + tenantId
     if (formType.value === 'create') {
       await BasicIdentificationApi.createBasicIdentification(data)
       message.success(t('common.createSuccess'))
     } else {
-      data.qrCode = window.location.origin + "/QRCode?qrCode="
       await BasicIdentificationApi.updateBasicIdentification(data)
       message.success(t('common.updateSuccess'))
     }

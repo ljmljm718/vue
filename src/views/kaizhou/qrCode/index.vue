@@ -49,6 +49,7 @@ const formData = ref({
   scanLon: undefined,
   scanLat: undefined,
   scanLocation: undefined,
+  tenantId:undefined,
 })
 
 const onLoad = async () => {
@@ -67,6 +68,7 @@ const onLoad = async () => {
 const saveRecord = async () => {
   if(router.currentRoute.value.query.qrCode) {
     formData.value.identificationCode = router.currentRoute.value.query.qrCode
+    formData.value.tenantId = router.currentRoute.value.query.tenantId
   } else {
     message.error('扫码异常，请重新扫码或联系管理员')
   }

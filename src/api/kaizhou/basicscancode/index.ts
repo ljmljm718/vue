@@ -9,6 +9,7 @@ export interface BasicScanCodeVO {
   scanLon: string // 扫码经度
   scanLat: string // 扫码纬度
   scanLocation: string // 扫码位置
+  tenantId:undefined,//租户id
 }
 
 // 扫码记录 API

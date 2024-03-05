@@ -196,6 +196,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {BasicIdentificationApi, BasicIdentificationVO} from '@/api/kaizhou/basicidentification'
 import BasicIdentificationForm from './BasicIdentificationForm.vue'
+import { getTenantId } from '@/utils/auth'
 
 /** 标识管理 列表 */
 defineOptions({name: 'BasicIdentification'})
@@ -268,11 +269,13 @@ const handleDelete = async (id: number) => {
 
 /** 赋码按钮操作 */
 const uniqueCode = async (data: BasicIdentificationVO) => {
+  //获取租户id
+  const tenantId = getTenantId()
   try {
     formData.value = {
       id: data.id,
       identificationCode: data.identificationCode,
-      qrCode: window.location.origin + "/QRCode?qrCode=",
+      qrCode: window.location.origin + "/QRCode?qrCode=" + data.identificationCode + "&tenantId=" + tenantId,
       uniqueCodeTime: data.uniqueCodeTime,
       isBinding: data.isBinding,
       isUniqueCode: data.isUniqueCode,
