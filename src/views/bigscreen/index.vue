@@ -4,7 +4,7 @@
             <div class="header-left-part-wrapper">
                 <!-- <BigScreenTime /> -->
             </div>
-            <div class="header-title-wrapper">黑水镇鲁渝协作乡村振兴示范村数字化赋能</div>
+            <div class="header-title-wrapper">明月村农业产业监管大屏</div>
             <div class="header-right-part-wrapper"></div>
         </div>
         <div class="content-main-wrapper">
