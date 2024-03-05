@@ -204,7 +204,7 @@ const setPlotInfo = async (order:ParkBaseVO) => {
   formData.value.plotId=String(order[0].code)
   formData.value.plotName=String(order[0].name)
 }
-const setParkInfo = async (order:order) => {
+const setParkInfo = async (order:ParkBaseVO) => {
   formData.value.parkId=String(order[0].code)
   formData.value.parkName=String(order[0].name)
 }
