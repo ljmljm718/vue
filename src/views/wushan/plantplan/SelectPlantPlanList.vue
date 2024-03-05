@@ -99,8 +99,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" @selection-change="handleSelectionChange">
-      <el-table-column width="30" label="选择" type="selection"/>
+    <el-table v-loading="loading" :data="list" :stripe="true"  :show-overflow-tooltip="true" @selection-change="handleSelectionChange">
+      <el-table-column width="30" label="选择" type="selection"  />
       <el-table-column label="计划编码" align="center" prop="plantCode" width="200" />
       <el-table-column label="园区名称" align="center" prop="parkName" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
@@ -212,9 +212,7 @@ const handleSelectionChange = (rows: PlantPlanVO[]) => {
 }
 
 /** 提交选择 */
-const emits = defineEmits<{
-  (e: 'success', value: PlantPlanVO[]): void
-}>()
+const emits = defineEmits<{(e: 'success', value: PlantPlanVO[]): void}>()
 const submitForm = () => {
   try {
     emits('success', selectionList.value)
