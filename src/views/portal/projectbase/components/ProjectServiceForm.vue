@@ -60,6 +60,9 @@
 import {getIntDictOptions, DICT_TYPE, getDictOptions} from '@/utils/dict'
 import { ProjectBaseApi } from '@/api/portal/projectbase'
 
+/** 初始赋值 */
+const status = 1;
+
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
@@ -72,7 +75,7 @@ const formData = ref({
   code: undefined,
   name: undefined,
   type: undefined,
-  status: undefined,
+  status: status,
   accessPath: undefined,
   endpoint: undefined,
   ports: undefined,
@@ -142,7 +145,7 @@ const resetForm = () => {
     code: undefined,
     name: undefined,
     type: undefined,
-    status: undefined,
+    status: status,
     accessPath: undefined,
     endpoint: undefined,
     ports: undefined,

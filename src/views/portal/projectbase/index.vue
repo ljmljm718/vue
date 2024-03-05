@@ -91,10 +91,24 @@
       @current-change="handleCurrentChange"
     >
       <el-table-column label="项目编码" align="center" prop="code" />
-      <el-table-column label="项目名称" align="center" prop="name" />
-      <el-table-column label="项目分类" align="center" prop="category"/>
+      <el-table-column label="项目名称" width="300px" align="center" prop="name"/>
+      <el-table-column label="项目分类" width="230px" align="center" prop="category">
+        <template #default="scope">
+          <el-cascader
+            style="width: 200px"
+            v-model="scope.row.category"
+            :options="categoryOptions"
+            :props="props"
+            disabled
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="描述" align="center" prop="description" />
-      <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="是否展示" align="center" prop="status">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.status" />
+        </template>
+      </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column
         label="创建时间"
@@ -103,7 +117,12 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column
+        label="操作"
+        width="200px"
+        align="center"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             link
@@ -146,11 +165,13 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { ProjectBaseApi, ProjectBaseVO } from '@/api/portal/projectbase'
+import {ProjectBaseApi, ProjectBaseVO} from '@/api/portal/projectbase'
 import ProjectBaseForm from './ProjectBaseForm.vue'
 import ProjectServiceList from './components/ProjectServiceList.vue'
+import {ProjectCategoryApi} from "@/api/portal/projectcategory";
+import {DICT_TYPE} from "@/utils/dict";
 
 /** 门户项目基础信息 列表 */
 defineOptions({ name: 'ProjectBase' })
@@ -173,13 +194,19 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+let categoryOptions = ref([])// 项目分类选项
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await ProjectBaseApi.getProjectBasePage(queryParams)
-    console.log("data", data)
-    list.value = data.list
+    categoryOptions.value = await ProjectCategoryApi.getProjectCategoryTree({parentId: 0, status: 1})
+    list.value = data.list.map((item: any) => {
+      item.category = item.category.split(',').map(Number)
+      return item;
+    })
+
     total.value = data.total
   } finally {
     loading.value = false
@@ -234,10 +261,13 @@ const handleExport = async () => {
 
 /** 选中行操作 */
 const currentRow = ref({}) // 选中行
-const handleCurrentChange = (row) => {
+const handleCurrentChange = (row: any) => {
   currentRow.value = row
 }
 
+/**
+ * 项目分类级联选择器
+ */
 const props = {
   value: 'id'
 }

@@ -10,19 +10,18 @@
       <Icon icon="ep:plus" class="mr-5px" /> 新增
     </el-button>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-       <el-table-column label="服务编码" align="center" prop="code" />
-      <el-table-column label="服务名称" align="center" prop="name" />
-      <el-table-column label="服务类型" align="center" prop="type" />
-      <el-table-column label="状态" align="center" prop="status">
+       <el-table-column label="服务编码" width="200px"  align="center" prop="code" />
+      <el-table-column label="服务名称" width="400px" align="center" prop="name" />
+      <el-table-column label="服务类型" width="150px" align="center" prop="type" />
+      <el-table-column label="是否展示" align="center" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="访问路径" align="center" prop="accessPath" />
-      <el-table-column label="服务器地址" align="center" prop="endpoint" />
+      <el-table-column label="访问路径" width="400px" align="center" prop="accessPath" />
+      <el-table-column label="服务器地址" width="200px" align="center" prop="endpoint" />
       <el-table-column label="端口号" align="center" prop="ports" />
       <el-table-column label="描述" align="center" prop="description" />
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -30,7 +29,12 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="200px"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             link

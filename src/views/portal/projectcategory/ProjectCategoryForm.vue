@@ -27,7 +27,11 @@
         <el-input v-model="formData.label" placeholder="请输入分类标签" />
       </el-form-item>
       <el-form-item label="分类排序" prop="sort">
-        <el-input v-model="formData.sort" placeholder="请输入分类排序"/>
+        <el-input-number
+          v-model="formData.sort"
+          :min="1"
+          :step="1"
+          step-strictly/>
       </el-form-item>
       <el-form-item label="是否显示" prop="status">
         <el-radio-group v-model="formData.status">
@@ -82,15 +86,34 @@ const formData = ref({
   pic: undefined,
   description: undefined,
 })
+
+const validateTopNode = (rule, value, callback) => {
+  const currCategoryId = formData.value.parentId;
+  if (judgeFirstNode(currCategoryId)) {
+    callback(new Error('一级结点必须上传图片，并需要添加描述'))
+  } else {
+    callback()
+  }
+}
+const judgeFirstNode = (currCategoryId: any) => {
+  if (projectCategoryTree.value[0].children) {
+    for (let i = 0; i < projectCategoryTree.value[0].children.length; i++) {
+      let item = projectCategoryTree.value[0].children[i];
+      return item.id === currCategoryId && item.parentId === 0
+    }
+  }
+  return false;
+}
+
 const formRules = reactive({
   code: [{ required: true, message: '分类编码不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '分类名称不能为空', trigger: 'blur' }],
   label: [{ required: true, message: '分类标签不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '是否显示不能为空', trigger: 'blur' }],
-  parentId: [{required: true, message: '父结点不能为空', trigger: 'blur'}],
+  parentId: [{required: true, message: '父结点不能为空', trigger: 'change'}],
   sort: [{required: true, message: '排序不能为空', trigger: 'blur'}],
-  pic: [{required: true, message: '图片不能为空', trigger: 'blur'}],
-  description: [{required: true, message: '分类描述不能为空', trigger: 'blur'}],
+  pic: [{validator: validateTopNode, trigger: 'blur'}],
+  description: [{validator: validateTopNode, trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 const projectCategoryTree = ref() // 树形结构

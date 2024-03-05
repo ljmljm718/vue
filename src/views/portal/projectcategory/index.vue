@@ -1,3 +1,115 @@
+<script setup lang="ts">
+import {DICT_TYPE} from '@/utils/dict'
+import {dateFormatter} from '@/utils/formatTime'
+import {handleTree} from '@/utils/tree'
+import download from '@/utils/download'
+import {ProjectCategoryApi, ProjectCategoryVO} from '@/api/portal/projectcategory'
+import ProjectCategoryForm from './ProjectCategoryForm.vue'
+
+/** 项目分类 列表 */
+defineOptions({name: 'ProjectCategory'})
+
+const message = useMessage() // 消息弹窗
+const {t} = useI18n() // 国际化
+
+const loading = ref(true) // 列表的加载中
+const list = ref<ProjectCategoryVO[]>([]) // 列表的数据
+const queryParams = reactive({
+  code: undefined,
+  name: undefined,
+  label: undefined,
+  status: undefined,
+  createTime: [],
+  parentId: undefined,
+  sort: undefined,
+})
+const queryFormRef = ref() // 搜索的表单
+const exportLoading = ref(false) // 导出的加载中
+
+/** 查询列表 */
+const getList = async () => {
+  loading.value = true
+  try {
+    const data = await ProjectCategoryApi.getProjectCategoryList(queryParams)
+    list.value = handleTree(data, 'id', 'parentId')
+  } finally {
+    loading.value = false
+  }
+}
+
+/** 搜索按钮操作 */
+const handleQuery = () => {
+  getList()
+}
+
+/** 重置按钮操作 */
+const resetQuery = () => {
+  queryFormRef.value.resetFields()
+  handleQuery()
+}
+
+/** 添加/修改操作 */
+const formRef = ref()
+const openForm = (type: string, id?: number) => {
+  formRef.value.open(type, id)
+}
+
+/** 删除按钮操作 */
+const handleDelete = async (id: number) => {
+  try {
+    // 删除的二次确认
+    await message.delConfirm()
+    // 发起删除
+    await ProjectCategoryApi.deleteProjectCategory(id)
+    message.success(t('common.delSuccess'))
+    // 刷新列表
+    await getList()
+  } catch {
+  }
+}
+
+/** 导出按钮操作 */
+const handleExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    exportLoading.value = true
+    const data = await ProjectCategoryApi.exportProjectCategory(queryParams)
+    download.excel(data, '项目分类.xls')
+  } catch {
+  } finally {
+    exportLoading.value = false
+  }
+}
+
+/** 展开/折叠操作 */
+const isExpandAll = ref(false) // 是否展开，默认不展开
+const refreshTable = ref(true) // 重新渲染表格状态
+const toggleExpandAll = async () => {
+  refreshTable.value = false
+  isExpandAll.value = !isExpandAll.value
+  await nextTick()
+  refreshTable.value = true
+}
+
+/** 初始化 **/
+onMounted(() => {
+  getList()
+})
+
+/**
+ * 表格样式
+ */
+const tableRowClassName = ({row}: { row: ProjectCategoryVO, rowIndex: number }) => {
+  if (row.parentId === 0) {
+    return 'success-row'
+  } else {
+    return 'warning-row'
+  }
+}
+</script>
+
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -58,14 +170,14 @@
     <el-table
       v-loading="loading"
       :data="list"
-      :stripe="true"
       :show-overflow-tooltip="true"
       row-key="id"
       :default-expand-all="isExpandAll"
       v-if="refreshTable"
+      :row-class-name="tableRowClassName"
     >
+      <el-table-column label="分类名称" align="left" prop="name"/>
       <el-table-column label="分类编码" align="center" prop="code" />
-      <el-table-column label="分类名称" align="center" prop="name" />
       <el-table-column label="分类标签" align="center" prop="label" />
       <el-table-column label="是否显示" align="center" prop="status">
         <template #default="scope">
@@ -101,116 +213,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
   <ProjectCategoryForm ref="formRef" @success="getList" />
 </template>
 
-<script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import { handleTree } from '@/utils/tree'
-import download from '@/utils/download'
-import { ProjectCategoryApi, ProjectCategoryVO } from '@/api/portal/projectcategory'
-import ProjectCategoryForm from './ProjectCategoryForm.vue'
+<style scoped lang="scss">
 
-/** 项目分类 列表 */
-defineOptions({ name: 'ProjectCategory' })
-
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-
-const loading = ref(true) // 列表的加载中
-const list = ref<ProjectCategoryVO[]>([]) // 列表的数据
-const queryParams = reactive({
-  code: undefined,
-  name: undefined,
-  label: undefined,
-  status: undefined,
-  createTime: [],
-  parentId: undefined,
-  sort: undefined,
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-
-/** 查询列表 */
-const getList = async () => {
-  loading.value = true
-  try {
-    const data = await ProjectCategoryApi.getProjectCategoryList(queryParams)
-    list.value = handleTree(data, 'id', 'parentId')
-  } finally {
-    loading.value = false
-  }
-}
-
-/** 搜索按钮操作 */
-const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
-
-/** 重置按钮操作 */
-const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
-
-/** 添加/修改操作 */
-const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
-
-/** 删除按钮操作 */
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await ProjectCategoryApi.deleteProjectCategory(id)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-  } catch {}
-}
-
-/** 导出按钮操作 */
-const handleExport = async () => {
-  try {
-    // 导出的二次确认
-    await message.exportConfirm()
-    // 发起导出
-    exportLoading.value = true
-    const data = await ProjectCategoryApi.exportProjectCategory(queryParams)
-    download.excel(data, '项目分类.xls')
-  } catch {
-  } finally {
-    exportLoading.value = false
-  }
-}
-
-/** 展开/折叠操作 */
-const isExpandAll = ref(true) // 是否展开，默认全部展开
-const refreshTable = ref(true) // 重新渲染表格状态
-const toggleExpandAll = async () => {
-  refreshTable.value = false
-  isExpandAll.value = !isExpandAll.value
-  await nextTick()
-  refreshTable.value = true
-}
-
-/** 初始化 **/
-onMounted(() => {
-  getList()
-})
-</script>
+</style>

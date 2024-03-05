@@ -15,6 +15,7 @@
       </el-form-item>
       <el-form-item label="项目分类" prop="category">
         <el-cascader
+          style="width: 100%"
           v-model="category"
           :options="categoryOptions"
           @change="handleChange"
@@ -98,7 +99,6 @@ const open = async (type: string, id?: number) => {
 
   // 获取项目分类树
   categoryOptions.value = await ProjectCategoryApi.getProjectCategoryTree({parentId: 0, status: 1})
-  console.log(categoryOptions.value )
 
   resetForm()
   // 修改时，设置数据
