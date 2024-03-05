@@ -235,6 +235,9 @@ export enum DICT_TYPE {
   DEVICE_CONNECT = 'device_connect', // 设备连接类型
   EQU_STATE = 'equ_state', // 设备在线状态
 
+  // ========== WUSHAN -巫山  ==========
+  WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
+
   // ========== PORTAL - 门户  ==========
   PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型
 }
