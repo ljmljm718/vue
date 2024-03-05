@@ -39,23 +39,23 @@
 <!--        >-->
 <!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
 <!--        </el-button>-->
-        <el-button
-          type="success"
-          plain
-          @click="showScanCode"
-          :loading="exportLoading"
-        >
-          跳转
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['kaizhou:basic-scan-code:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="showScanCode"-->
+<!--          :loading="exportLoading"-->
+<!--        >-->
+<!--          跳转-->
+<!--        </el-button>-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleExport"-->
+<!--          :loading="exportLoading"-->
+<!--          v-hasPermi="['kaizhou:basic-scan-code:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -77,8 +77,16 @@
         width="180px"
       />
 <!--      <el-table-column label="扫码ip" align="center" prop="scanIp" />-->
-      <el-table-column label="扫码经度" align="center" prop="scanLon" />
-      <el-table-column label="扫码纬度" align="center" prop="scanLat" />
+      <el-table-column label="扫码经度" align="center" prop="scanLon">
+        <template #default="scope">
+          <span>{{scope.row.scanLon == undefined || scope.row.scanLon == '' ? '无' : scope.row.scanLon}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="扫码纬度" align="center" prop="scanLat">
+        <template #default="scope">
+          <span>{{scope.row.scanLat == undefined || scope.row.scanLat == '' ? '无' : scope.row.scanLat}}</span>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="扫码位置" align="center" prop="scanLocation" />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
