@@ -11,8 +11,17 @@
         <el-input v-model="formData.recodeCode" disabled placeholder="系统自动生成...." />
       </el-form-item>
       <el-form-item label="种植计划id" prop="plantId">
-        <el-input v-model="formData.plantId" placeholder="请输入种植计划id" />
+        <!-- <el-input v-model="formData.plantId" placeholder="请输入种植计划id" /> -->
+        <el-input v-model="formData.plantId" placeholder="请选择种植计划编码" :disabled="true">
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
+
       <el-form-item label="农事定义" prop="farmWork">
         <el-select v-model="formData.farmWork" placeholder="请选择农事定义">
           <el-option
@@ -46,10 +55,13 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
+                          @success="handlePurchaseOrderChange"/>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
+import AgriculturalBaseList from '@/views/wushan/plantplan/SelectPlantPlanList.vue'
 
 /** 农事记录 表单 */
 defineOptions({ name: 'PlanRecordForm' })
@@ -74,6 +86,24 @@ const formData = ref({
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
+
+
+
+/** 新加方法 */
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+}
+
+const handlePurchaseOrderChange = (order: PlanRecordVO) => {
+  // 将订单设置到入库单
+  console.log("--->>查看查到的农资信息",order)
+  formData.value.plantId = String(order[0].plantCode)
+  /*formData.value.agriculturalName = String(order[0].name)
+  formData.value.agriculturalSize = String(order[0].size)*/
+}
+
+// 截至
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {

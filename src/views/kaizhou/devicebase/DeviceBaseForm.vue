@@ -144,7 +144,7 @@ const parkBaseHelperRef = ref()
 const openType = ref('')
 const openParkBaseHelper = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined){
+  if (openType.value === undefined || openType.value === ""){
     message.error("请选择基地")
   }else parkBaseHelperRef.value.open(id)
 }

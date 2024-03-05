@@ -1,5 +1,5 @@
-<template>
-  <Dialog     title="农事记录"
+ <template>
+  <Dialog     title="种植计划"
               v-model="dialogVisible"
               :appendToBody="true"
               :scroll="true"
@@ -13,86 +13,127 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="记录编码" prop="recodeCode">
+      <el-form-item label="计划编码" prop="plantCode">
         <el-input
-          v-model="queryParams.recodeCode"
-          placeholder="请输入记录编码"
+            v-model="queryParams.plantCode"
+            placeholder="请输入计划编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="园区名称" prop="parkName">
+        <el-input
+          v-model="queryParams.parkName"
+          placeholder="请输入园区名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="农事定义" prop="farmWork">
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input
+          v-model="queryParams.plotName"
+          placeholder="请输入地块名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="种植作物品种名称" prop="plantVariety" label-width="130px">
+        <el-input
+          v-model="queryParams.plantVariety"
+          placeholder="请输入种植作物品种名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="类别" prop="plantCategory">
+        <el-input
+          v-model="queryParams.plantCategory"
+          placeholder="请输入类别"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="plantStatus">
         <el-select
-          v-model="queryParams.farmWork"
-          placeholder="请选择农事定义"
+          v-model="queryParams.plantStatus"
+          placeholder="请选择状态"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="记录时间" prop="recordTime">
-        <el-date-picker
-          v-model="queryParams.recordTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['kaizhou:plant-plan:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" /> 新增
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['kaizhou:plant-plan:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 导出
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"  @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" @selection-change="handleSelectionChange">
       <el-table-column width="30" label="选择" type="selection"/>
-      <el-table-column label="记录编码" align="center" prop="recodeCode" />
-      <el-table-column label="种植计划编码" align="center" prop="plantId" />
-      <el-table-column label="农事定义" align="center" prop="farmWork">
+      <el-table-column label="计划编码" align="center" prop="plantCode" width="200" />
+      <el-table-column label="园区名称" align="center" prop="parkName" />
+      <el-table-column label="地块名称" align="center" prop="plotName" />
+      <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" width="200" />
+      <el-table-column label="类别" align="center" prop="plantCategory" />
+      <el-table-column label="状态" align="center" prop="plantStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_WORK" :value="scope.row.farmWork" />
+          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center" prop="remark" />
+      <el-table-column label="面积" align="center" prop="area"  width="100"/>
+      <el-table-column label="负责人" align="center" prop="plantPerson"  width="100"/>
       <el-table-column
-        label="记录时间"
+        label="种植开始时间"
         align="center"
-        prop="recordTime"
+        prop="plantStarttime"
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="数值" align="center" prop="recordValue">
-        <template #default="scope">{{ scope.row.recordValue + scope.row.recordUnit }}</template>
-      </el-table-column>
-      <!-- <el-table-column label="单位" align="center" prop="recordUnit" /> -->
-      <!-- <el-table-column
-        label="创建时间"
+      <el-table-column
+        label="种植结束时间"
         align="center"
-        prop="createTime"
+        prop="plantEndtime"
         :formatter="dateFormatter"
         width="180px"
-      /> -->
-<!--      <el-table-column label="操作" align="center">
+      />
+      <!-- <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:plan-record:update']"
+            v-hasPermi="['kaizhou:plant-plan:update']"
           >
             编辑
           </el-button>
@@ -100,12 +141,12 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['kaizhou:plan-record:delete']"
+            v-hasPermi="['kaizhou:plant-plan:delete']"
           >
             删除
           </el-button>
         </template>
-      </el-table-column>-->
+      </el-table-column> -->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -122,33 +163,41 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
-  <!-- 表单弹窗：添加/修改 -->
-<!--  <PlanRecordForm ref="formRef" @success="getList" />-->
 </template>
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
-import PlanRecordForm from './PlanRecordForm.vue'
-import {AgriculturalBaseVO} from "@/api/kaizhou/agriculturalbase";
+import { PlantPlanApi, PlantPlanVO } from '@/api/kaizhou/plantplan'
+import PlantPlanForm from './PlantPlanForm.vue'
 
-/** 农事记录 列表 */
-defineOptions({ name: 'PlanRecord' })
+/** 种植计划 列表 */
+defineOptions({ name: 'PlantPlan' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<PlanRecordVO[]>([]) // 列表的数据
+const list = ref<PlantPlanVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  recodeCode: undefined,
-  farmWork: undefined,
-  recordTime: []
+  parkId: undefined,
+  parkName: undefined,
+  plotId: undefined,
+  plotName: undefined,
+  plantVariety: undefined,
+  plantCategory: undefined,
+  plantStatus: undefined,
+  area: undefined,
+  plantPerson: undefined,
+  plantStarttime: [],
+  plantEndtime: [],
+  cropId: undefined,
+  createTime: [],
+  plantCode: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -157,14 +206,14 @@ const exportLoading = ref(false) // 导出的加载中
 
 /** 选中操作 */
 const dialogVisible = ref(false) // 弹窗的是否展示
-const selectionList = ref<PlanRecordVO[]>([])
-const handleSelectionChange = (rows: PlanRecordVO[]) => {
+const selectionList = ref<PlantPlanVO[]>([])
+const handleSelectionChange = (rows: PlantPlanVO[]) => {
   selectionList.value = rows
 }
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: PlanRecordVO[]): void
+  (e: 'success', value: PlantPlanVO[]): void
 }>()
 const submitForm = () => {
   try {
@@ -183,13 +232,15 @@ const open = async (id: string) => {
   await resetQuery()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+// 结束
+
 
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await PlanRecordApi.getPlanRecordPage(queryParams)
+    const data = await PlantPlanApi.getPlantPlanPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -221,7 +272,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await PlanRecordApi.deletePlanRecord(id)
+    await PlantPlanApi.deletePlantPlan(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -235,8 +286,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await PlanRecordApi.exportPlanRecord(queryParams)
-    download.excel(data, '农事记录.xls')
+    const data = await PlantPlanApi.exportPlantPlan(queryParams)
+    download.excel(data, '种植计划.xls')
   } catch {
   } finally {
     exportLoading.value = false
