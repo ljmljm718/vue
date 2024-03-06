@@ -89,9 +89,9 @@ const formRules = reactive({
   type: [{ required: true, message: '服务类型不能为空', trigger: 'change' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
   accessPath: [{ required: true, message: '访问路径不能为空', trigger: 'blur' }],
-  endpoint: [{ required: true, message: '服务器地址不能为空', trigger: 'blur' }],
-  ports: [{ required: true, message: '端口号不能为空', trigger: 'blur' }],
-  description: [{ required: true, message: '描述不能为空', trigger: 'blur' }],
+  // endpoint: [{ required: true, message: '服务器地址不能为空', trigger: 'blur' }],
+  // ports: [{ required: true, message: '端口号不能为空', trigger: 'blur' }],
+  // description: [{ required: true, message: '描述不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
