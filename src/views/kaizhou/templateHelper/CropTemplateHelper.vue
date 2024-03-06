@@ -187,7 +187,6 @@ const resetQuery = () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
-  queryParams.parentId = parentValue.value
   getList()
 }
 </script>
