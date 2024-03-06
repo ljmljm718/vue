@@ -193,9 +193,9 @@
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
                             </div>
-                            <div v-for="itm,inde in item.vlaues" :key="inde">
+                            <div v-for="itm,inde in item.values" :key="inde">
                               <div>
-                                {{item.key}}：{{item.values}}
+                                {{itm.key}}：{{itm.values}}
                               </div>
                             </div>
                          </div>
