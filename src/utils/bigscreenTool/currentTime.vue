@@ -36,4 +36,19 @@ onBeforeUnmount(()=>{
 
 </script>
 <style lang='scss' scoped>
+@font-face {
+    font-family: "TitleFont";
+    src: url(./biaoti.ttf);
+}
+.current-time-wrapper {
+    display: flex;
+    align-items: center;
+    color: #00D1FF;
+    font-family: "TitleFont";
+    padding: 0 10px;
+    font-size: 1rem;
+    span {
+        padding: 8px;
+    }
+}
 </style>
