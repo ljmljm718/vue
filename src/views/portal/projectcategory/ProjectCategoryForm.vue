@@ -96,13 +96,7 @@ const validateTopNode = (rule, value, callback) => {
   }
 }
 const judgeFirstNode = (currCategoryId: any) => {
-  if (projectCategoryTree.value[0].children) {
-    for (let i = 0; i < projectCategoryTree.value[0].children.length; i++) {
-      let item = projectCategoryTree.value[0].children[i];
-      return item.id === currCategoryId && item.parentId === 0
-    }
-  }
-  return false;
+  return currCategoryId === 0;
 }
 
 const formRules = reactive({
