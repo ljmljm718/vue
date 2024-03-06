@@ -50,7 +50,14 @@
         </el-input>
       </el-form-item>
       <el-form-item label="类别" prop="plantCategory">
-        <el-input v-model="formData.plantCategory" placeholder="请输入类别" />
+        <el-select v-model="formData.plantCategory" placeholder="请选择类别" style="width: 100%;">
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PLANT_PLAN_CATEGORY)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="plantStatus">
         <el-radio-group v-model="formData.plantStatus">
@@ -64,7 +71,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="面积" prop="area">
-        <el-input v-model="formData.area" placeholder="请输入面积" />
+        <el-input v-model="formData.area" placeholder="请输入面积" >
+            <template #append>亩</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="负责人" prop="plantPerson">
         <el-input v-model="formData.plantPerson" placeholder="请输入负责人" />
@@ -104,6 +113,8 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { PlantPlanApi, PlantPlanVO } from '@/api/kaizhou/plantplan'
 import ParkTemplateHelper from "@/views/kaizhou/templateHelper/ParkTemplateHelper.vue";
+import CropTemplateHelper from "@/views/kaizhou/templateHelper/CropTemplateHelper.vue";
+import PlotTemplateHelper from "@/views/kaizhou/templateHelper/PlotTemplateHelper.vue";
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
 import {CropBaseVO} from "@/api/kaizhou/cropbase";
 

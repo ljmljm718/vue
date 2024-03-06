@@ -16,36 +16,37 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="编号" prop="code">
+
+        <el-form-item label="编号" prop="cropCode">
           <el-input
-            v-model="queryParams.code"
-            placeholder="请输入编号"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-160px"
+              v-model="queryParams.cropCode"
+              placeholder="请输入编号"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="名称" prop="name">
+        <el-form-item label="名称" prop="cropName">
           <el-input
-            v-model="queryParams.name"
-            placeholder="请输入名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-160px"
+              v-model="queryParams.cropName"
+              placeholder="请输入名称"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
+        <el-form-item label="品种" prop="cropType">
           <el-select
-            v-model="queryParams.type"
-            placeholder="请选择类型"
-            clearable
-            class="!w-160px"
+              v-model="queryParams.cropType"
+              placeholder="请选择品种"
+              clearable
+              class="!w-240px"
           >
             <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_CROP_CULTIVARS)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
             />
           </el-select>
         </el-form-item>

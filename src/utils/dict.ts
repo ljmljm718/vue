@@ -234,6 +234,8 @@ export enum DICT_TYPE {
   WUSHAN_FARM_WORK = 'wushan_farm_work', // 巫山园区类型
   DEVICE_CONNECT = 'device_connect', // 设备连接类型
   EQU_STATE = 'equ_state', // 设备在线状态
+  KAIZHOU_PLANT_PLAN_CATEGORY='kaizhou_plant_plan_category',//开州区种植计划作物类别
+
 
   // ========== WUSHAN -巫山  ==========
   WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
