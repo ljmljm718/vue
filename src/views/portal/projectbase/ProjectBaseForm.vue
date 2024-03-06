@@ -97,10 +97,10 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
 
+  resetForm()
+
   // 获取项目分类树
   categoryOptions.value = await ProjectCategoryApi.getProjectCategoryTree({parentId: 0, status: 1})
-
-  resetForm()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -150,6 +150,7 @@ const resetForm = () => {
     sort: undefined,
     remark: undefined,
   }
+  category.value = []
   formRef.value?.resetFields()
 }
 
