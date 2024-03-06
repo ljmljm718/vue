@@ -1,8 +1,8 @@
 <template>
     <div class="bigscreen-wrappper bigscreen-main-wrapper">
         <div class="header-main-wrapper">
-            <div class="header-left-part-wrapper">
-                <!-- <BigScreenTime /> -->
+            <div class="header-left-part-wrapper" style="color: #c1c1c1;margin-left:15px;">
+                <BigScreenTime />
             </div>
             <div class="header-title-wrapper">明月村农业产业监管大屏</div>
             <div class="header-right-part-wrapper"></div>

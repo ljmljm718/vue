@@ -30,9 +30,9 @@ timeTimer.value = setInterval(() => {
           getNowTime();
    }, 1000);
     
-onBeforeUnmount =() => {
-  clearInterval(timeTimer.value)
-   }
+onBeforeUnmount(()=>{
+    clearInterval(timeTimer.value);
+})
 
 </script>
 <style lang='scss' scoped>
