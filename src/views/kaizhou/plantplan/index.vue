@@ -45,13 +45,19 @@
         />
       </el-form-item>
       <el-form-item label="类别" prop="plantCategory">
-        <el-input
-          v-model="queryParams.plantCategory"
-          placeholder="请输入类别"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <el-select
+            v-model="queryParams.plantCategory"
+            placeholder="请选择类别"
+            clearable
+            class="!w-240px"
+        >
+          <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PLANT_PLAN_CATEGORY)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="plantStatus">
         <el-select
@@ -99,13 +105,17 @@
       <el-table-column label="园区名称" align="center" prop="parkName" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" width="200" />
-      <el-table-column label="类别" align="center" prop="plantCategory" />
+      <el-table-column label="类别" align="center" prop="plantCategory" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.KAIZHOU_PLANT_PLAN_CATEGORY" :value="scope.row.plantCategory" />
+        </template>
+      </el-table-column>
       <el-table-column label="状态" align="center" prop="plantStatus">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="面积" align="center" prop="area"  width="100"/>
+      <el-table-column label="面积（亩）" align="center" prop="area"  width="100"/>
       <el-table-column label="负责人" align="center" prop="plantPerson"  width="100"/>
       <el-table-column
         label="种植开始时间"

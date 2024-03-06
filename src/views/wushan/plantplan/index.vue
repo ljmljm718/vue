@@ -1,4 +1,4 @@
- <template>
+<template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -10,14 +10,14 @@
     >
       <el-form-item label="计划编码" prop="plantCode">
         <el-input
-            v-model="queryParams.plantCode"
-            placeholder="请输入计划编码"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+          v-model="queryParams.plantCode"
+          placeholder="请输入计划编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="园区名称" prop="parkName">
+      <el-form-item label="所属园区" prop="parkName">
         <el-input
           v-model="queryParams.parkName"
           placeholder="请输入园区名称"
@@ -26,7 +26,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
+      <el-form-item label="所属地块" prop="plotName">
         <el-input
           v-model="queryParams.plotName"
           placeholder="请输入地块名称"
@@ -45,13 +45,19 @@
         />
       </el-form-item>
       <el-form-item label="类别" prop="plantCategory">
-        <el-input
+        <el-select
           v-model="queryParams.plantCategory"
-          placeholder="请输入类别"
+          placeholder="请选择品种"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.WUSHAN_CROP_CULTIVARS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="plantStatus">
         <el-select
@@ -69,15 +75,22 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['kaizhou:plant-plan:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -86,7 +99,8 @@
           :loading="exportLoading"
           v-hasPermi="['kaizhou:plant-plan:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -95,18 +109,22 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="计划编码" align="center" prop="plantCode" width="200" />
-      <el-table-column label="园区名称" align="center" prop="parkName" />
-      <el-table-column label="地块名称" align="center" prop="plotName" />
-      <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" width="200" />
-      <el-table-column label="类别" align="center" prop="plantCategory" />
-      <el-table-column label="状态" align="center" prop="plantStatus">
+      <el-table-column label="计划编码" align="center" prop="plantCode" width="200"/>
+      <el-table-column label="种植作物品种名称" align="center" prop="plantVariety" width="200"/>
+      <el-table-column label="所属园区" align="center" prop="parkName"/>
+      <el-table-column label="所属地块" align="center" prop="plotName"/>
+      <el-table-column label="类别" align="center" prop="plantCategory">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus" />
+          <dict-tag :type="DICT_TYPE.WUSHAN_CROP_CULTIVARS" :value="scope.row.plantCategory"/>
         </template>
       </el-table-column>
-      <el-table-column label="面积" align="center" prop="area"  width="100"/>
-      <el-table-column label="负责人" align="center" prop="plantPerson"  width="100"/>
+      <el-table-column label="状态" align="center" prop="plantStatus">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="面积" align="center" prop="area" width="100"/>
+      <el-table-column label="负责人" align="center" prop="plantPerson" width="100"/>
       <el-table-column
         label="种植开始时间"
         align="center"
@@ -152,21 +170,21 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <PlantPlanForm ref="formRef" @success="getList" />
+  <PlantPlanForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { PlantPlanApi, PlantPlanVO } from '@/api/kaizhou/plantplan'
+import {PlantPlanApi, PlantPlanVO} from '@/api/kaizhou/plantplan'
 import PlantPlanForm from './PlantPlanForm.vue'
 
 /** 种植计划 列表 */
-defineOptions({ name: 'PlantPlan' })
+defineOptions({name: 'PlantPlan'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<PlantPlanVO[]>([]) // 列表的数据
@@ -232,7 +250,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

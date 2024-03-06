@@ -76,7 +76,7 @@
           <dict-tag :type="DICT_TYPE.WUSHAN_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark" />
+      <el-table-column label="所属园区" align="center" prop="belongPark" />
       <el-table-column label="所属地块" align="center" prop="belongPlot" />
       <el-table-column label="图片" align="center" prop="imgId">
         <template #default="{ row }">
