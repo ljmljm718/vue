@@ -135,7 +135,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
-import PlanRecordForm from './PlanRecordForm.vue'
+import PlanRecordForm from './addOrUpdatePlanRecordForm.vue'
 
 /** 农事记录 列表 */
 defineOptions({ name: 'PlanRecord' })

@@ -26,10 +26,10 @@
         </el-input>
       </el-form-item>
       <el-form-item label="产量(KG)" prop="output">
-        <el-input v-model="formData.wushanOutput" placeholder="请输入产量(KG)" />
+        <el-input v-model="formData.wushanOutput" placeholder="请输入产量(KG),请输入纯数字" />
       </el-form-item>
       <el-form-item label="单价(KG/元)" prop="unitPrice">
-        <el-input v-model="formData.unitPrice" placeholder="请输入单价(元)" />
+        <el-input v-model="formData.unitPrice" placeholder="请输入单价(元),请输入纯数字" />
       </el-form-item>
       <el-form-item label="收入(元)" prop="income">
         <el-input v-model="formData.wushanIncome" placeholder="请输入收入,如果不写会自动计算并填入" />
