@@ -1,7 +1,7 @@
 <!-- 下属地块列表 -->
 <template>
   <Dialog
-      title="地块"
+      title="农事定义"
       v-model="dialogVisible"
       :appendToBody="true"
       :scroll="true"
@@ -80,7 +80,6 @@
 <script lang="ts" setup>
 import {ElTable} from 'element-plus'
 import {FarmWorkDefineApi, FarmWorkDefineVO} from '@/api/kaizhou/farmworkdefine'
-import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 
 defineOptions({name: 'FarmWorkTemplateHelper'})
@@ -88,7 +87,6 @@ const list = ref<FarmWorkDefineVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
 const dialogVisible = ref(false) // 弹窗的是否展示
-const parentValue = ref('')
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,

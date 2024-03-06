@@ -14,7 +14,7 @@
         <el-input v-model="formData.plantId" placeholder="请输入种植计划id" />
       </el-form-item>
       <el-form-item label="农事定义" prop="farmWork">
-        <el-input v-model="formData.farmWork" placeholder="请选择农事定义" >
+        <el-input v-model="formData.farmWork" disabled placeholder="请选择农事定义" >
         <template #append>
           <el-button @click="openFarmWorkTemplateHelper">
             <Icon icon="ep:search"/>
@@ -54,13 +54,13 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <FarmWorkTemplateHelper ref="farmWorkTemplateHelper" @setFarmWorkInfo="setFarmWorkInfo" />
 </template>
-<FarmWorkTemplateHelper ref="farmWorkTemplateHelper" @setFarmWorkInfo="setFarmWorkInfo"/>
 
 <script setup lang="ts">
 import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord';
-import FarmWorkTemplateHelper from "@/views/kaizhou/templateHelper/FarmWorkTemplateHelper.vue";
 import {FarmWorkDefineVO} from "@/api/kaizhou/farmworkdefine";
+import FarmWorkTemplateHelper from "@/views/kaizhou/templateHelper/FarmWorkTemplateHelper.vue";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'PlanRecordForm' })
@@ -93,7 +93,7 @@ const openFarmWorkTemplateHelper = async () => {
 }
 
 const setFarmWorkInfo = (order:FarmWorkDefineVO) => {
-  formData.value.farmWork=String(order[0].code)
+  formData.value.farmWork=String(order[0].workType)
 }
 
 /** 打开弹窗 */

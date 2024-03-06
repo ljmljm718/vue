@@ -1,7 +1,7 @@
 <!-- 下属地块列表 -->
 <template>
   <Dialog
-    title="地块"
+    title="园区"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
