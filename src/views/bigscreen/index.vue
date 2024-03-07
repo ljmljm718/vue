@@ -176,7 +176,7 @@
                 </div>
                 <div class="middle-main-item">
                       <div class='sxt' v-for="item,index in webcam" :key="index" @click="webcamCli(index)" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                         <div v-show="webcamIndex==index" class="message">
+                         <div :style="{visibility:webcamIndex==index?'visible':'hidden',top:-sxtHeight+'px',left:'-50px'}" ref="sxtList" class="message">
                             <div class="message-item">
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
@@ -188,20 +188,20 @@
                          </div>
                       </div>
                       <div class='cgq' v-for="item,index in sensor" :key="index" @click="sensorCli(index)" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                        <div v-show="sensorIndex==index" class="message">
+                        <div :style="{visibility:sensorIndex==index?'visible':'hidden',top:-sensorHeight+'px',left:'-50px'}" class="message" ref="sensorList" > 
                             <div class="message-item">
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
                             </div>
-                            <div v-for="itm,inde in item.vlaues" :key="inde">
+                            <div v-for="itm,inde in item.values" :key="inde">
                               <div>
-                                {{item.key}}：{{item.values}}
+                                {{itm.key}}：{{itm.values}}
                               </div>
                             </div>
                          </div>
                       </div>
                       <div class='alarm' v-for="item,index in warn" @click="warnCli(index)" :key="index" :style="{left:item.latitude>100?item.latitude/13+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                        <div v-show="warnIndex==index" class="message" ref="alarm">
+                        <div  :style="{visibility:warnIndex==index?'visible':'hidden',top:-alarmHeight+'px',left:'-50px'}" ref="alarmList" class="message">
                             <div class="message-item">
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
@@ -704,7 +704,6 @@ getDeviceStatistics()
 // 选择园区
 let select=ref<any>([])
 let selectId=ref<any>('')
-let select2Id=ref<any>('')
 let select2=ref<any>([])
 //园区
 const getParkBaseInfo=async (params)=>{
@@ -790,15 +789,24 @@ const getDeviceAndWarn=()=>{
   })
 }
 getDeviceAndWarn()
+let sxtList=ref<any>(null)
+let sxtHeight=ref()
 const webcamCli=(val:any)=>{
+  sxtHeight.value=sxtList.value[val].offsetHeight
   if(webcamIndex.value==val) webcamIndex.value=-1
   else  webcamIndex.value=val
 }
+let sensorList=ref<any>(null)
+let sensorHeight=ref<any>('')
 const sensorCli=(val:any)=>{
+  sensorHeight.value=sensorList.value[val].offsetHeight
   if(sensorIndex.value==val) sensorIndex.value=-1
   else  sensorIndex.value=val
 }
+let alarmList=ref<any>(null)
+let alarmHeight=ref()
 const warnCli=(val:any)=>{
+  alarmHeight.value=alarmList.value[val].offsetHeight
   if(warnIndex.value==val) warnIndex.value=-1
   else  warnIndex.value=val
 }
@@ -1109,8 +1117,6 @@ getIndustryData()
           padding: 10px 15px 15px;
           box-sizing: border-box;
           z-index: 9999;
-          left:-50px;
-          top: -150px;
           background-size: 100% 100%;
           background-image:url('./assets/middleBg.png');
           .message-item{
@@ -1143,8 +1149,6 @@ getIndustryData()
           padding: 10px 15px 15px;
           box-sizing: border-box;
           z-index: 9999;
-          left:-50px;
-          top: -130px;
           background-size: 100% 100%;
           background-image:url('./assets/middleBg.png');
           .message-item{
@@ -1177,8 +1181,6 @@ getIndustryData()
           padding: 10px 15px 15px;
           box-sizing: border-box;
           z-index: 9999;
-          left:-50px;
-          top: -150px;
           background-size: 100% 100%;
           background-image:url('./assets/middleBg.png');
           .message-item{

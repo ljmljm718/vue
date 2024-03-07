@@ -1,7 +1,7 @@
 <!-- 下属地块列表 -->
 <template>
   <Dialog
-    title="地块"
+    title="作物"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -187,7 +187,6 @@ const resetQuery = () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
-  queryParams.parentId = parentValue.value
   getList()
 }
 </script>

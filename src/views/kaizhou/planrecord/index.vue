@@ -18,19 +18,13 @@
         />
       </el-form-item>
       <el-form-item label="农事定义" prop="farmWork">
-        <el-select
-          v-model="queryParams.farmWork"
-          placeholder="请选择农事定义"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <el-input
+            v-model="queryParams.farmWork"
+            placeholder="请输入农事定义"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+        />
       </el-form-item>
       <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker
@@ -72,11 +66,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="记录编码" align="center" prop="recodeCode" />
       <el-table-column label="种植计划编码" align="center" prop="plantId" />
-      <el-table-column label="农事定义" align="center" prop="farmWork">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_FARM_WORK" :value="scope.row.farmWork" />
-        </template>
-      </el-table-column>
+      <el-table-column label="农事定义" align="center" prop="farmWork"/>
       <el-table-column label="描述" align="center" prop="remark" />
       <el-table-column
         label="记录时间"

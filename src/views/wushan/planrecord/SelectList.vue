@@ -58,7 +58,7 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"  @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="list" :stripe="true" ref="suibian" :show-overflow-tooltip="true" @select="fangfa"  @selection-change="handleSelectionChange">
       <el-table-column width="30" label="选择" type="selection"/>
       <el-table-column label="记录编码" align="center" prop="recodeCode" />
       <el-table-column label="种植计划编码" align="center" prop="plantId" />
@@ -153,7 +153,13 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
-
+let suibian=ref(null)
+const fangfa=(select:any,row:any)=>{
+  if(select.length>1){
+    let del_row =select.shift();
+    suibian.value.toggleRowSelection(del_row,false);
+  }
+}
 
 /** 选中操作 */
 const dialogVisible = ref(false) // 弹窗的是否展示

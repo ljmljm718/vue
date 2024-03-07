@@ -14,14 +14,22 @@
         <el-input v-model="formData.plantId" placeholder="请输入种植计划id" />
       </el-form-item>
       <el-form-item label="农事定义" prop="farmWork">
-        <el-select v-model="formData.farmWork" placeholder="请选择农事定义">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <el-input v-model="formData.farmWork" disabled placeholder="请选择农事定义" >
+        <template #append>
+          <el-button @click="openFarmWorkTemplateHelper">
+            <Icon icon="ep:search"/>
+            选择
+          </el-button>
+        </template>
+        </el-input>
+<!--        <el-select v-model="formData.farmWork" placeholder="请选择农事定义">-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_WORK)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
       </el-form-item>
       <el-form-item label="描述" prop="remark">
         <el-input v-model="formData.remark" type="textarea" placeholder="请输入描述" />
@@ -46,10 +54,13 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <FarmWorkTemplateHelper ref="farmWorkTemplateHelper" @setFarmWorkInfo="setFarmWorkInfo" />
 </template>
+
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord'
+import { PlanRecordApi, PlanRecordVO } from '@/api/kaizhou/planrecord';
+import {FarmWorkDefineVO} from "@/api/kaizhou/farmworkdefine";
+import FarmWorkTemplateHelper from "@/views/kaizhou/templateHelper/FarmWorkTemplateHelper.vue";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'PlanRecordForm' })
@@ -74,6 +85,16 @@ const formData = ref({
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
+
+const farmWorkTemplateHelper=ref()
+const openFarmWorkTemplateHelper = async () => {
+  console.log(farmWorkTemplateHelper.value,22222)
+    farmWorkTemplateHelper.value.open()
+}
+
+const setFarmWorkInfo = (order:FarmWorkDefineVO) => {
+  formData.value.farmWork=String(order[0].workType)
+}
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {

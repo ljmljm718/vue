@@ -123,7 +123,7 @@
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.plantStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="面积" align="center" prop="area" width="100"/>
+      <el-table-column label="面积/亩" align="center" prop="area" width="100"/>
       <el-table-column label="负责人" align="center" prop="plantPerson" width="100"/>
       <el-table-column
         label="种植开始时间"

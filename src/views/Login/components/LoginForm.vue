@@ -1,6 +1,6 @@
 <template>
   <div style="display:flex;flex-direction: column;align-items: center;">
-  <LoginFormTitle style="width: 140%;margin-bottom:30px;"/>
+  <LoginFormTitle style="margin-bottom:10px;"/>
   <el-form
     v-show="getShow"
     ref="formLogin"
@@ -191,7 +191,7 @@ const loginData = reactive({
     username: 'admin',
     password: 'Y123456a?',
     captchaVerification: '',
-    rememberMe: false
+    rememberMe: true // 默认记录我。如果不需要，可手动修改
   }
 })
 
@@ -221,14 +221,14 @@ const getTenantId = async () => {
   }
 }
 // 记住我
-const getCookie = () => {
+const getLoginFormCache = () => {
   const loginForm = authUtil.getLoginForm()
   if (loginForm) {
     loginData.loginForm = {
       ...loginData.loginForm,
       username: loginForm.username ? loginForm.username : loginData.loginForm.username,
       password: loginForm.password ? loginForm.password : loginData.loginForm.password,
-      rememberMe: loginForm.rememberMe ? true : false,
+      rememberMe: loginForm.rememberMe,
       tenantName: loginForm.tenantName ? loginForm.tenantName : loginData.loginForm.tenantName
     }
   }
@@ -323,7 +323,7 @@ watch(
   }
 )
 onMounted(() => {
-  getCookie()
+  getLoginFormCache()
   getTenantByWebsite()
 })
 </script>
