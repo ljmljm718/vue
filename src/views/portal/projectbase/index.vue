@@ -1,86 +1,73 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="项目编码" prop="code">
-        <el-input
-          v-model="queryParams.code"
-          placeholder="请输入项目编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="项目名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入项目名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="项目分类" prop="category">
-        <el-input
-          v-model="queryParams.category"
-          placeholder="请输入项目分类"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择状态"
-          clearable
-          class="!w-240px"
+  <div class="affix-container">
+    <el-affix target=".affix-container" :offset="120">
+      <ContentWrap style="background-color: #ecf5ff">
+        <!-- 搜索工作栏 -->
+        <el-form
+          class="-mb-15px"
+          :model="queryParams"
+          ref="queryFormRef"
+          :inline="true"
+          label-width="68px"
         >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['portal:project-base:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['portal:project-base:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </ContentWrap>
+          <el-form-item label="项目名称" prop="name">
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入项目名称"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-240px"
+            />
+          </el-form-item>
+          <el-form-item label="是否显示" prop="status">
+            <el-select
+              v-model="queryParams.status"
+              placeholder="请选择状态"
+              clearable
+              class="!w-240px"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="handleQuery">
+              <Icon icon="ep:search" class="mr-5px"/>
+              搜索
+            </el-button>
+            <el-button @click="resetQuery">
+              <Icon icon="ep:refresh" class="mr-5px"/>
+              重置
+            </el-button>
+            <el-button
+              type="primary"
+              plain
+              @click="openForm('create')"
+              v-hasPermi="['portal:project-base:create']"
+            >
+              <Icon icon="ep:plus" class="mr-5px"/>
+              新增
+            </el-button>
+            <el-button
+              type="success"
+              plain
+              @click="handleExport"
+              :loading="exportLoading"
+              v-hasPermi="['portal:project-base:export']"
+            >
+              <Icon icon="ep:download" class="mr-5px"/>
+              导出
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </ContentWrap>
+    </el-affix>
 
-  <!-- 列表 -->
+    <!-- 列表 -->
   <ContentWrap>
     <el-table
       v-loading="loading"
@@ -98,7 +85,7 @@
             style="width: 200px"
             v-model="scope.row.category"
             :options="categoryOptions"
-            :props="props"
+            :props="categoryProps"
             disabled
           />
         </template>
@@ -152,16 +139,20 @@
     />
   </ContentWrap>
 
+    <el-affix target=".affix-container" :offset="120">
+      <!-- 子表的列表 -->
+      <ContentWrap>
+        <el-tabs model-value="projectService">
+          <el-tab-pane label="门户项目服务" name="projectService">
+            <ProjectServiceList :project-id="currentRow.id"/>
+          </el-tab-pane>
+        </el-tabs>
+      </ContentWrap>
+    </el-affix>
+  </div>
   <!-- 表单弹窗：添加/修改 -->
   <ProjectBaseForm ref="formRef" @success="getList" />
-  <!-- 子表的列表 -->
-  <ContentWrap>
-    <el-tabs model-value="projectService">
-      <el-tab-pane label="门户项目服务" name="projectService">
-        <ProjectServiceList :project-id="currentRow.id" />
-      </el-tab-pane>
-    </el-tabs>
-  </ContentWrap>
+
 </template>
 
 <script setup lang="ts">
@@ -171,7 +162,7 @@ import {ProjectBaseApi, ProjectBaseVO} from '@/api/portal/projectbase'
 import ProjectBaseForm from './ProjectBaseForm.vue'
 import ProjectServiceList from './components/ProjectServiceList.vue'
 import {ProjectCategoryApi} from "@/api/portal/projectcategory";
-import {DICT_TYPE} from "@/utils/dict";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 门户项目基础信息 列表 */
 defineOptions({ name: 'ProjectBase' })
@@ -219,10 +210,13 @@ const handleQuery = () => {
   getList()
 }
 
+let clearCategoryEmit = defineEmits(["clearCategory"]);
+
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  handleQuery()
+  clearCategoryEmit("clearCategory")
+  // handleQuery()
 }
 
 /** 添加/修改操作 */
@@ -268,7 +262,7 @@ const handleCurrentChange = (row: any) => {
 /**
  * 项目分类级联选择器
  */
-const props = {
+const categoryProps = {
   value: 'id'
 }
 
@@ -276,4 +270,27 @@ const props = {
 onMounted(() => {
   getList()
 })
+
+// 定义属性
+const props = defineProps({
+  currCategory: {
+    type: Object,
+    default: () => ({})
+  },
+})
+// 监听父组件category变化
+watch(() => props.currCategory, (newVal) => {
+  if (newVal){
+    queryParams.category = newVal.parentId + "," + newVal.id
+  }else {
+    queryParams.category = undefined
+  }
+  handleQuery()
+})
 </script>
+
+<style scoped>
+.affix-container {
+
+}
+</style>
