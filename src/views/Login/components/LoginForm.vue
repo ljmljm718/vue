@@ -1,6 +1,6 @@
 <template>
   <div style="display:flex;flex-direction: column;align-items: center;">
-  <LoginFormTitle style="width: 140%;margin-bottom:30px;"/>
+  <LoginFormTitle style="margin-bottom:10px;"/>
   <el-form
     v-show="getShow"
     ref="formLogin"
