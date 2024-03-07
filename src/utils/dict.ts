@@ -239,6 +239,8 @@ export enum DICT_TYPE {
 
   // ========== WUSHAN -巫山  ==========
   WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
+  WUSHAN_ARTICLE_STATUS = 'wushan_article_status',
+  WUSHAN_KNOWLEDGE_TYPE = 'wushan_knowledge_type',
 
   // ========== PORTAL - 门户  ==========
   PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型

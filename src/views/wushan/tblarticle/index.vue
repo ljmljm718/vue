@@ -150,7 +150,6 @@
         </template>
       </el-table-column>
       <el-table-column label="作者" align="center" prop="articleAuthor" />
-      <el-table-column label="文章内容" align="center" prop="articleContent" />
       <el-table-column
         label="发布时间"
         align="center"
@@ -179,7 +178,7 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm('update', scope.row.articleId)"
             v-hasPermi="['wushan:tbl-article:update']"
           >
             编辑
@@ -187,7 +186,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDelete(scope.row.id)"
+            @click="handleDelete(scope.row.articleId)"
             v-hasPermi="['wushan:tbl-article:delete']"
           >
             删除
