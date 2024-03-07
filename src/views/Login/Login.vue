@@ -42,8 +42,8 @@
         <div class="cont">
           <div class="left">
             <div style="margin-top: 4%;margin-left: 6%;font-weight: 600;color: #f1f1f1;">数 字 乡 村 振 兴 服 务 管 理 平 台</div>
-            <div style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 600;">助推乡村振兴</div>
-            <div  style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 550;">建设美丽新农村</div>
+            <div style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 600;color:#fff;">助推乡村振兴</div>
+            <div  style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 550;color:#fff;">建设美丽新农村</div>
           </div>
           <div style="width: 30%;height: 100%;background: #fff;">
               <LoginForm />
