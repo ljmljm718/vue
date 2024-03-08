@@ -91,8 +91,12 @@ const queryParams = reactive({
 watch(
   () => props.projectId,
   (val) => {
-    queryParams.projectId = val
-    handleQuery()
+    if (val){
+      queryParams.projectId = val
+      handleQuery()
+    }else {
+      list.value = []
+    }
   },
   { immediate: false }
 )

@@ -214,6 +214,7 @@ let clearCategoryEmit = defineEmits(["clearCategory"]);
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   handleQuery()
+  currentRow.value = {id: undefined}
   clearCategoryEmit("clearCategory")
 }
 
