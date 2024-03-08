@@ -55,7 +55,6 @@ const handleCurrentCategoryChange = (currNodeData) => {
 }
 // 取消选择
 const clearCategory = () => {
-  console.log(treeRef.value?.setCurrentKey())
   treeRef.value.setCurrentKey()
 }
 

@@ -178,9 +178,8 @@ const queryParams = reactive({
   pageSize: 10,
   code: undefined,
   name: undefined,
-  category: null,
+  category: undefined,
   status: undefined,
-  createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -214,8 +213,8 @@ let clearCategoryEmit = defineEmits(["clearCategory"]);
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  handleQuery()
   clearCategoryEmit("clearCategory")
-  // handleQuery()
 }
 
 /** 添加/修改操作 */
@@ -279,15 +278,16 @@ const props = defineProps({
   },
 })
 // 监听父组件category变化
-watch(() => props.currCategory, (newVal) => {
-  if (newVal){
-    if (newVal.parentId === 0){
-      queryParams.category = newVal.id
+watch(() => props.currCategory,
+  () => {
+    if (props.currCategory) {
+      if (props.currCategory.parentId === 0) {
+        queryParams.category = props.currCategory.id
     }else{
-      queryParams.category = newVal.parentId + "," + newVal.id
+        queryParams.category = props.currCategory.parentId + "," + props.currCategory.id
     }
   }else {
-    queryParams.category = null
+      queryParams.category = undefined
   }
   handleQuery()
 })
