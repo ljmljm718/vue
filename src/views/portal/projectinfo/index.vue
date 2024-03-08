@@ -55,15 +55,14 @@ const handleCurrentCategoryChange = (currNodeData) => {
 }
 // 取消选择
 const clearCategory = () => {
-  console.log(treeRef.value?.setCurrentKey())
   treeRef.value.setCurrentKey()
 }
 
 </script>
 
 <template>
-  <el-row :gutter="20">
-    <el-col :span="4" v-loading="loading">
+  <el-row :gutter="20" v-loading="loading">
+    <el-col :span="4">
       <ContentWrap>
         <ContentWrap>
           <el-input
@@ -82,9 +81,11 @@ const clearCategory = () => {
             :filter-node-method="filterNode"
             highlight-current
             node-key="id"
+            :expand-on-click-node="false"
             @current-change="handleCurrentCategoryChange"
           />
         </ContentWrap>
+
       </ContentWrap>
     </el-col>
 

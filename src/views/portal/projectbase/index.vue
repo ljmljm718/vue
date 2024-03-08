@@ -77,12 +77,12 @@
       highlight-current-row
       @current-change="handleCurrentChange"
     >
-      <el-table-column label="项目编码" align="center" prop="code" />
-      <el-table-column label="项目名称" width="300px" align="center" prop="name"/>
-      <el-table-column label="项目分类" width="230px" align="center" prop="category">
+      <el-table-column label="项目编码" width="100px" align="center" prop="code" />
+      <el-table-column label="项目名称" width="400px" align="center" prop="name"/>
+      <el-table-column label="项目分类" width="250px" align="center" prop="category">
         <template #default="scope">
           <el-cascader
-            style="width: 200px"
+            style="width: 100%"
             v-model="scope.row.category"
             :options="categoryOptions"
             :props="categoryProps"
@@ -180,7 +180,6 @@ const queryParams = reactive({
   name: undefined,
   category: undefined,
   status: undefined,
-  createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -192,7 +191,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ProjectBaseApi.getProjectBasePage(queryParams)
-    categoryOptions.value = await ProjectCategoryApi.getProjectCategoryTree({parentId: 0, status: 1})
     list.value = data.list.map((item: any) => {
       item.category = item.category.split(',').map(Number)
       return item;
@@ -215,8 +213,9 @@ let clearCategoryEmit = defineEmits(["clearCategory"]);
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  handleQuery()
+  currentRow.value = {id: undefined}
   clearCategoryEmit("clearCategory")
-  // handleQuery()
 }
 
 /** 添加/修改操作 */
@@ -267,8 +266,9 @@ const categoryProps = {
 }
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
+onMounted(async () => {
+  categoryOptions.value = await ProjectCategoryApi.getProjectCategoryTree({parentId: 0, status: 1});
+  await getList()
 })
 
 // 定义属性
@@ -279,11 +279,16 @@ const props = defineProps({
   },
 })
 // 监听父组件category变化
-watch(() => props.currCategory, (newVal) => {
-  if (newVal){
-    queryParams.category = newVal.parentId + "," + newVal.id
+watch(() => props.currCategory,
+  () => {
+    if (props.currCategory) {
+      if (props.currCategory.parentId === 0) {
+        queryParams.category = props.currCategory.id
+    }else{
+        queryParams.category = props.currCategory.parentId + "," + props.currCategory.id
+    }
   }else {
-    queryParams.category = undefined
+      queryParams.category = undefined
   }
   handleQuery()
 })
