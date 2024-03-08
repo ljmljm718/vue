@@ -186,7 +186,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   },
   {
     path: '/sso',
-    component: () => import('@/views/Login/Login.vue'),
+    component: () => import('@/views/Login/components/SSOLogin.vue'),
     name: 'SSOLogin',
     meta: {
       hidden: true,
