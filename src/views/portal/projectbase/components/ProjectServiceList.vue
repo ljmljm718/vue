@@ -19,14 +19,14 @@
         </template>
       </el-table-column>
       <el-table-column label="访问路径" width="400px" align="center" prop="accessPath" />
-      <el-table-column label="框架类型" width="" align="center" prop="frameType">
+      <el-table-column label="框架类型" width="200px" align="center" prop="frameType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.PROJECT_FRAME_TYPE" :value="scope.row.frameType" />
         </template>
       </el-table-column>
-      <el-table-column label="租户名称" width="100px" align="center" prop="tenantName" />
-      <el-table-column label="用户名" width="100px" align="center" prop="username" />
-      <el-table-column label="密码" width="100px" align="center" prop="password" />
+      <el-table-column label="租户名称" width="150px" align="center" prop="tenantName" />
+      <el-table-column label="用户名" width="150px" align="center" prop="username" />
+      <el-table-column label="密码" width="150px" align="center" prop="password" />
       <el-table-column label="服务器地址" width="200px" align="center" prop="endpoint" />
       <el-table-column label="端口号" align="center" prop="ports" />
       <el-table-column label="描述" align="center" prop="description" />
