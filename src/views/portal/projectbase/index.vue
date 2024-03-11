@@ -195,7 +195,7 @@ const getList = async () => {
       item.category = item.category.split(',').map(Number)
       return item;
     })
-
+    console.log(list.value)
     total.value = data.total
   } finally {
     loading.value = false
