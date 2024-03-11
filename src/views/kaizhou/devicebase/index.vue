@@ -117,29 +117,31 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备号" align="center" prop="deviceCode" />
-      <el-table-column label="名称" align="center" prop="deviceName" />
-      <el-table-column label="种类" align="center" prop="kinds">
+      <el-table-column label="设备号" width="200px" align="center" prop="deviceCode" />
+      <el-table-column label="名称" width="200px" align="center" prop="deviceName" />
+      <el-table-column label="种类" width="100px" align="center" prop="kinds">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_KINDS" :value="scope.row.kinds" />
         </template>
       </el-table-column>
-      <el-table-column label="设备类型" align="center" prop="deviceType">
+      <el-table-column label="设备类型" width="100px" align="center" prop="deviceType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
         </template>
       </el-table-column>
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="状态" align="center" prop="deviceStatus">
+      <el-table-column label="经度" width="150px" align="center" prop="longitude" />
+      <el-table-column label="纬度" width="150px" align="center" prop="latitude" />
+      <el-table-column label="状态" width="100px" align="center" prop="deviceStatus">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark" />
-      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+      <el-table-column label="基地编号" width="200px" align="center" prop="belongPark" />
+      <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName" />
+      <el-table-column label="地块编号" width="200px" align="center" prop="belongPlot" />
+      <el-table-column label="地块名称" width="200px" align="center" prop="belongPlotName" />
 <!--      <el-table-column label="URL" align="center" prop="url" />-->
-      <el-table-column label="备注" align="center" prop="remark" />
+<!--      <el-table-column label="备注" align="center" prop="remark" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -228,6 +230,8 @@ const getList = async () => {
   try {
     const data = await DeviceBaseApi.getDeviceBasePage(queryParams)
     list.value = data.list
+    console.log(1, list.value)
+    console.log(2, data.list.value)
     total.value = data.total
   } finally {
     loading.value = false

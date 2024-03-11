@@ -12,8 +12,9 @@ export interface DeviceBaseVO {
   deviceStatus: string // 状态
   belongPark: string // 所属基地
   belongPlot: string // 所属地块
+  belongParkName: string // 所属基地名称
+  belongPlotName: string // 所属地块名称
   url: string // URL
-  remark: string // 备注
 }
 
 // 设备管理 API
@@ -47,4 +48,4 @@ export const DeviceBaseApi = {
   exportDeviceBase: async (params) => {
     return await request.download({ url: `/kaizhou/device-base/export-excel`, params })
   },
-}
+}
