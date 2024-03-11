@@ -136,6 +136,7 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { WarningRecordApi, WarningRecordVO } from '@/api/kaizhou/warningrecord'
 import SelectDevice from "@/views/kaizhou/warningrecord/component/SelectDevice.vue";
+import {DeviceBaseVO} from "@/api/kaizhou/devicebase";
 
 /** 预警记录 表单 */
 defineOptions({ name: 'WarningRecordForm' })
