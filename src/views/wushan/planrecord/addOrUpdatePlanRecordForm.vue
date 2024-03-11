@@ -10,7 +10,7 @@
       <el-form-item label="计划编码" prop="recodeCode">
         <el-input v-model="formData.recodeCode" disabled placeholder="系统自动生成...." />
       </el-form-item>
-      <el-form-item label="种植计划id" prop="plantId">
+      <el-form-item label="种植计划编码" prop="plantId">
         <!-- <el-input v-model="formData.plantId" placeholder="请输入种植计划id" /> -->
         <el-input v-model="formData.plantId" placeholder="请选择种植计划编码" :disabled="true">
           <template #append>
