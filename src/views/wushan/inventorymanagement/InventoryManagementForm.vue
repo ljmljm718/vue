@@ -4,19 +4,12 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="120px"
+      label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="统计时间" prop="statisticalTime">
-        <el-date-picker
-          v-model="formData.statisticalTime"
-          type="datetime"
-          value-format="x"
-          placeholder="选择统计时间"
-        />
-      </el-form-item>
-      <el-form-item label="农事记录编码" prop="agriculturalRecordCode">
-        <el-input v-model="formData.agriculturalRecordCode" placeholder="请输入农事记录编码" :disabled="true">
+      <el-form-item label="农资名称" prop="agriculturalMaterialName">
+        <!-- <el-input v-model="formData.agriculturalMaterialName" placeholder="请输入农资名称" /> -->
+        <el-input v-model="formData.agriculturalMaterialName" placeholder="请选择农资名称" :disabled="true">
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
               <Icon icon="ep:search"/>
@@ -25,16 +18,35 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="产量(KG)" prop="output">
-        <el-input v-model="formData.wushanOutput" placeholder="请输入产量(KG),请输入纯数字" />
+      <el-form-item label="规格" prop="wushanSpecification">
+        <el-input v-model="formData.wushanSpecification" placeholder="请输入规格" />
       </el-form-item>
-      <el-form-item label="单价(KG/元)" prop="unitPrice">
-        <el-input v-model="formData.unitPrice" placeholder="请输入单价(元),请输入纯数字" />
+      <el-form-item label="库存数量" prop="stockQuantity">
+        <el-input v-model="formData.stockQuantity" placeholder="请输入库存数量" />
       </el-form-item>
-      <el-form-item label="收入(元)" prop="income">
-        <el-input v-model="formData.wushanIncome" placeholder="请输入收入,如果不写会自动计算并填入" />
+      <el-form-item label="生产日期" prop="productionDate">
+        <el-date-picker
+          v-model="formData.productionDate"
+          type="datetime"
+          value-format="x"
+          placeholder="选择生产日期"
+        />
       </el-form-item>
-<!--      <el-form-item label="备用一" prop="reserveOne">
+      <el-form-item label="有效日期" prop="expiryDate">
+        <el-date-picker
+          v-model="formData.expiryDate"
+          type="datetime"
+          value-format="x"
+          placeholder="选择有效日期"
+        />
+      </el-form-item>
+      <el-form-item label="出库详情" prop="outboundDetails">
+        <el-input v-model="formData.outboundDetails" placeholder="请输入出库详情" />
+      </el-form-item>
+      <el-form-item label="备注" prop="wushanRemarks">
+        <el-input v-model="formData.wushanRemarks" placeholder="请输入备注" />
+      </el-form-item>
+      <!-- <el-form-item label="备用一" prop="reserveOne">
         <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
       </el-form-item>
       <el-form-item label="备用二" prop="reserveTwo">
@@ -42,7 +54,7 @@
       </el-form-item>
       <el-form-item label="备用三" prop="reserveThree">
         <el-input v-model="formData.reserveThree" placeholder="请输入备用三" />
-      </el-form-item>-->
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -51,14 +63,13 @@
   </Dialog>
   <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
                           @success="handlePurchaseOrderChange"/>
-
 </template>
 <script setup lang="ts">
-import { FarmRecordApi, FarmRecordVO } from '@/api/wushan/farmrecord'
-import AgriculturalBaseList from '@/views/wushan/planrecord/SelectList.vue'
+import { InventoryManagementApi, InventoryManagementVO } from '@/api/wushan/inventorymanagement'
+import AgriculturalBaseList from '@/views/erp/product/product/SelectProductList.vue'
 
-/** 巫山农事记录 表单 */
-defineOptions({ name: 'FarmRecordForm' })
+/** 农资库存管理 表单 */
+defineOptions({ name: 'InventoryManagementForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -69,11 +80,13 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  statisticalTime: undefined,
-  agriculturalRecordCode: undefined,
-  wushanOutput: undefined,
-  unitPrice: undefined,
-  wushanIncome: undefined,
+  agriculturalMaterialName: undefined,
+  wushanSpecification: undefined,
+  stockQuantity: undefined,
+  productionDate: undefined,
+  expiryDate: undefined,
+  outboundDetails: undefined,
+  wushanRemarks: undefined,
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -82,23 +95,22 @@ const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
 
-
-
 /** 新加方法 */
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
   purchaseOrderInEnableListRef.value.open()
-  
 }
 
-const handlePurchaseOrderChange = (order: FarmRecordVO) => {
+const handlePurchaseOrderChange = (order: InventoryManagementVO) => {
   // 将订单设置到入库单
   console.log("--->>查看查到的农资信息",order)
-  formData.value.agriculturalRecordCode = String(order[0].id)
-  /*formData.value.agriculturalName = String(order[0].name)
-  formData.value.agriculturalSize = String(order[0].size)*/
-}
+  formData.value.agriculturalMaterialName = String(order[0].name);
+  formData.value.wushanSpecification = String(order[0].standard);
 
+  // formData.value.agriculturalName = String(order[0].name)
+  // formData.value.agriculturalSize = String(order[0].size)
+}
+// 截至
 
 
 /** 打开弹窗 */
@@ -111,7 +123,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await FarmRecordApi.getFarmRecord(id)
+      formData.value = await InventoryManagementApi.getInventoryManagement(id)
     } finally {
       formLoading.value = false
     }
@@ -127,12 +139,12 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as FarmRecordVO
+    const data = formData.value as unknown as InventoryManagementVO
     if (formType.value === 'create') {
-      await FarmRecordApi.createFarmRecord(data)
+      await InventoryManagementApi.createInventoryManagement(data)
       message.success(t('common.createSuccess'))
     } else {
-      await FarmRecordApi.updateFarmRecord(data)
+      await InventoryManagementApi.updateInventoryManagement(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
@@ -147,11 +159,13 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    statisticalTime: undefined,
-    agriculturalRecordCode: undefined,
-    output: undefined,
-    unitPrice: undefined,
-    income: undefined,
+    agriculturalMaterialName: undefined,
+    wushanSpecification: undefined,
+    stockQuantity: undefined,
+    productionDate: undefined,
+    expiryDate: undefined,
+    outboundDetails: undefined,
+    wushanRemarks: undefined,
     reserveOne: undefined,
     reserveTwo: undefined,
     reserveThree: undefined,

@@ -67,7 +67,7 @@
                         <option :value="item.id" v-for="item,index in select" :key="index">{{item.name}}</option>
                       </select>
                       <select name="" id="2" class="select2" @change="selectCli2">
-                        <option v:value="item.id" v-for="item,index in select2" :key="index">{{item.name}}</option>
+                        <option :value="item.id" v-for="item,index in select2" :key="index">{{item.name}}</option>
                       </select>
                     </div>
                     <div class="left3-item">

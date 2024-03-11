@@ -43,6 +43,25 @@
       <el-form-item label="端口号" prop="ports">
         <el-input v-model="formData.ports" placeholder="请输入端口号" />
       </el-form-item>
+      <el-form-item label="框架类型" prop="frameType">
+        <el-select v-model="formData.frameType" placeholder="请选择项目所用框架类型">
+          <el-option
+            v-for="dict in getDictOptions(DICT_TYPE.PROJECT_FRAME_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="租户名" prop="tenantName" v-show="formData.frameType && formData.frameType === 'saas'">
+        <el-input v-model="formData.tenantName" placeholder="请输入租户名称"/>
+      </el-form-item>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="formData.username" placeholder="请输入登录用户名"/>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="formData.password" placeholder="请输入端口号"/>
+      </el-form-item>
       <el-form-item label="描述" prop="description">
         <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
       </el-form-item>
@@ -57,8 +76,8 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import {getIntDictOptions, DICT_TYPE, getDictOptions} from '@/utils/dict'
-import { ProjectBaseApi } from '@/api/portal/projectbase'
+import {DICT_TYPE, getDictOptions, getIntDictOptions} from '@/utils/dict'
+import {ProjectBaseApi} from '@/api/portal/projectbase'
 
 /** 初始赋值 */
 const status = 1;
@@ -81,6 +100,10 @@ const formData = ref({
   ports: undefined,
   description: undefined,
   remark: undefined,
+  frameType: undefined,
+  tenantName: undefined,
+  username: undefined,
+  password: undefined,
 })
 const formRules = reactive({
   projectId: [{ required: true, message: '项目不能为空', trigger: 'blur' }],
@@ -151,6 +174,10 @@ const resetForm = () => {
     ports: undefined,
     description: undefined,
     remark: undefined,
+    frameType: undefined,
+    tenantName: undefined,
+    username: undefined,
+    password: undefined,
   }
   formRef.value?.resetFields()
 }

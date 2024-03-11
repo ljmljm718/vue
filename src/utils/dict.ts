@@ -236,7 +236,6 @@ export enum DICT_TYPE {
   EQU_STATE = 'equ_state', // 设备在线状态
   KAIZHOU_PLANT_PLAN_CATEGORY='kaizhou_plant_plan_category',//开州区种植计划作物类别
 
-
   // ========== WUSHAN -巫山  ==========
   WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
   WUSHAN_ARTICLE_STATUS = 'wushan_article_status',
@@ -244,4 +243,5 @@ export enum DICT_TYPE {
 
   // ========== PORTAL - 门户  ==========
   PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型
+  PROJECT_FRAME_TYPE = 'project_frame_type',//项目框架类型
 }
