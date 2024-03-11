@@ -12,7 +12,7 @@
           <el-form-item label="规则类型" prop="ruleType">
             <el-select v-model="formData.ruleType" placeholder="请选择规则类型" style="width: 100%;">
               <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_RULE_TYPE)"
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
                 :key="dict.value"
                 :label="dict.label"
                 :value="dict.value"

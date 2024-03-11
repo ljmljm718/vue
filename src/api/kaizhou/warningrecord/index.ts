@@ -18,6 +18,7 @@ export interface WarningRecordVO {
   dealPersonId: string // 处理人编号
   dealInfo: string // 处理信息
   deviceType: string // 设备类型
+  imgId: string // 预警图片
 }
 
 // 设备管理 VO
