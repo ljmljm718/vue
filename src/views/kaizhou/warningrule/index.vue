@@ -16,7 +16,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_RULE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -97,7 +97,7 @@
 <!--      <el-table-column label="规则编号" align="center" prop="id" width="200"/>-->
       <el-table-column label="规则类型" align="center" prop="ruleType" width="200">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_RULE_TYPE" :value="scope.row.ruleType" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.ruleType" />
         </template>
       </el-table-column>
       <el-table-column label="预警下限" align="center" width="120">
