@@ -367,13 +367,19 @@ const options2 = ref<Array<any>>([])
 const getOptions2 = async (parentId) => {
   const res = await ParkBaseInfo2({ parentId })
   options2.value = res
+  handleSelectorChange2({
+    target: { value: res[0].id}
+  })
 }
 
 const handleSelectorChange1 = (val) => {
   getOptions2(val.target.value)
 }
 const handleSelectorChange2 = (val) => {
-  console.log('val', val);
+  const parentId = val.target.value || 0
+  getLargeScreenGetOneDeviceData(parentId)
+  getLargeScreenGetOneWarning(parentId)
+  getLargeScreenGetDeviceData(parentId)
 }
 
 // 大屏中间获取一条监测信息
@@ -383,8 +389,8 @@ const monitorInfo = ref({
   soilHumidity: "",
   soilTemperature: ""
 })
-const getLargeScreenGetOneDeviceData = async () => {
-  const res = await largeScreenGetOneDeviceData({ parkId: -1 })
+const getLargeScreenGetOneDeviceData = async (parkId = 0) => {
+  const res = await largeScreenGetOneDeviceData({ parkId })
   console.log('大屏中间获取一条监测信息', res);
   monitorInfo.value = res
 }
@@ -396,8 +402,8 @@ const warnInfo = ref({
   parkName: "",
   warnInfo: ""
 })
-const getLargeScreenGetOneWarning = async () => {
-  const res = await largeScreenGetOneWarning({ parkId: -1 })
+const getLargeScreenGetOneWarning = async (parkId = 0) => {
+  const res = await largeScreenGetOneWarning({ parkId })
   console.log('大屏中间获取一条预警信息', res);
   warnInfo.value = res
 }
@@ -436,8 +442,8 @@ const detectData = ref({
   soil_humidity: "0",
   soil_temperature: "0"
 })
-const getLargeScreenGetDeviceData = async () => {
-  const res = await largeScreenGetDeviceData({ parkId: 0 })
+const getLargeScreenGetDeviceData = async (parkId = 0) => {
+  const res = await largeScreenGetDeviceData({ parkId })
   detectData.value = res
 }
 getLargeScreenGetDeviceData()
