@@ -269,6 +269,7 @@ const handleBindDevice = async () => {
     const data = temp as any
     await WarningRuleDeviceApi.WarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))
+    dialogVisible.value = false
   } finally {
     loading.value = false
   }

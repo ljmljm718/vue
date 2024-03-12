@@ -74,6 +74,7 @@
 <!--      <el-table-column label="园区编号" align="center" prop="parkCode" />-->
 <!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
+      <el-table-column label="设备名称" align="center" prop="deviceName" width="200"/>
       <el-table-column label="预警标题" align="center" prop="warnTitle" width="140"/>
       <el-table-column label="预警信息" align="center" prop="warnInfo" width="320"/>
       <el-table-column label="当前值" align="center" prop="currentValue" width="100">
@@ -211,6 +212,8 @@ const getList = async () => {
   try {
     const data = await WarningRecordApi.getWarningRecordPage(queryParams)
     list.value = data.list
+    console.log("list.value", list.value)
+    console.log("data.list.value", data.list)
     total.value = data.total
   } finally {
     loading.value = false

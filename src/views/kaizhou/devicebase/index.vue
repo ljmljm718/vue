@@ -149,8 +149,15 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" fixed="right" width="120">
+      <el-table-column label="操作" align="center" fixed="right" width="180">
         <template #default="scope">
+          <el-button
+            link
+            type="success"
+            @click="bindWarnRule(scope.row.id)"
+          >
+            绑定规则
+          </el-button>
           <el-button
             link
             type="primary"
@@ -181,6 +188,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceBaseForm ref="formRef" @success="getList" />
+
+  <!-- 绑定规则列表 -->
+  <DeviceBindWarnRule ref="deviceBindWarnRuleRef" :deviceId="deviceId" :warnRuleId="warnRuleId"/>
 </template>
 
 <script setup lang="ts">
@@ -190,6 +200,7 @@ import download from '@/utils/download'
 import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
 import DeviceBaseForm from './DeviceBaseForm.vue'
 import { useRouter,useRoute } from "vue-router";
+import DeviceBindWarnRule from "@/views/kaizhou/devicebase/DeviceBindWarnRule.vue";
 
 /** 设备管理 列表 */
 defineOptions({ name: 'DeviceBase' })
@@ -297,4 +308,20 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
+const deviceId = ref()
+const warnRuleId = ref([]) // 已绑定的规则id
+const deviceBindWarnRuleRef = ref()
+/** 绑定规则操作 */
+const bindWarnRule = async (id: string) => {
+  try{
+    console.log("id",id)
+    const data = await DeviceBaseApi.selectWarnRuleByDeviceId(String(id))
+    console.log("data", data)
+    warnRuleId.value = data.map(item => (item.warnRuleId))
+    deviceId.value = id
+    deviceBindWarnRuleRef.value.open()
+  } catch{
+  }
+}
 </script>

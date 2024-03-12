@@ -17,6 +17,11 @@ export interface DeviceBaseVO {
   url: string // URL
 }
 
+export interface DeviceRuleDTO {
+  deviceId: string // 设备id
+  warnRuleId: string[] // 预警规则id
+}
+
 // 设备管理 API
 export const DeviceBaseApi = {
   // 查询设备管理分页
@@ -47,5 +52,15 @@ export const DeviceBaseApi = {
   // 导出设备管理 Excel
   exportDeviceBase: async (params) => {
     return await request.download({ url: `/kaizhou/device-base/export-excel`, params })
+  },
+
+  // 绑定设备
+  DeviceBindWarnRule: async (data: DeviceRuleDTO) => {
+    return await request.post({ url: `/kaizhou/device-base/bind`, data })
+  },
+
+  // 根据预警规则查询设备
+  selectWarnRuleByDeviceId: async (deviceId: string) => {
+    return await request.get({ url: `/kaizhou/device-base/list/rule?deviceId=` + deviceId })
   },
 }
