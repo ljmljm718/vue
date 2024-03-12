@@ -6,5 +6,5 @@
 <script lang="ts" setup>
 defineOptions({ name: 'GoView' })
 
-const src = 'http://127.0.0.1:3000'
+const src = 'http://117.73.12.97:48081'
 </script>
