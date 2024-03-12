@@ -16,7 +16,7 @@
       <el-form-item label="消息类型" prop="msgType">
         <el-select v-model="formData.msgType" placeholder="请选择消息类型" style="width: 100%">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_MSG_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
