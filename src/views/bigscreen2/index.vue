@@ -5,7 +5,16 @@
         <BigScreenTime />
       </div>
       <div class="linear-font-title header-title-wrapper">巫山县福田镇鲁渝协作乡村振兴示范村数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
+      <div class="header-right-part-wrapper">
+        <div class="selector-wrapper">
+          <select @change="handleSelectorChange1">
+            <option :value="item.id" v-for="item,index in options1" :key="index">{{item.name}}</option>
+          </select>
+          <select @change="handleSelectorChange2">
+            <option :value="item.id" v-for="item,index in options2" :key="index">{{item.name}}</option>
+          </select>
+        </div>
+      </div>
     </div>
     <div class="content-main-wrapper">
       <div class="content-main-item">
@@ -115,10 +124,23 @@
         </div>
         <div id="mainBg">
           <div class="main-tip-dialog" style="left: calc(500px - 120px); bottom: 200px;">
-            <div class="main-tip-inner">
-              V0435-0093传感器
+            <div class="main-tip-inner" style="border: 2px solid #06ef60;">
+              <div>{{ monitorInfo.deviceName }}</div>
+              <div>{{ monitorInfo.parkName }}</div>
+              <div class="divider-bar" style="background-color: #06ef6060;"></div>
+              <div>{{ monitorInfo.soilHumidity }}</div>
+              <div>{{ monitorInfo.soilTemperature }}</div>
             </div>
             <img src="/images/blue.png" alt="" />
+          </div>
+          <div class="main-tip-dialog" style="left: calc(900px - 120px); bottom: 400px;">
+            <div class="main-tip-inner" style="border: 2px solid red;">
+              <div>{{ warnInfo.deviceName }}</div>
+              <div>{{ warnInfo.parkName }}</div>
+              <div class="divider-bar" style="background-color: #720904;"></div>
+              <div>{{ warnInfo.warnInfo }}</div>
+            </div>
+            <img src="/images/red.png" alt="" />
           </div>
         </div>
         <div class="tool-tips-wrapper">
@@ -142,13 +164,62 @@
             <span class="linear-font-title">环境监测</span>
           </div>
           <div class="content-main panel-2-wrapper">
-            <div class="panel-2-item" v-for="item in 6" :key="item">
+            <div class="panel-2-item">
               <div class="panel-2-icon icon-1"></div>
               <div class="panel-text-wrapper">
-                <div class="panel-text-inner" style="font-size: .8rem;">二氧化碳浓度</div>
+                <div class="panel-text-inner" style="font-size: .8rem;">温度</div>
                 <div class="panel-text-inner">
-                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">32</span>
+                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">{{ detectData.env_temperature }}</span>
                   ℃
+                </div>
+              </div>
+            </div>
+            <div class="panel-2-item">
+              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-text-wrapper">
+                <div class="panel-text-inner" style="font-size: .8rem;">风速</div>
+                <div class="panel-text-inner">
+                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">{{ detectData.env_speed }}</span>
+                  m/s
+                </div>
+              </div>
+            </div>
+            <div class="panel-2-item">
+              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-text-wrapper">
+                <div class="panel-text-inner" style="font-size: .8rem;">风向</div>
+                <div class="panel-text-inner">
+                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">{{ detectData.env_wind }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-2-item">
+              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-text-wrapper">
+                <div class="panel-text-inner" style="font-size: .8rem;">CO₂浓度</div>
+                <div class="panel-text-inner">
+                  <span style="font-size: 1.1rem;font-family: 'TitleFont';">{{ detectData.co2_num }}</span>
+                  ppm
+                </div>
+              </div>
+            </div>
+            <div class="panel-2-item">
+              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-text-wrapper">
+                <div class="panel-text-inner" style="font-size: .8rem;">湿度</div>
+                <div class="panel-text-inner">
+                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">{{ detectData.env_humidity }}</span>
+                  %
+                </div>
+              </div>
+            </div>
+            <div class="panel-2-item">
+              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-text-wrapper">
+                <div class="panel-text-inner" style="font-size: .8rem;">降雨量</div>
+                <div class="panel-text-inner">
+                  <span style="font-size: 1.2rem;font-family: 'TitleFont';">{{ detectData.env_rainfall }}</span>
+                  mm
                 </div>
               </div>
             </div>
@@ -182,9 +253,17 @@
             <span class="linear-font-title">土壤监测</span>
           </div>
           <div class="content-main panel-4-wrapper">
-            <div :class="['panel-4-item', 'scan-' + item]" v-for="item in 3" :key="item">
-              <div style="font-family: 'TitleFont';font-size: 1.3rem;">22℃</div>
+            <div class="panel-4-item scan-1">
+              <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_temperature }}℃</div>
               <div>温度</div>
+            </div>
+            <div class="panel-4-item scan-1">
+              <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_humidity }}%</div>
+              <div>湿度</div>
+            </div>
+            <div class="panel-4-item scan-1">
+              <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_conductivity }}%</div>
+              <div>导电率</div>
             </div>
           </div>
         </div>
@@ -249,17 +328,25 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import {
+  ParkBaseInfo,
+  ParkBaseInfo2
+} from '@/api/kaizhou/bigscreen/index'
+import {
   dictDataPage,
   getBigLeftTopPin,
   getBigLeftTopPlantWu,
   productSumPrice,
   getSumOrderByDate,
   selectOfCustom,
+  onlineRateOfCustom,
   getCountSum,
   deviceBaseList,
   largeScreenGetWarningNum,
   largeScreenGetWarning,
-  getBigLeftCentrePlantWu
+  getBigLeftCentrePlantWu,
+  largeScreenGetDeviceData,
+  largeScreenGetOneDeviceData,
+  largeScreenGetOneWarning
 } from '@/api/wushan/bigscreen/index'
 import { onMounted, ref } from 'vue'
 import {
@@ -268,11 +355,59 @@ import {
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 
+const options1 = ref<Array<any>>([])
+const getOptions1 = async (parentId = '0') => {
+  const res = await ParkBaseInfo({ parentId });
+  options1.value = res
+  getOptions2(options1.value[0].id)
+}
+getOptions1()
+
+const options2 = ref<Array<any>>([])
+const getOptions2 = async (parentId) => {
+  const res = await ParkBaseInfo2({ parentId })
+  options2.value = res
+}
+
+const handleSelectorChange1 = (val) => {
+  getOptions2(val.target.value)
+}
+const handleSelectorChange2 = (val) => {
+  console.log('val', val);
+}
+
+// 大屏中间获取一条监测信息
+const monitorInfo = ref({
+  deviceName: "",
+  parkName: "",
+  soilHumidity: "",
+  soilTemperature: ""
+})
+const getLargeScreenGetOneDeviceData = async () => {
+  const res = await largeScreenGetOneDeviceData({ parkId: -1 })
+  console.log('大屏中间获取一条监测信息', res);
+  monitorInfo.value = res
+}
+getLargeScreenGetOneDeviceData()
+
+// 大屏中间获取一条预警信息
+const warnInfo = ref({
+  deviceName: "",
+  parkName: "",
+  warnInfo: ""
+})
+const getLargeScreenGetOneWarning = async () => {
+  const res = await largeScreenGetOneWarning({ parkId: -1 })
+  console.log('大屏中间获取一条预警信息', res);
+  warnInfo.value = res
+}
+getLargeScreenGetOneWarning()
+
 // 获取左边中间种植品种分布
 const leftPlantLayout = ref<Array<any>>([])
 const getGetBigLeftCentrePlantWu = async () => {
   const res = await getBigLeftCentrePlantWu()
-  console.log('res', res);
+  console.log('resss', res);
   leftPlantLayout.value = res
   leftPlantLayout.value = [{
     "proportion": "57.98%",
@@ -289,12 +424,31 @@ const getGetBigLeftCentrePlantWu = async () => {
 }
 getGetBigLeftCentrePlantWu()
 
+// 大屏右上角获取环境监测与土壤检测数据
+const detectData = ref({
+  co2_num: "0",
+  env_humidity: "0",
+  env_rainfall: "0",
+  env_speed: "0",
+  env_temperature: "0",
+  env_wind: "-",
+  soil_conductivity: "0",
+  soil_humidity: "0",
+  soil_temperature: "0"
+})
+const getLargeScreenGetDeviceData = async () => {
+  const res = await largeScreenGetDeviceData({ parkId: 0 })
+  detectData.value = res
+}
+getLargeScreenGetDeviceData()
+
 // 农资类别统计
 const suppliesCount = ref(0)
 const getdictDataPage = async () => {
   const { total = 0 } = await dictDataPage({
     pageNo: 1,
-    pageSize: 10
+    pageSize: 10,
+    dictType: 'kaizhou_agricultural_type'
   })
   suppliesCount.value = total;
 }
@@ -379,29 +533,28 @@ const getProductSumPrice = async () => {
       legend: {
         show: true,
         top: 'center',
-        left: 'right',
-        orient: 'horizontal',
+        right: '4%',
         itemWidth: 12,
         itemHeight: 12
       },
       color: ['#00b4ff', '#00f496', '#3b72ad'],
       series: [
         {
-          nam: '种植资源',
+          name: '种植资源',
           type: 'pie',
-          radius: ['30%', '50%'],
-          center: 'center',
+          radius: ['40%', '62%'],
+          center: ['35%', '50%'],
           data: data,
           label: {
             // formatter: "{c|{c}},{d|{d}%}",
             formatter: '\n{c}\n {d}%',
             rich: {
               c: {
-                color: '#c1c1c1',
+                color: '#fff',
                 fontSize: 10
               },
               d: {
-                color: '#c1c1c1',
+                color: '#fff',
                 fontSize: 10
               }
             }
@@ -569,9 +722,9 @@ onMounted(() => { getGetSumOrderByDate() })
 
 // 右下角在线率
 const getSelectOfCustom = async () => {
-  let data = await selectOfCustom({
-    startDate: '2023-03-05',
-    endDate: '2024-03-05'
+  let data = await onlineRateOfCustom({
+    startDate: '2024-01-05',
+    endDate: '2024-03-08'
   })
   if (!data || data.length === 0) {
     data = [
@@ -707,6 +860,7 @@ onMounted(() => { getSelectOfCustom() })
         .content-title {
           height: 18%;
           padding-left: 8%;
+          padding-top: 5px;
           display: flex;
           align-items: center;
           font-family: 'TitleFont';
@@ -845,6 +999,20 @@ onMounted(() => { getSelectOfCustom() })
   }
 }
 
+.selector-wrapper {
+  float: right;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  select {
+    margin: 0 .3rem;
+    padding: .2rem .3rem;
+    border-radius: .4rem 0 .4rem 0;
+    background-color: #0a2019;
+    color: white;
+    border: 2px solid #00fbc9;
+  }
+}
+
 #mainBg {
   width: 1600px;
   height: 800px;
@@ -853,6 +1021,11 @@ onMounted(() => { getSelectOfCustom() })
   position: relative;
   left: calc(50% - 800px);
   top: calc(50% - 400px);
+  .divider-bar {
+    width: 100%;
+    margin: .6rem 0;
+    height: 2px;
+  }
   .main-tip-dialog {
     width: 240px;
     position: absolute;
@@ -860,11 +1033,10 @@ onMounted(() => { getSelectOfCustom() })
     flex-direction: column;
     align-items: center;
     .main-tip-inner {
-      border: 2px solid red;
       padding: .6rem 1rem;
       background-color: #0a2019b3;
       width: 100%;
-      height: 100px;
+      font-size: .8rem;
     }
   }
 }
@@ -937,7 +1109,7 @@ onMounted(() => { getSelectOfCustom() })
 
 .table-wrapper {
   background-color: #5bdcc228;
-  width: calc(100% - 1.8rem);
+  width: calc(100% - .6rem);
   height: calc(100% - 3.2rem) !important;
   overflow: auto;
   padding: 0 .6rem .3rem .6rem;
@@ -953,6 +1125,8 @@ onMounted(() => { getSelectOfCustom() })
     width: 100px;
     height: 30px;
     box-sizing: border-box;
+    text-align: center;
+    padding: .3rem;
   }
   td {
     height: 35px !important;

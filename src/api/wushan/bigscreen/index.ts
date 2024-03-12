@@ -1,5 +1,21 @@
 import request from '@/config/axios'
 
+// 大屏中间获取一条监测信息
+export const largeScreenGetOneDeviceData = async (params) => {
+  return await request.get({
+    url: '/kaizhou/device-data/largeScreenGetOneDeviceData',
+    params
+  })
+}
+
+// 大屏中间获取一条最新预警信息
+export const largeScreenGetOneWarning = async (params) => {
+  return await request.get({
+    url: '/kaizhou/warning-record/largeScreenGetOneWarning',
+    params
+  })
+}
+
 // 大屏左上角获取农业资源-种植品种
 export const getBigLeftTopPin = async () => {
   return await request.get({
@@ -11,6 +27,14 @@ export const getBigLeftTopPin = async () => {
 export const largeScreenGetWarningNum = async () => {
   return await request.get({
     url: '/kaizhou/warning-record/largeScreenGetWarningNum',
+  })
+}
+
+// 大屏右上角获取环境监测与土壤检测数据
+export const largeScreenGetDeviceData = async (params) => {
+  return await request.get({
+    url: '/kaizhou/device-data/largeScreenGetDeviceData',
+    params
   })
 }
 
@@ -47,6 +71,14 @@ export const deviceBaseList = async () => {
 export const selectOfCustom = async (params) => {
   return await request.get({
     url: '/wushan/on-line-monitoring/selectOfCustom',
+    params
+  })
+}
+
+// 大屏右下角设备在线率统计自定义时间统计
+export const onlineRateOfCustom = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/onlineRateOfCustom',
     params
   })
 }
