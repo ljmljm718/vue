@@ -144,7 +144,10 @@
           </div>
           <div class="main-tip-dialog" style="left: calc(1000px - 120px); bottom: 200px;">
             <div class="main-tip-inner" style="border: 2px solid #00ff04;">
-              <div>{{ monitorCenterInfo.deviceName }}</div>
+              <div style="display: flex;justify-content: space-between;">
+                <span>{{ monitorCenterInfo.deviceName }}</span>
+                <span style="color: #24d165;">在线</span>
+              </div>
               <div>{{ monitorCenterInfo.teaGarden + '' + monitorCenterInfo.massif }}</div>
               <div class="divider-bar" style="background-color: #00ff0440;"></div>
               <div class="btn-inner">查看监控</div>
@@ -159,11 +162,11 @@
           </div>
           <div class="tool-tips-item">
             <img src="/images/green.png" alt="" />
-            <span>摄像头</span>
+            <span>传感器</span>
           </div>
           <div class="tool-tips-item">
             <img src="/images/red.png" alt="" />
-            <span>摄像头</span>
+            <span>预警信息</span>
           </div>
         </div>
       </div>
