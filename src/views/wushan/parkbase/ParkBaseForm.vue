@@ -51,7 +51,7 @@
       <el-form-item label="联系电话" prop="tel">
         <el-input v-model="formData.tel" placeholder="请输入联系电话" />
       </el-form-item>
-      <el-form-item label="面积" prop="area">
+      <el-form-item label="面积(亩)" prop="area">
         <el-input v-model="formData.area" placeholder="请输入面积" />
       </el-form-item>
       <el-form-item label="简介" prop="remark">

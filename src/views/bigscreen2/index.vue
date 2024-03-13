@@ -33,7 +33,7 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item"  @click="$router.push('/wsxftzTeaPlantation/wsParkManagement/wsxparkbase?grade=10')">
+              <div class="panel-1-item"  @click="goPage()">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">地块数量</div>
                   <div class="panel-1-value">
@@ -375,6 +375,7 @@ import {
   largeScreenGetOneWarning
 } from '@/api/wushan/bigscreen/index'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   initChartStatic,
   generateBaseOptions,
@@ -542,7 +543,15 @@ const getGetCountSum = async () => {
   })
 }
 getGetCountSum()
-
+let router=useRouter()
+const goPage= ()=>{
+  router.push({
+    path:'/wsxftzTeaPlantation/wsParkManagement/wsxparkbase',
+    query:{
+      grade:10
+    }
+  })
+}
 // 大屏中央设备数量统计
 const centerDeviceCount = ref({
   camera: "0",
