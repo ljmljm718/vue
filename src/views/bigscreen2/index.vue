@@ -124,7 +124,7 @@
         </div>
         <div id="mainBg">
           <div class="main-tip-dialog" style="left: calc(500px - 120px); bottom: 200px;">
-            <div class="main-tip-inner" style="border: 2px solid #06ef60;">
+            <div class="main-tip-inner" style="border: 2px solid #35ffd7;">
               <div>{{ monitorInfo.deviceName }}</div>
               <div>{{ monitorInfo.parkName }}</div>
               <div class="divider-bar" style="background-color: #06ef6060;"></div>
@@ -141,6 +141,15 @@
               <div>{{ warnInfo.warnInfo }}</div>
             </div>
             <img src="/images/red.png" alt="" />
+          </div>
+          <div class="main-tip-dialog" style="left: calc(1000px - 120px); bottom: 200px;">
+            <div class="main-tip-inner" style="border: 2px solid #00ff04;">
+              <div>{{ monitorCenterInfo.deviceName }}</div>
+              <div>{{ monitorCenterInfo.teaGarden + '' + monitorCenterInfo.massif }}</div>
+              <div class="divider-bar" style="background-color: #00ff0440;"></div>
+              <div class="btn-inner">查看监控</div>
+            </div>
+            <img src="/images/green.png" alt="" />
           </div>
         </div>
         <div class="tool-tips-wrapper">
@@ -353,6 +362,7 @@ import {
   getSumOrderByDate,
   selectOfCustom,
   onlineRateOfCustom,
+  monitoringSelectState,
   onlineRateNormal,
   onlineNumNormal,
   getCountSum,
@@ -405,6 +415,19 @@ const handleSelectorChange2 = (val) => {
   getLargeScreenGetOneWarning(parentId)
   getLargeScreenGetDeviceData(parentId)
 }
+
+const monitorCenterInfo = ref({
+  deviceCode: "",
+  deviceName: "",
+  massif: "",
+  teaGarden: ""
+})
+const getmonitoringSelectState = async () => {
+  const res = await monitoringSelectState({});
+  console.log('res monitor', res)
+  monitorCenterInfo.value = res
+}
+getmonitoringSelectState()
 
 // 大屏中间获取一条监测信息
 const monitorInfo = ref({
@@ -1092,6 +1115,18 @@ onMounted(() => { getSelectOfCustom() })
       background-color: #0a2019b3;
       width: 100%;
       font-size: .8rem;
+      .btn-inner {
+        width: 80%;
+        margin-left: 10%;
+        aspect-ratio: 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url(./assets/btn.png);
+        background-size: 100% 100%;
+        font-family: 'TitleFont';
+        font-size: 1.2rem;
+      }
     }
   }
 }

@@ -8,6 +8,14 @@ export const largeScreenGetOneDeviceData = async (params) => {
   })
 }
 
+// 大屏中央设备在线和园区地块显示
+export const monitoringSelectState = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/selectState',
+    params
+  })
+}
+
 // 大屏中间获取一条最新预警信息
 export const largeScreenGetOneWarning = async (params) => {
   return await request.get({
