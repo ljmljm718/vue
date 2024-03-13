@@ -10,6 +10,8 @@ import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
 import RouterSearch from '@/components/RouterSearch/index.vue'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
+import { getTenantId } from '@/utils/auth'
+import { getRouteByTenant } from '@/api/system/user'
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -44,6 +46,13 @@ const message = computed(() => appStore.getMessage)
 export default defineComponent({
   name: 'ToolHeader',
   setup() {
+    const tenantId = getTenantId()
+    const bigscreenRoute = ref('/bigscreen')
+    const MatchRouteMap = async () => {
+      const data = await getRouteByTenant({ id: tenantId })
+      bigscreenRoute.value = data.bigScreen
+    }
+    MatchRouteMap()
     return () => (
       <div
         id={`${variables.namespace}-tool-header`}
@@ -62,7 +71,7 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <a href="/bigscreen">
+          <a href={bigscreenRoute.value}>
             <el-icon><Platform /></el-icon>
           </a>
           {screenfull.value ? (

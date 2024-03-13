@@ -17,6 +17,11 @@ export interface UserVO {
   createTime: Date
 }
 
+// 根据租户获取大屏跳转路径
+export const getRouteByTenant = (params: any) => {
+  return request.get({ url: '/system/tenant/get', params })
+}
+
 // 查询用户管理列表
 export const getUserPage = (params: PageParam) => {
   return request.get({ url: '/system/user/page', params })

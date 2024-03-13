@@ -7,7 +7,7 @@ import * as echarts from 'echarts'
  * @param {object} option Echarts配置项
  * @returns 
  */
-export const initChartStatic = (id = '', option = {}) => {
+export const initChartStatic = (id = '', option = {}, type = 'default') => {
     if (!id) return;
     const chart = document.getElementById(id);
     const chartInstance = echarts.init(chart, 'default');

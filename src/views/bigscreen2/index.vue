@@ -24,7 +24,7 @@
           </div>
           <div class="content-main" style="padding: 14px;">
             <div class="panel-1-wrapper">
-              <div class="panel-1-item">
+              <div class="panel-1-item" @click="$router.push('/wsxftzTeaPlantation/wsParkManagement/wsxparkbase?grade=0')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">园区数量</div>
                   <div class="panel-1-value">
@@ -33,7 +33,7 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item">
+              <div class="panel-1-item"  @click="$router.push('/wsxftzTeaPlantation/wsParkManagement/wsxparkbase?grade=10')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">地块数量</div>
                   <div class="panel-1-value">
@@ -42,7 +42,7 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item">
+              <div class="panel-1-item" @click="$router.push('/wsxftzTeaPlantation/wsParkManagement/wsxparkbase?grade=0')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">种植面积</div>
                   <div class="panel-1-value">
@@ -51,25 +51,25 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item">
+              <div class="panel-1-item" @click="$router.push('/wsxftzTeaPlantation/wsParkManagement/cropbaseWu')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">种植品种</div>
                   <div class="panel-1-value">
-                    <span>{{ 0 }}</span>
+                    <span>{{ cropNumRef }}</span>
                     <span style="padding-left: 4px;font-size: .8rem;">种</span>
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item">
+              <div class="panel-1-item" @click="$router.push('/wsxftzTeaPlantation/wsPlantingManagement/plantplanWu')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">种植计划</div>
                   <div class="panel-1-value">
-                    <span>{{ 0 }}</span>
+                    <span>{{ plantNumRef }}</span>
                     <span style="padding-left: 4px;font-size: .8rem;">个</span>
                   </div>
                 </div>
               </div>
-              <div class="panel-1-item">
+              <div class="panel-1-item" @click="$router.push('/dict/type/data/kaizhou_agricultural_type')">
                 <div class="panel-1-item-inner">
                   <div class="panel-1-title">农资类别</div>
                   <div class="panel-1-value">
@@ -85,39 +85,39 @@
       <div class="content-main-item" style="grid-row: span 4;z-index: 2;">
         <div class="center-wrapper">
           <div class="top-items-wrapper">
-            <div class="top-items-item">
+            <div class="top-items-item" @click="$router.push('/basic/device/devicebase')">
               <div class="top-items-item-text">设备总数量</div>
               <div class="top-items-item-text" style="padding-bottom: 50px;">
                 <span>{{ centerDeviceCount.sum }}</span>
                 <span style="font-size: .8rem;padding-left: 4px;">台</span>
               </div>
             </div>
-            <div class="top-items-item">
+            <div class="top-items-item" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">
               <div class="top-items-item-text">在线数量</div>
               <div class="top-items-item-text" style="padding-bottom: 50px;">
                 <span>{{ centerDeviceCount.online }}</span>
                 <span style="font-size: .8rem;padding-left: 4px;">台</span>
               </div>
             </div>
-            <div class="top-items-item">
+            <div class="top-items-item" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">
               <div class="top-items-item-text">离线数量</div>
               <div class="top-items-item-text" style="padding-bottom: 50px;">
                 <span>{{ centerDeviceCount.offline }}</span>
                 <span style="font-size: .8rem;padding-left: 4px;">台</span>
               </div>
             </div>
-            <div class="top-items-item">
+            <div class="top-items-item" @click="$router.push('/basic/device/devicebase?deviceStatus=fault')">
               <div class="top-items-item-text">故障数量</div>
               <div class="top-items-item-text" style="padding-bottom: 50px;">
                 <span>{{ centerDeviceCount.fault }}</span>
                 <span style="font-size: .8rem;padding-left: 4px;">台</span>
               </div>
             </div>
-            <div class="top-items-item">
+            <div class="top-items-item" @click="$router.push('/warning/warning-record?warnStatus=0')">
               <div class="top-items-item-text">预警数量</div>
               <div class="top-items-item-text" style="padding-bottom: 50px;">
                 <span>{{ preWarnCount }}</span>
-                <span style="font-size: .8rem;padding-left: 4px;">台</span>
+                <span style="font-size: .8rem;padding-left: 4px;">个</span>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div class="content-main-inner item-bg-wrapper" @click="$router.push('/IotDevices/devicedataWu')">
           <div class="content-title">
             <span class="linear-font-title">环境监测</span>
           </div>
@@ -175,7 +175,7 @@
               </div>
             </div>
             <div class="panel-2-item">
-              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-2-icon icon-2"></div>
               <div class="panel-text-wrapper">
                 <div class="panel-text-inner" style="font-size: .8rem;">风速</div>
                 <div class="panel-text-inner">
@@ -185,7 +185,7 @@
               </div>
             </div>
             <div class="panel-2-item">
-              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-2-icon icon-3"></div>
               <div class="panel-text-wrapper">
                 <div class="panel-text-inner" style="font-size: .8rem;">风向</div>
                 <div class="panel-text-inner">
@@ -194,7 +194,7 @@
               </div>
             </div>
             <div class="panel-2-item">
-              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-2-icon icon-4"></div>
               <div class="panel-text-wrapper">
                 <div class="panel-text-inner" style="font-size: .8rem;">CO₂浓度</div>
                 <div class="panel-text-inner">
@@ -204,7 +204,7 @@
               </div>
             </div>
             <div class="panel-2-item">
-              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-2-icon icon-5"></div>
               <div class="panel-text-wrapper">
                 <div class="panel-text-inner" style="font-size: .8rem;">湿度</div>
                 <div class="panel-text-inner">
@@ -214,7 +214,7 @@
               </div>
             </div>
             <div class="panel-2-item">
-              <div class="panel-2-icon icon-1"></div>
+              <div class="panel-2-icon icon-6"></div>
               <div class="panel-text-wrapper">
                 <div class="panel-text-inner" style="font-size: .8rem;">降雨量</div>
                 <div class="panel-text-inner">
@@ -227,7 +227,10 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div
+          class="content-main-inner item-bg-wrapper"
+          @click="$router.push('/wsxftzTeaPlantation/wsPlantingManagement/plantplanWu')"
+        >
           <div class="content-title">
             <span class="linear-font-title">种植品种分布</span>
           </div>
@@ -248,7 +251,7 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div class="content-main-inner item-bg-wrapper" @click="$router.push('/IotDevices/devicedataWu')">
           <div class="content-title">
             <span class="linear-font-title">土壤监测</span>
           </div>
@@ -257,11 +260,11 @@
               <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_temperature }}℃</div>
               <div>温度</div>
             </div>
-            <div class="panel-4-item scan-1">
+            <div class="panel-4-item scan-2">
               <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_humidity }}%</div>
               <div>湿度</div>
             </div>
-            <div class="panel-4-item scan-1">
+            <div class="panel-4-item scan-3">
               <div style="font-family: 'TitleFont';font-size: 1.3rem;">{{ detectData.soil_conductivity }}%</div>
               <div>导电率</div>
             </div>
@@ -269,7 +272,7 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div class="content-main-inner item-bg-wrapper" @click="$router.push('/erp/purchase/order')">
           <div class="content-title">
             <span class="linear-font-title">采购成本</span>
           </div>
@@ -293,7 +296,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in preWarnList" :key="index">
+                <tr v-for="(item, index) in preWarnList" :key="index" @click="$router.push('/warning/warning-record')">
                   <td>{{ item.parkName }}</td>
                   <td>{{ item.deviceName }}</td>
                   <td>{{ item.warnInfo }}</td>
@@ -306,7 +309,7 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div class="content-main-inner item-bg-wrapper" @click="$router.push('/wsxftzTeaPlantation/wsPlantingManagement/farm-record')">
           <div class="content-title">
             <span class="linear-font-title">茶园产量与收入统计</span>
           </div>
@@ -314,11 +317,22 @@
         </div>
       </div>
       <div class="content-main-item">
-        <div class="content-main-inner item-bg-wrapper">
+        <div
+          class="content-main-inner item-bg-wrapper"
+          @click="$router.push('/IotDevices/on-line-monitoring')"
+          style="position: relative;"
+        >
           <div class="content-title">
             <span class="linear-font-title">设备在线率分析</span>
           </div>
           <div class="content-main" id="chart4"></div>
+          <div class="btns-wrapper" @click="(e) => { e.stopPropagation() }">
+            <div class="btn-item" @click="handleBtnClick('month')">月</div>
+            <div class="btn-item" @click="handleBtnClick('day')">日</div>
+            <div class="btn-item">
+              <input type="date" name="" id="" @change="handleDateChange" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -339,6 +353,8 @@ import {
   getSumOrderByDate,
   selectOfCustom,
   onlineRateOfCustom,
+  onlineRateNormal,
+  onlineNumNormal,
   getCountSum,
   deviceBaseList,
   largeScreenGetWarningNum,
@@ -354,6 +370,14 @@ import {
   generateBaseOptions,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
+
+const handleBtnClick = (type) => {
+  getSelectOfCustom(type)
+}
+
+const handleDateChange = (e) => {
+  getSelectOfCustom('custom', e.target.value)
+}
 
 const options1 = ref<Array<any>>([])
 const getOptions1 = async (parentId = '0') => {
@@ -480,12 +504,14 @@ getlargeScreenGetWarning()
 const baseCount = ref(0), teaCount = ref(0), areaCount = ref(0)
 const getGetCountSum = async () => {
   const list = await getCountSum()
+  console.log('list', list);
+  
   if (Array.isArray(list)) list.forEach(item => {
     if (item.type === 'massif_base') {
       // 地块
       teaCount.value = item.nameCount
     }
-    if (item.type === 'park_citrus') {
+    if (item.type === 'park_tea') {
       // 基地
       baseCount.value = item.nameCount
       areaCount.value = item.area || 0
@@ -554,10 +580,12 @@ const getProductSumPrice = async () => {
           label: {
             // formatter: "{c|{c}},{d|{d}%}",
             formatter: '\n{c}\n {d}%',
+            color: '#fff',
+            borderWidth: 0,
             rich: {
               c: {
-                color: '#fff',
-                fontSize: 10
+                color: '#000',
+                fontSize: 20
               },
               d: {
                 color: '#fff',
@@ -567,7 +595,8 @@ const getProductSumPrice = async () => {
           }
         }
       ]
-    })
+    }),
+    'dark'
   )
 }
 onMounted(() => { getProductSumPrice() })
@@ -651,7 +680,7 @@ const getGetSumOrderByDate = async () => {
           show: false, //是否显示
         },
       }, {
-        name: '万',
+        name: '元',
         type: "value",
         axisLine: {
           show: true,
@@ -726,47 +755,31 @@ const getGetSumOrderByDate = async () => {
 }
 onMounted(() => { getGetSumOrderByDate() })
 
-// 右下角在线率
-const getSelectOfCustom = async () => {
-  let data = await onlineRateOfCustom({
-    startDate: '2024-01-05',
-    endDate: '2024-03-08'
-  })
-  if (!data || data.length === 0) {
-    data = [
-      {
-        "createDate": "2024-02-04",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-02-03",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-02-02",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-02-01",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-01-31",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-01-30",
-        "sum": "0"
-      },
-      {
-        "createDate": "2024-01-29",
-        "sum": "0"
-      }
-    ]
-  }
+const formatDate = (d = new Date()) => {
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
 
-  const axis = data.map(item => (item.createDate))
-  const list = data.map(item => (item.sum))
+// 右下角在线率 type day month custom
+const getSelectOfCustom = async (type = 'day', endDate = formatDate()) => {
+  let data:Array<any> = await onlineRateNormal({
+    type,
+    startDate: '2023-01-05',
+    endDate
+  })
+
+  let dataNum:Array<any> = await onlineNumNormal({
+    type,
+    startDate: '2023-01-05',
+    endDate
+  })
+
+  console.log('data1', data);
+  console.log('dataNum', dataNum);
+  
+
+  const axis = data.map(item => (item.createDate)).reverse()
+  const listRate = data.map(item => (item.sum)).reverse()
+  const listNum = dataNum.map(item => (item.sum)).reverse()
 
   initChartStatic(
     "chart4",
@@ -812,8 +825,25 @@ const getSelectOfCustom = async () => {
       },
       series: [
         {
-          name: '数量',
-          data: list,
+          name: '在线率',
+          data: listRate,
+          type: "line",
+          barWidth: "20",
+          smooth: true,
+          barGap: '70%',
+          label: {
+            show: true, //开启显示
+            position: "top", //在上方显示
+            textStyle: {
+              //数值样式
+              color: "#eee",
+              fontSize: 10,
+            },
+          },
+        },
+        {
+          name: '在线数量',
+          data: listNum,
           type: "bar",
           barWidth: "20",
           smooth: false,
@@ -875,6 +905,24 @@ onMounted(() => { getSelectOfCustom() })
         .content-main {
           height: 82%;
         }
+        .btns-wrapper {
+          display: flex;
+          position: absolute;
+          top: calc(18% + 2px);
+          left: .8rem;
+          .btn-item {
+            margin: 0 .3rem;
+            padding: .1rem .6rem;
+            background-color: #017363;
+            font-size: .7rem;
+            border-radius: 3px 0 3px 0;
+            input {
+              background-color: #017363;
+              color: white;
+              border: none
+            }
+          }
+        }
       }
 
       .item-bg-wrapper {
@@ -925,6 +973,7 @@ onMounted(() => { getSelectOfCustom() })
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+  padding: .8rem;
 
   .panel-2-item {
     height: 100%;
@@ -939,7 +988,7 @@ onMounted(() => { getSelectOfCustom() })
     }
 
     .panel-text-wrapper {
-      width: calc(100% - 4rem);
+      width: 6.5rem;
       display: flex;
       flex-direction: column;
       justify-content: center;

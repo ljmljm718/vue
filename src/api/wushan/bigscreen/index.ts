@@ -83,6 +83,22 @@ export const onlineRateOfCustom = async (params) => {
   })
 }
 
+// 牛逼的接口 rate
+export const onlineRateNormal = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/onlineRateNormal',
+    params
+  })
+}
+
+// 牛逼的接口 num
+export const onlineNumNormal = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/onlineNumNormal',
+    params
+  })
+}
+
 // 农资类别统计
 export const dictDataPage = async (params) => {
   return await request.get({
