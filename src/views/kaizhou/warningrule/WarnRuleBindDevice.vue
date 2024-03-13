@@ -5,7 +5,7 @@
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
-    width="1150"
+    width="1250"
   >
     <ContentWrap>
       <!-- 搜索工作栏 -->
@@ -114,7 +114,7 @@
       <el-table ref="dialogTable" v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
                 :row-key="getRowKeys" @selection-change="handleSelectionChange" >
         <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>
-        <el-table-column label="设备号" align="center" prop="deviceCode"/>
+        <el-table-column label="设备号" align="center" prop="deviceCode" width="200"/>
         <el-table-column label="名称" align="center" prop="deviceName"/>
         <el-table-column label="种类" align="center" prop="kinds">
           <template #default="scope">
@@ -134,16 +134,18 @@
           </template>
         </el-table-column>
         <el-table-column label="所属基地" align="center" prop="belongPark"/>
+        <el-table-column label="基地名称" align="center" prop="belongParkName"/>
         <el-table-column label="所属地块" align="center" prop="belongPlot"/>
+        <el-table-column label="地块名称" align="center" prop="belongPlotName"/>
         <!--      <el-table-column label="URL" align="center" prop="url" />-->
         <!--        <el-table-column label="备注" align="center" prop="remark" />-->
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          :formatter="dateFormatter"
-          width="180px"
-        />
+<!--        <el-table-column-->
+<!--          label="创建时间"-->
+<!--          align="center"-->
+<!--          prop="createTime"-->
+<!--          :formatter="dateFormatter"-->
+<!--          width="180px"-->
+<!--        />-->
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -269,6 +271,7 @@ const handleBindDevice = async () => {
     const data = temp as any
     await WarningRuleDeviceApi.WarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))
+    dialogVisible.value = false
   } finally {
     loading.value = false
   }

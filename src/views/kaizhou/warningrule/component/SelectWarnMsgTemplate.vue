@@ -32,7 +32,7 @@
             class="!w-240px"
           >
             <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_MSG_TYPE)"
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -70,15 +70,14 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="主键" align="center" prop="id" width="190"/>
         <el-table-column label="消息标题" align="center" prop="msgTitle" width="180"/>
         <el-table-column label="消息内容" align="center" prop="msgContent" />
-        <el-table-column label="消息类型" align="center" prop="msgType" width="100">
+        <el-table-column label="消息类型" align="center" prop="msgType" width="120">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.KAIZHOU_MSG_TYPE" :value="scope.row.msgType" />
+            <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.msgType" />
           </template>
         </el-table-column>
-        <el-table-column label="消息级别" align="center" prop="msgLevel" width="100">
+        <el-table-column label="消息级别" align="center" prop="msgLevel" width="120">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_MSG_LEVEL" :value="scope.row.msgLevel" />
           </template>

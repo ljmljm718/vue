@@ -25,7 +25,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_MSG_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -88,7 +88,7 @@
       <el-table-column label="消息内容" align="center" prop="msgContent" />
       <el-table-column label="消息类型" align="center" prop="msgType" width="130">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_MSG_TYPE" :value="scope.row.msgType" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.msgType" />
         </template>
       </el-table-column>
       <el-table-column label="消息级别" align="center" prop="msgLevel" width="130">
