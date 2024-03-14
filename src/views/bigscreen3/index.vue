@@ -467,7 +467,6 @@ getPlanParks()
 let cropList=ref<any>([])
 const getPage=()=>{
   page().then(res=>{
-    console.log(res,99);
     cropList.value=res.list
   })
 }
