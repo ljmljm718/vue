@@ -69,6 +69,7 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceDataApi, DeviceDataVO } from '@/api/kaizhou/devicedata'
 import SelectDevice from "@/views/kaizhou/warningrecord/component/SelectDevice.vue";
+import {DeviceBaseVO} from "@/api/kaizhou/devicebase";
 
 /** 设备数据 表单 */
 defineOptions({ name: 'DeviceDataForm' })
