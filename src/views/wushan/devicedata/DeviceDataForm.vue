@@ -9,7 +9,7 @@
     >
       <el-form-item label="设备名称" prop="deviceName">
 <!--        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.deviceName" placeholder="请输入设备编号" readonly>
+        <el-input v-model="formData.deviceName" placeholder="请选择设备" readonly>
           <template #append>
             <el-button @click="openSelectDevice">
               <Icon icon="ep:search"/>
@@ -96,6 +96,7 @@ const formData = ref({
   belongPlotName: undefined, // 所属地块名称
 })
 const formRules = reactive({
+  deviceName: [{required: true, message: '设备名称不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
