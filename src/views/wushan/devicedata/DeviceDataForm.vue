@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="设备名称" prop="deviceName">
 <!--        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" readonly>
+        <el-input v-model="formData.deviceName" placeholder="请输入设备编号" readonly>
           <template #append>
             <el-button @click="openSelectDevice">
               <Icon icon="ep:search"/>
@@ -89,6 +89,11 @@ const formData = ref({
   dataValue: undefined,
   unit: undefined,
   collectTime: undefined,
+  deviceName: undefined,
+  belongPark: undefined, // 所属基地
+  belongPlot: undefined, // 所属地块
+  belongParkName: undefined, // 所属基地名称
+  belongPlotName: undefined, // 所属地块名称
 })
 const formRules = reactive({
 })
@@ -146,6 +151,11 @@ const resetForm = () => {
     dataValue: undefined,
     unit: undefined,
     collectTime: undefined,
+    deviceName: undefined,
+    belongPark: undefined, // 所属基地
+    belongPlot: undefined, // 所属地块
+    belongParkName: undefined, // 所属基地名称
+    belongPlotName: undefined, // 所属地块名称
   }
   formRef.value?.resetFields()
 }
@@ -155,6 +165,13 @@ const openSelectDevice = () => {
   selectDeviceRef.value.open()
 }
 const handleSelectDeviceChange = (order: DeviceBaseVO) => {
+  console.log("1231421")
+  console.log(order[0])
   formData.value.deviceCode = String(order[0].deviceCode)
+  formData.value.deviceName = String(order[0].deviceName)
+  formData.value.belongPark = String(order[0].belongPark)
+  formData.value.belongPlot = String(order[0].belongPlot)
+  formData.value.belongParkName = String(order[0].belongParkName)
+  formData.value.belongPlotName = String(order[0].belongPlotName)
 }
 </script>

@@ -93,7 +93,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备编号" align="center" prop="deviceCode"/>
+      <!--      <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
+      <el-table-column label="设备名称" align="center" prop="deviceName"/>
       <el-table-column label="设备类型" align="center" prop="deviceType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType"/>
@@ -104,6 +105,8 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.type"/>
         </template>
       </el-table-column>
+      <el-table-column label="园区名称" align="center" prop="belongParkName"/>
+      <el-table-column label="地块名称" align="center" prop="belongPlotName"/>
       <el-table-column label="数据值" align="center" prop="dataValue"/>
       <el-table-column label="单位" align="center" prop="unit"/>
       <el-table-column label="采集时间" align="center" prop="collectTime"/>
