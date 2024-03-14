@@ -20,6 +20,7 @@ export interface WarningRecordVO {
   deviceType: string // 设备类型
   imgId: string // 预警图片
   deviceName: string // 设备名称
+  warnType: string // 预警类型
 }
 
 // 设备管理 VO

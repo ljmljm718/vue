@@ -165,6 +165,7 @@ const formData = ref({
   dealPersonId: undefined,
   dealInfo: undefined,
   deviceType: undefined,
+  warnType: undefined,
 })
 const formRules = reactive({
   parkCode: [{ required: true, message: '园区编号不能为空', trigger: 'blur' }],

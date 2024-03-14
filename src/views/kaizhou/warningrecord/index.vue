@@ -28,6 +28,21 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="预警类型" prop="warnType">
+        <el-select
+          v-model="queryParams.warnType"
+          placeholder="请选择预警类型"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="预警状态" prop="warnStatus">
         <el-select
           v-model="queryParams.warnStatus"
@@ -75,6 +90,11 @@
 <!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="200"/>
+      <el-table-column label="预警类型" align="center" prop="warnType" width="140">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_TYPE" :value="scope.row.warnType" />
+        </template>
+      </el-table-column>
       <el-table-column label="预警标题" align="center" prop="warnTitle" width="140"/>
       <el-table-column label="预警信息" align="center" prop="warnInfo" width="320"/>
       <el-table-column label="当前值" align="center" prop="currentValue" width="100">
@@ -107,7 +127,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="处理信息" align="center" prop="dealInfo"/>
+      <el-table-column label="处理信息" align="center" prop="dealInfo" width="170"/>
 <!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
 <!--        <template #default="scope">-->
 <!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
@@ -123,14 +143,14 @@
           >
             处理
           </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:warning-record:update']"
-          >
-            编辑
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id)"-->
+<!--            v-hasPermi="['kaizhou:warning-record:update']"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
           <el-button
             link
             type="danger"
@@ -193,6 +213,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   warnTime: [],
   warnStatus: '',
+  warnType: '',
   id: ''
 })
 const queryFormRef = ref() // 搜索的表单
