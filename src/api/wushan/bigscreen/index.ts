@@ -8,6 +8,14 @@ export const largeScreenGetOneDeviceData = async (params) => {
   })
 }
 
+// 大屏中央设备在线和园区地块显示
+export const monitoringSelectState = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/selectState',
+    params
+  })
+}
+
 // 大屏中间获取一条最新预警信息
 export const largeScreenGetOneWarning = async (params) => {
   return await request.get({
@@ -79,6 +87,22 @@ export const selectOfCustom = async (params) => {
 export const onlineRateOfCustom = async (params) => {
   return await request.get({
     url: '/wushan/on-line-monitoring/onlineRateOfCustom',
+    params
+  })
+}
+
+// 牛逼的接口 rate
+export const onlineRateNormal = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/onlineRateNormal',
+    params
+  })
+}
+
+// 牛逼的接口 num
+export const onlineNumNormal = async (params) => {
+  return await request.get({
+    url: '/wushan/on-line-monitoring/onlineNumNormal',
     params
   })
 }

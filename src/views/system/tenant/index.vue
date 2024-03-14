@@ -100,8 +100,8 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
       <el-table-column label="租户编号" align="center" prop="id" />
-      <el-table-column label="租户名" align="center" prop="name" />
-      <el-table-column label="租户套餐" align="center" prop="packageId">
+      <el-table-column label="租户名" width="350px" align="center" prop="name" />
+      <el-table-column label="租户套餐" width="300px" align="center" prop="packageId">
         <template #default="scope">
           <el-tag v-if="scope.row.packageId === 0" type="danger">系统租户</el-tag>
           <template v-else v-for="item in packageList">
@@ -112,7 +112,7 @@
         </template>
       </el-table-column>
       <el-table-column label="联系人" align="center" prop="contactName" />
-      <el-table-column label="联系手机" align="center" prop="contactMobile" />
+      <el-table-column label="联系手机" width="180px" align="center" prop="contactMobile" />
       <el-table-column label="账号额度" align="center" prop="accountCount">
         <template #default="scope">
           <el-tag>{{ scope.row.accountCount }}</el-tag>
@@ -126,6 +126,7 @@
         :formatter="dateFormatter"
       />
       <el-table-column label="绑定域名" align="center" prop="website" width="180" />
+      <el-table-column label="大屏路由" align="center" prop="bigScreen" width="180" />
       <el-table-column label="租户状态" align="center" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />

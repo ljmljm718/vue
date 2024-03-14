@@ -112,7 +112,7 @@
       <el-table-column label="通讯地址" align="center" prop="address" />
       <el-table-column label="联系人" align="center" prop="contact" />
       <el-table-column label="联系电话" align="center" prop="tel" />
-      <el-table-column label="面积m²" align="center" prop="area" />
+      <el-table-column label="面积(亩)" align="center" prop="area" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
@@ -183,6 +183,7 @@ import { ParkBaseApi, ParkBaseVO } from '@/api/kaizhou/parkbase'
 import ParkBaseForm from './ParkBaseForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import ParkBaseMassifList from '@/views/wushan/parkbase/ParkBaseMassifList.vue'
+import { useRoute } from 'vue-router'
 
 /** 园区/地块基本信息 列表 */
 defineOptions({ name: 'ParkBase' })
@@ -224,6 +225,14 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+let route=useRoute()
+let location=route.query.grade
+if(location){
+  queryParams.grade=location
+  getList()
+}else{
+  getList()
 }
 
 /** 搜索按钮操作 */

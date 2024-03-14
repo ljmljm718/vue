@@ -50,7 +50,15 @@
           :disabled="queryParams.kinds === undefined"
         >
           <el-option
+            v-show="queryParams.kinds != null && queryParams.kinds !=''"
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE).filter(item => item.value.toString().substring(0,6) === queryParams.kinds)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+          <el-option
+            v-show="queryParams.kinds == null || queryParams.kinds ==''"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -217,7 +225,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   deviceName: undefined,
   kinds: undefined,
-  deviceType: undefined,
+  deviceType: '',
   longitude: undefined,
   latitude: undefined,
   deviceStatus: '',
@@ -234,6 +242,10 @@ const route = currentRoute.value
 onMounted(()=>{
   if (route.query.deviceStatus)
     queryParams.deviceStatus = route.query.deviceStatus as string
+  if (route.query.deviceType)
+    queryParams.deviceType = route.query.deviceType as string
+  if (route.query.deviceName)
+    queryParams.deviceName = route.query.deviceName as string
 })
 /** 查询列表 */
 const getList = async () => {

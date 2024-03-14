@@ -57,6 +57,9 @@
       <el-form-item label="绑定域名" prop="website">
         <el-input v-model="formData.website" placeholder="请输入绑定域名" />
       </el-form-item>
+      <el-form-item label="大屏路由" prop="bigScreen">
+        <el-input v-model="formData.bigScreen" placeholder="请输入大屏路由地址"/>
+      </el-form-item>
       <el-form-item label="租户状态" prop="status">
         <el-radio-group v-model="formData.status">
           <el-radio
@@ -76,9 +79,9 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
 import * as TenantApi from '@/api/system/tenant'
-import { CommonStatusEnum } from '@/utils/constants'
+import {CommonStatusEnum} from '@/utils/constants'
 import * as TenantPackageApi from '@/api/system/tenantPackage'
 
 defineOptions({ name: 'SystemTenantForm' })
@@ -98,6 +101,7 @@ const formData = ref({
   accountCount: undefined,
   expireTime: undefined,
   website: undefined,
+  bigScreen: undefined,
   status: CommonStatusEnum.ENABLE,
   // 新增专属
   username: undefined,
@@ -111,6 +115,14 @@ const formRules = reactive({
   accountCount: [{ required: true, message: '账号额度不能为空', trigger: 'blur' }],
   expireTime: [{ required: true, message: '过期时间不能为空', trigger: 'blur' }],
   website: [{ required: true, message: '绑定域名不能为空', trigger: 'blur' }],
+  bigScreen: [{
+    required: true, validator: (_, _value: string, callback) => {
+      if (!_value.startsWith('/')) {
+        callback(new Error('大屏路由地址必须以 / 开头'))
+      }
+      callback()
+    }, trigger: 'blur'
+  }],
   username: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
   password: [{ required: true, message: '用户密码不能为空', trigger: 'blur' }]
 })
@@ -174,6 +186,7 @@ const resetForm = () => {
     accountCount: undefined,
     expireTime: undefined,
     website: undefined,
+    bigScreen: undefined,
     status: CommonStatusEnum.ENABLE,
     username: undefined,
     password: undefined

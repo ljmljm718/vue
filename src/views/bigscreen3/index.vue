@@ -14,62 +14,38 @@
             <div class="left1-item">
               <div class="left1-warper">
                 <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top:10px;">{{ sources.park }}</div>
               </div>
               <div class="left1-warper">
-                <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top: -30px;">种植地块</div>
+                <div style="margin-top:10px;">{{ sources.plot }}</div>
               </div>
               <div class="left1-warper">
-                <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top: -30px;">种植面积</div>
+                <div style="margin-top:10px;">{{sources.area}}万亩</div>
               </div>
               <div class="left1-warper">
-                <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top: -30px;">作物品种</div>
+                <div style="margin-top:10px;">{{ sources.crop }}</div>
               </div>
               <div class="left1-warper">
-                <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top: -30px;">农户数量</div>
+                <div style="margin-top:10px;">{{sources.farmer}}</div>
               </div>
               <div class="left1-warper">
-                <div style="margin-top: -30px;">柑橘园区</div>
-                <div style="margin-top:10px;">4</div>
+                <div style="margin-top: -30px;">公司数量</div>
+                <div style="margin-top:10px;">{{sources.company}}</div>
               </div>
             </div>
           </div>
           <div class="left2">
-            <div class="box-title">种植园区</div>
+            <div class="box-title">种植园区 <span style="margin-left: 40px;color: #ffce54;font-size: 20px;">{{ total }}</span> </div>
             <div class="left2-item">
-              <div class="left2-warper">
-                <div style="flex: 1;font-weight: 600; ">塘北A1园区</div>
-                <div style="font-size: 14px; color: #c1c1c1;">地块：18</div>
-                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：2800亩</div>
-                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：沃柑、晚橙</div>
-              </div>
-              <div class="left2-warper">
-                <div style="flex: 1;font-weight: 600; ">塘北A1园区</div>
-                <div style="font-size: 14px; color: #c1c1c1;">地块：18</div>
-                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：2800亩</div>
-                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：沃柑、晚橙</div>
-              </div>
-              <div class="left2-warper">
-                <div style="flex: 1;font-weight: 600; ">塘北A1园区</div>
-                <div style="font-size: 14px; color: #c1c1c1;">地块：18</div>
-                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：2800亩</div>
-                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：沃柑、晚橙</div>
-              </div>
-              <div class="left2-warper">
-                <div style="flex: 1;font-weight: 600; ">塘北A1园区</div>
-                <div style="font-size: 14px; color: #c1c1c1;">地块：18</div>
-                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：2800亩</div>
-                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：沃柑、晚橙</div>
-              </div>
-              <div class="left2-warper">
-                <div style="flex: 1;font-weight: 600; ">塘北A1园区</div>
-                <div style="font-size: 14px; color: #c1c1c1;">地块：18</div>
-                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：2800亩</div>
-                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：沃柑、晚橙</div>
+              <div class="left2-warper" v-for="item,index in parkList" :key="index">
+                <div style="flex: 1;font-size: 14px; font-weight: 600; ">{{ item.parkName }}</div>
+                <div style="font-size: 14px; color: #c1c1c1;">地块：{{ item.plotCout }}</div>
+                <div style="font-size: 14px; color: #c1c1c1;margin: 0 10px;">面积：{{ item.area }}</div>
+                <div style="font-size: 14px; color: #c1c1c1;">柑橘品种：{{ item.crop }}</div>
               </div>
             </div>
           </div>
@@ -80,23 +56,93 @@
             </div>
           </div>
         </div>
-        <div class="main"></div>
+        <div class="main">
+          <div class="middle-main-item"></div>
+          <div class="main-citrus">
+            <div class="box-title2" >柑橘种植信息</div>
+            <div class="citrus-item">
+                <div class="citrus-left">
+                  <div class="left-item1">
+                    <div class="left-border">
+                      <img src="./assets/citrusImg.png" style="width: 95%;height: 95%;" alt=""/>
+                    </div>
+                    <div class="left-citrus">
+                      <div style="color:#fff;font-size: 14px;">沃柑 1900亩</div>
+                      <div>
+                        <div style="display: flex;justify-content: end;margin-right: 20px;color: #c1c1c1;font-size: 14px;">67.86%</div>
+                        <div class="citrusbg">
+                          <div style="height: 100%;width: 67%;">
+                            <img src="./assets/jdt.png" alt=""/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="left-item1">
+                    <div class="left-border">
+                      <img src="./assets/citrusImg.png" style="width: 95%;height: 95%;" alt=""/>
+                    </div>
+                    <div class="left-citrus">
+                      <div style="color:#fff;font-size: 14px;">晚橙 900亩</div>
+                      <div>
+                        <div style="display: flex;justify-content: end;margin-right: 20px;color: #c1c1c1;font-size: 14px;">32.14%</div>
+                        <div class="citrusbg">
+                          <div style="height: 100%;width: 32%;">
+                            <img src="./assets/jdt2.png" alt=""/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="citrus-right">
+                  <div class="table-wrapper">
+                        <div class="table-header-row">
+                        <div
+                            class="table-header-cell"
+                            v-for="column,index in leftArr.tableColumns1"
+                            :style="`width: ${column.width};`" :key="index"
+                        >{{ column.label }}</div>
+                        </div>
+                        <div class="table-data-row" v-for="item,index in leftArr.tableData1" :key="index" >
+                        <div v-show="item[column.key]!= item.warnStatus"
+                            class="table-data-cell"
+                            v-for="column,inde in leftArr.tableColumns1" :key="inde"
+                            :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                        >{{ item[column.key]}}</div>
+                        </div>
+              </div>
+                </div>
+            </div>
+            
+          </div>
+          <div class="main-footer">
+            <div v-for="item,index in mainList" :key="index" @click="goPage(index)" :class="mainIndex==index?'active':'actived'">
+            {{ item }}
+            </div>
+          </div>
+        </div>
         <div class="right">
           <div class="right1">
             <div class="box-title">产品介绍</div>
             <div class="right1-item">
-              <div class="right1-left">
-                  <img src="./assets/left1LeftImg.png" style="width: 84%;height: 78%;" alt=""/>
-              </div>
-              <div class="right1-right">
-                <div class="right1-top">
-                  <span style="font-weight: 600;font-size: 20px;">沃柑</span> 
-                  <div class="right1-warper"></div>
-                </div>
-                <div style="font-size: 14px; color: #c1c1c1;margin-top: 10px;">
-                  早结丰产、适应性广、果实外观漂亮、品质优良、成熟期晚、采收期长。在重庆地区11月中下旬转色，1月中旬成熟，采收期从1月中旬至3上旬，果实耐贮性好，自然留果时间可从成熟的1-2月到7-8月份。
-                </div>
-              </div>
+              <el-carousel :interval="3000" indicator-position='none' :autoplay='true' arrow="always" style="width: 100%;height: 100%;">
+                        <el-carousel-item v-for="item in cropList" :key="item" style="width: 100%;height: 100%;display:flex;align-items:center;justify-content:space-between;">
+                         <div class="right1-left">
+                      <img :src="item.imgId" style="width: 84%;height: 78%;" alt=""/>
+                    </div>
+                    <div class="right1-right">
+                      <div class="right1-top">
+                        <span style="font-weight: 600;font-size: 16px;">{{ item.cropName }}</span> 
+                        <div class="right1-warper"></div>
+                      </div>
+                      <div style="font-size: 14px; color: #c1c1c1;margin-top: 10px;">
+                       {{ item.cropDesc }}
+                      </div>
+                    </div>
+                        </el-carousel-item>
+                      </el-carousel>
+              
             </div>
           </div>
           <div class="right2">
@@ -124,6 +170,12 @@ import {
   generateBaseOptions,
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
+import {
+  agResources,
+  planParks,
+  page
+} from '@/api/bigscreen3/index'
+import { useRouter} from 'vue-router'
 import img from './assets/chart1Img.png'
 const initChart1= ()=> {
       initChartStatic(
@@ -198,10 +250,7 @@ const initChart2=  ()=>{
             data:['长势预测','产量预测'],
             show: true, 
             orient:'horizontal',
-            itemWidth: 15,
-            itemHeight: 15,
          },
-          color: ["#1290ed","#0cb5b8"],
           yAxis: {
             type: "value",
             axisLine: {
@@ -230,6 +279,30 @@ const initChart2=  ()=>{
               data: [15,50,70,60,80,100,110,115,140,120,150,170],
               type: "line",
               smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+             color: {
+                type: 'line',
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#128feb' // 0% 处的颜色
+                  },
+                  {
+                    offset: 0.4,
+                    color: '#128feb' // 50% 处的颜色
+                  },
+                  {
+                    offset: 0.6,
+                    color: '#04e1e5' // 50% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: '#04e1e5' // 100% 处的颜色
+                  }
+                ]
+              }
+          },
             },
           ],
           grid: {
@@ -246,6 +319,19 @@ const initChart3= ()=> {
       initChartStatic(
         "chart3",
         generatePieOptions({
+          title : {
+            show:true,
+            text: 96+'\n'+'总数', // \n可以换行
+            x:'50%', // center
+            y: 'center',
+            textAlign: 'center',
+            textStyle: {
+              fontSize: '16',
+              fontStyle: 'normal',
+              fontWeight: '600',
+              color:'#fff'
+            },
+          },
           legend: {
             show: true,
             top: "center",
@@ -255,17 +341,18 @@ const initChart3= ()=> {
             itemWidth: 12,
             itemHeight: 12,
           },
-          graphic: {  
-              type: 'text',  
-              left: 'center',  
-              top: 'center',  
-              style: {  
-                  text: '总访问量: ' + (335 + 310), 
-                  textAlign: 'center',  
-                  fontSize: 20,  
-                  color: 'white'  
-              }  
-          }  ,
+          
+          // graphic: {  
+          //     type: 'text',  
+          //     left: 'center',  
+          //     top: 'center',  
+          //     style: {  
+          //         text: '总访问量: ' + (335 + 310), 
+          //         textAlign: 'center',  
+          //         fontSize: 20,  
+          //         color: 'white'  
+          //     }  
+          // }  ,
           color: ["#00ffff", "#0081ff", "#ffffff", "#ffce54"],
           series: [
             {
@@ -304,6 +391,94 @@ onMounted(()=>{
   initChart3()
 
 })
+let leftArr=reactive<Object>({
+    tableColumns1: [
+        {
+          key: 'massif',
+          label: '地块',
+          width: '25%',
+        },
+        {
+          key: 'breed',
+          label: '作物品种',
+          width: '25%',
+        },
+        {
+          key: 'area',
+          label: '种植面积(亩)',
+          width: '25%',
+        },
+        {
+          key: 'per',
+          label: '亩产(斤)',
+          width: '25%',
+        },
+      ],
+      tableData1: [
+        {
+          massif:'D1-1',
+          breed:'沃柑',
+          area:'132',
+          per:'3200'
+        },
+        {
+          massif:'D1-1',
+          breed:'沃柑',
+          area:'132',
+          per:'3200'
+        },
+        {
+          massif:'D1-1',
+          breed:'沃柑',
+          area:'132',
+          per:'3200'
+        },
+        {
+          massif:'D1-1',
+          breed:'沃柑',
+          area:'132',
+          per:'3200'
+        },
+      ],
+})
+let mainIndex=ref('0')
+let mainList=ref<any>([
+'农业资源','设备监控','产业数据','鲁渝有礼','视频监控'
+])
+//农业资源
+let sources=ref({})
+const getagResources=()=>{
+  agResources().then(res=>{
+    sources.value=res
+  })
+}
+getagResources()
+//种植园区
+let total=ref<any>(0)
+let parkList=ref<any>([])
+const getPlanParks=()=>{
+  planParks().then(res=>{
+    total.value=res.total
+    parkList.value=res.parkList
+  })
+}
+getPlanParks()
+//产品介绍
+let cropList=ref<any>([])
+const getPage=()=>{
+  page().then(res=>{
+    console.log(res,99);
+    cropList.value=res.list
+  })
+}
+getPage()
+let router=useRouter()
+const goPage=(val)=>{
+  mainIndex.value=val
+  if(val=='1'){
+    router.push('/bigscreen4')
+  }
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -327,6 +502,17 @@ onMounted(()=>{
   font-family: 'TitleFont';
   background-size: 100% 100%;
   background-image: url('./assets/box-title.png');
+}
+.box-title2{
+  width: 100%;
+  height: 2rem;
+  text-indent: 2.5rem;
+  color: #fff;
+  font-size: 20px;
+  line-height: 2rem;
+  font-family: 'TitleFont';
+  background-size: 100% 100%;
+  background-image: url('./assets/box-title2.png');
 }
 .content-main-wrapper {
     padding: 0 10px !important;
@@ -407,9 +593,140 @@ onMounted(()=>{
       }
     }
     .main{ 
+      position: relative;
       grid-auto-columns: 100%;
       width: 100%;
       height: 100%;
+      .middle-main-item{
+      position: absolute;
+      width: 1000px;
+      height: 600px;
+      left: calc(50% - 500px);
+      top: calc(50% - 540px );
+      background-size: 100% 100%;
+      background-image: url(./assets/mainBg.png);
+      position: relative;
+      }
+      .main-citrus{
+        position: absolute;
+        left: 0;
+        bottom: 15%;
+        width: 100%;
+        height: 300px;
+        .citrus-item{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: calc( 100% - 2rem);
+          .citrus-left{
+            width: 40%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            .left-item1{
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-around;
+              height: 40%;
+              background-size: 100% 100%;
+              background-image: url('./assets/citrus.png');
+              .left-border{
+                width: 20%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-left:20px;
+                height: 60%;
+                background-size: 100% 100%;
+                background-image: url('./assets/left1-border.png');
+              }
+              .left-citrus{
+                width: 60%;
+                height: 60%;
+                .citrusbg{
+                  width: 90%;
+                  height: 20px;
+                  background-size: 100% 100%;
+                  background-image: url('./assets/jdtBg.png');
+
+                }
+              }
+            }
+          }
+          .citrus-right{
+            width: 57%;
+            height: 90%;
+            .table-wrapper {
+            width: 100%;
+            height: calc(100% - 3rem);
+            position: relative;
+            overflow: auto;
+            font-size: .9rem;
+            .table-header-row {
+                width: 100%;
+                padding: 8px 0;
+                display: flex;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                background-color: #2b5f93;
+                .table-header-cell {
+                color: #fff;
+                text-align: center;
+                }
+            }
+            .table-data-row {
+                margin-top: 10px;
+                width: 100%;
+                height: 18%;
+                display: flex;
+                align-items: center;
+                padding: 8px 0;
+                .table-data-cell {
+                text-align: center;
+                }
+            }
+    }
+        .table-wrapper::-webkit-scrollbar {
+        width: 0px;
+        }
+    
+          }
+        }
+      }
+      .main-footer{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 13%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        .active{
+          width: 20%;
+          height: 50px;
+          cursor: pointer;
+          text-align: center;
+          font-weight: 600;
+          background-size: 100% 100%;
+          background-image: url('./assets/active.png');
+        }
+        .actived{
+          cursor: pointer;
+          width: 20%;
+          height: 50px;
+          text-align: center;
+          font-weight: 600;
+          color: #c1c1c1;
+          background-size: 100% 100%;
+          background-image: url('./assets/actived.png');
+        }
+      }
     }
     .right{
       display: grid;
