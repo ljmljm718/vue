@@ -60,7 +60,7 @@
     </template>
   </Dialog>
 
-  <SelectDevice
+  <EquListForm
     ref="selectDeviceRef"
     @success="handleSelectDeviceChange"
   />
@@ -68,8 +68,9 @@
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceDataApi, DeviceDataVO } from '@/api/kaizhou/devicedata'
-import SelectDevice from "@/views/kaizhou/warningrecord/component/SelectDevice.vue";
 import {DeviceBaseVO} from "@/api/kaizhou/devicebase";
+import EquListForm from "@/views/wushan/onlinemonitoring/equListForm/equListForm.vue";
+
 
 /** 设备数据 表单 */
 defineOptions({ name: 'DeviceDataForm' })
