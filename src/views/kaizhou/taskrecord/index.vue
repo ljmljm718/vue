@@ -110,7 +110,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="关联任务" align="center" prop="taskId" />
       <el-table-column
         label="开始时间"

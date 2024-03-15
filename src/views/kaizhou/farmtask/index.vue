@@ -129,7 +129,7 @@
 <!--        :formatter="dateFormatter"-->
 <!--        width="180px"-->
 <!--      />-->
-      <el-table-column label="操作" align="center" fixed="right" width="200">
+      <el-table-column label="操作" align="center" fixed="right" width="300">
         <template #default="scope">
           <el-button
             link
@@ -176,6 +176,13 @@
             编辑
           </el-button>
           <el-button
+              link
+              type="primary"
+              @click="handleLookRecord(scope.row.id)"
+          >
+            查看记录
+          </el-button>
+          <el-button
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
@@ -198,6 +205,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <FarmTaskForm ref="formRef" @success="getList" />
+  <TaskRecordTemplateHelper ref="taskRecordTemplateHelper"/>
 </template>
 
 <script setup lang="ts">
@@ -206,6 +214,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmTaskApi, FarmTaskVO } from '@/api/kaizhou/farmtask'
 import FarmTaskForm from './FarmTaskForm.vue'
+import TaskRecordTemplateHelper from "@/views/kaizhou/templateHelper/TaskRecordTemplateHelper.vue";
 
 /** 农事任务 列表 */
 defineOptions({ name: 'FarmTask' })
@@ -272,6 +281,13 @@ const handleDelete = async (id: number) => {
     await getList()
   } catch {}
 }
+const taskRecordTemplateHelper=ref()
+const handleLookRecord = async (id: number) => {
+  console.log("!!!!!!!!!!!!!!!!!!")
+  taskRecordTemplateHelper.value.open()
+}
+
+
 const handlePublish =async (id: number) =>{
   try {
     await message.confirm('请确定是否发布该任务?')
