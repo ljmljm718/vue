@@ -8,14 +8,42 @@
       v-loading="formLoading"
     >
       <el-form-item label="任务编码" prop="taskCode">
-        <el-input v-model="formData.taskCode" placeholder="请输入任务编码" />
+        <el-input v-model="formData.taskCode" disabled placeholder="系统自动生成...." />
+      </el-form-item>
+      <el-form-item label="任务名称" prop="taskName">
+        <el-input v-model="formData.taskName" placeholder="请输入任务名称" />
+      </el-form-item>
+      <el-form-item label="任务状态" prop="taskStastus">
+        <el-select v-model="formData.taskStastus" placeholder="请选择任务状态">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_TASK_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="任务人员" prop="taskPerson">
-        <el-input v-model="formData.taskPerson" placeholder="请输入任务人员" />
+        <el-input v-model="formData.taskPersonName" disabled placeholder="请选择任务人员" >
+          <template #append>
+            <el-button @click="openPersonTemplateHelper">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="任务完成要求" prop="taskDemand">
-        <el-input v-model="formData.taskDemand" type="textarea" placeholder="请输入任务完成要求" />
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称" >
+          <template #append>
+            <el-button @click="openPlotTemplateHelper">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
+
       <el-form-item label="任务开始时间" prop="taskStartdate">
         <el-date-picker
           v-model="formData.taskStartdate"
@@ -32,25 +60,15 @@
           placeholder="选择任务截止时间"
         />
       </el-form-item>
-      <el-form-item label="任务状态" prop="taskStastus">
-        <el-select v-model="formData.taskStastus" placeholder="请选择任务状态">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_FARM_TASK_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+
+      <el-form-item label="任务完成要求" prop="taskDemand">
+        <el-input v-model="formData.taskDemand" type="textarea" placeholder="请输入任务完成要求" />
       </el-form-item>
-      <el-form-item label="任务名称" prop="taskName">
-        <el-input v-model="formData.taskName" placeholder="请输入任务名称" />
-      </el-form-item>
-      <el-form-item label="地块id" prop="plotId">
-        <el-input v-model="formData.plotId" placeholder="请输入地块id" />
-      </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
-      </el-form-item>
+
+<!--      <el-form-item label="地块id" prop="plotId">-->
+<!--        <el-input v-model="formData.plotId" disabled placeholder="请输入地块id" />-->
+<!--      </el-form-item>-->
+
       <el-form-item label="验收标准" prop="checkStandard">
         <el-input v-model="formData.checkStandard" type="textarea" placeholder="请输入验收标准" />
       </el-form-item>
@@ -60,10 +78,18 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <PlotTemplateHelper ref="plotTemplateHelper" @setPlotInfo="setPlotInfo"/>
+  <PersonTemplateHelper ref="personTemplateHelper" @setPersonInfo="setPersonInfo"/>
+
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { FarmTaskApi, FarmTaskVO } from '@/api/kaizhou/farmtask'
+import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import PlotTemplateHelper from "@/views/kaizhou/templateHelper/PlotTemplateHelper.vue";
+import PersonTemplateHelper from "@/views/kaizhou/templateHelper/PersonTemplateHelper.vue";
+import {UserVO} from "@/api/system/user";
 
 /** 农事任务 表单 */
 defineOptions({ name: 'FarmTaskForm' })
@@ -79,6 +105,7 @@ const formData = ref({
   id: undefined,
   taskCode: undefined,
   taskPerson: undefined,
+  taskPersonName: undefined,
   taskDemand: undefined,
   taskStartdate: undefined,
   taskEnddate: undefined,
@@ -139,7 +166,22 @@ const submitForm = async () => {
     formLoading.value = false
   }
 }
-
+const personTemplateHelper=ref()
+const openPersonTemplateHelper =() =>{
+  personTemplateHelper.value.open()
+}
+const plotTemplateHelper=ref()
+const openPlotTemplateHelper = async () => {
+  plotTemplateHelper.value.open()
+}
+const setPlotInfo = async (order:ParkBaseVO) => {
+  formData.value.plotId=String(order[0].code)
+  formData.value.plotName=String(order[0].name)
+}
+const setPersonInfo = async (order:UserVO) => {
+  formData.value.taskPerson=String(order[0].id)
+  formData.value.taskPersonName=String(order[0].username)
+}
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
