@@ -59,7 +59,11 @@
         <div class="main">
           <div class="middle-main-item"></div>
           <div class="main-citrus">
-            <div class="box-title2" >柑橘种植信息</div>
+            <div class="box-title2" >柑橘种植信息
+              <select name="" id="" class="select">
+                <option value="">塘北A1园区</option>
+              </select>
+            </div>
             <div class="citrus-item">
                 <div class="citrus-left">
                   <div class="left-item1">
@@ -512,6 +516,17 @@ const goPage=(val)=>{
   font-family: 'TitleFont';
   background-size: 100% 100%;
   background-image: url('./assets/box-title2.png');
+  position: relative;
+  .select{
+    position: absolute;
+    background: none;
+    color: #fff;
+    padding: 3px 5px;
+    background-size: 100% 100%;
+    background-image: url('./assets/select.png');
+    top: 0;
+    right: 0;
+  }
 }
 .content-main-wrapper {
     padding: 0 10px !important;

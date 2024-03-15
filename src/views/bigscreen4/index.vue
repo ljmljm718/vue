@@ -15,56 +15,56 @@
             <div class="left1-warper">
               <div class="total">
                 <div style="margin-top:-80px;">设备总数</div>
-                <div style="font-weight: 600;">117</div>
+                <div style="font-weight: 600;">{{ device.total }}</div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>在线数量</span><span>104</span></div>
+                <div class="warper-top"><span>在线数量</span><span>{{ device.online?.sum }}</span></div>
                 <div class="warper-num">
                   <div style="display: flex;justify-content: space-around;">
                     <div>环境监测</div>
-                    <div>1</div>
+                    <div>{{ device.online?.env }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
-                    <div>22</div>
+                    <div>{{ device.online?.soil }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>视频监控</div>
-                    <div>81</div>
+                    <div>{{ device.online?.video }}</div>
                   </div>
                 </div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>在线数量</span><span>104</span></div>
+                <div class="warper-top"><span>故障数量</span><span>{{ device.fault?.sum }}</span></div>
                 <div class="warper-num">
                   <div style="display: flex;justify-content: space-around;">
                     <div>环境监测</div>
-                    <div>1</div>
+                    <div>{{ device.fault?.env }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
-                    <div>22</div>
+                    <div>{{ device.fault?.soil }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>视频监控</div>
-                    <div>81</div>
+                    <div>{{ device.fault?.video }}</div>
                   </div>
                 </div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>在线数量</span><span>104</span></div>
+                <div class="warper-top"><span>离线数量</span><span>{{ device.offline?.sum }}</span></div>
                 <div class="warper-num">
                   <div style="display: flex;justify-content: space-around;">
                     <div>环境监测</div>
-                    <div>1</div>
+                    <div>{{ device.offline?.env }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
-                    <div>22</div>
+                    <div>{{ device.offline?.soil }}</div>
                   </div>
                   <div style="display: flex;justify-content: space-around;">
                     <div>视频监控</div>
-                    <div>81</div>
+                    <div>{{ device.offline?.video }}</div>
                   </div>
                 </div>
               </div>
@@ -78,77 +78,25 @@
                 <div class="top">
                   <div class="bg"></div>
                   <span style="margin-left: -20px;"> 环境监测</span> 
-                  <span>1</span> 
+                  <span>{{ tistics.total }}</span> 
                 </div>
-                <div style="color: #c1c1c1;font-size: 13px;">在线率 100%</div>
+                <div style="color: #c1c1c1;font-size: 13px;">在线率 {{ tistics.onlineRate }}</div>
               </div>
-                <div style="display: flex;width: 36%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>超声波一体气象变送器</div>
-                  <div>1</div>
+              <div style="width: 70%;">
+              <div style="display: flex;justify-content: space-between;align-items: center; width: 100%;margin-bottom: 10px; " v-for="item,index in tistics.detail" :key="index">
+                <div style="display: flex;width: 49%;font-size: 12px; align-items: center;justify-content: space-between; color: #c1c1c1;">
+                  <div>{{ item.deviceName }}</div>
+                  <div>{{ item.sum }}</div>
                 </div>
-                <div  style="display: flex;width: 28%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
+                <div  style="display: flex;width: 49%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
                   <div>在线数量</div>
-                  <div>1</div>
+                  <div>{{ item.online }}</div>
                 </div>
+              </div>
+            </div>
                 <div class="xian"></div>
             </div>
-            <div class="left2-warper">
-              <div class="left-top">
-                <div class="top">
-                  <div class="bg"></div>
-                  <span style="margin-left: -20px;"> 环境监测</span> 
-                  <span>1</span> 
-                </div>
-                <div style="color: #c1c1c1;font-size: 13px;">在线率 100%</div>
-              </div>
-                <div style="display: flex;width: 36%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>超声波一体气象变送器</div>
-                  <div>1</div>
-                </div>
-                <div  style="display: flex;width: 28%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>在线数量</div>
-                  <div>1</div>
-                </div>
-                <div class="xian"></div>
-            </div>
-            <div class="left2-warper">
-              <div class="left-top">
-                <div class="top">
-                  <div class="bg"></div>
-                  <span style="margin-left: -20px;"> 环境监测</span> 
-                  <span>1</span> 
-                </div>
-                <div style="color: #c1c1c1;font-size: 13px;">在线率 100%</div>
-              </div>
-                <div style="display: flex;width: 36%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>超声波一体气象变送器</div>
-                  <div>1</div>
-                </div>
-                <div  style="display: flex;width: 28%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>在线数量</div>
-                  <div>1</div>
-                </div>
-                <div class="xian"></div>
-            </div>
-            <div class="left2-warper">
-              <div class="left-top">
-                <div class="top">
-                  <div class="bg"></div>
-                  <span style="margin-left: -20px;"> 环境监测</span> 
-                  <span>1</span> 
-                </div>
-                <div style="color: #c1c1c1;font-size: 13px;">在线率 100%</div>
-              </div>
-                <div style="display: flex;width: 36%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>超声波一体气象变送器</div>
-                  <div>1</div>
-                </div>
-                <div  style="display: flex;width: 28%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>在线数量</div>
-                  <div>1</div>
-                </div>
-                <div class="xian"></div>
-            </div>
+            
             
         </div>
         <div class="left3">
@@ -156,55 +104,68 @@
         </div>
       </div>
       <div class="main">
-        <div class="middle-main-item"></div>
+        <div class="middle-main-item">
+          <div class='sxt' v-for="item,index in webcam" :key="index" @click="webcamCli(index)" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
+                         <!-- <div :style="{visibility:webcamIndex==index?'visible':'hidden',top:-sxtHeight+'px',left:'-50px'}" ref="sxtList" class="message">
+                            <div class="message-item">
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
+                            </div>
+                            <div v-show="item.deviceStatus=='online'" style="font-size:15px"> 设备状态：<span style="color:#00ffdd;">在线</span></div>
+                            <div v-show="item.deviceStatus=='offline'" style="font-size:15px"> 设备状态：<span style="color:#c1c1c1;">离线</span></div>
+                            <div v-show="item.deviceStatus=='fault'" style="font-size:15px"> 设备状态：<span style="color:red;">故障</span></div>
+                            <div class="messageJk">查看监控</div>
+                         </div> -->
+                      </div>
+                      <div class='cgq' v-for="item,index in sensor" :key="index" @click="sensorCli(index)" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
+                        <!-- <div :style="{visibility:sensorIndex==index?'visible':'hidden',top:-sensorHeight+'px',left:'-50px'}" class="message" ref="sensorList" > 
+                            <div class="message-item">
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
+                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
+                            </div>
+                            <div v-for="itm,inde in item.values" :key="inde">
+                              <div>
+                                {{itm.key}}：{{itm.values}}
+                              </div>
+                            </div>
+                         </div> -->
+                      </div>
+        </div>
+        <div class="middle-sxt">
+                    <div style="display:flex;align-items:center;">
+                        <div :class="['middle-icon','middle-sxt-1']"></div>
+                        <div style="font-size:14px">摄像头</div>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <div :class="['middle-icon','middle-sxt-2']"></div>
+                        <div style="font-size:14px">传感器</div>
+                    </div>
+                </div>
       </div>
       <div class="right">
         <div class="right1">
           <div class="box-title">预警信息</div>
           <div class="right1-item">
-            <div class="right1-warper">
+            <div class="right1-warper" v-for="item,index in record" :key="index">
               <div class="right1-left">
-                <img src="./assets/warn1Img.png" style="width: 85%;height: 80%;" alt=""/>
+                <img :src="item.imgId" style="width: 85%;height: 80%;" alt=""/>
               </div>
               <div class="right1-right">
                   <div class="right-top">
-                    <div style="font-weight: 900;font-size: 14px;width: 30%;">入侵预警-人员</div>
+                    <div style="font-weight: 900;font-size: 14px;width: 30%;">{{ item.warnTitle }}</div>
                     <div class="right1-warper2"></div>
                   </div>
                   <div class="warn">
                     <div class="warnBg"></div>
-                    <div>不明身份人员入侵园区</div>
+                    <div>{{item.warnInfo}}</div>
                   </div>
                   <div class="warn">
                     <div class="warnBg"></div>
-                    <div>塘北园区D3地块 球机4号</div>
+                    <div>{{ item.parkName+item.plotName }} {{ item.deviceName }}</div>
                   </div>
                   <div class="warn">
                     <div class="warnBg"></div>
-                    <div>2023-07-07 13:39:48</div>
-                  </div>
-              </div>
-            </div>
-            <div class="right1-warper">
-              <div class="right1-left">
-                <img src="./assets/warnImg2.png" style="width: 85%;height: 80%;" alt=""/>
-              </div>
-              <div class="right1-right">
-                  <div class="right-top">
-                    <div style="font-weight: 900;font-size: 14px;width: 30%;">入侵预警-车辆</div>
-                    <div class="right1-warper2"></div>
-                  </div>
-                  <div class="warn">
-                    <div class="warnBg"></div>
-                    <div>未登记车辆渝A859ST</div>
-                  </div>
-                  <div class="warn">
-                    <div class="warnBg"></div>
-                    <div>塘北园区D11地块 球机43号</div>
-                  </div>
-                  <div class="warn">
-                    <div class="warnBg"></div>
-                    <div>2023-07-07 13:39:48</div>
+                    <div>{{ item.warnTime }}</div>
                   </div>
               </div>
             </div>
@@ -219,42 +180,29 @@
       </div>
       </div>
       <div class="footer">
-        <div class="box-title2">实时监测</div>
+        <div class="box-title2">实时监测
+          <div class="btn">
+            <div :class="btnIndex=='1'?'active2':'actived2'" @click="qxCli(1)">气象监测</div>
+            <div :class="btnIndex=='2'?'active2':'actived2'" @click="tsCli('2')">土壤墒情</div>
+          </div>
+        </div>
         <div class="footer-item">
-          <div class="footer-warper">
-              <div class="footer-top">
-                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;">空气温度</div>
-                <div style="font-size: 20px;">12.3℃</div>
+          <div class="footer-warper" v-for="item,index in byHour" :key="index">
+              <div :class="['footer-top','footerBg-'+(index+1).toString()]" v-show="btnIndex==2">
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==0">土壤温度</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==1">土壤温度</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==2">土壤导电率</div>
+                <div style="font-size: 20px;">{{item.newData.data}} <span style="font-size: 12px;">{{ item.newData.unit }}</span></div>
               </div>
-              <div id="chart3"></div>
-          </div>
-          <div class="footer-warper">
-              <div class="footer-top">
-                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;">空气温度</div>
-                <div style="font-size: 20px;">12.3℃</div>
+              <div :class="['footer-top','footerBg-'+(index+1).toString()]" v-show="btnIndex==1">
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==0">气象温度</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==1">气象湿度</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==2">气象降雨量</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==3">气象光照</div>
+                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;" v-show="index==4">气象风速</div>
+                <div style="font-size: 20px;">{{item.newData?.data}} <span style="font-size: 12px;">{{ item.newData?.unit }}</span></div>
               </div>
-              <div id="chart3"></div>
-          </div>
-          <div class="footer-warper">
-              <div class="footer-top">
-                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;">空气温度</div>
-                <div style="font-size: 20px;">12.3℃</div>
-              </div>
-              <div id="chart3"></div>
-          </div>
-          <div class="footer-warper">
-              <div class="footer-top">
-                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;">空气温度</div>
-                <div style="font-size: 20px;">12.3℃</div>
-              </div>
-              <div id="chart3"></div>
-          </div>
-          <div class="footer-warper">
-              <div class="footer-top">
-                <div style="font-size: 14px;color: #c1c1c1;margin-left:35px;">空气温度</div>
-                <div style="font-size: 20px;">12.3℃</div>
-              </div>
-              <div id="chart3"></div>
+              <div :id="'chart' + (index + 3)"></div>
           </div>
         </div>
       </div>
@@ -273,9 +221,19 @@ import {
   generateBaseOptions,
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
+import {
+  deviceTotal,
+  deviceTypeStatistics,
+  deviceStateStatistics,
+  AvgDataValueByHour,
+  MonitorWarnRecord,
+  DeviceAndWarn
+} from '@/api/bigscreen4/index'
 import { useRouter} from 'vue-router'
 import img from './assets/imgchart1.png'
-const initChart1= ()=> {
+//左侧饼状图
+const initChart1=async ()=> {
+  let res= await deviceStateStatistics()  
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -307,11 +265,7 @@ const initChart1= ()=> {
               type: "pie",
               radius: ["50%", "70%"],
               center: "center",
-              data: [
-                {value:104,name:'在线'},
-                {value:5,name:'故障'},
-                {value:8,name:'离线'},
-              ],
+              data: res,
               label: {
                 // formatter: "{c|{c}},{d|{d}%}",
                 formatter: "\n{c}\n {d}%",
@@ -406,12 +360,39 @@ const initChart2=  ()=>{
       );
     
 }
-const initChart3=  ()=>{
+//实时监测
+let byHour=ref<any>([])
+  let btnIndex=ref<any>(1)
+const tsCli= async(val)=>{
+  btnIndex.value=val
+  let res = await Promise.all([AvgDataValueByHour({deviceType:'sensor_soil',type:'soil_humidity'}),AvgDataValueByHour({deviceType:'sensor_soil',type:'soil_temperature'}),AvgDataValueByHour({deviceType:'sensor_soil',type:'soil_conductivity'})])
+      byHour.value=res
+      setTimeout(() => {
+        initChart3()
+        initChart4()
+        initChart5()
+      }, 200)
+}
+const qxCli=async (val)=>{
+  btnIndex.value=val
+  let res = await Promise.all([AvgDataValueByHour({deviceType:'sensor_env',type:'env_temperature'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_humidity'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_rainfall'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_light'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_speed'})])
+      byHour.value=res
+      console.log(res,99);
+      setTimeout(() => {
+        initChart3()
+        initChart4()
+        initChart5()
+        initChart6()
+        initChart7()
+      }, 200)
+}
+qxCli(1)
+const initChart3= ()=>{
       initChartStatic(
         "chart3",
         generateBaseOptions({
           xAxis: {
-            data: [ 0,3,6,9,12,15,18,21,24],
+            data:byHour.value[0].list.map(item =>item.time),
             axisLine: {
               show: true,
               lineStyle: {
@@ -449,7 +430,7 @@ const initChart3=  ()=>{
           color:['#48c0ce'],
           series: [
             {
-              data: [13,10,14,15,14,15,18,12,15],
+              data: byHour.value[0].list.map(item =>item.data),
               type: "line",
               smooth: false,
               symbol:'none',
@@ -466,13 +447,255 @@ const initChart3=  ()=>{
           },
         })
       );
-    
+}
+const initChart4= ()=>{
+      initChartStatic(
+        "chart4",
+        generateBaseOptions({
+          xAxis: {
+            data:byHour.value[1].list.map(item =>item.time),
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: true, 
+            orient:'horizontal',
+         },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          color:['#48c0ce'],
+          series: [
+            {
+              data: byHour.value[1].list.map(item =>item.data),
+              type: "line",
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "4%",
+            top: "15%",
+            bottom: "20%",
+          },
+        })
+      );
+}
+const initChart5= ()=>{
+      initChartStatic(
+        "chart5",
+        generateBaseOptions({
+          xAxis: {
+            data:byHour.value[2].list.map(item =>item.time),
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: true, 
+            orient:'horizontal',
+         },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          color:['#48c0ce'],
+          series: [
+            {
+              data: byHour.value[2].list.map(item =>item.data),
+              type: "line",
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "4%",
+            top: "15%",
+            bottom: "20%",
+          },
+        })
+      );
+}
+const initChart6= ()=>{
+      initChartStatic(
+        "chart6",
+        generateBaseOptions({
+          xAxis: {
+            data:byHour.value[3].list.map(item =>item.time),
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: true, 
+            orient:'horizontal',
+         },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          color:['#48c0ce'],
+          series: [
+            {
+              data: byHour.value[3].list.map(item =>item.data),
+              type: "line",
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "4%",
+            top: "15%",
+            bottom: "20%",
+          },
+        })
+      );
+}
+const initChart7= ()=>{
+      initChartStatic(
+        "chart7",
+        generateBaseOptions({
+          xAxis: {
+            data:byHour.value[4].list.map(item =>item.time),
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: true, 
+            orient:'horizontal',
+         },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          color:['#48c0ce'],
+          series: [
+            {
+              data: byHour.value[4].list.map(item =>item.data),
+              type: "line",
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "4%",
+            top: "15%",
+            bottom: "20%",
+          },
+        })
+      );
 }
 onMounted(()=>{
   initChart1()
   initChart2()
-  initChart3()
-
+  
 })
 let mainIndex=ref('1')
 let mainList=ref<any>([
@@ -485,17 +708,85 @@ const goPage=(val)=>{
     router.push('/bigscreen3')
   }
 }
+//左上总设备信息
+let device=ref<any>({})
+const getDeviceTotal=()=>{
+  deviceTotal().then(res=>{
+    device.value=res
+  })
+} 
+getDeviceTotal()
+//土壤环境
+let tistics=ref<any>({
+  tatol:0,
+  onlineRate:0,
+  detail:[]
+})
+const getDeviceTypeStatistics=()=>{
+  deviceTypeStatistics({type:'sensor_env',type:'sensor_soil',type:'camera_env'}).then(res=>{
+    tistics.value=res
+  })
+}
+getDeviceTypeStatistics()
+//预警信息
+let record=ref<any>([])
+const getMonitorWarnRecord=()=>{
+  MonitorWarnRecord().then(res=>{
+    record.value=res
+  })
+}
+getMonitorWarnRecord()
+//地图预警信息
+let webcam=ref<any>([])
+let webcamIndex=ref<any>('-1')
+let sensor=ref<any>([])
+ let sensorIndex=ref<any>('-1')
+const getDeviceAndWarn=()=>{
+  DeviceAndWarn().then(res=>{
+    let i=7
+    let i2=6
+    let a= res.webcam
+    let b= res.sensor    
+    a.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return  a.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    b.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    webcam.value=a
+    sensor.value=b
+  })
+}
+getDeviceAndWarn()
+let sxtList=ref<any>(null)
+let sxtHeight=ref()
+const webcamCli=(val:any)=>{
+  sxtHeight.value=sxtList.value[val].offsetHeight
+  if(webcamIndex.value==val) webcamIndex.value=-1
+  else  webcamIndex.value=val
+}
+let sensorList=ref<any>(null)
+let sensorHeight=ref<any>('')
+const sensorCli=(val:any)=>{
+  sensorHeight.value=sensorList.value[val].offsetHeight
+  if(sensorIndex.value==val) sensorIndex.value=-1
+  else  sensorIndex.value=val
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
 .bigscreen2-wrappper {
   width: 100vw;
   height: 100vh;
-  background-image: url('./assets/bg.png');
+  background-image: url(./assets/bg.png);
   background-size: 100% 100%;
   .header-main-wrapper{
       background-size: 100% 100%;
-        background-image: url('./assets/headerBg.png');
+        background-image: url(./assets/headerBg.png);
     }
 }
 .box-title{
@@ -507,18 +798,53 @@ const goPage=(val)=>{
   line-height: 2rem;
   font-family: 'TitleFont';
   background-size: 100% 100%;
-  background-image: url('./assets/box-title.png');
+  background-image: url(./assets/box-title.png);
 }
 .box-title2{
   width: 100%;
   height: 2rem;
+  position: relative;
   text-indent: 2.5rem;
   color: #fff;
   font-size: 20px;
   line-height: 2rem;
   font-family: 'TitleFont';
   background-size: 100% 100%;
-  background-image: url('./assets/box-title2.png');
+  background-image: url(./assets/box-title2.png);
+  .btn{
+    position: absolute;
+    top: 2%;
+    font-size: 14px;
+    font-family: none;
+    right: 5%;
+    display: flex;
+    width: 230px;
+    justify-content: space-between;
+    .active2{
+      width: 100px;
+      height: 2rem;
+      cursor: pointer;
+      display: flex;
+      font-weight: 600;
+      align-items: center;
+      text-indent: -0.3rem;
+      justify-content: center;
+      background-size: 100% 100%;
+      background-image: url(./assets/active2.png);
+    }
+    .actived2{
+      width: 100px;
+      height: 2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      text-indent: -0.3rem;
+      justify-content: center;
+      color: #c1c1c1;
+      background-size: 100% 100%;
+      background-image: url(./assets/actived2.png);
+    }
+  }
 }
 .content-main-wrapper {
     padding: 0 10px !important;
@@ -551,7 +877,7 @@ const goPage=(val)=>{
             align-items: center;
             color: #fff;
             background-size: 100% 100%;
-            background-image: url('./assets/left1-item.png');
+            background-image: url(./assets/left1-item.png);
             .xian{
               position: absolute;
               left: 24%;
@@ -559,7 +885,7 @@ const goPage=(val)=>{
               width: 2px;
               height: 80px;
               background-size: 100% 100%;
-              background-image: url('./assets/xian.png');
+              background-image: url(./assets/xian.png);
             }
             .total{
               display: flex;
@@ -570,7 +896,7 @@ const goPage=(val)=>{
               width: 20%;
               height: 80%;
               background-size: 100% 100%;
-              background-image: url('./assets/tatol.png');
+              background-image: url(./assets/tatol.png);
             }
             .left1-warper-num{
               width: 21%;
@@ -582,7 +908,7 @@ const goPage=(val)=>{
                 justify-content: space-between;
                 align-items: center;
                 background-size: 100% 100%;
-                background-image: url('./assets/left1-warper.png');
+                background-image: url(./assets/left1-warper.png);
               }
               .warper-num{
                 width: 100%;
@@ -593,7 +919,7 @@ const goPage=(val)=>{
                 color: #c1c1c1;
                 font-size: 14px;
                 background-size: 100% 100%;
-                background-image: url('./assets/warper-num.png');
+                background-image: url(./assets/warper-num.png);
               }
             }
           }
@@ -604,7 +930,7 @@ const goPage=(val)=>{
         height: 100%;
         overflow-y: scroll;
         .left2-warper{
-          padding: 0 10px !important;
+          padding: 10px 10px !important;
           margin-bottom: 10px;
           position: relative;
           box-sizing: border-box;
@@ -612,9 +938,8 @@ const goPage=(val)=>{
           align-items: center;
           justify-content: space-between;
           width: 100%;
-          height: 70px;
           background-size: 100% 100%;
-          background-image: url('./assets/left2Item.png');
+          background-image: url(./assets/left2Item.png);
           .xian{
             position: absolute;
             width: 1px;
@@ -622,7 +947,7 @@ const goPage=(val)=>{
             top: 8%;
             left: 28.5%;
             background-size: 100% 100%;
-            background-image: url('./assets/xian.png');
+            background-image: url(./assets/xian.png);
           }
           .left-top{
             width: 25%;
@@ -642,7 +967,7 @@ const goPage=(val)=>{
                 width: 40px;
                 height: 40px;
                 background-size: 100%;
-                background-image: url('./assets/zhu.png');
+                background-image: url(./assets/zhu.png);
               }
             }
           }
@@ -655,7 +980,7 @@ const goPage=(val)=>{
         width: 100%;
         height: 100%;
         background-size: 100% 100%;
-        background-image: url('./assets/left3Bg.png');
+        background-image: url(./assets/left3Bg.png);
         #chart1{
           width: 100%;
           height: 100%;
@@ -674,8 +999,41 @@ const goPage=(val)=>{
         left: calc(50% - 500px);
         top: calc(50% - 50% );
         background-size: 100% 100%;
-        background-image: url('./assets/mainBg.png');
+        background-image: url(./assets/mainBg.png);
+        position: relative;
+        .sxt{
+        position: absolute;
+        z-index: 999;
+        width: 2rem;
+        height:4rem;
+        background-size: 100% 100%;
+        background-image: url(./assets/jk2.png);
+        position: relative
+      }
+      .cgq{
+        position: absolute;
+        z-index: 9999;
+        width: 2rem;
+        height: 4rem;
+        background-size: 100% 100%;
+        background-image: url(./assets/cgq2.png);
+      }
         }
+        .middle-sxt{
+        position: absolute;
+        right: 5%;
+        bottom: 10%;
+        display: flex;
+        width: 20%;
+        color: #fff;
+        align-items: center;
+        justify-content: space-between;
+        .middle-icon{
+            width: 2rem;
+            height: 2rem;
+            background-size: 100% 100%;
+        }
+    }
     }
     .right{
       display: grid;
@@ -702,7 +1060,7 @@ const goPage=(val)=>{
               justify-content: center;
               align-items: center;
               background-size: 100% 100%;
-              background-image: url('./assets/right1Warn.png');
+              background-image: url(./assets/right1Warn.png);
 
             }
             .right1-right{
@@ -718,7 +1076,7 @@ const goPage=(val)=>{
                 width: 70%;
                 height: 10px;
                 background-size: 100% 100%;
-                background-image: url('./assets/right1Top.png');
+                background-image: url(./assets/right1Top.png);
               }
               }
               .warn{
@@ -732,7 +1090,7 @@ const goPage=(val)=>{
                   height: 10px;
                   margin-right: 10px;
                   background-size: 100% 100%;
-                  background-image:url('./assets/warn.png');
+                  background-image:url(./assets/warn.png);
                 }
                 
               }
@@ -779,16 +1137,32 @@ const goPage=(val)=>{
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      background-image: url('./assets/footerItemBg.png');
+      background-image: url(./assets/footerItemBg.png);
       .footer-top{
         width: 80%;
         display: flex;
-        align-items: center;justify-content: space-around;
+        align-items: center;
+        justify-content: space-around;
         height: 28%;
         background-size: 100% 100%;
-        background-image: url('./assets/footer-top.png');
       }
       #chart3{
+        width: 100%;
+        height: calc(100% - 28%);
+      }
+      #chart4{
+        width: 100%;
+        height: calc(100% - 28%);
+      }
+      #chart5{
+        width: 100%;
+        height: calc(100% - 28%);
+      }
+      #chart6{
+        width: 100%;
+        height: calc(100% - 28%);
+      }
+      #chart7{
         width: 100%;
         height: calc(100% - 28%);
       }
@@ -812,7 +1186,7 @@ const goPage=(val)=>{
           text-align: center;
           font-weight: 600;
           background-size: 100% 100%;
-          background-image: url('./assets/active.png');
+          background-image: url(./assets/active.png);
         }
         .actived{
           cursor: pointer;
@@ -822,13 +1196,19 @@ const goPage=(val)=>{
           font-weight: 600;
           color: #c1c1c1;
           background-size: 100% 100%;
-          background-image: url('./assets/actived.png');
+          background-image: url(./assets/actived.png);
         }
       }
 
-@for $i from 1 through 3 {
-  .scan-#{$i} {
-    background-image: url(./assets/scan#{$i}.png);
+@for $i from 1 through 5 {
+  .footerBg-#{$i} {
+    background-image: url(./assets/footer-top#{$i}.png);
+  }
+}
+@for $i from 1 through 2 {
+  .middle-sxt-#{$i} {
+    background-size: 100% 100%;
+    background-image: url(./assets/sxt#{$i}.png);
   }
 }
 </style>
