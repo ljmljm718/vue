@@ -99,15 +99,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['kaizhou:device-base:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -116,7 +123,8 @@
           :loading="exportLoading"
           v-hasPermi="['kaizhou:device-base:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -125,31 +133,32 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备号" width="200px" align="center" prop="deviceCode" />
-      <el-table-column label="名称" width="200px" align="center" prop="deviceName" />
+      <el-table-column label="设备号" width="200px" align="center" prop="deviceCode"/>
+      <el-table-column label="名称" width="200px" align="center" prop="deviceName"/>
       <el-table-column label="种类" width="100px" align="center" prop="kinds">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_KINDS" :value="scope.row.kinds" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_KINDS" :value="scope.row.kinds"/>
         </template>
       </el-table-column>
       <el-table-column label="设备类型" width="100px" align="center" prop="deviceType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType"/>
         </template>
       </el-table-column>
-      <el-table-column label="经度" width="150px" align="center" prop="longitude" />
-      <el-table-column label="纬度" width="150px" align="center" prop="latitude" />
+      <el-table-column label="经度" width="150px" align="center" prop="longitude"/>
+      <el-table-column label="纬度" width="150px" align="center" prop="latitude"/>
       <el-table-column label="状态" width="100px" align="center" prop="deviceStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="基地编号" width="200px" align="center" prop="belongPark" />
-      <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName" />
-      <el-table-column label="地块编号" width="200px" align="center" prop="belongPlot" />
-      <el-table-column label="地块名称" width="200px" align="center" prop="belongPlotName" />
-<!--      <el-table-column label="URL" align="center" prop="url" />-->
-<!--      <el-table-column label="备注" align="center" prop="remark" />-->
+      <el-table-column label="基地编号" width="200px" align="center" prop="belongPark"/>
+      <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName"/>
+      <el-table-column :label="getTenantId() === 157 ? '鱼塘编号' : '地块编号'" width="200px" align="center" prop="belongPlot"/>
+      <el-table-column :label="getTenantId() === 157 ? '鱼塘名称' : '地块名称'" width="200px" align="center" prop="belongPlotName"/>
+      <!--      <el-table-column label="地块名称" width="200px" align="center" prop="belongPlotName" />-->
+      <!--      <el-table-column label="URL" align="center" prop="url" />-->
+      <!--      <el-table-column label="备注" align="center" prop="remark" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -195,27 +204,27 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceBaseForm ref="formRef" @success="getList()" />
+  <DeviceBaseForm ref="formRef" @success="getList()"/>
 
   <!-- 绑定规则列表 -->
   <DeviceBindWarnRule ref="deviceBindWarnRuleRef" :deviceId="deviceId" :warnRuleId="warnRuleId"/>
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
+import {DeviceBaseApi, DeviceBaseVO} from '@/api/kaizhou/devicebase'
 import DeviceBaseForm from './DeviceBaseForm.vue'
-import { useRouter,useRoute } from "vue-router";
+import {useRouter, useRoute} from "vue-router";
+import { getTenantId } from '@/utils/auth'
 import DeviceBindWarnRule from "@/views/kaizhou/devicebase/DeviceBindWarnRule.vue";
 
 /** 设备管理 列表 */
-defineOptions({ name: 'DeviceBase' })
-
+defineOptions({name: 'DeviceBase'})
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-let route2=useRoute()
+const {t} = useI18n() // 国际化
+let route2 = useRoute()
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -234,12 +243,13 @@ const queryParams = reactive({
   url: undefined,
   remark: undefined,
   createTime: [],
+  tenantId: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const { currentRoute } = useRouter()
+const {currentRoute} = useRouter()
 const route = currentRoute.value
-onMounted(()=>{
+onMounted(() => {
   if (route.query.deviceStatus)
     queryParams.deviceStatus = route.query.deviceStatus as string
   if (route.query.deviceType)
@@ -260,13 +270,12 @@ const getList = async () => {
     loading.value = false
   }
 }
-let location=route2.query
-console.log(location,'路由');
-if(location.kinds){
-  queryParams.kinds=location.kinds
+let location = route2.query
+console.log(location, '路由');
+if (location.kinds) {
+  queryParams.kinds = location.kinds
   getList()
-}
-else{
+} else {
   getList()
 }
 
@@ -298,7 +307,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
@@ -326,14 +336,14 @@ const warnRuleId = ref([]) // 已绑定的规则id
 const deviceBindWarnRuleRef = ref()
 /** 绑定规则操作 */
 const bindWarnRule = async (id: string) => {
-  try{
-    console.log("id",id)
+  try {
+    console.log("id", id)
     const data = await DeviceBaseApi.selectWarnRuleByDeviceId(String(id))
     console.log("data", data)
     warnRuleId.value = data.map(item => (item.warnRuleId))
     deviceId.value = id
     deviceBindWarnRuleRef.value.open()
-  } catch{
+  } catch {
   }
 }
 </script>

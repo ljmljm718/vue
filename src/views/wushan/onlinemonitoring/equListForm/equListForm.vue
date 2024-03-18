@@ -135,13 +135,15 @@
             <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
           </template>
         </el-table-column>
-<!--        <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
-<!--        <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
+        <!--        <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
+        <!--        <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
         <!--      <el-table-column label="URL" align="center" prop="url" />-->
-        <el-table-column label="基地编号" width="200px" align="center" prop="belongPark" />
-        <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName" />
-        <el-table-column label="地块编号" width="200px" align="center" prop="belongPlot" />
-        <el-table-column label="地块名称" width="200px" align="center" prop="belongPlotName" />
+        <el-table-column label="基地编号" width="200px" align="center" prop="belongPark"/>
+        <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName"/>
+        <el-table-column :label="getTenantId() === 157 ? '鱼塘编号' : '地块编号'" width="200px"
+                         align="center" prop="belongPlot"/>
+        <el-table-column :label="getTenantId() === 157 ? '鱼塘名称' : '地块名称'" width="200px"
+                         align="center" prop="belongPlotName"/>
 
         <el-table-column label="备注" align="center" prop="remark"/>
         <el-table-column
@@ -170,6 +172,7 @@
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {dateFormatter} from '@/utils/formatTime'
+import { getTenantId } from '@/utils/auth'
 import {DeviceBaseApi, DeviceBaseVO} from '@/api/kaizhou/devicebase'
 
 

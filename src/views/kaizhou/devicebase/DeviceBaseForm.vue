@@ -60,8 +60,8 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="点击右侧按钮选择所属地块" readonly>
+      <el-form-item :label="getTenantId() === 157 ? '鱼塘编号' : '地块编号'" prop="belongPlot">
+        <el-input v-model="formData.belongPlot" placeholder="点击右侧按钮选择" readonly>
           <template #append>
             <el-button @click="openParkBaseHelper(formData.belongPark)">
               <Icon icon="ep:search"/>
@@ -100,6 +100,7 @@ defineOptions({ name: 'DeviceBaseForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+import { getTenantId } from '@/utils/auth'
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
