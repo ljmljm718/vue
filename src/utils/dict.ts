@@ -245,4 +245,7 @@ export enum DICT_TYPE {
   // ========== PORTAL - 门户  ==========
   PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型
   PROJECT_FRAME_TYPE = 'project_frame_type',//项目框架类型
+
+  // ========== AGRI - 武隆  ==========
+  AGRI_PARK_TYPE = 'agri_park_type', //基地种植类型
 }
