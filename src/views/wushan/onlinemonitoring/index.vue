@@ -91,7 +91,7 @@
           <dict-tag :type="DICT_TYPE.DEVICE_CONNECT" :value="scope.row.connection" />
         </template>
       </el-table-column>
-      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+      <el-table-column :label="getTenantId() === 157 ? '鱼塘名称' : '地块名称'" align="center" prop="belongPlot" />
       <el-table-column label="在线状态" align="center" prop="presence">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.EQU_STATE" :value="scope.row.presence" />
@@ -153,7 +153,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { OnLineMonitoringApi, OnLineMonitoringVO } from '@/api/wushan/onlinemonitoring'
 import OnLineMonitoringForm from './OnLineMonitoringForm.vue'
-
+import { getTenantId } from '@/utils/auth'
 /** 物联网设备在线监测 列表 */
 defineOptions({ name: 'OnLineMonitoring' })
 
@@ -240,4 +240,5 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
 </script>

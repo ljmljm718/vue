@@ -31,7 +31,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
+      <el-form-item :label="getTenantId() === 157 ? '鱼塘名称' : '地块名称'" prop="belongPlot">
         <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" disabled/>
       </el-form-item>
       <el-form-item label="在线状态" prop="presence">
@@ -73,6 +73,7 @@ import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {OnLineMonitoringApi, OnLineMonitoringVO} from '@/api/wushan/onlinemonitoring'
 import EquListForm from "@/views/wushan/onlinemonitoring/equListForm/equListForm.vue";
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import {getTenantId} from '@/utils/auth'
 
 /** 物联网设备在线监测 表单 */
 defineOptions({name: 'OnLineMonitoringForm'})
