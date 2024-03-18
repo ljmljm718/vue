@@ -190,12 +190,12 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="getList()"
     />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceBaseForm ref="formRef" @success="getList" />
+  <DeviceBaseForm ref="formRef" @success="getList()" />
 
   <!-- 绑定规则列表 -->
   <DeviceBindWarnRule ref="deviceBindWarnRuleRef" :deviceId="deviceId" :warnRuleId="warnRuleId"/>

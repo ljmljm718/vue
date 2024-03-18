@@ -57,7 +57,38 @@
           </div>
         </div>
         <div class="main">
-          <div class="middle-main-item"></div>
+          <div class="middle-main-item">
+              <div class="dian" style="left:27%;bottom:33%;width: 23rem;height: 5rem;" @click="dianCli(0)">
+                <div class="message" ref="message" :style="{visibility:dianIndex==0?'visible':'hidden',top:-messageHeight+'px',right:'-150px'}">
+                  <div style="text-align: center;color:#fff;margin-bottom: 15px;margin-top: -5px;">塘北A2园区-05地块</div>
+                  <div style="margin-top: 8px;">经纬度:120.07765 29.761076</div>
+                  <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom:10px;margin-top: 10px;">
+                    <div>作物:沃柑</div>
+                    <div>面积:12.5亩</div>
+                  </div>
+                  <div style="display: flex;margin-bottom:10px; justify-content: space-between;align-items: center;">
+                    <div>负责人:王少卿</div>
+                    <div>投入设备:4台</div>
+                  </div>
+                  <div>农事活动：育肥→酒药→灌溉→修枝</div>
+                </div>
+              </div>
+              <div class="dian" style="left:34%;bottom:45%;width: 15rem;height: 3rem;" @click="dianCli(1)">
+                <div class="message" ref="message" :style="{visibility:dianIndex==1?'visible':'hidden',top:-messageHeight+'px',right:'-150px'}">
+                  <div style="text-align: center;color:#fff;margin-bottom: 15px;margin-top: -5px;">塘北A2园区-05地块</div>
+                  <div>经纬度:120.07765 29.761076</div>
+                  <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom:10px;margin-top: 10px;">
+                    <div>作物:沃柑</div>
+                    <div>面积:12.5亩</div>
+                  </div>
+                  <div style="display: flex;margin-bottom:10px; justify-content: space-between;align-items: center;">
+                    <div>负责人:王少卿</div>
+                    <div>投入设备:4台</div>
+                  </div>
+                  <div>农事活动：育肥→酒药→灌溉→修枝</div>
+                </div>
+              </div>
+          </div>
           <div class="main-citrus">
             <div class="box-title2" >柑橘种植信息
               <select name="" id="" class="select">
@@ -482,6 +513,14 @@ const goPage=(val)=>{
     router.push('/bigscreen4')
   }
 }
+//
+let dianIndex=ref<any>(-1)
+let message=ref<any>(null)
+let messageHeight=ref<any>(0)
+const  dianCli=(val)=>{
+  dianIndex.value=val
+  messageHeight.value=message.value.offsetHeight
+} 
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -620,6 +659,19 @@ const goPage=(val)=>{
       background-size: 100% 100%;
       background-image: url(./assets/mainBg.png);
       position: relative;
+      .dian{
+        z-index: 999;
+        position: absolute;
+        background-size: 100% 100%;
+        background-image: url(./assets/dian.png);
+        .message{
+          position: absolute;
+          padding: 8px 15px 20px;
+          color:#c1c1c1;
+          background-size: 100% 100%;
+          background-image: url(./assets/message.png);
+        }
+      }
       }
       .main-citrus{
         position: absolute;

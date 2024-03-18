@@ -13,56 +13,56 @@
           <div class="box-title">智能物联设备信息</div>
           <div class="left1-item">
             <div class="left1-warper">
-              <div class="total">
+              <div class="total" @click="$router.push('/basic/device/devicebase')" style="cursor: pointer;">
                 <div style="margin-top:-80px;">设备总数</div>
                 <div style="font-weight: 600;">{{ device.total }}</div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>在线数量</span><span>{{ device.online?.sum }}</span></div>
+                <div class="warper-top" @click="$router.push(`/basic/device/devicebase?deviceStatus=online`)" style="cursor: pointer;"><span>在线数量</span><span>{{ device.online?.sum }}</span></div>
                 <div class="warper-num">
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=online&deviceType=sensor_env')"  style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>环境监测</div>
                     <div>{{ device.online?.env }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=online&deviceType=sensor_soil')"  style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
                     <div>{{ device.online?.soil }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=online&deviceType=camera_env')"  style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>视频监控</div>
                     <div>{{ device.online?.video }}</div>
                   </div>
                 </div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>故障数量</span><span>{{ device.fault?.sum }}</span></div>
+                <div class="warper-top" @click="$router.push('/basic/device/devicebase?deviceStatus=fault')" style="cursor: pointer;"><span>故障数量</span><span>{{ device.fault?.sum }}</span></div>
                 <div class="warper-num">
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=fault&deviceType=sensor_env')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>环境监测</div>
                     <div>{{ device.fault?.env }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=fault&deviceType=sensor_soil')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
                     <div>{{ device.fault?.soil }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=fault&deviceType=camera_env')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>视频监控</div>
                     <div>{{ device.fault?.video }}</div>
                   </div>
                 </div>
               </div>
               <div class="left1-warper-num">
-                <div class="warper-top"><span>离线数量</span><span>{{ device.offline?.sum }}</span></div>
+                <div class="warper-top" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')" style="cursor: pointer;"><span>离线数量</span><span>{{ device.offline?.sum }}</span></div>
                 <div class="warper-num">
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=offline&deviceType=sensor_env')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>环境监测</div>
                     <div>{{ device.offline?.env }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=offline&deviceType=sensor_soil')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>土壤墒情</div>
                     <div>{{ device.offline?.soil }}</div>
                   </div>
-                  <div style="display: flex;justify-content: space-around;">
+                  <div @click="$router.push('/basic/device/devicebase?deviceStatus=offline&deviceType=camera_env')" style="cursor: pointer; display: flex;justify-content: space-around;">
                     <div>视频监控</div>
                     <div>{{ device.offline?.video }}</div>
                   </div>
@@ -73,24 +73,24 @@
           </div> 
         </div>
         <div class="left2">
-            <div class="left2-warper">
+            <div class="left2-warper" v-for="item,index in tistics" :key="index">
               <div class="left-top">
-                <div class="top">
+                <div class="top"  @click="$router.push(`/basic/device/devicebase?deviceType=${tisticsList2[index]}`)" style="cursor: pointer;">
                   <div class="bg"></div>
-                  <span style="margin-left: -20px;"> 环境监测</span> 
-                  <span>{{ tistics.total }}</span> 
+                  <span style="margin-left: -20px; "> {{ tisticsList[index] }}</span> 
+                  <span>{{ item.total }}</span> 
                 </div>
-                <div style="color: #c1c1c1;font-size: 13px;">在线率 {{ tistics.onlineRate }}</div>
+                <div style="color: #c1c1c1;font-size: 13px;">在线率 {{ item.onlineRate }}</div>
               </div>
               <div style="width: 70%;">
-              <div style="display: flex;justify-content: space-between;align-items: center; width: 100%;margin-bottom: 10px; " v-for="item,index in tistics.detail" :key="index">
-                <div style="display: flex;width: 49%;font-size: 12px; align-items: center;justify-content: space-between; color: #c1c1c1;">
-                  <div>{{ item.deviceName }}</div>
-                  <div>{{ item.sum }}</div>
+              <div style="display: flex;justify-content: space-between;align-items: center; width: 100%;margin-bottom: 10px; " v-for="itm,inde in item.detail" :key="inde">
+                <div @click="$router.push(`/basic/device/devicebase?deviceName=${tisticsList2[index]}`)" style="display: flex;width: 49%;font-size: 12px; align-items: center;justify-content: space-between; color: #c1c1c1;cursor: pointer;">
+                  <div>{{ itm.deviceName }}</div>
+                  <div>{{ itm.sum }}</div>
                 </div>
-                <div  style="display: flex;width: 49%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
+                <div @click="$router.push(`/basic/device/devicebase?deviceName=${tisticsList2[index]}&deviceStatus=online`)"  style="cursor: pointer; display: flex;width: 49%;font-size: 14px; align-items: center;justify-content: space-between; color: #c1c1c1;">
                   <div>在线数量</div>
-                  <div>{{ item.online }}</div>
+                  <div>{{ itm.online }}</div>
                 </div>
               </div>
             </div>
@@ -377,7 +377,6 @@ const qxCli=async (val)=>{
   btnIndex.value=val
   let res = await Promise.all([AvgDataValueByHour({deviceType:'sensor_env',type:'env_temperature'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_humidity'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_rainfall'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_light'}),AvgDataValueByHour({deviceType:'sensor_env',type:'env_speed'})])
       byHour.value=res
-      console.log(res,99);
       setTimeout(() => {
         initChart3()
         initChart4()
@@ -697,7 +696,7 @@ onMounted(()=>{
   initChart2()
   
 })
-let mainIndex=ref('1')
+let mainIndex=ref(1)
 let mainList=ref<any>([
 '农业资源','设备监控','产业数据','鲁渝有礼','视频监控'
 ])
@@ -717,15 +716,23 @@ const getDeviceTotal=()=>{
 } 
 getDeviceTotal()
 //土壤环境
-let tistics=ref<any>({
-  tatol:0,
-  onlineRate:0,
-  detail:[]
-})
-const getDeviceTypeStatistics=()=>{
-  deviceTypeStatistics({type:'sensor_env',type:'sensor_soil',type:'camera_env'}).then(res=>{
-    tistics.value=res
-  })
+let tistics=ref<any>([])
+let tisticsList=ref<any>([
+  '环境监测','土壤墒情','视频监控'
+])
+let tisticsList2=ref<any>([
+  'sensor_env','sensor_soil','camera_env'
+])
+const getDeviceTypeStatistics= async ()=>{
+  let a= await deviceTypeStatistics({type:'sensor_env'})
+  let b=await  deviceTypeStatistics({type:'sensor_soil'})
+  let c=await  deviceTypeStatistics({type:'camera_env'})
+  
+
+ tistics.value.push(a,b,c)
+ console.log(tistics.value , 9999);
+ 
+
 }
 getDeviceTypeStatistics()
 //预警信息
