@@ -1,11 +1,11 @@
-<!-- 下属地块列表 -->
+<!-- 基地/地块列表 -->
 <template>
   <Dialog
-    title="下属地块"
+    title="选择基地/地块"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
-    width="1080"
+    width="1300"
   >
     <ContentWrap>
       <!-- 搜索工作栏 -->
@@ -34,7 +34,7 @@
             class="!w-160px"
           />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
+<!--        <el-form-item label="类型" prop="type">
           <el-select
             v-model="queryParams.type"
             placeholder="请选择类型"
@@ -42,42 +42,50 @@
             class="!w-160px"
           >
             <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,9) === 'fisheries')"
+              v-for="dict in queryParams.grade === '0' ? getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,4) === 'park') : getStrDictOptions(DICT_TYPE.KAIZHOU_PARK_BASE_TYPE).filter(item => item.value.toString().substring(0,6) === 'massif')"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
-          <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px"/>
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true">
+      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
+                @selection-change="handleSelectionChange">
+        <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="编号" align="center" prop="code" width="200"/>
         <el-table-column label="名称" align="center" prop="name" width="200"/>
-        <el-table-column label="分类" align="center" prop="grade" >
+        <el-table-column label="分类" align="center" prop="grade">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_GRADE" :value="scope.row.grade" />
+            <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_GRADE" :value="scope.row.grade"/>
           </template>
         </el-table-column>
-        <el-table-column label="类型" align="center" prop="type" >
+        <el-table-column label="类型" align="center" prop="type">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_TYPE" :value="scope.row.type" />
+            <dict-tag :type="DICT_TYPE.KAIZHOU_PARK_BASE_TYPE" :value="scope.row.type"/>
           </template>
         </el-table-column>
-        <el-table-column label="海拔" align="center" prop="altitude" />
-        <el-table-column label="纬度" align="center" prop="latitude" />
-        <el-table-column label="经度" align="center" prop="longitude" />
-        <el-table-column label="通讯地址" align="center" prop="address" />
-        <el-table-column label="联系人" align="center" prop="contact" />
-        <el-table-column label="联系电话" align="center" prop="tel" />
-        <el-table-column label="面积" align="center" prop="area" />
-        <el-table-column label="备注" align="center" prop="remark" />
+<!--        <el-table-column label="园区id" align="center" prop="parentId"/>-->
+        <!--        <el-table-column label="纬度" align="center" prop="latitude"/>-->
+        <!--        <el-table-column label="经度" align="center" prop="longitude"/>-->
+        <!--        <el-table-column label="通讯地址" align="center" prop="address"/>-->
+        <!--        <el-table-column label="联系人" align="center" prop="contact"/>-->
+        <!--        <el-table-column label="联系电话" align="center" prop="tel"/>-->
+<!--        <el-table-column label="面积" align="center" prop="area"/>-->
+        <el-table-column label="备注" align="center" prop="remark"/>
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -88,18 +96,20 @@
       />
     </ContentWrap>
     <template #footer>
+      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+        确 定
+      </el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ElTable } from 'element-plus'
-import { ParkBaseApi, ParkBaseVO } from '@/api/kaizhou/parkbase'
+import {ElTable} from 'element-plus'
+import {ParkBaseApi, ParkBaseVO} from '@/api/kaizhou/parkbase'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
-defineOptions({ name: 'ParkBaseMassifList' })
-
+defineOptions({name: 'ParkBaseHelper'})
 const list = ref<ParkBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
@@ -110,7 +120,7 @@ const queryParams = reactive({
   pageSize: 10,
   code: undefined,
   name: undefined,
-  grade: '20',
+  grade: undefined,
   type: undefined,
   altitude: undefined,
   latitude: undefined,
@@ -125,16 +135,36 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 
+/** 选中操作 */
+const selectionList = ref<ParkBaseVO[]>([])
+const handleSelectionChange = (rows: ParkBaseVO[]) => {
+  selectionList.value = rows
+}
+
+/** 提交选择 */
+const emits = defineEmits<{
+  (e: 'success', value: ParkBaseVO[]): void
+}>()
+const submitForm = () => {
+  try {
+    emits('success', selectionList.value)
+  } finally {
+    // 关闭弹窗
+    dialogVisible.value = false
+  }
+}
+
+
 /** 打开弹窗 */
 const open = async (id: string) => {
   dialogVisible.value = true
   parentValue.value = id
-  console.log("id:"+ id)
+  console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 加载列表  */
 const getList = async () => {

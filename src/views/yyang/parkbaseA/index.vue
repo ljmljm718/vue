@@ -76,15 +76,15 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['kaizhou:park-base:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增基地
-        </el-button>
+        <!--        <el-button-->
+        <!--          type="primary"-->
+        <!--          plain-->
+        <!--          @click="openForm('create')"-->
+        <!--          v-hasPermi="['kaizhou:park-base:create']"-->
+        <!--        >-->
+        <!--          <Icon icon="ep:plus" class="mr-5px"/>-->
+        <!--          新增基地-->
+        <!--        </el-button>-->
         <el-button
           type="success"
           plain
@@ -131,24 +131,24 @@
       />
       <el-table-column label="操作" align="center" fixed="right" width="300">
         <template #default="scope">
-          <el-button
-            link
-            type="success"
-            v-hasPermi="['kaizhou:park-base:create']"
-            @click="openParkBaseMassifList(scope.row.id)"
-            v-show="scope.row.parentId === '0'"
-          >
-            查询鱼塘
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('add', scope.row.id)"
-            v-hasPermi="['kaizhou:park-base:create']"
-            v-show="scope.row.parentId === '0'"
-          >
-            添加鱼塘
-          </el-button>
+          <!--          <el-button-->
+          <!--            link-->
+          <!--            type="success"-->
+          <!--            v-hasPermi="['kaizhou:park-base:create']"-->
+          <!--            @click="openParkBaseMassifList(scope.row.id)"-->
+          <!--            v-show="scope.row.parentId === '0'"-->
+          <!--          >-->
+          <!--            查询鱼塘-->
+          <!--          </el-button>-->
+          <!--          <el-button-->
+          <!--            link-->
+          <!--            type="primary"-->
+          <!--            @click="openForm('add', scope.row.id)"-->
+          <!--            v-hasPermi="['kaizhou:park-base:create']"-->
+          <!--            v-show="scope.row.parentId === '0'"-->
+          <!--          >-->
+          <!--            添加鱼塘-->
+          <!--          </el-button>-->
           <el-button
             link
             type="primary"
@@ -206,8 +206,8 @@ const queryParams = reactive({
   pageSize: 10,
   code: undefined,
   name: undefined,
-  grade: '0',
-  type: 'fisheries',
+  grade: '20',
+  type: undefined,
   altitude: undefined,
   latitude: undefined,
   longitude: undefined,
