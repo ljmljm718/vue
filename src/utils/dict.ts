@@ -248,4 +248,5 @@ export enum DICT_TYPE {
 
   // ========== AGRI - 武隆  ==========
   AGRI_PARK_TYPE = 'agri_park_type', //基地种植类型
+  AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
 }
