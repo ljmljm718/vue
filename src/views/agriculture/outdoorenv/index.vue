@@ -17,21 +17,32 @@
             class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-select
-            v-model="queryParams.deviceType"
-            placeholder="请选择设备类型"
-            clearable
+      <el-form-item label="数据上报时间" prop="reportDate" label-width="100">
+        <el-date-picker
+            v-model="queryParams.reportDate"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             class="!w-240px"
-        >
-          <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-          />
-        </el-select>
+        />
       </el-form-item>
+<!--      <el-form-item label="设备类型" prop="deviceType">-->
+<!--        <el-select-->
+<!--            v-model="queryParams.deviceType"-->
+<!--            placeholder="请选择设备类型"-->
+<!--            clearable-->
+<!--            class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"-->
+<!--              :key="dict.value"-->
+<!--              :label="dict.label"-->
+<!--              :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -60,11 +71,11 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="设备编号" align="center" prop="deviceId" />
-      <el-table-column label="设备类型" align="center" prop="deviceType">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="温度" align="center" prop="temperature" />
       <el-table-column label="湿度" align="center" prop="humidity" />
       <el-table-column label="光照" align="center" prop="lighting" />
@@ -135,7 +146,7 @@ const queryParams = reactive({
   reportDate: [],
   deptId: undefined,
   userId: undefined,
-  deviceType: undefined,
+  deviceType: 'outdoor',
   airPressure: undefined,
 })
 const queryFormRef = ref() // 搜索的表单

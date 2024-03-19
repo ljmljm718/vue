@@ -10,16 +10,16 @@
       <el-form-item label="设备编号" prop="deviceId">
         <el-input v-model="formData.deviceId" placeholder="请输入设备编号" />
       </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
-          <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="设备类型" prop="deviceType">-->
+<!--        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">-->
+<!--          <el-option-->
+<!--              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"-->
+<!--              :key="dict.value"-->
+<!--              :label="dict.label"-->
+<!--              :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="温度" prop="temperature">
         <el-input v-model="formData.temperature" placeholder="请输入温度" />
       </el-form-item>
@@ -41,7 +41,7 @@
       <el-form-item label="数据上报时间" prop="reportDate">
         <el-date-picker
             v-model="formData.reportDate"
-            type="date"
+            type="datetime"
             value-format="x"
             placeholder="选择数据上报时间"
         />
@@ -77,11 +77,10 @@ const formData = ref({
   rainfall: undefined,
   co2Density: undefined,
   reportDate: undefined,
-  deviceType: undefined,
+  deviceType: 'indoor',
   airPressure: undefined,
 })
 const formRules = reactive({
-  deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
 })
 const formRef = ref() // 表单 Ref
 
@@ -139,7 +138,7 @@ const resetForm = () => {
     rainfall: undefined,
     co2Density: undefined,
     reportDate: undefined,
-    deviceType: undefined,
+    deviceType: 'indoor',
     airPressure: undefined,
   }
   formRef.value?.resetFields()
