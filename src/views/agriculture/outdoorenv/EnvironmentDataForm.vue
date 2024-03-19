@@ -58,7 +58,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { EnvironmentDataApi, EnvironmentDataVO } from '@/api/agriculture/environmentdata'
 
 /** 环境数据 表单 */
-defineOptions({ name: 'EnvironmentDataForm' })
+defineOptions({ name: 'OutDoorEnvironmentDataForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗

@@ -120,7 +120,7 @@ import { EnvironmentDataApi, EnvironmentDataVO } from '@/api/agriculture/environ
 import EnvironmentDataForm from './EnvironmentDataForm.vue'
 
 /** 环境数据 列表 */
-defineOptions({ name: 'EnvironmentData' })
+defineOptions({ name: 'OutDoorEnvironmentData' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
