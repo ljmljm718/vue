@@ -8,38 +8,23 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="编号" prop="cropCode">
+      <el-form-item label="编号" prop="code">
         <el-input
-          v-model="queryParams.cropCode"
+          v-model="queryParams.code"
           placeholder="请输入编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="名称" prop="cropName">
+      <el-form-item label="名称" prop="name">
         <el-input
-          v-model="queryParams.cropName"
+          v-model="queryParams.name"
           placeholder="请输入名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
-      <el-form-item label="品种" prop="cropType">
-        <el-select
-          v-model="queryParams.cropType"
-          placeholder="请选择品种"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
@@ -59,7 +44,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['agriculture:crop-base:create']"
+          v-hasPermi="['agriculture:park-detail:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -68,7 +53,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['agriculture:crop-base:export']"
+          v-hasPermi="['agriculture:park-detail:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -79,28 +64,17 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="编号" align="center" prop="cropCode" />
-      <el-table-column label="名称" align="center" prop="cropName" />
-      <el-table-column label="品种" align="center" prop="cropType">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_CROP_CULTIVARS" :value="scope.row.cropType" />
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" align="center" prop="imgId" >
-        <template #default="{ row }">
-          <el-image
-              class="h-50px w-50px"
-              lazy
-              :src="row.imgId"
-              :preview-src-list="[row.imgId]"
-              preview-teleported
-              fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark" />
-      <el-table-column label="所属地块" align="center" prop="belongPlot"/>
-      <el-table-column label="描述" align="center" prop="cropDesc" />
+      <el-table-column label="所属基地" align="center" prop="parkId" />
+      <el-table-column label="编号" align="center" prop="code" width="200"/>
+      <el-table-column label="名称" align="center" prop="name" width="150"/>
+<!--      <el-table-column label="类型" align="center" prop="type" />-->
+      <el-table-column label="海拔" align="center" prop="altitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="通讯地址" align="center" prop="address" />
+      <el-table-column label="联系人" align="center" prop="contact" />
+      <el-table-column label="联系电话" align="center" prop="tel" />
+      <el-table-column label="面积" align="center" prop="area" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
@@ -109,13 +83,13 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+<!--      <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:crop-base:update']"
+            v-hasPermi="['agriculture:park-detail:update']"
           >
             编辑
           </el-button>
@@ -123,12 +97,12 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:crop-base:delete']"
+            v-hasPermi="['agriculture:park-detail:delete']"
           >
             删除
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -140,37 +114,42 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CropBaseForm ref="formRef" @success="getList" />
+  <ParkDetailForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase'
-import CropBaseForm from './CropBaseForm.vue'
-import ImageTable from "@/views/mp/material/components/ImageTable.vue";
+import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
+import ParkDetailForm from './ParkDetailForm.vue'
 
-/** 鲁渝协作品种管理 列表 */
-defineOptions({ name: 'AgriCropBase' })
+/** 地块基本信息 列表 */
+defineOptions({ name: 'ParkDetail' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<CropBaseVO[]>([]) // 列表的数据
+const list = ref<ParkDetailVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  cropCode: undefined,
-  cropName: undefined,
-  cropType: undefined,
+  parkId: undefined,
+  code: undefined,
+  name: undefined,
+  type: undefined,
+  altitude: undefined,
+  latitude: undefined,
+  longitude: undefined,
+  address: undefined,
+  contact: undefined,
+  tel: undefined,
+  area: undefined,
+  remark: undefined,
   createTime: [],
-  belongPark: undefined,
-  belongPlot: undefined,
   deptId: undefined,
-  userId: undefined,
+  userId: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -179,7 +158,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await CropBaseApi.getCropBasePage(queryParams)
+    const data = await ParkDetailApi.getParkDetailPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -211,7 +190,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await CropBaseApi.deleteCropBase(id)
+    await ParkDetailApi.deleteParkDetail(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -225,8 +204,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await CropBaseApi.exportCropBase(queryParams)
-    download.excel(data, '鲁渝协作品种管理.xls')
+    const data = await ParkDetailApi.exportParkDetail(queryParams)
+    download.excel(data, '地块基本信息.xls')
   } catch {
   } finally {
     exportLoading.value = false

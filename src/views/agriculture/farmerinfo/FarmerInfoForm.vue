@@ -7,44 +7,73 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="农户编码" prop="farmerId">
-        <el-input v-model="formData.farmerId" placeholder="请输入农户编码" />
-      </el-form-item>
-      <el-form-item label="农户姓名" prop="farmerName">
-        <el-input v-model="formData.farmerName" placeholder="请输入农户姓名" />
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="formData.sex">
-          <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX)"
-            :key="dict.value"
-            :label="dict.value"
-          >
-            {{ dict.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="年龄" prop="age">
-        <el-input v-model="formData.age" placeholder="请输入年龄" />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="mobile">
-        <el-input v-model="formData.mobile" placeholder="请输入手机号码" />
-      </el-form-item>
-      <el-form-item label="承包土地面积（亩）" prop="coveredLandArea">
-        <el-input v-model="formData.coveredLandArea" placeholder="请输入承包土地面积（亩）" />
-      </el-form-item>
-      <el-form-item label="擅长种植种类" prop="plantingSpecies">
-        <el-input v-model="formData.plantingSpecies" placeholder="请输入擅长种植种类" />
-      </el-form-item>
-      <el-form-item label="种植经验（年）" prop="plantingExperience">
-        <el-input v-model="formData.plantingExperience" placeholder="请输入种植经验（年）" />
-      </el-form-item>
-      <el-form-item label="部门id" prop="deptId">
-        <el-input v-model="formData.deptId" placeholder="请输入部门id" />
-      </el-form-item>
-      <el-form-item label="用户id" prop="userId">
-        <el-input v-model="formData.userId" placeholder="请输入用户id" />
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="农户身份码" prop="farmerId">
+            <el-input v-model="formData.farmerId" placeholder="请输入农户身份码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="农户姓名" prop="farmerName">
+            <el-input v-model="formData.farmerName" placeholder="请输入农户姓名" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="性别" prop="sex">
+            <el-radio-group v-model="formData.sex">
+              <el-radio
+                v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_FARMER_SEX)"
+                :key="dict.value"
+                :label="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="年龄" prop="age">
+            <el-input v-model="formData.age" placeholder="请输入年龄" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="手机号码" prop="mobile">
+            <el-input v-model="formData.mobile" placeholder="请输入手机号码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="承包土地" prop="coveredLandArea">
+            <el-input type="number" v-model="formData.coveredLandArea" placeholder="请输入承包土地面积" >
+              <template #append>亩</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="种植种类" prop="plantingSpecies">
+            <el-input v-model="formData.plantingSpecies" placeholder="请输入擅长种植种类" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="种植经验" prop="plantingExperience">
+            <el-input type="number" v-model="formData.plantingExperience" placeholder="请输入种植经验" >
+              <template #append>年</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+<!--      <el-form-item label="部门id" prop="deptId">-->
+<!--        <el-input v-model="formData.deptId" placeholder="请输入部门id" />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="用户id" prop="userId">-->
+<!--        <el-input v-model="formData.userId" placeholder="请输入用户id" />-->
+<!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -80,14 +109,12 @@ const formData = ref({
   userId: undefined,
 })
 const formRules = reactive({
-  farmerId: [{ required: true, message: '农户编码不能为空', trigger: 'blur' }],
+  farmerId: [{ required: true, message: '农户身份码不能为空', trigger: 'blur' }],
   farmerName: [{ required: true, message: '农户姓名不能为空', trigger: 'blur' }],
   sex: [{ required: true, message: '性别不能为空', trigger: 'blur' }],
   age: [{ required: true, message: '年龄不能为空', trigger: 'blur' }],
   mobile: [{ required: true, message: '手机号码不能为空', trigger: 'blur' }],
   plantingSpecies: [{ required: true, message: '擅长种植种类不能为空', trigger: 'blur' }],
-  deptId: [{ required: true, message: '部门id不能为空', trigger: 'blur' }],
-  userId: [{ required: true, message: '用户id不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
