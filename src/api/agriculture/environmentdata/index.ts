@@ -12,6 +12,7 @@ export interface EnvironmentDataVO {
   co2Density: string // 二氧化碳浓度
   reportDate: Date // 数据上报时间
   deviceType: string // 设备类型
+  airPressure: string // 大气压力
 }
 
 // 环境数据 API
@@ -45,4 +46,4 @@ export const EnvironmentDataApi = {
   exportEnvironmentData: async (params) => {
     return await request.download({ url: `/agriculture/environment-data/export-excel`, params })
   },
-}
+}

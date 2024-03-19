@@ -2,44 +2,44 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="68px"
     >
       <el-form-item label="设备编号" prop="deviceId">
         <el-input
-          v-model="queryParams.deviceId"
-          placeholder="请输入设备编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
+            v-model="queryParams.deviceId"
+            placeholder="请输入设备编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="数据上报时间" prop="reportDate">
-        <el-date-picker
-          v-model="queryParams.reportDate"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>-->
+<!--      <el-form-item label="数据上报时间" prop="reportDate">-->
+<!--        <el-date-picker-->
+<!--            v-model="queryParams.reportDate"-->
+<!--            value-format="YYYY-MM-DD HH:mm:ss"-->
+<!--            type="daterange"-->
+<!--            start-placeholder="开始日期"-->
+<!--            end-placeholder="结束日期"-->
+<!--            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+<!--            class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="设备类型" prop="deviceType">
         <el-select
-          v-model="queryParams.deviceType"
-          placeholder="请选择设备类型"
-          clearable
-          class="!w-240px"
+            v-model="queryParams.deviceType"
+            placeholder="请选择设备类型"
+            clearable
+            class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -47,19 +47,19 @@
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:environment-data:create']"
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:environment-data:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:environment-data:export']"
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:environment-data:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -79,39 +79,31 @@
       <el-table-column label="温度" align="center" prop="temperature" />
       <el-table-column label="湿度" align="center" prop="humidity" />
       <el-table-column label="光照" align="center" prop="lighting" />
-      <el-table-column label="风速" align="center" prop="windSpeed" />
+      <el-table-column label="大气压力" align="center" prop="airPressure" />
       <el-table-column label="降雨量" align="center" prop="rainfall" />
       <el-table-column label="二氧化碳浓度" align="center" prop="co2Density" />
       <el-table-column
-        label="数据上报时间"
-        align="center"
-        prop="reportDate"
-        :formatter="dateFormatter"
-        width="180px"
+          label="数据上报时间"
+          align="center"
+          prop="reportDate"
+          :formatter="dateFormatter"
+          width="180px"
       />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:environment-data:update']"
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['agriculture:environment-data:update']"
           >
             编辑
           </el-button>
           <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:environment-data:delete']"
+              link
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['agriculture:environment-data:delete']"
           >
             删除
           </el-button>
@@ -120,10 +112,10 @@
     </el-table>
     <!-- 分页 -->
     <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
     />
   </ContentWrap>
 
@@ -155,6 +147,7 @@ const queryParams = reactive({
   deptId: undefined,
   userId: undefined,
   deviceType: undefined,
+  airPressure: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

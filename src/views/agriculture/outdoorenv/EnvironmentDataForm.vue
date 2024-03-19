@@ -1,11 +1,11 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible">
     <el-form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      label-width="100px"
-      v-loading="formLoading"
+        ref="formRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="100px"
+        v-loading="formLoading"
     >
       <el-form-item label="设备编号" prop="deviceId">
         <el-input v-model="formData.deviceId" placeholder="请输入设备编号" />
@@ -32,21 +32,20 @@
       <el-form-item label="风速" prop="windSpeed">
         <el-input v-model="formData.windSpeed" placeholder="请输入风速" />
       </el-form-item>
+      <el-form-item label="大气压力" prop="airPressure">
+        <el-input v-model="formData.airPressure" placeholder="请输入大气压力" />
+      </el-form-item>
       <el-form-item label="降雨量" prop="rainfall">
         <el-input v-model="formData.rainfall" placeholder="请输入降雨量" />
       </el-form-item>
-      <el-form-item label="二氧化碳浓度" prop="co2Density">
-        <el-input v-model="formData.co2Density" placeholder="请输入二氧化碳浓度" />
-      </el-form-item>
       <el-form-item label="数据上报时间" prop="reportDate">
         <el-date-picker
-          v-model="formData.reportDate"
-          type="date"
-          value-format="x"
-          placeholder="选择数据上报时间"
+            v-model="formData.reportDate"
+            type="date"
+            value-format="x"
+            placeholder="选择数据上报时间"
         />
       </el-form-item>
-
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -79,6 +78,7 @@ const formData = ref({
   co2Density: undefined,
   reportDate: undefined,
   deviceType: undefined,
+  airPressure: undefined,
 })
 const formRules = reactive({
   deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
@@ -140,6 +140,7 @@ const resetForm = () => {
     co2Density: undefined,
     reportDate: undefined,
     deviceType: undefined,
+    airPressure: undefined,
   }
   formRef.value?.resetFields()
 }
