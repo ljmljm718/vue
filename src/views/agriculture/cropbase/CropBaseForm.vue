@@ -23,6 +23,12 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="所属基地" prop="belongPlot">
+        <el-input v-model="formData.belongPlot" placeholder="请输入所属园区" />
+      </el-form-item>
+      <el-form-item label="所属地块" prop="belongPark">
+        <el-input v-model="formData.belongPark" placeholder="请输入所属地块" />
+      </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId" />
       </el-form-item>
@@ -70,6 +76,8 @@ const formRules = reactive({
   cropName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
   cropType: [{ required: true, message: '品种不能为空', trigger: 'change' }],
   imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
+  belongPlot: [{ required: true, message: '所属基地不能为空', trigger: 'blur' }],
+  belongPark: [{ required: true, message: '所属地块不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
