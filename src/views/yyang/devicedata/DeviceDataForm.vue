@@ -19,7 +19,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
+        <el-select v-model="formData.deviceType" placeholder="请选择设备类型" disabled>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
             :key="dict.value"
@@ -85,7 +85,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceCode: undefined,
-  deviceType: undefined,
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
@@ -148,7 +148,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceCode: undefined,
-    deviceType: undefined,
+    deviceType: 'sensor_env',
     type: undefined,
     dataValue: undefined,
     unit: undefined,

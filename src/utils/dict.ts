@@ -253,4 +253,5 @@ export enum DICT_TYPE {
   // =========== YYANG -  酉阳 ==========
   YYANG_WATER_DETECTION = 'yyang_water_detection',
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
+  CHECK_STATE='check_state'
 }

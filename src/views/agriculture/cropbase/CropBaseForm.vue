@@ -16,7 +16,7 @@
             <el-form-item label="品种" prop="cropType">
                 <el-select v-model="formData.cropType" placeholder="请选择品种">
                     <el-option
-                            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_CROP_CULTIVARS)"
+                            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
                             :key="dict.value"
                             :label="dict.label"
                             :value="dict.value"
