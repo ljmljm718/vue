@@ -62,7 +62,33 @@
               </div>
             </div>
           </div>
-          <div class="main"></div>
+          <div class="content-main-item middle-main-wrapper">
+            <div class="main-top">
+              <div :class="mainIndex==1?'active':'actived'" @click="mainIndex=1">农业一张图</div>
+              <div :class="mainIndex==2?'active':'actived'" @click="mainIndex=2">产业一张图</div>
+              <div :class="mainIndex==3?'active':'actived'" @click="mainIndex=3">设备监控</div>
+            </div>
+            <div class="middle-main-item">
+                <div class="sxt" style="left: 30%;top: 50%;">
+                  <div class="message">
+                    <div class="message-top">基地1 监控</div>
+                    <div style="margin-left:20px;margin-top:10px;">监控摄像头-枪机</div>
+                    <div  style="margin-bottom: 20px; margin-left:20px;margin-top:10px;display: flex;align-items: center;color: #43ffd0;">
+                      <div class="pie"></div>
+                      在线
+                    </div>
+                    <div class="Jkbtn">查看监控</div>
+                  </div>
+                </div>
+                <div class="soil" style="left: 40%;top: 60%;"></div>
+                <div class="shed" style="left: 50%;top: 40%;"></div>
+              <div class="footer">
+                <div style="display: flex;align-items: center;"><div :class="['sxt-icon','sxt-1']"></div><div>监控设备</div> </div>
+                <div style="display: flex;align-items: center;margin-left: 20px;margin-right: 20px;"><div :class="['sxt-icon','sxt-2']"></div><div>土壤墒情监控</div> </div>
+                <div style="display: flex;align-items: center;"><div :class="['sxt-icon','sxt-3']"></div><div>棚内环境监测</div> </div>
+              </div>
+            </div>
+          </div>
           <div class="right">
             <div class="right1">
               <div class="box-title">气象监测</div>
@@ -78,7 +104,7 @@
                       <div style="color:#16bee2;font-size: 18px;">{{ item.val }}</div>
                       <div style="font-size: 13px;">{{ item.title }}</div>
                     </div>
-
+                    
                   </div>
                 </div>
               </div>
@@ -95,7 +121,36 @@
                   </select>
                 </div>
                 <div class="right2-warper">
-
+                  <div class="right2-warper-item">
+                      <div class="warper-top">土壤墒情</div>
+                      <div class="warper-foot">
+                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
+                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
+                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
+                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
+                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
+                      </div>
+                  </div>
+                  <div class="right2-warper-item">
+                      <div class="warper-top">土壤墒情</div>
+                      <div class="warper-foot">
+                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
+                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
+                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
+                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
+                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
+                      </div>
+                  </div>
+                  <div class="right2-warper-item">
+                      <div class="warper-top">土壤墒情</div>
+                      <div class="warper-foot">
+                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
+                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
+                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
+                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
+                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
+                      </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -163,6 +218,7 @@ onMounted(()=>{
   initChart1()
 })
 let qxzIndex=ref(1)
+let mainIndex=ref(1)
 let leftTop1List=ref<any>([
   {
     title:'基地',
@@ -265,8 +321,9 @@ grid-template-columns: 25% calc(50% - 20px) 25%;
 grid-auto-rows: 100%;
 gap: 10px;
 .left{
+  z-index: 999;
   display: grid;
-  grid-template-rows: 24% 24% 24% calc(28% - 10px);
+  grid-template-rows: 24% 24% 24% calc(28% - 30px);
   gap: 10px;
   grid-auto-columns: 100%;
   .left1{
@@ -348,7 +405,128 @@ gap: 10px;
   }
   }
 }
+.middle-main-wrapper{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .main-top{
+      z-index: 9999;
+      position: absolute;
+      width: 95%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;      
+      .active{
+        padding: 5px 50px;
+        height: 100%;
+        font-weight: 700;
+        text-align: center;
+        line-height: 45px;
+        color: #fff;
+        background-size: 100% 100%;
+        background-image: url(./assets/active2.png);
+      }
+      .actived{
+        padding: 5px 50px;
+        height: 100%;
+        color: #c1c1c1;
+        text-align: center;
+        line-height: 45px;
+        background-size: 100% 100%;
+        background-image: url(./assets/actived2.png);
+      }
+    }
+    .middle-main-item{
+      position: absolute;
+      width: 1400px;
+      height: 900px;
+      left: calc(50% - 700px);
+      top: calc(50% - 450px);
+      background-size: 100% 100%;
+      background-image: url(./assets/mainBg.png); 
+      position: relative;
+      .sxt{
+        z-index: 99;
+        position: absolute;
+        width: 4.5rem;
+        height: 4.5rem;
+        background-size: 100% 100%;
+        background-image: url(./assets/sxt1.png);
+        position: relative;
+        .message{
+          position: absolute;
+          top: -250px;
+          left: -80px;
+          padding: 15px 15px !important;
+          width: 200px;
+          height: 250px;
+          color: #c1c1c1;
+          background-size: 100% 100%;
+          background-image: url(./assets/message.png);
+          .message-top{
+            width: 100%;
+            margin-left: 20px;
+            font-weight: 600;
+            line-height: 30px;
+            color: #fff;
+            padding: 5px;
+            box-sizing: border-box;
+            margin-top: 20px;
+            height: 40px;
+            background-size: 100% 100%;
+            background-image: url(./assets/messageTop.png);
+          }
+          .pie{
+            width: 5px;
+            height: 10px;
+            background-repeat: no-repeat;
+            background-image: url(./assets/pie.png);
+          }
+          .Jkbtn{
+            width: 100px;
+            margin: auto;
+            text-align: center;
+            line-height: 50px;
+            height: 50px;
+            background-size: 100% 100%;
+            background-image: url(./assets/jkBtn.png);
+          }
+        }
+      }
+      .soil{
+        z-index: 99;
+        position: absolute;
+        width: 4.5rem;
+        height: 4.5rem;
+        background-size: 100% 100%;
+        background-image: url(./assets/sxt2.png);
+      }
+      .shed{
+        z-index: 99;
+        position: absolute;
+        width: 4.5rem;
+        height: 4.5rem;
+        background-size: 100% 100%;
+        background-image: url(./assets/sxt3.png);
+      }
+      .footer{
+        display: flex;
+        position: absolute;
+        left: 20%;
+        bottom: 2%;
+        .sxt-icon{
+          width: 3rem;
+          height: 3rem;
+          margin-right:10px;
+          background-size: 100% 100%;
+        }
+      }   
+      }
+
+  }
 .right{
+  z-index: 999;
   display: grid;
   grid-template-rows: 35% calc(65% - 10px);
   gap: 10px;
@@ -367,7 +545,7 @@ gap: 10px;
           color: #fff;
           font-size: 14px;
           padding: 7px 15px;
-
+          
           background-size: 100% 100%;
           background-image: url(./assets/active.png);
         }
@@ -406,11 +584,12 @@ gap: 10px;
     height: 100%;
     .right2-item{
       width: 100%;
-      height: calc(100% - 2rem);
+      height: calc(100% - 2.7rem);
       .right2-select{
         height: 33px;
         margin-left: 230px;
         display: flex;
+        margin-bottom: 10px;
         .select{
           background: none;
           padding: 0 15px;
@@ -421,8 +600,52 @@ gap: 10px;
       }
       .right2-warper{
         width: 100%;
-        height: calc(100% - 48px);
-        background-color: red;
+        height: calc(100% - 58px);
+        overflow-y: scroll;
+        .right2-warper-item{
+          width: 100%;
+          height: 32%;
+          margin-bottom: 20px;
+          background-size: 100% 100%;
+          background-image: url(./assets/right2Bg.png);
+          padding: 15px 20px !important;
+            box-sizing: border-box;
+          .warper-top{
+            width: 30%;
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            background-size: 100% 100%;
+            background-image: url(./assets/warperTop.png);
+          }
+          .warper-foot{
+            width: 100%;
+            margin-top: 15px;
+            height: calc(100% - 45px);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            overflow-y: scroll;
+              .warper-item2{
+                width: 43%;
+                height: 20px;
+                color: #c1c1c1;
+                padding: 3px 10px !important;
+                margin-bottom: 10px;
+                display: flex;
+                background-size: 100% 100%;
+                background-image: url(./assets/wareprBg.png);
+              }
+          }
+          .warper-foot::-webkit-scrollbar{
+            display: none;
+          }
+        }
+      }
+      .right2-warper::-webkit-scrollbar{
+        display: none;
       }
     }
   }
@@ -442,6 +665,11 @@ gap: 10px;
 @for $i from 1 through 6 {
 .right1bg-#{$i} {
   background-image: url(./assets/right1Bg#{$i}.png);
+}
+}
+@for $i from 1 through 3 {
+.sxt-#{$i} {
+  background-image: url(./assets/sxt#{$i}.png);
 }
 }
 
