@@ -34,7 +34,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_CROP_CULTIVARS)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -83,7 +83,7 @@
       <el-table-column label="名称" align="center" prop="cropName" />
       <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_CROP_CULTIVARS" :value="scope.row.cropType" />
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
       <el-table-column label="图片" align="center" prop="imgId" >
