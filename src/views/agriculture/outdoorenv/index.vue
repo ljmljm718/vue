@@ -76,12 +76,12 @@
 <!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <el-table-column label="温度" align="center" prop="temperature" />
-      <el-table-column label="湿度" align="center" prop="humidity" />
-      <el-table-column label="光照" align="center" prop="lighting" />
-      <el-table-column label="大气压力" align="center" prop="airPressure" />
-      <el-table-column label="降雨量" align="center" prop="rainfall" />
-      <el-table-column label="风速" align="center" prop="windSpeed" />
+      <el-table-column label="温度(℃)" align="center" prop="temperature" />
+      <el-table-column label="湿度(%/RH)" align="center" prop="humidity" />
+      <el-table-column label="光照(Lux)" align="center" prop="lighting" />
+      <el-table-column label="大气压力(kPa)" align="center" prop="airPressure" />
+      <el-table-column label="降雨量(mm)" align="center" prop="rainfall" />
+      <el-table-column label="风速(m/s)" align="center" prop="windSpeed" />
       <el-table-column
           label="数据上报时间"
           align="center"

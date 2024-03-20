@@ -10,23 +10,12 @@
       <el-form-item label="规则名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入规则名称"/>
       </el-form-item>
-      <el-form-item label="是否生效" prop="status">
-        <el-radio-group v-model="formData.status">
-          <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
-            :key="dict.value"
-            :label="dict.value"
-          >
-            {{ dict.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="处理器的名字" prop="handlerName">
-        <el-input v-model="formData.handlerName" placeholder="请输入处理器的名字" disabled/>
-      </el-form-item>
-      <el-form-item label="处理器的参数" prop="handlerParam">
-        <el-input v-model="formData.handlerParam" placeholder="请输入处理器的参数" disabled/>
-      </el-form-item>
+<!--      <el-form-item label="处理器的名字" prop="handlerName">-->
+<!--        <el-input v-model="formData.handlerName" placeholder="请输入处理器的名字" disabled/>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="处理器的参数" prop="handlerParam">-->
+<!--        <el-input v-model="formData.handlerParam" placeholder="请输入处理器的参数" disabled/>-->
+<!--      </el-form-item>-->
       <el-form-item label="CRON 表达式" prop="cronExpression">
 <!--        <el-input v-model="formData.cronExpression" placeholder="请输入CRON 表达式"/>-->
         <crontab v-model="formData.cronExpression" />
@@ -52,10 +41,7 @@
 </template>
 <script setup lang="ts">
 import {CheckRuleApi, CheckRuleVO} from '@/api/agriculture/checkrule'
-import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
-
-/** 初始赋值 */
-const status = 0;
+import {InfraJobStatusEnum} from "@/utils/constants";
 
 /** 巡检规则 表单 */
 defineOptions({name: 'CheckRuleForm'})
@@ -70,7 +56,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
-  status: status,
+  status: InfraJobStatusEnum.NORMAL,
   handlerName: '',
   handlerParam: '',
   cronExpression: '',
@@ -137,7 +123,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     name: undefined,
-    status: status,
+    status: InfraJobStatusEnum.NORMAL,
     handlerName: '',
     handlerParam: '',
     cronExpression: '',

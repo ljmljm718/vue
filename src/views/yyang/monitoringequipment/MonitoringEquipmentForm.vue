@@ -41,7 +41,7 @@
       <el-form-item label="监控基地ID" prop="monitoringBaseId">
         <!-- <el-input v-model="formData.monitoringBaseId" placeholder="请输入监控基地ID" /> -->
         <el-input v-model="formData.monitoringBaseId" placeholder="请选择右侧按钮监控基地" readonly>
-          <template #append> 
+          <template #append>
             <el-button @click="openParkBaseHelper('0')">
               <Icon icon="ep:search"/>
               选择
@@ -106,7 +106,7 @@ import { updateFile } from "@/api/infra/file/index";
 
 // 视频监控
 let fileList = ref([]);
- 
+
  const handleSuccess = (response, file, fileList) => {
    console.log('Upload success:', response, file, fileList);
    videoType.value=false

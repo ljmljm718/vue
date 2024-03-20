@@ -1,13 +1,13 @@
 <template>
-  <doc-alert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
-  <doc-alert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
-  <doc-alert title="Excel 导入导出" url="https://doc.iocoder.cn/excel-import-and-export/" />
+  <doc-alert title="用户体系" url="https://doc.iocoder.cn/user-center/"/>
+  <doc-alert title="三方登陆" url="https://doc.iocoder.cn/social-user/"/>
+  <doc-alert title="Excel 导入导出" url="https://doc.iocoder.cn/excel-import-and-export/"/>
 
   <el-row :gutter="20">
     <!-- 左侧部门树 -->
     <el-col :span="4" :xs="24">
       <ContentWrap class="h-1/1">
-        <DeptTree @node-click="handleDeptNodeClick" />
+        <DeptTree @node-click="handleDeptNodeClick"/>
       </ContentWrap>
     </el-col>
     <el-col :span="20" :xs="24">
@@ -64,15 +64,22 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button @click="handleQuery"><Icon icon="ep:search" />搜索</el-button>
-            <el-button @click="resetQuery"><Icon icon="ep:refresh" />重置</el-button>
+            <el-button @click="handleQuery">
+              <Icon icon="ep:search"/>
+              搜索
+            </el-button>
+            <el-button @click="resetQuery">
+              <Icon icon="ep:refresh"/>
+              重置
+            </el-button>
             <el-button
               type="primary"
               plain
               @click="openForm('create')"
               v-hasPermi="['system:user:create']"
             >
-              <Icon icon="ep:plus" /> 新增
+              <Icon icon="ep:plus"/>
+              新增
             </el-button>
             <el-button
               type="warning"
@@ -80,7 +87,8 @@
               @click="handleImport"
               v-hasPermi="['system:user:import']"
             >
-              <Icon icon="ep:upload" /> 导入
+              <Icon icon="ep:upload"/>
+              导入
             </el-button>
             <el-button
               type="success"
@@ -89,14 +97,15 @@
               :loading="exportLoading"
               v-hasPermi="['system:user:export']"
             >
-              <Icon icon="ep:download" />导出
+              <Icon icon="ep:download"/>
+              导出
             </el-button>
           </el-form-item>
         </el-form>
       </ContentWrap>
       <ContentWrap>
         <el-table v-loading="loading" :data="list">
-          <el-table-column label="用户编号" align="center" key="id" prop="id" />
+          <el-table-column label="用户编号" align="center" key="id" prop="id"/>
           <el-table-column
             label="用户名称"
             align="center"
@@ -116,7 +125,7 @@
             prop="deptName"
             :show-overflow-tooltip="true"
           />
-          <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
+          <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
           <el-table-column label="状态" key="status">
             <template #default="scope">
               <el-switch
@@ -143,7 +152,8 @@
                   @click="openForm('update', scope.row.id)"
                   v-hasPermi="['system:user:update']"
                 >
-                  <Icon icon="ep:edit" />修改
+                  <Icon icon="ep:edit"/>
+                  修改
                 </el-button>
                 <el-dropdown
                   @command="(command) => handleCommand(command, scope.row)"
@@ -153,26 +163,32 @@
                     'system:permission:assign-user-role'
                   ]"
                 >
-                  <el-button type="primary" link><Icon icon="ep:d-arrow-right" /> 更多</el-button>
+                  <el-button type="primary" link>
+                    <Icon icon="ep:d-arrow-right"/>
+                    更多
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
                         command="handleDelete"
                         v-if="checkPermi(['system:user:delete'])"
                       >
-                        <Icon icon="ep:delete" />删除
+                        <Icon icon="ep:delete"/>
+                        删除
                       </el-dropdown-item>
                       <el-dropdown-item
                         command="handleResetPwd"
                         v-if="checkPermi(['system:user:update-password'])"
                       >
-                        <Icon icon="ep:key" />重置密码
+                        <Icon icon="ep:key"/>
+                        重置密码
                       </el-dropdown-item>
                       <el-dropdown-item
                         command="handleRole"
                         v-if="checkPermi(['system:permission:assign-user-role'])"
                       >
-                        <Icon icon="ep:circle-check" />分配角色
+                        <Icon icon="ep:circle-check"/>
+                        分配角色
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
@@ -192,28 +208,28 @@
   </el-row>
 
   <!-- 添加或修改用户对话框 -->
-  <UserForm ref="formRef" @success="getList" />
+  <UserForm ref="formRef" @success="getList"/>
   <!-- 用户导入对话框 -->
-  <UserImportForm ref="importFormRef" @success="getList" />
+  <UserImportForm ref="importFormRef" @success="getList"/>
   <!-- 分配角色 -->
-  <UserAssignRoleForm ref="assignRoleFormRef" @success="getList" />
+  <UserAssignRoleForm ref="assignRoleFormRef" @success="getList"/>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { checkPermi } from '@/utils/permission'
-import { dateFormatter } from '@/utils/formatTime'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
+import {checkPermi} from '@/utils/permission'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CommonStatusEnum } from '@/utils/constants'
+import {CommonStatusEnum} from '@/utils/constants'
 import * as UserApi from '@/api/system/user'
 import UserForm from './UserForm.vue'
 import UserImportForm from './UserImportForm.vue'
 import UserAssignRoleForm from './UserAssignRoleForm.vue'
 import DeptTree from './DeptTree.vue'
 
-defineOptions({ name: 'SystemUser' })
+defineOptions({name: 'SystemUser'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
@@ -331,7 +347,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 重置密码 */
@@ -346,7 +363,8 @@ const handleResetPwd = async (row: UserApi.UserVO) => {
     // 发起重置
     await UserApi.resetUserPwd(row.id, password)
     message.success('修改成功，新密码是：' + password)
-  } catch {}
+  } catch {
+  }
 }
 
 /** 分配角色 */

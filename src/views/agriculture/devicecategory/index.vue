@@ -120,11 +120,11 @@
     <el-table
       v-loading="loading"
       :data="list"
-      :stripe="true"
       :show-overflow-tooltip="true"
       row-key="id"
       :default-expand-all="isExpandAll"
       v-if="refreshTable"
+      :row-class-name="tableRowClassName"
     >
 <!--      <el-table-column label="id主键" align="center" prop="id" />-->
 <!--      <el-table-column label="父结点" align="center" prop="parentId" />-->
@@ -280,6 +280,15 @@ const toggleExpandAll = async () => {
   isExpandAll.value = !isExpandAll.value
   await nextTick()
   refreshTable.value = true
+}
+
+// 表格行颜色
+const tableRowClassName = ({row}: { row: DeviceCategoryVO, rowIndex: number }) => {
+  if (row.parentId === 0) {
+    return 'primary-row'
+  } else {
+    return 'success-row'
+  }
 }
 
 /** 初始化 **/

@@ -49,4 +49,4 @@ export const MonitoringEquipmentApi = {
   exportMonitoringEquipment: async (params) => {
     return await request.download({ url: `/yyang/monitoring-equipment/export-excel`, params })
   },
-}
+}

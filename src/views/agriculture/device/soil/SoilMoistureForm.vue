@@ -7,16 +7,22 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备id" prop="equId">
-        <el-input v-model="formData.equId" placeholder="请输入设备id" />
+      <el-form-item label="设备编号" prop="deviceCode">
+<!--        <el-input v-model="deviceData.deviceCode" disabled/>-->
+        <el-select v-model="deviceData.deviceCode" placeholder="请选择设备" @change="changeDevice" style="width: 100%;">
+          <el-option
+            v-for="item in deviceList"
+            :key="item.id"
+            :label="item.deviceCode"
+            :value="item.id"
+          >
+            <span style="float: left">{{item.deviceCode}}</span>
+            <span style="float: right">{{item.deviceName}}</span>
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="采集时间" prop="gatherTime">
-        <el-date-picker
-          v-model="formData.gatherTime"
-          type="date"
-          value-format="x"
-          placeholder="选择采集时间"
-        />
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input v-model="deviceData.deviceName" disabled/>
       </el-form-item>
       <el-form-item label="土壤温度" prop="soilTemperature">
         <el-input v-model="formData.soilTemperature" placeholder="请输入土壤温度" />
@@ -42,6 +48,7 @@
 </template>
 <script setup lang="ts">
 import { SoilMoistureApi, SoilMoistureVO } from '@/api/agriculture/soilmoisture'
+import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 
 /** 土壤墒情 表单 */
 defineOptions({ name: 'SoilMoistureForm' })
@@ -64,32 +71,60 @@ const formData = ref({
   soilDepth: undefined,
 })
 const formRules = reactive({
-  gatherTime: [{ required: true, message: '采集时间不能为空', trigger: 'blur' }],
-  soilTemperature: [{ required: true, message: '土壤温度不能为空', trigger: 'blur' }],
-  soilHumidity: [{ required: true, message: '土壤湿度不能为空', trigger: 'blur' }],
-  soilPh: [{ required: true, message: 'PH值不能为空', trigger: 'blur' }],
-  soilEc: [{ required: true, message: 'EC值不能为空', trigger: 'blur' }],
+  soilTemperature: [{ required: true, message: '土壤温度不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的土壤温度', trigger: 'blur'
+  }],
+  soilHumidity: [{ required: true, message: '土壤湿度不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的土壤湿度', trigger: 'blur'
+  }],
+  soilPh: [{ required: true, message: 'PH值不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的PH值', trigger: 'blur'
+  }],
+  soilEc: [{ required: true, message: 'EC值不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的EC值', trigger: 'blur'
+  }],
   soilDepth: [{ required: true, message: '土壤深度不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
+const deviceData = ref({
+  deviceCode: '',
+  deviceName: ''
+})
+const deviceList = ref<DeviceInfoVO[]>([]) // 设备列表的数据
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, deviceCode?: string, deviceName?: string) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  getDeviceInfo()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await SoilMoistureApi.getSoilMoisture(id)
+      if (deviceCode) {
+        deviceData.value.deviceCode = deviceCode
+      }
+      if (deviceName) {
+        deviceData.value.deviceName = deviceName
+      }
     } finally {
       formLoading.value = false
     }
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+const getDeviceInfo = async () => {
+  const data = await DeviceInfoApi.getDeviceInfoPage({
+    deviceType: '14,16',
+    pageNo: 1,
+    pageSize: 100
+  })
+  deviceList.value = data.list
+}
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -115,6 +150,19 @@ const submitForm = async () => {
   }
 }
 
+// 选择设备时赋值
+const changeDevice = async (value) => {
+  const select = deviceList.value.filter( item => {
+    return item.id === value
+  })
+  if(select.length > 0) {
+    //赋值
+    formData.value.equId = select[0].id
+    deviceData.value.deviceCode = select[0].deviceCode
+    deviceData.value.deviceName = select[0].deviceName
+  }
+}
+
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
@@ -128,5 +176,11 @@ const resetForm = () => {
     soilDepth: undefined,
   }
   formRef.value?.resetFields()
+  if (formType.value === 'create') {
+    deviceData.value = {
+      deviceCode: undefined,
+      deviceName: undefined
+    }
+  }
 }
 </script>
