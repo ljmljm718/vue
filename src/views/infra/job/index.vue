@@ -238,7 +238,7 @@ const handleChangeStatus = async (row: JobApi.JobVO) => {
   } catch {
     // 取消后，进行恢复按钮
     row.status =
-      row.status === InfraJobStatusEnum.NORMAL ? InfraJobStatusEnum.STOP : InfraJobStatusEnum.NORMAL
+      row.status === InfraJobStatusEnum.NORMAL ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP
   }
 }
 

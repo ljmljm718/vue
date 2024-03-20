@@ -18,8 +18,8 @@
           </template>
         </el-input>
       </el-form-item>
-      <!-- <el-form-item label="设备类型" prop="deviceType">
-        <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
+      <el-form-item label="设备类型" prop="deviceType">
+        <el-select v-model="formData.deviceType" placeholder="请选择设备类型" disabled>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
             :key="dict.value"
@@ -27,12 +27,11 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item> -->
-      
+      </el-form-item>
       <el-form-item label="监测类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择监测类型">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.YYANG_WATER_DETECTION)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -86,7 +85,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceCode: undefined,
-  deviceType: undefined,
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
@@ -149,7 +148,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceCode: undefined,
-    deviceType: 'sensor_water_quality',
+    deviceType: 'sensor_env',
     type: undefined,
     dataValue: undefined,
     unit: undefined,

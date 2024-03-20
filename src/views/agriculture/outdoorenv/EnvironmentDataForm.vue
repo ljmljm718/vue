@@ -21,22 +21,34 @@
 <!--        </el-select>-->
 <!--      </el-form-item>-->
       <el-form-item label="温度" prop="temperature">
-        <el-input v-model="formData.temperature" placeholder="请输入温度" />
+        <el-input v-model="formData.temperature" placeholder="请输入温度" >
+          <template #append>℃</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="湿度" prop="humidity">
-        <el-input v-model="formData.humidity" placeholder="请输入湿度" />
+        <el-input v-model="formData.humidity" placeholder="请输入湿度" >
+          <template #append>%/RH</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="光照" prop="lighting">
-        <el-input v-model="formData.lighting" placeholder="请输入光照" />
+        <el-input v-model="formData.lighting" placeholder="请输入光照" >
+          <template #append>Lux</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="风速" prop="windSpeed">
-        <el-input v-model="formData.windSpeed" placeholder="请输入风速" />
+        <el-input v-model="formData.windSpeed" placeholder="请输入风速" >
+          <template #append>m/s</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="大气压力" prop="airPressure">
-        <el-input v-model="formData.airPressure" placeholder="请输入大气压力" />
+        <el-input v-model="formData.airPressure" placeholder="请输入大气压力" >
+          <template #append>kPa</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="降雨量" prop="rainfall">
-        <el-input v-model="formData.rainfall" placeholder="请输入降雨量" />
+        <el-input v-model="formData.rainfall" placeholder="请输入降雨量" >
+          <template #append>mm</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="数据上报时间" prop="reportDate">
         <el-date-picker
