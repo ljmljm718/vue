@@ -117,7 +117,19 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>
+<!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
+      <el-table-column label="巡检影像" align="center" prop="inspectionImage">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.inspectionImage"
+            :preview-src-list="[row.inspectionImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="巡检内容" align="center" prop="content"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
