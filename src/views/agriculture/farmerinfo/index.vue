@@ -6,12 +6,12 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="90px"
+      label-width="68px"
     >
-      <el-form-item label="农户身份码" prop="farmerId">
+      <el-form-item label="农户编码" prop="farmerId">
         <el-input
           v-model="queryParams.farmerId"
-          placeholder="请输入农户身份码"
+          placeholder="请输入农户编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -34,14 +34,14 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_FARMER_SEX)"
+            v-for="dict in getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="种植种类" prop="plantingSpecies">
+      <el-form-item label="擅长种植种类" prop="plantingSpecies">
         <el-input
           v-model="queryParams.plantingSpecies"
           placeholder="请输入擅长种植种类"
@@ -82,7 +82,7 @@
       <el-table-column label="农户姓名" align="center" prop="farmerName" />
       <el-table-column label="性别" align="center" prop="sex">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_FARMER_SEX" :value="scope.row.sex" />
+          <dict-tag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="scope.row.sex" />
         </template>
       </el-table-column>
       <el-table-column label="年龄" align="center" prop="age" />
