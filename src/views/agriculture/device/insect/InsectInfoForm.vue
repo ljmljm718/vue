@@ -7,28 +7,23 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备id" prop="equId">
-        <el-input v-model="formData.equId" placeholder="请输入设备id" />
+      <el-form-item label="设备编号" prop="deviceCode">
+        <el-input v-model="deviceData.deviceCode" disabled/>
       </el-form-item>
-      <el-form-item label="采集时间" prop="gatherTime">
-        <el-date-picker
-          v-model="formData.gatherTime"
-          type="date"
-          value-format="x"
-          placeholder="选择采集时间"
-        />
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input v-model="deviceData.deviceName" disabled/>
       </el-form-item>
       <el-form-item label="虫害数量" prop="insectPestNumber">
-        <el-input v-model="formData.insectPestNumber" placeholder="请输入虫害数量" />
+        <el-input v-model="formData.insectPestNumber" placeholder="请输入虫害数量"/>
       </el-form-item>
       <el-form-item label="虫害种类" prop="insectPestKind">
-        <el-input v-model="formData.insectPestKind" placeholder="请输入虫害种类" />
+        <el-input v-model="formData.insectPestKind" placeholder="请输入虫害种类"/>
       </el-form-item>
       <el-form-item label="杀虫仓温度" prop="insectTemperature">
-        <el-input v-model="formData.insectTemperature" placeholder="请输入杀虫仓温度" />
+        <el-input v-model="formData.insectTemperature" placeholder="请输入杀虫仓温度"/>
       </el-form-item>
       <el-form-item label="烘干仓温度" prop="dryingTemperature">
-        <el-input v-model="formData.dryingTemperature" placeholder="请输入烘干仓温度" />
+        <el-input v-model="formData.dryingTemperature" placeholder="请输入烘干仓温度"/>
       </el-form-item>
       <el-form-item label="诱虫灯状态" prop="insectLampStatus">
         <el-radio-group v-model="formData.insectLampStatus">
@@ -52,7 +47,7 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="杀虫灯挡板状态" prop="killInsectBaffleStatus">
+      <el-form-item label="挡板状态" prop="killInsectBaffleStatus">
         <el-radio-group v-model="formData.killInsectBaffleStatus">
           <el-radio
             v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
@@ -82,13 +77,13 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { InsectInfoApi, InsectInfoVO } from '@/api/agriculture/insectinfo'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {InsectInfoApi, InsectInfoVO} from '@/api/agriculture/insectinfo'
 
 /** 虫情信息 表单 */
-defineOptions({ name: 'InsectInfoForm' })
+defineOptions({name: 'InsectInfoForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -108,21 +103,57 @@ const formData = ref({
   killInsectBaffleStatus: undefined,
   insectVideo: undefined,
 })
+const checkRules = (rule: any, value: any, callback: any) => {
+  rule = /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/
+  if (rule.test(value)) {
+    if (Number(value) < 46) {
+      callback(new Error('请输入正确的温度46℃以上'))
+    } else {
+      callback()
+    }
+  } else {
+    callback(new Error('请输入正确的温度46℃以上'))
+  }
+}
+const checkDrying = (rule: any, value: any, callback: any) => {
+  rule = /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/
+  if (rule.test(value)) {
+    if (Number(value) >= 60 && Number(value) <= 115) {
+      callback()
+    } else {
+      callback(new Error('请输入正确的温度60-115℃'))
+    }
+  } else {
+    callback(new Error('请输入正确的温度60-115℃'))
+  }
+}
 const formRules = reactive({
-  gatherTime: [{ required: true, message: '采集时间不能为空', trigger: 'blur' }],
-  insectPestNumber: [{ required: true, message: '虫害数量不能为空', trigger: 'blur' }],
-  insectPestKind: [{ required: true, message: '虫害种类不能为空', trigger: 'blur' }],
-  insectTemperature: [{ required: true, message: '杀虫仓温度不能为空', trigger: 'blur' }],
-  dryingTemperature: [{ required: true, message: '烘干仓温度不能为空', trigger: 'blur' }],
-  insectLampStatus: [{ required: true, message: '诱虫灯状态不能为空', trigger: 'blur' }],
-  killInsectStatus: [{ required: true, message: '杀虫灯状态不能为空', trigger: 'blur' }],
-  killInsectBaffleStatus: [{ required: true, message: '杀虫灯挡板状态不能为空', trigger: 'blur' }],
-  insectVideo: [{ required: true, message: '摄像头状态不能为空', trigger: 'blur' }],
+  insectPestNumber: [{required: true, message: '虫害数量不能为空', trigger: 'blur'}, {
+    pattern: /^[1-9]\d*$/, message: '请输入正确的虫害数量', trigger: 'blur'
+  }],
+  insectPestKind: [{required: true, message: '虫害种类不能为空', trigger: 'blur'}, {
+    pattern: /^[1-9]\d*$/, message: '请输入正确的虫害数量', trigger: 'blur'
+  }],
+  insectTemperature: [{required: true, message: '杀虫仓温度不能为空', trigger: 'blur'}
+    , {
+      validator: checkRules, trigger: 'blur'
+    }],
+  dryingTemperature: [{required: true, message: '烘干仓温度不能为空', trigger: 'blur'}, {
+    validator: checkDrying, trigger: 'blur'
+  }],
+  insectLampStatus: [{required: true, message: '诱虫灯状态不能为空', trigger: 'blur'}],
+  killInsectStatus: [{required: true, message: '杀虫灯状态不能为空', trigger: 'blur'}],
+  killInsectBaffleStatus: [{required: true, message: '杀虫灯挡板状态不能为空', trigger: 'blur'}],
+  insectVideo: [{required: true, message: '摄像头状态不能为空', trigger: 'blur'}],
 })
-const formRef = ref() // 表单 Ref
+const formRef = ref()// 表单 Ref
+const deviceData = ref({
+  deviceCode: '',
+  deviceName: ''
+})
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, deviceCode?: string, deviceName?: string) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -132,12 +163,18 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await InsectInfoApi.getInsectInfo(id)
+      if (deviceCode) {
+        deviceData.value.deviceCode = deviceCode
+      }
+      if (deviceName) {
+        deviceData.value.deviceName = deviceName
+      }
     } finally {
       formLoading.value = false
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -173,10 +210,10 @@ const resetForm = () => {
     insectPestKind: undefined,
     insectTemperature: undefined,
     dryingTemperature: undefined,
-    insectLampStatus: undefined,
-    killInsectStatus: undefined,
-    killInsectBaffleStatus: undefined,
-    insectVideo: undefined,
+    insectLampStatus: '0',
+    killInsectStatus: '0',
+    killInsectBaffleStatus: '0',
+    insectVideo: '0',
   }
   formRef.value?.resetFields()
 }
