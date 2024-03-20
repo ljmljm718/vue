@@ -62,4 +62,7 @@ body {
 .el-table .success-row {
   --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
+.el-table .primary-row {
+  --el-table-tr-bg-color: var(--el-color-primary-light-9);
+}
 </style>

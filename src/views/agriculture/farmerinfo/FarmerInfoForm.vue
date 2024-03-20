@@ -16,7 +16,7 @@
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="formData.sex">
           <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX)"
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_FARMER_SEX)"
             :key="dict.value"
             :label="dict.value"
           >
