@@ -46,4 +46,9 @@ export const DeviceCategoryApi = {
   exportDeviceCategory: async (params) => {
     return await request.download({ url: `/agriculture/device-category/export-excel`, params })
   },
+
+  // 查询设备分类树
+  getDeviceCategoryTree: async (params) => {
+    return await request.get({ url: `/agriculture/device-category/tree`, params })
+  },
 }
