@@ -54,14 +54,15 @@
         <UploadImg v-model="formData.capturedImage" />
       </el-form-item>
       <el-form-item label="视频URL" prop="videoUrl">
+        <el-input v-model="formData.videoUrl" placeholder="请选择视频" />
         <el-upload
-          :action="aa"
+          action="#"
+          :auto-upload="false"
           :on-success="handleSuccess"
           :on-error="handleError"
-          :before-upload="beforeUpload"
+          :on-change="beforeUpload"
         >
           <el-button solt="trigger" size="small" type="primary">选择视频</el-button>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
         </el-upload>
 
       </el-form-item>
@@ -88,6 +89,12 @@
     ref="parkBaseHelperRef"
     @success="handleParkBaseChange"
   />
+  <div class="container" v-show="videoType">
+    <div class="mask" v-show="videoType"></div>
+    <div class="spinner" v-show="videoType"></div>
+  </div>
+  
+  
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
@@ -95,28 +102,42 @@ import { MonitoringEquipmentApi, MonitoringEquipmentVO } from '@/api/yyang/monit
 import ParkBaseHelper from "@/views/kaizhou/parkbase/components/ParkBaseHelper.vue";
 import { ref } from 'vue';
 import { ElMessageBox } from 'element-plus';
+import { updateFile } from "@/api/infra/file/index";
 
 // 视频监控
 let fileList = ref([]);
-let aa=import.meta.env.VITE_APP_TENANT_ENABLE
- console.log(aa,'0aa');
  
  const handleSuccess = (response, file, fileList) => {
    console.log('Upload success:', response, file, fileList);
+   videoType.value=false
  };
 
  const handleError = (err, file, fileList) => {
    console.error('Upload error:', err, file, fileList);
  };
-
- const beforeUpload = (file) => {
-   const isVideo = file.type === 'video/mp4';
+let videoType=ref(false)
+ const beforeUpload = async (file) => {
+  console.log('file', file);
+  
+   const isVideo = file.raw.type === 'video/mp4';
    if (!isVideo) {
      ElMessageBox.alert('请上传视频文件（.mp4格式）', '错误', { type: 'error' });
+   } else {
+    videoType.value=true
+      const fileForm = new FormData()
+      fileForm.append('file', file.raw)
+      const { data } = await updateFile(fileForm);
+      console.log('res', data);
+        formData.value.videoUrl=data
+        videoType.value=false
+      
+        
+      
    }
    return isVideo;
  };
 
+ 
  const submitUpload = () => {
    if (fileList.value && fileList.value.length > 0) {
      const formData = new FormData();
@@ -190,15 +211,6 @@ const handleParkBaseChange = (order: MonitoringEquipmentVO) => {
   if (openType.value === '0') formData.value.monitoringBaseId = String(order[0].id)
   else formData.value.monitoringBaseId = String(order[0].id)
 }
-let action=ref<String>('')
-const handlePreview=(row)=>{
-  console.log(row,999);
-}
-const handleRemoveFiles=()=>{}
-
-const handleChangeFiles=()=>{}
-
-const beforeUploadFiles=()=>{}
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -245,3 +257,41 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+<style scope="scoped" scss>
+.container {
+  position: relative;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  z-index: 10000;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+</style>
