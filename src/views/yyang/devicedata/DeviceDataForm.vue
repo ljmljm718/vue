@@ -18,7 +18,7 @@
           </template>
         </el-input>
       </el-form-item>
-      <!-- <el-form-item label="设备类型" prop="deviceType">
+      <el-form-item label="设备类型" prop="deviceType">
         <el-select v-model="formData.deviceType" placeholder="请选择设备类型">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
@@ -27,12 +27,11 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item> -->
-      
+      </el-form-item>
       <el-form-item label="监测类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择监测类型">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.YYANG_WATER_DETECTION)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -149,7 +148,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceCode: undefined,
-    deviceType: 'sensor_water_quality',
+    deviceType: undefined,
     type: undefined,
     dataValue: undefined,
     unit: undefined,

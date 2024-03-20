@@ -59,9 +59,8 @@
       </el-form-item>
     </el-form>
   </ContentWrap>
-  
 
-  <!-- 列表  -->
+  <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
       <el-table-column label="字典编码" align="center" prop="id" />

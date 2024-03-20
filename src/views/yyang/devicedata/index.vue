@@ -17,7 +17,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <!-- <el-form-item label="设备类型" prop="deviceType">
+      <el-form-item label="设备类型" prop="deviceType">
         <el-select
           v-model="queryParams.deviceType"
           placeholder="请选择设备类型"
@@ -31,7 +31,7 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="监测类型" prop="type">
         <el-select
           v-model="queryParams.type"
@@ -40,7 +40,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.YYANG_WATER_DETECTION)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -95,14 +95,14 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
       <el-table-column label="设备名称" align="center" prop="deviceName"/>
-      <!-- <el-table-column label="设备类型" align="center" prop="deviceType">
+      <el-table-column label="设备类型" align="center" prop="deviceType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType"/>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column label="监测类型" align="center" prop="type">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.YYANG_WATER_DETECTION" :value="scope.row.type"/>
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.type"/>
         </template>
       </el-table-column>
       <el-table-column label="园区名称" align="center" prop="belongParkName"/>
@@ -172,7 +172,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   deviceCode: undefined,
-  deviceType: 'sensor_water_quality',
+  deviceType: undefined,
   type: undefined,
   dataValue: undefined,
   unit: undefined,
