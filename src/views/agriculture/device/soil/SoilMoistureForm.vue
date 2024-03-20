@@ -7,16 +7,11 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备id" prop="equId">
-        <el-input v-model="formData.equId" placeholder="请输入设备id" />
+      <el-form-item label="设备编号" prop="deviceCode">
+        <el-input v-model="deviceData.deviceCode" disabled/>
       </el-form-item>
-      <el-form-item label="采集时间" prop="gatherTime">
-        <el-date-picker
-          v-model="formData.gatherTime"
-          type="date"
-          value-format="x"
-          placeholder="选择采集时间"
-        />
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input v-model="deviceData.deviceName" disabled/>
       </el-form-item>
       <el-form-item label="土壤温度" prop="soilTemperature">
         <el-input v-model="formData.soilTemperature" placeholder="请输入土壤温度" />
@@ -64,17 +59,28 @@ const formData = ref({
   soilDepth: undefined,
 })
 const formRules = reactive({
-  gatherTime: [{ required: true, message: '采集时间不能为空', trigger: 'blur' }],
-  soilTemperature: [{ required: true, message: '土壤温度不能为空', trigger: 'blur' }],
-  soilHumidity: [{ required: true, message: '土壤湿度不能为空', trigger: 'blur' }],
-  soilPh: [{ required: true, message: 'PH值不能为空', trigger: 'blur' }],
-  soilEc: [{ required: true, message: 'EC值不能为空', trigger: 'blur' }],
+  soilTemperature: [{ required: true, message: '土壤温度不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的土壤温度', trigger: 'blur'
+  }],
+  soilHumidity: [{ required: true, message: '土壤湿度不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的土壤湿度', trigger: 'blur'
+  }],
+  soilPh: [{ required: true, message: 'PH值不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的PH值', trigger: 'blur'
+  }],
+  soilEc: [{ required: true, message: 'EC值不能为空', trigger: 'blur' }, {
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/, message: '请输入正确的EC值', trigger: 'blur'
+  }],
   soilDepth: [{ required: true, message: '土壤深度不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
+const deviceData = ref({
+  deviceCode: '',
+  deviceName: ''
+})
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, deviceCode?: string, deviceName?: string) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -84,6 +90,12 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await SoilMoistureApi.getSoilMoisture(id)
+      if (deviceCode) {
+        deviceData.value.deviceCode = deviceCode
+      }
+      if (deviceName) {
+        deviceData.value.deviceName = deviceName
+      }
     } finally {
       formLoading.value = false
     }

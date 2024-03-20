@@ -8,10 +8,19 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备id" prop="equId">
+      <el-form-item label="设备编号" prop="deviceCode">
         <el-input
-          v-model="queryParams.equId"
-          placeholder="请输入设备id"
+          v-model="queryParams.deviceCode"
+          placeholder="请输入设备编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入设备名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -28,51 +37,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="土壤温度" prop="soilTemperature">
-        <el-input
-          v-model="queryParams.soilTemperature"
-          placeholder="请输入土壤温度"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="土壤湿度" prop="soilHumidity">
-        <el-input
-          v-model="queryParams.soilHumidity"
-          placeholder="请输入土壤湿度"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="PH值" prop="soilPh">
-        <el-input
-          v-model="queryParams.soilPh"
-          placeholder="请输入PH值"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="EC值" prop="soilEc">
-        <el-input
-          v-model="queryParams.soilEc"
-          placeholder="请输入EC值"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="土壤深度" prop="soilDepth">
-        <el-input
-          v-model="queryParams.soilDepth"
-          placeholder="请输入土壤深度"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -84,15 +48,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agri:soil-moisture:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleExport"-->
+<!--          :loading="exportLoading"-->
+<!--          v-hasPermi="['agri:soil-moisture:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -100,8 +64,13 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="设备id" align="center" prop="equId" />
+      <el-table-column label="序号" width="60" align="center">
+        <template v-slot="scope">
+          <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="设备编号" align="center" prop="deviceCode" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column
         label="采集时间"
         align="center"
@@ -109,17 +78,29 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="土壤温度" align="center" prop="soilTemperature" />
-      <el-table-column label="土壤湿度" align="center" prop="soilHumidity" />
+      <el-table-column label="土壤温度" align="center" prop="soilTemperature">
+        <template v-slot="scope">
+          <span>{{scope.row.soilTemperature}}℃</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="土壤湿度" align="center" prop="soilHumidity">
+        <template v-slot="scope">
+          <span>{{scope.row.soilTemperature}}%/RH</span>
+        </template>
+      </el-table-column>
       <el-table-column label="PH值" align="center" prop="soilPh" />
       <el-table-column label="EC值" align="center" prop="soilEc" />
-      <el-table-column label="土壤深度" align="center" prop="soilDepth" />
+      <el-table-column label="土壤深度" align="center" prop="soilDepth">
+        <template v-slot="scope">
+          <span>{{scope.row.soilDepth}}m</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"
             v-hasPermi="['agri:soil-moisture:update']"
           >
             编辑
@@ -204,8 +185,8 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, id?: number, deviceCode?: string, deviceName?: string) => {
+  formRef.value.open(type, id, deviceCode, deviceName)
 }
 
 /** 删除按钮操作 */
