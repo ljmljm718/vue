@@ -23,6 +23,7 @@
           placeholder="请选择设备类型"
           clearable
           class="!w-240px"
+          disabled
         >
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
@@ -105,8 +106,8 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE" :value="scope.row.type"/>
         </template>
       </el-table-column>
-      <el-table-column label="园区名称" align="center" prop="belongParkName"/>
-      <el-table-column label="地块名称" align="center" prop="belongPlotName"/>
+      <el-table-column label="基地名称" align="center" prop="belongParkName"/>
+      <el-table-column label="鱼塘名称" align="center" prop="belongPlotName"/>
       <el-table-column label="数据值" align="center" prop="dataValue"/>
       <el-table-column label="单位" align="center" prop="unit"/>
       <el-table-column label="采集时间" align="center" prop="collectTime"/>
@@ -172,7 +173,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   deviceCode: undefined,
-  deviceType: undefined,
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
