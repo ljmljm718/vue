@@ -78,7 +78,7 @@
                       <div style="color:#16bee2;font-size: 18px;">{{ item.val }}</div>
                       <div style="font-size: 13px;">{{ item.title }}</div>
                     </div>
-                    
+
                   </div>
                 </div>
               </div>
@@ -367,7 +367,7 @@ gap: 10px;
           color: #fff;
           font-size: 14px;
           padding: 7px 15px;
-          
+
           background-size: 100% 100%;
           background-image: url(./assets/active.png);
         }

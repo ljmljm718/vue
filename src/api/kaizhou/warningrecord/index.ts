@@ -75,4 +75,9 @@ export const WarningRecordApi = {
   getDeviceBasePage: async (params: any) => {
     return await request.get({ url: `/kaizhou/warning-record/device/page`, params })
   },
+
+  // 查询预警记录分页-返回基地名称和地块名称
+  getWarningRecordPageWithParkName: async (params: any) => {
+    return await request.get({ url: `/kaizhou/warning-record/page/park/info`, params })
+  },
 }
