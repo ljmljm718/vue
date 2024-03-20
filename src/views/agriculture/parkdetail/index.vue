@@ -1,5 +1,6 @@
 <template>
   <ContentWrap>
+    <!-- 搜索工作栏 -->
     <el-form
       class="-mb-15px"
       :model="queryParams"
@@ -7,34 +8,34 @@
       :inline="true"
       label-width="68px"
     >
-      <!-- <el-form-item label="字典名称" prop="dictType">
-        <el-select v-model="queryParams.dictType" class="!w-240px">
-          <el-option
-            v-for="item in dictTypeList"
-            :key="item.type"
-            :label="item.name"
-            :value="item.type"
-          />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item label="字典标签" prop="label">
+      <el-form-item label="编号" prop="code">
         <el-input
-          v-model="queryParams.label"
-          placeholder="请输入字典标签"
+          v-model="queryParams.code"
+          placeholder="请输入编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="数据状态" clearable class="!w-240px">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="名称" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -43,7 +44,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['system:dict:create']"
+          v-hasPermi="['agriculture:park-detail:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -52,7 +53,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['system:dict:export']"
+          v-hasPermi="['agriculture:park-detail:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -60,49 +61,48 @@
     </el-form>
   </ContentWrap>
 
-
-  <!-- 列表  -->
+  <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list">
-      <el-table-column label="字典编码" align="center" prop="id" />
-      <el-table-column label="字典标签" align="center" prop="label" />
-      <el-table-column label="字典键值" align="center" prop="value" />
-      <el-table-column label="字典排序" align="center" prop="sort" />
-      <el-table-column label="状态" align="center" prop="status">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
-      <el-table-column label="颜色类型" align="center" prop="colorType" />
-      <el-table-column label="CSS Class" align="center" prop="cssClass" />
-      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip />
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column label="所属基地" align="center" prop="parkId" />
+      <el-table-column label="编号" align="center" prop="code" width="200"/>
+      <el-table-column label="名称" align="center" prop="name" width="150"/>
+<!--      <el-table-column label="类型" align="center" prop="type" />-->
+      <el-table-column label="海拔" align="center" prop="altitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="通讯地址" align="center" prop="address" />
+      <el-table-column label="联系人" align="center" prop="contact" />
+      <el-table-column label="联系电话" align="center" prop="tel" />
+      <el-table-column label="面积" align="center" prop="area" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
-        width="180"
         :formatter="dateFormatter"
+        width="180px"
       />
-      <el-table-column label="操作" align="center">
+<!--      <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['system:dict:update']"
+            v-hasPermi="['agriculture:park-detail:update']"
           >
-            修改
+            编辑
           </el-button>
           <el-button
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['system:dict:delete']"
+            v-hasPermi="['agriculture:park-detail:delete']"
           >
             删除
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -114,41 +114,51 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DictDataForm ref="formRef" @success="getList" />
+  <ParkDetailForm ref="formRef" @success="getList" />
 </template>
-<script lang="ts" setup>
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+
+<script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import * as DictDataApi from '@/api/system/dict/dict.data'
-import * as DictTypeApi from '@/api/system/dict/dict.type'
-import DictDataForm from './DictDataForm.vue'
+import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
+import ParkDetailForm from './ParkDetailForm.vue'
 
-defineOptions({ name: 'SystemDictData' })
+/** 地块基本信息 列表 */
+defineOptions({ name: 'ParkDetail' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-const route = useRoute() // 路由
 
 const loading = ref(true) // 列表的加载中
+const list = ref<ParkDetailVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  label: '',
-  status: undefined,
-  dictType: 'kaizhou_farm_work'
+  parkId: undefined,
+  code: undefined,
+  name: undefined,
+  type: undefined,
+  altitude: undefined,
+  latitude: undefined,
+  longitude: undefined,
+  address: undefined,
+  contact: undefined,
+  tel: undefined,
+  area: undefined,
+  remark: undefined,
+  createTime: [],
+  deptId: undefined,
+  userId: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const dictTypeList = ref<DictTypeApi.DictTypeVO[]>() // 字典类型的列表
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await DictDataApi.getDictDataPage(queryParams)
+    const data = await ParkDetailApi.getParkDetailPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -171,7 +181,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id, queryParams.dictType)
+  formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
@@ -180,7 +190,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await DictDataApi.deleteDictData(id)
+    await ParkDetailApi.deleteParkDetail(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -194,8 +204,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await DictDataApi.exportDictData(queryParams)
-    download.excel(data, '字典数据.xls')
+    const data = await ParkDetailApi.exportParkDetail(queryParams)
+    download.excel(data, '地块基本信息.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -203,9 +213,7 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(async () => {
-  await getList()
-  // 查询字典（精简)列表
-  dictTypeList.value = await DictTypeApi.getSimpleDictTypeList()
+onMounted(() => {
+  getList()
 })
 </script>
