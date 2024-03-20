@@ -61,9 +61,13 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="规则编号" align="center" prop="id" />
       <el-table-column label="规则名称" align="center" prop="name" />
-      <el-table-column label="规则状态" align="center" prop="status" />
-      <el-table-column label="处理器的名字" align="center" prop="handlerName" />
-      <el-table-column label="处理器的参数" align="center" prop="handlerParam" />
+      <el-table-column label="规则状态" align="center" prop="status">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.INFRA_JOB_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="处理器的名字" align="center" prop="handlerName" />-->
+<!--      <el-table-column label="处理器的参数" align="center" prop="handlerParam" />-->
       <el-table-column label="CRON 表达式" align="center" prop="cronExpression" />
       <el-table-column label="重试次数" align="center" prop="retryCount" />
       <el-table-column label="重试间隔" align="center" prop="retryInterval" />
@@ -76,8 +80,29 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="250px"
+        fixed="right"
+      >
         <template #default="scope">
+          <el-button
+            type="primary"
+            link
+            @click="handleChangeStatus(scope.row)"
+            v-hasPermi="['agriculture:check-rule:update']"
+          >
+            {{ scope.row.status === InfraJobStatusEnum.STOP ? '开启' : '暂停' }}
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row.id)"
+            v-hasPermi="['agriculture:check-rule:update']"
+          >
+            绑定设备
+          </el-button>
           <el-button
             link
             type="primary"
@@ -116,6 +141,7 @@ import download from '@/utils/download'
 import { CheckRuleApi, CheckRuleVO } from '@/api/agriculture/checkrule'
 import CheckRuleForm from './CheckRuleForm.vue'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
+import {InfraJobStatusEnum} from "@/utils/constants";
 
 /** 巡检规则 列表 */
 defineOptions({ name: 'CheckRule' })
@@ -167,6 +193,28 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   handleQuery()
+}
+
+/** 修改状态操作 */
+const handleChangeStatus = async (row: CheckRuleVO) => {
+  try {
+    // 修改状态的二次确认
+    const text = row.status === InfraJobStatusEnum.STOP ? '开启' : '关闭'
+    await message.confirm(
+      '确认要' + text + '巡检规则编号为"' + row.id + '"的数据项?',
+      t('common.reminder')
+    )
+    const status =
+      row.status === InfraJobStatusEnum.STOP ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP
+    await CheckRuleApi.updateJobStatus(row.id, status)
+    message.success(text + '成功')
+    // 刷新列表
+    await getList()
+  } catch {
+    // 取消后，进行恢复按钮
+    row.status =
+      row.status === InfraJobStatusEnum.NORMAL ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP
+  }
 }
 
 /** 添加/修改操作 */

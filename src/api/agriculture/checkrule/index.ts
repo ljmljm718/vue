@@ -47,4 +47,17 @@ export const CheckRuleApi = {
   exportCheckRule: async (params) => {
     return await request.download({ url: `/agriculture/check-rule/export-excel`, params })
   },
-}
+
+  updateJobStatus: async (id: number, status: number) => {
+    const params = {
+      id,
+      status
+    }
+    return request.put({url: '/agriculture/check-rule/update-status', params})
+  },
+
+  // 定时任务立即执行一次
+  runJob: async (id: number) => {
+    return request.put({url: '/agriculture/check-rule/trigger?id=' + id})
+  }
+}
