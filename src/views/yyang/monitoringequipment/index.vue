@@ -70,7 +70,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="监控基地ID" prop="monitoringBaseId">
+      <!-- <el-form-item label="监控基地ID" prop="monitoringBaseId">
         <el-input
           v-model="queryParams.monitoringBaseId"
           placeholder="请输入监控基地ID"
@@ -78,7 +78,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="监控基地名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -125,7 +125,7 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="创建时间" prop="createTime">
+      <!-- <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -135,7 +135,7 @@
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -180,36 +180,39 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.yyStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="监控基地ID" align="center" prop="monitoringBaseId" />
+      <!-- <el-table-column label="监控基地ID" align="center" prop="monitoringBaseId" /> -->
       <el-table-column label="基地名称" align="center" prop="name" />
-      <el-table-column label="抓拍图片" align="center" prop="capturedImage" />
-      <el-table-column label="视频URL" align="center" prop="videoUrl" />
+      <el-table-column label="抓拍图片" align="center" prop="capturedImage" >
+        <template #default="scope">
+          <!-- <img src="scope.row.capturedImage" :value="scope.row.capturedImage" /> -->
+          <el-image 
+            style="width: 60px; height: 60px"
+            :src="scope.row.capturedImage"
+             />
+          
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column label="视频URL" align="center" prop="videoUrl" />        -->
       <el-table-column label="备注" align="center" prop="yyRemarks" />
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
-      <el-table-column
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
-      <el-table-column label="操作" align="center">
+      /> -->
+      <el-table-column label="操作" align="center" width="180px">
         <template #default="scope">
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['yyang:monitoring-equipment:update']"
+            @click="openVideo(scope.row.videoUrl)"
+            v-hasPermi="['yyang:monitoring-equipment:query']"
           >查看视频</el-button>
-<!-- 
-  size="mini"
-            type="text"
-            icon="el-icon-video-camera"
-            @click="playVideo(scope.row)"
-            v-hasPermi="['species:video:remove']"
- -->
           <el-button
             link
             type="primary"
@@ -241,15 +244,16 @@
   <!-- 表单弹窗：添加/修改 -->
   <MonitoringEquipmentForm ref="formRef" @success="getList" />
   <!-- 视频弹窗 -->
-  <!-- <el-dialog title :visible="isShow" width="600px" @close="closeDialog" class="videoBox">
+  <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
       <video
         :src="videoUrl"
         controls
         autoplay
         class="video"
-        width="100%"
+        width="800px" 
+        height="800px"
       ></video>
-    </el-dialog> -->
+  </el-dialog>
 
 </template>
 
@@ -290,6 +294,19 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+
+// openVideo
+let videoUrl=ref();
+let isShow=ref(false);
+const openVideo = (video: any) => {
+  videoUrl.value=video;
+  isShow.value=true;
+
+}
+const closeDialog=()=>{
+  isShow.value=false;
+}
 
 /** 查询列表 */
 const getList = async () => {

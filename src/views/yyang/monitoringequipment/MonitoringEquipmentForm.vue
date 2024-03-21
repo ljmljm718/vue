@@ -43,7 +43,7 @@
         <el-input v-model="formData.monitoringBaseId" placeholder="请选择右侧按钮监控基地" readonly>
           <template #append>
             <el-button @click="openParkBaseHelper('0')">
-              <Icon icon="ep:search"/>
+              <Icon icon="ep:search" />
               选择
             </el-button>
           </template>
@@ -54,7 +54,7 @@
         <UploadImg v-model="formData.capturedImage" />
       </el-form-item>
       <el-form-item label="视频URL" prop="videoUrl">
-        <el-input v-model="formData.videoUrl" placeholder="请选择视频" />
+        <el-input v-model="formData.videoUrl" placeholder="请选择视频" :disabled="true" />
         <el-upload
           action="#"
           :auto-upload="false"
@@ -64,7 +64,6 @@
         >
           <el-button solt="trigger" size="small" type="primary">选择视频</el-button>
         </el-upload>
-
       </el-form-item>
       <el-form-item label="备注" prop="yyRemarks">
         <el-input v-model="formData.yyRemarks" placeholder="请输入备注" />
@@ -85,70 +84,58 @@
     </template>
   </Dialog>
   <!-- 基地/地块列表 -->
-  <ParkBaseHelper
-    ref="parkBaseHelperRef"
-    @success="handleParkBaseChange"
-  />
+  <ParkBaseHelper ref="parkBaseHelperRef" @success="handleParkBaseChange" />
   <div class="container" v-show="videoType">
     <div class="mask" v-show="videoType"></div>
     <div class="spinner" v-show="videoType"></div>
   </div>
-  
-  
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { MonitoringEquipmentApi, MonitoringEquipmentVO } from '@/api/yyang/monitoringequipment'
-import ParkBaseHelper from "@/views/kaizhou/parkbase/components/ParkBaseHelper.vue";
-import { ref } from 'vue';
-import { ElMessageBox } from 'element-plus';
-import { updateFile } from "@/api/infra/file/index";
+import ParkBaseHelper from '@/views/kaizhou/parkbase/components/ParkBaseHelper.vue'
+import { ref } from 'vue'
+import { ElMessageBox } from 'element-plus'
+import { updateFile } from '@/api/infra/file/index'
 
 // 视频监控
-let fileList = ref([]);
+let fileList = ref([])
 
- const handleSuccess = (response, file, fileList) => {
-   console.log('Upload success:', response, file, fileList);
-   videoType.value=false
- };
+const handleSuccess = (response, file, fileList) => {
+  console.log('Upload success:', response, file, fileList)
+  videoType.value = false
+}
 
- const handleError = (err, file, fileList) => {
-   console.error('Upload error:', err, file, fileList);
- };
-let videoType=ref(false)
- const beforeUpload = async (file) => {
-  console.log('file', file);
-  
-   const isVideo = file.raw.type === 'video/mp4';
-   if (!isVideo) {
-     ElMessageBox.alert('请上传视频文件（.mp4格式）', '错误', { type: 'error' });
-   } else {
-    videoType.value=true
-      const fileForm = new FormData()
-      fileForm.append('file', file.raw)
-      const { data } = await updateFile(fileForm);
-      console.log('res', data);
-        formData.value.videoUrl=data
-        videoType.value=false
-      
-        
-      
-   }
-   return isVideo;
- };
+const handleError = (err, file, fileList) => {
+  console.error('Upload error:', err, file, fileList)
+}
+let videoType = ref(false)
+const beforeUpload = async (file) => {
+  const isVideo = file.raw.type === 'video/mp4'
+  if (!isVideo) {
+    ElMessageBox.alert('请上传视频文件（.mp4格式）', '错误', { type: 'error' })
+  } else {
+    videoType.value = true
+    const fileForm = new FormData()
+    fileForm.append('file', file.raw)
+    const { data } = await updateFile(fileForm)
+    console.log('res', data)
+    formData.value.videoUrl = data
+    videoType.value = false
+  }
+  return isVideo
+}
 
- 
- const submitUpload = () => {
-   if (fileList.value && fileList.value.length > 0) {
-     const formData = new FormData();
-     formData.append('file', fileList.value[0].raw);
-     // 使用你的HTTP库发送formData到服务器
-   } else {
-     ElMessageBox.alert('请选择一个视频文件上传', '提示', { type: 'info' });
-   }
- };
+const submitUpload = () => {
+  if (fileList.value && fileList.value.length > 0) {
+    const formData = new FormData()
+    formData.append('file', fileList.value[0].raw)
+    // 使用你的HTTP库发送formData到服务器
+  } else {
+    ElMessageBox.alert('请选择一个视频文件上传', '提示', { type: 'info' })
+  }
+}
 //视频监控结尾
-
 
 /** 监控设备 表单 */
 defineOptions({ name: 'MonitoringEquipmentForm' })
@@ -174,10 +161,9 @@ const formData = ref({
   yyRemarks: undefined,
   reserveOne: undefined,
   reserveTwo: undefined,
-  reserveThree: undefined,
+  reserveThree: undefined
 })
-const formRules = reactive({
-})
+const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
@@ -201,10 +187,10 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 const parkBaseHelperRef = ref()
 const openType = ref('')
 const openParkBaseHelper = (id: string) => {
-  openType.value = id;
-  if (openType.value === undefined || openType.value === ""){
-    message.error("请选择基地")
-  }else parkBaseHelperRef.value.open(id)
+  openType.value = id
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地')
+  } else parkBaseHelperRef.value.open(id)
 }
 
 const handleParkBaseChange = (order: MonitoringEquipmentVO) => {
@@ -252,7 +238,7 @@ const resetForm = () => {
     yyRemarks: undefined,
     reserveOne: undefined,
     reserveTwo: undefined,
-    reserveThree: undefined,
+    reserveThree: undefined
   }
   formRef.value?.resetFields()
 }
@@ -293,5 +279,4 @@ const resetForm = () => {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
-
 </style>
