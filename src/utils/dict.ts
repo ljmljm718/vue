@@ -249,6 +249,8 @@ export enum DICT_TYPE {
   // ========== AGRI - 武隆  ==========
   AGRI_PARK_TYPE = 'agri_park_type', //基地种植类型
   AGRI_CROP_CULTIVARS='agri_crop_cultivars',//作物品种
+  AGRI_MONITOR_TYPE = 'agri_monitor_type', //预警类型
+  AGRI_MONITOR_UNIT = 'agri_monitor_unit', //预警单位
 
   // =========== YYANG -  酉阳 ==========
   YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
