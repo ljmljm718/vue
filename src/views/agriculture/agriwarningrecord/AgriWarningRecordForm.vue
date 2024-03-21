@@ -48,7 +48,7 @@
       <el-form-item label="预警时间" prop="warnTime">
         <el-date-picker
           v-model="formData.warnTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择预警时间"
         />
@@ -67,7 +67,7 @@
       <el-form-item label="处理时间" prop="dealTime">
         <el-date-picker
           v-model="formData.dealTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择处理时间"
         />

@@ -96,7 +96,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="规则标题" align="center" prop="ruleTitle" />
-      <el-table-column label="规则类型" align="center" prop="warnType" width="140">
+      <el-table-column label="规则类型" align="center" prop="warnType" width="150">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
         </template>
