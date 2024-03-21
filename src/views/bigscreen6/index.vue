@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { initChartStatic, generateBaseOptions } from '../../utils/bigscreenTool/index';
 import preWarn from './assets/preWarn.png'
 import sensor from './assets/sensor.png'
@@ -9,6 +9,128 @@ import {
   ParkBaseInfo,
   ParkBaseInfo2
 } from '@/api/kaizhou/bigscreen/index'
+import {
+  largeScreenGetWarning,
+  largeScreenGetOneWarning,
+  waterDetection,
+  selectStateNum,
+  deviceBaseList,
+  waterDetectionType,
+  deviceBasePage
+} from './apis'
+
+// 单条预警
+const onWarningInfo = ref({
+  deviceName: "",
+  id: "",
+  parkName: "",
+  warnInfo: ""
+})
+const getLargeScreenGetOneWarning = async (parkId) => {
+  const res = await largeScreenGetOneWarning({ parkId })
+  console.log('getLargeScreenGetOneWarninges', res);
+  onWarningInfo.value = res
+}
+getLargeScreenGetOneWarning('1')
+
+const getDeviceBasePage = async () => {
+  const { list = [] } = await deviceBasePage();
+  console.log('getDeviceBasePage', list);
+  Array.isArray(list) ? envOptions.value = list.map(item => ({
+    id: item.id, name: item.deviceName
+  })) : null
+}
+getDeviceBasePage()
+
+// 大屏中央设备设备数量统计
+const deviceBaseInfo = ref<any>({
+  sum: 0, online: 0, offline: 0
+})
+const getDeviceBaseList = async () => {
+  const res = await deviceBaseList()
+  console.log('大屏中央设备设备数量统计', res);
+  deviceBaseInfo.value = res[0]
+}
+getDeviceBaseList()
+
+// 预警信息（大屏右下角）
+const getlargeScreenGetWarning = async () => {
+  const res = await largeScreenGetWarning({ pageSize: 10 })
+  if (Array.isArray(res)) tableData.value = res.map(item => ({
+    name: item.parkName,
+    device: item.deviceName,
+    info: item.warnInfo,
+    time: item.warnTime,
+    status: item.warnStatus === '0' ? '未处理' : '已处理'
+  }))
+}
+getlargeScreenGetWarning()
+
+// 大屏中央设备设备数量统计
+const deviceNumCount = ref<Array<any>>([])
+const getSelectStateNum = async () => {
+  const res = await selectStateNum();
+  Array.isArray(res) ? deviceNumCount.value = res : null
+}
+getSelectStateNum()
+
+// 水质监测（八项参数）
+const waterTypeList = ref<Array<any>>([
+  {
+    "unit": "mg/L",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "ammonia_oxygen"
+  },
+  {
+    "unit": "mg/L",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "nitrite_nitrogen"
+  },
+  {
+    "unit": "ph",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "PH_value"
+  },
+  {
+    "unit": "%",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "salinity"
+  },
+  {
+    "unit": "m",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "water_level"
+  },
+  {
+    "unit": "mg/L",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "dissolved_oxygen"
+  },
+  {
+    "unit": "ppm",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "turbidity"
+  },
+  {
+    "unit": "℃",
+    "month": "2024-03-19",
+    "dataValue": 0,
+    "type": "temperature"
+  }
+])
+const getWaterDetectionType = async () => {
+  const res = await waterDetectionType()
+  console.log('水质监测（八项参数）', res);
+  Array.isArray(res) ? waterTypeList.value = res : null
+}
+getWaterDetectionType()
 
 const options1 = ref<Array<any>>([])
 const getOptions1 = async (parentId = '0') => {
@@ -35,10 +157,14 @@ const handleSelectorChange2 = (val) => {
   console.log('parentId', parentId);
 }
 
+// 环境监测 options
+const envOptions = ref<Array<any>>([])
+const handleEnvSelectorChange = (val) => {}
+
 const tableColumns = ref([
   {
     key: 'name',
-    label: '塘口名称',
+    label: '基地名称',
     width: '5rem'
   },
   {
@@ -49,12 +175,12 @@ const tableColumns = ref([
   {
     key: 'info',
     label: '预警信息',
-    width: 'calc(100% - 20rem)'
+    width: 'calc(100% - 19rem)'
   },
   {
     key: 'time',
     label: '时间',
-    width: '7rem'
+    width: '5rem'
   },
   {
     key: 'status',
@@ -63,22 +189,7 @@ const tableColumns = ref([
   },
 ])
 
-const tableData = ref([
-  {
-    name: 'sda',
-    device: 'ss',
-    info: 's',
-    time: 's',
-    status: 's'
-  },
-  {
-    name: 'sda',
-    device: 'ss',
-    info: 's',
-    time: 's',
-    status: 's'
-  },
-])
+const tableData = ref<Array<any>>([])
 
 onMounted(() => {
   initChartStatic(
@@ -151,7 +262,11 @@ onMounted(() => {
   )
 })
 
-onMounted(() => {
+onMounted(async () => {
+  // 水质监测（折线图）
+  const res = await waterDetection()
+  console.log('res', res);
+  
   initChartStatic(
     'chart2',
     generateBaseOptions({
@@ -221,6 +336,34 @@ onMounted(() => {
     })
   )
 })
+
+const rightTabSelected = ref('temperature')
+watch(
+  () => rightTabSelected.value,
+  (newValue) => {
+    console.log('newValue', newValue);
+  }
+)
+const rightIconMap = {
+  'temperature': 1,
+  'salinity': 2,
+  'turbidity': 3,
+  'water_level': 4,
+  'PH_value': 5,
+  'dissolved_oxygen': 6,
+  'ammonia_oxygen': 7,
+  'nitrite_nitrogen': 8
+}
+const rightLabelMap = {
+  'temperature': '温度',
+  'salinity': '盐度',
+  'turbidity': '浑浊度',
+  'water_level': '水位',
+  'PH_value': 'PH值',
+  'dissolved_oxygen': '溶氧量',
+  'ammonia_oxygen': '氨氧量',
+  'nitrite_nitrogen': '向亚硝酸盐氮'
+}
 </script>
 <template>
   <div class="bigscreen-main-wrapper">
@@ -236,6 +379,11 @@ onMounted(() => {
         <div class="grid-main-item">
           <div class="main-item-title title-bg">
             <div>环境监测</div>
+            <div class="selector-wrapper">
+              <select @change="handleEnvSelectorChange">
+                <option :value="item.id" v-for="item,index in envOptions" :key="index">{{item.name}}</option>
+              </select>
+            </div>
           </div>
           <div class="main-item-container">
             <div class="card-grid-wrapper">
@@ -287,56 +435,72 @@ onMounted(() => {
             </div>
           </div>
           <div id="mainMap">
-            <div class="tool-info" style="left: calc(400px - 80px);top: 300px;">
+            <div class="tool-info" style="left: calc(400px - 100px);bottom: 300px;">
+              <div class="info-rect">
+                <div class="text-info">
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                </div>
+              </div>
               <img :src="monitor" alt="" />
+            </div>
+
+            <div class="tool-info" style="left: calc(600px - 100px);bottom: 100px;">
+              <div class="info-rect">
+                <div class="text-info">
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                  <div class="text-row">编号: 125464786434543</div>
+                </div>
+              </div>
+              <img :src="sensor" alt="" />
+            </div>
+            <div class="tool-info" style="left: calc(900px - 100px);bottom: 200px;">
+              <div class="info-rect">
+                <div class="text-info">
+                  <div class="text-row">位置: {{ onWarningInfo.parkName }}</div>
+                  <div class="text-row">设备: {{ onWarningInfo.deviceName }}</div>
+                  <div class="text-row">
+                    预警信息:
+                    <span  style="color: #ff0000;">{{ onWarningInfo.warnInfo }}</span>
+                  </div>
+                </div>
+              </div>
+              <img :src="preWarn" alt="" />
             </div>
           </div>
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card">21</div>
+              <div class="value-card">{{ deviceBaseInfo.sum }}</div>
             </div>
             <div class="top-card-item">
-              <div class="label-card">设备总数</div>
-              <div class="value-card">21</div>
+              <div class="label-card">在线总数</div>
+              <div class="value-card">{{ deviceBaseInfo.online }}</div>
             </div>
             <div class="top-card-item">
-              <div class="label-card">设备总数</div>
-              <div class="value-card">21</div>
+              <div class="label-card">离线总数</div>
+              <div class="value-card">{{ deviceBaseInfo.offline }}</div>
             </div>
           </div>
           <div class="extra-card-wrappper">
-            <div class="top-card-item">
+            <div class="top-card-item" v-for="item in deviceNumCount" :key="item">
               <div class="extra-icon t-icon-1"></div>
               <div class="extra-text-wrapper">
                 <div class="extra-text-row extra-title-font">
-                  <div>PH传感器</div>
-                  <div>5</div>
+                  <div>{{ item[0].name }}</div>
+                  <div>{{ item[0].sum }}</div>
                 </div>
                 <div class="extra-text-row">
                   <div>在线数量</div>
-                  <div>5</div>
+                  <div style="color: #0fc87c;">{{ item[0].online }}</div>
                 </div>
                 <div class="extra-text-row">
                   <div>离线数量</div>
-                  <div>5</div>
-                </div>
-              </div>
-            </div>
-            <div class="top-card-item" v-for="item in 3" :key="item">
-              <div class="extra-icon t-icon-1"></div>
-              <div class="extra-text-wrapper">
-                <div class="extra-text-row extra-title-font">
-                  <div>水质环境监测仪</div>
-                  <div>5</div>
-                </div>
-                <div class="extra-text-row">
-                  <div>在线数量</div>
-                  <div>5</div>
-                </div>
-                <div class="extra-text-row">
-                  <div>离线数量</div>
-                  <div>5</div>
+                  <div style="color: #c51416;">{{ item[0].offline }}</div>
                 </div>
               </div>
             </div>
@@ -359,25 +523,25 @@ onMounted(() => {
           <div class="main-item-container">
             <div class="card-grid-wrapper">
               <div
-                class="card-grid-item"
-                v-for="item in 8"
-                :key="item"
+                :class="`card-grid-item ${rightTabSelected === item.type ? 'card-selected' : ''}`"
+                v-for="item in waterTypeList"
+                :key="item.type"
               >
-                <div :class="`icon-wrapper r-icon-${item}`"></div>
+                <div :class="`icon-wrapper r-icon-${rightIconMap[item.type]}`"></div>
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
-                    <span class="value">22</span>
-                    <span class="unit">℃</span>
+                    <span class="value">{{ item.dataValue }}</span>
+                    <span class="unit">{{ item.unit  }}</span>
                   </div>
-                  <div class="label-wrapper">温度</div>
+                  <div class="label-wrapper">{{ rightLabelMap[item.type] }}</div>
                 </div>
-                <div class="check-btn">查看</div>
+                <div class="check-btn" @click="rightTabSelected = item.type">查看</div>
               </div>
             </div>
             <div class="sub-title-wrapper">
               <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">PH值变化趋势</div>
-              <div style="width: calc(100% - 8rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{ rightLabelMap[rightTabSelected] }}变化趋势</div>
+              <div style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
             </div>
             <div
               class="chart-wrapper"
@@ -497,6 +661,9 @@ onMounted(() => {
           grid-template-columns: 1fr 1fr;
           grid-template-rows: repeat(4, 1fr);
           gap: 1rem;
+          .card-selected {
+            background: linear-gradient(to right, #00000000, #2f6979, #00000000);
+          }
           .card-grid-item {
             border: 1px solid #325c98;
             padding: 0.6rem 0.8rem;
@@ -535,6 +702,7 @@ onMounted(() => {
               padding: 0.2rem 0.5rem;
               font-size: 0.8rem;
               border-radius: 0.6rem;
+              cursor: pointer;
             }
           }
         }
@@ -586,7 +754,7 @@ onMounted(() => {
   }
   .extra-card-wrappper {
     .top-card-item {
-      margin: 0 1rem;
+      margin: 0 .4rem;
       padding: .8rem;
       background-image: url(./assets/extraBg.png);
       background-size: 100% 100%;
@@ -627,10 +795,25 @@ onMounted(() => {
       flex-direction: column;
       align-items: center;
       position: absolute;
-      width: 160px;
-      border: 1px solid red;
+      width: 200px;
       img {
         width: 2rem;
+      }
+      .info-rect {
+        background-size: 100% 100%;
+        width: 100%;
+        aspect-ratio: 1.1;
+        background-image: url(./assets/infoRect.png);
+        .text-info {
+          width: calc(100% - 1.6rem);
+          height: calc(70% - 1.6rem);
+          margin: .8rem;
+
+          .text-row {
+            font-size: .9rem;
+            padding: .1rem;
+          }
+        }
       }
     }
   }
@@ -667,9 +850,21 @@ onMounted(() => {
   .table-cell {
     text-align: center;
     font-size: .9rem;
+    padding: 0 .1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    overflow:hidden;
+    /*! autoprefixer: off */
+    -webkit-box-orient: vertical;
   }
   .table-container {
     height: calc(100% - 1.8rem);
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
   }
   .table-header {
     display: flex;
@@ -733,6 +928,7 @@ onMounted(() => {
     border: 2px solid #0be3de;
   }
 }
+
 
 @for $i from 1 through 8 {
   .l-icon-#{$i} {

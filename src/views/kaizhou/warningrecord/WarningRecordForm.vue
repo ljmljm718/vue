@@ -17,6 +17,9 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input v-model="formData.deviceName" placeholder="选择设备后自动带出" disabled />
+      </el-form-item>
       <el-row>
         <el-col :span="12">
           <el-form-item label="基地编号" prop="parkCode">
@@ -135,8 +138,9 @@
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { WarningRecordApi, WarningRecordVO } from '@/api/kaizhou/warningrecord'
-import SelectDevice from "@/views/kaizhou/warningrecord/component/SelectDevice.vue";
+//import SelectDevice from "@/views/kaizhou/warningrecord/component/SelectDevice.vue";
 import {DeviceBaseVO} from "@/api/kaizhou/devicebase";
+import SelectDevice from "@/views/wushan/onlinemonitoring/equListForm/equListForm.vue";
 
 /** 预警记录 表单 */
 defineOptions({ name: 'WarningRecordForm' })
@@ -229,8 +233,14 @@ const openSelectDevice = () => {
 
 const handleSelectDeviceChange = (order: DeviceBaseVO) => {
   formData.value.deviceCode = String(order[0].deviceCode)
+  formData.value.deviceName = String(order[0].deviceName)
   formData.value.parkCode = String(order[0].belongPark)
   formData.value.plotCode = String(order[0].belongPlot)
+  //如果设备种类是传感器，那么预警的类型就是设备预警
+  let equipType=String(order[0].kinds)
+  if ( equipType != undefined &&  equipType==='sensor'){
+    formData.value.warnType='1'
+  }
 }
 
 /** 重置表单 */

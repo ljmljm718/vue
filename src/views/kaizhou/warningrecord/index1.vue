@@ -86,10 +86,11 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
-      <el-table-column label="地块名称" align="center" prop="plotName" width="200"/>
-<!--      <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>-->
-      <el-table-column label="设备名称" align="center" prop="deviceName" width="200"/>
+      <el-table-column label="基地名称" align="center" prop="parkName" width="150"/>
+      <el-table-column label="地块名称" align="center" prop="plotName" width="150"/>
+      <el-table-column label="地块编号" align="center" prop="plotCode" width="200"/>
+      <el-table-column label="设备编号" align="center" prop="deviceCode" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="预警类型" align="center" prop="warnType" width="140">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_TYPE" :value="scope.row.warnType" />

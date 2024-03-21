@@ -117,7 +117,7 @@
                 @selection-change="handleSelectionChange">
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="设备号" align="center" prop="deviceCode"/>
-        <el-table-column label="名称" align="center" prop="deviceName"/>
+        <el-table-column label="名称" align="center" prop="deviceName" width="150px"/>
         <el-table-column label="种类" align="center" prop="kinds">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_KINDS" :value="scope.row.kinds"/>
@@ -128,8 +128,7 @@
             <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType"/>
           </template>
         </el-table-column>
-        <el-table-column label="经度" align="center" prop="longitude"/>
-        <el-table-column label="纬度" align="center" prop="latitude"/>
+
         <el-table-column label="状态" align="center" prop="deviceStatus">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
@@ -138,12 +137,16 @@
         <!--        <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
         <!--        <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
         <!--      <el-table-column label="URL" align="center" prop="url" />-->
-        <el-table-column label="基地编号" width="200px" align="center" prop="belongPark"/>
+
         <el-table-column label="基地名称" width="200px" align="center" prop="belongParkName"/>
-        <el-table-column :label="getTenantId() === 157 ? '鱼塘编号' : '地块编号'" width="200px"
-                         align="center" prop="belongPlot"/>
+
         <el-table-column :label="getTenantId() === 157 ? '鱼塘名称' : '地块名称'" width="200px"
                          align="center" prop="belongPlotName"/>
+        <el-table-column label="基地编号" width="200px" align="center" prop="belongPark"/>
+        <el-table-column :label="getTenantId() === 157 ? '鱼塘编号' : '地块编号'" width="200px"
+                         align="center" prop="belongPlot"/>
+        <el-table-column label="经度" align="center" prop="longitude"/>
+        <el-table-column label="纬度" align="center" prop="latitude"/>
 
         <el-table-column label="备注" align="center" prop="remark"/>
         <el-table-column
