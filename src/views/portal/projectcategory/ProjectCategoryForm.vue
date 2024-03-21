@@ -89,7 +89,7 @@ const formData = ref({
 
 const validateTopNode = (rule, value, callback) => {
   const currCategoryId = formData.value.parentId;
-  if (judgeFirstNode(currCategoryId)) {
+  if (judgeFirstNode(currCategoryId) && !value) {
     callback(new Error('一级结点必须上传图片，并需要添加描述'))
   } else {
     callback()
@@ -106,8 +106,8 @@ const formRules = reactive({
   status: [{ required: true, message: '是否显示不能为空', trigger: 'blur' }],
   parentId: [{required: true, message: '父结点不能为空', trigger: 'change'}],
   sort: [{required: true, message: '排序不能为空', trigger: 'blur'}],
-  pic: [{validator: validateTopNode, trigger: 'blur'}],
-  description: [{validator: validateTopNode, trigger: 'blur'}],
+  pic: [{ validator: validateTopNode, trigger: 'change'} ],
+  description: [{ validator: validateTopNode, trigger: 'change' }],
 })
 const formRef = ref() // 表单 Ref
 const projectCategoryTree = ref() // 树形结构
