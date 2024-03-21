@@ -148,7 +148,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceCode: undefined,
-    deviceType: 'sensor_water_quality',
+    deviceType: 'camera_env',
     type: undefined,
     dataValue: undefined,
     unit: undefined,
