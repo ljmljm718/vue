@@ -728,6 +728,7 @@ gap: 10px;
   }
 }
 .middle-main-wrapper{
+     z-index:1;
     position: relative;
     width: 100%;
     height: 100%;
@@ -836,7 +837,7 @@ gap: 10px;
         display: flex;
         position: absolute;
         left: 20%;
-        bottom: 2%;
+        bottom: 18%;
         .sxt-icon{
           width: 3rem;
           height: 3rem;
@@ -915,6 +916,7 @@ gap: 10px;
   display:flex;
   justify-content:space-between;
   .footer-left{
+  z-index:9999; 
     width:60%;
     height:100%;
     display:grid;
@@ -1006,6 +1008,7 @@ gap: 10px;
     }
   }
   .footer-right{
+  z-index:9999; 
     width:39%;
     height:100%;
     .select{
@@ -1051,6 +1054,11 @@ gap: 10px;
 @for $i from 1 through 4 {
 .block-#{$i} {
   background-image: url(./assets/block#{$i}.png);
+}
+}
+@for $i from 1 through 3 {
+.sxt-#{$i} {
+  background-image: url(./assets/sxt#{$i}.png);
 }
 }
 
