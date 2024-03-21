@@ -173,7 +173,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   deviceCode: undefined,
-  deviceType: 'camera_env',
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,

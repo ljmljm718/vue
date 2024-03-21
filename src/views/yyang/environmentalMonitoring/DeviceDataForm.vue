@@ -85,7 +85,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceCode: undefined,
-  deviceType: 'camera_env',
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
@@ -148,7 +148,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceCode: undefined,
-    deviceType: 'camera_env',
+    deviceType: 'sensor_env',
     type: undefined,
     dataValue: undefined,
     unit: undefined,
