@@ -202,6 +202,19 @@
             type="primary"
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['yyang:monitoring-equipment:update']"
+          >查看视频</el-button>
+<!-- 
+  size="mini"
+            type="text"
+            icon="el-icon-video-camera"
+            @click="playVideo(scope.row)"
+            v-hasPermi="['species:video:remove']"
+ -->
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row.id)"
+            v-hasPermi="['yyang:monitoring-equipment:update']"
           >
             编辑
           </el-button>
@@ -227,6 +240,17 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <MonitoringEquipmentForm ref="formRef" @success="getList" />
+  <!-- 视频弹窗 -->
+  <!-- <el-dialog title :visible="isShow" width="600px" @close="closeDialog" class="videoBox">
+      <video
+        :src="videoUrl"
+        controls
+        autoplay
+        class="video"
+        width="100%"
+      ></video>
+    </el-dialog> -->
+
 </template>
 
 <script setup lang="ts">

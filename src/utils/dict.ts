@@ -253,5 +253,6 @@ export enum DICT_TYPE {
   // =========== YYANG -  酉阳 ==========
   YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
-  CHECK_STATE='check_state'
+  CHECK_STATE='check_state',
+  YYANG_ENVIRONMENTAL_MONITORING='yyang_environmental_monitoring',//环境监测
 }

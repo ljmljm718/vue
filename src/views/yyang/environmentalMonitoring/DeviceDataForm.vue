@@ -31,7 +31,7 @@
       <el-form-item label="监测类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择监测类型">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.YYANG_WATER_DETECTION)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.YYANG_ENVIRONMENTAL_MONITORING)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -85,7 +85,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceCode: undefined,
-  deviceType: 'sensor_env',
+  deviceType: 'camera_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
