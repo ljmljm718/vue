@@ -8,7 +8,18 @@
       v-loading="formLoading"
     >
       <el-form-item label="设备编号" prop="deviceCode">
-        <el-input v-model="deviceData.deviceCode" disabled/>
+<!--        <el-input v-model="deviceData.deviceCode" disabled/>-->
+        <el-select v-model="deviceData.deviceCode" placeholder="请选择设备" @change="changeDevice" style="width: 100%;">
+          <el-option
+            v-for="item in deviceList"
+            :key="item.id"
+            :label="item.deviceCode"
+            :value="item.id"
+          >
+            <span style="float: left">{{item.deviceCode}}</span>
+            <span style="float: right">{{item.deviceName}}</span>
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
         <el-input v-model="deviceData.deviceName" disabled/>
@@ -79,6 +90,7 @@
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {InsectInfoApi, InsectInfoVO} from '@/api/agriculture/insectinfo'
+import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 
 /** 虫情信息 表单 */
 defineOptions({name: 'InsectInfoForm'})
@@ -103,6 +115,8 @@ const formData = ref({
   killInsectBaffleStatus: undefined,
   insectVideo: undefined,
 })
+const deviceList = ref<DeviceInfoVO[]>([]) // 设备列表的数据
+
 const checkRules = (rule: any, value: any, callback: any) => {
   rule = /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/
   if (rule.test(value)) {
@@ -158,6 +172,7 @@ const open = async (type: string, id?: number, deviceCode?: string, deviceName?:
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  getDeviceInfo()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -175,6 +190,15 @@ const open = async (type: string, id?: number, deviceCode?: string, deviceName?:
   }
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+const getDeviceInfo = async () => {
+  const data = await DeviceInfoApi.getDeviceInfoPage({
+    deviceType: '14,17',
+    pageNo: 1,
+    pageSize: 100
+  })
+  deviceList.value = data.list
+}
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -200,6 +224,19 @@ const submitForm = async () => {
   }
 }
 
+// 选择设备时赋值
+const changeDevice = async (value) => {
+  const select = deviceList.value.filter( item => {
+    return item.id === value
+  })
+  if(select.length > 0) {
+    //赋值
+    formData.value.equId = select[0].id
+    deviceData.value.deviceCode = select[0].deviceCode
+    deviceData.value.deviceName = select[0].deviceName
+  }
+}
+
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
@@ -216,5 +253,11 @@ const resetForm = () => {
     insectVideo: '0',
   }
   formRef.value?.resetFields()
+  if (formType.value === 'create') {
+    deviceData.value = {
+      deviceCode: undefined,
+      deviceName: undefined
+    }
+  }
 }
 </script>

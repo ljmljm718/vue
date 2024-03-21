@@ -8,49 +8,51 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="巡检编号" prop="inspectionNum">
         <el-input
-          v-model="queryParams.deviceCode"
-          placeholder="请输入设备编号"
+          v-model="queryParams.inspectionNum"
+          placeholder="请输入巡检编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
+      <el-form-item label="巡检状态" prop="inspectionState">
         <el-select
-          v-model="queryParams.deviceType"
-          placeholder="请选择设备类型"
+          v-model="queryParams.inspectionState"
+          placeholder="请选择巡检状态"
           clearable
           class="!w-240px"
-          disabled
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="监测类型" prop="type">
-        <el-select
-          v-model="queryParams.type"
-          placeholder="请选择监测类型"
+      <el-form-item label="巡检结果" prop="inspectionResults">
+        <el-input
+          v-model="queryParams.inspectionResults"
+          placeholder="请输入巡检结果"
           clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_DATA_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="采集时间" prop="collectTime">
+      <el-form-item label="巡检人" prop="inspector">
+        <el-input
+          v-model="queryParams.inspector"
+          placeholder="请输入巡检人"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="巡检时间" prop="inspectionTime">
         <el-date-picker
-          v-model="queryParams.collectTime"
+          v-model="queryParams.inspectionTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -72,7 +74,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['kaizhou:device-data:create']"
+          v-hasPermi="['agriculture:check-logs:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
           新增
@@ -82,7 +84,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['kaizhou:device-data:export']"
+          v-hasPermi="['agriculture:check-logs:export']"
         >
           <Icon icon="ep:download" class="mr-5px"/>
           导出
@@ -94,37 +96,55 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!--      <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
-      <el-table-column label="设备名称" align="center" prop="deviceName"/>
-      <el-table-column label="设备类型" align="center" prop="deviceType">
+      <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="巡检编号" align="center" prop="inspectionNum"/>
+      <el-table-column label="巡检状态" align="center" prop="inspectionState">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType"/>
+          <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
         </template>
       </el-table-column>
-      <el-table-column label="监测类型" align="center" prop="type">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.YYANG_WATER_DETECTION" :value="scope.row.type"/>
+      <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
+      <el-table-column label="设备" align="center" prop="equNum"/>
+      <el-table-column label="所属基地" align="center" prop="base"/>
+      <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
+                       prop="massif"/>
+      <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
+      <el-table-column label="巡检人" align="center" prop="inspector"/>
+      <el-table-column
+        label="巡检时间"
+        align="center"
+        prop="inspectionTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+<!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
+      <el-table-column label="巡检影像" align="center" prop="inspectionImage">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.inspectionImage"
+            :preview-src-list="[row.inspectionImage]"
+            preview-teleported
+            fit="cover"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="基地名称" align="center" prop="belongParkName"/>
-      <el-table-column label="鱼塘名称" align="center" prop="belongPlotName"/>
-      <el-table-column label="数据值" align="center" prop="dataValue"/>
-      <el-table-column label="单位" align="center" prop="unit"/>
-      <el-table-column label="采集时间" align="center" prop="collectTime"/>
-      <!--      <el-table-column
-              label="创建时间"
-              align="center"
-              prop="createTime"
-              :formatter="dateFormatter"
-              width="180px"
-            />-->
+      <el-table-column label="巡检内容" align="center" prop="content"/>
+      <!--      <el-table-column-->
+      <!--        label="创建时间"-->
+      <!--        align="center"-->
+      <!--        prop="createTime"-->
+      <!--        :formatter="dateFormatter"-->
+      <!--        width="180px"-->
+      <!--      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:update']"
+            v-hasPermi="['agriculture:check-logs:update']"
           >
             编辑
           </el-button>
@@ -132,7 +152,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['kaizhou:device-data:delete']"
+            v-hasPermi="['agriculture:check-logs:delete']"
           >
             删除
           </el-button>
@@ -149,35 +169,41 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceDataForm ref="formRef" @success="getList"/>
+  <CheckLogsForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import {DeviceDataApi, DeviceDataVO} from '@/api/kaizhou/devicedata'
-import DeviceDataForm from './DeviceDataForm.vue'
-import {useRoute} from "vue-router";
+import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
+import CheckLogsForm from './CheckLogsForm.vue'
+import {parseTime} from "element-plus/es/components/time-select/src/utils";
+import {getTenantId} from "@/utils/auth";
 
-/** 设备数据 列表 */
-defineOptions({name: 'DeviceData'})
+/** 巡检记录 列表 */
+defineOptions({name: 'CheckLogs'})
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<DeviceDataVO[]>([]) // 列表的数据
+const list = ref<CheckLogsVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  deviceCode: undefined,
-  deviceType: 'sensor_water_quality',
-  type: undefined,
-  dataValue: undefined,
-  unit: undefined,
-  collectTime: [],
+  inspectionNum: undefined,
+  inspectionState: undefined,
+  inspectionResults: undefined,
+  equNum: undefined,
+  base: undefined,
+  massif: undefined,
+  inspectorId: undefined,
+  inspector: undefined,
+  inspectionTime: [],
+  inspectionImage: undefined,
+  content: undefined,
   createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
@@ -187,21 +213,12 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await DeviceDataApi.getDeviceDataPage(queryParams)
+    const data = await CheckLogsApi.getCheckLogsPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
     loading.value = false
   }
-}
-let route = useRoute()
-let location = route.query
-console.log(location, '路由');
-if (location.deviceType) {
-  queryParams.deviceType = location.deviceType
-  getList()
-} else {
-  getList()
 }
 
 /** 搜索按钮操作 */
@@ -228,7 +245,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await DeviceDataApi.deleteDeviceData(id)
+    await CheckLogsApi.deleteCheckLogs(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -243,8 +260,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await DeviceDataApi.exportDeviceData(queryParams)
-    download.excel(data, '设备数据.xls')
+    const data = await CheckLogsApi.exportCheckLogs(queryParams)
+    download.excel(data, '巡检记录.xls')
   } catch {
   } finally {
     exportLoading.value = false

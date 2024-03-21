@@ -253,6 +253,8 @@ export enum DICT_TYPE {
   AGRI_MONITOR_UNIT = 'agri_monitor_unit', //预警单位
 
   // =========== YYANG -  酉阳 ==========
-  YYANG_WATER_DETECTION = 'yyang_water_detection',
+  YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
+  CHECK_STATE='check_state',
+  YYANG_ENVIRONMENTAL_MONITORING='yyang_environmental_monitoring',//环境监测
 }

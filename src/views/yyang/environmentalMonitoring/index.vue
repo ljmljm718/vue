@@ -103,7 +103,7 @@
       </el-table-column>
       <el-table-column label="监测类型" align="center" prop="type">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.YYANG_WATER_DETECTION" :value="scope.row.type"/>
+          <dict-tag :type="DICT_TYPE.YYANG_ENVIRONMENTAL_MONITORING" :value="scope.row.type"/>
         </template>
       </el-table-column>
       <el-table-column label="基地名称" align="center" prop="belongParkName"/>
@@ -173,7 +173,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   deviceCode: undefined,
-  deviceType: 'sensor_water_quality',
+  deviceType: 'sensor_env',
   type: undefined,
   dataValue: undefined,
   unit: undefined,
