@@ -126,8 +126,9 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark" />
-      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+      <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+      <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
+      <el-table-column label="位置" align="center" prop="location" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
@@ -202,7 +203,8 @@ const queryParams = reactive({
   remark: undefined,
   createTime: [],
   deptId: undefined,
-  userId: undefined
+  userId: undefined,
+  location: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

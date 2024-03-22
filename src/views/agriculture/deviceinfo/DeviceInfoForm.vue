@@ -52,6 +52,12 @@
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId" />
       </el-form-item>
+      <el-form-item label="视频url" prop="url">
+        <el-input v-model="formData.url" placeholder="请输入视频url" />
+      </el-form-item>
+      <el-form-item label="位置" prop="location">
+        <el-input v-model="formData.location" placeholder="请输入位置" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -87,7 +93,9 @@ const formData = ref({
   remark: undefined,
   deptId: undefined,
   userId: undefined,
-  imgId: undefined
+  imgId: undefined,
+  location: undefined,
+  url: undefined
 })
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
@@ -159,7 +167,9 @@ const resetForm = () => {
     remark: undefined,
     deptId: undefined,
     userId: undefined,
-    imgId: undefined
+    imgId: undefined,
+    location: undefined,
+    url: undefined
   }
   deviceType.value = []
   formRef.value?.resetFields()
