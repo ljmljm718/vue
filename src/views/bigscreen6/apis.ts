@@ -8,7 +8,7 @@ export const largeScreenGetWarning = async (params) => {
   })
 }
 
-// 单条预警（大屏中间位置）
+// 单条预警（大屏中间位置） parkId parkName
 export const largeScreenGetOneWarning = async (params) => {
   return await request.get({
     url: '/kaizhou/warning-record/largeScreenGetOneWarning',

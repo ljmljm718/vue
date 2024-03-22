@@ -96,7 +96,6 @@ const getLargeScreenGetOneWarning = async (parkId) => {
   console.log('getLargeScreenGetOneWarninges', res)
   onWarningInfo.value = res
 }
-getLargeScreenGetOneWarning('1')
 
 const getDeviceBasePage = async () => {
   const { list = [] } = await deviceBasePage()
@@ -242,6 +241,7 @@ const handleSelectorChange2 = (val) => {
   initChart2(rightTabSelected.value, curBelongPark.value, parentId)
   getwaterDetectionByAddress()
   getViewMonitoring()
+  getLargeScreenGetOneWarning(parentId)
 }
 
 // 环境监测 options
@@ -289,7 +289,7 @@ const initChart1 = async (type) => {
     'chart1',
     generateBaseOptions({
       xAxis: {
-        data: res[0],
+        data: res[0].reverse(),
         axisLine: {
           show: true,
           lineStyle: {
@@ -331,7 +331,7 @@ const initChart1 = async (type) => {
       series: [
         {
           name: leftLabelMap[type],
-          data: res[1],
+          data: res[1].reverse(),
           type: 'line',
           smooth: true,
           label: {
@@ -374,7 +374,7 @@ const initChart2 = async (type, belongPark, belongPlot) => {
     'chart2',
     generateBaseOptions({
       xAxis: {
-        data: res.map(item => (item.month)),
+        data: res.map(item => (item.month)).reverse(),
         axisLine: {
           show: true,
           lineStyle: {
@@ -416,7 +416,7 @@ const initChart2 = async (type, belongPark, belongPlot) => {
       series: [
         {
           name: seriseName,
-          data: res.map(item => (item.dataValue)),
+          data: res.map(item => (item.dataValue)).reverse(),
           type: 'line',
           smooth: false,
           label: {
@@ -516,7 +516,7 @@ const rightLabelMap = {
   PH_value: 'PH值',
   dissolved_oxygen: '溶氧量',
   ammonia_oxygen: '氨氧量',
-  nitrite_nitrogen: '向亚硝酸盐氮'
+  nitrite_nitrogen: '亚硝酸盐氮'
 }
 
 const rightUnitMap = {
