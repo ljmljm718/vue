@@ -7,6 +7,12 @@ export interface AgriWarningRuleDeviceVO {
   deviceId: string // 设备id
 }
 
+//预警绑定设备
+export interface AgriRuleDeviceDTO {
+  warnRuleId: string // 预警规则id
+  deviceId: string[] // 设备id
+}
+
 // 预警规则-设备关联 API
 export const AgriWarningRuleDeviceApi = {
   // 查询预警规则-设备关联分页
@@ -38,4 +44,14 @@ export const AgriWarningRuleDeviceApi = {
   exportAgriWarningRuleDevice: async (params) => {
     return await request.download({ url: `/agriculture/agri-warning-rule-device/export-excel`, params })
   },
-}
+
+  // 绑定设备
+  AgriWarnRuleBindDevice: async (data: AgriRuleDeviceDTO) => {
+    return await request.post({ url: `/agriculture/agri-warning-rule-device/bind`, data })
+  },
+
+  // 根据预警规则查询设备
+  selectAgriDeviceByWarnRuleId: async (warnRuleId: string) => {
+    return await request.get({ url: `/agriculture/agri-warning-rule-device/list?warnRuleId=` + warnRuleId })
+  },
+}

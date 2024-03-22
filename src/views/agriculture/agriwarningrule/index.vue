@@ -130,13 +130,13 @@
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right">
         <template #default="scope">
-<!--          <el-button-->
-<!--            link-->
-<!--            type="success"-->
-<!--            @click="bindDevice(scope.row.id)"-->
-<!--          >-->
-<!--            绑定设备-->
-<!--          </el-button>-->
+          <el-button
+            link
+            type="success"
+            @click="bindDevice(scope.row.id)"
+          >
+            绑定设备
+          </el-button>
           <el-button
             link
             type="primary"
@@ -167,6 +167,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <AgriWarningRuleForm ref="formRef" @success="getList" />
+
+  <!-- 绑定设备列表 -->
+  <AgriWarnRuleBindDevice ref="warnRuleBindDeviceRef" :warnRuleId="warnRuleId" :deviceId="deviceId"/>
 </template>
 
 <script setup lang="ts">
@@ -175,6 +178,8 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwarningrule'
 import AgriWarningRuleForm from './AgriWarningRuleForm.vue'
+import { AgriWarningRuleDeviceApi } from "@/api/agriculture/agriwarningruledevice";
+import AgriWarnRuleBindDevice from "@/views/agriculture/agriwarningrule/component/AgriWarnRuleBindDevice.vue";
 
 /** 鲁渝协作预警规则 列表 */
 defineOptions({ name: 'AgriWarningRule' })
@@ -259,6 +264,21 @@ const handleExport = async () => {
   } catch {
   } finally {
     exportLoading.value = false
+  }
+}
+/** 绑定设备操作 */
+const deviceId = ref([]) // 已绑定的设备id
+const warnRuleId = ref()
+const warnRuleBindDeviceRef = ref()
+const bindDevice = async (id: number) => {
+  try{
+    console.log("id",id)
+    const data = await AgriWarningRuleDeviceApi.selectAgriDeviceByWarnRuleId(String(id))
+    console.log("data", data)
+    deviceId.value = data.map(item => (item.deviceId))
+    warnRuleId.value = id
+    warnRuleBindDeviceRef.value.open()
+  } catch{
   }
 }
 
