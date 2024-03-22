@@ -17,9 +17,10 @@ export const largeScreenGetOneWarning = async (params) => {
 }
 
 // 水质监测（折线图）
-export const waterDetection = async () => {
+export const waterDetection = async (params) => {
   return await request.get({
     url: '/kaizhou/device-data/waterDetection',
+    params
   })
 }
 
@@ -38,9 +39,10 @@ export const deviceBaseList = async () => {
 }
 
 // 水质监测（八项参数）
-export const waterDetectionType = async () => {
+export const waterDetectionType = async (params) => {
   return await request.get({
     url: '/kaizhou/device-data/waterDetectionType',
+    params
   })
 }
 
@@ -51,5 +53,44 @@ export const deviceBasePage = async () => {
     params: {
       deviceName: '气象站'
     }
+  })
+}
+
+// 左下角监控设备(两条)
+export const monitoringEquipment = async () => {
+  return await request.get({
+    url: '/yyang/monitoring-equipment/monitoringEquipment'
+  })
+}
+
+// 大屏中央右边监控设备(单条
+export const viewMonitoring = async (params) => {
+  return await request.get({
+    url: '/yyang/monitoring-equipment/viewMonitoring',
+    params
+  })
+}
+
+// 大屏左上角根据 设备 获取 环境监测数值
+export const getDeviceDataYouEnvironment = async (params) => {
+  return await request.get({
+    url: '/kaizhou/device-data/getDeviceDataYouEnvironment',
+    params
+  })
+}
+
+// 大屏中央传感器设备显示(单条)
+export const waterDetectionByAddress = async (params) => {
+  return await request.get({
+    url: '/kaizhou/device-data/waterDetectionByAddress',
+    params
+  })
+}
+
+// 大屏左侧环境监测折线图
+export const getDeviceDataYouEnvironmentLine = async (params) => {
+  return await request.get({
+    url: '/kaizhou/device-data/getDeviceDataYouEnvironmentLine',
+    params
   })
 }
