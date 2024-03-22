@@ -250,6 +250,8 @@ const handleEnvSelectorChange = (val) => {
   getGetDeviceDataYouEnvironment(val.target.value)
 }
 
+const envLabel = ref('')
+
 const tableColumns = ref([
   {
     key: 'name',
@@ -283,6 +285,8 @@ const tableData = ref<Array<any>>([])
 const initChart1 = async (type) => {
   const deviceCode = leftCurDeviceCode.value;
   if (!type || !deviceCode) return
+  console.log('type', type)
+  envLabel.value = leftLabelMap[type];
   const res = await getDeviceDataYouEnvironmentLine({ deviceCode, type })
   console.log('getDeviceDataYouEnvironmentLine ==', res);
   initChartStatic(
@@ -542,9 +546,9 @@ const rightUnitMap = {
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/devicedataYYang')">
             <div>环境监测</div>
-            <div class="selector-wrapper">
+            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleEnvSelectorChange">
                 <option
                   :value="item.id"
@@ -569,12 +573,12 @@ const rightUnitMap = {
                   </div>
                   <div class="label-wrapper">{{ leftLabelMap[item] }}</div>
                 </div>
-                <div class="check-btn" @click="leftTabSelected = item">查看</div>
+                <div v-show="leftUnitMap[item]" class="check-btn" @click="leftTabSelected = item">查看</div>
               </div>
             </div>
             <div class="sub-title-wrapper">
               <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">温度变化趋势</div>
+              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{ envLabel }}变化趋势</div>
               <div style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
             </div>
             <div
@@ -671,15 +675,15 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card">{{ deviceBaseInfo.sum }}</div>
+              <div class="value-card"  @click="$router.push('/basic/device/devicebase')">{{ deviceBaseInfo.sum }}</div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card">{{ deviceBaseInfo.online }}</div>
+              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">{{ deviceBaseInfo.online }}</div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card">{{ deviceBaseInfo.offline }}</div>
+              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">{{ deviceBaseInfo.offline }}</div>
             </div>
           </div>
           <div class="extra-card-wrappper">
@@ -709,9 +713,9 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/yyangDeviceData')">
             <div>水质监测</div>
-            <div class="selector-wrapper">
+            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleSelectorChange1">
                 <option
                   :value="item.id"
@@ -763,7 +767,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/monitoring-equipment')">
             <div>监控设备</div>
           </div>
           <div
@@ -797,7 +801,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push('/warning/warning-record')">
             <div>预警信息</div>
           </div>
           <div class="main-item-container pre-warn-table">
