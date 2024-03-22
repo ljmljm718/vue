@@ -27,22 +27,16 @@
                     <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、金红九等</div>
                   </div>
                 <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基1</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 13</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 4</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、金红九等</div>
+                    <div style="flex:1;margin-left: 15px;">地基2</div>
+                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 17</div>
+                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 5</div>
+                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、红满园等</div>
                   </div>
                 <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基1</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 13</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 4</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、金红九等</div>
-                  </div>
-                <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基1</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 13</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 4</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、金红九等</div>
+                    <div style="flex:1;margin-left: 15px;">地基3</div>
+                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 21</div>
+                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 5</div>
+                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：红满园、格雷等</div>
                   </div>
               </div>
             </div>
@@ -66,7 +60,7 @@
             <div class="main-top">
               <div :class="mainIndex==1?'active':'actived'" @click="mainIndex=1">农业一张图</div>
               <div :class="mainIndex==2?'active':'actived'" @click="mainIndex=2">产业一张图</div>
-              <div :class="mainIndex==3?'active':'actived'" @click="mainIndex=3">设备监控</div>
+              <div :class="mainIndex==3?'active':'actived'" @click="$router.push('/bigscreen7')">设备监控</div>
             </div>
             <div class="middle-main-item">
                 <div class="sxt" style="left: 30%;top: 50%;">
@@ -132,23 +126,23 @@
                       </div>
                   </div>
                   <div class="right2-warper-item">
-                      <div class="warper-top">土壤墒情</div>
+                      <div class="warper-top">棚内环境监测</div>
                       <div class="warper-foot">
-                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
-                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
-                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
-                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
-                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
+                        <div class="warper-item2"><div>温度：</div><div style="color:#22a7bf">27.34℃</div> </div>
+                        <div class="warper-item2"><div>湿度：</div><div style="color:#22a7bf">76.21%/RH</div> </div>
+                        <div class="warper-item2"><div>光照：</div><div style="color:#22a7bf">20890Lux</div> </div>
+                        <div class="warper-item2"><div>气压：</div><div style="color:#22a7bf">91.25kPa</div> </div>
+                        <div class="warper-item2"><div>降雨量：</div><div style="color:#22a7bf">0.3mm</div> </div>
+                        <div class="warper-item2"><div>CO₂：</div><div style="color:#22a7bf">4.4mmol/L</div> </div>
                       </div>
                   </div>
                   <div class="right2-warper-item">
-                      <div class="warper-top">土壤墒情</div>
+                      <div class="warper-top">虫情测报监测</div>
                       <div class="warper-foot">
-                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
-                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
-                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
-                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
-                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
+                        <div class="warper-item2"><div>虫害数量：</div><div style="color:#22a7bf">16</div> </div>
+                        <div class="warper-item2"><div>虫害种类：</div><div style="color:#22a7bf">3</div> </div>
+                        <div class="warper-item2"><div>杀虫仓温度：</div><div style="color:#22a7bf">20℃</div> </div>
+                        <div class="warper-item2"><div>烘干仓温度：</div><div style="color:#22a7bf">20℃</div> </div>
                       </div>
                   </div>
                 </div>
@@ -243,7 +237,7 @@ let leftTop3List=ref<any>([
     val:'108台'
   },
   {
-    title:'环境传染',
+    title:'环境传感',
     val:'13台'
   },
   {
@@ -611,7 +605,7 @@ gap: 10px;
           padding: 15px 20px !important;
             box-sizing: border-box;
           .warper-top{
-            width: 30%;
+            width: 40%;
             text-align: center;
             height: 30px;
             line-height: 30px;

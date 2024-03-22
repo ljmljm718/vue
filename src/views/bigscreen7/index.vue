@@ -45,7 +45,7 @@
           </div>
           <div class="content-main-item middle-main-wrapper">
             <div class="main-top">
-              <div :class="mainIndex==1?'active':'actived'" @click="mainIndex=1">农业一张图</div>
+              <div :class="mainIndex==1?'active':'actived'" @click="$router.push('/bigscreen5')">农业一张图</div>
               <div :class="mainIndex==2?'active':'actived'" @click="mainIndex=2">产业一张图</div>
               <div :class="mainIndex==3?'active':'actived'" @click="mainIndex=3">设备监控</div>
             </div>
@@ -74,32 +74,11 @@
             <div class="right1">
               <div class="box-title">预警信息</div>
               <div class="right1-item">
-               <div class="right1-warper">
-                <div class="right1-left"><div class="tranig"></div>虫情预警</div>
+               <div class="right1-warper" v-for="item,index in warnInfo" :key='index'>
+                <div class="right1-left"><div class="tranig"></div>{{item.warnType}}</div>
                 <div class='right1-right'>
-                  <div>3号大棚虫害数量已经接近阈值95，建议开启诱虫灯</div>
-                  <div style="margin-top:10px;">2024-03-19 16:48:09</div>
-                </div>
-               </div>
-               <div class="right1-warper">
-                <div class="right1-left"><div class="tranig"></div>虫情预警</div>
-                <div class='right1-right'>
-                  <div>3号大棚虫害数量已经接近阈值95，建议开启诱虫灯</div>
-                  <div style="margin-top:10px;">2024-03-19 16:48:09</div>
-                </div>
-               </div>
-               <div class="right1-warper">
-                <div class="right1-left"><div class="tranig"></div>虫情预警</div>
-                <div class='right1-right'>
-                  <div>3号大棚虫害数量已经接近阈值95，建议开启诱虫灯</div>
-                  <div style="margin-top:10px;">2024-03-19 16:48:09</div>
-                </div>
-               </div>
-               <div class="right1-warper">
-                <div class="right1-left"><div class="tranig"></div>虫情预警</div>
-                <div class='right1-right'>
-                  <div>3号大棚虫害数量已经接近阈值95，建议开启诱虫灯</div>
-                  <div style="margin-top:10px;">2024-03-19 16:48:09</div>
+                  <div>{{item.warnInfo}}</div>
+                  <div style="margin-top:10px;">{{new Date().toLocaleString(item.warnTime)}}</div>
                 </div>
                </div>
                
@@ -116,40 +95,68 @@
       <div class="footter">
           <div class='footer-left'>
             <div class='select'>
-              <select id="" name="" class='select-left'>
-                <option value="">基地</option>
+              <select id="" name="" @change='selectCli1' class='select-left'>
+                <option v-for="item,index in selecte1" :key="index" :value="item.id">{{item.name}}</option>
               </select>
-              <select id="" name=""  class='select-right'>
-                <option value="">1号大鹏</option>
+              <select id="" name=""  @change='selectCli2'  class='select-right'>
+                <option v-for="item,index in selecte2" :key="index" :value="item.id">{{item.name}}</option>
               </select>
             </div>
             <div class='left-soil'>
-              <div :class='soilIndex==1?"active":"actived"' @click='soilIndex=1'>气象监测</div>
-              <div :class='soilIndex==2?"active":"actived"' @click='soilIndex=2'>土壤墒情</div>
-              <div :class='soilIndex==3?"active":"actived"' @click='soilIndex=3'>棚内环境</div>
-              <div :class='soilIndex==4?"active":"actived"' @click='soilIndex=4'>虫情监测</div>
+              <div :class='soilIndex==1?"active":"actived"' @click='soilCli("14,15",1)'>气象监测</div>
+              <div :class='soilIndex==2?"active":"actived"' @click='soilCli("14,16",2)'>土壤墒情</div>
+              <div :class='soilIndex==3?"active":"actived"' @click='soilCli("14,18",3)'>棚内环境</div>
+              <div :class='soilIndex==4?"active":"actived"' @click='soilCli("14,17",4)'>虫情监测</div>
             </div>
             <div class='footer-chart'>
               <div class='footer-item'>
-                <div class='foot-top'>
+                <div :class='["foot-top","footTop-1"]'>
                     <div style='margin-left:30px;'>空气温度</div>
-                    <div style='font-size:25px;margin-left:-100px;'>12.3<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.temperature}}<span style='font-size:12px;'>℃</span></div>
                 </div>
                 <div id='chart3'></div>
               </div>
               <div class='footer-item'>
-                <div class='foot-top'>
-                    <div style='margin-left:30px;'>空气温度</div>
-                    <div style='font-size:25px;margin-left:-100px;'>12.3<span style='font-size:12px;'>℃</span></div>
+                <div  :class='["foot-top","footTop-2"]'>
+                    <div style='margin-left:30px;'>空气湿度</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.humidity}}<span style='font-size:12px;'>℃</span></div>
                 </div>
                 <div id='chart4'></div>
               </div>
               <div class='footer-item'>
-                <div class='foot-top'>
-                    <div style='margin-left:30px;'>空气温度</div>
-                    <div style='font-size:25px;margin-left:-100px;'>12.3<span style='font-size:12px;'>℃</span></div>
+                <div :class='["foot-top","footTop-3"]'>
+                    <div style='margin-left:30px;'>降雨量</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.rainfall}}<span style='font-size:12px;'>℃</span></div>
                 </div>
                 <div id='chart5'></div>
+              </div>
+              <div class='footer-item'>
+                <div :class='["foot-top","footTop-4"]'>
+                    <div style='margin-left:30px;'>光照强度</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.lighting}}<span style='font-size:12px;'>℃</span></div>
+                </div>
+                <div id='chart6'></div>
+              </div>
+              <div class='footer-item'>
+                <div :class='["foot-top","footTop-5"]'>
+                    <div style='margin-left:30px;'>风速</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.windSpeed}}<span style='font-size:12px;'>℃</span></div>
+                </div>
+                <div id='chart7'></div>
+              </div>
+              <div class='footer-item'>
+                <div :class='["foot-top","footTop-6"]'>
+                    <div style='margin-left:30px;'>大气压力</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.airPressure}}<span style='font-size:12px;'>℃</span></div>
+                </div>
+                <div id='chart8'></div>
+              </div>
+              <div class='footer-item' v-show="soilIndex==3">
+                <div :class='["foot-top","footTop-7"]'>
+                    <div style='margin-left:30px;'>二氧化碳</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.co2Density}}<span style='font-size:12px;'>℃</span></div>
+                </div>
+                <div id='chart9'></div>
               </div>
             </div>
           </div>
@@ -160,11 +167,23 @@
                 <option value="">基地</option>
               </select>
               <select id="" name=""  class='select-right'>
-                <option value="">1号大鹏</option>
+                <option value="">1号大棚</option>
               </select>
             </div>
             </div>
-            <div class='footer-item'></div>
+            <div class='footer-item2'>
+              <div class=foot-warper v-for='item,index in 8' :key='index'>
+                <div class='foot-top2'></div>
+                <div class='foot-cont2'>
+                  <div class='foot-img'></div>
+                  <div style='margin-left:-20px;'>位置:<span>1号棚入口</span></div>
+                </div>
+                <div class='foot-cont2' style='margin-top:-20px;'>
+                  <div class='foot-img'></div>
+                  <div style='margin-left:-20px;'>状态:<span class='online'>在线</span></div>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
 
@@ -178,6 +197,12 @@ initChartStatic,
 generateBaseOptions,
 generatePieOptions,
 } from "../../utils/bigscreenTool/index";
+import {
+  environmentData,
+  warningRecordInfo,
+  ParkBaseInfo,
+  environmentView
+} from '@/api/bigscreen7/index'
 import { resetSize } from '@/components/Verifition/src/utils/util';
 import {ref,onMounted} from 'vue'
 const initChart1= ()=> {
@@ -305,7 +330,90 @@ const initChart2=  ()=>{
       );
     
 }
+//获取基地
+let selecte1 =ref<any>([])
+let selecte2 =ref<any>([])
+let selecte1Id =ref<any>('')
+let select2Id=ref<any>('')
+  let soilId=ref<any>('14,15')
+//获取基地
+const getParkBaseInfo=()=>{
+  ParkBaseInfo({parentId:'0'}).then(res=>{
+    console.log(res,'获取基地');
+    selecte1.value=res
+    selecte1Id.value=res[0].id
+    getParkBase({parentId:res[0].id})
+  })
+}
+getParkBaseInfo()
+//获取棚区
+const getParkBase=(val)=>{
+  ParkBaseInfo(val).then(res=>{
+    console.log(res,'棚区');
+    selecte2.value=res
+    select2Id.value=res[0].id
+    
+  })
+}
+
+
+//筛选基地
+const selectCli1=(val:any)=>{
+  selecte1Id.value=val.target.value
+  getParkBase({parentId:val.target.value})
+}
+//筛选设备
+const selectCli2=(val:any)=>{
+  select2Id.value=val.target.value
+}
+
+//气象点击
+const soilCli=(val:any,index:any)=>{
+  soilId.value=val
+  soilIndex.value=index
+  getEnvironmentData()
+  getEnvironmentView()
+}
+//环境数据顶部
+let footTop=ref<any>({})
+let footChart=ref<any>({})
+let getEnvironmentData=()=>{
+  environmentData({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value}).then(res=>{
+    console.log(res,'环境数据');
+    footTop.value=res
+  })
+}
+getEnvironmentData()
+let getEnvironmentView=()=>{
+  environmentView({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value}).then(res=>{
+    console.log(res,'环境数据');
+    footChart.value=res
+    setTimeout(()=>{
+        initChart3()
+        initChart4()
+        initChart5()
+        initChart6()
+        initChart7()
+        initChart8()
+        initChart9()
+    },200)
+  })
+}
+getEnvironmentView()
+
 const initChart3=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+      time.forEach((item,index)=>{
+        let aa=footChart.value.time.includes(item)
+        console.log(aa,index,'shifou');
+        if(!aa){
+          // data=footChart.value.temperature.push('0')
+          footChart.value.temperature.splice(index-1, 0, 0);
+          
+        }
+      })
+  console.log(footChart.value.temperatur,'data');
+  
       initChartStatic(
         "chart3",
         generateBaseOptions({
@@ -319,7 +427,7 @@ const initChart3=  ()=>{
             },
           },
           legend: { 
-            show: true, 
+            show: false, 
             orient:'horizontal',
             left:'center'            
          },
@@ -385,7 +493,7 @@ const initChart4=  ()=>{
             },
           },
           legend: { 
-            show: true, 
+            show: false, 
             orient:'horizontal',
             left:'center'            
          },
@@ -451,7 +559,271 @@ const initChart5=  ()=>{
             },
           },
           legend: { 
-            show: true, 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: [11,15,20,18,20,15,22,19],
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart6=  ()=>{
+      initChartStatic(
+        "chart6",
+        generateBaseOptions({
+          xAxis: {
+            data: [ '0','3','6','9','12',"15","18","21"],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: [11,15,20,18,20,15,22,19],
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart7=  ()=>{
+      initChartStatic(
+        "chart7",
+        generateBaseOptions({
+          xAxis: {
+            data: [ '0','3','6','9','12',"15","18","21"],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: [11,15,20,18,20,15,22,19],
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart8=  ()=>{
+      initChartStatic(
+        "chart8",
+        generateBaseOptions({
+          xAxis: {
+            data: [ '0','3','6','9','12',"15","18","21"],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: [11,15,20,18,20,15,22,19],
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart9=  ()=>{
+      initChartStatic(
+        "chart9",
+        generateBaseOptions({
+          xAxis: {
+            data: [ '0','3','6','9','12',"15","18","21"],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
             orient:'horizontal',
             left:'center'            
          },
@@ -506,11 +878,8 @@ const initChart5=  ()=>{
 onMounted(()=>{
   initChart1()
   initChart2()
-  initChart3()
-  initChart4()
-  initChart5()
 })
-let mainIndex=ref(1)
+let mainIndex=ref(3)
 let left1Top=ref([
   {
     title:'在线',
@@ -592,6 +961,15 @@ let left2List=ref([
   },
 ])
 let soilIndex=ref(1)
+//预警信息
+let warnInfo=ref([])
+const getWarningRecordInfo=()=>{
+  warningRecordInfo().then(res=>{
+    console.log(res,'预警信息');
+    warnInfo.value=res
+  })
+}
+getWarningRecordInfo()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -789,6 +1167,7 @@ gap: 10px;
           background-image: url(./assets/message.png);
           .message-top{
             width: 100%;
+            z-index: 9999;
             margin-left: 20px;
             font-weight: 600;
             line-height: 30px;
@@ -916,7 +1295,7 @@ gap: 10px;
   display:flex;
   justify-content:space-between;
   .footer-left{
-  z-index:9999; 
+    z-index:9999; 
     width:60%;
     height:100%;
     display:grid;
@@ -927,23 +1306,28 @@ gap: 10px;
       width:100%;
       height:100%;
       .select-left{
-        width:100px;
+        
         padding:0 5px;
         height:60%;
-        color:#fff;
+        color: #fff;
         margin-right:20px;
         background-size:100% 100%;
         background:none;
         background-image:url(./assets/select.png);
+        option{
+          color: #000;
+        }
       }
       .select-right{
-        width:100px;
         padding:0 5px;
         height:60%;
         color:#fff;
         background-size:100% 100%;
         background:none;
         background-image:url(./assets/select.png);
+        option{
+          color: #000;
+        }
       }
     }
     .left-soil{
@@ -973,9 +1357,11 @@ gap: 10px;
     .footer-chart{
       width:100%;
       height:100%;
-      display:flex;
-      justify-content:space-between;
+      overflow-x: scroll;
+      white-space: nowrap;
       .footer-item{
+        display: inline-block;
+        margin-right:15px;
         width:32%;
         padding:10px !important;
         box-sizing:border-box;
@@ -990,7 +1376,7 @@ gap: 10px;
           color:#fff;
           justify-content:space-around;
           background-size:100% 100%;
-          background-image:url(./assets/footerTop.png);
+          background-image:url(./assets/footerTop1.png);
         }
         #chart3{
           width:100%;
@@ -1001,6 +1387,22 @@ gap: 10px;
           height:calc(100% - 50px);
         }
         #chart5{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart6{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart7{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart8{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart9{
           width:100%;
           height:calc(100% - 50px);
         }
@@ -1034,10 +1436,40 @@ gap: 10px;
         background-image:url(./assets/select.png);
       }
     }
-    .footer-item{
+    .footer-item2{
       width:100%;
+      padding:10px!important;
+      box-sizing:border-box;
       height:calc(100% - 2rem);
-
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      .foot-warper{
+        width:23%;
+        height:45%;
+        .foot-top2{
+          width:100%;
+          height:65%;
+          background-image:url(./assets/footRightBg.png);
+          background-size:100% 100%;
+        }
+        .foot-cont2{
+          width:100%;
+          height:35%;
+          color:#c1c1c1;
+          display:flex;
+          align-items:center;
+          .foot-img{
+            width:60px;
+            height:60px;
+            background-size:100% 100%;
+            background-image:url(./assets/jg.png)
+          }
+          .online{
+            color:green;
+          }
+        }
+      }
     }
   }
 }
@@ -1059,6 +1491,11 @@ gap: 10px;
 @for $i from 1 through 3 {
 .sxt-#{$i} {
   background-image: url(./assets/sxt#{$i}.png);
+}
+}
+@for $i from 1 through 3 {
+.footTop-#{$i} {
+  background-image: url(./assets/footerTop#{$i}.png);
 }
 }
 
