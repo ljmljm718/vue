@@ -151,7 +151,7 @@
                 </div>
                 <div id='chart8'></div>
               </div>
-              <div class='footer-item' v-show="soilIndex==3">
+              <div class='footer-item' v-if="soilIndex==3">
                 <div :class='["foot-top","footTop-7"]'>
                     <div style='margin-left:30px;'>二氧化碳</div>
                     <div style='font-size:25px;margin-left:-100px;'>{{footTop.co2Density}}<span style='font-size:12px;'>℃</span></div>
@@ -403,22 +403,21 @@ getEnvironmentView()
 
 const initChart3=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-      time.forEach((item,index)=>{
-        let aa=footChart.value.time.includes(item)
-        console.log(aa,index,'shifou');
-        if(!aa){
-          // data=footChart.value.temperature.push('0')
-          footChart.value.temperature.splice(index-1, 0, 0);
-          
-        }
-      })
-  console.log(footChart.value.temperatur,'data');
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.temperature
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
   
       initChartStatic(
         "chart3",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -459,7 +458,7 @@ const initChart3=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -480,11 +479,21 @@ const initChart3=  ()=>{
     
 }
 const initChart4=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.humidity
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart4",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -525,7 +534,7 @@ const initChart4=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -546,11 +555,21 @@ const initChart4=  ()=>{
     
 }
 const initChart5=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.rainfall
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart5",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data:time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -591,7 +610,7 @@ const initChart5=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -612,11 +631,21 @@ const initChart5=  ()=>{
     
 }
 const initChart6=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.lighting
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart6",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -657,7 +686,7 @@ const initChart6=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -678,11 +707,21 @@ const initChart6=  ()=>{
     
 }
 const initChart7=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.windSpeed
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart7",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -723,7 +762,7 @@ const initChart7=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -744,11 +783,21 @@ const initChart7=  ()=>{
     
 }
 const initChart8=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.airPressure
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart8",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -789,7 +838,7 @@ const initChart8=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -810,11 +859,21 @@ const initChart8=  ()=>{
     
 }
 const initChart9=  ()=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= footChart.value.time
+  let b= footChart.value.co2Density
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
       initChartStatic(
         "chart9",
         generateBaseOptions({
           xAxis: {
-            data: [ '0','3','6','9','12',"15","18","21"],
+            data: time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -855,7 +914,7 @@ const initChart9=  ()=>{
           series: [
             {
               name:'空气温度',
-              data: [11,15,20,18,20,15,22,19],
+              data: data,
               type: "line",
               barWidth:'20', 
               smooth: false,
@@ -1493,7 +1552,7 @@ gap: 10px;
   background-image: url(./assets/sxt#{$i}.png);
 }
 }
-@for $i from 1 through 3 {
+@for $i from 1 through 7 {
 .footTop-#{$i} {
   background-image: url(./assets/footerTop#{$i}.png);
 }
