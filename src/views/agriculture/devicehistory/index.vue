@@ -1,6 +1,4 @@
 <template>
-<!--  <doc-alert title="【销售】销售订单、出库、退货" url="https://doc.iocoder.cn/erp/sale/" />-->
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -10,30 +8,33 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="设备id" prop="deviceId">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入名称"
+          v-model="queryParams.deviceId"
+          placeholder="请输入设备id"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="mobile">
-        <el-input
-          v-model="queryParams.mobile"
-          placeholder="请输入手机号码"
+      <el-form-item label="设备状态" prop="deviceStatus">
+        <el-select
+          v-model="queryParams.deviceStatus"
+          placeholder="请选择设备状态"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option label="请选择字典生成" value="" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="联系电话" prop="telephone">
-        <el-input
-          v-model="queryParams.telephone"
-          placeholder="请输入联系电话"
-          clearable
-          @keyup.enter="handleQuery"
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
@@ -44,7 +45,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:customer:create']"
+          v-hasPermi="['agriculture:device-history-status:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -53,7 +54,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:customer:export']"
+          v-hasPermi="['agriculture:device-history-status:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -64,25 +65,27 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="联系人" align="center" prop="contact" />
-      <el-table-column label="手机号码" align="center" prop="mobile" />
-      <el-table-column label="联系电话" align="center" prop="telephone" />
-      <el-table-column label="电子邮箱" align="center" prop="email" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="状态" align="center" prop="status">
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="设备id" align="center" prop="deviceId" />
+      <el-table-column label="设备状态" align="center" prop="deviceStatus" >
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
         </template>
       </el-table-column>
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:customer:update']"
+            v-hasPermi="['agriculture:device-history-status:update']"
           >
             编辑
           </el-button>
@@ -90,7 +93,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['erp:customer:delete']"
+            v-hasPermi="['agriculture:device-history-status:delete']"
           >
             删除
           </el-button>
@@ -107,31 +110,31 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CustomerForm ref="formRef" @success="getList" />
+  <DeviceHistoryStatusForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import { DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
-import CustomerForm from './CustomerForm.vue'
+import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory'
+import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 
-/** ERP 客户 列表 */
-defineOptions({ name: 'ErpCustomer' })
+/** 设备历史状态 列表 */
+defineOptions({ name: 'DeviceHistoryStatus' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<CustomerVO[]>([]) // 列表的数据
+const list = ref<DeviceHistoryStatusVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  name: undefined,
-  mobile: undefined,
-  telephone: undefined
+  deviceId: undefined,
+  deviceStatus: undefined,
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -140,7 +143,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await CustomerApi.getCustomerPage(queryParams)
+    const data = await DeviceHistoryStatusApi.getDeviceHistoryStatusPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -172,7 +175,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await CustomerApi.deleteCustomer(id)
+    await DeviceHistoryStatusApi.deleteDeviceHistoryStatus(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -186,8 +189,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await CustomerApi.exportCustomer(queryParams)
-    download.excel(data, '客户.xls')
+    const data = await DeviceHistoryStatusApi.exportDeviceHistoryStatus(queryParams)
+    download.excel(data, '设备历史状态.xls')
   } catch {
   } finally {
     exportLoading.value = false

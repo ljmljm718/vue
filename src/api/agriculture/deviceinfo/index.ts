@@ -15,6 +15,8 @@ export interface DeviceInfoVO {
   remark: string // 备注
   deptId: number // 部门编号
   userId: number // 用户编号
+  url: string // 监控视频
+  location: string // 位置
 }
 
 // 设备信息 API
