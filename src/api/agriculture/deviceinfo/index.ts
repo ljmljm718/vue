@@ -47,5 +47,11 @@ export const DeviceInfoApi = {
   // 导出设备信息 Excel
   exportDeviceInfo: async (params) => {
     return await request.download({ url: `/agriculture/device-info/export-excel`, params })
-  }
+  },
+
+  // 绑定定时任务与设备信息
+  jobBindDevice: async (data: any) => {
+    return await request.post({ url: `/agriculture/device-info/job-bind-device`, data })
+  },
+
 }

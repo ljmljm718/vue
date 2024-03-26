@@ -286,8 +286,8 @@ watch(() => props.currCategory,
 const handleBindDevice = async () => {
   loading.value = true
   try {
-    console.log("ids", ids)
     const temp = reactive({warnRuleId: props.warnRuleId, deviceId: ids.value})
+    console.log("temp", temp)
     const data = temp as any
     await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))
