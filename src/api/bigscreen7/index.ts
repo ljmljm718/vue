@@ -34,3 +34,15 @@ export const monitorDeviceByPark = async (params) => {
     params
   })
 }
+//设备运行统计
+export const deviceHistoryStatus = async () => {
+  return await request.get({
+    url: '/agriculture/big-screen/deviceHistoryStatus',
+  })
+}
+//设备运行统计
+export const deviceInfoCard = async () => {
+  return await request.get({
+    url: '/agriculture/big-screen/deviceInfoCard',
+  })
+}
