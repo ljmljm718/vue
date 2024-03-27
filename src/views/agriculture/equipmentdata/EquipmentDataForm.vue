@@ -159,6 +159,8 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.baseCode = String(order[0].belongPark);
   //地块
   formData.value.plotCode = order[0].belongPlot
+  //重置检查类型让他重新选择
+  formData.value.monitoringType = ''
 
   let a=order[0].deviceType[1]
   let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
