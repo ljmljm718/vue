@@ -199,6 +199,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
+      selectList.value=null;
       let dataA= await EquipmentDataApi.getEquipmentData(id);
       formData.value=dataA.list[0];
     } finally {
