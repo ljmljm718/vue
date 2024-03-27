@@ -104,7 +104,8 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
-      <el-table-column label="设备" align="center" prop="equNum"/>
+<!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
+      <el-table-column label="设备" align="center" prop="equName"/>
       <el-table-column label="所属基地" align="center" prop="base"/>
       <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
                        prop="massif"/>
@@ -117,7 +118,19 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>
+<!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
+      <el-table-column label="巡检影像" align="center" prop="inspectionImage" >
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.inspectionImage"
+            :preview-src-list="[row.inspectionImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="巡检内容" align="center" prop="content"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
@@ -185,6 +198,7 @@ const queryParams = reactive({
   inspectionState: undefined,
   inspectionResults: undefined,
   equNum: undefined,
+  equName: undefined,
   base: undefined,
   massif: undefined,
   inspectorId: undefined,
