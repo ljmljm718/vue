@@ -96,13 +96,15 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table
+      ref="deviceInfoTableRef"
       v-loading="loading"
       :data="list"
+      :row-key="(row) => row.id"
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="multi" type="selection" width="55"/>
+      <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -236,10 +238,24 @@ const getList = async () => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
     })
-    console.log(list.value)
+    console.log("list.value", list.value)
     total.value = data.total
+    setTimeout(() => {
+      handleSelectedDeviceIds()
+    })
   } finally {
     loading.value = false
+  }
+}
+
+// 选中已经绑定的设备id
+const deviceInfoTableRef = ref()
+const handleSelectedDeviceIds = () => {
+  multipleSelection.value = list.value.filter(item => props.initDeviceInfoIdList.includes(item.id))
+  if (multipleSelection.value.length > 0){
+    multipleSelection.value.forEach((row) => {
+      deviceInfoTableRef.value!.toggleRowSelection(row, true);
+    })
   }
 }
 
@@ -305,7 +321,6 @@ const categoryProps = {
 onMounted(async () => {
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree)
-  console.log("categoryOptions.value", categoryOptions.value)
   await getList()
 })
 
@@ -325,6 +340,11 @@ const props = defineProps({
   readonly: {
     type: Boolean,
     default: true
+  },
+  // 选中的设备id
+  initDeviceInfoIdList: {
+    type: Array,
+    default: () => ([])
   }
 })
 
