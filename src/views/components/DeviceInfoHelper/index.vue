@@ -5,8 +5,10 @@ import {DeviceInfoVO} from "@/api/agriculture/deviceinfo";
 defineOptions({name: 'DeviceInfoHelper'})
 
 const dialogVisible = ref(false) // 弹窗的是否展示
+const selectedDeviceIdList = ref([]) // 选中的设备ID列表
 /** 打开弹窗 */
-const open = async () => {
+const open = async (selectedDeviceIds: []) => {
+  selectedDeviceIdList.value = selectedDeviceIds
   dialogVisible.value = true
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
@@ -40,7 +42,6 @@ const selectedDeviceInfo = (val) => {
 const emit = defineEmits(["confirmDeviceInfoList"])
 const confirmSelectedDeviceInfoList = () => {
   emit('confirmDeviceInfoList', selectedDeviceInfoList.value)
-  console.log("...", selectedDeviceInfoList.value)
   dialogVisible.value = false
 }
 
@@ -54,6 +55,7 @@ const confirmSelectedDeviceInfoList = () => {
     <DeviceInfo
       :readonly="deviceInfoProps.readonly"
       :multi="deviceInfoProps.multi"
+      :init-device-info-id-list="deviceInfoProps.multi ? selectedDeviceIdList : []"
       @selected-device-info="selectedDeviceInfo"
     />
     <template #footer>

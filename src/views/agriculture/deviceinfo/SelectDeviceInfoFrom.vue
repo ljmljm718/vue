@@ -1,4 +1,9 @@
 <template>
+  <Dialog     title="农事记录"
+              v-model="dialogVisible"
+              :appendToBody="true"
+              :scroll="true"
+              width="1300">
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -75,7 +80,6 @@
           plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:device-info:create']"
-          v-if="!readonly"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -85,7 +89,6 @@
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agriculture:device-info:export']"
-          v-if="!readonly"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -95,16 +98,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table
-      ref="deviceInfoTableRef"
-      v-loading="loading"
-      :data="list"
-      :row-key="(row) => row.id"
-      :stripe="true"
-      :show-overflow-tooltip="true"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
+    <el-table v-loading="loading" :data="list" :stripe="true" ref="suibian" :show-overflow-tooltip="true" @select="fangfa"  @selection-change="handleSelectionChange">
+      <el-table-column width="30" label="选择" type="selection"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -118,7 +113,6 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="状态" align="center" prop="deviceStatus">
@@ -150,13 +144,7 @@
         width="180px"
       />
 
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        fixed="right"
-        v-if="!readonly"
-      >
+      <!-- <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -175,7 +163,7 @@
             删除
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -184,20 +172,27 @@
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
+    
   </ContentWrap>
+  <template #footer>
+      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+        确 定
+      </el-button>
+      <el-button @click="dialogVisible = false">取 消</el-button>
+    </template>
+  </Dialog>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceInfoForm ref="formRef" @success="getList" />
+  <!-- <DeviceInfoForm ref="formRef" @success="getList" /> -->
 </template>
 
 <script setup lang="ts">
-import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
+import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
-import {retainFirstTwoLayers} from "@/utils/tree";
 
 /** 设备信息 列表 */
 defineOptions({ name: 'DeviceInfo' })
@@ -223,14 +218,54 @@ const queryParams = reactive({
   createTime: [],
   deptId: undefined,
   userId: undefined,
-  location: undefined,
-  deviceMonitorType: undefined,
-  deviceKind: undefined
+  location: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 let categoryOptions = ref([])// 设备分类选项
 const deviceType = ref()
+
+//开始
+
+let suibian=ref(null)
+const fangfa=(select:any,row:any)=>{
+  if(select.length>1){
+    let del_row =select.shift();
+    suibian.value.toggleRowSelection(del_row,false);
+  }
+}
+
+/** 选中操作 */
+const dialogVisible = ref(false) // 弹窗的是否展示
+const selectionList = ref<DeviceInfoVO[]>([])
+const handleSelectionChange = (rows: DeviceInfoVO[]) => {
+  selectionList.value = rows
+}
+
+/** 提交选择 */
+const emits = defineEmits<{
+  (e: 'success', value: DeviceInfoVO[]): void
+}>()
+const submitForm = () => {
+  try {
+    emits('success', selectionList.value)
+  } finally {
+    // 关闭弹窗
+    dialogVisible.value = false
+  }
+}
+/** 打开弹窗 */
+const open = async (id: string) => {
+  dialogVisible.value = true
+  console.log("id:" + id)
+  await nextTick() // 等待，避免 queryFormRef 为空
+  // 加载下属地块列表
+  await resetQuery()
+}
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+
+//结束
 
 /** 查询列表 */
 const getList = async () => {
@@ -241,24 +276,10 @@ const getList = async () => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
     })
-    console.log("list.value", list.value)
+    console.log(list.value)
     total.value = data.total
-    setTimeout(() => {
-      handleSelectedDeviceIds()
-    })
   } finally {
     loading.value = false
-  }
-}
-
-// 选中已经绑定的设备id
-const deviceInfoTableRef = ref()
-const handleSelectedDeviceIds = () => {
-  multipleSelection.value = list.value.filter(item => props.initDeviceInfoIdList.includes(item.id))
-  if (multipleSelection.value.length > 0){
-    multipleSelection.value.forEach((row) => {
-      deviceInfoTableRef.value!.toggleRowSelection(row, true);
-    })
   }
 }
 
@@ -322,46 +343,17 @@ const categoryProps = {
 
 /** 初始化 **/
 onMounted(async () => {
-  const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-  categoryOptions.value = retainFirstTwoLayers(categoryTree)
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   await getList()
 })
 
 // 定义属性
 const props = defineProps({
-  // todo (zhangyu26, 2024-03-26 15:19:17) : currCategory, 暂时没用
   currCategory: {
     type: Object,
     default: () => ({})
   },
-  // 多选
-  multi: {
-    type: Boolean,
-    default: false
-  },
-  // 只读
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  // 选中的设备id
-  initDeviceInfoIdList: {
-    type: Array,
-    default: () => ([])
-  }
 })
-
-/**
- * table多选
- * 目前只是作为组件向父组件传值
- */
-const multipleSelection = ref<DeviceInfoVO[]>([])
-const emit = defineEmits(["selectedDeviceInfo"]);
-const handleSelectionChange = (val: DeviceInfoVO[]) => {
-  multipleSelection.value = val
-  emit('selectedDeviceInfo', multipleSelection.value)
-}
-
 // 监听父组件category变化
 watch(() => props.currCategory,
   () => {
@@ -376,5 +368,4 @@ watch(() => props.currCategory,
     }
     handleQuery()
   })
-
 </script>

@@ -80,14 +80,14 @@
         </template>
       </el-table-column>
       <el-table-column label="处理器的名字" align="center" prop="handlerName"/>
-      <el-table-column label="处理器的参数" align="center" prop="handlerParam"/>
+      <el-table-column label="处理器的参数" width="400" align="center" prop="handlerParam"/>
       <el-table-column label="CRON 表达式" align="center" prop="cronExpression" />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="200" fixed="right">
         <template #default="scope">
           <el-button
             type="primary"
             link
-            @click="openDeviceInfoHelperDialog(scope.row.id)"
+            @click="openDeviceInfoHelperDialog(scope.row)"
             v-hasPermi="['infra:job:update']"
           >
             绑定设备
@@ -170,8 +170,8 @@ import download from '@/utils/download'
 import * as JobApi from '@/api/infra/job'
 import {InfraJobStatusEnum} from '@/utils/constants'
 import DeviceInfoHelper from '@/views/components/DeviceInfoHelper/index.vue'
-import {JobVO} from "@/api/infra/job";
 import {DeviceInfoApi} from "@/api/agriculture/deviceinfo";
+import {JobVO} from "@/api/infra/job";
 
 defineOptions({name: 'InfraJob'})
 
@@ -242,20 +242,19 @@ const openForm = (type: string, id?: number) => {
  */
 // 打开设备选择弹窗
 const deviceInfoHelperRef = ref()
-const currJobId = ref()
-const openDeviceInfoHelperDialog = jobId => {
-  currJobId.value = jobId
-  deviceInfoHelperRef.value.open()
+const currJob = ref()
+const openDeviceInfoHelperDialog = (job: JobVO) => {
+  currJob.value = job
+  deviceInfoHelperRef.value.open(job.handlerParam.split(','))
 }
 // 绑定设备
 const handleBindDevice = async (val) => {
-  const deviceIdList: [] = val.map(item => item.id);
-  console.log("deviceIdList", deviceIdList)
   const formData = {
-    jobId: currJobId.value,
-    deviceIdList: deviceIdList,
+    jobId: currJob.value.id,
+    deviceIdList: val.map(item => item.id),
   }
-  await DeviceInfoApi.jobBindDevice(formData)
+  await DeviceInfoApi.jobBindDevice(formData);
+  await getList()
   message.success("绑定设备成功！")
 }
 

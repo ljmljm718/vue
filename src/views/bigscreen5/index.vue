@@ -11,9 +11,21 @@
             <div class="left1">
               <div class="box-title">农业资源</div>
               <div class="left1-item">
-                  <div v-for="item,index in leftTop1List" :key="index" :class="['left1-warper','leftTop-'+(index+1).toString()]">
-                    <div style="color: #c1c1c1;margin-left: 120px;">{{ item.title }}</div>
-                    <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ item.val }}</div>
+                  <div  :class="['left1-warper','leftTop-1']">
+                    <div style="color: #c1c1c1;margin-left: 120px;">基地</div>
+                    <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.parkCount }}</div>
+                  </div>
+                  <div  :class="['left1-warper','leftTop-1']">
+                    <div style="color: #c1c1c1;margin-left: 120px;">棚区</div>
+                    <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.plotCount }}</div>
+                  </div>
+                  <div  :class="['left1-warper','leftTop-1']">
+                    <div style="color: #c1c1c1;margin-left: 120px;">种植面积</div>
+                    <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.area }}</div>
+                  </div>
+                  <div  :class="['left1-warper','leftTop-1']">
+                    <div style="color: #c1c1c1;margin-left: 120px;">农户</div>
+                    <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.farmer }}</div>
                   </div>
               </div>
             </div>
@@ -159,10 +171,20 @@ initChartStatic,
 generateBaseOptions,
 generatePieOptions,
 } from "../../utils/bigscreenTool/index";
-
+import {
+  AgriResources,
+  getCropInfo
+} from '@/api/bigscreen5/index'
 import {ref,reactive,onMounted} from 'vue'
 import { resetSize } from '@/components/Verifition/src/utils/util';
-const initChart1= ()=> {
+const initChart1= async ()=> {
+  let res =await getCropInfo()
+  console.log(res,'种植分布')
+  let data=[]
+  res.forEach(item=>{
+    data.push({name:item.name,value:item.area})
+  })
+  console.log(data,'data')
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -182,13 +204,7 @@ const initChart1= ()=> {
               type: "pie",
               radius: ["30%", "50%"],
               center: "center",
-              data: [
-                {value: "32",name:'喜力'},
-                {value: "26",name:'金红九'},
-                {value: "21",name:'红满园'},
-                {value: "6",name:'格雷'},
-                {value: "7",name:'百利'},
-              ],
+              data: data,
               label: {
                 // formatter: "{c|{c}},{d|{d}%}",
                 formatter: "\n{c}\n {d}%",
@@ -275,6 +291,15 @@ let right1List=ref([
     title:'风速'
   },
 ])
+//农业资源
+let leftTop=ref<any>({})
+const getAgriResources=()=>{
+  AgriResources().then(res=>{
+    console.log(res,'农业资源');
+    leftTop.value=res
+  })
+}
+getAgriResources()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);

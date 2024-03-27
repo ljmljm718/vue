@@ -89,7 +89,7 @@
 import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
-import EquListForm from "@/views/wushan/onlinemonitoring/equListForm/equListForm.vue";
+import EquListForm from "@/views/agriculture/checklogs/device/equListForm.vue";
 import UserListForm from "@/views/agriculture/checklogs/user/user.vue";
 import { getTenantId } from '@/utils/auth'
 /** 巡检记录 表单 */
@@ -108,6 +108,7 @@ const formData = ref({
   inspectionState: undefined,
   inspectionResults: undefined,
   equNum: undefined,
+  equName: undefined,
   base: undefined,
   massif: undefined,
   inspectorId: undefined,
@@ -142,9 +143,8 @@ const openPurchaseOrderInEnableList = () => {
   purchaseOrderInEnableListRef.value.open()
 }
 const handlePurchaseOrderChange = (order: ParkBaseVO) => {
-  // 将订单设置到入库单
-  console.log(order)
   formData.value.equNum = String(order[0].deviceCode)
+  formData.value.equName = String(order[0].deviceName)
   formData.value.base = String(order[0].belongPark)
   formData.value.massif = String(order[0].belongPlot)
 }
@@ -155,7 +155,6 @@ const openUserList = () => {
   userListRef.value.open()
 }
 const handlePurchaseOrderChange2 = (order: ParkBaseVO) => {
-  // 将订单设置到入库单
   console.log(order)
   formData.value.inspectorId = String(order[0].id)
   formData.value.inspector = String(order[0].nickname)
