@@ -96,7 +96,8 @@ const formData = ref({
   userId: undefined,
   imgId: undefined,
   location: undefined,
-  url: undefined
+  url: undefined,
+  deviceKind: undefined
 })
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
@@ -171,7 +172,8 @@ const resetForm = () => {
     userId: undefined,
     imgId: undefined,
     location: undefined,
-    url: undefined
+    url: undefined,
+    deviceKind: undefined
   }
   deviceType.value = []
   formRef.value?.resetFields()
@@ -187,5 +189,6 @@ const props = {
 const handleChange = (value: any) => {
   console.log(value)
   formData.value.deviceType = value.join(',')
+  formData.value.deviceKind = value[1]
 }
 </script>
