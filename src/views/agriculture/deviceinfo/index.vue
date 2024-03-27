@@ -75,6 +75,7 @@
           plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:device-info:create']"
+          v-if="!readonly"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -84,6 +85,7 @@
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agriculture:device-info:export']"
+          v-if="!readonly"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -93,7 +95,14 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column v-if="multi" type="selection" width="55"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -138,7 +147,13 @@
         width="180px"
       />
 
-      <el-table-column label="操作" align="center" width="150" fixed="right">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="150"
+        fixed="right"
+        v-if="!readonly"
+      >
         <template #default="scope">
           <el-button
             link
@@ -173,12 +188,13 @@
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
+import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import {retainFirstTwoLayers} from "@/utils/tree";
 
 /** 设备信息 列表 */
 defineOptions({ name: 'DeviceInfo' })
@@ -287,17 +303,42 @@ const categoryProps = {
 
 /** 初始化 **/
 onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  categoryOptions.value = retainFirstTwoLayers(categoryTree)
+  console.log("categoryOptions.value", categoryOptions.value)
   await getList()
 })
 
 // 定义属性
 const props = defineProps({
+  // todo (zhangyu26, 2024-03-26 15:19:17) : currCategory, 暂时没用
   currCategory: {
     type: Object,
     default: () => ({})
   },
+  // 多选
+  multi: {
+    type: Boolean,
+    default: false
+  },
+  // 只读
+  readonly: {
+    type: Boolean,
+    default: true
+  }
 })
+
+/**
+ * table多选
+ * 目前只是作为组件向父组件传值
+ */
+const multipleSelection = ref<DeviceInfoVO[]>([])
+const emit = defineEmits(["selectedDeviceInfo"]);
+const handleSelectionChange = (val: DeviceInfoVO[]) => {
+  multipleSelection.value = val
+  emit('selectedDeviceInfo', multipleSelection.value)
+}
+
 // 监听父组件category变化
 watch(() => props.currCategory,
   () => {
@@ -312,4 +353,5 @@ watch(() => props.currCategory,
     }
     handleQuery()
   })
+
 </script>

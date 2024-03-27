@@ -27,3 +27,10 @@ export const ParkBaseInfo = async (params) => {
   })
 }
 
+//获取基地和棚区
+export const monitorDeviceByPark = async (params) => {
+  return await request.get({
+    url: '/agriculture/big-screen/monitorDeviceByPark',
+    params
+  })
+}

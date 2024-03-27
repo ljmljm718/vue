@@ -163,24 +163,28 @@
           <div class='footer-right'>
             <div class='box-title' style='position:relative; text-indent: 7rem;'>监控设备
               <div class='select' style="position:absolute;right:20px;top:0;">
-              <select id="" name="" class='select-left'>
-                <option value="">基地</option>
+              <select id="" name="" class='select-left' @change="selectCli3" >
+                <option  v-for="item,index in selecte3" :key="index" :value="item.id">{{item.name}}</option>
               </select>
-              <select id="" name=""  class='select-right'>
-                <option value="">1号大棚</option>
+              <select id="" name=""  class='select-right'  @change="selectCli4">
+                <option  v-for="item,index in selecte4" :key="index" :value="item.id">{{item.name}}</option>
               </select>
             </div>
             </div>
             <div class='footer-item2'>
-              <div class=foot-warper v-for='item,index in 8' :key='index'>
-                <div class='foot-top2'></div>
+              <div class=foot-warper v-for='item,index in ParkList' :key='index'>
+                <div class='foot-top2'>
+                  <img :src="item.imgId" alt="" style="width:100%;height:100%;"/>
+                </div>
                 <div class='foot-cont2'>
                   <div class='foot-img'></div>
-                  <div style='margin-left:-20px;'>位置:<span>1号棚入口</span></div>
+                  <div style='margin-left:-20px;'>位置:<span>{{ item.location }}</span></div>
                 </div>
                 <div class='foot-cont2' style='margin-top:-20px;'>
                   <div class='foot-img'></div>
-                  <div style='margin-left:-20px;'>状态:<span class='online'>在线</span></div>
+                  <div v-show="item.deviceStatus=='online'" style='margin-left:-20px;'>状态:<span class='online'>在线</span></div>
+                  <div v-show="item.deviceStatus=='offline'" style='margin-left:-20px;'>状态:<span class='offline'>离线</span></div>
+                  <div v-show="item.deviceStatus=='fault'" style='margin-left:-20px;'>状态:<span class='fault'>故障</span></div>
                 </div>
               </div>
             </div>
@@ -201,7 +205,8 @@ import {
   environmentData,
   warningRecordInfo,
   ParkBaseInfo,
-  environmentView
+  environmentView,
+  monitorDeviceByPark
 } from '@/api/bigscreen7/index'
 import { resetSize } from '@/components/Verifition/src/utils/util';
 import {ref,onMounted} from 'vue'
@@ -333,8 +338,12 @@ const initChart2=  ()=>{
 //获取基地
 let selecte1 =ref<any>([])
 let selecte2 =ref<any>([])
+let selecte3 =ref<any>([])
+let selecte4 =ref<any>([])
 let selecte1Id =ref<any>('')
 let select2Id=ref<any>('')
+  let selecte3Id=ref(0)
+  let selecte4Id=ref(0)
   let soilId=ref<any>('14,15')
 //获取基地
 const getParkBaseInfo=()=>{
@@ -346,19 +355,44 @@ const getParkBaseInfo=()=>{
   })
 }
 getParkBaseInfo()
+const getParkBaseInfo2=()=>{
+  ParkBaseInfo({parentId:'0'}).then(res=>{
+    console.log(res,'获取基地2');
+    selecte3.value=res
+    selecte3Id.value=res[0].id
+    getParkBase2({parentId:res[0].id})
+  })
+}
+getParkBaseInfo2()
 //获取棚区
 const getParkBase=(val)=>{
   ParkBaseInfo(val).then(res=>{
     console.log(res,'棚区');
     selecte2.value=res
     select2Id.value=res[0].id
-    
   })
 }
+//获取棚区
+const getParkBase2=(val)=>{
+  ParkBaseInfo(val).then(res=>{
+    console.log(res,'棚区2');
+    selecte4.value=res
+    selecte4Id.value=res[0].id
+    getMonitorDeviceByPark({belongPark:selecte3Id.value,belongPlot:res[0].id})
 
+  })
+}
+//气象点击
+const soilCli=(val:any,index:any)=>{
+  soilId.value=val
+  soilIndex.value=index
+  getEnvironmentData()
+  getEnvironmentView()
+}
 
 //筛选基地
 const selectCli1=(val:any)=>{
+  console.log(val,'val')
   selecte1Id.value=val.target.value
   getParkBase({parentId:val.target.value})
 }
@@ -367,13 +401,7 @@ const selectCli2=(val:any)=>{
   select2Id.value=val.target.value
 }
 
-//气象点击
-const soilCli=(val:any,index:any)=>{
-  soilId.value=val
-  soilIndex.value=index
-  getEnvironmentData()
-  getEnvironmentView()
-}
+
 //环境数据顶部
 let footTop=ref<any>({})
 let footChart=ref<any>({})
@@ -1029,6 +1057,24 @@ const getWarningRecordInfo=()=>{
   })
 }
 getWarningRecordInfo()
+//获取基地视频
+let ParkList=ref<any>([])
+const getMonitorDeviceByPark=(val)=>{
+  monitorDeviceByPark(val).then(res=>{
+    console.log(res,'获取基地视频');
+    ParkList.value=res
+  })
+}
+//筛选基地
+const selectCli3=(val:any)=>{
+  selecte3Id.value=val.target.value
+  getParkBase2({parentId:val.target.value})
+}
+//筛选设备
+const selectCli4=(val:any)=>{
+  selecte4Id.value=val.target.value
+  getMonitorDeviceByPark({belongPark:selecte3Id.value,belongPlot:selecte4Id.value})
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -1365,8 +1411,7 @@ gap: 10px;
       width:100%;
       height:100%;
       .select-left{
-        
-        padding:0 5px;
+
         height:60%;
         color: #fff;
         margin-right:20px;
@@ -1483,6 +1528,9 @@ gap: 10px;
         background-size:100% 100%;
         background:none;
         background-image:url(./assets/select.png);
+        option{
+          color:#000
+        }
       }
       .select-right{
         width:100px;
@@ -1493,6 +1541,9 @@ gap: 10px;
         background-size:100% 100%;
         background:none;
         background-image:url(./assets/select.png);
+        option{
+          color:#000
+        }
       }
     }
     .footer-item2{
@@ -1526,6 +1577,12 @@ gap: 10px;
           }
           .online{
             color:green;
+          }
+          .offline{
+            color:#c1c1c1;
+          }
+          .fault{
+            color:red;
           }
         }
       }

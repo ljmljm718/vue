@@ -69,6 +69,7 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
+import {retainFirstTwoLayers} from "@/utils/tree";
 
 /** 设备信息 表单 */
 defineOptions({ name: 'DeviceInfoForm' })
@@ -114,7 +115,8 @@ const open = async (type: string, id?: number) => {
   resetForm()
 
   // 获取设备分类树
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1})
+  const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  categoryOptions.value = retainFirstTwoLayers(categoryTree);
   // 修改时，设置数据
   if (id) {
     formLoading.value = true

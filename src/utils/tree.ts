@@ -398,3 +398,23 @@ export const treeToString = (tree: any[], nodeId) => {
   }
   return str
 }
+
+/**
+ * 只保留前两层树
+ *
+ * @param tree
+ */
+export const retainFirstTwoLayers = (tree: Array) => {
+  for (let i = 0; i < tree.length; i++) {
+    const first = tree[i]
+    if (first.children && first.children.length > 0) {
+      for (let j = 0; j < first.children.length; j++) {
+        const second = first.children[j]
+        if (second.children && second.children.length > 0) {
+          second.children = []
+        }
+      }
+    }
+  }
+  return tree;
+}
