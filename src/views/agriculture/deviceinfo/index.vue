@@ -324,7 +324,7 @@ const props = defineProps({
   // 只读
   readonly: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 
