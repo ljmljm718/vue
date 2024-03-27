@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="100px"
+      label-width="110px"
       v-loading="formLoading"
     >
       <el-form-item label="设备编号" prop="deviceCode">
@@ -22,6 +22,21 @@
           :props="props"
           filterable
         />
+      </el-form-item>
+      <el-form-item label="设备检测类型" prop="deviceMonitorType">
+          <el-select
+                  v-model="formData.deviceMonitorType"
+                  multiple
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="请选择设备检测类型">
+              <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value" />
+          </el-select>
       </el-form-item>
       <el-form-item label="经度" prop="longitude">
         <el-input v-model="formData.longitude" placeholder="请输入经度" />
@@ -70,6 +85,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
 import {retainFirstTwoLayers} from "@/utils/tree";
+import {any} from "vue-types";
 
 /** 设备信息 表单 */
 defineOptions({ name: 'DeviceInfoForm' })
@@ -96,11 +112,36 @@ const formData = ref({
   userId: undefined,
   imgId: undefined,
   location: undefined,
-  url: undefined
+  url: undefined,
+  deviceKind: undefined,
+  deviceMonitorType: undefined
 })
+const options=ref([
+  {
+    value: '温度',
+    label: '温度'
+  },
+  {
+      value: '风速',
+      label: '风速'
+  },
+  {
+      value: '光照',
+      label: '光照'
+  },
+{
+  value: '湿度',
+  label: '湿度'
+},
+{
+  value: 'PH值检测',
+  label: 'PH值检测'
+}]
+)
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
   deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
+  deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
   imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
@@ -117,11 +158,13 @@ const open = async (type: string, id?: number) => {
   // 获取设备分类树
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree);
+
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await DeviceInfoApi.getDeviceInfo(id)
+      formData.value.deviceMonitorType=formData.value.deviceMonitorType.split(',');
       deviceType.value = formData.value.deviceType.split(',').map(Number)
     } finally {
       formLoading.value = false
@@ -138,7 +181,9 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
+      formData.value.deviceMonitorType
     const data = formData.value as unknown as DeviceInfoVO
+      console.log(data,333333)
     if (formType.value === 'create') {
       await DeviceInfoApi.createDeviceInfo(data)
       message.success(t('common.createSuccess'))
@@ -171,7 +216,8 @@ const resetForm = () => {
     userId: undefined,
     imgId: undefined,
     location: undefined,
-    url: undefined
+    url: undefined,
+    deviceKind: undefined
   }
   deviceType.value = []
   formRef.value?.resetFields()
@@ -187,5 +233,6 @@ const props = {
 const handleChange = (value: any) => {
   console.log(value)
   formData.value.deviceType = value.join(',')
+  formData.value.deviceKind = value[1]
 }
 </script>
