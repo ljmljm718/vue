@@ -159,7 +159,7 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   //地块
   formData.value.plotCode = order[0].belongPlot
 
-  let a=formData.value.collectionType[1]
+  let a = order[0].deviceType[1]
   let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
   selectList.value=res
 }

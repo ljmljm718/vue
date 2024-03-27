@@ -19,8 +19,8 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="设备名称" >
-        <el-input v-model="deviceName" placeholder="请选择设备名称" :disabled="true"/>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input v-model="formData.deviceName" placeholder="请选择设备名称" :disabled="true"/>
       </el-form-item>
 
       <el-form-item label="采集类型" prop="collectionType">
@@ -63,10 +63,10 @@
         />
       </el-form-item>
       <el-form-item label="基地编码" prop="baseCode">
-        <el-input v-model="formData.baseCode" placeholder="请输入基地编码" />
+        <el-input v-model="formData.baseCode" placeholder="请输入基地编码" :disabled="true"/>
       </el-form-item>
       <el-form-item label="地块编码" prop="plotCode">
-        <el-input v-model="formData.plotCode" placeholder="请输入地块编码" />
+        <el-input v-model="formData.plotCode" placeholder="请输入地块编码" :disabled="true"/>
       </el-form-item>
       <el-form-item label="通道编码" prop="channelId">
         <el-input v-model="formData.channelId" placeholder="请输入通道编码" />
@@ -126,13 +126,16 @@ const formData = ref({
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
+  deviceName: undefined,
+  parkName: undefined,
+  parkDname: undefined,
 })
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
 
 /** 新加方法 */
-const deviceName=ref()
+// const deviceName=ref()
 
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
@@ -148,11 +151,16 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.equipmentCode = order[0].id
   //赋值采集类型
   let DeviceCategoryVO =await DeviceCategoryApi.getDeviceCategory(order[0].deviceType[1])
-  console.log(DeviceCategoryVO,"===");
-  //formData.value.collectionType = DeviceCategoryVO.value.get;
+  console.log(DeviceCategoryVO.categoryName,"===");
+  formData.value.collectionType = DeviceCategoryVO.categoryName;
   //赋值设备名称
-  deviceName.value = String(order[0].deviceName)
-  let a=formData.value.collectionType[1]
+  formData.value.deviceName = String(order[0].deviceName);
+  //基地
+  formData.value.baseCode = String(order[0].belongPark);
+  //地块
+  formData.value.plotCode = order[0].belongPlot
+
+  let a=order[0].deviceType[1]
   let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
   selectList.value=res
   
@@ -185,7 +193,8 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await EquipmentDataApi.getEquipmentData(id)
+      let dataA= await EquipmentDataApi.getEquipmentData(id);
+      formData.value=dataA.list[0];
     } finally {
       formLoading.value = false
     }
@@ -234,6 +243,9 @@ const resetForm = () => {
     reserveOne: undefined,
     reserveTwo: undefined,
     reserveThree: undefined,
+    deviceName: undefined,
+    parkName: undefined,
+    parkDname: undefined,
   }
   formRef.value?.resetFields()
 }
