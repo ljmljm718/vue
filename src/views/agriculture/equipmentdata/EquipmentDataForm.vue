@@ -8,14 +8,46 @@
       v-loading="formLoading"
     >
       <el-form-item label="设备编码" prop="equipmentCode">
-        <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" />
+        <!-- <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" /> -->
+        <el-input v-model="formData.equipmentCode" placeholder="请选择设备编码" :disabled="true">
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
+
+      <el-form-item label="设备名称" >
+        <el-input v-model="deviceName" placeholder="请选择设备名称" :disabled="true"/>
+      </el-form-item>
+
       <el-form-item label="采集类型" prop="collectionType">
-        <el-input v-model="formData.collectionType" placeholder="请输入采集类型" />
+        <!-- <el-cascader
+          v-model="formData.collectionType"
+          :options="categoryOptions"
+          :props="categoryProps"
+          @change="handleChange"
+          disabled
+        /> -->
+        <el-input v-model="formData.collectionType" placeholder="请输入采集类型" :disabled="true"/>
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" />
+        <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
+        <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+          <el-option
+            v-for="item in selectList"  
+            :key="item?.id"
+            :label="item?.categoryName"
+            :value="item?.categoryName"/>
+          
+        </el-select>
+        <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+          <el-option value='' />
+        </el-select>
       </el-form-item>
+
       <el-form-item label="数据值" prop="dataValue">
         <el-input v-model="formData.dataValue" placeholder="请输入数据值" />
       </el-form-item>
@@ -57,9 +89,17 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
+                          @success="handlePurchaseOrderChange"/>
+
 </template>
 <script setup lang="ts">
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
+import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue'
+
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+
+
 
 /** 设备数据 表单 */
 defineOptions({ name: 'EquipmentDataForm' })
@@ -90,6 +130,50 @@ const formData = ref({
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
+
+/** 新加方法 */
+const deviceName=ref()
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+  
+}
+
+let selectList=ref<any>([])
+const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
+  // 将订单设置到入库单
+  //console.log("--->>查看查到的农资信息",order)
+  //赋值id
+  formData.value.equipmentCode = order[0].id
+  //赋值采集类型
+  let DeviceCategoryVO =await DeviceCategoryApi.getDeviceCategory(order[0].deviceType[1])
+  console.log(DeviceCategoryVO,"===");
+  //formData.value.collectionType = DeviceCategoryVO.value.get;
+  //赋值设备名称
+  deviceName.value = String(order[0].deviceName)
+  let a=formData.value.collectionType[1]
+  let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
+  selectList.value=res
+  
+}
+
+// 结尾  
+/**
+ * 设备分类级联选择器
+ */
+
+ let categoryOptions = ref([])// 设备分类选项
+ const categoryProps = {
+  value: 'id',
+  label: 'categoryName'
+}
+
+/** 初始化 **/
+onMounted(async () => {
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+})
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {

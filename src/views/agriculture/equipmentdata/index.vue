@@ -191,6 +191,18 @@
       <el-table-column label="设备编码" align="center" prop="equipmentCode" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="采集类型" align="center" prop="collectionType" />
+        <!-- <template #default="scope">
+          <el-cascader
+            style="width: 100%"
+            v-model="scope.row.collectionType"
+            :options="categoryOptions"
+            :props="categoryProps"
+            disabled
+          />
+        </template>
+      </el-table-column> -->
+
+      
       <el-table-column label="监测类型" align="center" prop="monitoringType" />
       <el-table-column label="数据值" align="center" prop="dataValue" />
       <el-table-column label="单位" align="center" prop="yyUnit" />
@@ -211,13 +223,13 @@
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
-      <el-table-column
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
+      /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -258,6 +270,8 @@ import download from '@/utils/download'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
 
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
 
@@ -290,6 +304,23 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+/**
+ * 设备分类级联选择器
+ */
+
+ let categoryOptions = ref([])// 设备分类选项
+ const categoryProps = {
+  value: 'id',
+  label: 'categoryName'
+}
+
+/** 初始化 **/
+onMounted(async () => {
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  await getList()
+})
+
 
 /** 查询列表 */
 const getList = async () => {
