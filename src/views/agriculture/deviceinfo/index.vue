@@ -116,6 +116,7 @@
           />
         </template>
       </el-table-column>
+      <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="状态" align="center" prop="deviceStatus">
@@ -220,7 +221,9 @@ const queryParams = reactive({
   createTime: [],
   deptId: undefined,
   userId: undefined,
-  location: undefined
+  location: undefined,
+  deviceMonitorType: undefined,
+  deviceKind: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
