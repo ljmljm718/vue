@@ -22,7 +22,6 @@
       <el-form-item label="设备名称" prop="deviceName">
         <el-input v-model="formData.deviceName" placeholder="请选择设备名称" :disabled="true"/>
       </el-form-item>
-
       <el-form-item label="采集类型" prop="collectionType">
         <!-- <el-cascader
           v-model="formData.collectionType"
@@ -31,11 +30,11 @@
           @change="handleChange"
           disabled
         /> -->
-        <el-input v-model="formData.collectionType" placeholder="请输入采集类型" :disabled="true"/>
+        <el-input v-model="formData.collectionType" placeholder="请输入采集类型" />
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
-        <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+        <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" />
+        <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
           <el-option
             v-for="item in selectList"  
             :key="item?.id"
@@ -45,7 +44,7 @@
         </el-select>
         <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
           <el-option value='' />
-        </el-select>
+        </el-select> -->
       </el-form-item>
 
       <el-form-item label="数据值" prop="dataValue">
@@ -135,7 +134,7 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 新加方法 */
-// const deviceName=ref()
+//const deviceName=ref()
 
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
@@ -151,8 +150,8 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.equipmentCode = order[0].id
   //赋值采集类型
   let DeviceCategoryVO =await DeviceCategoryApi.getDeviceCategory(order[0].deviceType[1])
-  console.log(DeviceCategoryVO.categoryName,"===");
-  formData.value.collectionType = DeviceCategoryVO.categoryName;
+  console.log(DeviceCategoryVO,"===");
+  //formData.value.collectionType = DeviceCategoryVO.value.get;
   //赋值设备名称
   formData.value.deviceName = String(order[0].deviceName);
   //基地
@@ -162,10 +161,9 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   //重置检查类型让他重新选择
   formData.value.monitoringType = ''
 
-  let a=order[0].deviceType[1]
+  let a = order[0].deviceType[1]
   let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
   selectList.value=res
-  
 }
 
 // 结尾  
@@ -195,8 +193,8 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      let dataA= await EquipmentDataApi.getEquipmentData(id);
-      formData.value=dataA.list[0];
+       let dataA= await EquipmentDataApi.getEquipmentData(id);
+       formData.value=dataA.list[0];
     } finally {
       formLoading.value = false
     }
