@@ -160,7 +160,6 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.plotCode = order[0].belongPlot
   //重置检查类型让他重新选择
   formData.value.monitoringType = ''
-
   let a = order[0].deviceType[1]
   let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
   selectList.value=res

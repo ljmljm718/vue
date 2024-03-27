@@ -38,9 +38,9 @@
         <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
           <el-option
             v-for="item in selectList"  
-            :key="item?.id"
-            :label="item?.categoryName"
-            :value="item?.categoryName"/>
+            :key="item"
+            :label="item"
+            :value="item"/>
           
         </el-select>
         <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
@@ -143,7 +143,7 @@ const openPurchaseOrderInEnableList = () => {
   
 }
 
-let selectList=ref<any>([])
+let selectList=ref([])
 const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   // 将订单设置到入库单
   //console.log("--->>查看查到的农资信息",order)
@@ -161,11 +161,15 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.plotCode = order[0].belongPlot
   //重置检查类型让他重新选择
   formData.value.monitoringType = ''
-
-  let a=order[0].deviceType[1]
-  let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
-  selectList.value=res
+  //给下拉列表赋值
+  let res =order[0].deviceMonitorType.split(','); 
+  console.log(res,"==-==");
   
+  // let a=order[0].deviceType[1]
+  // let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
+  selectList.value=res
+  console.log(selectList,"==selectList==");
+
 }
 
 // 结尾  
