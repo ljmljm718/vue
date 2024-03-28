@@ -8,18 +8,18 @@
         :inline="true"
         label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceId">
+      <el-form-item label="设备编号" prop="equipmentCode">
         <el-input
-            v-model="queryParams.deviceId"
+            v-model="queryParams.equipmentCode"
             placeholder="请输入设备编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="数据上报时间" prop="reportDate" label-width="100">
+      <el-form-item label="数据上报时间" prop="collectionTime" label-width="100">
         <el-date-picker
-            v-model="queryParams.reportDate"
+            v-model="queryParams.collectionTime"
             value-format="YYYY-MM-DD HH:mm:ss"
             type="daterange"
             start-placeholder="开始日期"
@@ -46,23 +46,23 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:environment-data:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:environment-data:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--            type="primary"-->
+<!--            plain-->
+<!--            @click="openForm('create')"-->
+<!--            v-hasPermi="['agriculture:environment-data:create']"-->
+<!--        >-->
+<!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
+<!--        </el-button>-->
+<!--        <el-button-->
+<!--            type="success"-->
+<!--            plain-->
+<!--            @click="handleExport"-->
+<!--            :loading="exportLoading"-->
+<!--            v-hasPermi="['agriculture:environment-data:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -70,7 +70,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备编号" align="center" prop="deviceId" />
+      <el-table-column label="设备编号" align="center" prop="equipmentCode" />
 <!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
 <!--        <template #default="scope">-->
 <!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
@@ -85,30 +85,30 @@
       <el-table-column
           label="数据上报时间"
           align="center"
-          prop="reportDate"
+          prop="collectionTime"
           :formatter="dateFormatter"
           width="180px"
       />
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-              link
-              type="primary"
-              @click="openForm('update', scope.row.id)"
-              v-hasPermi="['agriculture:environment-data:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-              link
-              type="danger"
-              @click="handleDelete(scope.row.id)"
-              v-hasPermi="['agriculture:environment-data:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="操作" align="center">-->
+<!--        <template #default="scope">-->
+<!--          <el-button-->
+<!--              link-->
+<!--              type="primary"-->
+<!--              @click="openForm('update', scope.row.id)"-->
+<!--              v-hasPermi="['agriculture:environment-data:update']"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--              link-->
+<!--              type="danger"-->
+<!--              @click="handleDelete(scope.row.id)"-->
+<!--              v-hasPermi="['agriculture:environment-data:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -142,8 +142,8 @@ const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  deviceId: undefined,
-  reportDate: [],
+  equipmentCode: undefined,
+  collectionTime: [],
   deptId: undefined,
   userId: undefined,
   deviceType: 'outdoor',

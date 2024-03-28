@@ -2,15 +2,14 @@ import request from '@/config/axios'
 
 // 环境数据 VO
 export interface EnvironmentDataVO {
-  id: string // 主键id
-  deviceId: string // 设备编号
+  equipmentCode: string // 设备编号
   temperature: string // 温度
   humidity: string // 湿度
   lighting: string // 光照
   windSpeed: string // 风速
   rainfall: string // 降雨量
   co2Density: string // 二氧化碳浓度
-  reportDate: Date // 数据上报时间
+  collectionTime: Date // 数据上报时间
   deviceType: string // 设备类型
   airPressure: string // 大气压力
 }
