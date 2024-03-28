@@ -19,3 +19,13 @@ export const pageWarningInfo = (params: any) => {
 export const pageRealTimeData = (params: any) => {
   return request.get({ url: `/agriculture/warning-record-big-screen/pageRealTimeData`, params })
 }
+
+
+// home1的接口
+export const warnRecordList = () => {
+  return request.get({ url: `/agriculture/agri-warning-record/list` })
+}
+
+export const deviceInfoPage = () => {
+  return request.get({ url: `/agriculture/device-info/page` })
+}
