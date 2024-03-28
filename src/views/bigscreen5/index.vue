@@ -32,23 +32,11 @@
             <div class="left2">
               <div class="box-title">种植基地</div>
               <div class="left2-item">
-                <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基1</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 13</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 4</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、金红九等</div>
-                  </div>
-                <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基2</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 17</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 5</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：喜力、红满园等</div>
-                  </div>
-                <div class="left2-warper">
-                    <div style="flex:1;margin-left: 15px;">地基3</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">大棚： 21</div>
-                    <div style="margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： 5</div>
-                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：红满园、格雷等</div>
+                <div class="left2-warper" v-for="item,index in baseColl" :key="index">
+                    <div style="margin-left: 8px;">{{item.baseName}}</div>
+                    <div style="margin-left:25px; margin-right: 15px; color: #c1c1c1;font-size: 14px;">大棚： {{item.plotCount}}</div>
+                    <div style="margin-left:1 5px; margin-right: 15px;color: #c1c1c1;font-size: 14px;">农户： {{item.farmerCout}}</div>
+                    <div style="color: #c1c1c1;font-size: 14px;">种植品种：{{item.variety}}</div>
                   </div>
               </div>
             </div>
@@ -57,7 +45,7 @@
               <div class="left3-item">
                 <div v-for="item,index in leftTop3List" :key="index" :class="['left3-warper','left3Top-'+(index+1).toString()]">
                     <div style="color: #c1c1c1;margin-left: 50px;">{{ item.title }}</div>
-                    <div style="font-weight:600;margin-left: 50px;font-size: 23px; font-family:TitleFont ;">{{ item.val }}</div>
+                    <div style="font-weight:600;margin-left: 50px;font-size: 23px; font-family:TitleFont ;">{{ item.category|| item.deviceCount }}</div>
                   </div>
               </div>
             </div>
@@ -100,17 +88,51 @@
               <div class="box-title">气象监测</div>
               <div class="right1-item">
                 <div class="right1-top">
-                  <div :class="qxzIndex==1?'active':'actived'" @click="qxzIndex=1" style="margin-right:10px;">气象站1</div>
-                  <div :class="qxzIndex==2?'active':'actived'" @click="qxzIndex=2">气象站2</div>
+                  <div v-for="item,index in deviceList" :key="index" :class="qxzIndex==index?'active':'actived'" @click="qxzCli(index,item.id)" style="margin-right:10px;">{{item.deviceName}}</div>
+                 
                 </div>
                 <div class="right1-warper">
-                  <div v-for="item,index in right1List" :key="index" class="right1Bg">
-                    <div :class="['right1-icon','right1bg-'+(index+1).toString()]"></div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-1']"></div>
                     <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
-                      <div style="color:#16bee2;font-size: 18px;">{{ item.val }}</div>
-                      <div style="font-size: 13px;">{{ item.title }}</div>
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.temperature }}</div>
+                      <div style="font-size: 13px;">大气温度</div>
                     </div>
-                    
+                  </div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-2']"></div>
+                    <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.humidity }}</div>
+                      <div style="font-size: 13px;">大气湿度</div>
+                    </div>
+                  </div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-3']"></div>
+                    <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.rainfall }}</div>
+                      <div style="font-size: 13px;">降雨量</div>
+                    </div>
+                  </div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-4']"></div>
+                    <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.airPressure }}</div>
+                      <div style="font-size: 13px;">气压</div>
+                    </div>
+                  </div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-5']"></div>
+                    <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.lighting }}</div>
+                      <div style="font-size: 13px;">光照</div>
+                    </div>
+                  </div>
+                  <div  class="right1Bg">
+                    <div :class="['right1-icon','right1bg-6']"></div>
+                    <div style="margin-left: 20px;display: flex;flex-direction: column;align-items: center;height: 40%;justify-content: space-between;;">
+                      <div style="color:#16bee2;font-size: 18px;">{{ deviceObj.windSpeed }}</div>
+                      <div style="font-size: 13px;">风速</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -119,42 +141,18 @@
               <div class="box-title">棚内环境监测</div>
               <div class="right2-item">
                 <div class="right2-select" style="margin-top: 15px;">
-                  <select name="" id="" class="select" style="margin-right: 20px;">
-                    <option value="12">基地</option>
+                  <select name="" id="" class="select" style="margin-right: 20px;" @change="seleCli1">
+                    <option v-for="item,index in selecte1" :key="index" :value="item.id">{{item.name}}</option>
                   </select>
-                  <select name="" id="" class="select">
-                    <option value="12">1号大鹏</option>
+                  <select name="" id="" class="select"  @change="seleCli2">
+                    <option v-for="item,index in selecte2" :key="index" :value="item.id">{{item.name}}</option>
                   </select>
                 </div>
                 <div class="right2-warper">
-                  <div class="right2-warper-item">
-                      <div class="warper-top">土壤墒情</div>
+                  <div class="right2-warper-item" v-for="item,index in right2List" :key="index">
+                      <div class="warper-top">{{item.collectionType}}</div>
                       <div class="warper-foot">
-                        <div class="warper-item2"><div>土壤温度：</div><div style="color:#22a7bf">19.6℃</div> </div>
-                        <div class="warper-item2"><div>土壤湿度：</div><div style="color:#22a7bf">79.3%/RH</div> </div>
-                        <div class="warper-item2"><div>PH值：</div><div style="color:#22a7bf">6.3</div> </div>
-                        <div class="warper-item2"><div>导电率：</div><div style="color:#22a7bf">0.42</div> </div>
-                        <div class="warper-item2"><div>N:P:K比例：</div><div style="color:#22a7bf">1:0:46:1.32</div> </div>
-                      </div>
-                  </div>
-                  <div class="right2-warper-item">
-                      <div class="warper-top">棚内环境监测</div>
-                      <div class="warper-foot">
-                        <div class="warper-item2"><div>温度：</div><div style="color:#22a7bf">27.34℃</div> </div>
-                        <div class="warper-item2"><div>湿度：</div><div style="color:#22a7bf">76.21%/RH</div> </div>
-                        <div class="warper-item2"><div>光照：</div><div style="color:#22a7bf">20890Lux</div> </div>
-                        <div class="warper-item2"><div>气压：</div><div style="color:#22a7bf">91.25kPa</div> </div>
-                        <div class="warper-item2"><div>降雨量：</div><div style="color:#22a7bf">0.3mm</div> </div>
-                        <div class="warper-item2"><div>CO₂：</div><div style="color:#22a7bf">4.4mmol/L</div> </div>
-                      </div>
-                  </div>
-                  <div class="right2-warper-item">
-                      <div class="warper-top">虫情测报监测</div>
-                      <div class="warper-foot">
-                        <div class="warper-item2"><div>虫害数量：</div><div style="color:#22a7bf">16</div> </div>
-                        <div class="warper-item2"><div>虫害种类：</div><div style="color:#22a7bf">3</div> </div>
-                        <div class="warper-item2"><div>杀虫仓温度：</div><div style="color:#22a7bf">20℃</div> </div>
-                        <div class="warper-item2"><div>烘干仓温度：</div><div style="color:#22a7bf">20℃</div> </div>
+                        <div class="warper-item2" v-for="itm,inde in item.result" :key='inde'><div>{{itm.monitoringType}}：</div><div style="color:#22a7bf">{{itm.avgData+itm.dataUnit}}</div> </div>
                       </div>
                   </div>
                 </div>
@@ -169,11 +167,18 @@ import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import {
 initChartStatic,
 generateBaseOptions,
-generatePieOptions,
+generatePieOptions
 } from "../../utils/bigscreenTool/index";
 import {
   AgriResources,
-  getCropInfo
+  getCropInfo,
+  BaseCollect,
+  homeDeviceCard,
+  MeteorologyDevice,
+  MeteorologyDeviceData,
+  ParkBaseInfo,
+  pageShedMonitoringData,
+  bigScreenDevicePoint
 } from '@/api/bigscreen5/index'
 import {ref,reactive,onMounted} from 'vue'
 import { resetSize } from '@/components/Verifition/src/utils/util';
@@ -184,7 +189,6 @@ const initChart1= async ()=> {
   res.forEach(item=>{
     data.push({name:item.name,value:item.area})
   })
-  console.log(data,'data')
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -229,42 +233,8 @@ onMounted(()=>{
 })
 let qxzIndex=ref(1)
 let mainIndex=ref(1)
-let leftTop1List=ref<any>([
-  {
-    title:'基地',
-    val:'3'
-  },
-  {
-    title:'棚区',
-    val:'51'
-  },
-  {
-    title:'种植面积',
-    val:'108亩'
-  },
-  {
-    title:'农户',
-    val:'48'
-  },
-])
-let leftTop3List=ref<any>([
-  {
-    title:'监控设备',
-    val:'108台'
-  },
-  {
-    title:'环境传感',
-    val:'13台'
-  },
-  {
-    title:'土壤墒情',
-    val:'5台'
-  },
-  {
-    title:'虫情监测',
-    val:'21台'
-  },
-])
+
+let leftTop3List=ref<any>([])
 let right1List=ref([
   {
     val:'17.3℃',
@@ -300,6 +270,92 @@ const getAgriResources=()=>{
   })
 }
 getAgriResources()
+//种植基地
+let baseColl=ref<any>([])
+const getBaseCollect=()=>{
+  BaseCollect().then(res=>{
+    console.log(res,'种植基地')
+    baseColl.value=res
+  })
+}
+getBaseCollect()
+//设备资源
+const getHomeDeviceCard=()=>{
+  homeDeviceCard().then(res=>{
+    console.log(res.slice(1,6),'设备资源');
+    leftTop3List.value=res.splice(1,6)
+
+  })
+}
+getHomeDeviceCard()
+//气象站获取设备数据
+let deviceList=ref<any>([])
+const getMeteorologyDevice=()=>{
+  MeteorologyDevice().then(res=>{
+    console.log(res,'气象站设备');
+    deviceList.value=res
+    qxzCli('0',res[0].id)
+  })
+}
+getMeteorologyDevice()
+//气象站事件
+let deviceObj=ref<any>({})
+const qxzCli=(val,id)=>{
+  qxzIndex.value=val
+  MeteorologyDeviceData({deviceCode:id}).then(res=>{
+    console.log(res,'气象站数据');
+    deviceObj.value=res
+  })
+}
+//获取基地
+let selecte1=ref<any>([])
+let selecte2=ref<any>([])
+let selecte1Id=ref<any>('')
+let selecte2Id=ref<any>('')
+const getParkBaseInf=()=>{
+  ParkBaseInfo({parentId:0}).then(res=>{
+    console.log(res,'基地');
+    selecte1.value=res.reverse()
+    selecte1Id.value=res[0].id
+    getParkBaseInf2({parentId:res[0].id})
+  })
+}
+getParkBaseInf()
+//获取棚区
+const getParkBaseInf2=(val)=>{
+  ParkBaseInfo(val).then(res=>{
+    console.log(res,'棚区');
+    selecte2.value=res
+    getPageShedMonitoringData({parkId:selecte1Id.value,plotId:res[0].id})
+  })
+}
+//获取棚内环境数据  parkId  ：基地编号 plotId  ：地块编号
+let right2List=ref([])
+const getPageShedMonitoringData=(val)=>{
+  pageShedMonitoringData(val).then(res=>{
+    console.log(res,'彭内环境数据')
+    right2List.value=res
+  })
+}
+
+//筛选基地
+const seleCli1=(e)=>{
+  selecte1Id.value=e.target.value
+  getParkBaseInf2({parentId:e.target.value})
+}
+//筛选基地
+const seleCli2=(e)=>{
+  selecte2Id.value=e.target.value
+  getPageShedMonitoringData({parkId:selecte1Id.value,plotId:e.target.value})
+}
+//获取地图数据
+const getBigScreenDevicePoint=()=>{
+  bigScreenDevicePoint().then(res=>{
+    console.log(res.传感设备,'地图数据')
+  
+  })
+}
+getBigScreenDevicePoint()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -380,7 +436,6 @@ gap: 10px;
         width: 100%;
         box-sizing: border-box;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         background-image: url(./assets/left2Bg.png);
         background-size: 100% 100%;
@@ -396,13 +451,14 @@ gap: 10px;
     .left3-item{
       width: 100%;
       height: calc(100% - 2rem);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
       .left3-warper{
-        width: 100%;
-        height: 100%;
+        display: inline-block;
+        width: 33%;
+        height: 48%;
         background-size: 100% 100%;
         display: flex;
         flex-direction: column;
@@ -563,14 +619,13 @@ gap: 10px;
         .active{
           color: #fff;
           font-size: 14px;
-          padding: 7px 15px;
-          
+          padding: 7px 5px;
           background-size: 100% 100%;
           background-image: url(./assets/active.png);
         }
         .actived{
           color: #c1c1c1;
-          padding: 7px 15px;
+          padding: 7px 5px;
           font-size: 14px;
           background-size: 100% 100%;
           background-image: url(./assets/actived.png);
@@ -606,7 +661,7 @@ gap: 10px;
       height: calc(100% - 2.7rem);
       .right2-select{
         height: 33px;
-        margin-left: 230px;
+        margin-left: 180px;
         display: flex;
         margin-bottom: 10px;
         .select{
@@ -615,6 +670,9 @@ gap: 10px;
           color: #fff;
           background-size: 100% 100%;
           background-image: url(./assets/select.png);
+          option{
+            color:#000
+          }
         }
       }
       .right2-warper{
@@ -676,7 +734,7 @@ gap: 10px;
   background-image: url(./assets/leftTop#{$i}.png);
 }
 }
-@for $i from 1 through 4 {
+@for $i from 1 through 6 {
 .left3Top-#{$i} {
   background-image: url(./assets/left3Top#{$i}.png);
 }

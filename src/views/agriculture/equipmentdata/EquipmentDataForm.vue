@@ -156,7 +156,7 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   //赋值设备名称
   formData.value.deviceName = String(order[0].deviceName);
   //基地
-  formData.value.baseCode = String(order[0].belongPark);
+  formData.value.baseCode = order[0].belongPark;
   //地块
   formData.value.plotCode = order[0].belongPlot
   //重置检查类型让他重新选择

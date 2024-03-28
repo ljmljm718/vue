@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="编号" prop="cropCode">
-        <el-input v-model="formData.cropCode" placeholder="不输入默认生成" />
-      </el-form-item>
+<!--      <el-form-item label="编号" prop="cropCode">-->
+<!--        <el-input v-model="formData.cropCode" placeholder="不输入默认生成" />-->
+<!--      </el-form-item>-->
       <el-form-item label="名称" prop="cropName">
         <el-input v-model="formData.cropName" placeholder="请输入名称" />
       </el-form-item>
