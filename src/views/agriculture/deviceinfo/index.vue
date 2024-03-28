@@ -169,7 +169,7 @@
           <el-button
             link
             type="primary"
-            @click="$router.push(`/device/equipment-data?deviceCode=${scope.row.deviceCode}&deviceMonitorType=${scope.row.deviceMonitorType}`)"
+            @click="$router.push(`/device/equipment-data?id=${scope.row.id}&deviceMonitorType=${scope.row.deviceMonitorType}`)"
           >查看监测数据
           </el-button>
           <el-button
