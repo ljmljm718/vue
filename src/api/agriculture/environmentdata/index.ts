@@ -20,7 +20,10 @@ export const EnvironmentDataApi = {
   getEnvironmentDataPage: async (params: any) => {
     return await request.get({ url: `/agriculture/environment-data/page`, params })
   },
-
+  // 查询环境数据分页
+  getEnvironmentPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/environment-data/envPage`, params })
+  },
   // 查询环境数据详情
   getEnvironmentData: async (id: number) => {
     return await request.get({ url: `/agriculture/environment-data/get?id=` + id })
