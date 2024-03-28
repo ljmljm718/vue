@@ -46,6 +46,8 @@ import {InfraJobStatusEnum} from "@/utils/constants";
 /** 巡检规则 表单 */
 defineOptions({name: 'CheckRuleForm'})
 
+const handlerName = 'genCheckLogsJob';
+
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
@@ -57,7 +59,7 @@ const formData = ref({
   id: undefined,
   name: undefined,
   status: InfraJobStatusEnum.NORMAL,
-  handlerName: '',
+  handlerName: handlerName,
   handlerParam: '',
   cronExpression: '',
   retryCount: undefined,
@@ -124,7 +126,7 @@ const resetForm = () => {
     id: undefined,
     name: undefined,
     status: InfraJobStatusEnum.NORMAL,
-    handlerName: '',
+    handlerName: handlerName,
     handlerParam: '',
     cronExpression: '',
     retryCount: undefined,

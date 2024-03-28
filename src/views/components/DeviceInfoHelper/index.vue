@@ -53,6 +53,7 @@ const confirmSelectedDeviceInfoList = () => {
     width="70%"
   >
     <DeviceInfo
+      :in-dialog="true"
       :readonly="deviceInfoProps.readonly"
       :multi="deviceInfoProps.multi"
       :init-device-info-id-list="deviceInfoProps.multi ? selectedDeviceIdList : []"

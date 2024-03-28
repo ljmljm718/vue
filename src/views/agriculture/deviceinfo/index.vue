@@ -110,6 +110,7 @@
       :row-key="(row) => row.id"
       :stripe="true"
       :show-overflow-tooltip="true"
+      :style="`${props.inDialog ? 'height: 40vh;' : ''}`"
       @selection-change="handleSelectionChange"
     >
       <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
@@ -213,6 +214,7 @@ import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
+
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
@@ -361,17 +363,21 @@ const props = defineProps({
   // 多选
   multi: {
     type: Boolean,
-    default: false
+    default: () => false
   },
   // 只读
   readonly: {
     type: Boolean,
-    default: false
+    default: () => false
   },
   // 选中的设备id
   initDeviceInfoIdList: {
     type: Array,
     default: () => ([])
+  },
+  inDialog: {
+    type: Boolean,
+    default: () => false
   }
 })
 
