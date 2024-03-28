@@ -393,7 +393,7 @@ let select2Id=ref<any>('')
 const getParkBaseInfo=()=>{
   ParkBaseInfo({parentId:'0'}).then(res=>{
     console.log(res,'获取基地');
-    selecte1.value=res
+    selecte1.value=res.reverse()
     selecte1Id.value=res[0].id
     getParkBase({parentId:res[0].id})
   })
@@ -402,7 +402,7 @@ getParkBaseInfo()
 const getParkBaseInfo2=()=>{
   ParkBaseInfo({parentId:'0'}).then(res=>{
     console.log(res,'获取基地2');
-    selecte3.value=res
+    selecte3.value=res.reverse()
     selecte3Id.value=res[0].id
     getParkBase2({parentId:res[0].id})
   })
@@ -414,6 +414,8 @@ const getParkBase=(val)=>{
     console.log(res,'棚区');
     selecte2.value=res
     select2Id.value=res[0].id
+    getEnvironmentView()
+    getEnvironmentData()
   })
 }
 //获取棚区
@@ -430,6 +432,7 @@ const getParkBase2=(val)=>{
 const soilCli=(val:any,index:any)=>{
   soilId.value=val
   soilIndex.value=index
+
   getEnvironmentData()
   getEnvironmentView()
 }
@@ -456,7 +459,10 @@ let getEnvironmentData=()=>{
   })
 }
 getEnvironmentData()
+//环境数据折线图
 let getEnvironmentView=()=>{
+  console.log({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value},'jiegou');
+  
   environmentView({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value}).then(res=>{
     console.log(res,'环境数据');
     footChart.value=res
@@ -471,7 +477,7 @@ let getEnvironmentView=()=>{
     },200)
   })
 }
-getEnvironmentView()
+
 
 const initChart3=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -1432,7 +1438,6 @@ gap: 10px;
       height:100%;
       overflow-x: scroll;
       white-space: nowrap;
-      position: relative;
       .footer-item{
         display: inline-block;
         margin-right:15px;
@@ -1481,16 +1486,6 @@ gap: 10px;
           height:calc(100% - 50px);
         }
       }
-      .right{
-        position: absolute;
-        top: 20%;
-        right: 0%;
-        color: #fff;
-        background-color: red;
-      }
-    }
-    .footer-chart::-webkit-scrollbar{
-      display: none;
     }
   }
   .footer-right{
