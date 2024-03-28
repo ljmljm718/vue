@@ -198,6 +198,7 @@ import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
+import router from "@/router";
 
 /** 设备信息 列表 */
 defineOptions({ name: 'DeviceInfo' })
@@ -268,6 +269,7 @@ const handleQuery = () => {
   if (deviceType.value != null && deviceType.value != undefined){
    queryParams.deviceType = deviceType.value.join(",")
   }
+  console.log(deviceType.value);
   getList()
 }
 
@@ -324,6 +326,13 @@ const categoryProps = {
 onMounted(async () => {
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree)
+  if (router.currentRoute.value.query.deviceType) {
+    const type = router.currentRoute.value.query.deviceType;
+    if (type != null && type != undefined && type != "" && type != 'undefined') {
+      queryParams.deviceType = type;
+      deviceType.value = type.toString().split(',').map(Number)
+    }
+  }
   await getList()
 })
 
