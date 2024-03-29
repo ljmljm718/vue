@@ -28,7 +28,6 @@
       @pagination="getList()"
     />
   </ContentWrap>
-
   <!-- 列表 -->
   <ContentWrap>
     <div style="width: 100%;text-align: center;font-weight: 700;font-size: 25px;">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</div>
