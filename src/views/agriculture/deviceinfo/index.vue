@@ -403,13 +403,16 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id
+      if (props.currCategory.parkId === undefined ) {
+        queryParams.belongPark = props.currCategory.id
+        queryParams.belongPlot = undefined
       } else {
-        queryParams.deviceType = props.currCategory.parentId + "," + props.currCategory.id
+        queryParams.belongPark = undefined
+        queryParams.belongPlot=  props.currCategory.id
       }
     } else {
-      queryParams.deviceType = undefined
+      queryParams.belongPark = undefined
+      queryParams.belongPlot = undefined
     }
     handleQuery()
   })
