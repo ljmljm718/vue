@@ -31,6 +31,7 @@
 
   <!-- 列表 -->
   <ContentWrap>
+    <div style="width: 100%;text-align: center;font-weight: 700;font-size: 25px;">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</div>
     <div id="chart" style="width: 100%; height: 400px;"></div>  
   </ContentWrap>
 </template>
@@ -176,6 +177,7 @@ const handleExport = async () => {
   }
 }
 let res=null;
+let obj=ref({})
 //tab切换
 const tabCli=async (id,val,index)=>{
   active.value=index
@@ -188,10 +190,12 @@ const initChart= async ()=>{
 
   if(res!=null){
     res=res
+    obj.value=res[0]
   }else{
     res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(listRes.value.equipmentCode,listRes.value.monitoringType)
+    obj.value=res[0]
   }
-  //console.log(res,'==res');
+  console.log(res,'==res');
   let xAxisData=[]
   let yAxisData=[]
   res.forEach(item => {
