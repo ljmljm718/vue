@@ -13,6 +13,8 @@ export interface FarmerInfoVO {
   plantingExperience: string // 种植经验（年）
   deptId: number // 部门id
   userId: number // 用户id
+  belongPark: string // 所属基地
+  belongPlot: string // 所属地块
 }
 
 // 农户管理 API
@@ -46,4 +48,4 @@ export const FarmerInfoApi = {
   exportFarmerInfo: async (params) => {
     return await request.download({ url: `/agriculture/farmer-info/export-excel`, params })
   },
-}
+}
