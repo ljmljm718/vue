@@ -49,4 +49,13 @@ export const EquipmentDataApi = {
   exportEquipmentData: async (params) => {
     return await request.download({ url: `/yyang/equipment-data/export-excel`, params })
   },
-}
+  // 数据采集上方圆形方块
+  getEquipmentDataByEquipmentCode: async (id: string) => {
+    return await request.get({ url: `/yyang/equipment-data/getEquipmentDataByEquipmentCode?id=` + id })
+  },
+  // 数据采集类型柱状图
+  getEquipmentDataByEquipmentIdAndType: async (id: string,type:string) => {
+    return await request.get({ url: `/yyang/equipment-data/getEquipmentDataByEquipmentIdAndType?id=` + id +`&type=`+type})
+  },
+
+}

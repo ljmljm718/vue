@@ -170,8 +170,13 @@
           <el-button
             link
             type="primary"
-            @click="$router.push(`/device/equipment-data?id=${scope.row.id}&deviceMonitorType=${scope.row.deviceMonitorType}`)"
-          >查看监测数据
+            v-if="scope.row.deviceType[0]===25"
+            @click="$router.push({
+              path: '/device/equipment-data-three',
+              query: {
+                equipmentCode: scope.row.id
+              }
+            })">查看监测数据
           </el-button>
           <el-button
             link
@@ -231,6 +236,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
+  deviceTypes: undefined,
   longitude: undefined,
   latitude: undefined,
   deviceStatus: undefined,
@@ -396,13 +402,16 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id
+      if (props.currCategory.parkId === undefined ) {
+        queryParams.belongPark = props.currCategory.id
+        queryParams.belongPlot = undefined
       } else {
-        queryParams.deviceType = props.currCategory.parentId + "," + props.currCategory.id
+        queryParams.belongPark = undefined
+        queryParams.belongPlot=  props.currCategory.id
       }
     } else {
-      queryParams.deviceType = undefined
+      queryParams.belongPark = undefined
+      queryParams.belongPlot = undefined
     }
     handleQuery()
   })

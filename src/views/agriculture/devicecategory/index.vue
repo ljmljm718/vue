@@ -273,7 +273,7 @@ const handleExport = async () => {
 }
 
 /** 展开/折叠操作 */
-const isExpandAll = ref(true) // 是否展开，默认全部展开
+const isExpandAll = ref(false) // 是否展开，默认全部展开
 const refreshTable = ref(true) // 重新渲染表格状态
 const toggleExpandAll = async () => {
   refreshTable.value = false
