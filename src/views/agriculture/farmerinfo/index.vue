@@ -50,6 +50,24 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="所属基地" prop="belongPark">
+        <el-input
+          v-model="queryParams.belongPark"
+          placeholder="请输入所属基地"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="所属地块" prop="belongPlot">
+        <el-input
+          v-model="queryParams.belongPlot"
+          placeholder="请输入所属地块"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -80,24 +98,26 @@
 <!--      <el-table-column label="农户ID" align="center" prop="id" />-->
       <el-table-column label="农户身份码" align="center" prop="farmerId" />
       <el-table-column label="农户姓名" align="center" prop="farmerName" />
-      <el-table-column label="性别" align="center" prop="sex">
+      <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+      <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
+      <el-table-column label="性别" align="center" prop="sex" width="90">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_FARMER_SEX" :value="scope.row.sex" />
         </template>
       </el-table-column>
-      <el-table-column label="年龄" align="center" prop="age" >
+      <el-table-column label="年龄" align="center" prop="age" width="90">
         <template #default="scope">
           <div> {{ scope.row["age"] }}{{ "岁" }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="手机号码" align="center" prop="mobile" />
-      <el-table-column label="承包土地面积" align="center" prop="coveredLandArea" min-width="150">
+      <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
+      <el-table-column label="承包土地面积" align="center" prop="coveredLandArea" width="150">
         <template #default="scope">
           <div> {{ scope.row["coveredLandArea"] }}{{ "亩" }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="擅长种植种类" align="center" prop="plantingSpecies" />
-      <el-table-column label="种植经验" align="center" prop="plantingExperience"  min-width="130">
+      <el-table-column label="擅长种植种类" align="center" prop="plantingSpecies" width="150"/>
+      <el-table-column label="种植经验" align="center" prop="plantingExperience"  width="110">
         <template #default="scope">
           <div> {{ scope.row["plantingExperience"] }}{{ "年" }}</div>
         </template>
@@ -111,7 +131,7 @@
       />
 <!--      <el-table-column label="部门id" align="center" prop="deptId" />-->
 <!--      <el-table-column label="用户id" align="center" prop="userId" />-->
-      <el-table-column label="操作" align="center" fixed="right">
+      <el-table-column label="操作" align="center" fixed="right" width="110">
         <template #default="scope">
           <el-button
             link
@@ -168,6 +188,8 @@ const queryParams = reactive({
   farmerName: undefined,
   sex: undefined,
   plantingSpecies: undefined,
+  belongPark: undefined,
+  belongPlot: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

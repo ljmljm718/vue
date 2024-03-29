@@ -49,7 +49,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属基地" prop="belongPark">
+<!--      <el-form-item label="所属基地" prop="belongPark">
         <el-input
           v-model="queryParams.belongPark"
           placeholder="请输入所属基地"
@@ -66,7 +66,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -170,14 +170,13 @@
           <el-button
             link
             type="primary"
-
-			v-if="scope.row.deviceType[0]===25"
-			@click="$router.push({
+            v-if="scope.row.deviceType[0]===25"
+            @click="$router.push({
               path: '/device/equipment-data-three',
               query: {
                 equipmentCode: scope.row.id
               }
-            })"          >查看监测数据
+            })">查看监测数据
           </el-button>
           <el-button
             link

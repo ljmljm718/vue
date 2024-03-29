@@ -56,10 +56,30 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+          <template #append>
+            <el-button @click="openParkInfoPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="基地名称" prop="parkName">
+        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+          <template #append>
+            <el-button @click="openParkDetailPopup(formData.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="地块名称" prop="parkDetailName">
+        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly/>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
@@ -79,6 +99,10 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+  <!--  选择大棚-->
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
@@ -86,7 +110,10 @@ import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
 import {retainFirstTwoLayers} from "@/utils/tree";
 import {any} from "vue-types";
-
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import {  ParkInfoVO } from '@/api/agriculture/parkinfo'
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 /** 设备信息 表单 */
 defineOptions({ name: 'DeviceInfoForm' })
 
@@ -114,7 +141,9 @@ const formData = ref({
   location: undefined,
   url: undefined,
   deviceKind: undefined,
-  deviceMonitorType: undefined
+  deviceMonitorType: undefined,
+  parkName: undefined,
+  parkDetailName: undefined
 })
 const options=ref([
   {
@@ -217,7 +246,9 @@ const resetForm = () => {
     imgId: undefined,
     location: undefined,
     url: undefined,
-    deviceKind: undefined
+    deviceKind: undefined,
+    parkName: undefined,
+    parkDetailName: undefined
   }
   deviceType.value = []
   formRef.value?.resetFields()
@@ -234,5 +265,40 @@ const handleChange = (value: any) => {
   console.log(value)
   formData.value.deviceType = value.join(',')
   formData.value.deviceKind = value[1]
+}
+
+//基地的选择
+const parkInfoPopupRef = ref()
+const openType = ref('')
+const openParkInfoPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === ""){
+    message.error("请选择基地")
+  }else parkInfoPopupRef.value.open(id)
+}
+const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0'){
+    formData.value.belongPark = String(order[0].code)
+    formData.value.parkName = String(order[0].name)
+  }
+  else formData.value.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const parkDetailPopupRef = ref()
+const openType1 = ref('')
+const openParkDetailPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value){
+    message.error("请选择基地")
+  }else parkDetailPopupRef.value.open(id)
+}
+const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+
+  console.log("--->>查看选择的地块信息：",order[0])
+  formData.value.belongPark = String(order[0].parkId)
+  formData.value.belongPlot = String(order[0].id)
+  formData.value.parkDetailName = String(order[0].name)
+
 }
 </script>
