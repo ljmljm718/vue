@@ -170,6 +170,7 @@
           <el-button
             link
             type="primary"
+            v-if="scope.row.deviceType[0]===33"
             @click="$router.push(`/device/equipment-data?id=${scope.row.id}&deviceMonitorType=${scope.row.deviceMonitorType}`)"
           >查看监测数据
           </el-button>
@@ -231,6 +232,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
+  deviceTypes: undefined,
   longitude: undefined,
   latitude: undefined,
   deviceStatus: undefined,
