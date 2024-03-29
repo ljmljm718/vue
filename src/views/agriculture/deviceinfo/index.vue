@@ -170,13 +170,13 @@
           <el-button
             link
             type="primary"
-       
-			v-if="scope.row.deviceType[0]===33"
-			@click="$router.push({  
-              path: '/device/equipment-data-three',  
-              query: {  
+
+			v-if="scope.row.deviceType[0]===25"
+			@click="$router.push({
+              path: '/device/equipment-data-three',
+              query: {
                 equipmentCode: scope.row.id
-              }  
+              }
             })"          >查看监测数据
           </el-button>
           <el-button
