@@ -37,3 +37,35 @@ export const warnRecordList = () => {
 export const deviceInfoPage = () => {
   return request.get({ url: `/agriculture/device-info/page` })
 }
+
+export const deviceInfoByPark = () => {
+  return request.get({ url: `/agriculture/big-screen/deviceInfoByPark` })
+}
+
+export const getDeviceState = () => {
+  return request.get({ url: `/agriculture/big-screen/getDeviceState` })
+}
+
+export const environmentalData = () => {
+  return request.get({ url: `/yyang/equipment-data/environmentalData` })
+}
+
+export const waterQualityData = () => {
+  return request.get({ url: `/yyang/equipment-data/waterQualityData` })
+}
+
+export const growthPage = (params) => {
+  return request.get({ url: `/agri/crop-growth/page`, params })
+}
+
+export const getCountPageByBaseId = (params) => {
+  return request.get({ url: `/agriculture/check-logs/getCountPageByBaseId`, params })
+}
+
+export const detailListByParkId = (params) => {
+  return request.get({ url: `/agriculture/park-info/park-detail/list-by-park-id`, params })
+}
+
+export const parkInfoPage = (params) => {
+  return request.get({ url: `/agriculture/park-info/page`, params })
+}
