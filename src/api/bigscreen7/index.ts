@@ -46,3 +46,16 @@ export const deviceInfoCard = async () => {
     url: '/agriculture/big-screen/deviceInfoCard',
   })
 }
+//地图中间数据
+export const bigScreenDevicePoint = async () => {
+  return await request.get({
+    url: '/agriculture/warning-record-big-screen/bigScreenDevicePoint',
+  })
+}
+//土壤墒情和虫情
+export const ParkAndPlotAndType = async (params) => {
+  return await request.get({
+    url: '/agriculture/big-screen/getDeviceDataByParkAndPlotAndType',
+    params
+  })
+}
