@@ -20,6 +20,14 @@ export const pageRealTimeData = (params: any) => {
   return request.get({ url: `/agriculture/warning-record-big-screen/pageRealTimeData`, params })
 }
 
+export const envPage = (params: any) => {
+  return request.get({ url: `/agriculture/environment-data/envPage`, params })
+}
+
+export const envDataPage = (params: any) => {
+  return request.get({ url: `/agriculture/environment-data/page`, params })
+}
+
 
 // home1的接口
 export const warnRecordList = () => {

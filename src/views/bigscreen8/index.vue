@@ -419,16 +419,16 @@ onMounted(() => {
       <div class="gird-item-wrapper" style="grid-row: span 4;">
         <div class="grid-main-item center-container">
           <div class="top-card-wrapper">
-            <div class="top-card-item">
-              <div class="value-card">产业一张图</div>
+              <div class="top-card-item" @click="$router.push('/bigscreen5')">
+                <div class="value-card">产业一张图</div>
+              </div>
+              <div class="top-card-item card-selected">
+                <div class="value-card">产业一张图</div>
+              </div>
+              <div class="top-card-item" @click="$router.push('/bigscreen7')">
+                <div class="value-card">设备监控</div>
+              </div>
             </div>
-            <div class="top-card-item">
-              <div class="value-card">产业一张图</div>
-            </div>
-            <div class="top-card-item">
-              <div class="value-card">设备监控</div>
-            </div>
-          </div>
           <div id="mainMap" style="width: 100%; height: 100%;"></div>
         </div>
         
@@ -593,31 +593,34 @@ onMounted(() => {
 .center-container {
   position: relative;
   .top-card-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 10;
-    padding: 0.8rem 0;
-    .top-card-item {
-      margin: 0 1.3rem;
-      width: 10rem;
-      aspect-ratio: 3.7;
-      background-image: url(./assets/topBg.png);
-      background-size: 100% 100%;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      .value-card {
-        font-size: 1.1rem;
-        font-family: 'TitleFont';
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      padding: 0.8rem 0;
+      .top-card-item {
+        margin: 0 1.3rem;
+        width: 10rem;
+        aspect-ratio: 3.7;
+        background-image: url(./assets/actived2.png);
+        background-size: 100% 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .value-card {
+          font-size: 1.1rem;
+          font-family: 'TitleFont';
+        }
+        .label-card {
+          font-size: 0.9rem;
+        }
       }
-      .label-card {
-        font-size: 0.9rem;
+      .card-selected {
+        background-image: url(./assets/active2.png) !important;
       }
     }
-  }
 
   #mainMap {
     width: 100%;
