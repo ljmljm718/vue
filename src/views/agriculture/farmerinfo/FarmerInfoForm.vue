@@ -21,6 +21,18 @@
       </el-row>
       <el-row>
         <el-col :span="12">
+          <el-form-item label="所属基地" prop="belongPark">
+            <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="所属地块" prop="belongPlot">
+            <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="性别" prop="sex">
             <el-radio-group v-model="formData.sex">
               <el-radio
@@ -46,7 +58,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="承包土地" prop="coveredLandArea">
+          <el-form-item label="已承包土地" prop="coveredLandArea">
             <el-input type="number" v-model="formData.coveredLandArea" placeholder="请输入承包土地面积" >
               <template #append>亩</template>
             </el-input>
@@ -107,6 +119,8 @@ const formData = ref({
   plantingExperience: undefined,
   deptId: undefined,
   userId: undefined,
+  belongPark: undefined,
+  belongPlot: undefined,
 })
 const formRules = reactive({
   farmerId: [{ required: true, message: '农户身份码不能为空', trigger: 'blur' }],
@@ -174,6 +188,8 @@ const resetForm = () => {
     plantingExperience: undefined,
     deptId: undefined,
     userId: undefined,
+    belongPark: undefined,
+    belongPlot: undefined,
   }
   formRef.value?.resetFields()
 }
