@@ -98,8 +98,8 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPlot"/>
-      <el-table-column label="所属地块" align="center" prop="belongPark" />
+      <el-table-column label="所属基地" align="center" prop="belongPark"/>
+      <el-table-column label="所属地块" align="center" prop="belongPlot" />
       <el-table-column label="描述" align="center" prop="cropDesc" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column

@@ -110,6 +110,7 @@
       :row-key="(row) => row.id"
       :stripe="true"
       :show-overflow-tooltip="true"
+      :style="`${props.inDialog ? 'height: 40vh;' : ''}`"
       @selection-change="handleSelectionChange"
     >
       <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
@@ -169,13 +170,14 @@
           <el-button
             link
             type="primary"
-            @click="$router.push({  
+       
+			v-if="scope.row.deviceType[0]===33"
+			@click="$router.push({  
               path: '/device/equipment-data-three',  
               query: {  
                 equipmentCode: scope.row.id
               }  
-            })"
-          >查看监测数据
+            })"          >查看监测数据
           </el-button>
           <el-button
             link
@@ -219,6 +221,7 @@ import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
 
+
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
 
@@ -234,6 +237,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
+  deviceTypes: undefined,
   longitude: undefined,
   latitude: undefined,
   deviceStatus: undefined,
@@ -366,17 +370,21 @@ const props = defineProps({
   // 多选
   multi: {
     type: Boolean,
-    default: false
+    default: () => false
   },
   // 只读
   readonly: {
     type: Boolean,
-    default: false
+    default: () => false
   },
   // 选中的设备id
   initDeviceInfoIdList: {
     type: Array,
     default: () => ([])
+  },
+  inDialog: {
+    type: Boolean,
+    default: () => false
   }
 })
 

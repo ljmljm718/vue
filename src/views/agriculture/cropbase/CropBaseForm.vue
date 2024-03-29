@@ -23,11 +23,11 @@
                     />
                 </el-select>
             </el-form-item>
-            <el-form-item label="所属基地" prop="belongPlot">
-                <el-input v-model="formData.belongPlot" placeholder="请输入所属园区" />
+            <el-form-item label="所属基地" prop="belongPark">
+                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />
             </el-form-item>
-            <el-form-item label="所属地块" prop="belongPark">
-                <el-input v-model="formData.belongPark" placeholder="请输入所属地块" />
+            <el-form-item label="所属地块" prop="belongPlot">
+                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
             </el-form-item>
             <el-form-item label="图片" prop="imgId">
                 <UploadImg v-model="formData.imgId" />
