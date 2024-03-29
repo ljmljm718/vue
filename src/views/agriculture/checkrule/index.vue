@@ -60,7 +60,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="规则编号" align="center" prop="id" />
-      <el-table-column label="规则名称" align="center" prop="name" />
+      <el-table-column label="规则名称" width="300px" align="center" prop="name"/>
       <el-table-column label="规则状态" align="center" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.INFRA_JOB_STATUS" :value="scope.row.status" />
@@ -142,18 +142,20 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CheckRuleApi, CheckRuleVO } from '@/api/agriculture/checkrule'
+import {CheckRuleApi, CheckRuleVO} from '@/api/agriculture/checkrule'
 import CheckRuleForm from './CheckRuleForm.vue'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {InfraJobStatusEnum} from "@/utils/constants";
 import DeviceInfoHelper from "@/views/components/DeviceInfoHelper/index.vue";
 import {JobVO} from "@/api/infra/job";
-import {DeviceInfoApi} from "@/api/agriculture/deviceinfo";
+import {CACHE_KEY, useCache} from "@/hooks/web/useCache";
 
 /** 巡检规则 列表 */
 defineOptions({ name: 'CheckRule' })
+
+const {wsCache} = useCache()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -215,7 +217,7 @@ const handleChangeStatus = async (row: CheckRuleVO) => {
     )
     const status =
       row.status === InfraJobStatusEnum.STOP ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP
-    await CheckRuleApi.updateJobStatus(row.id, status)
+    await CheckRuleApi.updateCheckRuleStatus(row.id, status)
     message.success(text + '成功')
     // 刷新列表
     await getList()
@@ -265,18 +267,25 @@ const handleExport = async () => {
  */
 // 打开设备选择弹窗
 const deviceInfoHelperRef = ref()
-const currJob = ref()
+const currRule = ref()
 const openDeviceInfoHelperDialog = (job: JobVO) => {
-  currJob.value = job
-  deviceInfoHelperRef.value.open(job.handlerParam.split(','))
+  currRule.value = job
+  const jsonObject = JSON.parse(job.handlerParam);
+  deviceInfoHelperRef.value.open(jsonObject.deviceIds)
 }
 // 绑定设备
 const handleBindDevice = async (val) => {
-  const formData = {
-    jobId: currJob.value.id,
-    deviceIdList: val.map(item => item.id),
+  const user = wsCache.get(CACHE_KEY.USER).user
+  const handlerParam = {
+    userId: user.id,
+    deptId: user.deptId,
+    deviceIds: val.map(item => item.id)
   }
-  await DeviceInfoApi.jobBindDevice(formData);
+  const formData: CheckRuleVO = {
+    id: currRule.value.id,
+    handlerParam: JSON.stringify(handlerParam),
+  }
+  await CheckRuleApi.checkRuleBindDeviceInfo(formData)
   await getList()
   message.success("绑定设备成功！")
 }

@@ -38,6 +38,11 @@ export const CheckRuleApi = {
     return await request.put({ url: `/agriculture/check-rule/update`, data })
   },
 
+  // 巡检规则绑定设备信息
+  checkRuleBindDeviceInfo: async (data: CheckRuleVO) => {
+    return await request.put({url: `/agriculture/check-rule/bind`, data})
+  },
+
   // 删除巡检规则
   deleteCheckRule: async (id: number) => {
     return await request.delete({ url: `/agriculture/check-rule/delete?id=` + id })
@@ -48,7 +53,7 @@ export const CheckRuleApi = {
     return await request.download({ url: `/agriculture/check-rule/export-excel`, params })
   },
 
-  updateJobStatus: async (id: number, status: number) => {
+  updateCheckRuleStatus: async (id: number, status: number) => {
     const params = {
       id,
       status
