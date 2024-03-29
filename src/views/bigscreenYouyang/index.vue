@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import { onMounted, ref, watch } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import * as echarts from 'echarts'
-import { initChartStatic, generateBaseOptions } from '../../utils/bigscreenTool/index'
+import {initChartStatic, generateBaseOptions} from '../../utils/bigscreenTool/index'
 import preWarn from '@/views/bigscreen6/assets/preWarn.png'
 import sensor from '@/views/bigscreen6/assets/sensor.png'
 import monitor from '@/views/bigscreen6/assets/monitor.png'
-import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index'
+import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
 
 import {
   largeScreenGetWarning,
@@ -24,19 +24,20 @@ import {
 } from './apis'
 
 // 大屏中央右边监控设备(单条) 未完成
-const singleMonitor = ref({
-  equipmentName: "",
-  id: "",
-  name: "",
-  status: ""
-})
+// const singleMonitor = ref({
+// equipmentName: "",
+// id: "",
+// name: "",
+// status: ""
+// })
+const singleMonitor = ref<Array<any>>([])
 const getViewMonitoring = async () => {
-  const res = await viewMonitoring({
-    belongPark: curBelongPark.value,
-    belongPlot: curBelongPlot.value
-  })
-  console.log('监控设备(单条)',  res);
-  singleMonitor.value = res
+  const {list = []} = await viewMonitoring({});
+  Array.isArray(list) ? (singleMonitor.value = list.map((item) => ({
+    ...item,
+    id: item.id
+  }))) : null;
+  console.log('监控设备(单条)');
 }
 
 // 传感器 （单条）
@@ -58,22 +59,24 @@ const getwaterDetectionByAddress = async () => {
 
 // 左上角 根据设备获取环境监测值
 const envVal = ref({
-  atmospheric_pressure: "0",
-  carbon_dioxide: "0",
-  humidness: "0",
-  hyetal: "0",
-  illumination: "0",
-  temperature: "0",
-  wind_direction: "-",
-  wind_speed: "0"
+  "气压": "0",
+  "二氧化碳": "0",
+  "湿度": "0",
+  "雨量": "0",
+  "光照": "0",
+  "温度": "0",
+  "风向": "-",
+  "风速": "0"
 })
-const leftCurDeviceCode = ref(0);
-const getGetDeviceDataYouEnvironment = async (deviceCode) => {
-  leftCurDeviceCode.value = deviceCode;
-  const res = await getDeviceDataYouEnvironment({ deviceCode })
-  console.log('根据设备获取环境监测值', res);
+const leftCurDeviceCode1 = ref(0);
+const leftCurDeviceCode2 = ref(0);
+const getGetDeviceDataYouEnvironment = async (belongPark, belongPlot) => {
+  leftCurDeviceCode1.value = belongPark;
+  leftCurDeviceCode2.value = belongPlot;
+  const res = await getDeviceDataYouEnvironment({})
+  console.log("数据", res)
   envVal.value = res;
-  initChart1(leftTabSelected.value)
+  await initChart1(leftTabSelected.value)
 }
 
 // 左下角设备监控
@@ -93,30 +96,31 @@ const onWarningInfo = ref({
   warnInfo: ''
 })
 const getLargeScreenGetOneWarning = async (parkId) => {
-  const res = await largeScreenGetOneWarning({ parkId })
+  const res = await largeScreenGetOneWarning({parkId})
   console.log('getLargeScreenGetOneWarninges', res)
   onWarningInfo.value = res
 }
 
 const getDeviceBasePage = async () => {
-  const { list = [] } = await deviceBasePage()
+  const {list = []} = await deviceBasePage()
   console.log('getDeviceBasePage', list)
   Array.isArray(list)
     ? (envOptions.value = list.map((item) => ({
-        id: item.id,
-        name: item.deviceName
-      })))
+      ...item,
+      id: item.id,
+      name: item.deviceName
+    })))
     : null;
   if (envOptions.value[0]) {
-    getGetDeviceDataYouEnvironment(envOptions.value[0].id)
-    initChart1('temperature')
+    await getGetDeviceDataYouEnvironment(envOptions.value[0].belongPark, envOptions.value[0].belongPlot)
+    await initChart1('temperature')
   }
 }
 getDeviceBasePage()
 
 // 大屏中央设备设备数量统计
 const deviceBaseInfo = ref<any>({
-  sum: 0,
+  total: 0,
   online: 0,
   offline: 0
 })
@@ -129,15 +133,18 @@ getDeviceBaseList()
 
 // 预警信息（大屏右下角）
 const getlargeScreenGetWarning = async () => {
-  const res = await largeScreenGetWarning({ pageSize: 10 })
-  if (Array.isArray(res))
-    tableData.value = res.map((item) => ({
-      name: item.parkName,
-      device: item.deviceName,
+  const {list = []} = await largeScreenGetWarning({pageSize: 10})
+  console.log('shit', list)
+  if (Array.isArray(list))
+    tableData.value = list.map((item) => ({
+      name: item.plotCode,
+      device: item.deviceCode,
       info: item.warnInfo,
       time: item.warnTime,
       status: item.warnStatus === '0' ? '未处理' : '已处理'
     }))
+  console.log("右下角", list)
+  console.log("右下角", tableData.value)
 }
 getlargeScreenGetWarning()
 
@@ -145,7 +152,8 @@ getlargeScreenGetWarning()
 const deviceNumCount = ref<Array<any>>([])
 const getSelectStateNum = async () => {
   const res = await selectStateNum()
-  Array.isArray(res) ? (deviceNumCount.value = res) : null
+  Array.isArray(res) ? (deviceNumCount.value = [res[0], res[1],res[2],res[3 ]]) : null
+  console.log(res)
 }
 getSelectStateNum()
 
@@ -206,26 +214,26 @@ const waterTypeList = ref<Array<any>>([
  * belongPlot 塘口编号
  */
 const getWaterDetectionType = async (belongPark, belongPlot) => {
-  const res = await waterDetectionType({ belongPark, belongPlot })
+  const res = await waterDetectionType({belongPark, belongPlot})
   console.log('水质监测（八项参数）', res)
   Array.isArray(res) ? (waterTypeList.value = res) : null
 }
 
 const options1 = ref<Array<any>>([])
 const getOptions1 = async (parentId = '0') => {
-  const res = await ParkBaseInfo({ parentId })
+  const res = await ParkBaseInfo({parentId})
   options1.value = res
-  getOptions2(options1.value[0].id)
+  if (options1.value.length > 0) await getOptions2(options1.value[0].id)
 }
 getOptions1()
 
 const options2 = ref<Array<any>>([])
 const getOptions2 = async (parentId) => {
   curBelongPark.value = parentId
-  const res = await ParkBaseInfo2({ parentId })
+  const res = await ParkBaseInfo2({parentId})
   options2.value = res
   handleSelectorChange2({
-    target: { value: res[0].id }
+    target: {value: res[0].id}
   })
 }
 const curBelongPark = ref('')
@@ -248,7 +256,10 @@ const handleSelectorChange2 = (val) => {
 // 环境监测 options
 const envOptions = ref<Array<any>>([])
 const handleEnvSelectorChange = (val) => {
-  getGetDeviceDataYouEnvironment(val.target.value)
+  const item = envOptions.value.find(item => {
+    return item.id === val.target.value
+  })
+  getGetDeviceDataYouEnvironment(item.belongPark, item.belongPlot)
 }
 
 const envLabel = ref('')
@@ -284,11 +295,12 @@ const tableColumns = ref([
 const tableData = ref<Array<any>>([])
 
 const initChart1 = async (type) => {
-  const deviceCode = leftCurDeviceCode.value;
-  if (!type || !deviceCode) return
+  const deviceCode1 = leftCurDeviceCode1.value;
+  const deviceCode2 = leftCurDeviceCode2.value;
+  if (!type || !deviceCode1) return
   console.log('type', type)
   envLabel.value = leftLabelMap[type];
-  const res = await getDeviceDataYouEnvironmentLine({ deviceCode, type })
+  const res = await getDeviceDataYouEnvironmentLine({deviceCode1, type})
   console.log('getDeviceDataYouEnvironmentLine ==', res);
   initChartStatic(
     'chart1',
@@ -351,8 +363,8 @@ const initChart1 = async (type) => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#ffa77300' },
-                { offset: 0, color: '#ffa773' }
+                {offset: 1, color: '#ffa77300'},
+                {offset: 0, color: '#ffa773'}
               ])
             },
           },
@@ -371,7 +383,7 @@ const initChart1 = async (type) => {
 
 const initChart2 = async (type, belongPark, belongPlot) => {
   // 水质监测（折线图）
-  const res = await waterDetection({ type, belongPark, belongPlot })
+  const res = await waterDetection({type, belongPark, belongPlot})
   console.log('水质监测（折线图）', res)
   const seriseName = rightLabelMap[res[0].type]
   const yName = rightUnitMap[res[0].type]
@@ -436,8 +448,8 @@ const initChart2 = async (type, belongPark, belongPlot) => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#30c3ef00' },
-                { offset: 0, color: '#30c3ef' }
+                {offset: 1, color: '#30c3ef00'},
+                {offset: 0, color: '#30c3ef'}
               ])
             },
           },
@@ -454,7 +466,7 @@ const initChart2 = async (type, belongPark, belongPlot) => {
   )
 }
 
-const leftTabSelected = ref('temperature')
+const leftTabSelected = ref('温度')
 watch(
   () => leftTabSelected.value,
   (newValue) => {
@@ -463,36 +475,36 @@ watch(
   }
 )
 const leftIconMap = {
-  "temperature": 1, //环境温度
-  "humidness": 2, //环境湿度
-  "illumination": 3, //光照
-  "carbon_dioxide": 4, //二氧化碳浓度
-  "wind_speed": 5, //风速
-  "atmospheric_pressure": 6, //气压
-  "hyetal": 7, //降雨量
-  "wind_direction": 8 //风向
+  "温度": 1, //环境温度
+  "湿度": 2, //环境湿度
+  "光照": 3, //光照
+  "二氧化碳": 4, //二氧化碳浓度
+  "风速": 5, //风速
+  "气压": 6, //气压
+  "雨量": 7, //降雨量
+  "风向": 8 //风向
 }
 
 const leftUnitMap = {
-  "temperature": '℃', //环境温度
-  "humidness": '%', //环境湿度
-  "illumination": 'Lux', //光照
-  "carbon_dioxide": 'ppm', //二氧化碳浓度
-  "wind_speed": 'm/s', //风速
-  "atmospheric_pressure": 'hPa', //气压
-  "hyetal": 'mm', //降雨量
-  "wind_direction": '' //风向
+  "温度": '℃', //环境温度
+  "湿度": '%', //环境湿度
+  "光照": 'Lux', //光照
+  "二氧化碳": 'ppm', //二氧化碳浓度
+  "风速": 'm/s', //风速
+  "气压": 'hPa', //气压
+  "雨量": 'mm', //降雨量
+  "风向": '' //风向
 }
 
 const leftLabelMap = {
-  "temperature": '温度', //环境温度
-  "humidness": '湿度', //环境湿度
-  "illumination": '光照', //光照
-  "carbon_dioxide": '二氧化碳', //二氧化碳浓度
-  "wind_speed": '风速', //风速
-  "atmospheric_pressure": '气压', //气压
-  "hyetal": '雨量', //降雨量
-  "wind_direction": '风向' //风向
+  "温度": '温度', //环境温度
+  "湿度": '湿度', //环境湿度
+  "光照": '光照', //光照
+  "二氧化碳": '二氧化碳', //二氧化碳浓度
+  "风速": '风速', //风速
+  "气压": '气压', //气压
+  "雨量": '雨量', //降雨量
+  "风向": '风向' //风向
 }
 
 const rightTabSelected = ref('temperature')
@@ -539,7 +551,7 @@ const rightUnitMap = {
   <div class="bigscreen-main-wrapper">
     <div class="header-main-wrapper header-bg">
       <div class="header-left-part-wrapper">
-        <BigScreenTime />
+        <BigScreenTime/>
       </div>
       <div class="header-title-wrapper">酉阳鲁渝协作示范村数字化赋能</div>
       <div class="header-right-part-wrapper"></div>
@@ -555,7 +567,8 @@ const rightUnitMap = {
                   :value="item.id"
                   v-for="item,index in envOptions"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -574,13 +587,19 @@ const rightUnitMap = {
                   </div>
                   <div class="label-wrapper">{{ leftLabelMap[item] }}</div>
                 </div>
-                <div v-show="leftUnitMap[item]" class="check-btn" @click="leftTabSelected = item">查看</div>
+                <div v-show="leftUnitMap[item]" class="check-btn" @click="leftTabSelected = item">
+                  查看
+                </div>
               </div>
             </div>
             <div class="sub-title-wrapper">
               <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{ envLabel }}变化趋势</div>
-              <div style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{
+                  envLabel
+                }}变化趋势
+              </div>
+              <div
+                style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
             </div>
             <div
               class="chart-wrapper"
@@ -623,11 +642,14 @@ const rightUnitMap = {
               style="left: calc(400px - 100px);bottom: 300px;"
             >
               <div class="info-rect">
-                <div class="text-info">
-                  <div class="text-row">编号: {{ singleMonitor.id }}</div>
-                  <div class="text-row">位置: {{ singleMonitor.name }}</div>
-                  <div class="text-row">设备: {{ singleMonitor.equipmentName }}</div>
-                  <div class="text-row">状态: <span :style="`color: ${singleMonitor.status === 'online' ? '#35bb60' : '#bc3f00'};`">{{ singleMonitor.status === 'online' ? '在线' : '离线' }}</span></div>
+                <div class="text-info" v-for="(item, index) in singleMonitor" :key="index">
+                  <div class="text-row">编号: {{ item.id }}</div>
+                  <div class="text-row">位置: {{ item.name }}</div>
+                  <div class="text-row">设备: {{ item.id }}</div>
+                  <div class="text-row">状态: <span
+                    :style="`color: ${item.status === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                      item.status === 'online' ? '在线' : '离线'
+                    }}</span></div>
                 </div>
               </div>
               <img
@@ -676,15 +698,21 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card"  @click="$router.push('/basic/device/devicebase')">{{ deviceBaseInfo.sum }}</div>
+              <div class="value-card" @click="$router.push('/basic/device/devicebase')">
+                {{ deviceBaseInfo.total }}
+              </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">{{ deviceBaseInfo.online }}</div>
+              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">
+                {{ deviceBaseInfo.online }}
+              </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">{{ deviceBaseInfo.offline }}</div>
+              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">
+                {{ deviceBaseInfo.offline }}
+              </div>
             </div>
           </div>
           <div class="extra-card-wrappper">
@@ -696,16 +724,16 @@ const rightUnitMap = {
               <div class="extra-icon t-icon-1"></div>
               <div class="extra-text-wrapper">
                 <div class="extra-text-row extra-title-font">
-                  <div>{{ item[0].name }}</div>
-                  <div>{{ item[0].sum }}</div>
+                  <div>{{ item.categoryName }}</div>
+                  <div>{{ item.total }}</div>
                 </div>
                 <div class="extra-text-row">
                   <div>在线数量</div>
-                  <div style="color: #0fc87c;">{{ item[0].online }}</div>
+                  <div style="color: #0fc87c;">{{ item.online }}</div>
                 </div>
                 <div class="extra-text-row">
                   <div>离线数量</div>
-                  <div style="color: #c51416;">{{ item[0].offline }}</div>
+                  <div style="color: #c51416;">{{ item.offline }}</div>
                 </div>
               </div>
             </div>
@@ -722,14 +750,16 @@ const rightUnitMap = {
                   :value="item.id"
                   v-for="item,index in options1"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
               <select @change="handleSelectorChange2">
                 <option
                   :value="item.id"
                   v-for="item,index in options2"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -744,20 +774,24 @@ const rightUnitMap = {
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ item.unit  }}</span>
+                    <span class="unit">{{ item.unit }}</span>
                   </div>
                   <div class="label-wrapper">{{ rightLabelMap[item.type] }}</div>
                 </div>
                 <div
                   class="check-btn"
                   @click="rightTabSelected = item.type"
-                >查看</div>
+                >查看
+                </div>
               </div>
             </div>
             <div class="sub-title-wrapper">
               <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{ rightLabelMap[rightTabSelected] }}变化趋势</div>
-              <div style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
+                {{ rightLabelMap[rightTabSelected] }}变化趋势
+              </div>
+              <div
+                style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
             </div>
             <div
               class="chart-wrapper"
@@ -794,7 +828,10 @@ const rightUnitMap = {
               <div class="text-wrapper">
                 <div class="text-row">名称:{{ item.equipmentName }}</div>
                 <div class="text-row">位置:{{ item.yyLocation }}</div>
-                <div class="text-row">状态: <span :style="`color: ${item.yyStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{ item.yyStatus === 'online' ? '在线' : '离线' }}</span></div>
+                <div class="text-row">状态: <span
+                  :style="`color: ${item.yyStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                    item.yyStatus === 'online' ? '在线' : '离线'
+                  }}</span></div>
               </div>
             </div>
           </div>
@@ -812,7 +849,8 @@ const rightUnitMap = {
                 v-for="(item) in tableColumns"
                 :key="item.key"
                 :style="`width: ${item.width};`"
-              >{{ item.label }}</div>
+              >{{ item.label }}
+              </div>
             </div>
             <div class="table-container">
               <div
@@ -825,7 +863,8 @@ const rightUnitMap = {
                   v-for="(column) in tableColumns"
                   :key="column.key"
                   :style="`width: ${column.width};`"
-                >{{ item[column.key] }}</div>
+                >{{ item[column.key] }}
+                </div>
               </div>
             </div>
           </div>
@@ -837,9 +876,11 @@ const rightUnitMap = {
 </template>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
+
 .header-bg {
   background-image: url(./assets/headerBg.png);
 }
+
 .title-bg {
   background-image: url(./assets/titleBg.png);
 }
@@ -847,19 +888,23 @@ const rightUnitMap = {
 .bigscreen-main-wrapper {
   background-image: url(./assets/bg.png);
 }
+
 .grid-container {
   display: grid;
   grid-template-columns: 25% 50% 25%;
   grid-template-rows: 70% 30%;
   color: aliceblue;
+
   .gird-item-wrapper {
     padding: 0.5rem;
     position: relative;
     z-index: 20;
+
     .grid-main-item {
       height: 100%;
       display: flex;
       flex-direction: column;
+
       .main-item-title {
         height: 2.2rem;
         padding: 0 2rem;
@@ -869,6 +914,7 @@ const rightUnitMap = {
         justify-content: space-between;
         align-items: center;
       }
+
       .main-item-container {
         height: calc(100% - 2.2rem);
         background-image: url(./assets/bottomBg.png);
@@ -878,42 +924,51 @@ const rightUnitMap = {
         padding: 1rem;
         display: flex;
         flex-direction: column;
+
         .card-grid-wrapper {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-rows: repeat(4, 1fr);
           gap: 1rem;
+
           .card-selected {
             background: linear-gradient(to right, #00000000, #2f6979, #00000000);
           }
+
           .card-grid-item {
             border: 1px solid #325c98;
             padding: 0.6rem 0.8rem;
             display: flex;
             align-items: center;
             position: relative;
+
             .icon-wrapper {
               width: 2rem;
               height: 2rem;
               background-size: 100% 100%;
             }
+
             .label-val-wrapper {
               padding: 0 0.8rem;
+
               .label-wrapper {
                 color: #2efbf6;
                 font-size: 0.7rem;
               }
+
               .value-wrapper {
                 .value {
                   font-size: 1.1rem;
                   font-family: 'TitleFont';
                 }
+
                 .unit {
                   font-size: 0.6rem;
                   padding-left: 0.3rem;
                 }
               }
             }
+
             .check-btn {
               position: absolute;
               right: 0.8rem;
@@ -928,12 +983,14 @@ const rightUnitMap = {
             }
           }
         }
+
         .sub-title-wrapper {
           height: 1rem;
           display: flex;
           margin: 0.7rem 0;
           align-items: center;
         }
+
         .chart-wrapper {
           height: 100%;
         }
@@ -944,6 +1001,7 @@ const rightUnitMap = {
 
 .center-container {
   position: relative;
+
   .top-card-wrapper,
   .extra-card-wrappper {
     display: flex;
@@ -953,6 +1011,7 @@ const rightUnitMap = {
     z-index: 10;
     padding: 0.8rem 0;
   }
+
   .top-card-wrapper {
     .top-card-item {
       margin: 0 1.3rem;
@@ -964,16 +1023,19 @@ const rightUnitMap = {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+
       .value-card {
         font-size: 1.4rem;
         font-family: 'TitleFont';
         margin-bottom: 1.6rem;
       }
+
       .label-card {
         font-size: 0.9rem;
       }
     }
   }
+
   .extra-card-wrappper {
     .top-card-item {
       margin: 0 0.4rem;
@@ -981,20 +1043,24 @@ const rightUnitMap = {
       background-image: url(./assets/extraBg.png);
       background-size: 100% 100%;
       display: flex;
+
       .extra-icon {
         background-size: 100% 100%;
         width: 3rem;
         height: 3rem;
         margin-right: 0.6rem;
       }
+
       .extra-text-wrapper {
         width: 9rem;
+
         .extra-text-row {
           display: flex;
           justify-content: space-between;
           align-items: center;
           font-size: 0.8rem;
         }
+
         .extra-title-font {
           font-size: 1.1rem;
           font-family: 'TitleFont';
@@ -1012,20 +1078,24 @@ const rightUnitMap = {
     top: calc(50% - 400px);
     background-image: url(./assets/main.png);
     background-size: 100% 100%;
+
     .tool-info {
       display: flex;
       flex-direction: column;
       align-items: center;
       position: absolute;
       width: 200px;
+
       img {
         width: 2rem;
       }
+
       .info-rect {
         background-size: 100% 100%;
         width: 100%;
         aspect-ratio: 1.1;
         background-image: url(./assets/infoRect.png);
+
         .text-info {
           width: calc(100% - 1.6rem);
           height: calc(70% - 1.6rem);
@@ -1052,13 +1122,16 @@ const rightUnitMap = {
   bottom: 1rem;
   left: 1rem;
   display: flex;
+
   .tool-tip-item {
     padding: 0 1rem;
     display: flex;
     align-items: center;
+
     img {
       width: 2rem;
     }
+
     span {
       padding-left: 0.7rem;
     }
@@ -1069,6 +1142,7 @@ const rightUnitMap = {
 .pre-warn-table {
   position: relative;
   padding: 0.4rem 1rem !important;
+
   .table-cell {
     text-align: center;
     font-size: 0.9rem;
@@ -1081,13 +1155,16 @@ const rightUnitMap = {
     /*! autoprefixer: off */
     -webkit-box-orient: vertical;
   }
+
   .table-container {
     height: calc(100% - 1.8rem);
     overflow: auto;
+
     &::-webkit-scrollbar {
       width: 0px;
     }
   }
+
   .table-header {
     display: flex;
     height: 1.8rem;
@@ -1096,6 +1173,7 @@ const rightUnitMap = {
     font-size: 0.7rem !important;
     color: #f5f5f5c8;
   }
+
   .row-wrapper {
     display: flex;
     align-items: center;
@@ -1112,12 +1190,15 @@ const rightUnitMap = {
 .monitor-device {
   display: flex;
   justify-content: space-between;
+
   .monitor-item {
     width: calc(50% - 0.5rem);
+
     .video-wrapper {
       width: 100%;
       aspect-ratio: 1.8;
       position: relative;
+
       .filter-img {
         background-repeat: no-repeat;
         background-position: center;
@@ -1132,13 +1213,16 @@ const rightUnitMap = {
         z-index: -1;
       }
     }
+
     .text-wrapper {
       padding: 0.4rem 0;
+
       .text-row {
         padding: 0.1rem 1rem;
         position: relative;
         font-size: 0.7rem;
       }
+
       .text-row::before {
         content: '';
         position: absolute;
@@ -1169,11 +1253,13 @@ const rightUnitMap = {
     background-image: url(./assets/icon#{$i}.png);
   }
 }
+
 @for $i from 1 through 8 {
   .r-icon-#{$i} {
     background-image: url(./assets/rcon#{$i}.png);
   }
 }
+
 @for $i from 1 through 4 {
   .t-icon-#{$i} {
     background-image: url(./assets/tcon#{$i}.png);

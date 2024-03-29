@@ -27,14 +27,14 @@ export const waterDetection = async (params) => {
 // 大屏中央设备设备数量统计  /agriculture/big-screen/getDeviceState
 export const selectStateNum = async () => {
   return await request.get({
-    url: '/agriculture/big-screen/getDeviceState',
+    url: '/agriculture/big-screen/deviceInfoByPark',
   })
 }
 
 // 大屏中央设备设备数量统计
 export const deviceBaseList = async () => {
   return await request.get({
-    url: '/agriculture/big-screen/deviceInfoByPark',
+    url: '/agriculture/big-screen/getDeviceState',
   })
 }
 
@@ -66,7 +66,7 @@ export const monitoringEquipment = async () => {
 // 大屏中央右边监控设备(单条
 export const viewMonitoring = async (params) => {
   return await request.get({
-    url: '/yyang/monitoring-equipment/viewMonitoring',
+    url: '/agriculture/device-info/page',
     params
   })
 }
