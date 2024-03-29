@@ -12,6 +12,7 @@ import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 import { getTenantId } from '@/utils/auth'
 import { getRouteByTenant } from '@/api/system/user'
+import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -48,9 +49,14 @@ export default defineComponent({
   setup() {
     const tenantId = getTenantId()
     const bigscreenRoute = ref('/bigscreen')
+    const { wsCache } = useCache()
+    const roles = wsCache.get(CACHE_KEY.USER).roles
     const MatchRouteMap = async () => {
       const data = await getRouteByTenant({ id: tenantId })
       bigscreenRoute.value = data.bigScreen
+      
+      if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
+      if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
     }
     setTimeout(() => {
       MatchRouteMap()
