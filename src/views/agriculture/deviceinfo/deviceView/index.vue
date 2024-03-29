@@ -68,6 +68,7 @@ const clearCategory = () => {
           <el-input
             v-model="filterText"
             placeholder="输入关键字进行过滤"
+            clearable
           />
         </ContentWrap>
         <ContentWrap style="max-height: 62vh; overflow: auto;">
