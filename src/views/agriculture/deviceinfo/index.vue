@@ -27,12 +27,12 @@
         />
       </el-form-item>
       <el-form-item label="设备类型" prop="deviceType">
-          <el-cascader
-            style="width: 100%"
-            v-model="deviceType"
-            :options="categoryOptions"
-            :props="categoryProps"
-          />
+        <el-cascader
+          style="width: 100%"
+          v-model="deviceType"
+          :options="categoryOptions"
+          :props="categoryProps"
+        />
       </el-form-item>
       <el-form-item label="状态" prop="deviceStatus">
         <el-select
@@ -68,8 +68,14 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
@@ -77,7 +83,8 @@
           v-hasPermi="['agriculture:device-info:create']"
           v-if="!readonly"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -87,7 +94,8 @@
           v-hasPermi="['agriculture:device-info:export']"
           v-if="!readonly"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -96,13 +104,16 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table
+      ref="deviceInfoTableRef"
       v-loading="loading"
       :data="list"
+      :row-key="(row) => row.id"
       :stripe="true"
       :show-overflow-tooltip="true"
+      :style="`${props.inDialog ? 'height: 40vh;' : ''}`"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="multi" type="selection" width="55"/>
+      <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -116,14 +127,15 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
+      <el-table-column label="经度" align="center" prop="longitude"/>
+      <el-table-column label="纬度" align="center" prop="latitude"/>
       <el-table-column label="状态" align="center" prop="deviceStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="图片" align="center" prop="imgId" >
+      <el-table-column label="图片" align="center" prop="imgId">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
@@ -137,8 +149,8 @@
       </el-table-column>
       <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
       <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
-      <el-table-column label="位置" align="center" prop="location" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="位置" align="center" prop="location"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -150,11 +162,23 @@
       <el-table-column
         label="操作"
         align="center"
-        width="150"
+        width="250"
         fixed="right"
         v-if="!readonly"
       >
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+
+			v-if="scope.row.deviceType[0]===25"
+			@click="$router.push({
+              path: '/device/equipment-data-three',
+              query: {
+                equipmentCode: scope.row.id
+              }
+            })"          >查看监测数据
+          </el-button>
           <el-button
             link
             type="primary"
@@ -184,7 +208,7 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceInfoForm ref="formRef" @success="getList" />
+  <DeviceInfoForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -195,12 +219,14 @@ import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
+import router from "@/router";
+
 
 /** 设备信息 列表 */
-defineOptions({ name: 'DeviceInfo' })
+defineOptions({name: 'DeviceInfo'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceInfoVO[]>([]) // 列表的数据
@@ -211,6 +237,7 @@ const queryParams = reactive({
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
+  deviceTypes: undefined,
   longitude: undefined,
   latitude: undefined,
   deviceStatus: undefined,
@@ -220,7 +247,9 @@ const queryParams = reactive({
   createTime: [],
   deptId: undefined,
   userId: undefined,
-  location: undefined
+  location: undefined,
+  deviceMonitorType: undefined,
+  deviceKind: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -236,19 +265,34 @@ const getList = async () => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
     })
-    console.log(list.value)
+    console.log("list.value", list.value)
     total.value = data.total
+    setTimeout(() => {
+      handleSelectedDeviceIds()
+    })
   } finally {
     loading.value = false
+  }
+}
+
+// 选中已经绑定的设备id
+const deviceInfoTableRef = ref()
+const handleSelectedDeviceIds = () => {
+  multipleSelection.value = list.value.filter(item => props.initDeviceInfoIdList.includes(item.id))
+  if (multipleSelection.value.length > 0) {
+    multipleSelection.value.forEach((row) => {
+      deviceInfoTableRef.value!.toggleRowSelection(row, true);
+    })
   }
 }
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
-  if (deviceType.value != null && deviceType.value != undefined){
-   queryParams.deviceType = deviceType.value.join(",")
+  if (deviceType.value != null && deviceType.value != undefined) {
+    queryParams.deviceType = deviceType.value.join(",")
   }
+  console.log(deviceType.value);
   getList()
 }
 
@@ -275,7 +319,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
@@ -305,7 +350,13 @@ const categoryProps = {
 onMounted(async () => {
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree)
-  console.log("categoryOptions.value", categoryOptions.value)
+  if (router.currentRoute.value.query.deviceType) {
+    const type = router.currentRoute.value.query.deviceType;
+    if (type != null && type != undefined && type != "" && type != 'undefined') {
+      queryParams.deviceType = type;
+      deviceType.value = type.toString().split(',').map(Number)
+    }
+  }
   await getList()
 })
 
@@ -319,12 +370,21 @@ const props = defineProps({
   // 多选
   multi: {
     type: Boolean,
-    default: false
+    default: () => false
   },
   // 只读
   readonly: {
     type: Boolean,
-    default: true
+    default: () => false
+  },
+  // 选中的设备id
+  initDeviceInfoIdList: {
+    type: Array,
+    default: () => ([])
+  },
+  inDialog: {
+    type: Boolean,
+    default: () => false
   }
 })
 
@@ -343,13 +403,16 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id
-      }else{
-        queryParams.deviceType = props.currCategory.parentId + "," + props.currCategory.id
+      if (props.currCategory.parkId === undefined ) {
+        queryParams.belongPark = props.currCategory.id
+        queryParams.belongPlot = undefined
+      } else {
+        queryParams.belongPark = undefined
+        queryParams.belongPlot=  props.currCategory.id
       }
-    }else {
-      queryParams.deviceType = undefined
+    } else {
+      queryParams.belongPark = undefined
+      queryParams.belongPlot = undefined
     }
     handleQuery()
   })

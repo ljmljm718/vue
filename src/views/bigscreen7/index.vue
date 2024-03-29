@@ -13,27 +13,44 @@
               <div class="left1-item">
                   <div class='left1-top'>
                     <div style="font-size: 13px;margin-left: 5px;">设备总数</div>
-                    <div style="color:#00e4ec;font-weight: 700;font-size: 20px;">117</div>
+                    <div style="color:#00e4ec;font-weight: 700;font-size: 20px;">{{leftTop.total}}</div>
                   </div>
-                  <div v-for="item,index in left1Top" :key="index" :class="['leftTop','leftTop-'+(index+1).toString()]">
-                    <div  style="font-size: 13px;margin-left: 5px;">{{item.title}}</div>
-                    <div>{{item.val}}
+                  <div :class="['leftTop','leftTop-1']">
+                    <div  style="font-size: 13px;margin-left: 5px;">在线</div>
+                    <div>{{leftTop.online}}</div>
                   </div>
-              </div>
+                  <div :class="['leftTop','leftTop-2']">
+                    <div  style="font-size: 13px;margin-left: 5px;">离线</div>
+                    <div>{{leftTop.offline}}</div>
+                  </div>
+                  <div :class="['leftTop','leftTop-3']">
+                    <div  style="font-size: 13px;margin-left: 5px;">故障</div>
+                    <div>{{leftTop.fault}}</div>
+                  </div>
             </div>
             </div>
             <div class="left2">
-              <div v-for="item,index in left2List" :key="index" :class="['left2Bg','left2Bg-'+(index+1).toString()]">
+              <div v-for="item,index in leftDevice" :key="index" :class="['left2Bg','left2Bg-'+(index+1).toString()]">
                 <div class="left2-top">
                   <div class=left2-top-bg></div>
-                  <div style='flex:1;margin-left: 15px;'>{{item.title}}</div>
-                  <div>{{item.val}}</div>
+                  <div style='flex:1;margin-left: 15px;'>{{item.categoryName|| item.deviceType}}</div>
+                  <div>{{item.total}}</div>
                 </div>
                 <div class="left2-content">
-                  <div class="left2-warper" v-for='itm,inde in item.list' :key=inde>
-                    <div :class="['blockBg','block-'+(inde+1).toString()]"></div>
-                    <div style="flex:1;margin-left:10px;">{{itm.title}}</div>
-                    <div style="margin-right:20px;">{{itm.val}}</div>
+                  <div class="left2-warper" >
+                    <div :class="['blockBg','block-1']"></div>
+                    <div style="flex:1;margin-left:10px;">在线</div>
+                    <div style="margin-right:20px;">{{item.online}}</div>
+                  </div>
+                  <div class="left2-warper" >
+                    <div :class="['blockBg','block-2']"></div>
+                    <div style="flex:1;margin-left:10px;">离线</div>
+                    <div style="margin-right:20px;">{{item.offline}}</div>
+                  </div>
+                  <div class="left2-warper" >
+                    <div :class="['blockBg','block-3']"></div>
+                    <div style="flex:1;margin-left:10px;">故障</div>
+                    <div style="margin-right:20px;">{{item.fault}}</div>
                   </div>
                 </div>
               </div>
@@ -41,14 +58,24 @@
             <div class="left3">
              <div id="chart1"></div>
             </div>
-           
           </div>
           <div class="content-main-item middle-main-wrapper">
-            <div class="main-top">
+            <div class="top-card-wrapper">
+              <div class="top-card-item" @click="$router.push('/bigscreen5')">
+                <div class="value-card">产业一张图</div>
+              </div>
+              <div class="top-card-item" @click="$router.push('/bigscreen8')">
+                <div class="value-card">产业一张图</div>
+              </div>
+              <div class="top-card-item card-selected">
+                <div class="value-card">设备监控</div>
+              </div>
+            </div>
+            <!-- <div class="main-top">
               <div :class="mainIndex==1?'active':'actived'" @click="$router.push('/bigscreen5')">农业一张图</div>
               <div :class="mainIndex==2?'active':'actived'" @click="mainIndex=2">产业一张图</div>
               <div :class="mainIndex==3?'active':'actived'" @click="mainIndex=3">设备监控</div>
-            </div>
+            </div> -->
             <div class="middle-main-item">
                 <div class="sxt" style="left: 30%;top: 50%;">
                   <div class="message">
@@ -180,11 +207,17 @@
                   <div class='foot-img'></div>
                   <div style='margin-left:-20px;'>位置:<span>{{ item.location }}</span></div>
                 </div>
-                <div class='foot-cont2' style='margin-top:-20px;'>
+                <div class='foot-cont2' style='margin-top:-20px;' v-show="item.deviceStatus=='online'">
                   <div class='foot-img'></div>
-                  <div v-show="item.deviceStatus=='online'" style='margin-left:-20px;'>状态:<span class='online'>在线</span></div>
-                  <div v-show="item.deviceStatus=='offline'" style='margin-left:-20px;'>状态:<span class='offline'>离线</span></div>
-                  <div v-show="item.deviceStatus=='fault'" style='margin-left:-20px;'>状态:<span class='fault'>故障</span></div>
+                  <div  style='margin-left:-20px;'>状态:<span class='online'>在线</span></div>
+                </div>
+                <div class='foot-cont2' style='margin-top:-20px;' v-show="item.deviceStatus=='offline'">
+                  <div class='foot-img'></div>
+                  <div style='margin-left:-20px;'>状态:<span class='offline'>离线</span></div>
+                </div>
+                <div class='foot-cont2' style='margin-top:-20px;' v-show="item.deviceStatus=='fault'">
+                  <div class='foot-img'></div>
+                  <div style='margin-left:-20px;'>状态:<span class='fault'>故障</span></div>
                 </div>
               </div>
             </div>
@@ -206,11 +239,28 @@ import {
   warningRecordInfo,
   ParkBaseInfo,
   environmentView,
-  monitorDeviceByPark
+  monitorDeviceByPark,
+  deviceHistoryStatus,
+  deviceInfoCard
 } from '@/api/bigscreen7/index'
 import { resetSize } from '@/components/Verifition/src/utils/util';
 import {ref,onMounted} from 'vue'
-const initChart1= ()=> {
+//设备信息
+let leftTop=ref<any>({})
+let leftDevice=ref<any>([])
+const getDeviceInfoCard=async ()=>{
+ 
+}
+getDeviceInfoCard()
+const initChart1=async ()=> {
+  let res= await deviceInfoCard()
+    console.log(res,'设备信息');
+    leftTop.value=res.deviceTotal
+    leftDevice.value=res.category
+     let online= leftTop.value.online
+     let offline= leftTop.value.offline
+     let fault= leftTop.value.fault
+     
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -230,9 +280,9 @@ const initChart1= ()=> {
               radius: ["45%", "70%"],
               center: "center",
               data: [
-                {value: "104",name:'在线'},
-                {value: "5",name:'故障'},
-                {value: "8",name:'离线'},
+                {value:online,name:'在线'},
+                {value: fault,name:'故障'},
+                {value: offline,name:'离线'},
               ],
               label: {
                 // formatter: "{c|{c}},{d|{d}%}",
@@ -253,12 +303,17 @@ const initChart1= ()=> {
         })
       );
 }
-const initChart2=  ()=>{
+//设备运行统计
+const initChart2= async ()=>{
+  let res= await deviceHistoryStatus()
+  let xAxisData=res.date
+  let yAxisData=res.offline
+  let yAxisData2=res.online
       initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data: [ '10月','11月','12月','1月','2月',"3月"],
+            data: xAxisData,
             axisLine: {
               show: true,
               lineStyle: {
@@ -297,15 +352,15 @@ const initChart2=  ()=>{
           {
             type:'value',
             name:'%',
-            min:0,
-            max:14
+            min:Math.min(...yAxisData),
+            max:Math.max(...yAxisData),
           }
         ],
         color:['#0bbdc4','red'],
           series: [
             {
               name:'在线率',
-              data: [98,95,90,88,85,80],
+              data: yAxisData2,
               type: "bar",
               barWidth:'20',
               smooth: false,
@@ -317,7 +372,7 @@ const initChart2=  ()=>{
             },
             {
               name:'离线率',
-              data: [0,2,5,4,10,13],
+              data: yAxisData,
               type: "line",
               yAxisIndex:1,
               barWidth:'20',
@@ -349,7 +404,7 @@ let select2Id=ref<any>('')
 const getParkBaseInfo=()=>{
   ParkBaseInfo({parentId:'0'}).then(res=>{
     console.log(res,'获取基地');
-    selecte1.value=res
+    selecte1.value=res.reverse()
     selecte1Id.value=res[0].id
     getParkBase({parentId:res[0].id})
   })
@@ -358,7 +413,7 @@ getParkBaseInfo()
 const getParkBaseInfo2=()=>{
   ParkBaseInfo({parentId:'0'}).then(res=>{
     console.log(res,'获取基地2');
-    selecte3.value=res
+    selecte3.value=res.reverse()
     selecte3Id.value=res[0].id
     getParkBase2({parentId:res[0].id})
   })
@@ -370,6 +425,8 @@ const getParkBase=(val)=>{
     console.log(res,'棚区');
     selecte2.value=res
     select2Id.value=res[0].id
+    getEnvironmentView()
+    getEnvironmentData()
   })
 }
 //获取棚区
@@ -386,6 +443,7 @@ const getParkBase2=(val)=>{
 const soilCli=(val:any,index:any)=>{
   soilId.value=val
   soilIndex.value=index
+
   getEnvironmentData()
   getEnvironmentView()
 }
@@ -412,7 +470,10 @@ let getEnvironmentData=()=>{
   })
 }
 getEnvironmentData()
+//环境数据折线图
 let getEnvironmentView=()=>{
+  console.log({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value},'jiegou');
+  
   environmentView({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value}).then(res=>{
     console.log(res,'环境数据');
     footChart.value=res
@@ -427,7 +488,7 @@ let getEnvironmentView=()=>{
     },200)
   })
 }
-getEnvironmentView()
+
 
 const initChart3=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -967,86 +1028,6 @@ onMounted(()=>{
   initChart2()
 })
 let mainIndex=ref(3)
-let left1Top=ref([
-  {
-    title:'在线',
-    val:'104'
-  },
-  {
-    title:'离线',
-    val:'8'
-  },
-  {
-    title:'故障',
-    val:'5'
-  },
-])
-let left2List=ref([
-  {
-    title:'气象监测',
-    val:1,
-    list:[
-      {
-        title:'在线',
-        val:'1'
-      }
-    ]
-  },
-  {
-    title:'监控设备',
-    val:92,
-    list:[
-      {
-        title:'在线',
-        val:'81'
-      },
-      {
-        title:'离线',
-        val:'4'
-      },
-      {
-        title:'故障',
-        val:'7'
-      },
-    ]
-  },
-  {
-    title:'土壤墒情',
-    val:24,
-    list:[
-      {
-        title:'在线',
-        val:'21'
-      },
-      {
-        title:'离线',
-        val:'2'
-      },
-      {
-        title:'故障',
-        val:'1'
-      },
-    ]
-  },
-  {
-    title:'虫情监测',
-    val:14,
-    list:[
-      {
-        title:'在线',
-        val:'11'
-      },
-      {
-        title:'离线',
-        val:'3'
-      },
-      {
-        title:'故障',
-        val:'1'
-      },
-    ]
-  },
-])
 let soilIndex=ref(1)
 //预警信息
 let warnInfo=ref([])
@@ -1075,6 +1056,7 @@ const selectCli4=(val:any)=>{
   selecte4Id.value=val.target.value
   getMonitorDeviceByPark({belongPark:selecte3Id.value,belongPlot:selecte4Id.value})
 }
+
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -1152,15 +1134,15 @@ gap: 10px;
   .left2{
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-columns: 49% calc(51% - 10px);
-    grid-template-rows: 49% calc(51% - 10px);
-    gap: 10px;
+    overflow-y: scroll;
     .left2Bg{
-      width: 100%;
-      height: 100%;
+      display: inline-block;
+      width: 47%;
+      height: 50%;
       overflow: hidden;
       background-size: 100% 100%;
+      margin-bottom: 8px;
+      margin-right:8px;
       .left2-top{
         width: 100%;
         font-weight: 700;
@@ -1200,7 +1182,11 @@ gap: 10px;
         }
       }
     }
+    
   }
+  .left2::-webkit-scrollbar{
+      display: none;
+    }
   .left3{
     width: 100%;
     height:100%;
@@ -1215,6 +1201,35 @@ gap: 10px;
     position: relative;
     width: 100%;
     height: 100%;
+    .top-card-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      padding: 0.8rem 0;
+      .top-card-item {
+        margin: 0 1.3rem;
+        width: 10rem;
+        aspect-ratio: 3.7;
+        background-image: url(./assets/actived2.png);
+        background-size: 100% 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .value-card {
+          font-size: 1.1rem;
+          font-family: 'TitleFont';
+        }
+        .label-card {
+          font-size: 0.9rem;
+        }
+      }
+      .card-selected {
+        background-image: url(./assets/active2.png) !important;
+      }
+    }
     .main-top{
       z-index: 9999;
       position: absolute;
@@ -1521,7 +1536,6 @@ gap: 10px;
       display:flex;
       .select-left{
         width:100px;
-        padding:0 5px;
         height:30px;
         color:#fff;
         margin-right:20px;
@@ -1594,7 +1608,7 @@ gap: 10px;
   background-image: url(./assets/left1Top#{$i}.png);
 }
 }
-@for $i from 1 through 4 {
+@for $i from 1 through 8 {
 .left2Bg-#{$i} {
   background-image: url(./assets/left2Bg#{$i}.png);
 }

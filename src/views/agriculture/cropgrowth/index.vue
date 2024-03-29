@@ -8,15 +8,6 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="编号" prop="cropCode">
-        <el-input
-          v-model="queryParams.cropCode"
-          placeholder="请输入编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="名称" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
@@ -122,7 +113,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="编号" align="center" prop="cropCode" />
+<!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
       <el-table-column label="名称" align="center" prop="cropName" />
       <el-table-column label="品种" align="center" prop="cropType" />
       <el-table-column label="生长期" align="center" prop="growth" />

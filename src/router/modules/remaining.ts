@@ -59,7 +59,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/Home/Index.vue'),
+        component: () => import('@/views/Home/base.vue'),
         name: 'Index',
         meta: {
           title: t('router.home'),
@@ -286,6 +286,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path:'/bigscreen7',
     name:'bigscreen7',
     component:()=>import('@/views/bigscreen7/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
+    path:'/bigscreen8',
+    name:'bigscreen8',
+    component:()=>import('@/views/bigscreen8/index.vue'),
     meta:{
       hidden: true
     }

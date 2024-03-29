@@ -52,7 +52,9 @@ export default defineComponent({
       const data = await getRouteByTenant({ id: tenantId })
       bigscreenRoute.value = data.bigScreen
     }
-    MatchRouteMap()
+    setTimeout(() => {
+      MatchRouteMap()
+    },2000)
     return () => (
       <div
         id={`${variables.namespace}-tool-header`}

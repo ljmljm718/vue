@@ -31,6 +31,14 @@ setDefaultTheme()
   </ConfigGlobal>
 </template>
 <style lang="scss">
+@font-face {
+  font-family: 'ArtFont';
+  src: url(./assets/biaoti.ttf);
+}
+
+.art-font {
+  font-family: 'ArtFont';
+}
 $prefix-cls: #{$namespace}-app;
 
 .size {

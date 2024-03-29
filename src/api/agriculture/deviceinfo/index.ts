@@ -17,6 +17,8 @@ export interface DeviceInfoVO {
   userId: number // 用户编号
   url: string // 监控视频
   location: string // 位置
+  deviceKind: string // 设备类型
+  deviceMonitorType: any //设备检测类型
 }
 
 // 设备信息 API

@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="编号" prop="cropCode">
-        <el-input v-model="formData.cropCode" placeholder="请输入编号" />
-      </el-form-item>
+<!--      <el-form-item label="编号" prop="cropCode">-->
+<!--        <el-input v-model="formData.cropCode" placeholder="不输入默认生成" />-->
+<!--      </el-form-item>-->
       <el-form-item label="名称" prop="cropName">
         <el-input v-model="formData.cropName" placeholder="请输入名称" />
       </el-form-item>
@@ -28,11 +28,31 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属地块" />
+      <el-form-item label="所属基地" prop="belongPark">
+        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+          <template #append>
+            <el-button @click="openParkInfoPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="所属园区" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属园区" />
+      <el-form-item label="基地名称" prop="parkName">
+        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+      </el-form-item>
+      <el-form-item label="所属地块" prop="belongPlot">
+        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+          <template #append>
+            <el-button @click="openParkDetailPopup(formData.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="地块名称" prop="parkDetailName">
+        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly/>
       </el-form-item>
       <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
@@ -56,9 +76,18 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+
+
 </template>
 <script setup lang="ts">
 import { CropGrowthApi, CropGrowthVO } from '@/api/agriculture/cropgrowth'
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
 
 /** 作物生长期管理 表单 */
 defineOptions({ name: 'CropGrowthForm' })
@@ -83,11 +112,52 @@ const formData = ref({
   belongPlot: undefined,
   startTime: undefined,
   endTime: undefined,
+  parkName: undefined,
+  parkDetailName: undefined,
 })
 const formRules = reactive({
   cropName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
+
+//基地的选择
+const parkInfoPopupRef = ref()
+const openType = ref('')
+const openParkInfoPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === ""){
+    message.error("请选择基地")
+  }else parkInfoPopupRef.value.open(id)
+}
+const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0'){
+    formData.value.belongPark = String(order[0].code)
+    formData.value.parkName = String(order[0].name)
+  }
+  else formData.value.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const parkDetailPopupRef = ref()
+const openType1 = ref('')
+const openParkDetailPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value){
+    message.error("请选择地块")
+  }else parkDetailPopupRef.value.open(id)
+}
+const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+
+    console.log("--->>查看选择的地块信息：",order[0])
+    formData.value.belongPark = String(order[0].parkId)
+    formData.value.belongPlot = String(order[0].id)
+    formData.value.parkDetailName = String(order[0].name)
+
+}
+
+
+
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -146,6 +216,8 @@ const resetForm = () => {
     belongPlot: undefined,
     startTime: undefined,
     endTime: undefined,
+    parkName: undefined,
+    parkDetailName: undefined,
   }
   formRef.value?.resetFields()
 }

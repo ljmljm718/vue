@@ -20,14 +20,19 @@
       <el-form-item label="设备状态" prop="deviceStatus">
         <el-select
           v-model="queryParams.deviceStatus"
-          placeholder="请选择设备状态"
+          placeholder="请选择状态"
           clearable
           class="!w-240px"
         >
-          <el-option label="请选择字典生成" value="" />
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+<!--      <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -37,7 +42,7 @@
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -66,7 +71,8 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="设备id" align="center" prop="deviceId" />
+      <el-table-column label="设备Id" align="center" prop="deviceId" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="设备状态" align="center" prop="deviceStatus" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
@@ -118,7 +124,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory'
 import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue'
-import {DICT_TYPE} from "@/utils/dict";
+import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
 
 /** 设备历史状态 列表 */
 defineOptions({ name: 'DeviceHistoryStatus' })

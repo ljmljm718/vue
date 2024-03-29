@@ -5,6 +5,7 @@ export interface DeviceHistoryStatusVO {
   id: string // 主键
   deviceId: string // 设备id
   deviceStatus: string // 设备状态
+  deviceName: string
 }
 
 // 设备历史状态 API
