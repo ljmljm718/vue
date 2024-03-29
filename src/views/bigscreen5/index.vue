@@ -45,6 +45,7 @@
               <div class="left3-item">
                 <div v-for="item,index in leftTop3List" :key="index" :class="['left3-warper','left3Top-'+(index+1).toString()]">
                     <div style="color: #c1c1c1;margin-left: 50px;">{{ item.title }}</div>
+                 
                     <div style="font-weight:600;margin-left: 50px;font-size: 23px; font-family:TitleFont ;">{{ item.category|| item.deviceCount }}</div>
                   </div>
               </div>
@@ -59,7 +60,7 @@
           <div class="content-main-item middle-main-wrapper">
             <div class="top-card-wrapper">
               <div class="top-card-item card-selected">
-                <div class="value-card">产业一张图</div>
+                <div class="value-card">农业一张图</div>
               </div>
               <div class="top-card-item" @click="$router.push('/bigscreen8')">
                 <div class="value-card">产业一张图</div>
@@ -96,14 +97,18 @@
                 <div class="soil"  @click="soilCli(index)" v-for="item,index in soilList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
                   <div class="message"  :style="{visibility:soilIndex==index?'visible':'hidden',top:-soilHeight+'px',left:'-65px'}" ref="soilList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
-                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class="message-content">
+                      <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    </div>
                     <div class='messageBar'></div>
                   </div>
                 </div>
                 <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/20+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
                   <div class="message" :style="{visibility:largeIndex==index?'visible':'hidden',top:-largeHeight+'px',left:'-65px'}" ref="largeList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
-                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class="message-content">
+                      <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    </div>
                     <div class='messageBar'></div>
                   </div>
                   
@@ -694,6 +699,15 @@ gap: 10px;
             background-size: 100% 100%;
             background-image: url(./assets/messageTop.png);
           }
+          .message-content{
+            width:100%;
+            height: 150px;
+            overflow-y: scroll;
+            
+          }
+          .message-content::-webkit-scrollbar {
+            display: none;
+          }
           .messageBar{
             width: 5px;
             height: 60px;
@@ -734,6 +748,15 @@ gap: 10px;
             height: 40px;
             background-size: 100% 100%;
             background-image: url(./assets/messageTop.png);
+          }
+          .message-content{
+            width:100%;
+            height: 150px;
+            overflow-y: scroll;
+            
+          }
+          .message-content::-webkit-scrollbar {
+            display: none;
           }
           .messageBar{
             width: 5px;

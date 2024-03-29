@@ -62,7 +62,7 @@
           <div class="content-main-item middle-main-wrapper">
             <div class="top-card-wrapper">
               <div class="top-card-item" @click="$router.push('/bigscreen5')">
-                <div class="value-card">产业一张图</div>
+                <div class="value-card">农业一张图</div>
               </div>
               <div class="top-card-item" @click="$router.push('/bigscreen8')">
                 <div class="value-card">产业一张图</div>
@@ -99,14 +99,18 @@
                 <div class="soil"  @click="soilCli2(index)" v-for="item,index in soilList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
                   <div class="message"  :style="{visibility:soilIndex2==index?'visible':'hidden',top:-soilHeight+'px',left:'-65px'}" ref="soilList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
-                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class="message-content">
+                      <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    </div>
                     <div class='messageBar'></div>
                   </div>
                 </div>
-                <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/20+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
+                <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/20+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/10+'%':item.longitude+'%'}">
                   <div class="message" :style="{visibility:largeIndex==index?'visible':'hidden',top:-largeHeight+'px',left:'-65px'}" ref="largeList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
-                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class="message-content">
+                      <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    </div>
                     <div class='messageBar'></div>
                   </div>
                   
@@ -156,7 +160,7 @@
               <div :class='soilIndex==3?"active":"actived"' @click='soilCli("14,18",3)'>棚内环境</div>
               <div :class='soilIndex==4?"active":"actived"' @click='soilCli("17",4)'>虫情监测</div>
             </div>
-            <div class='footer-chart'>
+            <div class='footer-chart' v-if="soilIndex==1 || soilIndex==3">
               <div class='footer-item'>
                 <div :class='["foot-top","footTop-1"]'>
                     <div style='margin-left:30px;'>空气温度</div>
@@ -205,6 +209,15 @@
                     <div style='font-size:25px;margin-left:-100px;'>{{footTop.co2Density}}<span style='font-size:12px;'>℃</span></div>
                 </div>
                 <div id='chart9'></div>
+              </div>
+            </div>
+            <div class='footer-chart' v-else>
+              <div class='footer-item' v-for="item,index in soilList3" :key='index'>
+                <div :class='["foot-top","footTop2-"+(index+1+soilImg).toString()]'>
+                    <div style='margin-left:30px;'>{{item.typeName}}</div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{item.typeValue}}<span style='font-size:12px;'>{{item.typeUnit}}</span></div>
+                </div>
+                <div :id="'chart'+(9+(index+1))"></div>
               </div>
             </div>
           </div>
@@ -420,9 +433,9 @@ let selecte3 =ref<any>([])
 let selecte4 =ref<any>([])
 let selecte1Id =ref<any>('')
 let select2Id=ref<any>('')
-  let selecte3Id=ref(0)
-  let selecte4Id=ref(0)
-  let soilId=ref<any>('14,15')
+let selecte3Id=ref(0)
+let selecte4Id=ref(0)
+let soilId=ref<any>('14,15')
 //获取基地
 const getParkBaseInfo=()=>{
   ParkBaseInfo({parentId:'0'}).then(res=>{
@@ -463,7 +476,9 @@ const getParkBase2=(val)=>{
   })
 }
 //气象点击
+let soilImg=ref(0)  
 const soilCli=(val:any,index:any)=>{
+
   soilId.value=val
   soilIndex.value=index
   //获取环境数据顶部
@@ -472,14 +487,24 @@ const soilCli=(val:any,index:any)=>{
   getEnvironmentView()
   //获取虫情和土壤
   getParkAndPlotAndType()
-  console.log({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value},'jiegou2');
+  if(index==4){
+    soilImg.value=5
+  }
 }
 //获取虫情和土壤
+let soilList3=ref([])
 const getParkAndPlotAndType=()=>{
-  
   ParkAndPlotAndType({belongPark:selecte1Id.value,belongPlot:select2Id.value,deviceKind:soilId.value}).then(res=>{
     console.log(res,'虫情');
-    
+    soilList3.value=res
+    setTimeout(()=>{
+        initChart10(res[0].list)
+        initChart11(res[1].list)
+        initChart12(res[2].list)
+        initChart13(res[3].list)
+        initChart14(res[4].list)
+
+    },200)
   })
 }
 
@@ -1058,6 +1083,367 @@ const initChart9=  ()=>{
       );
     
 }
+const initChart10=  (arr)=>{
+ let time=[]
+ let data=[]
+  arr.forEach(item=>{
+    data.push(item.gatherValue)
+    time.push(item.gatherHour)
+  })
+      initChartStatic(
+        "chart10",
+        generateBaseOptions({
+          xAxis: {
+            data: time,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: data,
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart11=  (arr)=>{
+  let time=[]
+ let data=[]
+  arr.forEach(item=>{
+    data.push(item.gatherValue)
+    time.push(item.gatherHour)
+  })
+      initChartStatic(
+        "chart11",
+        generateBaseOptions({
+          xAxis: {
+            data: time,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: data,
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart12=  (arr)=>{
+  let time=[]
+ let data=[]
+  arr.forEach(item=>{
+    data.push(item.gatherValue)
+    time.push(item.gatherHour)
+  })
+      initChartStatic(
+        "chart12",
+        generateBaseOptions({
+          xAxis: {
+            data: time,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: data,
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart13=  (arr)=>{
+  let time=[]
+ let data=[]
+  arr.forEach(item=>{
+    data.push(item.gatherValue)
+    time.push(item.gatherHour)
+  })
+      initChartStatic(
+        "chart13",
+        generateBaseOptions({
+          xAxis: {
+            data: time,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: data,
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+const initChart14=  (arr)=>{
+  let time=[]
+ let data=[]
+  arr.forEach(item=>{
+    data.push(item.gatherValue)
+    time.push(item.gatherHour)
+  })
+      initChartStatic(
+        "chart14",
+        generateBaseOptions({
+          xAxis: {
+            data: time,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            left:'center'            
+         },
+          yAxis: [{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          }
+        ],
+        color:['#0bbdc4','red'],
+          series: [
+            {
+              name:'空气温度',
+              data: data,
+              type: "line",
+              barWidth:'20', 
+              smooth: false,
+              symbol:'none',
+              areaStyle: { // 区域面积
+                color:'#48c0ce'
+              },
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+
 onMounted(()=>{
   initChart1()
   initChart2()
@@ -1449,6 +1835,15 @@ gap: 10px;
             background-size: 100% 100%;
             background-image: url(./assets/messageTop.png);
           }
+          .message-content{
+            width:100%;
+            height: 150px;
+            overflow-y: scroll;
+            
+          }
+          .message-content::-webkit-scrollbar {
+            display: none;
+          }
           .messageBar{
             width: 5px;
             height: 60px;
@@ -1490,6 +1885,15 @@ gap: 10px;
             height: 40px;
             background-size: 100% 100%;
             background-image: url(./assets/messageTop.png);
+          }
+          .message-content{
+            width:100%;
+            height: 150px;
+            overflow-y: scroll;
+            
+          }
+          .message-content::-webkit-scrollbar {
+            display: none;
           }
           .messageBar{
             width: 5px;
@@ -1665,7 +2069,6 @@ gap: 10px;
           color:#fff;
           justify-content:space-around;
           background-size:100% 100%;
-          background-image:url(./assets/footerTop1.png);
         }
         #chart3{
           width:100%;
@@ -1692,6 +2095,26 @@ gap: 10px;
           height:calc(100% - 50px);
         }
         #chart9{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart10{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart11{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart12{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart13{
+          width:100%;
+          height:calc(100% - 50px);
+        }
+        #chart14{
           width:100%;
           height:calc(100% - 50px);
         }
@@ -1796,6 +2219,11 @@ gap: 10px;
 @for $i from 1 through 7 {
 .footTop-#{$i} {
   background-image: url(./assets/footerTop#{$i}.png);
+}
+}
+@for $i from 1 through 9 {
+.footTop2-#{$i} {
+  background-image: url(./assets/foot2Top#{$i}.png);
 }
 }
 
