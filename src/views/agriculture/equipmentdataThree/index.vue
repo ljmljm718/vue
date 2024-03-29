@@ -259,7 +259,7 @@ const initChart= async ()=>{
               itemStyle: {   //配置样式，设置每个柱子的颜色
                normal:{  
                   color: function (params){
-                  var colorList = ['#61a5e8','#7ecf51','#eecb5f','#9570e5'];
+                  var colorList = ['#fe0100','#fe9a00','#ffff02','#02fe03','#01ffff','#0201fe','#ff00fe'];
                    return colorList[params.dataIndex];
                }
          },}

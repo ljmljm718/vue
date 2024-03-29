@@ -77,19 +77,40 @@
               <div :class="mainIndex==3?'active':'actived'" @click="mainIndex=3">设备监控</div>
             </div> -->
             <div class="middle-main-item">
-                <div class="sxt" style="left: 30%;top: 50%;">
-                  <div class="message">
-                    <div class="message-top">基地1 监控</div>
-                    <div style="margin-left:20px;margin-top:10px;">监控摄像头-枪机</div>
-                    <div  style="margin-bottom: 20px; margin-left:20px;margin-top:10px;display: flex;align-items: center;color: #43ffd0;">
+              <div class="sxt" v-for="item,index in jkList" :key='index' @click="sxtCli(index)" :style="{left:item.latitude.length>3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/20+'%':item.longitude+'%'}">
+                  <div class="message" :style="{visibility:sxtIndex==index?'visible':'hidden',top:-sxtHeight+'px',left:'-70px'}" ref="sxtList">
+                    <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
+                    <div style="margin-left:20px;margin-top:10px;">{{item.deviceName}}</div>
+                    <div v-show="item.deviceStatus=='online'" style="margin-bottom: 20px; margin-left:20px;margin-top:10px;display: flex;align-items: center;color: #43ffd0;">
                       <div class="pie"></div>
                       在线
                     </div>
-                    <div class="Jkbtn">查看监控</div>
+                    <div v-show="item.deviceStatus=='offline'" style="margin-bottom: 20px; margin-left:20px;margin-top:10px;display: flex;align-items: center;color: #c1c1c1;">
+                      <div class="pie"></div>
+                      离线
+                    </div>
+                    <div v-show="item.deviceStatus=='fault'" style="margin-bottom: 20px; margin-left:20px;margin-top:10px;display: flex;align-items: center;color: red;">
+                      <div class="pie"></div>
+                      故障
+                    </div>
+                    <div class="Jkbtn" style='margin-top:-10px;'>查看监控</div>
                   </div>
                 </div>
-                <div class="soil" style="left: 40%;top: 60%;"></div>
-                <div class="shed" style="left: 50%;top: 40%;"></div>
+                <div class="soil"  @click="soilCli2(index)" v-for="item,index in soilList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
+                  <div class="message"  :style="{visibility:soilIndex2==index?'visible':'hidden',top:-soilHeight+'px',left:'-65px'}" ref="soilList2">
+                    <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
+                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class='messageBar'></div>
+                  </div>
+                </div>
+                <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/20+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
+                  <div class="message" :style="{visibility:largeIndex==index?'visible':'hidden',top:-largeHeight+'px',left:'-65px'}" ref="largeList2">
+                    <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
+                    <div v-for="itm,inde in item.result" :key='inde' style="margin-left:20px;margin-bottom:15px;">{{itm.dataType}}：{{itm.avgData+itm.dataUnit}}</div>
+                    <div class='messageBar'></div>
+                  </div>
+                  
+                </div>
               <div class="footer">
                 <div style="display: flex;align-items: center;"><div :class="['sxt-icon','sxt-1']"></div><div>监控设备</div> </div>
                 <div style="display: flex;align-items: center;margin-left: 20px;margin-right: 20px;"><div :class="['sxt-icon','sxt-2']"></div><div>土壤墒情监控</div> </div>
@@ -131,9 +152,9 @@
             </div>
             <div class='left-soil'>
               <div :class='soilIndex==1?"active":"actived"' @click='soilCli("14,15",1)'>气象监测</div>
-              <div :class='soilIndex==2?"active":"actived"' @click='soilCli("14,16",2)'>土壤墒情</div>
+              <div :class='soilIndex==2?"active":"actived"' @click='soilCli("16",2)'>土壤墒情</div>
               <div :class='soilIndex==3?"active":"actived"' @click='soilCli("14,18",3)'>棚内环境</div>
-              <div :class='soilIndex==4?"active":"actived"' @click='soilCli("14,17",4)'>虫情监测</div>
+              <div :class='soilIndex==4?"active":"actived"' @click='soilCli("17",4)'>虫情监测</div>
             </div>
             <div class='footer-chart'>
               <div class='footer-item'>
@@ -241,7 +262,9 @@ import {
   environmentView,
   monitorDeviceByPark,
   deviceHistoryStatus,
-  deviceInfoCard
+  deviceInfoCard,
+  bigScreenDevicePoint,
+  ParkAndPlotAndType
 } from '@/api/bigscreen7/index'
 import { resetSize } from '@/components/Verifition/src/utils/util';
 import {ref,onMounted} from 'vue'
@@ -443,9 +466,21 @@ const getParkBase2=(val)=>{
 const soilCli=(val:any,index:any)=>{
   soilId.value=val
   soilIndex.value=index
-
+  //获取环境数据顶部
   getEnvironmentData()
+  //获取折线图
   getEnvironmentView()
+  //获取虫情和土壤
+  getParkAndPlotAndType()
+  console.log({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value},'jiegou2');
+}
+//获取虫情和土壤
+const getParkAndPlotAndType=()=>{
+  
+  ParkAndPlotAndType({belongPark:selecte1Id.value,belongPlot:select2Id.value,deviceKind:soilId.value}).then(res=>{
+    console.log(res,'虫情');
+    
+  })
 }
 
 //筛选基地
@@ -1056,7 +1091,73 @@ const selectCli4=(val:any)=>{
   selecte4Id.value=val.target.value
   getMonitorDeviceByPark({belongPark:selecte3Id.value,belongPlot:selecte4Id.value})
 }
+//获取地图数据
+let jkList=ref([])
+let soilList=ref([])
+let largeList=ref([])
+const getBigScreenDevicePoint=()=>{
+  bigScreenDevicePoint().then(res=>{
+    console.log(res,'地图数据')
+    let i=7
+    let i2=5
+    let a= res.monitorDevice.splice(0,4)
+    let b= []
+    let c= []
+    b.push(res.SensorDevice[0])
+    c.push(res.SensorDevice[1])
+    a.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return  a.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    console.log(a,'地图监控数据')
+    b.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    c.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    console.log(b,'地图传感器数据b')
+    console.log(c,'地图传感器数据c')
+    jkList.value=a
+    soilList.value=b
+    largeList.value=c
 
+  
+  })
+}
+getBigScreenDevicePoint()
+//监控点击
+let sxtIndex=ref(-1)
+let sxtList=ref<any>(null)
+let sxtHeight=ref()
+const sxtCli=(val)=>{
+  sxtHeight.value=sxtList.value[val].offsetHeight
+  if(sxtIndex.value==val) sxtIndex.value=-1
+  else sxtIndex.value=val
+}
+//土壤点击
+let soilIndex2=ref(-1)
+let soilList2=ref<any>(null)
+let soilHeight=ref()
+const soilCli2=(val)=>{
+  soilHeight.value=soilList2.value[val].offsetHeight+20
+  if(soilIndex2.value==val) soilIndex2.value=-1
+  else soilIndex2.value=val
+}
+//土壤点击
+let largeIndex=ref(-1)
+let largeList2=ref<any>(null)
+let largeHeight=ref()
+const largeCli=(val)=>{
+  largeHeight.value=largeList2.value[val].offsetHeight+20
+  if(largeIndex.value==val) largeIndex.value=-1
+  else largeIndex.value=val
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -1268,7 +1369,7 @@ gap: 10px;
       background-image: url(./assets/mainBg.png); 
       position: relative;
       .sxt{
-        z-index: 99;
+        z-index: 999;
         position: absolute;
         width: 4.5rem;
         height: 4.5rem;
@@ -1278,17 +1379,18 @@ gap: 10px;
         .message{
           position: absolute;
           top: -250px;
+          z-index: 9999;
           left: -80px;
-          padding: 15px 15px !important;
+          padding: 0 15px !important;
           width: 200px;
-          height: 250px;
+          height: 200px;
           color: #c1c1c1;
           background-size: 100% 100%;
           background-image: url(./assets/message.png);
           .message-top{
             width: 100%;
-            z-index: 9999;
             margin-left: 20px;
+            margin-bottom: 15px;
             font-weight: 600;
             line-height: 30px;
             color: #fff;
@@ -1317,20 +1419,88 @@ gap: 10px;
         }
       }
       .soil{
-        z-index: 99;
+        z-index: 999;
         position: absolute;
         width: 4.5rem;
         height: 4.5rem;
         background-size: 100% 100%;
         background-image: url(./assets/sxt2.png);
+        .message{
+          position: absolute;
+          top: -250px;
+          z-index: 9999;
+          left: -80px;
+          padding: 20px 15px !important;
+          width: 200px;
+          color: #c1c1c1;
+          background-size: 100% 100%;
+          background-image: url(./assets/message.png);
+          .message-top{
+            width: 100%;
+            margin-bottom: 15px;
+            margin-left: 20px;
+            font-weight: 600;
+            line-height: 30px;
+            color: #fff;
+            padding: 5px;
+            box-sizing: border-box;
+            margin-top: 20px;
+            height: 40px;
+            background-size: 100% 100%;
+            background-image: url(./assets/messageTop.png);
+          }
+          .messageBar{
+            width: 5px;
+            height: 60px;
+            background-size: 100% 100%;
+            background-image: url(./assets/messageBar.png);
+            position: absolute;
+            bottom: -40px;
+            left: 100px;
+          }
+        }
       }
       .shed{
-        z-index: 99;
+        z-index: 999;
         position: absolute;
         width: 4.5rem;
         height: 4.5rem;
         background-size: 100% 100%;
         background-image: url(./assets/sxt3.png);
+        .message{
+          position: absolute;
+          z-index: 9999;
+          top: -250px;
+          left: -80px;
+          padding: 15px 15px !important;
+          width: 200px;
+          color: #c1c1c1;
+          background-size: 100% 100%;
+          background-image: url(./assets/message.png);
+          .message-top{
+            width: 100%;
+            margin-left: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 30px;
+            color: #fff;
+            padding: 5px;
+            box-sizing: border-box;
+            margin-top: 20px;
+            height: 40px;
+            background-size: 100% 100%;
+            background-image: url(./assets/messageTop.png);
+          }
+          .messageBar{
+            width: 5px;
+            height: 60px;
+            background-size: 100% 100%;
+            background-image: url(./assets/messageBar.png);
+            position: absolute;
+            bottom: -40px;
+            left: 100px;
+          }
+        }
       }
       .footer{
         display: flex;
