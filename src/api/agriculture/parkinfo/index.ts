@@ -55,5 +55,10 @@ export const ParkInfoApi = {
   // 获得地块基本信息列表
   getParkDetailListByParkId: async (parkId) => {
     return await request.get({ url: `/agriculture/park-info/park-detail/list-by-park-id?parkId=` + parkId })
+  },
+
+  // 基地地块树
+  getParkTree: async (params: any) => {
+    return await request.get({ url: `/agriculture/big-screen/getParkTree`, params })
   }
 }
