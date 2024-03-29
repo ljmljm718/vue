@@ -1,13 +1,14 @@
 <template>
   <h1>数据采集</h1>
   <ContentWrap>
+    <h3>最新数据</h3>
     <div class="container">
           <div class="box" v-for="item,index in trendData" :key="index">
                 <div class="box-top">
                   <div style="text-align: center">{{ item.monitoringType }}</div>
                   <div style="text-align: center">{{ item.dataValue}}{{ item.yyUnit}}</div>
                 </div>
-                <div @click="active=index" :class="active==index?'active':'actived'">查看趋势</div>
+                <div @click="tabCli(item.equipmentCode,item.monitoringType,index)" :class="active==index?'active':'actived'">查看趋势</div>
           </div>
     </div>
    
@@ -29,7 +30,6 @@
   </ContentWrap>
 
   <!-- 列表 -->
- 
   <ContentWrap>
     <div id="chart" style="width: 100%; height: 400px;"></div>  
   </ContentWrap>
@@ -47,6 +47,10 @@ import {
   generatePieOptions
 } from '../../../utils/bigscreenTool/index'
 import { log } from 'console';
+import {useRoute} from 'vue-router'
+let route = useRoute();
+
+
 let active=ref(0)
 /** 设备数据 列表 */      
 defineOptions({ name: 'EquipmentData' })
@@ -92,10 +96,7 @@ const exportLoading = ref(false) // 导出的加载中
 }
 
 /** 初始化 **/
-onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-  await getList()
-})
+
 
 let trendData=ref([]);
 let listRes=ref<any>({})
@@ -103,19 +104,31 @@ let listRes=ref<any>({})
 const getList = async () => {
   loading.value = true
   try {
+    //设置默认第一条数据
+    let aa=route.query.equipmentCode;
+    queryParams.equipmentCode=aa;
+    //结束
     const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
     list.value = data.list
-    //设置默认第一条数据
+
+    
+    
+    //初始化上发图片
+    //console.log(listRes,"==listRes==");
+    if(queryParams.pageNo==1){
     listRes.value = list.value[0];
-    initChart()
     trendData.value=await EquipmentDataApi.getEquipmentDataByEquipmentCode(listRes.value.equipmentCode)
-    console.log(trendData.value,"==trendData==");
+    }
+    //console.log(trendData.value,"==trendData==");
+    //初始化柱桩图
+    initChart()
     //结束
     total.value = data.total
   } finally {
     loading.value = false
   }
 }
+
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -126,7 +139,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  handleQuery()
+  //handleQuery()
 }
 
 /** 添加/修改操作 */
@@ -162,21 +175,28 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-// const getEquipmentDataApi=()=>{
-//   EquipmentDataApi.getEquipmentDataByEquipmentCode().then(res=>{
-
-//   })
-// }
-// getEquipmentDataApi()
+let res=null;
+//tab切换
+const tabCli=async (id,val,index)=>{
+  active.value=index
+  res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(id,val)
+  //console.log(res,'res,22')
+  initChart()
+}
 //echarts
 const initChart= async ()=>{
-  let res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(listRes.value.equipmentCode,listRes.value.monitoringType)
-  console.log(res,'res');
+
+  if(res!=null){
+    res=res
+  }else{
+    res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(listRes.value.equipmentCode,listRes.value.monitoringType)
+  }
+  //console.log(res,'==res');
   let xAxisData=[]
   let yAxisData=[]
   res.forEach(item => {
-    xAxisData.push(item.collectionTime+':00')
-    yAxisData.push(item.dataValue)
+    xAxisData.unshift(item.collectionTime+':00')
+    yAxisData.unshift(item.dataValue)
   });
       initChartStatic(
         "chart",
