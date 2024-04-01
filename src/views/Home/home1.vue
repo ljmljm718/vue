@@ -263,7 +263,8 @@ onMounted(() => {
         <div v-if="item.title === '设备总数' || item.title === '预警数量'">
           <div class="flex items-center pt-2 h-[2.5rem] px-2">
             <span>{{ item.total }}</span>
-            <span style="padding-left: 2rem;">台</span>
+            <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;">台</span>
+            <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;">个</span>
           </div>
         </div>
         <div v-else>
@@ -448,7 +449,7 @@ onMounted(() => {
           </div>
           <el-divider class="!my-3"/>
           <el-table :data="tableData" stripe max-height="240" fit border>
-            <el-table-column label="塘口名称" prop="plotCode" min-width="100px"
+            <el-table-column label="塘口编号" prop="plotCode" min-width="100px"
                              show-overflow-tooltip/>
             <el-table-column label="设备" prop="deviceCode" min-width="100px"
                              show-overflow-tooltip/>
