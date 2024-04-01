@@ -270,8 +270,7 @@ const deviceInfoHelperRef = ref()
 const currRule = ref()
 const openDeviceInfoHelperDialog = (job: JobVO) => {
   currRule.value = job
-  const jsonObject = JSON.parse(job.handlerParam);
-  deviceInfoHelperRef.value.open(jsonObject.deviceIds)
+  deviceInfoHelperRef.value.open(job.handlerParam ? JSON.parse(job.handlerParam).deviceIds : [])
 }
 // 绑定设备
 const handleBindDevice = async (val) => {
