@@ -44,6 +44,23 @@ export interface CheckDeviceV0 {
   "inspectionTime": string,
 }
 
+export interface CheckLogV01 {
+  id: string // 主键
+  inspectionNum: string // 巡检编号
+  inspectionState: string // 巡检状态
+  inspectionResults: string // 巡检结果
+  equNum: string // 设备编号
+  equName: string // 设备编号
+  base: string // 所属基地
+  massif: string // 所属地块
+  inspector: string // 巡检人
+  inspectorId: string // 巡检人Id
+  inspectionTime: Date // 巡检时间
+  inspectionImage: string // 巡检影像
+  content: string // 巡检内容
+  createTime: Date // 创建时间
+}
+
 // 巡检记录 API
 export const CheckLogsApi = {
   // 查询巡检记录分页
@@ -85,4 +102,10 @@ export const CheckLogsApi = {
   getCheckDeviceBySome: async (params: any) => {
     return await request.get({url: `agriculture/check-logs/getCheckDeviceBySome`, params})
   },
+
+  // 查询巡检设备统计分页
+  pageByCondition: async (params: any) => {
+    return await request.get({url: `/agriculture/check-logs/pageByCondition`, params})
+  },
+
 }

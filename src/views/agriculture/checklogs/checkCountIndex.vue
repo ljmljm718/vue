@@ -114,6 +114,7 @@ const getBaseList = async () => {
       queryParamsCountPageByBaseId.baseId = listBase.value[0].code
       queryParamsCountPageByBaseId.createTime = formatCurrentDate()
     }
+    await getDeviceCountList()
   } finally {
     loading.value = false
   }
@@ -121,7 +122,6 @@ const getBaseList = async () => {
 
 /** 查询设备分类统计列表 */
 const getDeviceCountList = async () => {
-  console.log(queryParamsCountPageByBaseId)
   loading.value = true
   try {
     const data = await CheckLogsApi.getCountPageByBaseId(queryParamsCountPageByBaseId)
@@ -149,7 +149,6 @@ const resetQuery = () => {
 const {push} = useRouter()
 const goCheck = (row) => {
   //打开新的页签并传递参数
-  console.log("准备打开的页签", queryParamsCountPageByBaseId.baseId,queryParamsCountPageByBaseId.createTime,row.categoryId,row.categoryName)
   push(`/check/checkCountTwo?baseId=${queryParamsCountPageByBaseId.baseId}&createTime=${queryParamsCountPageByBaseId.createTime}&categoryId=${row.categoryId}&categoryName=${row.categoryName}`);
 }
 
@@ -169,7 +168,6 @@ onMounted(() => {
   //首先查询所有基地供选择
   //默认赋值查询参数
   getBaseList()
-  getDeviceCountList()
 })
 </script>
 <style scoped lang="scss">
