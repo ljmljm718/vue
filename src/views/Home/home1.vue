@@ -19,7 +19,7 @@ import {
   initChartStatic,
   generatePieOptions
 } from "../../utils/bigscreenTool/index";
-import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index'
+import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
 
 const optionsX = ref([])
 const handleSelectorChangeX = (e) => {
@@ -27,7 +27,7 @@ const handleSelectorChangeX = (e) => {
   getGetCountPageByBaseId(e.target.value)
 }
 const getParkInfoPage = async () => {
-  const { list = [] } = await parkInfoPage({
+  const {list = []} = await parkInfoPage({
     pageReqVO: {}
   })
   console.log('getDetailListByParkIdX', list);
@@ -43,13 +43,13 @@ getParkInfoPage()
 // 设备巡检
 const deviceCheckList = ref([])
 const getGetCountPageByBaseId = async (baseId) => {
-  const { list = [] } = await getCountPageByBaseId({
+  const {list = []} = await getCountPageByBaseId({
     pageNo: 1,
     pageSize: 10,
     baseId
   })
   console.log('baseId', baseId);
-  
+
   console.log('getGetCountPageByBaseId', list);
   deviceCheckList.value = list
 }
@@ -57,7 +57,7 @@ const getGetCountPageByBaseId = async (baseId) => {
 const growthTypes = ref([])
 const growthIndex = ref(0)
 const getGrowthPage = async (belongPark, belongPlot) => {
-  const { list = [] } = await growthPage({
+  const {list = []} = await growthPage({
     pageNo: 1,
     pageSize: 1
   })
@@ -67,7 +67,7 @@ const getGrowthPage = async (belongPark, belongPlot) => {
 
 const options1 = ref<Array<any>>([])
 const getOptions1 = async (parentId = '0') => {
-  const res = await ParkBaseInfo({ parentId })
+  const res = await ParkBaseInfo({parentId})
   options1.value = res
   getOptions2(options1.value[0].id)
 }
@@ -76,10 +76,10 @@ const getOptions1 = async (parentId = '0') => {
 const options2 = ref<Array<any>>([])
 const getOptions2 = async (parentId) => {
   curBelongPark.value = parentId
-  const res = await detailListByParkId({ parkId: parentId })
+  const res = await detailListByParkId({parkId: parentId})
   options2.value = res
   handleSelectorChange2({
-    target: { value: res[0].id }
+    target: {value: res[0].id}
   })
 }
 
@@ -128,29 +128,30 @@ const initChart = async () => {
       legend: {
         left: 'right',
         top: 'center',
-        orient: "vertical"
+        orient: "vertical",
+        textStyle:{color:"#969393"}
       },
       series: [
         {
-          name: 'Access From',
+          name: '设备',
           type: 'pie',
           radius: ['40%', '70%'],
           center: ['40%', '50%'],
           avoidLabelOverlap: false,
           label: {
-              formatter: "{c|{c}} , {per|{d}%}",
-              rich: {
-                  c: {
-                      color: "#fff",
-                      fontSize: 12,
-                      lineHeight: 33,
-                  },
-                  per: {
-                      color: "#fff",
-                      fontSize: 12,
-                      lineHeight: 33,
-                  },
+            formatter: "{c|{c}} , {per|{d}%}",
+            rich: {
+              c: {
+                color: "#969393",
+                fontSize: 12,
+                lineHeight: 33,
               },
+              per: {
+                color: "#969393",
+                fontSize: 12,
+                lineHeight: 33,
+              },
+            },
           },
           emphasis: {
             label: {
@@ -163,7 +164,9 @@ const initChart = async () => {
             show: false
           },
           data: [
-            {value: res[0].online, name: '运行'},
+            {
+              value: res[0].online, name: '运行'
+            },
             {value: res[0].offline, name: '离线'}
           ],
         }
@@ -214,7 +217,7 @@ const getdeviceInfoByPark = async () => {
   const res = await deviceInfoByPark()
   console.log('getdeviceInfoByPark', res);
   const stateRes = await getDeviceState()
-  const { list } = await deviceInfoPage()
+  const {list} = await deviceInfoPage()
   cardList.value = [{
     id: 'all',
     title: '设备总数',
@@ -252,7 +255,10 @@ onMounted(() => {
       >
         <div class="flex justify-between w-full items-center">
           <div style="font-family: 'ArtFont';font-size: 1.3rem;">{{ item.title }}</div>
-          <div>{{ (item.title !== '设备总数' && item.title !== '预警数量') ? (item.total + '台') : '' }}</div>
+          <div>{{
+              (item.title !== '设备总数' && item.title !== '预警数量') ? (item.total + '台') : ''
+            }}
+          </div>
         </div>
         <div v-if="item.title === '设备总数' || item.title === '预警数量'">
           <div class="flex items-center pt-2 h-[2.5rem] px-2">
@@ -294,14 +300,16 @@ onMounted(() => {
                   :value="item.id"
                   v-for="item,index in options1"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
               <select @change="handleSelectorChange2">
                 <option
                   :value="item.id"
                   v-for="item,index in options2"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -313,7 +321,7 @@ onMounted(() => {
             >养殖物名称: 黄河口大闸蟹
             </div>
             <div class="p-1 mt-3 flex items-start" v-if="growthTypes.length !== 0">
-              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-30 object-contain" />
+              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-30 object-contain"/>
               <div class="px-2">
                 <div class="p-1">
                   <span>养殖品种: </span>
@@ -324,12 +332,18 @@ onMounted(() => {
                   <span class="pl-2">{{ growthTypes[growthIndex].growth }}</span>
                 </div>
                 <div class="p-1 py-2">
-                  <div>开始时间: </div>
-                  <div class="pt-2">{{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd') }}</div>
+                  <div>开始时间:</div>
+                  <div class="pt-2">{{
+                      formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')
+                    }}
+                  </div>
                 </div>
                 <div class="p-1 py-2">
-                  <div>预计结束时间: </div>
-                  <div class="pt-2">{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}</div>
+                  <div>预计结束时间:</div>
+                  <div class="pt-2">{{
+                      formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd')
+                    }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -350,8 +364,11 @@ onMounted(() => {
               <div class="t w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
               <div>环境监测</div>
             </div>
-            <div v-for="(item, index) in topDataList" :key="item.monitoringType" class="flex space-x-2 p-2 pl-4" style="border: 1px solid #5293EAA0;background-color: #5293EA30;">
-              <div :class="`t-${index + 1} w-[2rem] h-[2rem]`" style="background-size: 100% 100%;"></div>
+            <div v-for="(item, index) in topDataList" :key="item.monitoringType"
+                 class="flex space-x-2 p-2 pl-4"
+                 style="border: 1px solid #5293EAA0;background-color: #5293EA30;">
+              <div :class="`t-${index + 1} w-[2rem] h-[2rem]`"
+                   style="background-size: 100% 100%;"></div>
               <div>
                 <div>
                   <span>{{ item.dataValue }}</span>
@@ -367,8 +384,10 @@ onMounted(() => {
               <div class="b w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
               <div>环境监测</div>
             </div>
-            <div v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4" style="border: 1px solid #b5ead8A0;background-color: #b5ead830;">
-              <div :class="`b-${index + 1} w-[2rem] h-[2rem]`" style="background-size: 100% 100%;"></div>
+            <div v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4"
+                 style="border: 1px solid #b5ead8A0;background-color: #b5ead830;">
+              <div :class="`b-${index + 1} w-[2rem] h-[2rem]`"
+                   style="background-size: 100% 100%;"></div>
               <div>
                 <div>
                   <span>{{ item.dataValue }}</span>
@@ -392,15 +411,18 @@ onMounted(() => {
                   :value="item.id"
                   v-for="item,index in optionsX"
                   :key="index"
-                >{{item.name}}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
           <el-divider class="!my-3"/>
           <div class="grid grid-cols-3 gap-3">
             <div v-for="item in deviceCheckList" :key="item.deviceId">
-              <img src="/img.png" alt="" class="w-full h-[9rem]" style="object-fit: contain;border: 1px solid #ffffff20;"/>
-              <div class="flex items-center px-3 py-1" style="background: linear-gradient(to right, #7acfffA0, #7acfff00);">
+              <img src="/img.png" alt="" class="w-full h-[9rem]"
+                   style="object-fit: contain;border: 1px solid #ffffff20;"/>
+              <div class="flex items-center px-3 py-1"
+                   style="background: linear-gradient(to right, #7acfffA0, #7acfff00);">
                 <span>{{ item.categoryName }}</span>
                 <span style="padding-left: .3rem;">{{ item.sumNum }}</span>
               </div>
@@ -426,9 +448,12 @@ onMounted(() => {
           </div>
           <el-divider class="!my-3"/>
           <el-table :data="tableData" stripe max-height="240" fit border>
-            <el-table-column label="塘口名称" prop="plotCode" min-width="100px" show-overflow-tooltip/>
-            <el-table-column label="设备" prop="deviceCode" min-width="100px" show-overflow-tooltip/>
-            <el-table-column label="预警信息" prop="warnInfo" min-width="100px" show-overflow-tooltip/>
+            <el-table-column label="塘口名称" prop="plotCode" min-width="100px"
+                             show-overflow-tooltip/>
+            <el-table-column label="设备" prop="deviceCode" min-width="100px"
+                             show-overflow-tooltip/>
+            <el-table-column label="预警信息" prop="warnInfo" min-width="100px"
+                             show-overflow-tooltip/>
             <el-table-column label="时间" prop="warnTime" min-width="100px" show-overflow-tooltip>
               <template #default="scope">
                 <span>{{ formatTime(scope.row.warnTime, 'yyyy-MM-dd') }}</span>
@@ -457,7 +482,8 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: left center;
 }
-.left1{
+
+.left1 {
   //width: 100%;
   //height: 100px;
 }
@@ -469,14 +495,20 @@ onMounted(() => {
   }
 }
 
-.t { background-image: url(./assets/home1/t.png); }
+.t {
+  background-image: url(./assets/home1/t.png);
+}
+
 @for $i from 1 through 8 {
   .t-#{$i} {
     background-image: url(./assets/home1/t#{$i}.png);
   }
 }
 
-.b { background-image: url(./assets/home1/b.png); }
+.b {
+  background-image: url(./assets/home1/b.png);
+}
+
 @for $i from 1 through 8 {
   .b-#{$i} {
     background-image: url(./assets/home1/b#{$i}.png);

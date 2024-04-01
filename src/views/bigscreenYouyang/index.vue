@@ -73,9 +73,9 @@ const leftCurDeviceCode2 = ref(0);
 const getGetDeviceDataYouEnvironment = async (belongPark, belongPlot) => {
   leftCurDeviceCode1.value = belongPark;
   leftCurDeviceCode2.value = belongPlot;
-  const res = await getDeviceDataYouEnvironment({})
+  const res = await getDeviceDataYouEnvironment({ belongPark, belongPlot })
   console.log("数据", res)
-  envVal.value = res;
+  // envVal.value = res;
   await initChart1(leftTabSelected.value)
 }
 
