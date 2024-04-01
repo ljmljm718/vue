@@ -252,16 +252,15 @@ const getWaterDetectionType = async (belongPark, belongPlot) => {
 }
 
 const options1 = ref<Array<any>>([])
-const getOptions1 = async (parentId = '0') => {
-  const res = await ParkBaseInfo({parentId})
-  options1.value = res
-  if (options1.value.length > 0) await getOptions2(options1.value[0].id)
-}
-getOptions1()
+// const getOptions1 = async (parentId = '0') => {
+//   const res = await ParkBaseInfo({parentId})
+//   options1.value = res
+//   if (options1.value.length > 0) await getOptions2(options1.value[0].id)
+// }
+// getOptions1()
 
 //获取基地
 let selecteId1=ref('')
-let selecteId2=ref('')
 const getPage=()=>{
   page({}).then(res=>{
     console.log(res,'基地')
@@ -277,6 +276,7 @@ const getPark=(id)=>{
   park(id).then(res=>{
     console.log(res,'塘口')
     options2.value=res
+    
     getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:res[0].id})
   })
 }
@@ -284,6 +284,8 @@ const getPark=(id)=>{
 const getWaterDetectionType2=(val)=>{
   waterDetectionType(val).then(res=>{
     console.log(res,'八项参数')
+    waterTypeList.value=res
+
   })
 }
 const selecte2=(val)=>{
@@ -299,6 +301,7 @@ const getOptions2 = async (parentId) => {
 }
 const curBelongPark = ref('')
 const handleSelectorChange1 = (val) => {
+  selecteId1.value = val.target.value
   getPark({parkId :val.target.value})
 }
 const curBelongPlot = ref('')
@@ -452,9 +455,9 @@ const getChart=(val)=>{
   leftTabSelected.value = val
   initChart1()
 }
-const initChart2 = async (type, belongPark, belongPlot) => {
+const initChart2 = async (lineChart , belongPark, belongPlot) => {
   // 水质监测（折线图）
-  const res = await waterDetection({type, belongPark, belongPlot})
+  const res = await waterDetection({lineChart , belongPark, belongPlot})
   console.log('水质监测（折线图）', res)
   const seriseName = rightLabelMap[res[0].type]
   const yName = rightUnitMap[res[0].type]
@@ -578,7 +581,7 @@ const leftLabelMap = {
   "风向": '风向' //风向
 }
 
-const rightTabSelected = ref('temperature')
+const rightTabSelected = ref('PH值')
 watch(
   () => rightTabSelected.value,
   (newValue) => {
@@ -587,7 +590,7 @@ watch(
   }
 )
 const rightIconMap = {
-  temperature: 1,
+  temperature: 'PH值',
   salinity: 2,
   turbidity: 3,
   water_level: 4,
@@ -837,21 +840,21 @@ const rightUnitMap = {
           <div class="main-item-container">
             <div class="card-grid-wrapper">
               <div
-                :class="`card-grid-item ${rightTabSelected === item.type ? 'card-selected' : ''}`"
+                :class="`card-grid-item ${rightTabSelected === item.monitoringType ? 'card-selected' : ''}`"
                 v-for="(item, index) in waterTypeList"
                 :key="index"
               >
-                <div :class="`icon-wrapper r-icon-${rightIconMap[item.type]}`"></div>
+                <div :class="`icon-wrapper r-icon-${index}`"></div>
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
                     <span class="unit">{{ item.unit }}</span>
                   </div>
-                  <div class="label-wrapper">{{ rightLabelMap[item.type] }}</div>
+                  <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
                 <div
                   class="check-btn"
-                  @click="rightTabSelected = item.type"
+                  @click="rightTabSelected = item.monitoringType"
                 >查看
                 </div>
               </div>
