@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="50%">
     <el-form
       ref="formRef"
       :model="formData"
@@ -22,12 +22,38 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="所属基地" prop="belongPark">
-            <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+            <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+              <template #append>
+                <el-button @click="openParkPopup('0')">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="基地名称" prop="parkName">
+            <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="所属地块" prop="belongPlot">
-            <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+            <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+              <template #append>
+                <el-button @click="openPlotPopup(formData.belongPark)">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="地块名称" prop="plotName">
+            <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -92,10 +118,19 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择大棚-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { FarmerInfoApi, FarmerInfoVO } from '@/api/agriculture/farmerinfo'
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import { ParkInfoVO } from '@/api/agriculture/parkinfo'
 
 /** 农户管理 表单 */
 defineOptions({ name: 'FarmerInfoForm' })
@@ -121,6 +156,8 @@ const formData = ref({
   userId: undefined,
   belongPark: undefined,
   belongPlot: undefined,
+  parkName: undefined,
+  plotName: undefined,
 })
 const formRules = reactive({
   farmerId: [{ required: true, message: '农户身份码不能为空', trigger: 'blur' }],
@@ -190,7 +227,44 @@ const resetForm = () => {
     userId: undefined,
     belongPark: undefined,
     belongPlot: undefined,
+    parkName: undefined,
+    plotName: undefined
   }
   formRef.value?.resetFields()
+}
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === ""){
+    message.error("请选择基地")
+  }else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0'){
+    formData.value.belongPark = String(order[0].code)
+    formData.value.parkName = String(order[0].name)
+  }
+  else formData.value.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value){
+    message.error("请选择基地")
+  }else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+
+  console.log("--->>查看选择的地块信息：",order[0])
+  formData.value.belongPark = String(order[0].parkId)
+  formData.value.belongPlot = String(order[0].id)
+  formData.value.plotName = String(order[0].name)
+
 }
 </script>

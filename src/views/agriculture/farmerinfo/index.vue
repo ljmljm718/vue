@@ -51,22 +51,24 @@
         />
       </el-form-item>
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input
-          v-model="queryParams.belongPark"
-          placeholder="请输入所属基地"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" class="!w-240px">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input
-          v-model="queryParams.belongPlot"
-          placeholder="请输入所属地块"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <el-input v-model="queryParams.belongPlot" placeholder="请输入所属地块" class="!w-240px">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -163,6 +165,11 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <FarmerInfoForm ref="formRef" @success="getList" />
+
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择大棚-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 
 <script setup lang="ts">
@@ -171,6 +178,10 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmerInfoApi, FarmerInfoVO } from '@/api/agriculture/farmerinfo'
 import FarmerInfoForm from './FarmerInfoForm.vue'
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import { ParkInfoVO } from '@/api/agriculture/parkinfo'
 
 /** 农户管理 列表 */
 defineOptions({ name: 'FarmerInfo' })
@@ -256,4 +267,36 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === ""){
+    message.error("请选择基地")
+  }else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0'){
+    queryParams.belongPark = String(order[0].code)
+  }
+  else queryParams.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value){
+    message.error("请选择基地")
+  }else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+
+  console.log("--->>查看选择的地块信息：",order[0])
+  queryParams.belongPark = String(order[0].parkId)
+  queryParams.belongPlot = String(order[0].id)
+}
 </script>
