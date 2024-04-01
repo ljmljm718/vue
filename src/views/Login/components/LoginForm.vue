@@ -15,7 +15,7 @@
     <el-row style="margin-right: -10px; margin-left: -10px;">
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
-          <el-input 
+          <el-input
           class="login-input"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
@@ -25,7 +25,7 @@
           />
         </el-form-item>
       </el-col>
-     
+
       <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item prop="username">
           <el-input
@@ -142,9 +142,9 @@
 <!--      </el-col>-->
     </el-row>
   </el-form>
-  
+
   </div>
-  
+
 </template>
 <script lang="ts" setup>
 import { ElLoading } from 'element-plus'
@@ -187,7 +187,7 @@ const loginData = reactive({
   captchaEnable: import.meta.env.VITE_APP_CAPTCHA_ENABLE,
   tenantEnable: import.meta.env.VITE_APP_TENANT_ENABLE,
   loginForm: {
-    tenantName: '开州区鲁渝协作乡村振兴示范村数字化赋能',
+    tenantName: '鲁渝协作乡村振兴示范村数字化赋能',
     username: 'admin',
     password: 'Y123456a?',
     captchaVerification: '',
