@@ -202,12 +202,12 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="getList()"
     />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceInfoForm ref="formRef" @success="getList"/>
+  <DeviceInfoForm ref="formRef" @success="getList()"/>
 </template>
 
 <script setup lang="ts">
@@ -219,7 +219,7 @@ import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
-
+import {useRoute} from 'vue-router'
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
@@ -255,6 +255,7 @@ const exportLoading = ref(false) // 导出的加载中
 let categoryOptions = ref([])// 设备分类选项
 const deviceType = ref()
 
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -273,6 +274,7 @@ const getList = async () => {
     loading.value = false
   }
 }
+let route=useRoute()
 
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
@@ -356,6 +358,11 @@ onMounted(async () => {
       deviceType.value = type.toString().split(',').map(Number)
     }
   }
+  let location=route.query
+    if(location){
+      queryParams.deviceKind=location.id
+      queryParams.deviceStatus=location.val
+    }
   await getList()
 })
 

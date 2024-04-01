@@ -11,19 +11,19 @@
             <div class="left1">
               <div class="box-title">设备信息</div>
               <div class="left1-item">
-                  <div class='left1-top'>
+                  <div class='left1-top' @click="$router.push('/device/deviceView')">
                     <div style="font-size: 13px;margin-left: 5px;">设备总数</div>
                     <div style="color:#00e4ec;font-weight: 700;font-size: 20px;">{{leftTop.total}}</div>
                   </div>
-                  <div :class="['leftTop','leftTop-1']">
+                  <div  @click="goPage('online')" :class="['leftTop','leftTop-1']">
                     <div  style="font-size: 13px;margin-left: 5px;">在线</div>
                     <div>{{leftTop.online}}</div>
                   </div>
-                  <div :class="['leftTop','leftTop-2']">
+                  <div  @click="goPage('offline')" :class="['leftTop','leftTop-2']">
                     <div  style="font-size: 13px;margin-left: 5px;">离线</div>
                     <div>{{leftTop.offline}}</div>
                   </div>
-                  <div :class="['leftTop','leftTop-3']">
+                  <div  @click="goPage('fault')" :class="['leftTop','leftTop-3']">
                     <div  style="font-size: 13px;margin-left: 5px;">故障</div>
                     <div>{{leftTop.fault}}</div>
                   </div>
@@ -96,7 +96,7 @@
                     <div class="Jkbtn" style='margin-top:-10px;'>查看监控</div>
                   </div>
                 </div>
-                <div class="soil"  @click="soilCli2(index)" v-for="item,index in soilList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/5+'%':item.longitude+'%'}">
+                <div class="soil"  @click="soilCli2(index)" v-for="item,index in soilList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/30+'%':item.longitude+'%'}">
                   <div class="message"  :style="{visibility:soilIndex2==index?'visible':'hidden',top:-soilHeight+'px',left:'-65px'}" ref="soilList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
                     <div class="message-content">
@@ -105,7 +105,7 @@
                     <div class='messageBar'></div>
                   </div>
                 </div>
-                <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/20+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/10+'%':item.longitude+'%'}">
+                <div class="shed"  @click="largeCli(index)" v-for="item,index in largeList" :key='index' :style="{left:item.latitude.length>=3?item.latitude/100+'%':item.latitude/10+'%',top:item.longitude.length>=3?item.longitude/10+'%':item.longitude+'%'}">
                   <div class="message" :style="{visibility:largeIndex==index?'visible':'hidden',top:-largeHeight+'px',left:'-65px'}" ref="largeList2">
                     <div class="message-top">{{ item.parkName+'-'+item.plotName }}</div>
                     <div class="message-content">
@@ -124,9 +124,9 @@
           </div>
           <div class="right">
             <div class="right1">
-              <div class="box-title">预警信息</div>
+              <div class="box-title" @click="$router.push('/warn/agri-warning-record')">预警信息</div>
               <div class="right1-item">
-               <div class="right1-warper" v-for="item,index in warnInfo" :key='index'>
+               <div class="right1-warper" @click="$router.push('/warn/agri-warning-rule')" v-for="item,index in warnInfo" :key='index'>
                 <div class="right1-left"><div class="tranig"></div>{{item.warnType}}</div>
                 <div class='right1-right'>
                   <div>{{item.warnInfo}}</div>
@@ -137,7 +137,7 @@
               </div>
             </div>
             <div class="right2">
-              <div class="box-title">设备运行统计</div>
+              <div class="box-title" @click="$router.push('/device/devicehistory')">设备运行统计</div>
               <div class="right2-item">
                <div id="chart2"></div>
               </div>
@@ -281,6 +281,16 @@ import {
 } from '@/api/bigscreen7/index'
 import { resetSize } from '@/components/Verifition/src/utils/util';
 import {ref,onMounted} from 'vue'
+import {useRouter} from 'vue-router'
+let router=useRouter()
+const goPage=(val)=>{
+  router.push({
+    path:'/device/deviceView',
+    query:{
+      val
+    }
+  })
+}
 //设备信息
 let leftTop=ref<any>({})
 let leftDevice=ref<any>([])

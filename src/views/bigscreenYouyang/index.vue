@@ -20,7 +20,12 @@ import {
   viewMonitoring,
   getDeviceDataYouEnvironment,
   waterDetectionByAddress,
-  getDeviceDataYouEnvironmentLine
+  getDeviceDataYouEnvironmentLine,
+  page,
+  park,
+  page2,
+  page3,
+  list
 } from './apis'
 
 // 大屏中央右边监控设备(单条) 未完成
@@ -58,33 +63,34 @@ const getwaterDetectionByAddress = async () => {
 }
 
 // 左上角 根据设备获取环境监测值
-const envVal = ref({
-  "气压": "0",
-  "二氧化碳": "0",
-  "湿度": "0",
-  "雨量": "0",
-  "光照": "0",
-  "温度": "0",
-  "风向": "-",
-  "风速": "0"
-})
+const envVal = ref([])
+// const envVal = ref({
+//   "气压": "0",
+//   "二氧化碳": "0",
+//   "湿度": "0",
+//   "雨量": "0",
+//   "光照": "0",
+//   "温度": "0",
+//   "风向": "-",
+//   "风速": "0"
+// })
 const leftCurDeviceCode1 = ref(0);
 const leftCurDeviceCode2 = ref(0);
 const getGetDeviceDataYouEnvironment = async (belongPark, belongPlot) => {
   leftCurDeviceCode1.value = belongPark;
   leftCurDeviceCode2.value = belongPlot;
-  const res = await getDeviceDataYouEnvironment({ belongPark, belongPlot })
+  const res = await getDeviceDataYouEnvironment()
   console.log("数据", res)
-  // envVal.value = res;
+  envVal.value =res;
   await initChart1(leftTabSelected.value)
 }
 
 // 左下角设备监控
 const monitorEquipList = ref<Array<any>>([])
 const getMonitoringEquipment = async () => {
-  const res = await monitoringEquipment()
+  const res = await monitoringEquipment({pageNo:'1',pageSize:'10',deviceType:'30,31'})
   console.log('左下角设备监控', res)
-  monitorEquipList.value = res
+  monitorEquipList.value = res.list
 }
 getMonitoringEquipment()
 
@@ -113,11 +119,37 @@ const getDeviceBasePage = async () => {
     : null;
   if (envOptions.value[0]) {
     await getGetDeviceDataYouEnvironment(envOptions.value[0].belongPark, envOptions.value[0].belongPlot)
-    await initChart1('temperature')
+    await initChart1('温度')
   }
 }
 getDeviceBasePage()
-
+//单个摄像头
+let sxtObj=ref([])
+const getPage2=()=>{
+  page2({pageSize:1,pageNo:1}).then(res=>{
+    console.log(res,'单个摄像头')
+    sxtObj.value=res.list
+  })
+}
+getPage2()
+//单个数据采集
+let sjList=ref({})
+const getPage3=()=>{
+  page3({pageSize:1,pageNo:1}).then(res=>{
+    console.log(res,'单个shuju')
+    sjList.value=res.list[0]
+  })
+}
+getPage3()
+//预警信息
+let warnList=ref({})
+const getList=()=>{
+  list({pageSize:1,pageNo:1}).then(res=>{
+    console.log(res,'单个yujing')
+    warnList.value=res.list[0]
+  })
+}
+getList()
 // 大屏中央设备设备数量统计
 const deviceBaseInfo = ref<any>({
   total: 0,
@@ -227,7 +259,36 @@ const getOptions1 = async (parentId = '0') => {
 }
 getOptions1()
 
+//获取基地
+let selecteId1=ref('')
+let selecteId2=ref('')
+const getPage=()=>{
+  page({}).then(res=>{
+    console.log(res,'基地')
+    options1.value=res.list
+    selecteId1.value=res.list[0].id
+    getPark({parkId :res.list[0].id})
+  })
+}
+getPage()
+//获取堂口
 const options2 = ref<Array<any>>([])
+const getPark=(id)=>{
+  park(id).then(res=>{
+    console.log(res,'塘口')
+    options2.value=res
+    getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:res[0].id})
+  })
+}
+//获取八项
+const getWaterDetectionType2=(val)=>{
+  waterDetectionType(val).then(res=>{
+    console.log(res,'八项参数')
+  })
+}
+const selecte2=(val)=>{
+  getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:val.target.value})
+}
 const getOptions2 = async (parentId) => {
   curBelongPark.value = parentId
   const res = await ParkBaseInfo2({parentId})
@@ -238,7 +299,7 @@ const getOptions2 = async (parentId) => {
 }
 const curBelongPark = ref('')
 const handleSelectorChange1 = (val) => {
-  getOptions2(val.target.value)
+  getPark({parkId :val.target.value})
 }
 const curBelongPlot = ref('')
 const handleSelectorChange2 = (val) => {
@@ -294,19 +355,26 @@ const tableColumns = ref([
 
 const tableData = ref<Array<any>>([])
 
-const initChart1 = async (type) => {
+const initChart1 = async (lineChart ) => {
   const deviceCode1 = leftCurDeviceCode1.value;
   const deviceCode2 = leftCurDeviceCode2.value;
-  if (!type || !deviceCode1) return
-  console.log('type', type)
-  envLabel.value = leftLabelMap[type];
-  const res = await getDeviceDataYouEnvironmentLine({deviceCode1, type})
+  if (!lineChart  || !deviceCode1) return
+  console.log('lineChart ', lineChart )
+  envLabel.value = leftLabelMap[lineChart ];
+  const res = await getDeviceDataYouEnvironmentLine({deviceCode1, lineChart })
   console.log('getDeviceDataYouEnvironmentLine ==', res);
+  let xAxisData=[]
+  let yAxisData=[]
+  res.forEach(item=>{
+    xAxisData.push(item.collectionTime)
+    yAxisData.push(item.dataValue)
+  })
+  console.log(xAxisData, yAxisData,'data')
   initChartStatic(
     'chart1',
     generateBaseOptions({
       xAxis: {
-        data: res[0].reverse(),
+        data: xAxisData,
         axisLine: {
           show: true,
           lineStyle: {
@@ -320,9 +388,9 @@ const initChart1 = async (type) => {
         itemWidth: 15,
         itemHeight: 15
       },
-      color: ['#ffa773', '#36e1d9'],
+      color: ['#ffa773'],
       yAxis: {
-        name: leftUnitMap[type],
+        name: leftUnitMap[lineChart],
         type: 'value',
         axisLine: {
           show: true,
@@ -347,8 +415,8 @@ const initChart1 = async (type) => {
       },
       series: [
         {
-          name: leftLabelMap[type],
-          data: res[1].reverse(),
+          name: leftLabelMap[lineChart],
+          data: yAxisData,
           type: 'line',
           smooth: true,
           label: {
@@ -380,7 +448,10 @@ const initChart1 = async (type) => {
     })
   )
 }
-
+const getChart=(val)=>{
+  leftTabSelected.value = val
+  initChart1()
+}
 const initChart2 = async (type, belongPark, belongPlot) => {
   // 水质监测（折线图）
   const res = await waterDetection({type, belongPark, belongPlot})
@@ -575,19 +646,19 @@ const rightUnitMap = {
           <div class="main-item-container">
             <div class="card-grid-wrapper">
               <div
-                :class="`card-grid-item ${leftTabSelected === item ? 'card-selected' : ''}`"
-                v-for="item in Object.keys(envVal)"
-                :key="item"
+                :class="`card-grid-item ${leftTabSelected === item.monitoringType ? 'card-selected' : ''}`"
+                v-for="item,index in envVal"
+                :key="index"
               >
-                <div :class="`icon-wrapper l-icon-${leftIconMap[item]}`"></div>
+                <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType]}`"></div>
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
-                    <span class="value">{{ envVal[item] }}</span>
-                    <span class="unit">{{ leftUnitMap[item] }}</span>
+                    <span class="value">{{ item.dataValue }}</span>
+                    <span class="unit">{{ leftUnitMap[item.monitoringType] }}</span>
                   </div>
-                  <div class="label-wrapper">{{ leftLabelMap[item] }}</div>
+                  <div class="label-wrapper">{{ leftLabelMap[item.monitoringType] }}</div>
                 </div>
-                <div v-show="leftUnitMap[item]" class="check-btn" @click="leftTabSelected = item">
+                <div v-show="leftUnitMap[item.monitoringType]" class="check-btn" @click="getChart(item.monitoringType)">
                   查看
                 </div>
               </div>
@@ -642,13 +713,13 @@ const rightUnitMap = {
               style="left: calc(400px - 100px);bottom: 300px;"
             >
               <div class="info-rect">
-                <div class="text-info" v-for="(item, index) in singleMonitor" :key="index">
-                  <div class="text-row">编号: {{ item.id }}</div>
-                  <div class="text-row">位置: {{ item.name }}</div>
-                  <div class="text-row">设备: {{ item.id }}</div>
+                <div class="text-info" v-for="(item, index) in sxtObj" :key="index">
+                  <div class="text-row">编号: {{item.deviceCode}}</div>
+                  <div class="text-row">位置: {{item.location}}</div>
+                  <div class="text-row">设备: {{item.deviceName}}</div>
                   <div class="text-row">状态: <span
-                    :style="`color: ${item.status === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                      item.status === 'online' ? '在线' : '离线'
+                    :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                      item.deviceStatus === 'online' ? '在线' : '离线'
                     }}</span></div>
                 </div>
               </div>
@@ -664,10 +735,10 @@ const rightUnitMap = {
             >
               <div class="info-rect">
                 <div class="text-info">
-                  <div class="text-row">编号: {{ singleSensorInfo.deviceCode }}</div>
-                  <div class="text-row">位置: {{ singleSensorInfo.name }}</div>
-                  <div class="text-row">设备: {{ singleSensorInfo.deviceName }}</div>
-                  <div class="text-row">当前读数: {{ singleSensorInfo.dataValue }}</div>
+                  <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
+                  <div class="text-row">位置: {{ sjList.parkName }}</div>
+                  <div class="text-row">设备: {{ sjList.deviceName }}</div>
+                  <div class="text-row">当前读数: {{ sjList.dataValue }}</div>
                 </div>
               </div>
               <img
@@ -681,11 +752,11 @@ const rightUnitMap = {
             >
               <div class="info-rect">
                 <div class="text-info">
-                  <div class="text-row">位置: {{ onWarningInfo.parkName }}</div>
-                  <div class="text-row">设备: {{ onWarningInfo.deviceName }}</div>
+                  <div class="text-row">位置: {{ warnList.parkCode }}</div>
+                  <div class="text-row">设备: {{ warnList.deviceCode }}</div>
                   <div class="text-row">
                     预警信息:
-                    <span style="color: #ff0000;">{{ onWarningInfo.warnInfo }}</span>
+                    <span style="color: #ff0000;">{{ warnList.warnInfo }}</span>
                   </div>
                 </div>
               </div>
@@ -753,7 +824,7 @@ const rightUnitMap = {
                 >{{ item.name }}
                 </option>
               </select>
-              <select @change="handleSelectorChange2">
+              <select @change="selecte2">
                 <option
                   :value="item.id"
                   v-for="item,index in options2"
@@ -816,7 +887,7 @@ const rightUnitMap = {
             >
               <div class="video-wrapper">
                 <img
-                  :src="item.capturedImage"
+                  :src="item.imgId"
                   alt=""
                   style="width: 100%;height: 100%;object-fit: contain;"
                 />
@@ -826,11 +897,11 @@ const rightUnitMap = {
                 ></div>
               </div>
               <div class="text-wrapper">
-                <div class="text-row">名称:{{ item.equipmentName }}</div>
-                <div class="text-row">位置:{{ item.yyLocation }}</div>
+                <div class="text-row">名称:{{ item.deviceName }}</div>
+                <div class="text-row">位置:{{ item.location }}</div>
                 <div class="text-row">状态: <span
-                  :style="`color: ${item.yyStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                    item.yyStatus === 'online' ? '在线' : '离线'
+                  :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                    item.deviceStatus === 'online' ? '在线' : '离线'
                   }}</span></div>
               </div>
             </div>

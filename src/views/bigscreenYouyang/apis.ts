@@ -51,15 +51,16 @@ export const deviceBasePage = async () => {
   return await request.get({
     url: '/agriculture/device-info/page',
     params: {
-      deviceType: '25,26'
+      deviceType: '25,29'
     }
   })
 }
 
 // 左下角监控设备(两条)
-export const monitoringEquipment = async () => {
+export const monitoringEquipment = async (params) => {
   return await request.get({
-    url: '/yyang/monitoring-equipment/monitoringEquipment'
+    url: '/agriculture/device-info/page',
+    params
   })
 }
 
@@ -91,6 +92,42 @@ export const waterDetectionByAddress = async (params) => {
 export const getDeviceDataYouEnvironmentLine = async (params) => {
   return await request.get({
     url: '/yyang/equipment-data/environmentalDataLineChart',
+    params
+  })
+}
+//基地
+export const page = async (params) => {
+  return await request.get({
+    url: '/agriculture/park-info/page',
+    params
+  })
+}
+//水塘
+export const park = async (params) => {
+  return await request.get({
+    url: '/agriculture/park-info/park-detail/list-by-park-id',
+    params
+  })
+}
+
+//单个摄像头
+export const page2 = async (params) => {
+  return await request.get({
+    url: '/agriculture/device-info/page',
+    params
+  })
+}
+//单个数据采集
+export const page3 = async (params) => {
+  return await request.get({
+    url: '/yyang/equipment-data/page',
+    params
+  })
+}
+//预警信息
+export const list = async (params) => {
+  return await request.get({
+    url: '/agriculture/agri-warning-record/list',
     params
   })
 }
