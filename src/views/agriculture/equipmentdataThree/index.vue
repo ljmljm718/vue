@@ -237,8 +237,8 @@ const initChart= async ()=>{
               show: true, //是否显示
               lineStyle: {
                 //网格线样式
-                color: "#000", //网格线颜色
-                width: 3, //网格线的加粗程度
+                color: "#e1e7f1", //网格线颜色
+                width: 1, //网格线的加粗程度
                 type: "dashed", //网格线类型
               },
             },

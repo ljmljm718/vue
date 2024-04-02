@@ -85,7 +85,8 @@ const getGetDeviceDataYouEnvironment = async (id) => {
   console.log("数据", res)
   envVal.value =res;
   console.log(leftTabSelected.value,id,'jiegoufuhzi')
-  await initChart1({typeName:leftTabSelected.value,id:id.id})
+  let id2=id.id
+  await initChart1({typeName:leftTabSelected.value,id:id2})
 }
 
 // 左下角设备监控
@@ -459,7 +460,7 @@ const initChart1 = async (lineChart ) => {
 }
 const getChart=(val)=>{
   leftTabSelected.value = val
-  initChart1({typeName:val,id:leftCurDeviceCode1.value})
+  initChart1({typeName:val,id:leftCurDeviceCode1.value.id})
 }
 const initChart2 = async (lineChart , belongPark, belongPlot) => {
   // 水质监测（折线图）
@@ -556,7 +557,7 @@ watch(
   () => leftTabSelected.value,
   (newValue) => {
     console.log('newValue', newValue)
-    initChart1({typeName:newValue,id:leftCurDeviceCode1.value})
+    initChart1({typeName:newValue,id:leftCurDeviceCode1.value.id})
   }
 )
 const leftIconMap = {
