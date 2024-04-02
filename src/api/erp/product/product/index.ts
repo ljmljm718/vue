@@ -17,6 +17,7 @@ export interface ProductVO {
   purchasePrice: number // 采购价格，单位：元
   salePrice: number // 销售价格，单位：元
   minPrice: number // 最低价格，单位：元
+  img: String
 }
 
 // ERP 产品 API
