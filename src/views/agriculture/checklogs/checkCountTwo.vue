@@ -78,7 +78,7 @@
                 <el-button
                   link
                   type="primary"
-                  @click="openFormA('create', scope.row.id)"
+                  @click="openFormA('create', scope.row)"
                 >
                   去巡检
                 </el-button>
@@ -318,8 +318,8 @@ const openForm = (type: string, id?: number) => {
 }
 /** 去巡检操作 */
 const formRefA = ref()
-const openFormA = (type: string, id?: number) => {
-  formRefA.value.open(type, id)
+const openFormA = (type: string, row) => {
+  formRefA.value.open(type, row)
 }
 /** 去巡检操作后关闭窗口刷新事件 */
 const getALLList = () => {

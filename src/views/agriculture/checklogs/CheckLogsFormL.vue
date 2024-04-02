@@ -11,7 +11,7 @@
 <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
 <!--      </el-form-item>-->
       <el-form-item label="巡检状态" prop="inspectionState">
-        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态逻辑增加完毕再删除提醒">
+        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
             :key="dict.value"
@@ -121,21 +121,17 @@ const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, row) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
-  console.log("我想知道参数传进来的是什么",id)
   formType.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await CheckLogsApi.getCheckLogs(id)
-    } finally {
-      formLoading.value = false
-    }
-  }
+  //相关属性赋值
+  formData.value.equNum = row.equNum
+  formData.value.equName = row.equName
+  formData.value.massif = row.massif
+  formData.value.base = row.base
+  formLoading.value = false
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
