@@ -844,7 +844,7 @@ const rightUnitMap = {
                 v-for="(item, index) in waterTypeList"
                 :key="index"
               >
-                <div :class="`icon-wrapper r-icon-${index}`"></div>
+                <div :class="`icon-wrapper r-icon-${index+1}`"></div>
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
