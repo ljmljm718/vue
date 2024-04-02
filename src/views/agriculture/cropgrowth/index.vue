@@ -144,7 +144,7 @@
         :formatter="dateFormatter2"
         width="180px"
       />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark" width="200px"/>
       <el-table-column
         label="创建时间"
         align="center"

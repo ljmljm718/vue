@@ -649,7 +649,7 @@ const rightUnitMap = {
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/devicedataYYang')">
+          <div class="main-item-title title-bg" @click="$router.push('/deviceData/equipment-data-three')">
             <div>环境监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleEnvSelectorChange">
@@ -788,19 +788,19 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase')">
+              <div class="value-card" @click="$router.push('/device/deviceView')">
                 {{ deviceBaseInfo.total }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">
+              <div class="value-card" @click="$router.push('/device/deviceView?deviceStatus=online')">
                 {{ deviceBaseInfo.online }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">
+              <div class="value-card" @click="$router.push('/device/deviceView?deviceStatus=offline')">
                 {{ deviceBaseInfo.offline }}
               </div>
             </div>
@@ -832,7 +832,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/yyangDeviceData')">
+          <div class="main-item-title title-bg" @click="$router.push('/deviceData/equipment-data')">
             <div>水质监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleSelectorChange1">
@@ -892,7 +892,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/InternetThingsDevices/monitoring-equipment')">
+          <div class="main-item-title title-bg" @click="$router.push('/device/deviceView')">
             <div>监控设备</div>
           </div>
           <div
@@ -929,7 +929,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/warning/warning-record')">
+          <div class="main-item-title title-bg" @click="$router.push('/warn/agri-warning-record')">
             <div>预警信息</div>
           </div>
           <div class="main-item-container pre-warn-table">
