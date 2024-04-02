@@ -16,6 +16,7 @@ export interface ParkInfoVO {
   remark: string // 备注
   deptId: number // 部门编号
   userId: number // 用户编号
+  quantity: string // 数量
 }
 
 // 基地基本信息 API

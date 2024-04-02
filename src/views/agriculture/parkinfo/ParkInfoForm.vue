@@ -44,6 +44,9 @@
       <el-form-item label="面积" prop="area">
         <el-input v-model="formData.area" placeholder="请输入面积" />
       </el-form-item>
+      <el-form-item label="数量" prop="quantity">
+        <el-input v-model="formData.quantity" placeholder="请输入数量" />
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
@@ -89,7 +92,8 @@ const formData = ref({
   area: undefined,
   remark: undefined,
   deptId: undefined,
-  userId: undefined
+  userId: undefined,
+  quantity: undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -167,7 +171,8 @@ const resetForm = () => {
     area: undefined,
     remark: undefined,
     deptId: undefined,
-    userId: undefined
+    userId: undefined,
+    quantity: undefined
   }
   formRef.value?.resetFields()
 }
