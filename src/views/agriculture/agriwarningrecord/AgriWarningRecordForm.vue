@@ -7,14 +7,21 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="园区编号" prop="parkCode">
-        <el-input v-model="formData.parkCode" placeholder="请输入园区编号" />
+      <el-form-item label="设备编号" prop="deviceCode">
+        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" disabled>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="基地编号" prop="parkCode">
+        <el-input v-model="formData.parkCode" placeholder="请输入基地编号" disabled />
       </el-form-item>
       <el-form-item label="地块编号" prop="plotCode">
-        <el-input v-model="formData.plotCode" placeholder="请输入地块编号" />
-      </el-form-item>
-      <el-form-item label="设备编号" prop="deviceCode">
-        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
+        <el-input v-model="formData.plotCode" placeholder="请输入地块编号" disabled />
       </el-form-item>
       <el-form-item label="预警信息" prop="warnInfo">
         <el-input v-model="formData.warnInfo" placeholder="请输入预警信息" />
@@ -95,10 +102,24 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择基地-->
+<!--  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>-->
+  <!--  选择地块-->
+<!--  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>-->
+
+  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { AgriWarningRecordApi, AgriWarningRecordVO } from '@/api/agriculture/agriwarningrecord'
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import { ParkInfoVO } from '@/api/agriculture/parkinfo'
+import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 
 /** 预警记录 表单 */
 defineOptions({ name: 'AgriWarningRecordForm' })
@@ -203,5 +224,55 @@ const resetForm = () => {
     warnTitle: undefined,
   }
   formRef.value?.resetFields()
+}
+
+// 基地的选择
+// const parkPopupRef = ref()
+// const openType = ref('')
+// const openParkPopup = (id: string) => {
+//   openType.value = id;
+//   if (openType.value === undefined || openType.value === ""){
+//     message.error("请选择基地")
+//   }else parkPopupRef.value.open(id)
+// }
+// const handleParkPopupChange = (order: ParkInfoVO) => {
+//   if (openType.value === '0'){
+//     formData.value.parkCode = String(order[0].code)
+//   }
+//   else formData.value.plotCode = String(order[0].id)
+// }
+//
+// //地块的选择
+// const plotPopupRef = ref()
+// const openType1 = ref('')
+// const openPlotPopup = (id: string) => {
+//   openType1.value = id;
+//   if (!openType1.value){
+//     message.error("请选择基地")
+//   }else plotPopupRef.value.open(id)
+// }
+// const handlePlotPopupChange = (order: ParkDetailVO) => {
+//
+//   console.log("--->>查看选择的地块信息：",order[0])
+//   formData.value.parkCode = String(order[0].parkId)
+//   formData.value.plotCode = String(order[0].id)
+//
+// }
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+
+}
+
+const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
+  // 将订单设置到入库单
+  //console.log("--->>查看查到的农资信息",order)
+  //赋值id
+  formData.value.deviceCode = order[0].id
+  //基地
+  formData.value.parkCode = order[0].belongPark;
+  //地块
+  formData.value.plotCode = order[0].belongPlot
 }
 </script>

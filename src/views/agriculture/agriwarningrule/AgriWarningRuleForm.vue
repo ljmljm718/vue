@@ -117,6 +117,8 @@ import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwar
 /** 鲁渝协作预警规则 表单 */
 defineOptions({ name: 'AgriWarningRuleForm' })
 
+const status = "0" // 初始化生效状态为未生效
+
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
@@ -135,7 +137,7 @@ const formData = ref({
   responsiblePerson: undefined,
   remark: undefined,
   warnType: undefined,
-  effectiveStatus: undefined,
+  effectiveStatus: status,
   ruleTitle: undefined,
 })
 const formRules = reactive({
@@ -202,7 +204,7 @@ const resetForm = () => {
     responsiblePerson: undefined,
     remark: undefined,
     warnType: undefined,
-    effectiveStatus: undefined,
+    effectiveStatus: status,
     ruleTitle: undefined,
   }
   formRef.value?.resetFields()
