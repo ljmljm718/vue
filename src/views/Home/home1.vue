@@ -5,7 +5,7 @@ import {
   deviceInfoPage,
   deviceInfoByPark,
   getDeviceState,
-  environmentalData,
+  environmentalDataHomePage,
   waterQualityData,
   growthPage,
   getCountPageByBaseId,
@@ -98,7 +98,7 @@ const handleSelectorChange2 = (val) => {
 
 const topDataList = ref([])
 const getenvironmentalData = async () => {
-  const res = await environmentalData()
+  const res = await environmentalDataHomePage()
   console.log('top Data', res);
   topDataList.value = res
 }
