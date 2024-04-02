@@ -772,19 +772,19 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase')">
+              <div class="value-card" @click="$router.push('/device/deviceView')">
                 {{ deviceBaseInfo.total }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=online')">
+              <div class="value-card" @click="$router.push('/device/deviceView?deviceStatus=online')">
                 {{ deviceBaseInfo.online }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/basic/device/devicebase?deviceStatus=offline')">
+              <div class="value-card" @click="$router.push('/device/deviceView?deviceStatus=offline')">
                 {{ deviceBaseInfo.offline }}
               </div>
             </div>
