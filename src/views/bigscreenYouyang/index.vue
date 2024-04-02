@@ -461,11 +461,17 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
   console.log('水质监测（折线图）', res)
   const seriseName = rightLabelMap[res[0].type]
   const yName = rightUnitMap[res[0].type]
+  let xAxisData=[]
+  let yAxisData=[]
+  res.forEach(item=>{
+    xAxisData.push(item.collectionTime)
+    yAxisData.push(item.dataValue)
+  })
   initChartStatic(
     'chart2',
     generateBaseOptions({
       xAxis: {
-        data: res.map(item => (item.month)).reverse(),
+        data:xAxisData,
         axisLine: {
           show: true,
           lineStyle: {
@@ -507,7 +513,7 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
       series: [
         {
           name: seriseName,
-          data: res.map(item => (item.dataValue)).reverse(),
+          data: yAxisData,
           type: 'line',
           smooth: false,
           label: {
@@ -848,7 +854,7 @@ const rightUnitMap = {
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ item.unit }}</span>
+                    <span class="unit">{{ item.yyUnit }}</span>
                   </div>
                   <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
