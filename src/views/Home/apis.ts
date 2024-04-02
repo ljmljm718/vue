@@ -69,3 +69,7 @@ export const detailListByParkId = (params) => {
 export const parkInfoPage = (params) => {
   return request.get({ url: `/agriculture/park-info/page`, params })
 }
+
+export const environmentalDataHomePage = () => {
+  return request.get({ url: `/yyang/equipment-data/environmentalDataHomePage` })
+}

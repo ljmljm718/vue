@@ -76,13 +76,17 @@ const envVal = ref([])
 // })
 const leftCurDeviceCode1 = ref(0);
 const leftCurDeviceCode2 = ref(0);
-const getGetDeviceDataYouEnvironment = async (belongPark, belongPlot) => {
-  leftCurDeviceCode1.value = belongPark;
-  leftCurDeviceCode2.value = belongPlot;
-  const res = await getDeviceDataYouEnvironment()
+const leftTabSelected = ref('温度')
+
+const getGetDeviceDataYouEnvironment = async (id) => {
+  leftCurDeviceCode1.value = id;
+  // leftCurDeviceCode2.value = belongPlot;
+  const res = await getDeviceDataYouEnvironment(id)
   console.log("数据", res)
   envVal.value =res;
-  await initChart1(leftTabSelected.value)
+  console.log(leftTabSelected.value,id,'jiegoufuhzi')
+  let id2=id.id
+  await initChart1({typeName:leftTabSelected.value,id:id2})
 }
 
 // 左下角设备监控
@@ -109,7 +113,7 @@ const getLargeScreenGetOneWarning = async (parkId) => {
 
 const getDeviceBasePage = async () => {
   const {list = []} = await deviceBasePage()
-  console.log('getDeviceBasePage', list)
+  console.log('左上下拉', list)
   Array.isArray(list)
     ? (envOptions.value = list.map((item) => ({
       ...item,
@@ -117,10 +121,10 @@ const getDeviceBasePage = async () => {
       name: item.deviceName
     })))
     : null;
-  if (envOptions.value[0]) {
-    await getGetDeviceDataYouEnvironment(envOptions.value[0].belongPark, envOptions.value[0].belongPlot)
-    await initChart1('温度')
-  }
+ 
+    console.log(list,'id')
+     getGetDeviceDataYouEnvironment({id:list[0].id})
+    await initChart1({typeName:'温度',id:list[0].id})
 }
 getDeviceBasePage()
 //单个摄像头
@@ -271,13 +275,15 @@ const getPage=()=>{
 }
 getPage()
 //获取堂口
+const rightTabSelected = ref('PH值')
 const options2 = ref<Array<any>>([])
 const getPark=(id)=>{
   park(id).then(res=>{
     console.log(res,'塘口')
     options2.value=res
-    
+    initChart2(rightTabSelected.value)
     getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:res[0].id})
+    
   })
 }
 //获取八项
@@ -320,10 +326,11 @@ const handleSelectorChange2 = (val) => {
 // 环境监测 options
 const envOptions = ref<Array<any>>([])
 const handleEnvSelectorChange = (val) => {
+  console.log(val.target.value,'huanjjcid')
   const item = envOptions.value.find(item => {
     return item.id === val.target.value
   })
-  getGetDeviceDataYouEnvironment(item.belongPark, item.belongPlot)
+  getGetDeviceDataYouEnvironment({id:val.target.value})
 }
 
 const envLabel = ref('')
@@ -364,7 +371,7 @@ const initChart1 = async (lineChart ) => {
   if (!lineChart  || !deviceCode1) return
   console.log('lineChart ', lineChart )
   envLabel.value = leftLabelMap[lineChart ];
-  const res = await getDeviceDataYouEnvironmentLine({deviceCode1, lineChart })
+  const res = await getDeviceDataYouEnvironmentLine( lineChart )
   console.log('getDeviceDataYouEnvironmentLine ==', res);
   let xAxisData=[]
   let yAxisData=[]
@@ -453,7 +460,7 @@ const initChart1 = async (lineChart ) => {
 }
 const getChart=(val)=>{
   leftTabSelected.value = val
-  initChart1()
+  initChart1({typeName:val,id:leftCurDeviceCode1.value.id})
 }
 const initChart2 = async (lineChart , belongPark, belongPlot) => {
   // 水质监测（折线图）
@@ -461,11 +468,17 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
   console.log('水质监测（折线图）', res)
   const seriseName = rightLabelMap[res[0].type]
   const yName = rightUnitMap[res[0].type]
+  let xAxisData=[]
+  let yAxisData=[]
+  res.forEach(item=>{
+    xAxisData.push(item.collectionTime)
+    yAxisData.push(item.dataValue)
+  })
   initChartStatic(
     'chart2',
     generateBaseOptions({
       xAxis: {
-        data: res.map(item => (item.month)).reverse(),
+        data:xAxisData,
         axisLine: {
           show: true,
           lineStyle: {
@@ -507,7 +520,7 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
       series: [
         {
           name: seriseName,
-          data: res.map(item => (item.dataValue)).reverse(),
+          data: yAxisData,
           type: 'line',
           smooth: false,
           label: {
@@ -540,12 +553,11 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
   )
 }
 
-const leftTabSelected = ref('温度')
 watch(
   () => leftTabSelected.value,
   (newValue) => {
     console.log('newValue', newValue)
-    initChart1(newValue)
+    initChart1({typeName:newValue,id:leftCurDeviceCode1.value.id})
   }
 )
 const leftIconMap = {
@@ -581,7 +593,11 @@ const leftLabelMap = {
   "风向": '风向' //风向
 }
 
-const rightTabSelected = ref('PH值')
+
+const btnCli=(val)=>{
+  rightTabSelected.value = val.monitoringType
+  initChart2(rightTabSelected.value)
+}
 watch(
   () => rightTabSelected.value,
   (newValue) => {
@@ -844,17 +860,17 @@ const rightUnitMap = {
                 v-for="(item, index) in waterTypeList"
                 :key="index"
               >
-                <div :class="`icon-wrapper r-icon-${index}`"></div>
+                <div :class="`icon-wrapper r-icon-${index+1}`"></div>
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ item.unit }}</span>
+                    <span class="unit">{{ item.yyUnit }}</span>
                   </div>
                   <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
                 <div
                   class="check-btn"
-                  @click="rightTabSelected = item.monitoringType"
+                  @click="btnCli(item)"
                 >查看
                 </div>
               </div>

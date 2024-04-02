@@ -4,13 +4,22 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
        <el-table-column label="编号" align="center" prop="code" width="200"/>
       <el-table-column label="名称" align="center" prop="name" width="150"/>
-      <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
+      <el-table-column label="海拔" align="center" prop="altitude" width="100">
+        <template #default="scope">
+          {{ scope.row.altitude != undefined ? scope.row.altitude + '米' : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="通讯地址" align="center" prop="address" />
       <el-table-column label="联系人" align="center" prop="contact" />
       <el-table-column label="联系电话" align="center" prop="tel" />
-      <el-table-column label="面积（亩）" align="center" prop="area" width="100"/>
+      <el-table-column label="面积" align="center" prop="area" width="100">
+        <template #default="scope">
+          {{ scope.row.area != undefined ? scope.row.area + '亩' : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="数量" align="center" prop="quantity" width="100"/>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"

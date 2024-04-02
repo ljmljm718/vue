@@ -171,42 +171,42 @@
               <div class='footer-item'>
                 <div  :class='["foot-top","footTop-2"]'>
                     <div style='margin-left:30px;'>空气湿度</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.humidity}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.humidity}}<span style='font-size:12px;'>%RH</span></div>
                 </div>
                 <div id='chart4'></div>
               </div>
               <div class='footer-item'>
                 <div :class='["foot-top","footTop-3"]'>
                     <div style='margin-left:30px;'>降雨量</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.rainfall}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.rainfall}}<span style='font-size:12px;'>mm</span></div>
                 </div>
                 <div id='chart5'></div>
               </div>
               <div class='footer-item'>
                 <div :class='["foot-top","footTop-4"]'>
                     <div style='margin-left:30px;'>光照强度</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.lighting}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.lighting}}<span style='font-size:12px;'>Lux</span></div>
                 </div>
                 <div id='chart6'></div>
               </div>
               <div class='footer-item'>
                 <div :class='["foot-top","footTop-5"]'>
                     <div style='margin-left:30px;'>风速</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.windSpeed}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.windSpeed}}<span style='font-size:12px;'>m/s</span></div>
                 </div>
                 <div id='chart7'></div>
               </div>
               <div class='footer-item'>
                 <div :class='["foot-top","footTop-6"]'>
                     <div style='margin-left:30px;'>大气压力</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.airPressure}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.airPressure}}<span style='font-size:12px;'>kPa</span></div>
                 </div>
                 <div id='chart8'></div>
               </div>
               <div class='footer-item' v-if="soilIndex==3">
                 <div :class='["foot-top","footTop-7"]'>
                     <div style='margin-left:30px;'>二氧化碳</div>
-                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.co2Density}}<span style='font-size:12px;'>℃</span></div>
+                    <div style='font-size:25px;margin-left:-100px;'>{{footTop.co2Density}}<span style='font-size:12px;'>mmol/L</span></div>
                 </div>
                 <div id='chart9'></div>
               </div>
@@ -352,6 +352,7 @@ const initChart1=async ()=> {
 //设备运行统计
 const initChart2= async ()=>{
   let res= await deviceHistoryStatus()
+  
   let xAxisData=res.date
   let yAxisData=res.offline
   let yAxisData2=res.online
