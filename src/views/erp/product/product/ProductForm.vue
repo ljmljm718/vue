@@ -121,6 +121,11 @@
             <el-input type="textarea" v-model="formData.remark" placeholder="请输入备注" />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="图片" prop="img">
+            <UploadImg v-model="formData.img" />
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <template #footer>
@@ -160,7 +165,8 @@ const formData = ref({
   weight: undefined,
   purchasePrice: undefined,
   salePrice: undefined,
-  minPrice: undefined
+  minPrice: undefined,
+  img: undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
@@ -235,7 +241,8 @@ const resetForm = () => {
     weight: undefined,
     purchasePrice: undefined,
     salePrice: undefined,
-    minPrice: undefined
+    minPrice: undefined,
+    img: undefined
   }
   formRef.value?.resetFields()
 }
