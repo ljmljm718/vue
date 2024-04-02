@@ -81,6 +81,13 @@
           </el-form-item>
         </template>
       </el-table-column>
+      <el-table-column label="数量" min-width="150">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.quantity`" :rules="formRules.quantity" class="mb-0px!">
+            <el-input v-model="row.quantity" placeholder="请输入数量" />
+          </el-form-item>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.remark`" :rules="formRules.remark" class="mb-0px!">
@@ -149,7 +156,8 @@ const handleAdd = () => {
     area: undefined,
     remark: undefined,
     deptId: undefined,
-    userId: undefined
+    userId: undefined,
+    quantity: undefined
   }
   row.parkId = props.parkId
   formData.value.push(row)
