@@ -13,7 +13,16 @@
       <el-form-item label="服务名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入服务名称" />
       </el-form-item>
-      <el-form-item label="服务类型" prop="type">
+      <el-form-item prop="type">
+        <template #label>
+          <div>服务类型</div>
+          <el-tooltip
+            content="服务类型为【前台服务】的会展示在门户首页，其他类型仅做为维护使用"
+            placement="top"
+          >
+            <Icon icon="ep:question-filled" style="vertical-align: middle" />
+          </el-tooltip>
+        </template>
         <el-select v-model="formData.type" placeholder="请选择服务类型">
           <el-option
             v-for="dict in getDictOptions(DICT_TYPE.PORTAL_PROJECT_SERVICE_TYPE)"
@@ -23,7 +32,16 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item prop="status">
+        <template #label>
+          <div>是否展示</div>
+          <el-tooltip
+            content="状态为【是】的会展示在门户首页"
+            placement="top"
+          >
+            <Icon icon="ep:question-filled" style="vertical-align: middle" />
+          </el-tooltip>
+        </template>
         <el-radio-group v-model="formData.status">
           <el-radio
             v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
@@ -93,7 +111,7 @@ const formData = ref({
   projectId: undefined,
   code: undefined,
   name: undefined,
-  type: undefined,
+  type: 'front-end_service',
   status: status,
   accessPath: undefined,
   endpoint: undefined,
@@ -167,7 +185,7 @@ const resetForm = () => {
     projectId: undefined,
     code: undefined,
     name: undefined,
-    type: undefined,
+    type: 'front-end_service',
     status: status,
     accessPath: undefined,
     endpoint: undefined,
