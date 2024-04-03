@@ -166,7 +166,7 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as CheckLogsVO
     if (formType.value === 'create') {
-      await CheckLogsApi.createCheckLogs(data)
+      await CheckLogsApi.createCheck(data)
       message.success(t('common.createSuccess'))
     } else {
       await CheckLogsApi.updateCheckLogs(data)
