@@ -9,7 +9,7 @@ export interface SalesManagementVO {
   quantity: string // 数量
   totalPrice: string // 总价
   salesLocation: string // 销售地
-  upTime: string // 时间
+  upTime: Date // 时间
   remark: string // 备注
 }
 
