@@ -98,7 +98,7 @@
           {{ scope.row.quantity != undefined ? scope.row.type === "chicken" ? scope.row.quantity + '只' : scope.row.quantity + '株' : '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="简介" align="center" prop="remark"/>
       <el-table-column
         label="创建时间"
         align="center"

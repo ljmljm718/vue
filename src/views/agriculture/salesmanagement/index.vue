@@ -80,7 +80,13 @@
       <el-table-column label="数量" align="center" prop="quantity" />
       <el-table-column label="总价" align="center" prop="totalPrice" />
       <el-table-column label="销售地" align="center" prop="salesLocation" />
-      <el-table-column label="时间" align="center" prop="upTime" />
+      <el-table-column
+        label="时间"
+        align="center"
+        prop="upTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"

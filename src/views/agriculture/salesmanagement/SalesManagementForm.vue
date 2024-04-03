@@ -28,7 +28,7 @@
       <el-form-item label="时间" prop="upTime">
         <el-date-picker
           v-model="formData.upTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择时间"
         />

@@ -47,8 +47,8 @@
       <el-form-item label="数量" prop="quantity">
         <el-input v-model="formData.quantity" placeholder="请输入数量" />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
+      <el-form-item label="简介" prop="remark">
+        <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
     <!-- 子表的表单 -->
