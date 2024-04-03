@@ -44,4 +44,9 @@ export const SalesManagementApi = {
   exportSalesManagement: async (params) => {
     return await request.download({ url: `/agriculture/sales-management/export-excel`, params })
   },
+
+  // 根据销售目的地统计总价
+  getSumPriceByLocation: async () => {
+    return await request.download({ url: `/agriculture/sales-management/location/price` })
+  },
 }
