@@ -172,7 +172,7 @@
             type="primary"
             v-if="scope.row.deviceType[0]===39"
             @click="$router.push({
-              path: '/device/equipment-data-three',
+              path: '/deviceData/equipment-data-three',
               query: {
                 equipmentCode: scope.row.id
               }
