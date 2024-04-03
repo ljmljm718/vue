@@ -76,9 +76,9 @@
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="销售编号" align="center" prop="salesNum" />
       <el-table-column label="产品" align="center" prop="product" />
-      <el-table-column label="单价" align="center" prop="unitPrice" />
-      <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="总价" align="center" prop="totalPrice" />
+      <el-table-column label="单价(元/斤)" align="center" prop="unitPrice" />
+      <el-table-column label="数量(斤)" align="center" prop="quantity" />
+      <el-table-column label="总价(万元)" align="center" prop="totalPrice" />
       <el-table-column label="销售地" align="center" prop="salesLocation" />
       <el-table-column
         label="时间"

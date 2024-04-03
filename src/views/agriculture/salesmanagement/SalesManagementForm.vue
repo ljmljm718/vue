@@ -13,13 +13,13 @@
       <el-form-item label="产品" prop="product">
         <el-input v-model="formData.product" placeholder="请输入产品" />
       </el-form-item>
-      <el-form-item label="单价" prop="unitPrice">
+      <el-form-item label="单价(元/斤)" prop="unitPrice">
         <el-input v-model="formData.unitPrice" placeholder="请输入单价" />
       </el-form-item>
-      <el-form-item label="数量" prop="quantity">
+      <el-form-item label="数量(斤)" prop="quantity">
         <el-input v-model="formData.quantity" placeholder="请输入数量" />
       </el-form-item>
-      <el-form-item label="总价" prop="totalPrice">
+      <el-form-item label="总价(万元)" prop="totalPrice">
         <el-input v-model="formData.totalPrice" placeholder="请输入总价" />
       </el-form-item>
       <el-form-item label="销售地" prop="salesLocation">
