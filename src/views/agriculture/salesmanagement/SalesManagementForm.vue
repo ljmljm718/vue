@@ -14,10 +14,16 @@
         <el-input v-model="formData.product" placeholder="请输入产品" />
       </el-form-item>
       <el-form-item label="单价(元/斤)" prop="unitPrice">
-        <el-input v-model="formData.unitPrice" placeholder="请输入单价" />
+        <el-input v-model="formData.unitPrice" placeholder="请输入单价" @input="() => {
+          if (!formData.quantity || !formData.unitPrice) return
+          formData.totalPrice = (formData.quantity * formData.unitPrice/10000).toFixed(2)
+        }" />
       </el-form-item>
       <el-form-item label="数量(斤)" prop="quantity">
-        <el-input v-model="formData.quantity" placeholder="请输入数量" />
+        <el-input v-model="formData.quantity" placeholder="请输入数量" @input="() => {
+          if (!formData.quantity || !formData.unitPrice) return
+          formData.totalPrice = (formData.quantity * formData.unitPrice/10000).toFixed(2)
+        }" />
       </el-form-item>
       <el-form-item label="总价(万元)" prop="totalPrice">
         <el-input v-model="formData.totalPrice" placeholder="请输入总价" />
