@@ -134,7 +134,7 @@
       </el-table>
     </el-drawer>
   </ContentWrap>
-  <!-- 表单弹窗：添加/修改 -->
+  <!-- 表单弹窗：查看 -->
   <CheckLogsFormLook ref="formRef" @success="getALLList"/>
   <!-- 表单弹窗：添加/修改 -->
   <CheckLogsFormL ref="formRefA" @success="getALLList"/>
