@@ -122,16 +122,16 @@
       />
       <el-table-column label="基地" align="center" prop="belongPark" />
       <el-table-column label="地块" align="center" prop="belongPlot" />
-      <el-table-column label="采收量" align="center" prop="harvestVolume" />
-      <el-table-column label="人工数量" align="center" prop="laborQuantity" />
+      <el-table-column label="采收量(/万斤)" align="center" prop="harvestVolume" />
+      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+<!--      <el-table-column-->
+<!--        label="创建时间"-->
+<!--        align="center"-->
+<!--        prop="createTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
