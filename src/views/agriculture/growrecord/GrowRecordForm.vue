@@ -43,7 +43,12 @@
       </el-form-item>
       <el-form-item label="测量类型" prop="measureType">
         <el-select v-model="formData.measureType" placeholder="请选择测量类型">
-          <el-option label="请选择字典生成" value="" />
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_GROW_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="测量值" prop="measureNum">
@@ -67,6 +72,7 @@
 </template>
 <script setup lang="ts">
 import { GrowRecordApi, GrowRecordVO } from '@/api/agriculture/growrecord'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 长势管理 表单 */
 defineOptions({ name: 'GrowRecordForm' })

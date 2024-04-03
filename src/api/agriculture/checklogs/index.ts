@@ -78,6 +78,12 @@ export const CheckLogsApi = {
     return await request.post({url: `/agriculture/check-logs/create`, data})
   },
 
+  //
+  // 新增巡检记录
+  createCheck: async (data: CheckLogsVO) => {
+    return await request.post({url: `/agriculture/check-logs/createCheck`, data})
+  },
+
   // 修改巡检记录
   updateCheckLogs: async (data: CheckLogsVO) => {
     return await request.put({url: `/agriculture/check-logs/update`, data})

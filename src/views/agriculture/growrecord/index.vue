@@ -17,15 +17,15 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品种名称" prop="cropName">
-        <el-input
-          v-model="queryParams.cropName"
-          placeholder="请输入品种名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="品种名称" prop="cropName">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.cropName"-->
+<!--          placeholder="请输入品种名称"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="品种" prop="cropType">
         <el-select
           v-model="queryParams.cropType"
@@ -33,7 +33,12 @@
           clearable
           class="!w-240px"
         >
-          <el-option label="请选择字典生成" value="" />
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="所属基地" prop="base">
@@ -45,28 +50,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="基地名称" prop="baseName">
-        <el-input
-          v-model="queryParams.baseName"
-          placeholder="请输入基地名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="所属地块" prop="massif">
         <el-input
           v-model="queryParams.massif"
           placeholder="请输入所属地块"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="地块名称" prop="massifName">
-        <el-input
-          v-model="queryParams.massifName"
-          placeholder="请输入地块名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -99,55 +86,13 @@
           clearable
           class="!w-240px"
         >
-          <el-option label="请选择字典生成" value="" />
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_GROW_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
-      </el-form-item>
-      <el-form-item label="测量值" prop="measureNum">
-        <el-input
-          v-model="queryParams.measureNum"
-          placeholder="请输入测量值"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="变化量" prop="measureSpike">
-        <el-input
-          v-model="queryParams.measureSpike"
-          placeholder="请输入变化量"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="测量单位" prop="measureUnit">
-        <el-input
-          v-model="queryParams.measureUnit"
-          placeholder="请输入测量单位"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -243,6 +188,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { GrowRecordApi, GrowRecordVO } from '@/api/agriculture/growrecord'
 import GrowRecordForm from './GrowRecordForm.vue'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 长势管理 列表 */
 defineOptions({ name: 'GrowRecord' })

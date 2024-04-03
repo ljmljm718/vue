@@ -257,4 +257,7 @@ export enum DICT_TYPE {
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
   CHECK_STATE='check_state',
   YYANG_ENVIRONMENTAL_MONITORING='yyang_environmental_monitoring',//环境监测
+
+  // =========== agri -  隘口 ==========
+  AGRI_GROW_TYPE = 'agri_grow_type', //长势管理测量类型
 }
