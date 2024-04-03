@@ -3,8 +3,8 @@ import request from '@/config/axios'
 // 虫情信息 VO
 export interface InsectInfoVO {
   id: number // id
-  equId: number // 设备id
-  gatherTime: Date // 采集时间
+  equipmentCode: number // 设备id
+  collectionTime: Date // 采集时间
   insectPestNumber: string // 虫害数量
   insectPestKind: string // 虫害种类
   insectTemperature: string // 杀虫仓温度
@@ -13,6 +13,7 @@ export interface InsectInfoVO {
   killInsectStatus: string // 杀虫灯状态
   killInsectBaffleStatus: string // 杀虫灯挡板状态
   insectVideo: string // 摄像头状态
+
 }
 
 // 虫情信息 API

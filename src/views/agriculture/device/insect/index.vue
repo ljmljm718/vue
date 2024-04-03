@@ -37,66 +37,66 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="诱虫灯状态" prop="insectLampStatus">
-        <el-select
-          v-model="queryParams.insectLampStatus"
-          placeholder="请选择诱虫灯状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="杀虫灯状态" prop="killInsectStatus">
-        <el-select
-          v-model="queryParams.killInsectStatus"
-          placeholder="请选择杀虫灯状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="挡板状态" prop="killInsectBaffleStatus">
-        <el-select
-          v-model="queryParams.killInsectBaffleStatus"
-          placeholder="请选择杀虫灯挡板状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="摄像头状态" prop="insectVideo">
-        <el-select
-          v-model="queryParams.insectVideo"
-          placeholder="请选择摄像头状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="诱虫灯状态" prop="insectLampStatus">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.insectLampStatus"-->
+<!--          placeholder="请选择诱虫灯状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="杀虫灯状态" prop="killInsectStatus">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.killInsectStatus"-->
+<!--          placeholder="请选择杀虫灯状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="挡板状态" prop="killInsectBaffleStatus">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.killInsectBaffleStatus"-->
+<!--          placeholder="请选择杀虫灯挡板状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="摄像头状态" prop="insectVideo">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.insectVideo"-->
+<!--          placeholder="请选择摄像头状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -130,14 +130,14 @@
         </template>
       </el-table-column>
       <el-table-column label="设备编号" align="center" prop="equipmentCode" />
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column
-        label="采集时间"
-        align="center"
-        prop="collectionTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+<!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
+<!--      <el-table-column-->
+<!--        label="采集时间"-->
+<!--        align="center"-->
+<!--        prop="collectionTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
       <el-table-column label="虫害数量" align="center" prop="insectPestNumber" />
       <el-table-column label="虫害种类" align="center" prop="insectPestKind" />
       <el-table-column label="杀虫仓温度" align="center" prop="insectTemperature">
@@ -150,46 +150,53 @@
           <span>{{scope.row.dryingTemperature}}℃</span>
         </template>
       </el-table-column>
-      <el-table-column label="诱虫灯状态" align="center" prop="insectLampStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.insectLampStatus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="杀虫灯状态" align="center" prop="killInsectStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.killInsectStatus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="挡板状态" align="center" prop="killInsectBaffleStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.killInsectBaffleStatus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="摄像头状态" align="center" prop="insectVideo">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.insectVideo" />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"
-            v-hasPermi="['agri:insect-info:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agri:insect-info:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
+      <el-table-column
+              label="数据上报时间"
+              align="center"
+              prop="collectionTime"
+              :formatter="dateFormatter"
+              width="180px"
+      />
+<!--      <el-table-column label="诱虫灯状态" align="center" prop="insectLampStatus">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.insectLampStatus" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="杀虫灯状态" align="center" prop="killInsectStatus">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.killInsectStatus" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="挡板状态" align="center" prop="killInsectBaffleStatus">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.killInsectBaffleStatus" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="摄像头状态" align="center" prop="insectVideo">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.insectVideo" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="操作" align="center">-->
+<!--        <template #default="scope">-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"-->
+<!--            v-hasPermi="['agri:insect-info:update']"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleDelete(scope.row.id)"-->
+<!--            v-hasPermi="['agri:insect-info:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination

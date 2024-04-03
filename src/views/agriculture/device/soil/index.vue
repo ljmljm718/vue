@@ -8,27 +8,27 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="设备编号" prop="equipmentCode">
         <el-input
-          v-model="queryParams.deviceCode"
+          v-model="queryParams.equipmentCode"
           placeholder="请输入设备编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备名称" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="采集时间" prop="gatherTime">
+<!--      <el-form-item label="设备名称" prop="deviceName">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.deviceName"-->
+<!--          placeholder="请输入设备名称"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="采集时间" prop="collectionTime">
         <el-date-picker
-          v-model="queryParams.gatherTime"
+          v-model="queryParams.collectionTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -69,15 +69,15 @@
           <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="设备编号" align="center" prop="deviceCode" />
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column
-        label="采集时间"
-        align="center"
-        prop="gatherTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+      <el-table-column label="设备编号" align="center" prop="equipmentCode" />
+<!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
+<!--      <el-table-column-->
+<!--        label="采集时间"-->
+<!--        align="center"-->
+<!--        prop="gatherTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
       <el-table-column label="土壤温度" align="center" prop="soilTemperature">
         <template v-slot="scope">
           <span>{{scope.row.soilTemperature}}℃</span>
@@ -95,26 +95,33 @@
           <span>{{scope.row.soilDepth}}m</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"
-            v-hasPermi="['agri:soil-moisture:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agri:soil-moisture:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
+      <el-table-column
+          label="数据上报时间"
+          align="center"
+          prop="collectionTime"
+          :formatter="dateFormatter"
+          width="180px"
+      />
+<!--      <el-table-column label="操作" align="center">-->
+<!--        <template #default="scope">-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"-->
+<!--            v-hasPermi="['agri:soil-moisture:update']"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleDelete(scope.row.id)"-->
+<!--            v-hasPermi="['agri:soil-moisture:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -147,9 +154,9 @@ const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  deviceCode: undefined,
+  equipmentCode: undefined,
   deviceName: undefined,
-  gatherTime: [],
+  collectionTime: [],
   soilTemperature: undefined,
   soilHumidity: undefined,
   soilPh: undefined,

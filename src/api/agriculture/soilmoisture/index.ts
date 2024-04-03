@@ -3,8 +3,8 @@ import request from '@/config/axios'
 // 土壤墒情 VO
 export interface SoilMoistureVO {
   id: number // id
-  equId: number // 设备id
-  gatherTime: Date // 采集时间
+  equipmentCode: number // 设备id
+  collectionTime: Date // 采集时间
   soilTemperature: string // 土壤温度
   soilHumidity: string // 土壤湿度
   soilPh: string // PH值
