@@ -24,7 +24,9 @@
         </el-select>
       </el-form-item>
       <el-form-item label="海拔" prop="altitude">
-        <el-input v-model="formData.altitude" placeholder="请输入海拔" />
+        <el-input v-model="formData.altitude" placeholder="请输入海拔" >
+          <template #append>米</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="纬度" prop="latitude">
         <el-input v-model="formData.latitude" placeholder="请输入纬度" />
@@ -42,7 +44,9 @@
         <el-input v-model="formData.tel" placeholder="请输入联系电话" />
       </el-form-item>
       <el-form-item label="面积" prop="area">
-        <el-input v-model="formData.area" placeholder="请输入面积" />
+        <el-input v-model="formData.area" placeholder="请输入面积" >
+          <template #append>亩</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="数量" prop="quantity">
         <el-input v-model="formData.quantity" placeholder="请输入数量" />
