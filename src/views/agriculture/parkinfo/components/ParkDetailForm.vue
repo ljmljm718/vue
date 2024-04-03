@@ -35,7 +35,9 @@
       <el-table-column label="海拔" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.altitude`" :rules="formRules.altitude" class="mb-0px!">
-            <el-input v-model="row.altitude" placeholder="请输入海拔" />
+            <el-input v-model="row.altitude" placeholder="请输入海拔" >
+              <template #append>米</template>
+            </el-input>
           </el-form-item>
         </template>
       </el-table-column>
@@ -77,7 +79,9 @@
       <el-table-column label="面积" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.area`" :rules="formRules.area" class="mb-0px!">
-            <el-input v-model="row.area" placeholder="请输入面积" />
+            <el-input v-model="row.area" placeholder="请输入面积" >
+              <template #append>亩</template>
+            </el-input>
           </el-form-item>
         </template>
       </el-table-column>
