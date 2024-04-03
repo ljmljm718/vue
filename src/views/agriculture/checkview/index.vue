@@ -77,7 +77,7 @@ const clearCategory = () => {
             clearable
           />
         </ContentWrap>
-        <ContentWrap style="max-height: 62vh; overflow: auto;">
+        <ContentWrap style="height: 62vh; overflow: auto;">
           <el-tree
             ref="treeRef"
             style="max-width: 600px"
@@ -97,7 +97,7 @@ const clearCategory = () => {
     </el-col>
 
     <el-col :span="20">
-      <ContentWrap style="max-height: 78vh; overflow: auto;">
+      <ContentWrap style="height: 78vh; overflow: auto;">
         <check-list
           :currCategory="currCategory"
           @clear-category="clearCategory"
