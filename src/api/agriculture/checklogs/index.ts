@@ -79,7 +79,7 @@ export const CheckLogsApi = {
   },
 
   //
-  // 新增巡检记录
+  // 校验新增巡检记录
   createCheck: async (data: CheckLogsVO) => {
     return await request.post({url: `/agriculture/check-logs/createCheck`, data})
   },
