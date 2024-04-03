@@ -8,16 +8,16 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-select
-          v-model="queryParams.deviceType"
-          placeholder="请选择设备类型"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="设备类型" prop="deviceType">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.deviceType"-->
+<!--          placeholder="请选择设备类型"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option label="请选择字典生成" value="" />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="预警类型" prop="warnType">
         <el-select
           v-model="queryParams.warnType"
@@ -91,7 +91,7 @@
 <!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" />
 <!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
-      <el-table-column label="设备类型" align="center" prop="deviceType" />
+<!--      <el-table-column label="设备类型" align="center" prop="deviceType" />-->
       <el-table-column label="预警类型" align="center" prop="warnType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
