@@ -8,9 +8,9 @@
       :inline="true"
       label-width="95px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <el-form-item label="设备编号" prop="equipmentCode">
         <el-input
-          v-model="queryParams.deviceCode"
+          v-model="queryParams.equipmentCode"
           placeholder="请输入设备编号"
           clearable
           @keyup.enter="handleQuery"
@@ -26,9 +26,9 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="采集时间" prop="gatherTime">
+      <el-form-item label="采集时间" prop="collectionTime">
         <el-date-picker
-          v-model="queryParams.gatherTime"
+          v-model="queryParams.collectionTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -129,12 +129,12 @@
           <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="设备编号" align="center" prop="deviceCode" />
+      <el-table-column label="设备编号" align="center" prop="equipmentCode" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column
         label="采集时间"
         align="center"
-        prop="gatherTime"
+        prop="collectionTime"
         :formatter="dateFormatter"
         width="180px"
       />
@@ -224,7 +224,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   equId: undefined,
-  gatherTime: [],
+  collectionTime: [],
   insectPestNumber: undefined,
   insectPestKind: undefined,
   insectTemperature: undefined,
@@ -233,7 +233,7 @@ const queryParams = reactive({
   killInsectStatus: undefined,
   killInsectBaffleStatus: undefined,
   insectVideo: undefined,
-  deviceCode: undefined,
+  equipmentCode: undefined,
   deviceName: undefined
 })
 const queryFormRef = ref() // 搜索的表单
