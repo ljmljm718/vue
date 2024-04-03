@@ -60,7 +60,7 @@
         label="日期"
         align="center"
         prop="countDate"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column label="地点" align="center" prop="countPlace" />
@@ -122,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { PeopleCountingApi, PeopleCountingVO } from '@/api/agriculture/peoplecounting'
 import PeopleCountingForm from './PeopleCountingForm.vue'
