@@ -170,9 +170,9 @@
           <el-button
             link
             type="primary"
-            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
+            v-if="scope.row.deviceType[0]===39"
             @click="$router.push({
-              path: '/device/equipment-data-three',
+              path: '/deviceData/equipment-data-three',
               query: {
                 equipmentCode: scope.row.id
               }
@@ -223,13 +223,6 @@ import {useRoute} from 'vue-router'
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
-
-/**
- * 需要跳转的设备类型，一级分类为监测设备的
- * 14 - 武隆
- * 25 - 酉阳
- */
-const deviceTypeMain = ref([14, 25])
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化

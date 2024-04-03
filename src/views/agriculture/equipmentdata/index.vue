@@ -187,7 +187,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
+      <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="设备编码" align="center" prop="equipmentCode" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="采集类型" align="center" prop="collectionType" />
