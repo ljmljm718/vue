@@ -117,7 +117,12 @@ const formData = ref({
   inspectionImage: undefined,
   content: undefined,
 })
-const formRules = reactive({})
+const formRules = reactive({
+  inspectionState: [{ required: true, message: '巡检状态不能为空', trigger: 'change' }],
+  inspectionResults: [{ required: true, message: '巡检结果不能为空', trigger: 'blur' }],
+  inspectorId: [{ required: true, message: '巡检人id不能为空', trigger: 'change' }],
+  inspectionTime: [{ required: true, message: '巡检时间不能为空', trigger: 'change' }],
+})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
