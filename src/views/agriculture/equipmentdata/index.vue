@@ -309,17 +309,17 @@ const exportLoading = ref(false) // 导出的加载中
  * 设备分类级联选择器
  */
 
- let categoryOptions = ref([])// 设备分类选项
- const categoryProps = {
-  value: 'id',
-  label: 'categoryName'
-}
+//  let categoryOptions = ref([])// 设备分类选项
+//  const categoryProps = {
+//   value: 'id',
+//   label: 'categoryName'
+// }
 
-/** 初始化 **/
-onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-  await getList()
-})
+// /** 初始化 **/
+// onMounted(async () => {
+//   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+//   await getList()
+// })
 
 
 /** 查询列表 */
