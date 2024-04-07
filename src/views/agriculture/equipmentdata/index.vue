@@ -271,6 +271,7 @@ import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentda
 import EquipmentDataForm from './EquipmentDataForm.vue'
 
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import {useRoute} from 'vue-router'
 
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
@@ -380,8 +381,14 @@ const handleExport = async () => {
   }
 }
 
+let route=useRoute()
+
 /** 初始化 **/
 onMounted(() => {
+  let location = route.query
+  if (location) {
+    queryParams.collectionType = location.collectionType
+  }
   getList()
 })
 </script>
