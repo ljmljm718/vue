@@ -112,7 +112,8 @@
       <el-table-column label="所属设备名称" align="center" prop="remark"/>
       <el-table-column label="开关状态" align="center" prop="swithState">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.EQU_SWITH_STATE" :value="scope.row.swithState"/>
+          <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
+                     @change="handleSwitchChange(scope.row)"/>
         </template>
       </el-table-column>
       <el-table-column
@@ -163,6 +164,7 @@ import download from '@/utils/download'
 import {SubDeviceApi, SubDeviceVO} from '@/api/agriculture/subdevice'
 import SubDeviceForm from './SubDeviceForm.vue'
 import {useRoute} from "vue-router";
+
 let route = useRoute();
 /** 子设备管理 列表 */
 defineOptions({name: 'SubDevice'})
@@ -193,7 +195,7 @@ const getList = async () => {
     let aa = route.query.devicesId;
     queryParams.devicesId = aa;
     const data = await SubDeviceApi.getSubDevicePage(queryParams)
-    list.value = data.list
+    list.value = data.list.map(item => ({...item, status: item.swithState === '0'}))
     total.value = data.total
   } finally {
     loading.value = false
@@ -216,6 +218,15 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+const handleSwitchChange = async (item) => {
+  try {
+    await SubDeviceApi.updateSubDevice({
+      ...item, swithState: item.swithState === '0' ? '1' : '0'
+    })
+  } catch {
+  }
 }
 
 /** 删除按钮操作 */
