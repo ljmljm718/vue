@@ -3,23 +3,57 @@
   <ContentWrap>
     <h3>最新数据</h3>
     <div class="container">
-          <div class="box" v-for="item,index in trendData" :key="index">
-                <div class="box-top">
-                  <div style="text-align: center">{{ item.monitoringType }}</div>
-                  <div style="text-align: center">{{ item.dataValue}}{{ item.yyUnit}}</div>
-                </div>
-                <div @click="tabCli(item.equipmentCode,item.monitoringType,index)" :class="active==index?'active':'actived'">查看趋势</div>
-          </div>
+      <div
+        class="box"
+        v-for="item,index in trendData"
+        :key="index"
+      >
+        <div class="box-top">
+          <div style="text-align: center">{{ item.monitoringType }}</div>
+          <div style="text-align: center">{{ item.dataValue}}{{ item.yyUnit}}</div>
+        </div>
+        <div
+          @click="tabCli(item.equipmentCode,item.monitoringType,index)"
+          :class="active==index?'active':'actived'"
+        >查看趋势</div>
+      </div>
     </div>
-   
+
   </ContentWrap>
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="监测类型" align="center" prop="monitoringType" />
-      <el-table-column label="数据值" align="center" prop="dataValue" />
-      <el-table-column label="单位" align="center" prop="yyUnit" />
-      <el-table-column label="采集时间" align="center" prop="collectionTime" :formatter="dateFormatter" width="180px" />
+    <el-table
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+    >
+      <el-table-column
+        label="设备名称"
+        align="center"
+        prop="deviceName"
+      />
+      <el-table-column
+        label="监测类型"
+        align="center"
+        prop="monitoringType"
+      />
+      <el-table-column
+        label="数据值"
+        align="center"
+        prop="dataValue"
+      />
+      <el-table-column
+        label="单位"
+        align="center"
+        prop="yyUnit"
+      />
+      <el-table-column
+        label="采集时间"
+        align="center"
+        prop="collectionTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
     </el-table>
     <Pagination
       :total="total"
@@ -31,7 +65,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <div style="width: 100%;text-align: center;font-weight: 700;font-size: 25px;">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</div>
-    <div id="chart" style="width: 100%; height: 400px;"></div>  
+    <div
+      id="chart"
+      style="width: 100%; height: 400px;"
+    ></div>
   </ContentWrap>
 </template>
 
@@ -40,19 +77,18 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
-import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
 import {
   initChartStatic,
   generateBaseOptions,
   generatePieOptions
 } from '../../../utils/bigscreenTool/index'
-import { log } from 'console';
-import {useRoute} from 'vue-router'
-let route = useRoute();
+import { log } from 'console'
+import { useRoute } from 'vue-router'
+let route = useRoute()
 
-
-let active=ref(0)
-/** 设备数据 列表 */      
+let active = ref(0)
+/** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
 
 const message = useMessage() // 消息弹窗
@@ -80,7 +116,7 @@ const queryParams = reactive({
   deviceName: undefined,
   parkName: undefined,
   parkDname: undefined,
-  createTime: [],
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -89,35 +125,34 @@ const exportLoading = ref(false) // 导出的加载中
  * 设备分类级联选择器
  */
 
- let categoryOptions = ref([])// 设备分类选项
- const categoryProps = {
+let categoryOptions = ref([]) // 设备分类选项
+const categoryProps = {
   value: 'id',
   label: 'categoryName'
 }
 
 /** 初始化 **/
 
-
-let trendData=ref([]);
-let listRes=ref<any>({})
+let trendData = ref([])
+let listRes = ref<any>({})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     //设置默认第一条数据
-    let aa=route.query.equipmentCode;
-    queryParams.equipmentCode=aa;
+    let aa = route.query.equipmentCode
+    queryParams.equipmentCode = aa
     //结束
     const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
     list.value = data.list
 
-    
-    
     //初始化上发图片
     //console.log(listRes,"==listRes==");
-    if(queryParams.pageNo==1){
-    listRes.value = list.value[0];
-    trendData.value=await EquipmentDataApi.getEquipmentDataByEquipmentCode(listRes.value.equipmentCode)
+    if (queryParams.pageNo == 1) {
+      listRes.value = list.value[0]
+      trendData.value = await EquipmentDataApi.getEquipmentDataByEquipmentCode(
+        listRes.value.equipmentCode
+      )
     }
     //console.log(trendData.value,"==trendData==");
     //初始化柱桩图
@@ -128,7 +163,6 @@ const getList = async () => {
     loading.value = false
   }
 }
-
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -175,146 +209,153 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-let res=null;
-let obj=ref({})
+let res = null
+let obj = ref({})
 //tab切换
-const tabCli=async (id,val,index)=>{
-  active.value=index
-  res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(id,val)
+const tabCli = async (id, val, index) => {
+  active.value = index
+  res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(id, val)
   //console.log(res,'res,22')
   initChart()
 }
 //echarts
-const initChart= async ()=>{
-
-  if(res!=null){
-    res=res
-    obj.value=res[0]
-  }else{
-    res=await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(listRes.value.equipmentCode,listRes.value.monitoringType)
-    obj.value=res[0]
+const initChart = async () => {
+  if (res != null) {
+    res = res
+    obj.value = res[0]
+  } else {
+    res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(
+      listRes.value.equipmentCode,
+      listRes.value.monitoringType
+    )
+    obj.value = res[0]
   }
-  console.log(res,'==res');
-  let xAxisData=[]
-  let yAxisData=[]
-  res.forEach(item => {
-    xAxisData.unshift(item.collectionTime+':00')
+  console.log(res, '==res')
+  let xAxisData = []
+  let yAxisData = []
+  res.forEach((item) => {
+    xAxisData.unshift(item.collectionTime + ':00')
     yAxisData.unshift(item.dataValue)
-  });
-      initChartStatic(
-        "chart",
-        generateBaseOptions({
-          xAxis: {
-            data: xAxisData,
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: "#000",
-              },
-            },
-            nameTextStyle:{
-              color:'#000'
+  })
+  initChartStatic(
+    'chart',
+    generateBaseOptions({
+      xAxis: {
+        data: xAxisData,
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#000'
+          }
+        },
+        nameTextStyle: {
+          color: '#000'
+        }
+      },
+      legend: {
+        show: true,
+        orient: 'horizontal'
+      },
+      yAxis: [
+        {
+          type: 'value',
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#000'
             }
           },
-          legend: { 
-            show: true, 
-            orient:'horizontal',
-         },
-          yAxis: [
-            {
-            type: "value",
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: "#000",
-              },
-            },
-            axisLabel: {
-              color:'#000'
-            },
-            splitLine: {
-              //网格线
-              show: true, //是否显示
-              lineStyle: {
-                //网格线样式
-                color: "#e1e7f1", //网格线颜色
-                width: 1, //网格线的加粗程度
-                type: "dashed", //网格线类型
-              },
-            },
-            splitArea: {
-              //网格区域
-              show: false, //是否显示
-            },
+          axisLabel: {
+            color: '#000'
           },
-        ],
-       
-          series: [
-            {
-              name:res[0].monitoringType,
-              data:yAxisData,
-              type: "bar",
-              barWidth:'120',
-              smooth: false,
-              itemStyle: {   //配置样式，设置每个柱子的颜色
-               normal:{  
-                  color: function (params){
-                  var colorList = ['#fe0100','#fe9a00','#ffff02','#02fe03','#01ffff','#0201fe','#ff00fe'];
-                   return colorList[params.dataIndex];
-               }
-         },}
-            },
-            
-          ],
-          grid: {
-            left: "10%",
-            right: "10%",
-            top: "15%",
-            bottom: "15%",
+          splitLine: {
+            //网格线
+            show: true, //是否显示
+            lineStyle: {
+              //网格线样式
+              color: '#e1e7f1', //网格线颜色
+              width: 1, //网格线的加粗程度
+              type: 'dashed' //网格线类型
+            }
           },
-        })
-      );
-    
+          splitArea: {
+            //网格区域
+            show: false //是否显示
+          }
+        }
+      ],
+
+      series: [
+        {
+          name: res[0].monitoringType,
+          data: yAxisData,
+          type: 'bar',
+          barWidth: '120',
+          smooth: false,
+          itemStyle: {
+            //配置样式，设置每个柱子的颜色
+            normal: {
+              color: function (params) {
+                var colorList = [
+                  '#fe0100',
+                  '#fe9a00',
+                  '#ffff02',
+                  '#02fe03',
+                  '#01ffff',
+                  '#0201fe',
+                  '#ff00fe'
+                ]
+                return colorList[params.dataIndex]
+              }
+            }
+          }
+        }
+      ],
+      grid: {
+        left: '10%',
+        right: '10%',
+        top: '15%',
+        bottom: '15%'
+      }
+    })
+  )
 }
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
-
-
-
 </script>
 <style scoped lang="scss">
-.container{
+.container {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
-.box{
+.box {
   width: 5%;
   display: flex;
-  margin-right:20px;
+  margin-right: 20px;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  .box-top{
+  .box-top {
     width: 100%;
     padding: 3px 0;
     height: 50px;
     background-size: 100% 100%;
     background-image: url(./assets/topBg.png);
   }
-  .active{
+  .active {
     width: 100%;
     margin-top: 10px;
-    padding:0 5px;
+    padding: 0 5px;
     height: 50px;
     text-align: center;
     background-size: 100% 100%;
     background-image: url(./assets/active.png);
   }
-  .actived{
+  .actived {
     width: 100%;
     margin-top: 10px;
     height: 50px;
