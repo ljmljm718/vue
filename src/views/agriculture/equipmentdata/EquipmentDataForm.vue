@@ -36,16 +36,15 @@
       <el-form-item label="监测类型" prop="monitoringType">
         <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
         <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
-          <el-option
-            v-for="item in selectList"  
-            :key="item"
-            :label="item"
-            :value="item"/>
-          
-        </el-select>
-        <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
-          <el-option value='' />
-        </el-select>
+            <el-option
+              v-for="item in selectList"  
+              :key="item"
+              :label="item"
+              :value="item"/>
+          </el-select>
+          <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+            <el-option value='' />
+          </el-select>
       </el-form-item>
 
       <el-form-item label="数据值" prop="dataValue">
@@ -98,6 +97,7 @@ import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentda
 import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue'
 
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import {DeviceInfoApi} from '@/api/agriculture/deviceinfo'
 
 
 
@@ -143,6 +143,16 @@ const openPurchaseOrderInEnableList = () => {
   
 }
 
+const getDeviceInfoType= async()=>{
+  if(formData.value.equipmentCode){
+    let order=await DeviceInfoApi.getDeviceInfo(formData.value.equipmentCode);
+    let res =order.deviceMonitorType.split(','); 
+    selectList.value=res
+  }else{
+    selectList.value= []
+  }
+}
+
 let selectList=ref([])
 const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   // 将订单设置到入库单
@@ -160,15 +170,14 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   //地块
   formData.value.plotCode = order[0].belongPlot
   //重置检查类型让他重新选择
-  formData.value.monitoringType = ''
+  //formData.value.monitoringType = ''
   //给下拉列表赋值
   let res =order[0].deviceMonitorType.split(','); 
-  console.log(res,"==-==");
-  
+  selectList.value=res
+  //console.log(res,"==-==");
   // let a=order[0].deviceType[1]
   // let res= await DeviceCategoryApi.getDeviceCategoryList({parentId:a, status: 1})
-  selectList.value=res
-  console.log(selectList,"==selectList==");
+  //console.log(selectList,"==selectList==");
 
 }
 
@@ -177,16 +186,16 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
  * 设备分类级联选择器
  */
 
- let categoryOptions = ref([])// 设备分类选项
- const categoryProps = {
-  value: 'id',
-  label: 'categoryName'
-}
+//  let categoryOptions = ref([])// 设备分类选项
+//  const categoryProps = {
+//   value: 'id',
+//   label: 'categoryName'
+// }
 
-/** 初始化 **/
-onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-})
+// /** 初始化 **/
+// onMounted(async () => {
+//   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+// })
 
 
 /** 打开弹窗 */
@@ -195,17 +204,20 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
-      selectList.value=null;
+      // selectList.value=[];
       let dataA= await EquipmentDataApi.getEquipmentData(id);
       formData.value=dataA.list[0];
     } finally {
       formLoading.value = false
     }
   }
+  //设置默认下拉框,如果有设备id就去设备id中查找,如果没有,设置为null
+  getDeviceInfoType();
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 

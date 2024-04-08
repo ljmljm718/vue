@@ -276,7 +276,7 @@ const getList = async () => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
     })
-    console.log(list.value)
+    //console.log(list.value)
     total.value = data.total
   } finally {
     loading.value = false
