@@ -1,5 +1,5 @@
 <template>
-  <Dialog     title="农事记录"
+  <Dialog     title="设备列表"
               v-model="dialogVisible"
               :appendToBody="true"
               :scroll="true"
@@ -172,7 +172,7 @@
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-    
+
   </ContentWrap>
   <template #footer>
       <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">

@@ -260,4 +260,5 @@ export enum DICT_TYPE {
 
   // =========== agri -  隘口 ==========
   AGRI_GROW_TYPE = 'agri_grow_type', //长势管理测量类型
+  EQU_SWITH_STATE = 'equ_swith_state', //设备开启状态
 }
