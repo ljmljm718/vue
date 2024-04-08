@@ -73,3 +73,7 @@ export const parkInfoPage = (params) => {
 export const environmentalDataHomePage = () => {
   return request.get({ url: `/yyang/equipment-data/environmentalDataHomePage` })
 }
+
+export const soilPage = (params) => {
+  return request.get({ url: `/agriculture/environment-data/soilPage`, params })
+}

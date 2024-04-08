@@ -9,6 +9,7 @@ import {
   homeDeviceCard,
   envPage, // 棚内环境
   envDataPage, // 气象站
+  soilPage, // 土壤墒情
 } from './apis'
 import { formatTime } from '@/utils/index'
 
@@ -180,6 +181,13 @@ const getEnvDataPage = async (params) => {
   total.value = _total
 }
 
+const getSoilDataPage = async (params) => {
+  const { list = [], _total = 0 } = await soilPage(params)
+  console.log('土壤墒情', list);
+  lastDataList.value = list
+  total.value = _total
+}
+
 const total = ref(0)
 const queryParams = reactive({
   pageNo: 1,
@@ -193,6 +201,7 @@ const getLastList = async (type = '1') => {
   total.value = 0
   if (type === '1') getEnvPage(queryParams)
   if (type === '2') getEnvDataPage(queryParams)
+  if (type === '3') getSoilDataPage(queryParams)
 }
 getLastList('1')
 const handleRadioChange = (e) => {
