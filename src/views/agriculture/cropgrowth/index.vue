@@ -18,13 +18,19 @@
         />
       </el-form-item>
       <el-form-item label="品种" prop="cropType">
-        <el-input
-          v-model="queryParams.cropType"
-          placeholder="请输入品种"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <el-select
+            v-model="queryParams.cropType"
+            placeholder="请选择品种"
+            clearable
+            class="!w-240px"
+        >
+          <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="生长期" prop="growth">
         <el-input
@@ -115,7 +121,11 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
       <el-table-column label="名称" align="center" prop="cropName" />
-      <el-table-column label="品种" align="center" prop="cropType" />
+      <el-table-column label="品种" align="center" prop="cropType" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+        </template>
+      </el-table-column>
       <el-table-column label="生长期" align="center" prop="growth" />
       <el-table-column label="图片" align="center" prop="imgId" >
         <template #default="{ row }">
@@ -193,6 +203,7 @@ import { dateFormatter,dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { CropGrowthApi, CropGrowthVO } from '@/api/agriculture/cropgrowth'
 import CropGrowthForm from './CropGrowthForm.vue'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 作物生长期管理 列表 */
 defineOptions({ name: 'CropGrowth' })
