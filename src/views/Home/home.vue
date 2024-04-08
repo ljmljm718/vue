@@ -348,8 +348,8 @@ const plantInfoList = ref([
               <div
                 class="rounded-sm"
                 style="background-color: #237ced16;border: 1px solid #ffffff40;"
-                v-for="item in runTimeData"
-                :key="item.dataType"
+                v-for="(item, index) in runTimeData"
+                :key="index"
               >
                 <div class="flex p-1 px-2 items-center justify-between">
                   <div class="flex flex-col">
