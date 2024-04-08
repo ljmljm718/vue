@@ -1,70 +1,87 @@
 <template>
-  <h1>数据采集</h1>
   <ContentWrap>
-    <h3>最新数据</h3>
-    <div class="container">
+    <div class="flex space-x-4">
       <div
-        class="box"
+        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center"
         v-for="item,index in trendData"
         :key="index"
       >
         <div class="box-top">
-          <div style="text-align: center">{{ item.monitoringType }}</div>
-          <div style="text-align: center">{{ item.dataValue}}{{ item.yyUnit}}</div>
+          <div style="text-align: center;color: white;">{{ item.monitoringType }}</div>
+          <div style="text-align: center;color: white;">
+            <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
+            <span class="pl-1">{{ item.yyUnit }}</span>
+          </div>
         </div>
-        <div
+        <div :class="`w-[2rem] h-[2rem] icon-${getIcon(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
+        <!-- <div
           @click="tabCli(item.equipmentCode,item.monitoringType,index)"
           :class="active==index?'active':'actived'"
-        >查看趋势</div>
+        >查看趋势</div> -->
       </div>
     </div>
-
   </ContentWrap>
   <ContentWrap>
-    <el-table
-      v-loading="loading"
-      :data="list"
-      :stripe="true"
-      :show-overflow-tooltip="true"
-    >
-      <el-table-column
-        label="设备名称"
-        align="center"
-        prop="deviceName"
+    <div class="flex justify-between">
+      <div></div>
+      <div class="flex items-center">
+        <span class="pr-2">折叠/展示:</span>
+        <el-switch v-model="collis" />
+      </div>
+    </div>
+    <div v-show="collis">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+      >
+        <el-table-column
+          label="设备名称"
+          align="center"
+          prop="deviceName"
+        />
+        <el-table-column
+          label="监测类型"
+          align="center"
+          prop="monitoringType"
+        />
+        <el-table-column
+          label="数据值"
+          align="center"
+          prop="dataValue"
+        />
+        <el-table-column
+          label="单位"
+          align="center"
+          prop="yyUnit"
+        />
+        <el-table-column
+          label="采集时间"
+          align="center"
+          prop="collectionTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+      </el-table>
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList()"
       />
-      <el-table-column
-        label="监测类型"
-        align="center"
-        prop="monitoringType"
-      />
-      <el-table-column
-        label="数据值"
-        align="center"
-        prop="dataValue"
-      />
-      <el-table-column
-        label="单位"
-        align="center"
-        prop="yyUnit"
-      />
-      <el-table-column
-        label="采集时间"
-        align="center"
-        prop="collectionTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-    </el-table>
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList()"
-    />
+    </div>
+    
   </ContentWrap>
   <!-- 列表 -->
   <ContentWrap>
-    <div style="width: 100%;text-align: center;font-weight: 700;font-size: 25px;">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</div>
+    <div class="flex justify-between">
+      <span class="text-lg" style="font-family: 'ArtFont';">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</span>
+      <div class="flex items-center">
+        <span class="pr-2">显示模式:</span>
+        <el-switch v-model="isLine" @change="handleSwitchChange" />
+      </div>
+    </div>
     <div
       id="chart"
       style="width: 100%; height: 400px;"
@@ -75,6 +92,7 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
+import * as echarts from 'echarts'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
@@ -85,6 +103,25 @@ import {
 } from '../../../utils/bigscreenTool/index'
 import { log } from 'console'
 import { useRoute } from 'vue-router'
+
+const isLine = ref(false)
+const handleSwitchChange = (val) => {
+  initChart(val)
+}
+const getIcon = (item) => {
+  console.log('item', item);
+  const titleMap = {
+    "温度": "1",
+    "湿度": "2",
+    "雨量": "6",
+    "风速": "4",
+    "气压": "3",
+    "光照": "5"
+  }
+  return titleMap[item]
+}
+
+const collis = ref(true)
 let route = useRoute()
 
 let active = ref(0)
@@ -132,8 +169,7 @@ const categoryProps = {
 }
 
 /** 初始化 **/
-
-let trendData = ref([])
+let trendData = ref<Array<any>>([])
 let listRes = ref<any>({})
 /** 查询列表 */
 const getList = async () => {
@@ -151,7 +187,7 @@ const getList = async () => {
     if (queryParams.pageNo == 1) {
       listRes.value = list.value[0]
       trendData.value = await EquipmentDataApi.getEquipmentDataByEquipmentCode(
-        listRes.value.equipmentCode
+        listRes.value?.equipmentCode
       )
     }
     //console.log(trendData.value,"==trendData==");
@@ -219,7 +255,7 @@ const tabCli = async (id, val, index) => {
   initChart()
 }
 //echarts
-const initChart = async () => {
+const initChart = async (line = false) => {
   if (res != null) {
     res = res
     obj.value = res[0]
@@ -289,31 +325,22 @@ const initChart = async () => {
         {
           name: res[0].monitoringType,
           data: yAxisData,
-          type: 'bar',
+          type: line ? 'line' : 'bar',
           barWidth: '120',
           smooth: false,
           itemStyle: {
-            //配置样式，设置每个柱子的颜色
             normal: {
-              color: function (params) {
-                var colorList = [
-                  '#fe0100',
-                  '#fe9a00',
-                  '#ffff02',
-                  '#02fe03',
-                  '#01ffff',
-                  '#0201fe',
-                  '#ff00fe'
-                ]
-                return colorList[params.dataIndex]
-              }
-            }
-          }
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 1, color: '#28c3fd00' },
+                { offset: 0, color: '#28c3fd' }
+              ])
+            },
+          },
         }
       ],
       grid: {
-        left: '10%',
-        right: '10%',
+        left: '5%',
+        right: '5%',
         top: '15%',
         bottom: '15%'
       }
@@ -326,6 +353,11 @@ onMounted(() => {
 })
 </script>
 <style scoped lang="scss">
+.weather-bg {
+  background-image: url(./assets/weatherBg.png);
+  background-size: 100% 100%;
+}
+
 .container {
   width: 100%;
   display: flex;
@@ -362,6 +394,12 @@ onMounted(() => {
     text-align: center;
     background-size: 100% 100%;
     background-image: url(./assets/actived.png);
+  }
+}
+
+@for $i from 1 through 8 {
+  .icon-#{$i} {
+    background-image: url(./assets/icon#{$i}.png);
   }
 }
 </style>
