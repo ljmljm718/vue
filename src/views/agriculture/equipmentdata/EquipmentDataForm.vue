@@ -35,16 +35,23 @@
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
         <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
-        <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+        <el-select  v-model="formData.monitoringType" placeholder="请输入监测类型">  
             <el-option
               v-for="item in selectList"  
               :key="item"
               :label="item"
               :value="item"/>
           </el-select>
-          <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+        <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+            <el-option
+              v-for="item in selectList"  
+              :key="item"
+              :label="item"
+              :value="item"/>
+          </el-select> -->
+          <!-- <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
             <el-option value='' />
-          </el-select>
+          </el-select> -->
       </el-form-item>
 
       <el-form-item label="数据值" prop="dataValue">

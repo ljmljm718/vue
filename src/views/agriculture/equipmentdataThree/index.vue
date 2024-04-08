@@ -326,7 +326,6 @@ const initChart = async (line = false) => {
           name: res[0].monitoringType,
           data: yAxisData,
           type: line ? 'line' : 'bar',
-          barWidth: '120',
           smooth: false,
           itemStyle: {
             normal: {
