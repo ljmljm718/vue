@@ -121,7 +121,7 @@ const getDeviceBasePage = async () => {
       name: item.deviceName
     })))
     : null;
- 
+
     console.log(list,'id')
      getGetDeviceDataYouEnvironment({id:list[0].id})
     await initChart1({typeName:'温度',id:list[0].id})
@@ -130,7 +130,7 @@ getDeviceBasePage()
 //单个摄像头
 let sxtObj=ref([])
 const getPage2=()=>{
-  page2({pageSize:1,pageNo:1}).then(res=>{
+  page2({pageSize:1,pageNo:1,deviceType:'30,31'}).then(res=>{
     console.log(res,'单个摄像头')
     sxtObj.value=res.list
   })
@@ -283,7 +283,7 @@ const getPark=(id)=>{
     options2.value=res
     initChart2(rightTabSelected.value)
     getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:res[0].id})
-    
+
   })
 }
 //获取八项
@@ -338,7 +338,7 @@ const envLabel = ref('')
 const tableColumns = ref([
   {
     key: 'name',
-    label: '基地名称',
+    label: '编号',
     width: '5rem'
   },
   {
@@ -757,7 +757,7 @@ const rightUnitMap = {
                   <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
                   <div class="text-row">位置: {{ sjList.parkName }}</div>
                   <div class="text-row">设备: {{ sjList.deviceName }}</div>
-                  <div class="text-row">当前读数: {{ sjList.dataValue }}</div>
+                  <div class="text-row">当前读数: {{ sjList.dataValue + " "+sjList.yyUnit }}</div>
                 </div>
               </div>
               <img
@@ -771,7 +771,7 @@ const rightUnitMap = {
             >
               <div class="info-rect">
                 <div class="text-info">
-                  <div class="text-row">位置: {{ warnList.parkCode }}</div>
+                  <div class="text-row">编号: {{ warnList.parkCode }}</div>
                   <div class="text-row">设备: {{ warnList.deviceCode }}</div>
                   <div class="text-row">
                     预警信息:
