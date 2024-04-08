@@ -16,10 +16,10 @@
       <el-form-item label="类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择类型" style="width: 100%">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_PARK_TYPE)"
+            v-for="dict in parkCategoryOptions"
             :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            :label="dict.categoryLabel"
+            :value="dict.id"
           />
         </el-select>
       </el-form-item>
@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
 import ParkDetailForm from './components/ParkDetailForm.vue'
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {ParkCategoryApi, ParkCategoryVO} from "@/api/agriculture/parkcategory";
 
 /** 基地基本信息 表单 */
 defineOptions({ name: 'ParkInfoForm' })
@@ -107,6 +107,7 @@ const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
+const parkCategoryOptions = ref() //基地分类列表
 
 /** 子表的表单 */
 const subTabsName = ref('parkDetail')
@@ -117,6 +118,8 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  parkCategoryOptions.value =  await ParkCategoryApi.getAllParkCategory()
+  console.log(parkCategoryOptions)
   resetForm()
   // 修改时，设置数据
   if (id) {
