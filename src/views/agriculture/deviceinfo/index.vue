@@ -178,6 +178,18 @@
               }
             })">查看监测数据
           </el-button>
+
+          <el-button
+            link
+            type="primary"
+            v-if="scope.row.userId===142"
+            @click="$router.push({
+              path: '/device/sub-device',
+              query: {
+                devicesId: scope.row.id
+              }
+            })">查看子设备
+          </el-button>
           <el-button
             link
             type="primary"
