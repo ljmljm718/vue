@@ -7,39 +7,54 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="品种code" prop="cropCode">
-        <el-input v-model="formData.cropCode" placeholder="请输入品种code" />
+      <!--      <el-form-item label="品种code" prop="cropCode">-->
+      <!--        <el-input v-model="formData.cropCode" placeholder="请输入品种code"/>-->
+      <!--      </el-form-item>-->
+      <el-form-item label="品种作物code" prop="cropId">
+        <el-input v-model="formData.cropCode" readonly placeholder="请选择">
+          <template #append>
+            <el-button @click="openCropInfoPopup()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="品种名称" prop="cropName">
-        <el-input v-model="formData.cropName" placeholder="请输入品种名称" />
+        <el-input v-model="formData.cropName" placeholder="请输入品种名称" disabled/>
       </el-form-item>
       <el-form-item label="品种" prop="cropType">
-        <el-select v-model="formData.cropType" placeholder="请选择品种">
-          <el-option label="请选择字典生成" value="" />
+        <el-select v-model="formData.cropType" placeholder="请选择品种" disabled>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属基地" prop="base">
-        <el-input v-model="formData.base" placeholder="请输入所属基地" />
-      </el-form-item>
+      <!--      <el-form-item label="所属基地" prop="base">-->
+      <!--        <el-input v-model="formData.base" placeholder="请输入所属基地" />-->
+      <!--      </el-form-item>-->
       <el-form-item label="基地名称" prop="baseName">
-        <el-input v-model="formData.baseName" placeholder="请输入基地名称" />
+        <el-input v-model="formData.baseName" placeholder="请输入基地名称" disabled/>
       </el-form-item>
-      <el-form-item label="所属地块" prop="massif">
-        <el-input v-model="formData.massif" placeholder="请输入所属地块" />
-      </el-form-item>
+      <!--      <el-form-item label="所属地块" prop="massif">-->
+      <!--        <el-input v-model="formData.massif" placeholder="请输入所属地块" />-->
+      <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="massifName">
-        <el-input v-model="formData.massifName" placeholder="请输入地块名称" />
+        <el-input v-model="formData.massifName" placeholder="请输入地块名称" disabled/>
       </el-form-item>
       <el-form-item label="测量时间" prop="measureTime">
         <el-date-picker
           v-model="formData.measureTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择测量时间"
         />
       </el-form-item>
       <el-form-item label="测量者" prop="measurer">
-        <el-input v-model="formData.measurer" placeholder="请输入测量者" />
+        <el-input v-model="formData.measurer" placeholder="请输入测量者"/>
       </el-form-item>
       <el-form-item label="测量类型" prop="measureType">
         <el-select v-model="formData.measureType" placeholder="请选择测量类型">
@@ -52,16 +67,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="测量值" prop="measureNum">
-        <el-input v-model="formData.measureNum" placeholder="请输入测量值" />
+        <el-input v-model="formData.measureNum" placeholder="请输入测量值"/>
       </el-form-item>
       <el-form-item label="变化量" prop="measureSpike">
-        <el-input v-model="formData.measureSpike" placeholder="请输入变化量" />
+        <el-input v-model="formData.measureSpike" placeholder="请输入变化量"/>
       </el-form-item>
       <el-form-item label="测量单位" prop="measureUnit">
-        <el-input v-model="formData.measureUnit" placeholder="请输入测量单位" />
+        <el-input v-model="formData.measureUnit" placeholder="请输入测量单位"/>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
+        <el-input v-model="formData.remark" placeholder="请输入备注"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -69,15 +84,18 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
 </template>
 <script setup lang="ts">
-import { GrowRecordApi, GrowRecordVO } from '@/api/agriculture/growrecord'
+import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import {CropBaseVO} from "@/api/agriculture/cropbase";
+import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 
 /** 长势管理 表单 */
-defineOptions({ name: 'GrowRecordForm' })
+defineOptions({name: 'GrowRecordForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -102,6 +120,19 @@ const formData = ref({
   id: undefined
 })
 const formRules = reactive({
+  cropCode: [{ required: true, message: '品种code不能为空', trigger: 'blur' }],
+  cropName: [{ required: true, message: '品种名称不能为空', trigger: 'blur' }],
+  base: [{ required: true, message: '基地ID不能为空', trigger: 'blur' }],
+  baseName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],
+  cropType: [{ required: true, message: '品种类型不能为空', trigger: 'blur' }],
+  massif: [{ required: true, message: '地块ID不能为空', trigger: 'blur' }],
+  massifName: [{ required: true, message: '地块名称不能为空', trigger: 'blur' }],
+  measureTime: [{ required: true, message: '测量时间不能为空', trigger: 'change' }],
+  measurer: [{ required: true, message: '测量者不能为空', trigger: 'change' }],
+  measureType: [{ required: true, message: '测量类型不能为空', trigger: 'change' }],
+  measureNum: [{ required: true, message: '测量值不能为空', trigger: 'change' }],
+  measureSpike: [{ required: true, message: '变化量不能为空', trigger: 'change' }],
+  measureUnit: [{ required: true, message: '测量单位不能为空', trigger: 'change' }],
 })
 const formRef = ref() // 表单 Ref
 
@@ -121,7 +152,7 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -167,5 +198,21 @@ const resetForm = () => {
     id: undefined
   }
   formRef.value?.resetFields()
+}
+
+//作物的选择
+const cropInfoPopupRef = ref()
+const openCropInfoPopup = () => {
+  cropInfoPopupRef.value.open()
+}
+
+const handleCropInfoPopupChange = (order: CropBaseVO) => {
+  formData.value.cropCode = String(order[0].id)
+  formData.value.cropName = String(order[0].cropName)
+  formData.value.cropType = String(order[0].cropType)
+  formData.value.base = String(order[0].belongPark)
+  formData.value.massif = String(order[0].belongPlot)
+  formData.value.baseName = String(order[0].parkName)
+  formData.value.massifName = String(order[0].plotName)
 }
 </script>

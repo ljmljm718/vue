@@ -127,10 +127,10 @@
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="base"/>
-      <!--      <el-table-column label="基地名称" align="center" prop="baseName"/>-->
-      <el-table-column label="所属地块" align="center" prop="massif"/>
-      <!--      <el-table-column label="地块名称" align="center" prop="massifName"/>-->
+      <!--      <el-table-column label="所属基地" align="center" prop="base"/>-->
+      <el-table-column label="基地名称" align="center" prop="baseName"/>
+      <!--      <el-table-column label="所属地块" align="center" prop="massif"/>-->
+      <el-table-column label="地块名称" align="center" prop="massifName"/>
       <el-table-column
         label="测量时间"
         align="center"
@@ -139,7 +139,11 @@
         width="180px"
       />
       <el-table-column label="测量者" align="center" prop="measurer"/>
-      <el-table-column label="测量类型" align="center" prop="measureType"/>
+      <el-table-column label="测量类型" align="center" prop="measureType">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_GROW_TYPE" :value="scope.row.measureType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="测量值" align="center" prop="measureNum"/>
       <el-table-column label="变化量" align="center" prop="measureSpike"/>
       <el-table-column label="测量单位" align="center" prop="measureUnit"/>
