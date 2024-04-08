@@ -2,9 +2,10 @@
   <ContentWrap>
     <div class="flex space-x-4">
       <div
-        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center"
+        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center cursor-pointer"
         v-for="item,index in trendData"
         :key="index"
+        @click="tabCli(item.equipmentCode,item.monitoringType,index)"
       >
         <div class="box-top">
           <div style="text-align: center;color: white;">{{ item.monitoringType }}</div>
@@ -109,7 +110,7 @@ const handleSwitchChange = (val) => {
   initChart(val)
 }
 const getIcon = (item) => {
-  console.log('item', item);
+  let resIconIndex = '1'
   const titleMap = {
     "温度": "1",
     "湿度": "2",
@@ -118,7 +119,10 @@ const getIcon = (item) => {
     "气压": "3",
     "光照": "5"
   }
-  return titleMap[item]
+  for (const key in titleMap) {
+    if (item.indexOf(key) !== -1) resIconIndex = titleMap[key]
+  }
+  return resIconIndex
 }
 
 const collis = ref(true)
@@ -326,7 +330,6 @@ const initChart = async (line = false) => {
           name: res[0].monitoringType,
           data: yAxisData,
           type: line ? 'line' : 'bar',
-          barWidth: '120',
           smooth: false,
           itemStyle: {
             normal: {
