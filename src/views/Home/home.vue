@@ -407,10 +407,19 @@ const plantInfoList = ref([
             <el-table-column label="设备名称" align="center" prop="equipmentCode" />
             <el-table-column label="温度(℃)" align="center" prop="temperature" />
             <el-table-column label="湿度(%/RH)" align="center" prop="humidity" />
-            <el-table-column label="光照(Lux)" align="center" prop="lighting" />
-            <el-table-column label="气压(kPa)" align="center" prop="airPressure" />
-            <el-table-column label="雨量(mm)" align="center" prop="rainfall" />
-            <el-table-column label="二氧化碳(mmol/L)" align="center" prop="co2Density" />
+
+            <template v-if="radio !== '土壤墒情'">
+              <el-table-column label="光照(Lux)" align="center" prop="lighting" />
+              <el-table-column label="气压(kPa)" align="center" prop="airPressure" />
+              <el-table-column label="雨量(mm)" align="center" prop="rainfall" />
+              <el-table-column label="二氧化碳(mmol/L)" align="center" prop="co2Density" />
+            </template>
+            <template v-if="radio === '土壤墒情'">
+              <el-table-column label="土壤深度" align="center" prop="depth" />
+              <el-table-column label="EC值" align="center" prop="ec" />
+              <el-table-column label="PH值" align="center" prop="ph" />
+            </template>
+
             <el-table-column label="数据采集时间" align="center" prop="collectionTime" :formatter="dateFormatter" />
           </el-table>
           <Pagination
