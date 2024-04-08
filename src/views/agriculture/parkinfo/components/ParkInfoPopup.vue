@@ -1,7 +1,7 @@
-<!-- 基地/地块列表 -->
+<!-- 基地列表 -->
 <template>
   <Dialog
-    title="选择基地/地块"
+    title="选择基地"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -68,11 +68,7 @@
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="编号" align="center" prop="code" width="200"/>
         <el-table-column label="名称" align="center" prop="name" width="150"/>
-        <el-table-column label="类型" align="center" prop="type" >
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.AGRI_PARK_TYPE" :value="scope.row.type" />
-          </template>
-        </el-table-column>
+        <el-table-column label="类型" align="center" prop="categoryName" />
         <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
         <el-table-column label="纬度" align="center" prop="latitude" />
         <el-table-column label="经度" align="center" prop="longitude" />
