@@ -3,6 +3,7 @@ import request from '@/config/axios'
 // 作物生长期管理 VO
 export interface CropGrowthVO {
   id: string // 主键
+  cropId: string //作物id
   cropCode: string // 编号
   cropName: string // 名称
   cropType: string // 品种
@@ -47,4 +48,4 @@ export const CropGrowthApi = {
   exportCropGrowth: async (params) => {
     return await request.download({ url: `/agri/crop-growth/export-excel`, params })
   },
-}
+}

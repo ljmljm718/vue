@@ -10,6 +10,16 @@
 <!--      <el-form-item label="编号" prop="cropCode">-->
 <!--        <el-input v-model="formData.cropCode" placeholder="不输入默认生成" />-->
 <!--      </el-form-item>-->
+      <el-form-item label="作物id" prop="cropId">
+        <el-input v-model="formData.cropId" readonly placeholder="请选择" >
+          <template #append>
+            <el-button @click="openCropInfoPopup()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
       <el-form-item label="名称" prop="cropName">
         <el-input v-model="formData.cropName" placeholder="请输入名称" />
       </el-form-item>
@@ -80,6 +90,8 @@
 
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 
+  <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
+
 
 </template>
 <script setup lang="ts">
@@ -88,6 +100,8 @@ import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
+import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
+import {CropBaseVO} from "@/api/agriculture/cropbase";
 
 /** 作物生长期管理 表单 */
 defineOptions({ name: 'CropGrowthForm' })
@@ -102,6 +116,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   cropCode: undefined,
+  cropId: undefined,
   cropName: undefined,
   cropType: undefined,
   imgId: undefined,
@@ -156,6 +171,22 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 }
 
 
+//作物的选择
+const cropInfoPopupRef = ref()
+const openCropInfoPopup = () => {
+  cropInfoPopupRef.value.open()
+}
+const handleCropInfoPopupChange = (order: CropBaseVO) => {
+
+  console.log("--->>查看选择的作物信息：",order[0])
+  formData.value.cropId = String(order[0].id)
+  formData.value.cropName = String(order[0].cropName)
+  formData.value.cropType=String(order[0].cropType)
+  formData.value.belongPark = String(order[0].belongPark)
+  formData.value.belongPlot = String(order[0].belongPlot)
+  // formData.value.parkDetailName = String(order[0].name)
+
+}
 
 
 
@@ -206,6 +237,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     cropCode: undefined,
+    cropId: undefined,
     cropName: undefined,
     cropType: undefined,
     imgId: undefined,

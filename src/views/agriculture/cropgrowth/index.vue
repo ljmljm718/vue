@@ -208,6 +208,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   cropCode: undefined,
+  cropId: undefined,
   cropName: undefined,
   cropType: undefined,
   imgId: undefined,
