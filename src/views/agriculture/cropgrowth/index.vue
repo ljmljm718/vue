@@ -153,8 +153,9 @@
         width="180px"
       />
       <el-table-column label="所属地块" align="center" prop="belongPark" />
+      <el-table-column label="所属地块" align="center" prop="parkName" />
       <el-table-column label="所属园区" align="center" prop="belongPlot" />
-
+      <el-table-column label="所属地块" align="center" prop="parkDetailName" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button

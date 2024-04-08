@@ -11,6 +11,8 @@ export interface CropBaseVO {
   remark: string // 备注
   belongPark: string // 所属地块
   belongPlot: string // 所属园区
+  parkName:string
+  plotName:string
   deptId: string // 部门id
   userId: string // 用户id
 }

@@ -34,6 +34,10 @@
               </el-input>
 <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
             </el-form-item>
+          <el-form-item label="基地名称" prop="parkName">
+            <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+          </el-form-item>
+
             <el-form-item label="所属地块" prop="belongPlot">
                 <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
                     <template #append>
@@ -45,6 +49,10 @@
                 </el-input>
 <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
             </el-form-item>
+          <el-form-item label="地块名称" prop="plotName">
+            <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
+          </el-form-item>
+
             <el-form-item label="图片" prop="imgId">
                 <UploadImg v-model="formData.imgId" />
             </el-form-item>
@@ -92,6 +100,8 @@ const formData = ref({
     remark: undefined,
     belongPark: undefined,
     belongPlot: undefined,
+    parkName: undefined,
+    plotName: undefined,
     deptId: undefined,
     userId: undefined,
 })
@@ -134,7 +144,7 @@ const openParkInfoPopup = (id: string) => {
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
     if (openType.value === '0'){
         formData.value.belongPark = String(order[0].code)
-        // formData.value.parkName = String(order[0].name)
+        formData.value.parkName = String(order[0].name)
     }
     else formData.value.belongPlot = String(order[0].id)
 }
@@ -153,7 +163,7 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
     console.log("--->>查看选择的地块信息：",order[0])
     formData.value.belongPark = String(order[0].parkId)
     formData.value.belongPlot = String(order[0].id)
-    // formData.value.parkDetailName = String(order[0].name)
+    formData.value.plotName = String(order[0].name)
 
 }
 
@@ -193,6 +203,8 @@ const resetForm = () => {
         remark: undefined,
         belongPark: undefined,
         belongPlot: undefined,
+        parkName: undefined,
+        plotName: undefined,
         deptId: undefined,
         userId: undefined,
     }

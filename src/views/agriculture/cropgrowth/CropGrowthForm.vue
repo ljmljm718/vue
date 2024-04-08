@@ -24,7 +24,14 @@
         <el-input v-model="formData.cropName" placeholder="请输入名称" />
       </el-form-item>
       <el-form-item label="品种" prop="cropType">
-        <el-input v-model="formData.cropType" placeholder="请输入品种" />
+        <el-select v-model="formData.cropType" placeholder="请选择品种">
+          <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId" />
@@ -102,6 +109,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 作物生长期管理 表单 */
 defineOptions({ name: 'CropGrowthForm' })
@@ -184,7 +192,8 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.cropType=String(order[0].cropType)
   formData.value.belongPark = String(order[0].belongPark)
   formData.value.belongPlot = String(order[0].belongPlot)
-  // formData.value.parkDetailName = String(order[0].name)
+  formData.value.parkName = String(order[0].parkName)
+  formData.value.parkDetailName = String(order[0].plotName)
 
 }
 

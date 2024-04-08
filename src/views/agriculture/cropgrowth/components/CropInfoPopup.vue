@@ -1,7 +1,7 @@
 <!-- 基地/地块列表 -->
 <template>
   <Dialog
-    title="选择基地/地块"
+    title="选择作物"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -86,7 +86,9 @@
           </template>
         </el-table-column>
         <el-table-column label="所属基地" align="center" prop="belongPark"/>
+        <el-table-column label="所属基地" align="center" prop="parkName"/>
         <el-table-column label="所属地块" align="center" prop="belongPlot" />
+        <el-table-column label="所属基地" align="center" prop="plotName"/>
         <el-table-column label="描述" align="center" prop="cropDesc" />
         <el-table-column label="备注" align="center" prop="remark" />
         <el-table-column
@@ -129,20 +131,14 @@ const parentValue = ref('')
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  code: undefined,
-  name: undefined,
-  grade: undefined,
-  type: undefined,
-  altitude: undefined,
-  latitude: undefined,
-  longitude: undefined,
-  address: undefined,
-  contact: undefined,
-  tel: undefined,
-  area: undefined,
-  parentId: "",
-  remark: undefined,
+  cropCode: undefined,
+  cropName: undefined,
+  cropType: undefined,
   createTime: [],
+  belongPark: undefined,
+  belongPlot: undefined,
+  deptId: undefined,
+  userId: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 
