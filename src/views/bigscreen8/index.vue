@@ -6,14 +6,18 @@ import {
   initChartStatic,
   generateBaseOptions
 } from '../../utils/bigscreenTool/index'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
 import { jsonData } from './assets/china'
 console.log('jsonData', jsonData);
-
+onBeforeUnmount(() => {
+  echarts.dispose(document.getElementById("jl_chart1") as HTMLElement)
+  echarts.dispose(document.getElementById("jl_chart2") as HTMLElement)
+  echarts.dispose(document.getElementById("jl_chart3") as HTMLElement)
+})
 
 const initChart1 = async () => {
   initChartStatic(
-    'chart1',
+    'jl_chart1',
     generateBaseOptions({
       xAxis: {
         data: ['喜力', '渝红六号', '樱桃番茄', '金红九', '格雷'],
@@ -94,7 +98,7 @@ const initChart1 = async () => {
 
 const initChart2 = async () => {
   initChartStatic(
-    'chart2',
+    'jl_chart2',
     generateBaseOptions({
       yAxis: {
         data: ['台州', '湖北', '山东', '哈尔滨', '四川', '重庆', '浙江'],
@@ -175,7 +179,7 @@ const initChart2 = async () => {
 
 const initChart3 = async () => {
   initChartStatic(
-    'chart3',
+    'jl_chart3',
     generateBaseOptions({
       xAxis: {
         data: ['10月', '11月', '12月', '1月', '2月'],
@@ -439,7 +443,7 @@ onMounted(() => {
             <div>产品流通城市分析</div>
           </div>
           <div class="main-item-container">
-            <div id="chart2"></div>
+            <div id="jl_chart2"></div>
           </div>
         </div>
       </div>
@@ -478,7 +482,7 @@ onMounted(() => {
               <div class="text-md" style="font-family: 'TitleFont';">种植分布</div>
               <div style="width: calc(100% - 5rem);height: 1rem;background: linear-gradient(to right, #1d4daa, #1d4daa00);margin-left: .4rem;"></div>
             </div>
-            <div id="chart1"></div>
+            <div id="jl_chart1"></div>
           </div>
         </div>
       </div>
@@ -488,7 +492,7 @@ onMounted(() => {
             <div>订单销售数据</div>
           </div>
           <div class="main-item-container">
-            <div id="chart3"></div>
+            <div id="jl_chart3"></div>
           </div>
         </div>
       </div>
@@ -498,7 +502,7 @@ onMounted(() => {
 </template>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
-#chart1, #chart2, #chart3 {
+#jl_chart1, #jl_chart2, #jl_chart3 {
   height: 100%;
   
 }
