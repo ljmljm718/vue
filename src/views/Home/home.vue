@@ -12,6 +12,9 @@ import {
   soilPage, // 土壤墒情
 } from './apis'
 import { formatTime } from '@/utils/index'
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import {retainFirstTwoLayers} from "@/utils/tree";
+import {DICT_TYPE} from "@/utils/dict";
 
 const getIcon = (type) => {
   const iconMap = {
@@ -60,13 +63,37 @@ const getPageRealTimeData = async (parkId = '', plotId = '') => {
 getPageRealTimeData()
 
 const sensorList = ref([]), monitorList = ref([]), lineList = ref([])
+
+let categoryOptions = ref([])// 设备分类选项
+/**
+ * 设备分类级联选择器
+ */
+const categoryProps = {
+    value: 'id',
+    label: 'categoryName'
+}
 const getDeviceList = async (belongPark = '', belongPlot = '') => {
-  const res = await getDeviceByParkAndPlot({ belongPark, belongPlot })
-  console.log('res', res);
-  
-  if (Array.isArray(res.sensor)) sensorList.value = res.sensor
-  if (Array.isArray(res.surveillance)) monitorList.value = res.surveillance
-  if (Array.isArray(res.prodLine)) lineList.value = res.prodLine
+    const res = await getDeviceByParkAndPlot({ belongPark, belongPlot })
+    console.log('res', res);
+
+    sensorList.value = res.sensor.map((item: any) => {
+        item.deviceType = item.deviceType.split(',').map(Number)
+        return item;
+    })
+    monitorList.value = res.surveillance.map((item: any) => {
+        item.deviceType = item.deviceType.split(',').map(Number)
+        return item;
+    })
+    lineList.value = res.prodLine.map((item: any) => {
+        item.deviceType = item.deviceType.split(',').map(Number)
+        return item;
+    })
+    if (Array.isArray(res.sensor)) sensorList.value = res.sensor
+    if (Array.isArray(res.surveillance)) monitorList.value = res.surveillance
+    if (Array.isArray(res.prodLine)) lineList.value = res.prodLine
+    const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+    categoryOptions.value = retainFirstTwoLayers(categoryTree)
+    console.log('res32', res);
 }
 getDeviceList()
 
@@ -302,8 +329,22 @@ const plantInfoList = ref([
               <el-table :data="sensorList" :stripe="true" :show-overflow-tooltip="true" height="10rem">
                 <el-table-column label="名称" align="center" prop="deviceName" />
                 <el-table-column label="编号" align="center" prop="deviceCode" />
-                <el-table-column label="类型" align="center" prop="deviceType" />
-                <el-table-column label="状态" align="center" prop="deviceStatus" />
+                <el-table-column label="类型" align="center" prop="deviceType" width="200px" >
+                  <template #default="scope">
+                    <el-cascader
+                        style="width: 100%"
+                        v-model="scope.row.deviceType"
+                        :options="categoryOptions"
+                        :props="categoryProps"
+                        disabled
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column label="状态" align="center" prop="deviceStatus" >
+                  <template #default="scope">
+                    <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
+                  </template>
+                </el-table-column>
                 <el-table-column label="创建时间" align="center" prop="createTime">
                   <template #default="scope">
                     <span>{{ formatTime(scope.row.createTime, 'yyyy-MM-dd') }}</span>
@@ -315,8 +356,22 @@ const plantInfoList = ref([
               <el-table :data="monitorList" :stripe="true" :show-overflow-tooltip="true" height="10rem">
                 <el-table-column label="名称" align="center" prop="deviceName" />
                 <el-table-column label="编号" align="center" prop="deviceCode" />
-                <el-table-column label="类型" align="center" prop="deviceType" />
-                <el-table-column label="状态" align="center" prop="deviceStatus" />
+                <el-table-column label="类型" align="center" prop="deviceType"  width="200px">
+                  <template #default="scope">
+                    <el-cascader
+                        style="width: 100%"
+                        v-model="scope.row.deviceType"
+                        :options="categoryOptions"
+                        :props="categoryProps"
+                        disabled
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column label="状态" align="center" prop="deviceStatus" >
+                  <template #default="scope">
+                    <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
+                  </template>
+                </el-table-column>
                 <el-table-column label="创建时间" align="center" prop="createTime">
                   <template #default="scope">
                     <span>{{ formatTime(scope.row.createTime, 'yyyy-MM-dd') }}</span>
@@ -328,8 +383,22 @@ const plantInfoList = ref([
               <el-table :data="lineList" :stripe="true" :show-overflow-tooltip="true" height="10rem">
                 <el-table-column label="名称" align="center" prop="deviceName" />
                 <el-table-column label="编号" align="center" prop="deviceCode" />
-                <el-table-column label="类型" align="center" prop="deviceType" />
-                <el-table-column label="状态" align="center" prop="deviceStatus" />
+                <el-table-column label="类型" align="center" prop="deviceType" width="200px" >
+                  <template #default="scope">
+                    <el-cascader
+                        style="width: 100%"
+                        v-model="scope.row.deviceType"
+                        :options="categoryOptions"
+                        :props="categoryProps"
+                        disabled
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column label="状态" align="center" prop="deviceStatus" >
+                  <template #default="scope">
+                    <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
+                  </template>
+                </el-table-column>
                 <el-table-column label="创建时间" align="center" prop="createTime">
                   <template #default="scope">
                     <span>{{ formatTime(scope.row.createTime, 'yyyy-MM-dd') }}</span>
@@ -348,8 +417,8 @@ const plantInfoList = ref([
               <div
                 class="rounded-sm"
                 style="background-color: #237ced16;border: 1px solid #ffffff40;"
-                v-for="(item, index) in runTimeData"
-                :key="index"
+                v-for="item in runTimeData"
+                :key="item.dataType"
               >
                 <div class="flex p-1 px-2 items-center justify-between">
                   <div class="flex flex-col">
@@ -407,19 +476,10 @@ const plantInfoList = ref([
             <el-table-column label="设备名称" align="center" prop="equipmentCode" />
             <el-table-column label="温度(℃)" align="center" prop="temperature" />
             <el-table-column label="湿度(%/RH)" align="center" prop="humidity" />
-
-            <template v-if="radio !== '土壤墒情'">
-              <el-table-column label="光照(Lux)" align="center" prop="lighting" />
-              <el-table-column label="气压(kPa)" align="center" prop="airPressure" />
-              <el-table-column label="雨量(mm)" align="center" prop="rainfall" />
-              <el-table-column label="二氧化碳(mmol/L)" align="center" prop="co2Density" />
-            </template>
-            <template v-if="radio === '土壤墒情'">
-              <el-table-column label="土壤深度" align="center" prop="depth" />
-              <el-table-column label="EC值" align="center" prop="ec" />
-              <el-table-column label="PH值" align="center" prop="ph" />
-            </template>
-
+            <el-table-column label="光照(Lux)" align="center" prop="lighting" />
+            <el-table-column label="气压(kPa)" align="center" prop="airPressure" />
+            <el-table-column label="雨量(mm)" align="center" prop="rainfall" />
+            <el-table-column label="二氧化碳(mmol/L)" align="center" prop="co2Density" />
             <el-table-column label="数据采集时间" align="center" prop="collectionTime" :formatter="dateFormatter" />
           </el-table>
           <Pagination
