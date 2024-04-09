@@ -34,7 +34,7 @@
       <el-form-item label="烘干温度(℃)" prop="dryingTemperature">
         <el-input v-model="formData.dryingTemperature" placeholder="请输入烘干温度" />
       </el-form-item>
-      <el-form-item label="设备转速(rpm/m)" prop="equipmentSpeed">
+      <el-form-item label="设备转速(r/min)" prop="equipmentSpeed">
         <el-input v-model="formData.equipmentSpeed" placeholder="请输入设备转速" />
       </el-form-item>
       <el-form-item label="适宜作物" prop="suitableCrops">
