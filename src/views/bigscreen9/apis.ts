@@ -93,4 +93,17 @@ export const getDeviceState = async () => {
   })
 }
 
+// [大屏]气象站/土壤传感/虫情测报灯相关读数
+export const getDeviceStateByParams = async (params) => {
+  return await request.get({
+    url: '/yyang/equipment-data/aikouEquipmentMonitor',
+    params
+  })
+}
 
+// 设备分类在线离线统计
+export const deviceInfoBySum = async () => {
+  return await request.get({
+    url: '/agriculture/big-screen/deviceInfoBySum'
+  })
+}

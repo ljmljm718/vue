@@ -20,8 +20,48 @@ import {
   getPageMonitoring,
   locationPrice,
   selectSum,
-  getDeviceState
+  getDeviceState,
+  getDeviceStateByParams,
+  deviceInfoBySum
 } from './apis'
+
+// 右上角
+const deviceTotal = ref(0)
+const getdeviceInfoBySum = async () => {
+  const { list = [], total = 0} = await deviceInfoBySum()
+  console.log('deviceInfoBySum', list);
+  deviceTotal.value = total
+  deviceDataList.value = list.map(item => ({
+    ...item,
+    title: item.categoryName,
+    value: item.total
+  }))
+}
+getdeviceInfoBySum()
+
+// 获取大屏中间内容
+const weatherData = ref<Array<any>>([])
+const soilData = ref<Array<any>>([])
+const bugData = ref<Array<any>>([])
+const getDeviceStateData = async (type) => {
+  const res = await getDeviceStateByParams({
+    type, // 0气象监测 1土壤监测 2虫情监测
+    id: type === 0 ? '1774618074997252096' : type === 1 ? '1774647216884097024' : '1774632301782818816', // 设备ID
+  })
+  if (type === 0) {
+    console.log('气象监测 数据', res);
+    weatherData.value = res;
+  } else if (type === 1) {
+    console.log('土壤监测 数据', res);
+    soilData.value = res
+  } else {
+    console.log('虫情监测 数据', res);
+    bugData.value = res
+  }
+}
+getDeviceStateData(0)
+getDeviceStateData(1)
+getDeviceStateData(2)
 
 const getIndustryList = async () => {
   const res = await getParkCountAndAreaSum();
@@ -335,30 +375,30 @@ onMounted(() => {
 })
 
 // 设备数据
-const deviceDataList = ref([
+const deviceDataList = ref<Array<any>>([
   {
     title: '气象监测',
-    value: 4,
-    online: 3,
-    offline: 1
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '设备监控',
-    value: 75,
-    online: 69,
-    offline: 6
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '土壤墒情',
-    value: 12,
-    online: 10,
-    offline: 2
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '虫情测报灯',
-    value: 16,
-    online: 11,
-    offline: 5
+    value: 0,
+    online: 0,
+    offline: 0
   },
 ])
 
@@ -500,7 +540,7 @@ const monitorDeviceIndex = ref(1)
 const monitorDeviceList = ref<Array<any>>([])
 
 const getProductionOptions = async () => {
-  const { list = [], total = 0 } = await cropBasePage();
+  const { list = [] } = await cropBasePage();
   console.log('getProductionOptions', list);
   productOptions.value = list.map(item => ({
     ...item,
@@ -587,7 +627,7 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper relative" style="grid-row: span 7;">
         <div id="mainMap">
-          <div class="tool-tip-wrapper" style="left: 300px;top: 200px;">
+          <div class="tool-tip-wrapper" style="left: 250px;top: 200px;">
             <div class="rect-bg">
               <div class="rect-title">监控设备</div>
               <div class="flex rect-line mt-2">
@@ -607,6 +647,75 @@ const handleBaseIdChange = (id) => {
                 <div
                   :style="`color: ${mapMonitorData.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
                 >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}</div>
+              </div>
+            </div>
+            <img src="/images/bigscreen9/icon2.png" alt="" />
+          </div>
+          <div class="tool-tip-wrapper" style="left: 470px;top: 360px;">
+            <div class="rect-bg" style="min-height: 13rem;">
+              <div class="rect-title">气象站</div>
+              <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+                <div
+                  class="flex"
+                  v-for="(item, index) in weatherData"
+                  :key="index"
+                >
+                  <span>{{ item.monitoringType }}</span>
+                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                </div>
+                <div>
+                  <span>状态:</span>
+                  <span
+                    class="pl-2"
+                    :style="`color: ${(weatherData && weatherData[0] && weatherData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                  >{{ (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线' }}</span>
+                </div>
+              </div>
+            </div>
+            <img src="/images/bigscreen9/icon1.png" alt="" />
+          </div>
+          <div class="tool-tip-wrapper" style="left: 540px;top: 100px;">
+            <div class="rect-bg" style="width: 9rem;min-height: 10rem;">
+              <div class="rect-title">虫情测报灯</div>
+              <div class="grid gap-1 pt-2 px-1" style="font-size: .9rem;">
+                <div
+                  class="flex"
+                  v-for="(item, index) in bugData"
+                  :key="index"
+                >
+                  <span>{{ item.monitoringType }}</span>
+                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                </div>
+                <div>
+                  <span>状态:</span>
+                  <span
+                    class="pl-2"
+                    :style="`color: ${(bugData && bugData[0] && bugData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                  >{{ (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线' }}</span>
+                </div>
+              </div>
+            </div>
+            <img src="/images/bigscreen9/icon3.png" alt="" />
+          </div>
+          <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
+            <div class="rect-bg">
+              <div class="rect-title">土壤传感</div>
+              <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+                <div
+                  class="flex"
+                  v-for="(item, index) in soilData"
+                  :key="index"
+                >
+                  <span>{{ item.monitoringType }}</span>
+                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                </div>
+                <div>
+                  <span>状态:</span>
+                  <span
+                    class="pl-2"
+                    :style="`color: ${(soilData && soilData[0] && soilData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                  >{{ (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线' }}</span>
+                </div>
               </div>
             </div>
             <img src="/images/bigscreen9/icon1.png" alt="" />
@@ -668,7 +777,7 @@ const handleBaseIdChange = (id) => {
           <div class="!flex-row main-item-container">
             <div class="w-[6rem] flex flex-col items-center justify-center">
               <div class="w-[4.5rem] h-[4.5rem] device-icon flex justify-center items-center pb-4"
-                style="font-family: 'TitleFont';font-size: 1.2rem;">107</div>
+                style="font-family: 'TitleFont';font-size: 1.2rem;">{{ deviceTotal }}</div>
               <div style="font-size: .9rem;">总数</div>
             </div>
             <div class="grid grid-cols-2 grid-rows-2" style="width: calc(100% - 6rem);">
@@ -751,11 +860,11 @@ const handleBaseIdChange = (id) => {
               <div
                 v-for="(item, index) in preWarnList"
                 :key="index"
-                class="warn-item"
+                class="warn-item flex justify-between items-center"
               >
-                <span>{{ item.warnType }}</span>
-                <span>{{ item.warnInfo}}</span>
-                <span>{{ item.warnTime }}</span>
+                <div style="width: 2rem;">{{ item.warnType }}</div>
+                <div style="padding: 0 .4rem;">{{ item.warnInfo}}</div>
+                <div style="width: 8rem;">{{ item.warnTime }}</div>
               </div>
             </div>
           </div>
@@ -879,7 +988,7 @@ const handleBaseIdChange = (id) => {
 }
 
 .warn-item {
-  height: 2rem;
+  padding: .2rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
