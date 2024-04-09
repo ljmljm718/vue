@@ -169,7 +169,7 @@
       </el-table-column>
       <el-table-column label="加热时间(分钟)" align="center" prop="heatingTime" />
       <el-table-column label="烘干温度(℃)" align="center" prop="dryingTemperature" />
-      <el-table-column label="设备转速(rpm/m)" align="center" prop="equipmentSpeed" />
+      <el-table-column label="设备转速(r/min)" align="center" prop="equipmentSpeed" />
       <el-table-column label="适宜作物" align="center" prop="suitableCrops" />
       <el-table-column label="备注" align="center" prop="yyRemarks" />
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
