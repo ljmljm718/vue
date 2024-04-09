@@ -21,8 +21,23 @@ import {
   locationPrice,
   selectSum,
   getDeviceState,
-  getDeviceStateByParams
+  getDeviceStateByParams,
+  deviceInfoBySum
 } from './apis'
+
+// 右上角
+const deviceTotal = ref(0)
+const getdeviceInfoBySum = async () => {
+  const { list = [], total = 0} = await deviceInfoBySum()
+  console.log('deviceInfoBySum', list);
+  deviceTotal.value = total
+  deviceDataList.value = list.map(item => ({
+    ...item,
+    title: item.categoryName,
+    value: item.total
+  }))
+}
+getdeviceInfoBySum()
 
 // 获取大屏中间内容
 const weatherData = ref<Array<any>>([])
@@ -360,30 +375,30 @@ onMounted(() => {
 })
 
 // 设备数据
-const deviceDataList = ref([
+const deviceDataList = ref<Array<any>>([
   {
     title: '气象监测',
-    value: 4,
-    online: 3,
-    offline: 1
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '设备监控',
-    value: 75,
-    online: 69,
-    offline: 6
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '土壤墒情',
-    value: 12,
-    online: 10,
-    offline: 2
+    value: 0,
+    online: 0,
+    offline: 0
   },
   {
     title: '虫情测报灯',
-    value: 16,
-    online: 11,
-    offline: 5
+    value: 0,
+    online: 0,
+    offline: 0
   },
 ])
 
@@ -762,7 +777,7 @@ const handleBaseIdChange = (id) => {
           <div class="!flex-row main-item-container">
             <div class="w-[6rem] flex flex-col items-center justify-center">
               <div class="w-[4.5rem] h-[4.5rem] device-icon flex justify-center items-center pb-4"
-                style="font-family: 'TitleFont';font-size: 1.2rem;">107</div>
+                style="font-family: 'TitleFont';font-size: 1.2rem;">{{ deviceTotal }}</div>
               <div style="font-size: .9rem;">总数</div>
             </div>
             <div class="grid grid-cols-2 grid-rows-2" style="width: calc(100% - 6rem);">

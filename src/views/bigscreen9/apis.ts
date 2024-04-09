@@ -100,3 +100,10 @@ export const getDeviceStateByParams = async (params) => {
     params
   })
 }
+
+// 设备分类在线离线统计
+export const deviceInfoBySum = async () => {
+  return await request.get({
+    url: '/agriculture/big-screen/deviceInfoBySum'
+  })
+}
