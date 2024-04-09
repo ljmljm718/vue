@@ -42,6 +42,12 @@
       <el-form-item label="特点" prop="feature">
         <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点" />
       </el-form-item>
+      <el-form-item label="生长地点" prop="growSite">
+        <el-input v-model="formData.growSite" type="textarea" placeholder="请输入生长地点" />
+      </el-form-item>
+      <el-form-item label="环境条件" prop="envCondition">
+        <el-input v-model="formData.envCondition" type="textarea" placeholder="请输入环境条件" />
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
       </el-form-item>
@@ -137,6 +143,9 @@ const formData = ref({
   endTime: undefined,
   parkName: undefined,
   parkDetailName: undefined,
+  envCondition: undefined,
+  growSite: undefined,
+
 })
 const formRules = reactive({
   cropName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -259,6 +268,8 @@ const resetForm = () => {
     endTime: undefined,
     parkName: undefined,
     parkDetailName: undefined,
+    envCondition: undefined,
+    growSite: undefined,
   }
   formRef.value?.resetFields()
 }

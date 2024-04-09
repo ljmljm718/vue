@@ -140,6 +140,8 @@
         </template>
       </el-table-column>
       <el-table-column label="特点" align="center" prop="feature" />
+      <el-table-column label="环境条件" align="center" prop="envCondition" />
+      <el-table-column label="生长地点" align="center" prop="growSite" />
       <el-table-column
         label="开始时间"
         align="center"
@@ -164,7 +166,7 @@
       />
       <el-table-column label="所属地块" align="center" prop="belongPark" />
       <el-table-column label="所属园区" align="center" prop="belongPlot" />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="120px">
         <template #default="scope">
           <el-button
             link

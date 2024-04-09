@@ -7,6 +7,8 @@ export interface CropGrowthVO {
   cropCode: string // 编号
   cropName: string // 名称
   cropType: string // 品种
+  envCondition:string
+  growSite: string
   imgId: string // 图片
   growth: string // 生长期
   feature: string // 特点
