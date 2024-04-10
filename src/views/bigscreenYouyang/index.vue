@@ -587,6 +587,7 @@ const leftLabelMap = {
   "雨量": '雨量', //降雨量
   "风向": '风向' //风向
 }
+ 
 
 let btnIndex2=ref(0)
 let right2Val=ref('溶氧量')
