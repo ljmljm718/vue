@@ -281,6 +281,8 @@ const deviceType = ref()
 const getList = async () => {
   loading.value = true
   try {
+    let aa = route.query.deviceStatus;
+    queryParams.deviceStatus = aa;
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     list.value = data.list.map((item: any) => {
       item.deviceType = item.deviceType.split(',').map(Number)

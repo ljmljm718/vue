@@ -131,13 +131,30 @@ const initChart = async () => {
         orient: "vertical",
         textStyle:{color:"#969393"}
       },
+      graphic: {
+        type: "text", //通过不同top值可以设置上下显示
+        left: "35%",
+        top: "center",
+        style: {
+          text: `今日`,
+          textAlign: "center",
+          fill: "#1E7CE8", //文字的颜色
+          fontSize: 20,
+          lineHeight: 20,
+        },
+      },
       series: [
         {
           name: '设备',
           type: 'pie',
-          radius: ['40%', '70%'],
+          radius: ['60%', '90%'],
           center: ['40%', '50%'],
           avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
           label: {
             formatter: "{c|{c}} , {per|{d}%}",
             rich: {
@@ -255,25 +272,44 @@ onMounted(() => {
       >
         <div class="flex justify-between w-full items-center">
           <div style="font-family: 'ArtFont';font-size: 1.3rem;">{{ item.title }}</div>
-          <div>{{
+          <div @click="$router.push({
+            path:'/device/deviceinfo',
+             query: {
+                deviceType:item.deviceType
+
+              }
+            })">{{
               (item.title !== '设备总数' && item.title !== '预警数量') ? (item.total + '台') : ''
             }}
           </div>
         </div>
-        <div v-if="item.title === '设备总数' || item.title === '预警数量'">
+        <div v-if="item.title === '设备总数' || item.title === '预警数量'" >
           <div class="flex items-center pt-2 h-[2.5rem] px-2">
             <span>{{ item.total }}</span>
-            <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;">台</span>
-            <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;">个</span>
+            <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;"  @click="$router.push('/device/deviceinfo')">台</span>
+            <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;" @click="$router.push('/warn/agri-warning-record')">个</span>
           </div>
         </div>
         <div v-else>
           <div class="h-[1rem] p-1 pt-2 flex items-center">
-            <span>在线</span>
+            <span @click="$router.push({
+            path:'/device/deviceinfo',
+             query: {
+                deviceStatus: 'online',
+                deviceType:item.deviceType
+
+              }
+            })">在线</span>
             <span style="padding-left: 2rem;">{{ item.online }}台</span>
           </div>
           <div class="h-[1rem] p-1 flex items-center">
-            <span>离线</span>
+            <span  @click="$router.push({
+            path:'/device/deviceinfo',
+             query: {
+                deviceStatus: 'offline',
+                deviceType:item.deviceType
+              }
+            })">离线</span>
             <span style="padding-left: 2rem;">{{ item.offline }}台</span>
           </div>
         </div>
@@ -317,34 +353,36 @@ onMounted(() => {
           <el-divider class="!my-3"/>
           <div class="p-1">
             <div
-              class="text-center py-2"
+              class="text-center py-2 text-24px font-bold"
               style="background: linear-gradient(to right, #79cefe00, #79cefeA0, #79cefe00);"
             >养殖物名称: 黄河口大闸蟹
             </div>
             <div class="p-1 mt-3 flex items-start" v-if="growthTypes.length !== 0">
-              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-30 object-contain"/>
+
+              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-50 object-cover"/>
               <div class="px-2">
                 <div class="p-1">
-                  <span>养殖品种: </span>
+                  <span class="text-20px ">养殖品种: </span>
                   <span class="pl-2">{{ growthTypes[growthIndex].cropType }}</span>
                 </div>
                 <div class="p-1">
-                  <span>当前生育期: </span>
+                  <span class="text-20px">当前生育期: </span>
                   <span class="pl-2">{{ growthTypes[growthIndex].growth }}</span>
                 </div>
                 <div class="p-1 py-2">
-                  <div>开始时间:</div>
-                  <div class="pt-2">{{
-                      formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')
-                    }}
-                  </div>
+                  <div>开始时间:     {{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')}}</div>
+<!--                  <div class="pt-2">{{-->
+
+<!--                    }}-->
+<!--                  </div>-->
                 </div>
                 <div class="p-1 py-2">
-                  <div>预计结束时间:</div>
-                  <div class="pt-2">{{
+                  <div>结束时间:    {{
                       formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd')
-                    }}
-                  </div>
+                    }}</div>
+<!--                  <div class="pt-2">-->
+<!--                   -->
+<!--                  </div>-->
                 </div>
               </div>
             </div>
@@ -383,7 +421,7 @@ onMounted(() => {
               style="border: 1px solid #b5ead8A0;background-color: #b5ead830;"
             >
               <div class="b w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
-              <div>环境监测</div>
+              <div>水质监测</div>
             </div>
             <div v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4"
                  style="border: 1px solid #b5ead8A0;background-color: #b5ead830;">
