@@ -15,6 +15,7 @@ import { formatTime } from '@/utils/index'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import {DICT_TYPE} from "@/utils/dict";
+import {useRouter} from "vue-router";
 
 const getIcon = (type) => {
   const iconMap = {
@@ -45,6 +46,25 @@ const getHomeDeviceCard = async () => {
   deviceCardList.value = res
 }
 getHomeDeviceCard()
+
+let router=useRouter()
+const goPage=(index,id)=>{
+  if (id === 'online' || id === 'offline'|| id === 'fault'){
+    router.push({
+      path:'/device/deviceView',
+      query:{
+        val: id
+      }
+    })
+  }else {
+    router.push({
+      path:'/device/deviceView',
+      query:{
+        id
+      }
+    })
+  }
+}
 
 const pageWarnList = ref([])
 const getPageWarningInfo = async (parkId = '', plotId = '') => {
@@ -276,6 +296,7 @@ const plantInfoList = ref([
         v-for="(item, index) in deviceCardList"
         :key="index"
         style="background-color: #ffffff20;border: 1px solid #00000020;"
+        @click="goPage(index,item.category)"
       >
         <div class="art-font mt-1">{{ item.title }}</div>
         <div class="flex items-center">
