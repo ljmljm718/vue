@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="100px"
+      label-width="90px"
       v-loading="formLoading"
     >
       <el-form-item label="日期" prop="countDate">
@@ -16,7 +16,14 @@
         />
       </el-form-item>
       <el-form-item label="地点" prop="countPlace">
-        <el-input v-model="formData.countPlace" placeholder="请输入地点" type="textarea"/>
+        <el-input v-model="formData.countPlace" placeholder="请输入地点">
+          <template #append>
+            <el-button @click="openSelectScenicArea('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="进入人数" prop="inPeople">
         <el-input type="number" v-model="formData.inPeople" placeholder="请输入进入人数" >
@@ -42,9 +49,13 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  景点选择  -->
+  <SelectScenicArea ref="selectScenicAreaRef" @success="handleSelectScenicAreaChange"/>
 </template>
 <script setup lang="ts">
 import { PeopleCountingApi, PeopleCountingVO } from '@/api/agriculture/peoplecounting'
+import SelectScenicArea from "@/views/agriculture/scenicarea/SelectScenicArea.vue";
 
 /** 旅游人流量统计 表单 */
 defineOptions({ name: 'PeopleCountingForm' })
@@ -129,5 +140,14 @@ const resetForm = () => {
     weather: undefined,
   }
   formRef.value?.resetFields()
+}
+
+//景点的选择
+const selectScenicAreaRef = ref()
+const openSelectScenicArea = (id: string) => {
+  selectScenicAreaRef.value.open(id)
+}
+const handleSelectScenicAreaChange = (order: ScenicAreaVO) => {
+  formData.value.countPlace = String(order[0].scenicName)
 }
 </script>
