@@ -46,7 +46,7 @@
         /> -->
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择采集类型" clearable
+        <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择监测类型" clearable
           @keyup.enter="handleQuery"
           class="!w-240px">  
           <el-option
@@ -390,7 +390,6 @@ watch(
   },  
   { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整  
 );
-
 /** 查询列表 */
 const getList = async () => {
   loading.value = true

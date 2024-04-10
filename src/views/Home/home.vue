@@ -16,6 +16,7 @@ import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import {DICT_TYPE} from "@/utils/dict";
 import {useRouter} from "vue-router";
+import {ElTree} from "element-plus";
 
 const getIcon = (type) => {
   const iconMap = {
@@ -118,6 +119,7 @@ const getDeviceList = async (belongPark = '', belongPlot = '') => {
 getDeviceList()
 
 const treeList = ref([])
+const treeRef = ref<InstanceType<typeof ElTree>>()
 const buildTree = (tree = [], parentId = '') => {
   const res = []
   tree.forEach(item => {
@@ -131,10 +133,16 @@ const buildTree = (tree = [], parentId = '') => {
   })
   return res
 }
+
 const getTreeList = async () => {
   const data = await getParkTree({});
   treeList.value = buildTree(data)
   console.log('treeList.value', treeList.value);
+  nextTick(() => {
+    if (treeList.value) {
+      treeRef.value.setCurrentKey(treeList.value[0].children[0].id);
+    }
+  });
 }
 getTreeList()
 
@@ -308,10 +316,13 @@ const plantInfoList = ref([
     <div class="flex py-3 space-x-3">
       <el-card class="w-[16rem]">
         <el-tree
+          ref="treeRef"
           style="max-width: 16rem;"
           :data="treeList"
           :props="defaultProps"
-          @node-click="handleNodeClick"
+          highlight-current
+          node-key="id"
+          @current-change="handleNodeClick"
           :default-expand-all="true"
         />
       </el-card>

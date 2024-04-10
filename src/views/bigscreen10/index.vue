@@ -14,14 +14,16 @@
                     <div class="left1-item">
                       <div class='left1-top'>
                         <div class="left1-item-Bg">
-                        <div style="margin-left: 90px;">
-                          <div style="font-size:20px;color:#c1c1c1;">3681<span style="font-size:12px;">万亩</span></div>
+                          <div :class="['left1-icon','left1-icon-1']"></div>
+                        <div style="margin-left: 15px;margin-top: -20px;">
+                          <div style="font-size:20px;color:#c1c1c1;">{{ sticObjs.area }}</div>
                           <div style="color:#0050a4;font-size:14px;">种植面积</div>
                         </div>
                       </div>
                       <div class="left1-item-Bg2">
-                        <div style="margin-left: 90px;">
-                          <div style="font-size:20px;color:#c1c1c1;">9632<span style="font-size:12px;">万只</span></div>
+                        <div :class="['left1-icon','left1-icon-2']"></div>
+                        <div style="margin-left: 15px; margin-top: 10px;margin-top: -20px;">
+                          <div style="font-size:20px;color:#c1c1c1;">{{ sticObjs.quantity }}</div>
                           <div style="color:#0050a4;font-size:14px;">养殖数量</div>
                         </div>
                       </div>
@@ -39,10 +41,15 @@
                       <!-- 横线 -->
                       <div class='xian'></div>
                       <!-- 第三部分 -->
-                      <div style="width:100%;height:30%;margin-top:5%; display:flex;">
-                        <img src='./assets/left3Bg.png' style="width: 150px;height:100%;margin-right:2%;"/>
-                        <div style="color:#c1c1c1;font-size:14px;">山地鸡名副其实，是大巴山地典型的“溜达鸡"，农户全天放养，五谷杂粮、草籽昆虫无所不吃。秦巴山区的富锌富硒地带，林地资源丰富，鸡舍周边都是大片青山翠谷，是天然的“山景房"，促成了山地鸡紧实的肉质，醇厚的风味，想不好吃都难。</div>
+                      <el-carousel indicator-position="outside"  style="height: 35%; ">
+                      <el-carousel-item  v-for="item,index in left3List" :key="index">
+                        <div style="width:100%;height:100%;margin-top:5%; display:flex;">
+                        <img :src='item.imgId' style="width: 150px;height:60%;margin-right:2%;"/>
+                        <div style="color:#c1c1c1;font-size:14px;">{{item.cropDesc}}</div>
                       </div>
+                      </el-carousel-item>
+                    </el-carousel>
+                      
                     </div>
                 </div>
                 <div class="left2">
@@ -130,9 +137,55 @@
                       </div> 
                 </div>
                 <div class="middle-main-footer">
-                    <div class="box-title3">柑橘生产数据分析</div>
-                    <div class="middle-footer-item">
-                        <div id="chart4"></div>
+                    <div style="width: 49%;height:100%;">
+                      <div class="box-title">特色产品</div>
+                      <div class="middli-main-left">
+                        <div class='left-top'>
+                          <div class="main-left-pie">
+                            <div class="pie"></div>
+                          </div>
+                          <div class="middle-main-right">
+                              <div style="margin-top: 10px;">精品葡萄</div>
+                              <di style="width:90%;align-items: center; display:flex;margin-top: 15px;justify-content: space-between;">
+                                <div>
+                                  <span>订单</span>
+                                  <span>108</span>
+                                </div>
+                                <div style="width: 3px;height: 20px;background-color:#0c57c7 ;"></div>
+                                <div>
+                                  <span>销售额</span>
+                                  <span>5940</span>
+                                </div>
+                              </di>
+                          </div>
+                        </div>
+                        <div class='left-top'>
+                          <div class="main-left-pie">
+                            <div class="pie2"></div>
+                          </div>
+                          <div class="middle-main-right">
+                              <div style="margin-top: 10px;">散养土鸡</div>
+                              <di style="width:90%;align-items: center; display:flex;margin-top: 15px;justify-content: space-between;">
+                                <div>
+                                  <span>订单</span>
+                                  <span>67</span>
+                                </div>
+                                <div style="width: 3px;height: 20px;background-color:#0c57c7 ;"></div>
+                                <div>
+                                  <span>销售额</span>
+                                  <span>7906</span>
+                                </div>
+                              </di>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="middli-main-right" style="width: 49%;height:100%;">
+                      <div class="box-title">智慧文旅</div>
+                      <div style="font-size: 14px;color:#c1c1c1;display: flex;align-items: center;">客流量与特色产品销售数据
+                          <div class="main-right-xian"></div>
+                      </div>
+                      <div id="chart2"></div>
                     </div>
                 </div>
                 <div class="middle-sxt">
@@ -147,7 +200,7 @@
                       <div class="right1-item-top">
                         <div style="font-size:23px;font-family:'TitleFont';">物联网设备</div>
                         <div style="margin-right:20px;">
-                          总数<span style="color:#00f391;">104</span>台
+                          总数<span style="color:#00f391;font-size:23px;font-family:'TitleFont';margin-top:10px ;">104</span>台
                         </div>
                       </div>
                       <!-- 第二部分 -->
@@ -258,7 +311,7 @@
                           <div style="font-size:12px;">风向 <span style="color:#62f3f4;">东北</span></div>
                         </div>
                       </div>
-                      <!-- 第四部风 -->
+                      <!-- 第四部分 -->
                       <div class="right1-warper2">
                         <div class="right1-selecte1">
                            <div class='right1-title'>土壤墒情</div>
@@ -299,7 +352,14 @@
                 <div class="right2">
                     <div class="box-title">预警信息</div>
                     <div class="right2-item">
-                         
+                         <div class="right2-warper" v-for="item,index in warnInfo" :key="index">
+                           <div style="width:20%;font-size:12px ; color: #c1c1c1;display: flex;flex-direction: column;align-items: center;">
+                            {{ item.warnTitle }}
+                            <div :class="['right2-warper-leftBg','right2-warper-1']"></div>
+                          </div>
+                           <div style="width:40%;color: #c1c1c1;font-size: 14px;">{{ item.warnInfo }}</div>
+                           <div style="width: 40%;">{{new Date().toLocaleString(item.warnTime)}}</div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -314,22 +374,13 @@ import {
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
 import {
-  deviceStatistics,
-  ParkBaseInfo,
-  ParkBaseInfo2,
-  IoTLatestData,
-  cropBase,
-  PlantInfo,
-  PlantArea,
-  DeviceAndWarn,
-  ProductionData,
-  WarnInfo,
-  YearSaleData,
-  MonthSaleData,
-  LuYu,
-  IndustryData
-  
-} from '@/api/kaizhou/bigscreen/index'
+  Statistics,
+  baidiParkInfo,
+  page,
+  warningRecordInfo,
+  SmartTour,
+  People
+} from '@/api/bigscreen10/index'
 import * as echarts from "echarts"
 import {ref,reactive,onMounted} from 'vue'
 import { object } from 'vue-types';
@@ -363,7 +414,7 @@ const initChart1= async ()=>{
             axisLine: {
               show: true,
               lineStyle: {
-                color: "#fff",
+                color: "#c1c1c1",
               },
             },
             splitLine: {
@@ -371,7 +422,7 @@ const initChart1= async ()=>{
               show: true, //是否显示
               lineStyle: {
                 //网格线样式
-                color: "#fff", //网格线颜色
+                color: "#c1c1c1", //网格线颜色
                 width: 1, //网格线的加粗程度
                 type: "dashed", //网格线类型
               },
@@ -401,75 +452,132 @@ const initChart1= async ()=>{
         })
       );
 }
-
+const initChart2= async ()=>{
+  let res1=await SmartTour()
+  let res2=await People()
+  console.log(res1,'文旅销售额')
+  console.log(res2,'旅客流量')
+    initChartStatic(
+        "chart2",
+        generateBaseOptions({
+          xAxis: {
+            data:['1月','2月','3月','4月','5月','6月','7月'],
+            interval:0,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#c1c1c1",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            itemWidth: 15,
+            itemHeight: 15,
+         },
+         color:['#2becfc','#fdca00'],
+          yAxis:[
+            {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#c1c1c1",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#c1c1c1", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          {
+            type: "value",
+            max:'5',
+            main:'0'
+          }
+        ],
+          series: [
+            {
+              name: "客流",
+              data:[3681,1032,2486,2761,3962,4032,3561],
+              type: "bar",
+              barWidth:'20',
+              label: {
+               show: true, // 显示文字
+               position: 'top', // 在顶部显示
+             // 可以通过 formatter 自定义显示的文本内容
+               formatter: '{c}', // {c} 表示数据值,
+                color:'#c1c1c1'
+              }
+            },
+            {
+              name: "销售额",
+              data:[2.25,1.75,2.25,2.8,3.5,2.6,3.25],
+              type: "line",
+              yAxisIndex:1,
+              symbol:'none',
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "17%",
+            bottom: "15%",
+          },
+        })
+      );
+}
 onMounted(()=>{
     initChart1()
+    initChart2()
 })
-let device=ref<object>({})
-//中间-设备数量统计
-const getDeviceStatistics=()=>{
-  deviceStatistics().then(res=>{
-    device.value=res
+//获取左上角数据
+let sticObjs=ref({})
+const getStatistics=()=>{
+  Statistics().then(res=>{
+    console.log(res,'左上角数据');
+    sticObjs.value=res
   })
 }
-getDeviceStatistics()
-// 选择园区
-let select=ref<any>([])
-let selectId=ref<any>('')
-let select2=ref<any>([])
-//园区
-const getParkBaseInfo=async (params)=>{
-  let res= await ParkBaseInfo(params)  
-  select.value=res
-  getParkBaseInfo2({parentId:select.value[0].id})
-}
-getParkBaseInfo({parentId:'0'})
-//地块
-const getParkBaseInfo2=async (params)=>{
-  let res= await ParkBaseInfo2(params)
-  select2.value=res
-  getIoTLatestData({plotId:res[0].id})
-}
-const selectCli1=(val:any)=>{
-  getParkBaseInfo2({parentId:val.target.value})
-}
-// 物联设备数据 设备数据
-let IoTLates=ref<object>({})
-const getIoTLatestData=(params)=>{
-  IoTLatestData(params).then(res=>{
-      IoTLates.value=res
+getStatistics()
+//左边第二部分
+let parkInfo=ref({})
+const getbaidiParkInfo=()=>{
+  baidiParkInfo().then(res=>{
+    console.log(res,'左边第二部分');
+    parkInfo.value=res
   })
 }
-
-const selectCli2=(val:any)=>{
-  if(typeof(val)=='string'){
-    getIoTLatestData({plotId:selectId.value})
-  }else{
-    getIoTLatestData({plotId:val.target.value}) 
-  }
-}
-selectCli2(selectId.value)
-//产品介绍
-const cropList=ref<any>([])
-const getCropBase=()=>{
-  cropBase({pageNo:"1",pageSize:"10"}).then(res=>{
-    cropList.value=res.list
-    
+getbaidiParkInfo()
+//左边第三部分
+let left3List=ref([])
+const getPage=()=>{
+  page({pageReqVO:{}}).then(res=>{
+    console.log(res,'左边第三部分');
+    left3List.value=res.list
   })
 }
-getCropBase()
-//种植资源
-let plantInfo=ref<any>({})
-const  getPlantInfo=()=>{
-  PlantInfo().then(res=>{
-    plantInfo.value=res
+getPage()
+//预警信息
+let warnInfo=ref([])
+const getWarningRecordInfo=()=>{
+  warningRecordInfo().then(res=>{
+    console.log(res,'预警信息');
+    warnInfo.value=res
   })
 }
-getPlantInfo()
-
-
-
-
+getWarningRecordInfo()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -496,26 +604,6 @@ getPlantInfo()
     font-family: "TitleFont";
     background-size: 100% 100%;
     background-image: url("./assets/titleBg.png");
-}
-.box-title2{
-    width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-    text-indent: 2rem;
-    font-size: 1.3rem;
-    font-family: "TitleFont";
-    background-size: 100% 100%;
-    background-image: url("./assets/box-title2.png");
-}
-.box-title3{
-    width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-    text-indent: 4rem;
-    font-size: 1.3rem;
-    font-family: "TitleFont";
-    background-size: 100% 100%;
-    background-image: url("./assets/box-title3.png");
 }
 .content-main-wrapper {
   padding: 0px 15px !important;
@@ -552,14 +640,32 @@ getPlantInfo()
               .left1-item-Bg{
               width: 48%;
               height:80%;
+              display: flex;
+              align-items:center;
+              justify-content: center;
               background-size: 100% 100%;
               background-image: url(./assets/left1ItemBg.png);
+              .left1-icon{
+                margin-top: -20px;
+                width:3rem;
+                height: 3rem;
+                background-size: 100% 100%;
+              }
             }
             .left1-item-Bg2{
               width: 48%;
               height:80%;
+              display: flex;
+              align-items:center;
+              justify-content: center;
               background-size: 100% 100%;
-              background-image: url(./assets/left1ItemBg2.png);
+              background-image: url(./assets/left1ItemBg.png);
+              .left1-icon{
+                width:3rem;
+                margin-top: -20px;
+                height: 3rem;
+                background-size: 100% 100%;
+              }
             }
             }
             .xian{
@@ -616,117 +722,69 @@ getPlantInfo()
       background-image: url(./assets/mainBg.png);
       position: relative;
       
-      .sxt{
-        position: absolute;
-        cursor: pointer;
-        width: 3.5rem;
-        height: 5rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/sxt.png');
-        position: relative;
-        .message{
-          position: absolute;
-          padding: 10px 15px 15px;
-          box-sizing: border-box;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url('./assets/middleBg.png');
-          .message-item{
-            width: 105%;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            margin-top: -10px;
-            margin-left: -25px;
-            background-size: 100% 100%;
-            background-image:url('./assets/middle-top.png');
-          }
-          .messageJk{
-              margin: 15px 0 ;
-              padding: 5px ;
-              text-align: center;
-              background-size: 100% 100%;
-              background-image: url('./assets/messageJk.png');
-            }
-        }
-      }
-      .cgq{
-        position: absolute;
-        width: 3rem;
-        cursor: pointer;
-        height: 5rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/cgq.png');
-        .message{
-          position: absolute;
-          padding: 10px 15px 15px;
-          box-sizing: border-box;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url('./assets/middleBg.png');
-          .message-item{
-            width: 105%;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            margin-top: -10px;
-            margin-left: -25px;
-            background-size: 100% 100%;
-            background-image:url('./assets/middle-top.png');
-          }
-          .messageJk{
-              margin: 15px 0 ;
-              padding: 5px ;
-              text-align: center;
-              background-size: 100% 100%;
-              background-image: url('./assets/messageJk.png');
-            }
-        }
-      }
-      .alarm{
-        cursor: pointer;
-        position: absolute;
-        width: 3rem;
-        height: 6rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/alarm.png');
-        .message{
-          position: absolute;
-          padding: 10px 15px 15px;
-          box-sizing: border-box;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url('./assets/middleBg.png');
-          .message-item{
-            width: 105%;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            margin-top: -10px;
-            margin-left: -25px;
-            background-size: 100% 100%;
-            background-image:url('./assets/middle-top.png');
-          }
-          .messageJk{
-              margin: 15px 0 ;
-              padding: 5px ;
-              text-align: center;
-              background-size: 100% 100%;
-              background-image: url('./assets/messageJk.png');
-            }
-        }
-      }
        
     }
     .middle-main-footer{
         position: absolute;
         bottom: 2%;
         width: 97%;
-        height: 20%;
-        .middle-footer-item{
-            width: 100%;
-            height: calc(100% - 2rem);
-            #chart4{
-                width: 100%;
-                height: 100%;
+        height: 24%;
+        display: flex;
+        justify-content: space-between;
+        .middli-main-left{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          height: calc(100% - 2rem);
+          background-size: 100% 100%;
+          background-image: url(./assets/main-footer-item.png);
+          .left-top{
+            width: 80%;
+            height: 45%;
+            display: flex;
+            justify-content:space-between;
+            margin-top:10px;
+            background-size: 100% 100%;
+            background-image: url(./assets/middle-main-warper.png);
+            .main-left-pie{
+              width:25%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-size: 100% 100%;
+              background-image: url(./assets/main-left-pie.png);
+              .pie{
+                width: 60%;
+                height: 80%;
+                background-size: 100% 100%;
+                background-image: url(./assets/main-pie.png);
+              }
+              .pie2{
+                width: 70%;
+                height:80%;
+                background-size: 100% 100%;
+                background-image: url(./assets/main-pie2.png);
+              }
             }
+            .middle-main-right{
+              width:70%;
+              height:100%;
+            }
+          }
+        }
+        .middli-main-right{
+          .main-right-xian{
+            width: 58%;
+            margin-left: 10px;
+            height: 8px;
+            background-size: 100% 100%;
+            background-image: url(./assets/main-right-xian.png);
+          }
+          #chart2{
+            width: 100%;
+            height:calc(100% - 3rem);
+          }
         }
     }
     .middle-sxt{
@@ -781,13 +839,15 @@ getPlantInfo()
               grid-template-rows: 30% 30% calc(40% - 20px);
               gap:10px;
               .right1-warper-item{
-                padding: 5px;
+                
+                padding: 5px 10px;
                 box-sizing:border-box ;
                 width: 100%;
                 height: 100%;
                 background-size: 100% 100%;
                 background-image: url(./assets/right1Warper.png);
                   .right1-onlin{
+                    margin-top:5px;
                     width: 100%;
                     height: 10px;
                     background-size: 100% 100%;
@@ -911,6 +971,24 @@ getPlantInfo()
             height: calc(100% - 2rem);
             background-size:100% 100%;
             background-image: url(./assets/right2Item.png);
+            overflow-y: scroll;
+          .right2-warper{
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            border: 2px solid red;
+            box-sizing: border-box;
+            width:100%;
+            height: 25%;
+            .right2-warper-leftBg{
+              width: 4rem;
+              height:1rem;
+              background-size: 100% 100%;
+            }
+          }
+        }
+        .right2-item::-webkit-scrollbar{
+          display: none;
         }
     }
   }
@@ -931,6 +1009,17 @@ getPlantInfo()
     background-image: url(./assets/right1Warper4-#{$i}.png);
   }
 }
+@for $i from 1 through 3 {
+  .right2-warper-#{$i} {
+    background-image: url(./assets/right2WarperLeft#{$i}.png);
+  }
+}
+@for $i from 1 through 2 {
+  .left1-icon-#{$i} {
+    background-image: url(./assets/left1WarperBg#{$i}.png);
+  }
+}
+
 
 
 </style>
