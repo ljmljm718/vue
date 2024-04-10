@@ -333,7 +333,7 @@ const handleEnvSelectorChange = (val) => {
   getGetDeviceDataYouEnvironment({id:val.target.value})
 }
 
-const envLabel = ref('')
+const envLabel = ref('温度')
 
 const tableColumns = ref([
   {
@@ -370,7 +370,7 @@ const initChart1 = async (lineChart ) => {
   const deviceCode2 = leftCurDeviceCode2.value;
   if (!lineChart  || !deviceCode1) return
   console.log('lineChart ', lineChart )
-  envLabel.value = leftLabelMap[lineChart ];
+  
   const res = await getDeviceDataYouEnvironmentLine( lineChart )
   console.log('getDeviceDataYouEnvironmentLine ==', res);
   let xAxisData=[]
@@ -457,6 +457,7 @@ const initChart1 = async (lineChart ) => {
 let btnIndex=ref(0)
 const getChart=(val,index)=>{
   leftTabSelected.value = val
+  envLabel.value=val
   btnIndex.value=index
   initChart1({typeName:val,id:leftCurDeviceCode1.value.id})
 }
@@ -588,8 +589,10 @@ const leftLabelMap = {
 }
 
 let btnIndex2=ref(0)
+let right2Val=ref('溶氧量')
 const btnCli=(val,index)=>{
   rightTabSelected.value = val.monitoringType
+  right2Val.value=val.monitoringType
   btnIndex2.value=index
   initChart2(rightTabSelected.value)
 }
@@ -873,7 +876,7 @@ const rightUnitMap = {
             <div class="sub-title-wrapper">
               <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
               <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
-                {{ rightLabelMap[rightTabSelected] }}变化趋势
+                {{ right2Val }}变化趋势
               </div>
               <div
                 style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
