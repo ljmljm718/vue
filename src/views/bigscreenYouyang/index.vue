@@ -76,7 +76,7 @@ const envVal = ref([])
 // })
 const leftCurDeviceCode1 = ref(0);
 const leftCurDeviceCode2 = ref(0);
-const leftTabSelected = ref('温度')
+const leftTabSelected = ref('湿度')
 
 const getGetDeviceDataYouEnvironment = async (id) => {
   leftCurDeviceCode1.value = id;
@@ -275,7 +275,7 @@ const getPage=()=>{
 }
 getPage()
 //获取堂口
-const rightTabSelected = ref('PH值')
+const rightTabSelected = ref('溶氧量')
 const options2 = ref<Array<any>>([])
 const getPark=(id)=>{
   park(id).then(res=>{
@@ -410,7 +410,7 @@ const initChart1 = async (lineChart ) => {
         },
         splitLine: {
           //网格线
-          show: true, //是否显示
+          show: false, //是否显示
           lineStyle: {
             //网格线样式
             color: '#fff', //网格线颜色
@@ -418,10 +418,6 @@ const initChart1 = async (lineChart ) => {
             type: 'dashed' //网格线类型
           }
         },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
-        }
       },
       series: [
         {
@@ -458,8 +454,10 @@ const initChart1 = async (lineChart ) => {
     })
   )
 }
-const getChart=(val)=>{
+let btnIndex=ref(0)
+const getChart=(val,index)=>{
   leftTabSelected.value = val
+  btnIndex.value=index
   initChart1({typeName:val,id:leftCurDeviceCode1.value.id})
 }
 const initChart2 = async (lineChart , belongPark, belongPlot) => {
@@ -504,7 +502,7 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
         },
         splitLine: {
           //网格线
-          show: true, //是否显示
+          show: false, //是否显示
           lineStyle: {
             //网格线样式
             color: '#fff', //网格线颜色
@@ -512,10 +510,6 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
             type: 'dashed' //网格线类型
           }
         },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
-        }
       },
       series: [
         {
@@ -593,9 +587,10 @@ const leftLabelMap = {
   "风向": '风向' //风向
 }
 
-
-const btnCli=(val)=>{
+let btnIndex2=ref(0)
+const btnCli=(val,index)=>{
   rightTabSelected.value = val.monitoringType
+  btnIndex2.value=index
   initChart2(rightTabSelected.value)
 }
 watch(
@@ -677,7 +672,7 @@ const rightUnitMap = {
                   </div>
                   <div class="label-wrapper">{{ leftLabelMap[item.monitoringType] }}</div>
                 </div>
-                <div v-show="leftUnitMap[item.monitoringType]" class="check-btn" @click="getChart(item.monitoringType)">
+                <div v-show="leftUnitMap[item.monitoringType]" :class="btnIndex==index? 'check-btn2':'check-btn'" @click="getChart(item.monitoringType,index)">
                   查看
                 </div>
               </div>
@@ -869,8 +864,8 @@ const rightUnitMap = {
                   <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
                 <div
-                  class="check-btn"
-                  @click="btnCli(item)"
+                :class="btnIndex2==index? 'check-btn2':'check-btn'"
+                  @click="btnCli(item,index)"
                 >查看
                 </div>
               </div>
@@ -1063,6 +1058,18 @@ const rightUnitMap = {
               position: absolute;
               right: 0.8rem;
               background-color: #136db2;
+              color: white;
+              text-align: center;
+              margin: 0 auto;
+              padding: 0.2rem 0.5rem;
+              font-size: 0.8rem;
+              border-radius: 0.6rem;
+              cursor: pointer;
+            }
+            .check-btn2 {
+              position: absolute;
+              right: 0.8rem;
+              background-color: #68fffe;
               color: white;
               text-align: center;
               margin: 0 auto;
