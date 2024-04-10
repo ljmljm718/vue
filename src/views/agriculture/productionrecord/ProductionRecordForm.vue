@@ -126,7 +126,7 @@
         <span>产出产品</span>
       </div>
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="产品名称" prop="productName">
             <el-select
               v-model="formData.productName"
@@ -146,22 +146,22 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="单位" prop="productUnit">
             <el-input v-model="formData.productUnit" placeholder="请输入单位" disabled />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="产出总数量" prop="totalNumber">
             <el-input :disabled="formType === 'detail'" v-model="formData.totalNumber" placeholder="请输入产出总数量" />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="合格数量" prop="qualifiedNumber">
             <el-input :disabled="formType === 'detail'" v-model="formData.qualifiedNumber" placeholder="请输入合格数量" />
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="formData.lineStatus === '2'">
+        <el-col :span="8" v-if="formData.lineStatus === '2'">
           <el-form-item label="仓库" prop="warehouseName">
             <el-select
               v-model="formData.warehouseName"
@@ -180,7 +180,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="formData.lineStatus === '2'">
+        <el-col :span="8" v-if="formData.lineStatus === '2'">
           <el-form-item label="供应商" prop="supplierId">
             <el-select
               v-model="formData.supplierId"
@@ -266,6 +266,30 @@ const checkTime = (rule: any, value: any, callback: any) => {
     callback()
   }
 }
+const checkTotalNumber = (rule: any, value: any, callback: any) => {
+  let totalNumber = formData.value.totalNumber
+  if (formData.value.lineStatus === '2') {
+    if (totalNumber != undefined && totalNumber != null && totalNumber != '') {
+      callback()
+    } else {
+      callback(new Error('生产完成产出总数量不能为空'))
+    }
+  } else {
+    callback()
+  }
+}
+const checkQualifiedNumberNull = (rule: any, value: any, callback: any) => {
+  let qualifiedNumber = formData.value.qualifiedNumber
+  if (formData.value.lineStatus === '2') {
+    if (qualifiedNumber != undefined && qualifiedNumber != null && qualifiedNumber != '') {
+      callback()
+    } else {
+      callback(new Error('生产完成合格数量不能为空'))
+    }
+  } else {
+    callback()
+  }
+}
 const checkQualifiedNumber = (rule: any, value: any, callback: any) => {
   let totalNumber = formData.value.totalNumber
   if (Number(value) > Number(totalNumber)) {
@@ -283,11 +307,11 @@ const formRules = reactive({
   productBatch: [{required: true, message: '产品批次不能为空', trigger: ['blur','change']}],
   outOrderId: [{required: true, message: '出库单不能为空', trigger: ['blur','change']}],
   productName: [{required: true, message: '产品名称不能为空', trigger: ['blur','change']}],
-  totalNumber: [{required: true, message: '产出总数量不能为空', trigger: ['blur','change']},
-    {pattern: /^[1-9]\d*$/, message: '请输入正确的产出总数量', trigger: ['blur','change']}],
-  qualifiedNumber: [{required: true, message: '合格数量不能为空', trigger: ['blur','change']},
-    {pattern: /^[1-9]\d*$/, message: '请输入正确的合格数量', trigger: ['blur','change']},
-    {validator: checkQualifiedNumber, trigger: ['blur','change']}
+  totalNumber: [{pattern: /^[1-9]\d*$/, message: '请输入正确的产出总数量', trigger: ['blur','change']},
+    {validator: checkTotalNumber, trigger: ['blur','change']}],
+  qualifiedNumber: [{pattern: /^[1-9]\d*$/, message: '请输入正确的合格数量', trigger: ['blur','change']},
+    {validator: checkQualifiedNumberNull, trigger: ['blur','change']},
+    {validator: checkQualifiedNumber, trigger: ['blur','change']},
   ],
 })
 const formRef = ref() // 表单 Ref
