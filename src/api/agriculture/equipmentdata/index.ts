@@ -57,5 +57,10 @@ export const EquipmentDataApi = {
   getEquipmentDataByEquipmentIdAndType: async (id: string,type:string) => {
     return await request.get({ url: `/yyang/equipment-data/getEquipmentDataByEquipmentIdAndType?id=` + id +`&type=`+type})
   },
+  // 数据管理页面根据监测类型查询采集类型列表
+  getCollectionType: async (monitoringType:string) => {
+    return await request.get({ url: `/yyang/equipment-data/QueryCollectionType?monitoringType=` + monitoringType})
+  },
+
 
 }
