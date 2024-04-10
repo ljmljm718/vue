@@ -495,12 +495,18 @@ const plantInfoList = ref([
           <el-table :data="lastDataList" :stripe="true" :show-overflow-tooltip="true" height="12rem">
             <el-table-column label="设备类型" align="center" prop="collectionType" />
             <el-table-column label="设备名称" align="center" prop="equipmentCode" />
-            <el-table-column label="温度(℃)" align="center" prop="temperature" />
-            <el-table-column label="湿度(%/RH)" align="center" prop="humidity" />
-            <el-table-column label="光照(Lux)" align="center" prop="lighting" />
-            <el-table-column label="气压(kPa)" align="center" prop="airPressure" />
-            <el-table-column label="雨量(mm)" align="center" prop="rainfall" />
-            <el-table-column label="二氧化碳(mmol/L)" align="center" prop="co2Density" />
+            <el-table-column label="温度(℃)" align="center" prop="temperature" v-if="radio==='棚内环境' ||radio==='气象站'"/>
+            <el-table-column label="湿度(%/RH)" align="center" prop="humidity" v-if="radio==='棚内环境' ||radio==='气象站'"/>
+            <el-table-column label="光照(Lux)" align="center" prop="lighting" v-if="radio==='棚内环境' ||radio==='气象站'"/>
+            <el-table-column label="气压(kPa)" align="center" prop="airPressure" v-if="radio==='棚内环境' ||radio==='气象站'"/>
+            <el-table-column label="雨量(mm)" align="center" prop="rainfall" v-if="radio==='棚内环境' ||radio==='气象站'"/>
+            <el-table-column label="风速(m/s)" align="center" prop="windSpeed" v-if="radio==='气象站'"/>
+            <el-table-column label="二氧化碳浓度(mmol/L)" align="center" prop="co2Density" v-if="radio==='棚内环境'"/>
+            <el-table-column label="土壤深度(mm)" align="center" prop="depth" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="土壤温度(℃)" align="center" prop="temperature" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="土壤湿度(%/RH)" align="center" prop="humidity" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="ec值" align="center" prop="ec" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="ph值" align="center" prop="ph" v-if="radio==='土壤墒情'"/>
             <el-table-column label="数据采集时间" align="center" prop="collectionTime" :formatter="dateFormatter" />
           </el-table>
           <Pagination
