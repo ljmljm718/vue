@@ -49,24 +49,24 @@
           />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="所属基地" prop="belongPark">
-        <el-input
-          v-model="queryParams.belongPark"
-          placeholder="请输入所属基地"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input
-          v-model="queryParams.belongPlot"
-          placeholder="请输入所属地块"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>-->
+      <!--      <el-form-item label="所属基地" prop="belongPark">
+              <el-input
+                v-model="queryParams.belongPark"
+                placeholder="请输入所属基地"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>
+            <el-form-item label="所属地块" prop="belongPlot">
+              <el-input
+                v-model="queryParams.belongPlot"
+                placeholder="请输入所属地块"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -182,7 +182,7 @@
           <el-button
             link
             type="primary"
-            v-if="scope.row.userId===142"
+            v-if="scope.row.userId===142&&deviceTypeMain.includes(scope.row.deviceType[4])"
             @click="$router.push({
               path: '/device/sub-device',
               query: {
@@ -243,7 +243,7 @@ defineOptions({name: 'DeviceInfo'})
  * 39 - 隘口
  * 46 - 白帝
  */
-const deviceTypeMain = ref([14, 25, 39, 46])
+const deviceTypeMain = ref([14, 25, 39, 46,76])
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
@@ -295,7 +295,7 @@ const getList = async () => {
     loading.value = false
   }
 }
-let route=useRoute()
+let route = useRoute()
 
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
@@ -379,11 +379,11 @@ onMounted(async () => {
       deviceType.value = type.toString().split(',').map(Number)
     }
   }
-  let location=route.query
-    if(location){
-      queryParams.deviceKind=location.id
-      queryParams.deviceStatus=location.val
-    }
+  let location = route.query
+  if (location) {
+    queryParams.deviceKind = location.id
+    queryParams.deviceStatus = location.val
+  }
   await getList()
 })
 
@@ -430,12 +430,12 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      if (props.currCategory.parkId === undefined ) {
+      if (props.currCategory.parkId === undefined) {
         queryParams.belongPark = props.currCategory.id
         queryParams.belongPlot = undefined
       } else {
         queryParams.belongPark = undefined
-        queryParams.belongPlot=  props.currCategory.id
+        queryParams.belongPlot = props.currCategory.id
       }
     } else {
       queryParams.belongPark = undefined

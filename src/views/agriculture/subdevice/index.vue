@@ -221,10 +221,14 @@ const openForm = (type: string, id?: number) => {
 }
 
 const handleSwitchChange = async (item) => {
+  message.success(t('操作成功'))
   try {
     await SubDeviceApi.updateSubDevice({
       ...item, swithState: item.swithState === '0' ? '1' : '0'
     })
+
+
+
   } catch {
   }
 }
