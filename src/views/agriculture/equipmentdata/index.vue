@@ -46,7 +46,17 @@
         /> -->
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-input
+        <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择采集类型" clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px">  
+          <el-option
+            v-for="item in selectCollectionType"  
+            :key="item"
+            :label="item"
+            :value="item"
+            />   
+        </el-select>
+        <el-input v-else
           v-model="queryParams.monitoringType"
           placeholder="请输入监测类型"
           clearable
@@ -54,6 +64,7 @@
           class="!w-240px"
         />
       </el-form-item>
+
       <el-form-item label="数据值" prop="dataValue">
         <el-input
           v-model="queryParams.dataValue"
@@ -348,6 +359,8 @@ const exportLoading = ref(false) // 导出的加载中
 let selectEquipmentType=ref([])
 //存放基地信息
 let selectBase =ref([])
+//存放采集类型
+let selectCollectionType=ref([])
 //查询上方列表
 const queryList=async ()=>{
   const dataId = await DeviceCategoryApi.getDeviceCategoryList({categoryName:'监测设备'})
@@ -356,9 +369,26 @@ const queryList=async ()=>{
   // console.log(selectEquipmentType,"selectEquipmentType");
   const selectBaseList= await ParkInfoApi.getParkInfoPage({});
   selectBase.value = selectBaseList.list
-  // console.log(selectBase,"selectBase");
 }
 queryList()
+//查询采集类型列表
+const queryType= async ()=>{
+  if(queryParams.collectionType){
+  selectCollectionType.value = await EquipmentDataApi.getCollectionType(queryParams.collectionType);
+  // console.log(selectCollectionType,"selectCollectionType");
+  }
+}
+
+watch(  
+  () => queryParams.collectionType, // 监听 form.name 的变化  
+  (newVal, oldVal) => {  
+    if (newVal !== oldVal) { // 确保值确实发生了变化  
+      queryType()
+    }  
+  },  
+  { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整  
+);
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
