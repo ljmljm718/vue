@@ -27,13 +27,23 @@
         />
       </el-form-item>
       <el-form-item label="采集类型" prop="collectionType">
-        <el-input
+        <el-select  v-model="queryParams.collectionType" placeholder="请选择采集类型" clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px">  
+          <el-option
+            v-for="item in selectEquipmentType"  
+            :key="item"
+            :label="item.categoryName"
+            :value="item.categoryName"
+            />   
+        </el-select>
+        <!-- <el-input
           v-model="queryParams.collectionType"
           placeholder="请输入采集类型"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
         <el-input
@@ -84,13 +94,23 @@
       </el-form-item>
       
       <el-form-item label="基地名称" prop="parkName">
-        <el-input
+        <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px">  
+          <el-option
+            v-for="item in selectBase"  
+            :key="item"
+            :label="item.name"
+            :value="item.name"
+            />   
+        </el-select>
+        <!-- <el-input
           v-model="queryParams.parkName"
           placeholder="请输入基地名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
       </el-form-item>
 
       <el-form-item label="地块编码" prop="plotCode">
@@ -269,9 +289,12 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
-
+//导入设备分类
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+//导入基地列表
+import {ParkInfoApi} from "@/api/agriculture/parkinfo";
 import {useRoute} from 'vue-router'
+
 
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
@@ -321,8 +344,21 @@ const exportLoading = ref(false) // 导出的加载中
 //   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
 //   await getList()
 // })
-
-
+//存放监测类型
+let selectEquipmentType=ref([])
+//存放基地信息
+let selectBase =ref([])
+//查询上方列表
+const queryList=async ()=>{
+  const dataId = await DeviceCategoryApi.getDeviceCategoryList({categoryName:'监测设备'})
+  // console.log(dataId,"dataId");
+  selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({parentId : dataId[0].id})
+  // console.log(selectEquipmentType,"selectEquipmentType");
+  const selectBaseList= await ParkInfoApi.getParkInfoPage({});
+  selectBase.value = selectBaseList.list
+  // console.log(selectBase,"selectBase");
+}
+queryList()
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
