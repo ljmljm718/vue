@@ -8,19 +8,19 @@
       :inline="true"
       label-width="95px"
     >
-      <el-form-item label="产线编号" prop="lineNo">
+      <el-form-item label="设备编号" prop="lineNo">
         <el-input
           v-model="queryParams.lineNo"
-          placeholder="请输入产线编号"
+          placeholder="请输入设备编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="产线名称" prop="lineName">
+      <el-form-item label="设备名称" prop="lineName">
         <el-input
           v-model="queryParams.lineName"
-          placeholder="请输入产线名称"
+          placeholder="请输入设备名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -113,8 +113,8 @@
           <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="产线编号" align="center" prop="lineNo" width="160" />
-      <el-table-column label="产线名称" align="center" prop="lineName" width="160" />
+      <el-table-column label="设备编号" align="center" prop="lineNo" width="160" />
+      <el-table-column label="设备名称" align="center" prop="lineName" width="160" />
 <!--      <el-table-column label="出库单id" align="center" prop="outOrderId" />-->
       <el-table-column label="原材料" align="center" prop="rawName" width="160" />
       <el-table-column label="原材料数量" align="center" prop="rawNumber" width="120" />
