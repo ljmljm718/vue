@@ -94,15 +94,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="基地编码" prop="baseCode">
-        <el-input
-          v-model="queryParams.baseCode"
-          placeholder="请输入基地编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       
       <el-form-item label="基地名称" prop="parkName">
         <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
@@ -123,21 +114,32 @@
           class="!w-240px"
         /> -->
       </el-form-item>
-
-      <el-form-item label="地块编码" prop="plotCode">
+      <el-form-item label="基地编码" prop="baseCode">
         <el-input
-          v-model="queryParams.plotCode"
-          placeholder="请输入地块编码"
+          v-model="queryParams.baseCode"
+          placeholder="请输入基地编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
+      
+
+      
 
       <el-form-item label="地块名称" prop="parkDname">
         <el-input
           v-model="queryParams.parkDname"
           placeholder="请输入地块名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="地块编码" prop="plotCode">
+        <el-input
+          v-model="queryParams.plotCode"
+          placeholder="请输入地块编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -250,7 +252,7 @@
       <el-table-column label="地块名称" align="center" prop="parkDname" />
 
       <el-table-column label="通道编码" align="center" prop="channelId" />
-      <el-table-column label="备注" align="center" prop="yyRemarks" />
+      <!-- <el-table-column label="备注" align="center" prop="yyRemarks" /> -->
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
