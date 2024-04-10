@@ -57,7 +57,9 @@ const handleCurrentCategoryChange = (currNodeData) => {
 const clearCategory = () => {
   treeRef.value.setCurrentKey()
 }
-
+const resetTreeSelections = () => {
+  clearCategory() // 清空选中的节点
+};
 </script>
 
 <template>
@@ -95,6 +97,7 @@ const clearCategory = () => {
         <device-info
           :currCategory="currCategory"
           @clear-category="clearCategory"
+          @reset="resetTreeSelections"
         />
       </ContentWrap>
     </el-col>

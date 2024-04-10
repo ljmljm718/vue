@@ -322,10 +322,13 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
+  queryParams.belongPark = undefined
+  queryParams.belongPlot = undefined
+  emit('reset'); // 清空基地树的选中节点
   handleQuery()
 }
 
-/** 添加/修改操作 */
+  /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
