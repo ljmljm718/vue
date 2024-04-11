@@ -24,6 +24,7 @@ import {
   getDeviceStateByParams,
   deviceInfoBySum
 } from './apis'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 // 右上角
 const deviceTotal = ref(0)
@@ -135,6 +136,7 @@ const topList = ref<Array<any>>([
     title: '故障数量'
   },
 ])
+
 
 const initChart1 = async (cropCode) => {
   if (!cropCode) return
@@ -660,7 +662,7 @@ const handleBaseIdChange = (id) => {
                   v-for="(item, index) in weatherData"
                   :key="index"
                 >
-                  <span>{{ item.monitoringType }}</span>
+                  <span>{{ item.monitoringType }}: </span>
                   <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
                 </div>
                 <div>
@@ -683,7 +685,7 @@ const handleBaseIdChange = (id) => {
                   v-for="(item, index) in bugData"
                   :key="index"
                 >
-                  <span>{{ item.monitoringType }}</span>
+                  <span>{{ item.monitoringType }}: </span>
                   <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
                 </div>
                 <div>
@@ -698,7 +700,7 @@ const handleBaseIdChange = (id) => {
             <img src="/images/bigscreen9/icon3.png" alt="" />
           </div>
           <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
-            <div class="rect-bg">
+            <div class="rect-bg"  style="min-height: 12rem;">
               <div class="rect-title">土壤传感</div>
               <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
                 <div
@@ -706,7 +708,7 @@ const handleBaseIdChange = (id) => {
                   v-for="(item, index) in soilData"
                   :key="index"
                 >
-                  <span>{{ item.monitoringType }}</span>
+                  <span>{{ item.monitoringType }}: </span>
                   <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
                 </div>
                 <div>
@@ -718,7 +720,7 @@ const handleBaseIdChange = (id) => {
                 </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon1.png" alt="" />
+            <img src="/images/bigscreen9/icon4.png" alt="" />
           </div>
         </div>
         <div class="w-full absolute top-0 left-0 flex justify-center space-x-6 h-[6rem] pt-4">
@@ -860,11 +862,14 @@ const handleBaseIdChange = (id) => {
               <div
                 v-for="(item, index) in preWarnList"
                 :key="index"
-                class="warn-item flex justify-between items-center"
+                class="warn-item"
+                style="border: 1px solid #0b9b7980;padding: .2rem .4rem;"
               >
-                <div style="width: 2rem;">{{ item.warnType }}</div>
-                <div style="padding: 0 .4rem;">{{ item.warnInfo}}</div>
-                <div style="width: 8rem;">{{ item.warnTime }}</div>
+                <div class="flex justify-between">
+                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="item.warnType" />
+                  <div style="width: 8rem;">{{ item.warnTime }}</div>
+                </div>
+                <div style="padding: .2rem;font-size: .9rem;">{{ item.warnInfo}}</div>
               </div>
             </div>
           </div>
@@ -979,19 +984,21 @@ const handleBaseIdChange = (id) => {
 }
 
 .warn-bg {
-  background-size: 100% 100%;
+  background-size: 100% 95% !important;
   background-image: url(./assets/warnBg.png);
 }
 
 .prewarn-list-wrapper {
-  padding: .4rem;
+  padding: .4rem 0rem;
+  overflow: auto;
+}
+
+.prewarn-list-wrapper::-webkit-scrollbar {
+  width: 0px;
 }
 
 .warn-item {
   padding: .2rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .agriculture-bg {

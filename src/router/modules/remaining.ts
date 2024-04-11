@@ -323,6 +323,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path:'/bigscreenWF',
+    name:'bigscreenWF',
+    component:()=>import('@/views/bigscreenWenfeng/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
     path: '/bpm',
     component: Layout,
     name: 'bpm',

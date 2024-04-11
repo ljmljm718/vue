@@ -54,10 +54,10 @@ export default defineComponent({
     const MatchRouteMap = async () => {
       const data = await getRouteByTenant({ id: tenantId })
       bigscreenRoute.value = data.bigScreen
-      
       if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
       if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
       if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
+      if (roles.indexOf('wenfeng') !== -1) bigscreenRoute.value = '/bigscreenWF'
     }
     setTimeout(() => {
       MatchRouteMap()

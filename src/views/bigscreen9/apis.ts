@@ -107,3 +107,4 @@ export const deviceInfoBySum = async () => {
     url: '/agriculture/big-screen/deviceInfoBySum'
   })
 }
+

@@ -73,4 +73,15 @@ body {
 .el-table .primary-row {
   --el-table-tr-bg-color: var(--el-color-primary-light-9);
 }
+
+.selector-wrapper {
+  select {
+    margin: 0 0.3rem;
+    padding: 0.2rem 0.3rem;
+    border-radius: 0.4rem 0.4rem 0 0;
+    background-color: #0a2019;
+    color: white;
+    border: 2px solid #0be3de;
+  }
+}
 </style>
