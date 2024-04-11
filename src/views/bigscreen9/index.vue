@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
 import * as echarts from 'echarts'
-import { formatTime } from '@/utils/index'
+import {formatTime} from '@/utils/index'
 import {
   initChartStatic,
   generateBaseOptions,
@@ -24,12 +24,12 @@ import {
   getDeviceStateByParams,
   deviceInfoBySum
 } from './apis'
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 
 // 右上角
 const deviceTotal = ref(0)
 const getdeviceInfoBySum = async () => {
-  const { list = [], total = 0} = await deviceInfoBySum()
+  const {list = [], total = 0} = await deviceInfoBySum()
   console.log('deviceInfoBySum', list);
   deviceTotal.value = total
   deviceDataList.value = list.map(item => ({
@@ -66,22 +66,26 @@ getDeviceStateData(2)
 
 const getIndustryList = async () => {
   const res = await getParkCountAndAreaSum();
-  const { parkCount = 0, areaSum = 0 } = res;
+  const {parkCount = 0, areaSum = 0} = res;
   const data = await getFarmerCount();
   const count = await getCropBaseCount()
   industryList.value = [
     {
       title: '基地数量',
-      value: parkCount
+      value: parkCount,
+      url:'/base/parkinfo'
     }, {
       title: '种植面积',
-      value: areaSum + '亩'
+      value: areaSum + '亩',
+      url:'/base/parkinfo'
     }, {
       title: '农户',
-      value: data + '万户'
+      value: data + '万户',
+      url:'/base/farmer-info'
     }, {
       title: '品种',
-      value: count + '种'
+      value: count + '种',
+      url:'/crop/crop-base'
     }
   ]
 }
@@ -89,13 +93,20 @@ getIndustryList()
 
 const industryList = ref([{
   title: '基地数量',
-  value: '0'
+  value: '0',
+  url:'/base/parkinfo'
 }, {
   title: '种植面积',
-  value: '0亩'
+  value: '0亩',
+  url:'/base/parkinfo'
 }, {
   title: '农户',
-  value: '0万户'
+  value: '0万户',
+  url:'/base/farmer-info'
+},{
+  title: '品种',
+  value: '0种',
+  url:'/crop/crop-base'
 }])
 
 const getTopList = async () => {
@@ -118,30 +129,34 @@ const topList = ref<Array<any>>([
   {
     key: 'total',
     value: 0,
-    title: '设备数量'
+    title: '设备数量',
+    deviceType:''
   },
   {
     key: 'online',
     value: 0,
-    title: '在线数量'
+    title: '在线数量',
+    deviceType:'online'
   },
   {
     key: 'offline',
     value: 0,
-    title: '离线数量'
+    title: '离线数量',
+    deviceType:'offline'
   },
   {
     key: 'fault',
     value: 0,
-    title: '故障数量'
+    title: '故障数量',
+    deviceType:'fault'
   },
 ])
 
 
 const initChart1 = async (cropCode) => {
   if (!cropCode) return
-  const { xValue = [], yValue = []} = await getLineChar({ cropCode })
-  
+  const {xValue = [], yValue = []} = await getLineChar({cropCode})
+
   initChartStatic(
     'chart1',
     generateBaseOptions({
@@ -204,12 +219,12 @@ const initChart1 = async (cropCode) => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#1bcad600' },
-                { offset: 0, color: '#1bcad6' }
+                {offset: 1, color: '#1bcad600'},
+                {offset: 0, color: '#1bcad6'}
               ])
             },
           },
-          areaStyle: { normal: {} },
+          areaStyle: {normal: {}},
         }
       ],
       grid: {
@@ -227,7 +242,7 @@ const initChart2 = async () => {
   console.log('initChart3', res);
   const data: any = []
   for (const key in res) {
-    data.push({ value: res[key], name: key })
+    data.push({value: res[key], name: key})
   }
   initChartStatic(
     "chart2",
@@ -266,7 +281,7 @@ const initChart3 = async () => {
   const xAxisData = res.map(item => (item.salesYear))
   const data1 = res.map(item => (parseFloat(item.sum).toFixed(2)))
   const data2 = res.map(item => (item.salesSum))
-  
+
   initChartStatic(
     'chart3',
     generateBaseOptions({
@@ -329,12 +344,12 @@ const initChart3 = async () => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#1bcad600' },
-                { offset: 0, color: '#1bcad6' }
+                {offset: 1, color: '#1bcad600'},
+                {offset: 0, color: '#1bcad6'}
               ])
             },
           },
-          areaStyle: { normal: {} },
+          areaStyle: {normal: {}},
         },
         {
           name: '销售(万元)1300',
@@ -354,12 +369,12 @@ const initChart3 = async () => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#facb5100' },
-                { offset: 0, color: '#facb51' }
+                {offset: 1, color: '#facb5100'},
+                {offset: 0, color: '#facb51'}
               ])
             },
           },
-          areaStyle: { normal: {} },
+          areaStyle: {normal: {}},
         },
       ],
       grid: {
@@ -405,10 +420,10 @@ const deviceDataList = ref<Array<any>>([
 ])
 
 const getWeatherMonitorList = async () => {
-  const data = await aikouMonitor({ type: 0 })
+  const data = await aikouMonitor({type: 0})
   console.log('气象监测', data);
   weatherMonitorList.value = weatherMonitorList.value.map(item => {
-    let obj = { ...item }
+    let obj = {...item}
     data.forEach(ele => {
       if (ele.monitoringType == item.title) {
         obj.value = ele.dataValue
@@ -456,10 +471,10 @@ const weatherMonitorList = ref([
 
 // 土壤监测
 const getSoilMonitorList = async () => {
-  const data = await aikouMonitor({ type: 1 })
+  const data = await aikouMonitor({type: 1})
   console.log('土壤监测', data);
   soilMonitorList.value = soilMonitorList.value.map(item => {
-    let obj = { ...item }
+    let obj = {...item}
     data.forEach(ele => {
       if (item.title.indexOf(ele.monitoringType.toUpperCase()) !== -1) {
         obj.value = ele.dataValue
@@ -499,7 +514,7 @@ const soilMonitorList = ref([
 
 // 预警信息
 const getPreWarnList = async () => {
-  const { list = [] } = await agriWarningRecord()
+  const {list = []} = await agriWarningRecord()
   console.log('getPreWarnList', list);
   preWarnList.value = list.map(item => ({
     ...item,
@@ -527,7 +542,7 @@ const handleArrowClick = (index) => {
 const getMonitorDeviceList = async (pageNo = 1, belongPark = curBelongPark.value) => {
   if (!belongPark) return;
   curBelongPark.value = belongPark
-  const { list = [] } = await getPageMonitoring({
+  const {list = []} = await getPageMonitoring({
     pageNo, pageSize: 3, deviceType: '40,44', belongPark
   })
   monitorDeviceList.value = list.map(item => ({
@@ -542,7 +557,7 @@ const monitorDeviceIndex = ref(1)
 const monitorDeviceList = ref<Array<any>>([])
 
 const getProductionOptions = async () => {
-  const { list = [] } = await cropBasePage();
+  const {list = []} = await cropBasePage();
   console.log('getProductionOptions', list);
   productOptions.value = list.map(item => ({
     ...item,
@@ -559,7 +574,9 @@ const handleProdSelectorChange = (item) => {
 
 const handleCropIdChange = (id) => {
   if (!id) return;
-  const item = productOptions.value.find(item => { return item.id === id })
+  const item = productOptions.value.find(item => {
+    return item.id === id
+  })
   leftTopText.img = item.imgId
   leftTopText.text = item.cropDesc
   initChart1(id)
@@ -571,7 +588,7 @@ const leftTopText = reactive({
 })
 
 const getBaseOption = async () => {
-  const { list = [] } = await parkInfoPage()
+  const {list = []} = await parkInfoPage()
   console.log('getBaseOption', list);
   baseOptions.value = list
   if (list.length > 0) handleBaseIdChange(list[0].id)
@@ -592,7 +609,7 @@ const handleBaseIdChange = (id) => {
   <div class="bigscreen-main-wrapper">
     <div class="header-main-wrapper header-bg">
       <div class="header-left-part-wrapper">
-        <BigScreenTime />
+        <BigScreenTime/>
       </div>
       <div class="header-title-wrapper">隘口镇山银花产业数字化赋能</div>
       <div class="header-right-part-wrapper"></div>
@@ -608,26 +625,31 @@ const handleBaseIdChange = (id) => {
                   :value="item.id"
                   v-for="item,index in productOptions"
                   :key="index"
-                >{{ item.name }}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
           <div class="main-item-container flex flex-col">
             <div class="w-full flex justify-center h-[4.6rem]">
               <div v-for="(item, index) in industryList" :key="index"
-                class="flex flex-col items-center industry-bg h-full w-[28%] mx-1">
+                   class="flex flex-col items-center industry-bg h-full w-[28%] mx-1"
+                   @click="$router.push({
+                          path:item.url
+                  })">
                 <div style="font-size: 1.2rem;font-family: 'TitleFont';">{{ item.value }}</div>
                 <div style="font-size: .9rem;color: #00d4ff;">{{ item.title }}</div>
               </div>
             </div>
             <div style="height: calc(100% - 4.6rem);padding: 1rem;">
-              <img :src="leftTopText.img" align="left" width="160" style="margin: .3rem 1rem 1rem .3rem;" />
+              <img :src="leftTopText.img" align="left" width="160"
+                   style="margin: .3rem 1rem 1rem .3rem;"/>
               <span>{{ leftTopText.text }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="gird-item-wrapper relative" style="grid-row: span 7;">
+      <div class="gird-item-wrapper relative" style="grid-row: span 7;z-index: 0;">
         <div id="mainMap">
           <div class="tool-tip-wrapper" style="left: 250px;top: 200px;">
             <div class="rect-bg">
@@ -648,10 +670,11 @@ const handleBaseIdChange = (id) => {
                 <div class="w-[5rem]">状态:</div>
                 <div
                   :style="`color: ${mapMonitorData.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
-                >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}</div>
+                >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}
+                </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon2.png" alt="" />
+            <img src="/images/bigscreen9/icon2.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 470px;top: 360px;">
             <div class="rect-bg" style="min-height: 13rem;">
@@ -670,11 +693,13 @@ const handleBaseIdChange = (id) => {
                   <span
                     class="pl-2"
                     :style="`color: ${(weatherData && weatherData[0] && weatherData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{ (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线' }}</span>
+                  >{{
+                      (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线'
+                    }}</span>
                 </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon1.png" alt="" />
+            <img src="/images/bigscreen9/icon1.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 540px;top: 100px;">
             <div class="rect-bg" style="width: 9rem;min-height: 10rem;">
@@ -693,14 +718,16 @@ const handleBaseIdChange = (id) => {
                   <span
                     class="pl-2"
                     :style="`color: ${(bugData && bugData[0] && bugData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{ (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线' }}</span>
+                  >{{
+                      (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线'
+                    }}</span>
                 </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon3.png" alt="" />
+            <img src="/images/bigscreen9/icon3.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
-            <div class="rect-bg"  style="min-height: 12rem;">
+            <div class="rect-bg" style="min-height: 12rem;">
               <div class="rect-title">土壤传感</div>
               <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
                 <div
@@ -716,24 +743,37 @@ const handleBaseIdChange = (id) => {
                   <span
                     class="pl-2"
                     :style="`color: ${(soilData && soilData[0] && soilData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{ (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线' }}</span>
+                  >{{
+                      (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线'
+                    }}</span>
                 </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon4.png" alt="" />
+            <img src="/images/bigscreen9/icon4.png" alt=""/>
           </div>
         </div>
         <div class="w-full absolute top-0 left-0 flex justify-center space-x-6 h-[6rem] pt-4">
-          <div v-for="(item, index) in topList" :key="index" class="flex flex-col items-center h-full w-[8rem] top-bg">
-            <span class="linear-font-type" style="font-size: 1.4rem;font-family: 'TitleFont';">{{ item.value }}</span>
-            <span class="linear-font-type" style="font-size: .9rem;font-family: 'TitleFont';">{{ item.title }}</span>
+          <div v-for="(item, index) in topList" :key="index"
+               class="flex flex-col items-center h-full w-[8rem] top-bg"
+               @click="$router.push({
+                          path:'/device/deviceinfo',
+                          query: {
+                            deviceStatus: item.deviceType
+                          }})">
+            <span class="linear-font-type"
+                  style="font-size: 1.4rem;font-family: 'TitleFont';"
+            >{{ item.value }}</span>
+            <span class="linear-font-type"
+                  style="font-size: .9rem;font-family: 'TitleFont';">{{ item.title }}</span>
           </div>
         </div>
         <div class="absolute bottom-0 left-0 h-[24vh] flex justify-between"
-          style="width: calc(100% - 1rem);padding: 0 .5rem;">
+             style="width: calc(100% - 1rem);padding: 0 .5rem;">
           <div style="width: calc(50% - .5rem);">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg">
+              <div class="main-item-title title-bg"  @click="$router.push({
+                          path:'/crop/sales-management'
+                  })">
                 <div>商品流通分布</div>
               </div>
               <div class="main-item-container flex flex-col">
@@ -743,7 +783,9 @@ const handleBaseIdChange = (id) => {
           </div>
           <div style="width: calc(50% - .5rem);">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg">
+              <div class="main-item-title title-bg" @click="$router.push({
+                          path:'/crop/harvest-management'
+                  })">
                 <div>采收销售趋势分析</div>
               </div>
               <div class="main-item-container flex flex-col">
@@ -754,19 +796,19 @@ const handleBaseIdChange = (id) => {
         </div>
         <div class="absolute flex bottom-[24vh] pb-3 left-0">
           <div class="flex items-center px-2">
-            <img src="/images/bigscreen9/icon1.png" alt="" />
+            <img src="/images/bigscreen9/icon1.png" alt=""/>
             <span class="pl-1">气象站</span>
           </div>
           <div class="flex items-center px-2">
-            <img src="/images/bigscreen9/icon2.png" alt="" />
+            <img src="/images/bigscreen9/icon2.png" alt=""/>
             <span class="pl-1">监控设备</span>
           </div>
           <div class="flex items-center px-2">
-            <img src="/images/bigscreen9/icon3.png" alt="" />
+            <img src="/images/bigscreen9/icon3.png" alt=""/>
             <span class="pl-1">虫情测报灯</span>
           </div>
           <div class="flex items-center px-2">
-            <img src="/images/bigscreen9/icon4.png" alt="" />
+            <img src="/images/bigscreen9/icon4.png" alt=""/>
             <span class="pl-1">土壤传感</span>
           </div>
         </div>
@@ -777,14 +819,19 @@ const handleBaseIdChange = (id) => {
             <div>设备数据</div>
           </div>
           <div class="!flex-row main-item-container">
-            <div class="w-[6rem] flex flex-col items-center justify-center">
+            <div class="w-[6rem] flex flex-col items-center justify-center"
+                 @click="$router.push({
+                          path:'/device/deviceinfo',
+                          query: {}})">
               <div class="w-[4.5rem] h-[4.5rem] device-icon flex justify-center items-center pb-4"
-                style="font-family: 'TitleFont';font-size: 1.2rem;">{{ deviceTotal }}</div>
-              <div style="font-size: .9rem;">总数</div>
+                   style="font-family: 'TitleFont';font-size: 1.2rem;">{{ deviceTotal }}
+              </div>
+              <div style="font-size: .9rem;">总数
+              </div>
             </div>
             <div class="grid grid-cols-2 grid-rows-2" style="width: calc(100% - 6rem);">
               <div v-for="(item, index) in deviceDataList" :key="index"
-                class="flex flex-col justify-center px-2 device-bg">
+                   class="flex flex-col justify-center px-2 device-bg">
                 <div class="flex" style="font-family: 'TitleFont';">
                   <span>{{ item.title }}</span>
                   <span style="padding-left: 3rem;">{{ item.value }}</span>
@@ -806,12 +853,18 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg"
+               @click="$router.push({
+                          path:'/deviceData/equipment-data',
+                          query: {
+                            collectionType: '气象监测'
+                          }})">
             <div>气象监测</div>
           </div>
           <div class="main-item-container !grid grid-rows-2 grid-cols-3 gap-2">
             <div v-for="(item, index) in weatherMonitorList" :key="index"
-              class="flex weather-bg items-center px-2 justify-evenly" style="font-size: 0.9rem;">
+                 class="flex weather-bg items-center px-2 justify-evenly"
+                 style="font-size: 0.9rem;">
               <div :class="`icon-${index + 1}`"></div>
               <div>{{ item.title }}</div>
               <div style="color: #68fffe;">
@@ -824,12 +877,17 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push({
+                          path:'/deviceData/equipment-data',
+                          query: {
+                            collectionType: '土壤监测'
+                          }})">
             <div>土壤监测</div>
           </div>
           <div class="main-item-container !grid grid-cols-4 gap-2">
             <div v-for="(item, index) in soilMonitorList" :key="index"
-              class="flex weather-bg items-center px-2 justify-evenly" style="font-size: 0.9rem;">
+                 class="flex weather-bg items-center px-2 justify-evenly"
+                 style="font-size: 0.9rem;">
               <div :class="`${item.icon}`"></div>
               <div>
                 <div style="color: #68fffe;padding-left: .1rem;">
@@ -844,7 +902,9 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg"  @click="$router.push({
+                          path:'/crop/grow-record'
+                  })">
             <div>生长趋势</div>
           </div>
           <div class="main-item-container flex flex-col">
@@ -854,7 +914,8 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push({
+                          path:'/warn/agri-warning-record'})">
             <div>预警信息</div>
           </div>
           <div class="main-item-container flex flex-col warn-bg">
@@ -866,10 +927,10 @@ const handleBaseIdChange = (id) => {
                 style="border: 1px solid #0b9b7980;padding: .2rem .4rem;"
               >
                 <div class="flex justify-between">
-                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="item.warnType" />
+                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="item.warnType"/>
                   <div style="width: 8rem;">{{ item.warnTime }}</div>
                 </div>
-                <div style="padding: .2rem;font-size: .9rem;">{{ item.warnInfo}}</div>
+                <div style="padding: .2rem;font-size: .9rem;">{{ item.warnInfo }}</div>
               </div>
             </div>
           </div>
@@ -877,7 +938,9 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push({
+                          path:'/crop/crop-growth'
+                  })">
             <div>农事活动</div>
           </div>
           <div class="main-item-container flex flex-col">
@@ -887,7 +950,10 @@ const handleBaseIdChange = (id) => {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg">
+          <div class="main-item-title title-bg" @click="$router.push({
+                          path:'/device/deviceinfo',
+                          query:{deviceType:'40,44'}
+                  })">
             <div>监控设备</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleBaseSelectorChange">
@@ -895,7 +961,8 @@ const handleBaseIdChange = (id) => {
                   :value="item.id"
                   v-for="item,index in baseOptions"
                   :key="index"
-                >{{ item.name }}</option>
+                >{{ item.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -909,9 +976,12 @@ const handleBaseIdChange = (id) => {
               :key="index"
               class="flex flex-col px-1"
             >
-              <img :src="item.img" alt="" style="width: 100%;aspect-ratio: 1.3;object-fit: contain;" />
+              <img :src="item.img" alt=""
+                   style="width: 100%;aspect-ratio: 1.3;object-fit: contain;"/>
               <div>{{ item.title }}</div>
-              <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">{{ item.online ? '在线' : '离线' }}</div>
+              <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">
+                {{ item.online ? '在线' : '离线' }}
+              </div>
             </div>
             <div
               class="right-arrow-bg h-full"
@@ -1012,6 +1082,7 @@ const handleBaseIdChange = (id) => {
   position: absolute;
   width: 1200px;
   height: 800px;
+  z-index: -2;
   left: calc(50% - 600px);
   top: calc(50% - 400px);
   background-image: url(./assets/centerImg.png);
@@ -1074,17 +1145,20 @@ const handleBaseIdChange = (id) => {
   flex-direction: column;
   align-items: center;
   position: absolute;
+
   .rect-bg {
     width: 12rem;
     min-height: 11rem;
     background-image: url(./assets/rect.png);
     background-size: 100% 100%;
     padding: 1rem;
+
     .rect-title {
       width: 100%;
       text-align: center;
       font-family: 'TitleFont';
     }
+
     .rect-line {
       font-size: .9rem;
     }
