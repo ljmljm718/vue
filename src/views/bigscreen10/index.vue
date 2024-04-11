@@ -29,23 +29,22 @@
                       </div>
                       </div>
                       <!-- 第二部分 -->
-                      <div style="width:100%;height:32%;">
-                        <div style="display: flex">
-                          <img src='./assets/left2Bg.png' style="width: 100px;height:68%;margin-right:2%;"/>
-                          <div style="color:#c1c1c1;font-size:14px;">海拔900米，地处中纬度，四季变化明显，具有雨水充沛、年温适中、昼夜温差较大、无霜期长、光照充足等得天独厚的气候优势。</div>
-                        </div>
-                        <div style='width:100%;height:29%;margin-top:1%;color:#c1c1c1;font-size:14px;'>
-                          夏黑、户太8号、巨峰、玫瑰香等早中晚熟葡萄1万余株。绿色生产和优异品质也换来商家的青睐，果园与国内著名“四川国光”集团达成了合作
-                        </div>
+                      <el-carousel indicator-position="outside"  style="height: 33%;margin-bottom: 20px; ">
+                      <el-carousel-item  v-for="item,index in parkInfo" :key="index">
+                        <div style="width:100%;height:100%;margin-top:5%; display:flex;">
+                        <img :src='item.img' style="width: 150px;height:60%;margin-right:2%;"/>
+                        <div class="left2-right" style="color:#c1c1c1;font-size:14px;height: 100%;">{{item.remark}}</div>
                       </div>
+                      </el-carousel-item>
+                    </el-carousel>
                       <!-- 横线 -->
                       <div class='xian'></div>
                       <!-- 第三部分 -->
                       <el-carousel indicator-position="outside"  style="height: 35%; ">
                       <el-carousel-item  v-for="item,index in left3List" :key="index">
                         <div style="width:100%;height:100%;margin-top:5%; display:flex;">
-                        <img :src='item.imgId' style="width: 150px;height:60%;margin-right:2%;"/>
-                        <div style="color:#c1c1c1;font-size:14px;">{{item.cropDesc}}</div>
+                        <img :src='item.imgId' style="width: 150px;height:55%;margin-right:2%;"/>
+                        <div  style="color:#c1c1c1; font-size:14px;">{{item.cropDesc}}</div>
                       </div>
                       </el-carousel-item>
                     </el-carousel>
@@ -65,115 +64,110 @@
                     <div style="width:19%;height: 100%;display: flex;align-items: center;">
                       <div :class="['main-top-item','main-1']"></div>
                       <div style="display:flex;flex-direction: column;align-items: center;margin-left: 10px;">
-                        <div style="font-size:25px">110</div>
+                        <div style="font-size:25px">{{ contObj.equipmentNum }}</div>
                         <div style="font-size:14px;">设备数量</div>
                       </div>
                     </div>
                     <div style="width:19%;height: 100%;display: flex;align-items: center;">
                       <div :class="['main-top-item','main-2']"></div>
                       <div style="display:flex;flex-direction: column;align-items: center;margin-left: 10px;">
-                        <div style="font-size:25px">93</div>
+                        <div style="font-size:25px">{{ contObj.equipmentOnline }}</div>
                         <div style="font-size:14px;">在线数量</div>
                       </div>
                     </div>
                     <div style="width:19%;height: 100%;display: flex;align-items: center;">
                       <div :class="['main-top-item','main-3']"></div>
                       <div style="display:flex;flex-direction: column;align-items: center;margin-left: 10px;">
-                        <div style="font-size:25px">11</div>
+                        <div style="font-size:25px">{{ contObj.equipmentOffline }}</div>
                         <div style="font-size:14px;">离线数量</div>
                       </div>
                     </div>
                     <div style="width:19%;height: 100%;display: flex;align-items: center;">
                       <div :class="['main-top-item','main-4']"></div>
                       <div style="display:flex;flex-direction: column;align-items: center;margin-left: 10px;">
-                        <div style="font-size:25px">6</div>
+                        <div style="font-size:25px">{{ contObj.equipmentFault }}</div>
                         <div style="font-size:14px;">故障数量</div>
                       </div>
                     </div>
                     <div style="width:19%;height: 100%;display: flex;align-items: center;">
                       <div :class="['main-top-item','main-5']"></div>
                       <div style="display:flex;flex-direction: column;align-items: center;margin-left: 10px;">
-                        <div style="font-size:25px">896</div>
+                        <div style="font-size:25px">{{ contObj.chickenNum }}</div>
                         <div style="font-size:14px;">智能鸡脚环</div>
                       </div>
                     </div>
                 </div>
                 <div class="middle-main-item">
-                      <div class='sxt' v-for="item,index in webcam" :key="index" @click="webcamCli(index)" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                         <div :style="{visibility:webcamIndex==index?'visible':'hidden',top:-sxtHeight+'px',left:'-50px'}" ref="sxtList" class="message">
-                            <div class="message-item">
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
-                            </div>
-                            <div v-show="item.deviceStatus=='online'" style="font-size:15px"> 设备状态：<span style="color:#00ffdd;">在线</span></div>
-                            <div v-show="item.deviceStatus=='offline'" style="font-size:15px"> 设备状态：<span style="color:#c1c1c1;">离线</span></div>
-                            <div v-show="item.deviceStatus=='fault'" style="font-size:15px"> 设备状态：<span style="color:red;">故障</span></div>
-                            <div class="messageJk">查看监控</div>
+                  <div class='sxt1' @click="sxt1Cli(index)" v-for="item,index in sxt1List" :key="index" :style="{left:item.latitude>100?item.latitude/60+'%':item.latitude+'%',top:item.longitude>100?item.longitude/20+'%':item.longitude+'%'}">
+                         <div :style="{visibility:sxt1Index==index?'visible':'hidden', top:-sxt1Height+'px',left:'-50px'}" ref="sxtList1" class="message">
+                           <div style="text-align:center;margin-top:30px;margin-bottom:15px">{{item.deviceName}}</div>
+                           <div style=" display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;color:#c1c1c1;">
+                              <div v-for="itm,inde in item.result" :key="inde">{{itm.dataType}}：{{itm.avgData+itm?.dataUnit}}</div>
+                              <div v-show="item.deviceStatus=='online'">状态：<span style="color:#1ea362;">在线</span></div>
+                              <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
+                              <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
+                           </div>
+                           
                          </div>
-                      </div>
-                      <div class='cgq' v-for="item,index in sensor" :key="index" @click="sensorCli(index)" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                        <div :style="{visibility:sensorIndex==index?'visible':'hidden',top:-sensorHeight+'px',left:'-50px'}" class="message" ref="sensorList" > 
-                            <div class="message-item">
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
-                            </div>
-                            <div v-for="itm,inde in item.values" :key="inde">
-                              <div>
-                                {{itm.key}}：{{itm.values}}
-                              </div>
-                            </div>
+                    </div>
+                    <div class='sxt2' @click="sxt2Cli(index)" v-for="item,index in sxt2List" :key="index" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/20+'%':item.longitude+'%'}">
+                         <div :style="{visibility:sxt2Index==index?'visible':'hidden', top:-sxt2Height+'px',left:'-50px'}" ref="sxtList2" class="message">
+                           <div style="text-align:center;margin-top:30px;margin-bottom:15px">{{item.deviceName}}</div>
+                           <div style=" display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;color:#c1c1c1;">
+                              <div v-for="itm,inde in item.result" :key="inde">{{itm.dataType}}：{{itm.avgData+itm?.dataUnit}}</div>
+                              <div v-show="item.deviceStatus=='online'">状态：<span style="color:#1ea362;">在线</span></div>
+                              <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
+                              <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
+                           </div>
+                           
                          </div>
-                      </div>
-                      <div class='alarm' v-for="item,index in warn" @click="warnCli(index)" :key="index" :style="{left:item.latitude>100?item.latitude/13+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                        <div  :style="{visibility:warnIndex==index?'visible':'hidden',top:-alarmHeight+'px',left:'-50px'}" ref="alarmList" class="message">
-                            <div class="message-item">
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
-                              <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
-                            </div>
-                            <div style="color:red;">
-                                {{item.warnTitle}}({{item.threshold}}),阈值{{item.currentValue}}
-                            </div>
+                    </div>
+                    <div class='sxt3' @click="sxt3Cli(index)" v-for="item,index in sxt3List" :key="index" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/40+'%':item.longitude+'%'}">
+                         <div :style="{visibility:sxt3Index==index?'visible':'hidden', top:-sxt3Height+'px',left:'-50px'}" ref="sxtList3" class="message">
+                           <div style="text-align:center;margin-top:30px;margin-bottom:15px">{{item.deviceName}}</div>
+                           <div style=" display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;color:#c1c1c1;">
+                              <div v-for="itm,inde in item.result" :key="inde">{{itm.dataType}}：{{itm.avgData+itm?.dataUnit}}</div>
+                              <div v-show="item.deviceStatus=='online'">状态：<span style="color:#1ea362;">在线</span></div>
+                              <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
+                              <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
+                           </div>
+                           <div class="middle-btn">查看监控</div>
                          </div>
-                      </div> 
+                    </div>
+                    <div class='sxt4' @click="sxt4Cli(index)" v-for="item,index in sxt4List" :key="index" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/20+'%':item.longitude+'%'}">
+                         <div :style="{visibility:sxt4Index==index?'visible':'hidden', top:-sxt4Height+'px',left:'-50px'}" ref="sxtList4" class="message">
+                           <div style="text-align:center;margin-top:30px;margin-bottom:15px">{{item.deviceName}}</div>
+                           <div style=" display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;color:#c1c1c1;">
+                              <div v-for="itm,inde in item.result" :key="inde">{{itm.dataType}}：{{itm.avgData+itm?.dataUnit}}</div>
+                              <div v-show="item.deviceStatus=='online'">状态：<span style="color:#1ea362;">在线</span></div>
+                              <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
+                              <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
+                           </div>
+                           
+                         </div>
+                    </div>
+                      
+                      
                 </div>
                 <div class="middle-main-footer">
                     <div style="width: 49%;height:100%;">
                       <div class="box-title">特色产品</div>
                       <div class="middli-main-left">
-                        <div class='left-top'>
+                        <div class='left-top' v-for="item,index in ProductList" :key="index">
                           <div class="main-left-pie">
-                            <div class="pie"></div>
+                          <img :src="item.img" style="width:4rem;height: 4rem;border-radius: 50%;"/>
                           </div>
                           <div class="middle-main-right">
-                              <div style="margin-top: 10px;">精品葡萄</div>
+                              <div style="margin-top: 10px;">{{ item.featureName }}</div>
                               <di style="width:90%;align-items: center; display:flex;margin-top: 15px;justify-content: space-between;">
                                 <div>
                                   <span>订单</span>
-                                  <span>108</span>
+                                  <span>{{item.orderNum}}</span>
                                 </div>
                                 <div style="width: 3px;height: 20px;background-color:#0c57c7 ;"></div>
                                 <div>
                                   <span>销售额</span>
-                                  <span>5940</span>
-                                </div>
-                              </di>
-                          </div>
-                        </div>
-                        <div class='left-top'>
-                          <div class="main-left-pie">
-                            <div class="pie2"></div>
-                          </div>
-                          <div class="middle-main-right">
-                              <div style="margin-top: 10px;">散养土鸡</div>
-                              <di style="width:90%;align-items: center; display:flex;margin-top: 15px;justify-content: space-between;">
-                                <div>
-                                  <span>订单</span>
-                                  <span>67</span>
-                                </div>
-                                <div style="width: 3px;height: 20px;background-color:#0c57c7 ;"></div>
-                                <div>
-                                  <span>销售额</span>
-                                  <span>7906</span>
+                                  <span>{{ item.sale}}<span style="font-size:12px">({{item.saleUnit}})</span> </span>
                                 </div>
                               </di>
                           </div>
@@ -189,7 +183,10 @@
                     </div>
                 </div>
                 <div class="middle-sxt">
-                   
+                   <div style="display:flex;align-items: center;width:23%;font-size:13px;"><div :class="['middle-icon','main-sxt-1']"></div> 气象站</div>
+                   <div style="display:flex;align-items: center;width:23%;font-size:13px;"><div :class="['middle-icon','main-sxt-2']"></div> 监控设备</div>
+                   <div style="display:flex;align-items: center;width:23%;font-size:13px;"><div :class="['middle-icon','main-sxt-3']"></div> 土壤传感</div>
+                   <div style="display:flex;align-items: center;width:23%;font-size:13px;"><div :class="['middle-icon','main-sxt-4']"></div> 虫情测报灯</div>
                 </div>
             </div>
             <div class="right">
@@ -198,89 +195,26 @@
                     <div class="right1-item">
                       <!-- 第一部分 -->
                       <div class="right1-item-top">
-                        <div style="font-size:23px;font-family:'TitleFont';">物联网设备</div>
+                        <div style="font-size:23px;font-family:'TitleFont';">{{statisticsObj.name}}</div>
                         <div style="margin-right:20px;">
-                          总数<span style="color:#00f391;font-size:23px;font-family:'TitleFont';margin-top:10px ;">104</span>台
+                          总数<span style="color:#00f391;font-size:23px;font-family:'TitleFont';margin-top:10px ;">{{statisticsObj.total}}</span>台
                         </div>
                       </div>
                       <!-- 第二部分 -->
                       <div class="right1-warper">
-                        <div class="right1-warper-item">
+                        <div class="right1-warper-item" v-for="item,index in statisticsList" :key="index">
                           <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">生长监控</span>
-                            <span style="color:#00f792;">65</span>
+                            <span style="font-family:'TitleFont';">{{item.name}}</span>
+                            <span style="color:#00f792;">{{item.equipmentNum}}</span>
                           </div>
                           <div>
                             <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 1</span>
-                              <span style="color:red;">离线 1</span>
+                              <span style="color:#54d1d5;">在线 {{item.equipmentOnline}}</span>
+                              <span style="color:red;">离线 {{item.equipmentOffline}}</span>
                             </div>
-                              <div :class="['right1-onlin','right1-1']"></div>                                                      
-                          </div>
-                        </div>
-                        <div class="right1-warper-item">
-                          <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">土壤墒情</span>
-                            <span style="color:#00f792;">8</span>
-                          </div>
-                          <div>
-                            <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 7</span>
-                              <span style="color:red;">离线 1</span>
-                            </div>
-                              <div :class="['right1-onlin','right1-2']"></div>                                                      
-                          </div>
-                        </div>
-                        <div class="right1-warper-item">
-                          <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">气象站</span>
-                            <span style="color:#00f792;">4</span>
-                          </div>
-                          <div>
-                            <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 4</span>
-                              <span style="color:red;">离线 0</span>
-                            </div>
-                              <div :class="['right1-onlin','right1-3']"></div>                                                      
-                          </div>
-                        </div>
-                        <div class="right1-warper-item">
-                          <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">无人机</span>
-                            <span style="color:#00f792;">3</span>
-                          </div>
-                          <div>
-                            <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 1</span>
-                              <span style="color:red;">离线 2</span>
-                            </div>
-                              <div :class="['right1-onlin','right1-4']"></div>                                                      
-                          </div>
-                        </div>
-                        <div class="right1-warper-item">
-                          <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">杀虫灯</span>
-                            <span style="color:#00f792;">16</span>
-                          </div>
-                          <div>
-                            <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 13</span>
-                              <span style="color:red;">离线 3</span>
-                            </div>
-                              <div :class="['right1-onlin','right1-5']"></div>                                                      
-                          </div>
-                        </div>
-                        <div class="right1-warper-item">
-                          <div style="width: 100%;display: flex;justify-content: space-between;align-items: center">
-                            <span style="font-family:'TitleFont';">虫情测报灯</span>
-                            <span style="color:#00f792;">8</span>
-                          </div>
-                          <div>
-                            <div style="width: 100%;display: flex;justify-content: space-between;align-items: center;font-size:14px;margin-top: 5px;">
-                              <span style="color:#54d1d5;">在线 8</span>
-                              <span style="color:red;">离线 0</span>
-                            </div>
-                              <div :class="['right1-onlin','right1-6']"></div>                                                      
+                              <div :class="['right1-onlin','right1-1']">
+                                <div style="background-color:#0287d1;widht:100%;height:100%;border-radius:25px;"></div>
+                              </div>                                                      
                           </div>
                         </div>
                       </div>
@@ -289,26 +223,31 @@
                         <div class="right1-selecte1">
                            <div class='right1-title'>环境监测</div>
                         </div>
+                        <div class="selecte">
+                          <select id='' name="" @change="select1">
+                            <option :value="item.id" :data-value1="item.deviceType" v-for="item,index in selecteList.meteorology" :key="index">{{item.deviceName}}</option>
+                          </select>
+                        </div>
                       </div>
                       <div class="right1-warper3">
                         <div class="right1-warper3-left">
                           <div class="right1-left">
                             <div class="img"></div>
-                            <div style="color:#00de88">11.14<span style='font-size:14px;'>℃</span> </div>
+                            <div style="color:#00de88">{{timeData.temperature}} </div>
                           </div>
                           <div class="right1-right">
-                            <div style="font-size:14px;width:100% ; display: flex;justify-content: space-around">湿度 <span style="color:#62f3f4;">98.19%</span></div>
+                            <div style="font-size:14px;width:100% ; display: flex;justify-content: space-around">湿度 <span style="color:#62f3f4;">{{ timeData.humidity }}</span></div>
                             <div class='right1-xian'></div>
-                            <div style="font-size:14px;display: flex;width: 100%;justify-content: space-around">气压 <span style="color:#62f3f4;">98480Pa</span></div>
+                            <div style="font-size:14px;display: flex;width: 100%;justify-content: space-around">气压 <span style="color:#62f3f4;">{{ timeData.airPressure }}</span></div>
                           </div>
                         </div>
                         <div class="right1-warper3-cent">
-                          <div style="font-size:12px;">降雨量 <span style="color:#62f3f4;">0.0mm</span></div>
-                          <div style="font-size:12px;">光照强度 <span style="color:#62f3f4;">5615Lux</span></div>
+                          <div style="font-size:12px;">降雨量 <span style="color:#62f3f4;">{{ timeData.rainfall }}</span></div>
+                          <div style="font-size:12px;">光照强度 <span style="color:#62f3f4;">{{timeData.lighting}}</span></div>
                         </div>
                         <div class="right1-warper3-right">
-                          <div style="font-size:12px;">风速 <span style="color:#62f3f4;">0.7m/s</span></div>
-                          <div style="font-size:12px;">风向 <span style="color:#62f3f4;">东北</span></div>
+                          <div style="font-size:12px;">风速 <span style="color:#62f3f4;">{{ timeData.windSpeed }}</span></div>
+                          <div style="font-size:12px;">风向 <span style="color:#62f3f4;">{{ timeData.wind }}</span></div>
                         </div>
                       </div>
                       <!-- 第四部分 -->
@@ -316,34 +255,39 @@
                         <div class="right1-selecte1">
                            <div class='right1-title'>土壤墒情</div>
                         </div>
+                        <div class="selecte">
+                          <select id='' name="" @change="select2">
+                            <option :value="item.id"  v-for="item,index in selecteList.soil" :key="index">{{item.deviceName}}</option>
+                          </select>
+                        </div>
                       </div>
                       <div class="right1-warper4">
                            <div class="right1-warper4-item">
                             <div :class="['right1-warper4-icon','right1-warper4-1']"></div>
-                            <div style="margin-left:8px;">
-                              <div style="color:#68fffe;">18.3℃</div>
+                            <div style="margin-left:8px;width: calc(100% - 2rem);">
+                              <div style="color:#68fffe;">{{ soilObj.soilDepth }}</div>
                               <div style="font-size:14px;">土壤温度</div>
                             </div>
                           </div>
                           <div class="right1-warper4-item">
                             <div :class="['right1-warper4-icon','right1-warper4-2']"></div>
-                            <div style="margin-left:8px;">
-                              <div style="color:#68fffe;">92.3℃</div>
+                            <div style="margin-left:8px;width: calc(100% - 2rem);">
+                              <div style="color:#68fffe;">{{soilObj.soilTemperature}}</div>
                               <div style="font-size:14px;">土壤湿度</div>
                             </div>
                           </div>
                           <div class="right1-warper4-item">
                             <div :class="['right1-warper4-icon','right1-warper4-3']"></div>
-                            <div style="margin-left:8px;">
-                              <div style="color:#68fffe;">6.8</div>
+                            <div style="margin-left:8px;width: calc(100% - 2rem);">
+                              <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilHumidity}}</div>
                               <div style="font-size:14px;">PH值</div>
                             </div>
                           </div>
                           <div class="right1-warper4-item">
                             <div :class="['right1-warper4-icon','right1-warper4-4']"></div>
-                            <div style="margin-left:8px;">
-                              <div style="color:#68fffe;">0.42</div>
-                              <div style="font-size:14px;">土壤EC值</div>
+                            <div style="margin-left:8px; width: calc(100% - 2rem);">
+                              <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilEC}}</div>
+                              <div style="font-size:13px;">土壤EC值</div>
                             </div>
                           </div>
                       </div>
@@ -379,21 +323,35 @@ import {
   page,
   warningRecordInfo,
   SmartTour,
-  People
+  People,
+  deviceCount,
+  getLineChar,
+  featureProduct,
+  sensorDevice,
+  realTimeDataByDeviceId,
+  deviceStatistics,
+  DevicePoint
 } from '@/api/bigscreen10/index'
 import * as echarts from "echarts"
 import {ref,reactive,onMounted} from 'vue'
 import { object } from 'vue-types';
 import { resetSize } from '@/components/Verifition/src/utils/util';
 
-//柑橘数据分析
+
 const initChart1= async ()=>{
-  // let res= await ProductionData()
+   let res= await getLineChar({
+    cropCode:'1774714272496418816',
+    pageNo:1,
+    pageSize: 6
+   })
+   let xValue=res.xValue
+   let yValue=res.yValue
+   console.log(res,'左二')
     initChartStatic(
         "chart1",
         generateBaseOptions({
           xAxis: {
-            data:['1月','2月','3月','4月','5月','6月','7月'],
+            data:xValue,
             interval:0,
             axisLine: {
               show: true,
@@ -435,7 +393,7 @@ const initChart1= async ()=>{
           series: [
             {
               name: "生长监控",
-              data:[0.2,0.5,0.7,1,1.25,1.40,1.75,],
+              data:yValue,
               type: "line",
               symbol:'none',
               areaStyle:{
@@ -455,13 +413,16 @@ const initChart1= async ()=>{
 const initChart2= async ()=>{
   let res1=await SmartTour()
   let res2=await People()
-  console.log(res1,'文旅销售额')
-  console.log(res2,'旅客流量')
+  let xAxisData=Object.keys(res1)
+  let lineData=Object.values(res1)
+  let barData=Object.values(res2)
+  console.log(res1,'客流')
+  console.log(res1,'销售额')
     initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data:['1月','2月','3月','4月','5月','6月','7月'],
+            data:xAxisData,
             interval:0,
             axisLine: {
               show: true,
@@ -469,6 +430,9 @@ const initChart2= async ()=>{
                 color: "#c1c1c1",
               },
             },
+            axisLabel:{
+              interval:0
+            }
           },
           legend: { 
             show: false, 
@@ -503,14 +467,14 @@ const initChart2= async ()=>{
           },
           {
             type: "value",
-            max:'5',
+            max:Math.max.apply(null,lineData),
             main:'0'
           }
         ],
           series: [
             {
               name: "客流",
-              data:[3681,1032,2486,2761,3962,4032,3561],
+              data:barData,
               type: "bar",
               barWidth:'20',
               label: {
@@ -523,14 +487,14 @@ const initChart2= async ()=>{
             },
             {
               name: "销售额",
-              data:[2.25,1.75,2.25,2.8,3.5,2.6,3.25],
+              data:lineData,
               type: "line",
               yAxisIndex:1,
               symbol:'none',
             },
           ],
           grid: {
-            left: "10%",
+            left: "15%",
             right: "10%",
             top: "17%",
             bottom: "15%",
@@ -578,6 +542,141 @@ const getWarningRecordInfo=()=>{
   })
 }
 getWarningRecordInfo()
+//获取中间顶部卡片
+let contObj=ref({})
+const getDeviceCount=()=>{
+  deviceCount().then(res=>{
+    console.log(res,'中间顶部卡片');
+    contObj.value=res
+  })
+}
+getDeviceCount()
+//获取特色产品 土鸡
+let ProductList=ref([])
+const getFeatureProduct=()=>{
+  featureProduct().then(res=>{
+    console.log(res,'特色产品 土鸡');
+    ProductList.value=res.reverse()
+  })
+}
+getFeatureProduct()
+//设备运行-设备接口
+let selecteList=ref([])
+const getSensorDevice=()=>{
+  sensorDevice().then(res=>{
+    console.log(res,'设备运行-设备接口');
+    selecteList.value=res
+    getTimeDataByDeviceId({deviceId:res.meteorology[0].id,deviceType:'meteorology'})
+    getTimeDataByDeviceId2({deviceId:res.soil[0].id,deviceType:'soil'})
+  })
+}
+getSensorDevice()
+//获取实时环境数据
+let timeData=ref({})
+let soilObj=ref({})
+const getTimeDataByDeviceId=(val)=>{
+  realTimeDataByDeviceId(val).then(res=>{
+    console.log(res,'获取实时环境数据');
+    timeData.value=res
+  })
+}
+//获取实时土壤数据
+const getTimeDataByDeviceId2=(val)=>{
+  realTimeDataByDeviceId(val).then(res=>{
+    console.log(res,'获取实时土壤数据');
+    soilObj.value=res
+  })
+}
+//土壤监测点击
+const select1=(e)=>{
+  getTimeDataByDeviceId({deviceId:e.target.value,deviceType:'meteorology'})
+
+}
+//环境监测点击
+const select2=(e)=>{
+  getTimeDataByDeviceId2({deviceId:e.target.value,deviceType:'soil'})
+
+}
+//设备数量统计
+let statisticsObj=ref({})
+let statisticsList=ref({})
+const getDeviceStatistics=()=>{
+  deviceStatistics().then(res=>{
+    console.log(res,'设备数量统计');
+    statisticsObj.value=res
+    statisticsList.value=res.list
+  })
+}
+getDeviceStatistics()
+//获取地图数据
+let sxt1List=ref([])
+let sxt2List=ref([])
+let sxt3List=ref([])
+let sxt4List=ref([])
+const getDevicePoint=()=>{
+  DevicePoint().then(res=>{
+    console.log(res,'地图中间');
+    let a=res.SensorDevice
+    let b=res.monitorDevice
+    let i=7
+    let i2=6
+    a.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return  a.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    b.forEach((item,index)=>{
+      if(typeof(item.latitude)!='string') return b.splice(index, 1)
+      else  item.latitude=item.latitude.substring(i2)
+      item.longitude=item.longitude.substring(i)
+    })
+    sxt1List.value.push(a[0])
+    sxt2List.value.push(a[1])
+    for(let i =0 ;i<7;i++){
+      if(i<5){
+        sxt3List.value.push(b[i])
+      }else{
+        sxt4List.value.push(b[i])
+      }
+      
+    }
+    console.log(sxt1List.value,'sxt1List');
+    console.log(sxt2List.value,'sxt1List');
+    console.log(sxt3List.value,'sxt1List');
+    console.log(sxt4List.value,'sxt1List');
+    
+  })
+}
+getDevicePoint()
+//获取高度
+let sxtList1=ref(null)
+let sxt1Index=ref(-1)
+let sxt1Height=ref(0)
+const sxt1Cli=(index)=>{
+  sxt1Index.value=index
+  sxt1Height.value=sxtList1.value[index].offsetHeight
+}
+let sxtList2=ref(null)
+let sxt2Index=ref(-1)
+let sxt2Height=ref(0)
+const sxt2Cli=(index)=>{
+  sxt2Index.value=index
+  sxt2Height.value=sxtList2.value[index].offsetHeight
+}
+let sxtList3=ref(null)
+let sxt3Index=ref(-1)
+let sxt3Height=ref(0)
+const sxt3Cli=(index)=>{
+  sxt3Index.value=index
+  sxt3Height.value=sxtList3.value[index].offsetHeight
+}
+let sxtList4=ref(null)
+let sxt4Index=ref(-1)
+let sxt4Height=ref(0)
+const sxt4Cli=(index)=>{
+  sxt4Index.value=index
+  sxt4Height.value=sxtList4.value[index].offsetHeight
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -668,6 +767,12 @@ getWarningRecordInfo()
               }
             }
             }
+            .left2-right{
+              overflow-y:scroll;
+            }
+            .left2-right::-webkit-scrollbar{
+              display: none;
+            }
             .xian{
               width: 100%;
               height:1%;
@@ -721,8 +826,87 @@ getWarningRecordInfo()
       background-size: 100% 100%;
       background-image: url(./assets/mainBg.png);
       position: relative;
-      
-       
+      .sxt1{
+        position: absolute;
+        cursor: pointer;
+        width: 3rem;
+        height: 3rem;
+        background-size: 100% 100%;
+        background-image: url('./assets/sxt1.png');
+        position: relative;
+        .message{
+          position: absolute;
+          padding: 0 15px 30px !important;
+          box-sizing: border-box;
+          width: 250px;
+          z-index: 9999;
+          background-size: 100% 100%;
+          background-image:url(./assets/meassage.png);
+        }
+      }
+      .sxt2{
+        position: absolute;
+        cursor: pointer;
+        width: 3rem;
+        height: 3rem;
+        background-size: 100% 100%;
+        background-image: url('./assets/sxt2.png');
+        position: relative;
+        .message{
+          position: absolute;
+          padding: 0 15px 30px !important;
+          box-sizing: border-box;
+          width: 250px;
+          z-index: 9999;
+          background-size: 100% 100%;
+          background-image:url(./assets/meassage.png);
+        }
+      }
+      .sxt3{
+        position: absolute;
+        cursor: pointer;
+        width: 3rem;
+        height: 3rem;
+        background-size: 100% 100%;
+        background-image: url('./assets/sxt3.png');
+        position: relative;
+        .message{
+          position: absolute;
+          padding: 0 15px 30px !important;
+          box-sizing: border-box;
+          width: 250px;
+          z-index: 9999;
+          background-size: 100% 100%;
+          background-image:url(./assets/meassage.png);
+          .middle-btn{
+            width: 100px;
+            height: 50px;
+            line-height: 50px;
+            margin: auto;
+            text-align: center;
+            background-size: 100% 100%;
+            background-image: url(./assets/middle-btn.png);
+          }
+        }
+      }
+      .sxt4{
+        position: absolute;
+        cursor: pointer;
+        width: 3rem;
+        height: 3rem;
+        background-size: 100% 100%;
+        background-image: url('./assets/sxt4.png');
+        position: relative;
+        .message{
+          position: absolute;
+          padding: 0 15px 30px !important;
+          box-sizing: border-box;
+          width: 250px;
+          z-index: 9999;
+          background-size: 100% 100%;
+          background-image:url(./assets/meassage.png);
+        }
+      }
     }
     .middle-main-footer{
         position: absolute;
@@ -755,20 +939,13 @@ getWarningRecordInfo()
               background-size: 100% 100%;
               background-image: url(./assets/main-left-pie.png);
               .pie{
-                width: 60%;
-                height: 80%;
-                background-size: 100% 100%;
-                background-image: url(./assets/main-pie.png);
-              }
-              .pie2{
-                width: 70%;
-                height:80%;
-                background-size: 100% 100%;
-                background-image: url(./assets/main-pie2.png);
+                width: 100%;
+                height:100%;
               }
             }
             .middle-main-right{
               width:70%;
+                border-radius:50%;
               height:100%;
             }
           }
@@ -789,15 +966,16 @@ getWarningRecordInfo()
     }
     .middle-sxt{
         position: absolute;
-        right: 5%;
-        bottom: 24%;
+        left: 5%;
+        bottom: 28%;
         display: flex;
         width: 40%;
         align-items: center;
         justify-content: space-between;
         .middle-icon{
-            width: 3rem;
-            height: 3rem;
+            width: 2rem;
+            height: 2rem;
+            background-size: 100% 100%;
         }
     }
   }
@@ -859,6 +1037,7 @@ getWarningRecordInfo()
             }
             .right1-warper2{
               width: 100%;
+              position: relative;
               height: 30px;
               .right1-selecte1{
                 width: 80%;
@@ -868,9 +1047,25 @@ getWarningRecordInfo()
                 font-size: 20px;
                 font-family: 'TitleFont';
                 background-size: 100% 100%;
+                background:none;
                 background-image: url(./assets/right1-title.png);
               }
-
+              .selecte{
+                position:absolute;
+                top: 0;
+                right:0;
+                select{
+                  background:none;
+                  color:#fff;
+                  background-size: 100% 100%;
+                  background-image: url(./assets/select.png);
+                  option{
+                  color:#000;
+                  }
+                }
+                
+                
+              }
             }
             .right1-warper3{
               width: 100%;
@@ -999,7 +1194,7 @@ getWarningRecordInfo()
     background-image: url(./assets/mainTop#{$i}.png);
   }
 }
-@for $i from 1 through 6 {
+@for $i from 1 through 1 {
   .right1-#{$i} {
     background-image: url(./assets/right1Bg#{$i}.png);
   }
@@ -1017,6 +1212,11 @@ getWarningRecordInfo()
 @for $i from 1 through 2 {
   .left1-icon-#{$i} {
     background-image: url(./assets/left1WarperBg#{$i}.png);
+  }
+}
+@for $i from 1 through 4 {
+  .main-sxt-#{$i} {
+    background-image: url(./assets/sxt#{$i}.png);
   }
 }
 
