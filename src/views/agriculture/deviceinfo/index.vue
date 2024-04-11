@@ -243,7 +243,7 @@ defineOptions({name: 'DeviceInfo'})
  * 39 - 隘口
  * 46 - 白帝
  */
-const deviceTypeMain = ref([14, 25, 39, 46,76])
+const deviceTypeMain = ref([14, 25, 39, 46, 76])
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
@@ -281,8 +281,10 @@ const deviceType = ref()
 const getList = async () => {
   loading.value = true
   try {
-    let aa = route.query.deviceStatus;
-    queryParams.deviceStatus = aa;
+    if (route.query.deviceStatus){
+      let aa = route.query.deviceStatus;
+      queryParams.deviceStatus = aa;
+    }
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     list.value = data.list.map((item: any) => {
       item.deviceType = item.deviceType.split(',').map(Number)
@@ -330,7 +332,7 @@ const resetQuery = () => {
   handleQuery()
 }
 
-  /** 添加/修改操作 */
+/** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
