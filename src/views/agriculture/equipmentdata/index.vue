@@ -376,13 +376,13 @@ queryList()
 //查询采集类型列表
 const queryType= async ()=>{
   if(queryParams.collectionType){
+  queryParams.monitoringType=undefined
   selectCollectionType.value = await EquipmentDataApi.getCollectionType(queryParams.collectionType);
   // console.log(selectCollectionType,"selectCollectionType");
   }
 }
-
 watch(  
-  () => queryParams.collectionType, // 监听 form.name 的变化  
+  () => queryParams.collectionType, // 监听 queryParams.collectionType 的变化  
   (newVal, oldVal) => {  
     if (newVal !== oldVal) { // 确保值确实发生了变化  
       queryType()
@@ -390,6 +390,7 @@ watch(
   },  
   { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整  
 );
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
