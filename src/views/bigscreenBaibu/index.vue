@@ -259,6 +259,7 @@ const handleArrowClick = (param) => {
   }
   getMonitorDeviceByParkId(baibuIntroInfo.value.id, curMonitorPageIndex.value)
 }
+
 const getMonitorDeviceByParkId = async (belongPark, pageNo = 1) => {
   console.log('belongPark', belongPark);
   
@@ -268,6 +269,7 @@ const getMonitorDeviceByParkId = async (belongPark, pageNo = 1) => {
     pageSize: 3,
     deviceType: '58,61'
   })
+  if (list.length > 0) mapMonitorData.value = list[0]
   monitorDeviceList.value = list.map(item => ({
     ...item, title: item.deviceName, img: item.imgId,
     online: item.deviceStatus === 'online'
