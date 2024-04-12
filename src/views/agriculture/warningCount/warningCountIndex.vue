@@ -26,14 +26,15 @@
   </ContentWrap>
   <ContentWrap>
     预警折现图
-    <div id="main" style="width: 100%;height:400px;"></div>
+    <div id="echarts1" style="width: 100%;height:400px;"></div>
   </ContentWrap>
 </template>
 
 
 <script setup lang="ts">
 import {WarningRecordApi, WarningCountVO} from "@/api/kaizhou/warningrecord";
-
+// 如果直接使用原生ECharts
+import * as echarts from 'echarts';
 const warningCountVO = ref<WarningCountVO>(
   {
     todayCountNum: 0, // 今日新增
@@ -50,17 +51,41 @@ const getCount = async () => {
     //查询新增数量并进行对象赋值
     const countMap = await WarningRecordApi.getCountSum()
     warningCountVO.value = countMap
-    //查询新增数量折线图数据并进行对象赋值
-    const countList = await WarningRecordApi.getCountListByNowTime(6)
-    console.log(countList)
+
   } finally {
     loading.value = false
   }
 }
 
+const setChart1 = async () => {
+  loading.value = true
+  //查询新增数量折线图数据并进行对象赋值
+  const countList = await WarningRecordApi.getCountListByNowTime(6)
+  let myChart = echarts.init(document.getElementById("echarts1"))
+  myChart.setOption({
+    xAxis: {
+      type: 'category',
+      data: countList.xList
+    },
+    yAxis: {
+      type: 'value',
+      data: countList.yList
+    },
+    series: [
+      {
+        data: countList.yList,
+        type: 'line',
+        smooth: true
+      }
+    ]
+  })
+  loading.value = false
+}
+
 /** 初始化 **/
 onMounted(() => {
   getCount()
+  setChart1()
 })
 </script>
 <style scoped lang="scss">
