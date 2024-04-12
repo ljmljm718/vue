@@ -18,7 +18,7 @@ export const baidiParkInfo = async () => {
 export const monitorDeviceByParkId = async (data) => {
   return await request.post({
     url: '/agriculture/device-info/getPageMonitoring',
-    data,
+    params: data,
     headersType: 'multipart/form-data; boundary=--------------------------999028645642470077276192',
   })
 }
@@ -149,6 +149,14 @@ export const subDeviceUpdate = async (data) => {
   return await request.put({
     url: '/agriculture/sub-device/update',
     data
+  })
+}
+
+// [大屏]气象站/土壤传感/虫情测报灯相关读数
+export const getDeviceStateByParams = async (params) => {
+  return await request.get({
+    url: '/yyang/equipment-data/baibuEquipmentMonitor',
+    params
   })
 }
 
