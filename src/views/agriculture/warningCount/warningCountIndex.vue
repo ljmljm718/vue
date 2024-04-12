@@ -1,9 +1,6 @@
 <template>
   <ContentWrap>
     <el-row>
-      新增统计
-    </el-row>
-    <el-row>
       <div class="flex flex-wrap gap-4">
         <el-card style="width: 750px;text-align: center" shadow="always">
           <div>
@@ -25,7 +22,7 @@
     </el-row>
   </ContentWrap>
   <ContentWrap>
-    预警折现图
+    预警统计趋势图
     <div id="echarts1" style="width: 100%;height:400px;"></div>
   </ContentWrap>
 </template>
