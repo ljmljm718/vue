@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import {
   initChartStatic,
   generateBaseOptions
@@ -10,26 +10,70 @@ import {
   baidiParkInfo,
   monitorDeviceByParkId,
   warningRecordInfo,
+  getLineChar,
+  baibuTypeMonitor,
 } from './apis'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/index'
 
-// 获取监控设备 
-const getMonitorDeviceByParkId = async (belongPark) => {
-  const res = await monitorDeviceByParkId({ belongPark })
-  console.log('getMonitorDeviceByParkId', res);
+// 获取环境监测数据
+const getBaibuTypeMonitor = async () => {
+  const res = await baibuTypeMonitor({})
+  console.log('getBaibuTypeMonitor', res);
 }
 
+const productOptions = ref<Array<any>>([])
+const handleProdSelectorChange = (item) => {
+  const ele = productOptions.value.find(e => e.id === item.target.value)
+  baidiIntroInfo.value = ele
+  initChart1(item.target.value)
+  getMonitorDeviceByParkId(item.target.value)
+}
 const baidiIntroInfo = ref<any>({
+  id: '',
   img: '',
   remark: ''
 })
 const getBaidiParkInfo = async () => {
   const res = await baidiParkInfo()
   console.log('getBaidiParkInfo', res[0]);
-  baidiIntroInfo.value = res[0]
+  productOptions.value = res
+  if (Array.isArray(res) && res.length > 0) {
+    baidiIntroInfo.value = res[0]
+    initChart1(res[0].id)
+    getMonitorDeviceByParkId(res[0].id)
+  }
 }
 getBaidiParkInfo()
+
+
+// 获取监控设备 
+const monitorDeviceList = ref<Array<any>>([])
+const curMonitorPageIndex = ref(1)
+const handleArrowClick = (param) => {
+  if (!baidiIntroInfo.value.id) return
+  curMonitorPageIndex.value += param
+  if (curMonitorPageIndex.value < 1) {
+    curMonitorPageIndex.value = 1
+    return
+  }
+  console.log('curMonitorPageIndex', curMonitorPageIndex.value);
+  
+  getMonitorDeviceByParkId(baidiIntroInfo.value.id, curMonitorPageIndex.value)
+}
+const getMonitorDeviceByParkId = async (belongPark, pageNo = 1) => {
+  const { list = [] } = await monitorDeviceByParkId({
+    belongPark,
+    pageNo,
+    pageSize: 3,
+    deviceType: '67,68'
+  })
+  console.log('右下角监控设备列表', list);
+  monitorDeviceList.value = list.map(item => ({
+    ...item, title: item.deviceName, img: item.imgId,
+    online: item.deviceStatus === 'online'
+  }))
+}
 
 const getIndustryStatistics = async () => {
   const {
@@ -72,12 +116,19 @@ const industryList = ref([{
   value: '0亩'
 }])
 
-const initChart1 = () => {
+const initChart1 = async (cropCode) => {
+  const { xValue = [], measureUnit = [], yValue = [] } = await getLineChar({
+    pageNo: 1,
+    pageSize: 6,
+    cropCode
+  })
+  console.log('Chart1 Yvalue', yValue);
+  
   initChartStatic(
     'chart1',
     generateBaseOptions({
       xAxis: {
-        data: [1,2,3,4,5],
+        data: xValue,
         axisLine: {
           show: true,
           lineStyle: {
@@ -93,7 +144,7 @@ const initChart1 = () => {
       },
       color: ['#ffa773', '#36e1d9'],
       yAxis: {
-        name: '米',
+        name: measureUnit[0],
         type: 'value',
         axisLine: {
           show: true,
@@ -119,7 +170,7 @@ const initChart1 = () => {
       series: [
         {
           name: '',
-          data: [1,2,3,4,5],
+          data: yValue,
           barWidth: 30,
           type: 'line',
           smooth: true,
@@ -153,19 +204,7 @@ const initChart1 = () => {
   )
 }
 
-onMounted(() => { initChart1() })
 
-const handleArrowClick = (param) => {
-  console.log('params', param)
-}
-
-const monitorDeviceList = ref<Array<any>>([
-  {
-    online: "true",
-    title: "这是一个标题",
-    img: "/img.png"
-  }
-])
 
 // 报警信息
 const warningList = ref<Array<any>>([])
@@ -182,7 +221,7 @@ getwarningRecordInfo()
       <div class="header-left-part-wrapper">
         <BigScreenTime />
       </div>
-      <div class="header-title-wrapper">巫溪文风三宝村桂花产业数字化赋能</div>
+      <div class="header-title-wrapper">巫溪文峰三宝村桂花产业数字化赋能</div>
       <div class="header-right-part-wrapper"></div>
     </div>
     <div class="content-main-wrapper grid-container">
@@ -190,6 +229,15 @@ getwarningRecordInfo()
         <div class="grid-main-item">
           <div class="main-item-title title-bg">
             <div>产业介绍</div>
+            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+              <select @change="handleProdSelectorChange">
+                <option
+                  :value="item.id"
+                  v-for="item,index in productOptions"
+                  :key="index"
+                >{{ item.name }}</option>
+              </select>
+            </div>
           </div>
           <div class="main-item-container flex flex-col">
             <div class="w-full flex justify-center h-[4.6rem]">
@@ -335,15 +383,20 @@ getwarningRecordInfo()
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
           <div class="main-item-title">报警信息</div>
-          <div class="main-item-container">
+          <div class="main-item-container warn-bg">
             <div
               class="flex"
               v-for="(item, index) in warningList"
               :key="index"
+              style="color: #fffffff0;padding: .2rem 0;border-bottom: 1px solid #ffffff60;"
             >
-              <div :class="['w-[7rem]']">{{ item.warnTitle }}</div>
-              <div class="w-calc(100% - 16rem)">{{ item.warnInfo }}</div>
-              <div class="w-[9rem]">{{ formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss') }}</div>
+              <div :class="['w-[6.5rem]']">{{ item.warnTitle }}</div>
+              <div
+                style="width: calc(100% - 15.4rem);padding: 0 .4rem;"
+                :title="item.warnInfo"
+                class="line-clamp-2"
+              >{{ item.warnInfo }}</div>
+              <div class="w-[8rem] text-center">{{ formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss') }}</div>
             </div>
           </div>
         </div>
@@ -407,6 +460,11 @@ getwarningRecordInfo()
   background-size: 100% 100%;
   width: 1.6rem;
   height: 1.6rem;
+}
+
+.warn-bg {
+  background-size: 100% 95% !important;
+  background-image: url(./assets/warnBg.png);
 }
 
 .left-arrow-bg {

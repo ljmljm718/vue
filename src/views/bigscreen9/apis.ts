@@ -65,10 +65,11 @@ export const parkInfoPage = async () => {
 }
 
 // 根据基地获取监控设备列表
-export const getPageMonitoring = async (params) => {
-  return await request.get({
+export const getPageMonitoring = async (data) => {
+  return await request.post({
     url: '/agriculture/device-info/getPageMonitoring',
-    params
+    data,
+    headersType: 'multipart/form-data; boundary=--------------------------999028645642470077276192',
   })
 }
 

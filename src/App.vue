@@ -84,4 +84,12 @@ body {
     border: 2px solid #0be3de;
   }
 }
+
+.line-clamp-2 {
+  display: -webkit-box; /* 将元素作为弹性伸缩盒子展示 */
+  -webkit-line-clamp: 2; /* 限制文本行数为 2 行 */
+  -webkit-box-orient: vertical; /* 设置伸缩盒子为垂直方向 */
+  overflow: hidden; /* 隐藏溢出文本 */
+  text-overflow: ellipsis; /* 使用省略号截断溢出文本 */
+}
 </style>
