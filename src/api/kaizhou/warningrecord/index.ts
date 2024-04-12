@@ -39,45 +39,61 @@ export interface DeviceBaseVO {
   remark: string // 备注
 }
 
+// 预警记录 VO
+export interface WarningCountVO {
+  todayCountNum: number // 今日新增
+  thirtyDayCountNum: number // 近30日新增数量
+}
+
 // 预警记录 API
 export const WarningRecordApi = {
   // 查询预警记录分页
   getWarningRecordPage: async (params: any) => {
-    return await request.get({ url: `/kaizhou/warning-record/page`, params })
+    return await request.get({url: `/kaizhou/warning-record/page`, params})
   },
 
   // 查询预警记录详情
   getWarningRecord: async (id: number) => {
-    return await request.get({ url: `/kaizhou/warning-record/get?id=` + id })
+    return await request.get({url: `/kaizhou/warning-record/get?id=` + id})
   },
 
   // 新增预警记录
   createWarningRecord: async (data: WarningRecordVO) => {
-    return await request.post({ url: `/kaizhou/warning-record/create`, data })
+    return await request.post({url: `/kaizhou/warning-record/create`, data})
   },
 
   // 修改预警记录
   updateWarningRecord: async (data: WarningRecordVO) => {
-    return await request.put({ url: `/kaizhou/warning-record/update`, data })
+    return await request.put({url: `/kaizhou/warning-record/update`, data})
   },
 
   // 删除预警记录
   deleteWarningRecord: async (id: number) => {
-    return await request.delete({ url: `/kaizhou/warning-record/delete?id=` + id })
+    return await request.delete({url: `/kaizhou/warning-record/delete?id=` + id})
   },
 
   // 导出预警记录 Excel
   exportWarningRecord: async (params) => {
-    return await request.download({ url: `/kaizhou/warning-record/export-excel`, params })
+    return await request.download({url: `/kaizhou/warning-record/export-excel`, params})
   },
 
   // 查询设备管理分页
   getDeviceBasePage: async (params: any) => {
-    return await request.get({ url: `/kaizhou/warning-record/device/page`, params })
+    return await request.get({url: `/kaizhou/warning-record/device/page`, params})
   },
 
   // 查询预警记录分页-返回基地名称和地块名称
   getWarningRecordPageWithParkName: async (params: any) => {
-    return await request.get({ url: `/kaizhou/warning-record/page/park/info`, params })
+    return await request.get({url: `/kaizhou/warning-record/page/park/info`, params})
+  },
+
+  // 获得今日预警数量及近30天预警数量
+  getCountSum: async () => {
+    return await request.get({url: `/agriculture/agri-warning-record/getCountSum`})
+  },
+
+  // 获得今日预警数量及近30天预警数量
+  getCountListByNowTime: async (size: number) => {
+    return await request.get({url: `/agriculture/agri-warning-record/getCountListByNowTime?size=` + size})
   },
 }
