@@ -70,6 +70,11 @@
         </template>
       </el-table-column>
       <el-table-column label="设备编号" align="center" prop="equipmentCode" />
+      <el-table-column label="土壤深度" align="center" prop="soilDepth">
+        <template v-slot="scope">
+          <span>{{scope.row.soilDepth}}m</span>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
 <!--      <el-table-column-->
 <!--        label="采集时间"-->
@@ -90,11 +95,9 @@
       </el-table-column>
       <el-table-column label="PH值" align="center" prop="soilPh" />
       <el-table-column label="EC值" align="center" prop="soilEc" />
-      <el-table-column label="土壤深度" align="center" prop="soilDepth">
-        <template v-slot="scope">
-          <span>{{scope.row.soilDepth}}m</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="氮" align="center" prop="nitrogen" />
+      <el-table-column label="磷" align="center" prop="phosphorus" />
+      <el-table-column label="钾" align="center" prop="potassium" />
       <el-table-column
           label="数据上报时间"
           align="center"

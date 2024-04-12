@@ -518,6 +518,9 @@ const plantInfoList = ref([
             <el-table-column label="土壤湿度(%/RH)" align="center" prop="humidity" v-if="radio==='土壤墒情'"/>
             <el-table-column label="ec值" align="center" prop="ec" v-if="radio==='土壤墒情'"/>
             <el-table-column label="ph值" align="center" prop="ph" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="氮(mg/kg)" align="center" prop="nitrogen" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="磷(mg/kg)" align="center" prop="phosphorus" v-if="radio==='土壤墒情'"/>
+            <el-table-column label="钾(mg/kg)" align="center" prop="potassium" v-if="radio==='土壤墒情'"/>
             <el-table-column label="数据采集时间" align="center" prop="collectionTime" :formatter="dateFormatter" />
           </el-table>
           <Pagination
