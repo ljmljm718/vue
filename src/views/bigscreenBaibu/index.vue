@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import { ref } from 'vue'
+import {ref} from 'vue'
 import {
   initChartStatic,
   generateBaseOptions,
@@ -33,8 +33,8 @@ import {
   getDeviceStateByParams
 } from './apis'
 import * as echarts from 'echarts'
-import { formatTime } from '@/utils/index'
-import { ElMessage } from 'element-plus'
+import {formatTime} from '@/utils/index'
+import {ElMessage} from 'element-plus'
 
 // 状态切换
 const handleSwitchChange = async (e, ele) => {
@@ -51,8 +51,11 @@ const handleSwitchChange = async (e, ele) => {
 // 获取子设备
 const subDeviceList = ref<Array<any>>([])
 const getsubDevicePage = async () => {
-  const { list = [] } = await subDevicePage()
-  subDeviceList.value = arrayFormatter(list.map(item => ({ ...item, button: item.swithState === '0' })))
+  const {list = []} = await subDevicePage()
+  subDeviceList.value = arrayFormatter(list.map(item => ({
+    ...item,
+    button: item.swithState === '0'
+  })))
 }
 getsubDevicePage()
 
@@ -62,7 +65,7 @@ const handleMonitorSelectorChange = (e) => {
   console.log('MonitorSelector', e.target.value);
 }
 const getMonitorOptions = async () => {
-  const { list = [] } = await parkInfoPage();
+  const {list = []} = await parkInfoPage();
   monitorOptions.value = list
 }
 getMonitorOptions()
@@ -79,30 +82,40 @@ const getBaibuTypeMonitor = async (type, equipmentCode, plotCode) => {
   const res = await baibuTypeMonitor({
     type, equipmentCode, plotCode
   })
-  
+
   if (Array.isArray(res) && res.length === 0) return
   if (type === 0) {
-    const _tempItem = res.find(item => { return item.monitoringType === '温度'})
+    const _tempItem = res.find(item => {
+      return item.monitoringType === '温度'
+    })
     envTemp.value = _tempItem.dataValue
     envDataList.value = arrayFormatter(res)
   }
   if (type === 1) {
-    const _tempItem = res.find(item => { return item.monitoringType === '温度'})
+    const _tempItem = res.find(item => {
+      return item.monitoringType === '温度'
+    })
     soilTemp.value = _tempItem.dataValue
-    const _res = res.filter(item => { return item.monitoringType !== "温度"})
+    const _res = res.filter(item => {
+      return item.monitoringType !== "温度"
+    })
     soilDataList.value = arrayFormatter(_res)
   }
   if (type === 2) {
-    const _tempItem = res.find(item => { return item.monitoringType === '杀虫仓温度'})
+    const _tempItem = res.find(item => {
+      return item.monitoringType === '杀虫仓温度'
+    })
     bugTemp.value = _tempItem.dataValue
-    const _res = res.filter(item => { return item.monitoringType !== "杀虫仓温度"})
+    const _res = res.filter(item => {
+      return item.monitoringType !== "杀虫仓温度"
+    })
     bugDataList.value = arrayFormatter(_res)
   }
 }
 
 const parkOptions = ref<Array<any>>([])
 const getparkDetailPage = async () => {
-  const { list = [] } = await parkDetailPage()
+  const {list = []} = await parkDetailPage()
   parkOptions.value = list
   const __item = list[0]
   getGetDeviceForPark(72, __item.id)
@@ -162,7 +175,7 @@ const getGetDeviceForPark = async (type, park) => {
 const deviceInfoPart = ref<Array<any>>([])
 const deviceInfoTotal = ref(0)
 const getDeviceInfoBySum = async () => {
-  const { list = [], total = 0 } = await deviceInfoBySum();
+  const {list = [], total = 0} = await deviceInfoBySum();
   deviceInfoPart.value = list
   deviceInfoTotal.value = total
 }
@@ -171,9 +184,9 @@ getDeviceInfoBySum()
 // 商品流通
 const initChart2 = async () => {
   const res = await locationPrice();
-  const data:Array<any> = []
+  const data: Array<any> = []
   for (const key in res) {
-    data.push({ value: res[key], name: key })
+    data.push({value: res[key], name: key})
   }
   initChartStatic('chart2', generatePieOptions({
     legend: {
@@ -203,12 +216,14 @@ const initChart2 = async () => {
   }))
 }
 
-onMounted(() => { initChart2() })
+onMounted(() => {
+  initChart2()
+})
 
 // 工程设备
 const deviceInfo = ref<Array<any>>([])
 const getdeviceInfoBySumType = async () => {
-  const { list = [] } = await deviceInfoBySumType();
+  const {list = []} = await deviceInfoBySumType();
   if (Array.isArray(list) && list.length > 0) deviceInfo.value = list.splice(0, 5)
 }
 getdeviceInfoBySumType()
@@ -216,7 +231,7 @@ getdeviceInfoBySumType()
 // [大屏]烘干工艺
 const manageList = ref<Array<any>>([])
 const getManagementPage = async () => {
-  const { list = [] } = await managementPage({
+  const {list = []} = await managementPage({
     pageReqVO: `{ "pageNo": ${1}, "pageSize": ${10} }`
   })
   manageList.value = list
@@ -236,7 +251,7 @@ const baibuIntroInfo = ref<any>({
   remark: ''
 })
 const getBaibuParkInfo = async () => {
-  const { list = [] } = await getCropBaseList({ pageNo: 1, pageSize: 50 })
+  const {list = []} = await getCropBaseList({pageNo: 1, pageSize: 50})
   productOptions.value = list
   if (Array.isArray(list) && list.length > 0) {
     baibuIntroInfo.value = list[0]
@@ -247,7 +262,7 @@ const getBaibuParkInfo = async () => {
 getBaibuParkInfo()
 
 
-// 获取监控设备 
+// 获取监控设备
 const monitorDeviceList = ref<Array<any>>([])
 const curMonitorPageIndex = ref(1)
 const handleArrowClick = (param) => {
@@ -262,8 +277,8 @@ const handleArrowClick = (param) => {
 
 const getMonitorDeviceByParkId = async (belongPark, pageNo = 1) => {
   console.log('belongPark', belongPark);
-  
-  const { list = [] } = await monitorDeviceByParkId({
+
+  const {list = []} = await monitorDeviceByParkId({
     // belongPark,
     pageNo,
     pageSize: 3,
@@ -283,17 +298,20 @@ const getIndustryStatistics = async () => {
   } = await getParkCountAndAreaSum();
 
   const cropCount = await getCropBaseCount();
-  
+
   industryList.value = [
     {
       title: '基地数量',
-      value: parkCount
+      value: parkCount,
+      url: '/base/parkinfo'
     }, {
       title: '种植面积',
-      value: areaSum + '亩'
+      value: areaSum + '亩',
+      url: '/base/parkinfo'
     }, {
       title: '种植品种',
-      value: cropCount
+      value: cropCount,
+      url: '/crop/crop-base'
     },
   ]
 }
@@ -301,17 +319,20 @@ getIndustryStatistics()
 
 const industryList = ref([{
   title: '基地数量',
-  value: '0'
+  value: '0',
+  url: '/base/parkinfo'
 }, {
   title: '种植面积',
-  value: '0亩'
+  value: '0亩',
+  url: '/base/parkinfo'
 }, {
   title: '种植品种',
-  value: '0'
+  value: '0',
+  url: '/crop/crop-base'
 }])
 
 const initChart1 = async (cropCode) => {
-  const { xValue = [], measureUnit = [], yValue = [] } = await getLineChar({
+  const {xValue = [], measureUnit = [], yValue = []} = await getLineChar({
     pageNo: 1,
     pageSize: 6,
     cropCode
@@ -378,12 +399,12 @@ const initChart1 = async (cropCode) => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#1bcad600' },
-                { offset: 0, color: '#1bcad6' }
+                {offset: 1, color: '#1bcad600'},
+                {offset: 0, color: '#1bcad6'}
               ])
             },
           },
-          areaStyle: { normal: {} },
+          areaStyle: {normal: {}},
         }
       ],
       grid: {
@@ -438,7 +459,7 @@ getDeviceStateData(2)
   <div class="bigscreen-main-wrapper">
     <div class="header-main-wrapper header-bg">
       <div class="header-left-part-wrapper">
-        <BigScreenTime />
+        <BigScreenTime/>
       </div>
       <div class="header-title-wrapper">彭水百部中药产业数字化赋能</div>
       <div class="header-right-part-wrapper"></div>
@@ -454,41 +475,48 @@ getDeviceStateData(2)
                   :value="item.id"
                   v-for="item,index in productOptions"
                   :key="index"
-                >{{ item.cropName }}</option>
+                >{{ item.cropName }}
+                </option>
               </select>
             </div>
           </div>
           <div class="main-item-container flex flex-col">
             <div class="w-full flex justify-center h-[4.6rem]">
               <div v-for="(item, index) in industryList" :key="index"
-                class="flex flex-col items-center industry-bg h-full w-[28%] mx-1">
+                   class="flex flex-col items-center industry-bg h-full w-[28%] mx-1" @click="$router.push({
+                          path:item.url
+                  })">
                 <div style="font-size: 1.2rem;font-family: 'TitleFont';">{{ item.value }}</div>
                 <div style="font-size: .9rem;color: #00d4ff;">{{ item.title }}</div>
               </div>
             </div>
             <div style="height: calc(100% - 19.5rem);padding: 1rem;">
-              <img :src="baibuIntroInfo.imgId" align="left" width="160" style="margin: .3rem 1rem 1rem .3rem;" />
+              <img :src="baibuIntroInfo.imgId" align="left" width="160"
+                   style="margin: .3rem 1rem 1rem .3rem;"/>
               <span>{{ baibuIntroInfo.remark }}</span>
             </div>
             <div
               class="sub-title-bg h-[2rem]"
               style="margin-left: .7rem;width: calc(100% - .7rem);margin-bottom: .9rem;"
-            >烘干工艺</div>
+              @click="$router.push({
+                          path:'/production/drying-process-management'
+                  })">烘干工艺
+            </div>
             <div style="height: 12rem;">
               <table>
                 <thead>
-                    <tr>
-                        <th>烘干机</th>
-                        <th>温度(℃)</th>
-                        <th>转速(mm/s)</th>
-                    </tr>
+                <tr>
+                  <th>烘干机</th>
+                  <th>温度(℃)</th>
+                  <th>转速(mm/s)</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in manageList" :key="item.id">
-                        <td>{{ item.equipmentName }}</td>
-                        <td>{{ item.dryingTemperature }}</td>
-                        <td>{{ item.equipmentSpeed }}</td>
-                    </tr>
+                <tr v-for="item in manageList" :key="item.id">
+                  <td>{{ item.equipmentName }}</td>
+                  <td>{{ item.dryingTemperature }}</td>
+                  <td>{{ item.equipmentSpeed }}</td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -622,11 +650,15 @@ getDeviceStateData(2)
           <div class="main-item-title">智慧种植</div>
           <div class="main-item-container flex flex-col">
             <div class="grid grid-cols-2 gap-2">
-              <div class="bg-[length:100%_100%] card-width-bg flex justify-between p-3 col-span-2">
+              <div class="bg-[length:100%_100%] card-width-bg flex justify-between p-3 col-span-2" @click="$router.push({
+                          path:'/device/overview'
+                  })">
                 <span>物联网设备</span>
                 <span>
                   <span>总数</span>
-                  <span style="color: #00ff96;font-family: 'TitleFont';padding: 0 .3rem;">{{ deviceInfoTotal }}</span>
+                  <span style="color: #00ff96;font-family: 'TitleFont';padding: 0 .3rem;">{{
+                      deviceInfoTotal
+                    }}</span>
                   <span>台</span>
                 </span>
               </div>
@@ -652,7 +684,12 @@ getDeviceStateData(2)
                 </div>
               </div>
             </div>
-            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center">
+            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
+                          path:'/deviceData/equipment-data',
+                          query:{
+                            collectionType:'气象站'
+                          }
+                  })">
               <div>环境数据</div>
               <div class="flex space-x-2">
                 <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
@@ -676,10 +713,12 @@ getDeviceStateData(2)
                   </select>
                 </div>
               </div>
-              
+
             </div>
             <div class="grid grid-cols-4 gap-1 p-1">
-              <div class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center" style="font-size: .8rem;">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
                 <div class="bg-[length:100%_100%] temp-icon"></div>
                 <div style="font-family: 'TitleFont';" class="pt-1">{{ envTemp + '℃' }}</div>
               </div>
@@ -700,8 +739,13 @@ getDeviceStateData(2)
                 </div>
               </div>
             </div>
-            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center">
-              <div>土壤数据</div>
+            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center" @click="$router.push({
+                          path:'/deviceData/equipment-data',
+                          query:{
+                            collectionType:'土壤墒情'
+                          }
+                  })">
+              <div >土壤数据</div>
               <div class="flex space-x-2">
                 <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
                   <select @change="handleParkSoilSelectorChange">
@@ -726,7 +770,9 @@ getDeviceStateData(2)
               </div>
             </div>
             <div class="grid grid-cols-4 gap-1 p-1">
-              <div class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center" style="font-size: .8rem;">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
                 <div class="bg-[length:100%_100%] temp-icon"></div>
                 <div style="font-family: 'TitleFont';" class="pt-1">{{ soilTemp + '℃' }}</div>
               </div>
@@ -743,11 +789,18 @@ getDeviceStateData(2)
                   :key="ele.monitoringType"
                 >
                   <span>{{ ele.monitoringType }}</span>
-                  <span style="color: #68fffe;">{{ ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '') }}</span>
+                  <span style="color: #68fffe;">{{
+                      ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                    }}</span>
                 </div>
               </div>
             </div>
-            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center">
+            <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
+                          path:'/deviceData/equipment-data',
+                          query:{
+                            collectionType:'虫情监测'
+                          }
+                  })">
               <div>虫情监测</div>
               <div class="flex space-x-2">
                 <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
@@ -773,7 +826,9 @@ getDeviceStateData(2)
               </div>
             </div>
             <div class="grid grid-cols-4 gap-1 p-1">
-              <div class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center" style="font-size: .8rem;">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
                 <div class="bg-[length:100%_100%] temp-icon"></div>
                 <div style="font-family: 'TitleFont';" class="pt-1">{{ bugTemp + '℃' }}</div>
               </div>
@@ -790,7 +845,9 @@ getDeviceStateData(2)
                   :key="ele.monitoringType"
                 >
                   <span>{{ ele.monitoringType }}</span>
-                  <span style="color: #68fffe;">{{ ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '') }}</span>
+                  <span style="color: #68fffe;">{{
+                      ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                    }}</span>
                 </div>
               </div>
               <div
@@ -819,7 +876,14 @@ getDeviceStateData(2)
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title">工业设备</div>
+          <div class="main-item-title"
+               @click="$router.push({
+                          path:'/device/deviceView',
+                          query:{
+                               deviceType:'60'
+                          }
+                  })">工业设备
+          </div>
           <div class="main-item-container">
             <div class="flex justify-between h-full">
               <img
@@ -844,7 +908,10 @@ getDeviceStateData(2)
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title">商品流通</div>
+          <div class="main-item-title" @click="$router.push({
+                          path:'/crop/sales-management'
+                  })">商品流通
+          </div>
           <div class="main-item-container">
             <div id="chart2"></div>
           </div>
@@ -852,7 +919,9 @@ getDeviceStateData(2)
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title">报警信息</div>
+          <div class="main-item-title" @click="$router.push({
+                          path:'/warn/agri-warning-record',
+                  })">报警信息</div>
           <div class="main-item-container warn-bg">
             <div
               class="flex"
@@ -865,15 +934,24 @@ getDeviceStateData(2)
                 style="width: calc(100% - 15.4rem);padding: 0 .4rem;"
                 :title="item.warnInfo"
                 class="line-clamp-2"
-              >{{ item.warnInfo }}</div>
-              <div class="w-[8rem] text-center">{{ formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss') }}</div>
+              >{{ item.warnInfo }}
+              </div>
+              <div class="w-[8rem] text-center">{{
+                  formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss')
+                }}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title">
+          <div class="main-item-title" @click="$router.push({
+                          path:'/device/deviceinfo',
+                          query:{
+                            deviceType:'58,61'
+                          }
+                  })">
             <div>监控设备</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleMonitorSelectorChange">
@@ -896,9 +974,12 @@ getDeviceStateData(2)
               :key="index"
               class="flex flex-col px-1"
             >
-              <img :src="item.img" alt="" style="width: 100%;aspect-ratio: 1.3;object-fit: contain;" />
+              <img :src="item.img" alt=""
+                   style="width: 100%;aspect-ratio: 1.3;object-fit: contain;"/>
               <div>{{ item.title }}</div>
-              <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">{{ item.online ? '在线' : '离线' }}</div>
+              <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">
+                {{ item.online ? '在线' : '离线' }}
+              </div>
             </div>
             <div
               class="right-arrow-bg h-full"
@@ -913,10 +994,12 @@ getDeviceStateData(2)
 </template>
 <style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);
+
 #chart2 {
   width: 100%;
   height: 100%;
 }
+
 .header-bg {
   background-image: url(./assets/headerBg.png);
 }
@@ -1027,6 +1110,7 @@ getDeviceStateData(2)
       height: 100%;
       display: flex;
       flex-direction: column;
+
       .main-item-title {
         height: 2.4rem;
         padding: 0 2rem;
@@ -1078,7 +1162,7 @@ th, td {
 thead {
   position: sticky;
   top: 0;
-  background-color: #252525 ;
+  background-color: #252525;
 }
 
 tbody {
