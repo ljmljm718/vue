@@ -51,14 +51,13 @@ const handleSwitchChange = async (e, ele) => {
 
 // 获取子设备
 const subDeviceList = ref<Array<any>>([])
-const getsubDevicePage = async () => {
-  const {list = []} = await subDevicePage()
+const getsubDevicePage = async (params) => {
+  const {list = []} = await subDevicePage({ ...params })
   subDeviceList.value = arrayFormatter(list.map(item => ({
     ...item,
     button: item.swithState === '0'
   })))
 }
-getsubDevicePage()
 
 // 右下角选择
 const monitorOptions = ref<Array<any>>([])
@@ -152,6 +151,7 @@ const bugOptions = ref<Array<any>>([])
 const handleBugSelectorChange = (e) => {
   const _item = bugOptions.value.find(ele => ele.id === e.target.value)
   getBaibuTypeMonitor(2, _item.id, _item.belongPlot)
+  getsubDevicePage({ devicesId: _item.id })
 }
 // 1号设备，设备查询 76：虫情、73：土壤、72：环境
 const getGetDeviceForPark = async (type, park) => {
@@ -168,7 +168,10 @@ const getGetDeviceForPark = async (type, park) => {
   }
   if (type === 76) {
     bugOptions.value = res;
-    if (Array.isArray(res) && res.length > 0) getBaibuTypeMonitor(2, res[0].id, res[0].belongPlot)
+    if (Array.isArray(res) && res.length > 0) {
+      getBaibuTypeMonitor(2, res[0].id, res[0].belongPlot)
+      getsubDevicePage({ devicesId: res[0].id })
+    }
   }
 }
 

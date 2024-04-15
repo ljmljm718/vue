@@ -138,9 +138,10 @@ export const warningRecordInfo = async () => {
 }
 
 // 右四-子设备名称和状态查询
-export const subDevicePage = async () => {
+export const subDevicePage = async (params) => {
   return await request.get({
-    url: '/agriculture/sub-device/page'
+    url: '/agriculture/sub-device/page',
+    params
   })
 }
 
