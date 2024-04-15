@@ -82,7 +82,10 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <a href={bigscreenRoute.value}>
+          <a
+            href={bigscreenRoute.value}
+            style="color: var(--top-header-text-color);transform:scale(.8);margin-right: .5rem;"
+          >
             <el-icon><Platform /></el-icon>
           </a>
           {screenfull.value ? (

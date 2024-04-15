@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import { initChartStatic, generateBaseOptions } from '../../utils/bigscreenTool/index'
@@ -541,7 +542,9 @@ const rightUnitMap = {
         <BigScreenTime />
       </div>
       <div class="header-title-wrapper">酉阳鲁渝协作示范村数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
+      <div class="header-right-part-wrapper">
+        <BackOrHome />
+      </div>
     </div>
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import img1 from './assets/img1.png'
 import * as echarts from 'echarts'
 import {
@@ -400,7 +401,9 @@ onMounted(() => {
         <BigScreenTime />
       </div>
       <div class="header-title-wrapper">武隆县高山番茄数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
+      <div class="header-right-part-wrapper">
+        <BackOrHome />
+      </div>
     </div>
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper" style="grid-row: span 2;">

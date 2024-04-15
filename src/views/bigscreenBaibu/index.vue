@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import { ref } from 'vue'
 import {
   initChartStatic,
@@ -441,7 +442,9 @@ getDeviceStateData(2)
         <BigScreenTime />
       </div>
       <div class="header-title-wrapper">彭水百部中药产业数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
+      <div class="header-right-part-wrapper">
+        <BackOrHome />
+      </div>
     </div>
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">
