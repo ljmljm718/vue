@@ -1,8 +1,8 @@
 /**
  * 数据字典工具类
  */
-import { useDictStoreWithOut } from '@/store/modules/dict'
-import { ElementPlusInfoType } from '@/types/elementPlus'
+import {useDictStoreWithOut} from '@/store/modules/dict'
+import {ElementPlusInfoType} from '@/types/elementPlus'
 
 const dictStore = useDictStoreWithOut()
 
@@ -256,6 +256,7 @@ export enum DICT_TYPE {
   YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
   CHECK_STATE='check_state',
+  CHECK_RESULT_STATE='check_result_state',
   YYANG_ENVIRONMENTAL_MONITORING='yyang_environmental_monitoring',//环境监测
 
   // =========== agri -  隘口 ==========

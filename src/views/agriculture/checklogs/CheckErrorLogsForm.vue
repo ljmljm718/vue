@@ -1,0 +1,166 @@
+<template>
+    <Dialog :title="dialogTitle" v-model="dialogVisible">
+        <el-form
+                ref="formRef"
+                :model="formData"
+                :rules="formRules"
+                label-width="100px"
+                v-loading="formLoading"
+        >
+            <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
+            <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
+            <!--      </el-form-item>-->
+
+            <el-form-item label="处理人" prop="dealPerson">
+                <el-input v-model="formData.dealPerson" placeholder="请输入处理人" />
+            </el-form-item>
+            <el-form-item label="处理时间" prop="dealTime">
+                <el-date-picker
+                        v-model="formData.dealTime"
+                        type="datetime"
+                        value-format="x"
+                        placeholder="选择处理时间"
+                />
+            </el-form-item>
+            <el-form-item label="处理图片" prop="dealImage">
+                <UploadImg v-model="formData.dealImage"/>
+            </el-form-item>
+            <el-form-item label="处理结果" prop="dealResult">
+                <el-input type="textarea" v-model="formData.dealResult" placeholder="请输入处理结果"/>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
+            <el-button @click="dialogVisible = false">取 消</el-button>
+        </template>
+    </Dialog>
+
+</template>
+<script setup lang="ts">
+import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import EquListForm from "@/views/agriculture/checklogs/device/equListForm.vue";
+import UserListForm from "@/views/agriculture/checklogs/user/user.vue";
+import { getTenantId } from '@/utils/auth'
+/** 巡检记录 表单 */
+defineOptions({name: 'CheckErrorLogsForm'})
+
+const {t} = useI18n() // 国际化
+const message = useMessage() // 消息弹窗
+
+const dialogVisible = ref(false) // 弹窗的是否展示
+const dialogTitle = ref('') // 弹窗的标题
+const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const formData = ref({
+    id: undefined,
+    inspectionNum: undefined,
+    inspectionState: undefined,
+    inspectionResults: undefined,
+    equNum: undefined,
+    equName: undefined,
+    base: undefined,
+    massif: undefined,
+    inspectorId: undefined,
+    inspector: undefined,
+    inspectionTime: undefined,
+    inspectionImage: undefined,
+    content: undefined,
+    resultState: undefined,
+    dealTime:undefined,
+    dealPerson: undefined,
+    dealResult: undefined,
+    dealImage: undefined,
+})
+const formRules = reactive({})
+const formRef = ref() // 表单 Ref
+
+/** 打开弹窗 */
+const open = async (type: string, id?: number) => {
+    dialogVisible.value = true
+    dialogTitle.value = t('action.' + type)
+    formType.value = type
+    resetForm()
+    // 修改时，设置数据
+    if (id) {
+        formLoading.value = true
+        try {
+            formData.value = await CheckLogsApi.getCheckLogs(id)
+        } finally {
+            formLoading.value = false
+        }
+    }
+}
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+    purchaseOrderInEnableListRef.value.open()
+}
+const handlePurchaseOrderChange = (order: ParkBaseVO) => {
+    formData.value.equNum = String(order[0].deviceCode)
+    formData.value.equName = String(order[0].deviceName)
+    formData.value.base = String(order[0].belongPark)
+    formData.value.massif = String(order[0].belongPlot)
+}
+
+
+const userListRef = ref()
+const openUserList = () => {
+    userListRef.value.open()
+}
+const handlePurchaseOrderChange2 = (order: ParkBaseVO) => {
+    console.log(order)
+    formData.value.inspectorId = String(order[0].id)
+    formData.value.inspector = String(order[0].nickname)
+}
+
+/** 提交表单 */
+const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const submitForm = async () => {
+    // 校验表单
+    await formRef.value.validate()
+    // 提交请求
+    formLoading.value = true
+    try {
+        const data = formData.value as unknown as CheckLogsVO
+        if (formType.value === 'create') {
+            await CheckLogsApi.createCheckLogs(data)
+            message.success(t('common.createSuccess'))
+        } else {
+            await CheckLogsApi.updateCheckLogs(data)
+            message.success(t('common.updateSuccess'))
+        }
+        dialogVisible.value = false
+        // 发送操作成功的事件
+        emit('success')
+    } finally {
+        formLoading.value = false
+    }
+}
+
+/** 重置表单 */
+const resetForm = () => {
+    formData.value = {
+        id: undefined,
+        inspectionNum: undefined,
+        inspectionState: undefined,
+        inspectionResults: undefined,
+        equNum: undefined,
+        base: undefined,
+        massif: undefined,
+        inspectorId: undefined,
+        inspector: undefined,
+        inspectionTime: undefined,
+        inspectionImage: undefined,
+        content: undefined,
+        resultState: undefined,
+        dealTime:undefined,
+        dealPerson: undefined,
+        dealResult: undefined,
+        dealImage: undefined,
+    }
+    formRef.value?.resetFields()
+}
+</script>

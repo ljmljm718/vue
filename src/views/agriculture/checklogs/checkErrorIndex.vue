@@ -95,25 +95,25 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" prefix="right" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="巡检编号" align="center" prop="inspectionNum"/>
-      <el-table-column label="巡检状态" align="center" prop="inspectionState">
+      <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/>
+      <el-table-column label="巡检状态" align="center" prop="inspectionState" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
         </template>
       </el-table-column>
-        <el-table-column label="巡检结果状态" align="center" prop="resultState">
-            <template #default="scope">
-                <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
-            </template>
-        </el-table-column>
+      <el-table-column label="巡检结果状态" align="center" prop="resultState" width="180">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
+        </template>
+      </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
-<!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
-      <el-table-column label="设备" align="center" prop="equName"/>
-      <el-table-column label="所属基地" align="center" prop="base"/>
+      <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
+      <el-table-column label="设备" align="center" prop="equName" width="200"/>
+      <el-table-column label="所属基地" align="center" prop="base" width="200"/>
       <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
-                       prop="massif"/>
+                       prop="massif" width="200"/>
       <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
       <el-table-column label="巡检人" align="center" prop="inspector"/>
       <el-table-column
@@ -123,7 +123,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-<!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
+      <!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
       <el-table-column label="巡检影像" align="center" prop="inspectionImage" >
         <template #default="{ row }">
           <el-image
@@ -137,6 +137,27 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检内容" align="center" prop="content"/>
+      <el-table-column label="处理人" align="center" prop="dealPerson" />
+      <el-table-column
+        label="处理时间"
+        align="center"
+        prop="dealTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="处理结果" align="center" prop="dealResult"/>
+      <el-table-column label="处理图片" align="center" prop="dealImage" >
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.dealImage"
+            :preview-src-list="[row.inspectionImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -144,8 +165,16 @@
       <!--        :formatter="dateFormatter"-->
       <!--        width="180px"-->
       <!--      />-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="200">
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="openErrorFrom('update', scope.row.id)"
+            v-hasPermi="['agriculture:check-logs:update']"
+          >
+            处理
+          </el-button>
           <el-button
             link
             type="primary"
@@ -176,6 +205,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CheckLogsForm ref="formRef" @success="getList"/>
+  <CheckErrorLogsForm ref="errFormRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -184,7 +214,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
 import CheckLogsForm from './CheckLogsForm.vue'
-import {parseTime} from "element-plus/es/components/time-select/src/utils";
+import CheckErrorLogsForm from "@/views/agriculture/checklogs/CheckErrorLogsForm.vue";
 import {getTenantId} from "@/utils/auth";
 
 /** 巡检记录 列表 */
@@ -202,6 +232,7 @@ const queryParams = reactive({
   inspectionNum: undefined,
   inspectionState: undefined,
   inspectionResults: undefined,
+  resultState: 2,
   equNum: undefined,
   equName: undefined,
   base: undefined,
@@ -244,6 +275,11 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+const errFormRef= ref()
+const openErrorFrom = (type: string, id?: number) => {
+    errFormRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */

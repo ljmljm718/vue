@@ -20,6 +20,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="巡检结果状态" prop="resultState">
+        <el-select v-model="formData.resultState" placeholder="请选择巡检结果状态">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_RESULT_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="巡检结果" prop="inspectionResults">
         <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
       </el-form-item>
@@ -116,6 +126,11 @@ const formData = ref({
   inspectionTime: undefined,
   inspectionImage: undefined,
   content: undefined,
+  resultState: undefined,
+  dealTime:undefined,
+  dealPerson: undefined,
+  dealResult: undefined,
+  dealImage: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -199,6 +214,11 @@ const resetForm = () => {
     inspectionTime: undefined,
     inspectionImage: undefined,
     content: undefined,
+    resultState: undefined,
+    dealTime:undefined,
+    dealPerson: undefined,
+    dealResult: undefined,
+    dealImage: undefined,
   }
   formRef.value?.resetFields()
 }
