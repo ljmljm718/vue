@@ -13,6 +13,11 @@ export interface CheckLogsVO {
   inspectionTime: Date // 巡检时间
   inspectionImage: string // 巡检影像
   content: string // 巡检内容
+  resultState: string
+  dealTime:Date
+  dealPerson: string
+  dealResult: string
+  dealImage: string
 }
 
 export interface CheckLogsCountPageVO {
