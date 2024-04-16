@@ -10,7 +10,7 @@ export interface AgriculturalReport {
 
 // 农事报表 API
 export const AgriculturalReportApi = {
-  // 查询预警记录分页
+  // 查询作物物候期分页
   getAgriculturalReport: async (params: any) => {
     return await request.get({ url: `/agriculture/warning-record-big-screen/agriculturalReport`, params })
   },
