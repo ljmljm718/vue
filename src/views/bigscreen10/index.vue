@@ -5,7 +5,9 @@
                 <BigScreenTime />
             </div>
             <div class="header-title-wrapper">白帝镇农文旅产业数字化赋能</div>
-            <div class="header-right-part-wrapper"></div>
+            <div class="header-right-part-wrapper">
+              <BackOrHome />
+            </div>
         </div>
         <div class="content-main-wrapper">
             <div class="left">
@@ -311,6 +313,7 @@
   </div>
 </template>
 <script setup lang='ts'>
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import {
   initChartStatic,

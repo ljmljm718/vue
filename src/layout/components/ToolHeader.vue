@@ -58,6 +58,8 @@ export default defineComponent({
       if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
       if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
       if (roles.indexOf('wenfeng') !== -1) bigscreenRoute.value = '/bigscreenWF'
+      if (roles.indexOf('baibu') !== -1) bigscreenRoute.value = '/bigscreenBB'
+      if (roles.indexOf('baidi') !== -1) bigscreenRoute.value = '/bigscreen10'
     }
     setTimeout(() => {
       MatchRouteMap()
@@ -80,7 +82,10 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <a href={bigscreenRoute.value}>
+          <a
+            href={bigscreenRoute.value}
+            style="color: var(--top-header-text-color);transform:scale(.8);margin-right: .5rem;"
+          >
             <el-icon><Platform /></el-icon>
           </a>
           {screenfull.value ? (

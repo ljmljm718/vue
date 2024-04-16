@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {ref, onMounted} from 'vue'
 import * as echarts from 'echarts'
 import {formatTime} from '@/utils/index'
@@ -612,7 +613,9 @@ const handleBaseIdChange = (id) => {
         <BigScreenTime/>
       </div>
       <div class="header-title-wrapper">隘口镇山银花产业数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
+      <div class="header-right-part-wrapper">
+        <BackOrHome />
+      </div>
     </div>
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper" style="grid-row: span 3;">

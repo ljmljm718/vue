@@ -32,6 +32,9 @@
         }
         .header-right-part-wrapper {
             width: 17%;
+            display: flex;
+            flex-direction: row-reverse;
+            padding-right: 1rem;
         }
     }
     .content-main-wrapper {
