@@ -2,8 +2,8 @@
 import {ElTree} from "element-plus";
 import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
 import CropTypePopup from "@/views/agriculture/agriculturalreport/CropTypePopup.vue";
-import {CropBaseVO} from "@/api/agriculture/cropbase";
 import {AgriculturalReportApi} from "@/api/agriculture/agricultyralreport";
+import {CropGrowthVO} from "@/api/agriculture/cropgrowth";
 
 /** 农事报表 列表 */
 defineOptions({name: 'AgriculturalReport'})
@@ -18,7 +18,7 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 
-const list = ref<CropBaseVO[]>([]) // 列表的数据
+const list = ref<CropGrowthVO[]>([]) // 列表的数据
 
 /** 查询列表 */
 const getList = async () => {
@@ -33,6 +33,8 @@ const getList = async () => {
     loading.value = false
   }
 }
+
+
 
 interface Tree {
   [key: string]: any
@@ -182,7 +184,7 @@ const resetQuery = () => {
 
       <!-- 列表 -->
       <ContentWrap>
-        <el-table v-loading="loading" :data="list" style="width: 100%">
+        <el-table ref="dataTableRef" :border="false" :span-method="spanMethod" v-loading="loading" :data="list" size="large">
           <el-table-column label="月份" fixed="left" min-width="110" align="center">
             <el-table-column label="周" fixed="left" min-width="110" align="center">
               <el-table-column label="物候期" fixed="left" min-width="110" align="center">
@@ -190,82 +192,19 @@ const resetQuery = () => {
               </el-table-column>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="1月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="2月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="3月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-            <el-table-column label="5" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="4月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="5月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="6月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-            <el-table-column label="5" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="7月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="8月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="9月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-            <el-table-column label="5" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="10月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="11月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-          </el-table-column>
-          <el-table-column label="12月" align="center">
-            <el-table-column label="1" width="40" align="center"/>
-            <el-table-column label="2" width="40" align="center"/>
-            <el-table-column label="3" width="40" align="center"/>
-            <el-table-column label="4" width="40" align="center"/>
-            <el-table-column label="5" width="40" align="center"/>
-          </el-table-column>
+          <template v-for="(month, index) in 12" :key="index">
+            <el-table-column :label="`${month}月`" align="center">
+              <el-table-column :label="`${month}周`" :prop="`growth[${month - 1}]`" align="center">
+                <template #default="{ row: { growth } }">
+                <span round style="width: 100%">
+                  {{ growth[month - 1] }}
+                </span>
+                </template>
+              </el-table-column>
+            </el-table-column>
+          </template>
+
+
         </el-table>
       </ContentWrap>
     </el-col>
