@@ -77,3 +77,17 @@ export const environmentalDataHomePage = () => {
 export const soilPage = (params) => {
   return request.get({ url: `/agriculture/environment-data/soilPage`, params })
 }
+
+//homeBaidi 接口
+export const HomeDeviceCard2 = () => {
+  return request.get({ url: `/agriculture/big-screen/baidiHomeDeviceCard`,  })
+}
+export const ParkTree = () => {
+  return request.get({ url: `/agriculture/big-screen/getParkTree`,  })
+}
+export const homeCheckLog = (params) => {
+  return request.get({ url: `/agriculture/big-screen/homeCheckLog`,params  })
+}
+export const pageRealTimeData2 = (params) => {
+  return request.get({ url: `/agriculture/warning-record-big-screen/pageRealTimeData2`,params  })
+}
