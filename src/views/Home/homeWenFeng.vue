@@ -709,10 +709,10 @@ const handleDatePickerChange = (e) => {
             <span class="art-font">产品制造及销售</span>
           </div>
         </template>
-        <div class="grid grid-cols-2 gap-2 pb-2">
+        <div class="grid grid-cols-2 gap-2 pb-3">
           <div
-            class="shadow-md p-2 px-4"
-            style="box-shadow: 2px 2px 2px #25252525, -2px -2px 2px #14141414;"
+            class="shadow-md p-2 px-4 rounded-md"
+            style="box-shadow: 2px 2px 2px #eeeeee80, -2px -2px 1px #eeeeee40;"
           >
             <div class="art-font">产品制造</div>
             <div class="flex justify-between items-center w-full">

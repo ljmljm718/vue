@@ -22,13 +22,81 @@ import {
   deviceByCategoryName,
   deviceInfoById,
   getDeviceStateByParams,
-  bigScreenDevicePointBaidi
+  bigScreenDevicePointBaidi,
+  subDevicePage,
+  subDeviceUpdate
 } from './apis'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/index'
+import {ElMessage} from 'element-plus'
 
+// 获取子设备
+const subDeviceList = ref<Array<any>>([])
+const getsubDevicePage = async (params) => {
+  const {list = []} = await subDevicePage({ ...params })
+  subDeviceList.value = arrayFormatter(list.map(item => ({
+    ...item,
+    button: item.swithState === '0'
+  })))
+}
+
+// 状态切换
+const handleSwitchChange = async (e, ele) => {
+  const res = await subDeviceUpdate({
+    id: ele.id,
+    swithState: e ? '0' : '1'
+  }).catch(() => {
+    ElMessage.error('操作失败')
+  })
+  if (res) ElMessage.success('操作成功')
+  if (res) ElMessage.error('操作失败')
+}
+
+const sensorDataInfo1 = ref({
+  "deviceName": "",
+  "latitude": "",
+  "longitude": "",
+  "parkName": "",
+  "plotName": "",
+  "deviceStatus": "",
+  "result": []
+})
+const sensorDataInfo2 = ref({
+  "deviceName": "",
+  "latitude": "",
+  "longitude": "",
+  "parkName": "",
+  "plotName": "",
+  "deviceStatus": "",
+  "result": []
+})
+const monitorDeviceInfo1 = ref({
+  "deviceName": "",
+  "url": null,
+  "parkName": "",
+  "plotName": "",
+  "deviceStatus": "",
+  "latitude": "",
+  "longitude": ""
+})
+const monitorDeviceInfo2 = ref({
+  "deviceName": "",
+  "url": null,
+  "parkName": "",
+  "plotName": "",
+  "deviceStatus": "",
+  "latitude": "",
+  "longitude": ""
+})
 const getBigScreenDevicePointBaidi = async () => {
-  const { SensorDevice = [], monitorDevice = [] } = await bigScreenDevicePointBaidi()
+  const {
+    SensorDevice = [],
+    monitorDevice = []
+  } = await bigScreenDevicePointBaidi()
+  sensorDataInfo1.value = SensorDevice[0]
+  sensorDataInfo2.value = SensorDevice[1]
+  monitorDeviceInfo1.value = monitorDevice[0]
+  monitorDeviceInfo2.value = monitorDevice[1]
 }
 getBigScreenDevicePointBaidi()
 
@@ -121,15 +189,19 @@ const getBaibuTypeMonitor = async (type, equipmentCode, plotCode) => {
     envDataList.value = arrayFormatter(res)
   }
   if (type === 1) {
-    const _tempItem = res.find(item => { return item.monitoringType === '温度'})
+    const _tempItem = res.find(item => { return item.monitoringType === '土壤温度'})
     soilTemp.value = _tempItem.dataValue
-    const _res = res.filter(item => { return item.monitoringType !== "温度"})
+    const _res = res.filter(item => { return item.monitoringType !== "土壤温度"}).map(ele => ({
+      ...ele, monitoringType: ele.monitoringType.replace('土壤', ''), unit: ele.unit || ''
+    }))
     soilDataList.value = arrayFormatter(_res)
   }
   if (type === 2) {
     const _tempItem = res.find(item => { return item.monitoringType === '杀虫仓温度'})
-    bugTemp.value = _tempItem.dataValue
-    const _res = res.filter(item => { return item.monitoringType !== "杀虫仓温度"})
+    if (_tempItem) bugTemp.value = _tempItem.dataValue || 0
+    const _res = res.filter(item => { return item.monitoringType !== "杀虫仓温度"}).map(ele => ({
+      ...ele, unit: ele.unit || ''
+    }))
     bugDataList.value = arrayFormatter(_res)
   }
 }
@@ -317,27 +389,33 @@ const initChart1 = async (cropCode) => {
 }
 
 const parkOptions = ref<Array<any>>([])
+// 设备类型-环境
+const DEVICE_TYPE_METEOROLOGY = 64;
+// 设备类型-土壤
+const DEVICE_TYPE_SOIL = 65;
+// 设备类型-虫情
+const DEVICE_TYPE_INSECT = 66;
 const getparkDetailPage = async () => {
   const { list = [] } = await parkDetailPage()
-  parkOptions.value = list
+  parkOptions.value = list.reverse()
   const __item = list[0]
-  getGetDeviceForPark(72, __item.id)
-  getGetDeviceForPark(73, __item.id)
-  getGetDeviceForPark(76, __item.id)
+  getGetDeviceForPark(DEVICE_TYPE_METEOROLOGY, __item.id)
+  getGetDeviceForPark(DEVICE_TYPE_SOIL, __item.id)
+  getGetDeviceForPark(DEVICE_TYPE_INSECT, __item.id)
 }
 getparkDetailPage()
 const handleParkEnvSelectorChange = (e) => {
   const item = parkOptions.value.find(_item => _item.id === e.target.value)
   console.log('Selector Change', item);
-  getGetDeviceForPark(72, item.id)
+  getGetDeviceForPark(DEVICE_TYPE_METEOROLOGY, item.id)
 }
 const handleParkSoilSelectorChange = (e) => {
   const item = parkOptions.value.find(_item => _item.id === e.target.value)
-  getGetDeviceForPark(73, item.id)
+  getGetDeviceForPark(DEVICE_TYPE_SOIL, item.id)
 }
 const handleParkBugSelectorChange = (e) => {
   const item = parkOptions.value.find(_item => _item.id === e.target.value)
-  getGetDeviceForPark(76, item.id)
+  getGetDeviceForPark(DEVICE_TYPE_INSECT, item.id)
 }
 
 const envOptions = ref<Array<any>>([])
@@ -354,6 +432,7 @@ const bugOptions = ref<Array<any>>([])
 const handleBugSelectorChange = (e) => {
   const _item = bugOptions.value.find(ele => ele.id === e.target.value)
   getBaibuTypeMonitor(2, _item.id, _item.belongPlot)
+  getsubDevicePage({ devicesId: _item.id })
 }
 
 // 1号设备，设备查询 76：虫情、73：土壤、72：环境
@@ -366,17 +445,18 @@ const getGetDeviceForPark = async (type, park) => {
   })
   console.log('res', res);
   
-  if (type === 72) {
+  if (type === DEVICE_TYPE_METEOROLOGY) {
     envOptions.value = res
     if (Array.isArray(res) && res.length > 0) getBaibuTypeMonitor(0, res[0].id, res[0].belongPlot)
   }
-  if (type === 73) {
+  if (type === DEVICE_TYPE_SOIL) {
     soilOptions.value = res;
     if (Array.isArray(res) && res.length > 0) getBaibuTypeMonitor(1, res[0].id, res[0].belongPlot)
   }
-  if (type === 76) {
+  if (type === DEVICE_TYPE_INSECT) {
     bugOptions.value = res;
     if (Array.isArray(res) && res.length > 0) getBaibuTypeMonitor(2, res[0].id, res[0].belongPlot)
+    getsubDevicePage({ devicesId: res[0].id })
   }
 }
 
@@ -438,100 +518,96 @@ getwarningRecordInfo()
       <div class="gird-item-wrapper" style="grid-column: span 2;z-index: 0;">
         <div id="mainMap">
           <div class="tool-tip-wrapper" style="left: 250px;top: 200px;">
-            <!-- <div class="rect-bg">
-              <div class="rect-title">监控设备</div>
+            <div class="rect-bg" style="min-height: 12rem;width: 13rem;">
+              <div class="rect-title">{{ monitorDeviceInfo1.parkName }}</div>
               <div class="flex rect-line mt-2">
                 <div class="w-[5rem]">坐标:</div>
-                <div>经度: {{ mapMonitorData.longitude }}</div>
+                <div>经度: {{ monitorDeviceInfo1.longitude }}</div>
               </div>
               <div class="flex rect-line">
                 <div class="w-[5rem]"></div>
-                <div>纬度: {{ mapMonitorData.latitude }}</div>
+                <div>纬度: {{ monitorDeviceInfo1.latitude }}</div>
               </div>
               <div class="flex rect-line">
                 <div class="w-[5rem]">设备名称:</div>
-                <div>{{ mapMonitorData.deviceName }}</div>
+                <div>{{ monitorDeviceInfo1.deviceName }}</div>
               </div>
               <div class="flex rect-line">
                 <div class="w-[5rem]">状态:</div>
                 <div
-                  :style="`color: ${mapMonitorData.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
-                >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}
+                  :style="`color: ${monitorDeviceInfo1.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
+                >{{ monitorDeviceInfo1.deviceStatus === 'online' ? '在线' : '离线' }}
                 </div>
               </div>
-            </div> -->
-            <img src="/images/bigscreen9/icon2.png" alt=""/>
+            </div>
+            <img src="/images/bigscreen9/icon1.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 470px;top: 360px;">
-            <div class="rect-bg" style="min-height: 13rem;">
-              <div class="rect-title">气象站</div>
-              <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+            <div class="rect-bg" style="min-height: 12rem;width: 13rem;">
+              <div class="rect-title">{{ monitorDeviceInfo2.parkName }}</div>
+              <div class="flex rect-line mt-2">
+                <div class="w-[5rem]">坐标:</div>
+                <div>经度: {{ monitorDeviceInfo2.longitude }}</div>
+              </div>
+              <div class="flex rect-line">
+                <div class="w-[5rem]"></div>
+                <div>纬度: {{ monitorDeviceInfo2.latitude }}</div>
+              </div>
+              <div class="flex rect-line">
+                <div class="w-[5rem]">设备名称:</div>
+                <div>{{ monitorDeviceInfo2.deviceName }}</div>
+              </div>
+              <div class="flex rect-line">
+                <div class="w-[5rem]">状态:</div>
                 <div
-                  class="flex"
-                  v-for="(item, index) in weatherData"
-                  :key="index"
-                >
-                  <span>{{ item.monitoringType }}: </span>
-                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
-                </div>
-                <div>
-                  <span>状态:</span>
-                  <span
-                    class="pl-2"
-                    :style="`color: ${(weatherData && weatherData[0] && weatherData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{
-                      (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线'
-                    }}</span>
+                  :style="`color: ${monitorDeviceInfo2.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
+                >{{ monitorDeviceInfo2.deviceStatus === 'online' ? '在线' : '离线' }}
                 </div>
               </div>
             </div>
             <img src="/images/bigscreen9/icon1.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 540px;top: 100px;">
-            <div class="rect-bg" style="width: 9rem;min-height: 14rem;">
-              <div class="rect-title">虫情测报灯</div>
-              <div class="grid gap-1 pt-2 px-1" style="font-size: .9rem;">
+            <div class="rect-bg" style="width: 16rem;min-height: 13rem;">
+              <div class="rect-title">{{ sensorDataInfo1.parkName }}</div>
+              <div class="grid gap-1 pt-2 px-1 grid-cols-2" style="font-size: .9rem;">
                 <div
                   class="flex"
-                  v-for="(item, index) in bugData"
+                  v-for="(item, index) in sensorDataInfo1.result"
                   :key="index"
                 >
-                  <span>{{ item.monitoringType }}: </span>
-                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                  <span>{{ item.dataType }}: </span>
+                  <span style="padding-left: .1rem;">{{ item.avgData + (item.dataUnit || '') }}</span>
                 </div>
-                <div>
-                  <span>状态:</span>
-                  <span
-                    class="pl-2"
-                    :style="`color: ${(bugData && bugData[0] && bugData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{
-                      (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线'
-                    }}</span>
+                <div class="flex rect-line">
+                  <div class="w-[5rem]">状态:</div>
+                  <div
+                    :style="`color: ${sensorDataInfo1.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
+                  >{{ sensorDataInfo1.deviceStatus === 'online' ? '在线' : '离线' }}
+                  </div>
                 </div>
               </div>
             </div>
-            <img src="/images/bigscreen9/icon3.png" alt=""/>
+            <img src="/images/bigscreen9/icon4.png" alt=""/>
           </div>
           <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
-            <div class="rect-bg" style="min-height: 13.5rem;">
-              <div class="rect-title">土壤传感</div>
-              <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+            <div class="rect-bg" style="width: 16rem;min-height: 13rem;">
+              <div class="rect-title">{{ sensorDataInfo2.parkName }}</div>
+              <div class="grid gap-1 pt-2 px-1 grid-cols-2" style="font-size: .9rem;">
                 <div
                   class="flex"
-                  v-for="(item, index) in soilData"
+                  v-for="(item, index) in sensorDataInfo2.result"
                   :key="index"
                 >
-                  <span>{{ item.monitoringType }}: </span>
-                  <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                  <span>{{ item.dataType }}: </span>
+                  <span style="padding-left: .1rem;">{{ item.avgData + (item.dataUnit || '') }}</span>
                 </div>
-                <div>
-                  <span>状态:</span>
-                  <span
-                    class="pl-2"
-                    :style="`color: ${(soilData && soilData[0] && soilData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                  >{{
-                      (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线'
-                    }}</span>
+                <div class="flex rect-line">
+                  <div class="w-[5rem]">状态:</div>
+                  <div
+                    :style="`color: ${sensorDataInfo2.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
+                  >{{ sensorDataInfo2.deviceStatus === 'online' ? '在线' : '离线' }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -618,38 +694,26 @@ getwarningRecordInfo()
               </div>
             </div>
             <div class="grid grid-cols-4 gap-1 p-1">
-              <div class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center" style="font-size: .8rem;">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
                 <div class="bg-[length:100%_100%] temp-icon"></div>
-                <div style="font-family: 'TitleFont';" class="pt-1">11.14℃</div>
+                <div style="font-family: 'TitleFont';" class="pt-1">{{ envTemp + '℃' }}</div>
               </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-              </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-              </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
+              <div
+                class="bg-[length:100%_100%] card-bg px-1"
+                style="font-size: .8rem;"
+                v-for="(item, index) in envDataList"
+                :key="index"
+              >
+                <div
+                  class="flex justify-between p-2"
+                  style="border-bottom: 1px solid #5fabd980;"
+                  v-for="ele in item"
+                  :key="ele.monitoringType"
+                >
+                  <span>{{ ele.monitoringType }}</span>
+                  <span style="color: #68fffe;">{{ ele.dataValue + ele.unit }}</span>
                 </div>
               </div>
             </div>
@@ -679,38 +743,28 @@ getwarningRecordInfo()
               </div>
             </div>
             <div class="grid grid-cols-4 gap-1 p-1">
-              <div class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center" style="font-size: .8rem;">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
                 <div class="bg-[length:100%_100%] temp-icon"></div>
-                <div style="font-family: 'TitleFont';" class="pt-1">11.14℃</div>
+                <div style="font-family: 'TitleFont';" class="pt-1">{{ soilTemp + '℃' }}</div>
               </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-              </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-              </div>
-              <div class="bg-[length:100%_100%] card-bg px-1" style="font-size: .8rem;">
-                <div class="flex justify-between p-2" style="border-bottom: 1px solid #5fabd980;">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
-                </div>
-                <div class="flex justify-between p-2">
-                  <span>湿度</span>
-                  <span style="color: #68fffe;">98.19%</span>
+              <div
+                class="bg-[length:100%_100%] card-bg px-1"
+                style="font-size: .8rem;"
+                v-for="(item, index) in soilDataList"
+                :key="index"
+              >
+                <div
+                  class="flex justify-between p-2"
+                  style="border-bottom: 1px solid #5fabd980;"
+                  v-for="ele in item"
+                  :key="ele.monitoringType"
+                >
+                  <span>{{ ele.monitoringType }}</span>
+                  <span style="color: #68fffe;">{{
+                      ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                    }}</span>
                 </div>
               </div>
             </div>
@@ -736,6 +790,52 @@ getwarningRecordInfo()
                     >{{ item.deviceName }}
                     </option>
                   </select>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 gap-1 p-1">
+              <div
+                class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                style="font-size: .8rem;">
+                <div class="bg-[length:100%_100%] temp-icon"></div>
+                <div style="font-family: 'TitleFont';" class="pt-1">{{ bugTemp + '℃' }}</div>
+              </div>
+              <div
+                class="bg-[length:100%_100%] card-bg px-1"
+                style="font-size: .8rem;"
+                v-for="(item, index) in bugDataList"
+                :key="index"
+              >
+                <div
+                  class="flex justify-between p-2"
+                  style="border-bottom: 1px solid #5fabd980;"
+                  v-for="ele in item"
+                  :key="ele.monitoringType"
+                >
+                  <span>{{ ele.monitoringType }}</span>
+                  <span style="color: #68fffe;">{{
+                      ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                    }}</span>
+                </div>
+              </div>
+              <div
+                class="bg-[length:100%_100%] card-bg px-1"
+                style="font-size: .8rem;"
+                v-for="(item, index) in subDeviceList"
+                :key="index"
+              >
+                <div
+                  class="flex justify-between p-2 items-center"
+                  style="border-bottom: 1px solid #5fabd980;"
+                  v-for="ele in item"
+                  :key="ele.id"
+                >
+                  <span>{{ ele.subDevicesName }}</span>
+                  <el-switch
+                    v-model="ele.button"
+                    size="small"
+                    @change="(e) => { handleSwitchChange(e, ele) }"
+                  />
                 </div>
               </div>
             </div>

@@ -39,10 +39,10 @@ export const getLineChar = async (data) => {
 }
 
 // 右二-上部分-环境监测
-export const baibuTypeMonitor = async (data) => {
-  return await request.post({
+export const baibuTypeMonitor = async (params) => {
+  return await request.get({
     url: '/yyang/equipment-data/baibuTypeMonitor',
-    data
+    params
   })
 }
 
@@ -113,4 +113,18 @@ export const arrayFormatter = (array = [], subGroupLength = 2) => {
     newArray.push(array.slice(index, index += subGroupLength));
   }
   return newArray;
+}
+
+export const subDevicePage = async (params) => {
+  return await request.get({
+    url: '/agriculture/sub-device/page',
+    params
+  })
+}
+
+export const subDeviceUpdate = async (data) => {
+  return await request.put({
+    url: '/agriculture/sub-device/update',
+    data
+  })
 }
