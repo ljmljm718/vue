@@ -37,3 +37,20 @@ export const selectHarvestVolume = async (params) => {
     params
   })
 }
+
+// 大屏根据地块获取巡检统计
+export const getCountPageByBaseId = async (params) => {
+  return await request.get({
+    url: '/agriculture/check-logs/getCountPageByBaseId',
+    params
+  })
+}
+
+// 根据基地获取监控设备列表
+export const getPageMonitoring = async (data) => {
+  return await request.post({
+    url: '/agriculture/device-info/getPageMonitoring',
+    data,
+    headersType: 'multipart/form-data; boundary=--------------------------999028645642470077276192',
+  })
+}

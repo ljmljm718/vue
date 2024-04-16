@@ -4,7 +4,9 @@ import {
   warningRecordInfo,
   aikouMonitor,
   parkInfoPage,
-  selectHarvestVolume
+  selectHarvestVolume,
+  getCountPageByBaseId,
+  getPageMonitoring
 } from '@/api/home/aikou'
 import { formatTime } from '@/utils/index'
 import {
@@ -148,8 +150,11 @@ const getParkInfoPage = async () => {
   parkInfoList.value = list
   if (Array.isArray(list) && list.length > 0) {
     selectedBase.value = list[0].id
+    selectedBase1.value = list[0].id
     getAikouMonitor(0, list[0].id)
     getAikouMonitor(1, list[0].id)
+
+    getMonitorDeviceList()
   }
 }
 getParkInfoPage()
@@ -202,7 +207,34 @@ const handleSelectedBaseChange = (e) => {
   getAikouMonitor(1, e)
 }
 const selectedBase1 =ref('')
-const handleSelectedBaseChange1 = () => {}
+const handleSelectedBaseChange1 = () => {
+  getMonitorDeviceList()
+}
+
+const monitorDeviceList = ref<Array<any>>([])
+const monitorDeviceIndex = ref(1)
+const getMonitorDeviceList = async (pageNo = 1, baseId = selectedBase1.value) => {
+  if (!baseId) return;
+  selectedBase1.value = baseId
+  const {list = []} = await getCountPageByBaseId({
+    pageNo, pageSize: 3, deviceType: '40,44', baseId
+  })
+
+  console.log('巡检统计', list);
+  
+  monitorDeviceList.value = list.map(item => ({
+    ...item,
+    img: item.imgId,
+    title: item.deviceName,
+    online: item.deviceStatus === 'online'
+  }))
+}
+
+const handleArrowClick = (index) => {
+  if (index < 0 && monitorDeviceIndex.value <= 1) return
+  monitorDeviceIndex.value += index
+  getMonitorDeviceList(monitorDeviceIndex.value)
+}
 </script>
 <template>
   <div class="w-full">
@@ -216,7 +248,7 @@ const handleSelectedBaseChange1 = () => {}
             </el-icon>
           </div>
         </template>
-        <div class="h-[3rem]">
+        <div>
           <span>{{ deviceInfoTotal }}</span>
           <span class="ml-1">台</span>
         </div>
@@ -228,7 +260,7 @@ const handleSelectedBaseChange1 = () => {}
             <span>{{ item.total }}台</span>
           </div>
         </template>
-        <div class="h-[3rem]">
+        <div class="grid grid-cols-2 gap-2">
           <div class="flex">
             <span>在线: </span>
             <span class="ml-2" style="color:#409eff;">{{ item.online }}</span>
@@ -319,6 +351,46 @@ const handleSelectedBaseChange1 = () => {}
             </el-select>
           </div>
         </template>
+        <div
+          class="grid"
+          style="grid-template-columns: 5% repeat(3, 30%) 5%;"
+        >
+          <div class="left-arrow-bg h-full" @click="handleArrowClick(-1)"></div>
+          <div
+            v-for="(item, index) in monitorDeviceList"
+            :key="index"
+            class="flex flex-col px-1"
+          >
+            <div class="p-1" style="background-color: aliceblue;">
+              <img
+                :src="item.img || '/img.png'"
+                alt=""
+                style="width: 100%;aspect-ratio: 2;object-fit: contain;"
+              />
+            </div>
+            <div class="flex p-2 py-1" style="background: linear-gradient(to right, #409effa0, #409eff00)">
+              <span>{{ item.categoryName }}</span>
+              <span class="pl-4">{{ item.sumNum }}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 py-1">
+              <div class="flex items-center">
+                <el-icon style="color: green;"><HelpFilled /></el-icon>
+                <span>已巡检</span>
+                <span class="pl-2">{{ item.finishCheckNum }}</span>
+              </div>
+              <div class="flex items-center">
+                <el-icon style="color: red;"><HelpFilled /></el-icon>
+                <span>未巡检</span>
+                <span class="pl-2">{{ item.unFinishCheckNum }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="right-arrow-bg h-full"
+            v-show="monitorDeviceList.length === 3"
+            @click="handleArrowClick(1)"
+          ></div>
+        </div>
       </el-card>
       <el-card>
         <template #header>
@@ -366,5 +438,19 @@ const handleSelectedBaseChange1 = () => {}
   .b-#{$i} {
     background-image: url(./assets/home1/b#{$i}.png);
   }
+}
+
+.left-arrow-bg {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 90% auto;
+  background-image: url(./assets/leftArrowBg.png);
+}
+
+.right-arrow-bg {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 90% auto;
+  background-image: url(./assets/rightArrowBg.png);
 }
 </style>
