@@ -1,5 +1,6 @@
 <script lang="ts" setup name="HomeWenFeng">
 import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
 import {
   initChartStatic,
   generateBaseOptions,
@@ -16,10 +17,50 @@ import {
   warnAmountTrend,
   deviceCheckInfo,
   parkWarnDealRate,
+  productionSale,
+  productionSaleRank
 } from '@/api/home/wenfeng'
 import { formatTime } from '@/utils/index'
+import { merge } from 'lodash'
 window._AMapSecurityConfig = {
     securityJsCode:'289153494763707d55b03878ace1cb08',
+}
+
+const smallChart = (x:Array<any>, y:Array<any>, type = 'line', color = '#1ed76d') => {
+  return merge(generateBaseOptions({}), {
+    xAxis: {
+      show: false,
+      data: x
+    },
+    legend: {
+      show: false
+    },
+    yAxis: {
+      show: false
+    },
+    series: [
+      {
+        name: '',
+        data: y,
+        type,
+        itemStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 1, color: color + '00' },
+                { offset: 0, color: color }
+              ])
+            },
+          },
+          areaStyle: {normal: {}},
+      }
+    ],
+    grid: {
+      left: '0%',
+      right: '0%',
+      top: '15%',
+      bottom: '4%'
+    }
+  })
 }
 
 // 预警处理率
@@ -107,6 +148,7 @@ onMounted(() => { getDeviceCheckInfo() })
 // 产品制造及库存
 const productionTotalVal = ref(0)
 const stockTotalVal = ref(0)
+const productionDataList = ref<Array<any>>([])
 const getProductionList = async () => {
   const {
     list = [],
@@ -116,8 +158,47 @@ const getProductionList = async () => {
   console.log('产品制造及库存', list);
   productionTotalVal.value = productionTotal
   stockTotalVal.value = stockTotal
+  productionDataList.value = list
+
+  initLChart1(list)
 }
 getProductionList()
+const initLChart1 = (data) => {
+  if (!Array.isArray(data)) return
+  initChartStatic('lchart1', smallChart(
+    data.map(item => (item.month)),
+    data.map(item => (item.total)),
+    'line',
+    '#0668ad'
+  ))
+}
+
+// 产品销量
+const productionSaleTotal = ref(0)
+const productionSalePrice = ref('')
+const productionSaleList = ref<Array<any>>([])
+const getProductionSale = async () => {
+  const {
+    total = 0,
+    price = '',
+    list = []
+  } = await productionSale()
+  productionSaleTotal.value = total
+  productionSalePrice.value = price
+  productionSaleList.value = list
+  initLChart2(list)
+}
+getProductionSale()
+
+const initLChart2 = (data) => {
+  if (!Array.isArray(data)) return
+  initChartStatic('lchart2', smallChart(
+    data.map(item => (item.month)),
+    data.map(item => (item.total)),
+    'line',
+    '#2edc72'
+  ))
+}
 
 // 设备类型占比
 const radioOptions = ref<Array<any>>([])
@@ -197,62 +278,62 @@ const initChart1 = async () => {
   dataCollectDaily.value = daily
   initChartStatic('chart1', generateBaseOptions({
     xAxis: {
-        data: x,
+      data: x,
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: '#898989'
+        }
+      },
+      nameTextStyle: {
+        color: '#898989'
+      }
+    },
+    legend: {
+      show: false
+    },
+    yAxis: [
+      {
+        type: 'value',
         axisLine: {
           show: true,
           lineStyle: {
             color: '#898989'
           }
         },
-        nameTextStyle: {
+        axisLabel: {
           color: '#898989'
-        }
-      },
-      legend: {
-        show: false
-      },
-      yAxis: [
-        {
-          type: 'value',
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: '#898989'
-            }
-          },
-          axisLabel: {
-            color: '#898989'
-          },
-          splitLine: {
-            //网格线
-            show: true, //是否显示
-            lineStyle: {
-              //网格线样式
-              color: '#89898940', //网格线颜色
-              width: 1, //网格线的加粗程度
-              type: 'dashed' //网格线类型
-            }
-          },
-          splitArea: {
-            //网格区域
-            show: false //是否显示
+        },
+        splitLine: {
+          //网格线
+          show: true, //是否显示
+          lineStyle: {
+            //网格线样式
+            color: '#89898940', //网格线颜色
+            width: 1, //网格线的加粗程度
+            type: 'dashed' //网格线类型
           }
+        },
+        splitArea: {
+          //网格区域
+          show: false //是否显示
         }
-      ],
-
-      series: [
-        {
-          name: '',
-          data: y,
-          type: 'bar'
-        }
-      ],
-      grid: {
-        left: '10%',
-        right: '5%',
-        top: '15%',
-        bottom: '25%'
       }
+    ],
+
+    series: [
+      {
+        name: '',
+        data: y,
+        type: 'bar'
+      }
+    ],
+    grid: {
+      left: '10%',
+      right: '5%',
+      top: '15%',
+      bottom: '25%'
+    }
   }))
 }
 
@@ -499,9 +580,15 @@ const productSellParams = reactive({
   pageSize: 10,
   total: 0
 })
-const getProductSellList = () => {
-
+const getProductSellList = async () => {
+  const { list = [], total = 0 } = await productionSaleRank({
+    pageNo: productSellParams.pageNo,
+    pageSize: productSellParams.pageSize
+  })
+  productSellList.value = list.map((item, index) => ({ ...item, num: (index + 1) }))
+  productSellParams.total = total
 }
+getProductSellList()
 
 //  数据采集
 const dataPickerSelected = ref('本周')
@@ -673,7 +760,6 @@ const handleDatePickerChange = (e) => {
               @change="handleDatePickerChange"
             />
           </div>
-          
         </div>
       </template>
       <div class="flex justify-between h-[14rem]">
@@ -723,14 +809,35 @@ const handleDatePickerChange = (e) => {
                 <span>{{ stockTotalVal }}</span>
               </div>
             </div>
+            <div id="lchart1"></div>
+          </div>
+          <div
+            class="shadow-md p-2 px-4 rounded-md"
+            style="box-shadow: 2px 2px 2px #eeeeee80, -2px -2px 1px #eeeeee40;"
+          >
+            <div class="art-font">产品销量</div>
+            <div class="flex justify-between items-center w-full">
+              <div>
+                <span>{{ productionSaleTotal }}单</span>
+              </div>
+              <div>
+                <span>{{ productionSalePrice }}</span>
+              </div>
+            </div>
+            <div id="lchart2"></div>
           </div>
         </div>
         <div>
-          <el-table :data="productSellList" :show-overflow-tooltip="true" :stripe="true">
-            <el-table-column align="center" label="销售排名" prop="mobile" />
-            <el-table-column align="center" label="产品名称" prop="telephone" />
-            <el-table-column align="center" label="月销量" prop="telephone" />
-            <el-table-column align="center" label="月涨幅" prop="telephone" />
+          <el-table
+            :data="productSellList"
+            :show-overflow-tooltip="true"
+            :stripe="true"
+            height="10rem"
+          >
+            <el-table-column align="center" label="销售排名" prop="num" />
+            <el-table-column align="center" label="产品名称" prop="productName" />
+            <el-table-column align="center" label="月销量" prop="saleTotal" />
+            <el-table-column align="center" label="月涨幅" prop="rate" />
           </el-table>
           <Pagination
             v-model:limit="productSellParams.pageSize"
@@ -797,7 +904,7 @@ const handleDatePickerChange = (e) => {
 
 #chart5 {
   width: 100%;
-  height: 12rem;
+  height: 18rem;
 }
 
 #chart6 {
@@ -807,5 +914,10 @@ const handleDatePickerChange = (e) => {
 .scroll-bar-hidden::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+#lchart1, #lchart2 {
+  height: 5rem;
+  margin: .2rem 0;
 }
 </style>
