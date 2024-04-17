@@ -71,3 +71,18 @@ export const parkWarnDealRate = async () => {
     url: '/agriculture/warning-record-big-screen/parkWarnDealRate'
   })
 }
+
+// 产品销量
+export const productionSale = async () => {
+  return await request.get({
+    url: '/baidi/big-screen/productionSale'
+  })
+}
+
+// 产品销量排行
+export const productionSaleRank = async (params) => {
+  return await request.get({
+    url: '/baidi/big-screen/productionSaleRank',
+    params
+  })
+}
