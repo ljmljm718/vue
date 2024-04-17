@@ -10,6 +10,7 @@ import {
   growthPage,
   getCountPageByBaseId,
   parkInfoPage,
+  warningRecordPage,
   detailListByParkId
 } from './apis'
 import {formatTime} from '@/utils/index'
@@ -20,6 +21,7 @@ import {
   generatePieOptions
 } from "../../utils/bigscreenTool/index";
 import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
+import { method } from 'lodash';
 
 const optionsX = ref([])
 const handleSelectorChangeX = (e) => {
@@ -59,7 +61,9 @@ const growthIndex = ref(0)
 const getGrowthPage = async (belongPark, belongPlot) => {
   const {list = []} = await growthPage({
     pageNo: 1,
-    pageSize: 1
+    pageSize: 1,
+    belongPark,
+    belongPlot
   })
   console.log('getGrowthPage', list);
   growthTypes.value = list
@@ -90,8 +94,8 @@ const handleSelectorChange1 = (val) => {
 const curBelongPlot = ref('')
 const handleSelectorChange2 = (val) => {
   const parentId = val.target.value || 0
-  console.log('基地编号', curBelongPark.value);
-  console.log('塘口编号', parentId)
+  console.log('基地编号==', curBelongPark.value);
+  console.log('塘口编号==', parentId)
   curBelongPlot.value = parentId;
   getGrowthPage(curBelongPark.value, parentId)
 }
@@ -235,6 +239,7 @@ const getdeviceInfoByPark = async () => {
   console.log('getdeviceInfoByPark', res);
   const stateRes = await getDeviceState()
   const {list} = await deviceInfoPage()
+  const res2=await warningRecordPage()
   cardList.value = [{
     id: 'all',
     title: '设备总数',
@@ -251,7 +256,7 @@ const getdeviceInfoByPark = async () => {
   })), {
     id: 'prewarn',
     title: '预警数量',
-    total: list.length
+    total: res2.total
   }]
 }
 getdeviceInfoByPark()
