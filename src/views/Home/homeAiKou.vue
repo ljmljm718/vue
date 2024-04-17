@@ -306,11 +306,16 @@ const handleArrowClick = (index) => {
             <div class="t w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
             <div>环境监测</div>
           </div>
-          <div v-for="(item, index) in topDataList" :key="item.monitoringType"
-                class="flex space-x-2 p-2 pl-4"
-                style="border: 1px solid #5293EAA0;background-color: #5293EA30;font-size: .9rem;">
-            <div :class="`t-${index + 1} w-[2rem] h-[2rem]`"
-                  style="background-size: 100% 100%;"></div>
+          <div
+            v-for="(item, index) in topDataList"
+            :key="item.monitoringType"
+            class="flex space-x-2 p-2 pl-4"
+            style="border: 1px solid #5293EAA0;background-color: #5293EA30;font-size: .9rem;"
+          >
+            <div
+              :class="`t-${index + 1} w-[2rem] h-[2rem]`"
+              style="background-size: 100% 100%;"
+            ></div>
             <div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -326,10 +331,16 @@ const handleArrowClick = (index) => {
             <div class="b w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
             <div>水质监测</div>
           </div>
-          <div v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4"
-                style="border: 1px solid #b5ead8A0;background-color: #b5ead830;font-size: .9rem;">
-            <div :class="`b-${index + 1} w-[2rem] h-[2rem]`"
-                  style="background-size: 100% 100%;"></div>
+          <div
+            v-for="(item, index) in bottomDataList"
+            :key="item"
+            class="flex space-x-2 p-2 pl-4"
+            style="border: 1px solid #b5ead8A0;background-color: #b5ead830;font-size: .9rem;"
+          >
+            <div
+              :class="`b-${index + 1} w-[2rem] h-[2rem]`"
+              style="background-size: 100% 100%;"
+            ></div>
             <div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -407,7 +418,7 @@ const handleArrowClick = (index) => {
           <el-table-column label="预警类型" align="center" prop="warnType" />
           <el-table-column label="预警信息" align="center" prop="warnInfo" />
           <el-table-column label="预警时间" align="center">
-            <template v-slot="scope">
+            <template #default="scope">
               <span>{{ formatTime(scope.row.warnTime, 'yyyy-MM-dd') }}</span>
             </template>
           </el-table-column>
