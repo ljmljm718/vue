@@ -86,7 +86,8 @@
           <div class="p-[15px] bg-[#fff]">
           <div class="flex font-800"><div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>实时数据</div>
           <div style="height: calc(100% - 2rem);" class="mt-0.5rem grid grid-cols-2 gap-2 grid-rows-5 py-2">
-              <div v-show="item!=null"
+              <div
+                v-show="item!=null"
                 class="rounded-sm"
                 style="background-color: #237ced16;border: 1px solid #ffffff40;"
                 v-for="item,index in pageRealList"
