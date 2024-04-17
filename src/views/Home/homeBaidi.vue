@@ -76,7 +76,7 @@
                     <el-table-column label="描述" align="center" prop="warnInfo" />
                     <el-table-column label="时间" align="center" prop="warnTime">
                       <template #default="scope">
-                        <span>{{ formatTime(scope.row.warnTime, 'yyyy-MM-dd') }}</span>
+                        <span>{{ new Date().toLocaleString(scope.row.warnTime) }}</span>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -112,9 +112,9 @@
           <div class="flex font-800"><div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>历史数据 </div>
           <div class="flex py-2">
             <el-radio-group v-model="radio" @change="handleRadioChange">
-              <el-radio-button label="棚内环境" value="env" />
               <el-radio-button label="气象站" value="weather" />
               <el-radio-button label="土壤墒情" value="solid" />
+              <el-radio-button label="棚内环境" value="env" />
               <el-radio-button label="虫情监测" value="situation" />
             </el-radio-group>
             <div style="margin: 0 .4rem;">
@@ -127,6 +127,16 @@
               />
             </div>
             <el-button type="primary" @click="handleRadioChange(radio)">查询</el-button>
+          </div>
+          <div class=" w-[100] h-140px relative">
+            <select v-show='radio=="气象站" || radio=="棚内环境"' name="" id="" @change='selecteCli'>
+              <option :value='item.value' v-for="item,index in selecteList" :key="index">{{item.title}}</option>
+            </select>
+            <select v-show="radio=='土壤墒情' || radio=='虫情监测'" name="" id="" @change='selecteCli2'>
+              <option :value='index' v-for="item,index in selecteList2" :key="index">{{item.typeName}}</option>
+            </select>
+            <div v-if='radio=="气象站"' id="chart3"></div>
+            <div v-if="radio=='土壤墒情' || radio=='虫情监测'" id="chart4"></div>
           </div>
         </div>
       </div>
@@ -144,13 +154,48 @@ import {
   HomeDeviceCard2,
   ParkTree,
   homeCheckLog,
-  pageRealTimeData
+  pageRealTimeData,
+  CountListByNowTime,
+  pageWarningInfo2,
+  environmentView,
+  DataByParkAndPlotAndType
 } from './apis'
 const dateData = ref('')
-let radio=ref('棚内环境')
+let radio=ref('气象站')
 let pageWarnList=ref([])
 let topList=ref([])
 let data=ref([])
+let deviceType=ref('15')
+let deviceKind=ref('48')
+let belongPark=ref(0) //基地id
+let belongPlot=ref(0) // 地块id
+let selecteList=ref([
+  {
+    title:'土壤温度',
+    value:'1'    
+  },
+  {
+    title:'土壤湿度',
+    value:'2'    
+  },
+  {
+    title:'光照',
+    value:'3'    
+  },
+  {
+    title:'大气压',
+    value:'4'    
+  },
+  {
+    title:'降雨量',
+    value:'5'    
+  },
+  {
+    title:'风速',
+    value:'6'    
+  },
+])
+let selecteList2=ref([])
 const initChart1=()=>{
   initChartStatic('chart1', generatePieOptions({
     legend: {
@@ -191,10 +236,15 @@ const initChart1=()=>{
     ],
   }))
 }
-const initChart2=()=>{
+const initChart2=async ()=>{
+  let xAisData=[]
+  let yAisData=[]
+  let res= await CountListByNowTime({size:'10'})
+  xAisData=res.xList
+  yAisData=res.yList
   initChartStatic('chart2', generateBaseOptions({
     xAxis: {
-            data:['1月','2月','2月','2月','2月',],
+            data:xAisData,
             interval:0,
             axisLine: {
               show: true,
@@ -235,8 +285,8 @@ const initChart2=()=>{
           },
           series: [
             {
-              name: "生长监控",
-              data:[1,2,3,4,5,6,],
+              name: "预警信息",
+              data:yAisData,
               type: "line",
               symbol:'none',
               areaStyle:{
@@ -253,6 +303,149 @@ const initChart2=()=>{
   
   }))
 }
+const initChart3= (time2,list)=>{
+  let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+  let data=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
+  let a= time2
+  let b= list
+  function fn(a){
+    a.forEach((item,index)=> {
+        data.splice(time.findIndex(itm=>itm.includes(item)),1,b[index])
+    });
+  }
+  fn(a)
+  initChartStatic('chart3', generateBaseOptions({
+    xAxis: {
+            data:a[0]=='00'?a:a.reverse(),
+            interval:0,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            itemWidth: 15,
+            itemHeight: 15,
+         },
+         color:['#20cafd'],
+          yAxis:{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#c1c1c1",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#c1c1c1", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          series: [
+            {
+              name: "预警信息",
+              data:b,
+              type: "line",
+              symbol:'none',
+              areaStyle:{
+                color:'#20cafd'
+              }
+            },
+          ],
+          grid: {
+            left: "2%",
+            right: "3%",
+            top: "17%",
+            bottom: "15%",
+          },
+  
+  }))
+}
+const initChart4= (list)=>{
+  let a=[]
+  let b=[]
+  list.forEach(item=>{
+    a.push(item.gatherHour)
+    b.push(item.gatherValue)
+  })
+  console.log(a,'a');
+  console.log(b,'b');
+  
+  initChartStatic('chart4', generateBaseOptions({
+    xAxis: {
+            data:a,
+            interval:0,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: false, 
+            orient:'horizontal',
+            itemWidth: 15,
+            itemHeight: 15,
+         },
+         color:['#20cafd'],
+          yAxis:{
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#c1c1c1",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#c1c1c1", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          series: [
+            {
+              name: "预警信息",
+              data:b,
+              type: "line",
+              symbol:'none',
+              areaStyle:{
+                color:'#20cafd'
+              }
+            },
+          ],
+          grid: {
+            left: "2%",
+            right: "3%",
+            top: "17%",
+            bottom: "15%",
+          },
+  
+  }))
+}
 const defaultProps = {
   children: 'child',
   label: 'name',
@@ -262,13 +455,23 @@ onMounted(()=>{
   initChart2()
 })
 const handleRadioChange = (e) => {
-  console.log('e', e);
+  if(e=='气象站'){
+    deviceType.value='15'
+  }else if(e=='彭内环境'){
+    deviceType.value='16'
+  }else if(e=='土壤墒情'){
+    deviceKind.value='48'
+    getDataByParkAndPlotAndType(belongPark,belongPlot)
+  }else if(e=='虫情监测'){
+    deviceKind.value='49'
+    getDataByParkAndPlotAndType(belongPark,belongPlot)
+
+  }
   
 }
 //获取顶部小卡片数据
 const getHomeDeviceCard=()=>{
   HomeDeviceCard2().then(res=>{
-    console.log(res,'小卡片数据');
     topList.value=res
   })
 }
@@ -276,20 +479,27 @@ getHomeDeviceCard()
 //左侧基地树
 const getParkTree=()=>{
   ParkTree().then(res=>{
-    console.log(res,'左侧基地树');
     data.value=res
+    console.log(res,'dd');
+    belongPark.value=res[2].id
+    belongPlot.value= res[2].child[1].id
     getHomeCheckLog(res[0].child[0].id)
     getPageRealTimeData(res[1].id, res[1].child[1].id)
+    getpageWarningInfo(res[1].id, res[1].child[1].id)
+    getEnvironmentView(res[2].id, res[2].child[1].id)
+    getDataByParkAndPlotAndType(res[2].id, res[2].child[1].id)
   })
 }
 getParkTree()
 //基地选择
 const handleTreeChange=(data,b)=>{
-  console.log(data,'data');
-  console.log(b.data.id,b.parent.data.id,'b');
+  belongPark.value=b.data.id
+  belongPlot.value=b.parent.data.id
   getHomeCheckLog(data.id)
   getPageRealTimeData(b.parent.data.id,b.data.id)
-  
+  getpageWarningInfo(b.parent.data.id,b.data.id)
+  getEnvironmentView(b.parent.data.id,b.data.id)
+  getDataByParkAndPlotAndType(b.parent.data.id,b.data.id)
 }
 //获取巡检进度
 let typeList=ref([])
@@ -297,7 +507,6 @@ let deviceTotal=ref(0)
 let devicePercent=ref(0)
 const getHomeCheckLog=(id)=>{
   homeCheckLog({belongPlot:id}).then(res=>{
-    console.log(res,'巡检进度');
     typeList.value=res.deviceTypeList
     deviceTotal.value=res.deviceTotal
     devicePercent.value=res.progress
@@ -307,7 +516,6 @@ const getHomeCheckLog=(id)=>{
 let pageRealList=ref([])
 const getPageRealTimeData=(id,id2)=>{
   pageRealTimeData({parkId:id,plotId:id2}).then(res=>{
-    console.log(res,"实施诗句");
     res.forEach(item=>{
       if(item==null) return
     })
@@ -315,6 +523,49 @@ const getPageRealTimeData=(id,id2)=>{
     
     
   }) 
+}
+//获取预警信息
+const getpageWarningInfo=(id,id2)=>{
+  pageWarningInfo2({parkId:id,plotId:id2}).then(res=>{
+    pageWarnList.value=res
+  })
+}
+//获取气象站历史数据
+let chartList=ref({})
+const getEnvironmentView=(id,id2)=>{
+  environmentView({deviceType:deviceType.value,belongPark:id,belongPlot:id2}).then(res=>{
+    console.log(res,'气象站历史数据');
+    chartList.value=res
+    initChart3(chartList.value.time,chartList.value.temperature)
+  })
+}
+//获取土壤墒情和虫情监测
+const getDataByParkAndPlotAndType=(id,id2)=>{
+  DataByParkAndPlotAndType({deviceKind,belongPark:id,belongPlot:id2}).then(res=>{
+    console.log(res,'土壤墒情和虫情监测');
+    selecteList2.value=res
+    initChart4(res[0].list)
+  })
+}
+//下拉选择
+const selecteCli=(e)=>{
+  if(e.target.value==1){
+    initChart3(chartList.value.time,chartList.value.temperature)
+  }else if(e.target.value==2){
+    initChart3(chartList.value.time,chartList.value.humidity)
+  }else if(e.target.value==3){
+    initChart3(chartList.value.time,chartList.value.lighting)
+  }else if(e.target.value==4){
+    initChart3(chartList.value.time,chartList.value.airPressure)
+  }else if(e.target.value==5){
+    initChart3(chartList.value.time,chartList.value.rainfall)
+  }else if(e.target.value==6){
+    initChart3(chartList.value.time,chartList.value.windSpeed)
+  }
+} 
+//下拉选择2
+const selecteCli2=(e)=>{
+  initChart4(selecteList2.value[e.target.value].list)
 }
 </script>
 <style lang='scss' scoped>
@@ -363,6 +614,22 @@ const getPageRealTimeData=(id,id2)=>{
 #chart2{
   width: 100%;
   height: 100%;
+}
+#chart3{
+  width: 100%;
+  height: 100%;
+}
+#chart4{
+  width: 100%;
+  height: 100%;
+}
+select{
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 30px;
 }
 @for $i from 1 through 10  {
   .top-#{$i} {

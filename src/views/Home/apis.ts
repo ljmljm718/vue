@@ -91,3 +91,15 @@ export const homeCheckLog = (params) => {
 export const pageRealTimeData2 = (params) => {
   return request.get({ url: `/agriculture/warning-record-big-screen/pageRealTimeData2`,params  })
 }
+export const CountListByNowTime = (params) => {
+  return request.get({ url: `/agriculture/agri-warning-record/getCountListByNowTime`,params})
+}
+export const pageWarningInfo2 = (params) => {
+  return request.get({ url: `/agriculture/warning-record-big-screen/pageWarningInfo`,params})
+}
+export const environmentView = (params) => {
+  return request.get({ url: `/agriculture/big-screen/environmentView`,params})
+}
+export const DataByParkAndPlotAndType = (params) => {
+  return request.get({ url: `/agriculture/big-screen/getDeviceDataByParkAndPlotAndType`,params})
+}
