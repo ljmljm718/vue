@@ -147,7 +147,7 @@
               name=""
               id=""
               @change='selecteCli2'
-              v-model="test"
+              v-model="test2"
               placeholder="请选择类型"
               clearable
               class="!w-240px mx-2"
@@ -497,6 +497,7 @@ onMounted(()=>{
 })
 
 const test = ref()
+const test2 = ref()
 const handleRadioChange = (e) => {
   if(e=='气象站'){
     deviceType.value='15'
@@ -612,6 +613,7 @@ const selecteCli=(e)=>{
 } 
 //下拉选择2
 const selecteCli2=(e)=>{
+  test2.vlaue=e
   initChart4(selecteList2.value[e].list)
 }
 </script>
