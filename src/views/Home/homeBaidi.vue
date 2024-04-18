@@ -3,11 +3,24 @@
     <div class="mb-20px grid gap-5px h-70px" :style="`grid-template-columns: repeat(${10},9.7%);`">
       <div v-for="item,index in topList" :key="index" class="top-item" >
         <div style="color:#3a89ee;font-weight: 600;">{{item.title}}</div>
-        <div class="flex justify-center mt-10px ">
-          <div v-if="item.category=='online'" style="color:green;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
-          <div v-if="item.category=='offline'" style="color: #ccc;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
-          <div v-if="item.category=='fault'" style="color: red;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
+        <div class="flex justify-center mt-10px items-center" v-show="item.category==null || item.category=='49' || item.category=='48'||item.category=='47'||item.category=='53'|| item.category=='52'|| item.category=='55'">
+          <div style="font-size: 20px;" class="mr-10px">
+            <span class="art-font">{{ item.deviceCount }}</span>
+            <span style="font-size: 12px;">台</span>
+          </div>
           <div :class="['top-icon','top-'+(index+1)]"></div>
+        </div>
+        <div class="flex justify-center mt-10px " v-if="item.category=='online'">
+          <div style="color:green;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
+         <div :class="['top-icon','top-'+(index+1)]"></div>
+        </div>
+        <div class="flex justify-center mt-10px " v-if=" item.category=='offline'">
+          <div style="color:#c1c1c1;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
+         <div :class="['top-icon','top-'+(index+1)]"></div>
+        </div>
+        <div class="flex justify-center mt-10px " v-if=" item.category=='fault'">
+          <div style="color:red;font-size: 20px;" class="mr-10px">{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
+         <div :class="['top-icon','top-'+(index+1)]"></div>
         </div>
       </div>
     </div>
@@ -52,15 +65,15 @@
           <div class="p-[15px]  bg-[#fff]">
             <div class="flex w-100% h-49% mb-10px">
             <div class=" h-49% mr-20px w-20% ">
-              <div>
+              <div style="border:1px solid #c1c1c1;padding: 5px;">
                 <div style="color: #847d78;">预警信息</div>
-              <div class=" mt-20px">
+              <div class=" mt-20px ml-30px">
                 <div style="color: #847d78;">今日报警</div>
-                <div class="flex font-700" style="font-size: 20px">33 <div class="dayWarn-1 mt-10px"></div> </div>
+                <div class="flex font-700 mt-10px" style="font-size: 20px">33 <div class="dayWarn-1 ml-10px mt-10px"></div> </div>
               </div>
-              <div class=" mt-20px">
+              <div class=" mt-20px ml-30px">
                 <div style="color: #847d78;">近30天报警</div>
-                <div class="flex font-700" style="font-size: 20px">182 <div class="dayWarn-2 mt-10px"></div> </div>
+                <div class="flex font-700 mt-10px" style="font-size: 20px">182 <div class="dayWarn-2 ml-10px mt-10px"></div> </div>
               </div>
             </div>
             </div>
@@ -88,7 +101,7 @@
           <div style="height: calc(100% - 2rem);" class="mt-0.5rem grid grid-cols-2 gap-2 grid-rows-5 py-2">
               <div
                 v-show="item!=null"
-                class="rounded-sm"
+                class="rounded-sm flex items-center justify-around"
                 style="background-color: #237ced16;border: 1px solid #ffffff40;"
                 v-for="item,index in pageRealList"
                 :key="index"
@@ -109,9 +122,43 @@
           </div>
         </div>
         <!-- 底部 -->
-        <div class="w-100% h-30% bg-[#fff] mt-10px ">
+        <div class="w-100% h-30% bg-[#fff] mt-10px p-2">
           <div class="flex font-800"><div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>历史数据 </div>
           <div class="flex py-2">
+            <el-select
+              v-show='radio=="气象站" || radio=="棚内环境"'
+              name=""
+              id=""
+              @change='selecteCli'
+              v-model="test"
+              placeholder="请选择类型"
+              clearable
+              class="!w-240px mx-2"
+            >
+              <el-option
+                v-for="item, index in selecteList"
+                :key="index"
+                :label="item.title"
+                :value="item.value"
+              />
+            </el-select>
+            <el-select
+              v-show="radio=='土壤墒情' || radio=='虫情监测'"
+              name=""
+              id=""
+              @change='selecteCli2'
+              v-model="test"
+              placeholder="请选择类型"
+              clearable
+              class="!w-240px mx-2"
+            >
+              <el-option
+                v-for="item, index in selecteList2"
+                :key="index"
+                :label="item.typeName"
+                :value="index"
+              />
+            </el-select>
             <el-radio-group v-model="radio" @change="handleRadioChange">
               <el-radio-button label="气象站" value="weather" />
               <el-radio-button label="土壤墒情" value="solid" />
@@ -130,12 +177,6 @@
             <el-button type="primary" @click="handleRadioChange(radio)">查询</el-button>
           </div>
           <div class=" w-[100] h-140px relative">
-            <select v-show='radio=="气象站" || radio=="棚内环境"' name="" id="" @change='selecteCli'>
-              <option :value='item.value' v-for="item,index in selecteList" :key="index">{{item.title}}</option>
-            </select>
-            <select v-show="radio=='土壤墒情' || radio=='虫情监测'" name="" id="" @change='selecteCli2'>
-              <option :value='index' v-for="item,index in selecteList2" :key="index">{{item.typeName}}</option>
-            </select>
             <div v-if='radio=="气象站"' id="chart3"></div>
             <div v-if="radio=='土壤墒情' || radio=='虫情监测'" id="chart4"></div>
           </div>
@@ -150,7 +191,6 @@ import {
   generateBaseOptions,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
-import { formatTime } from '@/utils/index'
 import {
   HomeDeviceCard2,
   ParkTree,
@@ -250,7 +290,7 @@ const initChart2=async ()=>{
             axisLine: {
               show: true,
               lineStyle: {
-                color: "#fff",
+                color: "#c1c1c1",
               },
             },
           },
@@ -322,7 +362,7 @@ const initChart3= (time2,list)=>{
             axisLine: {
               show: true,
               lineStyle: {
-                color: "#fff",
+                color: "#c1c1c1",
               },
             },
           },
@@ -368,7 +408,7 @@ const initChart3= (time2,list)=>{
             },
           ],
           grid: {
-            left: "2%",
+            left: "5%",
             right: "3%",
             top: "17%",
             bottom: "15%",
@@ -393,7 +433,7 @@ const initChart4= (list)=>{
             axisLine: {
               show: true,
               lineStyle: {
-                color: "#fff",
+                color: "#c1c1c1",
               },
             },
           },
@@ -439,7 +479,7 @@ const initChart4= (list)=>{
             },
           ],
           grid: {
-            left: "2%",
+            left: "5%",
             right: "3%",
             top: "17%",
             bottom: "15%",
@@ -455,6 +495,8 @@ onMounted(()=>{
   initChart1()
   initChart2()
 })
+
+const test = ref()
 const handleRadioChange = (e) => {
   if(e=='气象站'){
     deviceType.value='15'
@@ -473,6 +515,8 @@ const handleRadioChange = (e) => {
 //获取顶部小卡片数据
 const getHomeDeviceCard=()=>{
   HomeDeviceCard2().then(res=>{
+    console.log(res,'顶部小卡片');
+    
     topList.value=res
   })
 }
@@ -550,23 +594,25 @@ const getDataByParkAndPlotAndType=(id,id2)=>{
 }
 //下拉选择
 const selecteCli=(e)=>{
-  if(e.target.value==1){
+  console.log(e,'下拉选择');
+  test.value=e
+  if(e==1){
     initChart3(chartList.value.time,chartList.value.temperature)
-  }else if(e.target.value==2){
+  }else if(e==2){
     initChart3(chartList.value.time,chartList.value.humidity)
-  }else if(e.target.value==3){
+  }else if(e==3){
     initChart3(chartList.value.time,chartList.value.lighting)
-  }else if(e.target.value==4){
+  }else if(e==4){
     initChart3(chartList.value.time,chartList.value.airPressure)
-  }else if(e.target.value==5){
+  }else if(e==5){
     initChart3(chartList.value.time,chartList.value.rainfall)
-  }else if(e.target.value==6){
+  }else if(e==6){
     initChart3(chartList.value.time,chartList.value.windSpeed)
   }
 } 
 //下拉选择2
 const selecteCli2=(e)=>{
-  initChart4(selecteList2.value[e.target.value].list)
+  initChart4(selecteList2.value[e].list)
 }
 </script>
 <style lang='scss' scoped>
@@ -586,6 +632,11 @@ const selecteCli2=(e)=>{
     height: 1.5rem;
     background-size: 100% 100%;
   }
+}
+.top-asd{
+  border: 1pxs;
+  width: 120px;
+  height: 222px;
 }
 .sanjiao{
   width: 0;  
@@ -627,8 +678,8 @@ const selecteCli2=(e)=>{
 select{
   position: absolute;
   z-index: 999;
-  top: 0;
-  left: 0;
+  top: -40px;
+  right:200px;
   width: 150px;
   height: 30px;
 }
