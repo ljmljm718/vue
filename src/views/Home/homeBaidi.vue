@@ -613,7 +613,7 @@ const selecteCli=(e)=>{
 } 
 //下拉选择2
 const selecteCli2=(e)=>{
-  test2.vlaue=e
+  test2.value=e
   initChart4(selecteList2.value[e].list)
 }
 </script>
