@@ -501,6 +501,7 @@ const test2 = ref()
 const handleRadioChange = (e) => {
   if(e=='气象站'){
     deviceType.value='15'
+    getEnvironmentView(belongPark.value,belongPlot.value)
   }else if(e=='彭内环境'){
     deviceType.value='16'
   }else if(e=='土壤墒情'){
@@ -613,7 +614,7 @@ const selecteCli=(e)=>{
 } 
 //下拉选择2
 const selecteCli2=(e)=>{
-  test2.value=e
+  test2.vlaue=e
   initChart4(selecteList2.value[e].list)
 }
 </script>
