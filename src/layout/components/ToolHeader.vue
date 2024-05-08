@@ -86,15 +86,17 @@ export default defineComponent({
             class="custom-hover"
             color="var(--top-header-text-color)"
           >
-            <div
+            <a
               href={bigscreenRoute.value}
+              style="color: var(--top-header-text-color);transform:scale(.8);margin-bottom: .3rem;"
             >
               <el-icon><Monitor/></el-icon>
-            </div>
+            </a>
           </div>
           <div class="custom-hover"
                color="var(--top-header-text-color)"
                onClick={() => {
+                 console.log(appStore.getAiAssistant)
                  appStore.setAiAssistant(!appStore.getAiAssistant)
                }}>
             <el-icon><Orange/></el-icon>
