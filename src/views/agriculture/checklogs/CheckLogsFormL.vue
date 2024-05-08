@@ -10,65 +10,99 @@
 <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
 <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
 <!--      </el-form-item>-->
-      <el-form-item label="巡检状态" prop="inspectionState">
-        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="巡检结果" prop="inspectionResults">
-        <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
-      </el-form-item>
-      <el-form-item label="设备编号" prop="equNum">
-        <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.equNum" readonly>
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="所属基地" prop="base">
-        <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
-      </el-form-item>
-      <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
-        <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
-      </el-form-item>
-      <el-form-item label="巡检人id" prop="inspectorId">
-        <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
-        <el-input v-model="formData.inspectorId" readonly>
-          <template #append>
-            <el-button @click="openUserList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="巡检人" prop="inspector">
-        <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>
-      </el-form-item>
-      <el-form-item label="巡检时间" prop="inspectionTime">
-        <el-date-picker
-          v-model="formData.inspectionTime"
-          type="datetime"
-          value-format="x"
-          placeholder="选择巡检时间"
-        />
-      </el-form-item>
-      <el-form-item label="巡检影像" prop="inspectionImage">
-        <UploadImg v-model="formData.inspectionImage"/>
-        <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
-      </el-form-item>
-      <el-form-item label="巡检内容" prop="content">
-        <el-input type="textarea" v-model="formData.content" placeholder="请输入巡检内容"/>
-      </el-form-item>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item label="巡检状态" prop="inspectionState">
+            <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="巡检结果" prop="inspectionResults">
+            <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item label="设备编号" prop="equNum">
+            <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
+            <el-input v-model="formData.equNum" readonly>
+              <template #append>
+                <el-button @click="openPurchaseOrderInEnableList">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="所属基地" prop="base">
+            <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
+            <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="巡检人id" prop="inspectorId">
+            <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
+            <el-input v-model="formData.inspectorId" readonly>
+              <template #append>
+                <el-button @click="openUserList">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item label="巡检人" prop="inspector">
+            <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="巡检时间" prop="inspectionTime">
+            <el-date-picker
+              v-model="formData.inspectionTime"
+              type="datetime"
+              value-format="x"
+              placeholder="选择巡检时间"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item label="巡检影像" prop="inspectionImage">
+            <UploadImg v-model="formData.inspectionImage"/>
+            <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="巡检内容" prop="content">
+            <el-input type="textarea" :rows="7" v-model="formData.content" placeholder="请输入巡检内容"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+
+
+
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
