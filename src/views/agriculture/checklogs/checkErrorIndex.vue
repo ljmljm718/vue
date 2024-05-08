@@ -103,14 +103,36 @@
           <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
         </template>
       </el-table-column>
-      <el-table-column label="巡检结果状态" align="center" prop="resultState" width="180">
+      <el-table-column label="巡检结果状态" align="center" prop="resultState" width="150">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
         </template>
       </el-table-column>
-      <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
+      <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/>
       <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
       <el-table-column label="设备" align="center" prop="equName" width="200"/>
+      <el-table-column label="处理人" align="center" prop="dealPerson" />
+      <el-table-column
+        label="处理时间"
+        align="center"
+        prop="dealTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="处理结果" align="center" prop="dealResult" width="180"/>
+      <el-table-column label="处理图片" align="center" prop="dealImage" >
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.dealImage"
+            :preview-src-list="[row.inspectionImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
+
       <el-table-column label="所属基地" align="center" prop="base" width="200"/>
       <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
                        prop="massif" width="200"/>
@@ -137,27 +159,6 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检内容" align="center" prop="content"/>
-      <el-table-column label="处理人" align="center" prop="dealPerson" />
-      <el-table-column
-        label="处理时间"
-        align="center"
-        prop="dealTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="处理结果" align="center" prop="dealResult"/>
-      <el-table-column label="处理图片" align="center" prop="dealImage" >
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.dealImage"
-            :preview-src-list="[row.inspectionImage]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
