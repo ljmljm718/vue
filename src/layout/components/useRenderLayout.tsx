@@ -35,7 +35,10 @@ const mobile = computed(() => appStore.getMobile)
 // 固定菜单
 const fixedMenu = computed(() => appStore.getFixedMenu)
 
+
 export const useRenderLayout = () => {
+    // 展示右侧AI框
+    const showRightPanel = computed(() => appStore.getAiAssistant)
   const renderClassic = () => {
     return (
       <>
@@ -55,7 +58,7 @@ export const useRenderLayout = () => {
                   'w-[var(--left-menu-max-width)]': !appStore.getCollapse
                 }
               ]}
-              style="transition: all var(--transition-time-02);"
+              style={`transition: all var(--transition-time-02);`}
             ></Logo>
           ) : undefined}
           <Menu class={[{ '!h-[calc(100%-var(--logo-height))]': logo.value }]}></Menu>
@@ -72,7 +75,7 @@ export const useRenderLayout = () => {
               'fixed !w-full !left-0': mobile.value
             }
           ]}
-          style="transition: all var(--transition-time-02);"
+          style={`transition: all var(--transition-time-02);width: calc(100% - calc(var(--left-menu-max-width) + ${showRightPanel.value ? '300px' : '0px'}));`}
         >
           <ElScrollbar
             v-loading={pageLoading.value}
@@ -114,14 +117,23 @@ export const useRenderLayout = () => {
             <AppView></AppView>
           </ElScrollbar>
         </div>
+          <div style={"padding-top: 85px;background-color: white;"} class={'shadow-lg'} v-show={showRightPanel.value}>
+            <iframe
+              src="http://117.73.12.23:18080/ui/chat/2b3f8c981d74f9e0"
+              style="width: 300px; height: calc(100% - 85px);position: absolute;right: 0;"
+              frameborder="0"
+              allow="microphone">
+            </iframe>
+          </div>
       </>
     )
   }
 
-  const renderTopLeft = () => {
-    return (
-      <>
-        <div class="relative flex items-center bg-[var(--top-header-bg-color)] layout-border__bottom dark:bg-[var(--el-bg-color)]">
+    const renderTopLeft = () => {
+        return (
+            <>
+                <div
+                    class="relative flex items-center bg-[var(--top-header-bg-color)] layout-border__bottom dark:bg-[var(--el-bg-color)]">
           {logo.value ? <Logo class="custom-hover"></Logo> : undefined}
 
           <ToolHeader class="flex-1"></ToolHeader>

@@ -1,18 +1,18 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
-import { Message } from '@/layout/components//Message'
-import { Collapse } from '@/layout/components/Collapse'
-import { UserInfo } from '@/layout/components/UserInfo'
-import { Screenfull } from '@/layout/components/Screenfull'
-import { Breadcrumb } from '@/layout/components/Breadcrumb'
-import { SizeDropdown } from '@/layout/components/SizeDropdown'
-import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
+import {computed, defineComponent} from 'vue'
+import {Message} from '@/layout/components//Message'
+import {Collapse} from '@/layout/components/Collapse'
+import {UserInfo} from '@/layout/components/UserInfo'
+import {Screenfull} from '@/layout/components/Screenfull'
+import {Breadcrumb} from '@/layout/components/Breadcrumb'
+import {SizeDropdown} from '@/layout/components/SizeDropdown'
+import {LocaleDropdown} from '@/layout/components/LocaleDropdown'
 import RouterSearch from '@/components/RouterSearch/index.vue'
-import { useAppStore } from '@/store/modules/app'
-import { useDesign } from '@/hooks/web/useDesign'
-import { getTenantId } from '@/utils/auth'
-import { getRouteByTenant } from '@/api/system/user'
-import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import {useAppStore} from '@/store/modules/app'
+import {useDesign} from '@/hooks/web/useDesign'
+import {getTenantId} from '@/utils/auth'
+import {getRouteByTenant} from '@/api/system/user'
+import {CACHE_KEY, useCache} from '@/hooks/web/useCache'
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -82,16 +82,27 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <a
-            href={bigscreenRoute.value}
-            style="color: var(--top-header-text-color);transform:scale(.8);margin-right: .5rem;"
+          <div
+            class="custom-hover"
+            color="var(--top-header-text-color)"
           >
-            <el-icon><Platform /></el-icon>
-          </a>
+            <div
+              href={bigscreenRoute.value}
+            >
+              <el-icon><Monitor/></el-icon>
+            </div>
+          </div>
+          <div class="custom-hover"
+               color="var(--top-header-text-color)"
+               onClick={() => {
+                 appStore.setAiAssistant(!appStore.getAiAssistant)
+               }}>
+            <el-icon><Orange/></el-icon>
+          </div>
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
-          {search.value ? <RouterSearch isModal={false} /> : undefined}
+          {search.value ? <RouterSearch isModal={false}/> : undefined}
           {size.value ? (
             <SizeDropdown class="custom-hover" color="var(--top-header-text-color)"></SizeDropdown>
           ) : undefined}
@@ -118,7 +129,8 @@ $prefix-cls: #{$namespace}-tool-header;
 .#{$prefix-cls} {
   transition: left var(--transition-time-02);
 }
-a{
+
+a {
   color:black;
   font-size: 25px;
   margin-top: 8px;

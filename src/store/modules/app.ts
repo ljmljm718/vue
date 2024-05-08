@@ -35,7 +35,8 @@ interface AppState {
   mobile: boolean
   footer: boolean
   theme: ThemeTypes
-  fixedMenu: boolean
+  fixedMenu: boolean,
+  showAiAssistant: boolean
 }
 
 export const useAppStore = defineStore('app', {
@@ -97,7 +98,9 @@ export const useAppStore = defineStore('app', {
         topHeaderHoverColor: '#f6f6f6',
         // 头部边框颜色
         topToolBorderColor: '#eee'
-      }
+      },
+      // 展示AI小助手
+      showAiAssistant: false,
     }
   },
   getters: {
@@ -175,6 +178,9 @@ export const useAppStore = defineStore('app', {
     },
     getFooter(): boolean {
       return this.footer
+    },
+    getAiAssistant(): boolean {
+      return this.showAiAssistant
     }
   },
   actions: {
@@ -267,6 +273,9 @@ export const useAppStore = defineStore('app', {
     },
     setFooter(footer: boolean) {
       this.footer = footer
+    },
+    setAiAssistant(show: boolean): void {
+      this.showAiAssistant =  show
     }
   },
   persist: false
