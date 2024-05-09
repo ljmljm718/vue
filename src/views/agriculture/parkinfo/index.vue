@@ -38,7 +38,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm('create')"
+          @click="openForm('create', 0)"
           v-hasPermi="['agriculture:park-info:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
