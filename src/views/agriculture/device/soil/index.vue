@@ -1,5 +1,25 @@
 <template>
   <ContentWrap>
+    <div class="flex space-x-4">
+      <div
+        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center cursor-pointer"
+        v-for="item,index in trendData"
+        :key="index"
+      >
+        <div class="box-top">
+          <div style="text-align: center;color: white;">{{ item.monitoringType }}</div>
+          <div style="text-align: center;color: white;">
+            <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
+            <span class="pl-1">{{ item.yyUnit }}</span>
+          </div>
+        </div>
+        <div :class="`w-[2rem] h-[2rem] icon-${getIcon(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
+      </div>
+    </div>
+  </ContentWrap>
+
+
+  <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
       class="-mb-15px"
@@ -17,15 +37,6 @@
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="设备名称" prop="deviceName">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.deviceName"-->
-<!--          placeholder="请输入设备名称"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="采集时间" prop="collectionTime">
         <el-date-picker
           v-model="queryParams.collectionTime"
@@ -40,23 +51,6 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agri:soil-moisture:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          plain-->
-<!--          @click="handleExport"-->
-<!--          :loading="exportLoading"-->
-<!--          v-hasPermi="['agri:soil-moisture:export']"-->
-<!--        >-->
-<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
-<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -64,67 +58,24 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="序号" width="60" align="center">
-        <template v-slot="scope">
-          <span>{{ scope.$index + (queryParams.pageNo - 1) * (queryParams.pageSize) + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="设备编号" align="center" prop="equipmentCode" />
-      <el-table-column label="土壤深度" align="center" prop="soilDepth">
-        <template v-slot="scope">
-          <span>{{scope.row.soilDepth}}m</span>
-        </template>
-      </el-table-column>
-<!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
-<!--      <el-table-column-->
-<!--        label="采集时间"-->
-<!--        align="center"-->
-<!--        prop="gatherTime"-->
-<!--        :formatter="dateFormatter"-->
-<!--        width="180px"-->
-<!--      />-->
-      <el-table-column label="土壤温度" align="center" prop="soilTemperature">
-        <template v-slot="scope">
-          <span>{{scope.row.soilTemperature}}℃</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="土壤湿度" align="center" prop="soilHumidity">
-        <template v-slot="scope">
-          <span>{{scope.row.soilTemperature}}%/RH</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="PH值" align="center" prop="soilPh" />
-      <el-table-column label="EC值" align="center" prop="soilEc" />
-      <el-table-column label="氮" align="center" prop="nitrogen" />
-      <el-table-column label="磷" align="center" prop="phosphorus" />
-      <el-table-column label="钾" align="center" prop="potassium" />
+      <el-table-column label="设备编码" align="center" prop="equipmentCode" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="采集类型" align="center" prop="collectionType" />
+      <el-table-column label="监测类型" align="center" prop="monitoringType" />
+      <el-table-column label="数据值" align="center" prop="dataValue" />
+      <el-table-column label="单位" align="center" prop="yyUnit" />
       <el-table-column
-          label="数据上报时间"
-          align="center"
-          prop="collectionTime"
-          :formatter="dateFormatter"
-          width="180px"
+        label="采集时间"
+        align="center"
+        prop="collectionTime"
+        :formatter="dateFormatter"
+        width="180px"
       />
-<!--      <el-table-column label="操作" align="center">-->
-<!--        <template #default="scope">-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="primary"-->
-<!--            @click="openForm('update', scope.row.id, scope.row.deviceCode, scope.row.deviceName)"-->
-<!--            v-hasPermi="['agri:soil-moisture:update']"-->
-<!--          >-->
-<!--            编辑-->
-<!--          </el-button>-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleDelete(scope.row.id)"-->
-<!--            v-hasPermi="['agri:soil-moisture:delete']"-->
-<!--          >-->
-<!--            删除-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="基地编码" align="center" prop="baseCode" />
+      <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="地块编码" align="center" prop="plotCode" />
+      <el-table-column label="地块名称" align="center" prop="parkDname" />
+<!--      <el-table-column label="通道编码" align="center" prop="channelId" />-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -134,49 +85,75 @@
       @pagination="getList"
     />
   </ContentWrap>
-
-  <!-- 表单弹窗：添加/修改 -->
-  <SoilMoistureForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { SoilMoistureApi, SoilMoistureVO } from '@/api/agriculture/soilmoisture'
-import SoilMoistureForm from './SoilMoistureForm.vue'
+import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 
 /** 土壤墒情 列表 */
 defineOptions({ name: 'SoilMoisture' })
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-
 const loading = ref(true) // 列表的加载中
-const list = ref<SoilMoistureVO[]>([]) // 列表的数据
+const list = ref<EquipmentDataVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   equipmentCode: undefined,
-  deviceName: undefined,
+  collectionType: '土壤墒情',
+  monitoringType: undefined,
+  dataValue: undefined,
+  yyUnit: undefined,
   collectionTime: [],
-  soilTemperature: undefined,
-  soilHumidity: undefined,
-  soilPh: undefined,
-  soilEc: undefined,
-  soilDepth: undefined,
+  baseCode: undefined,
+  plotCode: undefined,
+  channelId: undefined,
+  yyRemarks: undefined,
+  reserveOne: undefined,
+  reserveTwo: undefined,
+  reserveThree: undefined,
+  deviceName: undefined,
+  parkName: undefined,
+  parkDname: undefined,
+  createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
+const getIcon = (item) => {
+  let resIconIndex = '1'
+  const titleMap = {
+    "温度": "1",
+    "土壤温度": "1",
+    "湿度": "2",
+    "土壤湿度": "2",
+    "雨量": "6",
+    "风速": "4",
+    "气压": "3",
+    "光照": "5"
+  }
+  for (const key in titleMap) {
+    if (item.indexOf(key) !== -1) resIconIndex = titleMap[key]
+  }
+  return resIconIndex
+}
+
+let trendData = ref<Array<any>>([])
+let listRes = ref<any>({})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await SoilMoistureApi.getSoilMoisturePage(queryParams)
-    //const data = await SoilMoistureApi.getSoilMoisturePageJoin(queryParams)
+    const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
     list.value = data.list
     total.value = data.total
+
+    if (queryParams.pageNo == 1) {
+      listRes.value = list.value[0]
+      trendData.value = await EquipmentDataApi.getEquipmentDataByEquipmentCode(
+        listRes.value?.equipmentCode
+      )
+    }
   } finally {
     loading.value = false
   }
@@ -194,42 +171,59 @@ const resetQuery = () => {
   handleQuery()
 }
 
-/** 添加/修改操作 */
-const formRef = ref()
-const openForm = (type: string, id?: number, deviceCode?: string, deviceName?: string) => {
-  formRef.value.open(type, id, deviceCode, deviceName)
-}
-
-/** 删除按钮操作 */
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await SoilMoistureApi.deleteSoilMoisture(id)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-  } catch {}
-}
-
-/** 导出按钮操作 */
-const handleExport = async () => {
-  try {
-    // 导出的二次确认
-    await message.exportConfirm()
-    // 发起导出
-    exportLoading.value = true
-    const data = await SoilMoistureApi.exportSoilMoisture(queryParams)
-    download.excel(data, '土壤墒情.xls')
-  } catch {
-  } finally {
-    exportLoading.value = false
-  }
-}
-
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style scoped lang="scss">
+.weather-bg {
+  background-image: url(@/views/agriculture/equipmentdataThree/assets/weatherBg.png);
+  background-size: 100% 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.box {
+  width: 5%;
+  display: flex;
+  margin-right: 20px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  .box-top {
+    width: 100%;
+    padding: 3px 0;
+    height: 50px;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/topBg.png);
+  }
+  .active {
+    width: 100%;
+    margin-top: 10px;
+    padding: 0 5px;
+    height: 50px;
+    text-align: center;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/active.png);
+  }
+  .actived {
+    width: 100%;
+    margin-top: 10px;
+    height: 50px;
+    text-align: center;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/actived.png);
+  }
+}
+
+@for $i from 1 through 8 {
+  .icon-#{$i} {
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/icon#{$i}.png);
+  }
+}
+</style>

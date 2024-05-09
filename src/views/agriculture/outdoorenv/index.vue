@@ -1,5 +1,23 @@
 <template>
   <ContentWrap>
+    <div class="flex space-x-4">
+      <div
+        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center cursor-pointer"
+        v-for="item,index in trendData"
+        :key="index"
+      >
+        <div class="box-top">
+          <div style="text-align: center;color: white;">{{ item.monitoringType }}</div>
+          <div style="text-align: center;color: white;">
+            <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
+            <span class="pl-1">{{ item.yyUnit }}</span>
+          </div>
+        </div>
+        <div :class="`w-[2rem] h-[2rem] icon-${getIcon(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
+      </div>
+    </div>
+  </ContentWrap>
+  <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
         class="-mb-15px"
@@ -10,59 +28,27 @@
     >
       <el-form-item label="设备编号" prop="equipmentCode">
         <el-input
-            v-model="queryParams.equipmentCode"
-            placeholder="请输入设备编号"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+          v-model="queryParams.equipmentCode"
+          placeholder="请输入设备编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="数据上报时间" prop="collectionTime" label-width="100">
+      <el-form-item label="采集时间" prop="collectionTime">
         <el-date-picker
-            v-model="queryParams.collectionTime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            class="!w-240px"
+          v-model="queryParams.collectionTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="设备类型" prop="deviceType">-->
-<!--        <el-select-->
-<!--            v-model="queryParams.deviceType"-->
-<!--            placeholder="请选择设备类型"-->
-<!--            clearable-->
-<!--            class="!w-240px"-->
-<!--        >-->
-<!--          <el-option-->
-<!--              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE)"-->
-<!--              :key="dict.value"-->
-<!--              :label="dict.label"-->
-<!--              :value="dict.value"-->
-<!--          />-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-<!--        <el-button-->
-<!--            type="primary"-->
-<!--            plain-->
-<!--            @click="openForm('create')"-->
-<!--            v-hasPermi="['agriculture:environment-data:create']"-->
-<!--        >-->
-<!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
-<!--        </el-button>-->
-<!--        <el-button-->
-<!--            type="success"-->
-<!--            plain-->
-<!--            @click="handleExport"-->
-<!--            :loading="exportLoading"-->
-<!--            v-hasPermi="['agriculture:environment-data:export']"-->
-<!--        >-->
-<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
-<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -70,45 +56,24 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备编号" align="center" prop="equipmentCode" />
-<!--      <el-table-column label="设备类型" align="center" prop="deviceType">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_TYPE" :value="scope.row.deviceType" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-      <el-table-column label="温度(℃)" align="center" prop="temperature" />
-      <el-table-column label="湿度(%/RH)" align="center" prop="humidity" />
-      <el-table-column label="光照(Lux)" align="center" prop="lighting" />
-      <el-table-column label="大气压力(kPa)" align="center" prop="airPressure" />
-      <el-table-column label="降雨量(mm)" align="center" prop="rainfall" />
-      <el-table-column label="风速(m/s)" align="center" prop="windSpeed" />
+      <el-table-column label="设备编码" align="center" prop="equipmentCode" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="采集类型" align="center" prop="collectionType" />
+      <el-table-column label="监测类型" align="center" prop="monitoringType" />
+      <el-table-column label="数据值" align="center" prop="dataValue" />
+      <el-table-column label="单位" align="center" prop="yyUnit" />
       <el-table-column
-          label="数据上报时间"
-          align="center"
-          prop="collectionTime"
-          :formatter="dateFormatter"
-          width="180px"
+        label="采集时间"
+        align="center"
+        prop="collectionTime"
+        :formatter="dateFormatter"
+        width="180px"
       />
-<!--      <el-table-column label="操作" align="center">-->
-<!--        <template #default="scope">-->
-<!--          <el-button-->
-<!--              link-->
-<!--              type="primary"-->
-<!--              @click="openForm('update', scope.row.id)"-->
-<!--              v-hasPermi="['agriculture:environment-data:update']"-->
-<!--          >-->
-<!--            编辑-->
-<!--          </el-button>-->
-<!--          <el-button-->
-<!--              link-->
-<!--              type="danger"-->
-<!--              @click="handleDelete(scope.row.id)"-->
-<!--              v-hasPermi="['agriculture:environment-data:delete']"-->
-<!--          >-->
-<!--            删除-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="基地编码" align="center" prop="baseCode" />
+      <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="地块编码" align="center" prop="plotCode" />
+      <el-table-column label="地块名称" align="center" prop="parkDname" />
+<!--      <el-table-column label="通道编码" align="center" prop="channelId" />-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -118,47 +83,78 @@
         @pagination="getList"
     />
   </ContentWrap>
-
-  <!-- 表单弹窗：添加/修改 -->
-  <EnvironmentDataForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { EnvironmentDataApi, EnvironmentDataVO } from '@/api/agriculture/environmentdata'
-import EnvironmentDataForm from './EnvironmentDataForm.vue'
+import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 
 /** 环境数据 列表 */
-defineOptions({ name: 'OutDoorEnvironmentData' })
+defineOptions({ name: 'InDoorEnvironmentData' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<EnvironmentDataVO[]>([]) // 列表的数据
+const list = ref<EquipmentDataVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   equipmentCode: undefined,
+  collectionType: '气象站',
+  monitoringType: undefined,
+  dataValue: undefined,
+  yyUnit: undefined,
   collectionTime: [],
-  deptId: undefined,
-  userId: undefined,
-  deviceType: 'outdoor',
-  airPressure: undefined,
+  baseCode: undefined,
+  plotCode: undefined,
+  channelId: undefined,
+  yyRemarks: undefined,
+  reserveOne: undefined,
+  reserveTwo: undefined,
+  reserveThree: undefined,
+  deviceName: undefined,
+  parkName: undefined,
+  parkDname: undefined,
+  createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
+const getIcon = (item) => {
+  let resIconIndex = '1'
+  const titleMap = {
+    "温度": "1",
+    "土壤温度": "1",
+    "湿度": "2",
+    "土壤湿度": "2",
+    "雨量": "6",
+    "风速": "4",
+    "气压": "3",
+    "光照": "5"
+  }
+  for (const key in titleMap) {
+    if (item.indexOf(key) !== -1) resIconIndex = titleMap[key]
+  }
+  return resIconIndex
+}
+
+let trendData = ref<Array<any>>([])
+let listRes = ref<any>({})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await EnvironmentDataApi.getEnvironmentDataPage(queryParams)
+    const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
     list.value = data.list
     total.value = data.total
+
+    if (queryParams.pageNo == 1) {
+      listRes.value = list.value[0]
+      trendData.value = await EquipmentDataApi.getEquipmentDataByEquipmentCode(
+        listRes.value?.equipmentCode
+      )
+    }
   } finally {
     loading.value = false
   }
@@ -176,42 +172,59 @@ const resetQuery = () => {
   handleQuery()
 }
 
-/** 添加/修改操作 */
-const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
-
-/** 删除按钮操作 */
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await EnvironmentDataApi.deleteEnvironmentData(id)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-  } catch {}
-}
-
-/** 导出按钮操作 */
-const handleExport = async () => {
-  try {
-    // 导出的二次确认
-    await message.exportConfirm()
-    // 发起导出
-    exportLoading.value = true
-    const data = await EnvironmentDataApi.exportEnvironmentData(queryParams)
-    download.excel(data, '环境数据.xls')
-  } catch {
-  } finally {
-    exportLoading.value = false
-  }
-}
-
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style scoped lang="scss">
+.weather-bg {
+  background-image: url(@/views/agriculture/equipmentdataThree/assets/weatherBg.png);
+  background-size: 100% 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.box {
+  width: 5%;
+  display: flex;
+  margin-right: 20px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  .box-top {
+    width: 100%;
+    padding: 3px 0;
+    height: 50px;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/topBg.png);
+  }
+  .active {
+    width: 100%;
+    margin-top: 10px;
+    padding: 0 5px;
+    height: 50px;
+    text-align: center;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/active.png);
+  }
+  .actived {
+    width: 100%;
+    margin-top: 10px;
+    height: 50px;
+    text-align: center;
+    background-size: 100% 100%;
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/actived.png);
+  }
+}
+
+@for $i from 1 through 8 {
+  .icon-#{$i} {
+    background-image: url(@/views/agriculture/equipmentdataThree/assets/icon#{$i}.png);
+  }
+}
+</style>
