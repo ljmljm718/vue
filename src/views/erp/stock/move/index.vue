@@ -194,15 +194,15 @@
           >
             审批
           </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleUpdateStatus(scope.row.id, 10)"
-            v-hasPermi="['erp:stock-move:update-status']"
-            v-else
-          >
-            反审批
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
+<!--            v-hasPermi="['erp:stock-move:update-status']"-->
+<!--            v-else-->
+<!--          >-->
+<!--            反审批-->
+<!--          </el-button>-->
           <el-button
             link
             type="danger"
