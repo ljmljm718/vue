@@ -103,3 +103,24 @@ export const environmentView = (params) => {
 export const DataByParkAndPlotAndType = (params) => {
   return request.get({ url: `/agriculture/big-screen/getDeviceDataByParkAndPlotAndType`,params})
 }
+
+// 明月村项目接口
+export const getEquipmentCountSum = () => {
+  return request.get({ url: `/agriculture/device-info/getEquipmentCountSum`})
+}
+
+export const getInspectionProgress = (params) => {
+  return request.get({ url: `/baidi/big-screen/getInspectionProgress`, params})
+}
+
+export const warningRecordInfoByCode = (params) => {
+  return request.get({ url: `/agriculture/warning-record-big-screen/warningRecordInfoByCode`, params})
+}
+
+export const deviceTypeCount = (params) => {
+  return request.get({ url: `/baidi/big-screen/deviceTypeCount`, params})
+}
+
+export const QueryCurrentDateCount = (params) => {
+  return request.get({ url: `/yyang/equipment-data/QueryCurrentDateCount`, params})
+}

@@ -1,66 +1,18 @@
 <template>
   <div class="w-full">
     <div
-      class="mb-20px grid gap-5px h-70px"
-      :style="`grid-template-columns: repeat(${10},9.7%);`"
+      class="grid gap-2"
+      :style="`grid-template-columns: repeat(${topList.length}, 1fr);`"
     >
-      <div
-        v-for="item,index in topList"
-        :key="index"
-        class="top-item"
-      >
-        <div style="color:#3a89ee;font-weight: 600;">{{item.title}}</div>
-        <div
-          class="flex justify-center mt-10px items-center"
-          v-show="item.category==null || item.category=='49' || item.category=='48'||item.category=='47'||item.category=='53'|| item.category=='52'|| item.category=='55'"
-        >
-          <div
-            style="font-size: 20px;"
-            class="mr-10px"
-          >
-            <span class="art-font">{{ item.deviceCount }}</span>
-            <span style="font-size: 12px;">台</span>
-          </div>
-          <div :class="['top-icon','top-'+(index+1)]"></div>
+      <el-card v-for="item, index in topList" :key="index">
+        <div class="flex justify-between">
+          <div>{{ item.title }}</div>
+          <div class="art-font">{{ item.value }}</div>
         </div>
-        <div
-          class="flex justify-center mt-10px "
-          v-if="item.category=='online'"
-        >
-          <div
-            style="color:green;font-size: 20px;"
-            class="mr-10px"
-          >{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
-          <div :class="['top-icon','top-'+(index+1)]"></div>
-        </div>
-        <div
-          class="flex justify-center mt-10px "
-          v-if=" item.category=='offline'"
-        >
-          <div
-            style="color:#c1c1c1;font-size: 20px;"
-            class="mr-10px"
-          >{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
-          <div :class="['top-icon','top-'+(index+1)]"></div>
-        </div>
-        <div
-          class="flex justify-center mt-10px "
-          v-if=" item.category=='fault'"
-        >
-          <div
-            style="color:red;font-size: 20px;"
-            class="mr-10px"
-          >{{ item.deviceCount }} <span style="font-size: 12px;">台</span></div>
-          <div :class="['top-icon','top-'+(index+1)]"></div>
-        </div>
-      </div>
+      </el-card>
     </div>
-    <div class="flex justify-between">
-      <!-- 左侧 -->
-      <div
-        style="box-sizing: border-box;"
-        class="w-20% bg-[#ebf3ff]"
-      >
+    <div class="flex justify-between space-x-4 my-4">
+      <el-card class="w-[16rem]">
         <el-tree
           style="max-width: 100%;background: none;height:100%"
           :data="data"
@@ -70,22 +22,25 @@
           node-key="id"
           @current-change="handleTreeChange"
         />
-      </div>
-      <div class="w-79% ml-10px">
+      </el-card>
+      <div class="w-full">
         <!-- 左侧 -->
         <div
-          class="w-100% bg-[#ededed] mb-10px grid gap-8px"
-          style="grid-template-columns: 22% 56% calc(22% - 16px);"
+          class="w-full grid gap-3"
+          style="grid-template-columns: 1fr 2fr 1fr;"
         >
-          <div class="bg-[#fff] p-[10px]">
-            <div class="flex font-800">
-              <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>巡检进度
-            </div>
+          <el-card>
+            <template #header>
+              <div class="flex font-800">
+                <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+                <div>巡检进度</div>
+              </div>
+            </template>
             <div class="relative">
               <div id="chart1"></div>
-              <div class="absolute left--6 top-0 w-full h-full flex flex-col items-center justify-center">
+              <div class="absolute z-10 left-0 top-0 w-full h-full flex flex-col items-center justify-center">
                 <div style="font-size: 1.1rem;color:#7696eb;font-weight: bold;">{{devicePercent}}</div>
-                <div style="font-size: .8rem">种植进度</div>
+                <div style="font-size: .8rem">巡检进度</div>
               </div>
             </div>
             <div
@@ -106,49 +61,53 @@
                 v-for="item,index in typeList"
                 :key="index"
               >
-                <div class="flex justify-between mb-4px">{{item.deviceName}} <span>{{item.deviceCount}}</span></div>
-                <div style="color: #c1c1c1;">已巡检 <span class="ml-20px">{{item.inspect}}</span></div>
-                <div style="color: #c1c1c1;margin-top: 10px;">未巡检 <span class="ml-20px">{{item.notInspect}}</span></div>
+                <div style="color: #c1c1c1;">已巡检 <span class="ml-20px">{{item.yesCount}}</span></div>
+                <div style="color: #c1c1c1;margin-top: 10px;">未巡检 <span class="ml-20px">{{item.notCount}}</span></div>
               </div>
             </div>
-          </div>
+          </el-card>
           <!-- 中间 -->
-          <div class="p-[15px]  bg-[#fff]">
-            <div class="flex w-100% h-49% mb-10px">
-              <div class=" h-49% mr-20px w-20% ">
-                <div style="border:1px solid #c1c1c1;padding: 5px;">
-                  <div style="color: #847d78;">预警信息</div>
-                  <div class=" mt-20px ml-30px">
-                    <div style="color: #847d78;">今日报警</div>
-                    <div
-                      class="flex font-700 mt-10px"
-                      style="font-size: 20px"
-                    >33 <div class="dayWarn-1 ml-10px mt-10px"></div>
+          <div class="flex space-y-2 flex-col">
+            <el-card>
+              <div class="flex">
+                <div class="w-[10rem]">
+                  <div style="border:1px solid #c1c1c1;padding: 5px;">
+                    <div style="color: #847d78;">预警信息</div>
+                    <div class=" mt-20px ml-30px">
+                      <div style="color: #847d78;">今日报警</div>
+                      <div
+                        class="flex font-700 mt-10px"
+                        style="font-size: 20px"
+                      >33 <div class="dayWarn-1 ml-10px mt-10px"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class=" mt-20px ml-30px">
-                    <div style="color: #847d78;">近30天报警</div>
-                    <div
-                      class="flex font-700 mt-10px"
-                      style="font-size: 20px"
-                    >182 <div class="dayWarn-2 ml-10px mt-10px"></div>
+                    <div class=" mt-20px ml-30px">
+                      <div style="color: #847d78;">近30天报警</div>
+                      <div
+                        class="flex font-700 mt-10px"
+                        style="font-size: 20px"
+                      >182 <div class="dayWarn-2 ml-10px mt-10px"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div class="w-full">
+                  <div id="chart2"></div>
+                </div>
               </div>
-              <div class="w-78% ">
-                <div id="chart2"></div>
-              </div>
-            </div>
-            <div class="w-100% h-49%">
-              <div class="flex font-800">
-                <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>设备预警
-              </div>
+            </el-card>
+            <el-card>
+              <template #header>
+                <div class="flex font-800">
+                  <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+                  <div>设备预警</div>
+                </div>
+              </template>
               <el-table
                 :data="pageWarnList"
                 :stripe="true"
                 :show-overflow-tooltip="true"
-                height="10rem"
+                height="12rem"
               >
                 <el-table-column
                   label="设备"
@@ -175,17 +134,19 @@
                   </template>
                 </el-table-column>
               </el-table>
-            </div>
+            </el-card>
           </div>
           <!-- 右侧 -->
-          <div class="p-[15px] bg-[#fff] pr-[5px]">
-            <div class="flex font-800">
-              <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
-              <span>实时数据</span>
-            </div>
-            <el-scrollbar height="28rem">
+          <el-card>
+            <template #header>
+              <div class="flex font-800">
+                <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+                <div>实时数据</div>
+              </div>
+            </template>
+            <el-scrollbar height="26rem">
               <div
-                class="mt-0.5rem grid grid-cols-2 gap-2 py-2 pr-3"
+                class="grid grid-cols-2 gap-2"
               >
                 <div
                   v-show="item!=null"
@@ -211,13 +172,16 @@
                 </div>
               </div>
             </el-scrollbar>
-          </div>
+          </el-card>
         </div>
         <!-- 底部 -->
-        <div class="w-100% bg-[#fff] mt-4 p-2">
-          <div class="flex font-800">
-            <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>历史数据
-          </div>
+        <el-card class="my-3">
+          <template #header>
+            <div class="flex font-800">
+              <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+              <div>历史数据</div>
+            </div>
+          </template>
           <div class="flex py-2">
             <el-select
               v-show='radio=="气象站" || radio=="棚内环境"'
@@ -298,26 +262,30 @@
               id="chart4"
             ></div>
           </div>
-        </div>
-        <div class="w-full grid grid-cols-3 gap-2 bg-white my-2">
-          <div class="p-2">
-            <div class="flex font-800">
-              <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
-              <div>设备类型占比</div>
-            </div>
+        </el-card>
+        <div class="w-full grid grid-cols-3 gap-3 my-2">
+          <el-card>
+            <template #header>
+              <div class="flex font-800">
+                <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+                <div>设备类型占比</div>
+              </div>
+            </template>
             <el-radio-group v-model="deviceTypeRadio" class="my-2" @change="(val) => handleDeviceTypeRadioChange(val)">
               <el-radio-button label="全部" value="全部" />
+              <el-radio-button label="视频监控" value="视频监控" />
               <el-radio-button label="监测设备" value="监测设备" />
-              <el-radio-button label="监控设备" value="监控设备" />
-              <el-radio-button label="产线设备" value="产线设备" />
+              <el-radio-button label="控制设备" value="控制设备" />
             </el-radio-group>
             <div id="chartExtra1"></div>
-          </div>
-          <div class="col-span-2 p-2">
-            <div class="flex font-800">
-              <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
-              <div>数据采集</div>
-            </div>
+          </el-card>
+          <el-card class="col-span-2">
+            <template #header>
+              <div class="flex font-800">
+                <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
+                <div>数据采集</div>
+              </div>
+            </template>
             <div class="flex space-x-2 items-center">
               <el-radio-group
                 v-model="dataCollectRadio"
@@ -340,7 +308,7 @@
               </div>
             </div>
             <div id="chartExtra2"></div>
-          </div>
+          </el-card>
         </div>
       </div>
     </div>
@@ -353,26 +321,39 @@ import {
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 import {
-  HomeDeviceCard2,
+  getEquipmentCountSum,
   ParkTree,
-  homeCheckLog,
+  getInspectionProgress,
   pageRealTimeData,
   CountListByNowTime,
-  pageWarningInfo2,
+  warningRecordInfoByCode,
   environmentView,
-  DataByParkAndPlotAndType
+  DataByParkAndPlotAndType,
+  deviceTypeCount,
+  QueryCurrentDateCount
 } from './apis'
+import { formatTime } from '@/utils';
 
 const deviceTypeRadio = ref('全部')
+const deviceTypeDataList = ref<Array<any>>([])
 const handleDeviceTypeRadioChange = async (
   param: string | number | boolean = '全部'
 ) => {
+  let _data = []
+  if (deviceTypeDataList.value.length === 0) {
+	  const res = await deviceTypeCount()
+	  if (Array.isArray(res)) deviceTypeDataList.value = res
+  }
+  if (param === '全部') _data = deviceTypeDataList.value.map(item => ({ value: item.count, name: item.categoryName }))
+  if (param === '视频监控') _data = deviceTypeDataList.value.filter(ele => { return ele.typeName === '视频监控'}).map(item => ({ value: item.count, name: item.categoryName }))
+  if (param === '监测设备') _data = deviceTypeDataList.value.filter(ele => { return ele.typeName === '监测设备'}).map(item => ({ value: item.count, name: item.categoryName }))
+  if (param === '控制设备') _data = deviceTypeDataList.value.filter(ele => { return ele.typeName === '控制设备'}).map(item => ({ value: item.count, name: item.categoryName }))
   console.log('param', param);
   initChartStatic(
     'chartExtra1',
     generatePieOptions({
       legend: {
-        show: false,
+        show: true,
         top: 'center',
         left: 'right',
         bottom: '0',
@@ -380,7 +361,7 @@ const handleDeviceTypeRadioChange = async (
         itemWidth: 12,
         itemHeight: 12,
         textStyle: {
-          color: '#a1a1aa'
+          color: '#7c7c7d'
         }
       },
       color: ['#3381ed'],
@@ -389,18 +370,18 @@ const handleDeviceTypeRadioChange = async (
           type: 'pie',
           radius: ['45%', '65%'],
           center: ['50%', '50%'],
-          data: [
-            { value: 81, name: 'Search Engine' },
-            { value: 19, name: 'Direct' }
-          ],
+          data: _data,
           label: {
             show: true,
             position: 'center',
-            color: '#000'
+            color: '#7c7c7d',
+			formatter: (params) => {
+				return "类型占比"
+			}
           },
           emphasis: {
             label: {
-              show: true,
+              show: false,
               fontSize: 40,
               fontWeight: 'bold'
             }
@@ -412,16 +393,21 @@ const handleDeviceTypeRadioChange = async (
 }
 onMounted(() => { handleDeviceTypeRadioChange() })
 
-const dataCollectRadio = ref()
+const dataCollectRadio = ref('本年')
 const dataCollectPicker = ref<any>([])
 const handleDataCollectChange = async (radio: any = '本年', picker: any = []) => {
-  console.log('RADIO', radio);
-  console.log('picker', picker);
+  const res = await QueryCurrentDateCount({
+	  type: picker.length !== 0 ? 'appoint' : radio === '本年' ? 'year' : radio === '本月' ? 'month' : 'day',
+	  startDate: formatTime(picker[0], 'yyyy-MM-dd'),
+	  endDate: formatTime(picker[1], 'yyyy-MM-dd'),
+  });
+  console.log("数据采集数据", res)
+  const xAxis = res.map(item => (item.collectionDate)), series = res.map(item => (item.totalValue))
   initChartStatic(
     'chartExtra2',
     generateBaseOptions({
       xAxis: {
-        data: [1,2,3,4],
+        data: xAxis,
         interval: 0,
         axisLine: {
           show: true,
@@ -463,7 +449,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
       series: [
         {
           name: '预警信息',
-          data: [2,3,4,5],
+          data: series,
           type: 'line',
           symbol: 'none',
           areaStyle: {
@@ -486,7 +472,7 @@ onMounted(() => { handleDataCollectChange() })
 const dateData = ref('')
 let radio = ref('气象站')
 let pageWarnList = ref([])
-let topList = ref([])
+let topList = ref<Array<any>>([])
 let data = ref([])
 let deviceType = ref('15')
 let deviceKind = ref('48')
@@ -519,7 +505,9 @@ let selecteList = ref([
   }
 ])
 let selecteList2 = ref([])
-const initChart1 = () => {
+const initChart1 = (arr = []) => {
+  console.log("arr", arr);
+  
   initChartStatic(
     'chart1',
     generatePieOptions({
@@ -539,14 +527,14 @@ const initChart1 = () => {
       series: [
         {
           type: 'pie',
-          radius: ['45%', '65%'],
-          center: ['40%', '50%'],
+          radius: ['45%', '70%'],
+          center: ['50%', '50%'],
           data: [
             { value: 81, name: 'Search Engine' },
             { value: 19, name: 'Direct' }
           ],
           label: {
-            show: true,
+            show: false,
             position: 'center',
             color: '#000'
           },
@@ -768,6 +756,8 @@ const initChart4 = (list) => {
   })
   console.log(a, 'a')
   console.log(b, 'b')
+  const dom = document.getElementById("chart4")
+  if (!dom) return
 
   initChartStatic(
     'chart4',
@@ -837,7 +827,6 @@ const defaultProps = {
   label: 'name'
 }
 onMounted(() => {
-  initChart1()
   initChart2()
 })
 
@@ -859,10 +848,12 @@ const handleRadioChange = (e) => {
 }
 //获取顶部小卡片数据
 const getHomeDeviceCard = () => {
-  HomeDeviceCard2().then((res) => {
+  getEquipmentCountSum().then((res) => {
     console.log(res, '顶部小卡片')
 
-    topList.value = res
+    topList.value = Object.keys(res).map(item => ({
+      title: item, value: res[item]
+    }))
   })
 }
 getHomeDeviceCard()
@@ -896,10 +887,18 @@ let typeList = ref([])
 let deviceTotal = ref(0)
 let devicePercent = ref(0)
 const getHomeCheckLog = (id) => {
-  homeCheckLog({ belongPlot: id }).then((res) => {
-    typeList.value = res.deviceTypeList
-    deviceTotal.value = res.deviceTotal
-    devicePercent.value = res.progress
+  getInspectionProgress({
+    belongPlot: id,
+    date: formatTime(new Date(), 'yyyy-MM-dd')
+  }).then((res) => {
+    console.log("及接口2", res);
+    const { notCount, yesCount } = res['巡检进度'][0]
+    
+    typeList.value = res['巡检进度']
+    deviceTotal.value = res['总设备数'][0].count
+    devicePercent.value = (yesCount / (notCount + yesCount) * 100)
+
+    setTimeout(() => { initChart1(res['分组详情']) }, 200)
   })
 }
 //获取实时数据
@@ -914,7 +913,8 @@ const getPageRealTimeData = (id, id2) => {
 }
 //获取预警信息
 const getpageWarningInfo = (id, id2) => {
-  pageWarningInfo2({ parkId: id, plotId: id2 }).then((res) => {
+  warningRecordInfoByCode({ parkCode: id, plotCode: id2 }).then((res) => {
+	console.log("预警信息", res)
     pageWarnList.value = res
   })
 }
@@ -932,7 +932,9 @@ const getDataByParkAndPlotAndType = (id, id2) => {
   DataByParkAndPlotAndType({ deviceKind, belongPark: id, belongPlot: id2 }).then((res) => {
     console.log(res, '土壤墒情和虫情监测')
     selecteList2.value = res
-    initChart4(res[0].list)
+	setTimeout(() => {
+		initChart4(res[0].list)
+	}, 200)
   })
 }
 //下拉选择
