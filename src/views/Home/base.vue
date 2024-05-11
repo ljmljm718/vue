@@ -1,18 +1,20 @@
 <template>
   <div>
+    {{ deptId }}
     <Home1 v-if="deptId === 117" />
     <Home v-else-if="deptId === 115" />
+    <Index v-else-if="deptId === 114" />
     <HomeAiKou v-else-if="deptId === 118" />
     <HomeWenFeng v-else-if="deptId === 120" />
     <HomeBaiBu v-else-if="deptId === 122" />
     <HomeBaidi v-else-if="deptId === 119" />
     <HomeMingYue v-else-if="deptId === 152" />
     <homeQianJiang v-else-if="deptId === 153" />
-    <Index v-else />
+    <div v-else></div>
   </div>
 </template>
 <script setup lang="ts">
-import { getUserProfile } from '@/api/system/user/profile'
+import { getUserProfile } from '@/api/system/user/profile'                                          
 import Index from './Index.vue'
 import Home from './home.vue'
 import Home1 from './home1.vue'
