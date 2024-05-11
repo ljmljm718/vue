@@ -98,19 +98,21 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="巡检编号" align="center" prop="inspectionNum"/>
+<!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
+      <el-table-column label="设备" align="center" prop="equName"/>
       <el-table-column label="巡检状态" align="center" prop="inspectionState">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
         </template>
       </el-table-column>
-        <el-table-column label="巡检结果状态" align="center" prop="resultState">
+      <el-table-column label="巡检结果状态" align="center" prop="resultState">
             <template #default="scope">
                 <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
             </template>
         </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
-<!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
-      <el-table-column label="设备" align="center" prop="equName"/>
+      
+
       <el-table-column label="所属基地" align="center" prop="base"/>
       <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
                        prop="massif"/>

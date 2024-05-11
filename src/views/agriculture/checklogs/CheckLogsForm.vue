@@ -10,6 +10,20 @@
       <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
       <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
       <!--      </el-form-item>-->
+      
+
+      <el-form-item label="设备编号" prop="equNum">
+        <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
+        <el-input v-model="formData.equNum" readonly>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="巡检状态" prop="inspectionState">
@@ -44,17 +58,7 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="设备编号" prop="equNum">
-        <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.equNum" readonly>
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
+
       <el-form-item label="所属基地" prop="base">
         <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
       </el-form-item>
