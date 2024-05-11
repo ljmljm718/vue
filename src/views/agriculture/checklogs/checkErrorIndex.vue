@@ -98,6 +98,8 @@
     <el-table v-loading="loading" :data="list" :stripe="true" prefix="right" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/>
+      <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
+      <el-table-column label="设备" align="center" prop="equName" width="200"/>
       <el-table-column label="巡检状态" align="center" prop="inspectionState" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
@@ -109,8 +111,6 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/>
-      <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
-      <el-table-column label="设备" align="center" prop="equName" width="200"/>
       <el-table-column label="处理人" align="center" prop="dealPerson" />
       <el-table-column
         label="处理时间"
