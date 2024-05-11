@@ -6,6 +6,8 @@
     <HomeWenFeng v-else-if="deptId === 120" />
     <HomeBaiBu v-else-if="deptId === 122" />
     <HomeBaidi v-else-if="deptId === 119" />
+    <HomeMingYue v-else-if="deptId === 152" />
+    <homeQianJiang v-else-if="deptId === 153" />
     <Index v-else />
   </div>
 </template>
@@ -18,6 +20,8 @@ import HomeWenFeng from './homeWenFeng.vue'
 import HomeBaiBu from './homeBaiBu.vue'
 import HomeAiKou from './homeAiKou.vue'
 import HomeBaidi from './homeBaidi.vue'
+import HomeMingYue from './homeMingYue.vue'
+import homeQianJiang from './homeQianJiang.vue'
 const deptId = ref(0)
 const judgeHomePage = async () => {
   const data = await getUserProfile()
