@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ deptId }}
     <Home1 v-if="deptId === 117" />
     <Home v-else-if="deptId === 115" />
     <Index v-else-if="deptId === 114" />
@@ -24,6 +23,7 @@ import HomeAiKou from './homeAiKou.vue'
 import HomeBaidi from './homeBaidi.vue'
 import HomeMingYue from './homeMingYue.vue'
 import homeQianJiang from './homeQianJiang.vue'
+import { ref } from 'vue'
 const deptId = ref(0)
 const judgeHomePage = async () => {
   const data = await getUserProfile()
