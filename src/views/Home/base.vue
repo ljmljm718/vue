@@ -8,7 +8,7 @@
     <HomeBaidi v-else-if="deptId === 119" />
     <HomeMingYue v-else-if="deptId === 152" />
     <homeQianJiang v-else-if="deptId === 153" />
-    <Index v-else />
+    <div v-else v-loading class="w-full h-[30rem]"></div>
   </div>
 </template>
 <script setup lang="ts">
