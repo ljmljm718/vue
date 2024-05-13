@@ -113,7 +113,7 @@ const getDeviceCheckInfo = async () => {
     {
       title: '巡检完成率',
       value: completionRate || 0,
-      unit: '%'
+      unit: ''
     },
     {
       title: '结果异常设备',
@@ -127,8 +127,8 @@ const getDeviceCheckInfo = async () => {
     },
   ]
   const mapIns = new AMap.Map("chart3", {
-    zoom: 16,//级别
-    center: [109.24604650765662, 31.41416444104432], //中心点坐标
+    zoom: 18,//级别
+    center: [108.60662259981041, 29.5245921193875], //中心点坐标
     // mapStyle: 'amap://styles/blue', //设置地图的显示样式
   });
   mapIns.on('click', (e) => {
@@ -720,7 +720,7 @@ const handleDatePickerChange = (e) => {
     <el-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center art-font">
-          <span>设备巡检预览</span>
+          <span>设备巡检概览</span>
         </div>
       </template>
       <div class="relative">
