@@ -149,7 +149,7 @@ const resetQuery = () => {
 const {push} = useRouter()
 const goCheck = (row) => {
   //打开新的页签并传递参数
-  push(`/check/checkCountTwo?baseId=${queryParamsCountPageByBaseId.baseId}&createTime=${queryParamsCountPageByBaseId.createTime}&categoryId=${row.categoryId}&categoryName=${row.categoryName}`);
+  push(`/internetMonitor/check/checkCountTwo?baseId=${queryParamsCountPageByBaseId.baseId}&createTime=${queryParamsCountPageByBaseId.createTime}&categoryId=${row.categoryId}&categoryName=${row.categoryName}`);
 }
 
 /**获取当前时间 */
