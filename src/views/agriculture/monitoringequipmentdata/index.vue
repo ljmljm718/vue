@@ -154,8 +154,18 @@
       <el-table-column label="监控地块ID" align="center" prop="monitoringPlotId" />
       <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" />
       <el-table-column label="抓拍图片" align="center" prop="capturedImage" width="150px" >
-        <template #default="scope">
+        <!-- <template #default="scope">
           <el-image :src="scope.row.capturedImage" width="50px" />
+        </template> -->
+        <template #default="{ row }">
+          <el-image
+            class="h-100px w-100px"
+            lazy
+            :src="row.capturedImage"
+            :preview-src-list="[row.capturedImage]"
+            preview-teleported
+            fit="cover"
+          />
         </template>
       </el-table-column>
       <!-- <el-table-column label="视频链接" align="center" prop="videoLink" /> -->

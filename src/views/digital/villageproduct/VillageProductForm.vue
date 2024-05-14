@@ -7,24 +7,11 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="编号" prop="cropCode">
-        <el-input v-model="formData.cropCode" disabled placeholder="系统自动生成...."/>
+      <el-form-item label="产品名称" prop="product">
+        <el-input v-model="formData.product" placeholder="请输入产品名称"/>
       </el-form-item>
-      <el-form-item label="名称" prop="cropName">
-        <el-input v-model="formData.cropName" placeholder="请输入名称"/>
-      </el-form-item>
-      <el-form-item label="品种" prop="cropType">
-        <el-select v-model="formData.cropType" placeholder="请选择品种">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
+      <el-form-item label="所属基地id" prop="parkId">
+        <el-input v-model="formData.parkId" placeholder="请输入所属基地id">
           <template #append>
             <el-button @click="openParkInfoPopup('0')">
               <Icon icon="ep:search"/>
@@ -32,14 +19,12 @@
             </el-button>
           </template>
         </el-input>
-        <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
       </el-form-item>
-      <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+      <el-form-item label="所属基地" prop="park">
+        <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly/>
       </el-form-item>
-
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
+      <el-form-item label="产品码" prop="parkDetailId">
+        <el-input v-model="formData.parkDetailId" placeholder="请输入产品码（所属地块id）">
           <template #append>
             <el-button @click="openParkDetailPopup(formData.belongPark)">
               <Icon icon="ep:search"/>
@@ -47,17 +32,21 @@
             </el-button>
           </template>
         </el-input>
-        <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
       </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
+      <el-form-item label="所属地块" prop="parkDetail">
+        <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly/>
       </el-form-item>
-
-      <el-form-item label="图片" prop="imgId">
-        <UploadImg v-model="formData.imgId"/>
+      <el-form-item label="图片" prop="photo">
+        <UploadImg v-model="formData.photo"/>
       </el-form-item>
-      <el-form-item label="描述" prop="cropDesc">
-        <el-input v-model="formData.cropDesc" placeholder="请输入描述"/>
+      <el-form-item label="产品年份" prop="years">
+        <el-input v-model="formData.years" placeholder="请输入产品年份"/>
+      </el-form-item>
+      <el-form-item label="库存(袋)" prop="inventory">
+        <el-input v-model="formData.inventory" placeholder="请输入库存"/>
+      </el-form-item>
+      <el-form-item label="规格(Kg)" prop="specifications">
+        <el-input v-model="formData.specifications" placeholder="请输入规格"/>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注"/>
@@ -73,15 +62,14 @@
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 </template>
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {VillageProductApi, VillageProductVO} from '@/api/digital/villageproduct'
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 
-/** 鲁渝协作品种管理 表单 */
-defineOptions({name: 'AgriCropBaseForm'})
+/** 特色产品 表单 */
+defineOptions({name: 'VillageProductForm'})
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -92,11 +80,15 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  cropCode: undefined,
-  cropName: undefined,
-  cropType: undefined,
-  imgId: undefined,
-  cropDesc: undefined,
+  product: undefined,
+  parkId: undefined,
+  park: undefined,
+  parkDetailId: undefined,
+  parkDetail: undefined,
+  photo: undefined,
+  years: undefined,
+  inventory: undefined,
+  specifications: undefined,
   remark: undefined,
   belongPark: undefined,
   belongPlot: undefined,
@@ -105,13 +97,7 @@ const formData = ref({
   deptId: undefined,
   userId: undefined,
 })
-const formRules = reactive({
-  cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
-  cropType: [{required: true, message: '品种不能为空', trigger: 'change'}],
-  imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}],
-  belongPlot: [{required: true, message: '所属基地不能为空', trigger: 'blur'}],
-  belongPark: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
-})
+const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
@@ -124,7 +110,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await CropBaseApi.getCropBase(id)
+      formData.value = await VillageProductApi.getVillageProduct(id)
     } finally {
       formLoading.value = false
     }
@@ -144,7 +130,8 @@ const openParkInfoPopup = (id: string) => {
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
     formData.value.belongPark = String(order[0].code)
-    formData.value.parkName = String(order[0].name)
+    formData.value.park = String(order[0].name)
+    formData.value.parkId = String(order[0].id)
   } else formData.value.belongPlot = String(order[0].id)
 }
 
@@ -161,10 +148,11 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
   console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
-  formData.value.belongPlot = String(order[0].id)
-  formData.value.plotName = String(order[0].name)
+  formData.value.parkDetailId = String(order[0].id)
+  formData.value.parkDetail = String(order[0].name)
 
 }
+
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -174,12 +162,12 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as CropBaseVO
+    const data = formData.value as unknown as VillageProductVO
     if (formType.value === 'create') {
-      await CropBaseApi.createCropBase(data)
+      await VillageProductApi.createVillageProduct(data)
       message.success(t('common.createSuccess'))
     } else {
-      await CropBaseApi.updateCropBase(data)
+      await VillageProductApi.updateVillageProduct(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
@@ -194,18 +182,16 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    cropCode: undefined,
-    cropName: undefined,
-    cropType: undefined,
-    imgId: undefined,
-    cropDesc: undefined,
+    product: undefined,
+    parkId: undefined,
+    park: undefined,
+    parkDetailId: undefined,
+    parkDetail: undefined,
+    photo: undefined,
+    years: undefined,
+    inventory: undefined,
+    specifications: undefined,
     remark: undefined,
-    belongPark: undefined,
-    belongPlot: undefined,
-    parkName: undefined,
-    plotName: undefined,
-    deptId: undefined,
-    userId: undefined,
   }
   formRef.value?.resetFields()
 }
