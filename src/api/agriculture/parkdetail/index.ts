@@ -17,6 +17,7 @@ export interface ParkDetailVO {
   remark: string // 备注
   deptId: number // 部门编号
   userId: number // 用户编号
+  qrImg: undefined
 }
 
 // 地块基本信息 API

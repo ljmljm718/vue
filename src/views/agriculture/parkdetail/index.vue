@@ -76,6 +76,12 @@
       <el-table-column label="联系电话" align="center" prop="tel" />
       <el-table-column label="面积" align="center" prop="area" />
       <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="二维码图片" align="center" prop="qrImg" width="200px">
+        <template #default="scope">
+          <el-image :src="`data:image/png;base64,${scope.row.qrImg}`"
+               style="object-fit: cover;width: 7rem;height: 7rem;"/>
+        </template>
+      </el-table-column>
       <el-table-column
         label="创建时间"
         align="center"
@@ -149,7 +155,8 @@ const queryParams = reactive({
   remark: undefined,
   createTime: [],
   deptId: undefined,
-  userId: undefined
+  userId: undefined,
+  qrImg: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -159,6 +166,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ParkDetailApi.getParkDetailPage(queryParams)
+    console.log("data",data)
     list.value = data.list
     total.value = data.total
   } finally {
