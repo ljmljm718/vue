@@ -172,7 +172,7 @@
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
-              path: '/deviceData/equipment-data-three',
+              path: '/internetMonitor/deviceData/equipment-data-three',
               query: {
                 equipmentCode: scope.row.id
               }
