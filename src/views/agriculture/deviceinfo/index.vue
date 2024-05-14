@@ -172,13 +172,23 @@
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
-              path: '/internetMonitor/deviceData/equipment-data-three',
+              path: '/deviceData/equipment-data-three',
               query: {
                 equipmentCode: scope.row.id
               }
             })">查看监测数据
           </el-button>
-
+          <el-button
+            link
+            type="primary"
+            v-if="mingYueDeviceTypeMain.includes(scope.row.deviceType[0])"
+            @click="$router.push({
+              path: '/internetMonitor/deviceData/equipment-data-three',
+              query: {
+                equipmentCode:scope.row.id
+              }
+            })">查看监测数据
+          </el-button>
           <el-button
             link
             type="primary"
@@ -245,8 +255,8 @@ defineOptions({name: 'DeviceInfo'})
  * 80 - 明月
  * 90 - 黔江县中元村
  */
-const deviceTypeMain = ref([14, 25, 39, 46, 76, 80, 90])
-
+const deviceTypeMain = ref([14, 25, 39, 46, 76, 90])
+const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
