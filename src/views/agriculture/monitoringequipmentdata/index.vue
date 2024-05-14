@@ -148,6 +148,7 @@
       <!-- <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="设备ID" align="center" prop="deviceId" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="录入方式" align="center" prop="reserveOne" />
       <el-table-column label="监控基地ID" align="center" prop="monitoringBaseId" />
       <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" />
       <el-table-column label="监控地块ID" align="center" prop="monitoringPlotId" />
@@ -159,7 +160,7 @@
       </el-table-column>
       <!-- <el-table-column label="视频链接" align="center" prop="videoLink" /> -->
       <el-table-column label="备注" align="center" prop="remarks" />
-      <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
+      <!-- 
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
       <el-table-column

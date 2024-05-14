@@ -92,7 +92,7 @@
   <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
   <!--  选择地块-->
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
-  <!--  选择地块-->
+  <!--  选择设备-->
   <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess"/>
 
 </template>
@@ -111,7 +111,7 @@ import SelectDeviceInfo  from '@/views/agriculture/deviceinfo/SelectDeviceInfoFo
 let fileList = ref([])
 
 const handleSuccess = (response, file, fileList) => {
-  console.log('Upload success:', response, file, fileList)
+  //console.log('Upload success:', response, file, fileList)
   videoType.value = false
 }
 
@@ -128,7 +128,7 @@ const beforeUpload = async (file) => {
     const fileForm = new FormData()
     fileForm.append('file', file.raw)
     const { data } = await updateFile(fileForm)
-    console.log('res', data)
+    //console.log('res', data)
     formData.value.videoLink = data
     videoType.value = false
   }
@@ -279,12 +279,17 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 // 机器信息选择
 const SelectDeviceInfoRef = ref()
 const openSelectDeviceInfo = (item:any) => {
-  console.log(item);
-  
+  // console.log(item);
   if (!item.monitoringBaseId || item.monitoringBaseId === undefined ){
     message.error("请选择基地")
   }else if(!item.monitoringPlotId || !item.monitoringPlotId === undefined){
     message.error("请选择地块")
   }else SelectDeviceInfoRef.value.open(item)
+}
+//点击确定后
+const SelectDeviceInfoSuccess = (item:any) => {
+  // console.log(item,"--------");
+  formData.value.deviceId = item[0].id
+  formData.value.deviceName = item[0].deviceName
 }
 </script>

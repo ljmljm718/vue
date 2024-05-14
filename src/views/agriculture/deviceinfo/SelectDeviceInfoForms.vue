@@ -257,7 +257,7 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (item:any) => {
   dialogVisible.value = true
-  console.log(item,"------");  
+  //s(item,"------");  
   queryParams.belongPark = item.monitoringBaseId;
   queryParams.belongPlot = item.monitoringPlotId;
   queryParams.deviceKind = '79  '
