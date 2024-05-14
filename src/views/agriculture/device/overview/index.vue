@@ -77,7 +77,7 @@ const getList = async () => {
 }
 
 const showDetail = async (item) => {
-  router.push('/device/deviceinfo?deviceType=' + item.deviceType)
+  router.push('/internetMonitor/device/deviceView?deviceType=' + item.deviceType)
   // router.push('/device/deviceinfo?deviceType=14,16')
 }
 
