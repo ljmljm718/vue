@@ -52,23 +52,25 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPark">
-        <el-input
-          v-model="queryParams.belongPark"
-          placeholder="请输入所属地块"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+      <el-form-item label="所属基地" prop="parkName">
+        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地" >
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="所属园区" prop="belongPlot">
-        <el-input
-          v-model="queryParams.belongPlot"
-          placeholder="请输入所属园区"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+      <el-form-item label="所属地块" prop="plotName">
+        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块" >
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
@@ -164,9 +166,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="所属地块" align="center" prop="belongPark" />
-      <el-table-column label="所属园区" align="center" prop="belongPlot" />
-      <el-table-column label="操作" align="center" width="120px">
+      <el-table-column label="所属地块" align="center" prop="parkName" />
+      <el-table-column label="所属园区" align="center" prop="plotName" />
+      <el-table-column label="操作" align="center" width="120px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -198,6 +200,11 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CropGrowthForm ref="formRef" @success="getList" />
+
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 
 <script setup lang="ts">
@@ -206,6 +213,10 @@ import download from '@/utils/download'
 import { CropGrowthApi, CropGrowthVO } from '@/api/agriculture/cropgrowth'
 import CropGrowthForm from './CropGrowthForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import { ParkInfoVO } from '@/api/agriculture/parkinfo'
 
 /** 作物生长期管理 列表 */
 defineOptions({ name: 'CropGrowth' })
@@ -232,6 +243,8 @@ const queryParams = reactive({
   belongPlot: undefined,
   startTime: [],
   endTime: [],
+  parkName: undefined,
+  plotName: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -257,6 +270,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongPark = undefined
+  queryParams.belongPlot = undefined
   handleQuery()
 }
 
@@ -298,4 +313,37 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === ""){
+    message.error("请选择基地")
+  }else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0'){
+    queryParams.belongPark = String(order[0].code)
+    queryParams.parkName = String(order[0].name)
+  }
+  else queryParams.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value){
+    message.error("请选择基地")
+  }else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+  console.log("--->>查看选择的地块信息：",order[0])
+  queryParams.belongPark = String(order[0].parkId)
+  queryParams.belongPlot = String(order[0].id)
+  queryParams.plotName = String(order[0].name)
+}
 </script>

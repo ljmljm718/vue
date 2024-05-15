@@ -63,8 +63,8 @@
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
-                @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true" ref="multipleTableRef"
+                @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="所属基地" align="center" prop="parkId" />
         <el-table-column label="编号" align="center" prop="code" width="200"/>
@@ -189,4 +189,42 @@ const props = defineProps({
     type: any
   }
 })
+
+// 地块单选
+const multipleTableRef = ref()
+const select = (selection, row)=> {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if(selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true);
+}
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
 </script>
+
+<style scoped lang='scss'>
+// 隐藏全选按钮
+:deep(.el-table th.el-table__cell:nth-child(1) .cell) {
+  visibility: hidden;
+}
+</style>

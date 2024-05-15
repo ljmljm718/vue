@@ -8,15 +8,15 @@
     :inline-message="true"
   >
     <el-table :data="formData" class="-mt-10px">
-      <el-table-column label="序号" type="index" width="100" />
-       <el-table-column label="编号" min-width="150">
+      <el-table-column label="序号" type="index" width="70" align="center"/>
+       <el-table-column label="编号" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.code`" :rules="formRules.code" class="mb-0px!">
             <el-input v-model="row.code" placeholder="不填后台自动生成" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="名称" min-width="150">
+      <el-table-column label="名称" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.name`" :rules="formRules.name" class="mb-0px!">
             <el-input v-model="row.name" placeholder="请输入名称" />
@@ -32,7 +32,7 @@
           </el-form-item>
         </template>
       </el-table-column>-->
-      <el-table-column label="海拔" min-width="150">
+      <el-table-column label="海拔" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.altitude`" :rules="formRules.altitude" class="mb-0px!">
             <el-input v-model="row.altitude" placeholder="请输入海拔" >
@@ -41,42 +41,42 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="纬度" min-width="150">
+      <el-table-column label="纬度" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.latitude`" :rules="formRules.latitude" class="mb-0px!">
             <el-input v-model="row.latitude" placeholder="请输入纬度" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="经度" min-width="150">
+      <el-table-column label="经度" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.longitude`" :rules="formRules.longitude" class="mb-0px!">
             <el-input v-model="row.longitude" placeholder="请输入经度" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="通讯地址" min-width="150">
+      <el-table-column label="通讯地址" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.address`" :rules="formRules.address" class="mb-0px!">
             <el-input v-model="row.address" placeholder="请输入通讯地址" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="联系人" min-width="150">
+      <el-table-column label="联系人" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.contact`" :rules="formRules.contact" class="mb-0px!">
             <el-input v-model="row.contact" placeholder="请输入联系人" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="联系电话" min-width="150">
+      <el-table-column label="联系电话" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.tel`" :rules="formRules.tel" class="mb-0px!">
             <el-input v-model="row.tel" placeholder="请输入联系电话" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="面积" min-width="150">
+      <el-table-column label="面积" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.area`" :rules="formRules.area" class="mb-0px!">
             <el-input v-model="row.area" placeholder="请输入面积" >
@@ -85,14 +85,14 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="数量" min-width="150">
+      <el-table-column label="数量" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.quantity`" :rules="formRules.quantity" class="mb-0px!">
             <el-input v-model="row.quantity" placeholder="请输入数量" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="备注" min-width="150">
+      <el-table-column label="备注" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.remark`" :rules="formRules.remark" class="mb-0px!">
             <el-input v-model="row.remark" placeholder="请输入备注" />
@@ -101,7 +101,7 @@
       </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">
-          <el-button @click="handleDelete($index)" link>—</el-button>
+          <el-button @click="handleDelete($index)" link type="primary">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,7 +119,21 @@ const props = defineProps<{
 const formLoading = ref(false) // 表单的加载中
 const formData = ref([])
 const formRules = reactive({
-  name: [{ required: true, message: '名称不能为空', trigger: 'blur' }]
+  name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  altitude: [{ required: true, message: '海拔不能为空', trigger: 'blur' }],
+  latitude: [{ required: true, message: '纬度不能为空', trigger: 'blur' }],
+  longitude: [{ required: true, message: '经度不能为空', trigger: 'blur' }],
+  address: [{ required: true, message: '通讯地址不能为空', trigger: 'blur' }],
+  contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
+  tel: [
+    {
+      required: true,
+      pattern: /^(?:(?:\+|00)86)?1(?:3[\d]|4[5-79]|5[0-35-9]|6[5-7]|7[0-8]|8[\d]|9[189])\d{8}$/,
+      message: '请输入正确的号码',
+      trigger: 'blur'
+    }
+  ],
+  area: [{ required: true, message: '面积不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
@@ -128,6 +142,7 @@ const formRef = ref() // 表单 Ref
 watch(
   () => props.parkId,
   async (val) => {
+    console.log("props.parkId", val)
     // 1. 重置表单
     formData.value = []
     // 2. val 非空，则加载数据
@@ -137,11 +152,12 @@ watch(
     try {
       formLoading.value = true
       formData.value = await ParkInfoApi.getParkDetailListByParkId(val)
+      console.log("子表formdata", formData.value)
     } finally {
       formLoading.value = false
     }
   },
-  { immediate: true }
+  { deep: true }
 )
 
 /** 新增按钮操作 */
