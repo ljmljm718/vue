@@ -235,10 +235,10 @@
 <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="农事计划id" align="center" prop="planId" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="作物名称" align="center" prop="cropName" />
-      <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
+      <el-table-column label="基地名称" align="center" prop="parkName"  width="180" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="地块名称" align="center" prop="plotName" />
+      <el-table-column label="地块名称" align="center" prop="plotName"  width="180" />
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="记录状态" align="center" prop="recordState">
         <template #default="scope">
@@ -246,14 +246,14 @@
         </template>
       </el-table-column>
       <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />
-      <el-table-column label="品种" align="center" prop="cropType">
+      <el-table-column label="品种" align="center" prop="cropType" width="100">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.cropType" />
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
-      <el-table-column label="计划状态" align="center" prop="planState">
+      <el-table-column label="计划状态" align="center" prop="planState" width="100">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.planState" />
+          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
         </template>
       </el-table-column>
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
@@ -262,14 +262,14 @@
         label="计划开始时间"
         align="center"
         prop="startTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column
         label="计划结束时间"
         align="center"
         prop="endTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column
@@ -325,7 +325,7 @@
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmRecordApi, FarmRecordVO } from '@/api/agri/farmrecord'
 import FarmRecordForm from './FarmRecordForm.vue'

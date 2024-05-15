@@ -9,8 +9,8 @@
     >
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="农事计划id" prop="planId">
-            <el-input v-model="formData.planId" placeholder="请输入农事计划id" >
+          <el-form-item label="农事计划编码" prop="planId">
+            <el-input v-model="formData.planId" placeholder="请输入农事计划编码" >
               <template #append>
                 <el-button @click="openFarmPlanPopup()">
                   <Icon icon="ep:search"/>
@@ -28,8 +28,8 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="作物id" prop="cropId">
-            <el-input v-model="formData.cropId" placeholder="请输入作物id" >
+          <el-form-item label="作物编号" prop="cropId">
+            <el-input v-model="formData.cropId" placeholder="请输入作物编号" >
               <template #append>
                 <el-button @click="openCropInfoPopup()">
                   <Icon icon="ep:search"/>
@@ -158,7 +158,7 @@
           <el-form-item label="记录时间" prop="recordTime">
             <el-date-picker
               v-model="formData.recordTime"
-              type="date"
+              type="datetime"
               style="width: 100%"
               value-format="x"
               placeholder="选择记录时间"
@@ -181,7 +181,7 @@
           <el-form-item label="记录状态" prop="recordState">
             <el-select v-model="formData.recordState" placeholder="请选择记录状态">
               <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"
+                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_RECORD_STATE)"
                 :key="dict.value"
                 :label="dict.label"
                 :value="dict.value"
