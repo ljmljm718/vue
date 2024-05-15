@@ -38,15 +38,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:park-detail:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -55,7 +62,8 @@
           :loading="exportLoading"
           v-hasPermi="['agriculture:park-detail:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -64,22 +72,25 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="所属基地" align="center" prop="parkId" />
+      <el-table-column label="所属基地" align="center" prop="parkId"/>
       <el-table-column label="编号" align="center" prop="code" width="200"/>
       <el-table-column label="名称" align="center" prop="name" width="150"/>
-<!--      <el-table-column label="类型" align="center" prop="type" />-->
-      <el-table-column label="海拔" align="center" prop="altitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="通讯地址" align="center" prop="address" />
-      <el-table-column label="联系人" align="center" prop="contact" />
-      <el-table-column label="联系电话" align="center" prop="tel" />
-      <el-table-column label="面积" align="center" prop="area" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <!--      <el-table-column label="类型" align="center" prop="type" />-->
+      <el-table-column label="海拔" align="center" prop="altitude"/>
+      <el-table-column label="纬度" align="center" prop="latitude"/>
+      <el-table-column label="经度" align="center" prop="longitude"/>
+      <el-table-column label="通讯地址" align="center" prop="address"/>
+      <el-table-column label="联系人" align="center" prop="contact"/>
+      <el-table-column label="联系电话" align="center" prop="tel"/>
+      <el-table-column label="面积" align="center" prop="area"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="二维码图片" align="center" prop="qrImg" width="200px">
         <template #default="scope">
           <el-image :src="`data:image/png;base64,${scope.row.qrImg}`"
-               style="object-fit: cover;width: 7rem;height: 7rem;"/>
+                    style="object-fit: cover;width: 2rem;height: 2rem;"
+                    preview-teleported
+                    :preview-src-list="[`data:image/png;base64,${scope.row.qrImg}`]"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -89,26 +100,26 @@
         :formatter="dateFormatter"
         width="180px"
       />
-<!--      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:park-detail:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:park-detail:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>-->
+      <!--      <el-table-column label="操作" align="center">
+              <template #default="scope">
+                <el-button
+                  link
+                  type="primary"
+                  @click="openForm('update', scope.row.id)"
+                  v-hasPermi="['agriculture:park-detail:update']"
+                >
+                  编辑
+                </el-button>
+                <el-button
+                  link
+                  type="danger"
+                  @click="handleDelete(scope.row.id)"
+                  v-hasPermi="['agriculture:park-detail:delete']"
+                >
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -120,20 +131,20 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <ParkDetailForm ref="formRef" @success="getList" />
+  <ParkDetailForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { ParkDetailApi, ParkDetailVO } from '@/api/agriculture/parkdetail'
+import {ParkDetailApi, ParkDetailVO} from '@/api/agriculture/parkdetail'
 import ParkDetailForm from './ParkDetailForm.vue'
 
 /** 地块基本信息 列表 */
-defineOptions({ name: 'ParkDetail' })
+defineOptions({name: 'ParkDetail'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<ParkDetailVO[]>([]) // 列表的数据
@@ -166,7 +177,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ParkDetailApi.getParkDetailPage(queryParams)
-    console.log("data",data)
+    console.log("data", data)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -202,7 +213,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
