@@ -173,6 +173,18 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
+          <el-form-item label="完成面积（亩）" prop="finishArea"  label-width="120">
+            <el-input v-model="formData.finishArea" disabled />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="剩余面积（亩）" prop="area"  label-width="120">
+            <el-input v-model="formData.area" disabled />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
           <el-form-item label="土地面积（亩）" prop="recordArea" label-width="120">
             <el-input v-model="formData.recordArea" placeholder="请输入土地面积（亩）" />
           </el-form-item>
@@ -251,6 +263,8 @@ const formData = ref({
   planArea: undefined,
   recordArea: undefined,
   recordState: undefined,
+  finishArea:undefined,
+  area:undefined,
 })
 const formRules = reactive({
   recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }],

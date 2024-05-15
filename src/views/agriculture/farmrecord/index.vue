@@ -239,6 +239,18 @@
       <el-table-column label="基地名称" align="center" prop="parkName"  width="180" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName"  width="180" />
+      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
+        <template #default="scope">
+          <el-select v-model="scope.row.farmDefineType" disabled>
+            <el-option
+              v-for="dict in farmDefineOptions"
+              :key="dict.id"
+              :label="dict.defineName"
+              :value="dict.id"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="记录状态" align="center" prop="recordState">
         <template #default="scope">
@@ -329,12 +341,14 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmRecordApi, FarmRecordVO } from '@/api/agri/farmrecord'
 import FarmRecordForm from './FarmRecordForm.vue'
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 
 /** 农事记录 列表 */
 defineOptions({ name: 'FarmRecord' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
+let farmDefineOptions = ref([])// 设备分类选项
 
 const loading = ref(true) // 列表的加载中
 const list = ref<FarmRecordVO[]>([]) // 列表的数据
@@ -370,6 +384,9 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await FarmRecordApi.getFarmRecordPage(queryParams)
+    data.list.forEach((item)=>{
+      item.farmDefineType=parseInt(item.farmDefineType)
+    })
     list.value = data.list
     total.value = data.total
   } finally {
@@ -431,8 +448,9 @@ const setCheckParams = () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
+onMounted(async () => {
   setCheckParams()
   getList()
+  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 })
 </script>
