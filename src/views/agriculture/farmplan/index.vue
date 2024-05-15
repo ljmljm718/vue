@@ -203,22 +203,30 @@
       <el-table-column label="地块名称" align="center" prop="plotName" />
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="作物名称" align="center" prop="cropName" />
-      <el-table-column label="品种" align="center" prop="cropType" />
-      <el-table-column label="计划状态" align="center" prop="planState" />
+      <el-table-column label="品种" align="center" prop="cropType" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+        </template>
+      </el-table-column>
+      <el-table-column label="计划状态" align="center" prop="planState" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
       <el-table-column label="责任人" align="center" prop="personName" />
       <el-table-column
         label="计划开始时间"
         align="center"
         prop="startTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column
         label="计划结束时间"
         align="center"
         prop="endTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column label="面积（亩）" align="center" prop="planArea" />
@@ -265,10 +273,11 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmPlanApi, FarmPlanVO } from '@/api/agri/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
