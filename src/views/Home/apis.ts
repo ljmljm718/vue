@@ -124,3 +124,7 @@ export const deviceTypeCount = (params) => {
 export const QueryCurrentDateCount = (params) => {
   return request.get({ url: `/yyang/equipment-data/QueryCurrentDateCount`, params})
 }
+
+export const getCountSumByCode = (params) => {
+  return request.get({ url: `/agriculture/agri-warning-record/getCountSumByCode`, params})
+}

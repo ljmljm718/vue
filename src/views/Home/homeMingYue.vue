@@ -56,13 +56,12 @@
               <div>{{deviceTotal}}</div>
             </div>
             <div class="grid grid-cols-2 gap-5px grid-rows-2 h-40% mt-10px ">
-              <div
-                class="bg-[#f2f2f2] p-[10px]"
-                v-for="item,index in typeList"
-                :key="index"
-              >
-                <div style="color: #c1c1c1;">已巡检 <span class="ml-20px">{{item.yesCount}}</span></div>
-                <div style="color: #c1c1c1;margin-top: 10px;">未巡检 <span class="ml-20px">{{item.notCount}}</span></div>
+              <div class="bg-[#f2f2f2] p-[10px]" v-for="item,index in typeList" :key="index">
+                <div class="flex justify-between mb-4px" style="font-weight: bold;">{{item.categoryName}} <span>{{item.totalCount}}</span></div>
+                <div class="flex items-center justify-between" style="color: #606266;">
+                  <div>已巡检 <span class="ml-10px">{{item.yesCount}}</span></div>
+                  <div>未巡检 <span class="ml-10px">{{item.notCount}}</span></div>
+                </div>
               </div>
             </div>
           </el-card>
@@ -78,7 +77,7 @@
                       <div
                         class="flex font-700 mt-10px"
                         style="font-size: 20px"
-                      >33 <div class="dayWarn-1 ml-10px mt-10px"></div>
+                      >{{ todayWarnNum }}
                       </div>
                     </div>
                     <div class=" mt-20px ml-30px">
@@ -86,7 +85,7 @@
                       <div
                         class="flex font-700 mt-10px"
                         style="font-size: 20px"
-                      >182 <div class="dayWarn-2 ml-10px mt-10px"></div>
+                      >{{ thirtyDayWarn }}
                       </div>
                     </div>
                   </div>
@@ -146,28 +145,25 @@
             </template>
             <el-scrollbar height="26rem">
               <div
-                class="grid grid-cols-2 gap-2"
+                class="grid grid-cols-2 gap-2 pr-1"
               >
                 <div
-                  v-show="item!=null"
-                  class="rounded-sm flex items-center justify-around"
+                  class="flex items-center justify-between rounded-sm p-2 px-3"
                   style="background-color: #237ced16;border: 1px solid #ffffff40;"
                   v-for="item,index in pageRealList"
                   :key="index"
                 >
-                  <div class="flex p-1 px-2 items-center justify-between">
-                    <div class="flex flex-col">
-                      <div style="color: #1173ed;font-weight: bold;font-size:13px;">
-                        <span>{{ item?.avgData }}</span>
-                        <span>{{ item?.dataUnit }}</span>
-                      </div>
-                      <div class="text-sm">{{ item?.dataType }}</div>
+                  <div class="flex flex-col">
+                    <div style="color: #1173ed;font-weight: bold;font-size:13px;">
+                      <span>{{ item?.avgData }}</span>
+                      <span>{{ item?.dataUnit }}</span>
                     </div>
-                    <div
-                      :class="`w-9 h-9 border icon-${index+1}`"
-                      style="background-size: 100% 100%;"
-                    >
-                    </div>
+                    <div class="text-sm">{{ item?.dataType }}</div>
+                  </div>
+                  <div
+                    :class="`w-9 h-9 border icon-${index+1}`"
+                    style="background-size: 100% 100%;"
+                  >
                   </div>
                 </div>
               </div>
@@ -184,37 +180,17 @@
           </template>
           <div class="flex py-2">
             <el-select
-              v-show='radio=="气象站" || radio=="棚内环境"'
-              name=""
-              id=""
-              @change='selecteCli'
-              v-model="test"
+              @change='handleSelectedMonitorTypeChange'
+              v-model="selectedMonitorType"
               placeholder="请选择类型"
               clearable
               class="!w-240px mx-2"
             >
               <el-option
-                v-for="item, index in selecteList"
+                v-for="item, index in monitorTypeList"
                 :key="index"
-                :label="item.title"
-                :value="item.value"
-              />
-            </el-select>
-            <el-select
-              v-show="radio=='土壤墒情' || radio=='虫情监测'"
-              name=""
-              id=""
-              @change='selecteCli2'
-              v-model="test2"
-              placeholder="请选择类型"
-              clearable
-              class="!w-240px mx-2"
-            >
-              <el-option
-                v-for="item, index in selecteList2"
-                :key="index"
-                :label="item.typeName"
-                :value="index"
+                :label="item"
+                :value="item"
               />
             </el-select>
             <el-radio-group
@@ -222,25 +198,16 @@
               @change="handleRadioChange"
             >
               <el-radio-button
-                label="气象站"
-                value="weather"
-              />
-              <el-radio-button
-                label="土壤墒情"
-                value="solid"
-              />
-              <el-radio-button
-                label="棚内环境"
-                value="env"
-              />
-              <el-radio-button
-                label="虫情监测"
-                value="situation"
+                :label="item.categoryName"
+                :value="item.categoryCode"
+                v-for="item, index in selectEquipmentType"
+                :key="index"
               />
             </el-radio-group>
             <div style="margin: 0 .4rem;">
               <el-date-picker
                 v-model="dateData"
+                @change="initChart3"
                 type="daterange"
                 range-separator="-"
                 start-placeholder="开始时间"
@@ -249,18 +216,11 @@
             </div>
             <el-button
               type="primary"
-              @click="handleRadioChange(radio)"
+              @click="initChart3"
             >查询</el-button>
           </div>
           <div class=" w-[100] h-140px relative">
-            <div
-              v-if='radio=="气象站"'
-              id="chart3"
-            ></div>
-            <div
-              v-if="radio=='土壤墒情' || radio=='虫情监测'"
-              id="chart4"
-            ></div>
+            <div id="chart3"></div>
           </div>
         </el-card>
         <div class="w-full grid grid-cols-3 gap-3 my-2">
@@ -330,9 +290,33 @@ import {
   environmentView,
   DataByParkAndPlotAndType,
   deviceTypeCount,
-  QueryCurrentDateCount
+  QueryCurrentDateCount,
+  getCountSumByCode,
 } from './apis'
 import { formatTime } from '@/utils';
+import { DeviceCategoryApi } from "@/api/agriculture/devicecategory";
+
+//存放采集类型
+const selectEquipmentType = ref([])
+// 查询采集类型列表
+const queryList = async ()=>{
+  const dataId = await DeviceCategoryApi.getDeviceCategoryList({ categoryName:'监测设备' })
+  selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({ parentId : dataId[0].id })
+  console.log("查询采集类型列表", selectEquipmentType.value);
+  if (selectEquipmentType.value.length > 0) {
+    radio.value = selectEquipmentType.value[0].categoryName
+    handleRadioChange(radio.value)
+  }
+}
+queryList()
+
+const todayWarnNum = ref(0), thirtyDayWarn = ref(0)
+const getExtraDataInfo = async () => {
+  const { todayCountNum = 0, thirtyDayCountNum = 0 } = await getCountSumByCode({});
+  todayWarnNum.value = todayCountNum;
+  thirtyDayWarn.value = thirtyDayCountNum
+}
+getExtraDataInfo()
 
 const deviceTypeRadio = ref('全部')
 const deviceTypeDataList = ref<Array<any>>([])
@@ -448,7 +432,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
       },
       series: [
         {
-          name: '预警信息',
+          name: '数据采集信息',
           data: series,
           type: 'line',
           symbol: 'none',
@@ -470,7 +454,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
 onMounted(() => { handleDataCollectChange() })
 
 const dateData = ref('')
-let radio = ref('气象站')
+let radio = ref()
 let pageWarnList = ref([])
 let topList = ref<Array<any>>([])
 let data = ref([])
@@ -507,7 +491,10 @@ let selecteList = ref([
 let selecteList2 = ref([])
 const initChart1 = (arr = []) => {
   console.log("arr", arr);
-  
+  const data = [
+    { name: '已巡检', value: arr[0].yesCount },
+    { name: '未巡检', value: arr[0].notCount },
+  ]
   initChartStatic(
     'chart1',
     generatePieOptions({
@@ -529,10 +516,7 @@ const initChart1 = (arr = []) => {
           type: 'pie',
           radius: ['45%', '70%'],
           center: ['50%', '50%'],
-          data: [
-            { value: 81, name: 'Search Engine' },
-            { value: 19, name: 'Direct' }
-          ],
+          data,
           label: {
             show: false,
             position: 'center',
@@ -619,76 +603,24 @@ const initChart2 = async () => {
     })
   )
 }
-const initChart3 = (time2, list) => {
-  let time = [
-    '00',
-    '01',
-    '02',
-    '03',
-    '04',
-    '05',
-    '06',
-    '07',
-    '08',
-    '09',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23'
-  ]
-  let data = [
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0'
-  ]
-  let a = time2
-  let b = list
-  function fn(a) {
-    a.forEach((item, index) => {
-      data.splice(
-        time.findIndex((itm) => itm.includes(item)),
-        1,
-        b[index]
-      )
-    })
-  }
-  fn(a)
+const initChart3 = async () => {
+  const res = await DeviceCategoryApi.waterQualityDataLineChartA({
+    belongPark: belongPark.value,
+    belongPlot: belongPlot.value,
+    lineChart: selectedMonitorType.value,
+    collectionType: radio.value,
+    startTime: dateData.value.length === 2 ? formatTime(dateData.value[0], 'yyyy-MM-dd HH:mm:ss') : null,
+    endTime: dateData.value.length === 2 ? formatTime(dateData.value[1], 'yyyy-MM-dd HH:mm:ss') : null
+  })
+  console.log("历史数据", res);
+  const xAxis = res.map(item => (item.collectionTime))
+  const series = res.map(item => (item.dataValue))
+  
   initChartStatic(
     'chart3',
     generateBaseOptions({
       xAxis: {
-        data: a[0] == '00' ? a : a.reverse(),
+        data: xAxis,
         interval: 0,
         axisLine: {
           show: true,
@@ -729,83 +661,8 @@ const initChart3 = (time2, list) => {
       },
       series: [
         {
-          name: '预警信息',
-          data: b,
-          type: 'line',
-          symbol: 'none',
-          areaStyle: {
-            color: '#20cafd'
-          }
-        }
-      ],
-      grid: {
-        left: '5%',
-        right: '3%',
-        top: '17%',
-        bottom: '15%'
-      }
-    })
-  )
-}
-const initChart4 = (list) => {
-  let a = []
-  let b = []
-  list.forEach((item) => {
-    a.push(item.gatherHour)
-    b.push(item.gatherValue)
-  })
-  console.log(a, 'a')
-  console.log(b, 'b')
-  const dom = document.getElementById("chart4")
-  if (!dom) return
-
-  initChartStatic(
-    'chart4',
-    generateBaseOptions({
-      xAxis: {
-        data: a,
-        interval: 0,
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#c1c1c1'
-          }
-        }
-      },
-      legend: {
-        show: false,
-        orient: 'horizontal',
-        itemWidth: 15,
-        itemHeight: 15
-      },
-      color: ['#20cafd'],
-      yAxis: {
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#c1c1c1'
-          }
-        },
-        splitLine: {
-          //网格线
-          show: true, //是否显示
-          lineStyle: {
-            //网格线样式
-            color: '#c1c1c1', //网格线颜色
-            width: 1, //网格线的加粗程度
-            type: 'dashed' //网格线类型
-          }
-        },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
-        }
-      },
-      series: [
-        {
-          name: '预警信息',
-          data: b,
+          name: '数据详情',
+          data: series,
           type: 'line',
           symbol: 'none',
           areaStyle: {
@@ -832,19 +689,20 @@ onMounted(() => {
 
 const test = ref()
 const test2 = ref()
-const handleRadioChange = (e) => {
-  if (e == '气象站') {
-    deviceType.value = '15'
-    getEnvironmentView(belongPark.value, belongPlot.value)
-  } else if (e == '彭内环境') {
-    deviceType.value = '16'
-  } else if (e == '土壤墒情') {
-    deviceKind.value = '48'
-    getDataByParkAndPlotAndType(belongPark, belongPlot)
-  } else if (e == '虫情监测') {
-    deviceKind.value = '49'
-    getDataByParkAndPlotAndType(belongPark, belongPlot)
+const monitorTypeList = ref([])
+const selectedMonitorType = ref()
+
+const handleRadioChange = async (monitoringType) => {
+  console.log("test", monitoringType);
+  const res = await DeviceCategoryApi.QueryCollectionType({ monitoringType })
+  monitorTypeList.value = res
+  if (monitorTypeList.value.length > 0) {
+    handleSelectedMonitorTypeChange(res[0])
+    selectedMonitorType.value = res[0]
   }
+}
+const handleSelectedMonitorTypeChange = async (item) => {
+  initChart3()
 }
 //获取顶部小卡片数据
 const getHomeDeviceCard = () => {
@@ -894,11 +752,11 @@ const getHomeCheckLog = (id) => {
     console.log("及接口2", res);
     const { notCount, yesCount } = res['巡检进度'][0]
     
-    typeList.value = res['巡检进度']
+    typeList.value = res['分组详情']
     deviceTotal.value = res['总设备数'][0].count
     devicePercent.value = (yesCount / (notCount + yesCount) * 100)
 
-    setTimeout(() => { initChart1(res['分组详情']) }, 200)
+    setTimeout(() => { initChart1(res['巡检进度']) }, 200)
   })
 }
 //获取实时数据
@@ -924,7 +782,7 @@ const getEnvironmentView = (id, id2) => {
   environmentView({ deviceType: deviceType.value, belongPark: id, belongPlot: id2 }).then((res) => {
     console.log(res, '气象站历史数据')
     chartList.value = res
-    initChart3(chartList.value.time, chartList.value.temperature)
+    // initChart3(chartList.value.time, chartList.value.temperature)
   })
 }
 //获取土壤墒情和虫情监测
@@ -933,7 +791,7 @@ const getDataByParkAndPlotAndType = (id, id2) => {
     console.log(res, '土壤墒情和虫情监测')
     selecteList2.value = res
 	setTimeout(() => {
-		initChart4(res[0].list)
+		// initChart4(res[0].list)
 	}, 200)
   })
 }
@@ -941,24 +799,11 @@ const getDataByParkAndPlotAndType = (id, id2) => {
 const selecteCli = (e) => {
   console.log(e, '下拉选择')
   test.value = e
-  if (e == 1) {
-    initChart3(chartList.value.time, chartList.value.temperature)
-  } else if (e == 2) {
-    initChart3(chartList.value.time, chartList.value.humidity)
-  } else if (e == 3) {
-    initChart3(chartList.value.time, chartList.value.lighting)
-  } else if (e == 4) {
-    initChart3(chartList.value.time, chartList.value.airPressure)
-  } else if (e == 5) {
-    initChart3(chartList.value.time, chartList.value.rainfall)
-  } else if (e == 6) {
-    initChart3(chartList.value.time, chartList.value.windSpeed)
-  }
 }
 //下拉选择2
 const selecteCli2 = (e) => {
   test2.vlaue = e
-  initChart4(selecteList2.value[e].list)
+  // initChart4(selecteList2.value[e].list)
 }
 </script>
 <style lang='scss' scoped>

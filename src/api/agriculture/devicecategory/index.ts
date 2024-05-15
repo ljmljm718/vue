@@ -51,4 +51,13 @@ export const DeviceCategoryApi = {
   getDeviceCategoryTree: async (params) => {
     return await request.get({ url: `/agriculture/device-category/tree`, params })
   },
+
+  // 二下-历史数据获取类型
+  QueryCollectionType: async (params) => {
+    return await request.get({ url: `/yyang/equipment-data/QueryCollectionType`, params })
+  },
+  // 左二下-历史数据折线图
+  waterQualityDataLineChartA: async (params) => {
+    return await request.get({ url: `/yyang/equipment-data/waterQualityDataLineChartA`, params })
+  },
 }
