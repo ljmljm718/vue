@@ -183,7 +183,7 @@
       <el-table-column label="图片" align="center" prop="duckFarmImage" >
         <template #default="{ row }">
           <el-image
-            class="h-100px w-100px"
+            class="h-60px w-60px"
             lazy
             :src="row.duckFarmImage"
             :preview-src-list="[row.duckFarmImage]"

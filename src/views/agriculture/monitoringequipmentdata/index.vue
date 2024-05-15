@@ -17,16 +17,7 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="设备名称" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="监控基地ID" prop="monitoringBaseId">
+      <!-- <el-form-item label="监控基地ID" prop="monitoringBaseId">
         <el-input
           v-model="queryParams.monitoringBaseId"
           placeholder="请输入监控基地ID"
@@ -34,7 +25,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="监控基地名称" prop="monitoringBaseName">
         <el-input
           v-model="queryParams.monitoringBaseName"
@@ -44,7 +35,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="监控地块ID" prop="monitoringPlotId">
+      <!-- <el-form-item label="监控地块ID" prop="monitoringPlotId">
         <el-input
           v-model="queryParams.monitoringPlotId"
           placeholder="请输入监控地块ID"
@@ -52,13 +43,59 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="监控地块名称" prop="monitoringPlotName">
         <el-input
           v-model="queryParams.monitoringPlotName"
           placeholder="请输入监控地块名称"
           clearable
           @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入设备名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <!-- 原备用一 -->
+      <el-form-item label="录入方式" prop="reserveOne">
+        <el-select  
+          v-model="queryParams.reserveOne"  
+          placeholder="请选择录入方式"  
+          clearable  
+          @change="handleSelectChange"  
+          class="!w-240px"  
+        >  
+          <el-option  
+            v-for="item in options"  
+            :key="item.value"  
+            :label="item.label"  
+            :value="item.value"  
+          />  
+        </el-select>  
+      </el-form-item>
+
+      <!-- 原备用二 -->
+      <el-form-item label="图片拍摄时间" prop="reserveTwo">
+        <!-- <el-input
+          v-model="queryParams.reserveTwo"
+          placeholder="请输入备用二"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        /> -->
+        <el-date-picker
+          v-model="queryParams.reserveTwo"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
@@ -80,24 +117,8 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <!-- <el-form-item label="备用一" prop="reserveOne">
-        <el-input
-          v-model="queryParams.reserveOne"
-          placeholder="请输入备用一"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备用二" prop="reserveTwo">
-        <el-input
-          v-model="queryParams.reserveTwo"
-          placeholder="请输入备用二"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+      <!-- 
+      
       <el-form-item label="备用三" prop="reserveThree">
         <el-input
           v-model="queryParams.reserveThree"
@@ -107,7 +128,7 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="创建时间" prop="createTime">
+      <!-- <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -117,7 +138,7 @@
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -147,12 +168,12 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="设备ID" align="center" prop="deviceId" /> -->
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="录入方式" align="center" prop="reserveOne" />
-      <el-table-column label="监控基地ID" align="center" prop="monitoringBaseId" />
+      <!-- <el-table-column label="监控基地ID" align="center" prop="monitoringBaseId" /> -->
       <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" />
-      <el-table-column label="监控地块ID" align="center" prop="monitoringPlotId" />
+      <!-- <el-table-column label="监控地块ID" align="center" prop="monitoringPlotId" /> -->
       <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" />
+      <el-table-column label="录入方式" align="center" prop="reserveOne" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="抓拍图片" align="center" prop="capturedImage" width="150px" >
         <!-- <template #default="scope">
           <el-image :src="scope.row.capturedImage" width="50px" />
@@ -169,17 +190,17 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="视频链接" align="center" prop="videoLink" /> -->
+      <el-table-column label="图片拍摄时间" align="center" prop="reserveTwo" :formatter="dateFormatter" width="180px"/>
       <el-table-column label="备注" align="center" prop="remarks" />
       <!-- 
-      <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
-      <el-table-column
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
+      /> -->
       <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
           <el-button
@@ -260,12 +281,21 @@ const queryParams = reactive({
   videoLink: undefined,
   remarks: undefined,
   reserveOne: undefined,
-  reserveTwo: undefined,
+  reserveTwo: [],
   reserveThree: undefined,
   createTime: [],
 })
+
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+const options = [{
+          value: '人工',
+          label: '人工'
+        }, {
+          value: '机器',
+          label: '机器'
+        }]
 
 // openVideo
 let videoUrl=ref();
