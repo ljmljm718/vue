@@ -34,7 +34,7 @@ pipeline{
             steps {
                sh 'pwd && ls -alh'
                sh 'node -v'
-               sh 'cd ${WS} && npm install -g pnpm@8.6.0 && pnpm install && npm run build:prod'
+               sh 'cd ${WS} && npm install -g pnpm@8.6.0 && pnpm install --no-frozen-lockfile && npm run build:prod'
             }
         }
 
