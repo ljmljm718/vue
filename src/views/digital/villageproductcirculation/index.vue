@@ -78,7 +78,7 @@
       <el-table-column label="单价(元)" align="center" prop="unitPrice"/>
       <el-table-column label="数量(袋)" align="center" prop="quantity"/>
       <el-table-column label="总价(元)" align="center" prop="totalPrice"/>
-<!--      <el-table-column label="时间" align="center" prop="times"/>-->
+      <!--      <el-table-column label="时间" align="center" prop="times"/>-->
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
         label="创建时间"
@@ -168,7 +168,10 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await VillageProductCirculationApi.getVillageProductCirculationPage(queryParams)
-    list.value = data.list
+    list.value = data.list.map(item => ({
+      ...item,
+      salesLocation: item.provinceName + '-' + item.cityName + '-' + item.countiesName
+    }))
     total.value = data.total
   } finally {
     loading.value = false

@@ -42,7 +42,7 @@
       </el-form-item>
       <el-form-item label="数量(袋)" prop="quantity">
         <!--        <el-input v-model="formData.quantity" placeholder="请输入数量"/>-->
-        <el-input v-model="formData.quantity" placeholder="请输入数量" @input="() => {
+        <el-input v-model="formData.quantity" placeholder="请输入数量" :disabled="isDisabled" @input="() => {
           if (!formData.quantity || !formData.unitPrice) return
           formData.totalPrice = (formData.quantity * formData.unitPrice).toFixed(2)
         }"/>
@@ -78,6 +78,7 @@ import {VillageProductVO} from "@/api/digital/villageproduct";
 import {codeToText, regionData} from 'element-china-area-data';// 地址级联选择器
 /** 产品流通 表单 */
 defineOptions({name: 'VillageProductCirculationForm'})
+const isDisabled = ref<boolean>(false)
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -110,15 +111,18 @@ const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
+  isDisabled.value = false
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
   // 修改时，设置数据
   if (id) {
+    isDisabled.value = true
     formLoading.value = true
     try {
       formData.value = await VillageProductCirculationApi.getVillageProductCirculation(id)
+      formData.value.salesLocation = [formData.value.provinceCode, formData.value.cityCode, formData.value.countiesCode]
     } finally {
       formLoading.value = false
     }
@@ -149,8 +153,11 @@ const submitForm = async () => {
   await formRef.value.validate()
   // 提交请求
   formLoading.value = true
+  const strAddress = formData.value.salesLocation.toString()
+  formData.value.salesLocation = strAddress
   try {
     const data = formData.value as unknown as VillageProductCirculationVO
+
     if (formType.value === 'create') {
       await VillageProductCirculationApi.createVillageProductCirculation(data)
       message.success(t('common.createSuccess'))
@@ -193,7 +200,7 @@ const resetForm = () => {
 const handleChange = (e) => {
   const self = e;
   // CodeToText属性是区域码，属性值是汉字 CodeToText['110000']输出北京市
-  formData.value.salesLocation = codeToText[self[0]] + '-' + codeToText[self[1]] + '-' + codeToText[self[2]];
+  // formData.value.salesLocation = codeToText[self[0]] + '-' + codeToText[self[1]] + '-' + codeToText[self[2]];
   formData.value.cityCode = self[1];
   formData.value.cityName = codeToText[self[1]];
   formData.value.countiesCode = self[2];
