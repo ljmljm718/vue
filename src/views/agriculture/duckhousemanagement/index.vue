@@ -239,6 +239,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DuckHouseManagementForm ref="formRef" @success="getList" />
+  <div></div>
 </template>
 
 <script setup lang="ts">
