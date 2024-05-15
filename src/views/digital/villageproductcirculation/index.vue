@@ -153,6 +153,12 @@ const queryParams = reactive({
   productId: undefined,
   salesLocation: undefined,
   productSpecifications: undefined,
+  provinceCode: undefined,
+  provinceName: undefined,
+  cityCode: undefined,
+  cityName: undefined,
+  countiesCode: undefined,
+  countiesName: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
