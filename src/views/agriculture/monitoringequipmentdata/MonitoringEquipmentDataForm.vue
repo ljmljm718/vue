@@ -70,15 +70,22 @@
           <el-button solt="trigger" size="small" type="primary">选择视频</el-button>
         </el-upload>
       </el-form-item>
+      <!-- 备用二 -->
+      <el-form-item label="图片拍摄时间" prop="reserveTwo">
+        <!-- <el-input v-model="formData.reserveTwo" placeholder="请输入图片拍摄时间" /> -->
+        <el-date-picker
+          v-model="formData.reserveTwo"
+          type="datetime"
+          value-format="x"
+          placeholder="选择建设时间"
+        />
+      </el-form-item>
       <el-form-item label="备注" prop="remarks">
         <el-input v-model="formData.remarks" placeholder="请输入备注" />
       </el-form-item>
-      <!-- <el-form-item label="备用一" prop="reserveOne">
-        <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
-      </el-form-item>
-      <el-form-item label="备用二" prop="reserveTwo">
-        <el-input v-model="formData.reserveTwo" placeholder="请输入备用二" />
-      </el-form-item>
+      
+      <!--
+      
       <el-form-item label="备用三" prop="reserveThree">
         <el-input v-model="formData.reserveThree" placeholder="请输入备用三" />
       </el-form-item> -->

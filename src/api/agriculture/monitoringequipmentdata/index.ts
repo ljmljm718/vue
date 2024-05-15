@@ -13,7 +13,7 @@ export interface MonitoringEquipmentDataVO {
   videoLink: string // 视频链接
   remarks: string // 备注
   reserveOne: string // 备用一
-  reserveTwo: string // 备用二
+  reserveTwo: Date // 备用二:图片记录时间
   reserveThree: string // 备用三
 }
 
@@ -48,4 +48,4 @@ export const MonitoringEquipmentDataApi = {
   exportMonitoringEquipmentData: async (params) => {
     return await request.download({ url: `/agri/monitoring-equipment-data/export-excel`, params })
   },
-}
+}
