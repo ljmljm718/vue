@@ -107,7 +107,12 @@
         <el-col :span="12">
           <el-form-item label="责任人编号" prop="personId">
             <el-input v-model="formData.personId" placeholder="请输入责任人编号" >
-              111
+              <template #append>
+                <el-button @click="openSelectSysUser('0')">
+                  <Icon icon="ep:search"/>
+                  选择员工
+                </el-button>
+              </template>
             </el-input>
           </el-form-item>
         </el-col>
@@ -149,9 +154,9 @@
         </el-col>
       </el-row>
 
-<!--      <el-form-item label="土地面积（亩）" prop="area">-->
-<!--        <el-input v-model="formData.area" placeholder="请输入土地面积（亩）" />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="土地面积（亩）" prop="area">-->
+      <!--        <el-input v-model="formData.area" placeholder="请输入土地面积（亩）" />-->
+      <!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -165,6 +170,8 @@
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 
   <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
+  <!--  工作人员选择  -->
+  <SelectSysUser ref="selectSysUserRef" @success="handleSelectSysUserChange"/>
 
 </template>
 <script setup lang="ts">
@@ -176,6 +183,7 @@ import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
 
 /** 农事计划 表单 */
 defineOptions({ name: 'FarmPlanForm' })
@@ -268,6 +276,17 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
 
+}
+
+
+//工作人员的选择
+const selectSysUserRef = ref()
+const openSelectSysUser = (id: string) => {
+  selectSysUserRef.value.open(id)
+}
+const handleSelectSysUserChange = (order: UserVO) => {
+  formData.value.personId = String(order[0].id)
+  formData.value.personName = String(order[0].nickname)
 }
 
 /** 打开弹窗 */
