@@ -17,6 +17,7 @@ import icon5 from './assets/icon5.png'
 const selectBase = ref([])
 const getBaseDataList = async () => {
   const selectBaseList = await ParkInfoApi.getParkInfoPage({});
+  console.log(selectBaseList.list,'selectBaseList.list')
   selectBase.value = selectBaseList.list
 }
 getBaseDataList()
@@ -27,7 +28,27 @@ const getSoilInfoList = async () => {
   console.log("res", res);
 }
 getSoilInfoList()
-
+//获取虫情信息
+let infestation=ref([])
+const getEnvironmentalDataHomePageB=async ()=>{
+   infestation.value= await EquipmentDataApi.environmentalDataHomePageB({})
+  console.log(infestation.value,'虫情信息')
+}
+getEnvironmentalDataHomePageB()
+//获取气象信息
+let weather=ref([])
+const getEnvironmentalDataHomePageA=async()=>{
+  weather.value= await EquipmentDataApi.environmentalDataHomePageA({})
+  console.log(weather.value,'气象信息')
+}
+getEnvironmentalDataHomePageA()
+//获取水质信息
+let waterQuality=ref([])
+const getWaterQualityData=async ()=>{
+  waterQuality.value=await EquipmentDataApi.waterQualityData({})
+  console.log(waterQuality.value,'水质信息')
+}
+getWaterQualityData()
 const queryParams = ref({
   name: '',
   plot: ''
@@ -42,10 +63,12 @@ handleQuery()
 // 数据采集量展示
 const dataCollectRadio = ref()
 const dataCollectDateRange = ref([])
-onMounted(() => {
+onMounted(async () => {
+  let res =await EquipmentDataApi.QueryCurrentDateCount({})
+  console.log(res,'数据采集量展示')
   initChartStatic('dataCollectChart', generateBaseOptions({
     xAxis: {
-      data: [1,2,3,4,5,6,7,8,9,10],
+      data: res.map(item=>item.collectionDate).reverse(),
       axisLine: {
         show: true,
         lineStyle: {
@@ -87,7 +110,7 @@ onMounted(() => {
     series: [
       {
         name: '',
-        data: [2,3,4,5,3,4,3,2,1],
+        data: res.map(item=>item.totalValue).reverse(),
         type: 'line',
         smooth: true,
         label: {
@@ -113,10 +136,30 @@ onMounted(() => {
 // 数据展示
 const dataShowRadio = ref()
 const dataShowDate = ref([])
-onMounted(() => {
+// //今日本月今年
+// const dataShowChange=(a)=>{
+//   let day=new Date().getDay()
+//   let month=new Date().getMonth()+1
+//   let year=new Date().getFullYear()
+//   if(a=='今日'){
+//     console.log(new Date().getDay(),'shijian')
+//     day=new Date().getDay()
+//   }else if(a=='本月'){
+//     console.log(new Date().getMonth(),'shijian')
+//     month=new Date().getMonth()+1
+//   }else{
+//     console.log(new Date().getFullYear(),'shijian')
+//     year=new Date().getFullYear()
+//   }
+//   dataShowDate.value=`${day}-${month}-${year}`
+//   console.log(dataShowDate.value)
+// }
+const initDataShowChart=async ()=>{
+  let res=await EquipmentDataApi.getDataPresentation({})
+  console.log(res,'数据展示')
   initChartStatic('dataShowChart', generateBaseOptions({
     xAxis: {
-      data: [1,2,3,4,5,6,7,8,9,10],
+      data:res.map(item=>item.dateTime),
       axisLine: {
         show: true,
         lineStyle: {
@@ -157,8 +200,8 @@ onMounted(() => {
     },
     series: [
       {
-        name: '',
-        data: [2,32,14,52,311,42,31,112,19, 99],
+        name: res[0].collectionType,
+        data: res.map(item=>item.dataValue),
         type: 'line',
         smooth: true,
         label: {
@@ -179,11 +222,25 @@ onMounted(() => {
       bottom: '12%'
     }
   }))
+}
+onMounted( () => {
+  initDataShowChart()
+ 
 })
 
 // 数据采集量情况
 const collectConditionDateRange = ref([])
-onMounted(() => {
+//数据采集量情况
+onMounted( async() => {
+  let res=await EquipmentDataApi.getPieDataList({})
+  console.log(res,'数据采集量情况')
+  let data=[]
+  res.forEach(item=>{
+    data.push({
+      name:item.collectionType,
+      value:item.countNum
+    })
+  })
   initChartStatic('collectConditionChart', generatePieOptions({
     legend: {
       show: true,
@@ -202,10 +259,7 @@ onMounted(() => {
         type: 'pie',
         radius: ['40%', '62%'],
         center: ['35%', '50%'],
-        data: [
-          { name: 'ts', value: 14 },
-          { name: 'ts1', value: 14 },
-        ],
+        data:data,
         label: {
           // formatter: "{c|{c}},{d|{d}%}",
           formatter: '{c} - {d}%',
@@ -310,18 +364,11 @@ onMounted(() => {
           </div>
         </template>
         <div class="flex justify-evenly items-center">
-          <div class="flex px-1 py-2 justify-between items-center">
+          <div class="flex px-1 py-2 justify-between items-center" v-for="item,index in infestation" :key='index'>
             <el-avatar shape="square" :src="icon2" />
             <div class="flex px-2 pt-1 flex-col items-center justify-center">
-              <div style="font-size: 12px;">虫害种类</div>
-              <div class="art-font text-lg">5个</div>
-            </div>
-          </div>
-          <div class="flex px-1 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon2" />
-            <div class="flex px-2 pt-1 flex-col items-center justify-center">
-              <div style="font-size: 12px;">虫害数量</div>
-              <div class="art-font text-lg">6个</div>
+              <div style="font-size: 11px;">{{item.monitoringType}}</div>
+              <div class="art-font text-sm" >{{item.dataValue}}{{item.yyUnit}}</div>
             </div>
           </div>
         </div>
@@ -333,33 +380,12 @@ onMounted(() => {
             <span>气象站</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
+        <div class="flex justify-evenly items-center weather" style='flex-wrap: wrap;'>
+          <div class="min-w-32 flex px-3 py-2 justify-between items-center" v-for="item,index in weather" :key="index">
             <el-avatar shape="square" :src="icon1" />
             <div class="flex flex-col items-center justify-center">
-              <div>温度(℃)</div>
-              <div class="art-font text-lg">28.5</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon3" />
-            <div class="flex flex-col items-center justify-center">
-              <div>湿度(%)</div>
-              <div class="art-font text-lg">25.8</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon4" />
-            <div class="flex flex-col items-center justify-center">
-              <div>光照(lux)</div>
-              <div class="art-font text-lg">9000</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon5" />
-            <div class="flex flex-col items-center justify-center">
-              <div>雨量(mm)</div>
-              <div class="art-font text-lg">12</div>
+              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+              <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
           </div>
         </div>
@@ -371,33 +397,12 @@ onMounted(() => {
             <span>水质监测</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon1" />
-            <div class="flex flex-col items-center justify-center">
-              <div>温度(℃)</div>
-              <div class="art-font text-lg">28.5</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon3" />
-            <div class="flex flex-col items-center justify-center">
-              <div>湿度(%)</div>
-              <div class="art-font text-lg">25.8</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon4" />
-            <div class="flex flex-col items-center justify-center">
-              <div>光照(lux)</div>
-              <div class="art-font text-lg">9000</div>
-            </div>
-          </div>
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
+        <div class="flex justify-evenly items-center mt-15px" style="flex-wrap:wrap;">
+          <div class="min-w-32 flex px-3 py-2 justify-between items-center " v-for='item,index in waterQuality' :key='index'>
             <el-avatar shape="square" :src="icon5" />
             <div class="flex flex-col items-center justify-center">
-              <div>雨量(mm)</div>
-              <div class="art-font text-lg">12</div>
+              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+              <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
           </div>
         </div>
@@ -416,6 +421,7 @@ onMounted(() => {
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
+                @change='collectChange'
               />
             </div>
           </div>
@@ -430,7 +436,7 @@ onMounted(() => {
               <span>数据展示</span>
             </div>
             <div class="flex items-center space-x-2">
-              <el-radio-group v-model="dataShowRadio">
+              <el-radio-group v-model="dataShowRadio" @change='dataShowChange'>
                 <el-radio-button label="今日" value="今日" />
                 <el-radio-button label="本月" value="本月" />
                 <el-radio-button label="本年" value="本年" />

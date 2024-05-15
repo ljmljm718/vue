@@ -68,5 +68,47 @@ export const EquipmentDataApi = {
       params
     })
   },
+  // 【智能统计-一】虫情
+  environmentalDataHomePageB: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/environmentalDataHomePageB`,
+      params
+    })
+  },
+  // 【智能统计-一】气象
+  environmentalDataHomePageA: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/environmentalDataHomePageA`,
+      params
+    })
+  },
+  // 【智能统计-一】水质
+  waterQualityData: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/waterQualityData`,
+      params
+    })
+  },
+  // 【智能统计-一】数据采集量情况
+  getPieDataList: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/getPieDataList`,
+      params
+    })
+  },
+  // 【智能统计-一】数据展示
+  getDataPresentation: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/getDataPresentation`,
+      params
+    })
+  },
+  // 【智能统计-一】数据采集量展示
+  QueryCurrentDateCount: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/QueryCurrentDateCount`,
+      params
+    })
+  },
 
 }
