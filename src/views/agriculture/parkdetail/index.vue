@@ -100,26 +100,25 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <!--      <el-table-column label="操作" align="center">
-              <template #default="scope">
-                <el-button
-                  link
-                  type="primary"
-                  @click="openForm('update', scope.row.id)"
-                  v-hasPermi="['agriculture:park-detail:update']"
-                >
-                  编辑
-                </el-button>
-                <el-button
-                  link
-                  type="danger"
-                  @click="handleDelete(scope.row.id)"
-                  v-hasPermi="['agriculture:park-detail:delete']"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>-->
+      <el-table-column label="操作" align="center">
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="goCheck(scope.row)"
+          >
+            溯源
+          </el-button>
+          <!--          <el-button-->
+          <!--            link-->
+          <!--            type="danger"-->
+          <!--            @click="handleDelete(scope.row.id)"-->
+          <!--            v-hasPermi="['agriculture:park-detail:delete']"-->
+          <!--          >-->
+          <!--            删除-->
+          <!--          </el-button>-->
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -177,7 +176,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ParkDetailApi.getParkDetailPage(queryParams)
-    console.log("data", data)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -230,6 +228,14 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** */
+const {push} = useRouter()
+const goCheck = (row) => {
+  console.log(row.id)
+  //打开新的页签并传递参数
+  push(`/industry/farmManage/farm-record?baseId=${row.id}`);
 }
 
 /** 初始化 **/
