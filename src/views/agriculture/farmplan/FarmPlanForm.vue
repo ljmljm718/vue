@@ -155,7 +155,7 @@
         <el-col :span="12">
           <el-form-item label="农事阶段" prop="farmDefineType">
 <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
-            <el-select v-model="formData.farmDefineType" placeholder="请选择计划状态">
+            <el-select v-model="formData.farmDefineType" placeholder="请选择农事阶段">
               <el-option
                 v-for="dict in farmDefineOptions"
                 :key="dict.id"
@@ -232,7 +232,7 @@ const formData = ref({
 
 })
 const formRules = reactive({
-  // planCode: [{ required: true, message: '计划编码不能为空', trigger: 'blur' }],
+  farmDefineType: [{ required: true, message: '农事阶段不能为空', trigger: 'blur' }],
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
   parkName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],
   plotName: [{ required: true, message: '地块名称不能为空', trigger: 'blur' }],
@@ -340,6 +340,8 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as FarmPlanVO
     if (formType.value === 'create') {
+      data.area=data.planArea
+      data.finishArea="0"
       await FarmPlanApi.createFarmPlan(data)
       message.success(t('common.createSuccess'))
     } else {
