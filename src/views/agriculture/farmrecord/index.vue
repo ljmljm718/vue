@@ -423,8 +423,16 @@ const handleExport = async () => {
   }
 }
 
+const route = useRoute()
+/** 路由传参赋值 */
+const setCheckParams = () => {
+  //首先将路由传参的参数  赋值给查询参数
+  queryParams.belongPlot = route.query.baseId
+}
+
 /** 初始化 **/
 onMounted(() => {
+  setCheckParams()
   getList()
 })
 </script>
