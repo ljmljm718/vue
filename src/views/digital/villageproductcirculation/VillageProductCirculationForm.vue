@@ -98,6 +98,12 @@ const formData = ref({
   productId: undefined,
   salesLocation: undefined,
   productSpecifications: undefined,
+  provinceCode: undefined,
+  provinceName: undefined,
+  cityCode: undefined,
+  cityName: undefined,
+  countiesCode: undefined,
+  countiesName: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -174,6 +180,12 @@ const resetForm = () => {
     productId: undefined,
     salesLocation: undefined,
     productSpecifications: undefined,
+    provinceCode: undefined,
+    provinceName: undefined,
+    cityCode: undefined,
+    cityName: undefined,
+    countiesCode: undefined,
+    countiesName: undefined,
   }
   formRef.value?.resetFields()
 }
@@ -181,12 +193,12 @@ const resetForm = () => {
 const handleChange = (e) => {
   const self = e;
   // CodeToText属性是区域码，属性值是汉字 CodeToText['110000']输出北京市
-  // formData.value.provinceCode = self[0];
   formData.value.salesLocation = codeToText[self[0]] + '-' + codeToText[self[1]] + '-' + codeToText[self[2]];
-  // formData.value.cityCode = self[1];
-  // formData.value.cityName = codeToText[self[1]];
-  // formData.value.countiesCode = self[2];
-  // formData.value.countiesName = codeToText[self[2]];
-  // formData.value.provinceName = codeToText[self[0]];
+  formData.value.cityCode = self[1];
+  formData.value.cityName = codeToText[self[1]];
+  formData.value.countiesCode = self[2];
+  formData.value.countiesName = codeToText[self[2]];
+  formData.value.provinceCode = self[0];
+  formData.value.provinceName = codeToText[self[0]];
 }
 </script>
