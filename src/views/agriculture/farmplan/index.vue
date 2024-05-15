@@ -199,6 +199,18 @@
       <el-table-column label="计划名称" align="center" prop="planName" />
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
       <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
+        <template #default="scope">
+          <el-select v-model="scope.row.farmDefineType" disabled>
+            <el-option
+              v-for="dict in farmDefineOptions"
+              :key="dict.id"
+              :label="dict.defineName"
+              :value="dict.id"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
@@ -229,8 +241,9 @@
         :formatter="dateFormatter2"
         width="180px"
       />
-      <el-table-column label="面积（亩）" align="center" prop="planArea" />
-<!--      <el-table-column label="土地面积（亩）" align="center" prop="area" />-->
+      <el-table-column label="计划面积（亩）" align="center" prop="planArea" />
+      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" />
+      <el-table-column label="剩余面积（亩）" align="center" prop="area" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -238,7 +251,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="150">
         <template #default="scope">
           <el-button
             link
@@ -278,6 +291,7 @@ import download from '@/utils/download'
 import { FarmPlanApi, FarmPlanVO } from '@/api/agri/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
@@ -311,12 +325,18 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+let farmDefineOptions = ref([])// 设备分类选项
+
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
+    console.log(data)
+    data.list.forEach((item)=>{
+      item.farmDefineType=parseInt(item.farmDefineType)
+    })
     list.value = data.list
     total.value = data.total
   } finally {
@@ -371,7 +391,8 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
+onMounted(async ()  => {
   getList()
+  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 })
 </script>

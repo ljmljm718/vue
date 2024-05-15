@@ -45,4 +45,9 @@ export const FarmDefineApi = {
   exportFarmDefine: async (params) => {
     return await request.download({ url: `/agri/farm-define/export-excel`, params })
   },
+
+  // 查询设备分类树
+  getFarmDefineTree: async (params) => {
+    return await request.get({ url: `/agri/farm-define/tree`, params })
+  },
 }

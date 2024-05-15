@@ -19,6 +19,8 @@ export interface FarmPlanVO {
   endTime: Date // 计划结束时间
   planArea: string // 计划面积（亩）
   area: string // 土地面积（亩）
+  farmDefineType:string
+  finshArea:string
 }
 
 // 农事计划 API

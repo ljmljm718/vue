@@ -148,8 +148,21 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="面积（亩）" prop="planArea">
+          <el-form-item label="计划面积（亩）" prop="planArea" label-width="120">
             <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="农事阶段" prop="farmDefineType">
+<!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
+            <el-select v-model="formData.farmDefineType" placeholder="请选择计划状态">
+              <el-option
+                v-for="dict in farmDefineOptions"
+                :key="dict.id"
+                :label="dict.defineName"
+                :value="dict.id"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -184,6 +197,7 @@ import {CropBaseVO} from "@/api/agriculture/cropbase";
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 
 /** 农事计划 表单 */
 defineOptions({ name: 'FarmPlanForm' })
@@ -213,6 +227,9 @@ const formData = ref({
   endTime: undefined,
   planArea: undefined,
   area: undefined,
+  farmDefineType:undefined,
+  finishArea:undefined,
+
 })
 const formRules = reactive({
   // planCode: [{ required: true, message: '计划编码不能为空', trigger: 'blur' }],
@@ -289,17 +306,23 @@ const handleSelectSysUserChange = (order: UserVO) => {
   formData.value.personName = String(order[0].nickname)
 }
 
+let farmDefineOptions = ref([])// 设备分类选项
+const farmDefineType = ref()
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+
+  // 获取设备分类树
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   resetForm()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await FarmPlanApi.getFarmPlan(id)
+      formData.value.farmDefineType=parseInt(formData.value.farmDefineType);
     } finally {
       formLoading.value = false
     }
@@ -351,6 +374,8 @@ const resetForm = () => {
     endTime: undefined,
     planArea: undefined,
     area: undefined,
+    farmDefineType:undefined,
+    finishArea:undefined,
   }
   formRef.value?.resetFields()
 }
