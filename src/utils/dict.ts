@@ -267,4 +267,6 @@ export enum DICT_TYPE {
 
   // =========== agri -  百部 ==========
   DRYING_METHOD= 'drying_method',//烘干方式
+  // =========== agri -   明月 ==========
+  AGRI_DUCKHOUSE_CLASSIFICATION = 'agri_duckhouse_classification', //鸭舍分类
 }
