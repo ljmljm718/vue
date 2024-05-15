@@ -105,6 +105,21 @@ const formData = ref({
 })
 const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
+  altitude: [{ required: true, message: '海拔不能为空', trigger: 'blur' }],
+  latitude: [{ required: true, message: '纬度不能为空', trigger: 'blur' }],
+  longitude: [{ required: true, message: '经度不能为空', trigger: 'blur' }],
+  address: [{ required: true, message: '通讯地址不能为空', trigger: 'blur' }],
+  contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
+  tel: [
+    {
+      required: true,
+      pattern: /^(?:(?:\+|00)86)?1(?:3[\d]|4[5-79]|5[0-35-9]|6[5-7]|7[0-8]|8[\d]|9[189])\d{8}$/,
+      message: '请输入正确的手机号码',
+      trigger: 'blur'
+    }
+  ],
+  area: [{ required: true, message: '面积不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 const parkCategoryOptions = ref() //基地分类列表
@@ -119,13 +134,14 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   parkCategoryOptions.value =  await ParkCategoryApi.getAllParkCategory()
-  console.log(parkCategoryOptions)
   resetForm()
+  console.log("新增formdata", formData.value)
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await ParkInfoApi.getParkInfo(id)
+      console.log("修改formdata", formData.value)
     } finally {
       formLoading.value = false
     }

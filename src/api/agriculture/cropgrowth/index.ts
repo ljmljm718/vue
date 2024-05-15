@@ -17,6 +17,8 @@ export interface CropGrowthVO {
   belongPlot: string // 所属园区
   startTime: Date // 开始时间
   endTime: Date // 结束时间
+  parkName:string // 基地名称
+  plotName:string // 地块名称
 }
 
 // 作物生长期管理 API
