@@ -61,6 +61,12 @@ export const EquipmentDataApi = {
   getCollectionType: async (monitoringType:string) => {
     return await request.get({ url: `/yyang/equipment-data/QueryCollectionType?monitoringType=` + monitoringType})
   },
-
+  // 【智能统计-一】土壤
+  environmentalDataHomePageC: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/environmentalDataHomePageC`,
+      params
+    })
+  },
 
 }
