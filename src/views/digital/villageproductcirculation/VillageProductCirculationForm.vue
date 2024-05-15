@@ -24,24 +24,28 @@
         <el-input v-model="formData.customer" placeholder="请输入客户名称"/>
       </el-form-item>
       <el-form-item label="销售地" prop="salesLocation">
-        <el-input v-model="formData.salesLocation" placeholder="请输入销售地"/>
+        <!--        <el-input v-model="formData.salesLocation" placeholder="请输入销售地"/>-->
+        <el-cascader :options="areaSelectData" style="width: 100%"
+                     @change="handleChange" class="full-width" size="large"
+                     v-model="formData.salesLocation" placeholder="请选择销售地"/>
+
       </el-form-item>
       <el-form-item label="产品规格(Kg)" prop="productSpecifications">
         <el-input v-model="formData.productSpecifications" placeholder="请输入产品规格" disabled/>
       </el-form-item>
       <el-form-item label="单价(元)" prop="unitPrice">
-<!--        <el-input v-model="formData.unitPrice" placeholder="请输入单价"/>-->
+        <!--        <el-input v-model="formData.unitPrice" placeholder="请输入单价"/>-->
         <el-input v-model="formData.unitPrice" placeholder="请输入单价" @input="() => {
           if (!formData.quantity || !formData.unitPrice) return
           formData.totalPrice = (formData.quantity * formData.unitPrice).toFixed(2)
-        }" />
+        }"/>
       </el-form-item>
       <el-form-item label="数量(袋)" prop="quantity">
-<!--        <el-input v-model="formData.quantity" placeholder="请输入数量"/>-->
+        <!--        <el-input v-model="formData.quantity" placeholder="请输入数量"/>-->
         <el-input v-model="formData.quantity" placeholder="请输入数量" @input="() => {
           if (!formData.quantity || !formData.unitPrice) return
           formData.totalPrice = (formData.quantity * formData.unitPrice).toFixed(2)
-        }" />
+        }"/>
       </el-form-item>
       <el-form-item label="总价(元)" prop="totalPrice">
         <el-input v-model="formData.totalPrice" placeholder="请输入总价"/>
@@ -71,13 +75,13 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {VillageProductVO} from "@/api/digital/villageproduct";
-
+import {codeToText, regionData} from 'element-china-area-data';// 地址级联选择器
 /** 产品流通 表单 */
 defineOptions({name: 'VillageProductCirculationForm'})
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
-
+const areaSelectData = regionData // options绑定的数据就是引入的 regionData
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -94,6 +98,12 @@ const formData = ref({
   productId: undefined,
   salesLocation: undefined,
   productSpecifications: undefined,
+  provinceCode: undefined,
+  provinceName: undefined,
+  cityCode: undefined,
+  cityName: undefined,
+  countiesCode: undefined,
+  countiesName: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -170,7 +180,25 @@ const resetForm = () => {
     productId: undefined,
     salesLocation: undefined,
     productSpecifications: undefined,
+    provinceCode: undefined,
+    provinceName: undefined,
+    cityCode: undefined,
+    cityName: undefined,
+    countiesCode: undefined,
+    countiesName: undefined,
   }
   formRef.value?.resetFields()
+}
+// 编辑格式化地址
+const handleChange = (e) => {
+  const self = e;
+  // CodeToText属性是区域码，属性值是汉字 CodeToText['110000']输出北京市
+  formData.value.salesLocation = codeToText[self[0]] + '-' + codeToText[self[1]] + '-' + codeToText[self[2]];
+  formData.value.cityCode = self[1];
+  formData.value.cityName = codeToText[self[1]];
+  formData.value.countiesCode = self[2];
+  formData.value.countiesName = codeToText[self[2]];
+  formData.value.provinceCode = self[0];
+  formData.value.provinceName = codeToText[self[0]];
 }
 </script>

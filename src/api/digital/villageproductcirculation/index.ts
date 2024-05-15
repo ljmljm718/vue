@@ -13,6 +13,12 @@ export interface VillageProductCirculationVO {
   productId: string // 产品id
   salesLocation: string // 销售地
   productSpecifications: string // 产品规格
+  provinceCode: string // 省份Code
+  provinceName: string // 省份名称
+  cityCode: string // 市区code
+  cityName: string // 市区名称
+  countiesCode: string // 县区Code
+  countiesName: string // 县区名称
 }
 
 // 产品流通 API
