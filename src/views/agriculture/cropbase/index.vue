@@ -79,7 +79,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="编号" align="center" prop="cropCode" />
+<!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
       <el-table-column label="名称" align="center" prop="cropName" />
       <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">
@@ -98,11 +98,36 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark"/>
+<!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
       <el-table-column label="所属基地" align="center" prop="parkName"/>
-      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+<!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="所属基地" align="center" prop="plotName"/>
       <el-table-column label="描述" align="center" prop="cropDesc" />
+      <el-table-column
+        label="开始时间"
+        align="center"
+        prop="receiptStartTime"
+        :formatter="dateFormatter2"
+        width="180px"
+      />
+      <el-table-column
+        label="结束时间"
+        align="center"
+        prop="receiptEndTime"
+        :formatter="dateFormatter2"
+        width="180px"
+      />
+      <el-table-column label="批次号" align="center" prop="batchCode" />
+<!--      <el-table-column label="是否采收" align="center" prop="recoveryNo" />-->
+      <el-table-column label="二维码" align="center" prop="batchQrImg" >
+        <template #default="scope">
+          <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
+                    style="object-fit: cover;width: 2rem;height: 2rem;"
+                    preview-teleported
+                    :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
           label="创建时间"
@@ -113,6 +138,14 @@
       />
       <el-table-column label="操作" align="center">
         <template #default="scope">
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id)"-->
+<!--            v-hasPermi="['agriculture:crop-base:update']"-->
+<!--          >-->
+<!--            采收-->
+<!--          </el-button>-->
           <el-button
               link
               type="primary"
@@ -147,7 +180,7 @@
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
