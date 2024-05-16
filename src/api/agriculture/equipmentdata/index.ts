@@ -110,5 +110,12 @@ export const EquipmentDataApi = {
       params
     })
   },
+  // 【智能统计-一】数据展示 下拉
+  QueryCollectionType: async (params) => {
+    return await request.get({
+      url: `/yyang/equipment-data/QueryCollectionType`,
+      params
+    })
+  },
 
 }
