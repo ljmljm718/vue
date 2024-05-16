@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="编号" prop="duckFarmCode">
+      <!-- <el-form-item label="编号" prop="duckFarmCode">
         <el-input
           v-model="queryParams.duckFarmCode"
           placeholder="请输入编号"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -171,7 +171,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-      <el-table-column label="编号" align="center" prop="duckFarmCode" />
+      <!-- <el-table-column label="编号" align="center" prop="duckFarmCode" /> -->
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="分类" align="center" prop="category">
         <template #default="scope">

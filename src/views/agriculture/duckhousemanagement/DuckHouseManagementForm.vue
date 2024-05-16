@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="编号" prop="duckFarmCode">
+      <!-- <el-form-item label="编号" prop="duckFarmCode">
         <el-input v-model="formData.duckFarmCode" placeholder="请输入编号,不填写时会自动生成" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名称" />
       </el-form-item>

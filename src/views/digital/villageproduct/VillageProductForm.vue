@@ -10,6 +10,14 @@
       <el-form-item label="产品名称" prop="product">
         <el-input v-model="formData.product" placeholder="请输入产品名称"/>
       </el-form-item>
+
+      <el-form-item label="批次号" prop="batchCode">
+        <el-input v-model="formData.batchCode" placeholder="请输入批次号"/>
+      </el-form-item>
+      <el-form-item label="采收编号" prop="recoveryNum">
+        <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号"/>
+      </el-form-item>
+
       <el-form-item label="所属基地id" prop="parkId">
         <el-input v-model="formData.parkId" placeholder="请输入所属基地id">
           <template #append>
@@ -22,7 +30,7 @@
       </el-form-item>
       <el-form-item label="所属基地" prop="park">
         <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly/>
-      </el-form-item>
+      </el-form-item> 
       <el-form-item label="所属地块id" prop="parkDetailId">
         <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id">
           <template #append>
@@ -48,9 +56,9 @@
       <el-form-item label="规格(Kg)" prop="specifications">
         <el-input v-model="formData.specifications" placeholder="请输入规格"/>
       </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
+      <!-- <el-form-item label="批次号" prop="batchCode">
         <el-input v-model="formData.batchCode" placeholder="请输入批次号" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注"/>
       </el-form-item>
@@ -106,13 +114,28 @@ const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: any) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  if(typeof id === 'object'){
+    console.log(id,"-----===")
+    //批次号
+    formData.value.batchCode = id.batchCode
+    //采收编号
+    formData.value.recoveryNum = id.id
+
+    formData.value.parkId = id.belongPark
+    formData.value.park = id.parkName
+    formData.value.parkDetailId = id.recordNum
+    formData.value.parkDetail = id.parkDetailName
+
+    formData.value.product = id.varietyName
+  }
   // 修改时，设置数据
-  if (id) {
+  if (typeof id === 'string') {
+    console.log( "--进来了id");
     formLoading.value = true
     try {
       formData.value = await VillageProductApi.getVillageProduct(id)
