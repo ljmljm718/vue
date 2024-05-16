@@ -55,29 +55,58 @@
         <el-table-column label="计划名称" align="center" prop="planName" />
         <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
         <el-table-column label="基地名称" align="center" prop="parkName" />
+        <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
+          <template #default="scope">
+            <el-select v-model="scope.row.farmDefineType" disabled>
+              <el-option
+                v-for="dict in farmDefineOptions"
+                :key="dict.id"
+                :label="dict.defineName"
+                :value="dict.id"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
         <el-table-column label="地块名称" align="center" prop="plotName" />
         <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
         <el-table-column label="作物名称" align="center" prop="cropName" />
-        <el-table-column label="品种" align="center" prop="cropType" />
-        <el-table-column label="计划状态" align="center" prop="planState" />
+        <el-table-column label="品种" align="center" prop="cropType" >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+          </template>
+        </el-table-column>
+        <el-table-column label="计划状态" align="center" prop="planState" >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
+          </template>
+        </el-table-column>
         <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
         <el-table-column label="责任人" align="center" prop="personName" />
         <el-table-column
           label="计划开始时间"
           align="center"
           prop="startTime"
-          :formatter="dateFormatter"
+          :formatter="dateFormatter2"
           width="180px"
         />
         <el-table-column
           label="计划结束时间"
           align="center"
           prop="endTime"
+          :formatter="dateFormatter2"
+          width="180px"
+        />
+        <el-table-column label="计划面积（亩）" align="center" prop="planArea" />
+        <el-table-column label="完成面积（亩）" align="center" prop="finishArea" />
+        <el-table-column label="剩余面积（亩）" align="center" prop="area" />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="面积（亩）" align="center" prop="planArea" />
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -98,8 +127,11 @@
 
 <script lang="ts" setup>
 import {ElTable} from 'element-plus'
-import {dateFormatter} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import {FarmPlanApi, FarmPlanVO} from "@/api/agri/farmplan";
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 
 defineOptions({name: 'SelectFarmPlan'})
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
@@ -135,6 +167,7 @@ const selectionList = ref<FarmPlanVO[]>([])
 const handleSelectionChange = (rows: FarmPlanVO[]) => {
   selectionList.value = rows
 }
+let farmDefineOptions = ref([])// 设备分类选项
 
 /** 提交选择 */
 const emits = defineEmits<{
@@ -154,8 +187,11 @@ const submitForm = () => {
 const open = async (id: string) => {
   dialogVisible.value = true
   await nextTick() // 等待，避免 queryFormRef 为空
+  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
+
   // 加载下属地块列表
   await resetQuery()
+
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 

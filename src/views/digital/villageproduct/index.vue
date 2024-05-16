@@ -92,7 +92,7 @@
       <el-table-column label="产品名称" align="center" prop="product"/>
       <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
       <el-table-column label="所属基地" align="center" prop="park"/>
-      <el-table-column label="产品码" align="center" prop="parkDetailId"/>
+<!--      <el-table-column label="所属地块id" align="center" prop="parkDetailId"/>-->
       <el-table-column label="所属地块" align="center" prop="parkDetail"/>
       <el-table-column label="图片" align="center" prop="photo">
         <template #default="{ row }">
@@ -109,6 +109,8 @@
       <el-table-column label="产品年份" align="center" prop="years"/>
       <el-table-column label="库存(袋)" align="center" prop="inventory"/>
       <el-table-column label="规格(Kg)" align="center" prop="specifications"/>
+      <el-table-column label="批次号" align="center" prop="batchCode" />
+<!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
 <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
@@ -180,6 +182,8 @@ const queryParams = reactive({
   specifications: undefined,
   remark: undefined,
   createTime: [],
+  batchCode: undefined,
+  recoveryNum: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

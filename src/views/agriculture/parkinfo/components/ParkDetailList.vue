@@ -2,7 +2,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-       <el-table-column label="编号" align="center" prop="code" width="200"/>
+<!--       <el-table-column label="编号" align="center" prop="code" width="200"/>-->
       <el-table-column label="名称" align="center" prop="name" width="150"/>
       <el-table-column label="海拔" align="center" prop="altitude" width="100">
         <template #default="scope">

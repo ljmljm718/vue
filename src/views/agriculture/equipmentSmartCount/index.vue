@@ -21,11 +21,12 @@ const getBaseDataList = async () => {
   selectBase.value = selectBaseList.list
 }
 getBaseDataList()
-
+const soilList=ref([])
 // 获取土壤墒情信息
 const getSoilInfoList = async () => {
   const res = await EquipmentDataApi.environmentalDataHomePageC({})
   console.log("res", res);
+  soilList.value=res
 }
 getSoilInfoList()
 //获取虫情信息
@@ -59,16 +60,38 @@ const resetQuery = () => {
   handleQuery()
 }
 handleQuery()
+//时间提取
+function startTime(time){
+  let data=new Date(time[0])
+  let data2=new Date(time[1])
+  let year=data.getFullYear()
+  let year2=data2.getFullYear()
+  let month=data.getMonth()+1
+  let month2=data2.getMonth()+1
+  let day=data.getDate()
+  let day2=data2.getDate()
+  initDataCollectChart('appoint',`${year}-${month}-${day}`,`${year2}-${month2}-${day2}`)
+}
 
 // 数据采集量展示
-const dataCollectRadio = ref()
+const dataCollectRadio = ref('本年')
 const dataCollectDateRange = ref([])
-onMounted(async () => {
-  let res =await EquipmentDataApi.QueryCurrentDateCount({})
+const CollectDate=()=>{
+  startTime(dataCollectDateRange.value)
+}
+const dataColleChange= (val)=>{
+  if(val=='本年') val='year'
+  else if(val=='本月') val='month'
+  else if(val=='今日') val='day' 
+  initDataCollectChart(val)
+}
+const initDataCollectChart=async (type,startDate='',endDate='')=>{
+  console.log(type,startDate,endDate,'asdasdq123')
+  let res =await EquipmentDataApi.QueryCurrentDateCount(type=='appoint'?{type,startDate,endDate}:{type} )
   console.log(res,'数据采集量展示')
   initChartStatic('dataCollectChart', generateBaseOptions({
     xAxis: {
-      data: res.map(item=>item.collectionDate).reverse(),
+      data:type=='appoint'?res.map(item=>item.collectionDate):res.map(item=>item.collectionDate).reverse(),
       axisLine: {
         show: true,
         lineStyle: {
@@ -109,8 +132,8 @@ onMounted(async () => {
     },
     series: [
       {
-        name: '',
-        data: res.map(item=>item.totalValue).reverse(),
+        name: '数据采集量展示',
+        data:type=='appoint'?res.map(item=>item.totalValue):res.map(item=>item.totalValue).reverse() ,
         type: 'line',
         smooth: true,
         label: {
@@ -131,35 +154,43 @@ onMounted(async () => {
       bottom: '12%'
     }
   }))
-})
 
+}
 // 数据展示
-const dataShowRadio = ref()
+const dataShowRadio = ref('气象站')
+let seletValue=ref()
+let options=ref([])
 const dataShowDate = ref([])
-// //今日本月今年
-// const dataShowChange=(a)=>{
-//   let day=new Date().getDay()
-//   let month=new Date().getMonth()+1
-//   let year=new Date().getFullYear()
-//   if(a=='今日'){
-//     console.log(new Date().getDay(),'shijian')
-//     day=new Date().getDay()
-//   }else if(a=='本月'){
-//     console.log(new Date().getMonth(),'shijian')
-//     month=new Date().getMonth()+1
-//   }else{
-//     console.log(new Date().getFullYear(),'shijian')
-//     year=new Date().getFullYear()
-//   }
-//   dataShowDate.value=`${day}-${month}-${year}`
-//   console.log(dataShowDate.value)
-// }
-const initDataShowChart=async ()=>{
-  let res=await EquipmentDataApi.getDataPresentation({})
+// //获取下拉
+const dataShowChange= async(val)=>{
+  let res=await EquipmentDataApi.QueryCollectionType({monitoringType:val})
+  options.value=res
+  dataShowRadio.value=val
+  console.log(res,'实时数据下拉')
+  initDataShowChart(dataShowRadio.value,res[0])
+}
+dataShowChange('气象站')
+//下拉选择
+const selectCli=(e)=>{
+  console.log(e,'value221')
+  seletValue.value=e
+  initDataShowChart(dataShowRadio.value,e)
+}
+//选择时间
+const dataShowDateChange=(val)=>{
+  console.log(val,'val')
+  let data=new Date(val) 
+  let year=val.getFullYear()
+  let month=data.getMonth()+1
+  let day=data.getDate()
+  initDataShowChart(dataShowRadio.value,seletValue.value,`${year}-${month}-${day}`)
+}
+const initDataShowChart=async (collectionType='',monitoringType='',date='')=>{
+  let res=await EquipmentDataApi.getDataPresentation({collectionType,monitoringType,date})
   console.log(res,'数据展示')
   initChartStatic('dataShowChart', generateBaseOptions({
     xAxis: {
-      data:res.map(item=>item.dateTime),
+      data:res.map(item=>item.dateTime).reverse(),
       axisLine: {
         show: true,
         lineStyle: {
@@ -200,8 +231,8 @@ const initDataShowChart=async ()=>{
     },
     series: [
       {
-        name: res[0].collectionType,
-        data: res.map(item=>item.dataValue),
+        name: '数据展示' ,
+        data: res.map(item=>item.dataValue).reverse(),
         type: 'line',
         smooth: true,
         label: {
@@ -223,16 +254,35 @@ const initDataShowChart=async ()=>{
     }
   }))
 }
-onMounted( () => {
-  initDataShowChart()
- 
-})
 
 // 数据采集量情况
 const collectConditionDateRange = ref([])
+//数据采集量情况时间提取
+function getTime(time){
+  let data=new Date(time[0])
+  let data2=new Date(time[1])
+  console.log(data.getDate(),'asdasdq123')
+  let year=data.getFullYear()
+  let year2=data2.getFullYear()
+  let month=data.getMonth()+1
+  let month2=data2.getMonth()+1
+  let day=data.getDate()
+  let day2=data2.getDate()
+  let hour=data.getHours()
+  let hour2=data2.getHours()
+  let minute=data.getMinutes()
+  let minute2=data2.getMinutes()
+  let miao=data.getSeconds()
+  let miao2=data2.getSeconds()
+  initCollectConditionChart(`${year}-${month}-${day} ${hour}:${minute}:${miao}`,`${year2}-${month2}-${day2} ${hour2}:${minute2}:${miao2}`)
+
+}
+const collectChange=()=>{
+  getTime(collectConditionDateRange.value)
+}
 //数据采集量情况
-onMounted( async() => {
-  let res=await EquipmentDataApi.getPieDataList({})
+const initCollectConditionChart=async (dataStarTime='',dataEndTime='')=>{
+  let res=await EquipmentDataApi.getPieDataList({dataStarTime,dataEndTime})
   console.log(res,'数据采集量情况')
   let data=[]
   res.forEach(item=>{
@@ -255,7 +305,7 @@ onMounted( async() => {
     color: ['#00b4ff', '#00f496', '#3b72ad'],
     series: [
       {
-        name: '',
+        name: '数据采集量情况',
         type: 'pie',
         radius: ['40%', '62%'],
         center: ['35%', '50%'],
@@ -279,6 +329,12 @@ onMounted( async() => {
       }
     ]
   }))
+
+}
+onMounted( async() => {
+  initDataShowChart()
+  initDataCollectChart('year')
+  initCollectConditionChart()
 })
 </script>
 <template>
@@ -332,27 +388,13 @@ onMounted( async() => {
             <span>土壤墒情</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center">
-            <el-avatar shape="square" :src="icon1" />
+        <div class="grid grid-rows-3 grid-cols-3" style="flex-wrap:wrap;">
+          <div class="min-w-32 flex px-3 py-2 justify-between items-center" v-for="item,index in soilList" :key="index">
+            <el-avatar shape="square" :src="icon1" v-show="index==0"/>
             <div class="flex flex-col items-center justify-center">
-              <div>温度(℃)</div>
-              <div class="art-font text-lg">32</div>
+              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+              <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
-          </div>
-
-          <el-divider direction="vertical" />
-          <div class="flex flex-col items-center">
-            <div>湿度(%)</div>
-            <div class="art-font text-lg">60</div>
-          </div>
-          <div class="flex flex-col items-center">
-            <div>EC值</div>
-            <div class="art-font text-lg">0.5</div>
-          </div>
-          <div class="flex flex-col items-center">
-            <div>PH值</div>
-            <div class="art-font text-lg">6.5</div>
           </div>
         </div>
       </el-card>
@@ -363,8 +405,8 @@ onMounted( async() => {
             <span>虫情监测</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center">
-          <div class="flex px-1 py-2 justify-between items-center" v-for="item,index in infestation" :key='index'>
+        <div class="flex justify-evenly items-center" style="flex-direction:column;">
+          <div class="flex px-1 py-2 justify-between items-center mb-15px" v-for="item,index in infestation" :key='index'>
             <el-avatar shape="square" :src="icon2" />
             <div class="flex px-2 pt-1 flex-col items-center justify-center">
               <div style="font-size: 11px;">{{item.monitoringType}}</div>
@@ -380,7 +422,7 @@ onMounted( async() => {
             <span>气象站</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center weather" style='flex-wrap: wrap;'>
+        <div class="grid grid-rows-2 grid-cols-4 weather">
           <div class="min-w-32 flex px-3 py-2 justify-between items-center" v-for="item,index in weather" :key="index">
             <el-avatar shape="square" :src="icon1" />
             <div class="flex flex-col items-center justify-center">
@@ -435,13 +477,30 @@ onMounted( async() => {
               <el-icon><HelpFilled /></el-icon>
               <span>数据展示</span>
             </div>
+            
             <div class="flex items-center space-x-2">
               <el-radio-group v-model="dataShowRadio" @change='dataShowChange'>
-                <el-radio-button label="今日" value="今日" />
-                <el-radio-button label="本月" value="本月" />
-                <el-radio-button label="本年" value="本年" />
+                <el-radio-button label="气象站" value="气象站" />
+                <el-radio-button label="水质监测" value="水质监测" />
+                <el-radio-button label="土壤监测" value="土壤监测" />
+                <el-radio-button label="虫情监测" value="虫情监测" />
               </el-radio-group>
+              <el-select
+              @change="selectCli"
+              v-model="seletValue"
+              :placeholder="options[0]"
+              size="large"
+              style="width: 100px"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
               <el-date-picker
+                @change="dataShowDateChange"
                 v-model="dataShowDate"
                 placeholder="请选择时间"
               />
@@ -458,12 +517,13 @@ onMounted( async() => {
               <span>数据采集量展示</span>
             </div>
             <div class="flex items-center space-x-2">
-              <el-radio-group v-model="dataCollectRadio">
+              <el-radio-group v-model="dataCollectRadio" @change="dataColleChange">
                 <el-radio-button label="今日" value="今日" />
                 <el-radio-button label="本月" value="本月" />
                 <el-radio-button label="本年" value="本年" />
               </el-radio-group>
-              <el-date-picker
+              <el-date-picker 
+                @change="CollectDate"
                 v-model="dataCollectDateRange"
                 type="daterange"
                 range-separator="至"
@@ -485,5 +545,6 @@ onMounted( async() => {
 
 #collectConditionChart {
   height: 12rem;
+  flex-direction: column;
 }
 </style>

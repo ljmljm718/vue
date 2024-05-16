@@ -10,6 +10,21 @@
       <!--      <el-form-item label="记录编号" prop="recordNum">-->
       <!--        <el-input v-model="formData.recordNum" placeholder="请输入记录编号" />-->
       <!--      </el-form-item>-->
+      
+      <el-form-item label="品种名称" prop="varietyName">
+        <el-input v-model="formData.varietyName" placeholder="请输入品种名称"/>
+      </el-form-item>
+      <el-form-item label="品种" prop="variety">
+        <el-input v-model="formData.variety" placeholder="请输入品种"/>
+      </el-form-item>
+      <el-form-item label="品种ID" prop="varietyId">
+        <el-input v-model="formData.varietyId" placeholder="请输入品种ID"/>
+      </el-form-item>
+      <!-- 获取批次号 -->
+      <el-form-item label="批次码" prop="batchCode">
+        <el-input v-model="formData.batchCode" placeholder="请输入批次码"/>
+      </el-form-item>
+
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
           v-model="formData.upTime"
@@ -91,6 +106,12 @@ const formData = ref({
   remark: undefined,
   parkName: undefined,
   parkDetailName: undefined,
+  varietyName: undefined, // 品种名称
+  variety: undefined, // 品种
+  varietyId: undefined, // 品种ID
+  batchCode: undefined, // 批次码
+  belongParkId: undefined, // 基地ID
+  belongPlotId: undefined, // 地块ID
 })
 const formRules = reactive({
   laborQuantity: [{required: true, message: '人工数量不能为空', trigger: 'blur'}],

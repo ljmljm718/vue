@@ -9,13 +9,13 @@
   >
     <el-table :data="formData" class="-mt-10px">
       <el-table-column label="序号" type="index" width="70" align="center"/>
-       <el-table-column label="编号" min-width="150" align="center">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.code`" :rules="formRules.code" class="mb-0px!">
-            <el-input v-model="row.code" placeholder="不填后台自动生成" />
-          </el-form-item>
-        </template>
-      </el-table-column>
+<!--       <el-table-column label="编号" min-width="150" align="center">-->
+<!--        <template #default="{ row, $index }">-->
+<!--          <el-form-item :prop="`${$index}.code`" :rules="formRules.code" class="mb-0px!">-->
+<!--            <el-input v-model="row.code" placeholder="不填后台自动生成" />-->
+<!--          </el-form-item>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="名称" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.name`" :rules="formRules.name" class="mb-0px!">
@@ -111,10 +111,9 @@
   </el-row>
 </template>
 <script setup lang="ts">
-import { ParkInfoApi } from '@/api/agriculture/parkinfo'
 
 const props = defineProps<{
-  parkId: undefined // 主表（主表的关联字段）
+  parkDetails: undefined
 }>()
 const formLoading = ref(false) // 表单的加载中
 const formData = ref([])
@@ -137,9 +136,16 @@ const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
 
-
-/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/** 初始化设置入库项 */
 watch(
+  () => props.parkDetails,
+  async (val) => {
+    formData.value = val
+  },
+  { immediate: true }
+)
+/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/*watch(
   () => props.parkId,
   async (val) => {
     console.log("props.parkId", val)
@@ -158,7 +164,7 @@ watch(
     }
   },
   { deep: true }
-)
+)*/
 
 /** 新增按钮操作 */
 const handleAdd = () => {
@@ -180,7 +186,6 @@ const handleAdd = () => {
     userId: undefined,
     quantity: undefined
   }
-  row.parkId = props.parkId
   formData.value.push(row)
 }
 
@@ -198,6 +203,5 @@ const validate = () => {
 const getData = () => {
   return formData.value
 }
-
 defineExpose({ validate, getData })
 </script>

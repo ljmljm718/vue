@@ -278,6 +278,8 @@ const openFarmPlanPopup = () => {
   selectFarmPlanRef.value.open()
 }
 const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
+  console.log("--->>查看选择的地块信息：", order[0])
+
   formData.value.planId = String(order[0].id)
   formData.value.planName = String(order[0].planName)
   formData.value.cropId = String(order[0].cropId)
@@ -293,6 +295,8 @@ const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
   formData.value.startTime = String(order[0].startTime)
   formData.value.endTime = String(order[0].endTime)
   formData.value.planArea = String(order[0].planArea)
+  formData.value.finishArea = String(order[0].finishArea)
+  formData.value.area = String(order[0].area)
 }
 
 //基地的选择
@@ -322,7 +326,6 @@ const openParkDetailPopup = (id: string) => {
 }
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
-  console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
@@ -345,6 +348,8 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.belongPlot = String(order[0].belongPlot)
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
+
+
 
 }
 

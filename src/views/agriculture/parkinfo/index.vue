@@ -71,7 +71,7 @@
           </el-tabs>
         </template>
       </el-table-column>
-      <el-table-column label="编号" align="center" prop="code" width="200"/>
+<!--      <el-table-column label="编号" align="center" prop="code" width="200"/>-->
       <el-table-column label="名称" align="center" prop="name" width="150"/>
       <el-table-column label="类型" align="center" prop="categoryName" width="150"/>
       <el-table-column label="海拔" align="center" prop="altitude" width="100">
