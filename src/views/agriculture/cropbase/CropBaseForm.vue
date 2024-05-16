@@ -121,6 +121,8 @@ const formData = ref({
   plotName: undefined,
   deptId: undefined,
   userId: undefined,
+  receiptStartTime: undefined,
+  receiptEndTime: undefined,
 })
 const formRules = reactive({
   cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],

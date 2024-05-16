@@ -12,7 +12,7 @@
       <!--      </el-form-item>-->
 
       <el-form-item label="品种名称" prop="varietyName">
-        <el-input v-model="formData.varietyName" placeholder="请输入品种名称" :disabled = "boo" />
+        <el-input v-model="formData.varietyName" placeholder="请输入品种名称" :disabled="boo"/>
       </el-form-item>
       <el-form-item label="品种" prop="variety">
         <!-- <el-input v-model="formData.variety" placeholder="请输入品种"/> -->
@@ -20,7 +20,7 @@
           v-model="formData.variety"
           placeholder="请输入分类"
           clearable
-          :disabled = "boo"
+          :disabled="boo"
         >
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
@@ -31,18 +31,18 @@
         </el-select>
       </el-form-item>
       <el-form-item label="品种ID" prop="varietyId">
-        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled = "boo"/>
+        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled="boo"/>
       </el-form-item>
       <!-- 获取批次号 -->
       <el-form-item label="批次码" prop="batchCode">
-        <el-input v-model="formData.batchCode" placeholder="请输入批次码" :disabled = "boo"/>
+        <el-input v-model="formData.batchCode" placeholder="请输入批次码" :disabled="boo"/>
       </el-form-item>
 
 
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled = "boo">
+        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">
           <template #append v-if="boo">
-            <el-button @click="openParkInfoPopup('0')" :disabled = "boo">
+            <el-button @click="openParkInfoPopup('0')" :disabled="boo">
               <Icon icon="ep:search"/>
               选择
             </el-button>
@@ -50,12 +50,13 @@
         </el-input>
       </el-form-item>
       <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly :disabled = "boo"/>
+        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly
+                  :disabled="boo"/>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled = "boo">
+        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled="boo">
           <template #append>
-            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled = "boo">
+            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled="boo">
               <Icon icon="ep:search"/>
               选择
             </el-button>
@@ -63,7 +64,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="地块名称" prop="parkDetailName">
-        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly :disabled = "boo"/>
+        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly
+                  :disabled="boo"/>
       </el-form-item>
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
@@ -100,7 +102,9 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {CropBaseApi} from "@/api/agriculture/cropbase";
+
 /** 采收管理 表单 */
 defineOptions({name: 'HarvestManagementForm'})
 
@@ -175,7 +179,7 @@ const open = async (type: string, id?: any) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  if (typeof id === 'object'){
+  if (typeof id === 'object') {
     formData.value.varietyId = id.id
     formData.value.varietyName = id.cropName
     formData.value.variety = id.cropType
@@ -187,7 +191,7 @@ const open = async (type: string, id?: any) => {
     boo.value = true
   }
   // 修改时，设置数据
-  if (typeof id=== 'string' || typeof id=== 'number') {
+  if (typeof id === 'string' || typeof id === 'number') {
     formLoading.value = true
     try {
       formData.value = await HarvestManagementApi.getHarvestManagement(id)
@@ -209,6 +213,11 @@ const submitForm = async () => {
     const data = formData.value as unknown as HarvestManagementVO
     if (formType.value === 'create') {
       await HarvestManagementApi.createHarvestManagement(data)
+      const dataCropBase = {
+        id: data.varietyId,
+        recoveryNo: true
+      }
+      await CropBaseApi.updateCropBase(dataCropBase)
       message.success(t('common.createSuccess'))
     } else {
       await HarvestManagementApi.updateHarvestManagement(data)
