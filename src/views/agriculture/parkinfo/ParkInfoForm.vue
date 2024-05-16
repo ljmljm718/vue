@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="编号" prop="code">
-        <el-input v-model="formData.code" placeholder="不填后台自动生成" />
-      </el-form-item>
+<!--      <el-form-item label="编号" prop="code">-->
+<!--        <el-input v-model="formData.code" placeholder="不填后台自动生成" />-->
+<!--      </el-form-item>-->
       <el-form-item label="名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名称" />
       </el-form-item>

@@ -9,13 +9,13 @@
   >
     <el-table :data="formData" class="-mt-10px">
       <el-table-column label="序号" type="index" width="70" align="center"/>
-       <el-table-column label="编号" min-width="150" align="center">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.code`" :rules="formRules.code" class="mb-0px!">
-            <el-input v-model="row.code" placeholder="不填后台自动生成" />
-          </el-form-item>
-        </template>
-      </el-table-column>
+<!--       <el-table-column label="编号" min-width="150" align="center">-->
+<!--        <template #default="{ row, $index }">-->
+<!--          <el-form-item :prop="`${$index}.code`" :rules="formRules.code" class="mb-0px!">-->
+<!--            <el-input v-model="row.code" placeholder="不填后台自动生成" />-->
+<!--          </el-form-item>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="名称" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.name`" :rules="formRules.name" class="mb-0px!">
