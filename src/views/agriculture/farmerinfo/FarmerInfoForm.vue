@@ -33,8 +33,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="基地名称" prop="parkName">
-            <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+          <el-form-item label="基地名称" prop="belongParkName">
+            <el-input v-model="formData.belongParkName" placeholder="选择基地后自动写入" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -52,8 +52,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="地块名称" prop="plotName">
-            <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
+          <el-form-item label="地块名称" prop="belongPlotName">
+            <el-input v-model="formData.belongPlotName" placeholder="选择地块后自动写入" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -158,6 +158,8 @@ const formData = ref({
   belongPlot: undefined,
   parkName: undefined,
   plotName: undefined,
+  belongParkName: undefined,
+  belongPlotName: undefined,
 })
 const formRules = reactive({
   farmerId: [{ required: true, message: '农户身份码不能为空', trigger: 'blur' }],
@@ -228,7 +230,9 @@ const resetForm = () => {
     belongPark: undefined,
     belongPlot: undefined,
     parkName: undefined,
-    plotName: undefined
+    plotName: undefined,
+    belongParkName: undefined,
+    belongPlotName: undefined
   }
   formRef.value?.resetFields()
 }
@@ -246,6 +250,8 @@ const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0'){
     formData.value.belongPark = String(order[0].code)
     formData.value.parkName = String(order[0].name)
+    formData.value.belongParkName = String(order[0].name)
+    // belongParkName
   }
   else formData.value.belongPlot = String(order[0].id)
 }
@@ -265,6 +271,7 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
+  formData.value.belongPlotName = String(order[0].name)
 
 }
 </script>
