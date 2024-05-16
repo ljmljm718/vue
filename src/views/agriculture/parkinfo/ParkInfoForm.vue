@@ -44,7 +44,7 @@
         <el-input v-model="formData.tel" placeholder="请输入联系电话" />
       </el-form-item>
       <el-form-item label="面积" prop="area">
-        <el-input v-model="formData.area" placeholder="请输入面积" >
+        <el-input v-model="formData.area" placeholder="请输入面积" disabled>
           <template #append>亩</template>
         </el-input>
       </el-form-item>
@@ -61,7 +61,7 @@
     <!-- 子表的表单 -->
     <el-tabs v-model="subTabsName">
       <el-tab-pane label="地块基本信息" name="parkDetail">
-        <ParkDetailForm ref="parkDetailFormRef" :park-id="formData.id" />
+        <ParkDetailForm ref="parkDetailFormRef" :parkDetails="formData.parkDetails" />
       </el-tab-pane>
     </el-tabs>
     <template #footer>
@@ -101,7 +101,8 @@ const formData = ref({
   deptId: undefined,
   userId: undefined,
   quantity: undefined,
-  img: undefined
+  img: undefined,
+  parkDetails: []
 })
 const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -128,6 +129,21 @@ const parkCategoryOptions = ref() //基地分类列表
 const subTabsName = ref('parkDetail')
 const parkDetailFormRef = ref()
 
+/** 计算 discountPrice、totalPrice 价格 */
+watch(
+  () => formData.value,
+  (val) => {
+    if (!val) {
+      return
+    }
+    if (val.parkDetails){
+      const totalArea = val.parkDetails.reduce((prev, curr) => Number(prev) + Number(curr.area != null ? curr.area : 0), 0)
+      formData.value.area = totalArea
+    }
+  },
+  { deep: true }
+)
+
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -142,6 +158,7 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await ParkInfoApi.getParkInfo(id)
       console.log("修改formdata", formData.value)
+      formData.value.parkDetails = await ParkInfoApi.getParkDetailListByParkId(id)
     } finally {
       formLoading.value = false
     }
@@ -165,8 +182,6 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as ParkInfoVO
-    // 拼接子表的数据
-    data.parkDetails = parkDetailFormRef.value.getData()
     if (formType.value === 'create') {
       await ParkInfoApi.createParkInfo(data)
       message.success(t('common.createSuccess'))
@@ -200,7 +215,8 @@ const resetForm = () => {
     deptId: undefined,
     userId: undefined,
     quantity: undefined,
-    img: undefined
+    img: undefined,
+    parkDetails: []
   }
   formRef.value?.resetFields()
 }
