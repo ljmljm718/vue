@@ -109,7 +109,7 @@ export default {
     fixedMenu: '固定菜单'
   },
   size: {
-    default: '默认',
+    default: '正常',
     large: '大',
     small: '小'
   },
