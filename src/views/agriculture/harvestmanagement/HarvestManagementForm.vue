@@ -15,7 +15,19 @@
         <el-input v-model="formData.varietyName" placeholder="请输入品种名称"/>
       </el-form-item>
       <el-form-item label="品种" prop="variety">
-        <el-input v-model="formData.variety" placeholder="请输入品种"/>
+        <!-- <el-input v-model="formData.variety" placeholder="请输入品种"/> -->
+        <el-select
+          v-model="formData.variety"
+          placeholder="请输入分类"
+          clearable
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="品种ID" prop="varietyId">
         <el-input v-model="formData.varietyId" placeholder="请输入品种ID"/>
@@ -85,6 +97,7 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 /** 采收管理 表单 */
 defineOptions({name: 'HarvestManagementForm'})
 

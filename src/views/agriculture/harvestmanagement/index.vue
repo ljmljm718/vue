@@ -117,9 +117,10 @@
       <el-table-column label="品种名称" align="center" prop="varietyName" />
       <el-table-column label="品种" align="center" prop="variety" >
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.variety" />
         </template>
       </el-table-column>
+      
       <el-table-column label="品种ID" align="center" prop="varietyId" />
       <el-table-column label="批次码" align="center" prop="batchCode" />
       <el-table-column
