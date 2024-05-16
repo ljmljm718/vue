@@ -115,16 +115,16 @@
         align="center"
         prop="receiptStartTime"
         :formatter="dateFormatter2"
-        width="180px"
+        width="100px"
       />
       <el-table-column
         label="结束时间"
         align="center"
         prop="receiptEndTime"
         :formatter="dateFormatter2"
-        width="180px"
+        width="100px"
       />
-      <el-table-column label="批次号" align="center" prop="batchCode"/>
+      <el-table-column label="批次号" align="center" prop="batchCode" width="160px"/>
       <!--      <el-table-column label="是否采收" align="center" prop="recoveryNo" />-->
       <el-table-column label="二维码" align="center" prop="batchQrImg">
         <template #default="scope">
@@ -133,6 +133,12 @@
                     preview-teleported
                     :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
           />
+        </template>
+      </el-table-column>
+      <el-table-column label="采收状态" align="center" prop="recoveryNo">
+        <template #default="scope">
+          <span v-if="scope.row.recoveryNo">已采收</span>
+          <span v-if="!scope.row.recoveryNo">未采收</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center" prop="cropDesc"/>
