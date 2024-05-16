@@ -103,8 +103,12 @@ export default defineComponent({
             class="custom-hover"
             color="var(--top-header-text-color)"
           >
-            <el-icon><Platform /></el-icon>
-          </a>
+            <a
+              href={bigscreenRoute.value}
+              style="color: var(--top-header-text-color);transform:scale(.8);margin-bottom: .3rem;"
+            >
+              <el-icon><Platform /></el-icon>
+            </a>
           <span
             onClick={() => {
               drawer.value = true
