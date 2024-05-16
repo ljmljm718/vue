@@ -23,8 +23,8 @@
       <el-form-item label="所属基地" prop="park">
         <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly/>
       </el-form-item>
-      <el-form-item label="产品码" prop="parkDetailId">
-        <el-input v-model="formData.parkDetailId" placeholder="请输入产品码（所属地块id）">
+      <el-form-item label="所属地块id" prop="parkDetailId">
+        <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id">
           <template #append>
             <el-button @click="openParkDetailPopup(formData.belongPark)">
               <Icon icon="ep:search"/>
@@ -47,6 +47,9 @@
       </el-form-item>
       <el-form-item label="规格(Kg)" prop="specifications">
         <el-input v-model="formData.specifications" placeholder="请输入规格"/>
+      </el-form-item>
+      <el-form-item label="批次号" prop="batchCode">
+        <el-input v-model="formData.batchCode" placeholder="请输入批次号" />
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注"/>
@@ -96,6 +99,8 @@ const formData = ref({
   plotName: undefined,
   deptId: undefined,
   userId: undefined,
+  batchCode: undefined,
+  recoveryNum: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -192,6 +197,14 @@ const resetForm = () => {
     inventory: undefined,
     specifications: undefined,
     remark: undefined,
+    belongPark: undefined,
+    belongPlot: undefined,
+    parkName: undefined,
+    plotName: undefined,
+    deptId: undefined,
+    userId: undefined,
+    batchCode: undefined,
+    recoveryNum: undefined,
   }
   formRef.value?.resetFields()
 }

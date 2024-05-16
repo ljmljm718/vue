@@ -13,6 +13,8 @@ export interface VillageProductVO {
   inventory: string // 库存
   specifications: string // 规格
   remark: string // 备注
+  batchCode: string // 批次号
+  recoveryNum: string // 采收编号
 }
 
 // 特色产品 API
