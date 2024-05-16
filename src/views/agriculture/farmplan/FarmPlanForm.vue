@@ -22,7 +22,7 @@
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="作物id" prop="cropId">
-            <el-input v-model="formData.cropId" placeholder="请输入作物id" >
+            <el-input v-model="formData.cropId" disabled placeholder="请输入作物id" >
               <template #append>
                 <el-button @click="openCropInfoPopup()">
                   <Icon icon="ep:search"/>
@@ -34,14 +34,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="作物名称" prop="cropName">
-            <el-input v-model="formData.cropName" placeholder="请输入作物名称" />
+            <el-input v-model="formData.cropName" disabled placeholder="请输入作物名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="所属基地" prop="belongPark">
-            <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+            <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" >
               <template #append>
                 <el-button @click="openParkInfoPopup('0')">
                   <Icon icon="ep:search"/>
@@ -53,14 +53,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="基地名称" prop="parkName">
-            <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
+            <el-input v-model="formData.parkName" disabled placeholder="请输入基地名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="所属地块" prop="belongPlot">
-            <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+            <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" >
               <template #append>
                 <el-button @click="openParkDetailPopup(formData.belongPark)">
                   <Icon icon="ep:search"/>
@@ -72,7 +72,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="地块名称" prop="plotName">
-            <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+            <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -80,7 +80,7 @@
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="品种" prop="cropType">
-            <el-select v-model="formData.cropType" placeholder="请选择品种">
+            <el-select v-model="formData.cropType" disabled placeholder="请选择品种">
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
                 :key="dict.value"
@@ -106,7 +106,7 @@
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="责任人编号" prop="personId">
-            <el-input v-model="formData.personId" placeholder="请输入责任人编号" >
+            <el-input v-model="formData.personId" disabled placeholder="请输入责任人编号" >
               <template #append>
                 <el-button @click="openSelectSysUser('0')">
                   <Icon icon="ep:search"/>
@@ -118,7 +118,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="责任人" prop="personName">
-            <el-input v-model="formData.personName" placeholder="请输入责任人" />
+            <el-input v-model="formData.personName" disabled placeholder="请输入责任人" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -148,13 +148,8 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="计划面积（亩）" prop="planArea" label-width="120">
-            <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="农事阶段" prop="farmDefineType">
-<!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
+            <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
             <el-select v-model="formData.farmDefineType" placeholder="请选择农事阶段">
               <el-option
                 v-for="dict in farmDefineOptions"
@@ -163,6 +158,11 @@
                 :value="dict.id"
               />
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="计划面积（亩）" prop="planArea" label-width="120">
+            <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）" />
           </el-form-item>
         </el-col>
       </el-row>
