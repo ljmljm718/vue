@@ -8,18 +8,17 @@
       v-loading="formLoading"
     >
       <el-form-item label="产品名称" prop="product">
-        <el-input v-model="formData.product" placeholder="请输入产品名称"/>
+        <el-input v-model="formData.product" placeholder="请输入产品名称" :disabled="true"/>
       </el-form-item>
-
       <el-form-item label="批次号" prop="batchCode">
-        <el-input v-model="formData.batchCode" placeholder="请输入批次号"/>
+        <el-input v-model="formData.batchCode" placeholder="请输入批次号" :disabled="true"/>
       </el-form-item>
       <el-form-item label="采收编号" prop="recoveryNum">
-        <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号"/>
+        <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号" :disabled="true"/>
       </el-form-item>
 
       <el-form-item label="所属基地id" prop="parkId">
-        <el-input v-model="formData.parkId" placeholder="请输入所属基地id">
+        <el-input v-model="formData.parkId" placeholder="请输入所属基地id" :disabled="true">
           <template #append>
             <el-button @click="openParkInfoPopup('0')">
               <Icon icon="ep:search"/>
@@ -29,10 +28,10 @@
         </el-input>
       </el-form-item>
       <el-form-item label="所属基地" prop="park">
-        <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly/>
+        <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly :disabled="true"/>
       </el-form-item> 
       <el-form-item label="所属地块id" prop="parkDetailId">
-        <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id">
+        <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id" :disabled="true">
           <template #append>
             <el-button @click="openParkDetailPopup(formData.belongPark)">
               <Icon icon="ep:search"/>
@@ -42,7 +41,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="parkDetail">
-        <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly/>
+        <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly :disabled="true"/>
       </el-form-item>
       <el-form-item label="图片" prop="photo">
         <UploadImg v-model="formData.photo"/>
@@ -119,18 +118,21 @@ const open = async (type: string, id?: any) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  if(typeof id === 'object'){
+  if(typeof id === 'object' || typeof id === 'number'){
     console.log(id,"-----===")
     //批次号
     formData.value.batchCode = id.batchCode
     //采收编号
     formData.value.recoveryNum = id.id
-
+    //基地id
     formData.value.parkId = id.belongPark
+    //基地名称
     formData.value.park = id.parkName
+    //地块id
     formData.value.parkDetailId = id.recordNum
+    //地块名称
     formData.value.parkDetail = id.parkDetailName
-
+    //产品名称
     formData.value.product = id.varietyName
   }
   // 修改时，设置数据
