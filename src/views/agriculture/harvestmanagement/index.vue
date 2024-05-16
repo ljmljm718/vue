@@ -112,14 +112,16 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="记录编号" align="center" prop="recordNum" />
+      <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
       <el-table-column label="品种名称" align="center" prop="varietyName" />
-      <el-table-column label="品种" align="center" prop="variety" />
+      <el-table-column label="品种" align="center" prop="variety" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+        </template>
+      </el-table-column>
       <el-table-column label="品种ID" align="center" prop="varietyId" />
       <el-table-column label="批次码" align="center" prop="batchCode" />
-
-      
       <el-table-column
         label="上传时间"
         align="center"
@@ -191,6 +193,7 @@ import { HarvestManagementApi, HarvestManagementVO } from '@/api/agriculture/har
 import HarvestManagementForm from './HarvestManagementForm.vue'
 
 import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 采收管理 列表 */
 defineOptions({ name: 'HarvestManagement' })
