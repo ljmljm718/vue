@@ -474,7 +474,6 @@ watch(() => props.currCategory,
 
 /** 开关机 */
 const handleStatus = async (item: any) => {
-  console.log(item);
   let s = item.deviceStatus === 'online' ? '关机': '开机'
 
   try {

@@ -1,5 +1,15 @@
 <template>
   <ContentWrap>
+    <div class="floatRight">
+      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="large" @change="changeRefresh">
+        <el-option
+          v-for="item in refreshList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
     <div class="flex space-x-4">
       <div
         class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center cursor-pointer"
@@ -72,7 +82,7 @@
         @pagination="getList()"
       />
     </div>
-    
+
   </ContentWrap>
   <!-- 列表 -->
   <ContentWrap>
@@ -129,6 +139,43 @@ const collis = ref(true)
 let route = useRoute()
 
 let active = ref(0)
+
+const refreshValue = ref(0)
+const refreshList = [
+  {
+    value: 0,
+    label: '不自动刷新'
+  },
+  {
+    value: 1,
+    label: '1秒'
+  },
+  {
+    value: 5,
+    label: '5秒'
+  },
+  {
+    value: 30,
+    label: '30秒'
+  },
+  {
+    value: 60,
+    label: '1分钟'
+  },
+  {
+    value: 300,
+    label: '5分钟'
+  },
+  {
+    value: 600,
+    label: '10分钟'
+  },
+  {
+    value: 1800,
+    label: '30分钟'
+  }
+]
+
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
 
@@ -354,6 +401,22 @@ const initChart = async (line = false) => {
 onMounted(() => {
   getList()
 })
+
+const timerId = ref()
+const changeRefresh = async (value) => {
+  if (value === 0) {
+    if (timerId.value) {
+      clearInterval(timerId.value)
+    }
+  } else {
+    if (timerId.value) {
+      clearInterval(timerId.value)
+    }
+    timerId.value = setInterval(function() {
+      getList()
+    },value*1000)
+  }
+}
 </script>
 <style scoped lang="scss">
 .weather-bg {
@@ -398,6 +461,13 @@ onMounted(() => {
     background-size: 100% 100%;
     background-image: url(./assets/actived.png);
   }
+}
+.floatRight {
+  position: absolute;
+  right: 50px;
+  top: 20px;
+  width: 200px;
+  box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.07);
 }
 
 @for $i from 1 through 8 {
