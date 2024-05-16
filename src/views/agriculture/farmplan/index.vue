@@ -195,10 +195,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="计划编码" align="center" prop="planCode" />
-      <el-table-column label="计划名称" align="center" prop="planName" />
+      <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
+      <el-table-column label="计划名称" align="center" prop="planName" width="180" />
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="基地名称" align="center" prop="parkName" width="180"  />
       <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
         <template #default="scope">
           <el-select v-model="scope.row.farmDefineType" disabled>
@@ -212,21 +212,21 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="地块名称" align="center" prop="plotName" />
+      <el-table-column label="地块名称" align="center" prop="plotName" width="180"/>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
-      <el-table-column label="作物名称" align="center" prop="cropName" />
-      <el-table-column label="品种" align="center" prop="cropType" >
+      <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
+      <el-table-column label="品种" align="center" prop="cropType" width="100" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
-      <el-table-column label="计划状态" align="center" prop="planState" >
+      <el-table-column label="计划状态" align="center" prop="planState" width="100" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
         </template>
       </el-table-column>
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" />
+      <el-table-column label="责任人" align="center" prop="personName" width="150" />
       <el-table-column
         label="计划开始时间"
         align="center"
@@ -241,9 +241,6 @@
         :formatter="dateFormatter2"
         width="180px"
       />
-      <el-table-column label="计划面积（亩）" align="center" prop="planArea" />
-      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" />
-      <el-table-column label="剩余面积（亩）" align="center" prop="area" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -251,6 +248,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="计划面积（亩）" align="center" prop="planArea" fixed="right" width="150" />
+      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>
+      <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />
       <el-table-column label="操作" align="center" fixed="right" width="150">
         <template #default="scope">
           <el-button

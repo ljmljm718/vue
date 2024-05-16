@@ -19,7 +19,7 @@ export interface CropBaseVO {
   batchCode: string// 批次码
   receiptStartTime: string// 开始时间
   receiptEndTime: string// 结束时间
-  recoveryNo: string// 是否采收
+  recoveryNo: boolean// 是否采收
 }
 
 // 鲁渝协作品种管理 API

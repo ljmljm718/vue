@@ -120,7 +120,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="品种code" align="center" prop="cropCode"/>
+<!--      <el-table-column label="品种code" align="center" prop="cropCode"/>-->
       <el-table-column label="品种名称" align="center" prop="cropName"/>
       <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">

@@ -28,22 +28,20 @@
       </el-form-item>
       <el-form-item label="是否显示" prop="showStatus">
         <el-radio-group v-model="formData.showStatus">
-          <el-radio label="1">请选择字典生成</el-radio>
+          <el-radio
+            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="分类排序" prop="defineSort">
-        <el-input v-model="formData.defineSort" placeholder="请输入分类排序" />
+        <el-input-number v-model="formData.defineSort" placeholder="请输入分类排序" />
       </el-form-item>
-<!--      <el-form-item label="是否叶子" prop="isLeaf">-->
-<!--        <el-radio-group v-model="formData.isLeaf">-->
-<!--          <el-radio label="1">请选择字典生成</el-radio>-->
-<!--        </el-radio-group>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="图片" prop="imgId">-->
-<!--        <el-input v-model="formData.imgId" placeholder="请输入图片" />-->
-<!--      </el-form-item>-->
       <el-form-item label="描述" prop="description">
-        <el-input v-model="formData.imgId" type="textarea" placeholder="请输入图片" />
+        <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -55,6 +53,7 @@
 <script setup lang="ts">
 import { FarmDefineApi, FarmDefineVO } from '@/api/agri/farmdefine'
 import { defaultProps, handleTree } from '@/utils/tree'
+import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 鲁渝协作农事定义 表单 */
 defineOptions({ name: 'FarmDefineForm' })

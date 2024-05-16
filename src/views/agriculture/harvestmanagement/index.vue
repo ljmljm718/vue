@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="记录编号" prop="recordNum">
+      <!-- <el-form-item label="记录编号" prop="recordNum">
         <el-input
           v-model="queryParams.recordNum"
           placeholder="请输入记录编号"
@@ -16,7 +16,68 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
+      </el-form-item> -->
+      <el-form-item label="品种名称" prop="varietyName">
+        <el-input
+          v-model="queryParams.varietyName"
+          placeholder="请输入品种名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
+      <el-form-item label="品种" prop="variety">
+        <!-- <el-input
+          v-model="queryParams.variety"
+          placeholder="请输入品种"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        /> -->
+        <el-select
+            v-model="queryParams.variety"
+            placeholder="请选择品种"
+            clearable
+            class="!w-240px"
+        >
+          <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="批次码" prop="batchCode">
+        <el-input
+          v-model="queryParams.batchCode"
+          placeholder="请输入批次码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="采收量" prop="harvestVolume">
+        <el-input
+          v-model="queryParams.harvestVolume "
+          placeholder="请输入采收量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="人工数量" prop="laborQuantity">
+        <el-input
+          v-model="queryParams.laborQuantity "
+          placeholder="请输入人工数量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
           v-model="queryParams.upTime"
@@ -112,14 +173,17 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="记录编号" align="center" prop="recordNum" />
+      <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
       <el-table-column label="品种名称" align="center" prop="varietyName" />
-      <el-table-column label="品种" align="center" prop="variety" />
-      <el-table-column label="品种ID" align="center" prop="varietyId" />
-      <el-table-column label="批次码" align="center" prop="batchCode" />
-
+      <el-table-column label="品种" align="center" prop="variety" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.variety" />
+        </template>
+      </el-table-column>
       
+      <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
+      <el-table-column label="批次码" align="center" prop="batchCode" />
       <el-table-column
         label="上传时间"
         align="center"
@@ -191,6 +255,7 @@ import { HarvestManagementApi, HarvestManagementVO } from '@/api/agriculture/har
 import HarvestManagementForm from './HarvestManagementForm.vue'
 
 import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 采收管理 列表 */
 defineOptions({ name: 'HarvestManagement' })
