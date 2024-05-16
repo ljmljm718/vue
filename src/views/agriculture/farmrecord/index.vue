@@ -254,7 +254,7 @@
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="记录状态" align="center" prop="recordState">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.SYSTEM_OPERATE_TYPE" :value="scope.row.recordState" />
+          <dict-tag :type="DICT_TYPE.FARM_RECORD_STATE" :value="scope.row.recordState" />
         </template>
       </el-table-column>
       <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />
