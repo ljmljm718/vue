@@ -41,7 +41,7 @@
 
       <el-form-item label="所属基地" prop="belongPark">
         <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">
-          <template #append v-if="boo">
+          <template #append >
             <el-button @click="openParkInfoPopup('0')" :disabled="boo">
               <Icon icon="ep:search"/>
               选择
