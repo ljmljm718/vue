@@ -112,12 +112,14 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="记录编号" align="center" prop="recordNum" />
+
       <el-table-column label="品种名称" align="center" prop="varietyName" />
       <el-table-column label="品种" align="center" prop="variety" />
       <el-table-column label="品种ID" align="center" prop="varietyId" />
       <el-table-column label="批次码" align="center" prop="batchCode" />
 
-      <el-table-column label="记录编号" align="center" prop="recordNum" />
+      
       <el-table-column
         label="上传时间"
         align="center"
@@ -139,8 +141,15 @@
 <!--        :formatter="dateFormatter"-->
 <!--        width="180px"-->
 <!--      />-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="180px">
         <template #default="scope">
+          <el-button
+            link
+            type="success"
+            @click="openVillageProductForm('create', scope.row.id)"
+          >
+            加工
+          </el-button>
           <el-button
             link
             type="primary"
@@ -171,6 +180,8 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <HarvestManagementForm ref="formRef" @success="getList" />
+  <!-- 表单弹窗：添加/修改 -->
+  <VillageProductForm ref="formVpRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -178,6 +189,8 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { HarvestManagementApi, HarvestManagementVO } from '@/api/agriculture/harvestmanagement'
 import HarvestManagementForm from './HarvestManagementForm.vue'
+
+import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue'
 
 /** 采收管理 列表 */
 defineOptions({ name: 'HarvestManagement' })
@@ -208,6 +221,12 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+// 采收管理
+const formVpRef = ref()
+const openVillageProductForm =async (type: string, id: number) =>{
+  formVpRef.value.open(type,await HarvestManagementApi.getHarvestManagement(id))
+}
 
 /** 查询列表 */
 const getList = async () => {
