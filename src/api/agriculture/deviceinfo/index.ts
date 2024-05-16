@@ -58,4 +58,9 @@ export const DeviceInfoApi = {
     return await request.post({ url: `/agriculture/device-info/job-bind-device`, data })
   },
 
+  // 修改设备状态
+  updateDeviceStatus: async (id: number, deviceStatus: string) => {
+    return await request.put({ url: `/agriculture/device-info/updateStatus?id=` + id + "&deviceStatus=" + deviceStatus})
+  },
+
 }

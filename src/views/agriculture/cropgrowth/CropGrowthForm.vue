@@ -74,8 +74,8 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="地块名称" prop="parkDetailName">
-        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly/>
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
       </el-form-item>
       <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
@@ -142,6 +142,7 @@ const formData = ref({
   startTime: undefined,
   endTime: undefined,
   parkName: undefined,
+  plotName: undefined,
   parkDetailName: undefined,
   envCondition: undefined,
   growSite: undefined,
@@ -184,6 +185,7 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
     formData.value.belongPark = String(order[0].parkId)
     formData.value.belongPlot = String(order[0].id)
     formData.value.parkDetailName = String(order[0].name)
+    formData.value.plotName = String(order[0].name)
 
 }
 

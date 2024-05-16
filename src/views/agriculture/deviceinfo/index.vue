@@ -162,7 +162,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        width="360"
         fixed="right"
         v-if="!readonly"
       >
@@ -215,6 +215,15 @@
             v-hasPermi="['agriculture:device-info:delete']"
           >
             删除
+          </el-button>
+          <el-button
+            link
+            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"
+            @click="handleStatus(scope.row)"
+            v-if="scope.row.deviceStatus === 'online' || scope.row.deviceStatus === 'offline'"
+            v-hasPermi="['agriculture:device-info:update']"
+          >
+            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}
           </el-button>
         </template>
       </el-table-column>
@@ -462,5 +471,23 @@ watch(() => props.currCategory,
     }
     handleQuery()
   })
+
+/** 开关机 */
+const handleStatus = async (item: any) => {
+  console.log(item);
+  let s = item.deviceStatus === 'online' ? '关机': '开机'
+
+  try {
+    // 开关机的二次确认
+    await message.confirm("是否确认" + s + "?", s + "确认")
+    // 发起开关机
+    let status = item.deviceStatus === 'online' ? 'offline': 'online'
+    await DeviceInfoApi.updateDeviceStatus(item.id,status)
+    message.success(s + "成功")
+    // 刷新列表
+    await getList()
+  } catch {
+  }
+}
 
 </script>

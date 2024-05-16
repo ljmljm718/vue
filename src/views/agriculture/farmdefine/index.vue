@@ -86,9 +86,12 @@
       <el-table-column label="分类编码" align="center" prop="defineCode" />
       <el-table-column label="分类名称" align="center" prop="defineName" />
       <el-table-column label="分类标签" align="center" prop="defineLabel" />
-      <el-table-column label="是否显示" align="center" prop="showStatus" />
+      <el-table-column label="是否显示" align="center" prop="showStatus" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.showStatus" />
+        </template>
+      </el-table-column>
       <el-table-column label="分类排序" align="center" prop="defineSort" />
-<!--      <el-table-column label="是否叶子" align="center" prop="isLeaf" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -96,7 +99,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="图片" align="center" prop="imgId" />
       <el-table-column label="描述" align="center" prop="description" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
@@ -138,6 +140,7 @@ import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
 import { FarmDefineApi, FarmDefineVO } from '@/api/agri/farmdefine'
 import FarmDefineForm from './FarmDefineForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 
 /** 鲁渝协作农事定义 列表 */
 defineOptions({ name: 'FarmDefine' })

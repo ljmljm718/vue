@@ -7,42 +7,84 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="产品名称" prop="product">
-        <el-input v-model="formData.product" placeholder="请输入产品名称" :disabled="true"/>
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
-        <el-input v-model="formData.batchCode" placeholder="请输入批次号" :disabled="true"/>
-      </el-form-item>
-      <el-form-item label="采收编号" prop="recoveryNum">
-        <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号" :disabled="true"/>
-      </el-form-item>
+      <div v-if="boo">
+        <el-form-item label="产品名称" prop="product">
+          <el-input v-model="formData.product" placeholder="请输入产品名称" :disabled="true"/>
+        </el-form-item>
+        <el-form-item label="批次号" prop="batchCode">
+          <el-input v-model="formData.batchCode" placeholder="请输入批次号" :disabled="true"/>
+        </el-form-item>
+        <el-form-item label="采收编号" prop="recoveryNum">
+          <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号" :disabled="true"/>
+        </el-form-item>
 
-      <el-form-item label="所属基地id" prop="parkId">
-        <el-input v-model="formData.parkId" placeholder="请输入所属基地id" :disabled="true">
-          <template #append>
-            <el-button @click="openParkInfoPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="所属基地" prop="park">
-        <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly :disabled="true"/>
-      </el-form-item> 
-      <el-form-item label="所属地块id" prop="parkDetailId">
-        <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id" :disabled="true">
-          <template #append>
-            <el-button @click="openParkDetailPopup(formData.belongPark)">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="所属地块" prop="parkDetail">
-        <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly :disabled="true"/>
-      </el-form-item>
+        <el-form-item label="所属基地id" prop="parkId">
+          <el-input v-model="formData.parkId" placeholder="请输入所属基地id" :disabled="true">
+            <template #append>
+              <el-button @click="openParkInfoPopup('0')">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="所属基地" prop="park">
+          <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly :disabled="true"/>
+        </el-form-item>
+        <el-form-item label="所属地块id" prop="parkDetailId">
+          <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id" :disabled="true">
+            <template #append>
+              <el-button @click="openParkDetailPopup(formData.belongPark)">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="所属地块" prop="parkDetail">
+          <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly :disabled="true"/>
+        </el-form-item>
+      </div>
+
+      <div v-if="!boo" >
+        <el-form-item label="产品名称" prop="product">
+          <el-input v-model="formData.product" placeholder="请输入产品名称"/>
+        </el-form-item>
+        <el-form-item label="批次号" prop="batchCode">
+          <el-input v-model="formData.batchCode" placeholder="请输入批次号" />
+        </el-form-item>
+        <el-form-item label="采收编号" prop="recoveryNum">
+          <el-input v-model="formData.recoveryNum" placeholder="请输入采收编号" />
+        </el-form-item>
+
+        <el-form-item label="所属基地id" prop="parkId">
+          <el-input v-model="formData.parkId" placeholder="请输入所属基地id" >
+            <template #append>
+              <el-button @click="openParkInfoPopup('0')">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="所属基地" prop="park">
+          <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly />
+        </el-form-item>
+        <el-form-item label="所属地块id" prop="parkDetailId">
+          <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id" >
+            <template #append>
+              <el-button @click="openParkDetailPopup(formData.belongPark)">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="所属地块" prop="parkDetail">
+          <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly />
+        </el-form-item>
+      </div>
+
       <el-form-item label="图片" prop="photo">
         <UploadImg v-model="formData.photo"/>
       </el-form-item>
@@ -113,6 +155,7 @@ const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
+const boo = ref(false)
 const open = async (type: string, id?: any) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
@@ -134,6 +177,7 @@ const open = async (type: string, id?: any) => {
     formData.value.parkDetail = id.parkDetailName
     //产品名称
     formData.value.product = id.varietyName
+    boo.value= true
   }
   // 修改时，设置数据
   if (typeof id === 'string') {
