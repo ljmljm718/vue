@@ -66,7 +66,7 @@
       <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true" ref="multipleTableRef"
                 @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
         <el-table-column width="30" label="选择" type="selection"/>
-        <el-table-column label="编号" align="center" prop="code" width="200"/>
+<!--        <el-table-column label="编号" align="center" prop="code" width="200"/>-->
         <el-table-column label="名称" align="center" prop="name" width="150"/>
         <el-table-column label="类型" align="center" prop="categoryName" />
         <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
