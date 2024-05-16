@@ -52,7 +52,24 @@
       <el-form-item label="地块名称" prop="plotName">
         <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
       </el-form-item>
-
+      <el-form-item label="开始时间" prop="startTime">
+        <el-date-picker
+          v-model="formData.receiptStartTime"
+          type="date"
+          style="width: 100%"
+          value-format="x"
+          placeholder="选择开始时间"
+        />
+      </el-form-item>
+      <el-form-item label="结束时间" prop="startTime">
+        <el-date-picker
+          v-model="formData.receiptEndTime"
+          type="date"
+          style="width: 100%"
+          value-format="x"
+          placeholder="选择结束时间"
+        />
+      </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId"/>
       </el-form-item>
