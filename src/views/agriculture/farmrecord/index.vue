@@ -252,7 +252,7 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
-      <el-table-column label="记录状态" align="center" prop="recordState">
+      <el-table-column label="记录状态" align="center" prop="recordState" width="90">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.FARM_RECORD_STATE" :value="scope.row.recordState" />
         </template>
@@ -269,7 +269,7 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" />
+      <el-table-column label="责任人" align="center" prop="personName" width="100" />
       <el-table-column
         label="计划开始时间"
         align="center"
@@ -385,7 +385,7 @@ const getList = async () => {
   try {
     const data = await FarmRecordApi.getFarmRecordPage(queryParams)
     data.list.forEach((item)=>{
-      item.farmDefineType=parseInt(item.farmDefineType)
+      item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
     })
     list.value = data.list
     total.value = data.total

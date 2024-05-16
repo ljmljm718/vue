@@ -48,8 +48,13 @@
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
-                @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="list"
+                :show-overflow-tooltip="true"
+                @row-click="selectClick"
+                ref="multipleTableRef"
+                :stripe="true"
+                @select="select"
+               >
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="计划编码" align="center" prop="planCode" />
         <el-table-column label="计划名称" align="center" prop="planName" />
@@ -117,7 +122,7 @@
       />
     </ContentWrap>
     <template #footer>
-      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+      <el-button type="primary" @click="submitForm">
         确 定
       </el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -169,6 +174,38 @@ const handleSelectionChange = (rows: FarmPlanVO[]) => {
 }
 let farmDefineOptions = ref([])// 设备分类选项
 
+// 人员单选
+const multipleTableRef = ref()
+const select = (selection, row)=> {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if(selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true);
+}
+
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
+
 /** 提交选择 */
 const emits = defineEmits<{
   (e: 'success', value: FarmPlanVO[]): void
@@ -187,7 +224,6 @@ const submitForm = () => {
 const open = async (id: string) => {
   dialogVisible.value = true
   await nextTick() // 等待，避免 queryFormRef 为空
-  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 
   // 加载下属地块列表
   await resetQuery()
@@ -199,6 +235,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
+    farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -220,3 +257,10 @@ const handleQuery = () => {
   getList()
 }
 </script>
+
+<style scoped lang='scss'>
+// 隐藏全选按钮
+:deep(.el-table th.el-table__cell:nth-child(1) .cell) {
+  visibility: hidden;
+}
+</style>
