@@ -112,6 +112,11 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="品种名称" align="center" prop="varietyName" />
+      <el-table-column label="品种" align="center" prop="variety" />
+      <el-table-column label="品种ID" align="center" prop="varietyId" />
+      <el-table-column label="批次码" align="center" prop="batchCode" />
+
       <el-table-column label="记录编号" align="center" prop="recordNum" />
       <el-table-column
         label="上传时间"
@@ -120,7 +125,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
       <el-table-column label="基地" align="center" prop="belongPark" />
+      <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
       <el-table-column label="地块" align="center" prop="belongPlot" />
       <el-table-column label="采收量(/万斤)" align="center" prop="harvestVolume" />
       <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" />
@@ -192,6 +199,12 @@ const queryParams = reactive({
   laborQuantity: undefined,
   remark: undefined,
   createTime: [],
+  varietyName: undefined, // 品种名称
+  variety: undefined, // 品种
+  varietyId: undefined, // 品种ID
+  batchCode: undefined, // 批次码
+  belongParkId: undefined, // 基地ID
+  belongPlotId: undefined, // 地块ID
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

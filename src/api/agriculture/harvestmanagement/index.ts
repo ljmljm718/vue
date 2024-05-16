@@ -11,7 +11,13 @@ export interface HarvestManagementVO {
   laborQuantity: string // 人工数量
   remark: string // 备注
   parkName: string,
-  parkDetailName: string,
+  parkDetailName: string, 
+  varietyName: string, // 品种名称
+  variety: string, // 品种
+  varietyId: string, // 品种ID
+  batchCode: string, // 批次码
+  belongParkId: string, // 基地ID
+  belongPlotId: string, // 地块ID
 }
 
 // 采收管理 API
