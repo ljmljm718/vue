@@ -136,16 +136,16 @@
           :formatter="dateFormatter"
           width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
-<!--          <el-button-->
-<!--            link-->
-<!--            type="primary"-->
-<!--            @click="openForm('update', scope.row.id)"-->
-<!--            v-hasPermi="['agriculture:crop-base:update']"-->
-<!--          >-->
-<!--            采收-->
-<!--          </el-button>-->
+          <el-button
+            link
+            type="primary"
+            @click="openFormA('update', scope.row)"
+            v-hasPermi="['agriculture:harvest-management:create']"
+          >
+            采收
+          </el-button>
           <el-button
               link
               type="primary"
@@ -176,6 +176,8 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CropBaseForm ref="formRef" @success="getList" />
+  <!-- 表单弹窗：添加/修改 -->
+  <HarvestManagementForm ref="formRefA" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -184,7 +186,7 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
-import ImageTable from "@/views/mp/material/components/ImageTable.vue";
+import HarvestManagementForm from "@/views/agriculture/harvestmanagement/HarvestManagementForm.vue";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({ name: 'AgriCropBase' })
@@ -238,6 +240,12 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+/** 添加/修改操作 */
+const formRefA = ref()
+const openFormA = (type: string, row?: any) => {
+  formRefA.value.open(type, row)
 }
 
 /** 删除按钮操作 */
