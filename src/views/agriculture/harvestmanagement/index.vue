@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="记录编号" prop="recordNum">
+      <!-- <el-form-item label="记录编号" prop="recordNum">
         <el-input
           v-model="queryParams.recordNum"
           placeholder="请输入记录编号"
@@ -16,7 +16,68 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
+      </el-form-item> -->
+      <el-form-item label="品种名称" prop="varietyName">
+        <el-input
+          v-model="queryParams.varietyName"
+          placeholder="请输入品种名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
+      <el-form-item label="品种" prop="variety">
+        <!-- <el-input
+          v-model="queryParams.variety"
+          placeholder="请输入品种"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        /> -->
+        <el-select
+            v-model="queryParams.variety"
+            placeholder="请选择品种"
+            clearable
+            class="!w-240px"
+        >
+          <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="批次码" prop="batchCode">
+        <el-input
+          v-model="queryParams.batchCode"
+          placeholder="请输入批次码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="采收量" prop="harvestVolume">
+        <el-input
+          v-model="queryParams.harvestVolume "
+          placeholder="请输入采收量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="人工数量" prop="laborQuantity">
+        <el-input
+          v-model="queryParams.laborQuantity "
+          placeholder="请输入人工数量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
           v-model="queryParams.upTime"
