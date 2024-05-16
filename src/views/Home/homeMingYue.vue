@@ -754,7 +754,7 @@ const getHomeCheckLog = (id) => {
     
     typeList.value = res['分组详情']
     deviceTotal.value = res['总设备数'][0].count
-    devicePercent.value = (yesCount / (notCount + yesCount) * 100)
+    devicePercent.value = (yesCount / (notCount + yesCount) * 100).toFixed(2)
 
     setTimeout(() => { initChart1(res['巡检进度']) }, 200)
   })
