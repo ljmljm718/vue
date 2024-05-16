@@ -121,7 +121,7 @@
         </template>
       </el-table-column>
       
-      <el-table-column label="品种ID" align="center" prop="varietyId" />
+      <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
       <el-table-column label="批次码" align="center" prop="batchCode" />
       <el-table-column
         label="上传时间"
