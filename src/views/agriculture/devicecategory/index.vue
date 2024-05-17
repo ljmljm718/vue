@@ -129,7 +129,7 @@
 <!--      <el-table-column label="id主键" align="center" prop="id" />-->
 <!--      <el-table-column label="父结点" align="center" prop="parentId" />-->
       <el-table-column label="分类名称" align="left" prop="categoryName" />
-      <el-table-column label="分类编码" align="left" prop="categoryCode" width="140"/>
+      <el-table-column label="分类编码" align="left" prop="categoryCode" width="160"/>
       <el-table-column label="分类标签" align="center" prop="categoryLabel" />
       <el-table-column label="是否显示" align="center" prop="showStatus" width="140">
         <template #default="scope">
