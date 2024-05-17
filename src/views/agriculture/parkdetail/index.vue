@@ -237,7 +237,7 @@ const {push} = useRouter()
 const goCheck = (row) => {
   console.log(row.id)
   //打开新的页签并传递参数
-  push(`/industry/farmManage/farm-record?baseId=${row.id}`);
+  push(`/farm_work/farmManage/farm-record?baseId=${row.id}`);
 }
 
 /** 初始化 **/

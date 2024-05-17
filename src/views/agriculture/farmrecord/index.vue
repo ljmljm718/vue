@@ -446,6 +446,8 @@ const route = useRoute()
 const setCheckParams = () => {
   //首先将路由传参的参数  赋值给查询参数
   queryParams.belongPlot = route.query.baseId
+  //批次码  路由传参获取
+  queryParams.batchCode = route.query.batchCode
 }
 
 /** 初始化 **/

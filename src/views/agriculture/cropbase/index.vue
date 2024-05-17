@@ -155,6 +155,13 @@
           <el-button
             link
             type="primary"
+            @click="goCheck(scope.row)"
+          >
+            溯源
+          </el-button>
+          <el-button
+            link
+            type="primary"
             @click="openFormA('create', scope.row)"
             v-hasPermi="['agriculture:harvest-management:create']"
             v-if="!scope.row.recoveryNo"
@@ -291,6 +298,14 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** */
+const {push} = useRouter()
+const goCheck = (row) => {
+  console.log(row.batchCode)
+  //打开新的页签并传递参数
+  push(`/farm_work/farmManage/farm-record?batchCode=${row.batchCode}`);
 }
 
 /** 初始化 **/
