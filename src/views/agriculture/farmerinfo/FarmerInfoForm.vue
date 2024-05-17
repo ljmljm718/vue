@@ -22,7 +22,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="所属基地" prop="belongPark">
-            <el-input v-model="formData.belongPark" placeholder="请选择所属基地" >
+            <el-input v-model="formData.belongPark" placeholder="请选择所属基地" :disabled="true" >
               <template #append>
                 <el-button @click="openParkPopup('0')">
                   <Icon icon="ep:search"/>
@@ -41,7 +41,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="所属地块" prop="belongPlot">
-            <el-input v-model="formData.belongPlot" placeholder="请选择所属地块" >
+            <el-input v-model="formData.belongPlot" placeholder="请选择所属地块" :disabled="true">
               <template #append>
                 <el-button @click="openPlotPopup(formData.belongPark)">
                   <Icon icon="ep:search"/>

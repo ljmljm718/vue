@@ -160,21 +160,21 @@ const initDataCollectChart=async (type,startDate='',endDate='')=>{
 const dataShowRadio = ref('气象站')
 let seletValue=ref()
 let options=ref([])
-const dataShowDate = ref([])
+const dataShowDate = ref('')
 // //获取下拉
 const dataShowChange= async(val)=>{
   let res=await EquipmentDataApi.QueryCollectionType({monitoringType:val})
   options.value=res
   dataShowRadio.value=val
   console.log(res,'实时数据下拉')
-  initDataShowChart(dataShowRadio.value,res[0])
+  initDataShowChart(dataShowRadio.value,res[0],dataShowDate.value)
 }
 dataShowChange('气象站')
 //下拉选择
 const selectCli=(e)=>{
   console.log(e,'value221')
   seletValue.value=e
-  initDataShowChart(dataShowRadio.value,e)
+  initDataShowChart(dataShowRadio.value,seletValue.value,dataShowDate.value)
 }
 //选择时间
 const dataShowDateChange=(val)=>{
@@ -183,14 +183,15 @@ const dataShowDateChange=(val)=>{
   let year=val.getFullYear()
   let month=data.getMonth()+1
   let day=data.getDate()
-  initDataShowChart(dataShowRadio.value,seletValue.value,`${year}-${month}-${day}`)
+  dataShowDate.value=`${year}-${month}-${day}`
+  initDataShowChart(dataShowRadio.value,seletValue.value,dataShowDate.value)
 }
 const initDataShowChart=async (collectionType='',monitoringType='',date='')=>{
   let res=await EquipmentDataApi.getDataPresentation({collectionType,monitoringType,date})
   console.log(res,'数据展示')
   initChartStatic('dataShowChart', generateBaseOptions({
     xAxis: {
-      data:res.map(item=>item.dateTime).reverse(),
+      data:res.map(item=>item.dateTime),
       axisLine: {
         show: true,
         lineStyle: {
@@ -232,7 +233,7 @@ const initDataShowChart=async (collectionType='',monitoringType='',date='')=>{
     series: [
       {
         name: '数据展示' ,
-        data: res.map(item=>item.dataValue).reverse(),
+        data: res.map(item=>item.dataValue),
         type: 'line',
         smooth: true,
         label: {
