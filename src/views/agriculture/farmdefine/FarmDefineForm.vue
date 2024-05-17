@@ -151,7 +151,7 @@ const resetForm = () => {
 const getFarmDefineTree = async () => {
   farmDefineTree.value = []
   const data = await FarmDefineApi.getFarmDefineList()
-  const root: Tree = { id: 0, name: '农事定义', children: [] }
+  const root: Tree = { id: 0, defineName: '顶级农事定义',  children: [] }
   root.children = handleTree(data, 'id', 'parentId')
   farmDefineTree.value.push(root)
 }
