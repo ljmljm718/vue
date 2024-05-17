@@ -490,8 +490,7 @@ onMounted( async() => {
               @change="selectCli"
               v-model="seletValue"
               :placeholder="options[0]"
-              size="large"
-              style="width: 100px"
+              style="width: 100px;height: 31px;"
             >
               <el-option
                 v-for="item in options"
