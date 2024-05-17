@@ -72,19 +72,28 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="所属基地" align="center" prop="parkId"/>
+      <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>
+      <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
       <el-table-column label="编号" align="center" prop="code" width="200"/>
-      <el-table-column label="名称" align="center" prop="name" width="150"/>
+      <el-table-column label="名称" align="center" prop="name" width="200"/>
       <!--      <el-table-column label="类型" align="center" prop="type" />-->
       <el-table-column label="海拔" align="center" prop="altitude"/>
-      <el-table-column label="纬度" align="center" prop="latitude"/>
-      <el-table-column label="经度" align="center" prop="longitude"/>
-      <el-table-column label="通讯地址" align="center" prop="address"/>
+      <el-table-column label="纬度" align="center" prop="latitude" width="120"/>
+      <el-table-column label="经度" align="center" prop="longitude" width="120"/>
+      <el-table-column label="通讯地址" align="center" prop="address"  width="200"/>
       <el-table-column label="联系人" align="center" prop="contact"/>
-      <el-table-column label="联系电话" align="center" prop="tel"/>
+      <el-table-column label="联系电话" align="center" prop="tel"  width="120"/>
       <el-table-column label="面积" align="center" prop="area"/>
       <el-table-column label="备注" align="center" prop="remark"/>
-      <el-table-column label="二维码图片" align="center" prop="qrImg" width="200px">
+
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="二维码图片" fixed="right" align="center" prop="qrImg" width="200px">
         <template #default="scope">
           <el-image :src="`data:image/png;base64,${scope.row.qrImg}`"
                     style="object-fit: cover;width: 2rem;height: 2rem;"
@@ -93,14 +102,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" fixed="right" align="center">
         <template #default="scope">
           <el-button
             link
