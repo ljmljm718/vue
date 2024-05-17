@@ -215,6 +215,7 @@
       <el-table-column label="地块名称" align="center" prop="plotName" width="180"/>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
+      <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
       <el-table-column label="品种" align="center" prop="cropType" width="100" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />

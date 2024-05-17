@@ -112,6 +112,26 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
+          <el-form-item label="批次码" prop="batchCode">
+            <el-input v-model="formData.batchCode" placeholder="请输入批次码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="农事阶段" prop="farmDefineType">
+          <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
+          <el-select v-model="formData.farmDefineType" placeholder="请选择农事阶段">
+            <el-option
+              v-for="dict in farmDefineOptions"
+              :key="dict.id"
+              :label="dict.defineName"
+              :value="dict.id"
+            />
+          </el-select>
+        </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
           <el-form-item label="责任人编号" prop="personId">
             <el-input v-model="formData.personId" disabled placeholder="请输入责任人编号" >
               <template #append>
@@ -234,6 +254,7 @@ import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import SelectFarmPlan from "@/views/agriculture/farmrecord/SelectFarmPlan.vue";
 import {FarmPlanVO} from "@/api/agri/farmplan";
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -267,6 +288,9 @@ const formData = ref({
   recordState: undefined,
   finishArea:undefined,
   area:undefined,
+  farmDefineType:undefined,
+  batchCode:undefined,
+
 })
 const formRules = reactive({
   recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }],
@@ -274,6 +298,7 @@ const formRules = reactive({
 
 })
 const formRef = ref() // 表单 Ref
+let farmDefineOptions = ref([])// 设备分类选项
 
 
 //农事计划
@@ -301,6 +326,8 @@ const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
   formData.value.planArea = String(order[0].planArea)
   formData.value.finishArea = String(order[0].finishArea)
   formData.value.area = String(order[0].area)
+  formData.value.farmDefineType=order[0].farmDefineType?parseInt(order[0].farmDefineType):""
+  formData.value.batchCode=String(order[0].batchCode)
 }
 
 //基地的选择
@@ -352,8 +379,7 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.belongPlot = String(order[0].belongPlot)
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
-
-
+  formData.value.batchCode=String(order[0].batchCode)
 
 }
 
@@ -374,12 +400,16 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   resetForm()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
+      // 获取设备分类树
+      farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
       formData.value = await FarmRecordApi.getFarmRecord(id)
+      formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
     } finally {
       formLoading.value = false
     }

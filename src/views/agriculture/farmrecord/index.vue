@@ -263,6 +263,7 @@
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
+      <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
       <el-table-column label="计划状态" align="center" prop="planState" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />

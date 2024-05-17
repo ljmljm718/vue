@@ -329,7 +329,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await FarmPlanApi.getFarmPlan(id)
-      formData.value.farmDefineType=parseInt(formData.value.farmDefineType);
+      formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
     } finally {
       formLoading.value = false
     }

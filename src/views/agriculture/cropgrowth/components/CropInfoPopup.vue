@@ -89,6 +89,7 @@
         <el-table-column label="所属基地" align="center" prop="parkName"/>
         <el-table-column label="所属地块" align="center" prop="belongPlot" />
         <el-table-column label="所属基地" align="center" prop="plotName"/>
+        <el-table-column label="批次码" align="center" prop="batchCode" />
         <el-table-column label="描述" align="center" prop="cropDesc" />
         <el-table-column label="备注" align="center" prop="remark" />
         <el-table-column
@@ -139,6 +140,7 @@ const queryParams = reactive({
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
+  recoveryNo:true,
 })
 const queryFormRef = ref() // 搜索的表单
 
