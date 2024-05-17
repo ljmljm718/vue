@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备id" prop="deviceId">
+<!--      <el-form-item label="设备id" prop="deviceId">
         <el-input
           v-model="queryParams.deviceId"
           placeholder="请输入设备id"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="设备状态" prop="deviceStatus">
         <el-select
           v-model="queryParams.deviceStatus"
@@ -71,7 +71,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="设备Id" align="center" prop="deviceId" />
+<!--      <el-table-column label="设备Id" align="center" prop="deviceId" />-->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="设备状态" align="center" prop="deviceStatus" >
         <template #default="scope">

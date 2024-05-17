@@ -56,7 +56,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+        <el-input v-model="formData.parkName" placeholder="请输入所属基地" readonly>
           <template #append>
             <el-button @click="openParkInfoPopup('0')">
               <Icon icon="ep:search"/>
@@ -65,11 +65,11 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="基地名称" prop="parkName">
+<!--      <el-form-item label="基地名称" prop="parkName">
         <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+        <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly >
           <template #append>
             <el-button @click="openParkDetailPopup(formData.belongPark)">
               <Icon icon="ep:search"/>
@@ -78,9 +78,9 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="地块名称" prop="parkDetailName">
+<!--      <el-form-item label="地块名称" prop="parkDetailName">
         <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly/>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
