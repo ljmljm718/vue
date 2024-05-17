@@ -54,6 +54,7 @@
                 ref="multipleTableRef"
                 :stripe="true"
                 @select="select"
+                @selection-change="handleSelectionChange"
                >
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="计划编码" align="center" prop="planCode" />
@@ -122,7 +123,7 @@
       />
     </ContentWrap>
     <template #footer>
-      <el-button type="primary" @click="submitForm">
+      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
         确 定
       </el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
