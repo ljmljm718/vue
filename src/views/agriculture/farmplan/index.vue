@@ -335,7 +335,7 @@ const getList = async () => {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
     console.log(data)
     data.list.forEach((item)=>{
-      item.farmDefineType=parseInt(item.farmDefineType)
+      item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
     })
     list.value = data.list
     total.value = data.total

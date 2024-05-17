@@ -10,7 +10,7 @@
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="农事计划编码" prop="planId">
-            <el-input v-model="formData.planId" placeholder="请输入农事计划编码" >
+            <el-input v-model="formData.planId" disabled placeholder="请输入农事计划编码" >
               <template #append>
                 <el-button @click="openFarmPlanPopup()">
                   <Icon icon="ep:search"/>
@@ -22,14 +22,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="农事计划名称" prop="planName">
-            <el-input v-model="formData.planName" placeholder="请输入农事计划名称" />
+            <el-input v-model="formData.planName" disabled placeholder="请输入农事计划名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="作物编号" prop="cropId">
-            <el-input v-model="formData.cropId" placeholder="请输入作物编号" >
+            <el-input v-model="formData.cropId" disabled placeholder="请输入作物编号" >
               <template #append>
                 <el-button @click="openCropInfoPopup()">
                   <Icon icon="ep:search"/>
@@ -41,14 +41,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="作物名称" prop="cropName">
-            <el-input v-model="formData.cropName" placeholder="请输入作物名称" />
+            <el-input v-model="formData.cropName" disabled placeholder="请输入作物名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="所属基地" prop="belongPark">
-            <el-input v-model="formData.belongPark" placeholder="请输入所属基地" >
+            <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" >
               <template #append>
                 <el-button @click="openParkInfoPopup('0')">
                   <Icon icon="ep:search"/>
@@ -60,14 +60,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="基地名称" prop="parkName">
-            <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
+            <el-input v-model="formData.parkName" disabled placeholder="请输入基地名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="所属地块" prop="belongPlot">
-            <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" >
+            <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" >
               <template #append>
                 <el-button @click="openParkDetailPopup(formData.belongPark)">
                   <Icon icon="ep:search"/>
@@ -79,7 +79,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="地块名称" prop="plotName">
-            <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+            <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -99,7 +99,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="计划状态" prop="planState">
-            <el-select v-model="formData.planState" placeholder="请选择计划状态">
+            <el-select v-model="formData.planState" disabled placeholder="请选择计划状态">
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
                 :key="dict.value"
@@ -113,7 +113,7 @@
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="责任人编号" prop="personId">
-            <el-input v-model="formData.personId" placeholder="请输入责任人编号" >
+            <el-input v-model="formData.personId" disabled placeholder="请输入责任人编号" >
               <template #append>
                 <el-button @click="openSelectSysUser('0')">
                   <Icon icon="ep:search"/>
@@ -125,15 +125,16 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="责任人" prop="personName">
-            <el-input v-model="formData.personName" placeholder="请输入责任人" />
+            <el-input v-model="formData.personName" disabled placeholder="请输入责任人" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="计划开始时间" prop="startTime">
+          <el-form-item label="计划开始时间"   prop="startTime">
             <el-date-picker
               v-model="formData.startTime"
+              disabled
               type="date"
               style="width: 100%"
               value-format="x"
@@ -142,9 +143,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计划结束时间" prop="endTime">
+          <el-form-item label="计划结束时间"  prop="endTime">
             <el-date-picker
               v-model="formData.endTime"
+              disabled
               type="date"
               style="width: 100%"
               value-format="x"
@@ -166,8 +168,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计划面积（亩）" prop="planArea"  label-width="120">
-            <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）" />
+          <el-form-item label="计划面积（亩）"  prop="planArea"  label-width="120">
+            <el-input v-model="formData.planArea" disabled placeholder="请输入计划面积（亩）" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -268,6 +270,8 @@ const formData = ref({
 })
 const formRules = reactive({
   recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }],
+  recordState: [{ required: true, message: '记录状态不能为空', trigger: 'blur' }],
+
 })
 const formRef = ref() // 表单 Ref
 
@@ -292,8 +296,8 @@ const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
   formData.value.planState = String(order[0].planState)
   formData.value.personId = String(order[0].personId)
   formData.value.personName = String(order[0].personName)
-  formData.value.startTime = String(order[0].startTime)
-  formData.value.endTime = String(order[0].endTime)
+  formData.value.startTime = order[0].startTime
+  formData.value.endTime = order[0].startTime
   formData.value.planArea = String(order[0].planArea)
   formData.value.finishArea = String(order[0].finishArea)
   formData.value.area = String(order[0].area)

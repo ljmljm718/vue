@@ -91,15 +91,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计划状态" prop="planState">
-            <el-select v-model="formData.planState" placeholder="请选择计划状态">
-              <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
+          <el-form-item label="批次码" prop="batchCode">
+            <el-input v-model="formData.batchCode" disabled placeholder="请输入批次码" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -161,15 +154,26 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计划面积（亩）" prop="planArea" label-width="120">
+          <el-form-item label="计划面积(亩)" prop="planArea" label-width="120">
             <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）" />
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="3">
+        <el-col :span="12">
+          <el-form-item label="计划状态" prop="planState">
+            <el-select v-model="formData.planState" placeholder="请选择计划状态">
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-      <!--      <el-form-item label="土地面积（亩）" prop="area">-->
-      <!--        <el-input v-model="formData.area" placeholder="请输入土地面积（亩）" />-->
-      <!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -198,6 +202,7 @@ import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPop
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
 import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {UserVO} from "@/api/login/types";
 
 /** 农事计划 表单 */
 defineOptions({ name: 'FarmPlanForm' })
@@ -227,15 +232,16 @@ const formData = ref({
   endTime: undefined,
   planArea: undefined,
   area: undefined,
-  farmDefineType:undefined,
   finishArea:undefined,
-
+  farmDefineType:undefined,
+  batchCode:undefined,
 })
 const formRules = reactive({
   farmDefineType: [{ required: true, message: '农事阶段不能为空', trigger: 'blur' }],
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
   parkName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],
   plotName: [{ required: true, message: '地块名称不能为空', trigger: 'blur' }],
+  planArea: [{ required: true, message: '计划面积不能为空', trigger: 'blur' }],
   startTime: [{ required: true, message: '计划开始时间不能为空', trigger: 'blur' }],
   endTime: [{ required: true, message: '计划结束时间不能为空', trigger: 'blur' }],
 })
@@ -292,6 +298,7 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.belongPlot = String(order[0].belongPlot)
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
+  formData.value.batchCode = String(order[0].batchCode)
 
 }
 
@@ -378,6 +385,7 @@ const resetForm = () => {
     area: undefined,
     farmDefineType:undefined,
     finishArea:undefined,
+    batchCode:undefined,
   }
   formRef.value?.resetFields()
 }

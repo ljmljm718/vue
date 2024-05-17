@@ -21,6 +21,7 @@ export interface FarmPlanVO {
   area: string // 土地面积（亩）
   farmDefineType:string
   finishArea:string
+  batchCode:string
 }
 
 // 农事计划 API

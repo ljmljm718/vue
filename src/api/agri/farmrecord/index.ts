@@ -21,6 +21,8 @@ export interface FarmRecordVO {
   planArea: string // 计划面积（亩）
   recordArea: string // 土地面积（亩）
   recordState: string // 记录状态
+  farmDefineType:string
+  batchCode:string
 }
 
 // 农事记录 API
@@ -54,4 +56,4 @@ export const FarmRecordApi = {
   exportFarmRecord: async (params) => {
     return await request.download({ url: `/agri/farm-record/export-excel`, params })
   },
-}
+}

@@ -57,10 +57,10 @@
                 @selection-change="handleSelectionChange"
                >
         <el-table-column width="30" label="选择" type="selection"/>
-        <el-table-column label="计划编码" align="center" prop="planCode" />
-        <el-table-column label="计划名称" align="center" prop="planName" />
+        <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
+        <el-table-column label="计划名称" align="center" prop="planName" width="180" />
         <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-        <el-table-column label="基地名称" align="center" prop="parkName" />
+        <el-table-column label="基地名称" align="center" prop="parkName" width="180"  />
         <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
           <template #default="scope">
             <el-select v-model="scope.row.farmDefineType" disabled>
@@ -74,21 +74,21 @@
           </template>
         </el-table-column>
         <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-        <el-table-column label="地块名称" align="center" prop="plotName" />
+        <el-table-column label="地块名称" align="center" prop="plotName" width="180"/>
         <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
-        <el-table-column label="作物名称" align="center" prop="cropName" />
-        <el-table-column label="品种" align="center" prop="cropType" >
+        <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
+        <el-table-column label="品种" align="center" prop="cropType" width="100" >
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
           </template>
         </el-table-column>
-        <el-table-column label="计划状态" align="center" prop="planState" >
+        <el-table-column label="计划状态" align="center" prop="planState" width="100" >
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
           </template>
         </el-table-column>
         <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-        <el-table-column label="责任人" align="center" prop="personName" />
+        <el-table-column label="责任人" align="center" prop="personName" width="150" />
         <el-table-column
           label="计划开始时间"
           align="center"
@@ -103,9 +103,6 @@
           :formatter="dateFormatter2"
           width="180px"
         />
-        <el-table-column label="计划面积（亩）" align="center" prop="planArea" />
-        <el-table-column label="完成面积（亩）" align="center" prop="finishArea" />
-        <el-table-column label="剩余面积（亩）" align="center" prop="area" />
         <el-table-column
           label="创建时间"
           align="center"
@@ -113,6 +110,9 @@
           :formatter="dateFormatter"
           width="180px"
         />
+        <el-table-column label="计划面积（亩）" align="center" prop="planArea" fixed="right" width="150" />
+        <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>
+        <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -173,7 +173,6 @@ const selectionList = ref<FarmPlanVO[]>([])
 const handleSelectionChange = (rows: FarmPlanVO[]) => {
   selectionList.value = rows
 }
-let farmDefineOptions = ref([])// 设备分类选项
 
 // 人员单选
 const multipleTableRef = ref()
@@ -225,6 +224,7 @@ const submitForm = () => {
 const open = async (id: string) => {
   dialogVisible.value = true
   await nextTick() // 等待，避免 queryFormRef 为空
+  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 
   // 加载下属地块列表
   await resetQuery()
@@ -232,12 +232,16 @@ const open = async (id: string) => {
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
+let farmDefineOptions = ref([])// 设备分类选项
+
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
   try {
-    farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
+    data.list.forEach((item)=>{
+      item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
+    })
     list.value = data.list
     total.value = data.total
   } finally {
