@@ -140,7 +140,7 @@ const queryParams = reactive({
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
-  recoveryNo:true,
+  recoveryNo:false,
 })
 const queryFormRef = ref() // 搜索的表单
 

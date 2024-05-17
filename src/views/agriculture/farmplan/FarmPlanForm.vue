@@ -21,8 +21,8 @@
       </el-row>
       <el-row :gutter="3">
         <el-col :span="12">
-          <el-form-item label="作物id" prop="cropId">
-            <el-input v-model="formData.cropId" disabled placeholder="请输入作物id" >
+          <el-form-item label="作物编码" prop="cropId">
+            <el-input v-model="formData.cropId" disabled placeholder="请输入作物编码" >
               <template #append>
                 <el-button @click="openCropInfoPopup()">
                   <Icon icon="ep:search"/>

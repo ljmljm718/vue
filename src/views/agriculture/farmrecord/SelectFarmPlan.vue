@@ -158,7 +158,7 @@ const queryParams = reactive({
   cropId: undefined,
   cropName: undefined,
   cropType: undefined,
-  planState: undefined,
+  planState: ['1','0'],
   personId: undefined,
   personName: undefined,
   startTime: [],
