@@ -189,9 +189,15 @@ const dataShowDateChange=(val)=>{
 const initDataShowChart=async (collectionType='',monitoringType='',date='')=>{
   let res=await EquipmentDataApi.getDataPresentation({collectionType,monitoringType,date})
   console.log(res,'数据展示')
+  let data=res.map(item=>item.dateTime)
+  let xAxisData=[]
+  data.forEach(item=>{
+    xAxisData.push(item.slice(11))
+  })
+  console.log(xAxisData,'data数据展示')
   initChartStatic('dataShowChart', generateBaseOptions({
     xAxis: {
-      data:res.map(item=>item.dateTime),
+      data:xAxisData,
       axisLine: {
         show: true,
         lineStyle: {
