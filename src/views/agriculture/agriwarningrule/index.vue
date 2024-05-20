@@ -41,7 +41,7 @@
           />
         </el-select>
       </el-form-item>
-            <el-form-item label="预警等级" prop="warnType">
+            <el-form-item label="预警等级" prop="warnLevel">
         <el-select
           v-model="queryParams.warnLevel"
           placeholder="请选择预警等级"
