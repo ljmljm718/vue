@@ -59,7 +59,11 @@ export const ParkInfoApi = {
   },
 
   // 基地地块树
-  getParkTree: async (params: any) => {
+   getParkTree: async (params: any) => {
     return await request.get({ url: `/agriculture/big-screen/getParkTree`, params })
+  },
+  // 基地地块树
+  getDeviceAndParkTree: async (params: any) => {
+    return await request.get({ url: `/agriculture/big-screen/getDeviceAndParkTree`, params })
   }
 }
