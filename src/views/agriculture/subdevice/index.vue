@@ -106,7 +106,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>
+<!--      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>-->
       <el-table-column label="子设备名称" align="center" prop="subDevicesName"/>
       <el-table-column label="所属设备" align="center" prop="devicesId"/>
       <el-table-column label="所属设备名称" align="center" prop="remark"/>
@@ -237,8 +237,11 @@ const props = defineProps({
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      console.log(props.currCategory.id,2222222)
+      if (props.currCategory.deviceName==undefined){
+        queryParams.devicesId = undefined
+      }else {
         queryParams.devicesId = props.currCategory.id
+      }
     } else {
       queryParams.devicesId = undefined
     }
