@@ -139,6 +139,18 @@
 <!--                </el-form-item>-->
 <!--            </el-col>-->
             <el-col :span="12">
+              <el-form-item label="预警等级" prop="warnLevel">
+                  <el-select v-model="formData.warnLevel" placeholder="请选择预警等级">
+                      <el-option
+                              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                      />
+                  </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
                 <el-form-item label="预警图片" prop="imgId">
                     <UploadImg v-model="formData.imgId" />
                 </el-form-item>
@@ -198,6 +210,7 @@ const formData = ref({
   warnType: undefined,
   warnUnit: undefined,
   warnTitle: undefined,
+  warnLevel: undefined,
 })
 const formRules = reactive({
   parkCode: [{ required: true, message: '园区编号不能为空', trigger: 'blur' }],
@@ -270,6 +283,7 @@ const resetForm = () => {
     warnType: undefined,
     warnUnit: undefined,
     warnTitle: undefined,
+    warnLevel: undefined,
   }
   formRef.value?.resetFields()
 }

@@ -251,6 +251,7 @@ export enum DICT_TYPE {
   AGRI_CROP_CULTIVARS='agri_crop_cultivars',//作物品种
   AGRI_MONITOR_TYPE = 'agri_monitor_type', //预警类型
   AGRI_MONITOR_UNIT = 'agri_monitor_unit', //预警单位
+  AGRI_WARN_LEVEL = 'agri_warn_level',//预警等级
 
   // =========== YYANG -  酉阳 ==========
   YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测

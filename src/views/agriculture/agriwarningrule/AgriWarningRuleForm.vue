@@ -67,9 +67,14 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
+        <!-- <el-col :span="16">
           <el-form-item label="低位预警消息" prop="lowMsg">
             <el-input v-model="formData.lowMsg" placeholder="请输入低位预警消息" />
+          </el-form-item>
+        </el-col> -->
+        <el-col :span="16">
+          <el-form-item label="预警消息" prop="lowMsg">
+            <el-input v-model="formData.lowMsg" placeholder="请输入预警消息" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -94,15 +99,24 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
+        <!-- <el-col :span="16">
           <el-form-item label="高位预警消息" prop="highMsg">
             <el-input v-model="formData.highMsg" placeholder="请输入高位预警消息" />
           </el-form-item>
+        </el-col> -->
+        <el-col :span="16">
+          <el-form-item label="预警等级" prop="warnLevel">
+            <el-select v-model="formData.warnLevel" placeholder="请选择预警等级">
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
         </el-col>
       </el-row>
-<!--      <el-form-item label="备注" prop="remark">-->
-<!--        <el-input v-model="formData.remark" placeholder="请输入备注" />-->
-<!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -139,6 +153,7 @@ const formData = ref({
   warnType: undefined,
   effectiveStatus: status,
   ruleTitle: undefined,
+  warnLevel: undefined,
 })
 const formRules = reactive({
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
@@ -206,6 +221,7 @@ const resetForm = () => {
     warnType: undefined,
     effectiveStatus: status,
     ruleTitle: undefined,
+    warnLevel: undefined,
   }
   formRef.value?.resetFields()
 }
