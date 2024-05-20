@@ -7,25 +7,25 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="农事计划编码" prop="planId">
-            <el-input v-model="formData.planId" disabled placeholder="请输入农事计划编码" >
-              <template #append>
-                <el-button @click="openFarmPlanPopup()">
-                  <Icon icon="ep:search"/>
-                  选择
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="农事计划名称" prop="planName">
-            <el-input v-model="formData.planName" disabled placeholder="请输入农事计划名称" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      <el-row :gutter="3">-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="农事计划编码" prop="planId">-->
+<!--            <el-input v-model="formData.planId" disabled placeholder="请输入农事计划编码" >-->
+<!--              <template #append>-->
+<!--                <el-button @click="openFarmPlanPopup()">-->
+<!--                  <Icon icon="ep:search"/>-->
+<!--                  选择-->
+<!--                </el-button>-->
+<!--              </template>-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="农事计划名称" prop="planName">-->
+<!--            <el-input v-model="formData.planName" disabled placeholder="请输入农事计划名称" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="作物编号" prop="cropId">
@@ -97,20 +97,20 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="计划状态" prop="planState">
-            <el-select v-model="formData.planState" disabled placeholder="请选择计划状态">
-              <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="计划状态" prop="planState">-->
+<!--            <el-select v-model="formData.planState" disabled placeholder="请选择计划状态">-->
+<!--              <el-option-->
+<!--                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_PLAN_STATE)"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.label"-->
+<!--                :value="dict.value"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--      <el-row :gutter="3">-->
         <el-col :span="12">
           <el-form-item label="批次码" prop="batchCode">
             <el-input v-model="formData.batchCode" placeholder="请输入批次码" />
@@ -149,32 +149,32 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="计划开始时间"   prop="startTime">
-            <el-date-picker
-              v-model="formData.startTime"
-              disabled
-              type="date"
-              style="width: 100%"
-              value-format="x"
-              placeholder="选择计划开始时间"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="计划结束时间"  prop="endTime">
-            <el-date-picker
-              v-model="formData.endTime"
-              disabled
-              type="date"
-              style="width: 100%"
-              value-format="x"
-              placeholder="选择计划结束时间"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      <el-row :gutter="3">-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="计划开始时间"   prop="startTime">-->
+<!--            <el-date-picker-->
+<!--              v-model="formData.startTime"-->
+<!--              disabled-->
+<!--              type="date"-->
+<!--              style="width: 100%"-->
+<!--              value-format="x"-->
+<!--              placeholder="选择计划开始时间"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="计划结束时间"  prop="endTime">-->
+<!--            <el-date-picker-->
+<!--              v-model="formData.endTime"-->
+<!--              disabled-->
+<!--              type="date"-->
+<!--              style="width: 100%"-->
+<!--              value-format="x"-->
+<!--              placeholder="选择计划结束时间"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
       <el-row :gutter="3">
         <el-col :span="12">
           <el-form-item label="记录时间" prop="recordTime">
@@ -187,42 +187,42 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="计划面积（亩）"  prop="planArea"  label-width="120">
-            <el-input v-model="formData.planArea" disabled placeholder="请输入计划面积（亩）" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="完成面积（亩）" prop="finishArea"  label-width="120">
-            <el-input v-model="formData.finishArea" disabled />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="剩余面积（亩）" prop="area"  label-width="120">
-            <el-input v-model="formData.area" disabled />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="计划面积（亩）"  prop="planArea"  label-width="120">-->
+<!--            <el-input v-model="formData.planArea" disabled placeholder="请输入计划面积（亩）" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--      <el-row :gutter="3">-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="完成面积（亩）" prop="finishArea"  label-width="120">-->
+<!--            <el-input v-model="formData.finishArea" disabled />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="剩余面积（亩）" prop="area"  label-width="120">-->
+<!--            <el-input v-model="formData.area" disabled />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--      <el-row :gutter="3">-->
         <el-col :span="12">
           <el-form-item label="土地面积（亩）" prop="recordArea" label-width="120">
             <el-input v-model="formData.recordArea" placeholder="请输入土地面积（亩）" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="记录状态" prop="recordState">
-            <el-select v-model="formData.recordState" placeholder="请选择记录状态">
-              <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_RECORD_STATE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="记录状态" prop="recordState">-->
+<!--            <el-select v-model="formData.recordState" placeholder="请选择记录状态">-->
+<!--              <el-option-->
+<!--                v-for="dict in getStrDictOptions(DICT_TYPE.FARM_RECORD_STATE)"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.label"-->
+<!--                :value="dict.value"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
       </el-row>
     </el-form>
     <template #footer>

@@ -95,21 +95,21 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="计划状态" prop="planState">
-        <el-select
-          v-model="queryParams.planState"
-          placeholder="请选择计划状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="计划状态" prop="planState">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.planState"-->
+<!--          placeholder="请选择计划状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
 <!--      <el-form-item label="责任人编号" prop="personId">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.personId"-->
@@ -179,21 +179,21 @@
 <!--          class="!w-240px"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="记录状态" prop="recordState">
-        <el-select
-          v-model="queryParams.recordState"
-          placeholder="请选择记录状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="记录状态" prop="recordState">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.recordState"-->
+<!--          placeholder="请选择记录状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
 <!--      <el-form-item label="创建时间" prop="createTime">-->
 <!--        <el-date-picker-->
 <!--          v-model="queryParams.createTime"-->
@@ -252,39 +252,39 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
-      <el-table-column label="记录状态" align="center" prop="recordState" width="90">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.FARM_RECORD_STATE" :value="scope.row.recordState" />
-        </template>
-      </el-table-column>
-      <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />
+<!--      <el-table-column label="记录状态" align="center" prop="recordState" width="90">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.FARM_RECORD_STATE" :value="scope.row.recordState" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />-->
       <el-table-column label="品种" align="center" prop="cropType" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
       <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
-      <el-table-column label="计划状态" align="center" prop="planState" width="100">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="计划状态" align="center" prop="planState" width="100">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
       <el-table-column label="责任人" align="center" prop="personName" width="100" />
-      <el-table-column
-        label="计划开始时间"
-        align="center"
-        prop="startTime"
-        :formatter="dateFormatter2"
-        width="180px"
-      />
-      <el-table-column
-        label="计划结束时间"
-        align="center"
-        prop="endTime"
-        :formatter="dateFormatter2"
-        width="180px"
-      />
+<!--      <el-table-column-->
+<!--        label="计划开始时间"-->
+<!--        align="center"-->
+<!--        prop="startTime"-->
+<!--        :formatter="dateFormatter2"-->
+<!--        width="180px"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="计划结束时间"-->
+<!--        align="center"-->
+<!--        prop="endTime"-->
+<!--        :formatter="dateFormatter2"-->
+<!--        width="180px"-->
+<!--      />-->
       <el-table-column
         label="记录时间"
         align="center"
@@ -292,7 +292,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="180" />
+<!--      <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="180" />-->
       <el-table-column label="土地面积（亩）" align="center" prop="recordArea" width="180" />
 
       <el-table-column
