@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <div class="floatRight">
-      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="large" @change="changeRefresh">
+      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="default" @change="changeRefresh">
         <el-option
           v-for="item in refreshList"
           :key="item.value"
@@ -12,14 +12,15 @@
     </div>
     <div class="flex space-x-4">
       <div
-        class="weather-bg w-[8rem] py-2 px-4 flex justify-between items-center cursor-pointer"
+        class="weather-bg min-w-[8rem] rounded-lg py-2 px-4 flex justify-between items-center cursor-pointer space-x-3"
         v-for="item,index in trendData"
         :key="index"
+        style="border: 1px solid #888888;"
         @click="tabCli(item.equipmentCode,item.monitoringType,index)"
       >
         <div class="box-top">
-          <div style="text-align: center;color: white;">{{ item.monitoringType }}</div>
-          <div style="text-align: center;color: white;">
+          <div>{{ item.monitoringType }}</div>
+          <div>
             <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
             <span class="pl-1">{{ item.yyUnit }}</span>
           </div>
@@ -420,7 +421,6 @@ const changeRefresh = async (value) => {
 </script>
 <style scoped lang="scss">
 .weather-bg {
-  background-image: url(./assets/weatherBg.png);
   background-size: 100% 100%;
 }
 
@@ -464,10 +464,9 @@ const changeRefresh = async (value) => {
 }
 .floatRight {
   position: absolute;
-  right: 50px;
-  top: 20px;
-  width: 200px;
-  box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.07);
+  right: 30px;
+  top: 30px;
+  width: 120px;
 }
 
 @for $i from 1 through 8 {
