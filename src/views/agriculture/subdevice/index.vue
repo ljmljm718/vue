@@ -17,15 +17,15 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="所属设备" prop="devicesId">
-        <el-input
-          v-model="queryParams.devicesId"
-          placeholder="请输入所属设备"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="所属设备" prop="devicesId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.devicesId"-->
+<!--          placeholder="请输入所属设备"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="子设备名称" prop="subDevicesName">
         <el-input
           v-model="queryParams.subDevicesName"
