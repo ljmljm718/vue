@@ -38,7 +38,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm('create', 0)"
+          @click="openForm"
           v-hasPermi="['agriculture:park-info:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
@@ -107,7 +107,7 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm(scope.row.id)"
             v-hasPermi="['agriculture:park-info:update']"
           >
             编辑
@@ -199,11 +199,17 @@ const resetQuery = () => {
   handleQuery()
 }
 
+const router = useRouter() // 路由
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (id?: number) => {
+  // formRef.value.open(type, id)
+  router.push(`/asset/base/parkInfo/create?id=${id}`)
 }
+
+onActivated(() => {
+  handleQuery()
+})
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {

@@ -36,6 +36,10 @@ setDefaultTheme()
   src: url(./assets/biaoti.ttf);
 }
 
+.el-form-item {
+  align-items: flex-start;
+}
+
 .art-font {
   font-family: 'ArtFont';
 }
