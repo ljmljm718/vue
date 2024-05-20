@@ -174,19 +174,6 @@
       /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <!-- <iframe
-            src="scope.row.fileManagement"
-          >
-            文件预览
-          </iframe> -->
-          <el-button
-            link
-            type="primary"
-            @click="filePreview(scope.row.fileManagement)"
-          >
-          文件预览
-          </el-button>
-
           <el-button
             link
             type="primary"
@@ -217,21 +204,6 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <MarketingProgramForm ref="formRef" @success="getList" />
-
-  <!-- 文件预览 -->
-  
-  <el-dialog
-    v-model="dialogVisible"
-    title="Tips"
-    width="30%"
-    :before-close="handleClose"
-  >
-    <span>This is a message</span>
-    <template #footer>
-      <iframe :src="fileUrl" ></iframe>
-    </template>
-  </el-dialog>
-
 </template>
 
 <script setup lang="ts">
@@ -260,7 +232,7 @@ const queryParams = reactive({
   marketingTags: undefined,
   fileManagement: undefined,
   coverImage: undefined,
-  marketingType: 'marketing-program',
+  marketingType: 'productmanual',
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -268,16 +240,6 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
-let dialogVisible=ref(false)
-let fileUrl=ref()
-const filePreview=(url:any)=>{
-  dialogVisible.value=true
-  console.log(url,"--------");
-  
-  //fileUrl.value=url
-}
-
 
 /** 查询列表 */
 const getList = async () => {

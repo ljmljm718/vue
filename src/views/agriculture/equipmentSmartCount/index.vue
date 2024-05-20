@@ -189,9 +189,15 @@ const dataShowDateChange=(val)=>{
 const initDataShowChart=async (collectionType='',monitoringType='',date='')=>{
   let res=await EquipmentDataApi.getDataPresentation({collectionType,monitoringType,date})
   console.log(res,'数据展示')
+  let data=res.map(item=>item.dateTime)
+  let xAxisData=[]
+  data.forEach(item=>{
+    xAxisData.push(item.slice(11))
+  })
+  console.log(xAxisData,'data数据展示')
   initChartStatic('dataShowChart', generateBaseOptions({
     xAxis: {
-      data:res.map(item=>item.dateTime),
+      data:xAxisData,
       axisLine: {
         show: true,
         lineStyle: {
@@ -283,10 +289,10 @@ const collectChange=()=>{
 }
 //数据采集量情况
 const initCollectConditionChart=async (dataStarTime='',dataEndTime='')=>{
-  let res=await EquipmentDataApi.getPieDataList({dataStarTime,dataEndTime})
-  console.log(res,'数据采集量情况')
-  let data=[]
-  res.forEach(item=>{
+  const res = await EquipmentDataApi.getPieDataList({dataStarTime,dataEndTime})
+  console.log('数据采集量情况', res)
+  const data:Array<any> = []
+  res.forEach(item => {
     data.push({
       name:item.collectionType,
       value:item.countNum
@@ -337,6 +343,36 @@ onMounted( async() => {
   initDataCollectChart('year')
   initCollectConditionChart()
 })
+
+const getIconFrame = (text:string) => {
+  const _iconMap = {
+    "温度": "icon-1",
+    "磷": "icon-2",
+    "氮": "icon-3",
+    "钾": "icon-4",
+    "PH": "icon-5",
+    "湿度": "icon-6",
+    "EC": "icon-7",
+    "虫害": "icon-8",
+    "光": "icon-9",
+    "风": "icon-10",
+    "雨量": "icon-12",
+    "水位": "icon-13",
+    "盐度": "icon-14",
+    "亚硝酸盐": "icon-15",
+    "浑浊": "icon-16",
+    "量": "icon-11"
+  }
+  let res:string = 'icon-11'
+  let flag:boolean = false
+  Object.keys(_iconMap).forEach(item => {
+    if (text.indexOf(item) !== -1 && !flag) {
+      res = _iconMap[item]
+      flag = true
+    }
+  })
+  return res
+}
 </script>
 <template>
   <div>
@@ -389,11 +425,16 @@ onMounted( async() => {
             <span>土壤墒情</span>
           </div>
         </template>
-        <div class="grid grid-rows-3 grid-cols-3" style="flex-wrap:wrap;">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center" v-for="item,index in soilList" :key="index">
-            <el-avatar shape="square" :src="icon1" v-show="index==0"/>
-            <div class="flex flex-col items-center justify-center">
-              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+        <div class="extra-grid-css grid xl:grid-cols-2 2xl:grid-cols-3 gap-1 xl:gap-2">
+          <div
+            class="min-w-32 flex px-3 py-2 justify-between items-center rounded-lg"
+            v-for="item,index in soilList"
+            :key="index"
+            style="border: 1px solid #888888;"
+          >
+            <i alt="" :class="`w-2rem h-2rem ${getIconFrame(item.monitoringType)}`"></i>
+            <div class="flex flex-col items-end justify-center">
+              <div style="font-size: 14px;">{{item.monitoringType}}({{item.yyUnit}})</div>
               <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
           </div>
@@ -406,12 +447,17 @@ onMounted( async() => {
             <span>虫情监测</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center" style="flex-direction:column;">
-          <div class="flex px-1 py-2 justify-between items-center mb-15px" v-for="item,index in infestation" :key='index'>
-            <el-avatar shape="square" :src="icon2" />
-            <div class="flex px-2 pt-1 flex-col items-center justify-center">
-              <div style="font-size: 11px;">{{item.monitoringType}}</div>
-              <div class="art-font text-sm" >{{item.dataValue}}{{item.yyUnit}}</div>
+        <div class="grid grid-col-1 gap-2">
+          <div
+            class="flex px-3 py-2 justify-between items-center rounded-lg"
+            v-for="item,index in infestation"
+            :key='index'
+            style="border: 1px solid #888888;"
+          >
+            <i alt="" :class="`w-2rem h-2rem ${getIconFrame(item.monitoringType)}`"></i>
+            <div class="flex px-2 flex-col items-end justify-center">
+              <div style="font-size: 14px;">{{item.monitoringType}}</div>
+              <div class="art-font text-lg" >{{item.dataValue}}{{item.yyUnit}}</div>
             </div>
           </div>
         </div>
@@ -423,11 +469,16 @@ onMounted( async() => {
             <span>气象站</span>
           </div>
         </template>
-        <div class="grid grid-rows-2 grid-cols-4 weather">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center" v-for="item,index in weather" :key="index">
-            <el-avatar shape="square" :src="icon1" />
-            <div class="flex flex-col items-center justify-center">
-              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+        <div class="grid xl:grid-cols-3 2xl:grid-cols-4 gap-1 xl:gap-2">
+          <div
+            class="min-w-32 flex px-3 py-2 justify-between items-center rounded-lg"
+            v-for="item,index in weather"
+            :key="index"
+            style="border: 1px solid #888888;"
+          >
+            <i alt="" :class="`w-2rem h-2rem ${getIconFrame(item.monitoringType)}`"></i>
+            <div class="flex flex-col items-end justify-center">
+              <div style="font-size: 14px;">{{item.monitoringType}}({{item.yyUnit}})</div>
               <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
           </div>
@@ -440,11 +491,16 @@ onMounted( async() => {
             <span>水质监测</span>
           </div>
         </template>
-        <div class="flex justify-evenly items-center mt-15px" style="flex-wrap:wrap;">
-          <div class="min-w-32 flex px-3 py-2 justify-between items-center " v-for='item,index in waterQuality' :key='index'>
-            <el-avatar shape="square" :src="icon5" />
-            <div class="flex flex-col items-center justify-center">
-              <div>{{item.monitoringType}}({{item.yyUnit}})</div>
+        <div class="grid xl:grid-cols-3 2xl:grid-cols-4 gap-1 xl:gap-2">
+          <div
+            class="min-w-32 flex px-3 py-2 justify-between items-center rounded-lg"
+            v-for='item,index in waterQuality'
+            :key='index'
+            style="border: 1px solid #888888;"
+          >
+            <i alt="" :class="`w-2rem h-2rem ${getIconFrame(item.monitoringType)}`"></i>
+            <div class="flex flex-col items-end justify-center">
+              <div style="font-size: 14px;">{{item.monitoringType}}({{item.yyUnit}})</div>
               <div class="art-font text-lg">{{item.dataValue}}</div>
             </div>
           </div>
@@ -487,18 +543,18 @@ onMounted( async() => {
                 <el-radio-button label="虫情监测" value="虫情监测" />
               </el-radio-group>
               <el-select
-              @change="selectCli"
-              v-model="seletValue"
-              :placeholder="options[0]"
-              style="width: 100px;height: 31px;"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
+                @change="selectCli"
+                v-model="seletValue"
+                :placeholder="options[0]"
+                style="width: 100px;"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
               <el-date-picker
                 @change="dataShowDateChange"
                 v-model="dataShowDate"
@@ -547,4 +603,22 @@ onMounted( async() => {
   height: 12rem;
   flex-direction: column;
 }
+
+@media (max-width: 1722px) {
+  .extra-grid-css {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+.extra-grid-css {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@for $i from 1 through 16 {
+  .icon-#{$i} {
+    background-image: url(./assets/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
 </style>

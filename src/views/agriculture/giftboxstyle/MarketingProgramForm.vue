@@ -7,14 +7,14 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="方案名称" prop="schemeName">
+      <el-form-item label="产品名称" prop="schemeName">
         <el-input v-model="formData.schemeName" placeholder="请输入方案名称" />
       </el-form-item>
       <el-form-item label="简介" prop="briefIntroduction">
         <el-input v-model="formData.briefIntroduction" type="textarea" placeholder="请输入简介" />
       </el-form-item>
-      <el-form-item label="创作人" prop="marketingCreator">
-        <el-input v-model="formData.marketingCreator" placeholder="请输入创作人" />
+      <el-form-item label="设计人" prop="marketingCreator">
+        <el-input v-model="formData.marketingCreator" placeholder="请输入设计人" />
       </el-form-item>
       <el-form-item label="上传时间" prop="marketingUploadTime">
         <el-date-picker
@@ -78,7 +78,7 @@ const formData = ref({
   marketingTags: undefined,
   fileManagement: undefined,
   coverImage: undefined,
-  marketingType: 'marketing-program',
+  marketingType: 'giftboxstyle',
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -141,7 +141,7 @@ const resetForm = () => {
     marketingTags: undefined,
     fileManagement: undefined,
     coverImage: undefined,
-    marketingType: 'marketing-program',
+    marketingType: 'giftboxstyle',
     reserveOne: undefined,
     reserveTwo: undefined,
     reserveThree: undefined,
