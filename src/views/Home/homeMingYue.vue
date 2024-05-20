@@ -4,17 +4,24 @@
       class="grid gap-2"
       :style="`grid-template-columns: repeat(${topList.length}, 1fr);`"
     >
-      <el-card v-for="item, index in topList" :key="index">
-        <div class="flex justify-between">
-          <div>{{ item.title }}</div>
-          <div class="art-font">{{ item.value }}</div>
+      <el-card
+        v-for="item, index in topList"
+        :key="index"
+        style="background: #ebf3ff;"
+      >
+        <div class="flex items-center justify-between">
+          <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%;"></div>
+          <div class="flex justify-between flex-col items-end">
+            <div style="font-size: 13px;">{{ item.title }}</div>
+            <div class="art-font">{{ item.value }}</div>
+          </div>
         </div>
       </el-card>
     </div>
     <div class="flex justify-between space-x-4 my-4">
-      <el-card class="w-[16rem]">
+      <el-card class="w-[16rem]" style="background: #ebf3ff;">
         <el-tree
-          style="max-width: 100%;background: none;height:100%"
+          style="max-width: 100%;height:100%;background: #ebf3ff;"
           :data="data"
           :props="defaultProps"
           :default-expand-all="true"
@@ -39,7 +46,7 @@
             <div class="relative">
               <div id="chart1"></div>
               <div class="absolute z-10 left-0 top-0 w-full h-full flex flex-col items-center justify-center">
-                <div style="font-size: 1.1rem;color:#7696eb;font-weight: bold;">{{devicePercent}}</div>
+                <div style="font-size: 1.1rem;color:#7696eb;font-weight: bold;">{{ devicePercent }}</div>
                 <div style="font-size: .8rem">巡检进度</div>
               </div>
             </div>
@@ -708,9 +715,31 @@ const handleSelectedMonitorTypeChange = async (item) => {
 const getHomeDeviceCard = () => {
   getEquipmentCountSum().then((res) => {
     console.log(res, '顶部小卡片')
+    const _iconMap = {
+      "虫情": "top-2",
+      "土壤": "top-3",
+      "报警": "top-9",
+      "气象": "top-5",
+      "生长": "top-7",
+      "在线": "top-8",
+      "视频": "top-4",
+      "设备": "top-6",
+      "水质": "top-1",
+      "离线": 'top-10'
+    }
+    const getIconFrame = (text:string) => {
+      let flag = false, res = ''
+      Object.keys(_iconMap).forEach(item => {
+        if (text.indexOf(item) !== -1 && !flag) {
+          flag = true
+          res = _iconMap[item]
+        }
+      })
+      return res
+    }
 
     topList.value = Object.keys(res).map(item => ({
-      title: item, value: res[item]
+      title: item, value: res[item], icon: getIconFrame(item)
     }))
   })
 }
