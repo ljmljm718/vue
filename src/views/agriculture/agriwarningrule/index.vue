@@ -41,6 +41,21 @@
           />
         </el-select>
       </el-form-item>
+            <el-form-item label="预警等级" prop="warnType">
+        <el-select
+          v-model="queryParams.warnLevel"
+          placeholder="请选择预警等级"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="生效状态" prop="effectiveStatus">
         <el-select
           v-model="queryParams.effectiveStatus"
@@ -101,6 +116,11 @@
           <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
         </template>
       </el-table-column>
+      <el-table-column label="预警等级" align="center" prop="warnLevel" width="150">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel" />
+        </template>
+      </el-table-column>
       <el-table-column label="预警下限" align="center" width="120">
         <template #default="scope">
           <div> {{ scope.row["warnLowValue"] }}{{ scope.row["warnUnit"] }}</div>
@@ -111,8 +131,9 @@
           <div> {{ scope.row["warnHighValue"] }}{{ scope.row["warnUnit"] }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="低位预警消息" align="center" prop="lowMsg" />
-      <el-table-column label="高位预警消息" align="center" prop="highMsg" />
+      <!-- <el-table-column label="低位预警消息" align="center" prop="lowMsg" /> -->
+      <el-table-column label="预警消息" align="center" prop="lowMsg" />
+      <!-- <el-table-column label="高位预警消息" align="center" prop="highMsg" /> -->
 <!--      <el-table-column label="责任人编号" align="center" prop="responsiblePersonId" />-->
       <el-table-column label="责任人" align="center" prop="responsiblePerson" width="110"/>
 <!--      <el-table-column label="备注" align="center" prop="remark" />-->
@@ -128,7 +149,7 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_RULE_STATUS" :value="scope.row.effectiveStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" fixed="right">
+      <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
           <el-button
             link
@@ -205,6 +226,7 @@ const queryParams = reactive({
   warnType: undefined,
   effectiveStatus: undefined,
   ruleTitle: undefined,
+  warnLevel: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

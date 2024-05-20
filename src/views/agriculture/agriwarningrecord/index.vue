@@ -48,6 +48,21 @@
           />
         </el-select>
       </el-form-item>
+            <el-form-item label="预警等级" prop="warnLevel">
+        <el-select
+          v-model="queryParams.warnLevel"
+          placeholder="请选择预警等级"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="预警时间" prop="warnTime">
         <el-date-picker
           v-model="queryParams.warnTime"
@@ -95,6 +110,11 @@
       <el-table-column label="预警类型" align="center" prop="warnType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
+        </template>
+      </el-table-column>
+      <el-table-column label="预警等级" align="center" prop="warnLevel">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel" />
         </template>
       </el-table-column>
 <!--      <el-table-column label="预警标题" align="center" prop="warnTitle" />-->
@@ -294,6 +314,7 @@ const dealData = ref({
   warnType: undefined,
   warnUnit: undefined,
   warnTitle: undefined,
+  warnLevel: undefined,
 } as any)
 const dealDataRules = reactive({
   dealPerson: [{ required: true, message: '处理人不能为空', trigger: 'blur' }],
@@ -353,6 +374,7 @@ const resetForm = () => {
     warnType: undefined,
     warnUnit: undefined,
     warnTitle: undefined,
+    warnLevel: undefined,
   }
 }
 

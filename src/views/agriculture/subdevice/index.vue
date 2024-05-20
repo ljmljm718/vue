@@ -105,7 +105,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>
       <el-table-column label="子设备名称" align="center" prop="subDevicesName"/>
       <el-table-column label="所属设备" align="center" prop="devicesId"/>
