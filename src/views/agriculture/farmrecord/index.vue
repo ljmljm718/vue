@@ -88,7 +88,7 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"

@@ -17,15 +17,15 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="所属设备" prop="devicesId">
-        <el-input
-          v-model="queryParams.devicesId"
-          placeholder="请输入所属设备"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="所属设备" prop="devicesId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.devicesId"-->
+<!--          placeholder="请输入所属设备"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="子设备名称" prop="subDevicesName">
         <el-input
           v-model="queryParams.subDevicesName"
@@ -106,7 +106,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>
+<!--      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>-->
       <el-table-column label="子设备名称" align="center" prop="subDevicesName"/>
       <el-table-column label="所属设备" align="center" prop="devicesId"/>
       <el-table-column label="所属设备名称" align="center" prop="remark"/>
@@ -192,8 +192,6 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    let aa = route.query.devicesId;
-    queryParams.devicesId = aa;
     const data = await SubDeviceApi.getSubDevicePage(queryParams)
     list.value = data.list.map(item => ({...item, status: item.swithState === '0'}))
     total.value = data.total
@@ -201,6 +199,55 @@ const getList = async () => {
     loading.value = false
   }
 }
+if (route.query.devicesId){
+  let aa = route.query.devicesId;
+  queryParams.devicesId = aa;
+}
+
+// 定义属性
+const props = defineProps({
+  // todo (zhangyu26, 2024-03-26 15:19:17) : currCategory, 暂时没用
+  currCategory: {
+    type: Object,
+    default: () => ({})
+  },
+  // 多选
+  multi: {
+    type: Boolean,
+    default: () => false
+  },
+  // 只读
+  readonly: {
+    type: Boolean,
+    default: () => false
+  },
+  // 选中的设备id
+  initDeviceInfoIdList: {
+    type: Array,
+    default: () => ([])
+  },
+  inDialog: {
+    type: Boolean,
+    default: () => false
+  }
+})
+
+
+// 监听父组件category变化
+watch(() => props.currCategory,
+  () => {
+    if (props.currCategory) {
+      if (props.currCategory.deviceName==undefined){
+        queryParams.devicesId = undefined
+      }else {
+        queryParams.devicesId = props.currCategory.id
+      }
+    } else {
+      queryParams.devicesId = undefined
+    }
+    handleQuery()
+  })
+
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -211,6 +258,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  emit('reset'); // 清空基地树的选中节点
   handleQuery()
 }
 

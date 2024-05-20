@@ -8,19 +8,19 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="方案名称" prop="schemeName">
+      <el-form-item label="产品名称" prop="schemeName">
         <el-input
           v-model="queryParams.schemeName"
-          placeholder="请输入方案名称"
+          placeholder="请输入产品名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="创作人" prop="marketingCreator">
+      <el-form-item label="设计人" prop="marketingCreator">
         <el-input
           v-model="queryParams.marketingCreator"
-          placeholder="请输入创作人"
+          placeholder="请输入设计人"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -130,9 +130,9 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-      <el-table-column label="方案名称" align="center" prop="schemeName" />
+      <el-table-column label="产品名称" align="center" prop="schemeName" />
       <el-table-column label="简介" align="center" prop="briefIntroduction" />
-      <el-table-column label="创作人" align="center" prop="marketingCreator" />
+      <el-table-column label="设计人" align="center" prop="marketingCreator" />
       <el-table-column
         label="上传时间"
         align="center"
@@ -174,19 +174,6 @@
       /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <!-- <iframe
-            src="scope.row.fileManagement"
-          >
-            文件预览
-          </iframe> -->
-          <el-button
-            link
-            type="primary"
-            @click="filePreview(scope.row.fileManagement)"
-          >
-          文件预览
-          </el-button>
-
           <el-button
             link
             type="primary"
@@ -217,21 +204,6 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <MarketingProgramForm ref="formRef" @success="getList" />
-
-  <!-- 文件预览 -->
-  
-  <el-dialog
-    v-model="dialogVisible"
-    title="Tips"
-    width="30%"
-    :before-close="handleClose"
-  >
-    <span>This is a message</span>
-    <template #footer>
-      <iframe :src="fileUrl" ></iframe>
-    </template>
-  </el-dialog>
-
 </template>
 
 <script setup lang="ts">
@@ -260,7 +232,7 @@ const queryParams = reactive({
   marketingTags: undefined,
   fileManagement: undefined,
   coverImage: undefined,
-  marketingType: 'marketing-program',
+  marketingType: 'giftboxstyle',
   reserveOne: undefined,
   reserveTwo: undefined,
   reserveThree: undefined,
@@ -268,16 +240,6 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
-let dialogVisible=ref(false)
-let fileUrl=ref()
-const filePreview=(url:any)=>{
-  dialogVisible.value=true
-  console.log(url,"--------");
-  
-  //fileUrl.value=url
-}
-
 
 /** 查询列表 */
 const getList = async () => {

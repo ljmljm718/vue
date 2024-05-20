@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="子设备编号" prop="subDevicesNum">
-        <el-input v-model="formData.subDevicesNum" placeholder="选填"/>
-      </el-form-item>
+<!--      <el-form-item label="子设备编号" prop="subDevicesNum">-->
+<!--        <el-input v-model="formData.subDevicesNum" placeholder="选填"/>-->
+<!--      </el-form-item>-->
       <el-form-item label="子设备名称" prop="subDevicesName">
         <el-input v-model="formData.subDevicesName" placeholder="请输入子设备名称"/>
       </el-form-item>
