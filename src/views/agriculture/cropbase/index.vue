@@ -152,10 +152,17 @@
       />
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
+          <!--                    <el-button-->
+          <!--                      link-->
+          <!--                      type="success"-->
+          <!--                      @click="goCheck(scope.row)"-->
+          <!--                    >-->
+          <!--                      溯源-->
+          <!--                    </el-button>-->
           <el-button
             link
             type="success"
-            @click="goCheck(scope.row)"
+            @click="damn(scope.row)"
           >
             溯源
           </el-button>
@@ -201,22 +208,55 @@
   <CropBaseForm ref="formRef" @success="getList"/>
   <!-- 表单弹窗：添加/修改 -->
   <HarvestManagementForm ref="formRefA" @success="getList"/>
+  <el-drawer v-model="drawer2" :direction="direction" :data="formData">
+    <template #header>
+      <h3>生命周期-溯源</h3>
+    </template>
+    <template #default>
+      <el-timeline style="max-width: 600px">
+        <el-timeline-item
+          v-for="item, index in formData"
+          :key="index"
+          :timestamp="formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') "
+          placement="top"
+        >
+          <el-card>
+            <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
+            <p>品种：
+              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType" />
+           </p>
+            <p>作物名称：{{ item.cropName }}</p>
+            <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+    </template>
+    <template #footer>
+      <div style="flex: auto">
+        <el-button @click="cancelClick">cancel</el-button>
+      </div>
+    </template>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
+import {FarmDefineApi} from "@/api/agri/farmdefine";
 import download from '@/utils/download'
 import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
 import HarvestManagementForm from "@/views/agriculture/harvestmanagement/HarvestManagementForm.vue";
+import {DrawerProps} from "element-plus";
+import {FarmRecordApi, FarmRecordVO} from "@/api/agri/farmrecord";
+import {formatTime} from '@/utils/index'
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
-
+const drawer2 = ref(false)
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
-
+const direction = ref<DrawerProps['direction']>('rtl')
 const loading = ref(true) // 列表的加载中
 const list = ref<CropBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -231,6 +271,30 @@ const queryParams = reactive({
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
+})
+const formData = ref<FarmRecordVO[]>([])
+const queryParam = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  planId: undefined,
+  planName: undefined,
+  belongPark: undefined,
+  parkName: undefined,
+  belongPlot: undefined,
+  plotName: undefined,
+  cropId: undefined,
+  cropName: undefined,
+  cropType: undefined,
+  planState: undefined,
+  personId: undefined,
+  personName: undefined,
+  startTime: [],
+  endTime: [],
+  recordTime: [],
+  planArea: undefined,
+  recordArea: undefined,
+  recordState: undefined,
+  createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -300,15 +364,38 @@ const handleExport = async () => {
   }
 }
 
-/** */
-const {push} = useRouter()
-const goCheck = (row) => {
-  //打开新的页签并传递参数
-  push(`/farm_work/farmManage/farm-record?batchCode=${row.batchCode}`);
+function cancelClick() {
+  drawer2.value = false
 }
 
+const damn = async (row) => {
+  queryParam.batchCode = row.batchCode;
+  const data = await FarmRecordApi.getFarmRecordPage(queryParam)
+  data.list.forEach((item) => {
+    item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ""
+  })
+  formData.value = data.list
+  console.log("222222", formData.value)
+  drawer2.value = true
+}
+/** */
+const {push} = useRouter()
+// const goCheck = (row) => {
+//   //打开新的页签并传递参数
+//   push(`/farm_work/farmManage/farm-record?batchCode=${row.batchCode}`);
+// }
+
 /** 初始化 **/
-onMounted(() => {
-  getList()
+const farmDefineOptions = ref([])// 设备分类选项
+const getValByDict = (item) => {
+  let res = ''
+  farmDefineOptions.value.forEach(dict => {
+    if (dict.id === item) res = dict.defineName
+  })
+  return res
+}
+onMounted(async () => {
+  await getList()
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1})
 })
 </script>
