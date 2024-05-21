@@ -769,6 +769,7 @@ getBaseList()
           />
         </el-select>
         <el-scrollbar height="27rem" class="px-3 mt-2" v-loading="waitListLoading">
+          <el-empty description="暂无数据" v-show="waitCheckList.length === 0" />
           <div
             class="p-3 mb-2 rounded-lg flex justify-between items-center"
             style="border: 1px solid #888;"
