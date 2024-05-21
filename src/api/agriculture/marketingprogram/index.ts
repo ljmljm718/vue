@@ -25,7 +25,7 @@ export const MarketingProgramApi = {
   },
 
   // 查询营销方案详情
-  getMarketingProgram: async (id: number) => {
+  getMarketingProgram: async (id: any) => {
     return await request.get({ url: `/agriculture/marketing-program/get?id=` + id })
   },
 
@@ -48,4 +48,4 @@ export const MarketingProgramApi = {
   exportMarketingProgram: async (params) => {
     return await request.download({ url: `/agriculture/marketing-program/export-excel`, params })
   },
-}
+}
