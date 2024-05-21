@@ -20,6 +20,11 @@ import {
   productionSale,
   productionSaleRank
 } from '@/api/home/wenfeng'
+import {
+  CheckLogsApi,
+  CheckLogsCountPageVO,
+} from "@/api/agriculture/checklogs";
+import { ParkInfoApi, ParkInfoVO } from "@/api/agriculture/parkinfo";
 import { formatTime } from '@/utils/index'
 import { merge } from 'lodash'
 window._AMapSecurityConfig = {
@@ -608,6 +613,31 @@ const handleDatePickerChange = (e) => {
   initChart4('appoint', formatTime(e[0], 'yyyy-MM-dd'), formatTime(e[1], 'yyyy-MM-dd'))
   getQueryMonitorTypeCountRanking('appoint', formatTime(e[0], 'yyyy-MM-dd'), formatTime(e[1], 'yyyy-MM-dd'))
 }
+
+const waitCheckList = ref<Array<any>>([])
+const waitListLoading = ref<boolean>(false)
+const getWaitCheckList = async (baseId: string | number) => {
+  waitListLoading.value = true
+  const { list = [] } = await CheckLogsApi.getCountPageByBaseId({ baseId })
+  console.log("getWaitCheckList", list);
+  waitCheckList.value = list
+  waitListLoading.value = false
+}
+
+// 基地列表的数据
+const listBase = ref<ParkInfoVO[]>([])
+const selectedBaseId = ref()
+/** 查询基地列表 */
+const getBaseList = async () => {
+  const data = await ParkInfoApi.getParkInfoPage({ pageNo: 1, pageSize: 100 })
+  listBase.value = data.list
+  if (Array.isArray(listBase.value) && listBase.value.length > 0) {
+    console.log("listBase.value", listBase.value);
+    selectedBaseId.value = listBase.value[0].id
+  }
+  await getWaitCheckList(selectedBaseId.value)
+}
+getBaseList()
 </script>
 <template>
   <div class="w-full">
@@ -717,30 +747,78 @@ const handleDatePickerChange = (e) => {
           </div>
       </el-card>
     </div>
-    <el-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center art-font">
-          <span>设备巡检概览</span>
-        </div>
-      </template>
-      <div class="relative">
-        <div id="chart3"></div>
-        <div class="grid grid-cols-4 gap-3 absolute top-1 left-0 z-40 p-3" style="width: calc(100% - 1.5rem);">
+    <div class="grid grid-cols-4 gap-2 mt-4">
+      <el-card>
+        <template #header>
+          <div class="flex justify-between items-center art-font">
+            <span>待巡检记录</span>
+          </div>
+        </template>
+        <el-select
+          v-model="selectedBaseId"
+          placeholder="请选择基地"
+          clearable
+          class="!w-240px ml-3"
+          @change="() => getWaitCheckList(selectedBaseId)"
+        >
+          <el-option
+            v-for="item in listBase"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <el-scrollbar height="27rem" class="px-3 mt-2" v-loading="waitListLoading">
+          <el-empty description="暂无数据" v-show="waitCheckList.length === 0" />
           <div
-            class="p-3 rounded-sm shadow-lg"
-            v-for="(item, index) in devicePreviewList"
-            style="background-color: #ffffffa0;color: #252525;"
+            class="p-3 mb-2 rounded-lg flex justify-between items-center"
+            style="border: 1px solid #888;"
+            v-for="item, index in waitCheckList"
             :key="index"
           >
-            <div>{{ item.title }}</div>
-            <div class="flex items-end">
-              <span class="art-font" style="font-size: 1.2rem;">{{ item.value }}</span>
-              <span>{{ item.unit }}</span>
+            <div>
+              <span>{{ item.categoryName }}</span>
+              <span class="px-2">-</span>
+              <span>设备总数:{{ item.sumNum }}</span>
+            </div>
+            <div style="font-size: 13px;">
+              <div style="color: #2edc72;">
+                <span class="pr-2">已巡检:</span>
+                <span>{{ item.finishCheckNum }}</span>
+              </div>
+              <div style="color: #da534f;">
+                <span class="pr-2">未巡检:</span>
+                <span>{{ item.unFinishCheckNum }}</span>
+              </div>
+            </div>
+          </div>
+        </el-scrollbar>
+      </el-card>
+      <el-card class="col-span-3">
+        <template #header>
+          <div class="flex justify-between items-center art-font">
+            <span>设备巡检概览</span>
+          </div>
+        </template>
+        <div class="relative">
+          <div id="chart3"></div>
+          <div class="grid grid-cols-4 gap-3 absolute top-1 left-0 z-40 p-3" style="width: calc(100% - 1.5rem);">
+            <div
+              class="p-3 rounded-sm shadow-lg"
+              v-for="(item, index) in devicePreviewList"
+              style="background-color: #ffffffa0;color: #252525;"
+              :key="index"
+            >
+              <div>{{ item.title }}</div>
+              <div class="flex items-end">
+                <span class="art-font" style="font-size: 1.2rem;">{{ item.value }}</span>
+                <span>{{ item.unit }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </el-card>
+      </el-card>
+    </div>
     <el-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">

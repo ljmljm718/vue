@@ -273,4 +273,5 @@ export enum DICT_TYPE {
   FARM_RECORD_STATE='farm_record_state',//农事记录状态
   // =========== agri -   明月 ==========
   AGRI_DUCKHOUSE_CLASSIFICATION = 'agri_duckhouse_classification', //鸭舍分类
+  AGRI_PLOT_TYPE = 'agri_plot_type', //鸭舍分类
 }

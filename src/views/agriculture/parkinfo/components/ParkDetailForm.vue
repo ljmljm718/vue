@@ -23,15 +23,21 @@
           </el-form-item>
         </template>
       </el-table-column>
-<!--      <el-table-column label="类型" min-width="150">
+     
+      <el-table-column label="类型" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.type`" :rules="formRules.type" class="mb-0px!">
             <el-select v-model="row.type" placeholder="请选择类型">
-                <el-option label="请选择字典生成" value="" />
+                <el-option v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_PLOT_TYPE)"
+                    :key="dict.value"
+                    :label="dict.label" 
+                    :value="dict.value" 
+                />
             </el-select>
           </el-form-item>
         </template>
-      </el-table-column>-->
+      </el-table-column>
+
       <el-table-column label="海拔" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.altitude`" :rules="formRules.altitude" class="mb-0px!">
@@ -111,6 +117,8 @@
   </el-row>
 </template>
 <script setup lang="ts">
+
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 const props = defineProps<{
   parkDetails: undefined
