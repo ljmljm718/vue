@@ -38,7 +38,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm"
+          @click="openForm()"
           v-hasPermi="['agriculture:park-info:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
@@ -65,7 +65,7 @@
       <el-table-column type="expand">
         <template #default="scope">
           <el-tabs model-value="parkDetail">
-            <el-tab-pane label="地块基本信息" name="parkDetail">
+            <el-tab-pane label="农业资源列表" name="parkDetail">
               <ParkDetailList :park-id="scope.row.id"/>
             </el-tab-pane>
           </el-tabs>
@@ -204,7 +204,8 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (id?: number) => {
   // formRef.value.open(type, id)
-  router.push(`/asset/base/parkInfo/create?id=${id}`)
+  if (id) router.push(`/asset/base/parkInfo/create?id=${id}`)
+  else router.push(`/asset/base/parkInfo/create`)
 }
 
 onActivated(() => {

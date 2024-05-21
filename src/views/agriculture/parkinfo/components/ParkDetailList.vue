@@ -4,6 +4,12 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--       <el-table-column label="编号" align="center" prop="code" width="200"/>-->
       <el-table-column label="名称" align="center" prop="name" width="150"/>
+      <el-table-column label="类型" align="center" prop="type" width="150">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_PLOT_TYPE" :value="scope.row.type" />
+        </template>
+      </el-table-column>
+
       <el-table-column label="海拔" align="center" prop="altitude" width="100">
         <template #default="scope">
           {{ scope.row.altitude != undefined ? scope.row.altitude + '米' : '-' }}
@@ -34,6 +40,7 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
