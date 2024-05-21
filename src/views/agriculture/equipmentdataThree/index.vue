@@ -42,11 +42,53 @@
       </div>
     </div>
     <div v-show="collis">
+      <el-form
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="68px"
+      >
+        <el-form-item label="设备名称" prop="deviceName">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请输入设备名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="监测类型" prop="monitoringType">
+          <el-input v-model="queryParams.monitoringType"
+                    placeholder="请输入监测类型"
+                    clearable
+                    @keyup.enter="handleQuery"
+                    class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="采集时间" prop="collectionTime">
+          <el-date-picker
+            v-model="queryParams.collectionTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <el-button type="primary" @click="handleData">采集最新数据</el-button>
+        </el-form-item>
+      </el-form>
       <el-table
         v-loading="loading"
         :data="list"
         :stripe="true"
         :show-overflow-tooltip="true"
+        style="margin-top: 15px;"
       >
         <el-table-column
           label="设备名称"
@@ -106,14 +148,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import * as echarts from 'echarts'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
-import EquipmentDataForm from './EquipmentDataForm.vue'
-import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
-import {
-  initChartStatic,
-  generateBaseOptions,
-  generatePieOptions
-} from '../../../utils/bigscreenTool/index'
-import { log } from 'console'
+import { initChartStatic,generateBaseOptions } from '../../../utils/bigscreenTool/index'
 import { useRoute } from 'vue-router'
 
 const isLine = ref(false)
@@ -261,7 +296,22 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  //handleQuery()
+  handleQuery()
+}
+
+const handleData = async () => {
+  loading.value = true
+  try {
+    let aa = route.query.equipmentCode
+    if (!aa) {
+      aa = '1788451950035959808'
+    }
+    await EquipmentDataApi.queryNewData(aa)
+    resetQuery()
+    message.success("采集最新数据成功")
+  } finally {
+    loading.value = false
+  }
 }
 
 /** 添加/修改操作 */

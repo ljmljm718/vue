@@ -110,8 +110,8 @@
       :row-key="(row) => row.id"
       :stripe="true"
       :show-overflow-tooltip="true"
-      :style="`${props.inDialog ? 'height: 40vh;' : ''}`"
       @selection-change="handleSelectionChange"
+      height="calc(100vh - 470px)"
     >
       <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
@@ -225,6 +225,12 @@
           >
             {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}
           </el-button>
+          <el-button
+            link
+            type="primary"
+            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
+            @click="handleData(scope.row)">采集最新数据
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -251,6 +257,7 @@ import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
 import {useRoute} from 'vue-router'
+import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
@@ -486,6 +493,16 @@ const handleStatus = async (item: any) => {
     // 刷新列表
     await getList()
   } catch {
+  }
+}
+
+const handleData = async (item: any) => {
+  loading.value = true
+  try {
+    await EquipmentDataApi.queryNewData(item.id)
+    message.success("采集最新数据成功")
+  } finally {
+    loading.value = false
   }
 }
 
