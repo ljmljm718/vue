@@ -34,18 +34,18 @@ const tabsList = [
     label: '本地图标',
     name: 'svg-icon:'
   },
-  // {
-  //   label: 'Element Plus',
-  //   name: 'ep:'
-  // },
-  // {
-  //   label: 'Font Awesome 4',
-  //   name: 'fa:'
-  // },
-  // {
-  //   label: 'Font Awesome 5 Solid',
-  //   name: 'fa-solid:'
-  // }
+  {
+    label: 'Element Plus',
+    name: 'ep:'
+  },
+  {
+    label: 'Font Awesome 4',
+    name: 'fa:'
+  },
+  {
+    label: 'Font Awesome 5 Solid',
+    name: 'fa-solid:'
+  }
 ]
 
 const pageList = computed(() => {
