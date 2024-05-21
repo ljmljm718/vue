@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="设备预警" name="first">
+      <el-tab-pane label="传感器设备预警" name="first">
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -222,7 +222,7 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控预警" name="second">
+      <el-tab-pane label="监控设备预警" name="second">
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -324,12 +324,12 @@
             <el-table-column label="通知事件类型" align="center" prop="noticeEvent" width="120px"/>
             <el-table-column label="设备名称" align="center" prop="deviceName" width="120px"/>
             <el-table-column label="抓拍图片" align="center" prop="captured"  width="150px">
-              <template #default="{ row }">
+              <template #default="scope">
                 <el-image
-                  class="h-100px w-100px"
+                  class="h-50px w-50px"
                   lazy
-                  :src="row.capturedImage"
-                  :preview-src-list="[row.capturedImage]"
+                  :src="scope.row.captured"
+                  :preview-src-list="[scope.row.captured]"
                   preview-teleported
                   fit="cover"
                 />
