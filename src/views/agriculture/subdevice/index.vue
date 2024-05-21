@@ -164,6 +164,7 @@ import download from '@/utils/download'
 import {SubDeviceApi, SubDeviceVO} from '@/api/agriculture/subdevice'
 import SubDeviceForm from './SubDeviceForm.vue'
 import {useRoute} from "vue-router";
+import {DeviceInfoVO} from "@/api/agriculture/deviceinfo";
 
 let route = useRoute();
 /** 子设备管理 列表 */
@@ -255,6 +256,12 @@ const handleQuery = () => {
   getList()
 }
 
+const multipleSelection = ref<DeviceInfoVO[]>([])
+const emit = defineEmits(["selectedDeviceInfo"]);
+const handleSelectionChange = (val: DeviceInfoVO[]) => {
+  multipleSelection.value = val
+  emit('selectedDeviceInfo', multipleSelection.value)
+}
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
