@@ -115,6 +115,12 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
+    formData.value.parkDetails.forEach(parkDetail => {
+      if (!parkDetail.parkId){
+        parkDetail.parkId = formData.value.id
+      }
+    })
+    console.log("parkInfo", formData.value)
     const data = formData.value as unknown as ParkInfoVO
     if (!formData.value.id) {
       await ParkInfoApi.createParkInfo(data)

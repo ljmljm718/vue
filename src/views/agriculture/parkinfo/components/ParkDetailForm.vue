@@ -23,15 +23,15 @@
           </el-form-item>
         </template>
       </el-table-column>
-     
+
       <el-table-column label="类型" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.type`" :rules="formRules.type" class="mb-0px!">
             <el-select v-model="row.type" placeholder="请选择类型">
                 <el-option v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_PLOT_TYPE)"
                     :key="dict.value"
-                    :label="dict.label" 
-                    :value="dict.value" 
+                    :label="dict.label"
+                    :value="dict.value"
                 />
             </el-select>
           </el-form-item>
