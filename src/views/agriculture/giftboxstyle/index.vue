@@ -175,6 +175,15 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
+            v-if="scope.row.fileManagement"
+            link
+            type="primary"
+            @click="filePreview(scope.row.fileManagement)"
+          >
+            文件预览
+          </el-button>
+
+          <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -204,6 +213,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <MarketingProgramForm ref="formRef" @success="getList" />
+
+  <!-- 文件预览 -->
+  
+  <el-dialog
+    v-model="dialogVisible"
+    title="预览"
+    width="70vw"
+    :before-close="handleDialogClose"
+  >
+    <el-scrollbar height="65vh" class="px-2">
+      <div id="filePreview"></div>
+    </el-scrollbar>
+  </el-dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -211,9 +234,13 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
 import MarketingProgramForm from './MarketingProgramForm.vue'
+//文件预览引入
+import { renderAsync } from 'docx-preview'
+import axios from 'axios'
 
 /** 营销方案 列表 */
 defineOptions({ name: 'MarketingProgram' })
+
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -240,6 +267,56 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+
+//文件预览
+let dialogVisible=ref(false)
+let fileUrl=ref()
+const filePreview=(url:any)=>{
+  dialogVisible.value = true
+  console.log("preview url", url);
+  
+  if (url.endsWith('docx')) renderDocx(url)
+  else if (url.endsWith('pdf')) renderPDF(url)
+  else renderError()
+}
+
+const renderError = () => {
+  const _p = document.createElement("p")
+  _p.innerHTML = '格式暂不支持！'
+  setTimeout(() => {
+    const _dom = document.getElementById("filePreview") as HTMLElement
+    if (_dom) _dom.appendChild(_p)
+  }, 200)
+}
+
+const handleDialogClose = () => {
+  const _dom = document.getElementById("filePreview") as HTMLElement
+  if (_dom) _dom.innerHTML = ''
+  dialogVisible.value = false
+}
+// 渲染docx
+const renderDocx = (url:string) => {
+  if (!url.endsWith('docx')) return;
+  axios.get(url, { responseType: 'blob' }).then(({ data }) => {
+    const _dom = document.getElementById("filePreview") as HTMLElement
+    renderAsync(data, _dom)
+  })
+}
+
+const renderPDF = (url:string) => {
+  const _iframe = document.createElement("iframe")
+  _iframe.src = url
+  _iframe.width = '100%'
+  _iframe.height = '600px'
+  setTimeout(() => {
+    const _dom = document.getElementById("filePreview") as HTMLElement
+    console.log("dom", _dom);
+    
+    if (_dom) _dom.appendChild(_iframe)
+  }, 200)
+}
+//--------结束文件预览
 
 /** 查询列表 */
 const getList = async () => {

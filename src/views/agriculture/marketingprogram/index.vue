@@ -174,12 +174,8 @@
       /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <!-- <iframe
-            src="scope.row.fileManagement"
-          >
-            文件预览
-          </iframe> -->
           <el-button
+            v-if="scope.row.fileManagement"
             link
             type="primary"
             @click="filePreview(scope.row.fileManagement)"
@@ -270,6 +266,7 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+//文件预览
 let dialogVisible=ref(false)
 let fileUrl=ref()
 const filePreview=(url:any)=>{
@@ -316,7 +313,7 @@ const renderPDF = (url:string) => {
     if (_dom) _dom.appendChild(_iframe)
   }, 200)
 }
-
+//--------结束文件预览
 
 /** 查询列表 */
 const getList = async () => {
