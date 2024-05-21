@@ -117,5 +117,9 @@ export const EquipmentDataApi = {
       params
     })
   },
+  // 获取设备最新数据
+  queryNewData: async (id: string) => {
+    return await request.get({ url: `/yyang/equipment-data/queryNewData?id=` + id })
+  },
 
 }

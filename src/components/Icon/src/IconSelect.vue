@@ -19,7 +19,7 @@ const visible = ref(false)
 const inputValue = toRef(props, 'modelValue')
 const iconList = ref(IconJson)
 const icon = ref('add-location')
-const currentActiveType = ref('ep:')
+const currentActiveType = ref('svg-icon:')
 // 深拷贝图标数据，前端做搜索
 const copyIconList = cloneDeep(iconList.value)
 
@@ -30,6 +30,10 @@ const currentPage = ref(1)
 const filterValue = ref('')
 
 const tabsList = [
+  {
+    label: '本地图标',
+    name: 'svg-icon:'
+  },
   {
     label: 'Element Plus',
     name: 'ep:'
