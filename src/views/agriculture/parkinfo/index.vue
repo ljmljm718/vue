@@ -65,7 +65,7 @@
       <el-table-column type="expand">
         <template #default="scope">
           <el-tabs model-value="parkDetail">
-            <el-tab-pane label="地块基本信息" name="parkDetail">
+            <el-tab-pane label="农业资源列表" name="parkDetail">
               <ParkDetailList :park-id="scope.row.id"/>
             </el-tab-pane>
           </el-tabs>
