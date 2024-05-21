@@ -7,7 +7,6 @@
       <el-card
         v-for="item, index in topList"
         :key="index"
-        style="background: #ebf3ff;"
       >
         <div class="flex items-center justify-between">
           <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%;"></div>
@@ -19,9 +18,9 @@
       </el-card>
     </div>
     <div class="flex justify-between space-x-4 my-4">
-      <el-card class="w-[16rem]" style="background: #ebf3ff;">
+      <el-card class="w-[16rem]">
         <el-tree
-          style="max-width: 100%;height:100%;background: #ebf3ff;"
+          style="max-width: 100%;height:100%;"
           :data="data"
           :props="defaultProps"
           :default-expand-all="true"

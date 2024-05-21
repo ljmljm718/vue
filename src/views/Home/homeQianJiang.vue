@@ -618,7 +618,7 @@ const waitCheckList = ref<Array<any>>([])
 const waitListLoading = ref<boolean>(false)
 const getWaitCheckList = async (baseId: string | number) => {
   waitListLoading.value = true
-  const { list = [] } = await CheckLogsApi.getCountPageByBaseId({ baseId })
+  const { list = [] } = await CheckLogsApi.getCountPageByBaseId({ baseId, pageSize: 100 })
   console.log("getWaitCheckList", list);
   waitCheckList.value = list
   waitListLoading.value = false
