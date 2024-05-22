@@ -148,6 +148,13 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+if(route.query.id){
+  let idNumber=route.query.id;
+    MarketingProgramApi.getMarketingProgram(idNumber).then(res=>{
+    formData.value = res
+    formData.value.marketingType ='productmanual'
+  });
+}
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -167,13 +174,7 @@ const open = async (type: string, id?: number) => {
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
-if(route.query.id){
-  let idNumber=route.query.id;
-    MarketingProgramApi.getMarketingProgram(idNumber).then(res=>{
-    formData.value = res
-    formData.value.marketingType ='productmanual'
-  });
-}
+
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调

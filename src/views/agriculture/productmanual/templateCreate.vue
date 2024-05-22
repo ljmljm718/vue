@@ -57,14 +57,14 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
-
-if(route.query.id){
-    //替换成自己的
-    // MarketingProgramApi.getMarketingProgram(route.query.id).then(res=>{
-    // formData.value = res
-    // formData.value.marketingType ='productmanual'
-    // });
-}
+//方式一:调用
+// if(route.query.id){
+//     替换成自己的
+//     MarketingProgramApi.getMarketingProgram(route.query.id).then(res=>{
+//     formData.value = res
+//     formData.value.marketingType ='productmanual'
+//     });
+// }
 // 方式二 调用立即执行函数
 onMounted(async () => {
       await open(route.query.type,route.query.id);

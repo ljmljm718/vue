@@ -53,14 +53,14 @@
               type="datetime"
               value-format="x"
               placeholder="选择上传时间"
-              style="width: 300px" 
+              style="width: 520px" 
             />
           </el-form-item>
           <el-form-item label="分类" prop="marketingCategory">
-            <el-input v-model="formData.marketingCategory" placeholder="请输入分类" style="width: 300px" />
+            <el-input v-model="formData.marketingCategory" placeholder="请输入分类" style="width: 520px" />
           </el-form-item>
           <el-form-item label="标签" prop="marketingTags">
-            <el-input v-model="formData.marketingTags" placeholder="请输入标签" style="width: 300px" />
+            <el-input v-model="formData.marketingTags" placeholder="请输入标签" style="width: 520px" />
           </el-form-item>
           <el-form-item label="文件管理" prop="fileManagement">
             <UploadFile v-model="formData.fileManagement" :limit="1" style="width: 1150px" />
