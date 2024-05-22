@@ -342,9 +342,11 @@ const resetQuery = () => {
 }
 
 /** 添加/修改操作 */
+const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram?id='+id)
+  //formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */

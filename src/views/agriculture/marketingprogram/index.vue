@@ -235,10 +235,10 @@ import download from '@/utils/download'
 import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
 import MarketingProgramForm from './MarketingProgramForm.vue'
 import { renderAsync } from 'docx-preview'
-
+import axios from 'axios'
 /** 营销方案 列表 */
 defineOptions({ name: 'MarketingProgram' })
-import axios from 'axios'
+
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -340,10 +340,20 @@ const resetQuery = () => {
 }
 
 /** 添加/修改操作 */
+const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  router.push({
+    path: '/pcg/marketingCenter/marketingprogram/CreateOrUpdateMaketingPagram',
+    query:{
+      type:type,
+      id:id
+    }
+  })
+  //formRef.value.open(type, id)
 }
+
+
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
@@ -372,7 +382,6 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-
 /** 初始化 **/
 onMounted(() => {
   getList()
