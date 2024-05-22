@@ -79,7 +79,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm('create')"
+          @click="openForm()"
           v-hasPermi="['agriculture:device-info:create']"
           v-if="!readonly"
         >
@@ -203,7 +203,7 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm(scope.row.id)"
             v-hasPermi="['agriculture:device-info:update']"
           >
             编辑
@@ -362,8 +362,11 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (id?: number) => {
+  //formRef.value.open(type, id)
+  console.log(id)
+  if (id) router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
+  else router.push(`/internetMonitor/device/deviceView/create`)
 }
 
 /** 删除按钮操作 */
