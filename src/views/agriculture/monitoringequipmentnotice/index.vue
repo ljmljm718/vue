@@ -108,8 +108,8 @@
           <el-image
             class="h-100px w-100px"
             lazy
-            :src="row.capturedImage"
-            :preview-src-list="[row.capturedImage]"
+            :src="row.captured"
+            :preview-src-list="[row.captured]"
             preview-teleported
             fit="cover"
           />
@@ -214,11 +214,14 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
 const options = [{
-          value: '停留',
-          label: '停留'
+          value: '逗留',
+          label: '逗留'
         }, {
           value: '经过',
           label: '经过'
+        }, {
+          value: '非法入侵',
+          label: '非法入侵'
         }]
 
 // openVideo
