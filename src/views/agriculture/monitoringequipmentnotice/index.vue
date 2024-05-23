@@ -99,14 +99,14 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" width="120px"/>
-      <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" width="120px"/>
-      <el-table-column label="通知事件类型" align="center" prop="noticeEvent" width="120px"/>
-      <el-table-column label="设备名称" align="center" prop="deviceName" width="120px"/>
-      <el-table-column label="抓拍图片" align="center" prop="captured"  width="150px">
+      <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" />
+      <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" />
+      <el-table-column label="通知事件类型" align="center" prop="noticeEvent" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="抓拍图片" align="center" prop="captured"  >
         <template #default="{ row }">
           <el-image
-            class="h-100px w-100px"
+            class="h-50px w-50px"
             lazy
             :src="row.captured"
             :preview-src-list="[row.captured]"
@@ -165,7 +165,8 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <MonitoringEquipmentNoticeForm ref="formRef" @success="getList" />
+  <MonitoringEquipmentNoticeForm ref="formRef" @success="getList"/>
+
   <!-- 视频弹窗 -->
   <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
    <video

@@ -19,6 +19,10 @@ export interface DeviceInfoVO {
   location: string // 位置
   deviceKind: string // 设备类型
   deviceMonitorType: any //设备检测类型
+
+  //新增的两个字段
+  parkName: string //基地名称
+  parkDetailName: string //地块名称
 }
 
 // 设备信息 API
