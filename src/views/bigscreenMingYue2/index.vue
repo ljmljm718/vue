@@ -1,0 +1,523 @@
+<template>
+  <div class="bigscreen2-wrappper bigscreen-main-wrapper">
+    <div class="header-main-wrapper">
+      <div class="header-left-part-wrapper flex items-center justify-around color-[#fff]">
+        <div class="top-card-wrapper">
+          <div class="actived2">
+            <div class="value-card" @click="router.push('/bigscreenMYJD')">基地导览</div>
+          </div>
+          <div class="active2">
+            <div class="value-card">智慧种植</div>
+          </div>
+          <div class="actived2">
+            <div class="value-card">风险预警</div>
+          </div>
+        </div>
+      </div>
+      <div class="linear-font-title header-title-wrapper">稻鱼鸭产业可视化数字驾驶舱</div>
+      <div class="header-right-part-wrapper">
+        <BigScreenTime />
+      </div>
+    </div>
+    <div class="content-main-wrapper">
+      <div class="content-foot">
+        <div class="foot-left">
+          <div class='box-title'>预警分布</div>
+          <div id="chart1"></div>
+        </div>
+        <div class="foot-main">
+          <div class='box-title'>虫害数量</div>
+          <div id="chart2"></div>
+        </div>
+        <div class='foot-right'>
+          <div class='box-title'>指挥调度</div>
+          <div class="table-wrapper2">
+            <div class="table-header-row2">
+              <div
+                class="table-header-cell2"
+                v-for="(column, index) in leftArr2.tableColumns1"
+                :style="`width: ${column.width};`"
+                :key="index"
+                >{{ column.label }}</div
+              >
+            </div>
+            <div
+              class="table-data-row2"
+              v-for="(item, index) in leftArr2.tableData1"
+              :key="index"
+            >
+              <div
+                class="table-data-cell2"
+                v-for="(column, inde) in leftArr2.tableColumns1"
+                :key="inde"
+                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                >{{ item[column.key] }}</div
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-top">
+        <div class="top-left">
+          <div class="box-title">预警信息</div>
+          <div class="table-wrapper">
+            <div class="table-header-row">
+              <div
+                class="table-header-cell"
+                v-for="(column, index) in leftArr.tableColumns1"
+                :style="`width: ${column.width};`"
+                :key="index"
+                >{{ column.label }}</div
+              >
+            </div>
+            <div
+              class="table-data-row"
+              v-for="(item, index) in leftArr.tableData1"
+              :key="index"
+            >
+              <div
+                class="table-data-cell"
+                v-for="(column, inde) in leftArr.tableColumns1"
+                :key="inde"
+                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                >{{ item[column.key] }}</div
+              >
+            </div>
+          </div>
+        </div>
+        <div class="top-right">
+          <div class="box-title">报警信息处理情况</div>
+          <div class="top-right-ietm p-[15px] flex">
+            <div class="w-20% mr-[20px]">
+              <div class="w-full flex justify-around">报警数量 <span>32</span> </div>
+              <div  class="w-full flex justify-around mt-15px mb-15px">处理数量 <span>21</span> </div>
+              <div  class="w-full flex justify-around">未处理 <span>11</span> </div>
+            </div>
+            <div class="w-79% h-full p-[15px]" style="box-sizing: border-box;">
+              <div class="flex justify-between items-center top-right-item">
+                <div class='flex-1'>1号基地土壤湿度报警</div>
+                <div class="mr-20px ml-20px">忽略</div>
+                <div>去处理</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</template>
+<script setup lang="ts">
+import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import { ref, reactive, onMounted } from 'vue'
+import {
+  initChartStatic,
+  generateBaseOptions,
+  generatePieOptions
+} from '../../utils/bigscreenTool/index'
+import { useRouter } from 'vue-router'
+let router = useRouter()
+
+let leftArr = reactive<Object>({
+  tableColumns1: [
+    {
+      key: 'warnInfo',
+      label: '预警信息',
+      width: '35%'
+    },
+    {
+      key: 'warnAdress',
+      label: '预警地点',
+      width: '10%'
+    },
+    {
+      key: 'warnTime',
+      label: '报警时间',
+      width: '30%'
+    },
+    {
+      key: 'warnType',
+      label: '预警类型',
+      width: '10%'
+    },
+    {
+      key: 'warnStatus',
+      label: '预警状态',
+      width: '10%'
+    }
+  ],
+  tableData1: [
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+  ]
+})
+const initChart1= ()=> {
+      initChartStatic(
+        "chart1",
+        generatePieOptions({
+          legend: {
+            show: true,
+            top: "center",
+            left: "right",
+            orient:'vertical',
+          },
+          color: ["#5b9bd5", "#ed7d31", "#a5a5a5", '#ffc000','#4472c4'],
+          series: [
+            {
+              nam: "预警分布",
+              type: "pie",
+              radius: ["30%", "50%"],
+              center: "center",
+              data: [
+                {value:12,name:'土壤'},
+                {value:6,name:'病害'},
+                {value:9,name:'虫害'},
+                {value:11,name:'草害'},
+                {value:24,name:'环境'},
+              ],
+              label: {
+                // formatter: "{c|{c}},{d|{d}%}",
+                formatter: "{c},{d}%",
+                rich: {
+                  c: {
+                    color: "#c1c1c1",
+                    fontSize: 10,
+                  },
+                  d: {
+                    color: "#c1c1c1",
+                    fontSize: 10,
+                  },
+                },
+              },
+            },
+          ],
+        })
+      );
+}
+let leftArr2 = reactive<Object>({
+  tableColumns1: [
+    {
+      key: 'warnInfo',
+      label: '预警信息',
+      width: '35%'
+    },
+    {
+      key: 'warnAdress',
+      label: '预警地点',
+      width: '10%'
+    },
+    {
+      key: 'warnTime',
+      label: '报警时间',
+      width: '30%'
+    },
+    {
+      key: 'warnType',
+      label: '预警类型',
+      width: '10%'
+    },
+    {
+      key: 'warnStatus',
+      label: '预警状态',
+      width: '10%'
+    }
+  ],
+  tableData1: [
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+  ]
+})
+const initChart2=  ()=>{
+      initChartStatic(
+        "chart2",
+        generateBaseOptions({
+          xAxis: {
+            data: [ '12','13','14','15','16','17','18','19','20','21','22','23'],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+          },
+          legend: { 
+            show: true, 
+            orient:'horizontal',
+            itemWidth: 15,
+            itemHeight: 15,
+         },
+          color: ["#ed7d31","#a9d18e","#d9d9d9","#ff5757"],
+          yAxis: [
+            {
+            type: "value",
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#fff",
+              },
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: "#fff", //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: "dashed", //网格线类型
+              },
+            },
+            splitArea: {
+              //网格区域
+              show: false, //是否显示
+            },
+          },
+          {
+            type:'value',
+            min:'0',
+            max:'100'
+          }
+        ],
+          series: [
+            {
+              name: '金龟子',
+              data: [20,25,30,20,35,35,18,15,20,25,20,30],
+              type: "bar",
+              smooth: false,
+            },
+            {
+              name: '蟋蟀',
+              data: [30,28,20,25,28,25,20,23,28,25,22,20,25,25],
+              type: "bar",
+              smooth: false,
+            },
+            {
+              name: '蛾',
+              data: [20,25,30,20,35,35,18,15,20,25,20,30],
+              type: "bar",
+              smooth: false,
+            },
+            {
+              name: '总数',
+              data: [60,62,65,60,80,70,80,60,63,80,70,68],
+              type: "line",
+              smooth: true,
+              symbol: "none",
+              yAxisIndex:1,
+            },
+          ],
+          grid: {
+            left: "10%",
+            right: "10%",
+            top: "15%",
+            bottom: "15%",
+          },
+        })
+      );
+    
+}
+onMounted(()=>{
+  initChart1()
+  initChart2()
+})
+</script>
+<style lang='scss' scoped>
+@import url(../../utils/bigscreenTool/index.scss);
+.bigscreen2-wrappper {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('./assets/bg.png');
+  background-size: 100% 100%;
+  .header-main-wrapper {
+    background-size: 100% 100%;
+    background-image: url('./assets/headerBg.png');
+  }
+}
+.box-title {
+  color: #fff;
+  width: 300px;
+  height: 2rem;
+  font-size: 1.2rem;
+  line-height: 2rem;
+  text-indent: 2rem;
+  font-family: 'TitleFont';
+  background-size: 100% 100%;
+  background-image: url('./assets/box-title.png');
+}
+.content-main-wrapper {
+  margin-top: 10px;
+  padding: 0 10px !important;
+  height: 90% !important;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: calc(50% - 15px) 50%;
+  gap: 15px;
+  .content-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    .top-left {
+      .table-wrapper {
+        width: 100%;
+        height: calc(100% - 2rem);
+        position: relative;
+        overflow: auto;
+        font-size: 0.9rem;
+        .table-header-row {
+          width: 100%;
+          padding: 8px 0;
+          display: flex;
+          align-items: center;
+          position: sticky;
+          top: 0;
+          background-color: #01121c;
+          .table-header-cell {
+            color: #6c9bff;
+            text-align: center;
+          }
+        }
+        .table-data-row {
+          margin-top: 10px;
+          width: 100%;
+          height: 12%;
+          background-size: 100% 100%;
+          background-image: url(./assets/left4ItemBg.png);
+          display: flex;
+          align-items: center;
+          padding: 8px 0;
+          .table-data-cell {
+            text-align: center;
+          }
+        }
+      }
+      .table-wrapper::-webkit-scrollbar {
+        width: 0px;
+      }
+    }
+    .top-right{
+      box-sizing: border-box;
+      color: #c1c1c1;
+      .top-right-ietm{
+        box-sizing: border-box;
+        width:100%;
+        height: calc( 100% - 2rem);
+        background-size:100% 100%;
+        .top-right-item{
+          padding: 10px 15px;
+          background-size: 100% 100%;
+          background-image: url(./assets/top-rightItemBg.png)
+        }
+      }
+    }
+  }
+  .content-foot {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    #chart1{
+      width: 100%;
+      height: calc(100% - 2rem);
+    }
+    #chart2{
+      width: 100%;
+      height: calc(100% - 2rem)
+    }
+    .foot-right{
+      .table-wrapper2 {
+        width: 100%;
+        height: calc(100% - 2.5rem);
+        position: relative;
+        overflow: auto;
+        font-size: 0.9rem;
+        .table-header-row2 {
+          width: 100%;
+          padding: 8px 0;
+          display: flex;
+          align-items: center;
+          position: sticky;
+          top: 0;
+          background-color: #01121c;
+          .table-header-cell2 {
+            color: #6c9bff;
+            text-align: center;
+          }
+        }
+        .table-data-row2 {
+          margin-top: 10px;
+          width: 100%;
+          height: 12%;
+          background-size: 100% 100%;
+          background-image: url(./assets/footTabelBg.png);
+          display: flex;
+          align-items: center;
+          padding: 8px 0;
+          .table-data-cell2 {
+            text-align: center;
+          }
+        }
+      }
+      .table-wrapper::-webkit-scrollbar {
+        width: 0px;
+      }
+    }
+  }
+}
+.top-card-wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  .active2 {
+    width: 100%;
+    height: 2.5rem;
+    text-align: center;
+    line-height: 2.5rem;
+    background-size: 100% 100%;
+    background-image: url('./assets/active.png');
+    .value-card {
+      font-size: 1rem;
+      font-family: 'TitleFont';
+    }
+  }
+  .actived2 {
+    width: 100%;
+    height: 2.5rem;
+    text-align: center;
+    line-height: 2.5rem;
+    background-size: 100% 100%;
+    background-image: url('./assets/actived.png');
+    .value-card {
+      font-size: 1rem;
+      font-family: 'TitleFont';
+    }
+  }
+}
+.active {
+  width: 5rem;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+  background-color: #012162;
+}
+.actived {
+  width: 5rem;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+  background-color: #016aba;
+}
+@for $i from 1 through 3 {
+  .scan-#{$i} {
+    background-image: url(./assets/scan#{$i}.png);
+  }
+}
+</style>

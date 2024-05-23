@@ -7,7 +7,7 @@
                 <div class="value-card">基地导览</div>
               </div>
               <div class="actived2">
-                <div class="value-card">智慧种植</div>
+                <div class="value-card" @click="router.push('/bigscreenMYZH')">智慧种植</div>
               </div>
               <div class="actived2">
                 <div class="value-card">风险预警</div>
@@ -44,7 +44,7 @@
          <div class="right color-[#fff]">
           <div>通知事件</div>
           <div class="flex justify-between mt-10px">
-            <el-select v-model="selectVal" class="select"  @change="selectCli">
+            <el-select :teleported="false" :popper-append-to-body="false" v-model="selectVal" class="select"  @change="selectCli">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -52,7 +52,7 @@
                 :value="item.value"
               />
             </el-select>
-            <el-select v-model="selectVal2" class="select" @change="selectCli">
+            <el-select :teleported="false" popper-class="popperClass"  v-model="selectVal2" class="select"  @change="selectCli">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -62,12 +62,13 @@
             </el-select>
           </div>
           <div class="mt-20px">
-            <div class='flex items-center justify-around color-[#c1c1c1]' style="border: 1px solid #c1c1c1">
+            <div class='flex items-center justify-around color-[#c1c1c1] right-item p-[15px]'>
+              <div class="w-.7rem h-.7rem bg-[#c1c1c1]" style="border-radius: 50%"></div>
               <div>有人在监测区域停留</div>
               <video 
                 src='' 
                 width='30%' 
-                height='100px'
+                height='90px'
                 controls
                 autoplay></video>
             </div>
@@ -85,6 +86,7 @@ import {
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
 import { useRouter} from 'vue-router'
+let router=useRouter()
 let activeNum=ref(-1)
 const leftCli=(val)=>{
   activeNum.value=val
@@ -153,9 +155,40 @@ const selectCli=()=>{
     }
     .right{
       box-sizing: border-box;
-      .select {
+      .select  {
         width: 48%;
         background-color: none !important;
+      }
+      :deep(.el-popper.is-light){
+            background: #307cbf ;
+            border: 1px solid #273f70 ;
+        }
+
+        :deep(.el-select-dropdown__item.hover){
+            background: transparent ;
+            border: none ;
+            color: #04FAA0;
+        }
+
+
+        :deep(.el-select-dropdown__item){
+            background: transparent ;
+            border: none ;
+            color: #fff;
+        }
+
+        :deep(.el-popper.is-light .el-popper__arrow::before) {
+            border: 1px solid #4778d9;
+            background: #4778d9;
+            right: 0;
+        } 
+      .right-item{
+        width: 100%;
+        height: 100%;
+        background-size:100% 100%;
+        box-sizing: border-box;
+
+        background-image: url('./assets/right-itemBg.png');
       }
     }
 }
