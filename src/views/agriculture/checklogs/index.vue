@@ -246,7 +246,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
+  router.push('/internetMonitor/check/CreateOrUpdateCheckLogsLkh?type=' + type + "&id=" + id)
   // formRef.value.open(type, id)
 }
 

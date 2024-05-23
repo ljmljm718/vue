@@ -162,11 +162,9 @@ import {
 } from '@/components/EditFrame/index'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {getTenantId} from "@/utils/auth";
-
 import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
-import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
-import { getTenantId } from '@/utils/auth'
+
 /** 巡检记录 表单 */
 defineOptions({name: 'CreateOrUpdateCheckLogsLkh'})
 // 本地保存表单
@@ -198,7 +196,7 @@ const formData = ref({
   inspectionImage: undefined,
   content: undefined,
   resultState: undefined,
-  dealTime:undefined,
+  dealTime: undefined,
   dealPerson: undefined,
   dealResult: undefined,
   dealImage: undefined,
@@ -265,7 +263,7 @@ const submitForm = async () => {
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
-    router.push(ORIGIN_PATH)
+    await router.push(ORIGIN_PATH)
   } finally {
     formLoading.value = false
   }
@@ -287,14 +285,13 @@ const resetForm = () => {
     inspectionImage: undefined,
     content: undefined,
     resultState: undefined,
-    dealTime:undefined,
+    dealTime: undefined,
     dealPerson: undefined,
     dealResult: undefined,
     dealImage: undefined,
   }
   formRef.value?.resetFields()
 }
-
 
 
 //保存到浏览器缓存
@@ -318,14 +315,14 @@ if (!formData.value.id) loadData()
 const getFrom = async () => {
   resetForm();
   if (route.query.id) {
-    formData.value = await 查询单挑方法(route.query.id as any);
+    formData.value = await CheckLogsApi.getCheckLogs(route.query.id as any);
     loadData(route.query.id);
   }
 }
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
-  getFrom();
+  await getFrom();
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 // submit后面加入删除缓存
