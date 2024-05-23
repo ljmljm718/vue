@@ -1,7 +1,8 @@
 //templateCreateOrUpdate
+//class="grid 2xl:grid-cols-2 gap-3 p-4"
+//class="col-span-2"
 <template>
   <div>
-
     <EditFrame>
       <template #header>
         <div class="flex">
