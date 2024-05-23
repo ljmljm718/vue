@@ -1,7 +1,35 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1100px">
-    <div class="p-5">
-      <el-form
+  <div>
+
+    <EditFrame>
+      <template #header>
+        <div class="flex">
+           <!-- <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+          >
+            保存
+          </el-button> -->
+          <el-button
+            type="success"
+            :icon="TopRight"
+            plain
+            @click="submitForm"
+          >提交</el-button>
+          <el-button
+            type="danger"
+            :icon="Refresh"
+            plain
+            @click="resetForm()"
+          >清空
+          </el-button>
+        </div>
+      </template>
+
+      <template #content>
+        <el-form
         ref="formRef"
         :model="formData"
         :rules="formRules"
@@ -71,30 +99,24 @@
         <UploadFile v-model="formData.attachmentFile" />
       </el-form-item>
       </el-form>
-    </div>
 
-    <template #footer>
-      <el-button
-        @click="submitForm"
-        type="primary"
-        :disabled="formLoading"
-      >确 定
-      </el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
-    </template>
-  </Dialog>
+      </template>
+    </EditFrame>
+
+  </div>
 </template>
 <script setup lang="ts">
+import {EditFrame,addOrUpdateFormStorage} from '@/components/EditFrame/index'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
-
-/** 助农知识库信息表 表单 */
-defineOptions({ name: 'RepositoryInfoForm' })
-
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
-
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
+import {Refresh,TopRight} from '@element-plus/icons-vue'
+// 本地保存表单
+const route = useRoute()
+const router = useRouter()
+// 下面是抽象出的基本配置
+const ROUTE_PATH = route.path
+const FORMPAGE_NAME = ''
+const ORIGIN_PATH = '/pcg/repository-info' // 关闭表单时跳转的路径
+const formRef = ref() 
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
@@ -109,16 +131,38 @@ const formData = ref({
   attachmentFile: undefined,
   browseNum: undefined,
 })
-const formRules = reactive({
-})
-const formRef = ref() // 表单 Ref
+const message = useMessage() // 消息弹窗
+const dialogVisible = ref(false) // 弹窗的是否展示
+const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const { t } = useI18n() // 国际化
 
 const typeListAll = ['病虫害识别', '收获预测', '价格预测', '农事操作规程']
 const labelListAll = ['专家经验', '白皮书']
-/** 打开弹窗 */
+const formRules = reactive({
+})
+
+const localSave = () => {
+  addOrUpdateFormStorage(
+    ROUTE_PATH,
+    FORMPAGE_NAME + (formData.value.id ? '编辑' : '新增'), // TODO: 前面的表单名称写成当前页面名称
+    formData.value.id ? formData.value.id : 'new_form',
+    formData.value
+  )
+  message.success('保存成功！')
+}
+
+if(route.query.id){
+    //替换成自己的
+    // MarketingProgramApi.getMarketingProgram(route.query.id).then(res=>{
+    // formData.value = res
+    // formData.value.marketingType ='productmanual'
+    // });
+}
+// 方式二 调用立即执行函数
+onMounted(async () => {
+      await open(route.query.type,route.query.id);
+});
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
   // 修改时，设置数据
@@ -132,10 +176,6 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
-
-/** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
@@ -143,6 +183,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as RepositoryInfoVO
+    console.log("要提交的表单")
+    console.log(data)
     if (formType.value === 'create') {
       await RepositoryInfoApi.createRepositoryInfo(data)
       message.success(t('common.createSuccess'))
@@ -153,12 +195,11 @@ const submitForm = async () => {
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
+    router.push(ORIGIN_PATH);
   } finally {
     formLoading.value = false
   }
 }
-
-/** 重置表单 */
 const resetForm = () => {
   formData.value = {
     id: undefined,
@@ -174,4 +215,5 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+// 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
