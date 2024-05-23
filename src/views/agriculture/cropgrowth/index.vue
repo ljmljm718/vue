@@ -274,11 +274,12 @@ const resetQuery = () => {
   queryParams.belongPlot = undefined
   handleQuery()
 }
-
+const router = useRouter() // 路由
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  // formRef.value.open(type, id)
+  router.push('/farm_work/cropgrowth?id='+id)
 }
 
 /** 删除按钮操作 */
