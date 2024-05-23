@@ -94,6 +94,7 @@
 </template>
 <script setup lang="ts">
 import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
+import { useTagsViewStore } from "@/store/modules/tagsView";
 import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
 
 /** 营销方案 表单 */
@@ -154,8 +155,7 @@ if (!formData.value.id) loadData()
 // 方式二 调用立即执行函数
 onMounted(async () => {
   getFrom()
-    // await open(route.query.type,route.query.id);
-    // formData.value.marketingType = 'giftboxstyle'
+  //formData.value.marketingType = 'giftboxstyle'
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 
@@ -194,7 +194,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as MarketingProgramVO
-    if (formType.value === 'create') {
+    if (!formData.value.id) {
       await MarketingProgramApi.createMarketingProgram(data)
       message.success(t('common.createSuccess'))
     } else {
@@ -202,6 +202,13 @@ const submitForm = async () => {
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
+    // 表单已提交，从本地删除此表单
+    deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? formData.value.id : 'new_form'
+    )
+    // 关闭当前页面
+    useTagsViewStore().delView(router.currentRoute.value);
     // 发送操作成功的事件
     emit('success')
     router.push(ORIGIN_PATH)
