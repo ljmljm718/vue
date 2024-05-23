@@ -144,6 +144,12 @@ const localSave = () => {
   ElMessage.success('保存成功！')
 }
 
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
+
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
@@ -157,8 +163,8 @@ onMounted(async () => {
 const getFrom = async () =>{
   resetForm()
   if(route.query.id)  {
-    console.log(22222)
     formData.value = await MarketingProgramApi.getMarketingProgram(route.query.id as any)
+    loadData(route.query.id)
   }
 }
 // /** 打开弹窗 */
