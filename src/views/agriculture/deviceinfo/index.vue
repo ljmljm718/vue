@@ -203,6 +203,13 @@
           <el-button
             link
             type="primary"
+            @click="openFormDetail(scope.row.id)"
+          >
+            查看
+          </el-button>
+          <el-button
+            link
+            type="primary"
             @click="openForm(scope.row.id)"
             v-hasPermi="['agriculture:device-info:update']"
           >
@@ -383,6 +390,11 @@ const handleDelete = async (id: number) => {
   }
 }
 
+/** 查看操作 */
+const openFormDetail = (id?: number) => {
+  if (id) router.push(`/internetMonitor/device/deviceView/detail?id=${id}`)
+}
+
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
@@ -508,5 +520,4 @@ const handleData = async (item: any) => {
     loading.value = false
   }
 }
-
 </script>

@@ -28,7 +28,7 @@ const FORMPAGE_NAME = '设备信息'
 const ORIGIN_PATH = '/internetMonitor/device/deviceView' // 关闭表单时跳转的路径
 
 // name使用创建菜单时填写的组件名
-defineOptions({ name: 'DeviceInfoForm' })
+defineOptions({ name: 'DeviceInfoFormDetail' })
 const options=ref([
   {
     value: '温度',
@@ -233,6 +233,7 @@ const activeName = ref<any>('1')
             :icon="FolderChecked"
             plain
             @click="localSave()"
+            disabled
           >
             保存
           </el-button>
@@ -241,12 +242,14 @@ const activeName = ref<any>('1')
             :icon="TopRight"
             plain
             @click="submitForm"
+            disabled
           >提交</el-button>
           <el-button
             type="danger"
             :icon="Refresh"
             plain
             @click="resetForm()"
+            disabled
           >清空
           </el-button>
         </div>
@@ -260,6 +263,7 @@ const activeName = ref<any>('1')
             label-width="100px"
             v-loading="formLoading"
             class="grid 2xl:grid-cols-3 gap-2 p-4"
+            disabled
           >
             <el-form-item label="设备编号" prop="deviceCode">
               <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
@@ -339,7 +343,7 @@ const activeName = ref<any>('1')
               <el-input v-model="formData.url" placeholder="请输入视频url" />
             </el-form-item>-->
             <el-form-item label="图片" prop="imgId">
-              <UploadImg v-model="formData.imgId" />
+              <UploadImg v-model="formData.imgId" disabled="true"/>
             </el-form-item>
           </el-form>
         </el-scrollbar>
