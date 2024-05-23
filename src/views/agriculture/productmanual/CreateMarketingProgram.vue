@@ -3,14 +3,14 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-          <!-- <el-button
+          <el-button
             type="primary"
             :icon="FolderChecked"
             plain
             @click="localSave()"
           >
             保存
-          </el-button> -->
+          </el-button>
           <el-button
             type="success"
             :icon="TopRight"
@@ -94,6 +94,7 @@
 </template>
 <script setup lang="ts">
 import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
+import { useTagsViewStore } from "@/store/modules/tagsView";
 import {
   EditFrame,
   addFormStorage,
@@ -138,9 +139,10 @@ const route = useRoute()
 const router = useRouter()
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
-const FORMPAGE_NAME = ''
+const FORMPAGE_NAME = '产品手册'
 const ORIGIN_PATH = '/pcg/marketingCenter/productManual' // 关闭表单时跳转的路径
 
+//保存到浏览器缓存
 const localSave = () => {
   addOrUpdateFormStorage(
     ROUTE_PATH,
@@ -150,13 +152,27 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
-if(route.query.id){
-  let idNumber=route.query.id;
-    MarketingProgramApi.getMarketingProgram(idNumber).then(res=>{
-    formData.value = res
-    formData.value.marketingType ='productmanual'
-  });
+//获取浏览器缓存
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
 }
+if (!formData.value.id) loadData()
+
+//起步函数
+const getFrom = async () =>{
+  resetForm();
+  if(route.query.id)  {
+    formData.value = await MarketingProgramApi.getMarketingProgram (route.query.id as any);
+    loadData(route.query.id);
+  }
+}
+
+// 方式二 调用立即执行函数
+onMounted(async () => {
+    getFrom();
+});
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -197,6 +213,14 @@ const submitForm = async () => {
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
+    // 表单已提交，从本地删除此表单
+    deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? formData.value.id : 'new_form'
+    )
+    // 关闭当前页面
+    useTagsViewStore().delView(router.currentRoute.value);
+    // 发送操作成功的事件
     router.push(ORIGIN_PATH)
   } finally {
     formLoading.value = false

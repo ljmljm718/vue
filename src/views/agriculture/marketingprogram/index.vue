@@ -343,13 +343,11 @@ const resetQuery = () => {
 const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  router.push({
-    path: '/pcg/marketingCenter/marketingprogram/CreateOrUpdateMaketingPagram',
-    query:{
-      type:type,
-      id:id
-    }
-  })
+  if(type=='create'){
+    router.push('/pcg/marketingCenter/marketingprogram/CreateOrUpdateMaketingPagram')
+  }else {
+    router.push('/pcg/marketingCenter/marketingprogram/CreateOrUpdateMaketingPagram?type='+type+"&id="+id)
+  }
   //formRef.value.open(type, id)
 }
 
