@@ -34,7 +34,7 @@ interface NoticeItemType {
 }
 
 export default defineComponent({
-    name: 'BigscreenAdapter',
+    name: 'BigscreenTest',
     setup() {
         const activeTab = ref('base')
         const deviceVideoList = ref<Array<DeviceVideoListItemType>>([
@@ -107,7 +107,7 @@ export default defineComponent({
 			},
 			{
 				"captured": "http://117.73.12.97:9000/inspur/f1a9833cf93d493154194ad6352d12757da85670d6f5aa8cbff5ca8b6bc57b61.jpg",
-				"noticeEvent": "非法入侵",
+				"noticeEvent": "非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵",
 				"recordTime": 1716340773000,
 			},
 			{
@@ -139,15 +139,24 @@ export default defineComponent({
                         </div>
                         <div class="inner-border w-[18rem] p-3">
                             <div class="art-font">通知事件</div>
-                            <div class="h-[53.9rem] mt-2" style="border: 1px solid red;">
+                            <div class="h-[53rem]">
                                 {
                                     noticeList.value.map((item: NoticeItemType) => (
-                                        <div class="flex items-center px-2 py-4 justify-between">
-                                            <div class="flex flex-col justify-between">
-                                                <div>{item.noticeEvent}</div>
+                                        <div class="flex items-center px-2 my-4 py-2 justify-between inner-border rounded-md">
+                                            <div class="flex flex-col justify-between h-[4rem]">
+                                                <div class="mt-1 line-clamp-2 h-[2rem]">
+                                                    <el-tooltip
+                                                        class="box-item"
+                                                        effect="dark"
+                                                        content={item.noticeEvent}
+                                                        placement="bottom"
+                                                    >
+                                                        {item.noticeEvent}
+                                                    </el-tooltip>
+                                                </div>
                                                 <div>{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss')}</div>
                                             </div>
-                                            <img src={item.captured} class="w-[4rem] h-[4rem]" />
+                                            <img src={item.captured} class="w-[6rem] h-[4rem]" />
                                         </div>
                                     ))
                                 }
