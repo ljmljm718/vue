@@ -347,6 +347,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path:'/bigscreenTest',
+    name:'bigscreenTest',
+    component:()=>import('@/views/bigscreenTest/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
     path: '/bpm',
     component: Layout,
     name: 'bpm',
