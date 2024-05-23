@@ -36,7 +36,7 @@
           label-width="100px"
           v-loading="formLoading"
           class="grid 2xl:grid-cols-2 gap-3 p-4"
-        >repository-info
+        >
           <el-form-item label="产品名称" prop="schemeName" >
             <el-input v-model="formData.schemeName" placeholder="请输入方案名称"  />
           </el-form-item>
