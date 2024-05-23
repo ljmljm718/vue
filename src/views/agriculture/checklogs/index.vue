@@ -111,7 +111,7 @@
             </template>
         </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
-      
+
 
       <el-table-column label="所属基地" align="center" prop="base"/>
       <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
@@ -188,6 +188,7 @@ import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
 import CheckLogsForm from './CheckLogsForm.vue'
 import {parseTime} from "element-plus/es/components/time-select/src/utils";
 import {getTenantId} from "@/utils/auth";
+import router from "@/router";
 
 /** 巡检记录 列表 */
 defineOptions({name: 'CheckLogs'})
@@ -245,7 +246,8 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
+  // formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
