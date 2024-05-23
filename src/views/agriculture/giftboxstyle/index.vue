@@ -353,7 +353,11 @@ const resetQuery = () => {
 const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type='+type+"&id="+id)
+  if(type=='create'){
+    router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram')
+  }else {
+    router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type='+type+"&id="+id)
+  }
   //formRef.value.open(type, id)
 }
 

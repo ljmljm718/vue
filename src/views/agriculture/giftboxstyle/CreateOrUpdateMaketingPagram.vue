@@ -28,6 +28,7 @@
       </template>
 
       <template #content>
+        <el-scrollbar class="croll-bar-template">
         <!-- 原内容 -->
         <el-form
           ref="formRef"
@@ -46,7 +47,7 @@
           <el-form-item label="简介" prop="briefIntroduction">
             <el-input v-model="formData.briefIntroduction" type="textarea" placeholder="请输入简介"  />
           </el-form-item>
-          
+
           <el-form-item label="上传时间" prop="marketingUploadTime">
             <el-date-picker
               v-model="formData.marketingUploadTime"
@@ -81,6 +82,7 @@
             <el-input v-model="formData.reserveThree" placeholder="请输入备用三" />
           </el-form-item> -->
         </el-form>
+        </el-scrollbar>
         <!-- <template #footer>
           <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -129,7 +131,7 @@ const route = useRoute()
 const router = useRouter()
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
-const FORMPAGE_NAME = ''
+const FORMPAGE_NAME = '礼盒样式'
 const ORIGIN_PATH = '/pcg/marketingCenter/giftBoxStyle' // 关闭表单时跳转的路径
 
 const localSave = () => {
@@ -145,29 +147,37 @@ const localSave = () => {
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
-    await open(route.query.type,route.query.id);
-    formData.value.marketingType = 'giftboxstyle'
+  getFrom()
+    // await open(route.query.type,route.query.id);
+    // formData.value.marketingType = 'giftboxstyle'
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 
-
-/** 打开弹窗 */
-const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
+// if(id)
+const getFrom = async () =>{
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await MarketingProgramApi.getMarketingProgram(id)
-    } finally {
-      formLoading.value = false
-    }
+  if(route.query.id)  {
+    console.log(22222)
+    formData.value = await MarketingProgramApi.getMarketingProgram(route.query.id as any)
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+// /** 打开弹窗 */
+// const open = async (type: string, id?: number) => {
+//   dialogVisible.value = true
+//   dialogTitle.value = t('action.' + type)
+//   formType.value = type
+//   resetForm()
+//   // 修改时，设置数据
+//   if (id) {
+//     formLoading.value = true
+//     try {
+//       formData.value = await MarketingProgramApi.getMarketingProgram(id)
+//     } finally {
+//       formLoading.value = false
+//     }
+//   }
+// }
+// defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
