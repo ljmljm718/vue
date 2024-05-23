@@ -77,7 +77,7 @@
           v-model="formData.reserveTwo"
           type="datetime"
           value-format="x"
-          placeholder="选择建设时间"
+          placeholder="选择图片拍摄时间"
         />
       </el-form-item>
       <el-form-item label="备注" prop="remarks">

@@ -35,16 +35,16 @@
           :rules="formRules"
           label-width="100px"
           v-loading="formLoading"
-          :inline="true"
-        >
+          class="grid 2xl:grid-cols-2 gap-3 p-4"
+        >repository-info
           <el-form-item label="产品名称" prop="schemeName" >
-            <el-input v-model="formData.schemeName" placeholder="请输入方案名称" style="width: 520px" />
+            <el-input v-model="formData.schemeName" placeholder="请输入方案名称"  />
           </el-form-item>
           <el-form-item label="设计人" prop="marketingCreator">
-            <el-input v-model="formData.marketingCreator" placeholder="请输入设计人" style="width: 520px"/>
+            <el-input v-model="formData.marketingCreator" placeholder="请输入设计人" />
           </el-form-item>
           <el-form-item label="简介" prop="briefIntroduction">
-            <el-input v-model="formData.briefIntroduction" type="textarea" placeholder="请输入简介" style="width: 1150px" />
+            <el-input v-model="formData.briefIntroduction" type="textarea" placeholder="请输入简介"  />
           </el-form-item>
           
           <el-form-item label="上传时间" prop="marketingUploadTime">
@@ -53,20 +53,20 @@
               type="datetime"
               value-format="x"
               placeholder="选择上传时间"
-              style="width: 520px" 
+              style="width: 100%;"
             />
           </el-form-item>
           <el-form-item label="分类" prop="marketingCategory">
-            <el-input v-model="formData.marketingCategory" placeholder="请输入分类" style="width: 520px" />
+            <el-input v-model="formData.marketingCategory" placeholder="请输入分类"  />
           </el-form-item>
           <el-form-item label="标签" prop="marketingTags">
-            <el-input v-model="formData.marketingTags" placeholder="请输入标签" style="width: 520px" />
+            <el-input v-model="formData.marketingTags" placeholder="请输入标签"  />
           </el-form-item>
           <el-form-item label="文件管理" prop="fileManagement">
-            <UploadFile v-model="formData.fileManagement" :limit="1" style="width: 1150px" />
+            <UploadFile v-model="formData.fileManagement" :limit="1"  />
           </el-form-item>
           <el-form-item label="封面图片" prop="coverImage" >
-            <UploadImg v-model="formData.coverImage"  style="width: 1150px" />
+            <UploadImg v-model="formData.coverImage"  />
           </el-form-item>
           <!-- <el-form-item label="营销推广类型" prop="marketingType">
             <el-input v-model="formData.marketingType" placeholder="请输入营销推广类型" />
@@ -141,6 +141,7 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
