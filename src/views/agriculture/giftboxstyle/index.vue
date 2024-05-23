@@ -172,7 +172,7 @@
         :formatter="dateFormatter"
         width="180px"
       /> -->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
           <el-button
             v-if="scope.row.fileManagement"
@@ -182,7 +182,14 @@
           >
             文件预览
           </el-button>
-
+          <el-button
+            link
+            type="primary"
+            @click="openDetailForm('view', scope.row.id)"
+            v-hasPermi="['agriculture:marketing-program:update']"
+          >
+            详情
+          </el-button>
           <el-button
             link
             type="primary"
@@ -215,7 +222,7 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
   <!-- 文件预览 -->
-  
+
   <el-dialog
     v-model="dialogVisible"
     title="预览"
@@ -275,7 +282,7 @@ let fileUrl=ref()
 const filePreview=(url:any)=>{
   dialogVisible.value = true
   console.log("preview url", url);
-  
+
   if (url.endsWith('docx')) renderDocx(url)
   else if (url.endsWith('pdf')) renderPDF(url)
   else renderError()
@@ -312,7 +319,7 @@ const renderPDF = (url:string) => {
   setTimeout(() => {
     const _dom = document.getElementById("filePreview") as HTMLElement
     console.log("dom", _dom);
-    
+
     if (_dom) _dom.appendChild(_iframe)
   }, 200)
 }
@@ -347,6 +354,16 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type='+type+"&id="+id)
+  //formRef.value.open(type, id)
+}
+
+/**
+ * 详情按钮操作
+ * @param type
+ * @param id
+ */
+const openDetailForm = (type: string, id?: number) => {
+  router.push('/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type='+type+"&id="+id)
   //formRef.value.open(type, id)
 }
 
