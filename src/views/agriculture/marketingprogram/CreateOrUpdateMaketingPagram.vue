@@ -36,6 +36,7 @@
           :rules="formRules"
           label-width="100px"
           v-loading="formLoading"
+          class="grid 2xl:grid-cols-2 gap-3 p-4"
         >
           <el-form-item label="方案名称" prop="schemeName">
             <el-input v-model="formData.schemeName" placeholder="请输入方案名称" />
@@ -52,6 +53,7 @@
               type="datetime"
               value-format="x"
               placeholder="选择上传时间"
+              style="width: 100%;"
             />
           </el-form-item>
           <el-form-item label="分类" prop="marketingCategory">
