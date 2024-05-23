@@ -339,8 +339,8 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
-    path:'/bigscreenMY',
-    name:'bigscreenBB',
+    path:'/bigscreenMYJD',
+    name:'bigscreenMYJD',
     component:()=>import('@/views/bigscreenMingYue1/index.vue'),
     meta:{
       hidden: true
@@ -350,6 +350,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path:'/bigscreenTest',
     name:'bigscreenTest',
     component:()=>import('@/views/bigscreenTest/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
+    path:'/bigscreenMYZH',
+    name:'bigscreenMYZH',
+    component:()=>import('@/views/bigscreenMingYue2/index.vue'),
     meta:{
       hidden: true
     }

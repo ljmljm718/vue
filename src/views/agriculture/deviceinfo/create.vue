@@ -60,6 +60,7 @@ const getFormInfo = async () => {
   resetForm()
   if (route.query.id){
     formData.value = await DeviceInfoApi.getDeviceInfo(route.query.id as any)
+    loadData(route.query.id);
     formData.value.deviceMonitorType=formData.value.deviceMonitorType.split(',');
     deviceType.value = formData.value.deviceType.split(',').map(Number)
   }
@@ -216,6 +217,12 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
 /** 初始化 **/
 onMounted(() => {
   getFormInfo()

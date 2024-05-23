@@ -121,7 +121,8 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
 import RepositoryInfoForm from './RepositoryInfoForm.vue'
-import {Search,Plus, Sort, Edit, Delete} from '@element-plus/icons-vue'
+import {Search,Plus, Sort, Edit, Delete,TopRight} from '@element-plus/icons-vue'
+import router from '@/router'
 
 /** 助农知识库信息表 列表 */
 defineOptions({ name: 'RepositoryInfo' })
@@ -184,7 +185,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  router.push('pcg/repositoryinfo/RepositoryInfoCreateOrUpdateMaketingPagram?type='+type+'&id='+id)
 }
 
 /** 删除按钮操作 */

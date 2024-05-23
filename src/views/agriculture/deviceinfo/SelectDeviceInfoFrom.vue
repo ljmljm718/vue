@@ -1,5 +1,6 @@
 <template>
-  <Dialog     title="设备列表"
+  <Dialog
+title="设备列表"
               v-model="dialogVisible"
               :appendToBody="true"
               :scroll="true"
@@ -133,7 +134,9 @@
         </template>
       </el-table-column>
       <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+      <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
       <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
+      <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200"/>
       <el-table-column label="位置" align="center" prop="location" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
