@@ -37,5 +37,6 @@ export default defineComponent({
     padding: 0 1.5em;
     background-size: 100% 100%;
     position: relative;
+    z-index: 999;
 }
 </style>

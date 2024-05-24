@@ -142,7 +142,7 @@ export default defineComponent({
                             <div class="h-[53rem]">
                                 {
                                     noticeList.value.map((item: NoticeItemType) => (
-                                        <div class="flex items-center px-2 my-4 py-2 justify-between inner-border rounded-md">
+                                        <div class="flex items-center px-2 my-4 py-1 justify-between inner-border rounded-md">
                                             <div class="flex flex-col justify-between h-[4rem]">
                                                 <div class="mt-1 line-clamp-2 h-[2rem]">
                                                     <el-tooltip

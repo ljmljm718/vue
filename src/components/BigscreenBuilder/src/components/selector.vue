@@ -1,13 +1,19 @@
 <template>
-  <div class="w-[8rem] relative text-sm" :id="selectorId">
+  <div
+    class="relative text-sm"
+    :style="`width:${props.width};`"
+    :id="selectorId"
+  >
     <div
       class="selector-selected-label"
+      :style="`width:${props.width};`"
       @click="showSelectorOptions = true"
       @blur="showSelectorOptions = false"
     >{{ getLabelByVal(props.modelValue) }}</div>
-    <div class="absolute left-0 top-[1.7rem]" v-show="showSelectorOptions">
+    <div class="absolute left-0 top-[100%]" v-show="showSelectorOptions">
       <div
         class="selector-option-item"
+        :style="`width:${props.width};`"
         v-for="item, index in props.options"
         :key="index"
         @click="() => handleOptionClick(item.key)"
@@ -21,6 +27,7 @@ interface KeyLabelObject {
   key: string,
   label: string
 }
+
 const props = defineProps({
   options: {
     type: Array<KeyLabelObject>,
@@ -29,6 +36,10 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: ''
+  },
+  width: {
+    type: String,
+    default: '8rem'
   }
 })
 
@@ -70,29 +81,28 @@ const getLabelByVal = (val:string) => {
 const emit = defineEmits(['update:modelValue', 'change']);
 
 const handleOptionClick = (key:string) => {
-  console.log("SHIT", key);
-  
   showSelectorOptions.value = false
   emit('update:modelValue', key)
+  emit('change', key)
 }
 </script>
 <style scoped>
 .selector-selected-label {
   border: 1px solid #9c9c9c;
-  height: 1.7rem;
-  padding: 0 .4rem;
+  padding: .2rem .4rem;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   border-radius: 4px;
+  background-color: #141936;
 }
 .selector-option-item {
-  height: 1.7rem;
-  padding: 0 .4rem;
+  padding: .2rem .4rem;
   display: flex;
   align-items: center;
   border: 1px solid #9c9c9c;
-  width: 8rem;
   box-sizing: border-box;
+  background-color: #141936;
 }
 
 .selector-option-item:last-child {

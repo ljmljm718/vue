@@ -7,6 +7,12 @@ import BigscreenCard from './src/frame/card.vue'
 
 import BigscreenTab from './src/components/tab.vue'
 import BigscreenSelector from './src/components/selector.vue'
+import BigscreenTable from './src/components/table.vue'
+
+export interface KeyLabelObject {
+    key: string,
+    label: string
+}
 
 export default {
     BigscreenAdapter,
@@ -18,4 +24,5 @@ export default {
 
     BigscreenTab,
     BigscreenSelector,
+    BigscreenTable
 }
