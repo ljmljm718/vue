@@ -115,8 +115,8 @@
             <!--      <el-table-column label="主键" align="center" prop="id" />-->
             <!--      <el-table-column label="园区编号" align="center" prop="parkCode" />-->
             <!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
-            <el-table-column label="设备编号" align="center" prop="deviceCode"/>
-            <!--      <el-table-column label="设备名称" align="center" prop="deviceName" />-->
+<!--            <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
+                  <el-table-column label="设备名称" align="center" prop="deviceName" />
             <!--      <el-table-column label="设备类型" align="center" prop="deviceType" />-->
             <el-table-column label="预警类型" align="center" prop="warnType">
               <template #default="scope">

@@ -345,11 +345,8 @@ const resetQuery = () => {
 const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  if(type=='create'){
-    router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram')
-  }else {
-    router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram?type='+type+"&id="+id)
-  }
+  if(type=='create') router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram')
+  else router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram?type='+type+"&id="+id)
   //formRef.value.open(type, id)
 }
 

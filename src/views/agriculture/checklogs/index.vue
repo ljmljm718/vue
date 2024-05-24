@@ -150,6 +150,13 @@
         <template #default="scope">
           <el-button
             link
+            type="warning"
+            @click="openFormA('update', scope.row.id)"
+          >
+            详情
+          </el-button>
+          <el-button
+            link
             type="primary"
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['agriculture:check-logs:update']"
@@ -247,6 +254,11 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   router.push('/internetMonitor/check/CreateOrUpdateCheckLogsLkh?type=' + type + "&id=" + id)
+  // formRef.value.open(type, id)
+}
+
+const openFormA = (type: string, id?: number) => {
+  router.push('/internetMonitor/check/CheckLogsLookInfo?type=' + type + "&id=" + id)
   // formRef.value.open(type, id)
 }
 

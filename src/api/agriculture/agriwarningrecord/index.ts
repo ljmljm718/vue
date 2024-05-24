@@ -20,6 +20,7 @@ export interface AgriWarningRecordVO {
   warnType: string // 预警类型
   warnUnit: string // 预警单位
   warnTitle: string // 预警标题
+  deviceName: string // 设备名称
 }
 
 // 预警记录 API
