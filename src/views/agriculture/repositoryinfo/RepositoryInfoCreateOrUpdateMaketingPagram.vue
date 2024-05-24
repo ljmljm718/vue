@@ -45,12 +45,18 @@
               <el-select
                 v-model="formData.repositoryType"
               >
-                <el-option
-                  v-for="item in typeListAll"
-                  :label="item"
-                  :value="item"
-                  :key="item"
-                />
+              <div 
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_TYPE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+              >
+              <el-option
+              v-if="dict.value!='全部'"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"/>
+              </div>
               </el-select>
             </el-form-item>
           </div>
@@ -74,12 +80,18 @@
           <div class="col-span-3">
             <el-form-item label="标签" prop="repositoryLabel">
               <el-select v-model="formData.repositoryLabel" placeholder="请选择标签">
-                <el-option
-                  v-for="item in labelListAll"
-                  :label="item"
-                  :value="item"
-                  :key="item"
-                />
+                <div 
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+              >
+              <el-option
+              v-if="dict.value!='全部'"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"/>
+              </div>
               </el-select>
             </el-form-item>
           </div>
@@ -109,6 +121,7 @@
 import {EditFrame,addOrUpdateFormStorage} from '@/components/EditFrame/index'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
 import {Refresh,TopRight} from '@element-plus/icons-vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 // 本地保存表单
 const route = useRoute()
 const router = useRouter()
@@ -136,8 +149,6 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const { t } = useI18n() // 国际化
 
-const typeListAll = ['病虫害识别', '收获预测', '价格预测', '农事操作规程']
-const labelListAll = ['专家经验', '白皮书']
 const formRules = reactive({
 })
 

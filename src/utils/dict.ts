@@ -274,6 +274,8 @@ export enum DICT_TYPE {
   // =========== agri -   明月 ==========
   AGRI_DUCKHOUSE_CLASSIFICATION = 'agri_duckhouse_classification', //鸭舍分类
   AGRI_PLOT_TYPE = 'agri_plot_type', //鸭舍分类
+  AGRI_REPOSITORYINFO_TYPE='agri_repositoryinfo_type',//产业模型服务类型
+  AGRI_REPOSITORYINFO_LABEL='agri_repositoryinfo_label',//产业模型服务标签
 
   // =========== agri -   MQTT ==========
   AGRI_MQTT_SUBSCRIBE_STATUS = 'agri_mqtt_subscribe_status', //主题订阅状态

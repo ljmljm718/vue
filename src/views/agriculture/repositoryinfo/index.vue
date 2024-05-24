@@ -28,18 +28,17 @@
       <div class="flex flex-col py-2 space-y-2">
         <div class="flex items-center">
           <div class="px-2">分类:</div>
-
           <el-checkbox-group
             v-model="checkboxGroup1"
             @change="handleCheckBoxChange1"
             :min="0"
             :max="1"
           >
-            <el-checkbox-button
-              v-for="item in options1"
-              :label="item"
-              :value="item"
-              :key="item"
+          <el-checkbox-button
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_TYPE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             />
           </el-checkbox-group>
         </div>
@@ -52,10 +51,10 @@
             :max="1"
           >
           <el-checkbox-button
-              v-for="item in options2"
-              :label="item"
-              :value="item"
-              :key="item"
+              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             />
           </el-checkbox-group>
         </div>
@@ -117,11 +116,11 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import download from '@/utils/download'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
 import RepositoryInfoForm from './RepositoryInfoForm.vue'
-import {Search,Plus, Sort, Edit, Delete,TopRight} from '@element-plus/icons-vue'
+import {Search,Plus} from '@element-plus/icons-vue'
 import router from '@/router'
 
 /** 助农知识库信息表 列表 */
@@ -152,9 +151,7 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
 const checkboxGroup1 = ref(['全部'])
-const options1 = ['全部','病虫害识别', '收获预测', '价格预测', '农事操作规程']
 const checkboxGroup2 = ref(['全部'])
-const options2 = ['全部', '专家经验', '白皮书']
 
 /** 查询列表 */
 const getList = async () => {
