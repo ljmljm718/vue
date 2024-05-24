@@ -409,7 +409,7 @@ const initChart4 = async (type = 'appoint', startTime = '', endTime = '') => {
     type, startTime, endTime
   } : { type })
   console.log('Week', res);
-  
+
   const x = res.map(item => (item.collectionDate))
   const y = res.map(item => (item.totalValue))
   initChartStatic('chart4', generateBaseOptions({
@@ -477,12 +477,13 @@ const initChart4 = async (type = 'appoint', startTime = '', endTime = '') => {
 const initChart6 = async () => {
   const res = await warnAmountTrend()
   console.log('预警处理', res)
-  
+
   const x = res.map(item => (item.warnDate))
   const y1 = res.map(item => (item.warnAmount))
   const y2 = res.map(item => (item.dealAmount))
   initChartStatic('chart6', generateBaseOptions({
     xAxis: {
+        inverse: true,
         data: x,
         axisLine: {
           show: true,
@@ -682,7 +683,7 @@ getBaseList()
               </div>
             </div>
           </div>
-          
+
           <el-divider  class="!my-2"/>
           <div class="flex items-center">
             <span>本月报警数</span>
@@ -706,7 +707,7 @@ getBaseList()
               </div>
             </div>
           </div>
-          
+
           <el-divider  class="!my-2"/>
           <div class="flex items-center">
             <span>巡检完成率</span>
