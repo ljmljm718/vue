@@ -171,6 +171,12 @@
             link
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
+            @click="handleData(scope.row)">采集最新数据
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
               path: '/internetMonitor/deviceData/equipment-data-three',
               query: {
@@ -223,21 +229,21 @@
           >
             删除
           </el-button>
-          <el-button
-            link
-            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"
-            @click="handleStatus(scope.row)"
-            v-if="scope.row.deviceStatus === 'online' || scope.row.deviceStatus === 'offline'"
-            v-hasPermi="['agriculture:device-info:update']"
-          >
-            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
-            @click="handleData(scope.row)">采集最新数据
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"-->
+<!--            @click="handleStatus(scope.row)"-->
+<!--            v-if="scope.row.deviceStatus === 'online' || scope.row.deviceStatus === 'offline'"-->
+<!--            v-hasPermi="['agriculture:device-info:update']"-->
+<!--          >-->
+<!--            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}-->
+<!--          </el-button>-->
+          <el-switch
+            v-model="scope.row.deviceStatus"
+            active-value="online"
+            inactive-value="offline"
+            @change="handleStatus(scope.row)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -304,7 +310,8 @@ const queryParams = reactive({
   userId: undefined,
   location: undefined,
   deviceMonitorType: undefined,
-  deviceKind: undefined
+  deviceKind: undefined,
+  status: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -496,18 +503,19 @@ watch(() => props.currCategory,
 
 /** 开关机 */
 const handleStatus = async (item: any) => {
-  let s = item.deviceStatus === 'online' ? '关机': '开机'
+  let s = item.deviceStatus === 'online' ? '开机': '关机'
 
   try {
     // 开关机的二次确认
     await message.confirm("是否确认" + s + "?", s + "确认")
     // 发起开关机
-    let status = item.deviceStatus === 'online' ? 'offline': 'online'
+    let status = item.deviceStatus === 'online' ? 'online': 'offline'
     await DeviceInfoApi.updateDeviceStatus(item.id,status)
     message.success(s + "成功")
     // 刷新列表
     await getList()
   } catch {
+    item.deviceStatus = item.deviceStatus === 'online' ? 'offline' : 'online'
   }
 }
 
