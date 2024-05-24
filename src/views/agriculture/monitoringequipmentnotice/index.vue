@@ -44,16 +44,15 @@
       <el-form-item label="通知事件类型" prop="noticeEvent">
         <el-select  
           v-model="queryParams.noticeEvent"  
-          placeholder="请输入通知事件类型"  
-          clearable  
-          @change="handleSelectChange"  
+          placeholder="请选择通知事件类型"  
+          clearable   
           class="!w-240px"  
         >  
           <el-option  
-            v-for="item in options"  
-            :key="item.value"  
-            :label="item.label"  
-            :value="item.value"  
+          v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"  
           />  
         </el-select>  
       </el-form-item>
@@ -101,7 +100,11 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" />
       <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" />
-      <el-table-column label="通知事件类型" align="center" prop="noticeEvent" />
+      <el-table-column label="通知事件类型" align="center" prop="noticeEvent" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent" />
+        </template>
+      </el-table-column>
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="抓拍图片" align="center" prop="captured"  >
         <template #default="{ row }">
@@ -185,6 +188,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { MonitoringEquipmentNoticeApi, MonitoringEquipmentNoticeVO } from '@/api/agriculture/monitoringequipmentnotice'
 import MonitoringEquipmentNoticeForm from './MonitoringEquipmentNoticeForm.vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 监控设备通知 列表 */
 defineOptions({ name: 'MonitoringEquipmentNotice' })
@@ -213,17 +217,6 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
-const options = [{
-          value: '逗留',
-          label: '逗留'
-        }, {
-          value: '经过',
-          label: '经过'
-        }, {
-          value: '非法入侵',
-          label: '非法入侵'
-        }]
 
 // openVideo
 let videoUrl=ref();

@@ -99,14 +99,19 @@
       </el-form-item> -->
       
       <el-form-item label="通知事件类型" prop="noticeEvent">
-        <el-select v-model="formData.noticeEvent" placeholder="请选择通知事件类型">
+        <el-select  
+          v-model="formData.noticeEvent"  
+          placeholder="请选择通知事件类型"  
+          clearable   
+          class="!w-240px"  
+        >  
           <el-option  
-            v-for="item in options"  
-            :key="item.value"  
-            :label="item.label"  
-            :value="item.value"  
-          />      
-        </el-select>
+          v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"  
+          />  
+        </el-select>  
       </el-form-item>
 
       <el-form-item label="记录时间" prop="recordTime">
@@ -135,6 +140,7 @@ import {Refresh,TopRight} from '@element-plus/icons-vue'
 //=================新增的引用
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import {DeviceInfoVO} from '@/api/agriculture/deviceinfo';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 
 /** 监控设备通知 表单 */
@@ -189,17 +195,7 @@ const handlePurchaseOrderChange = async (order: DeviceInfoVO) => {
   //监控地块名称 monitoringPlotName  前端查不到，只能后端加
   formData.value.monitoringPlotName = order[0].parkDetailName;
 }
-//===================新增的下拉框
-const options = [{
-          value: '逗留',
-          label: '逗留'
-        }, {
-          value: '经过',
-          label: '经过'
-        }, {
-          value: '非法入侵',
-          label: '非法入侵'
-        }]
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
