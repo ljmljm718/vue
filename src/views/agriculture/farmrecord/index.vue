@@ -338,11 +338,11 @@
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { FarmRecordApi, FarmRecordVO } from 'src/api/agriculture/farmrecord'
+import { FarmRecordApi, FarmRecordVO } from '@/api/agriculture/farmrecord'
 import FarmRecordForm from './FarmRecordForm.vue'
-import {FarmDefineApi} from "src/api/agriculture/farmdefine";
+import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 农事记录 列表 */
 defineOptions({ name: 'FarmRecord' })

@@ -244,7 +244,7 @@
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { FarmRecordApi, FarmRecordVO } from 'src/api/agriculture/farmrecord'
+import { FarmRecordApi, FarmRecordVO } from '@/api/agriculture/farmrecord'
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
@@ -253,8 +253,8 @@ import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import SelectFarmPlan from "@/views/agriculture/farmrecord/SelectFarmPlan.vue";
-import {FarmPlanVO} from "src/api/agriculture/farmplan";
-import {FarmDefineApi} from "src/api/agriculture/farmdefine";
+import {FarmPlanVO} from "@/api/agriculture/farmplan";
+import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
