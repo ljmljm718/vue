@@ -67,7 +67,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="标题" align="center" prop="repositoryTitle" />
-      <el-table-column label="名称" align="center" prop="repositoryType" />
+      <el-table-column label="分类" align="center" prop="repositoryType" />
       <el-table-column label="标签" align="center" prop="repositoryLabel" />
       <el-table-column label="作者" align="center" prop="writer" />
       <el-table-column label="简介" align="center" prop="synopsis" />

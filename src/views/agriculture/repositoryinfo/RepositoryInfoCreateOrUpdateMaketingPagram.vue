@@ -183,8 +183,6 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as RepositoryInfoVO
-    console.log("要提交的表单")
-    console.log(data)
     if (formType.value === 'create') {
       await RepositoryInfoApi.createRepositoryInfo(data)
       message.success(t('common.createSuccess'))
