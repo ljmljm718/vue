@@ -4,6 +4,8 @@ import BigscreenBuilder, { KeyLabelObject } from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import headerBg from './assets/headerBg.png'
 import mainBg from './assets/bg.png'
+import img1 from './assets/img1.png'
+import img2 from './assets/img2.png'
 import {
   getParkBaseInfo,
   qianjiangMonitor,
@@ -405,12 +407,14 @@ export default defineComponent({
                           {
                             topCardDataList.value.map((item:LabelValItem) => (
                               <div class="inner-border py-2 px-4 flex flex-col items-center">
-                                <div>{item.label}</div>
-                                <div class="art-font">{item.value}</div>
+                                <div class="text-lg">{item.label}</div>
+                                <div class="art-font text-lg">{item.value}</div>
                               </div>
                             ))
                           }
                         </div>
+                        <img src={img1} class="absolute top-[15rem] w-[54rem] left-[1.3rem] z-20" />
+                        <img src={img2} class="absolute top-[19rem] w-[40rem] left-[8.6rem] z-10" />
                       </div>
                       <div class="w-[25%] flex flex-col space-y-3">
                         <BigscreenCard
