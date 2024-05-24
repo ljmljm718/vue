@@ -63,6 +63,7 @@ export default defineComponent({
       if (roles.indexOf('baibu') !== -1) bigscreenRoute.value = '/bigscreenBB'
       if (roles.indexOf('baidi') !== -1) bigscreenRoute.value = '/bigscreen10'
       if (roles.indexOf('fuling_dashun_mingyue') !== -1) bigscreenRoute.value = '/bigscreenMYJD'
+      if (roles.indexOf('qianjiang') !== -1) bigscreenRoute.value = '/bigscreenQJ'
     }
     setTimeout(() => {
       MatchRouteMap()

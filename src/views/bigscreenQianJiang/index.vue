@@ -71,11 +71,21 @@ export default defineComponent({
           }))
           if (res.length > 0) {
             selectedPlot.value = res[0].id
-            getTopCardDataList()
+            refreshAllData()
           }
         }
       }
       getBasePlotOptions()
+
+      const refreshAllData = () => {
+        getWeatherList()
+        getSoilList()
+        getBugList()
+        getAgricultureResourceList()
+        getPreWarnList()
+        getDeviceInfoList()
+        getTopCardDataList()
+      }
       
       // 气象站
       const weatherLoading = ref<boolean>(false)
@@ -291,7 +301,7 @@ export default defineComponent({
                   left: () => (
                     <div class="flex space-x-2">
                       <BigscreenSelector width={'10rem'} options={baseOptions.value} v-model={selectedBase.value} onChange={(key) => getBasePlotOptions(key)} />
-                      <BigscreenSelector width={'12rem'} options={plotOptions.value} v-model={selectedPlot.value} onChange={() => getTopCardDataList()} />
+                      <BigscreenSelector width={'12rem'} options={plotOptions.value} v-model={selectedPlot.value} onChange={() => refreshAllData()} />
                     </div>
                   )
               }}
@@ -436,12 +446,12 @@ export default defineComponent({
                                 <div class="art-font text-lg">设备信息</div>
                             ),
                             default: () => (
-                              <div class="p-4">
+                              <div class="p-4" v-loading={deviceInfoLoading.value}>
                                 <div class="flex justify-between inner-border p-3">
                                   <div class="art-font">物联网设备</div>
                                   <div class="text-sm">共<span class="art-font px-1">{deviceInfoTotal.value}</span>台</div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3 mt-3" v-loading={deviceInfoLoading.value}>
+                                <div class="grid grid-cols-2 gap-3 mt-3">
                                   {
                                     deviceInfoList.value.map(item => (
                                       <div class="inner-border p-2">
@@ -469,7 +479,7 @@ export default defineComponent({
                           }}
                         />
                         <BigscreenCard
-                          class="grow"
+                          class="h-[18rem]"
                           v-slots={{
                             title: () => (
                                 <div class="art-font text-lg">预警信息</div>
