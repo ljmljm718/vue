@@ -242,13 +242,13 @@
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
-import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {FarmDefineApi} from "src/api/agriculture/farmdefine";
 import download from '@/utils/download'
 import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
 import HarvestManagementForm from "@/views/agriculture/harvestmanagement/HarvestManagementForm.vue";
 import {DrawerProps} from "element-plus";
-import {FarmRecordApi, FarmRecordVO} from "@/api/agri/farmrecord";
+import {FarmRecordApi, FarmRecordVO} from "src/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
 
 /** 鲁渝协作品种管理 列表 */

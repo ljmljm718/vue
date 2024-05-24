@@ -135,10 +135,10 @@
 <script lang="ts" setup>
 import {ElTable} from 'element-plus'
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
-import {FarmPlanApi, FarmPlanVO} from "@/api/agri/farmplan";
+import {FarmPlanApi, FarmPlanVO} from "src/api/agriculture/farmplan";
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
-import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {FarmDefineApi} from "src/api/agriculture/farmdefine";
 
 defineOptions({name: 'SelectFarmPlan'})
 const list = ref<FarmPlanVO[]>([]) // 列表的数据

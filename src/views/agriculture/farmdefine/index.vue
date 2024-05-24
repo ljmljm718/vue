@@ -138,7 +138,7 @@
 import { dateFormatter } from '@/utils/formatTime'
 import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
-import { FarmDefineApi, FarmDefineVO } from '@/api/agri/farmdefine'
+import { FarmDefineApi, FarmDefineVO } from 'src/api/agriculture/farmdefine'
 import FarmDefineForm from './FarmDefineForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
 

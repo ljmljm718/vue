@@ -51,7 +51,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { FarmDefineApi, FarmDefineVO } from '@/api/agri/farmdefine'
+import { FarmDefineApi, FarmDefineVO } from 'src/api/agriculture/farmdefine'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 

@@ -289,10 +289,10 @@
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { FarmPlanApi, FarmPlanVO } from '@/api/agri/farmplan'
+import { FarmPlanApi, FarmPlanVO } from 'src/api/agriculture/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
-import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {FarmDefineApi} from "src/api/agriculture/farmdefine";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })

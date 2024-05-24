@@ -192,7 +192,7 @@
 
 </template>
 <script setup lang="ts">
-import { FarmPlanApi, FarmPlanVO } from '@/api/agri/farmplan'
+import { FarmPlanApi, FarmPlanVO } from 'src/api/agriculture/farmplan'
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
@@ -201,7 +201,7 @@ import {CropBaseVO} from "@/api/agriculture/cropbase";
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
-import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {FarmDefineApi} from "src/api/agriculture/farmdefine";
 import {UserVO} from "@/api/login/types";
 
 /** 农事计划 表单 */

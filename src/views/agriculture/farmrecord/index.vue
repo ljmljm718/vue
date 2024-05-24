@@ -340,9 +340,9 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { FarmRecordApi, FarmRecordVO } from '@/api/agri/farmrecord'
+import { FarmRecordApi, FarmRecordVO } from 'src/api/agriculture/farmrecord'
 import FarmRecordForm from './FarmRecordForm.vue'
-import {FarmDefineApi} from "@/api/agri/farmdefine";
+import {FarmDefineApi} from "src/api/agriculture/farmdefine";
 
 /** 农事记录 列表 */
 defineOptions({ name: 'FarmRecord' })
