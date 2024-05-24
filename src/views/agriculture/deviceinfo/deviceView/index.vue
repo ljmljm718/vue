@@ -60,18 +60,30 @@ const clearCategory = () => {
 const resetTreeSelections = () => {
   clearCategory() // 清空选中的节点
 };
+ let isCollapse=ref(false)
+
 </script>
 
 <template>
-  <el-row :gutter="20" v-loading="loading">
-    <el-col :span="4">
-      <ContentWrap>
-        <ContentWrap>
+  <el-row :gutter="24" v-loading="loading">
+    <div v-if="isCollapse" @click="isCollapse=false" class="mt--10px w-30px h-20px bg-[#c1c1c1] flex justify-end pr-10px" style="cursor: pointer;border-radius:0 25px 25px 0;"><el-icon><DArrowRight /></el-icon></div>
+    <el-col :span="isCollapse?0:4">
+     
+      <el-menu
+    default-active="2"
+    class="el-menu-vertical-demo relative"
+    :collapse="isCollapse"
+  >
+  
+  <ContentWrap>
+        <ContentWrap class="flex items-center">
           <el-input
             v-model="filterText"
             placeholder="输入关键字进行过滤"
             clearable
+            style="width:150px;"
           />
+          <div class="absolute right-25px top-50px" @click="isCollapse=true" style="cursor: pointer;"><el-icon><DArrowLeft /></el-icon></div>
         </ContentWrap>
         <ContentWrap style="height: 62vh; overflow: auto;">
           <el-tree
@@ -90,14 +102,17 @@ const resetTreeSelections = () => {
         </ContentWrap>
 
       </ContentWrap>
+  </el-menu>
+    
     </el-col>
 
-    <el-col :span="20">
+    <el-col :span="isCollapse?24:20">
       <ContentWrap style="height: 78vh; overflow: auto;">
         <device-info
           :currCategory="currCategory"
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
+          @updataChange='updataChange'
         />
       </ContentWrap>
     </el-col>

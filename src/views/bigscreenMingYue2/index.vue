@@ -6,10 +6,10 @@
           <div class="actived2">
             <div class="value-card" @click="router.push('/bigscreenMYJD')">基地导览</div>
           </div>
-          <div class="active2">
-            <div class="value-card">智慧种植</div>
-          </div>
           <div class="actived2">
+            <div class="value-card"  @click="router.push('/bigscreenMYZH')">智慧种植</div>
+          </div>
+          <div class="active2">
             <div class="value-card">风险预警</div>
           </div>
         </div>
@@ -85,17 +85,18 @@
             </div>
           </div>
         </div>
-        <div class="top-right">
+        <div class="top-right ">
           <div class="box-title">报警信息处理情况</div>
           <div class="top-right-ietm p-[15px] flex">
             <div class="w-20% mr-[20px]">
               <div class="w-full flex justify-around">报警数量 <span>32</span> </div>
-              <div  class="w-full flex justify-around mt-15px mb-15px">处理数量 <span>21</span> </div>
+              <div  class="w-full flex justify-around mt-25px mb-25px">处理数量 <span>21</span> </div>
               <div  class="w-full flex justify-around">未处理 <span>11</span> </div>
             </div>
             <div class="w-79% h-full p-[15px]" style="box-sizing: border-box;">
-              <div class="flex justify-between items-center top-right-item">
-                <div class='flex-1'>1号基地土壤湿度报警</div>
+              <div v-for="item in 5" :key='item' class="flex mb-1.5rem justify-evenly items-center top-right-item">
+                <div >{{item}}号基地土壤湿度报警</div>
+                <div>2024/5/23 16:32:00</div>
                 <div class="mr-20px ml-20px">忽略</div>
                 <div>去处理</div>
               </div>
@@ -147,6 +148,27 @@ let leftArr = reactive<Object>({
     }
   ],
   tableData1: [
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
     {
       warnInfo: '1号基地土壤湿度报警',
       warnAdress: '1号基地',
@@ -228,6 +250,27 @@ let leftArr2 = reactive<Object>({
     }
   ],
   tableData1: [
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
+    {
+      warnInfo: '1号基地土壤湿度报警',
+      warnAdress: '1号基地',
+      warnTime: '2024/05/23 11:46:00',
+      warnType: '土壤',
+      warnStatus: '未处理'
+    },
     {
       warnInfo: '1号基地土壤湿度报警',
       warnAdress: '1号基地',
@@ -500,6 +543,9 @@ onMounted(()=>{
       font-family: 'TitleFont';
     }
   }
+}
+.inner-border {
+    border: 1px solid #449ce9;
 }
 .active {
   width: 5rem;
