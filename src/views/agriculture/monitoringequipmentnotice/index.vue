@@ -261,8 +261,14 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
+const router = useRouter()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  // formRef.value.open(type, id)
+  if(type == 'create'){
+    router.push('/internetMonitor/deviceData/monitoringequipmentnotice/CreateOrUpdate?type='+type)
+  }else{
+    router.push('/internetMonitor/deviceData/monitoringequipmentnotice/CreateOrUpdate?type='+type+"&id="+id)
+  }
 }
 
 /** 删除按钮操作 */
