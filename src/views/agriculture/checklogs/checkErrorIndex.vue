@@ -62,7 +62,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -70,32 +70,37 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:check-logs:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:check-logs:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
       </el-form-item>
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:check-logs:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:check-logs:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" prefix="right" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" prefix="right"
+              :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/>
       <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
@@ -111,7 +116,7 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/>
-      <el-table-column label="处理人" align="center" prop="dealPerson" />
+      <el-table-column label="处理人" align="center" prop="dealPerson"/>
       <el-table-column
         label="处理时间"
         align="center"
@@ -120,7 +125,7 @@
         width="180px"
       />
       <el-table-column label="处理结果" align="center" prop="dealResult" width="180"/>
-      <el-table-column label="处理图片" align="center" prop="dealImage" >
+      <el-table-column label="处理图片" align="center" prop="dealImage">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
@@ -146,7 +151,7 @@
         width="180px"
       />
       <!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
-      <el-table-column label="巡检影像" align="center" prop="inspectionImage" >
+      <el-table-column label="巡检影像" align="center" prop="inspectionImage">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
@@ -278,9 +283,9 @@ const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
 }
 
-const errFormRef= ref()
+const errFormRef = ref()
 const openErrorFrom = (type: string, id?: number) => {
-    errFormRef.value.open(type, id)
+  errFormRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
