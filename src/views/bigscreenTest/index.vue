@@ -5,6 +5,16 @@ import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import headerBg from './assets/headerBg.png'
 import mainBg from './assets/bg.png'
 import { formatTime } from '@/utils'
+import {
+    getParkTree,
+    getEquipmentPhotographAndVideo,
+    monitoringEquNoticePage,
+
+    getPondCountFrySum,
+    // getLineChar,
+    // selectHarvest,
+    // getEquipmentCountSum,
+} from './api'
 
 const {
     BigscreenAdapter,
@@ -36,99 +46,109 @@ interface NoticeItemType {
 export default defineComponent({
     name: 'BigscreenTest',
     setup() {
-        const activeTab = ref('base')
-        const deviceVideoList = ref<Array<DeviceVideoListItemType>>([
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-            {
-                deviceName: '设备1',
-                videoSrc: 'string',
-                baseName: 'string',
-                online: true
-            },
-        ])
+        const activeBasePark = ref()
+        const handleMenuActive = (key: string, keyPath: string[]) => {
+            console.log(key, keyPath)
+            activeBasePark.value = key
+            if (keyPath.length === 2) getMonitorDeviceList(keyPath[0], keyPath[1])
+        }
+        const baseParkTreeList = ref<Array<any>>([]);
+        const getBaseParkTreeList = async () => {
+            const res = await getParkTree();
+            console.log('基地导览大屏基地树', res);
+            if (!Array.isArray(res)) return
+            baseParkTreeList.value = res
+        }
+        getBaseParkTreeList()
 
-        const noticeList = ref<Array<NoticeItemType>>([
-            {
-				"captured": "http://117.73.12.97:9000/inspur/b4099f3c8fb37fdb8ac15b99415e8548b5816ecec398480f08926b24bc9095d6.jpg",
-				"noticeEvent": "经过",
-				"recordTime": 1716429787000
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/a694bbf5ededec23c1fe004245456620c51f2ee124fcd155c49afdc17a253c75.jpg",
-				"noticeEvent": "逗留",
-				"recordTime": 1716343126000
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/f1a9833cf93d493154194ad6352d12757da85670d6f5aa8cbff5ca8b6bc57b61.jpg",
-				"noticeEvent": "非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵非法入侵",
-				"recordTime": 1716340773000,
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/de9ef56cdae79ce75ab78eb07d6f1e13c51a81e9177c3d50dd84427f560ba491.jpg",
-				"noticeEvent": "经过",
-				"recordTime": 1716340410000
-			},
-        ])
+        // 获取监控设备列表
+        const monitorDeviceLoading = ref<boolean>(false)
+        const deviceVideoList = ref<Array<DeviceVideoListItemType>>([])
+        const getMonitorDeviceList = async (baseId = '', plotId = '') => {
+            deviceVideoList.value = []
+            monitorDeviceLoading.value = true
+            const res = await getEquipmentPhotographAndVideo({ baseId, plotId }).catch(() => {
+                monitorDeviceLoading.value = false
+            })
+            console.log("获取监控设备列表", res);
+            monitorDeviceLoading.value = false
+            deviceVideoList.value = res.map(item => ({
+                deviceName: item.deviceName,
+                videoSrc: item.url,
+                baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
+                online: true
+            })).slice(0, 9)
+        }
+        getMonitorDeviceList()
+        const activeTab = ref('base')
+       
+
+        // 监控通知事件
+        const monitorNoticeLoading = ref<boolean>(false)
+        const getMonitorNoticeList = async () => {
+            monitorNoticeLoading.value = true
+            const { list = [] } = await monitoringEquNoticePage({}).catch(() => {
+                monitorNoticeLoading.value = false
+            })
+            monitorNoticeLoading.value = false
+            if (!Array.isArray(list)) return
+            noticeList.value = list.map(item => ({
+                captured: item.captured,
+                noticeEvent: item.noticeEvent,
+                recordTime: item.recordTime
+            }))
+        }
+        getMonitorNoticeList()
+
+        const noticeList = ref<Array<NoticeItemType>>([])
+        // 基地导览页面部分
         const baseTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
                     <div class="inner-border w-full h-full p-3 flex space-x-3 box-border">
-                        <div class="inner-border w-[10rem] p-3">{activeTab.value}</div>
-                        <div class="inner-border grow p-3 grid grid-cols-3 grid-rows-3 gap-3">
+                        <div class="inner-border w-[10rem] p-3">
+                            <el-menu
+                                active-text-color="#ffd04b"
+                                background-color="#1b2a58"
+                                class="el-menu-vertical-demo"
+                                default-active={activeBasePark.value}
+                                text-color="#fff"
+                                onSelect={handleMenuActive}
+                            >
+                                {
+                                    baseParkTreeList.value.map(item => {
+                                        if (item.child) return (
+                                            <el-sub-menu index={item.id} v-slots={{
+                                                title: () => (
+                                                    <span>{item.name}</span>
+                                                )
+                                            }}>
+                                                {
+                                                    Array.isArray(item.child) ? item.child.map(ele => (
+                                                        <el-menu-item index={ele.id}>
+                                                            {ele.name}
+                                                        </el-menu-item>
+                                                    )) : null
+                                                }
+                                            </el-sub-menu>
+                                        )
+                                        return (
+                                            <el-menu-item index={item.id}>
+                                                {item.name}
+                                            </el-menu-item>
+                                        )
+                                    })
+                                }
+                            </el-menu>
+                        </div>
+                        <div class="inner-border grow p-3 grid grid-cols-3 grid-rows-3 gap-3" v-loading={monitorDeviceLoading.value}>
                             {
                                 deviceVideoList.value.map((item:DeviceVideoListItemType) => (
                                     <div class="p-3 flex flex-col bg-gray-900 inner-border">
                                         <div class="art-font h-[1.4rem] tracking-wide">{ item.deviceName }</div>
                                         <video class="w-full h-[13rem]" controls autoplay src={ item.videoSrc } />
                                         <div class="flex items-center justify-between pt-2">
-                                            <div>{ item.deviceName }</div>
+                                            <div>{ item.baseName }</div>
                                             <div style={
                                                 item.online ? 'color: #48ad91;' : 'color: #db2153;'
                                             }>{ item.online ? '在线' : '离线' }</div>
@@ -139,7 +159,7 @@ export default defineComponent({
                         </div>
                         <div class="inner-border w-[18rem] p-3">
                             <div class="art-font">通知事件</div>
-                            <div class="h-[53rem]">
+                            <div class="h-[53rem]" v-loading={monitorNoticeLoading.value}>
                                 {
                                     noticeList.value.map((item: NoticeItemType) => (
                                         <div class="flex items-center px-2 my-4 py-1 justify-between inner-border rounded-md">
@@ -168,16 +188,50 @@ export default defineComponent({
         }
 
         const runtimeBase = ref('')
+        // 智慧种植部分
+        // 基础设施
+        const baseEquipmentLoading = ref<boolean>(false)
+        const baseEquipmentList = ref<Array<any>>([])
+        const getBaseEquipmentList = async () => {
+            baseEquipmentLoading.value = true
+            const res = await getPondCountFrySum().catch(() => {
+                baseEquipmentLoading.value = false
+            })
+            baseEquipmentList.value = [
+                { label: '池塘', value: res['池塘'] },
+                { label: '鱼苗', value: res['鱼苗'] }
+            ]
+            baseEquipmentLoading.value = false
+        }
+        getBaseEquipmentList()
+
+        // 生长分析折线图
+        // const getGrowthLineChartData = async () => {
+        //     const { xValue = [], yValue = [], measureUnit = []} = await getLineChar({})
+
+        // }
         const plantTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
                     <div class="w-full h-full p-3 flex space-x-3 box-border">
                         <div class="w-[25%] flex flex-col space-y-3">
                             <BigscreenCard
-                                class="h-[300px]"
+                                class="h-[100px]"
                                 v-slots={{
                                     title: () => (
                                         <div class="art-font text-lg">基础设施</div>
+                                    ),
+                                    default: () => (
+                                        <div class="grid grid-cols-2 gap-2 p-3" v-loading={baseEquipmentLoading.value}>
+                                            {
+                                                baseEquipmentList.value.map(item => (
+                                                    <div class="flex justify-between p-2 inner-border">
+                                                        <div>{item.label}</div>
+                                                        <div class="art-font">{item.value}</div>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
                                     )
                                 }}
                             />
@@ -186,6 +240,9 @@ export default defineComponent({
                                 v-slots={{
                                     title: () => (
                                         <div class="art-font text-lg">生长分析</div>
+                                    ),
+                                    default: () => (
+                                        <div id="growthChart"></div>
                                     )
                                 }}
                             />

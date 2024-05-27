@@ -4,7 +4,7 @@
 
     <EditFrame>
       <template #header>
-        <div class="flex">
+        <div :disabled="isShow" class="flex">
           <!-- <el-button
            type="primary"
            :icon="FolderChecked"
@@ -17,6 +17,7 @@
             type="success"
             :icon="TopRight"
             plain
+            :disabled="isShow"
             @click="submitForm"
           >提交
           </el-button>
@@ -24,6 +25,7 @@
             type="danger"
             :icon="Refresh"
             plain
+            :disabled="isShow"
             @click="resetForm()"
           >清空
           </el-button>
@@ -38,6 +40,7 @@
           :rules="formRules"
           label-width="100px"
           v-loading="formLoading"
+          :disabled="isShow"
         >
           <el-row :gutter="24">
             <el-col :span="8">
@@ -90,7 +93,8 @@
           <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="环境条件" prop="envCondition">
-                <el-input v-model="formData.envCondition" type="textarea"
+                <el-input
+v-model="formData.envCondition" type="textarea"
                           placeholder="请输入环境条件"/>
               </el-form-item>
             </el-col>
@@ -159,7 +163,7 @@
             </el-col>
             <el-col :span="9">
               <el-form-item label="图片" prop="imgId">
-                <UploadImg v-model="formData.imgId"/>
+                <UploadImg :disabled="isShow" v-model="formData.imgId"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -228,6 +232,7 @@ const formRules = reactive({
   cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
+const isShow = ref<boolean>(false);
 // 本地保存表单
 const route = useRoute()
 const router = useRouter()
@@ -299,8 +304,13 @@ if (route.query.id) {
   let idNumber = route.query.id;
   CropGrowthApi.getCropGrowth(idNumber).then(res => {
     formData.value = res
+  
     // formData.value.marketingType ='productmanual'
   });
+}
+if(route.query.type=='select')
+{
+  isShow.value = true;
 }
 //作物的选择
 const cropInfoPopupRef = ref()
@@ -334,6 +344,8 @@ const open = async (type: string, id?: number) => {
       formData.value = await CropGrowthApi.getCropGrowth(id)
     } finally {
       formLoading.value = false
+      isShow.value = true;
+  
     }
   }
 }

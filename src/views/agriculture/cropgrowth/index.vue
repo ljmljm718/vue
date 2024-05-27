@@ -19,16 +19,16 @@
       </el-form-item>
       <el-form-item label="品种" prop="cropType">
         <el-select
-            v-model="queryParams.cropType"
-            placeholder="请选择品种"
-            clearable
-            class="!w-240px"
+          v-model="queryParams.cropType"
+          placeholder="请选择品种"
+          clearable
+          class="!w-240px"
         >
           <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -53,7 +53,7 @@
         />
       </el-form-item>
       <el-form-item label="所属基地" prop="parkName">
-        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地" >
+        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
           <template #append>
             <el-button @click="openParkPopup('0')">
               <Icon icon="ep:search"/>
@@ -63,7 +63,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块" >
+        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search"/>
@@ -95,15 +95,26 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-form-item>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -112,24 +123,25 @@
           :loading="exportLoading"
           v-hasPermi="['agri:crop-growth:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </div>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
-      <el-table-column label="名称" align="center" prop="cropName" />
-      <el-table-column label="品种" align="center" prop="cropType" >
+      <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
+      <el-table-column label="名称" align="center" prop="cropName"/>
+      <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
         </template>
       </el-table-column>
-      <el-table-column label="生长期" align="center" prop="growth" />
-      <el-table-column label="图片" align="center" prop="imgId" >
+      <el-table-column label="生长期" align="center" prop="growth"/>
+      <el-table-column label="图片" align="center" prop="imgId">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
@@ -141,9 +153,9 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="特点" align="center" prop="feature" />
-      <el-table-column label="环境条件" align="center" prop="envCondition" />
-      <el-table-column label="生长地点" align="center" prop="growSite" />
+      <el-table-column label="特点" align="center" prop="feature"/>
+      <el-table-column label="环境条件" align="center" prop="envCondition"/>
+      <el-table-column label="生长地点" align="center" prop="growSite"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -158,7 +170,7 @@
         :formatter="dateFormatter2"
         width="180px"
       />
-<!--      <el-table-column label="备注" align="center" prop="remark" width="200px"/>-->
+      <!--      <el-table-column label="备注" align="center" prop="remark" width="200px"/>-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -166,9 +178,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="所属地块" align="center" prop="parkName" />
-      <el-table-column label="所属园区" align="center" prop="plotName" />
-      <el-table-column label="操作" align="center" width="120px" fixed="right">
+      <el-table-column label="所属地块" align="center" prop="parkName"/>
+      <el-table-column label="所属园区" align="center" prop="plotName"/>
+      <el-table-column label="操作" align="center" width="150px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -177,6 +189,13 @@
             v-hasPermi="['agri:crop-growth:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('select', scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
@@ -199,7 +218,7 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CropGrowthForm ref="formRef" @success="getList" />
+  <CropGrowthForm ref="formRef" @success="getList"/>
 
   <!--  选择基地-->
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
@@ -208,21 +227,21 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter,dateFormatter2 } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CropGrowthApi, CropGrowthVO } from '@/api/agriculture/cropgrowth'
+import {CropGrowthApi, CropGrowthVO} from '@/api/agriculture/cropgrowth'
 import CropGrowthForm from './CropGrowthForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-import { ParkDetailVO } from '@/api/agriculture/parkdetail'
-import { ParkInfoVO } from '@/api/agriculture/parkinfo'
+import {ParkDetailVO} from '@/api/agriculture/parkdetail'
+import {ParkInfoVO} from '@/api/agriculture/parkinfo'
 
 /** 作物生长期管理 列表 */
-defineOptions({ name: 'CropGrowth' })
+defineOptions({name: 'CropGrowth'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<CropGrowthVO[]>([]) // 列表的数据
@@ -279,7 +298,7 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  router.push('/farm_work/cropgrowth?id='+id)
+  router.push('/farm_work/cropgrowth?id=' +id+ '&type='+type)
 }
 
 /** 删除按钮操作 */
@@ -292,7 +311,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
@@ -320,16 +340,15 @@ const parkPopupRef = ref()
 const openType = ref('')
 const openParkPopup = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined || openType.value === ""){
+  if (openType.value === undefined || openType.value === "") {
     message.error("请选择基地")
-  }else parkPopupRef.value.open(id)
+  } else parkPopupRef.value.open(id)
 }
 const handleParkPopupChange = (order: ParkInfoVO) => {
-  if (openType.value === '0'){
+  if (openType.value === '0') {
     queryParams.belongPark = String(order[0].code)
     queryParams.parkName = String(order[0].name)
-  }
-  else queryParams.belongPlot = String(order[0].id)
+  } else queryParams.belongPlot = String(order[0].id)
 }
 
 //地块的选择
@@ -337,12 +356,12 @@ const plotPopupRef = ref()
 const openType1 = ref('')
 const openPlotPopup = (id: string) => {
   openType1.value = id;
-  if (!openType1.value){
+  if (!openType1.value) {
     message.error("请选择基地")
-  }else plotPopupRef.value.open(id)
+  } else plotPopupRef.value.open(id)
 }
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  console.log("--->>查看选择的地块信息：",order[0])
+  console.log("--->>查看选择的地块信息：", order[0])
   queryParams.belongPark = String(order[0].parkId)
   queryParams.belongPlot = String(order[0].id)
   queryParams.plotName = String(order[0].name)

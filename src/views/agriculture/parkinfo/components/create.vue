@@ -34,7 +34,16 @@ const getFormInfo = async () => {
   formData.value = await ParkInfoApi.getParkInfo(route.query.id as any)
   formData.value.parkDetails = await ParkInfoApi.getParkDetailListByParkId(route.query.id)
 }
-if (route.query.id) getFormInfo()
+const getCategoryOptions = async () => {
+  parkCategoryOptions.value =  await ParkCategoryApi.getAllParkCategory()
+}
+if (route.query.id) {
+  getFormInfo()
+}else {
+  getCategoryOptions()
+}
+
+// if (!route.query.id) getCategoryOptions()
 // 页面 Loading
 const formLoading = ref<boolean>(false)
 

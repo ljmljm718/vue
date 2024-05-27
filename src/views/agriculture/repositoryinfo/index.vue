@@ -14,11 +14,6 @@
           </template>
         </el-input>
         <div class="flex space-x-2">
-          <el-button type="primary" :icon="Plus" @click="openForm('create')">新增</el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
-            重置
-          </el-button>
           <el-radio-group v-model="radioVal" @change="handleRadioChange">
             <el-radio-button label="时间正序" value="时间正序"/>
             <el-radio-button label="时间倒序" value="时间倒序"/>
@@ -59,6 +54,15 @@
           </el-checkbox-group>
         </div>
       </div>
+      <div style="margin-top: 20px;margin-left: 10px;height: 30px">
+      <el-form-item>
+        <el-button type="primary" :icon="Plus" @click="openForm('create')">新增</el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
+      </el-form-item>
+    </div>
     </el-card>
   </ContentWrap>
 
