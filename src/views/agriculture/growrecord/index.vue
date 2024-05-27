@@ -86,7 +86,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery"   type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -94,6 +94,12 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+
+      </el-form-item>
+    </el-form>
+
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-form-item>
         <el-button
           type="primary"
           plain
@@ -114,7 +120,7 @@
           导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </div>
   </ContentWrap>
 
   <!-- 列表 -->
