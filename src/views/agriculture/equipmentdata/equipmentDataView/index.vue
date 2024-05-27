@@ -67,23 +67,20 @@ const resetTreeSelections = () => {
 </script>
 
 <template>
-  <el-row :gutter="24" v-loading="loading">
-    <div v-if="isCollapse" @click="isCollapse=false" class="mt--10px w-30px h-20px bg-[#fff] flex justify-end pr-10px" style="cursor: pointer;border-radius:0 25px 25px 0;"><el-icon><DArrowRight /></el-icon></div>
+  <el-row :gutter="20" v-loading="loading">
+    <div v-if="isCollapse" @click="isCollapse=false" class="mt--13px w-30px mb-7px bg-[#fff] flex justify-end pr-15px" style="height: 20px;line-height: 20px; cursor: pointer;border-radius:0 25px 25px 0;text-align: center;"><el-icon style="font-size: 10px;text-align: center; margin-top: 4px;margin-left: -8px;"><DArrowRight /></el-icon></div>
     <el-col :span="isCollapse?0:4">
-     
-  <el-menu
-    default-active="2"
-    class="el-menu-vertical-demo relative"
-    :collapse="isCollapse"
-  >
-  
+      <el-menu
+        default-active="2"
+        class="el-menu-vertical-demo relative"
+        :collapse="isCollapse"
+      >
       <ContentWrap>
-        <ContentWrap class="flex items-center">
+        <ContentWrap>
           <el-input
             v-model="filterText"
             placeholder="输入关键字进行过滤"
             clearable
-            style="width:150px;"
           />
           <div class="absolute right-25px top-50px" @click="isCollapse=true" style="cursor: pointer;"><el-icon><DArrowLeft /></el-icon></div>
         </ContentWrap>
@@ -102,9 +99,9 @@ const resetTreeSelections = () => {
             @current-change="handleCurrentCategoryChange"
           />
         </ContentWrap>
+
       </ContentWrap>
-  </el-menu>
-    
+      </el-menu>
     </el-col>
 
     <el-col :span="isCollapse?24:20">
