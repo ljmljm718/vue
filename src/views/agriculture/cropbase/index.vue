@@ -158,6 +158,15 @@
         <template #default="scope">
           <el-button
             link
+            type="primary"
+            @click="openForm('detail', scope.row.id)"
+            v-hasPermi="['agriculture:crop-base:update']"
+            v-if="!scope.row.recoveryNo"
+          >
+            详情
+          </el-button>
+          <el-button
+            link
             type="success"
             @click="damn(scope.row)"
           >
@@ -247,6 +256,7 @@ import HarvestManagementForm from "@/views/agriculture/harvestmanagement/Harvest
 import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
+import router from "@/router";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -323,7 +333,8 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  // formRef.value.open(type, id)
+  router.push('/farm_work/CreateOrUpdateCropbase?id=' +id+ '&type='+type)
 }
 
 /** 添加/修改操作 */
