@@ -104,12 +104,23 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" />
       <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" />
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="通知事件类型" align="center" prop="noticeEvent" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent" />
         </template>
       </el-table-column>
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      
+      <el-table-column label="消息內容" align="center" prop="remarks" />
+
+      <el-table-column
+        label="记录时间"
+        align="center"
+        prop="recordTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      
       <el-table-column label="抓拍图片" align="center" prop="captured"  >
         <template #default="{ row }">
           <el-image
@@ -125,14 +136,8 @@
       
       <!-- <el-table-column label="视频链接" align="center" prop="videoLink" />-->
       
-      <el-table-column
-        label="记录时间"
-        align="center"
-        prop="recordTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-    <el-table-column label="备注" align="center" prop="remarks" />
+      
+    
 
     <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
