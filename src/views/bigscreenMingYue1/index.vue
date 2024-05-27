@@ -21,14 +21,20 @@
     </div>
     <div class="content-main-wrapper inner-border">
          <div class="left inner-border flex items-center p-[10px] color-[#fff]" style="flex-direction: column;">
-          <div @click="leftCli(-1)" :class="activeNum==-1?'active':'actived'" style="margin-top: 30px;margin-bottom: 15px;">全部</div>
-          <div @click="leftCli(index)" v-for="item,index in 5" :class="activeNum==index?'active':'actived'" style="margin-bottom: 15px;" :key="index">库房{{ item }}</div>
-         </div>
-         <div class='main inner-border' style=' flex-wrap: wrap; '>
-          <div class="color-[#c1c1c1] w-full h-[15rem] p-[10px] inner-border" style="box-sizing: border-box; " v-for="item,index in 9" :Key='index'>
-            <div>设备{{ item }}</div>
+          <el-tree
+            style="width: 100%;height: 100%;background:transparent;color: #fff;"
+            :data="treeList"
+            :props="defaultProps"   
+            default-expand-all   
+            accordion
+            @node-click="handleNodeClick"
+          />
+        </div>
+         <div class='main inner-border' >
+          <div class="color-[#c1c1c1] w-32% h-[15rem] p-[10px] inner-border mb-15px mr-15px" style=" box-sizing: border-box; display: inline-block;" v-for="item,index in videoList" :Key='index'>
+            <div class="mb-10px">{{ item?.deviceName }}</div>
             <video
-              :src="''"
+              :src="item?.monitoringEquipmentDataDO?.videoLink"
               controls
               autoplay
               class="video"
@@ -36,36 +42,40 @@
               height="150px"
             ></video>
             <div class="w-full flex justify-between">
-              <div>基地全景</div>
-              <div class="color-[green]">在线</div>
+              <div>{{ item?.location }}</div>
+              <div v-if="item?.deviceStatus=='online'" class="color-[green]">在线</div>
+              <div v-if="item?.deviceStatus=='offline'" class="color-[#c1c1c1]">离线</div>
+              <div v-if="item?.deviceStatus=='fault'" class="color-[red]">故障</div>
             </div>
           </div>
          </div>
          <div class="right color-[#fff]  p-[10px] inner-border" style="box-sizing: border-box;">
           <div>通知事件</div>
           <div class="flex justify-between mt-10px">
-            <el-select :teleported="false" :popper-append-to-body="false" v-model="selectVal" class="select"  @change="selectCli">
+            <el-date-picker
+              v-model="dataVal"
+              type="daterange"
+              range-separator="To"
+              start-placeholder="请选择开始时间"
+              end-placeholder="请选择结束时间"              
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            value-format="YYYY-MM-DD HH:mm:ss"
+              @change="dateChange"
+            />
+            <el-select :teleported="false" placeholder="请选择事件类型" popper-class="popperClass"  v-model="selectVal" class="select"  @change="selectCli">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-            <el-select :teleported="false" popper-class="popperClass"  v-model="selectVal2" class="select"  @change="selectCli">
-              <el-option
-                v-for="item in options"
+                v-for="item in options2"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </div>
-          <div class="mt-20px">
-            <div v-for="item,index in right2List" :key="index" class='flex items-center justify-around color-[#c1c1c1] right-item p-[15px]'>
-              <div class="w-40%">{{item.noticeEvent}}</div>
-              <div class="w-35%">{{new Date().toLocaleString(item.recordTime)}}</div>
-              <img :src="item.captured" class="w-25% h-5rem" alt=""/>
+          <div class="mt-20px right-list">
+            <div v-for="item,index in pageList" :key="index" class='flex items-center justify-around color-[#c1c1c1] p-[15px] right-item'>
+              <div class="w-35%">{{item.noticeEvent}}</div>
+              <div class="w-40%">{{new Date().toLocaleString(item.createTime)}}</div>
+              <img :src="item.captured" class="w-25% h-100%" alt=""/>
             </div>
          </div>
       </div>
@@ -81,60 +91,85 @@ import {
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
 import { useRouter} from 'vue-router'
+import { 
+  getParkTree,
+  EquipmentPhotographAndVideo,
+  getPage
+} from '@/api/bigscreenMingYue'
 let router=useRouter()
-let activeNum=ref(-1)
-const leftCli=(val)=>{
-  activeNum.value=val
-}
 const selectVal=ref()
-const selectVal2=ref()
-const options = [
+const options2 = [
   {
-    value: 'Option1',
-    label: 'Option1',
+    value: '全部事件',
+    label: '全部事件',
   },
   {
-    value: 'Option2',
-    label: 'Option2',
+    value: '非法入侵',
+    label: '非法入侵',
   },
   {
-    value: 'Option3',
-    label: 'Option3',
+    value: '逗留',
+    label: '逗留',
   },
   {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
+    value: '经过',
+    label: '经过',
   },
 ]
-const selectCli=()=>{
+let dataVal=ref('')
+let plotId=ref('')
+let baseId=ref('')
+let pageList=ref([])
+const getGetPage=(monitoringPlotId='',monitoringBaseId='',noticeEvent='',recordTime=[])=>{
+  console.log(recordTime,'recordTime')
+  getPage({monitoringPlotId,monitoringBaseId,noticeEvent,pageNo:'1',pageSize:'10'}).then(res=>{
+    console.log(res,'通知事件')
+    pageList.value=res.list
+  })
+}
+getGetPage()
+const selectCli=(e)=>{
+  console.log(e,'事件')
+  selectVal.value=e=='全部事件'?'':e
+  e=='全部事件'?getGetPage():getGetPage(plotId.value,baseId.value,selectVal.value,dataVal.value)
+}
+const dateChange=(e)=>{
+  console.log(e,'shijian')
+  dataVal.value=e
+  getGetPage(plotId.value,baseId.value,selectVal.value,dataVal.value)
 
 }
-let right2List=ref( 
-    [{
-				"captured": "http://117.73.12.97:9000/inspur/b4099f3c8fb37fdb8ac15b99415e8548b5816ecec398480f08926b24bc9095d6.jpg",
-				"noticeEvent": "经过",
-				"recordTime": 1716429787000
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/a694bbf5ededec23c1fe004245456620c51f2ee124fcd155c49afdc17a253c75.jpg",
-				"noticeEvent": "逗留",
-				"recordTime": 1716343126000
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/f1a9833cf93d493154194ad6352d12757da85670d6f5aa8cbff5ca8b6bc57b61.jpg",
-				"noticeEvent": "非法入侵非法入侵",
-				"recordTime": 1716340773000,
-			},
-			{
-				"captured": "http://117.73.12.97:9000/inspur/de9ef56cdae79ce75ab78eb07d6f1e13c51a81e9177c3d50dd84427f560ba491.jpg",
-				"noticeEvent": "经过",
-				"recordTime": 1716340410000
-			},
-    ])
+const treeList=ref([])
+const defaultProps = {
+  children: 'child',
+  label: 'name',
+}
+const getGetParkTree=()=>{
+  getParkTree().then(res=>{
+    console.log(res,'左侧基地树')
+    treeList.value=res
+    baseId.value=res[0].id
+    plotId.value=res[0].child[0].id
+    getEquipmentPhotographAndVideo(res[0].id,res[0].child[0].id)
+    getGetPage()
+  })
+}
+getGetParkTree()
+
+const handleNodeClick=(data,node,val,obj)=>{
+  console.log(node.parent,'aa')
+   plotId.value=data.id
+   baseId.value=node.parent.data.id
+  getEquipmentPhotographAndVideo(baseId.value,plotId.value)
+}
+let videoList=ref([])
+const getEquipmentPhotographAndVideo=(baseId,plotId)=>{
+  EquipmentPhotographAndVideo({baseId,plotId}).then(res=>{
+    console.log(res,'视频')
+    videoList.value=res
+  })
+}
+
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -165,15 +200,14 @@ let right2List=ref(
       overflow-y: scroll;
       padding: 10px 15px;
       box-sizing: border-box;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:20px;
-      grid-template-rows: 1fr 1fr 1fr;
+      white-space: wrap;
     }
     .main::-webkit-scrollbar{
       width: 0;
     }
     .right{
+      width: 100%;
+      height: 100%;
       box-sizing: border-box;
       .select  {
         width: 48%;
@@ -184,31 +218,40 @@ let right2List=ref(
             border: 1px solid #273f70 ;
         }
 
-        :deep(.el-select-dropdown__item.hover){
+      :deep(.el-select-dropdown__item.hover){
             background: transparent ;
             border: none ;
             color: #04FAA0;
         }
 
 
-        :deep(.el-select-dropdown__item){
+      :deep(.el-select-dropdown__item){
             background: transparent ;
             border: none ;
             color: #fff;
         }
 
-        :deep(.el-popper.is-light .el-popper__arrow::before) {
+      :deep(.el-popper.is-light .el-popper__arrow::before) {
             border: 1px solid #4778d9;
             background: #4778d9;
             right: 0;
         } 
-      .right-item{
-        width: 100%;
-        height: 100%;
-        background-size:100% 100%;
-        box-sizing: border-box;
-
-        background-image: url('./assets/right-itemBg.png');
+      
+      .right-list{
+        width:100%;
+        height: 750px;
+        overflow-y: scroll;
+          .right-item{
+          width: 100%;
+          height: 13%;
+          margin-bottom:10px;
+          background-size:100% 100%;
+          box-sizing: border-box;
+          background-image: url('./assets/right-itemBg.png');
+        }
+      }
+      .right-list::-webkit-scrollbar{
+        width: 0;
       }
     }
 }
@@ -260,5 +303,8 @@ let right2List=ref(
   .scan-#{$i} {
     background-image: url(./assets/scan#{$i}.png);
   }
+}
+.el-tree::hover{
+  background-color: none;
 }
 </style>
