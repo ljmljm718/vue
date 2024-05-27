@@ -33,5 +33,6 @@ export default defineComponent({
     flex-direction: column;
     justify-content: space-between;
     position: relative;
+    color: #f0f0f0;
 }
 </style>
