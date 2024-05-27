@@ -271,9 +271,9 @@ const openParkInfoPopup = (id: string) => {
 }
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    formData.value.belongPark = String(order[0].code)
-    formData.value.parkName = String(order[0].name)
-  } else formData.value.belongPlot = String(order[0].id)
+    formData.value.belongPark = (order[0].code).toString()
+    formData.value.parkName = (order[0].name).toString()
+  } else formData.value.belongPlot = (order[0].id).toString()
 }
 
 //地块的选择
@@ -288,10 +288,10 @@ const openParkDetailPopup = (id: string) => {
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
   console.log("--->>查看选择的地块信息：", order[0])
-  formData.value.belongPark = String(order[0].parkId)
-  formData.value.belongPlot = String(order[0].id)
-  formData.value.parkDetailName = String(order[0].name)
-  formData.value.plotName = String(order[0].name)
+  formData.value.belongPark = (order[0].parkId).toString()
+  formData.value.belongPlot = (order[0].id).toString()
+  formData.value.parkDetailName = (order[0].name).toString()
+  formData.value.plotName = (order[0].name).toString()
 
 }
 

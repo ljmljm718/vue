@@ -27,14 +27,19 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px"/>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
           搜索
         </el-button>
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+
+    </el-form>
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-form-item>
         <el-button
           type="primary"
           plain
@@ -55,7 +60,8 @@
           导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </div>
+
   </ContentWrap>
 
   <!-- 列表 -->
@@ -71,7 +77,7 @@
           </el-tabs>
         </template>
       </el-table-column>
-<!--      <el-table-column label="编号" align="center" prop="code" width="200"/>-->
+      <!--      <el-table-column label="编号" align="center" prop="code" width="200"/>-->
       <el-table-column label="名称" align="center" prop="name" width="150"/>
       <el-table-column label="类型" align="center" prop="categoryName" width="150"/>
       <el-table-column label="海拔" align="center" prop="altitude" width="100">
@@ -91,7 +97,9 @@
       </el-table-column>
       <el-table-column label="数量" align="center" prop="quantity" width="100">
         <template #default="scope">
-          {{ scope.row.quantity != undefined ? scope.row.type === "chicken" ? scope.row.quantity + '只' : scope.row.quantity + '株' : '-' }}
+          {{
+            scope.row.quantity != undefined ? scope.row.type === "chicken" ? scope.row.quantity + '只' : scope.row.quantity + '株' : '-'
+          }}
         </template>
       </el-table-column>
       <el-table-column label="简介" align="center" prop="remark"/>
