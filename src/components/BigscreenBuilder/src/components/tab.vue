@@ -25,10 +25,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'change']);
 
 const handleOptionClick = (key:string) => {
   emit('update:modelValue', key)
+  emit('change', key)
 }
 </script>
 <style scoped>
