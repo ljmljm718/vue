@@ -188,7 +188,7 @@
         </template> -->
         <template #default="{ row }">
           <el-image
-            class="h-100px w-100px"
+            class="h-50px w-50px"
             lazy
             :src="row.capturedImage"
             :preview-src-list="[row.capturedImage]"

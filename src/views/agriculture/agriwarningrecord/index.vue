@@ -78,7 +78,7 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button @click="handleQuery">
+              <el-button @click="handleQuery" type="primary">
                 <Icon icon="ep:search" class="mr-5px"/>
                 搜索
               </el-button>
@@ -86,26 +86,30 @@
                 <Icon icon="ep:refresh" class="mr-5px"/>
                 重置
               </el-button>
-              <el-button
-                type="primary"
-                plain
-                @click="openForm('create')"
-                v-hasPermi="['agriculture:agri-warning-record:create']"
-              >
-                <Icon icon="ep:plus" class="mr-5px"/>
-                新增
-              </el-button>
-              <el-button
-                type="success"
-                plain
-                @click="handleExport"
-                :loading="exportLoading"
-                v-hasPermi="['agriculture:agri-warning-record:export']"
-              >
-                <Icon icon="ep:download" class="mr-5px"/>
-                导出
-              </el-button>
             </el-form-item>
+            <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  plain
+                  @click="openForm('create')"
+                  v-hasPermi="['agriculture:agri-warning-record:create']"
+                >
+                  <Icon icon="ep:plus" class="mr-5px"/>
+                  新增
+                </el-button>
+                <el-button
+                  type="success"
+                  plain
+                  @click="handleExport"
+                  :loading="exportLoading"
+                  v-hasPermi="['agriculture:agri-warning-record:export']"
+                >
+                  <Icon icon="ep:download" class="mr-5px"/>
+                  导出
+                </el-button>
+              </el-form-item>
+            </div>
           </el-form>
         </ContentWrap>
 
@@ -115,8 +119,8 @@
             <!--      <el-table-column label="主键" align="center" prop="id" />-->
             <!--      <el-table-column label="园区编号" align="center" prop="parkCode" />-->
             <!--      <el-table-column label="地块编号" align="center" prop="plotCode" />-->
-<!--            <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
-                  <el-table-column label="设备名称" align="center" prop="deviceName" />
+            <!--            <el-table-column label="设备编号" align="center" prop="deviceCode"/>-->
+            <el-table-column label="设备名称" align="center" prop="deviceName"/>
             <!--      <el-table-column label="设备类型" align="center" prop="deviceType" />-->
             <el-table-column label="预警类型" align="center" prop="warnType">
               <template #default="scope">
@@ -294,36 +298,50 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button @click="handleQueryA"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-              <el-button @click="resetQueryA"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-              <el-button
-                type="primary"
-                plain
-                @click="openFormA('create')"
-                v-hasPermi="['agriculture:monitoring-equipment-notice:create']"
-              >
-                <Icon icon="ep:plus" class="mr-5px" /> 新增
+              <el-button @click="handleQueryA" type="primary">
+                <Icon icon="ep:search" class="mr-5px"/>
+                搜索
               </el-button>
-              <el-button
-                type="success"
-                plain
-                @click="handleExportA"
-                :loading="exportLoadingA"
-                v-hasPermi="['agriculture:monitoring-equipment-notice:export']"
-              >
-                <Icon icon="ep:download" class="mr-5px" /> 导出
+              <el-button @click="resetQueryA">
+                <Icon icon="ep:refresh" class="mr-5px"/>
+                重置
               </el-button>
             </el-form-item>
+            <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  plain
+                  @click="openFormA('create')"
+                  v-hasPermi="['agriculture:monitoring-equipment-notice:create']"
+                >
+                  <Icon icon="ep:plus" class="mr-5px"/>
+                  新增
+                </el-button>
+                <el-button
+                  type="success"
+                  plain
+                  @click="handleExportA"
+                  :loading="exportLoadingA"
+                  v-hasPermi="['agriculture:monitoring-equipment-notice:export']"
+                >
+                  <Icon icon="ep:download" class="mr-5px"/>
+                  导出
+                </el-button>
+              </el-form-item>
+            </div>
           </el-form>
         </ContentWrap>
         <!-- 列表 -->
         <ContentWrap>
           <el-table v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true">
-            <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName" width="120px"/>
-            <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName" width="120px"/>
+            <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName"
+                             width="120px"/>
+            <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName"
+                             width="120px"/>
             <el-table-column label="通知事件类型" align="center" prop="noticeEvent" width="120px"/>
             <el-table-column label="设备名称" align="center" prop="deviceName" width="120px"/>
-            <el-table-column label="抓拍图片" align="center" prop="captured"  width="150px">
+            <el-table-column label="抓拍图片" align="center" prop="captured" width="150px">
               <template #default="scope">
                 <el-image
                   class="h-50px w-50px"
@@ -345,7 +363,7 @@
               :formatter="dateFormatter"
               width="180px"
             />
-            <el-table-column label="备注" align="center" prop="remarks" />
+            <el-table-column label="备注" align="center" prop="remarks"/>
 
             <el-table-column label="操作" align="center" width="200px">
               <template #default="scope">
@@ -354,7 +372,8 @@
                   link
                   type="primary"
                   @click="openVideoA(scope.row.videoLink)"
-                >查看视频</el-button>
+                >查看视频
+                </el-button>
                 <el-button
                   link
                   type="primary"
@@ -385,9 +404,10 @@
         </ContentWrap>
 
         <!-- 表单弹窗：添加/修改 -->
-        <MonitoringEquipmentNoticeForm ref="formRefA" @success="getListA" />
+        <MonitoringEquipmentNoticeForm ref="formRefA" @success="getListA"/>
         <!-- 视频弹窗 -->
-        <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
+        <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog"
+                   class="videoBox">
           <video
             :src="videoUrl"
             controls
@@ -581,22 +601,22 @@ const resetForm = () => {
 const handleClick = (tab, event) => {
   // console.log(event);
   // console.log(tab.props.name);
-  if (tab.props.name === 'first'){
+  if (tab.props.name === 'first') {
     getList()
-  }else if (tab.props.name === 'second'){
+  } else if (tab.props.name === 'second') {
     getListA()
   }
 }
 
 // openVideo
-let videoUrl=ref();
-let isShow=ref(false);
+let videoUrl = ref();
+let isShow = ref(false);
 const openVideoA = (video: any) => {
-  videoUrl.value=video;
-  isShow.value=true;
+  videoUrl.value = video;
+  isShow.value = true;
 }
-const closeDialog=()=>{
-  isShow.value=false;
+const closeDialog = () => {
+  isShow.value = false;
 }
 const queryFormRefA = ref() // 搜索的表单
 const exportLoadingA = ref(false) // 导出的加载中
@@ -666,7 +686,8 @@ const handleDeleteA = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getListA()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

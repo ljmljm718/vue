@@ -115,6 +115,13 @@
           <el-button
             link
             type="primary"
+            @click="openFormDetail(scope.row.id)"
+          >
+            查看
+          </el-button>
+          <el-button
+            link
+            type="primary"
             @click="openForm(scope.row.id)"
             v-hasPermi="['agriculture:park-info:update']"
           >
@@ -232,6 +239,11 @@ const handleDelete = async (id: number) => {
     await getList()
   } catch {
   }
+}
+
+/** 查看操作 */
+const openFormDetail = (id?: number) => {
+  if (id) router.push(`/asset/base/asset/base/parkinfo/detail?id=${id}`)
 }
 
 /** 导出按钮操作 */

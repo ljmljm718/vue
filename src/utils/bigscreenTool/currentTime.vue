@@ -36,6 +36,11 @@ export default defineComponent({
     onBeforeUnmount(() => {
       clearInterval(timeTimer.value);
     })
+
+    return {
+      dateDay,
+      dateTime
+    }
   }
 })
 </script>

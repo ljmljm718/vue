@@ -14,7 +14,7 @@
           placeholder="请输入分类编码"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-180px"
         />
       </el-form-item>
       <el-form-item label="分类名称" prop="defineName">
@@ -23,7 +23,7 @@
           placeholder="请输入分类名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-180px"
         />
       </el-form-item>
       <el-form-item label="分类标签" prop="defineLabel">
@@ -32,7 +32,7 @@
           placeholder="请输入分类标签"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-180px"
         />
       </el-form-item>
       <el-form-item label="是否显示" prop="showStatus">
@@ -40,35 +40,49 @@
           v-model="queryParams.showStatus"
           placeholder="请选择是否显示"
           clearable
-          class="!w-240px"
+          class="!w-150px"
         >
-          <el-option label="请选择字典生成" value="" />
+          <el-option label="请选择字典生成" value=""/>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agri:farm-define:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agri:farm-define:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
         </el-button>
-        <el-button type="danger" plain @click="toggleExpandAll">
-          <Icon icon="ep:sort" class="mr-5px" /> 展开/折叠
-        </el-button>
+
       </el-form-item>
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agri:farm-define:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agri:farm-define:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+          <el-button type="danger" plain @click="toggleExpandAll">
+            <Icon icon="ep:sort" class="mr-5px"/>
+            展开/折叠
+          </el-button>
+        </el-form-item>
+      </div>
     </el-form>
   </ContentWrap>
 
@@ -83,15 +97,15 @@
       :default-expand-all="isExpandAll"
       v-if="refreshTable"
     >
-      <el-table-column label="分类编码" align="center" prop="defineCode" />
-      <el-table-column label="分类名称" align="center" prop="defineName" />
-      <el-table-column label="分类标签" align="center" prop="defineLabel" />
-      <el-table-column label="是否显示" align="center" prop="showStatus" >
+      <el-table-column label="分类编码" align="center" prop="defineCode"/>
+      <el-table-column label="分类名称" align="center" prop="defineName"/>
+      <el-table-column label="分类标签" align="center" prop="defineLabel"/>
+      <el-table-column label="是否显示" align="center" prop="showStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.showStatus" />
+          <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.showStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="分类排序" align="center" prop="defineSort" />
+      <el-table-column label="分类排序" align="center" prop="defineSort"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -99,7 +113,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="描述" align="center" prop="description" />
+      <el-table-column label="描述" align="center" prop="description"/>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -131,22 +145,22 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <FarmDefineForm ref="formRef" @success="getList" />
+  <FarmDefineForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import { handleTree } from '@/utils/tree'
+import {dateFormatter} from '@/utils/formatTime'
+import {handleTree} from '@/utils/tree'
 import download from '@/utils/download'
-import { FarmDefineApi, FarmDefineVO } from '@/api/agriculture/farmdefine'
+import {FarmDefineApi, FarmDefineVO} from '@/api/agriculture/farmdefine'
 import FarmDefineForm from './FarmDefineForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
 
 /** 鲁渝协作农事定义 列表 */
-defineOptions({ name: 'FarmDefine' })
+defineOptions({name: 'FarmDefine'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<FarmDefineVO[]>([]) // 列表的数据
@@ -204,7 +218,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
