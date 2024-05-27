@@ -8,24 +8,6 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编码" prop="equipmentCode">
-        <el-input
-          v-model="queryParams.equipmentCode"
-          placeholder="请输入设备编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="设备名称" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="采集类型" prop="collectionType">
         <el-select  v-model="queryParams.collectionType" placeholder="请选择采集类型" clearable
           @keyup.enter="handleQuery"
@@ -64,8 +46,9 @@
           class="!w-240px"
         />
       </el-form-item>
+      
 
-      <el-form-item label="数据值" prop="dataValue">
+      <!-- <el-form-item label="数据值" prop="dataValue">
         <el-input
           v-model="queryParams.dataValue"
           placeholder="请输入数据值"
@@ -82,7 +65,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="采集时间" prop="collectionTime">
         <el-date-picker
           v-model="queryParams.collectionTime"
@@ -94,8 +77,17 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入设备名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       
-      <el-form-item label="基地名称" prop="parkName">
+      <!-- <el-form-item label="基地名称" prop="parkName">
         <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
           @keyup.enter="handleQuery"
           class="!w-240px">  
@@ -105,7 +97,7 @@
             :label="item.name"
             :value="item.name"
             />   
-        </el-select>
+        </el-select> -->
         <!-- <el-input
           v-model="queryParams.parkName"
           placeholder="请输入基地名称"
@@ -113,8 +105,8 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         /> -->
-      </el-form-item>
-      <el-form-item label="基地编码" prop="baseCode">
+      <!-- </el-form-item> -->
+      <!-- <el-form-item label="基地编码" prop="baseCode">
         <el-input
           v-model="queryParams.baseCode"
           placeholder="请输入基地编码"
@@ -123,11 +115,11 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+       -->
 
       
 
-      <el-form-item label="地块名称" prop="parkDname">
+      <!-- <el-form-item label="地块名称" prop="parkDname">
         <el-input
           v-model="queryParams.parkDname"
           placeholder="请输入地块名称"
@@ -135,8 +127,8 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
-      <el-form-item label="地块编码" prop="plotCode">
+      </el-form-item> -->
+      <!-- <el-form-item label="地块编码" prop="plotCode">
         <el-input
           v-model="queryParams.plotCode"
           placeholder="请输入地块编码"
@@ -144,12 +136,21 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="通道编码" prop="channelId">
         <el-input
           v-model="queryParams.channelId"
           placeholder="请输入通道编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="设备编码" prop="equipmentCode">
+        <el-input
+          v-model="queryParams.equipmentCode"
+          placeholder="请输入设备编码"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -225,7 +226,6 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-      <el-table-column label="设备编码" align="center" prop="equipmentCode" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="采集类型" align="center" prop="collectionType" />
         <!-- <template #default="scope">
@@ -250,12 +250,13 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="基地编码" align="center" prop="baseCode" />
+      <!-- <el-table-column label="基地编码" align="center" prop="baseCode" /> -->
       <el-table-column label="基地名称" align="center" prop="parkName" />
-      <el-table-column label="地块编码" align="center" prop="plotCode" />
+      <!-- <el-table-column label="地块编码" align="center" prop="plotCode" /> -->
       <el-table-column label="地块名称" align="center" prop="parkDname" />
 
       <el-table-column label="通道编码" align="center" prop="channelId" />
+      <el-table-column label="设备编码" align="center" prop="equipmentCode" />
       <!-- <el-table-column label="备注" align="center" prop="yyRemarks" /> -->
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
@@ -267,8 +268,15 @@
         :formatter="dateFormatter"
         width="180px"
       /> -->
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
+      <el-table-column label="操作" align="center" width='200px'>
+        <template #default="scope" >
+          <el-button
+            link
+            type="primary"
+            @click="openForm('details', scope.row.id)"
+          >
+            详情
+          </el-button>
           <el-button
             link
             type="primary"
@@ -311,8 +319,14 @@ import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 //导入基地列表
 import {ParkInfoApi} from "@/api/agriculture/parkinfo";
 import {useRoute} from 'vue-router'
-
-
+// import {defineExpose} from 'vue'
+// let props=defineExpose({
+//   currCategory:''
+// })
+// watch(()=>props.currCategory,(oldVal,newVal)=>{
+//   console.log(oldVal,'oldVal')
+//   console.log(newVal,'newVal')
+// })
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
 
@@ -346,6 +360,30 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+const props = defineProps({
+  // todo (zhangyu26, 2024-03-26 15:19:17) : currCategory, 暂时没用
+  currCategory: {
+    type: Object,
+    default: () => ({})
+  },
+})
+// 监听父组件category变化
+watch(() => props.currCategory,
+  () => {
+    if (props.currCategory) {
+      if (props.currCategory.parkId === undefined) {
+        queryParams.baseCode = props.currCategory.id
+        queryParams.plotCode = undefined
+      } else {
+        queryParams.baseCode = undefined
+        queryParams.plotCode = props.currCategory.id
+      }
+    } else {
+      queryParams.baseCode = undefined
+      queryParams.plotCode = undefined
+    }
+    handleQuery()
+  })
 /**
  * 设备分类级联选择器
  */
@@ -421,8 +459,14 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
+const router = useRouter()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  if(type=='create') {
+    router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData')
+  }else{ 
+    router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type='+type+'&id='+id)
+  }
+  //formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */

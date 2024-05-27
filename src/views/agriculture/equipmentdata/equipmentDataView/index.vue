@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {ElTree} from "element-plus";
 import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
-import DeviceInfo from "@/views/agriculture/deviceinfo/index.vue";
+import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
+import DeviceInfo from "@/views/agriculture/equipmentdata/index.vue"
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceView'})
@@ -50,8 +51,9 @@ onMounted(() => {
 
 let currCategory = ref({})
 const handleCurrentCategoryChange = (currNodeData) => {
-  console.log(currNodeData)
+  console.log(currNodeData,"-------------");
   currCategory.value = currNodeData
+
 }
 // 取消选择
 const clearCategory = () => {
@@ -65,23 +67,20 @@ const resetTreeSelections = () => {
 </script>
 
 <template>
-  <el-row :gutter="24" v-loading="loading">
+  <el-row :gutter="20" v-loading="loading">
     <div v-if="isCollapse" @click="isCollapse=false" class="mt--13px w-30px mb-7px bg-[#fff] flex justify-end pr-15px" style="height: 20px;line-height: 20px; cursor: pointer;border-radius:0 25px 25px 0;text-align: center;"><el-icon style="font-size: 10px;text-align: center; margin-top: 4px;margin-left: -8px;"><DArrowRight /></el-icon></div>
     <el-col :span="isCollapse?0:4">
-     
       <el-menu
-    default-active="2"
-    class="el-menu-vertical-demo relative"
-    :collapse="isCollapse"
-  >
-  
-  <ContentWrap>
-        <ContentWrap class="flex items-center">
+        default-active="2"
+        class="el-menu-vertical-demo relative"
+        :collapse="isCollapse"
+      >
+      <ContentWrap>
+        <ContentWrap>
           <el-input
             v-model="filterText"
             placeholder="输入关键字进行过滤"
             clearable
-            style="width:150px;"
           />
           <div class="absolute right-25px top-50px" @click="isCollapse=true" style="cursor: pointer;"><el-icon><DArrowLeft /></el-icon></div>
         </ContentWrap>
@@ -102,17 +101,17 @@ const resetTreeSelections = () => {
         </ContentWrap>
 
       </ContentWrap>
-  </el-menu>
-    
+      </el-menu>
     </el-col>
 
     <el-col :span="isCollapse?24:20">
       <ContentWrap style="height: 78vh; overflow: auto;">
-        <device-info
+        <DeviceInfo
           :currCategory="currCategory"
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
           @updataChange='updataChange'
+          
         />
       </ContentWrap>
     </el-col>

@@ -180,7 +180,7 @@
       />
       <el-table-column label="所属地块" align="center" prop="parkName"/>
       <el-table-column label="所属园区" align="center" prop="plotName"/>
-      <el-table-column label="操作" align="center" width="120px" fixed="right">
+      <el-table-column label="操作" align="center" width="150px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -189,6 +189,13 @@
             v-hasPermi="['agri:crop-growth:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('select', scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
@@ -291,7 +298,7 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  router.push('/farm_work/cropgrowth?id=' + id)
+  router.push('/farm_work/cropgrowth?id=' +id+ '&type='+type)
 }
 
 /** 删除按钮操作 */

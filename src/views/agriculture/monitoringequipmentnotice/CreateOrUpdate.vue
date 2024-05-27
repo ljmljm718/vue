@@ -88,12 +88,6 @@
       <!-- <el-form-item label="监控地块名称" prop="monitoringPlotName">
         <el-input v-model="formData.monitoringPlotName" placeholder="请输入监控地块名称" />
       </el-form-item> -->
-      <el-form-item label="抓拍图片或视频" prop="captured">
-        <UploadImg v-model="formData.captured" />
-      </el-form-item>
-      <el-form-item label="视频链接" prop="videoLink">
-        <el-input v-model="formData.videoLink" placeholder="请输入视频链接" />
-      </el-form-item>
       <!-- <el-form-item label="通知事件类型" prop="noticeEvent">
         <el-input v-model="formData.noticeEvent" placeholder="请输入通知事件类型" />
       </el-form-item> -->
@@ -113,6 +107,10 @@
           />  
         </el-select>  
       </el-form-item>
+      
+      <el-form-item label="消息內容" prop="remarks">
+        <el-input v-model="formData.remarks" placeholder="请输入备注" />
+      </el-form-item>
 
       <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker
@@ -123,9 +121,14 @@
         />
       </el-form-item>
 
-      <el-form-item label="备注" prop="remarks">
-        <el-input v-model="formData.remarks" placeholder="请输入备注" />
+      
+      <el-form-item label="抓拍图片或视频" prop="captured">
+        <UploadImg v-model="formData.captured" />
       </el-form-item>
+      <el-form-item label="视频链接" prop="videoLink">
+        <el-input v-model="formData.videoLink" placeholder="请输入视频链接" />
+      </el-form-item>
+
     </el-form>
       </template>
     </EditFrame>
