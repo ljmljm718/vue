@@ -194,7 +194,6 @@
             link
             type="primary"
             @click="openForm('select', scope.row.id)"
-            v-hasPermi="['agri:crop-growth:update']"
           >
             详情
           </el-button>
