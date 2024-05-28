@@ -8,6 +8,7 @@
       :inline="true"
       label-width="80px"
     >
+      <el-row>
       <el-form-item label="主题名称" prop="topicName">
         <el-input
           v-model="queryParams.topicName"
@@ -63,6 +64,10 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+      </el-row>
+      <el-row>
+      <el-form-item>
         <el-button
           type="primary"
           plain
@@ -114,6 +119,7 @@
         >全部退订
         </el-button>
       </el-form-item>
+      </el-row>
     </el-form>
   </ContentWrap>
 
