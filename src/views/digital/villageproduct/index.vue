@@ -111,8 +111,8 @@
         </template>
       </el-table-column>
       <el-table-column label="产品年份" align="center" prop="years"/>
-      <el-table-column label="库存(袋)" align="center" prop="inventory"/>
-      <el-table-column label="规格(Kg)" align="center" prop="specifications"/>
+      <el-table-column label="产品数量(袋)" align="center" prop="inventory"/>
+      <el-table-column label="产品规格(Kg)" align="center" prop="specifications"/>
       <el-table-column label="批次号" align="center" prop="batchCode"/>
       <!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
       <!--      <el-table-column label="备注" align="center" prop="remark"/>-->

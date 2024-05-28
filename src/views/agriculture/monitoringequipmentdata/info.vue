@@ -16,7 +16,7 @@ import {
   // getEquipmentCountSum,
 } from './api'
 import {useAppStore} from "@/store/modules/app";
-
+const router = useRouter() // 路由
 const appStore = useAppStore()
 const isDark = appStore.getIsDark;
 
@@ -86,7 +86,6 @@ export default defineComponent({
     getMonitorDeviceList()
     const activeTab = ref('base')
 
-
     // 监控通知事件
     const monitorNoticeLoading = ref<boolean>(false)
     const getMonitorNoticeList = async () => {
@@ -115,10 +114,11 @@ export default defineComponent({
       return (
         <>
           <div class="flex flex-row-reverse">
-            <el-select v-model={layoutSelected.value} placeholder="二/三/四宫格展示" style="width: 240px" onChange={changeLayout}>
-              <el-option key="grid-cols-2" label="2" value="grid-cols-2" />
-              <el-option key="grid-cols-3" label="3" value="grid-cols-3" />
-              <el-option key="grid-cols-4" label="4" value="grid-cols-4" />
+            <el-select v-model={layoutSelected.value} placeholder="宫格展示" style="width: 240px"
+                       onChange={changeLayout}>
+              <el-option key="grid-cols-2" label="两列展示" value="grid-cols-2"/>
+              <el-option key="grid-cols-3" label="三列展示" value="grid-cols-3"/>
+              <el-option key="grid-cols-4" label="四列展示" value="grid-cols-4"/>
             </el-select>
           </div>
           <div class="w-full h-full box-border">
@@ -163,7 +163,8 @@ export default defineComponent({
                 {
                   deviceVideoList.value.map((item: DeviceVideoListItemType) => (
                     <div class="p-3 flex flex-col inner-border">
-                      <div class="art-font h-[1.4rem] tracking-wide">{item.deviceName}</div>
+                      <div class="art-font h-[1.4rem] tracking-wide"
+                           s>{item.deviceName}</div>
                       <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc}/>
                       <div class="flex items-center justify-between pt-2">
                         <div>{item.baseName}</div>

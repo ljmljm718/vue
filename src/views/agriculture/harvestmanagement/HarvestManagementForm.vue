@@ -41,7 +41,7 @@
 
       <el-form-item label="所属基地" prop="belongPark">
         <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">
-          <template #append >
+          <template #append>
             <el-button @click="openParkInfoPopup('0')" :disabled="boo">
               <Icon icon="ep:search"/>
               选择
@@ -76,14 +76,14 @@
           style="width: 100%"
         />
       </el-form-item>
-      <el-form-item label="采收量" prop="harvestVolume">
-        <el-input v-model="formData.harvestVolume" placeholder="请输入采收量"/>
+      <el-form-item label="采收量(/Kg)" prop="harvestVolume">
+        <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>
       </el-form-item>
-      <el-form-item label="人工数量" prop="laborQuantity">
-        <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量"/>
+      <el-form-item label="人工数量(人)" prop="laborQuantity">
+        <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量(人)"/>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注"/>
+      <el-form-item label="库存(/Kg)" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入库存(/Kg)"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -94,6 +94,8 @@
   <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
 
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+
+
 </template>
 <script setup lang="ts">
 import {HarvestManagementApi, HarvestManagementVO} from '@/api/agriculture/harvestmanagement'
@@ -104,6 +106,9 @@ import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {CropBaseApi} from "@/api/agriculture/cropbase";
+import {formatTime} from "@/utils";
+import {DrawerProps} from "element-plus";
+import {FarmRecordVO} from "@/api/agriculture/farmrecord";
 
 /** 采收管理 表单 */
 defineOptions({name: 'HarvestManagementForm'})

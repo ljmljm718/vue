@@ -103,21 +103,21 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="库存(袋)" prop="inventory">
+              <el-form-item label="产品数量(袋)" prop="inventory">
                 <el-input v-model="formData.inventory" placeholder="请输入库存" :disabled="show"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="24">
             <el-col :span="8">
-              <el-form-item label="规格(Kg)" prop="specifications">
+              <el-form-item label="产品规格(Kg)" prop="specifications">
                 <el-input v-model="formData.specifications" placeholder="请输入规格"
                           :disabled="show"/>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="备注" prop="remark">
-                <el-input v-model="formData.remark" placeholder="请输入备注" :disabled="show"/>
+            <el-col :span="8" v-if="show1">
+              <el-form-item label="消耗量(Kg)" prop="remark">
+                <el-input v-model="formData.remark" placeholder="请输入消耗量(Kg)" :disabled="show"/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -163,6 +163,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const show = ref(false)
+const show1 = ref(true)
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
@@ -261,6 +262,7 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
 if (route.query.id) {
   let idNumber = route.query.id;
+  show1.value = false
   VillageProductApi.getVillageProduct(idNumber).then(res => {
     formData.value = res
     // formData.value.marketingType ='productmanual'

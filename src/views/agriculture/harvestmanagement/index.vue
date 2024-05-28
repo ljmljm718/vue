@@ -185,19 +185,19 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border>
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
-      <el-table-column label="品种名称" align="center" prop="varietyName"/>
-      <el-table-column label="品种" align="center" prop="variety">
+      <el-table-column label="品种名称" align="center" prop="varietyName"  width="140"/>
+      <el-table-column label="品种" align="center" prop="variety" width="120" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.variety"/>
         </template>
       </el-table-column>
 
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
-      <el-table-column label="批次码" align="center" prop="batchCode"/>
+      <el-table-column label="批次码" align="center" prop="batchCode" width="180" />
       <el-table-column
         label="上传时间"
         align="center"
@@ -206,12 +206,12 @@
         width="180px"
       />
       <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
-      <el-table-column label="基地" align="center" prop="belongPark"/>
+      <el-table-column label="基地" align="center" prop="belongPark" width="180" />
       <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
-      <el-table-column label="地块" align="center" prop="belongPlot"/>
-      <el-table-column label="采收量(/万斤)" align="center" prop="harvestVolume"/>
-      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="地块" align="center" prop="belongPlot" width="180" />
+      <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180" />
+      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180" />
+      <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180" />
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -219,7 +219,7 @@
       <!--        :formatter="dateFormatter"-->
       <!--        width="180px"-->
       <!--      />-->
-      <el-table-column label="操作" align="center" width="180px">
+      <el-table-column label="操作" align="center" fixed="right" width="200px">
         <template #default="scope">
           <el-button
             link
@@ -227,6 +227,13 @@
             @click="openVillageProductForm('create', scope.row.id)"
           >
             加工
+          </el-button>
+          <el-button
+            link
+            type="warning"
+            @click="damn(scope.row)"
+          >
+            加工记录
           </el-button>
           <el-button
             link
@@ -260,6 +267,35 @@
   <HarvestManagementForm ref="formRef" @success="getList"/>
   <!-- 表单弹窗：添加/修改 -->
   <VillageProductForm ref="formVpRef" @success="getList"/>
+
+  <el-drawer v-model="drawer2" :direction="direction" :data="formData">
+    <template #header>
+      <h3>加工记录</h3>
+    </template>
+    <template #default>
+      <el-timeline style="max-width: 600px">
+        <el-timeline-item
+          v-for="item, index in formData"
+          :key="index"
+          :timestamp="formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') "
+          placement="top"
+        >
+          <el-card>
+            <h4>品种名称：{{item.product}}</h4>
+            <p>批次码：{{ item.batchCode }}</p>
+            <p>消耗量：{{ item.remark+" "+"Kg" }}</p>
+            <p>加工时间：{{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+    </template>
+    <template #footer>
+      <div style="flex: auto">
+        <el-button @click="cancelClick">cancel</el-button>
+      </div>
+    </template>
+  </el-drawer>
+
 </template>
 
 <script setup lang="ts">
@@ -270,10 +306,19 @@ import HarvestManagementForm from './HarvestManagementForm.vue'
 
 import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue'
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {DrawerProps} from "element-plus";
+import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
+import {formatTime} from "@/utils";
+import {
+  VillageProcessingRecordsApi,
+  VillageProcessingRecordsVO
+} from "@/api/digital/villageprocessingrecords";
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
-
+const drawer2 = ref(false)
+const direction = ref<DrawerProps['direction']>('rtl')
+const formData = ref<VillageProcessingRecordsVO[]>([])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
@@ -298,8 +343,33 @@ const queryParams = reactive({
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
 })
+const queryParam = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  recoveryNum: undefined,
+  machiningTime: [],
+  product: undefined,
+  batchCode: undefined,
+  createTime: [],
+  remark: undefined,
+})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+function cancelClick() {
+  drawer2.value = false
+}
+const damn = async (row) => {
+  queryParam.recoveryNum = row.id;
+  const data = await VillageProcessingRecordsApi.getVillageProcessingRecordsPage(queryParam)
+  data.list.forEach((item) => {
+    // item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ""
+  })
+  formData.value = data.list
+  drawer2.value = true
+}
+
+
+
 
 // 采收管理
 const formVpRef = ref()
