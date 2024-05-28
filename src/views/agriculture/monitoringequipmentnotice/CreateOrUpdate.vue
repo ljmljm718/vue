@@ -37,6 +37,7 @@
       :rules="formRules"
       label-width="100px"
       v-loading="formLoading"
+      class="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-2 p-4"
     >
      
       <el-form-item label="设备ID" prop="deviceId">
@@ -121,13 +122,14 @@
         />
       </el-form-item>
 
+      <el-form-item label="视频链接" prop="videoLink">
+        <el-input v-model="formData.videoLink" placeholder="请输入视频链接" />
+      </el-form-item>
       
       <el-form-item label="抓拍图片或视频" prop="captured">
         <UploadImg v-model="formData.captured" />
       </el-form-item>
-      <el-form-item label="视频链接" prop="videoLink">
-        <el-input v-model="formData.videoLink" placeholder="请输入视频链接" />
-      </el-form-item>
+      
 
     </el-form>
       </template>
