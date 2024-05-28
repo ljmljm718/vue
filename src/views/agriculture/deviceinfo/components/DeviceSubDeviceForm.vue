@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" append-to-body>
+  <Dialog :title="dialogTitle" v-model="dialogVisible">
     <el-form
       ref="formRef"
       :model="formData"
@@ -10,12 +10,9 @@
 <!--      <el-form-item label="子设备编号" prop="subDevicesNum">-->
 <!--        <el-input v-model="formData.subDevicesNum" placeholder="选填"/>-->
 <!--      </el-form-item>-->
-      <el-form-item label="子设备名称" prop="subDevicesName">
-        <el-input v-model="formData.subDevicesName" placeholder="请输入子设备名称"/>
-      </el-form-item>
-      <el-form-item label="所属设备" prop="devicesId">
+      <el-form-item label="所属设备" prop="remark">
         <!--        <el-input v-model="formData.devicesId" placeholder="请输入所属设备" />-->
-        <el-input v-model="formData.devicesId" placeholder="请选择设备编码" :disabled="true">
+        <el-input v-model="formData.remark" placeholder="请选择设备编码" :disabled="true">
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
               <Icon icon="ep:search"/>
@@ -24,9 +21,13 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入"  disabled/>
+      <el-form-item label="子设备名称" prop="subDevicesName">
+        <el-input v-model="formData.subDevicesName" placeholder="请输入子设备名称"/>
       </el-form-item>
+
+<!--      <el-form-item label="设备名称" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入"  disabled/>
+      </el-form-item>-->
       <el-form-item label="开关状态" prop="swithState">
         <el-select v-model="formData.swithState" placeholder="请选择开关状态">
           <el-option
@@ -52,11 +53,9 @@ import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {SubDeviceApi, SubDeviceVO} from '@/api/agriculture/subdevice'
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
-import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
-import {string} from "vue-types";
 
 /** 子设备管理 表单 */
-defineOptions({name: 'SubDeviceForm'})
+defineOptions({name: 'DeviceSubDeviceForm'})
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -64,7 +63,6 @@ const message = useMessage() // 消息弹窗
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   subDevicesNum: undefined,
@@ -89,20 +87,12 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
 
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, deviceId: string, deviceName: string) => {
   dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
+  dialogTitle.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await SubDeviceApi.getSubDevice(id)
-    } finally {
-      formLoading.value = false
-    }
-  }
+  formData.value.devicesId = deviceId
+  formData.value.remark = deviceName
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
@@ -115,13 +105,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as SubDeviceVO
-    if (formType.value === 'create') {
-      await SubDeviceApi.createSubDevice(data)
-      message.success(t('common.createSuccess'))
-    } else {
-      await SubDeviceApi.updateSubDevice(data)
-      message.success(t('common.updateSuccess'))
-    }
+    await SubDeviceApi.createSubDevice(data)
+    message.success(t('common.createSuccess'))
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')

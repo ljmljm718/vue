@@ -96,7 +96,7 @@
       <el-table-column label="产品名称" align="center" prop="product"/>
       <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
       <el-table-column label="所属基地" align="center" prop="park"/>
-<!--      <el-table-column label="所属地块id" align="center" prop="parkDetailId"/>-->
+      <!--      <el-table-column label="所属地块id" align="center" prop="parkDetailId"/>-->
       <el-table-column label="所属地块" align="center" prop="parkDetail"/>
       <el-table-column label="图片" align="center" prop="photo">
         <template #default="{ row }">
@@ -113,9 +113,9 @@
       <el-table-column label="产品年份" align="center" prop="years"/>
       <el-table-column label="库存(袋)" align="center" prop="inventory"/>
       <el-table-column label="规格(Kg)" align="center" prop="specifications"/>
-      <el-table-column label="批次号" align="center" prop="batchCode" />
-<!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
-<!--      <el-table-column label="备注" align="center" prop="remark"/>-->
+      <el-table-column label="批次号" align="center" prop="batchCode"/>
+      <!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
+      <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -125,6 +125,14 @@
       <!--      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="openForm('show', scope.row.id)"
+            v-hasPermi="['digital:village-product:update']"
+          >
+            详情
+          </el-button>
           <el-button
             link
             type="primary"
@@ -165,7 +173,7 @@ import VillageProductForm from './VillageProductForm.vue'
 
 /** 特色产品 列表 */
 defineOptions({name: 'VillageProduct'})
-
+const router = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
@@ -219,7 +227,8 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  // formRef.value.open(type, id)
+  router.push({path: '/pcg/production/villageproduct', query: {id: id, type: type}})
 }
 
 /** 删除按钮操作 */

@@ -567,6 +567,32 @@ export default defineComponent({
             })).slice(0, 8)
         }
         getWaterList()
+
+        // 中间顶部
+        const plantCenterTopCardList = ref<Array<any>>([])
+        const getPlantCenterTopCardList = async () => {
+            const res = await getEquipmentCountSum()
+            console.log("中间顶部", res);
+            plantCenterTopCardList.value = [
+                {
+                    label: '设备总数',
+                    value: res['设备总数']
+                },
+                {
+                    label: '在线设备',
+                    value: res['在线设备']
+                },
+                {
+                    label: '离线设备',
+                    value: res['离线设备']
+                },
+                {
+                    label: '报警设备',
+                    value: res['报警设备']
+                },
+            ]
+        }
+        getPlantCenterTopCardList()
         const plantTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
@@ -616,7 +642,18 @@ export default defineComponent({
                             />
                         </div>
                         <div class="grow flex flex-col space-y-3">
-                            <div class="grow inner-border"></div>
+                            <div class="grow inner-border smart-plant-center relative">
+                                <div class="absolute left-0 top-2 w-full flex justify-center space-x-2">
+                                    {
+                                        plantCenterTopCardList.value.map(item => (
+                                            <div class="inner-border px-4 py-2 flex flex-col items-center" style="background:#001b4290;">
+                                                <div>{item.label}</div>
+                                                <div class="art-font">{item.value}</div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
                             <BigscreenCard
                                 class="h-[300px]"
                                 v-slots={{
@@ -1241,6 +1278,11 @@ export default defineComponent({
 
 #preWarnLayoutChart, #bugCountChart {
     height: 400px;
+}
+
+.smart-plant-center {
+    background-image: url(./assets/smartCenter.png);
+    background-size: contain;
 }
 
 @for $i from 1 through 18 {
