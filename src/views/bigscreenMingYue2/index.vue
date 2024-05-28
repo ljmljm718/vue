@@ -13,8 +13,9 @@
             <div class="value-card">风险预警</div>
           </div>
         </div>
+        <BackOrHome/> 
       </div>
-      <div class="linear-font-title header-title-wrapper">稻鱼鸭产业可视化数字驾驶舱</div>
+      <div class="linear-font-title header-title-wrapper"> 稻鱼鸭产业可视化数字驾驶舱</div>
       <div class="header-right-part-wrapper">
         <BigScreenTime />
       </div>
@@ -31,6 +32,12 @@
         </div>
         <div class='foot-right'>
           <div class='box-title'>指挥调度</div>
+          <div class="w-full h-80px color-[#c1c1c1] flex items-center justify-evenly">
+            <div v-for="item,index in ListAll" :key='index'>
+              <div :class="['right-icon','top-'+(index+1)]"></div>
+              <div class="mt-5px">{{item.defineName}}</div>
+            </div>
+          </div>
           <div class="table-wrapper2">
             <div class="table-header-row2">
               <div
@@ -80,25 +87,26 @@
                 v-for="(column, inde) in leftArr.tableColumns1"
                 :key="inde"
                 :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-                >{{ item[column.key] }}</div
-              >
+                >{{ item[column.key] }}</div>
             </div>
           </div>
         </div>
         <div class="top-right ">
           <div class="box-title">报警信息处理情况</div>
           <div class="top-right-ietm p-[15px] flex">
-            <div class="w-20% mr-[20px]">
-              <div class="w-full flex justify-around">报警数量 <span>32</span> </div>
-              <div  class="w-full flex justify-around mt-25px mb-25px">处理数量 <span>21</span> </div>
-              <div  class="w-full flex justify-around">未处理 <span>11</span> </div>
+            <div class="w-20% h-full mr-[20px] flex" style="flex-direction: column;" >
+              <div v-for='item,index in warnIngList' :key='index' class='mb-20px'>
+              <div class="w-100% flex justify-around" v-show="item.warnStatus==0">未处理 <span>{{item.num}}</span> </div>
+              <div class="w-100% flex justify-around" v-show="item.warnStatus==1">已处理 <span>{{item.num}}</span> </div>
+              <div class="w-100% flex justify-around" v-show="item.warnStatus==2">已忽略 <span>{{item.num}}</span> </div>
+            </div>
             </div>
             <div class="w-79% h-full p-[15px]" style="box-sizing: border-box;">
-              <div v-for="item in 5" :key='item' class="flex mb-1.5rem justify-evenly items-center top-right-item">
-                <div >{{item}}号基地土壤湿度报警</div>
-                <div>2024/5/23 16:32:00</div>
-                <div class="mr-20px ml-20px">忽略</div>
-                <div>去处理</div>
+              <div v-for="item,index in pageList" :key='index' class="flex mb-1.5rem justify-evenly items-center top-right-item">
+                <div class="w-42%" style="font-size:14px;">{{item.warnTitle}},{{item.warnInfo}}</div>
+                <div class="w-35%">{{ new Date().toLocaleString(item.warnTime)  }}</div>
+                <div class="w-10% mr-20px ml-20px">忽略</div>
+                <div class="w-13%">去处理</div>
               </div>
             </div>
           </div>
@@ -111,6 +119,16 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import { ref, reactive, onMounted } from 'vue'
+import {
+  fulingWarningDistr,
+  getPestLevelChart,
+  fulingWarningInfo,
+  listAll,
+  warningNum,
+  page,
+  pageW
+} from '@/api/bigscreenMingYue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
   initChartStatic,
   generateBaseOptions,
@@ -127,7 +145,7 @@ let leftArr = reactive<Object>({
       width: '35%'
     },
     {
-      key: 'warnAdress',
+      key: 'warnLocation',
       label: '预警地点',
       width: '10%'
     },
@@ -147,38 +165,18 @@ let leftArr = reactive<Object>({
       width: '10%'
     }
   ],
-  tableData1: [
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-  ]
+  tableData1: []
 })
-const initChart1= ()=> {
+const initChart1= async ()=> {
+  let res= await fulingWarningDistr()
+  let data=[]
+  res.forEach(item=>{
+    data.push({
+      name:item.warnType,
+      value:item.warnRatio
+    })
+  })
+  console.log(res,'预警分布')
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -188,20 +186,14 @@ const initChart1= ()=> {
             left: "right",
             orient:'vertical',
           },
-          color: ["#5b9bd5", "#ed7d31", "#a5a5a5", '#ffc000','#4472c4'],
+          color: ["#a5a5a5", "#ed7d31", "#5b9bd5", ],
           series: [
             {
               nam: "预警分布",
               type: "pie",
               radius: ["30%", "50%"],
               center: "center",
-              data: [
-                {value:12,name:'土壤'},
-                {value:6,name:'病害'},
-                {value:9,name:'虫害'},
-                {value:11,name:'草害'},
-                {value:24,name:'环境'},
-              ],
+              data,
               label: {
                 // formatter: "{c|{c}},{d|{d}%}",
                 formatter: "{c},{d}%",
@@ -280,12 +272,14 @@ let leftArr2 = reactive<Object>({
     },
   ]
 })
-const initChart2=  ()=>{
+const initChart2= async ()=>{
+  let res=await getPestLevelChart()
+  console.log(res,'虫害数量')
       initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data: [ '12','13','14','15','16','17','18','19','20','21','22','23'],
+            data:res.abscissaList,
             axisLine: {
               show: true,
               lineStyle: {
@@ -326,32 +320,33 @@ const initChart2=  ()=>{
           },
           {
             type:'value',
-            min:'0',
-            max:'100'
+            min:0,
+            interval:200,
+            max:Math.floor(Math.max(...res.sumList))
           }
         ],
           series: [
             {
               name: '金龟子',
-              data: [20,25,30,20,35,35,18,15,20,25,20,30],
+              data:res.jinList,
               type: "bar",
               smooth: false,
             },
             {
               name: '蟋蟀',
-              data: [30,28,20,25,28,25,20,23,28,25,22,20,25,25],
+              data:res.xiList,
               type: "bar",
               smooth: false,
             },
             {
               name: '蛾',
-              data: [20,25,30,20,35,35,18,15,20,25,20,30],
+              data: res.eList,
               type: "bar",
               smooth: false,
             },
             {
               name: '总数',
-              data: [60,62,65,60,80,70,80,60,63,80,70,68],
+              data: res.sumList,
               type: "line",
               smooth: true,
               symbol: "none",
@@ -372,6 +367,48 @@ onMounted(()=>{
   initChart1()
   initChart2()
 })
+const getfulingWarningInfo=()=>{
+  fulingWarningInfo().then(res=>{
+    res.forEach(item=>{
+      if(item.warnStatus=='0') item.warnStatus='未处理'
+      else if(item.warnStatus=='1') item.warnStatus='已处理'
+       item.warnTime= new Date().toLocaleString(item.warnTime)
+    })
+    console.log(res,'预警信息')
+    leftArr.tableData1=res
+  })
+}
+getfulingWarningInfo()
+let ListAll=ref([])
+const getListAll=()=>{
+  listAll().then(res=>{
+    console.log(res,'数据')
+    ListAll.value=res
+  })
+}
+getListAll()  
+let warnIngList=ref([])
+const getwarningNum=()=>{
+  warningNum().then(res=>{
+    console.log(res,'预警统计')
+    warnIngList.value=res
+  })
+}
+getwarningNum()
+let pageList=ref([])
+const getPage=()=>{
+  page().then(res=>{
+    console.log(res,'未处理信息')
+    pageList.value=res.list
+  })
+}
+getPage()
+const getpageW=()=>{
+  pageW().then(res=>{
+    console.log(res,'农事计划')
+  })
+}
+getpageW()
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -475,9 +512,14 @@ onMounted(()=>{
       height: calc(100% - 2rem)
     }
     .foot-right{
+      .right-icon{
+        width: 2rem;
+        height: 2rem;
+        background-size: 100% 100%;
+      }
       .table-wrapper2 {
         width: 100%;
-        height: calc(100% - 2.5rem);
+        height: calc(100% - 6rem);
         position: relative;
         overflow: auto;
         font-size: 0.9rem;
@@ -564,6 +606,11 @@ onMounted(()=>{
 @for $i from 1 through 3 {
   .scan-#{$i} {
     background-image: url(./assets/scan#{$i}.png);
+  }
+}
+@for $i from 1 through 6 {
+  .top-#{$i} {
+    background-image: url(./assets/top-Item#{$i}.png);
   }
 }
 </style>

@@ -13,6 +13,7 @@
             <div class="value-card"  @click="router.push('/bigscreenMYFX')">风险预警</div>
           </div>
         </div>
+        <BackOrHome/> 
       </div>
       <div class="linear-font-title header-title-wrapper">稻鱼鸭产业可视化数字驾驶舱</div>
       <div class="header-right-part-wrapper">
@@ -26,21 +27,23 @@
           <div class="box-item flex justify-evenly" style=" flex-direction: column;">
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
               <div>示范基地</div>
-              <div>300亩</div>
+              <div>{{selectCountObj?.parkSum}}亩</div>
               <div>鸭舍</div>
-              <div>15所</div>
+              <div>{{DuckSumObj?.duckCoopCount}}所</div>
             </div>
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
               <div>基地数量</div>
-              <div>4</div>
+              <div>{{selectCountObj?.parkCount}}</div>
               <div>稻鸭</div>
-              <div>800只</div>
+              <div>{{DuckSumObj?.riceDuckCount}}只</div>
             </div>
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
               <div>养殖农户</div>
-              <div>15户</div>
+              <div>{{selectCountObj.farmerCount}}户</div>
+              <div>池塘</div>
+              <div>{{frySumObj.pondCount}}</div>
               <div>稻鱼</div>
-              <div>20000尾</div>
+              <div>{{frySumObj.fryCount}}尾</div>
             </div>
           </div>
         </div>
@@ -59,77 +62,73 @@
       </div>
       <div class="content-main-item middle-main-wrapper">
                 <div class="main-top">
-                  <div class="top-warper">
-                    <div style="text-align:center;">预计产量</div>
-                    <div class="flex mt-10px color-[#c1c1c1] justify-evenly">
-                      <div class="flex"><div class="mr-5px">稻谷</div> <div>3200万斤</div></div>
-                      <div class="flex"><div>稻鸭</div> <div>1000斤</div></div>
-                      <div class="flex"><div>稻鱼</div> <div>1300斤</div></div>
-                    </div>
-                  </div>
-                  <div class="top-warper">
-                    <div class="flex justify-evenly items-center"><div>监控设备</div> <div>32</div></div>
-                    <div class="flex mt-15px justify-evenly color-[#c1c1c1]">
-                      <div class="flex "><div class="mr-8px">在线</div> <div>21</div></div>
-                      <div class="flex "><div class="mr-8px">离线</div> <div>6</div></div>
-                      <div class="flex "><div>故障</div> <div class="mr-8px"> 2</div></div>
-                    </div>
-                  </div>
-                  <div class="top-warper">
-                    <div class="flex justify-evenly items-center"><div>传感设备</div> <div>12</div></div>
-                    <div class="flex mt-15px justify-evenly color-[#c1c1c1]">
-                      <div class="flex "><div class="mr-8px">在线</div> <div>10</div></div>
-                      <div class="flex "><div class="mr-8px">离线</div> <div>2</div></div>
-                      <div class="flex "><div class="mr-8px">故障</div> <div class="mr-8px"> 0</div></div>
-                    </div>
+                  <div class="top-warper color-black" v-for="item,index in countSum" :key="index">
+                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='设备总数'"><div>设备总数</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='在线设备'"><div>在线数量</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='离线设备'"><div>离线数量</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='报警设备'"><div>故障数量</div> <div>{{item.value}}</div></div>
                   </div>
                 </div>
                 <div class="middle-main-item">
-                  
-                   
-                      
-                      
                 </div>
-                <div class="middle-main-footer box-item">
-                    <div style="width: 49%;height:100%;">
-                      
+                <div class="middle-main-footer ">
+                  <div class="box-title">特色产品</div>
+                  <el-carousel indicator-position="outside" class="box-item w-full h-full">
+                    <el-carousel-item v-for="item,index in mainFootList" :key="index" class="flex w-full p-15px" style="box-sizing:border-box;">
+                    <div class="flex ">
+                      <div class='w-48% h-100% flex justify-evenly'>
+                        <img :src="item.photo" class="w-65% h-150px" alt=""/>
+                        <div class="w-33% h-70% flex justify-evenly" style="flex-direction:column">
+                          <div>产品名称：{{item.parkDetail}}</div>
+                          <div>产品批次：{{item.specifications}}</div>
+                          <div>产品年份: {{item.years}}</div>
+                        </div>
+                      </div>
+                      <div class='w-48% h-100% flex justify-evenly'>
+                        <img :src="item.photo" class="w-65% h-150px" alt=""/>
+                        <div class="w-33% h-70% flex justify-evenly" style="flex-direction:column">
+                          <div>产品名称：{{item.parkDetail}}</div>
+                          <div>产品批次：{{item.specifications}}</div>
+                          <div>产品年份: {{item.years}}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="middli-main-right" style="width: 49%;height:100%;">
                       
-                    </div>
+                    </el-carousel-item>
+                  </el-carousel>
                 </div>
             </div>
       <div class="right">
         <div>
           <div class="box-title">物联网设备</div>
           <div class="box-item">
-            <div class="w-full flex justify-evenly items-center color-[#fff]"><div>总数</div><div class="color-[#4584c0]">104<span>台</span></div></div>
+            <div class="w-full flex justify-evenly items-center color-[#fff]"><div>总数</div><div class="color-[#4584c0]">{{countTotal}}<span>台</span></div></div>
             <div class="grid gap-10px w-full color-[#c1c1c1]" style="height: calc(100% - 20px); grid-template-columns: 50% calc(50% - 10px); grid-template-rows: 43% calc(57% - 30px);">
               <div>
-                <div class="flex justify-between mt-10px"><div>生长监控</div> <div class="color-[#4584c0]">65</div></div>
+                <div class="flex justify-between mt-10px"><div>生长监控</div> <div class="color-[#4584c0]">{{CountSumOrderByType.growthMonitoring.totality}}</div></div>
                 <div >
-                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线60</div> <div>离线5</div></div>
+                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线 {{CountSumOrderByType.growthMonitoring.online}}</div> <div>离线 {{CountSumOrderByType.growthMonitoring.offline}}</div></div>
                   <div class="mt-10px w-full h-15px bg-[#c1c1c1]" style="border-radius: 10px;border: nono"><div class="w-80% h-full bg-[#4584c0]" style="border-radius: 10px;border: nono"></div></div>
                 </div>
               </div>
               <div>
-                <div class="flex justify-between mt-10px"><div>土壤墒情</div> <div class="color-[#4584c0]">8</div></div>
+                <div class="flex justify-between mt-10px"><div>土壤墒情</div> <div class="color-[#4584c0]">{{CountSumOrderByType.soil.totality}}</div></div>
                 <div >
-                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线7</div> <div>离线1</div></div>
+                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线 {{CountSumOrderByType.soil.online}}</div> <div>离线 {{CountSumOrderByType.soil.offline}}</div></div>
                   <div class="mt-10px w-full h-15px bg-[#c1c1c1]" style="border-radius: 10px;border: nono"><div class="w-87% h-full bg-[#4584c0]" style="border-radius: 10px;border: nono"></div></div>
                 </div>
               </div>
               <div>
-                <div class="flex justify-between mt-10px"><div>气象站</div> <div class="color-[#4584c0]">4</div></div>
+                <div class="flex justify-between mt-10px"><div>气象站</div> <div class="color-[#4584c0]">{{CountSumOrderByType.atmosphere.totality}}</div></div>
                 <div >
-                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线4</div> <div>离线0</div></div>
+                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线 {{CountSumOrderByType.atmosphere.online}}</div> <div>离线 {{CountSumOrderByType.atmosphere.offline}}</div></div>
                   <div class="mt-10px w-full h-15px bg-[#c1c1c1]" style="border-radius: 10px;border: nono"><div class="w-100% h-full bg-[#4584c0]" style="border-radius: 10px;border: nono"></div></div>
                 </div>
               </div>
               <div>
-                <div class="flex justify-between mt-10px"><div>水质监测</div> <div class="color-[#4584c0]"></div></div>
+                <div class="flex justify-between mt-10px"><div>水质监测</div> <div class="color-[#4584c0]">{{CountSumOrderByType.waterQuality.totality}}</div></div>
                 <div >
-                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线1</div> <div>离线2</div></div>
+                  <div class="flex justify-around mt-10px" style="font-size: 14px;"><div>在线 {{CountSumOrderByType.waterQuality.online}}</div> <div>离线 {{CountSumOrderByType.waterQuality.offline}}</div></div>
                   <div class="mt-10px w-full h-15px bg-[#c1c1c1]" style="border-radius: 10px;border: nono"><div class="w-33% h-full bg-[#4584c0]" style="border-radius: 10px;border: nono"></div></div>
                 </div>
               </div>
@@ -138,37 +137,21 @@
           </div>
         </div>
         <div>
-          <div class="box-title">实时监测</div>
-          <div class="box-item grid gap-10px" style="grid-template-rows:33% 33% calc(34% - 20px);overflow-y: auto;">
-            <div class="right2-warper w-full p-10px">
-              <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">气象监测</div>
-              <div style="height: calc(100% - 21px);overflow: auto;color: #c1c1c1;margin-top: 15px;display: flex;flex-wrap: wrap;justify-content:space-between;">
-                <div class="flex items-center justify-evenly warper-item"><div>土壤温度</div> <div>21℃</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>土壤湿度</div> <div>67%</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>降雨量</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>光照强度</div> <div>560Lux</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>风向风速</div> <div>南风五级</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>co2浓度</div> <div>23℃</div> </div>
-              </div>
+          <div class="box-title relative">实时监测
+            <div class="absolute top-0 right-5px">
+              <select name="" @change="baseChange" id="" style="background-color: transparent !important; color:#fff;" >
+                <option :value="item.id" v-for="item,index in baseList" :key="index">{{item.name}}</option>
+              </select>
+              <select name="" id="" @change="plotChange" style="background-color: transparent !important; color:#fff;margin-left: 8px;margin-right: 8px;" >
+                <option :value="item.id" v-for="item,index in plotList" :key="index">{{item.name}}</option>
+              </select>
             </div>
-            <div class="right2-warper w-full p-10px">
-              <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">土壤墒情</div>
-              <div style="height: calc(100% - 21px);overflow: auto;color: #c1c1c1;margin-top: 15px;display: flex;flex-wrap: wrap;justify-content:space-between;">
-                <div class="flex items-center justify-evenly warper-item"><div>土壤温度</div> <div>21℃</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>土壤温度</div> <div>75%</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>氮</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>磷</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>钾</div> <div>0mm</div> </div>
-              </div>
-            </div>
-            <div class="right2-warper w-full p-10px">
-              <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">水质监测</div>
-              <div style="height: calc(100% - 21px);overflow: auto;color: #c1c1c1;margin-top: 15px;display: flex;flex-wrap: wrap;justify-content:space-between;">
-                <div class="flex items-center justify-evenly warper-item"><div>水PH</div> <div>8.2</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>氨氮</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>溶解氧</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>亚硝酸盐</div> <div>0mm</div> </div>
-                <div class="flex items-center justify-evenly warper-item"><div>余氯</div> <div>0mm</div> </div>
+          </div>
+          <div class="box-item " style="overflow-y: auto;">
+            <div class="right2-warper w-full h-30% mb-10px  p-10px" v-for="item,index in homePageList" :key="index">
+              <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">{{item.name}}</div>
+              <div class="right2-item flex " style="height: calc(100% - 40px);font-size:14px; color: #c1c1c1;margin-top: 15px;">
+                <div v-for="itm,inde in item.list" :key="inde" class="warper-item flex items-center justify-evenly"><div>{{itm.monitoringType}}</div> <div >{{itm.dataValue}}<span style="font-size:13px;">{{itm.yyUnit}}</span> </div> </div>
               </div>
             </div>
             
@@ -186,7 +169,26 @@ import {
   generateBaseOptions,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
+
+import {
+  getPondCountFrySum,
+  getLineChar,
+  getCountRiceDuckSum,
+  selectCount,
+  selectHarvest,
+  getEquipmentCountSum,
+  getEquipmentCountSumOrderByType,
+  maiFootPage,
+  basePage,
+  plotPage,
+  environmentalDataHomePageB,
+  environmentalDataHomePageC,
+  environmentalDataHomePageA,
+  waterQualityData
+} from '@/api/bigscreenMingYue'
 import { useRouter } from 'vue-router'
+import { constant } from 'lodash'
 let router = useRouter()
 
 let leftArr = reactive<Object>({
@@ -248,12 +250,14 @@ let leftArr = reactive<Object>({
     },
   ]
 })
-const initChart1 =  () => {
+const initChart1 = async () => {
+  let res=await getLineChar({cropCode:'1787727824907661312'})
+  console.log(res,'生长趋势')
   initChartStatic(
     'chart1',
     generateBaseOptions({
       xAxis: {
-        data:[1,2,3,4,5,6,7,8,9,10,11,12,],
+        data:res.xValue,
         axisLine: {
           show: true,
           lineStyle: {
@@ -269,6 +273,7 @@ const initChart1 =  () => {
       },
       color: ['#ffa773', '#36e1d9'],
       yAxis: {
+        name:res.measureUnit[0],
         type: 'value',
         axisLine: {
           show: true,
@@ -294,35 +299,10 @@ const initChart1 =  () => {
       series: [
         {
           name: '稻米',
-          data: [2,3,4,1,5,7,2,8,10,8,11,8],
+          data: res.yValue,
           type: 'line',
           smooth: true,
           symbol:'none'
-        },
-        {
-          name: '鱼',
-          data: [2,3,1,4,5,1,3,2,5,1,2,3,],
-          type: 'line',
-          smooth: true,
-          symbol:'none'
-        },
-        {
-          name: '鸭',
-          data: [3,1,2,3,1,2,3,1,3,4,5,2],
-          type: 'line',
-          smooth: true,
-          symbol:'none'
-          // label: {
-          //   show: true, //开启显示
-          //   position: 'top', //在上方显示
-          //   textStyle: {
-          //     //数值样式
-          //     color: '#eee',
-          //     fontSize: 10
-          //   }
-          // },
-          
-          // areaStyle: {normal: {}},
         },
       ],
       grid: {
@@ -334,12 +314,32 @@ const initChart1 =  () => {
     })
   )
 }
-const initChart2=  ()=>{
+const initChart2= async ()=>{
+  let res=await selectHarvest()
+  console.log(res,'分析')
+  let duck=[]
+  let fish=[]
+  let rice=[]
+  let time=Array.from(new Set(res.map(item=>item.time))).sort((a,b)=>a-b)
+  res.forEach(item=>{
+    if(item.variety=='duck') duck.push(item)
+    else if(item.variety=='fish') fish.push(item)
+    else if(item.variety=='rice') rice.push(item)
+  })
+  console.log(duck,fish,rice,'产量')
+  function fn(val){
+    console.log(val,'val')
+    val.forEach((item,index)=>{
+      
+      console.log(time.indexOf(item.time),'sadsd')
+    })
+  }
+  fn(duck)
       initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data: [ '2024','2023','2022'],
+            data:time,
             axisLine: {
               show: true,
               lineStyle: {
@@ -397,7 +397,7 @@ const initChart2=  ()=>{
             },
             {
               name: '稻鸭',
-              data: [1200,1320,1050],
+              data: duck.map(item=>item.harvest),
               type: "bar",
               smooth: false,
               label: {
@@ -440,6 +440,135 @@ onMounted(()=>{
   initChart1()
   initChart2()
 })
+let frySumObj=ref({})
+let DuckSumObj=ref({})
+let selectCountObj=ref({})
+const getGetPondCountFrySum=()=>{
+  getPondCountFrySum().then(res=>{
+    console.log(res,'基础设施')
+    frySumObj.value=res
+  })
+  getCountRiceDuckSum().then(res=>{
+    console.log(res,'基础设施2')
+    DuckSumObj.value=res
+  })
+  selectCount().then(res=>{
+    console.log(res,'jichusheshi3')
+    selectCountObj.value=res
+  })
+} 
+getGetPondCountFrySum()
+let countSum=ref([])
+const getGetEquipmentCountSum=()=>{
+  getEquipmentCountSum().then(res=>{
+    console.log(res,'中间顶部')
+    countSum.value=Object.keys(res).map(item=>{
+      return { 
+        name:item,
+        value:res[item]
+      }
+    })
+    countSum.value=countSum.value.filter(item=>{
+      if(item.name=='设备总数'||item.name=='在线设备'||item.name=='离线设备'|| item.name=='报警设备') return item
+    })
+    console.log(countSum.value,'shuju')
+  })
+}
+getGetEquipmentCountSum()
+let CountSumOrderByType=ref({})
+let countTotal=ref('')
+const getGetEquipmentCountSumOrderByType=()=>{
+  getEquipmentCountSumOrderByType().then(res=>{
+    console.log(res,'物联网设备')
+    CountSumOrderByType.value=res
+    countTotal.value+=(res.atmosphere.totality+res.growthMonitoring.totality+res.soil.totality+res.waterQuality.totality)
+  })
+}
+getGetEquipmentCountSumOrderByType()
+let mainFootList=ref([])
+const getMaiFootPage=()=>{
+  maiFootPage().then(res=>{
+    console.log(res,'中间下')
+    mainFootList.value=res.list
+  })
+}
+getMaiFootPage()
+let baseList=ref([])
+let plotList=ref([])
+let baseParkId=ref('')
+let plotParkId=ref('')
+const getBasePage=()=>{
+  basePage({pageReqVO:{}}).then(res=>{
+    console.log(res,'获取基地')
+    baseList.value=res.list
+    baseParkId.value=res.list[0].id
+    getPlotPage(res.list[0].id)
+
+  })
+}
+getBasePage()
+const getPlotPage=(id)=>{
+  plotPage({pageReqVO:{},parkId:id}).then(res=>{
+    console.log(res,'获取地块')
+    plotList.value=res.list
+    plotParkId.value=res.list[0].id
+    getenvironmentalDataHomePageB(baseParkId.value,plotParkId.value)
+  })
+}
+//实时数据
+let homePageList=ref([])
+const getenvironmentalDataHomePageB=(belongPark,belongPlot)=>{
+  homePageList.value=[]
+  //虫情
+  environmentalDataHomePageB({belongPark,belongPlot}).then(res=>{
+    console.log(res,'shishishuju')
+    if(res.length){
+    homePageList.value.push({
+      name:'虫情监测',
+      list:res
+    })
+  }
+  })
+  //土壤
+  environmentalDataHomePageC({belongPark,belongPlot}).then(res=>{
+    console.log(res,'shishishuju')
+    if(res.length){
+    homePageList.value.push({
+      name:'土壤环境',
+      list:res
+    })
+  }
+  })
+  //气象
+  environmentalDataHomePageA({belongPark,belongPlot}).then(res=>{
+    console.log(res,'shishishuju')
+    if(res.length){
+    homePageList.value.push({
+      name:'气象监测',
+      list:res
+    })
+  }
+  })
+  //水质
+  waterQualityData({belongPark,belongPlot}).then(res=>{
+    console.log(res,'shishishuju')
+    if(res.length){
+    homePageList.value.push({
+      name:'水质监测',
+      list:res
+    })
+  }
+  })
+  console.log(homePageList.value,'实时数据')
+}
+const baseChange=(e)=>{
+ console.log(e.target.value,'基地id')
+ baseParkId.value=e.target.value
+}
+const plotChange=(e)=>{
+  plotParkId.value=e.target.value
+  getenvironmentalDataHomePageB(baseParkId.value,plotParkId.value)
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -451,6 +580,11 @@ onMounted(()=>{
   .header-main-wrapper {
     background-size: 100% 100%;
     background-image: url('./assets/headerBg.png');
+  }
+}
+select{
+  option{
+    color: #000;
   }
 }
 .box-title {
@@ -471,9 +605,9 @@ onMounted(()=>{
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 25% calc(50% - 30px) 25%;
-  // justify-content: spa;
   gap: 15px;
   .left{
+    z-index: 9999;
     display: grid;
     grid-auto-columns: 100%;
     grid-template-rows: 30% 30% calc(40% - 30px);
@@ -492,6 +626,7 @@ onMounted(()=>{
     }
   }
   .right{
+    z-index: 9999;
     display: grid;
     grid-auto-columns: 100%;
     grid-template-rows: 30% calc(70% - 15px);
@@ -510,6 +645,14 @@ onMounted(()=>{
         .warper-top{
           background-size: 100% 100%;
           background-image: url(./assets/warperTop.png);
+        }
+        .right2-item{
+          display: flex;
+          flex-wrap: wrap;
+          overflow-y:scrolll;
+        }
+        .right2-item::-webkit-scrollbar{
+          width: 0;
         }
         .warper-item{
           width: 47%;
@@ -535,10 +678,10 @@ onMounted(()=>{
       width: 95%;
       height: 100px;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-evenly;
       align-items: center;
       .top-warper{
-        width: 32%;
+        width: 23%;
         padding: 15px;
         box-sizing: border-box;
         height: 100%;
@@ -555,156 +698,20 @@ onMounted(()=>{
       top: calc(50% - 450px);
       background-size: 100% 100%;
       position: relative;
-      .sxt1{
-        position: absolute;
-        cursor: pointer;
-        width: 3rem;
-        height: 3rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/sxt1.png');
-        position: relative;
-        .message{
-          position: absolute;
-          padding: 0 15px 30px !important;
-          box-sizing: border-box;
-          width: 250px;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url(./assets/meassage.png);
-        }
-      }
-      .sxt2{
-        position: absolute;
-        cursor: pointer;
-        width: 3rem;
-        height: 3rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/sxt2.png');
-        position: relative;
-        .message{
-          position: absolute;
-          padding: 0 15px 30px !important;
-          box-sizing: border-box;
-          width: 250px;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url(./assets/meassage.png);
-        }
-      }
-      .sxt3{
-        position: absolute;
-        cursor: pointer;
-        width: 3rem;
-        height: 3rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/sxt3.png');
-        position: relative;
-        .message{
-          position: absolute;
-          padding: 0 15px 30px !important;
-          box-sizing: border-box;
-          width: 250px;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url(./assets/meassage.png);
-          .middle-btn{
-            width: 100px;
-            height: 50px;
-            line-height: 50px;
-            margin: auto;
-            text-align: center;
-            background-size: 100% 100%;
-            background-image: url(./assets/middle-btn.png);
-          }
-        }
-      }
-      .sxt4{
-        position: absolute;
-        cursor: pointer;
-        width: 3rem;
-        height: 3rem;
-        background-size: 100% 100%;
-        background-image: url('./assets/sxt4.png');
-        position: relative;
-        .message{
-          position: absolute;
-          padding: 0 15px 30px !important;
-          box-sizing: border-box;
-          width: 250px;
-          z-index: 9999;
-          background-size: 100% 100%;
-          background-image:url(./assets/meassage.png);
-        }
-      }
+      background-image: url(./assets/mainBg.png);
     }
     .middle-main-footer{
         position: absolute;
         bottom: 2%;
         width: 97%;
         height: 24%;
-        display: flex;
-        justify-content: space-between;
-        .middli-main-left{
+        .box-item{
           width: 100%;
-          display: flex;
-          align-items: center;
-          flex-direction: column;
+          padding: 10px 15px;
+          box-sizing: border-box;
           height: calc(100% - 2rem);
           background-size: 100% 100%;
-          background-image: url(./assets/main-footer-item.png);
-          .left-top{
-            width: 80%;
-            height: 45%;
-            display: flex;
-            justify-content:space-between;
-            margin-top:10px;
-            background-size: 100% 100%;
-            background-image: url(./assets/middle-main-warper.png);
-            .main-left-pie{
-              width:25%;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background-size: 100% 100%;
-              background-image: url(./assets/main-left-pie.png);
-              .pie{
-                width: 100%;
-                height:100%;
-              }
-            }
-            .middle-main-right{
-              width:70%;
-                border-radius:50%;
-              height:100%;
-            }
-          }
-        }
-        .middli-main-right{
-          .main-right-xian{
-            width: 58%;
-            margin-left: 10px;
-            height: 8px;
-            background-size: 100% 100%;
-            background-image: url(./assets/main-right-xian.png);
-          }
-          #chart2{
-            width: 100%;
-            height:calc(100% - 3rem);
-          }
-        }
-    }
-    .middle-sxt{
-        position: absolute;
-        left: 5%;
-        bottom: 28%;
-        display: flex;
-        width: 40%;
-        align-items: center;
-        justify-content: space-between;
-        .middle-icon{
-            width: 2rem;
-            height: 2rem;
-            background-size: 100% 100%;
+          background-image: url(./assets/cardBg.png);
         }
     }
   }

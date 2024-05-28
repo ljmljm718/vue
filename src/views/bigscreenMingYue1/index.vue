@@ -13,6 +13,8 @@
                 <div class="value-card"  @click="router.push('/bigscreenMYFX')">风险预警</div>
               </div>
         </div>
+        <BackOrHome/> 
+
       </div>
       <div class="linear-font-title header-title-wrapper">稻鱼鸭产业可视化数字驾驶舱</div>
       <div class="header-right-part-wrapper">
@@ -33,7 +35,8 @@
          <div class='main inner-border' >
           <div class="color-[#c1c1c1] w-32% h-[15rem] p-[10px] inner-border mb-15px mr-15px" style=" box-sizing: border-box; display: inline-block;" v-for="item,index in videoList" :Key='index'>
             <div class="mb-10px">{{ item?.deviceName }}</div>
-            <video
+            <video 
+              v-if="item?.monitoringEquipmentDataDO?.videoLink"
               :src="item?.monitoringEquipmentDataDO?.videoLink"
               controls
               autoplay
@@ -41,8 +44,11 @@
               width="100%" 
               height="150px"
             ></video>
+            <img style="width: 100%;height: 150px" v-if="item?.monitoringEquipmentDataDO?.videoLink==null" :src="item.monitoringEquipmentDataDO?.capturedImage" alt=""/>
+            <img style="width: 100%;height: 150px" v-if="item?.deviceStatus=='fault'" :src="item.monitoringEquipmentDataDO?.capturedImage" alt=""/>
+            <img style="width: 100%;height: 150px" v-if="item?.deviceStatus=='fault'" :src="item.monitoringEquipmentDataDO?.capturedImage" alt=""/>
             <div class="w-full flex justify-between">
-              <div>{{ item?.location }}</div>
+              <div style="cursor: pointer;" @click="router.push('/internetMonitor/deviceData/monitoring-equipment-data')">{{ item?.location }}</div>
               <div v-if="item?.deviceStatus=='online'" class="color-[green]">在线</div>
               <div v-if="item?.deviceStatus=='offline'" class="color-[#c1c1c1]">离线</div>
               <div v-if="item?.deviceStatus=='fault'" class="color-[red]">故障</div>
@@ -72,7 +78,7 @@
             </el-select>
           </div>
           <div class="mt-20px right-list">
-            <div v-for="item,index in pageList" :key="index" class='flex items-center justify-around color-[#c1c1c1] p-[15px] right-item'>
+            <div @click="router.push('/internetMonitor/deviceData/monitoring-equipment-notice')" style="cursor: pointer;" v-for="item,index in pageList" :key="index" class='flex items-center justify-around color-[#c1c1c1] p-[15px] right-item'>
               <div class="w-35%">{{item.noticeEvent}}</div>
               <div class="w-40%">{{new Date().toLocaleString(item.createTime)}}</div>
               <img :src="item.captured" class="w-25% h-100%" alt=""/>
@@ -85,6 +91,8 @@
 <script setup lang="ts">
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import {ref,reactive,onMounted} from 'vue'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
+
 import {
   initChartStatic,
   generateBaseOptions,
@@ -120,6 +128,17 @@ let dataVal=ref('')
 let plotId=ref('')
 let baseId=ref('')
 let pageList=ref([])
+const getGetParkTree=()=>{
+  getParkTree().then(res=>{
+    console.log(res,'左侧基地树')
+    treeList.value=res
+    baseId.value=res[0].id
+    plotId.value=res[0].child[0].id
+    getEquipmentPhotographAndVideo()
+    getGetPage()
+  })
+}
+getGetParkTree()
 const getGetPage=(monitoringPlotId='',monitoringBaseId='',noticeEvent='',recordTime=[])=>{
   console.log(recordTime,'recordTime')
   getPage({monitoringPlotId,monitoringBaseId,noticeEvent,pageNo:'1',pageSize:'10'}).then(res=>{
@@ -144,17 +163,7 @@ const defaultProps = {
   children: 'child',
   label: 'name',
 }
-const getGetParkTree=()=>{
-  getParkTree().then(res=>{
-    console.log(res,'左侧基地树')
-    treeList.value=res
-    baseId.value=res[0].id
-    plotId.value=res[0].child[0].id
-    getEquipmentPhotographAndVideo(res[0].id,res[0].child[0].id)
-    getGetPage()
-  })
-}
-getGetParkTree()
+
 
 const handleNodeClick=(data,node,val,obj)=>{
   console.log(node.parent,'aa')
@@ -163,7 +172,7 @@ const handleNodeClick=(data,node,val,obj)=>{
   getEquipmentPhotographAndVideo(baseId.value,plotId.value)
 }
 let videoList=ref([])
-const getEquipmentPhotographAndVideo=(baseId,plotId)=>{
+const getEquipmentPhotographAndVideo=(baseId='',plotId='')=>{
   EquipmentPhotographAndVideo({baseId,plotId}).then(res=>{
     console.log(res,'视频')
     videoList.value=res
