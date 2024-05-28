@@ -8,97 +8,103 @@
       :inline="true"
       label-width="108px"
     >
-      <el-form-item label="子设备编号" prop="subDevicesNum">
-        <el-input
-          v-model="queryParams.subDevicesNum"
-          placeholder="请输入子设备编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <!--      <el-form-item label="所属设备" prop="devicesId">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.devicesId"-->
-      <!--          placeholder="请输入所属设备"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="子设备名称" prop="subDevicesName">
-        <el-input
-          v-model="queryParams.subDevicesName"
-          placeholder="请输入子设备名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="开关状态" prop="swithState">
-        <el-select
-          v-model="queryParams.swithState"
-          placeholder="请选择开关状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.EQU_SWITH_STATE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+      <el-row>
+        <el-form-item label="子设备编号" prop="subDevicesNum">
+          <el-input
+            v-model="queryParams.subDevicesNum"
+            placeholder="请输入子设备编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
           />
-        </el-select>
-      </el-form-item>
-      <!--      <el-form-item label="备注" prop="remark">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.remark"-->
-      <!--          placeholder="请输入备注"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px"/>
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
-          重置
-        </el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:sub-device:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:sub-device:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
+        </el-form-item>
+        <!--      <el-form-item label="所属设备" prop="devicesId">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.devicesId"-->
+        <!--          placeholder="请输入所属设备"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="子设备名称" prop="subDevicesName">
+          <el-input
+            v-model="queryParams.subDevicesName"
+            placeholder="请输入子设备名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="开关状态" prop="swithState">
+          <el-select
+            v-model="queryParams.swithState"
+            placeholder="请选择开关状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.EQU_SWITH_STATE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!--      <el-form-item label="备注" prop="remark">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.remark"-->
+        <!--          placeholder="请输入备注"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px"/>
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
+        </el-form-item>
+      </el-row>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:sub-device:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:sub-device:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
     </el-form>
   </ContentWrap>
 
@@ -106,7 +112,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-<!--      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>-->
+      <!--      <el-table-column label="子设备编号" align="center" prop="subDevicesNum"/>-->
       <el-table-column label="子设备名称" align="center" prop="subDevicesName"/>
       <el-table-column label="所属设备" align="center" prop="devicesId"/>
       <el-table-column label="所属设备名称" align="center" prop="remark"/>
@@ -200,7 +206,7 @@ const getList = async () => {
     loading.value = false
   }
 }
-if (route.query.devicesId){
+if (route.query.devicesId) {
   let aa = route.query.devicesId;
   queryParams.devicesId = aa;
 }
@@ -238,9 +244,9 @@ const props = defineProps({
 watch(() => props.currCategory,
   () => {
     if (props.currCategory) {
-      if (props.currCategory.deviceName==undefined){
+      if (props.currCategory.deviceName == undefined) {
         queryParams.devicesId = undefined
-      }else {
+      } else {
         queryParams.devicesId = props.currCategory.id
       }
     } else {
@@ -281,7 +287,6 @@ const handleSwitchChange = async (item) => {
     await SubDeviceApi.updateSubDevice({
       ...item, swithState: item.swithState === '0' ? '1' : '0'
     })
-
 
 
   } catch {

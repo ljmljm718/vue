@@ -8,74 +8,88 @@
       :inline="true"
       label-width="68px"
     >
-<!--      <el-form-item label="设备id" prop="deviceId">
-        <el-input
-          v-model="queryParams.deviceId"
-          placeholder="请输入设备id"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>-->
-      <el-form-item label="设备状态" prop="deviceStatus">
-        <el-select
-          v-model="queryParams.deviceStatus"
-          placeholder="请选择状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-<!--      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>-->
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:device-history-status:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:device-history-status:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
-      </el-form-item>
+      <!--      <el-form-item label="设备id" prop="deviceId">
+              <el-input
+                v-model="queryParams.deviceId"
+                placeholder="请输入设备id"
+                clearable
+                @keyup.enter="handleQuery"
+                class="!w-240px"
+              />
+            </el-form-item>-->
+      <el-row>
+        <el-form-item label="设备状态" prop="deviceStatus">
+          <el-select
+            v-model="queryParams.deviceStatus"
+            placeholder="请选择状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!--      <el-form-item label="创建时间" prop="createTime">
+                <el-date-picker
+                  v-model="queryParams.createTime"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  type="daterange"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+                  class="!w-240px"
+                />
+              </el-form-item>-->
+        <el-form-item>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px"/>
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
+        </el-form-item>
+      </el-row>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:device-history-status:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:device-history-status:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id" />-->
-<!--      <el-table-column label="设备Id" align="center" prop="deviceId" />-->
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="设备状态" align="center" prop="deviceStatus" >
+      <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <!--      <el-table-column label="设备Id" align="center" prop="deviceId" />-->
+      <el-table-column label="设备名称" align="center" prop="deviceName"/>
+      <el-table-column label="设备状态" align="center" prop="deviceStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
         </template>
       </el-table-column>
       <el-table-column
@@ -116,21 +130,21 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceHistoryStatusForm ref="formRef" @success="getList" />
+  <DeviceHistoryStatusForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory'
+import {DeviceHistoryStatusApi, DeviceHistoryStatusVO} from '@/api/agriculture/devicehistory'
 import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue'
 import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
 
 /** 设备历史状态 列表 */
-defineOptions({ name: 'DeviceHistoryStatus' })
+defineOptions({name: 'DeviceHistoryStatus'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceHistoryStatusVO[]>([]) // 列表的数据
@@ -185,7 +199,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */
