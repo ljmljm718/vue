@@ -28,11 +28,14 @@
       :model="formData"
       :rules="formRules"
       label-width="101px"
+      :label-position="labelPosition"
       v-loading="formLoading"
       :disabled="isShow"
+      :inline="true"
+      class="demo-form-inline"
     >
       <el-form-item label="品种作物code" prop="cropId">
-        <el-input v-model="formData.cropCode" readonly placeholder="请选择">
+        <el-input  style="width: 150px" v-model="formData.cropCode" readonly placeholder="请选择">
           <template #append>
             <el-button @click="openCropInfoPopup()">
               <Icon icon="ep:search"/>
@@ -66,6 +69,7 @@
           type="datetime"
           value-format="x"
           placeholder="选择测量时间"
+          style="width: 150px"
         />
       </el-form-item>
       <el-form-item label="测量者" prop="measurer">
@@ -107,6 +111,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
+import type { FormProps } from 'element-plus'
 // 本地保存表单
 const route = useRoute()
 const router = useRouter()
@@ -156,6 +161,7 @@ const formRules = reactive({
   measureSpike: [{ required: true, message: '变化量不能为空', trigger: 'change' }],
   measureUnit: [{ required: true, message: '测量单位不能为空', trigger: 'change' }],
 })
+const labelPosition = ref<FormProps['labelPosition']>('left')
 
 const localSave = () => {
   addOrUpdateFormStorage(
@@ -251,3 +257,13 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
 }
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
+
+<style>
+.demo-form-inline .el-input {
+  --el-input-width: 150px;
+}
+
+.demo-form-inline .el-select {
+  --el-select-width: 150px;
+}
+</style>
