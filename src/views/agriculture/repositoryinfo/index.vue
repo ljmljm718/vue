@@ -162,8 +162,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await RepositoryInfoApi.getRepositoryInfoPage(queryParams)
-    console.log("查询得到的结果")
-    console.log(data)
     list.value = data.list
     total.value = data.total
   } finally {

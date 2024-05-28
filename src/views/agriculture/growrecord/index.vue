@@ -162,7 +162,7 @@
       />
       <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
       <!--      <el-table-column label="主键ID" align="center" prop="id"/>-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="150px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -171,6 +171,13 @@
             v-hasPermi="['agriculture:grow-record:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('select', scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
@@ -202,6 +209,7 @@ import download from '@/utils/download'
 import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
 import GrowRecordForm from './GrowRecordForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import router from '@/router';
 
 /** 长势管理 列表 */
 defineOptions({name: 'GrowRecord'})
@@ -261,7 +269,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  router.push('/farm_work/grow-record/CreateOrUpdate?type='+type+'&id='+id)
 }
 
 /** 删除按钮操作 */
