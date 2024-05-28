@@ -84,12 +84,41 @@
         <el-button
           type="primary"
           plain
-          @click="openForm()"
+          @click="openAddForm()"
           v-hasPermi="['agriculture:device-info:create']"
           v-if="!readonly"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
           新增
+        </el-button>
+        <el-button
+          plain
+          type="success"
+          @click="openEditForm()"
+          v-hasPermi="['agriculture:device-info:update']"
+          :disabled="single"
+        >
+          <Icon icon="ep:edit" class="mr-5px"/>
+          编辑
+        </el-button>
+        <el-button
+          plain
+          type="primary"
+          @click="openFormDetail()"
+          :disabled="single"
+        >
+          <Icon icon="ep:view" class="mr-5px"/>
+          查看
+        </el-button>
+        <el-button
+          plain
+          type="danger"
+          @click="handleDelete()"
+          v-hasPermi="['agriculture:device-info:delete']"
+          :disabled="single"
+        >
+          <Icon icon="ep:delete" class="mr-5px"/>
+          删除
         </el-button>
         <el-button
           type="success"
@@ -133,10 +162,10 @@
       <el-table-column  type="selection" width="55" :reserve-selection="true"/>
       <!-- 子设备的列表 -->
       <el-table-column type="expand">
-        <template #default="scope">
-          <el-tabs model-value="deviceDetail">
-            <el-tab-pane label="子设备" name="deviceDetail">
-              <SubDeviceList :device-id="scope.row.id"/>
+              <template #default="scope">
+                <el-tabs model-value="deviceDetail">
+                  <el-tab-pane label="子设备" name="deviceDetail">
+                    <SubDeviceList :device-id="scope.row.id"/>
             </el-tab-pane>
           </el-tabs>
         </template>
@@ -155,6 +184,21 @@
         </template>
       </el-table-column>
       <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
+      <el-table-column
+        label="开关"
+        align="center"
+        width="80"
+        v-if="!readonly"
+      >
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.deviceStatus"
+            active-value="online"
+            inactive-value="offline"
+            @change="handleStatus(scope.row)"
+           />
+        </template>
+      </el-table-column>
       <el-table-column label="经度" align="center" prop="longitude"/>
       <el-table-column label="纬度" align="center" prop="latitude"/>
       <el-table-column label="状态" align="center" prop="deviceStatus">
@@ -186,9 +230,9 @@
         width="180px"
       />
       <el-table-column
-        label="调控按钮"
+        label="操作"
         align="center"
-        width="250"
+        width="150"
         fixed="right"
         v-if="!readonly"
       >
@@ -197,7 +241,7 @@
             link
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
-            @click="handleData(scope.row)">采集最新数据
+            @click="handleData(scope.row)">采集数据
           </el-button>
           <el-button
             link
@@ -208,9 +252,9 @@
               query: {
                 equipmentCode:scope.row.id
               }
-            })">查看监测数据
+            })">查看数据
           </el-button>
-          <el-button
+<!--          <el-button
             link
             type="primary"
             v-if="scope.row.userId===142&&deviceTypeMain.includes(scope.row.deviceType[4])"
@@ -231,47 +275,8 @@
                 devicesId: scope.row.id
               }
             })">查看子设备
-          </el-button>
-          <el-switch
-            v-model="scope.row.deviceStatus"
-            active-value="online"
-            inactive-value="offline"
-            @change="handleStatus(scope.row)"
-            style="margin-left: 10px"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        fixed="right"
-        v-if="!readonly"
-      >
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openFormDetail(scope.row.id)"
-          >
-            查看
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm(scope.row.id)"
-            v-hasPermi="['agriculture:device-info:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:device-info:delete']"
-          >
-            删除
-          </el-button>
+          </el-button>-->
+
 <!--          <el-button-->
 <!--            link-->
 <!--            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"-->
@@ -417,21 +422,25 @@ const resetQuery = () => {
   handleQuery()
 }
 
-/** 添加/修改操作 */
+
 const formRef = ref()
-const openForm = (id?: number) => {
-  //formRef.value.open(type, id)
-  console.log(id)
-  if (id) router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
-  else router.push(`/internetMonitor/device/deviceView/create`)
+/** 添加操作 */
+const openAddForm = () => {
+  router.push(`/internetMonitor/device/deviceView/create`)
+}
+/** 修改操作 */
+const openEditForm = () => {
+  const id = deviceId.value.toString()
+  router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (id: number) => {
+const handleDelete = async () => {
   try {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
+    const id = deviceId.value.toString()
     await DeviceInfoApi.deleteDeviceInfo(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
@@ -441,7 +450,8 @@ const handleDelete = async (id: number) => {
 }
 
 /** 查看操作 */
-const openFormDetail = (id?: number) => {
+const openFormDetail = () => {
+  const id = deviceId.value.toString()
   if (id) router.push(`/internetMonitor/device/deviceView/detail?id=${id}`)
 }
 
@@ -585,6 +595,6 @@ const handleData = async (item: any) => {
 /** 添加子设备操作 */
 const subDeviceFormRef = ref()
 const openSubDeviceForm = () => {
-  subDeviceFormRef.value.open("新增子设备",deviceId.value.toString(),deviceName.value.toString())
+  subDeviceFormRef.value.open("调试配置",deviceId.value.toString(),deviceName.value.toString())
 }
 </script>
