@@ -558,7 +558,7 @@ const handleStatus = async (item: any) => {
     // 发起开关机
     let status = item.deviceStatus === 'online' ? 'online': 'offline'
     await DeviceInfoApi.updateDeviceStatus(item.id,status)
-    message.success(s + "成功")
+    message.alertSuccess(s + "成功")
     // 刷新列表
     await getList()
   } catch {
@@ -570,7 +570,13 @@ const handleData = async (item: any) => {
   loading.value = true
   try {
     await EquipmentDataApi.queryNewData(item.id)
-    message.success("采集最新数据成功")
+    message.success(item.deviceName+",采集最新数据成功")
+    router.push({
+      path: '/internetMonitor/deviceData/equipment-data-three',
+      query: {
+        equipmentCode:item.id
+      }
+    })
   } finally {
     loading.value = false
   }
