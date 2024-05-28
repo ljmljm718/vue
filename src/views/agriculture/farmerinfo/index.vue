@@ -160,7 +160,7 @@
       />
 <!--      <el-table-column label="部门id" align="center" prop="deptId" />-->
 <!--      <el-table-column label="用户id" align="center" prop="userId" />-->
-      <el-table-column label="操作" align="center" fixed="right" width="110">
+      <el-table-column label="操作" align="center" fixed="right" width="150px">
         <template #default="scope">
           <el-button
             link
@@ -169,6 +169,13 @@
             v-hasPermi="['agriculture:farmer-info:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('select', scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
@@ -258,10 +265,17 @@ const resetQuery = () => {
   handleQuery()
 }
 
+
 /** 添加/修改操作 */
+const router = useRouter()
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  if(type == 'create'){
+    router.push('/asset/base/farmer-info/CreateOrUpdate?type='+type)
+  }else{
+    router.push('/asset/base/farmer-info/CreateOrUpdate?type='+type+'&id='+id)
+  }
+  
 }
 
 /** 删除按钮操作 */

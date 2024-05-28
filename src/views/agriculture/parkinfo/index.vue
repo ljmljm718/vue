@@ -115,17 +115,17 @@
           <el-button
             link
             type="primary"
-            @click="openFormDetail(scope.row.id)"
-          >
-            查看
-          </el-button>
-          <el-button
-            link
-            type="primary"
             @click="openForm(scope.row.id)"
             v-hasPermi="['agriculture:park-info:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openFormDetail(scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
