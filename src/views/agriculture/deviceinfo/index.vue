@@ -8,6 +8,7 @@
       :inline="true"
       label-width="68px"
     >
+      <el-row>
       <el-form-item label="设备编号" prop="deviceCode">
         <el-input
           v-model="queryParams.deviceCode"
@@ -76,6 +77,10 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+      </el-row>
+      <el-row>
+      <el-form-item>
         <el-button
           type="primary"
           plain
@@ -97,7 +102,19 @@
           <Icon icon="ep:download" class="mr-5px"/>
           导出
         </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="openSubDeviceForm()"
+          v-hasPermi="['agriculture:sub-device:create']"
+          v-if="!readonly"
+          :disabled="single"
+        >
+          <Icon icon="ep:tools" class="mr-5px"/>
+          调试配置
+        </el-button>
       </el-form-item>
+      </el-row>
     </el-form>
   </ContentWrap>
 
@@ -113,7 +130,17 @@
       @selection-change="handleSelectionChange"
       height="calc(100vh - 470px)"
     >
-      <el-table-column v-if="multi" type="selection" width="55" :reserve-selection="true"/>
+      <el-table-column  type="selection" width="55" :reserve-selection="true"/>
+      <!-- 子设备的列表 -->
+      <el-table-column type="expand">
+        <template #default="scope">
+          <el-tabs model-value="deviceDetail">
+            <el-tab-pane label="子设备" name="deviceDetail">
+              <SubDeviceList :device-id="scope.row.id"/>
+            </el-tab-pane>
+          </el-tabs>
+        </template>
+      </el-table-column>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -158,11 +185,10 @@
         :formatter="dateFormatter"
         width="180px"
       />
-
       <el-table-column
-        label="操作"
+        label="调控按钮"
         align="center"
-        width="360"
+        width="250"
         fixed="right"
         v-if="!readonly"
       >
@@ -206,6 +232,23 @@
               }
             })">查看子设备
           </el-button>
+          <el-switch
+            v-model="scope.row.deviceStatus"
+            active-value="online"
+            inactive-value="offline"
+            @change="handleStatus(scope.row)"
+            style="margin-left: 10px"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+        width="150"
+        fixed="right"
+        v-if="!readonly"
+      >
+        <template #default="scope">
           <el-button
             link
             type="primary"
@@ -238,12 +281,7 @@
 <!--          >-->
 <!--            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}-->
 <!--          </el-button>-->
-          <el-switch
-            v-model="scope.row.deviceStatus"
-            active-value="online"
-            inactive-value="offline"
-            @change="handleStatus(scope.row)"
-          />
+
         </template>
       </el-table-column>
     </el-table>
@@ -258,6 +296,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceInfoForm ref="formRef" @success="getList()"/>
+  <DeviceSubDeviceForm ref="subDeviceFormRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -271,6 +310,8 @@ import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
 import {useRoute} from 'vue-router'
 import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
+import SubDeviceList from "@/views/agriculture/deviceinfo/components/SubDeviceList.vue";
+import DeviceSubDeviceForm from "@/views/agriculture/deviceinfo/components/DeviceSubDeviceForm.vue";
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
@@ -317,7 +358,9 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 let categoryOptions = ref([])// 设备分类选项
 const deviceType = ref()
-
+const single= ref(true)  // 非单个禁用
+const deviceId = ref() // 选中的设备id
+const deviceName = ref() // 选中的设备名称
 
 /** 查询列表 */
 const getList = async () => {
@@ -481,6 +524,10 @@ const emit = defineEmits(["selectedDeviceInfo"]);
 const handleSelectionChange = (val: DeviceInfoVO[]) => {
   multipleSelection.value = val
   emit('selectedDeviceInfo', multipleSelection.value)
+
+  single.value = val.length!==1
+  deviceId.value = val.map(item => item.id)
+  deviceName.value = val.map(item => item.deviceName)
 }
 
 // 监听父组件category变化
@@ -527,5 +574,11 @@ const handleData = async (item: any) => {
   } finally {
     loading.value = false
   }
+}
+
+/** 添加子设备操作 */
+const subDeviceFormRef = ref()
+const openSubDeviceForm = () => {
+  subDeviceFormRef.value.open("新增子设备",deviceId.value.toString(),deviceName.value.toString())
 }
 </script>
