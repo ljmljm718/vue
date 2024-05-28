@@ -48,74 +48,103 @@
             <el-form-item label="编号" prop="cropCode">
               <el-input v-model="formData.cropCode" disabled placeholder="系统自动生成...."/>
             </el-form-item>
-            <el-form-item label="名称" prop="cropName">
-              <el-input v-model="formData.cropName" placeholder="请输入名称"/>
-            </el-form-item>
-            <el-form-item label="品种" prop="cropType">
-              <el-select v-model="formData.cropType" placeholder="请选择品种">
-                <el-option
-                  v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属基地" prop="belongPark">
-              <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
-                <template #append>
-                  <el-button @click="openParkInfoPopup('0')">
-                    <Icon icon="ep:search"/>
-                    选择
-                  </el-button>
-                </template>
-              </el-input>
-              <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
-            </el-form-item>
-            <el-form-item label="基地名称" prop="parkName">
-              <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
-            </el-form-item>
-
-            <el-form-item label="所属地块" prop="belongPlot">
-              <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
-                <template #append>
-                  <el-button @click="openParkDetailPopup(formData.belongPark)">
-                    <Icon icon="ep:search"/>
-                    选择
-                  </el-button>
-                </template>
-              </el-input>
-              <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
-            </el-form-item>
-            <el-form-item label="地块名称" prop="plotName">
-              <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
-            </el-form-item>
-            <el-form-item label="开始时间" prop="startTime">
-              <el-date-picker
-                v-model="formData.receiptStartTime"
-                type="date"
-                style="width: 100%"
-                value-format="x"
-                placeholder="选择开始时间"
-              />
-            </el-form-item>
-            <el-form-item label="结束时间" prop="startTime">
-              <el-date-picker
-                v-model="formData.receiptEndTime"
-                type="date"
-                style="width: 100%"
-                value-format="x"
-                placeholder="选择结束时间"
-              />
-            </el-form-item>
-            <el-form-item label="图片" prop="imgId">
-              <UploadImg v-model="formData.imgId"/>
-            </el-form-item>
-            <el-form-item label="描述" prop="cropDesc">
-              <el-input v-model="formData.cropDesc" placeholder="请输入描述"/>
-            </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="名称" prop="cropName">
+                  <el-input v-model="formData.cropName" placeholder="请输入名称"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="品种" prop="cropType">
+                  <el-select v-model="formData.cropType" placeholder="请选择品种">
+                    <el-option
+                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
+                      :key="dict.value"
+                      :label="dict.label"
+                      :value="dict.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="所属基地" prop="belongPark">
+                  <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
+                    <template #append>
+                      <el-button @click="openParkInfoPopup('0')">
+                        <Icon icon="ep:search"/>
+                        选择
+                      </el-button>
+                    </template>
+                  </el-input>
+                  <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="基地名称" prop="parkName">
+                  <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">  <el-form-item label="所属地块" prop="belongPlot">
+                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
+                  <template #append>
+                    <el-button @click="openParkDetailPopup(formData.belongPark)">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
+                <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
+              </el-form-item></el-col>
+              <el-col :span="12">
+                <el-form-item label="地块名称" prop="plotName">
+                  <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="开始时间" prop="startTime">
+                  <el-date-picker
+                    v-model="formData.receiptStartTime"
+                    type="date"
+                    style="width: 100%"
+                    value-format="x"
+                    placeholder="选择开始时间"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="结束时间" prop="startTime">
+                  <el-date-picker
+                    v-model="formData.receiptEndTime"
+                    type="date"
+                    style="width: 100%"
+                    value-format="x"
+                    placeholder="选择结束时间"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="图片" prop="imgId">
+                  <UploadImg v-model="formData.imgId"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="描述" prop="cropDesc" style="height: 100%">
+                  <el-input v-model="formData.cropDesc" placeholder="请输入描述" type="textarea"
+                            :autosize="{ minRows: 7, maxRows: 8}"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="formData.remark" placeholder="请输入备注"/>
+              <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"
+                        :autosize="{ minRows: 6, maxRows: 6}"/>
             </el-form-item>
           </el-form>
           <!-- 截至 -->
