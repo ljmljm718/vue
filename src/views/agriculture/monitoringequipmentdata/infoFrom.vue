@@ -1,36 +1,14 @@
 <script lang="tsx">
 import {defineComponent, ref} from 'vue'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import headerBg from './assets/headerBg.png'
-import mainBg from './assets/bg.png'
-import {formatTime} from '@/utils'
 import {
   getParkTree,
   getEquipmentPhotographAndVideo,
-  monitoringEquNoticePage,
-
-  getPondCountFrySum,
-  // getLineChar,
-  // selectHarvest,
-  // getEquipmentCountSum,
+  monitoringEquNoticePage
 } from './api'
 import {useAppStore} from "@/store/modules/app";
+import InfoDetail from './infoDetail.vue'
 
 const appStore = useAppStore()
-const isDark = appStore.getIsDark;
-
-const {
-  BigscreenAdapter,
-  BigscreenContainer,
-  BigscreenHeader,
-  BigscreenFooter,
-  BigscreenMain,
-  BigscreenCard,
-
-  BigscreenTab,
-  BigscreenSelector,
-} = BigscreenBuilder
 
 // 设备列表项
 interface DeviceVideoListItemType {
@@ -84,8 +62,6 @@ export default defineComponent({
       })).slice(0, 9)
     }
     getMonitorDeviceList()
-    const activeTab = ref('base')
-
 
     // 监控通知事件
     const monitorNoticeLoading = ref<boolean>(false)
@@ -158,22 +134,8 @@ export default defineComponent({
                   }
                 </el-menu>
               </div>
-              <div class={`inner-border grow p-3 grid ${currentLayout.value} grid-rows-3 gap-3`}
-                   v-loading={monitorDeviceLoading.value}>
-                {
-                  deviceVideoList.value.map((item: DeviceVideoListItemType) => (
-                    <div class="p-3 flex flex-col inner-border">
-                      <div class="art-font h-[1.4rem] tracking-wide">{item.deviceName}</div>
-                      <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc}/>
-                      <div class="flex items-center justify-between pt-2">
-                        <div>{item.baseName}</div>
-                        <div style={
-                          item.online ? 'color: #48ad91;' : 'color: #db2153;'
-                        }>{item.online ? '在线' : '离线'}</div>
-                      </div>
-                    </div>
-                  ))
-                }
+              <div class="inner-border grow p-3">
+                <InfoDetail />
               </div>
             </div>
           </div>
@@ -181,23 +143,7 @@ export default defineComponent({
       )
     }
 
-    const runtimeBase = ref('')
     // 智慧种植部分
-    // 基础设施
-    const baseEquipmentLoading = ref<boolean>(false)
-    const baseEquipmentList = ref<Array<any>>([])
-    const getBaseEquipmentList = async () => {
-      baseEquipmentLoading.value = true
-      const res = await getPondCountFrySum().catch(() => {
-        baseEquipmentLoading.value = false
-      })
-      baseEquipmentList.value = [
-        {label: '池塘', value: res['池塘']},
-        {label: '鱼苗', value: res['鱼苗']}
-      ]
-      baseEquipmentLoading.value = false
-    }
-    getBaseEquipmentList()
     return () => (
       baseTabPage()
     )

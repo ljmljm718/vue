@@ -54,3 +54,26 @@ export const getEquipmentCountSum = async () => {
   })
 }
 
+// 右边-监控通知事件
+export const monitorEquipNoticePage = async (params) => {
+  return await request.get({
+    url: '/agriculture/monitoring-equipment-notice/page',
+    params
+  })
+}
+
+// 中间-设备视频
+export const getVideoByDeviceId = async (params) => {
+  return await request.get({
+    url: '/agri/monitoring-equipment-data/getVideoByDeviceId',
+    params
+  })
+}
+
+// 右三-实时拍摄图片列表
+export const monitorEquipDataPage = async (params) => {
+  return await request.get({
+    url: '/agri/monitoring-equipment-data/page',
+    params
+  })
+}

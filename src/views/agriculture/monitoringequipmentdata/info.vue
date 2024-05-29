@@ -1,10 +1,5 @@
 <script lang="tsx">
 import {defineComponent, ref} from 'vue'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import headerBg from './assets/headerBg.png'
-import mainBg from './assets/bg.png'
-import {formatTime} from '@/utils'
 import {
   getParkTree,
   getEquipmentPhotographAndVideo,
@@ -15,29 +10,17 @@ import {
   // selectHarvest,
   // getEquipmentCountSum,
 } from './api'
-import {useAppStore} from "@/store/modules/app";
-const router = useRouter() // 路由
+import { useAppStore } from "@/store/modules/app";
+import router from '@/router'
 const appStore = useAppStore()
-const isDark = appStore.getIsDark;
-
-const {
-  BigscreenAdapter,
-  BigscreenContainer,
-  BigscreenHeader,
-  BigscreenFooter,
-  BigscreenMain,
-  BigscreenCard,
-
-  BigscreenTab,
-  BigscreenSelector,
-} = BigscreenBuilder
 
 // 设备列表项
 interface DeviceVideoListItemType {
   deviceName: string,
   videoSrc: string,
   baseName: string,
-  online: boolean
+  online: boolean,
+  id: string | number
 }
 
 // 通知事件列表项
@@ -56,6 +39,11 @@ export default defineComponent({
       activeBasePark.value = key
       if (keyPath.length === 2) getMonitorDeviceList(keyPath[0], keyPath[1])
     }
+    const handleMenuOpen = (key:string, keyPath: string[]) => {
+      console.log(key, keyPath)
+      activeBasePark.value = ''
+      if (keyPath.length === 1) getMonitorDeviceList(keyPath[0], '')
+    }
     const baseParkTreeList = ref<Array<any>>([]);
     const getBaseParkTreeList = async () => {
       const res = await getParkTree();
@@ -71,12 +59,13 @@ export default defineComponent({
     const getMonitorDeviceList = async (baseId = '', plotId = '') => {
       deviceVideoList.value = []
       monitorDeviceLoading.value = true
-      const res = await getEquipmentPhotographAndVideo(plotId ? {baseId, plotId} : {}).catch(() => {
+      const res = await getEquipmentPhotographAndVideo(plotId ? {baseId, plotId} : baseId ? { baseId } : {}).catch(() => {
         monitorDeviceLoading.value = false
       })
       console.log("获取监控设备列表", res);
       monitorDeviceLoading.value = false
       deviceVideoList.value = res.map(item => ({
+        id: item.id,
         deviceName: item.deviceName,
         videoSrc: item.url,
         baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
@@ -125,12 +114,14 @@ export default defineComponent({
             <div class=" w-full h-full p-3 flex space-x-3 box-border">
               <div class="inner-border w-[10rem] p-3">
                 <el-menu
-                  active-text-color={appStore.getIsDark ? "#ffd04b" : '#000'}
+                  active-text-color={appStore.getIsDark ? "#ffd04b" : '#1ed76d'}
                   background-color={appStore.getIsDark ? "#1b2a58" : '#fff'}
                   class="el-menu-vertical-demo"
                   default-active={activeBasePark.value}
                   text-color={appStore.getIsDark ? "#fff" : '#000'}
                   onSelect={handleMenuActive}
+                  onOpen={handleMenuOpen}
+                  onClose={handleMenuOpen}
                 >
                   {
                     baseParkTreeList.value.map(item => {
@@ -158,13 +149,19 @@ export default defineComponent({
                   }
                 </el-menu>
               </div>
-              <div class={`inner-border grow p-3 grid ${currentLayout.value} grid-rows-3 gap-3`}
-                   v-loading={monitorDeviceLoading.value}>
+              <div
+                class={`inner-border grow p-3 grid ${currentLayout.value} grid-rows-3 gap-3`}
+                v-loading={monitorDeviceLoading.value}
+              >
                 {
                   deviceVideoList.value.map((item: DeviceVideoListItemType) => (
                     <div class="p-3 flex flex-col inner-border">
-                      <div class="art-font h-[1.4rem] tracking-wide"
-                           s>{item.deviceName}</div>
+                      <div class="h-[1.4rem] tracking-wide flex justify-between">
+                        <span class="art-font">{item.deviceName}</span>
+                        <div class="cursor-pointer" onClick={() => {
+                          router.push("/internetMonitor/deviceData/monitoringequipmentdata?id=" + item.id)
+                        }}>更多</div>
+                      </div>
                       <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc}/>
                       <div class="flex items-center justify-between pt-2">
                         <div>{item.baseName}</div>
@@ -182,7 +179,6 @@ export default defineComponent({
       )
     }
 
-    const runtimeBase = ref('')
     // 智慧种植部分
     // 基础设施
     const baseEquipmentLoading = ref<boolean>(false)
