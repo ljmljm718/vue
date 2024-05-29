@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="编号" prop="code">
+      <!-- <el-form-item label="编号" prop="code">
         <el-input
           v-model="queryParams.code"
           placeholder="请输入编号"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -26,6 +26,34 @@
           class="!w-240px"
         />
       </el-form-item>
+      
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px" @click="handleClick()">
+          <el-option
+          v-for="dict in parkCategoryOptions"
+                  :key="dict.value"
+                  :label="dict.categoryLabel"
+                  :value="dict.id" 
+          />
+          </el-select>
+         </el-form-item>
+
+         <el-form-item label="面积" prop="area">
+              <el-input v-model="queryParams.area" placeholder="请输入面积" >
+                <template #append>亩</template>
+              </el-input>
+            </el-form-item>
+          
+          <el-form-item label="联系人" prop="contact">
+              <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px"/>
+            </el-form-item>
+            <el-form-item label="联系电话" prop="tel">
+              <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px"/>
+            </el-form-item>
+            
+
+
+
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
@@ -157,7 +185,12 @@ import download from '@/utils/download'
 import {ParkInfoApi, ParkInfoVO} from '@/api/agriculture/parkinfo'
 import ParkInfoForm from './ParkInfoForm.vue'
 import ParkDetailList from './components/ParkDetailList.vue'
-import {DICT_TYPE} from "@/utils/dict";
+
+import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
+const parkCategoryOptions = ref() //基地分类列表
+const handleClick = async()=> {
+  parkCategoryOptions.value = await ParkCategoryApi.getAllParkCategory()
+}
 
 /** 基地基本信息 列表 */
 defineOptions({name: 'ParkInfo'})
@@ -264,5 +297,6 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+  
 })
 </script>
