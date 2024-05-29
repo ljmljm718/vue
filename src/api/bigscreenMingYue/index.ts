@@ -58,6 +58,12 @@ export const pageW = async (params) => {
     params
   })
 }
+export const createA = async (data) => {
+  return await request.post({
+    url: '/agri/farm-record/createA',
+    data
+  })
+}
 
 
 //智慧种植

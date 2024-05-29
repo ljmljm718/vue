@@ -61,12 +61,12 @@
                 >{{ item[column.key] }}</div
               >
               <div
-               v-show='item[column.key]=="warnStatus"'
-                :key="inde"
-               v-for="(column, inde) in leftArr2.tableColumns1"
+              
                 class="table-data-cell2"
-                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                @click="goCreate(item)"
+                style="width: 15%;margin-left: -80px;color:red;cursor: pointer; font-size:12px;text-align:center;"
                 >去处理</div>
+
             </div>
               
           </div>
@@ -226,7 +226,7 @@ let leftArr2 = reactive<Object>({
     {
       key: 'parkName',
       label: '基地',
-      width: '35%'
+      width: '30%'
     },
     {
       key: 'plotName',
@@ -244,9 +244,9 @@ let leftArr2 = reactive<Object>({
       width: '10%'
     },
     {
-      key: 'warnStatus',
+      key: 'btn',
       label: '操作',
-      width: '10%'
+      width: '15%'
     }
   ],
   tableData1: [
@@ -389,6 +389,7 @@ const getpageW=(id:string)=>{
     console.log(res,'农事计划')
     leftArr2.tableData1=res.list
     leftArr2.tableData1.forEach(item=>{
+      item['btn']
       if(item.startTime) item.startTime=new Date().toLocaleString(item.startTime)
     })
 
@@ -396,6 +397,13 @@ const getpageW=(id:string)=>{
 }
 const tabAgriculture=(id)=>{
   getpageW(id)
+}
+const goCreate=(val)=>{
+  router.push({
+    path:'/farm_work/farmManage/farm-record/CreateOrUpdate?type=create',
+    query:{...val}
+  })
+  // router.push('/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&obj='+val)
 }
 </script>
 <style lang='scss' scoped>

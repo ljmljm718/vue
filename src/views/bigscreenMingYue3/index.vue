@@ -315,35 +315,56 @@ const initChart1 = async () => {
   )
 }
 const initChart2= async ()=>{
-  let res=await selectHarvest()
-  console.log(res,'分析')
-  let duck=[]
-  let fish=[]
-  let rice=[]
-  let time=Array.from(new Set(res.map(item=>item.time)))
-  res.forEach(item=>{
-    if(item.variety=='duck') duck.push(item)
-    else if(item.variety=='fish') fish.push(item)
-    else if(item.variety=='rice') rice.push(item)
-  })
-  console.log(duck,fish,rice,'产量')
-  let time2=time.sort((a,b)=>a-b)
-  function fn(duck){
-    let time=duck.map(item=>item.time)
-    time2.forEach(item=>{
-       console.log(time.indexOf(item),'itemdasd')
-       if(item==time[0]){
-       }
-    })
-   
-    console.log(duck,'稻鸭')
-  }
-  fn(duck)
+  const res = await selectHarvest()
+            console.log("产量分析", res);
+            let xAxis = res.map(item => (item.time))
+            xAxis = [...new Set([...xAxis])].sort().reverse()
+            console.log("xAxis", xAxis);
+            let types = res.map(item => (item.variety))
+            types = [...new Set([...types])]
+            const findValByTimeAndvariety = (item) => {
+                let _res = '0'
+                res.forEach(ele => {
+                    if (
+                        item.time === ele.time
+                        &&
+                        item.variety === ele.variety
+                    ) _res = parseFloat(ele.harvest).toFixed(2)
+                })
+                return _res
+            }
+            const series = types.map(item => {
+                const nameMap = {
+                    "duck": '稻田鸭',
+                    "fish": '稻田鱼',
+                    "rice": "稻谷"
+                }
+                return {
+                    name: nameMap[item],
+                    data: xAxis.map(x => {
+                        return findValByTimeAndvariety({
+                            time: x,
+                            variety: item
+                        })
+                    }),
+                    type: "bar",
+                    smooth: false,
+                    label: {
+                        show: true, //开启显示
+                        position: 'top', //在上方显示
+                        textStyle: {
+                            //数值样式
+                            color: '#eee',
+                            fontSize: 10
+                        }
+                    },
+                }
+            })
   initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data:time.sort((a,b)=>a-b),
+            data:xAxis,
             axisLine: {
               show: true,
               lineStyle: {
@@ -383,53 +404,7 @@ const initChart2= async ()=>{
             },
           },  
         ],
-          series: [
-            {
-              name: '稻谷',
-              data: [3200,2980,2750],
-              type: "bar",
-              smooth: false,
-              label: {
-                show: true, //开启显示
-                position: 'top', //在上方显示
-                textStyle: {
-                  //数值样式
-                  color: '#eee',
-                  fontSize: 10
-                }
-              },
-            },
-            {
-              name: '稻鸭',
-              data: duck.map(item=>item.harvest),
-              type: "bar",
-              smooth: false,
-              label: {
-                show: true, //开启显示
-                position: 'top', //在上方显示
-                textStyle: {
-                  //数值样式
-                  color: '#eee',
-                  fontSize: 10
-                }
-              },
-            },
-            {
-              name: '稻鱼',
-              data: [1089,1180,988],
-              type: "bar",
-              smooth: false,
-              label: {
-                show: true, //开启显示
-                position: 'top', //在上方显示
-                textStyle: {
-                  //数值样式
-                  color: '#eee',
-                  fontSize: 10
-                }
-              },
-            },
-          ],
+          series,
           grid: {
             left: "10%",
             right: "10%",
