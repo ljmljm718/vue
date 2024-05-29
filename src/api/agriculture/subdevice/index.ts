@@ -41,4 +41,15 @@ export const SubDeviceApi = {
   exportSubDevice: async (params) => {
     return await request.download({ url: `/agriculture/sub-device/export-excel`, params })
   },
+
+  // 根据设备id查询子设备管理详情
+  getSubDeviceByDeviceId: async (id: number) => {
+    return await request.get({ url: `/agriculture/sub-device/getByDeviceId?id=` + id })
+  },
+
+  //子设备列表编辑
+  editSubDevice: async (data: SubDeviceVO) => {
+    return await request.post({url: `/agriculture/sub-device/editSubDevice`, data})
+  },
+
 }
