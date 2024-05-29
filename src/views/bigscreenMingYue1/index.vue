@@ -24,7 +24,7 @@
     <div class="content-main-wrapper inner-border">
          <div class="left inner-border flex items-center p-[10px] color-[#fff]" style="flex-direction: column;">
           <el-tree
-            style="width: 100%;height: 100%;background:transparent;color: #fff;"
+            style="width: 100%;height: 100%;background:transparent;color: #888888;background-color: transparent ;"
             :data="treeList"
             :props="defaultProps"   
             default-expand-all   
@@ -204,6 +204,9 @@ const getEquipmentPhotographAndVideo=(baseId='',plotId='')=>{
     gap: 10px;
     .left{
       box-sizing: border-box;
+      .el-tree-node:hover {
+        background-color: transparent !important;
+      }
     }
     .main{
       overflow-y: scroll;

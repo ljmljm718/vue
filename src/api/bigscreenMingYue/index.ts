@@ -52,9 +52,10 @@ export const page = async () => {
     url: '/agriculture/agri-warning-record/page?warnStatus=0',
   })
 }
-export const pageW = async () => {
+export const pageW = async (params) => {
   return await request.get({
-    url: '/agri/farm-plan/pageW?pageNo=1&pageSize=3',
+    url: '/agri/farm-plan/pageW',
+    params
   })
 }
 

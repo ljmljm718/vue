@@ -151,7 +151,7 @@
             <div class="right2-warper w-full h-30% mb-10px  p-10px" v-for="item,index in homePageList" :key="index">
               <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">{{item.name}}</div>
               <div class="right2-item flex " style="height: calc(100% - 40px);font-size:14px; color: #c1c1c1;margin-top: 15px;">
-                <div v-for="itm,inde in item.list" :key="inde" class="warper-item flex items-center justify-evenly"><div>{{itm.monitoringType}}</div> <div >{{itm.dataValue}}<span style="font-size:13px;">{{itm.yyUnit}}</span> </div> </div>
+                <div v-for="itm,inde in item.list" :key="inde" class="warper-item flex items-center justify-evenly mr-8px"><div>{{itm.monitoringType}}</div> <div >{{itm.dataValue}}<span style="font-size:13px;">{{itm.yyUnit}}</span> </div> </div>
               </div>
             </div>
             

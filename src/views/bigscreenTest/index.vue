@@ -20,7 +20,7 @@ import {
     getLineChar,
     selectHarvest,
     getEquipmentCountSum,
-    
+
     getEquipmentCountSumOrderByType,
     villageProductPage,
     environmentalDataHomePageA,
@@ -131,7 +131,7 @@ export default defineComponent({
         const getMonitorDeviceList = async (baseId = '', plotId = '') => {
             deviceVideoList.value = []
             monitorDeviceLoading.value = true
-            const res = await getEquipmentPhotographAndVideo({ baseId, plotId }).catch(() => {
+            const res = await getEquipmentPhotographAndVideo(plotId ? {baseId, plotId} : {}).catch(() => {
                 monitorDeviceLoading.value = false
             })
             console.log("获取监控设备列表", res);
@@ -145,7 +145,7 @@ export default defineComponent({
         }
         getMonitorDeviceList()
         const activeTab = ref('base')
-       
+
 
         // 监控通知事件
         const monitorNoticeLoading = ref<boolean>(false)
@@ -413,8 +413,8 @@ export default defineComponent({
                             },
                         },
                     },
-                    legend: { 
-                        show: true, 
+                    legend: {
+                        show: true,
                         orient:'horizontal',
                         itemWidth: 15,
                         itemHeight: 15,
@@ -446,7 +446,7 @@ export default defineComponent({
                                 //网格区域
                                 show: false, //是否显示
                             },
-                        },  
+                        },
                     ],
                     series,
                     grid: {
@@ -547,7 +547,7 @@ export default defineComponent({
             })).slice(0, 8)
         }
         getsoilList()
-        
+
         // 水质
         const waterLoading = ref<boolean>(false)
         const waterList = ref<Array<any>>([])
@@ -1240,7 +1240,7 @@ export default defineComponent({
                                         { key: 'risk', label: '风险预警' }
                                     ]}
                                     onChange={handleTabChange}
-                                />  
+                                />
                             ),
                             right: () => (
                                 <BigScreenTime />

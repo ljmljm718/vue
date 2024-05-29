@@ -23,17 +23,17 @@
     <div class="content-main-wrapper">
       <div class="content-foot">
         <div class="foot-left">
-          <div class='box-title'>预警分布</div>
+          <div class='box-title' style="cursor: pointer;" @click="router.push('/internetMonitor/warn/agri-warning-record')">预警分布</div>
           <div id="chart1"></div>
         </div>
         <div class="foot-main">
-          <div class='box-title'>虫害数量</div>
+          <div class='box-title' style="cursor: pointer;" @click="router.push('/internetMonitor/deviceData/equipment-data?collectionType=虫情监测')">虫害数量</div>
           <div id="chart2"></div>
         </div>
         <div class='foot-right'>
-          <div class='box-title'>指挥调度</div>
+          <div class='box-title' style="cursor: pointer;" @click="router.push('/farm_work/farmManage/farm-plan')">指挥调度</div>
           <div class="w-full h-80px color-[#c1c1c1] flex items-center justify-evenly">
-            <div v-for="item,index in ListAll" :key='index'>
+            <div style="cursor:pointer;" @click="tabAgriculture(item.id)" v-for="item,index in ListAll" :key='index'>
               <div :class="['right-icon','top-'+(index+1)]"></div>
               <div class="mt-5px">{{item.defineName}}</div>
             </div>
@@ -60,13 +60,21 @@
                 :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
                 >{{ item[column.key] }}</div
               >
+              <div
+               v-show='item[column.key]=="warnStatus"'
+                :key="inde"
+               v-for="(column, inde) in leftArr2.tableColumns1"
+                class="table-data-cell2"
+                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                >去处理</div>
             </div>
+              
           </div>
         </div>
       </div>
       <div class="content-top">
         <div class="top-left">
-          <div class="box-title">预警信息</div>
+          <div class="box-title" style="cursor: pointer;" @click="router.push('/internetMonitor/warn/agri-warning-record')">预警信息</div>
           <div class="table-wrapper">
             <div class="table-header-row">
               <div
@@ -92,7 +100,7 @@
           </div>
         </div>
         <div class="top-right ">
-          <div class="box-title">报警信息处理情况</div>
+          <div class="box-title" style="cursor: pointer;" @click="router.push('/internetMonitor/warn/agri-warning-record')">报警信息处理情况</div>
           <div class="top-right-ietm p-[15px] flex">
             <div class="w-20% h-full mr-[20px] flex" style="flex-direction: column;" >
               <div v-for='item,index in warnIngList' :key='index' class='mb-20px'>
@@ -105,8 +113,8 @@
               <div v-for="item,index in pageList" :key='index' class="flex mb-1.5rem justify-evenly items-center top-right-item">
                 <div class="w-42%" style="font-size:14px;">{{item.warnTitle}},{{item.warnInfo}}</div>
                 <div class="w-35%">{{ new Date().toLocaleString(item.warnTime)  }}</div>
-                <div class="w-10% mr-20px ml-20px">忽略</div>
-                <div class="w-13%">去处理</div>
+                <div class="w-10% mr-20px ml-20px" style="cursor: pointer;" @click="router.push(`/internetMonitor/warn/agri-warning-record?id=${item.id}&status=2`)">忽略</div>
+                <div class="w-13%" style="cursor: pointer;" @click="router.push(`/internetMonitor/warn/agri-warning-record?id=${item.id}`)">去处理</div>
               </div>
             </div>
           </div>
@@ -216,60 +224,32 @@ const initChart1= async ()=> {
 let leftArr2 = reactive<Object>({
   tableColumns1: [
     {
-      key: 'warnInfo',
-      label: '预警信息',
+      key: 'parkName',
+      label: '基地',
       width: '35%'
     },
     {
-      key: 'warnAdress',
-      label: '预警地点',
+      key: 'plotName',
+      label: '地块',
       width: '10%'
     },
     {
-      key: 'warnTime',
-      label: '报警时间',
+      key: 'startTime',
+      label: '上次操作时间',
       width: '30%'
     },
     {
-      key: 'warnType',
-      label: '预警类型',
+      key: 'planName',
+      label: '预警',
       width: '10%'
     },
     {
       key: 'warnStatus',
-      label: '预警状态',
+      label: '操作',
       width: '10%'
     }
   ],
   tableData1: [
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
-    {
-      warnInfo: '1号基地土壤湿度报警',
-      warnAdress: '1号基地',
-      warnTime: '2024/05/23 11:46:00',
-      warnType: '土壤',
-      warnStatus: '未处理'
-    },
   ]
 })
 const initChart2= async ()=>{
@@ -384,6 +364,7 @@ const getListAll=()=>{
   listAll().then(res=>{
     console.log(res,'数据')
     ListAll.value=res
+    getpageW(res[0].id)
   })
 }
 getListAll()  
@@ -403,12 +384,19 @@ const getPage=()=>{
   })
 }
 getPage()
-const getpageW=()=>{
-  pageW().then(res=>{
+const getpageW=(id:string)=>{
+  pageW({farmDefineType:id,pageNo:1,pageSize:3}).then(res=>{
     console.log(res,'农事计划')
+    leftArr2.tableData1=res.list
+    leftArr2.tableData1.forEach(item=>{
+      if(item.startTime) item.startTime=new Date().toLocaleString(item.startTime)
+    })
+
   })
 }
-getpageW()
+const tabAgriculture=(id)=>{
+  getpageW(id)
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);

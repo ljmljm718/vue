@@ -98,7 +98,7 @@
           v-model="formData.noticeEvent"  
           placeholder="请选择通知事件类型"  
           clearable   
-          class="!w-240px"  
+          class="!w-450px"  
         >  
           <el-option  
           v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
@@ -119,6 +119,7 @@
           type="datetime"
           value-format="x"
           placeholder="选择记录时间"
+          class="!w-450px"  
         />
       </el-form-item>
 

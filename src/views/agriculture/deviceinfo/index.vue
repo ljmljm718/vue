@@ -161,7 +161,7 @@
     >
       <el-table-column  type="selection" width="55" :reserve-selection="true"/>
       <!-- 子设备的列表 -->
-      <el-table-column type="expand">
+<!--      <el-table-column type="expand">
               <template #default="scope">
                 <el-tabs model-value="deviceDetail">
                   <el-tab-pane label="子设备" name="deviceDetail">
@@ -169,7 +169,7 @@
             </el-tab-pane>
           </el-tabs>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -301,7 +301,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceInfoForm ref="formRef" @success="getList()"/>
-  <DeviceSubDeviceForm ref="subDeviceFormRef" @success="getList"/>
+  <SubDeviceListForm ref="subDeviceFormRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -315,8 +315,7 @@ import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
 import {useRoute} from 'vue-router'
 import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
-import SubDeviceList from "@/views/agriculture/deviceinfo/components/SubDeviceList.vue";
-import DeviceSubDeviceForm from "@/views/agriculture/deviceinfo/components/DeviceSubDeviceForm.vue";
+import SubDeviceListForm from "@/views/agriculture/deviceinfo/components/SubDeviceListForm.vue";
 
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
@@ -595,6 +594,6 @@ const handleData = async (item: any) => {
 /** 添加子设备操作 */
 const subDeviceFormRef = ref()
 const openSubDeviceForm = () => {
-  subDeviceFormRef.value.open("调试配置",deviceId.value.toString(),deviceName.value.toString())
+  subDeviceFormRef.value.open(deviceId.value.toString())
 }
 </script>

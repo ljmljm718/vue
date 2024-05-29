@@ -3,9 +3,11 @@ import {ElTree} from "element-plus";
 import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import DeviceInfo from "@/views/agriculture/equipmentdata/index.vue"
-
+import {useRoute} from 'vue-router'
+let route=useRoute()
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceView'})
+console.log(route.query.collectionType,'router')
 
 const loading = ref(true) // 列表的加载中
 
@@ -111,7 +113,7 @@ const resetTreeSelections = () => {
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
           @updataChange='updataChange'
-          
+          :collectionType='route.query'
         />
       </ContentWrap>
     </el-col>
