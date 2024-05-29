@@ -71,7 +71,7 @@ export default defineComponent({
     const getMonitorDeviceList = async (baseId = '', plotId = '') => {
       deviceVideoList.value = []
       monitorDeviceLoading.value = true
-      const res = await getEquipmentPhotographAndVideo({baseId, plotId}).catch(() => {
+      const res = await getEquipmentPhotographAndVideo(plotId ? {baseId, plotId} : {}).catch(() => {
         monitorDeviceLoading.value = false
       })
       console.log("获取监控设备列表", res);
