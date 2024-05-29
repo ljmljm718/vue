@@ -51,6 +51,14 @@
 <script setup lang="ts">
 import {DeviceOverviewApi,DeviceOverviewVO} from '@/api/agriculture/device/overview'
 import router from "@/router";
+const deviceStatustype=ref(
+  [
+  "总数",
+  "在线",
+  "离线",
+  "故障"
+  ]
+)
 
 /** 设备总览 */
 defineOptions({ name: 'DeviceOverview' })
@@ -127,7 +135,7 @@ onMounted(() => {
       .right {
         font-size: 16px;
         font-weight: normal;
-        color: #808385;
+        color: #000000;
         cursor: pointer;
       }
     }
@@ -155,6 +163,7 @@ onMounted(() => {
           align-items: center;
           justify-content: right;
           padding-right: 8px;
+          color: #000;
           .value-backgroud {
             height: 28px;
             width: 28px;
