@@ -39,7 +39,11 @@ import {
     agriWarningRecordPage,
     farmPlanPageW,
     farmdefineList,
+
+    selectCount,
+    getCountRiceDuckSum
 } from './api'
+import router from '@/router'
 
 const {
     BigscreenAdapter,
@@ -93,11 +97,11 @@ export default defineComponent({
                 "农户": '17',
                 "大棚": '15',
                 "盆栽": '16',
-                "肥料": "19",
+                "施肥": "19",
                 "虫害": "20",
                 "浇水": "21",
-                "草害": "22",
-                "病害": "23",
+                "除草": "22",
+                "打药": "23",
                 "采收": "24"
             }
             const iconLabel = Object.keys(iconMap);
@@ -229,7 +233,9 @@ export default defineComponent({
                         <div class="inner-border grow p-3 grid grid-cols-3 grid-rows-3 gap-3" v-loading={monitorDeviceLoading.value}>
                             {
                                 deviceVideoList.value.map((item:DeviceVideoListItemType) => (
-                                    <div class="p-3 flex flex-col bg-gray-900 inner-border">
+                                    <div class="p-3 flex flex-col bg-gray-900 inner-border" onClick={() => {
+                                        router.push("/internetMonitor/deviceData/monitoring-equipment-data")
+                                    }}>
                                         <div class="art-font h-[1.4rem] tracking-wide">{ item.deviceName }</div>
                                         <video class="w-full h-[13rem]" controls autoplay src={ item.videoSrc } />
                                         <div class="flex items-center justify-between pt-2">
@@ -242,7 +248,9 @@ export default defineComponent({
                                 ))
                             }
                         </div>
-                        <div class="inner-border w-[18rem] p-3">
+                        <div class="inner-border w-[18rem] p-3" onClick={() => {
+                            router.push("/internetMonitor/deviceData/monitoring-equipment-notice")
+                        }}>
                             <div class="art-font">通知事件</div>
                             <div class="h-[53rem]" v-loading={monitorNoticeLoading.value}>
                                 {
@@ -279,14 +287,26 @@ export default defineComponent({
         const baseEquipmentList = ref<Array<any>>([])
         const getBaseEquipmentList = async () => {
             baseEquipmentLoading.value = true
-            const res = await getPondCountFrySum().catch(() => {
+            try {
+                const res = await getPondCountFrySum()
+                const res2 = await selectCount()
+                const res1 = await getCountRiceDuckSum()
+                console.log("基础设施", res);
+                baseEquipmentList.value = [
+                    { label: '池塘', value: res.pondCount + '个' },
+                    { label: '鱼苗', value: res.fryCount + '条' },
+                    { label: '鸭舍', value: res1.duckCoopCount + '间', url: '/asset/agriculturalResourcesManagement/duck-house-management' },
+                    { label: '稻鸭', value: res1.riceDuckCount, url: '/asset/agriculturalResourcesManagement/duck-house-management' },
+                    { label: '示范基地', value: res2.parkSum + '亩', url: '/asset/base/parkinfo' },
+                    { label: '基地数量', value: res2.parkCount + '个', url: '/asset/base/parkinfo' },
+                    { label: '养殖农户', value: res2.farmerCount + '户', url: '/asset/base/farmer-info' },
+                ]
+
+
+            } catch(err) {
                 baseEquipmentLoading.value = false
-            })
-            console.log("基础设施", res);
-            baseEquipmentList.value = [
-                { label: '池塘', value: res.pondCount },
-                { label: '鱼苗', value: res.fryCount }
-            ]
+            }
+            
             baseEquipmentLoading.value = false
         }
         getBaseEquipmentList()
@@ -628,7 +648,7 @@ export default defineComponent({
                     <div class="w-full h-full p-3 flex space-x-3 box-border">
                         <div class="w-[25%] flex flex-col space-y-3">
                             <BigscreenCard
-                                class="h-[100px]"
+                                class="h-[240px]"
                                 v-slots={{
                                     title: () => (
                                         <div class="art-font text-lg">基础设施</div>
@@ -637,7 +657,9 @@ export default defineComponent({
                                         <div class="grid grid-cols-2 gap-2 p-3" v-loading={baseEquipmentLoading.value}>
                                             {
                                                 baseEquipmentList.value.map(item => (
-                                                    <div class="flex justify-between p-2 inner-border">
+                                                    <div class="flex justify-between p-2 inner-border" onClick={() => {
+                                                        if (item.url) router.push(item.url)
+                                                    }}>
                                                         <div>{item.label}</div>
                                                         <div class="art-font">{item.value}</div>
                                                     </div>
@@ -654,7 +676,9 @@ export default defineComponent({
                                         <div class="art-font text-lg">生长分析</div>
                                     ),
                                     default: () => (
-                                        <div id="growthChart"></div>
+                                        <div id="growthChart" onClick={() => {
+                                            router.push("/farm_work/grow-record")
+                                        }}></div>
                                     )
                                 }}
                             />
@@ -665,7 +689,9 @@ export default defineComponent({
                                         <div class="art-font text-lg">产量分析</div>
                                     ),
                                     default: () => (
-                                        <div id="harvestChart" class="mt-2"></div>
+                                        <div id="harvestChart" class="mt-2" onClick={() => {
+                                            router.push("/farm_work/harvest-management")
+                                        }}></div>
                                     )
                                 }}
                             />
@@ -675,7 +701,12 @@ export default defineComponent({
                                 <div class="absolute left-0 top-2 w-full flex justify-center space-x-2">
                                     {
                                         plantCenterTopCardList.value.map(item => (
-                                            <div class="inner-border px-4 py-2 flex flex-col items-center" style="background:#001b4290;">
+                                            <div
+                                                class="inner-border px-4 py-2 flex flex-col items-center"
+                                                style="background:#001b4290;"
+                                                onClick={() => {
+                                                router.push("/internetMonitor/device/deviceView")
+                                            }}>
                                                 <div>{item.label}</div>
                                                 <div class="art-font">{item.value}</div>
                                             </div>
@@ -690,7 +721,13 @@ export default defineComponent({
                                         <div class="art-font text-lg">打造特色产品</div>
                                     ),
                                     default: () => (
-                                        <div class="grid grid-cols-2 gap-2 p-3" v-loading={villageProductPageLoading.value}>
+                                        <div
+                                            class="grid grid-cols-2 gap-2 p-3"
+                                            v-loading={villageProductPageLoading.value}
+                                            onClick={() => {
+                                                router.push("/pcg/production/village-product")
+                                            }}
+                                        >
                                             {
                                                 villageProductPageList.value.map(item => (
                                                     <div class="inner-border flex p-3">
@@ -728,7 +765,9 @@ export default defineComponent({
                                         <div class="art-font text-lg">物联网设备</div>
                                     ),
                                     default: () => (
-                                        <div class="p-4" v-loading={deviceInfoLoading.value}>
+                                        <div class="p-4" v-loading={deviceInfoLoading.value}  onClick={() => {
+                                            router.push("/internetMonitor/device/overview")
+                                        }}>
                                             <div class="flex justify-between inner-border p-1 px-2">
                                                 <div class="art-font">物联网设备</div>
                                                 <div class="text-sm">共<span class="art-font px-1">{deviceInfoTotal.value}</span>台</div>
@@ -779,8 +818,12 @@ export default defineComponent({
                                     ),
                                     default: () => (
                                         <>
-                                            <div class="art-font px-3 py-1 pt-2">气象监测</div>
-                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={weatherLoading.value}>
+                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=气象站")
+                                            }}>气象监测</div>
+                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={weatherLoading.value} onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=气象站")
+                                            }}>
                                                 {
                                                     weatherList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
@@ -796,8 +839,12 @@ export default defineComponent({
                                                     ))
                                                 }
                                             </div>
-                                            <div class="art-font px-3 py-1 pt-2">土壤墒情</div>
-                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={soilLoading.value}>
+                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=土壤监测")
+                                            }}>土壤墒情</div>
+                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={soilLoading.value} onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=土壤监测")
+                                            }}>
                                                 {
                                                     soilList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
@@ -813,8 +860,12 @@ export default defineComponent({
                                                     ))
                                                 }
                                             </div>
-                                            <div class="art-font px-3 py-1 pt-2">水质监测</div>
-                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={waterLoading.value}>
+                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=水质监测")
+                                            }}>水质监测</div>
+                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={waterLoading.value} onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=水质监测")
+                                            }}>
                                                 {
                                                     waterList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
@@ -1119,7 +1170,9 @@ export default defineComponent({
                                             <div class="art-font text-lg">预警信息</div>
                                         ),
                                         default: () => (
-                                            <div class="p-5 h-[380px]" v-loading={preWarnLoading.value}>
+                                            <div class="p-5 h-[380px]" v-loading={preWarnLoading.value} onClick={() => {
+                                                router.push("/internetMonitor/warn/agri-warning-record")
+                                            }}>
                                                 <ElTable
                                                     data={preWarnList.value}
                                                     rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
@@ -1161,7 +1214,9 @@ export default defineComponent({
                                             <div class="art-font text-lg">报警信息处理情况</div>
                                         ),
                                         default: () => (
-                                            <div class="p-5 h-[380px] flex space-x-3">
+                                            <div class="p-5 h-[380px] flex space-x-3" onClick={() => {
+                                                router.push("/internetMonitor/warn/agri-warning-record")
+                                            }}>
                                                 <div class="w-[140px]">
                                                     {
                                                         warnHandleInfo.value.map(item => (
@@ -1217,7 +1272,9 @@ export default defineComponent({
                                             <div class="art-font text-lg">预警分布</div>
                                         ),
                                         default: () => (
-                                            <div id="preWarnLayoutChart"></div>
+                                            <div id="preWarnLayoutChart" onClick={() => {
+                                                router.push("/internetMonitor/warn/agri-warning-record")
+                                            }}></div>
                                         )
                                     }}
                                 />
@@ -1230,7 +1287,9 @@ export default defineComponent({
                                             <div class="art-font text-lg">虫害数量</div>
                                         ),
                                         default: () => (
-                                            <div id="bugCountChart"></div>
+                                            <div id="bugCountChart" onClick={() => {
+                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=虫情监测")
+                                            }}></div>
                                         )
                                     }}
                                 />
@@ -1244,7 +1303,9 @@ export default defineComponent({
                                         ),
                                         default: () => (
                                             <div class="p-5">
-                                                <div class="flex space-x-4 pb-2">
+                                                <div class="flex space-x-4 pb-2" onClick={() => {
+                                                    router.push("/farm_work/farmManage/farm-plan")
+                                                }}>
                                                     {
                                                         farmTopList.value.map(item => (
                                                             <div class="flex flex-col items-center">
@@ -1349,7 +1410,7 @@ export default defineComponent({
 }
 
 #growthChart, #harvestChart {
-    height: 340px;
+    height: 270px;
 }
 
 #preWarnLayoutChart, #bugCountChart {

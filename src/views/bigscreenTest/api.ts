@@ -155,3 +155,19 @@ export const farmdefineList = async () => {
     url: '/agri/farm-define/listAll'
   })
 }
+
+
+// 补充
+// 左一-基础设施-基地面积，基地数量-养殖农户个数
+export const selectCount = async () => {
+  return await request.get({
+    url: '/agriculture/park-info/selectCount'
+  })
+}
+
+// 【左一-基础设施】鸭舍数量，稻鸭数量
+export const getCountRiceDuckSum = async () => {
+  return await request.get({
+    url: '/agri/duck-house-management/getCountRiceDuckSum'
+  })
+}
