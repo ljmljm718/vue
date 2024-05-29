@@ -15,6 +15,7 @@ import {
     ElTable,
     ElTableColumn
 } from 'element-plus'
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
     getParkTree,
     getEquipmentPhotographAndVideo,
@@ -1369,15 +1370,19 @@ export default defineComponent({
                         backgroundImage={headerBg}
                         v-slots={{
                             left: () => (
-                                <BigscreenTab
-                                    v-model={activeTab.value}
-                                    options={[
-                                        { key: 'base', label: '基地导览' },
-                                        { key: 'plant', label: '智慧种植' },
-                                        { key: 'risk', label: '风险预警' }
-                                    ]}
-                                    onChange={handleTabChange}
-                                />
+                                <div class="flex space-x-4">
+                                    <BigscreenTab
+                                        v-model={activeTab.value}
+                                        options={[
+                                            { key: 'base', label: '基地导览' },
+                                            { key: 'plant', label: '智慧种植' },
+                                            { key: 'risk', label: '风险预警' }
+                                        ]}
+                                        onChange={handleTabChange}
+                                    />
+
+                                    <BackOrHome />
+                                </div>
                             ),
                             right: () => (
                                 <BigScreenTime />
