@@ -319,6 +319,7 @@ import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 //导入基地列表
 import {ParkInfoApi} from "@/api/agriculture/parkinfo";
 import {useRoute} from 'vue-router'
+import {defineProps} from 'vue'
 // import {defineExpose} from 'vue'
 // let props=defineExpose({
 //   currCategory:''
@@ -329,6 +330,7 @@ import {useRoute} from 'vue-router'
 // })
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
+
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -366,7 +368,11 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
-})
+  collectionType:{
+    type:Object
+  }
+},
+)
 // 监听父组件category变化
 watch(() => props.currCategory,
   () => {
@@ -384,6 +390,7 @@ watch(() => props.currCategory,
     }
     handleQuery()
   })
+
 /**
  * 设备分类级联选择器
  */
@@ -444,7 +451,10 @@ const getList = async () => {
     loading.value = false
   }
 }
-
+if(props.collectionType){
+  queryParams.collectionType=props.collectionType.collectionType
+  getList()
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1

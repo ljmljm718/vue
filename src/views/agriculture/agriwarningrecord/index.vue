@@ -434,7 +434,7 @@ import {
 } from "@/api/agriculture/monitoringequipmentnotice";
 import MonitoringEquipmentNoticeForm
   from "@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue";
-
+import {useRoute} from 'vue-router'
 /** 预警记录 列表 */
 defineOptions({name: 'AgriWarningRecord'})
 
@@ -451,6 +451,7 @@ const queryParams = reactive({
   warnStatus: undefined,
   deviceType: undefined,
   warnType: undefined,
+  id: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -459,6 +460,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
+    console.log(1)
     const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -466,7 +468,11 @@ const getList = async () => {
     loading.value = false
   }
 }
-
+let route=useRoute()
+if(route.query.id){
+  queryParams.id=route.query.id
+  getList()
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
