@@ -6,7 +6,7 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-           <el-button
+           <!-- <el-button
             type="primary"
             :icon="FolderChecked"
             plain
@@ -14,7 +14,7 @@
             disabled
           >
             保存
-          </el-button>
+          </el-button> -->
           <el-button
             type="success"
             :icon="TopRight"

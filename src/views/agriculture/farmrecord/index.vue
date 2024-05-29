@@ -306,7 +306,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" fixed="right" align="center" width="120">
+      <el-table-column label="操作" fixed="right" align="center" width="150">
         <template #default="scope">
           <el-button
             link
@@ -315,6 +315,13 @@
             v-hasPermi="['agri:farm-record:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('select', scope.row.id)"
+          >
+            详情
           </el-button>
           <el-button
             link
@@ -412,9 +419,14 @@ const resetQuery = () => {
 }
 
 /** 添加/修改操作 */
+const router = useRouter()
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  if(type == 'create'){
+    router.push('/farm_work/farmManage/farm-record/CreateOrUpdate?type='+type)
+  }else{
+    router.push('/farm_work/farmManage/farm-record/CreateOrUpdate?type='+type+'&id='+id)
+  }
 }
 
 /** 删除按钮操作 */

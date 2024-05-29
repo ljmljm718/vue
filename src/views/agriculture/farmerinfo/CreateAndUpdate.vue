@@ -6,7 +6,7 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-           <el-button
+           <!-- <el-button
             type="primary"
             :icon="FolderChecked"
             plain
@@ -14,7 +14,7 @@
             :disabled="isShow"
           >
             保存
-          </el-button>
+          </el-button> -->
           <el-button
             type="success"
             :icon="TopRight"
@@ -152,11 +152,14 @@
 <!--      </el-form-item>-->
     </el-form>
         <!-- 截至 -->
-        </el-scrollbar>
+      </el-scrollbar>
       </template>
     </EditFrame>
-
   </div>
+   <!--  选择基地-->
+   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+    <!--  选择大棚-->
+   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 <script setup lang="ts">
 import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
@@ -165,6 +168,8 @@ import { FarmerInfoApi, FarmerInfoVO } from '@/api/agriculture/farmerinfo'
 import { ParkDetailVO } from '@/api/agriculture/parkdetail'
 import { ParkInfoVO } from '@/api/agriculture/parkinfo'
 import {Refresh,TopRight} from '@element-plus/icons-vue'
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 
 /** 农户管理 表单 */
 defineOptions({ name: 'FarmerInfoForm' })
