@@ -1,13 +1,19 @@
 <template>
   <div class="w-full">
-    <el-radio-group v-model="tabVal" size="large">
-      <el-radio-button
-        v-for="item in tabOptions"
-        :key="item.name"
-        :label="item.title"
-        :value="item.name"
-      />
-    </el-radio-group>
+    <div class="flex space-x-2">
+      <el-button type="primary" size="default" @click="router.go(-1)">
+        返回<el-icon><Back /></el-icon>
+      </el-button>
+      <el-radio-group v-model="tabVal" size="default">
+        <el-radio-button
+          v-for="item in tabOptions"
+          :key="item.name"
+          :label="item.title"
+          :value="item.name"
+        />
+      </el-radio-group>
+    </div>
+    
     <div class="w-full flex space-x-2 py-2" v-if="tabVal !== '实时拍摄'">
       <div class="flex flex-col space-y-2 grow">
         <video :src="currentVideoLink" class="w-full bg-black" autoplay muted></video>
@@ -66,7 +72,7 @@
           <div class="pb-2">{{ item.deviceName }}</div>
           <img :src="item.capturedImage" alt="" class="w-full aspect-video object-fill" />
           <div class="flex justify-between">
-            <span>{{ formatTime(item.reserveTwo, 'yyyy-MM-dd') }}</span>
+            <span>{{ formatTime(item.reserveTwo, 'yyyy-MM-dd HH:mm:ss') }}</span>
             <span
               class="lg:hidden 2xl:block"
             >{{ item.monitoringBaseName }}-{{ item.monitoringPlotName }}</span>
@@ -92,6 +98,7 @@ import {
 } from './api'
 defineOptions({ name: 'InfoDetail' })
 const route = useRoute()
+const router = useRouter()
 const tabVal = ref("设备视频")
 const tabOptions = ref<Array<any>>([
   {

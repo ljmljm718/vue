@@ -12,6 +12,10 @@ import {
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 import {
+    ElTable,
+    ElTableColumn
+} from 'element-plus'
+import {
     getParkTree,
     getEquipmentPhotographAndVideo,
     monitoringEquNoticePage,
@@ -24,7 +28,7 @@ import {
     getEquipmentCountSumOrderByType,
     villageProductPage,
     environmentalDataHomePageA,
-    environmentalDataHomePageB,
+    // environmentalDataHomePageB,
     environmentalDataHomePageC,
     waterQualityData,
 
@@ -33,6 +37,8 @@ import {
     getPestLevelChart,
     warningNum,
     agriWarningRecordPage,
+    farmPlanPageW,
+    farmdefineList,
 } from './api'
 
 const {
@@ -44,7 +50,7 @@ const {
     BigscreenCard,
 
     BigscreenTab,
-    BigscreenSelector,
+    // BigscreenSelector,
     BigscreenTable,
 } = BigscreenBuilder
 
@@ -86,7 +92,13 @@ export default defineComponent({
                 "种植面积": '18',
                 "农户": '17',
                 "大棚": '15',
-                "盆栽": '16'
+                "盆栽": '16',
+                "肥料": "19",
+                "虫害": "20",
+                "浇水": "21",
+                "草害": "22",
+                "病害": "23",
+                "采收": "24"
             }
             const iconLabel = Object.keys(iconMap);
             let key = 'default'
@@ -131,7 +143,9 @@ export default defineComponent({
         const getMonitorDeviceList = async (baseId = '', plotId = '') => {
             deviceVideoList.value = []
             monitorDeviceLoading.value = true
-            const res = await getEquipmentPhotographAndVideo(plotId ? {baseId, plotId} : {}).catch(() => {
+            const res = await getEquipmentPhotographAndVideo(
+                plotId ? {baseId, plotId} : baseId ? { baseId } : {}
+            ).catch(() => {
                 monitorDeviceLoading.value = false
             })
             console.log("获取监控设备列表", res);
@@ -165,6 +179,11 @@ export default defineComponent({
         getMonitorNoticeList()
 
         const noticeList = ref<Array<NoticeItemType>>([])
+        const handleMenuChange = (key: string, keyPath: string[]) => {
+            console.log(key, keyPath)
+            activeBasePark.value = ''
+            if (keyPath.length === 1) getMonitorDeviceList(keyPath[0], '')
+        }
         // 基地导览页面部分
         const baseTabPage = () => {
             return (
@@ -178,6 +197,8 @@ export default defineComponent({
                                 default-active={activeBasePark.value}
                                 text-color="#fff"
                                 onSelect={handleMenuActive}
+                                onOpen={handleMenuChange}
+                                onClose={handleMenuChange}
                             >
                                 {
                                     baseParkTreeList.value.map(item => {
@@ -251,7 +272,7 @@ export default defineComponent({
             )
         }
 
-        const runtimeBase = ref('')
+        // const runtimeBase = ref('')
         // 智慧种植部分
         // 基础设施
         const baseEquipmentLoading = ref<boolean>(false)
@@ -261,9 +282,10 @@ export default defineComponent({
             const res = await getPondCountFrySum().catch(() => {
                 baseEquipmentLoading.value = false
             })
+            console.log("基础设施", res);
             baseEquipmentList.value = [
-                { label: '池塘', value: res['池塘'] },
-                { label: '鱼苗', value: res['鱼苗'] }
+                { label: '池塘', value: res.pondCount },
+                { label: '鱼苗', value: res.fryCount }
             ]
             baseEquipmentLoading.value = false
         }
@@ -475,13 +497,20 @@ export default defineComponent({
             const res = await getEquipmentCountSumOrderByType().catch(() => {
                 deviceInfoLoading.value = false
             })
+            console.log('设备信息', res);
             const buildArr:Array<any> = []
+            const kayMap = {
+                "atmosphere": "气象监测",
+                "growthMonitoring": "生长监控",
+                "soil": "土壤监控",
+                "waterQuality": "水质监测"
+            }
             for (let key in res) {
                 buildArr.push({
-                    deviceKind: key,
-                    total: res[key]['总数'],
-                    online: res[key]['在线'],
-                    offline: res[key]['离线']
+                    deviceKind: kayMap[key],
+                    total: res[key]['totality'],
+                    online: res[key]['online'],
+                    offline: res[key]['offline']
                 })
             }
             deviceInfoLoading.value = false
@@ -827,6 +856,7 @@ export default defineComponent({
             console.log("预警列表", res);
             preWarnList.value = res.map(item => ({
                 ...item,
+                warnLocation: item.warnLocation ? item.warnLocation : '未知',
                 warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss'),
                 warnStatus: item.warnStatus === '0' ? '未处理' : '已处理'
             }))
@@ -1047,13 +1077,35 @@ export default defineComponent({
         // 指挥调度
         const commandLoading = ref<boolean>(false)
         const commandInfoList = ref<Array<any>>([])
-        const getCommandInfoList = () => {
+        const getCommandInfoList = async () => {
             commandLoading.value = true
-            // const res = await  这个接口好像还没有
+            const { list = [], total = 0} = await farmPlanPageW({
+                pageNo: 1, pageSize: 7
+            }).catch(() => {
+                commandLoading.value = false
+            })
+            console.log("指挥调度", list);
             commandLoading.value = false
-            commandInfoList.value = []
+            commandInfoList.value = list.map(item => ({ ...item, startTime: formatTime(item.startTime, 'yyyy-MM-dd HH:mm:ss') }))
+            console.log("total", total);
         }
         getCommandInfoList()
+
+        // 指挥调度 上面
+        const farmTopLoading = ref<boolean>(false)
+        const farmTopList = ref<Array<any>>([])
+        const getFarmTopList = async () => {
+            farmTopLoading.value = true
+            const res = await farmdefineList().catch(() => {
+                farmTopLoading.value = false
+            })
+            farmTopLoading.value = false
+            farmTopList.value = res.map(item => ({
+                icon: 'icon-' + getIconClass(item.defineName),
+                label: item.defineName
+            }))
+        }
+        getFarmTopList()
         const riskTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
@@ -1067,38 +1119,35 @@ export default defineComponent({
                                             <div class="art-font text-lg">预警信息</div>
                                         ),
                                         default: () => (
-                                            <div class="p-3 h-[380px]">
-                                                <BigscreenTable
-                                                    columns={[
-                                                        {
-                                                            key: 'warnInfo',
-                                                            label: '预警信息',
-                                                            width: '14rem'
-                                                        },
-                                                        {
-                                                            key: 'warnLocation',
-                                                            label: '预警地点',
-                                                            width: '14rem'
-                                                        },
-                                                        {
-                                                            key: 'warnTime',
-                                                            label: '预警时间',
-                                                            width: '7rem'
-                                                        },
-                                                        {
-                                                            key: 'warnType',
-                                                            label: '预警类型',
-                                                            width: '9rem'
-                                                        },
-                                                        {
-                                                            key: 'warnStatus',
-                                                            label: '预警状态',
-                                                            width: '4rem'
-                                                        },
-                                                    ]}
-                                                    dataList={preWarnList.value}
-                                                    loading={preWarnLoading.value}
-                                                />
+                                            <div class="p-5 h-[380px]" v-loading={preWarnLoading.value}>
+                                                <ElTable
+                                                    data={preWarnList.value}
+                                                    rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
+                                                    headerCellStyle={{ color: '#fff', backgroundColor: '#064477' }}
+                                                    height="340px"
+                                                    style="background-color: transparent;"
+                                                >
+                                                    <ElTableColumn
+                                                        label="预警信息"
+                                                        property="warnInfo"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="预警地点"
+                                                        property="warnLocation"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="预警时间"
+                                                        property="warnTime"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="预警类型"
+                                                        property="warnType"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="预警状态"
+                                                        property="warnStatus"
+                                                    />
+                                                </ElTable>
                                             </div>
                                         )
                                     }}
@@ -1112,7 +1161,7 @@ export default defineComponent({
                                             <div class="art-font text-lg">报警信息处理情况</div>
                                         ),
                                         default: () => (
-                                            <div class="p-3 h-[380px] flex space-x-3">
+                                            <div class="p-5 h-[380px] flex space-x-3">
                                                 <div class="w-[140px]">
                                                     {
                                                         warnHandleInfo.value.map(item => (
@@ -1123,27 +1172,36 @@ export default defineComponent({
                                                         ))
                                                     }
                                                 </div>
-                                                <BigscreenTable
-                                                    columns={[
-                                                        {
-                                                            key: 'warnInfo',
-                                                            label: '预警信息',
-                                                            width: '23rem'
-                                                        },
-                                                        {
-                                                            key: 'warnTime',
-                                                            label: '预警时间',
-                                                            width: '9rem'
-                                                        },
-                                                        {
-                                                            key: 'operate',
-                                                            label: '操作',
-                                                            width: '11rem'
-                                                        },
-                                                    ]}
-                                                    dataList={warnInfoHandleList.value}
-                                                    loading={warnInfoHandleLoading.value}
-                                                />
+                                                <ElTable
+                                                    v-loading={warnInfoHandleLoading.value}
+                                                    data={warnInfoHandleList.value}
+                                                    rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
+                                                    headerCellStyle={{ color: '#fff', backgroundColor: '#064477' }}
+                                                    headerRowStyle={{ backgroundColor: '#064477' }}
+                                                    height="340px"
+                                                    style="background-color: transparent;"
+                                                >
+                                                    <ElTableColumn
+                                                        label="预警信息"
+                                                        property="warnInfo"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="预警时间"
+                                                        property="warnTime"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="操作"
+                                                        property="operation"
+                                                        formatter={
+                                                            (e) => (
+                                                                <div class="flex space-x-2">
+                                                                    <el-button link type="primary">忽略</el-button>
+                                                                    <el-button link type="primary">去处理</el-button>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    />
+                                                </ElTable>
                                             </div>
                                         )
                                     }}
@@ -1185,36 +1243,54 @@ export default defineComponent({
                                             <div class="art-font text-lg">指挥调度</div>
                                         ),
                                         default: () => (
-                                            <div class="p-3">
-                                                <BigscreenTable
-                                                    columns={[
-                                                        {
-                                                            key: 'warnInfo',
-                                                            label: '基地',
-                                                        },
-                                                        {
-                                                            key: 'warnTime',
-                                                            label: '地块',
-                                                        },
-                                                        {
-                                                            key: 'operate',
-                                                            label: '上次施肥时间',
-                                                            width: '8rem'
-                                                        },
-                                                        {
-                                                            key: 'operate',
-                                                            label: '施肥预警',
-                                                            width: '5rem'
-                                                        },
-                                                        {
-                                                            key: 'operate',
-                                                            label: '操作',
-                                                            width: '4rem'
-                                                        },
-                                                    ]}
-                                                    dataList={commandInfoList.value}
-                                                    loading={commandLoading.value}
-                                                />
+                                            <div class="p-5">
+                                                <div class="flex space-x-4 pb-2">
+                                                    {
+                                                        farmTopList.value.map(item => (
+                                                            <div class="flex flex-col items-center">
+                                                                <div class={[item.icon]} style="width: 2rem;height: 2rem;"></div>
+                                                                <div>{item.label}</div>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                                <ElTable
+                                                    v-loading={commandLoading.value}
+                                                    data={commandInfoList.value}
+                                                    rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
+                                                    headerCellStyle={{ color: '#fff', backgroundColor: '#064477' }}
+                                                    headerRowStyle={{ backgroundColor: '#064477' }}
+                                                    height="300px"
+                                                    style="background-color: transparent;"
+                                                >
+                                                    <ElTableColumn
+                                                        label="基地"
+                                                        property="parkName"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="地块"
+                                                        property="plotName"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="上次施肥时间"
+                                                        property="startTime"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="施肥预警"
+                                                        property="planState"
+                                                    />
+                                                    <ElTableColumn
+                                                        label="操作"
+                                                        property="operation"
+                                                        formatter={
+                                                            (e) => (
+                                                                <div class="flex space-x-2">
+                                                                    <el-button link type="primary">去施肥</el-button>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    />
+                                                </ElTable>
                                             </div>
                                         )
                                     }}
@@ -1285,12 +1361,16 @@ export default defineComponent({
     background-size: contain;
 }
 
-@for $i from 1 through 18 {
+@for $i from 1 through 24 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
     background-size: 100% auto;
     width: 1.2rem;
     height: 1.2rem;
   }
+}
+
+.table-row {
+    background-color: #b9b9b9;
 }
 </style>

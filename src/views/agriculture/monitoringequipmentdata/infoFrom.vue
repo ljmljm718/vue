@@ -91,11 +91,6 @@ export default defineComponent({
       return (
         <>
           <div class="flex flex-row-reverse">
-            <el-select v-model={layoutSelected.value} placeholder="Select" style="width: 240px" onChange={changeLayout}>
-              <el-option key="grid-cols-2" label="2" value="grid-cols-2" />
-              <el-option key="grid-cols-3" label="3" value="grid-cols-3" />
-              <el-option key="grid-cols-4" label="4" value="grid-cols-4" />
-            </el-select>
           </div>
           <div class="w-full h-full box-border">
             <div class=" w-full h-full p-3 flex space-x-3 box-border">

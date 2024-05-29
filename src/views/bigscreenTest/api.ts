@@ -139,3 +139,19 @@ export const agriWarningRecordPage = async (params) => {
     params
   })
 }
+
+
+// 下三-农事活动（1）农事计划
+export const farmPlanPageW = async (params) => {
+  return await request.get({
+    url: '/agri/farm-plan/pageW',
+    params
+  })
+}
+
+// 下三-农事活动(0)农事定义全部
+export const farmdefineList = async () => {
+  return await request.get({
+    url: '/agri/farm-define/listAll'
+  })
+}
