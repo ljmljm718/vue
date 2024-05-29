@@ -290,7 +290,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
 import SelectFarmPlan from "@/views/agriculture/farmrecord/SelectFarmPlan.vue";
-
+import {createA} from '@/api/bigscreenMingYue'
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
 const isShow = ref<boolean>(false);//用来控制详情时不显示
@@ -456,6 +456,46 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
+  if(route.query.cropType){
+    createA({
+      batchCode:formData.value.batchCode,
+      belongPark:formData.value.belongPark,
+      belongPlot:formData.value.belongPlot,
+      cropId:formData.value.cropId,
+      cropName:formData.value.cropName,
+      cropType:formData.value.cropType,
+      farmDefineType:formData.value.farmDefineType,
+      parkName:formData.value.parkName,
+      personId:formData.value.personId,
+      personName:formData.value.personName,
+      plotName:formData.value.plotName,
+      recordTime:new Date().getTime(formData.value.recordTime),
+    }).then(res=>{
+      formData.value = {
+    id: undefined,
+    planId: undefined,
+    planName: undefined,
+    belongPark: undefined,
+    parkName: undefined,
+    belongPlot: undefined,
+    plotName: undefined,
+    cropId: undefined,
+    cropName: undefined,
+    cropType: undefined,
+    planState: undefined,
+    personId: undefined,
+    personName: undefined,
+    startTime: undefined,
+    endTime: undefined,
+    recordTime: undefined,
+    planArea: undefined,
+    recordArea: undefined,
+    recordState: undefined,
+  }
+  message.success(t('common.createSuccess'))
+  router.push('/bigscreenMYFX')
+    })
+  }else{
   // 校验表单
   await formRef.value.validate()
   // 提交请求
@@ -476,6 +516,8 @@ const submitForm = async () => {
   } finally {
     formLoading.value = false
   }
+  }
+  
 }
 
 /** 重置表单 */
@@ -507,6 +549,14 @@ const resetForm = () => {
 // 本地保存表单
 const route = useRoute()
 const router = useRouter()
+console.log(route)
+if(route.query){
+  
+  formData.value={...route.query}
+  formData.value.recordArea=route.query.area
+  formData.value.recordTime= new Date().toLocaleString(route.query.recordTime) 
+
+}
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
 const FORMPAGE_NAME = ''
@@ -528,7 +578,9 @@ const localSave = () => {
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
+    if(!route.query){
       await open(route.query.type,route.query.id);
+    }
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
