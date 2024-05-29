@@ -28,7 +28,7 @@
             :data="treeList"
             :props="defaultProps"   
             default-expand-all   
-            accordion
+            :expand-on-click-node="false"
             @node-click="handleNodeClick"
           />
         </div>
@@ -124,7 +124,7 @@ const options2 = [
     label: '经过',
   },
 ]
-let dataVal=ref('')
+let dataVal=ref([])
 let plotId=ref('')
 let baseId=ref('')
 let pageList=ref([])
@@ -141,7 +141,7 @@ const getGetParkTree=()=>{
 getGetParkTree()
 const getGetPage=(monitoringPlotId='',monitoringBaseId='',noticeEvent='',recordTime=[])=>{
   console.log(recordTime,'recordTime')
-  getPage({monitoringPlotId,monitoringBaseId,noticeEvent,pageNo:'1',pageSize:'10'}).then(res=>{
+  getPage({monitoringPlotId,monitoringBaseId,noticeEvent,pageNo:'1',pageSize:'10',recordTime}).then(res=>{
     console.log(res,'通知事件')
     pageList.value=res.list
   })
@@ -149,13 +149,14 @@ const getGetPage=(monitoringPlotId='',monitoringBaseId='',noticeEvent='',recordT
 getGetPage()
 const selectCli=(e)=>{
   console.log(e,'事件')
+  dataVal.value=[]
   selectVal.value=e=='全部事件'?'':e
   e=='全部事件'?getGetPage():getGetPage(plotId.value,baseId.value,selectVal.value,dataVal.value)
 }
 const dateChange=(e)=>{
   console.log(e,'shijian')
   dataVal.value=e
-  getGetPage(plotId.value,baseId.value,selectVal.value,dataVal.value)
+  getGetPage(plotId.value,baseId.value,selectVal.value,e)
 
 }
 const treeList=ref([])

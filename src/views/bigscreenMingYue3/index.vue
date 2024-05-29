@@ -26,35 +26,35 @@
           <div class="box-title">基础设施</div>
           <div class="box-item flex justify-evenly" style=" flex-direction: column;">
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
-              <div>示范基地</div>
-              <div>{{selectCountObj?.parkSum}}亩</div>
-              <div>鸭舍</div>
-              <div>{{DuckSumObj?.duckCoopCount}}所</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/parkinfo')">示范基地</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/parkinfo')">{{selectCountObj?.parkSum}}亩</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/agriculturalResourcesManagement/duck-house-management')">鸭舍</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/agriculturalResourcesManagement/duck-house-management')">{{DuckSumObj?.duckCoopCount}}所</div>
             </div>
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
-              <div>基地数量</div>
-              <div>{{selectCountObj?.parkCount}}</div>
-              <div>稻鸭</div>
-              <div>{{DuckSumObj?.riceDuckCount}}只</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/parkinfo')" >基地数量</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/parkinfo')" >{{selectCountObj?.parkCount}}</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/agriculturalResourcesManagement/duck-house-management')" >稻鸭</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/agriculturalResourcesManagement/duck-house-management')" >{{DuckSumObj?.riceDuckCount}}只</div>
             </div>
             <div class="flex justify-evenly items-center color-[#c1c1c1]">
-              <div>养殖农户</div>
-              <div>{{selectCountObj.farmerCount}}户</div>
-              <div>池塘</div>
-              <div>{{frySumObj.pondCount}}</div>
-              <div>稻鱼</div>
-              <div>{{frySumObj.fryCount}}尾</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/farmer-info')" >养殖农户</div>
+              <div style='cursor: pointer;' @click="router.push('/asset/base/farmer-info')" >{{selectCountObj.farmerCount}}户</div>
+              <div  >池塘</div>
+              <div >{{frySumObj.pondCount}}</div>
+              <div >稻鱼</div>
+              <div  >{{frySumObj.fryCount}}尾</div>
             </div>
           </div>
         </div>
         <div>
-          <div class="box-title">生长分析</div>
+          <div class="box-title" style="cursor:pointer" @click="router.push('/farm_work/grow-record')" >生长分析</div>
           <div class="box-item">
             <div id="chart1"></div>
           </div>
         </div>
         <div>
-          <div class="box-title">产量分析</div>
+          <div class="box-title"  style="cursor:pointer" @click="router.push('/farm_work/harvest-management')" >产量分析</div>
           <div class="box-item">
             <div id="chart2"></div>
           </div>
@@ -63,23 +63,23 @@
       <div class="content-main-item middle-main-wrapper">
                 <div class="main-top">
                   <div class="top-warper color-black" v-for="item,index in countSum" :key="index">
-                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='设备总数'"><div>设备总数</div> <div>{{item.value}}</div></div>
-                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='在线设备'"><div>在线数量</div> <div>{{item.value}}</div></div>
-                    <div class="flex justify-evenly items-center h-full" v-if="item.name=='离线设备'"><div>离线数量</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" style="cursor:pointer" @click="router.push('/internetMonitor/device/deviceView')" v-if="item.name=='设备总数'"><div>设备总数</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" style="cursor:pointer" @click="router.push('/internetMonitor/device/deviceView')"  v-if="item.name=='在线设备'"><div>在线数量</div> <div>{{item.value}}</div></div>
+                    <div class="flex justify-evenly items-center h-full" style="cursor:pointer" @click="router.push('/internetMonitor/device/deviceView')"  v-if="item.name=='离线设备'"><div>离线数量</div> <div>{{item.value}}</div></div>
                     <div class="flex justify-evenly items-center h-full" v-if="item.name=='报警设备'"><div>故障数量</div> <div>{{item.value}}</div></div>
                   </div>
                 </div>
                 <div class="middle-main-item">
                 </div>
                 <div class="middle-main-footer ">
-                  <div class="box-title">特色产品</div>
+                  <div class="box-title" style="cursor: pointer;" @click="router.push('/pcg/production/village-product')">特色产品</div>
                   <el-carousel indicator-position="outside" class="box-item w-full h-full">
                     <el-carousel-item v-for="item,index in mainFootList" :key="index" class="flex w-full p-15px" style="box-sizing:border-box;">
                     <div class="flex ">
                       <div class='w-48% h-100% flex justify-evenly'>
                         <img :src="item.photo" class="w-65% h-150px" alt=""/>
                         <div class="w-33% h-70% flex justify-evenly" style="flex-direction:column">
-                          <div>产品名称：{{item.parkDetail}}</div>
+                          <div>产品名称：{{item.parkDetail}}</div> 
                           <div>产品批次：{{item.specifications}}</div>
                           <div>产品年份: {{item.years}}</div>
                         </div>
@@ -100,7 +100,7 @@
             </div>
       <div class="right">
         <div>
-          <div class="box-title">物联网设备</div>
+          <div class="box-title" style="cursor:pointer" @click="router.push('/internetMonitor/device/overview')">物联网设备</div>
           <div class="box-item">
             <div class="w-full flex justify-evenly items-center color-[#fff]"><div>总数</div><div class="color-[#4584c0]">{{countTotal}}<span>台</span></div></div>
             <div class="grid gap-10px w-full color-[#c1c1c1]" style="height: calc(100% - 20px); grid-template-columns: 50% calc(50% - 10px); grid-template-rows: 43% calc(57% - 30px);">
@@ -149,7 +149,7 @@
           </div>
           <div class="box-item " style="overflow-y: auto;">
             <div class="right2-warper w-full h-30% mb-10px  p-10px" v-for="item,index in homePageList" :key="index">
-              <div class="warper-top w-100px color-[#fff]" style="text-align: center;font-family: 'TitleFont';">{{item.name}}</div>
+              <div class="warper-top w-100px color-[#fff]" @click="router.push(`/internetMonitor/deviceData/equipment-data?collectionType=${item.name}`)" style="cursor:pointer;text-align: center;font-family: 'TitleFont';">{{item.name}}</div>
               <div class="right2-item flex " style="height: calc(100% - 40px);font-size:14px; color: #c1c1c1;margin-top: 15px;">
                 <div v-for="itm,inde in item.list" :key="inde" class="warper-item flex items-center justify-evenly mr-8px"><div>{{itm.monitoringType}}</div> <div >{{itm.dataValue}}<span style="font-size:13px;">{{itm.yyUnit}}</span> </div> </div>
               </div>
@@ -320,26 +320,30 @@ const initChart2= async ()=>{
   let duck=[]
   let fish=[]
   let rice=[]
-  let time=Array.from(new Set(res.map(item=>item.time))).sort((a,b)=>a-b)
+  let time=Array.from(new Set(res.map(item=>item.time)))
   res.forEach(item=>{
     if(item.variety=='duck') duck.push(item)
     else if(item.variety=='fish') fish.push(item)
     else if(item.variety=='rice') rice.push(item)
   })
   console.log(duck,fish,rice,'产量')
-  function fn(val){
-    console.log(val,'val')
-    val.forEach((item,index)=>{
-      
-      console.log(time.indexOf(item.time),'sadsd')
+  let time2=time.sort((a,b)=>a-b)
+  function fn(duck){
+    let time=duck.map(item=>item.time)
+    time2.forEach(item=>{
+       console.log(time.indexOf(item),'itemdasd')
+       if(item==time[0]){
+       }
     })
+   
+    console.log(duck,'稻鸭')
   }
   fn(duck)
-      initChartStatic(
+  initChartStatic(
         "chart2",
         generateBaseOptions({
           xAxis: {
-            data:time,
+            data:time.sort((a,b)=>a-b),
             axisLine: {
               show: true,
               lineStyle: {
