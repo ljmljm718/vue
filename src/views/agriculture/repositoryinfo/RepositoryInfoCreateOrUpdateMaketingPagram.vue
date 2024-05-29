@@ -35,9 +35,11 @@
         :rules="formRules"
         label-width="60px"
         v-loading="formLoading"
+        class="demo-form-inline"
+        :inline="true"
       >
-        <div class="grid grid-cols-4 gap-2">
-          <div class="col-span-3">
+      <el-row>
+      <el-col :span="20">
             <el-form-item
               label="分类"
               prop="repositoryType"
@@ -59,25 +61,9 @@
               </div>
               </el-select>
             </el-form-item>
-          </div>
-          <div class="row-span-4">
-            <el-form-item prop="attachmentFile">
-              <div>
-                <UploadImg v-model="formData.attachmentImg" />
-                <div style="font-size: .7rem;color:#deb581;">
-                  上传1440*810px,小于500kb的图片
-                </div>
-              </div>
-
-            </el-form-item>
-          </div>
-          <div class="col-span-3">
             <el-form-item label="标题" prop="repositoryTitle">
               <el-input v-model="formData.repositoryTitle" placeholder="请输入知识库标题"/>
             </el-form-item>
-          </div>
-
-          <div class="col-span-3">
             <el-form-item label="标签" prop="repositoryLabel">
               <el-select v-model="formData.repositoryLabel" placeholder="请选择标签">
                 <div 
@@ -94,16 +80,24 @@
               </div>
               </el-select>
             </el-form-item>
-          </div>
-          <div class="col-span-3">
             <el-form-item label="作者" prop="writer">
               <el-input v-model="formData.writer" placeholder="请输入作者"/>
             </el-form-item>
-          </div>
-        </div>
         <el-form-item label="简介" prop="synopsis">
           <el-input v-model="formData.synopsis" placeholder="请输入简介"/>
         </el-form-item>
+      </el-col>
+      <el-col :span="4">
+        <el-form-item  prop="attachmentFile">
+              <div>
+                <UploadImg height="100px" v-model="formData.attachmentImg" />
+                <div style="font-size: .7rem;color:#deb581;">
+                  上传1440*810px,小于500kb的图片
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="内容" prop="repositoryContent">
           <Editor v-model="formData.repositoryContent" height="300px"/>
         </el-form-item>
@@ -226,3 +220,12 @@ const resetForm = () => {
 }
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
+<style>
+.demo-form-inline .el-input {
+  --el-input-width: 220px;
+}
+
+.demo-form-inline .el-select {
+  --el-select-width: 220px;
+}
+</style>
