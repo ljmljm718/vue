@@ -5,7 +5,7 @@
     v-model:current-page="currentPage"
     v-model:page-size="pageSize"
     :background="true"
-    :page-sizes="[10, 20, 30, 50, 100]"
+    :page-sizes="pageSizes"
     :pager-count="pagerCount"
     :total="total"
     :small="isSmall"
@@ -50,6 +50,10 @@ const props = defineProps({
   pagerCount: {
     type: Number,
     default: document.body.clientWidth < 992 ? 5 : 7
+  },
+  pageSizes: {
+    type: Array,
+    default: () => [10, 20, 30, 50, 100]
   }
 })
 
@@ -71,6 +75,13 @@ const pageSize = computed({
     // 触发 update:limit 事件，更新 limit 属性，从而更新 pageSize
     emit('update:limit', val)
   }
+})
+
+const pageSizes = computed({
+  get() {
+    return props.pageSizes
+  },
+  set(val) {}
 })
 const handleSizeChange = (val) => {
   // 如果修改后超过最大页面，强制跳转到第 1 页
