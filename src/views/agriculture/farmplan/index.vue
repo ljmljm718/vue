@@ -91,13 +91,19 @@
 <!--        </el-select>-->
 <!--      </el-form-item>-->
       <el-form-item label="计划状态" prop="planState">
-        <el-input
+        <el-select
           v-model="queryParams.planState"
-          placeholder="请输入计划状态"
+          placeholder="请选择计划状态"
           clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+          class="!w-150px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
 <!--      <el-form-item label="责任人编号" prop="personId">-->
 <!--        <el-input-->
@@ -295,7 +301,7 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
-import {DICT_TYPE} from "@/utils/dict";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 农事计划 列表 */

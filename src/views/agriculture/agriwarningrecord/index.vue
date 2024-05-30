@@ -452,15 +452,26 @@ const queryParams = reactive({
   deviceType: undefined,
   warnType: undefined,
   id: undefined,
+  parkCode: undefined,
+  plotCode: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+let route=useRoute()
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  //路由跳转赋值判定
+  if(route.query.warnTime){
+    queryParams.value.warnTime = route.query.warnTime
+  }
+  if(route.query.parkCode){
+    queryParams.value.parkCode = route.query.parkCode
+  }
+  if(route.query.plotCode){
+    queryParams.value.warnTime = route.query.plotCode
+  }
   try {
-    console.log(1)
     const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -468,7 +479,7 @@ const getList = async () => {
     loading.value = false
   }
 }
-let route=useRoute()
+
 if(route.query.id){
   queryParams.id=route.query.id
   getList()

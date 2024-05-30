@@ -42,7 +42,12 @@
           clearable
           class="!w-150px"
         >
-          <el-option label="请选择字典生成" value=""/>
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -154,7 +159,7 @@ import {handleTree} from '@/utils/tree'
 import download from '@/utils/download'
 import {FarmDefineApi, FarmDefineVO} from '@/api/agriculture/farmdefine'
 import FarmDefineForm from './FarmDefineForm.vue'
-import {DICT_TYPE} from "@/utils/dict";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 鲁渝协作农事定义 列表 */
 defineOptions({name: 'FarmDefine'})
