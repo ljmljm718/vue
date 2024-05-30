@@ -546,6 +546,24 @@ export default defineComponent({
         // 特色产品
         const villageProductPageLoading = ref<boolean>(false)
         const villageProductPageList = ref<Array<any>>([])
+        const showedProductPageList = ref<Array<any>>([])
+        const villageActiveIndex = ref<number>(0)
+        let villageTimer:any = null
+        onMounted(() => {
+            villageTimer = setInterval(() => {
+                const len = villageProductPageList.value.length
+                if (villageProductPageList.value.length <= 2) return
+                if (villageActiveIndex.value + 2 >= len) {
+                    villageActiveIndex.value = 0
+                } else { villageActiveIndex.value++ }
+                showedProductPageList.value = villageProductPageList.value.slice(
+                    villageActiveIndex.value, villageActiveIndex.value + 2
+                )
+            }, 8000)
+        })
+        onBeforeUnmount(() => {
+            clearInterval(villageTimer)
+        })
         const getvillageProductPage = async () => {
             villageProductPageLoading.value = true
             const { list = [] } = await villageProductPage().catch(() => {
@@ -554,7 +572,11 @@ export default defineComponent({
             villageProductPageLoading.value = false
             console.log("特色产品", list);
             if (!Array.isArray(list)) return
-            villageProductPageList.value = list.slice(0, 2)
+            villageProductPageList.value = list.filter(item => {
+                if (item.photo) return true
+                return false
+            })
+            showedProductPageList.value = villageProductPageList.value.slice(0, 2)
         }
         getvillageProductPage()
 
@@ -730,7 +752,7 @@ export default defineComponent({
                                             }}
                                         >
                                             {
-                                                villageProductPageList.value.map(item => (
+                                                showedProductPageList.value.map(item => (
                                                     <div class="inner-border flex p-3">
                                                         <img
                                                             src={item.photo}
@@ -828,9 +850,12 @@ export default defineComponent({
                                                 {
                                                     weatherList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
-                                                            <div class={['icon-' + item.icon]}></div>
-                                                            <div class="flex space-x-2 items-end py-2">
+                                                            <div class="flex space-x-2">
+                                                                <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
+                                                            </div>
+                                                            
+                                                            <div class="flex space-x-2 items-end py-2">
                                                                 <div>
                                                                     <span class="art-font">{item.value}</span>
                                                                     <span class="pl-1">{item.unit || ''}</span>
@@ -849,9 +874,11 @@ export default defineComponent({
                                                 {
                                                     soilList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
-                                                            <div class={['icon-' + item.icon]}></div>
-                                                            <div class="flex space-x-2 items-end py-2">
+                                                            <div class="flex space-x-2">
+                                                                <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
+                                                            </div>
+                                                            <div class="flex space-x-2 items-end py-2">
                                                                 <div>
                                                                     <span class="art-font">{item.value}</span>
                                                                     <span class="pl-1">{item.unit || ''}</span>
@@ -870,9 +897,11 @@ export default defineComponent({
                                                 {
                                                     waterList.value.map((item) => (
                                                         <div class="inner-border flex justify-between px-4 items-center">
-                                                            <div class={['icon-' + item.icon]}></div>
-                                                            <div class="flex space-x-2 items-end py-2">
+                                                            <div class="flex space-x-2">
+                                                                <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
+                                                            </div>
+                                                            <div class="flex space-x-2 items-end py-2">
                                                                 <div>
                                                                     <span class="art-font">{item.value}</span>
                                                                     <span class="pl-1">{item.unit || ''}</span>
@@ -1370,7 +1399,7 @@ export default defineComponent({
                         backgroundImage={headerBg}
                         v-slots={{
                             left: () => (
-                                <div class="flex space-x-4">
+                                <div class="flex space-x-4 relative">
                                     <BigscreenTab
                                         v-model={activeTab.value}
                                         options={[
@@ -1380,7 +1409,14 @@ export default defineComponent({
                                         ]}
                                         onChange={handleTabChange}
                                     />
-
+                                    {
+                                        monitorDeviceLoading.value || monitorNoticeLoading.value ? (
+                                            <div
+                                                class="absolute left-0 top-0 w-230px h-30px"
+                                                onClick={(e) => { e.stopPropagation() }}
+                                            ></div>
+                                        ) : null
+                                    }
                                     <BackOrHome />
                                 </div>
                             ),
