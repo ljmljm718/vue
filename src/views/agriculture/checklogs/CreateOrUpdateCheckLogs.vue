@@ -103,7 +103,7 @@
             </el-form-item>
             <el-row :gutter="3">
               <el-col :span="12">
-                <el-form-item label="巡检人id" prop="inspectorId">
+                <el-form-item label="巡检人编号" prop="inspectorId">
                   <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
                   <el-input v-model="formData.inspectorId" readonly>
                     <template #append>
@@ -151,8 +151,17 @@
         </el-scrollbar>
       </template>
     </EditFrame>
-
   </div>
+  <EquListForm
+    ref="purchaseOrderInEnableListRef"
+    @success="handlePurchaseOrderChange"
+  />
+  <UserListForm
+    ref="userListRef"
+    @success="handlePurchaseOrderChange2"
+  />
+
+  <!-- <CheckLogsForm ref="purchaseOrderInEnableListRef" @success="getList"/> -->
 </template>
 <script setup lang="ts">
 import {
@@ -164,6 +173,10 @@ import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {getTenantId} from "@/utils/auth";
 import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
+import EquListForm from "@/views/agriculture/checklogs/device/equListForm.vue";
+import UserListForm from "@/views/agriculture/checklogs/user/user.vue";
+
+import CheckLogsForm from "@/views/agriculture/checklogs/CheckLogsForm.vue";
 
 /** 巡检记录 表单 */
 defineOptions({name: 'CreateOrUpdateCheckLogsLkh'})
@@ -244,6 +257,7 @@ const handlePurchaseOrderChange2 = (order: ParkBaseVO) => {
   formData.value.inspector = String(order[0].nickname)
 }
 
+
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
@@ -253,7 +267,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as CheckLogsVO
-    if (formType.value === 'create') {
+    if (!formData.value.id) {
       await CheckLogsApi.createCheckLogs(data)
       message.success(t('common.createSuccess'))
     } else {

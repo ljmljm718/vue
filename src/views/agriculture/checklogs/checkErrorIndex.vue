@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="巡检编号" prop="inspectionNum">
+      <!-- <el-form-item label="巡检编号" prop="inspectionNum">
         <el-input
           v-model="queryParams.inspectionNum"
           placeholder="请输入巡检编号"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="巡检状态" prop="inspectionState">
         <el-select
           v-model="queryParams.inspectionState"
@@ -102,7 +102,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" prefix="right"
               :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/>
+      <!-- <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/> -->
       <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
       <el-table-column label="设备" align="center" prop="equName" width="200"/>
       <el-table-column label="巡检状态" align="center" prop="inspectionState" width="100">

@@ -156,6 +156,8 @@
       <el-table-column label="特点" align="center" prop="feature"/>
       <el-table-column label="环境条件" align="center" prop="envCondition"/>
       <el-table-column label="生长地点" align="center" prop="growSite"/>
+      <el-table-column label="所属园区" align="center" prop="parkName"/>
+      <el-table-column label="所属地块" align="center" prop="plotName"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -178,8 +180,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="所属地块" align="center" prop="parkName"/>
-      <el-table-column label="所属园区" align="center" prop="plotName"/>
       <el-table-column label="操作" align="center" width="150px" fixed="right">
         <template #default="scope">
           <el-button

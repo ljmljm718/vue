@@ -5,14 +5,14 @@
     <EditFrame>
       <template #header>
         <div :disabled="isShow" class="flex">
-          <!-- <el-button
-           type="primary"
-           :icon="FolderChecked"
-           plain
-           @click="localSave()"
-         >
-           保存
-         </el-button> -->
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+          >
+            保存
+          </el-button>
           <el-button
             type="success"
             :icon="TopRight"
@@ -94,8 +94,8 @@
             <el-col :span="8">
               <el-form-item label="环境条件" prop="envCondition">
                 <el-input
-v-model="formData.envCondition" type="textarea"
-                          placeholder="请输入环境条件"/>
+                  v-model="formData.envCondition" type="textarea"
+                  placeholder="请输入环境条件"/>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -241,6 +241,12 @@ const ROUTE_PATH = route.path
 const FORMPAGE_NAME = ''
 const ORIGIN_PATH = '/farm_work/crop-growth' // 关闭表单时跳转的路径
 
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
+
 const localSave = () => {
   addOrUpdateFormStorage(
     ROUTE_PATH,
@@ -304,12 +310,11 @@ if (route.query.id) {
   let idNumber = route.query.id;
   CropGrowthApi.getCropGrowth(idNumber).then(res => {
     formData.value = res
-  
+
     // formData.value.marketingType ='productmanual'
   });
 }
-if(route.query.type=='select')
-{
+if (route.query.type == 'select') {
   isShow.value = true;
 }
 //作物的选择
@@ -325,6 +330,7 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.cropType = String(order[0].cropType)
   formData.value.belongPark = String(order[0].belongPark)
   formData.value.belongPlot = String(order[0].belongPlot)
+  formData.value.plotName = String(order[0].plotName)
   formData.value.parkName = String(order[0].parkName)
   formData.value.parkDetailName = String(order[0].plotName)
 
@@ -345,7 +351,7 @@ const open = async (type: string, id?: number) => {
     } finally {
       formLoading.value = false
       isShow.value = true;
-  
+
     }
   }
 }
@@ -360,7 +366,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as CropGrowthVO
-    if (formType.value === 'create') {
+    console.log(formType.value)
+    if (!formData.value.id) {
       await CropGrowthApi.createCropGrowth(data)
       message.success(t('common.createSuccess'))
     } else {

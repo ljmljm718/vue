@@ -153,13 +153,13 @@
       <el-table-column label="测量值" align="center" prop="measureNum"/>
       <el-table-column label="变化量" align="center" prop="measureSpike"/>
       <el-table-column label="测量单位" align="center" prop="measureUnit"/>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+<!--      <el-table-column-->
+<!--        label="创建时间"-->
+<!--        align="center"-->
+<!--        prop="createTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
       <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
       <!--      <el-table-column label="主键ID" align="center" prop="id"/>-->
       <el-table-column label="操作" align="center" width="150px" fixed="right">
