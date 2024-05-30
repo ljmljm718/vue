@@ -7,6 +7,7 @@
       <el-card
         v-for="item, index in topList"
         :key="index"
+        @click="goPage(item)"
       >
         <div class="flex items-center justify-between">
           <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%;"></div>
@@ -79,16 +80,18 @@
                   <div style="border:1px solid #c1c1c1;padding: 5px;">
                     <div style="color: #847d78;">预警信息</div>
                     <div class=" mt-20px ml-30px">
-                      <div style="color: #847d78;">今日报警</div>
+                      <div style="color: #847d78;" @click="goPageWran(1)">今日报警</div>
                       <div
+                      @click="goPageWran(1)"
                         class="flex font-700 mt-10px"
                         style="font-size: 20px"
                       >{{ todayWarnNum }}
                       </div>
                     </div>
                     <div class=" mt-20px ml-30px">
-                      <div style="color: #847d78;">近30天报警</div>
-                      <div
+                      <div style="color: #847d78;" @click="goPageWran(2)">近30天报警</div>
+                      <div 
+                      @click="goPageWran(2)"
                         class="flex font-700 mt-10px"
                         style="font-size: 20px"
                       >{{ thirtyDayWarn }}
@@ -301,7 +304,7 @@ import {
 } from './apis'
 import { formatTime } from '@/utils';
 import { DeviceCategoryApi } from "@/api/agriculture/devicecategory";
-
+import { useRouter} from 'vue-router'
 //存放采集类型
 const selectEquipmentType = ref([])
 // 查询采集类型列表
@@ -390,22 +393,74 @@ const handleDeviceTypeRadioChange = async (
   )
 }
 onMounted(() => { handleDeviceTypeRadioChange() })
-
+//今日预警跳转
+const goPageWran=(val)=>{
+  router.push( `/internetMonitor/warn/agri-warning-record?time=${val}`)
+} 
+//顶部跳转
+let router=useRouter()
+const goPage=(obj)=>{
+  console.log(obj,'objasd')
+  let title=obj.title
+  switch(title){
+    case '虫情监测':
+     router.push('/internetMonitor/device/deviceView?deviceType=80,88')
+      break;
+    case '土壤监测':
+    router.push('/internetMonitor/device/deviceView?deviceType=80,87')
+      break;
+    case '报警设备':
+    router.push('/internetMonitor/device/deviceView?deviceStatus=fault')
+      break;
+    case '气象站':
+    router.push('/internetMonitor/device/deviceView?deviceType=80,87')
+      break;
+    case '生长监控':
+    router.push('/internetMonitor/device/deviceView?deviceType=78,79')
+      break;
+    case '在线设备':
+    router.push('/internetMonitor/device/deviceView?deviceStatus=online')
+      break;
+    case '视频监控':
+    router.push('/internetMonitor/device/deviceView?deviceType=78,79')
+      break;
+    case '设备总数':
+    router.push('/internetMonitor/device/deviceView')
+      break;
+    case '水质监测':
+    router.push('/internetMonitor/device/deviceView?deviceType=80,86')
+      break;
+    case '离线设备':
+    router.push('/internetMonitor/device/deviceView?deviceStatus=offline')
+      break;
+    default:
+      break;
+  }
+}
 const dataCollectRadio = ref('本年')
 const dataCollectPicker = ref<any>([])
 const handleDataCollectChange = async (radio: any = '本年', picker: any = []) => {
-  const res = await QueryCurrentDateCount({
-	  type: picker.length !== 0 ? 'appoint' : radio === '本年' ? 'year' : radio === '本月' ? 'month' : 'day',
-	  startDate: formatTime(picker[0], 'yyyy-MM-dd'),
-	  endDate: formatTime(picker[1], 'yyyy-MM-dd'),
+  let res
+  if(picker==null){
+    res = await QueryCurrentDateCount({
+	  type:  picker ? 'appoint' : radio === '本年' ? 'year' : radio === '本月' ? 'month' : 'day',
+	  startDate:dataCollectPicker.value? formatTime(picker[0], 'yyyy-MM-dd'):null,
+	  endDate: dataCollectPicker.value? formatTime(picker[1], 'yyyy-MM-dd'):null,
   });
+  } else{
+    res = await QueryCurrentDateCount({
+	  type: picker.length !== 0 || picker == null ? 'appoint' : radio === '本年' ? 'year' : radio === '本月' ? 'month' : 'day',
+	  startDate:dataCollectPicker.value? formatTime(picker[0], 'yyyy-MM-dd'):null,
+	  endDate: dataCollectPicker.value? formatTime(picker[1], 'yyyy-MM-dd'):null,
+  });
+  }
   console.log("数据采集数据", res)
   const xAxis = res.map(item => (item.collectionDate)), series = res.map(item => (item.totalValue))
   initChartStatic(
     'chartExtra2',
     generateBaseOptions({
       xAxis: {
-        data: xAxis,
+        data: xAxis.reverse(),
         interval: 0,
         axisLine: {
           show: true,
@@ -447,7 +502,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
       series: [
         {
           name: '数据采集信息',
-          data: series,
+          data: series.reverse(),
           type: 'line',
           symbol: 'none',
           areaStyle: {
@@ -467,7 +522,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
 
 onMounted(() => { handleDataCollectChange() })
 
-const dateData = ref('')
+const dateData = ref([])
 let radio = ref()
 let pageWarnList = ref([])
 let topList = ref<Array<any>>([])
@@ -618,13 +673,14 @@ const initChart2 = async () => {
   )
 }
 const initChart3 = async () => {
+  console.log(dateData.value,'length')
   const res = await DeviceCategoryApi.waterQualityDataLineChartA({
     belongPark: belongPark.value,
     belongPlot: belongPlot.value,
     lineChart: selectedMonitorType.value,
     collectionType: radio.value,
-    startTime: dateData.value.length === 2 ? formatTime(dateData.value[0], 'yyyy-MM-dd HH:mm:ss') : null,
-    endTime: dateData.value.length === 2 ? formatTime(dateData.value[1], 'yyyy-MM-dd HH:mm:ss') : null
+    startTime: dateData.value  ? formatTime(dateData.value[0], 'yyyy-MM-dd HH:mm:ss') : null,
+    endTime: dateData.value ? formatTime(dateData.value[1], 'yyyy-MM-dd HH:mm:ss') : null
   })
   console.log("历史数据", res);
   const xAxis = res.map(item => (item.collectionTime))
@@ -758,7 +814,6 @@ const getParkTree = () => {
     console.log(res, 'dd')
     belongPark.value = res[2].id
     belongPlot.value = res[2].child[1].id
-    getHomeCheckLog(res[0].child[0].id)
     getPageRealTimeData(res[1].id, res[1].child[1].id)
     getpageWarningInfo(res[1].id, res[1].child[1].id)
     getEnvironmentView(res[2].id, res[2].child[1].id)
@@ -780,7 +835,7 @@ const handleTreeChange = (data, b) => {
 let typeList = ref([])
 let deviceTotal = ref(0)
 let devicePercent = ref(0)
-const getHomeCheckLog = (id) => {
+const getHomeCheckLog = (id='') => {
   getInspectionProgress({
     belongPlot: id,
     date: formatTime(new Date(), 'yyyy-MM-dd')
@@ -795,8 +850,9 @@ const getHomeCheckLog = (id) => {
     setTimeout(() => { initChart1(res['巡检进度']) }, 200)
   })
 }
+getHomeCheckLog()
 //获取实时数据
-const getIconClass = (text:string) => {
+const getIconClass = (text:string='') => {
   const iconMap = {
     '温度': '1',
     '湿度': '2',
@@ -839,6 +895,7 @@ const getIconClass = (text:string) => {
   })
   return iconMap[key]
 }
+getIconClass()
 let pageRealList = ref<Array<any>>([])
 const getPageRealTimeData = async (parkId, plotId) => {
   const res = await pageRealTimeData({ parkId, plotId })
@@ -849,12 +906,13 @@ const getPageRealTimeData = async (parkId, plotId) => {
   }).map(ele => ({ ...ele, icon: 'my-icon-' + getIconClass(ele.dataType)}))
 }
 //获取预警信息
-const getpageWarningInfo = (id, id2) => {
+const getpageWarningInfo = (id='', id2='') => {
   warningRecordInfoByCode({ parkCode: id, plotCode: id2 }).then((res) => {
 	console.log("预警信息", res)
     pageWarnList.value = res
   })
 }
+getpageWarningInfo()
 //获取气象站历史数据
 let chartList = ref({})
 const getEnvironmentView = (id, id2) => {
