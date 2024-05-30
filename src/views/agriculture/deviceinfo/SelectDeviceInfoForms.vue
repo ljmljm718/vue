@@ -260,7 +260,7 @@ const open = async (item:any) => {
   //s(item,"------");  
   queryParams.belongPark = item.monitoringBaseId;
   queryParams.belongPlot = item.monitoringPlotId;
-  queryParams.deviceKind = '79  '
+  queryParams.deviceKind = '79'
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()

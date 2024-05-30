@@ -27,13 +27,21 @@
         />
       </el-form-item> -->
       <el-form-item label="监控基地名称" prop="monitoringBaseName">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.monitoringBaseName"
           placeholder="请输入监控基地名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
+        <el-input v-model="queryParams.monitoringBaseName" placeholder="请选择所属基地">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <!-- <el-form-item label="监控地块ID" prop="monitoringPlotId">
         <el-input
@@ -45,22 +53,38 @@
         />
       </el-form-item> -->
       <el-form-item label="监控地块名称" prop="monitoringPlotName">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.monitoringPlotName"
           placeholder="请输入监控地块名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
+        <el-input v-model="queryParams.monitoringPlotName" placeholder="请选择所属地块">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.monitoringBaseId)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.deviceName"
           placeholder="请输入设备名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
+        <el-input v-model="queryParams.deviceName" placeholder="请选择设备名称">
+          <template #append>
+            <el-button @click="openSelectDeviceInfo()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <!-- 原备用一 -->
       <el-form-item label="录入方式" prop="reserveOne">
@@ -248,17 +272,23 @@
   <!-- 表单弹窗：添加/修改 -->
   <MonitoringEquipmentDataForm ref="formRef" @success="getList" />
    <!-- 视频弹窗 -->
-   <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
+  <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
   
-  <video
-    :src="videoUrl"
-    controls
-    autoplay
-    class="video"
-    width="800px" 
-    height="800px"
-  ></video>
-</el-dialog>
+    <video
+      :src="videoUrl"
+      controls
+      autoplay
+      class="video"
+      width="800px" 
+      height="800px"
+    ></video>
+  </el-dialog>
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+   <!--  选择设备-->
+   <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess"/>
 </template>
 
 <script setup lang="ts">
@@ -266,6 +296,9 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { MonitoringEquipmentDataApi, MonitoringEquipmentDataVO } from '@/api/agriculture/monitoringequipmentdata'
 import MonitoringEquipmentDataForm from './MonitoringEquipmentDataForm.vue'
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import SelectDeviceInfo  from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue'
 
 /** 监控设备数据 列表 */
 defineOptions({ name: 'MonitoringEquipmentData' })
@@ -330,6 +363,18 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
+  if(queryParams.monitoringBaseName == null){
+    queryParams.monitoringBaseName= undefined
+    queryParams.monitoringBaseId= undefined
+  }
+  if(queryParams.monitoringPlotName == null){
+    queryParams.monitoringPlotName= undefined
+    queryParams.monitoringPlotId= undefined
+  }
+  if(queryParams.deviceName == null){
+    queryParams.deviceName = undefined
+    queryParams.deviceId = undefined
+  }
   queryParams.pageNo = 1
   getList()
 }
@@ -378,4 +423,52 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === "") {
+    message.error("请选择基地")
+  } else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    queryParams.monitoringBaseId = String(order[0].id)
+    queryParams.monitoringBaseName = String(order[0].name)
+  } else queryParams.monitoringBaseName = String(order[0].name)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value) {
+    message.error("请选择基地")
+  } else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+  console.log("--->>查看选择的地块信息：", order[0])
+  queryParams.monitoringPlotName = String(order[0].name)
+}
+// 机器信息选择
+const SelectDeviceInfoRef = ref()
+const openSelectDeviceInfo = () => {
+  // console.log(item);
+  SelectDeviceInfoRef.value.open("jk")//监控
+  // if (!item.monitoringBaseId || item.monitoringBaseId === undefined ){
+  //   message.error("请选择基地")
+  // }else if(!item.monitoringPlotId || !item.monitoringPlotId === undefined){
+  //   message.error("请选择地块")
+  // }else SelectDeviceInfoRef.value.open(item)
+}
+//点击确定后
+const SelectDeviceInfoSuccess =  (item:any) => {
+  //console.log(item[0],"--------");
+  queryParams.deviceId = item[0].id
+  queryParams.deviceName = item[0].deviceName
+}
 </script>

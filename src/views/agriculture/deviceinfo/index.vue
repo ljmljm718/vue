@@ -389,7 +389,7 @@ const getList = async () => {
   }
 }
 let route = useRoute()
-
+getList()
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
 const handleSelectedDeviceIds = () => {
