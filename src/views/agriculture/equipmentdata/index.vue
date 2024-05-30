@@ -457,6 +457,9 @@ if(props.collectionType){
 }
 /** 搜索按钮操作 */
 const handleQuery = () => {
+  if(queryParams.collectionTime == null){
+    queryParams.collectionTime = undefined
+  }
   queryParams.pageNo = 1
   getList()
 }
