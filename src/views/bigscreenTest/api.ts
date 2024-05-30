@@ -33,10 +33,10 @@ export const getPondCountFrySum = async () => {
 }
 
 // 左上角第二行-获取生长趋势折线图
-export const getLineChar = async (data) => {
-  return await request.post({
+export const getLineChar = async (params) => {
+  return await request.get({
     url: '/agriculture/grow-record/getLineChar',
-    data
+    params
   })
 }
 

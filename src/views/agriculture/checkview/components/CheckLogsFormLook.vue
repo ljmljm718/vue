@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" append-to-body>
+  <Dialog :title="'巡检记录'" v-model="dialogVisible" append-to-body>
     <el-form
       ref="formRef"
       :model="formData"

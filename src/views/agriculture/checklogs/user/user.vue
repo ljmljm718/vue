@@ -128,6 +128,12 @@ import {UserVO} from "@/api/system/user";
 
 /** 设备管理 表单 */
 defineOptions({name: 'User'})
+const props = defineProps({
+  autoComplete: {
+    type: Boolean,
+    default: () => false
+  }
+})
 const list = ref<DeviceBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
@@ -179,7 +185,7 @@ const open = async (id: string) => {
   // 加载列表
   await resetQuery()
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
 
 
 /** 查询列表 */
@@ -189,10 +195,14 @@ const getList = async () => {
     const data = await UserApi.getUserPage(queryParams)
     list.value = data.list
     total.value = data.total
+    if (props.autoComplete && list.value.length > 0) {
+      emits('success', [{ ...list.value[0] }] as any)
+    }
   } finally {
     loading.value = false
   }
 }
+defineExpose({open, getList}) // 提供 open 方法，用于打开弹窗
 
 /** 搜索按钮操作 */
 const handleQuery = () => {

@@ -277,6 +277,7 @@ const openForm = (type: string, id?: number) => {
 const formRefA = ref()
 const openFormA = (type: string, row) => {
   formRefA.value.open(type, row)
+  formRefA.value.generateDefaultVal()
 }
 /** 去巡检操作后关闭窗口刷新事件 */
 const getALLList = () => {

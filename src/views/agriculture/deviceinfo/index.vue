@@ -313,7 +313,7 @@ import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
-import {useRoute} from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
 import SubDeviceListForm from "@/views/agriculture/deviceinfo/components/SubDeviceListForm.vue";
 
@@ -432,6 +432,10 @@ const openEditForm = () => {
   const id = deviceId.value.toString()
   router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
 }
+
+onActivated(() => {
+  resetQuery()
+})
 
 /** 删除按钮操作 */
 const handleDelete = async () => {

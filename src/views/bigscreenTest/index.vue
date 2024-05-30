@@ -339,14 +339,14 @@ export default defineComponent({
             } catch(err) {
                 baseEquipmentLoading.value = false
             }
-            
+
             baseEquipmentLoading.value = false
         }
         getBaseEquipmentList()
 
         // 生长分析折线图
         const getGrowthLineChartData = async () => {
-            const { xValue = [], yValue = [], measureUnit = []} = await getLineChar({})
+            const { xValue = [], yValue = [], measureUnit = []} = await getLineChar({ cropCode: '1787727824907661312' })
             console.log("xValue", xValue);
             console.log("yValue", yValue);
             console.log("measureUnit", measureUnit);
@@ -886,7 +886,7 @@ export default defineComponent({
                                                                 <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
                                                             </div>
-                                                            
+
                                                             <div class="flex space-x-2 items-end py-2">
                                                                 <div>
                                                                     <span class="art-font">{item.value}</span>

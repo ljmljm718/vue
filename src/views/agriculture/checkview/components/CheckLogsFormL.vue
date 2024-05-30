@@ -7,9 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
-<!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
-<!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
+      <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
+      <!--      </el-form-item>-->
       <el-form-item label="巡检状态" prop="inspectionState">
         <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
           <el-option
@@ -83,6 +83,7 @@
   <UserListForm
     ref="userListRef"
     @success="handlePurchaseOrderChange2"
+    :autoComplete="true"
   />
 </template>
 <script setup lang="ts">
@@ -91,7 +92,8 @@ import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {ParkBaseVO} from "@/api/kaizhou/parkbase";
 import EquListForm from "@/views/agriculture/checklogs/device/equListForm.vue";
 import UserListForm from "@/views/agriculture/checklogs/user/user.vue";
-import { getTenantId } from '@/utils/auth'
+import {getTenantId} from '@/utils/auth'
+
 /** 巡检记录 表单 */
 defineOptions({name: 'CheckLogsForm'})
 
@@ -118,13 +120,13 @@ const formData = ref({
   content: undefined,
 })
 const formRules = reactive({
-  inspectionState: [{ required: true, message: '巡检状态不能为空', trigger: 'change' }],
-  inspectionResults: [{ required: true, message: '巡检结果不能为空', trigger: 'blur' }],
-  inspectorId: [{ required: true, message: '巡检人id不能为空', trigger: 'change' }],
-  inspectionTime: [{ required: true, message: '巡检时间不能为空', trigger: 'change' }],
+  inspectionState: [{required: true, message: '巡检状态不能为空', trigger: 'change'}],
+  inspectionResults: [{required: true, message: '巡检结果不能为空', trigger: 'blur'}],
+  inspectorId: [{required: true, message: '巡检人id不能为空', trigger: 'change'}],
+  inspectionTime: [{required: true, message: '巡检时间不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
-
+const route = useRoute()
 /** 打开弹窗 */
 const open = async (type: string, row) => {
   dialogVisible.value = true
@@ -138,7 +140,16 @@ const open = async (type: string, row) => {
   formData.value.base = row.base
   formLoading.value = false
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+const userListRef = ref()
+const generateDefaultVal = () => {
+  formData.value.inspectionState = '1' as any
+  formData.value.inspectionTime = new Date() as any
+  userListRef.value & userListRef.value.getList()
+}
+defineExpose({open, generateDefaultVal}) // 提供 open 方法，用于打开弹窗
+
+
 
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
@@ -152,13 +163,13 @@ const handlePurchaseOrderChange = (order: ParkBaseVO) => {
 }
 
 
-const userListRef = ref()
+
 const openUserList = () => {
   userListRef.value.open()
 }
-const handlePurchaseOrderChange2 = (order: ParkBaseVO) => {
-  formData.value.inspectorId = String(order[0].id)
-  formData.value.inspector = String(order[0].nickname)
+const handlePurchaseOrderChange2 = (order: any) => {
+  formData.value.inspectorId = order[0].id.toString()
+  formData.value.inspector = order[0].nickname.toString()
 }
 
 /** 提交表单 */
