@@ -80,7 +80,7 @@
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-          <el-button type="primary" @click="handleData">采集最新数据</el-button>
+          <el-button type="primary" @click="handleData"  v-if="route.query.equipmentCode != null && route.query.equipmentCode != undefined" >采集最新数据</el-button>
         </el-form-item>
       </el-form>
       <el-table
