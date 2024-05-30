@@ -9,7 +9,7 @@
       label-width="108px"
     >
       <el-row>
-        <el-form-item label="子设备编号" prop="subDevicesNum">
+        <!-- <el-form-item label="子设备编号" prop="subDevicesNum">
           <el-input
             v-model="queryParams.subDevicesNum"
             placeholder="请输入子设备编号"
@@ -17,16 +17,17 @@
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
-        </el-form-item>
-        <!--      <el-form-item label="所属设备" prop="devicesId">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.devicesId"-->
-        <!--          placeholder="请输入所属设备"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
+        </el-form-item>-->
+             <!-- <el-form-item label="所属设备" prop="devicesId">
+               <el-input
+                 v-model="queryParams.devicesId"
+                 placeholder="请输入所属设备"
+                 clearable
+                 @keyup.enter="handleQuery"
+                 class="!w-240px"
+               />
+       </el-form-item> -->
+       
         <el-form-item label="子设备名称" prop="subDevicesName">
           <el-input
             v-model="queryParams.subDevicesName"
@@ -118,7 +119,8 @@
       <el-table-column label="所属设备名称" align="center" prop="remark"/>
       <el-table-column label="开关状态" align="center" prop="swithState">
         <template #default="scope">
-          <el-switch v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
+          <el-switch
+v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949"
                      @change="handleSwitchChange(scope.row)"/>
         </template>
       </el-table-column>
