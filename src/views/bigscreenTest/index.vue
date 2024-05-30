@@ -15,6 +15,7 @@ import {
     ElTable,
     ElTableColumn
 } from 'element-plus'
+import Pagination from '@/components/Pagination/index.vue'
 import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
     getParkTree,
@@ -168,9 +169,18 @@ export default defineComponent({
 
         // 监控通知事件
         const monitorNoticeLoading = ref<boolean>(false)
+        const monitorQueryParams = ref({
+            pageNo: 1,
+            pageSize: 9
+        })
+        const noticeListTotal = ref<number>(0)
+        const noticeDatePickerVal = ref<Array<any>>([])
         const getMonitorNoticeList = async () => {
             monitorNoticeLoading.value = true
-            const { list = [] } = await monitoringEquNoticePage({}).catch(() => {
+            const { list = [], total = 0 } = await monitoringEquNoticePage({
+                ...monitorQueryParams.value,
+                recordTime: noticeDatePickerVal.value ? noticeDatePickerVal.value.map(item => formatTime(item, 'yyyy-MM-dd HH:mm:ss')) : undefined
+            }).catch(() => {
                 monitorNoticeLoading.value = false
             })
             monitorNoticeLoading.value = false
@@ -180,6 +190,7 @@ export default defineComponent({
                 noticeEvent: item.noticeEvent,
                 recordTime: item.recordTime
             }))
+            noticeListTotal.value = total
         }
         getMonitorNoticeList()
 
@@ -249,11 +260,24 @@ export default defineComponent({
                                 ))
                             }
                         </div>
-                        <div class="inner-border w-[18rem] p-3" onClick={() => {
-                            router.push("/internetMonitor/deviceData/monitoring-equipment-notice")
-                        }}>
-                            <div class="art-font">通知事件</div>
-                            <div class="h-[53rem]" v-loading={monitorNoticeLoading.value}>
+                        <div class="inner-border w-[18rem] p-3">
+                            <div class="art-font" onClick={() => {
+                                router.push("/internetMonitor/deviceData/monitoring-equipment-notice")
+                            }}>通知事件</div>
+                            <el-date-picker
+                                v-model={noticeDatePickerVal.value}
+                                type="daterange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                onChange={() => {
+                                    getMonitorNoticeList()
+                                }}
+                                style="width: 16.5rem;position: relative; top: .2rem;"
+                            />
+                            <div class="h-[48.5rem]" v-loading={monitorNoticeLoading.value} onClick={() => {
+                                router.push("/internetMonitor/deviceData/monitoring-equipment-notice")
+                            }}>
                                 {
                                     noticeList.value.map((item: NoticeItemType) => (
                                         <div class="flex items-center px-2 my-4 py-1 justify-between inner-border rounded-md">
@@ -275,6 +299,14 @@ export default defineComponent({
                                     ))
                                 }
                             </div>
+                            <Pagination
+                                total={noticeListTotal.value}
+                                v-model:page={monitorQueryParams.value.pageNo}
+                                v-model:limit={monitorQueryParams.value.pageSize}
+                                onPagination={() => getMonitorNoticeList()}
+                                layout="total, prev, pager, next"
+                                style="position: relative;top: .6rem;"
+                            />
                         </div>
                     </div>
                 </div>
@@ -1158,10 +1190,11 @@ export default defineComponent({
         // 指挥调度
         const commandLoading = ref<boolean>(false)
         const commandInfoList = ref<Array<any>>([])
-        const getCommandInfoList = async () => {
+        const getCommandInfoList = async (farmDefineType:string) => {
+            commandInfoList.value = []
             commandLoading.value = true
-            const { list = [], total = 0} = await farmPlanPageW({
-                pageNo: 1, pageSize: 7
+            const { list = [], total = 0 } = await farmPlanPageW({
+                pageNo: 1, pageSize: 7, farmDefineType
             }).catch(() => {
                 commandLoading.value = false
             })
@@ -1170,11 +1203,11 @@ export default defineComponent({
             commandInfoList.value = list.map(item => ({ ...item, startTime: formatTime(item.startTime, 'yyyy-MM-dd HH:mm:ss') }))
             console.log("total", total);
         }
-        getCommandInfoList()
 
         // 指挥调度 上面
         const farmTopLoading = ref<boolean>(false)
         const farmTopList = ref<Array<any>>([])
+        const selectedFarmTopId = ref<string>()
         const getFarmTopList = async () => {
             farmTopLoading.value = true
             const res = await farmdefineList().catch(() => {
@@ -1182,9 +1215,14 @@ export default defineComponent({
             })
             farmTopLoading.value = false
             farmTopList.value = res.map(item => ({
+                ...item,
                 icon: 'icon-' + getIconClass(item.defineName),
                 label: item.defineName
             }))
+            if (farmTopList.value.length > 0) {
+                selectedFarmTopId.value = farmTopList.value[0].id
+                getCommandInfoList(farmTopList.value[0].id)
+            }
         }
         getFarmTopList()
         const riskTabPage = () => {
@@ -1241,13 +1279,15 @@ export default defineComponent({
                                     class="h-full"
                                     v-slots={{
                                         title: () => (
-                                            <div class="art-font text-lg">报警信息处理情况</div>
+                                            <div class="art-font text-lg" onClick={() => {
+                                                router.push("/internetMonitor/warn/agri-warning-record")
+                                            }}>报警信息处理情况</div>
                                         ),
                                         default: () => (
-                                            <div class="p-5 h-[380px] flex space-x-3" onClick={() => {
-                                                router.push("/internetMonitor/warn/agri-warning-record")
-                                            }}>
-                                                <div class="w-[140px]">
+                                            <div class="p-5 h-[380px] flex space-x-3">
+                                                <div class="w-[140px]" onClick={() => {
+                                                    router.push("/internetMonitor/warn/agri-warning-record")
+                                                }}>
                                                     {
                                                         warnHandleInfo.value.map(item => (
                                                             <div class="flex justify-between p-2 inner-border">
@@ -1280,8 +1320,12 @@ export default defineComponent({
                                                         formatter={
                                                             (e) => (
                                                                 <div class="flex space-x-2">
-                                                                    <el-button link type="primary">忽略</el-button>
-                                                                    <el-button link type="primary">去处理</el-button>
+                                                                    <el-button link type="primary" onClick={() => {
+                                                                        router.push(`/internetMonitor/warn/agri-warning-record?id=${e.id}&status=2`)
+                                                                    }}>忽略</el-button>
+                                                                    <el-button link type="primary" onClick={() => {
+                                                                        router.push(`/internetMonitor/warn/agri-warning-record?id=${e.id}`)
+                                                                    }}>去处理</el-button>
                                                                 </div>
                                                             )
                                                         }
@@ -1329,16 +1373,22 @@ export default defineComponent({
                                     class="h-full"
                                     v-slots={{
                                         title: () => (
-                                            <div class="art-font text-lg">指挥调度</div>
+                                            <div class="art-font text-lg" onClick={() => {
+                                                router.push("/farm_work/farmManage/farm-plan")
+                                            }}>农事活动</div>
                                         ),
                                         default: () => (
                                             <div class="p-5">
-                                                <div class="flex space-x-4 pb-2" onClick={() => {
-                                                    router.push("/farm_work/farmManage/farm-plan")
-                                                }}>
+                                                <div class="flex space-x-4 pb-3">
                                                     {
                                                         farmTopList.value.map(item => (
-                                                            <div class="flex flex-col items-center">
+                                                            <div
+                                                                class={`flex flex-col items-center ${item.id === selectedFarmTopId.value ? 'selected-farm-top' : ''}`}
+                                                                onClick={() => {
+                                                                    selectedFarmTopId.value = item.id
+                                                                    getCommandInfoList(selectedFarmTopId.value as any)
+                                                                }}
+                                                            >
                                                                 <div class={[item.icon]} style="width: 2rem;height: 2rem;"></div>
                                                                 <div>{item.label}</div>
                                                             </div>
@@ -1376,7 +1426,12 @@ export default defineComponent({
                                                         formatter={
                                                             (e) => (
                                                                 <div class="flex space-x-2">
-                                                                    <el-button link type="primary">去施肥</el-button>
+                                                                    <el-button link type="primary" onClick={() => {
+                                                                        router.push({
+                                                                            path:'/farm_work/farmManage/farm-record/CreateOrUpdate?type=create',
+                                                                            query:{...e}
+                                                                        })
+                                                                    }}>去处理</el-button>
                                                                 </div>
                                                             )
                                                         }
@@ -1474,5 +1529,17 @@ export default defineComponent({
 
 .table-row {
     background-color: #b9b9b9;
+}
+
+.selected-farm-top {
+    position: relative;
+    &::after {
+        position: absolute;
+        bottom: -2px;
+        width: 100%;
+        height: .2rem;
+        content: '';
+        background-color: #00d3b6;
+    }
 }
 </style>

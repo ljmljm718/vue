@@ -103,6 +103,7 @@ export default defineComponent({
           <div class="custom-hover" color="var(--top-header-text-color)">
             <a
               href={bigscreenRoute.value}
+              target="_blank"
               style="color: var(--top-header-text-color);transform:scale(.8);margin-bottom: -1px;margin-right: .4rem;"
             >
               <el-icon>

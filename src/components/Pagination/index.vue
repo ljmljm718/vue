@@ -10,7 +10,7 @@
     :total="total"
     :small="isSmall"
     class="float-right mb-15px mt-15px"
-    layout="total, sizes, prev, pager, next, jumper"
+    :layout="props.layout"
     @size-change="handleSizeChange"
     @current-change="handleCurrentChange"
   />
@@ -54,6 +54,10 @@ const props = defineProps({
   pageSizes: {
     type: Array,
     default: () => [10, 20, 30, 50, 100]
+  },
+  layout: {
+    type: String,
+    default: 'total, sizes, prev, pager, next, jumper'
   }
 })
 

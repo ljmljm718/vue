@@ -167,7 +167,7 @@
                     <div class="text-sm">{{ item?.dataType }}</div>
                   </div>
                   <div
-                    :class="`w-9 h-9 border icon-${index+1}`"
+                    :class="`w-9 h-9 border ${item.icon}`"
                     style="background-size: 100% 100%;"
                   >
                   </div>
@@ -788,14 +788,57 @@ const getHomeCheckLog = (id) => {
   })
 }
 //获取实时数据
-let pageRealList = ref([])
-const getPageRealTimeData = (id, id2) => {
-  pageRealTimeData({ parkId: id, plotId: id2 }).then((res) => {
-    res.forEach((item) => {
-      if (item == null) return
-    })
-    pageRealList.value = res
+const getIconClass = (text:string) => {
+  const iconMap = {
+    '温度': '1',
+    '湿度': '2',
+    'PH': '3',
+    'EC': '4',
+    '光': '5',
+    '雨': '6',
+    '二氧化碳': '7',
+    '气压': '8',
+    '虫': '9',
+    '类': '10',
+    'default': '1',
+    "磷": '11',
+    "氮": '12',
+    "钾": '13',
+    "深度": '14',
+    "种植面积": '18',
+    "农户": '17',
+    "大棚": '15',
+    "盆栽": '16',
+    "施肥": "19",
+    "虫害": "20",
+    "浇水": "21",
+    "除草": "22",
+    "打药": "23",
+    "采收": "24",
+    "风": "25",
+    "电": "26",
+    "盐": "27",
+    "水位": "28",
+    "氧": "29",
+    "辐射": '30',
+    "浑浊": "31",
+    "氯": "32"
+  }
+  const iconLabel = Object.keys(iconMap);
+  let key = 'default'
+  iconLabel.forEach(item => {
+      if (text.indexOf(item) !== -1) key = item
   })
+  return iconMap[key]
+}
+let pageRealList = ref<Array<any>>([])
+const getPageRealTimeData = async (parkId, plotId) => {
+  const res = await pageRealTimeData({ parkId, plotId })
+  if (!Array.isArray(res)) return
+  pageRealList.value = res.filter(item => {
+    if (!item.dataType || !item.avgData) return false
+    return true
+  }).map(ele => ({ ...ele, icon: 'my-icon-' + getIconClass(ele.dataType)}))
 }
 //获取预警信息
 const getpageWarningInfo = (id, id2) => {
@@ -915,6 +958,13 @@ select {
 @for $i from 1 through 10 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
+  }
+}
+
+@for $i from 1 through 32 {
+  .my-icon-#{$i} {
+    background-image: url(./assets//mingyue/icon#{$i}.png);
+    background-size: 100% auto;
   }
 }
 </style>

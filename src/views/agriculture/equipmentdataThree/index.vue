@@ -10,7 +10,7 @@
         />
       </el-select>
     </div>
-    <div class="flex space-x-4">
+    <div class="flex space-x-4 flex-wrap">
       <div
         class="weather-bg min-w-[8rem] rounded-lg py-2 px-4 flex justify-between items-center cursor-pointer space-x-3"
         v-for="item,index in trendData"
