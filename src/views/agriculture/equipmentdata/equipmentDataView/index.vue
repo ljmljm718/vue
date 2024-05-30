@@ -70,7 +70,7 @@ const resetTreeSelections = () => {
 
 <template>
   <el-row :gutter="20" v-loading="loading">
-    <div v-if="isCollapse" @click="isCollapse=false" class="mt--13px w-30px mb-7px bg-[#fff] flex justify-end pr-15px" style="height: 20px;line-height: 20px; cursor: pointer;border-radius:0 25px 25px 0;text-align: center;"><el-icon style="font-size: 10px;text-align: center; margin-top: 4px;margin-left: -8px;"><DArrowRight /></el-icon></div>
+    <div v-if="isCollapse" @click="isCollapse=false" class="mt--13px w-30px mb-7px flex justify-end pr-15px" style="height: 20px;line-height: 20px; cursor: pointer;border-radius:0 25px 25px 0;text-align: center;"><el-icon style="font-size: 10px;text-align: center; margin-top: 4px;margin-left: -8px;"><DArrowRight /></el-icon></div>
     <el-col :span="isCollapse?0:4">
       <el-menu
         default-active="2"

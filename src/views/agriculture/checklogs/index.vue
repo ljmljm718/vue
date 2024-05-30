@@ -101,7 +101,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="巡检编号" align="center" prop="inspectionNum"/>
+      <!-- <el-table-column label="巡检编号" align="center" prop="inspectionNum"/> -->
       <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
       <el-table-column label="设备" align="center" prop="equName"/>
       <el-table-column label="巡检状态" align="center" prop="inspectionState">
@@ -257,7 +257,11 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  router.push('/internetMonitor/check/CreateOrUpdateCheckLogsLkh?type=' + type + "&id=" + id)
+  if(type == 'create'){
+     router.push('/internetMonitor/check/CreateOrUpdateCheckLogs')
+     
+  }
+  else router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
   // formRef.value.open(type, id)
 }
 

@@ -12,41 +12,41 @@ import icon2 from './assets/icon2.png'
 import icon3 from './assets/icon3.png'
 import icon4 from './assets/icon4.png'
 import icon5 from './assets/icon5.png'
-
 //存放基地信息
 const selectBase = ref([])
 const getBaseDataList = async () => {
   const selectBaseList = await ParkInfoApi.getParkInfoPage({});
   console.log(selectBaseList.list,'selectBaseList.list')
   selectBase.value = selectBaseList.list
+  console.log(selectBase,"-=---=")
 }
 getBaseDataList()
 const soilList=ref([])
 // 获取土壤墒情信息
-const getSoilInfoList = async () => {
-  const res = await EquipmentDataApi.environmentalDataHomePageC({})
+const getSoilInfoList = async (belongPark?:any,belongPlot?:any) => {
+  const res = await EquipmentDataApi.environmentalDataHomePageC({belongPark,belongPlot})
   console.log("res", res);
   soilList.value=res
 }
 getSoilInfoList()
 //获取虫情信息
 let infestation=ref([])
-const getEnvironmentalDataHomePageB=async ()=>{
-   infestation.value= await EquipmentDataApi.environmentalDataHomePageB({})
+const getEnvironmentalDataHomePageB=async (belongPark?:any,belongPlot?:any)=>{
+   infestation.value= await EquipmentDataApi.environmentalDataHomePageB({belongPark,belongPlot})
   console.log(infestation.value,'虫情信息')
 }
 getEnvironmentalDataHomePageB()
 //获取气象信息
 let weather=ref([])
-const getEnvironmentalDataHomePageA=async()=>{
-  weather.value= await EquipmentDataApi.environmentalDataHomePageA({})
+const getEnvironmentalDataHomePageA=async(belongPark?:any,belongPlot?:any)=>{
+  weather.value= await EquipmentDataApi.environmentalDataHomePageA({belongPark,belongPlot})
   console.log(weather.value,'气象信息')
 }
 getEnvironmentalDataHomePageA()
 //获取水质信息
 let waterQuality=ref([])
-const getWaterQualityData=async ()=>{
-  waterQuality.value=await EquipmentDataApi.waterQualityData({})
+const getWaterQualityData=async (belongPark?:any,belongPlot?:any)=>{
+  waterQuality.value=await EquipmentDataApi.waterQualityData({belongPark,belongPlot})
   console.log(waterQuality.value,'水质信息')
 }
 getWaterQualityData()
@@ -54,7 +54,12 @@ const queryParams = ref({
   name: '',
   plot: ''
 })
-const handleQuery = async () => {}
+const handleQuery = async () => {
+  getSoilInfoList(queryParams.value.name,queryParams.value.plot)
+  getEnvironmentalDataHomePageB(queryParams.value.name,queryParams.value.plot)
+  getEnvironmentalDataHomePageA(queryParams.value.name,queryParams.value.plot)
+  getWaterQualityData(queryParams.value.name,queryParams.value.plot)
+}
 const resetQuery = () => {
   queryParams.value = { name: '', plot: '' }
   handleQuery()
@@ -373,6 +378,17 @@ const getIconFrame = (text:string) => {
   })
   return res
 }
+const boo = ref(false)
+let listPlot= ref([])
+watch(
+  () => queryParams.value.name,
+  async (val) => {
+    if (val != null && val != '' && val != undefined) {
+      boo.value=true
+      listPlot.value = await ParkInfoApi.getParkDetailListByParkId(queryParams.value.name);
+    }
+  }
+)
 </script>
 <template>
   <div>
@@ -390,18 +406,34 @@ const getIconFrame = (text:string) => {
               v-for="item in selectBase"  
               :key="item"
               :label="item.name"
-              :value="item.name"
+              :value="item.id"
             />   
           </el-select>
         </el-form-item>
-        <el-form-item label="地块名称">
-          <el-input
+        <el-form-item :model="queryParams" label="地块名称" class="flex space-x-3">
+          <el-input 
+            v-if = !boo
             v-model="queryParams.plot"
             clearable
             placeholder="请输入地块名称"
             style="width: 240px;"
             @keyup.enter="handleQuery"
           />
+          
+          <el-select v-if="boo"
+            v-model="queryParams.plot"
+            placeholder="请选择基地名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          >  
+            <el-option
+              v-for="items in listPlot"  
+              :key="items"
+              :label="items.name"
+              :value="items.id"
+            />   
+          </el-select>
         </el-form-item>
         <el-form-item>
           <div class="flex space-x-3">
