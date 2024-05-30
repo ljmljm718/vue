@@ -45,7 +45,7 @@
             <div class="relative">
               <div id="chart1"></div>
               <div class="absolute z-10 left-0 top-0 w-full h-full flex flex-col items-center justify-center">
-                <div style="font-size: 1.1rem;color:#7696eb;font-weight: bold;">{{ devicePercent }}</div>
+                <div style="font-size: 1.1rem;color:#7696eb;font-weight: bold;">{{ devicePercent }}%</div>
                 <div style="font-size: .8rem">巡检进度</div>
               </div>
             </div>
@@ -101,7 +101,7 @@
                 </div>
               </div>
             </el-card>
-            <el-card>
+            <el-card class="grow">
               <template #header>
                 <div class="flex font-800">
                   <div class="bg-[#7696eb] w-7px h-1.5rem mr-5px"></div>
@@ -185,6 +185,17 @@
             </div>
           </template>
           <div class="flex py-2">
+            <el-radio-group
+              v-model="radio"
+              @change="handleRadioChange"
+            >
+              <el-radio-button
+                :label="item.categoryName"
+                :value="item.categoryCode"
+                v-for="item, index in selectEquipmentType"
+                :key="index"
+              />
+            </el-radio-group>
             <el-select
               @change='handleSelectedMonitorTypeChange'
               v-model="selectedMonitorType"
@@ -199,17 +210,6 @@
                 :value="item"
               />
             </el-select>
-            <el-radio-group
-              v-model="radio"
-              @change="handleRadioChange"
-            >
-              <el-radio-button
-                :label="item.categoryName"
-                :value="item.categoryCode"
-                v-for="item, index in selectEquipmentType"
-                :key="index"
-              />
-            </el-radio-group>
             <div style="margin: 0 .4rem;">
               <el-date-picker
                 v-model="dateData"
@@ -329,9 +329,9 @@ const deviceTypeDataList = ref<Array<any>>([])
 const handleDeviceTypeRadioChange = async (
   param: string | number | boolean = '全部'
 ) => {
-  let _data = []
+  let _data:Array<any> = []
   if (deviceTypeDataList.value.length === 0) {
-	  const res = await deviceTypeCount()
+	  const res = await deviceTypeCount({})
 	  if (Array.isArray(res)) deviceTypeDataList.value = res
   }
   if (param === '全部') _data = deviceTypeDataList.value.map(item => ({ value: item.count, name: item.categoryName }))
@@ -359,19 +359,27 @@ const handleDeviceTypeRadioChange = async (
         {
           type: 'pie',
           radius: ['45%', '65%'],
-          center: ['50%', '50%'],
+          center: ['40%', '50%'],
           data: _data,
           label: {
-            show: true,
-            position: 'center',
-            color: '#7c7c7d',
-			formatter: (params) => {
-				return "类型占比"
-			}
+            formatter: "{c|{c}}台 , {per|{d}%}",
+            color: '#888',
+            rich: {
+              c: {
+                color: "#888",
+                fontSize: 12,
+                lineHeight: 33,
+              },
+              per: {
+                color: "#888",
+                fontSize: 12,
+                lineHeight: 33,
+              },
+            },
           },
           emphasis: {
             label: {
-              show: false,
+              show: true,
               fontSize: 40,
               fontWeight: 'bold'
             }
