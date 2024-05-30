@@ -452,26 +452,15 @@ const queryParams = reactive({
   deviceType: undefined,
   warnType: undefined,
   id: undefined,
-  parkCode: undefined,
-  plotCode: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-let route=useRoute()
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
-  //路由跳转赋值判定
-  if(route.query.warnTime){
-    queryParams.value.warnTime = route.query.warnTime
-  }
-  if(route.query.parkCode){
-    queryParams.value.parkCode = route.query.parkCode
-  }
-  if(route.query.plotCode){
-    queryParams.value.warnTime = route.query.plotCode
-  }
   try {
+    console.log(1)
     const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -479,9 +468,35 @@ const getList = async () => {
     loading.value = false
   }
 }
-
+let route=useRoute()
 if(route.query.id){
   queryParams.id=route.query.id
+  getList()
+}
+if(route.query.time){
+  let data=new Date()
+  let year=data.getFullYear()
+  let month=data.getMonth()+1>=9?data.getMonth()+1:'0'+(data.getMonth()+1)
+  let day=data.getDate()
+  if(route.query.time=='1'){
+    console.log(`${year}-${month}-${day} 00:00-00-00`,'`${year}-${month}-${day} 00:00-00-00`')
+    queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    queryParams.warnTime.push(`${year}-${month}-${day} 23:59:59`)
+    console.log(queryParams,'queryParams')
+  }else{
+
+    let  month2=data.getMonth()>=9?data.getMonth():'0'+data.getMonth()
+    if(month=='01'){
+      month2=12
+      let year2=data.getFullYear()-1
+      queryParams.warnTime.push(`${year2}-${month2}-${day} 23:59:59`)
+      queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    }else{
+      queryParams.warnTime.push(`${year}-${month2}-${day} 23:59:59`)
+      queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    }
+
+  }
   getList()
 }
 /** 搜索按钮操作 */
@@ -616,8 +631,6 @@ const resetForm = () => {
 
 //tab点击切换事件
 const handleClick = (tab, event) => {
-  // console.log(event);
-  // console.log(tab.props.name);
   if (tab.props.name === 'first') {
     getList()
   } else if (tab.props.name === 'second') {
