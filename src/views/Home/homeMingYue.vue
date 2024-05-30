@@ -5,6 +5,7 @@
       :style="`grid-template-columns: repeat(${topList.length}, 1fr);`"
     >
       <el-card
+       style="cursor: pointer;"
         v-for="item, index in topList"
         :key="index"
         @click="goPage(item)"
@@ -80,20 +81,20 @@
                   <div style="border:1px solid #c1c1c1;padding: 5px;">
                     <div style="color: #847d78;">预警信息</div>
                     <div class=" mt-20px ml-30px">
-                      <div style="color: #847d78;" @click="goPageWran(1)">今日报警</div>
+                      <div style="color: #847d78; cursor: pointer;" @click="goPageWran(1)">今日报警</div>
                       <div
                       @click="goPageWran(1)"
-                        class="flex font-700 mt-10px"
-                        style="font-size: 20px"
+                        class="flex font-700 mt-10px "
+                        style="font-size: 20px; cursor: pointer;"
                       >{{ todayWarnNum }}
                       </div>
                     </div>
                     <div class=" mt-20px ml-30px">
-                      <div style="color: #847d78;" @click="goPageWran(2)">近30天报警</div>
+                      <div style="color: #847d78; cursor: pointer; " @click="goPageWran(2)">近30天报警</div>
                       <div 
                       @click="goPageWran(2)"
-                        class="flex font-700 mt-10px"
-                        style="font-size: 20px"
+                        class="flex font-700 mt-10px; "
+                        style="font-size: 20px; cursor: pointer;"
                       >{{ thirtyDayWarn }}
                       </div>
                     </div>
@@ -115,7 +116,7 @@
                 :data="pageWarnList"
                 :stripe="true"
                 :show-overflow-tooltip="true"
-                height="12rem"
+                height="18rem"
               >
                 <el-table-column
                   label="设备"
