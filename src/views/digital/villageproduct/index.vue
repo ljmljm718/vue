@@ -26,15 +26,15 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="产品码" prop="parkDetailId">
-        <el-input
-          v-model="queryParams.parkDetailId"
-          placeholder="请输入产品码（所属地块id）"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="产品码" prop="parkDetailId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.parkDetailId"-->
+<!--          placeholder="请输入产品码（所属地块id）"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="所属地块" prop="parkDetail">
         <el-input
           v-model="queryParams.parkDetail"

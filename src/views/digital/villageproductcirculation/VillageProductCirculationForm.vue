@@ -48,7 +48,7 @@
         }"/>
       </el-form-item>
       <el-form-item label="总价(元)" prop="totalPrice">
-        <el-input v-model="formData.totalPrice" placeholder="请输入总价"/>
+        <el-input v-model="formData.totalPrice" placeholder="跟据单价和数量自动计算，无需手动输入！" :disabled="true"/>
       </el-form-item>
       <!--      <el-form-item label="时间" prop="times">-->
       <!--        <el-input v-model="formData.times" placeholder="请输入时间"/>-->

@@ -3,7 +3,7 @@
   <div>
 
     <EditFrame>
-      <template #header>
+      <template #header v-if="show1">
         <div class="flex">
           <!-- <el-button
            type="primary"
@@ -187,7 +187,12 @@ const formData = ref({
   recoveryNum: undefined,
 })
 const formRules = reactive({
-  // cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+  product: [{required: true, message: '产品名称不能为空', trigger: 'blur'}],
+  parkId: [{required: true, message: '基地不能为空', trigger: 'blur'}],
+  parkDetailId: [{required: true, message: '地块不能为空', trigger: 'blur'}],
+  years: [{required: true, message: '产品年份不能为空', trigger: 'blur'}],
+  inventory: [{required: true, message: '产品数量不能为空', trigger: 'blur'}],
+  specifications: [{required: true, message: '产品规格不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 // 本地保存表单
@@ -305,7 +310,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as VillageProductVO
-    if (formType.value === 'create') {
+    if (!formData.value.id) {
       await VillageProductApi.createVillageProduct(data)
       message.success(t('common.createSuccess'))
     } else {
