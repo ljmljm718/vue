@@ -389,6 +389,10 @@ const getList = async () => {
   }
 }
 let route = useRoute()
+if(route.query.deviceType){
+  queryParams.deviceType=route.query.deviceType
+  getList()
+}
 getList()
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
