@@ -820,7 +820,6 @@ const getParkTree = () => {
     belongPark.value = res[2].id
     belongPlot.value = res[2].child[1].id
     // getPageRealTimeData(res[1].id, res[1].child[1].id)
-    getpageWarningInfo(res[1].id, res[1].child[1].id)
     getEnvironmentView(res[2].id, res[2].child[1].id)
     getDataByParkAndPlotAndType(res[2].id, res[2].child[1].id)
   })
