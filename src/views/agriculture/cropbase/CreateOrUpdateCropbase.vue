@@ -316,7 +316,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as CropBaseVO
-    if (formType.value === 'create') {
+    if (!formData.value.id) {
       await CropBaseApi.createCropBase(data)
       message.success(t('common.createSuccess'))
     } else {
