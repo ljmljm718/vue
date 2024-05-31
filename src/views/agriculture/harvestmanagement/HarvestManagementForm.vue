@@ -218,11 +218,11 @@ const submitForm = async () => {
     const data = formData.value as unknown as HarvestManagementVO
     if (formType.value === 'create') {
       await HarvestManagementApi.createHarvestManagement(data)
-      const dataCropBase = {
-        id: data.varietyId,
-        recoveryNo: true
-      }
-      await CropBaseApi.updateCropBase(dataCropBase)
+      // const dataCropBase = {
+      //   id: data.varietyId,
+      //   recoveryNo: true
+      // }
+      // await CropBaseApi.updateCropBase(dataCropBase)
       message.success(t('common.createSuccess'))
     } else {
       await HarvestManagementApi.updateHarvestManagement(data)
