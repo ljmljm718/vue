@@ -434,7 +434,8 @@ import {
 } from "@/api/agriculture/monitoringequipmentnotice";
 import MonitoringEquipmentNoticeForm
   from "@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue";
-import { useRoute } from 'vue-router'
+import {useRoute} from 'vue-router'
+
 /** 预警记录 列表 */
 defineOptions({name: 'AgriWarningRecord'})
 
@@ -469,7 +470,7 @@ const getList = async () => {
   }
 }
 const route = useRoute()
-if(route.query.id){
+if (route.query.id) {
   queryParams.id = route.query.id
   getList()
 }
@@ -478,29 +479,51 @@ if (route.query.warnStatus) {
   queryParams.warnStatus = route.query.warnStatus
   getList()
 }
-if(route.query.time){
-  let data=new Date()
-  let year=data.getFullYear()
-  let month=data.getMonth()+1>=9?data.getMonth()+1:'0'+(data.getMonth()+1)
-  let day=data.getDate()
-  if(route.query.time=='1'){
-    console.log(`${year}-${month}-${day} 00:00-00-00`,'`${year}-${month}-${day} 00:00-00-00`')
+if (route.query.time) {
+  let data = new Date()
+  let year = data.getFullYear()
+  let month = data.getMonth() + 1 >= 9 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1)
+  let day = data.getDate()
+  if (route.query.time == '1') {
+    console.log(`${year}-${month}-${day} 00:00-00-00`, '`${year}-${month}-${day} 00:00-00-00`')
     queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
     queryParams.warnTime.push(`${year}-${month}-${day} 23:59:59`)
-    console.log(queryParams,'queryParams')
-  }else{
-
-    let  month2=data.getMonth()>=9?data.getMonth():'0'+data.getMonth()
-    if(month=='01'){
-      month2=12
-      let year2=data.getFullYear()-1
-      queryParams.warnTime.push(`${year2}-${month2}-${day} 23:59:59`)
-      queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
-    }else{
-      queryParams.warnTime.push(`${year}-${month2}-${day} 23:59:59`)
-      queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    console.log(queryParams, 'queryParams')
+  } else {
+    // let  month2=data.getMonth()>=9?data.getMonth():'0'+data.getMonth()
+    // if(month=='01'){
+    //   console.log("11111111LIKHAI")
+    //   month2=12
+    //   let year2=data.getFullYear()-1
+    //   queryParams.warnTime.push(`${year2}-${month2}-${day} 23:59:59`)
+    //   queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    //   console.log("11111111LIKHAI",queryParams.warnTime)
+    // }else{
+    //   console.log("222222LIKHEI")
+    //   queryParams.warnTime.push(`${year}-${month2}-${day} 23:59:59`)
+    //   console.log("111111222222LIKHEI",queryParams.warnTime)
+    //   queryParams.warnTime.push(`${year}-${month}-${day} 00:00:00`)
+    //   console.log("222222LIKHEI",queryParams.warnTime)
+    // }
+    // 获取当前时间
+    console.log("11111:");
+    let now = new Date();
+// 获取一个月前的时间
+    now.setMonth(now.getMonth() - 1);
+// 格式化日期（可选），这里使用自定义函数格式化日期
+    function formatDate(date) {
+      let year = date.getFullYear();
+      let month = ("0" + (date.getMonth() + 1)).slice(-2); // 月份是从0开始的，所以加1
+      let day = ("0" + date.getDate()).slice(-2);
+      let hours = ("0" + date.getHours()).slice(-2);
+      let minutes = ("0" + date.getMinutes()).slice(-2);
+      let seconds = ("0" + date.getSeconds()).slice(-2);
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
-
+    let currentTime = formatDate(new Date());
+    let oneMonthAgo = formatDate(now);
+    queryParams.warnTime.push(oneMonthAgo)
+    queryParams.warnTime.push(currentTime)
   }
   getList()
 }
