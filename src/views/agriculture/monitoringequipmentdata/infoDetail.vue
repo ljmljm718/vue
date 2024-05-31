@@ -16,7 +16,7 @@
     
     <div class="w-full flex space-x-2 py-2" v-if="tabVal !== '实时拍摄'">
       <div class="flex flex-col space-y-2 grow">
-        <video :src="currentVideoLink" class="w-full bg-black" autoplay muted></video>
+        <video :src="currentVideoLink" class="w-full bg-black aspect-video" autoplay muted></video>
         <div class="flex space-x-2">
           <el-button type="primary" size="default">
             回放录像<el-icon><Film /></el-icon>

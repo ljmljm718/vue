@@ -139,7 +139,7 @@
                   prop="warnTime"
                 >
                   <template #default="scope">
-                    <span>{{ new Date().toLocaleString(scope.row.warnTime) }}</span>
+                    <span>{{ new Date(scope.row.warnTime).toLocaleString() }}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -165,10 +165,10 @@
                 >
                   <div class="flex flex-col">
                     <div style="color: #1173ed;font-weight: bold;font-size:13px;">
-                      <span>{{ item?.avgData }}</span>
-                      <span>{{ item?.dataUnit }}</span>
+                      <span>{{ item?.dataValue }}</span>
+                      <span>{{ item?.yyUnit }}</span>
                     </div>
-                    <div class="text-sm">{{ item?.dataType }}</div>
+                    <div class="text-sm">{{ item?.monitoringType }}</div>
                   </div>
                   <div
                     :class="`w-9 h-9 border ${item.icon}`"
@@ -294,6 +294,10 @@ import {
   getEquipmentCountSum,
   ParkTree,
   getInspectionProgress,
+  waterQualityData2,
+  environmentalDataHomePageA,
+  environmentalDataHomePageB,
+  environmentalDataHomePageC,
   pageRealTimeData,
   CountListByNowTime,
   warningRecordInfoByCode,
@@ -414,10 +418,10 @@ const goPage=(obj)=>{
     router.push('/internetMonitor/device/deviceView?deviceStatus=fault')
       break;
     case '气象站':
-    router.push('/internetMonitor/device/deviceView?deviceType=80,87')
+    router.push('/internetMonitor/device/deviceView?deviceType=80,81')
       break;
     case '生长监控':
-    router.push('/internetMonitor/device/deviceView?deviceType=78,79')
+    router.push('/internetMonitor/device/deviceView?deviceType=78,82')
       break;
     case '在线设备':
     router.push('/internetMonitor/device/deviceView?deviceStatus=online')
@@ -815,7 +819,7 @@ const getParkTree = () => {
     console.log(res, 'dd')
     belongPark.value = res[2].id
     belongPlot.value = res[2].child[1].id
-    getPageRealTimeData(res[1].id, res[1].child[1].id)
+    // getPageRealTimeData(res[1].id, res[1].child[1].id)
     getpageWarningInfo(res[1].id, res[1].child[1].id)
     getEnvironmentView(res[2].id, res[2].child[1].id)
     getDataByParkAndPlotAndType(res[2].id, res[2].child[1].id)
@@ -896,16 +900,21 @@ const getIconClass = (text:string='') => {
   })
   return iconMap[key]
 }
-getIconClass()
 let pageRealList = ref<Array<any>>([])
-const getPageRealTimeData = async (parkId, plotId) => {
-  const res = await pageRealTimeData({ parkId, plotId })
-  if (!Array.isArray(res)) return
-  pageRealList.value = res.filter(item => {
-    if (!item.dataType || !item.avgData) return false
+const getPageRealTimeData = async (belongPark='', belongPlot='') => {
+  const res=await waterQualityData2({belongPark,belongPlot})
+  const res2=await environmentalDataHomePageA({belongPark,belongPlot})
+  const res3=await environmentalDataHomePageB({belongPark,belongPlot})
+  const res4=await environmentalDataHomePageC({belongPark,belongPlot})
+  let data=[...res,...res2,...res3,...res4]
+  if (!Array.isArray(data)) return
+  pageRealList.value = data.filter(item => {
+    if (!item.monitoringType || !item.dataValue) return false
     return true
-  }).map(ele => ({ ...ele, icon: 'my-icon-' + getIconClass(ele.dataType)}))
+  }).map(ele => ({ ...ele, icon: 'my-icon-' + getIconClass(ele.monitoringType)}))
+ console.log(pageRealList.value,'pageRealList.valuepageRealList.value')
 }
+getPageRealTimeData()
 //获取预警信息
 const getpageWarningInfo = (id='', id2='') => {
   warningRecordInfoByCode({ parkCode: id, plotCode: id2 }).then((res) => {

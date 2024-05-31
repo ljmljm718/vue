@@ -434,7 +434,7 @@ import {
 } from "@/api/agriculture/monitoringequipmentnotice";
 import MonitoringEquipmentNoticeForm
   from "@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue";
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 /** 预警记录 列表 */
 defineOptions({name: 'AgriWarningRecord'})
 
@@ -468,9 +468,14 @@ const getList = async () => {
     loading.value = false
   }
 }
-let route=useRoute()
+const route = useRoute()
 if(route.query.id){
-  queryParams.id=route.query.id
+  queryParams.id = route.query.id
+  getList()
+}
+
+if (route.query.warnStatus) {
+  queryParams.warnStatus = route.query.warnStatus
   getList()
 }
 if(route.query.time){
