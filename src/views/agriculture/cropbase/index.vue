@@ -334,7 +334,8 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  router.push('/farm_work/CreateOrUpdateCropbase?id=' +id+ '&type='+type)
+  if(type == 'create' ) router.push('/farm_work/CreateOrUpdateCropbase')
+  else router.push('/farm_work/CreateOrUpdateCropbase?id=' +id+ '&type='+type)
 }
 
 /** 添加/修改操作 */

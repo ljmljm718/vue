@@ -363,15 +363,15 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  if(queryParams.monitoringBaseName == null){
+  if(queryParams.monitoringBaseName == null || queryParams.monitoringBaseName == ''){
     queryParams.monitoringBaseName= undefined
     queryParams.monitoringBaseId= undefined
   }
-  if(queryParams.monitoringPlotName == null){
+  if(queryParams.monitoringPlotName == null || queryParams.monitoringPlotName == ''){
     queryParams.monitoringPlotName= undefined
     queryParams.monitoringPlotId= undefined
   }
-  if(queryParams.deviceName == null){
+  if(queryParams.deviceName == null || queryParams.deviceName == ''){
     queryParams.deviceName = undefined
     queryParams.deviceId = undefined
   }

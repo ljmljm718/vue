@@ -73,15 +73,15 @@
       </el-form-item>
       <div style="margin-top: 20px;margin-left: 30px;height: 30px">
         <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:check-logs:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px"/>
-            新增
-          </el-button>
+          <!--          <el-button-->
+          <!--            type="primary"-->
+          <!--            plain-->
+          <!--            @click="openForm('create')"-->
+          <!--            v-hasPermi="['agriculture:check-logs:create']"-->
+          <!--          >-->
+          <!--            <Icon icon="ep:plus" class="mr-5px"/>-->
+          <!--            新增-->
+          <!--          </el-button>-->
           <el-button
             type="success"
             plain
@@ -257,11 +257,10 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  if(type == 'create'){
-     router.push('/internetMonitor/check/CreateOrUpdateCheckLogs')
-     
-  }
-  else router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
+  if (type == 'create') {
+    router.push('/internetMonitor/check/CreateOrUpdateCheckLogs')
+
+  } else router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
   // formRef.value.open(type, id)
 }
 
