@@ -128,3 +128,19 @@ export const QueryCurrentDateCount = (params) => {
 export const getCountSumByCode = (params) => {
   return request.get({ url: `/agriculture/agri-warning-record/getCountSumByCode`, params})
 }
+//土壤
+export const environmentalDataHomePageC = (params) => {
+  return request.get({ url: `/yyang/equipment-data/environmentalDataHomePageC`, params})
+}
+//虫情
+export const environmentalDataHomePageB = (params) => {
+  return request.get({ url: `/yyang/equipment-data/environmentalDataHomePageB`, params})
+}
+//气象
+export const environmentalDataHomePageA = (params) => {
+  return request.get({ url: `/yyang/equipment-data/environmentalDataHomePageA`, params})
+}
+//水质
+export const waterQualityData2 = (params) => {
+  return request.get({ url: `/yyang/equipment-data/waterQualityData`, params})
+}
