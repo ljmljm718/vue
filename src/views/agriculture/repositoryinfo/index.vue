@@ -3,16 +3,22 @@
     <!-- 搜索工作栏 -->
     	<el-card>
       <div class="flex justify-between">
-        <el-input
+       <el-input v-model='queryParams.repositoryTitle'
+       style="width: 16rem;"
+       placeholder="请输入标题"
+          @keyup.enter="handleQuery"
+       >
+       <!-- <el-input
           placeholder="请输入标题"
           v-model="queryParams.repositoryTitle"
           style="width: 16rem;"
           @keyup.enter="handleQuery"
-        >
+        > -->
           <template #append>
             <el-button :icon="Search" @click="handleQuery"/>
           </template>
         </el-input>
+
         <div class="flex space-x-2">
           <el-radio-group v-model="radioVal" @change="handleRadioChange">
             <el-radio-button label="时间正序" value="时间正序"/>
