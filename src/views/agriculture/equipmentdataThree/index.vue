@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <div class="floatRight">
-      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="default" @change="changeRefresh">
+      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
         <el-option
           v-for="item in refreshList"
           :key="item.value"
@@ -10,22 +10,22 @@
         />
       </el-select>
     </div>
-    <div class="flex space-x-4 flex-wrap">
+    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-7 mr-[120px]">
       <div
         class="weather-bg min-w-[8rem] rounded-lg py-2 px-4 flex justify-between items-center cursor-pointer space-x-3"
         v-for="item,index in trendData"
         :key="index"
-        style="border: 1px solid #888888;"
+        :style="`background-color: ${getRandomColor(index)};`"
         @click="tabCli(item.equipmentCode,item.monitoringType,index)"
       >
-        <div class="box-top">
+        <div :class="`w-[2rem] h-[2rem] icon-extra-${getIconClass(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
+        <div class="flex flex-col items-end box-top">
           <div>{{ item.monitoringType }}</div>
           <div>
             <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
             <span class="pl-1">{{ item.yyUnit }}</span>
           </div>
         </div>
-        <div :class="`w-[2rem] h-[2rem] icon-${getIcon(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
         <!-- <div
           @click="tabCli(item.equipmentCode,item.monitoringType,index)"
           :class="active==index?'active':'actived'"
@@ -155,6 +155,43 @@ const isLine = ref(false)
 const handleSwitchChange = (val) => {
   initChart(val)
 }
+
+const getIconClass = (text:string) => {
+    const iconMap = {
+        '温度': '1',
+        '湿度': '2',
+        'PH': '3',
+        'EC': '4',
+        '光': '5',
+        '雨': '6',
+        '二氧化碳': '7',
+        '气压': '8',
+        '虫': '9',
+        '类': '10',
+        'default': '1',
+        "磷": '11',
+        "氮": '12',
+        "钾": '13',
+        "深度": '14',
+        "种植面积": '18',
+        "农户": '17',
+        "大棚": '15',
+        "盆栽": '16',
+        "施肥": "19",
+        "虫害": "20",
+        "浇水": "21",
+        "除草": "22",
+        "打药": "23",
+        "采收": "24"
+    }
+    const iconLabel = Object.keys(iconMap);
+    let key = 'default'
+    iconLabel.forEach(item => {
+        if (text.indexOf(item) !== -1) key = item
+    })
+    return iconMap[key]
+}
+
 const getIcon = (item) => {
   let resIconIndex = '1'
   const titleMap = {
@@ -244,6 +281,11 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+const getRandomColor = (index:number) => {
+  const colorArr = ['#f9e1dc', '#f9ecea', '#d8e2da', '#ede3db', '#ffd7b9', '#caf0f8']
+  return colorArr[index % colorArr.length]
+}
 
 /**
  * 设备分类级联选择器
@@ -527,6 +569,12 @@ const changeRefresh = async (value) => {
 @for $i from 1 through 8 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
+  }
+}
+
+@for $i from 1 through 24 {
+  .icon-extra-#{$i} {
+    background-image: url(../../bigscreenTest/assets/icon#{$i}.png);
   }
 }
 </style>

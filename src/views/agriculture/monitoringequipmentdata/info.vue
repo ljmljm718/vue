@@ -1,5 +1,5 @@
 <script lang="tsx">
-import {defineComponent, ref} from 'vue'
+import { defineComponent, ref, nextTick } from 'vue'
 import {
   getParkTree,
   getEquipmentPhotographAndVideo,
@@ -96,7 +96,12 @@ export default defineComponent({
     const layoutSelected = ref()
     const currentLayout = ref<string>('grid-cols-3')
     const changeLayout = (item) => {
+      const _arr = deviceVideoList.value
+      deviceVideoList.value = []
       currentLayout.value = item
+      nextTick(() => {
+        deviceVideoList.value = _arr
+      })
     }
     // 基地导览页面部分
     const baseTabPage = () => {
