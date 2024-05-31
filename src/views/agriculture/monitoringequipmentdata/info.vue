@@ -67,7 +67,7 @@ export default defineComponent({
       deviceVideoList.value = res.map(item => ({
         id: item.id,
         deviceName: item.deviceName,
-        videoSrc: item.url,
+        videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
         baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
         online: true
       }))
@@ -162,7 +162,7 @@ export default defineComponent({
                           router.push("/internetMonitor/deviceData/monitoringequipmentdata?id=" + item.id)
                         }}>更多</div>
                       </div>
-                      <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc}/>
+                      <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc} loop />
                       <div class="flex items-center justify-between pt-2">
                         <div>{item.baseName}</div>
                         <div style={

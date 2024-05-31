@@ -287,6 +287,11 @@ const getList = async () => {
   }
 }
 
+if (route.query.collectionType) {
+  queryParams.collectionType = route.query.collectionType
+  getList()
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1

@@ -158,7 +158,7 @@ export default defineComponent({
             monitorDeviceLoading.value = false
             deviceVideoList.value = res.map(item => ({
                 deviceName: item.deviceName,
-                videoSrc: item.url,
+                videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
                 baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
                 online: item.deviceStatus === 'online'
             })).slice(0, 9)
@@ -249,7 +249,7 @@ export default defineComponent({
                                         router.push("/internetMonitor/deviceData/monitoring-equipment-data")
                                     }}>
                                         <div class="art-font h-[1.4rem] tracking-wide">{ item.deviceName }</div>
-                                        <video class="w-full h-[13rem]" controls autoplay src={ item.videoSrc } />
+                                        <video class="w-full h-[13rem]" controls autoplay src={ item.videoSrc } loop />
                                         <div class="flex items-center justify-between pt-2">
                                             <div>{ item.baseName }</div>
                                             <div style={
@@ -624,6 +624,7 @@ export default defineComponent({
             console.log("气象站", res);
             if(!Array.isArray(res)) return
             weatherList.value = res.map(item => ({
+                id: item.id,
                 icon: getIconClass(item.monitoringType),
                 label: item.monitoringType || '--',
                 value: item.dataValue || '--',
@@ -644,6 +645,7 @@ export default defineComponent({
             console.log("土壤墒情", res);
             if(!Array.isArray(res)) return
             soilList.value = res.map(item => ({
+                id: item.id,
                 icon: getIconClass(item.monitoringType),
                 label: item.monitoringType || '--',
                 value: item.dataValue || '--',
@@ -664,6 +666,7 @@ export default defineComponent({
             console.log("水质", res);
             if(!Array.isArray(res)) return
             waterList.value = res.map(item => ({
+                id: item.id,
                 icon: getIconClass(item.monitoringType),
                 label: item.monitoringType || '--',
                 value: item.dataValue || '--',
@@ -680,19 +683,23 @@ export default defineComponent({
             plantCenterTopCardList.value = [
                 {
                     label: '设备总数',
-                    value: res['设备总数']
+                    value: res['设备总数'],
+                    param: ''
                 },
                 {
                     label: '在线设备',
-                    value: res['在线设备']
+                    value: res['在线设备'],
+                    param: 'online'
                 },
                 {
                     label: '离线设备',
-                    value: res['离线设备']
+                    value: res['离线设备'],
+                    param: 'offline'
                 },
                 {
-                    label: '报警设备',
-                    value: res['报警设备']
+                    label: '故障设备',
+                    value: res['报警设备'],
+                    param: 'fault'
                 },
             ]
         }
@@ -760,7 +767,7 @@ export default defineComponent({
                                                 class="inner-border px-4 py-2 flex flex-col items-center"
                                                 style="background:#001b4290;"
                                                 onClick={() => {
-                                                router.push("/internetMonitor/device/deviceView")
+                                                router.push("/internetMonitor/device/deviceView?deviceStatus=" + item.param)
                                             }}>
                                                 <div>{item.label}</div>
                                                 <div class="art-font">{item.value}</div>
@@ -874,10 +881,10 @@ export default defineComponent({
                                     default: () => (
                                         <>
                                             <div class="art-font px-3 py-1 pt-2" onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=气象站")
+                                                router.push("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站")
                                             }}>气象监测</div>
                                             <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={weatherLoading.value} onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=气象站")
+                                                router.push("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站")
                                             }}>
                                                 {
                                                     weatherList.value.map((item) => (
@@ -898,10 +905,10 @@ export default defineComponent({
                                                 }
                                             </div>
                                             <div class="art-font px-3 py-1 pt-2" onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=土壤监测")
+                                                router.push("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
                                             }}>土壤墒情</div>
                                             <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={soilLoading.value} onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=土壤监测")
+                                                router.push("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
                                             }}>
                                                 {
                                                     soilList.value.map((item) => (
@@ -921,10 +928,10 @@ export default defineComponent({
                                                 }
                                             </div>
                                             <div class="art-font px-3 py-1 pt-2" onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=水质监测")
+                                                router.push("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测")
                                             }}>水质监测</div>
                                             <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={waterLoading.value} onClick={() => {
-                                                router.push("/internetMonitor/deviceData/equipment-data?collectionType=水质监测")
+                                                router.push(`/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测`)
                                             }}>
                                                 {
                                                     waterList.value.map((item) => (
@@ -1158,6 +1165,7 @@ export default defineComponent({
             console.log('报警信息处理情况左侧统计', res);
             if (!Array.isArray(res)) return
             warnHandleInfo.value = res.map(item => ({
+                ...item,
                 label: item.warnStatus === '0'
                     ? '未处理'
                     : item.warnStatus === '1'
@@ -1285,12 +1293,12 @@ export default defineComponent({
                                         ),
                                         default: () => (
                                             <div class="p-5 h-[380px] flex space-x-3">
-                                                <div class="w-[140px]" onClick={() => {
-                                                    router.push("/internetMonitor/warn/agri-warning-record")
-                                                }}>
+                                                <div class="w-[140px]">
                                                     {
                                                         warnHandleInfo.value.map(item => (
-                                                            <div class="flex justify-between p-2 inner-border">
+                                                            <div class="flex justify-between p-2 inner-border" onClick={() => {
+                                                                router.push(`/internetMonitor/warn/agri-warning-record?warnStatus=${item.warnStatus}`)
+                                                            }}>
                                                                 <span>{item.label}</span>
                                                                 <span>{item.value}</span>
                                                             </div>
