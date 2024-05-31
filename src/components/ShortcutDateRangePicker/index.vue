@@ -15,6 +15,7 @@
       :shortcuts="shortcuts"
       class="!w-240px"
       @change="emitDateRangePicker"
+      
     />
     <slot></slot>
   </div>

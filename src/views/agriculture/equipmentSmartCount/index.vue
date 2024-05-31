@@ -71,17 +71,17 @@ function startTime(time){
   let data2=new Date(time[1])
   let year=data.getFullYear()
   let year2=data2.getFullYear()
-  let month=data.getMonth()+1
-  let month2=data2.getMonth()+1
-  let day=data.getDate()
-  let day2=data2.getDate()
+  let month=data.getMonth()+1>9?data.getMonth()+1:'0'+(data.getMonth()+1)
+  let month2=data2.getMonth()+1>9?data2.getMonth()+1:'0'+(data2.getMonth()+1)
+  let day=data.getDate()>9?data.getDate():'0'+data.getDate()
+  let day2=data2.getDate()>9?data2.getDate():'0'+data2.getDate()
   initDataCollectChart('appoint',`${year}-${month}-${day}`,`${year2}-${month2}-${day2}`)
 }
 
 // 数据采集量展示
 const dataCollectRadio = ref('本年')
 const dataCollectDateRange = ref([])
-const CollectDate=()=>{
+const CollectDate=(e)=>{
   startTime(dataCollectDateRange.value)
 }
 const dataColleChange= (val)=>{
@@ -613,6 +613,8 @@ watch(
               <el-date-picker 
                 @change="CollectDate"
                 v-model="dataCollectDateRange"
+                :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+                value-format="YYYY-MM-DD HH:mm:ss"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始时间"
