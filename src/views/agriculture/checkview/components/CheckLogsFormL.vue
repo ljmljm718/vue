@@ -10,19 +10,6 @@
       <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
       <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
       <!--      </el-form-item>-->
-      <el-form-item label="巡检状态" prop="inspectionState">
-        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="巡检结果" prop="inspectionResults">
-        <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
-      </el-form-item>
       <el-form-item label="设备编号" prop="equNum">
         <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
         <el-input v-model="formData.equNum" readonly>
@@ -61,6 +48,29 @@
           value-format="x"
           placeholder="选择巡检时间"
         />
+      </el-form-item>
+      <el-form-item label="巡检状态" prop="inspectionState">
+        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态" disabled>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="巡检结果" prop="inspectionResults">
+        <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
+      </el-form-item>
+      <el-form-item label="巡检结果状态" prop="resultState">
+        <el-select v-model="formData.resultState" placeholder="请选择巡检结果状态">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_RESULT_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="巡检影像" prop="inspectionImage">
         <UploadImg v-model="formData.inspectionImage"/>
@@ -124,6 +134,7 @@ const formRules = reactive({
   inspectionResults: [{required: true, message: '巡检结果不能为空', trigger: 'blur'}],
   inspectorId: [{required: true, message: '巡检人id不能为空', trigger: 'change'}],
   inspectionTime: [{required: true, message: '巡检时间不能为空', trigger: 'change'}],
+  resultState: [{required: true, message: '巡检结果状态不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
 const route = useRoute()
@@ -147,7 +158,7 @@ const generateDefaultVal = () => {
   formData.value.inspectionTime = new Date() as any
   userListRef.value & userListRef.value.getList()
 }
-defineExpose({open, generateDefaultVal}) // 提供 open 方法，用于打开弹窗
+defineExpose({open, generateDefaultVal})// 提供 open 方法，用于打开弹窗
 
 
 
