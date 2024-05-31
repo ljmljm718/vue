@@ -36,13 +36,21 @@
 <!--        />-->
 <!--      </el-form-item>-->
       <el-form-item label="基地名称" prop="parkName">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.parkName"
           placeholder="请输入基地名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
+        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--      <el-form-item label="所属地块" prop="belongPlot">-->
 <!--        <el-input-->
@@ -54,13 +62,21 @@
 <!--        />-->
 <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.plotName"
           placeholder="请输入地块名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        /> -->
+        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--      <el-form-item label="作物id" prop="cropId">-->
 <!--        <el-input-->
@@ -294,6 +310,10 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <FarmPlanForm ref="formRef" @success="getList" />
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 
 <script setup lang="ts">
@@ -303,6 +323,8 @@ import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
@@ -357,6 +379,14 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
+  if(queryParams.parkName == null || queryParams.parkName == ''){
+    queryParams.belongPark= undefined
+    queryParams.parkName= undefined
+  }
+  if(queryParams.plotName == null || queryParams.plotName == ''){
+    queryParams.plotName= undefined
+    queryParams.belongPlot= undefined
+  }
   queryParams.pageNo = 1
   getList()
 }
@@ -406,4 +436,36 @@ onMounted(async ()  => {
   getList()
   farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 })
+
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === "") {
+    message.error("请选择基地")
+  } else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    queryParams.belongPark = String(order[0].id)
+    queryParams.parkName = String(order[0].name)
+  } else queryParams.parkName = String(order[0].name)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value) {
+    message.error("请选择基地")
+  } else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+ // console.log("--->>查看选择的地块信息：", order[0])
+  queryParams.belongPlot = String(order[0].id)
+  queryParams.plotName = String(order[0].name)
+}
 </script>
