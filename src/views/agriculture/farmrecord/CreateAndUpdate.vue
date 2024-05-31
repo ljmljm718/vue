@@ -433,6 +433,7 @@ const handleSelectSysUserChange = (order: UserVO) => {
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
+  console.log("字符串进来了！")
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -577,10 +578,13 @@ const localSave = () => {
 }
 
 // 方式二 调用立即执行函数
+// onMounted(async () => {
+//     if(!route.query){
+//       await open(route.query.type,route.query.id);
+//     }
+// });
 onMounted(async () => {
-    if(!route.query){
       await open(route.query.type,route.query.id);
-    }
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
