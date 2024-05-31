@@ -132,8 +132,16 @@
     <div class="flex justify-between">
       <span class="text-lg" style="font-family: 'ArtFont';">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</span>
       <div class="flex items-center">
-        <span class="pr-2">显示模式:</span>
-        <el-switch v-model="isLine" @change="handleSwitchChange" />
+        <el-radio-group v-model="isLineRadio" size="small" @change="handleRadioChange">
+          <el-radio-button label="line" value="line">
+            <el-icon><Share /></el-icon>
+          </el-radio-button>
+          <el-radio-button label="pie" value="pie">
+            <el-icon><Histogram /></el-icon>
+          </el-radio-button>
+        </el-radio-group>
+        <!-- <span class="pr-2">显示模式:</span>
+        <el-switch v-model="isLine" @change="handleSwitchChange" /> -->
       </div>
     </div>
     <div
@@ -152,6 +160,11 @@ import { initChartStatic,generateBaseOptions } from '../../../utils/bigscreenToo
 import { useRoute } from 'vue-router'
 
 const isLine = ref(false)
+const isLineRadio = ref('pie')
+const handleRadioChange = (item) => {
+  if (item === 'line') initChart(true)
+  else initChart(false)
+}
 const handleSwitchChange = (val) => {
   initChart(val)
 }
