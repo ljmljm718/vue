@@ -97,7 +97,6 @@ const formatTimeRange = (type = '') => {
 // 设备巡检概览
 const devicePreviewList = ref<Array<any>>([])
 const checkSumCount = ref(0)
-const checkCompletionRate = ref(0)
 const getDeviceCheckInfo = async () => {
   const {
     count = '',
@@ -108,7 +107,6 @@ const getDeviceCheckInfo = async () => {
   } = await deviceCheckInfo()
 
   checkSumCount.value = count
-  checkCompletionRate.value = completionRate
   devicePreviewList.value = [
     {
       title: '巡检设备总量',
@@ -617,12 +615,22 @@ const handleDatePickerChange = (e) => {
 
 const waitCheckList = ref<Array<any>>([])
 const waitListLoading = ref<boolean>(false)
+const alreadyCheck = ref<number>(0), noCheck = ref<number>(0), sumCheck = ref<number>(0)
+const checkCompletionRate = ref<any>(0)
 const getWaitCheckList = async (baseId: string | number) => {
   waitListLoading.value = true
   const { list = [] } = await CheckLogsApi.getCountPageByBaseId({ baseId, pageSize: 100 })
   console.log("getWaitCheckList", list);
   waitCheckList.value = list
   waitListLoading.value = false
+  alreadyCheck.value = 0, sumCheck.value = 0, noCheck.value = 0
+  waitCheckList.value.forEach(item => {
+    alreadyCheck.value += item.finishCheckNum
+    noCheck.value += item.unFinishCheckNum
+    sumCheck.value += item.sumNum
+  })
+  const _rate = alreadyCheck.value / sumCheck.value
+  checkCompletionRate.value = isNaN(_rate) ? '0' : (_rate.toFixed(2) + '%')
 }
 
 // 基地列表的数据
@@ -693,21 +701,26 @@ getBaseList()
       <el-card>
           <template #header>
             <div class="flex justify-between items-center">
-              <span>巡检总次数</span>
+              <span>今日巡检</span>
               <el-icon><Warning /></el-icon>
             </div>
           </template>
-          <div class="text-[1.2rem] art-font">{{ checkSumCount }}</div>
-          <div class="h-[5rem] flex justify-center items-center">
-            <div class="w-full h-4 bg-slate-100">
-              <div class="h-full relative" :style="`width: ${checkCompletionRate};background-color: #409eff;`">
-                <div
-                  :class="['absolute', 'top-[-1.4rem]', parseInt(checkCompletionRate) > 50 ? 'right-0' : 'right-[-3rem]']"
-                >{{ checkCompletionRate }}</div>
+          <div class="h-[5rem]">
+            <div class="flex justify-between space-x-3 py-2">
+              <span>巡检总数</span>
+              <span class="art-font">{{ sumCheck }}</span>
+            </div>
+            <div class="flex justify-between space-x-3">
+              <div class="flex justify-between">
+                <span>已巡检</span>
+                <span class="pl-3 art-font">{{ alreadyCheck }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>未巡检</span>
+                <span class="pl-3 art-font">{{ noCheck }}</span>
               </div>
             </div>
           </div>
-
           <el-divider  class="!my-2"/>
           <div class="flex items-center">
             <span>巡检完成率</span>

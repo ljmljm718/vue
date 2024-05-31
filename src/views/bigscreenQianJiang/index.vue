@@ -33,6 +33,10 @@ interface LabelValItem {
   value: string
 }
 
+interface LabelValUrlItem extends LabelValItem {
+  url: string
+}
+
 interface BaseItemType extends LabelValItem {
   unit: string,
   icon: any
@@ -148,7 +152,7 @@ export default defineComponent({
 
 
       // 中央顶部卡片数据
-      const topCardDataList = ref<Array<LabelValItem>>([])
+      const topCardDataList = ref<Array<LabelValUrlItem>>([])
       const getTopCardDataList = async () => {
         const res = await qjDeviceStatistics({
           belongPark: selectedBase.value,
@@ -159,19 +163,23 @@ export default defineComponent({
         topCardDataList.value = [
           {
             label: '设备总数',
-            value: res.total || '0'
+            value: res.total || '0',
+            url: '/internetMonitor/device/deviceView'
           },
           {
             label: '在线设备',
-            value: res.online || '0'
+            value: res.online || '0',
+            url: '/internetMonitor/device/deviceView?deviceStatus=online'
           },
           {
             label: '离线设备',
-            value: res.offline || '0'
+            value: res.offline || '0',
+            url: '/internetMonitor/device/deviceView?deviceStatus=offline'
           },
           {
             label: '设备预警',
-            value: res.warningDevice || '0'
+            value: res.warningDevice || '0',
+            url: '/internetMonitor/warn/agri-warning-record'
           },
         ]
       }
@@ -179,7 +187,7 @@ export default defineComponent({
 
       // 农业资源
       const agricultureLoading = ref<boolean>(false)
-      const agricultureResourceList = ref<Array<AgricultureItemType>>([])
+      const agricultureResourceList = ref<Array<any>>([])
       const getAgricultureResourceList = async () => {
         agricultureLoading.value = true
         const res = await getQianjiangAgriResource({}).catch(() => {
@@ -192,25 +200,29 @@ export default defineComponent({
             label: '大棚数量',
             value: res.shelterAmount.toString() || '0',
             icon: getIconClass('大棚数量'),
-            unit: '个'
+            unit: '个',
+            url: '/asset/base/parkdetail'
           },
           {
             label: '盆栽数量',
             value: res.pottingAmount.toString() || '0',
             icon: getIconClass('盆栽数量'),
-            unit: '个'
+            unit: '个',
+            url: '/asset/inventory/stock/stock'
           },
           {
             label: '种植面积',
             value: res.plantArea.toString() || '0',
             icon: getIconClass('种植面积'),
-            unit: '亩'
+            unit: '亩',
+            url: '/asset/base/parkinfo'
           },
           {
             label: '种植农户',
             value: res.plantFarmer.toString() || '0',
             icon: getIconClass('种植农户'),
-            unit: '户'
+            unit: '户',
+            url: '/asset/base/farmer-info'
           },
         ]
       }
@@ -282,10 +294,11 @@ export default defineComponent({
         deviceInfoLoading.value = false
         if (!Array.isArray(res)) return
         const getRateByData = (_item) => {
-          return parseInt(_item.online) / parseInt(_item.total) * 100
+          return parseInt(_item.online) / parseInt(_item.numByType) * 100
         }
         deviceInfoList.value = res.map(item => ({ ...item, rate: getRateByData(item) }))
-        res.forEach(item => { deviceInfoTotal.value += parseInt(item.total) })
+        console.log("设备信息", deviceInfoList.value);
+        res.forEach(item => { deviceInfoTotal.value += parseInt(item.numByType) })
       }
       getDeviceInfoList()
       return () => (
@@ -405,8 +418,10 @@ export default defineComponent({
                       <div class="grow flex flex-col space-y-3 relative">
                         <div class="absolute top-0 left-0 w-full flex justify-center py-2 space-x-3">
                           {
-                            topCardDataList.value.map((item:LabelValItem) => (
-                              <div class="inner-border py-2 px-4 flex flex-col items-center">
+                            topCardDataList.value.map((item:LabelValUrlItem) => (
+                              <div class="inner-border py-2 px-4 flex flex-col items-center" onClick={() => {
+                                window.open(item.url)
+                              }}>
                                 <div class="text-lg">{item.label}</div>
                                 <div class="art-font text-lg">{item.value}</div>
                               </div>
@@ -426,8 +441,10 @@ export default defineComponent({
                             default: () => (
                               <div class="grid grid-cols-2 grid-rows-2 gap-3 p-4 h-[8rem]" v-loading={soilLoading.value}>
                                 {
-                                  agricultureResourceList.value.map((item: AgricultureItemType) => (
-                                    <div class="inner-border flex justify-between px-4 items-center">
+                                  agricultureResourceList.value.map((item: any) => (
+                                    <div class="inner-border flex justify-between px-4 items-center" onClick={() => {
+                                      window.open(item.url)
+                                    }}>
                                       <div class={['icon-' + item.icon]}></div>
                                       <div class="flex flex-col items-end">
                                         <div>{item.label}</div>
@@ -447,10 +464,14 @@ export default defineComponent({
                           class="grow"
                           v-slots={{
                             title: () => (
-                                <div class="art-font text-lg">设备信息</div>
+                                <div class="art-font text-lg" onClick={() => {
+                                  window.open('/internetMonitor/device/deviceView')
+                                }}>设备信息</div>
                             ),
                             default: () => (
-                              <div class="p-4" v-loading={deviceInfoLoading.value}>
+                              <div class="p-4" v-loading={deviceInfoLoading.value} onClick={() => {
+                                window.open('/internetMonitor/device/deviceView')
+                              }}>
                                 <div class="flex justify-between inner-border p-3">
                                   <div class="art-font">物联网设备</div>
                                   <div class="text-sm">共<span class="art-font px-1">{deviceInfoTotal.value}</span>台</div>
@@ -461,7 +482,7 @@ export default defineComponent({
                                       <div class="inner-border p-2">
                                         <div class="flex justify-between">
                                           <div>{item.deviceKind}</div>
-                                          <div>共计:<span class="art-font px-1">{item.total}</span>台</div>
+                                          <div>共计:<span class="art-font px-1">{item.numByType}</span>台</div>
                                         </div>
                                         <div
                                           class="h-[1.2rem] mt-2 relative flex justify-between items-center px-1"
@@ -486,10 +507,14 @@ export default defineComponent({
                           class="h-[18rem]"
                           v-slots={{
                             title: () => (
-                                <div class="art-font text-lg">预警信息</div>
+                                <div class="art-font text-lg" onClick={() => {
+                                  window.open('/internetMonitor/warn/agri-warning-record')
+                                }}>预警信息</div>
                             ),
                             default: () => (
-                              <div class="p-4">
+                              <div class="p-4" onClick={() => {
+                                window.open('/internetMonitor/warn/agri-warning-record')
+                              }}>
                                 <BigscreenTable
                                   columns={[
                                     {
