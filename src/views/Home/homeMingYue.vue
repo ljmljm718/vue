@@ -153,7 +153,7 @@
                 <div>实时数据</div>
               </div>
             </template>
-            <el-scrollbar height="26rem">
+            <el-scrollbar height="40rem">
               <div
                 class="grid grid-cols-2 gap-2 pr-1"
               >
