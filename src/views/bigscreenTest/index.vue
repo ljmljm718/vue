@@ -1189,7 +1189,7 @@ export default defineComponent({
             warnInfoHandleList.value = list.map(item => {
                 return {
                     ...item,
-                    warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss')
+                    warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss'),
                 }
             })
         }
@@ -1208,7 +1208,7 @@ export default defineComponent({
             })
             console.log("指挥调度", list);
             commandLoading.value = false
-            commandInfoList.value = list.map(item => ({ ...item, startTime: formatTime(item.startTime, 'yyyy-MM-dd HH:mm:ss') }))
+            commandInfoList.value = list.map(item => ({ ...item, lastTime: formatTime(item.lastTime, 'yyyy-MM-dd'),startTime: formatTime(item.startTime, 'yyyy-MM-dd')}))
             console.log("total", total);
         }
 
@@ -1378,12 +1378,12 @@ export default defineComponent({
                             </div>
                             <div class="inner-border w-[40%]">
                                 <BigscreenCard
-                                    class="h-full"
+                                    class="h-full "
                                     v-slots={{
                                         title: () => (
-                                            <div class="art-font text-lg" onClick={() => {
+                                            <div class="art-font text-lg ml-5px" onClick={() => {
                                                 window.open("/farm_work/farmManage/farm-plan")
-                                            }}>农事活动</div>
+                                            }}>农事指挥调度</div>
                                         ),
                                         default: () => (
                                             <div class="p-5">
@@ -1421,12 +1421,12 @@ export default defineComponent({
                                                         property="plotName"
                                                     />
                                                     <ElTableColumn
-                                                        label="上次施肥时间"
-                                                        property="startTime"
+                                                        label="上次执行时间"
+                                                        property="lastTime"
                                                     />
                                                     <ElTableColumn
-                                                        label="施肥预警"
-                                                        property="planState"
+                                                        label="计划执行时间"
+                                                        property="startTime"
                                                     />
                                                     <ElTableColumn
                                                         label="操作"
