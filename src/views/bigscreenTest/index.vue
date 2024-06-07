@@ -46,6 +46,7 @@ import {
     getCountRiceDuckSum
 } from './api'
 import router from '@/router'
+import {object} from "vue-types";
 
 const {
     BigscreenAdapter,
@@ -1233,6 +1234,16 @@ export default defineComponent({
             }
         }
         getFarmTopList()
+        //跳转农事记录添加接口，定义可传递的参数
+        const generateUrlParams = (params:object) => {
+          const _keys = Object.keys(params)
+          let _url = []
+          _keys.forEach(_ele => {
+            const _text = _ele + '=' + params[_ele]
+            _url.push(_text)
+          })
+          return _url.join('&')
+        }
         const riskTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
@@ -1429,17 +1440,26 @@ export default defineComponent({
                                                         property="startTime"
                                                     />
                                                     <ElTableColumn
+                                                      label="计划状态"
+                                                      property="planState"
+                                                      formatter={
+                                                        (e) => e.planState === '0' ? '未开始' : e.planState === '1' ? '进行中' : '已结束'
+                                                      }
+                                                    />
+                                                    <ElTableColumn
                                                         label="操作"
                                                         property="operation"
                                                         formatter={
                                                             (e) => (
                                                                 <div class="flex space-x-2">
-                                                                    <el-button link type="primary" onClick={() => {
-                                                                        window.open({
-                                                                            path:'/farm_work/farmManage/farm-record/CreateOrUpdate?type=create',
-                                                                            query:{...e}
-                                                                        })
-                                                                    }}>去处理</el-button>
+                                                                  {
+                                                                    e.planState === '2' ? null : (
+                                                                      <el-button link type="primary" onClick={() => {
+                                                                        window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create?${generateUrlParams(e)}`)
+                                                                      }}>去处理</el-button>
+                                                                    )
+                                                                  }
+
                                                                 </div>
                                                             )
                                                         }

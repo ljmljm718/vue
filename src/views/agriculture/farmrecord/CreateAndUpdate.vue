@@ -32,7 +32,7 @@
           </el-button>
         </div>
       </template>
-       
+
 
       <template #content>
         <el-scrollbar class="croll-bar-template">
@@ -518,7 +518,7 @@ const submitForm = async () => {
     formLoading.value = false
   }
   }
-  
+
 }
 
 /** 重置表单 */
@@ -552,10 +552,10 @@ const route = useRoute()
 const router = useRouter()
 console.log(route)
 if(route.query){
-  
+
   formData.value={...route.query}
   formData.value.recordArea=route.query.area
-  formData.value.recordTime= new Date().toLocaleString(route.query.recordTime) 
+  formData.value.recordTime= new Date().toLocaleString(route.query.recordTime)
 
 }
 // 下面是抽象出的基本配置
@@ -584,7 +584,9 @@ const localSave = () => {
 //     }
 // });
 onMounted(async () => {
-      await open(route.query.type,route.query.id);
+  if (route.query.type === 'update' || route.query.type === 'select'){
+    await open(route.query.type,route.query.id);
+  }
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
