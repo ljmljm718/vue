@@ -31,6 +31,7 @@ window._AMapSecurityConfig = {
     securityJsCode:'289153494763707d55b03878ace1cb08',
 }
 
+const router = useRouter()
 const smallChart = (x:Array<any>, y:Array<any>, type = 'line', color = '#1ed76d') => {
   return merge(generateBaseOptions({}), {
     xAxis: {
@@ -111,7 +112,8 @@ const getDeviceCheckInfo = async () => {
     {
       title: '巡检设备总量',
       value: count || 0,
-      unit: '台/次'
+      unit: '台/次',
+      url: '/internetMonitor/check/checkView'
     },
     {
       title: '巡检完成率',
@@ -121,12 +123,14 @@ const getDeviceCheckInfo = async () => {
     {
       title: '结果异常设备',
       value: errorCount || 0,
-      unit: ''
+      unit: '',
+      url: '/internetMonitor/check/check-logs'
     },
     {
       title: '巡检异常处理',
       value: errorDealCount || 0,
-      unit: '台/次'
+      unit: '台/次',
+      url: '/internetMonitor/check/checkErrorIndex'
     },
   ]
   const mapIns = new AMap.Map("chart3", {
@@ -822,6 +826,7 @@ getBaseList()
               v-for="(item, index) in devicePreviewList"
               style="background-color: #ffffffa0;color: #252525;"
               :key="index"
+              @click="item.url && router.push(item.url)"
             >
               <div>{{ item.title }}</div>
               <div class="flex items-end">
