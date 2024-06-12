@@ -129,7 +129,6 @@
             link
             type="primary"
             @click="openForm('show', scope.row.id)"
-            v-hasPermi="['digital:village-product:update']"
           >
             详情
           </el-button>
