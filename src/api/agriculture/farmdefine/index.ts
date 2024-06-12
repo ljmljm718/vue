@@ -50,4 +50,8 @@ export const FarmDefineApi = {
   getFarmDefineTree: async (params) => {
     return await request.get({ url: `/agri/farm-define/tree`, params })
   },
+  // 查询n农事定义最大啊的序号
+  getMaxOrder: async () => {
+    return await request.get({ url: `/agri/farm-define/getMaxOrder` })
+  },
 }

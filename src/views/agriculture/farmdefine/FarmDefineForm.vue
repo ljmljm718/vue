@@ -38,7 +38,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="分类排序" prop="defineSort">
-        <el-input-number v-model="formData.defineSort" placeholder="请输入分类排序" />
+        <el-input-number v-model="formData.defineSort" placeholder="请输入排序" />
       </el-form-item>
       <el-form-item label="描述" prop="description">
         <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
@@ -101,6 +101,8 @@ const open = async (type: string, id?: number) => {
     } finally {
       formLoading.value = false
     }
+  }else {
+    formData.value.defineSort =await FarmDefineApi.getMaxOrder()
   }
   await getFarmDefineTree()
 }
