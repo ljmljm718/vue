@@ -22,10 +22,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备名称" prop="deviceName">
+      <el-form-item label="设备点位" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
+          placeholder="请输入设备点位"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -101,7 +101,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" ref="suibian" :show-overflow-tooltip="true" @select="fangfa"  @selection-change="handleSelectionChange">
       <el-table-column width="30" label="选择" type="selection"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
-      <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
+      <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
         <template #default="scope">
           <el-cascader
@@ -257,10 +257,9 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (item:any) => {
   dialogVisible.value = true
-  //s(item,"------");  
+  //s(item,"------");
   queryParams.belongPark = item.monitoringBaseId;
   queryParams.belongPlot = item.monitoringPlotId;
-  queryParams.deviceKind = '79'
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
@@ -273,6 +272,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
+    console.log(queryParams,"---===")
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     if(data.total==0){
       message.error("暂无设备,请添加")

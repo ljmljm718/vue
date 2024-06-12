@@ -18,10 +18,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备名称" prop="deviceName">
+      <el-form-item label="设备点位" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
+          placeholder="请输入设备点位"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -171,7 +171,7 @@
         </template>
       </el-table-column>-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
-      <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
+      <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
         <template #default="scope">
           <el-cascader

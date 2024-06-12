@@ -115,7 +115,7 @@
                           :disabled="show"/>
               </el-form-item>
             </el-col>
-            <el-col :span="8" v-if="show1">
+            <el-col :span="8" v-if="show">
               <el-form-item label="消耗量(Kg)" prop="remark">
                 <el-input v-model="formData.remark" placeholder="请输入消耗量(Kg)" :disabled="show"/>
               </el-form-item>
@@ -267,18 +267,19 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
 if (route.query.id) {
   let idNumber = route.query.id;
-  show1.value = false
+  // show1.value = false
+  if (route.query.type) {
+    let type = route.query.type;
+    if (type === 'show') {
+      show1.value = false
+    }
+  }
   VillageProductApi.getVillageProduct(idNumber).then(res => {
     formData.value = res
     // formData.value.marketingType ='productmanual'
   });
 }
-if (route.query.type) {
-  let type = route.query.type;
-  if (type === 'show') {
-    show.value = true
-  }
-}
+
 
 
 /** 打开弹窗 */

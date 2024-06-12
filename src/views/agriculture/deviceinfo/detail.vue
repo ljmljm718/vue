@@ -95,7 +95,7 @@ const formData = ref({
 
 // 表单校验规则
 const formRules = reactive({
-  deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
+  deviceName: [{ required: true, message: '设备点位不能为空', trigger: 'blur' }],
   deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
   deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
   deviceStatus: [{ required: true, message: '状态不能为空', trigger: 'change' }],
@@ -268,8 +268,8 @@ const activeName = ref<any>('1')
             <el-form-item label="设备编号" prop="deviceCode">
               <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
             </el-form-item>
-            <el-form-item label="设备名称" prop="deviceName">
-              <el-input v-model="formData.deviceName" placeholder="请输入设备名称" />
+            <el-form-item label="设备点位" prop="deviceName">
+              <el-input v-model="formData.deviceName" placeholder="请输入设备点位" />
             </el-form-item>
             <el-form-item label="设备类型" prop="deviceType">
               <el-cascader
