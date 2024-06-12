@@ -257,7 +257,7 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (item:any) => {
   dialogVisible.value = true
-  //s(item,"------");  
+  //s(item,"------");
   queryParams.belongPark = item.monitoringBaseId;
   queryParams.belongPlot = item.monitoringPlotId;
   await nextTick() // 等待，避免 queryFormRef 为空
@@ -272,6 +272,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
+    console.log(queryParams,"---===")
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     if(data.total==0){
       message.error("暂无设备,请添加")
