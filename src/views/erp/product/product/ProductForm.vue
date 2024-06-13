@@ -44,45 +44,34 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="formData.status">
-              <el-radio
-                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-                :key="dict.value"
-                :label="dict.value"
-              >
-                {{ dict.label }}
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="状态" prop="status">-->
+<!--            <el-radio-group v-model="formData.status">-->
+<!--              <el-radio-->
+<!--                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.value"-->
+<!--              >-->
+<!--                {{ dict.label }}-->
+<!--              </el-radio>-->
+<!--            </el-radio-group>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="12">
           <el-form-item label="规格" prop="standard">
             <el-input v-model="formData.standard" placeholder="请输入规格" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="保质期天数" prop="expiryDay">
-            <el-input-number
-              v-model="formData.expiryDay"
-              placeholder="请输入保质期天数"
-              :min="0"
-              :precision="0"
-              class="!w-1/1"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="重量（kg）" prop="weight">
-            <el-input-number
-              v-model="formData.weight"
-              placeholder="请输入重量（kg）"
-              :min="0"
-              class="!w-1/1"
-            />
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="重量（kg）" prop="weight">-->
+<!--            <el-input-number-->
+<!--              v-model="formData.weight"-->
+<!--              placeholder="请输入重量（kg）"-->
+<!--              :min="0"-->
+<!--              class="!w-1/1"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="12">
           <el-form-item label="采购价格" prop="purchasePrice">
             <el-input-number
@@ -112,6 +101,28 @@
               placeholder="请输入最低价格，单位：元"
               :min="0"
               :precision="2"
+              class="!w-1/1"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="生产日期" prop="produceDate">
+            <el-date-picker
+              v-model="formData.produceDate"
+              type="date"
+              value-format="x"
+              placeholder="选择生产日期"
+              class="!w-1/1"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保质期天数" prop="expiryDay">
+            <el-input-number
+              v-model="formData.expiryDay"
+              placeholder="请输入保质期天数"
+              :min="0"
+              :precision="0"
               class="!w-1/1"
             />
           </el-form-item>
@@ -166,7 +177,8 @@ const formData = ref({
   purchasePrice: undefined,
   salePrice: undefined,
   minPrice: undefined,
-  img: undefined
+  img: undefined,
+  produceDate: undefined,
 })
 const formRules = reactive({
   name: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
@@ -242,7 +254,8 @@ const resetForm = () => {
     purchasePrice: undefined,
     salePrice: undefined,
     minPrice: undefined,
-    img: undefined
+    img: undefined,
+    produceDate: undefined,
   }
   formRef.value?.resetFields()
 }

@@ -18,6 +18,7 @@ export interface ProductVO {
   salePrice: number // 销售价格，单位：元
   minPrice: number // 最低价格，单位：元
   img: String
+  produceDate: string // 生产日期
 }
 
 // ERP 产品 API
@@ -56,6 +57,12 @@ export const ProductApi = {
   exportProduct: async (params) => {
     return await request.download({ url: `/erp/product/export-excel`, params })
   },
+
+  // 导出产品 Excel
+  uploadImportStandard: async () => {
+    return await request.download({ url: `/erp/product/uploadStandard` })
+  },
+
   //提交认证与审核认证
   certifyProduct:async (id: number,certifyStatus:string) =>{
       return await request.get({ url: `/erp/product/certify?id=` + id +`&certifyStatus=`+certifyStatus})
