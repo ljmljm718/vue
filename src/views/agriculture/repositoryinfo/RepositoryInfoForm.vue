@@ -1,5 +1,9 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1100px">
+  <Dialog
+    :title="dialogTitle"
+    v-model="dialogVisible"
+    width="1100px"
+  >
     <div class="p-5">
       <el-form
         ref="formRef"
@@ -12,16 +16,17 @@
           <div class="col-span-3">
             <el-form-item
               label="分类"
-              prop="repositoryType"
+              prop="repositoryId"
             >
               <el-select
-                v-model="formData.repositoryType"
+                v-model="formData.repositoryId"
+                @change="updateFlowType"
               >
                 <el-option
                   v-for="item in typeListAll"
-                  :label="item"
-                  :value="item"
-                  :key="item"
+                  :label="item.repositoryName"
+                  :value="item.id"
+                  :key="item.id"
                 />
               </el-select>
             </el-form-item>
@@ -29,7 +34,21 @@
           <div class="row-span-4">
             <el-form-item prop="attachmentFile">
               <div>
-                <UploadImg v-model="formData.attachmentImg" />
+                <UploadImg v-model="formData.attachmentFile" ref="uploadImgRef"/>
+                <div class="flex space-x-2">
+                  <div
+                    class="w-full text-center rounded-md"
+                    style="border: 1px solid #78788760;"
+                    @click="handleUploadRef('edit')"
+                  >编辑封面
+                  </div>
+                  <div
+                    class="w-full text-center rounded-md"
+                    style="border: 1px solid #78788760;"
+                    @click="handleUploadRef('reset')"
+                  >重置
+                  </div>
+                </div>
                 <div style="font-size: .7rem;color:#deb581;">
                   上传1440*810px,小于500kb的图片
                 </div>
@@ -47,10 +66,10 @@
             <el-form-item label="标签" prop="repositoryLabel">
               <el-select v-model="formData.repositoryLabel" placeholder="请选择标签">
                 <el-option
-                  v-for="item in labelListAll"
-                  :label="item"
-                  :value="item"
-                  :key="item"
+                  v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
                 />
               </el-select>
             </el-form-item>
@@ -67,9 +86,6 @@
         <el-form-item label="内容" prop="repositoryContent">
           <Editor v-model="formData.repositoryContent" height="300px"/>
         </el-form-item>
-        <el-form-item label="附件文件" prop="attachmentFile">
-        <UploadFile v-model="formData.attachmentFile" />
-      </el-form-item>
       </el-form>
     </div>
 
@@ -85,12 +101,16 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
+import {RepositoryInfoApi, RepositoryInfoVO} from '@/api/agriculture/repositoryinfo'
+import {RepositoryTypeApi} from '@/api/agriculture/repositorytype'
+import {getStrDictOptions, DICT_TYPE} from "@/utils/dict";
 
-/** 助农知识库信息表 表单 */
-defineOptions({ name: 'RepositoryInfoForm' })
+/** 知识库 表单 */
+defineOptions({name: 'RepositoryInfoForm'})
 
-const { t } = useI18n() // 国际化
+console.log('dd', getStrDictOptions(DICT_TYPE.AGRI_REPOSITORY_STATUS))
+
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -99,40 +119,62 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
+  repositoryName: undefined,
+  repositoryId: undefined,
   repositoryTitle: undefined,
-  repositoryType: undefined,
-  repositoryLabel: undefined,
-  writer: undefined,
-  synopsis: undefined,
   repositoryContent: undefined,
-  attachmentImg: undefined,
   attachmentFile: undefined,
+  repositoryLabel: '',
+  writer: undefined,
   browseNum: undefined,
+  repositoryStatus: '0',
+  synopsis: undefined,
+  releaseTime: undefined
+})
+let typeListAll = ref([])
+const queryParams = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  repositoryName: undefined,
+  repositoryId: undefined,
+  repositoryTitle: undefined,
+  repositoryContent: undefined,
+  attachmentFile: undefined,
+  repositoryLabel: '',
+  writer: undefined,
+  browseNum: undefined,
+  repositoryStatus: '0',
+  synopsis: undefined,
+  releaseTime: undefined
 })
 const formRules = reactive({
+  repositoryName: [{required: true, message: '分类不能为空', trigger: 'blur'}],
+  repositoryTitle: [{required: true, message: '标题不能为空', trigger: 'blur'}],
+  writer: [{required: true, message: '作者不能为空', trigger: 'blur'}],
+  repositoryLabel: [{required: true, message: '标签不能为空', trigger: 'blur'}],
+  repositoryContent: [{required: true, message: '内容不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
 
-const typeListAll = ['病虫害识别', '收获预测', '价格预测', '农事操作规程']
-const labelListAll = ['专家经验', '白皮书']
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  const resAll = await RepositoryTypeApi.getAllRepositoryType()
+  typeListAll.value = resAll
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await RepositoryInfoApi.getRepositoryInfo(id)
-      formData.value.attachmentFile=formData.value.attachmentFile.split(",");
     } finally {
       formLoading.value = false
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -162,16 +204,33 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
+    repositoryName: undefined,
+    repositoryId: undefined,
     repositoryTitle: undefined,
-    repositoryType: undefined,
-    repositoryLabel: undefined,
-    writer: undefined,
-    synopsis: undefined,
     repositoryContent: undefined,
-    attachmentImg: undefined,
     attachmentFile: undefined,
+    repositoryLabel: '',
+    writer: undefined,
     browseNum: undefined,
+    repositoryStatus: '0',
+    releaseTime: undefined,
+    synopsis: undefined
   }
   formRef.value?.resetFields()
+}
+
+const updateFlowType = (e) => {
+  console.log(e.terget.value)
+  console.log(formData)
+}
+
+const uploadImgRef = ref<any>(null)
+const handleUploadRef = (type) => {
+  if (type === 'edit') {
+    if (uploadImgRef.value) uploadImgRef.value.editImg()
+  }
+  if (type === 'reset') {
+    if (uploadImgRef.value) uploadImgRef.value.deleteImg()
+  }
 }
 </script>
