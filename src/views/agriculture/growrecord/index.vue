@@ -248,6 +248,7 @@ const queryParams = reactive({
   measureNum: undefined,
   measureSpike: undefined,
   measureUnit: undefined,
+  facilityId: undefined,
   createTime: [],
   remark: undefined
 })
