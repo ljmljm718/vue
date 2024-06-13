@@ -65,6 +65,13 @@ export const createA = async (data) => {
   })
 }
 
+export const updatestate = async (params) => {
+  return await request.get({
+    url: '/agri/farm-plan/updatestate',
+    params
+  })
+}
+
 
 //智慧种植
 export const getPondCountFrySum= async () => {
