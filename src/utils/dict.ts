@@ -236,7 +236,7 @@ export enum DICT_TYPE {
   DEVICE_CONNECT = 'device_connect', // 设备连接类型
   EQU_STATE = 'equ_state', // 设备在线状态
   KAIZHOU_PLANT_PLAN_CATEGORY='kaizhou_plant_plan_category',//开州区种植计划作物类别
-  
+
 
   // ========== WUSHAN -巫山  ==========
   WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
@@ -277,6 +277,7 @@ export enum DICT_TYPE {
   AGRI_PLOT_TYPE = 'agri_plot_type', //鸭舍分类
   AGRI_REPOSITORYINFO_TYPE='agri_repositoryinfo_type',//产业模型服务类型
   AGRI_REPOSITORYINFO_LABEL='agri_repositoryinfo_label',//产业模型服务标签
+  AGRI_REPOSITORY_STATUS='agri_repository_status',
   AGRI_NOTICEEVENT_TYPE = 'agri_noticeevent_type', //通知事件类型
 
   // =========== agri -   MQTT ==========
