@@ -185,11 +185,10 @@
       <el-table-column label="抓拍图片" align="center" prop="capturedImage" >
         <template #default="scope">
           <!-- <img src="scope.row.capturedImage" :value="scope.row.capturedImage" /> -->
-          <el-image 
+          <el-image
             style="width: 60px; height: 60px"
             :src="scope.row.capturedImage"
              />
-          
         </template>
       </el-table-column>
 
@@ -250,7 +249,7 @@
         controls
         autoplay
         class="video"
-        width="800px" 
+        width="800px"
         height="800px"
       ></video>
   </el-dialog>

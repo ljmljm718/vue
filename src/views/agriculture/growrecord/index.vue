@@ -133,6 +133,7 @@
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
         </template>
       </el-table-column>
+      <el-table-column label="设备名称" align="center" prop="facilityName"/>
       <!--      <el-table-column label="所属基地" align="center" prop="base"/>-->
       <el-table-column label="基地名称" align="center" prop="baseName"/>
       <!--      <el-table-column label="所属地块" align="center" prop="massif"/>-->
@@ -144,7 +145,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="测量者" align="center" prop="measurer"/>
+<!--      <el-table-column label="测量者" align="center" prop="measurer"/>-->
       <el-table-column label="测量类型" align="center" prop="measureType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_GROW_TYPE" :value="scope.row.measureType"/>
@@ -153,6 +154,17 @@
       <el-table-column label="测量值" align="center" prop="measureNum"/>
       <el-table-column label="变化量" align="center" prop="measureSpike"/>
       <el-table-column label="测量单位" align="center" prop="measureUnit"/>
+      <el-table-column label="抓拍图片" align="center" prop="imgUrl" >
+        <template #default="scope">
+          <!-- <img src="scope.row.capturedImage" :value="scope.row.capturedImage" /> -->
+          <el-image
+            style="width: 50px; height: 50px"
+            :src="scope.row.imgUrl"
+            :preview-src-list="[scope.row.imgUrl]"
+            preview-teleported
+          />
+        </template>
+      </el-table-column>
 <!--      <el-table-column-->
 <!--        label="创建时间"-->
 <!--        align="center"-->
