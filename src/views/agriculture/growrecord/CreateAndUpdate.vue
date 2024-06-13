@@ -172,7 +172,7 @@
           </el-row>
         </el-form>
         <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
-        <AgriculturalBaseList ref="purchaseOrderInEnableListRef"
+        <AgriculturalBaseList ref="purchaseOrderInEnableListRef" :deviceTypeA = "deviceType"
                               @success="handlePurchaseOrderChange"/>
       </template>
     </EditFrame>
@@ -326,6 +326,7 @@ const resetForm = () => {
 
 //作物的选择
 const cropInfoPopupRef = ref()
+const deviceType = ref("99,102")
 const openCropInfoPopup = () => {
   cropInfoPopupRef.value.open()
 }
@@ -347,7 +348,7 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
 
 const handlePurchaseOrderChange = async (orderA: EquipmentDataVO) => {
   // 将订单设置到入库单
-  console.log("--->>查看查到设备信息", orderA[0])
+  // console.log("--->>查看查到设备信息", orderA[0])
   //赋值id
   formData.value.facilityId = String(orderA[0].deviceCode)
   // //赋值设备名称
