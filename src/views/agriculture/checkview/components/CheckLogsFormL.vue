@@ -155,7 +155,7 @@ const open = async (type: string, row) => {
 const userListRef = ref()
 const generateDefaultVal = () => {
   formData.value.inspectionState = '1' as any
-  formData.value.inspectionTime = new Date() as any
+  formData.value.inspectionTime = Date.now() as any
   userListRef.value & userListRef.value.getList()
 }
 defineExpose({open, generateDefaultVal})// 提供 open 方法，用于打开弹窗

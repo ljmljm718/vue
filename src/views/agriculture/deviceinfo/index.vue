@@ -328,8 +328,9 @@ defineOptions({name: 'DeviceInfo'})
  * 46 - 白帝
  * 80 - 明月
  * 90 - 黔江县中元村
+ * 100 - 塘坝镇天印村
  */
-const deviceTypeMain = ref([14, 25, 39, 46, 76, 80, 90])
+const deviceTypeMain = ref([14, 25, 39, 46, 76, 80, 90, 100])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化

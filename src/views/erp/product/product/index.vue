@@ -43,6 +43,13 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="info"
+          plain
+          @click="handleCraftImport()"
+        >
+          <Icon icon="ep:upload" class="mr-5px"/> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -58,10 +65,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="条码" align="center" prop="barCode" width="200"/>
+      <el-table-column label="条码" align="center" prop="barCode" width="160"/>
       <el-table-column label="名称" align="center" prop="name" width="160"/>
-      <el-table-column label="规格" align="center" prop="standard" width="80"/>
-      <el-table-column label="分类" align="center" prop="categoryName" width="160" />
+      <el-table-column label="规格" align="center" prop="standard" width="100"/>
+      <el-table-column label="分类" align="center" prop="categoryName" width="130" />
       <el-table-column label="单位" align="center" prop="unitName" width="80" />
       <el-table-column label="图片" align="center" prop="imgId" >
         <template #default="{ row }">
@@ -81,35 +88,37 @@
         label="采购价格"
         align="center"
         prop="purchasePrice"
-        width="150"
+        width="130"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="销售价格"
         align="center"
         prop="salePrice"
-        width="150"
+        width="130"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="最低价格"
         align="center"
         prop="minPrice"
-        width="150"
+        width="130"
         :formatter="erpPriceTableColumnFormatter"
       />
-      <el-table-column label="状态" align="center" prop="status" width="150">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column
-        label="创建时间"
+        label="生产日期"
         align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180"
+        prop="produceDate"
+        :formatter="dateFormatter2"
+        width="140"
       />
+      <el-table-column label="保质期天数" align="center" prop="expiryDay" width="100" />
+      <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
       <el-table-column label="操作" align="center" width="110" fixed="right">
         <template #default="scope">
           <el-button
@@ -142,17 +151,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ProductForm ref="formRef" @success="getList" />
+
+  <!-- 批量导入-->
+  <ProductImportForm ref="importFormRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
 import ProductForm from './ProductForm.vue'
-import { DICT_TYPE } from '@/utils/dict'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { erpPriceTableColumnFormatter } from '@/utils'
+import ProductImportForm from "@/views/erp/product/product/ProductImportForm.vue";
 
 /** ERP 产品列表 */
 defineOptions({ name: 'ErpProduct' })
@@ -229,6 +241,12 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 导入 */
+const importFormRef = ref()
+const handleCraftImport = () => {
+  importFormRef.value.open()
 }
 
 /** 初始化 **/
