@@ -7,7 +7,7 @@
       label-width="100px"
       v-loading="formLoading"
     >
-     
+
       <el-form-item label="设备ID" prop="deviceId">
           <el-input v-model="formData.deviceId" placeholder="请输入设备ID" disabled>
               <template #append>
@@ -66,15 +66,15 @@
       <!-- <el-form-item label="通知事件类型" prop="noticeEvent">
         <el-input v-model="formData.noticeEvent" placeholder="请输入通知事件类型" />
       </el-form-item> -->
-      
+
       <el-form-item label="通知事件类型" prop="noticeEvent">
         <el-select v-model="formData.noticeEvent" placeholder="请选择通知事件类型">
-          <el-option  
-            v-for="item in options"  
-            :key="item.value"  
-            :label="item.label"  
-            :value="item.value"  
-          />      
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
 
@@ -87,8 +87,8 @@
         />
       </el-form-item>
 
-      <el-form-item label="备注" prop="remarks">
-        <el-input v-model="formData.remarks" placeholder="请输入备注" />
+      <el-form-item label="消息内容" prop="remarks">
+        <el-input v-model="formData.remarks" placeholder="请输入消息内容" />
       </el-form-item>
     </el-form>
     <template #footer>

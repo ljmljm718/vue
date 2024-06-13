@@ -334,14 +334,23 @@
         </ContentWrap>
         <!-- 列表 -->
         <ContentWrap>
-          <el-table v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true">
+          <el-table v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true"
+                    border>
             <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName"
-                             width="120px"/>
+            />
             <el-table-column label="监控地块名称" align="center" prop="monitoringPlotName"
-                             width="120px"/>
-            <el-table-column label="通知事件类型" align="center" prop="noticeEvent" width="120px"/>
-            <el-table-column label="设备名称" align="center" prop="deviceName" width="120px"/>
-            <el-table-column label="抓拍图片" align="center" prop="captured" width="150px">
+            />
+            <el-table-column label="设备名称" align="center" prop="deviceName"/>
+            <el-table-column label="通知事件类型" align="center" prop="noticeEvent"/>
+            <!-- <el-table-column label="视频链接" align="center" prop="videoLink" />-->
+            <el-table-column label="消息内容" align="center" prop="remarks"/>
+            <el-table-column
+              label="记录时间"
+              align="center"
+              prop="recordTime"
+              :formatter="dateFormatter"
+            />
+            <el-table-column label="抓拍图片" align="center" prop="captured">
               <template #default="scope">
                 <el-image
                   class="h-50px w-50px"
@@ -353,18 +362,6 @@
                 />
               </template>
             </el-table-column>
-
-            <!-- <el-table-column label="视频链接" align="center" prop="videoLink" />-->
-
-            <el-table-column
-              label="记录时间"
-              align="center"
-              prop="recordTime"
-              :formatter="dateFormatter"
-              width="180px"
-            />
-            <el-table-column label="备注" align="center" prop="remarks"/>
-
             <el-table-column label="操作" align="center" width="200px">
               <template #default="scope">
                 <el-button
@@ -510,6 +507,7 @@ if (route.query.time) {
     let now = new Date();
 // 获取一个月前的时间
     now.setMonth(now.getMonth() - 1);
+
 // 格式化日期（可选），这里使用自定义函数格式化日期
     function formatDate(date) {
       let year = date.getFullYear();
@@ -520,6 +518,7 @@ if (route.query.time) {
       let seconds = ("0" + date.getSeconds()).slice(-2);
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
+
     let currentTime = formatDate(new Date());
     let oneMonthAgo = formatDate(now);
     queryParams.warnTime.push(oneMonthAgo)
