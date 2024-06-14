@@ -150,8 +150,11 @@
       <el-table-column label="基地名称" align="center" prop="parkName" />
       <el-table-column label="所属地块" align="center" prop="belongPlot" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
-      <el-table-column label="实例编号" align="center" prop="processInstanceId" />
-      <el-table-column label="审批结果" align="center" prop="status" />
+      <el-table-column label="审批状态" align="center" prop="status" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="开始时间"
         align="center"
@@ -178,7 +181,7 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
-            v-hasPermi="['bpm:farm-task:query']"
+            v-hasPermi="['agriculture:farm-task:query']"
             link
             type="primary"
             @click="handleDetail(scope.row)"
@@ -186,7 +189,7 @@
             详情
           </el-button>
           <el-button
-            v-hasPermi="['bpm:farm-task:query']"
+            v-hasPermi="['agriculture:farm-task:query']"
             link
             type="primary"
             @click="handleProcessDetail(scope.row)"
@@ -195,7 +198,7 @@
           </el-button>
           <el-button
             v-if="scope.row.result === 1"
-            v-hasPermi="['bpm:farm-task:create']"
+            v-hasPermi="['agriculture:farm-task:create']"
             link
             type="danger"
             @click="cancelLeave(scope.row)"
@@ -223,6 +226,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmTaskApi, FarmTaskVO } from '@/api/agriculture/farmtask'
 import FarmTaskForm from './FarmTaskForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 import Router from "@/router";
 import * as ProcessInstanceApi from '@/api/bpm/processInstance'
 

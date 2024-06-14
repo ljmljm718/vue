@@ -1,92 +1,201 @@
 <template>
-  <el-form
-    ref="formRef"
-    v-loading="formLoading"
-    :model="formData"
-    :rules="formRules"
-    label-width="80px"
-  >
-    <el-form-item label="所属基地" prop="belongPark">
-      <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
-    </el-form-item>
-    <el-form-item label="基地名称" prop="parkName">
-      <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
-    </el-form-item>
-    <el-form-item label="所属地块" prop="belongPlot">
-      <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
-    </el-form-item>
-    <el-form-item label="地块名称" prop="plotName">
-      <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
-    </el-form-item>
-    <el-form-item label="开始时间" prop="startTime">
-      <el-date-picker
-        v-model="formData.startTime"
-        type="date"
-        value-format="x"
-        placeholder="选择开始时间"
-      />
-    </el-form-item>
-    <el-form-item label="完成时间" prop="endTime">
-      <el-date-picker
-        v-model="formData.endTime"
-        type="date"
-        value-format="x"
-        placeholder="选择完成时间"
-      />
-    </el-form-item>
-    <el-form-item label="完成要求" prop="completeRequirement">
-      <el-input v-model="formData.completeRequirement" placeholder="请输入完成要求" />
-    </el-form-item>
-    <el-form-item label="验收标准" prop="acceptanceStandard">
-      <el-input v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
-    </el-form-item>
-    <el-col v-if="startUserSelectTasks.length > 0">
-      <el-card class="mb-10px">
-        <template #header>指定审批人</template>
-        <el-form
-          :model="startUserSelectAssignees"
-          :rules="startUserSelectAssigneesFormRules"
-          ref="startUserSelectAssigneesFormRef"
-        >
-          <el-form-item
-            v-for="userTask in startUserSelectTasks"
-            :key="userTask.id"
-            :label="`任务【${userTask.name}】`"
-            :prop="userTask.id"
+  <div>
+    <EditFrame>
+      <template #header>
+        <div class="flex">
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
           >
-            <el-select
-              v-model="startUserSelectAssignees[userTask.id]"
-              multiple
-              placeholder="请选择审批人"
-            >
-              <el-option
-                v-for="user in userList"
-                :key="user.id"
-                :label="user.nickname"
-                :value="user.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </el-card>
-    </el-col>
-    <el-form-item>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
-    </el-form-item>
-  </el-form>
+            保存
+          </el-button>
+          <el-button
+            type="success"
+            :icon="TopRight"
+            plain
+            @click="submitForm"
+          >提交</el-button>
+          <el-button
+            type="danger"
+            :icon="Refresh"
+            plain
+            @click="resetForm()"
+          >清空
+          </el-button>
+        </div>
+      </template>
+      <template #content>
+        <el-scrollbar class="croll-bar-template">
+          <el-form
+            ref="formRef"
+            :model="formData"
+            :rules="formRules"
+            label-width="100px"
+            v-loading="formLoading"
+            class="grid gap-3 p-4"
+          >
+            <!-- TODO: 表单项写在这里 -->
+            <!-- TODO: 如果使用手风琴，参考下面的代码 下面的注意不用的话要删掉 -->
+            <el-collapse v-model="activeName" simple>
+              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4"
+                                title="作物信息" name="1" >
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="所属基地" prop="belongPark">
+                      <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openParkInfoPopup('0')">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="基地名称" prop="parkName">
+                      <el-input v-model="formData.parkName" disabled placeholder="请输入基地名称" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="所属地块" prop="belongPlot">
+                      <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openParkDetailPopup(formData.belongPark)">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="地块名称" prop="plotName">
+                      <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="开始时间" prop="startTime">
+                      <el-date-picker
+                        v-model="formData.startTime"
+                        type="date"
+                        style="width: 100%;"
+                        value-format="x"
+                        placeholder="选择开始时间"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="结束时间" prop="endTime">
+                      <el-date-picker
+                        v-model="formData.endTime"
+                        type="date"
+                        style="width: 100%;"
+                        value-format="x"
+                        placeholder="选择结束时间"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="24">
+                    <el-form-item label="完成要求" prop="completeRequirement">
+                      <el-input type="textarea" v-model="formData.completeRequirement" placeholder="请输入完成要求" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="验收标准" prop="acceptanceStandard">
+                      <el-input type="textarea" v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col v-if="startUserSelectTasks.length > 0">
+                    <el-card class="mb-10px">
+                      <template #header>指定审批人</template>
+                      <el-form
+                        :model="startUserSelectAssignees"
+                        :rules="startUserSelectAssigneesFormRules"
+                        ref="startUserSelectAssigneesFormRef"
+                      >
+                        <el-form-item
+                          v-for="userTask in startUserSelectTasks"
+                          :key="userTask.id"
+                          :label="`任务【${userTask.name}】`"
+                          :prop="userTask.id"
+                        >
+                          <el-select
+                            v-model="startUserSelectAssignees[userTask.id]"
+                            multiple
+                            placeholder="请选择审批人"
+                          >
+                            <el-option
+                              v-for="user in userList"
+                              :key="user.id"
+                              :label="user.nickname"
+                              :value="user.id"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-form>
+                    </el-card>
+                  </el-col>
+                </el-row>
+              </el-collapse-item>
+            </el-collapse>
+          </el-form>
+        </el-scrollbar>
+      </template>
+    </EditFrame>
+  </div>
+
+
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import {DICT_TYPE, getIntDictOptions, getStrDictOptions} from '@/utils/dict'
 import { FarmTaskApi, FarmTaskVO } from '@/api/agriculture/farmtask'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import * as DefinitionApi from '@/api/bpm/definition'
 import * as UserApi from '@/api/system/user'
+import {FolderChecked, Refresh, TopRight} from "@element-plus/icons-vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import {ElMessage} from "element-plus";
+import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {
+  EditFrame,
+  addFormStorage,
+  addOrUpdateFormStorage,
+  getFormStorage,
+  deleteFormStorage
+} from '@/components/EditFrame/index'
 
 defineOptions({ name: 'FarmTaskForm' })
 
 const message = useMessage() // 消息弹窗
 const { delView } = useTagsViewStore() // 视图操作
 const { push, currentRoute } = useRouter() // 路由
+const localSave = () => {
+  addOrUpdateFormStorage(
+    ROUTE_PATH,
+    FORMPAGE_NAME + (formData.value.id ? '编辑' : '新增'), // TODO: 前面的表单名称写成当前页面名称
+    formData.value.id ? formData.value.id : 'new_form',
+    formData.value
+  )
+  ElMessage.success('保存成功！')
+}
 
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref({
@@ -120,6 +229,47 @@ const startUserSelectAssigneesFormRef = ref() // 发起人选择审批人的表�
 const startUserSelectAssigneesFormRules = ref({}) // 发起人选择审批人的表单 Rules
 const userList = ref<any[]>([]) // 用户列表
 
+
+
+//基地的选择
+const parkInfoPopupRef = ref()
+const openType = ref('')
+const openParkInfoPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === "") {
+    ElMessage.error("请先选择基地")
+  } else parkInfoPopupRef.value.open(id)
+}
+const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    formData.value.belongPark = String(order[0].code)
+    formData.value.parkName = String(order[0].name)
+  } else formData.value.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const parkDetailPopupRef = ref()
+const openType1 = ref('')
+const openParkDetailPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value) {
+    ElMessage.error("请先选择基地！")
+  } else parkDetailPopupRef.value.open(id)
+}
+const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+
+  console.log("--->>查看选择的地块信息：", order[0])
+  formData.value.belongPark = String(order[0].parkId)
+  formData.value.belongPlot = String(order[0].id)
+  formData.value.plotName = String(order[0].name)
+
+}
+const route = useRoute()
+const router = useRouter()
+const activeName = ref<any>(['1'])
+const ROUTE_PATH = route.path
+const FORMPAGE_NAME = '农事计划'
+const ORIGIN_PATH = '/farm_work/farm-task' // 关闭表单时跳转的路径
 /** 提交表单 */
 const submitForm = async () => {
   // 校验表单
@@ -141,9 +291,14 @@ const submitForm = async () => {
     }
       await FarmTaskApi.createFarmTask(data)
     message.success('发起成功')
+    // 表单已提交，从本地删除此表单
+    deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? formData.value.id : 'new_form'
+    )
     // 关闭当前 Tab
     delView(unref(currentRoute))
-    await push({ name: 'BpmOALeave' })
+    router.push(ORIGIN_PATH)
   } finally {
     formLoading.value = false
   }
@@ -156,7 +311,7 @@ onMounted(async () => {
     processDefineKey
   )
   if (!processDefinitionDetail) {
-    message.error('OA 请假的流程模型未配置，请检查！')
+    message.error('流程模型未配置，请检查！')
     return
   }
   startUserSelectTasks.value = processDefinitionDetail.startUserSelectTasks
