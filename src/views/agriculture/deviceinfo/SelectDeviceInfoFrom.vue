@@ -196,6 +196,7 @@ import download from '@/utils/download'
 import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import {defaultProps} from "@/utils/tree";
 
 /** 设备信息 列表 */
 defineOptions({ name: 'DeviceInfo' })
@@ -260,7 +261,7 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (id: string) => {
   dialogVisible.value = true
-  console.log("id:" + id)
+  // console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
@@ -270,9 +271,26 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 //结束
 
+
+// 定义属性
+const props = defineProps({
+  currCategory: {
+    type: Object,
+    default: () => ({})
+  },
+  deviceTypeA: {
+    type: String,
+    default: ""
+  },
+})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  if (props.deviceTypeA){
+    if (!queryParams.deviceType){
+      queryParams.deviceType = props.deviceTypeA
+    }
+  }
   try {
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     list.value = data.list.map((item: any) => {
@@ -350,13 +368,6 @@ onMounted(async () => {
   await getList()
 })
 
-// 定义属性
-const props = defineProps({
-  currCategory: {
-    type: Object,
-    default: () => ({})
-  },
-})
 // 监听父组件category变化
 watch(() => props.currCategory,
   () => {

@@ -135,6 +135,14 @@
         <el-button
           type="success"
           plain
+          @click="handleOrderImport()"
+        >
+          <Icon icon="ep:upload" class="mr-5px"/>
+          导入
+        </el-button>
+        <el-button
+          type="warning"
+          plain
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['erp:purchase-order:export']"
@@ -274,6 +282,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
+
+  <!-- 采购订单导入-->
+  <OrderImportForm ref="importFormRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -287,6 +298,8 @@ import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
+import OrderImportForm from "./components/OrderImportForm.vue";
+
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpPurchaseOrder' })
@@ -404,4 +417,10 @@ onMounted(async () => {
 })
 // TODO 芋艿：可优化功能：列表界面，支持导入
 // TODO 芋艿：可优化功能：详情界面，支持打印
+
+/** 导入 */
+const importFormRef = ref()
+const handleOrderImport = () => {
+  importFormRef.value.open()
+}
 </script>

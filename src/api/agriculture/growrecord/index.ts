@@ -16,6 +16,9 @@ export interface GrowRecordVO {
   measureSpike: number // 变化量
   measureUnit: string // 测量单位
   remark: string // 备注
+  facilityName: string  // 设备名称
+  facilityId: string // 设备Code
+  imgUrl: string // 图片Url
   id: string // 主键ID
 }
 

@@ -1455,7 +1455,7 @@ export default defineComponent({
                                                                   {
                                                                     e.planState === '2' ? null : (
                                                                       <el-button link type="primary" onClick={() => {
-                                                                        window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create?${generateUrlParams(e)}`)
+                                                                        window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&${generateUrlParams(e)}`)
                                                                       }}>去处理</el-button>
                                                                     )
                                                                   }
