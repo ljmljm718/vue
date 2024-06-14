@@ -8,10 +8,10 @@
         {{ detailData.plotName }}
       </el-descriptions-item>
       <el-descriptions-item label="开始时间">
-        {{ formatDate(detailData.startTime, 'YYYY-MM-DD HH:Mi:SS') }}
+        {{ formatDate(detailData.startTime, 'YYYY-MM-DD') }}
       </el-descriptions-item>
       <el-descriptions-item label="结束时间">
-        {{ formatDate(detailData.endTime, 'YYYY-MM-DD HH:Mi:SS') }}
+        {{ formatDate(detailData.endTime, 'YYYY-MM-DD') }}
       </el-descriptions-item>
       <el-descriptions-item label="完成要求">
         {{ detailData.completeRequirement }}
