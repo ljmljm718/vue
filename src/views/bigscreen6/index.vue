@@ -463,35 +463,35 @@ watch(
   }
 )
 const leftIconMap = {
-  "temperature": 1, //环境温度                       
+  "temperature": 1, //环境温度
   "humidness": 2, //环境湿度
   "illumination": 3, //光照
   "carbon_dioxide": 4, //二氧化碳浓度
   "wind_speed": 5, //风速
   "atmospheric_pressure": 6, //气压
-  "hyetal": 7, //降雨量    
+  "hyetal": 7, //降雨量
   "wind_direction": 8 //风向
 }
 
 const leftUnitMap = {
-  "temperature": '℃', //环境温度                       
+  "temperature": '℃', //环境温度
   "humidness": '%', //环境湿度
   "illumination": 'Lux', //光照
   "carbon_dioxide": 'ppm', //二氧化碳浓度
   "wind_speed": 'm/s', //风速
   "atmospheric_pressure": 'hPa', //气压
-  "hyetal": 'mm', //降雨量    
+  "hyetal": 'mm', //降雨量
   "wind_direction": '' //风向
 }
 
 const leftLabelMap = {
-  "temperature": '温度', //环境温度                       
+  "temperature": '温度', //环境温度
   "humidness": '湿度', //环境湿度
   "illumination": '光照', //光照
   "carbon_dioxide": '二氧化碳', //二氧化碳浓度
   "wind_speed": '风速', //风速
   "atmospheric_pressure": '气压', //气压
-  "hyetal": '雨量', //降雨量    
+  "hyetal": '雨量', //降雨量
   "wind_direction": '风向' //风向
 }
 

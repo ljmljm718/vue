@@ -370,7 +370,7 @@ const initChart1 = async (lineChart ) => {
   const deviceCode2 = leftCurDeviceCode2.value;
   if (!lineChart  || !deviceCode1) return
   console.log('lineChart ', lineChart )
-  
+
   const res = await getDeviceDataYouEnvironmentLine( lineChart )
   console.log('getDeviceDataYouEnvironmentLine ==', res);
   let xAxisData=[]
@@ -587,7 +587,7 @@ const leftLabelMap = {
   "雨量": '雨量', //降雨量
   "风向": '风向' //风向
 }
- 
+
 
 let btnIndex2=ref(0)
 let right2Val=ref('溶氧量')
@@ -648,7 +648,7 @@ const rightUnitMap = {
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/deviceData/equipment-data?collectionType=环境监测')">
+          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')">
             <div>环境监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleEnvSelectorChange">
@@ -787,19 +787,19 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card" @click="$router.push('/device/deviceinfo')">
+              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView')">
                 {{ deviceBaseInfo.total }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/device/deviceinfo?val=online')">
+              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=online')">
                 {{ deviceBaseInfo.online }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/device/deviceinfo?val=offline')">
+              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=offline')">
                 {{ deviceBaseInfo.offline }}
               </div>
             </div>
@@ -831,7 +831,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/deviceData/equipment-data?collectionType=水质监测')">
+          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
             <div>水质监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleSelectorChange1">
@@ -891,7 +891,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/device/deviceinfo?deviceType=30,31')">
+          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=30,31')">
             <div>监控设备</div>
           </div>
           <div
@@ -928,7 +928,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/warn/agri-warning-record')">
+          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/warn/agri-warning-record')">
             <div>预警信息</div>
           </div>
           <div class="main-item-container pre-warn-table">

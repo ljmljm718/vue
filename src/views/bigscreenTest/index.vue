@@ -740,7 +740,7 @@ export default defineComponent({
                                     ),
                                     default: () => (
                                         <div id="growthChart" onClick={() => {
-                                            window.open("/farm_work/grow-record")
+                                            window.open("/internetMonitor/deviceData/grow-record")
                                         }}></div>
                                     )
                                 }}
