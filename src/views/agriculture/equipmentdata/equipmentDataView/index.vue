@@ -32,7 +32,10 @@ const filterNode = (value: string, data: Tree) => {
   if (!value) return true
   return data.name.includes(value)
 }
-
+//清空树节点
+const clearTree=()=>{
+  clearCategory()
+}
 const categoryTree = ref<ParkInfoVO[]>([]) // 列表的数据
 /** 查询基地地块列表 */
 const getCategoryList = async () => {
@@ -114,6 +117,7 @@ const resetTreeSelections = () => {
           @reset="resetTreeSelections"
           @updataChange='updataChange'
           :collectionType='route.query'
+          @clearTree="clearTree"
         />
       </ContentWrap>
     </el-col>

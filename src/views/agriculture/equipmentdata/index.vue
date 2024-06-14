@@ -406,6 +406,7 @@ watch(() => props.currCategory,
 //   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
 //   await getList()
 // })
+const emit=defineEmits(['clearTree'])
 //存放监测类型
 let selectEquipmentType=ref([])
 //存放基地信息
@@ -467,6 +468,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  emit('clearTree')
   handleQuery()
 }
 
