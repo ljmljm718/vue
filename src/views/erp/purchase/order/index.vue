@@ -88,7 +88,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <!-- <el-form-item label="备注" prop="remark">
         <el-input
           v-model="queryParams.remark"
           placeholder="请输入备注"
@@ -120,7 +120,7 @@
           <el-option label="部分退货" value="1" />
           <el-option label="全部退货" value="2" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
