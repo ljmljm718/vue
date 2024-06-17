@@ -53,12 +53,24 @@
             v-loading="warnDataLoading"
             stripe
           >
-            <el-table-column label="报警类型" prop="warnType" />
-            <el-table-column label="报警等级" prop="warnLevel" />
+            <el-table-column label="报警类型" prop="warnType">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="报警等级" prop="warnLevel">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel"/>
+              </template>
+            </el-table-column>
             <el-table-column label="报警信息" min-width="150" prop="warnInfo" />
             <el-table-column label="当前值" prop="currentValue" />
             <el-table-column label="阈值" prop="threshold" />
-            <el-table-column label="处理状态" prop="warnStatus" />
+            <el-table-column label="处理状态" prop="warnStatus">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.KAIZHOU_WARN_STATUS" :value="scope.row.warnStatus"/>
+              </template>
+            </el-table-column>
             <el-table-column
               label="报警时间"
               prop="warnTime"
@@ -132,6 +144,7 @@
 </template>
 <script setup lang="ts">
 import { formatTime } from '@/utils'
+import { DICT_TYPE } from "@/utils/dict"
 import {
   getEquipmentDataById,
   getWarningRecordList,
@@ -370,6 +383,7 @@ const handleSave = async () => {
     createTime: new Date(updateForm.value.createTime).valueOf()
   })
   if (res) message.success("操作成功！")
+  editEnabled.value = false
 }
 
 const emit = defineEmits(['update:modelValue'])
