@@ -44,19 +44,6 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="12">-->
-<!--          <el-form-item label="状态" prop="status">-->
-<!--            <el-radio-group v-model="formData.status">-->
-<!--              <el-radio-->
-<!--                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"-->
-<!--                :key="dict.value"-->
-<!--                :label="dict.value"-->
-<!--              >-->
-<!--                {{ dict.label }}-->
-<!--              </el-radio>-->
-<!--            </el-radio-group>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
         <el-col :span="12">
           <el-form-item label="规格" prop="standard">
             <el-input v-model="formData.standard" placeholder="请输入规格" />
@@ -125,6 +112,19 @@
               :precision="0"
               class="!w-1/1"
             />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="状态" prop="status">
+            <el-radio-group v-model="formData.status">
+              <el-radio
+                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+                :key="dict.value"
+                :label="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="24">

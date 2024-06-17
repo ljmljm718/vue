@@ -67,9 +67,9 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="条码" align="center" prop="barCode" width="160"/>
       <el-table-column label="名称" align="center" prop="name" width="160"/>
-      <el-table-column label="规格" align="center" prop="standard" width="100"/>
       <el-table-column label="分类" align="center" prop="categoryName" width="130" />
       <el-table-column label="单位" align="center" prop="unitName" width="80" />
+      <el-table-column label="规格" align="center" prop="standard" width="100"/>
       <el-table-column label="图片" align="center" prop="imgId" >
         <template #default="{ row }">
           <el-image
@@ -88,21 +88,21 @@
         label="采购价格"
         align="center"
         prop="purchasePrice"
-        width="130"
+        width="120"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="销售价格"
         align="center"
         prop="salePrice"
-        width="130"
+        width="120"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="最低价格"
         align="center"
         prop="minPrice"
-        width="130"
+        width="120"
         :formatter="erpPriceTableColumnFormatter"
       />
 <!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
