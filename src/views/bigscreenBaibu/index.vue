@@ -307,15 +307,15 @@ const getIndustryStatistics = async () => {
     {
       title: '基地数量',
       value: parkCount,
-      url: '/base/parkinfo'
+      url: '/asset/base/parkinfo'
     }, {
       title: '种植面积',
       value: areaSum + '亩',
-      url: '/base/parkinfo'
+      url: '/asset/base/parkdetail'
     }, {
       title: '种植品种',
       value: cropCount,
-      url: '/crop/crop-base'
+      url: '/farm_work/crop-base'
     },
   ]
 }
@@ -324,15 +324,15 @@ getIndustryStatistics()
 const industryList = ref([{
   title: '基地数量',
   value: '0',
-  url: '/base/parkinfo'
+  url: '/asset/base/parkinfo'
 }, {
   title: '种植面积',
   value: '0亩',
-  url: '/base/parkinfo'
+  url: '/asset/base/parkdetail'
 }, {
   title: '种植品种',
   value: '0',
-  url: '/crop/crop-base'
+  url: '/farm_work/crop-base'
 }])
 
 const initChart1 = async (cropCode) => {
@@ -505,7 +505,7 @@ getDeviceStateData(2)
               class="sub-title-bg h-[2rem]"
               style="margin-left: .7rem;width: calc(100% - .7rem);margin-bottom: .9rem;"
               @click="$router.push({
-                          path:'/production/drying-process-management'
+                          path:'/pcg/product/drying-process-management'
                   })">烘干工艺
             </div>
             <div style="height: 12rem;">
@@ -657,7 +657,7 @@ getDeviceStateData(2)
           <div class="main-item-container flex flex-col">
             <div class="grid grid-cols-2 gap-2">
               <div class="bg-[length:100%_100%] card-width-bg flex justify-between p-3 col-span-2" @click="$router.push({
-                          path:'/device/overview'
+                          path:'/internetMonitor/device/overview'
                   })">
                 <span>物联网设备</span>
                 <span>
@@ -691,7 +691,7 @@ getDeviceStateData(2)
               </div>
             </div>
             <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
-                          path:'/deviceData/equipment-data',
+                          path:'/internetMonitor/deviceData/equipment-data-three',
                           query:{
                             collectionType:'气象站'
                           }
@@ -746,7 +746,7 @@ getDeviceStateData(2)
               </div>
             </div>
             <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center" @click="$router.push({
-                          path:'/deviceData/equipment-data',
+                          path:'/internetMonitor/deviceData/equipment-data-three',
                           query:{
                             collectionType:'土壤墒情'
                           }
@@ -802,7 +802,7 @@ getDeviceStateData(2)
               </div>
             </div>
             <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
-                          path:'/deviceData/equipment-data',
+                          path:'/internetMonitor/deviceData/equipment-data-three',
                           query:{
                             collectionType:'虫情监测'
                           }
@@ -884,7 +884,7 @@ getDeviceStateData(2)
         <div class="grid-main-item">
           <div class="main-item-title"
                @click="$router.push({
-                          path:'/device/deviceView',
+                          path:'/internetMonitor/device/deviceView',
                           query:{
                                deviceType:'60'
                           }
@@ -915,7 +915,7 @@ getDeviceStateData(2)
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
           <div class="main-item-title" @click="$router.push({
-                          path:'/crop/sales-management'
+                          path:'/pcg/sale/sales-management'
                   })">商品流通
           </div>
           <div class="main-item-container">
@@ -926,7 +926,7 @@ getDeviceStateData(2)
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
           <div class="main-item-title" @click="$router.push({
-                          path:'/warn/agri-warning-record',
+                          path:'/internetMonitor/warn/agri-warning-record',
                   })">报警信息</div>
           <div class="main-item-container warn-bg">
             <div
@@ -953,7 +953,7 @@ getDeviceStateData(2)
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
           <div class="main-item-title" @click="$router.push({
-                          path:'/device/deviceinfo',
+                          path:'/internetMonitor/device/deviceView',
                           query:{
                             deviceType:'58,61'
                           }
