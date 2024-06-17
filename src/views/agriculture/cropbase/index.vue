@@ -53,7 +53,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"  type="primary">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -169,6 +169,7 @@
             link
             type="success"
             @click="damn(scope.row)"
+            v-if="show !==118"
           >
             溯源
           </el-button>
@@ -229,8 +230,8 @@
           <el-card>
             <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
             <p>品种：
-              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType" />
-           </p>
+              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
+            </p>
             <p>作物名称：{{ item.cropName }}</p>
             <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>
@@ -257,6 +258,9 @@ import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
 import router from "@/router";
+import {getTenantId} from "@/utils/auth";
+import {useUserStore} from "@/store/modules/user";
+import avatarImg from "@/assets/imgs/avatar.gif";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -305,10 +309,14 @@ const queryParam = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const show = ref()
+const userStore = useUserStore()
+const userName = computed(() => userStore.user.deptId ?? '0')
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  show.value = userName.value
   try {
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
@@ -334,8 +342,8 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  if(type == 'create' ) router.push('/farm_work/CreateOrUpdateCropbase')
-  else router.push('/farm_work/CreateOrUpdateCropbase?id=' +id+ '&type='+type)
+  if (type == 'create') router.push('/farm_work/CreateOrUpdateCropbase')
+  else router.push('/farm_work/CreateOrUpdateCropbase?id=' + id + '&type=' + type)
 }
 
 /** 添加/修改操作 */

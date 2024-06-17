@@ -155,7 +155,7 @@
           重置
         </el-button>
 
-      </el-form-item>
+      </el-form-item>userName
     </el-form>
 
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
@@ -232,6 +232,7 @@
             link
             type="warning"
             @click="damn(scope.row)"
+            v-if="getTenantId() !== 158"
           >
             加工记录
           </el-button>
@@ -313,6 +314,7 @@ import {
   VillageProcessingRecordsApi,
   VillageProcessingRecordsVO
 } from "@/api/digital/villageprocessingrecords";
+import {getTenantId} from "@/utils/auth";
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})

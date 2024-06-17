@@ -226,7 +226,7 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="getTenantId() !== 158">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==118">
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -430,6 +430,7 @@ import MonitoringEquipmentNoticeForm
 import {useRoute} from 'vue-router'
 import {getTenantId} from "@/utils/auth";
 import {CACHE_KEY} from "@/hooks/web/useCache";
+import {useUserStore} from "@/store/modules/user";
 
 /** 预警记录 列表 */
 defineOptions({name: 'AgriWarningRecord'})
@@ -451,10 +452,13 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+const show = ref()
+const userStore = useUserStore()
+const userName = computed(() => userStore.user.deptId ?? '0')
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  show.value = userName.value
   try {
     console.log(1)
     const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
