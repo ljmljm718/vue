@@ -8,28 +8,10 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input
-          v-model="queryParams.belongPark"
-          placeholder="请输入所属基地"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="基地名称" prop="parkName">
         <el-input
           v-model="queryParams.parkName"
           placeholder="请输入基地名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input
-          v-model="queryParams.belongPlot"
-          placeholder="请输入所属地块"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -44,65 +26,65 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="实例编号" prop="processInstanceId">
-        <el-input
-          v-model="queryParams.processInstanceId"
-          placeholder="请输入实例编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="审批结果" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择审批结果"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="开始时间" prop="startTime">
-        <el-date-picker
-          v-model="queryParams.startTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="完成时间" prop="endTime">
-        <el-date-picker
-          v-model="queryParams.endTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="完成要求" prop="completeRequirement">
-        <el-input
-          v-model="queryParams.completeRequirement"
-          placeholder="请输入完成要求"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="验收标准" prop="acceptanceStandard">
-        <el-input
-          v-model="queryParams.acceptanceStandard"
-          placeholder="请输入验收标准"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="实例编号" prop="processInstanceId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.processInstanceId"-->
+<!--          placeholder="请输入实例编号"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="审批结果" prop="status">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.status"-->
+<!--          placeholder="请选择审批结果"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option label="请选择字典生成" value="" />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="开始时间" prop="startTime">-->
+<!--        <el-date-picker-->
+<!--          v-model="queryParams.startTime"-->
+<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
+<!--          type="daterange"-->
+<!--          start-placeholder="开始日期"-->
+<!--          end-placeholder="结束日期"-->
+<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="完成时间" prop="endTime">-->
+<!--        <el-date-picker-->
+<!--          v-model="queryParams.endTime"-->
+<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
+<!--          type="daterange"-->
+<!--          start-placeholder="开始日期"-->
+<!--          end-placeholder="结束日期"-->
+<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="完成要求" prop="completeRequirement">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.completeRequirement"-->
+<!--          placeholder="请输入完成要求"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="验收标准" prop="acceptanceStandard">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.acceptanceStandard"-->
+<!--          placeholder="请输入验收标准"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -145,10 +127,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="计划ID" align="center" prop="id" />
-      <el-table-column label="所属基地" align="center" prop="belongPark" />
+<!--      <el-table-column label="计划ID" align="center" prop="id" />-->
+<!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
       <el-table-column label="基地名称" align="center" prop="parkName" />
-      <el-table-column label="所属地块" align="center" prop="belongPlot" />
+<!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="审批状态" align="center" prop="status" >
         <template #default="scope">
@@ -159,14 +141,14 @@
         label="开始时间"
         align="center"
         prop="startTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column
         label="完成时间"
         align="center"
         prop="endTime"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column label="完成要求" align="center" prop="completeRequirement" />
@@ -197,7 +179,7 @@
             进度
           </el-button>
           <el-button
-            v-if="scope.row.result === 1"
+            v-if="scope.row.status === 1"
             v-hasPermi="['agriculture:farm-task:create']"
             link
             type="danger"
@@ -222,7 +204,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmTaskApi, FarmTaskVO } from '@/api/agriculture/farmtask'
 import FarmTaskForm from './FarmTaskForm.vue'
@@ -296,7 +278,7 @@ const cancelLeave = async (row) => {
     inputErrorMessage: '取消原因不能为空'
   })
   // 发起取消
-  await ProcessInstanceApi.cancelProcessInstanceByStartUser(row.id, value)
+  await ProcessInstanceApi.cancelProcessInstanceByStartUser(row.processInstanceId, value)
   message.success('取消成功')
   // 刷新列表
   await getList()
