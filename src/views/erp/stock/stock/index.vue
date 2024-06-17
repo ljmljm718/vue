@@ -80,6 +80,14 @@
         :formatter="erpCountTableColumnFormatter"
       />
       <el-table-column label="仓库" align="center" prop="warehouseName" />
+      <el-table-column
+        label="生产日期"
+        align="center"
+        prop="produceDate"
+        :formatter="dateFormatter2"
+        width="140"
+      />
+      <el-table-column label="有效期天数" align="center" prop="expiryDay" />
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -97,6 +105,7 @@ import { StockApi, StockVO } from '@/api/erp/stock/stock'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { WarehouseApi, WarehouseVO } from '@/api/erp/stock/warehouse'
 import { erpCountTableColumnFormatter } from '@/utils'
+import {dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 产品库存列表 */
 defineOptions({ name: 'ErpStock' })
@@ -124,6 +133,7 @@ const getList = async () => {
   try {
     const data = await StockApi.getStockPage(queryParams)
     list.value = data.list
+    console.log("List", data.list)
     total.value = data.total
   } finally {
     loading.value = false
@@ -181,6 +191,7 @@ onMounted(async () => {
   await getList()
   // 加载产品、仓库列表
   productList.value = await ProductApi.getProductSimpleList()
+  console.log("productList.value", productList.value)
   warehouseList.value = await WarehouseApi.getWarehouseSimpleList()
 })
 </script>

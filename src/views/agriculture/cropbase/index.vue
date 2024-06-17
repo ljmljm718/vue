@@ -111,9 +111,9 @@
         </template>
       </el-table-column>
       <!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
-      <el-table-column label="所属基地" align="center" prop="parkName"/>
+      <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="所属基地" align="center" prop="plotName"/>
+      <el-table-column label="所属基地" align="center" prop="plotName" width="160"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -145,8 +145,8 @@
           <span v-if="!scope.row.recoveryNo">未采收</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center" prop="cropDesc"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="描述" align="center" prop="cropDesc" width="240"/>
+      <el-table-column label="备注" align="center" prop="remark" width="180"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -154,7 +154,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="240">
+      <el-table-column label="操作" align="center" width="220" fixed="right">
         <template #default="scope">
           <el-button
             link

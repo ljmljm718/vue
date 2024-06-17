@@ -3,27 +3,27 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
+<!--          <el-button-->
+<!--            type="primary"-->
+<!--            :icon="FolderChecked"-->
+<!--            plain-->
+<!--            @click="localSave()"-->
+<!--          >-->
+<!--            保存-->
+<!--          </el-button>-->
           <el-button
             type="success"
             :icon="TopRight"
             plain
             @click="submitForm"
           >提交</el-button>
-          <el-button
-            type="danger"
-            :icon="Refresh"
-            plain
-            @click="resetForm()"
-          >清空
-          </el-button>
+<!--          <el-button-->
+<!--            type="danger"-->
+<!--            :icon="Refresh"-->
+<!--            plain-->
+<!--            @click="resetForm()"-->
+<!--          >清空-->
+<!--          </el-button>-->
         </div>
       </template>
       <template #content>
@@ -135,6 +135,7 @@
                           <el-select
                             v-model="startUserSelectAssignees[userTask.id]"
                             multiple
+                            :multiple-limit="1"
                             placeholder="请选择审批人"
                           >
                             <el-option
@@ -269,7 +270,7 @@ const router = useRouter()
 const activeName = ref<any>(['1'])
 const ROUTE_PATH = route.path
 const FORMPAGE_NAME = '农事计划'
-const ORIGIN_PATH = '/farm_work/farm-task' // 关闭表单时跳转的路径
+const ORIGIN_PATH = '/farm_work/farmManage/farm-task' // 关闭表单时跳转的路径
 /** 提交表单 */
 const submitForm = async () => {
   // 校验表单
