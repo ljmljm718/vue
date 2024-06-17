@@ -155,7 +155,7 @@
           重置
         </el-button>
 
-      </el-form-item>
+      </el-form-item>userName
     </el-form>
 
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
@@ -189,15 +189,15 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
-      <el-table-column label="品种名称" align="center" prop="varietyName"  width="140"/>
-      <el-table-column label="品种" align="center" prop="variety" width="120" >
+      <el-table-column label="品种名称" align="center" prop="varietyName"  width="140" v-if="show !==118"/>
+      <el-table-column label="品种" align="center" prop="variety" width="120" v-if="show !==118">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.variety"/>
         </template>
       </el-table-column>
 
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
-      <el-table-column label="批次码" align="center" prop="batchCode" width="180" />
+      <el-table-column label="批次码" align="center" prop="batchCode" width="180" v-if="show !==118"/>
       <el-table-column
         label="上传时间"
         align="center"
@@ -232,6 +232,7 @@
             link
             type="warning"
             @click="damn(scope.row)"
+            v-if="getTenantId() !== 158"
           >
             加工记录
           </el-button>
@@ -313,6 +314,8 @@ import {
   VillageProcessingRecordsApi,
   VillageProcessingRecordsVO
 } from "@/api/digital/villageprocessingrecords";
+import {getTenantId} from "@/utils/auth";
+import {useUserStore} from "@/store/modules/user";
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
@@ -355,6 +358,9 @@ const queryParam = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const show = ref()
+const userStore = useUserStore()
+const userName = computed(() => userStore.user.deptId ?? '0')
 function cancelClick() {
   drawer2.value = false
 }
@@ -380,6 +386,7 @@ const openVillageProductForm = async (type: string, id: number) => {
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  show.value = userName.value
   try {
     const data = await HarvestManagementApi.getHarvestManagementPage(queryParams)
     list.value = data.list

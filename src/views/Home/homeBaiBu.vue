@@ -446,7 +446,7 @@ const handleDataPickerChange = (e) => {
                     class="rounded-full flex items-center justify-center w-[1rem] h-[1rem]"
                     :style="`background-color: ${index < 3 ? '#314659' : '#f0f2f5'};color: ${index < 3 ? '#f0f2f5' : '#314659'};`"
                   >{{ index + 1 }}</div>
-                  <div>{{ item.collectionDate }}</div>
+                  <div>{{ item.monitoringType }}</div>
                 </div>
                 <div>{{ item.totalValue }}</div>
               </div>

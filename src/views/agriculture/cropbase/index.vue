@@ -53,7 +53,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"  type="primary">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -111,9 +111,9 @@
         </template>
       </el-table-column>
       <!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
-      <el-table-column label="所属基地" align="center" prop="parkName"/>
+      <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="所属基地" align="center" prop="plotName"/>
+      <el-table-column label="所属基地" align="center" prop="plotName" width="160"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -145,8 +145,8 @@
           <span v-if="!scope.row.recoveryNo">未采收</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center" prop="cropDesc"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="描述" align="center" prop="cropDesc" width="240"/>
+      <el-table-column label="备注" align="center" prop="remark" width="180"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -154,7 +154,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="240">
+      <el-table-column label="操作" align="center" width="220" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -169,6 +169,7 @@
             link
             type="success"
             @click="damn(scope.row)"
+            v-if="show !==118"
           >
             溯源
           </el-button>
@@ -229,8 +230,8 @@
           <el-card>
             <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
             <p>品种：
-              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType" />
-           </p>
+              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
+            </p>
             <p>作物名称：{{ item.cropName }}</p>
             <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>
@@ -257,6 +258,9 @@ import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
 import router from "@/router";
+import {getTenantId} from "@/utils/auth";
+import {useUserStore} from "@/store/modules/user";
+import avatarImg from "@/assets/imgs/avatar.gif";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -305,10 +309,14 @@ const queryParam = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const show = ref()
+const userStore = useUserStore()
+const userName = computed(() => userStore.user.deptId ?? '0')
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  show.value = userName.value
   try {
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
@@ -334,8 +342,8 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  if(type == 'create' ) router.push('/farm_work/CreateOrUpdateCropbase')
-  else router.push('/farm_work/CreateOrUpdateCropbase?id=' +id+ '&type='+type)
+  if (type == 'create') router.push('/farm_work/CreateOrUpdateCropbase')
+  else router.push('/farm_work/CreateOrUpdateCropbase?id=' + id + '&type=' + type)
 }
 
 /** 添加/修改操作 */

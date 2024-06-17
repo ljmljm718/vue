@@ -17,7 +17,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="消息类型" prop="msgType">
+      <!-- <el-form-item label="消息类型" prop="msgType">
         <el-select
           v-model="queryParams.msgType"
           placeholder="请选择消息类型"
@@ -31,7 +31,7 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="消息级别" prop="msgLevel">
         <el-select
           v-model="queryParams.msgLevel"

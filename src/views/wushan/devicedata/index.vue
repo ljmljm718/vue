@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备编号" prop="deviceCode">
+      <!-- <el-form-item label="设备编号" prop="deviceCode">
         <el-input
           v-model="queryParams.deviceCode"
           placeholder="请输入设备编号"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="设备类型" prop="deviceType">
         <el-select
           v-model="queryParams.deviceType"
