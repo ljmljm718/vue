@@ -759,7 +759,7 @@ const handleBaseIdChange = (id) => {
           <div v-for="(item, index) in topList" :key="index"
                class="flex flex-col items-center h-full w-[8rem] top-bg"
                @click="$router.push({
-                          path:'/device/deviceinfo',
+                          path:'/internetMonitor/device/deviceView',
                           query: {
                             deviceStatus: item.deviceType
                           }})">
@@ -775,7 +775,7 @@ const handleBaseIdChange = (id) => {
           <div style="width: calc(50% - .5rem);">
             <div class="grid-main-item">
               <div class="main-item-title title-bg"  @click="$router.push({
-                          path:'/crop/sales-management'
+                          path:'/pcg/sale/sales-management'
                   })">
                 <div>商品流通分布</div>
               </div>
@@ -787,7 +787,7 @@ const handleBaseIdChange = (id) => {
           <div style="width: calc(50% - .5rem);">
             <div class="grid-main-item">
               <div class="main-item-title title-bg" @click="$router.push({
-                          path:'/crop/harvest-management'
+                          path:'/farm_work/harvest-management'
                   })">
                 <div>采收销售趋势分析</div>
               </div>
@@ -824,7 +824,7 @@ const handleBaseIdChange = (id) => {
           <div class="!flex-row main-item-container">
             <div class="w-[6rem] flex flex-col items-center justify-center"
                  @click="$router.push({
-                          path:'/device/deviceinfo',
+                          path:'/internetMonitor/device/deviceView',
                           query: {}})">
               <div class="w-[4.5rem] h-[4.5rem] device-icon flex justify-center items-center pb-4"
                    style="font-family: 'TitleFont';font-size: 1.2rem;">{{ deviceTotal }}
@@ -858,7 +858,7 @@ const handleBaseIdChange = (id) => {
         <div class="grid-main-item">
           <div class="main-item-title title-bg"
                @click="$router.push({
-                          path:'/deviceData/equipment-data',
+                          path:'/internetMonitor/deviceData/equipment-data-three',
                           query: {
                             collectionType: '气象监测'
                           }})">
@@ -881,7 +881,7 @@ const handleBaseIdChange = (id) => {
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
           <div class="main-item-title title-bg" @click="$router.push({
-                          path:'/deviceData/equipment-data',
+                          path:'/internetMonitor/deviceData/equipment-data-three',
                           query: {
                             collectionType: '土壤监测'
                           }})">
@@ -906,7 +906,7 @@ const handleBaseIdChange = (id) => {
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
           <div class="main-item-title title-bg"  @click="$router.push({
-                          path:'/crop/grow-record'
+                          path:'/internetMonitor/deviceData/grow-record'
                   })">
             <div>生长趋势</div>
           </div>
@@ -918,7 +918,7 @@ const handleBaseIdChange = (id) => {
       <div class="gird-item-wrapper" style="grid-row: span 2;">
         <div class="grid-main-item">
           <div class="main-item-title title-bg" @click="$router.push({
-                          path:'/warn/agri-warning-record'})">
+                          path:'/internetMonitor/warn/agri-warning-record'})">
             <div>预警信息</div>
           </div>
           <div class="main-item-container flex flex-col warn-bg">
@@ -954,7 +954,7 @@ const handleBaseIdChange = (id) => {
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
           <div class="main-item-title title-bg" @click="$router.push({
-                          path:'/device/deviceinfo',
+                          path:'/internetMonitor/device/deviceView',
                           query:{deviceType:'40,44'}
                   })">
             <div>监控设备</div>

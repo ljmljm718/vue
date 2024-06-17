@@ -226,7 +226,7 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second">
+      <el-tab-pane label="监控设备预警" name="second" v-if="getTenantId() !== 158">
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -313,7 +313,6 @@
                   type="primary"
                   plain
                   @click="openFormA('create')"
-                  v-hasPermi="['agriculture:monitoring-equipment-notice:create']"
                 >
                   <Icon icon="ep:plus" class="mr-5px"/>
                   新增
@@ -323,7 +322,6 @@
                   plain
                   @click="handleExportA"
                   :loading="exportLoadingA"
-                  v-hasPermi="['agriculture:monitoring-equipment-notice:export']"
                 >
                   <Icon icon="ep:download" class="mr-5px"/>
                   导出
@@ -375,7 +373,6 @@
                   link
                   type="primary"
                   @click="openFormA('update', scope.row.id)"
-                  v-hasPermi="['agriculture:monitoring-equipment-notice:update']"
                 >
                   编辑
                 </el-button>
@@ -383,7 +380,6 @@
                   link
                   type="danger"
                   @click="handleDeleteA(scope.row.id)"
-                  v-hasPermi="['agriculture:monitoring-equipment-notice:delete']"
                 >
                   删除
                 </el-button>
@@ -432,6 +428,8 @@ import {
 import MonitoringEquipmentNoticeForm
   from "@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue";
 import {useRoute} from 'vue-router'
+import {getTenantId} from "@/utils/auth";
+import {CACHE_KEY} from "@/hooks/web/useCache";
 
 /** 预警记录 列表 */
 defineOptions({name: 'AgriWarningRecord'})
@@ -746,7 +744,6 @@ const handleDeleteA = async (id: number) => {
   } catch {
   }
 }
-
 /** 导出按钮操作 */
 const handleExportA = async () => {
   try {
