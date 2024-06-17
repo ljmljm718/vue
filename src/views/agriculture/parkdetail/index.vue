@@ -102,25 +102,25 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" align="center">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="goCheck(scope.row)"
-          >
-            溯源
-          </el-button>
-          <!--          <el-button-->
-          <!--            link-->
-          <!--            type="danger"-->
-          <!--            @click="handleDelete(scope.row.id)"-->
-          <!--            v-hasPermi="['agriculture:park-detail:delete']"-->
-          <!--          >-->
-          <!--            删除-->
-          <!--          </el-button>-->
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="操作" fixed="right" align="center">-->
+<!--&lt;!&ndash;        <template #default="scope">&ndash;&gt;-->
+<!--&lt;!&ndash;          <el-button&ndash;&gt;-->
+<!--&lt;!&ndash;            link&ndash;&gt;-->
+<!--&lt;!&ndash;            type="primary"&ndash;&gt;-->
+<!--&lt;!&ndash;            @click="goCheck(scope.row)"&ndash;&gt;-->
+<!--&lt;!&ndash;          >&ndash;&gt;-->
+<!--&lt;!&ndash;            溯源&ndash;&gt;-->
+<!--&lt;!&ndash;          </el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;          <el-button&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;            link&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;            type="danger"&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;            @click="handleDelete(scope.row.id)"&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;            v-hasPermi="['agriculture:park-detail:delete']"&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;          >&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;            删除&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;          &lt;!&ndash;          </el-button>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        </template>&ndash;&gt;-->
+<!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination

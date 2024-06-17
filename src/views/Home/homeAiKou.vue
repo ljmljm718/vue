@@ -102,7 +102,7 @@ const initChart1 = async () => {
 
 const initChart2 = async () => {
   const res = await selectHarvestVolume({})
-  
+
   const data = res.map(item => ({
     name: item.belongPark,
     value: item.harvestVolume
@@ -174,7 +174,7 @@ const getAikouMonitor = async (type = 0, baseCode = '') => {
     return res
   }
   console.log('获取', res);
-  
+
   if (type === 0) {
     topDataList.value = fix_8(res)
   } else {
@@ -221,7 +221,7 @@ const getMonitorDeviceList = async (pageNo = 1, baseId = selectedBase1.value) =>
   })
 
   console.log('巡检统计', list);
-  
+
   monitorDeviceList.value = list.map(item => ({
     ...item,
     img: item.imgId,
