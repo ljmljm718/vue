@@ -24,3 +24,51 @@ export const qianjiangMonitor = async (params) => {
     params
   })
 }
+
+// 左三-园区监控
+export const getEquipmentPhotographAndVideo = async (params) => {
+  return await request.get({
+    url: '/agriculture/device-info/getEquipmentPhotographAndVideo',
+    params
+  })
+}
+
+// 中间上方卡片
+export const qjDeviceStatistics = async (params) => {
+  return await request.get({
+    url: '/agriculture/big-screen/qjDeviceStatistics',
+    params
+  })
+}
+
+// 右一：农业资源
+export const getQianjiangAgriResource = async (params) => {
+  return await request.get({
+    url: '/agriculture/big-screen/getQianjiangAgriResource',
+    params
+  })
+}
+
+// 右三：预警信息
+export const qianjiangWarnRecordInfo = async (params) => {
+  return await request.get({
+    url: '/agriculture/warning-record-big-screen/qianjiangWarnRecordInfo',
+    params
+  })
+}
+
+// 右二-设备信息
+export const qjDeviceInfo = async (params) => {
+  return await request.get({
+    url: '/agriculture/big-screen/qjDeviceInfo',
+    params
+  })
+}
+
+// 中间下方：枳壳树长势分析
+export const getLineChar = async (data) => {
+  return await request.post({
+    url: '/agriculture/grow-record/getLineChar',
+    data
+  })
+}

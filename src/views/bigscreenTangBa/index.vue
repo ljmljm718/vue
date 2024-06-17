@@ -12,8 +12,15 @@ import * as echarts from 'echarts'
 import {
   getParkBaseInfo,
   getEquipmentMap,
-  qianjiangMonitor
+  qianjiangMonitor,
+  getEquipmentPhotographAndVideo,
+  qjDeviceStatistics,
+  getQianjiangAgriResource,
+  qianjiangWarnRecordInfo,
+  qjDeviceInfo,
+  getLineChar
 } from './apis'
+import { formatTime } from '@/utils'
 
 const {
   BigscreenAdapter,
@@ -28,10 +35,11 @@ const {
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
-    const weatherDataList = ref<Array<any>>([1,1,1,1,1,1,1,1])
-    const getWeatherDataList = async () => {
+    const weatherDataList = ref<Array<any>>([])
+    const soilDataList = ref<Array<any>>([])
+    const getWeatherAndSoilDataList = async (type: '气象站' | '土壤墒情') => {
       const res = await qianjiangMonitor({
-        type: '气象站',
+        type,
         belongPark: selectedBase.value,
         belongPlot: selectedPlot.value
       })
@@ -45,66 +53,67 @@ export default defineComponent({
         "风速": "icon-7",
         "风向": "icon-8",
       }
-      if (Array.isArray(res)) weatherDataList.value = res.map(item => ({
+      if (type === '气象站' && Array.isArray(res)) weatherDataList.value = res.map(item => ({
         ...item, icon: iconMap[item.monitoringType] || 'icon-1'
       }))
-    }
-    const soilDataList = ref<Array<any>>([1,1,1,1,1,1,1,1])
-    const getSoilDataList = async () => {
-      const res = await qianjiangMonitor({
-        type: '气象站',
-      })
-      console.log("res", res);
-    }
-    const topDataList = ref<Array<any>>([
-      {
-        value: '0',
-        label: '设备总数',
-        color: '#7dffff'
-      },
-      {
-        value: '0',
-        label: '在线设备',
-        color: '#7dffff'
-      },
-      {
-        value: '0',
-        label: '离线数量',
-        color: '#ffd47f'
-      },
-      {
-        value: '0',
-        label: '设备预警',
-        color: '#ff8383'
-      },
-    ])
 
-    const deviceDataList = ref<Array<any>>([
-      {
-        label: '生长监控',
-        total: 65,
-        online: 60,
-        offline: 5,
-      },
-      {
-        label: '生长监控',
-        total: 65,
-        online: 60,
-        offline: 5,
-      },
-      {
-        label: '生长监控',
-        total: 65,
-        online: 60,
-        offline: 5,
-      },
-      {
-        label: '生长监控',
-        total: 65,
-        online: 60,
-        offline: 5,
-      },
-    ])
+      if (type === '土壤墒情' && Array.isArray(res)) soilDataList.value = res
+    }
+    
+    const topDataList = ref<Array<any>>([])
+    const getTopDataList = async () => {
+      const res:any = await qjDeviceStatistics({})
+      const {
+        total = '0',
+        online = '0',
+        offline = '0',
+        warningDevice = '0'
+      } = res
+      topDataList.value = [
+        {
+          value: total,
+          label: '设备总数',
+          color: '#7dffff',
+          url: '/internetMonitor/device/deviceView'
+        },
+        {
+          value: online,
+          label: '在线设备',
+          color: '#7dffff',
+          url: '/internetMonitor/device/deviceView?deviceStatus=online'
+        },
+        {
+          value: offline,
+          label: '离线数量',
+          color: '#ffd47f',
+          url: '/internetMonitor/device/deviceView?deviceStatus=offline'
+        },
+        {
+          value: warningDevice,
+          label: '设备预警',
+          color: '#ff8383',
+          url: '/internetMonitor/warn/agri-warning-record'
+        },
+      ]
+    }
+    getTopDataList()
+
+    const deviceDataList = ref<Array<any>>([])
+    const deviceAmount = ref<number>(0)
+    const getDeviceDataList = async () => {
+      const res = await qjDeviceInfo({})
+      if (Array.isArray(res)) {
+        deviceDataList.value = res.map(item => ({
+          ...item,
+          label: item.deviceKind,
+        }))
+        deviceAmount.value = 0
+        res.forEach(item => {
+          deviceAmount.value += (+item.total || 0)
+        })
+      }
+    }
+    getDeviceDataList()
 
     const baseOptions = ref<Array<any>>([])
     const plotOptions = ref<Array<any>>([
@@ -121,39 +130,45 @@ export default defineComponent({
 
     // 地块变化，刷新所有数据
     const refreshAllData = () => {
-      getWeatherDataList()
-      getSoilDataList()
+      parkDataIndex.value = 0
+      getWeatherAndSoilDataList('气象站')
+      getWeatherAndSoilDataList('土壤墒情')
+      getParkDataList()
     }
 
     const getBasePlotOptions = async (parentId = 0) => {
-        const res = await getParkBaseInfo({ parentId })
-        if (!Array.isArray(res)) return
-        if (parentId === 0) {
-          // 查询基地列表
-          baseOptions.value = res.map(item => ({
-            key: item.id,
-            label: item.name
-          }))
-          if (res.length > 0) {
-            selectedBase.value = res[0].id
-            if (res[0].id !== 0) getBasePlotOptions(res[0].id)
-          }
-        } else {
-          // 查询地块列表
-          plotOptions.value = res.map(item => ({
-            key: item.id,
-            label: item.name
-          }))
-          if (res.length > 0) {
-            selectedPlot.value = res[0].id
-            refreshAllData()
-          }
+      const res = await getParkBaseInfo({ parentId })
+      if (!Array.isArray(res)) return
+      if (parentId === 0) {
+        // 查询基地列表
+        baseOptions.value = res.map(item => ({
+          key: item.id,
+          label: item.name
+        }))
+        if (res.length > 0) {
+          selectedBase.value = res[0].id
+          if (res[0].id !== 0) getBasePlotOptions(res[0].id)
+        }
+      } else {
+        // 查询地块列表
+        plotOptions.value = res.map(item => ({
+          key: item.id,
+          label: item.name
+        }))
+        if (res.length > 0) {
+          selectedPlot.value = res[0].id
+          refreshAllData()
         }
       }
-      getBasePlotOptions()
+    }
+    getBasePlotOptions()
 
-    const initChart = () => {
-      const xValue = [1,2,3,4,5,6], yValue = [145, 112, 41, 78, 115, 22]
+    const initChart = async () => {
+      const res = await getLineChar({
+        cropCode: '1801136074673094656',
+        facilityId: '1800718949558734848'
+      })
+      const { xValue = [], yValue = [], measureUnit = [] } = res
       initChartStatic(
         'chart',
         generateBaseOptions({
@@ -174,7 +189,7 @@ export default defineComponent({
           },
           color: ['#ffa773', '#36e1d9'],
           yAxis: {
-              name: '',
+              name: measureUnit[0] || '',
               type: 'value',
               axisLine: {
                   show: true,
@@ -227,7 +242,7 @@ export default defineComponent({
           grid: {
             left: '6%',
             right: '4%',
-            top: '16%',
+            top: '17%',
             bottom: '15%'
           }
         })
@@ -238,6 +253,70 @@ export default defineComponent({
 
     const preWarnLoading = ref<boolean>(false)
     const preWarnList = ref<Array<any>>([])
+    const getPreWarnList = async () => {
+      const res = await qianjiangWarnRecordInfo({})
+      console.log("pre warn List", res);
+      if (Array.isArray(res)) preWarnList.value = res.map(item => ({
+        ...item, warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss'),
+        warnStatus: item.warnStatus === '0' ? '未处理' : '已处理'
+      }))
+    }
+    getPreWarnList()
+
+    const WindowOpen = (url:string) => {
+      if (url) window.open(url)
+    }
+
+    const parkDataList = ref<Array<any>>([])
+    const parkDataIndex = ref<number>(0)
+    const getParkDataList = async () => {
+      const res = await getEquipmentPhotographAndVideo({
+        baseId: selectedBase.value,
+        plotId: selectedPlot.value
+      })
+      console.log("getParkDataList", res);
+      if (Array.isArray(res)) parkDataList.value = res
+    }
+    
+    const agriResInfo = ref({
+      pottingAmount: 0,
+      plantArea: 0
+    })
+    const getAgriResourceData = async () => {
+      const res = await getQianjiangAgriResource({})
+      agriResInfo.value = res
+    }
+    getAgriResourceData()
+
+    // 正中间
+    const activeMapIns = ref<string>('')
+    const centerMapData = ref({
+      meteorologicalStation: {
+        deviceName: '',
+        location: '',
+        deviceStatus: ''
+      },
+      growthMonitoring: {
+        deviceName: '',
+        location: '',
+        deviceStatus: ''
+      },
+      camera: {
+        deviceName: '',
+        location: '',
+        deviceStatus: ''
+      },
+      soilMoistureContent: {
+        deviceName: '',
+        location: '',
+        deviceStatus: ''
+      }
+    })
+    const getCenterMapData = async () => {
+      const res = await getEquipmentMap({})
+      centerMapData.value = res
+    }
+    getCenterMapData()
     return () => (
       <BigscreenAdapter>
         <BigscreenContainer backgroundImage={mainBg}>
@@ -275,7 +354,7 @@ export default defineComponent({
                           <div class={`w-[165px] h-[60px] relative ${item.icon}`}>
                             <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
                               <span>{ item.dataValue }</span>
-                              <span>{ item.unit }</span>
+                              <span class="pl-1">{ item.unit }</span>
                             </div>
                           </div>
                         </div>
@@ -288,26 +367,116 @@ export default defineComponent({
                     {
                       soilDataList.value.map((item:any) => (
                         <div class="flex justify-center items-center">
-                          <div class="w-[190px] h-[40px] soil-bg"></div>
+                          <div class="w-[190px] h-[40px] soil-bg flex items-center justify-between px-3">
+                            <div>{item.monitoringType}</div>
+                            <div class="art-font linear-title">
+                              <span>{item.dataValue}</span>
+                              <span class="pl-1">{item.unit}</span>
+                            </div>
+                          </div>
                         </div>
                       ))
                     }
                   </div>
                 </div>
                 <div class="h-[237px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
-                  <div class="h-full bg-red flex space-x-1 justify-between items-center">
-                    <div class="left-btn w-[9px] h-[16px]"></div>
-                    <div class="flex flex-col space-y-2"></div>
-                    <div class="right-btn w-[9px] h-[16px]"></div>
+                  <div class="h-full flex space-x-1 justify-between items-center">
+                    <div
+                      class="left-btn w-[9px] h-[16px]" 
+                      onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
+                    ></div>
+                    {
+                      parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
+                        <div class="flex flex-col space-y-2 items-center w-[170px]">
+                          <img src={item.monitoringEquipmentDataDO.capturedImage} class="w-full aspect-video object-cover" />
+                          <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
+                            <span>{item.monitoringEquipmentDataDO.monitoringPlotName}</span>
+                            <span class="mx-1">|</span>
+                            <span
+                              class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
+                            >{item.deviceStatus === 'online' ? "在线" : '离线'}</span>
+                          </div>
+                        </div>
+                      ))
+                    }
+                    <div
+                      class="right-btn w-[9px] h-[16px]"
+                      onClick={() => { if (parkDataIndex.value < parkDataList.value.length - 1) parkDataIndex.value++ }}
+                    ></div>
                   </div>
                 </div>
               </div>
               <div class="flex flex-col space-y-4 grow">
                 <div class="grow relative">
+                  <div class="w-full h-full relative">
+                    <div class="camera-icon absolute left-[740px] top-[280px]" onClick={() => { activeMapIns.value = 'camera' }}>
+                      {
+                        activeMapIns.value === 'camera' ? (
+                          <div
+                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                          >
+                            <div class="w-full h-full p-2 px-3">
+                              <div>{centerMapData.value.camera.deviceName}</div>
+                              <div>{centerMapData.value.camera.location}</div>
+                              <div>{centerMapData.value.camera.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                    </div>
+                    <div class="grow-icon absolute left-[150px] top-[400px]" onClick={() => { activeMapIns.value = 'grow' }}>
+                      {
+                        activeMapIns.value === 'grow' ? (
+                          <div
+                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                          >
+                            <div class="w-full h-full p-2 px-3">
+                              <div>{centerMapData.value.growthMonitoring.deviceName}</div>
+                              <div>{centerMapData.value.growthMonitoring.location}</div>
+                              <div>{centerMapData.value.growthMonitoring.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                    </div>
+                    <div class="meteo-icon absolute left-[400px] top-[300px]" onClick={() => { activeMapIns.value = 'meteo' }}>
+                      {
+                        activeMapIns.value === 'meteo' ? (
+                          <div
+                            class="dialog-bg w-[240px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                          >
+                            <div class="w-full h-full p-2 px-3">
+                              <div>{centerMapData.value.meteorologicalStation.deviceName}</div>
+                              <div>{centerMapData.value.meteorologicalStation.location}</div>
+                              <div>{centerMapData.value.meteorologicalStation.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                    </div>
+                    <div class="soil-icon absolute left-[700px] top-[500px]" onClick={() => { activeMapIns.value = 'soil' }}>
+                      {
+                        activeMapIns.value === 'soil' ? (
+                          <div
+                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                          >
+                            <div class="w-full h-full p-2 px-3">
+                              <div>{centerMapData.value.soilMoistureContent.deviceName}</div>
+                              <div>{centerMapData.value.soilMoistureContent.location}</div>
+                              <div>{centerMapData.value.soilMoistureContent.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                    </div>
+                  </div>
                   <div class="absolute top-1 w-full flex justify-between">
                     {
                       topDataList.value.map((item, index) => (
-                        <div class={`w-[235px] h-[76px] relative topBg-${index + 1}`}>
+                        <div
+                          class={`w-[235px] h-[76px] cursor-pointer relative topBg-${index + 1}`}
+                          onClick={() => WindowOpen(item.url)}
+                        >
                           <div class="absolute left-[110px] art-font text-[26px]" style={{
                             color: item.color
                           }}>{item.value}</div>
@@ -326,10 +495,14 @@ export default defineComponent({
                 <div class="h-[308px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
                   <div class="flex h-full justify-evenly">
                     <div class="agri-1 w-[185px] h-[212px] flex justify-center items-center">
-                      <div class="text-[26px] art-font linear-title relative top-[50px]">50</div>
+                      <div class="text-[26px] art-font linear-title relative top-[50px]">
+                        {agriResInfo.value.pottingAmount}盆
+                      </div>
                     </div>
                     <div class="agri-2 w-[185px] h-[212px] flex justify-center items-center">
-                      <div class="text-[26px] art-font linear-title relative top-[50px]">50</div>
+                      <div class="text-[26px] art-font linear-title relative top-[50px]">
+                        {agriResInfo.value.plantArea}亩
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -338,7 +511,7 @@ export default defineComponent({
                     <div>物联网设备</div>
                     <div>
                       <span>总数:</span>
-                      <span class="linear-title art-font pl-2">--台</span>
+                      <span class="linear-title art-font pl-2">{deviceAmount.value}台</span>
                     </div>
                   </div>
                   <div class="h-[230px] mt-[14px] w-full px-2 box-border flex flex-col justify-evenly">
@@ -366,27 +539,30 @@ export default defineComponent({
                     }
                   </div>
                 </div>
-                <div class="h-[237px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px]">
-                  <BigscreenTable
-                    columns={[
-                      {
-                        key: 'warnInfo',
-                        label: '预警信息',
-                        width: '12rem'
-                      },
-                      {
-                        key: 'warnTime',
-                        label: '报警时间',
-                        width: '7rem'
-                      },
-                      {
-                        key: 'warnStatus',
-                        label: '状态',
-                      },
-                    ]}
-                    dataList={preWarnList.value}
-                    loading={preWarnLoading.value}
-                  />
+                <div class="h-[237px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px] overflow-hidden">
+                  <div class="h-[220px] overflow-auto hidden-scroll-bar">
+                    <BigscreenTable
+                      headerBackgroundColor="#012831"
+                      columns={[
+                        {
+                          key: 'warnInfo',
+                          label: '预警信息',
+                          width: '12rem'
+                        },
+                        {
+                          key: 'warnTime',
+                          label: '报警时间',
+                          width: '7rem'
+                        },
+                        {
+                          key: 'warnStatus',
+                          label: '状态',
+                        },
+                      ]}
+                      dataList={preWarnList.value}
+                      loading={preWarnLoading.value}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -451,5 +627,31 @@ export default defineComponent({
   background-image: linear-gradient(to top, #41ffff, #c0ffff);
   -webkit-background-clip: text;
   color: transparent;
+}
+
+.monitor-bg {
+  background-image: url(./assets/monitorBg.png);
+  background-size: 100% 100%;
+}
+
+.hidden-scroll-bar::-webkit-scrollbar {
+  width: 0px;
+}
+
+.bug-icon, .camera-icon, .grow-icon, .meteo-icon, .soil-icon {
+  width: 80px;
+  height: 85px;
+  background-size: 100% 100%;
+}
+
+.bug-icon { background-image: url(./assets/bug.png); }
+.camera-icon { background-image: url(./assets/camera.png); }
+.grow-icon { background-image: url(./assets/grow.png); }
+.meteo-icon { background-image: url(./assets/meteo.png); }
+.soil-icon { background-image: url(./assets/soil.png); }
+
+.dialog-bg {
+  background-image: url(./assets/dialog.png);
+  background-size: 100% 100%;
 }
 </style>
