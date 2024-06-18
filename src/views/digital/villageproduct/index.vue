@@ -169,6 +169,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {VillageProductApi, VillageProductVO} from '@/api/digital/villageproduct'
 import VillageProductForm from './VillageProductForm.vue'
+import {useRoute} from "vue-router";
 
 /** 特色产品 列表 */
 defineOptions({name: 'VillageProduct'})
@@ -210,13 +211,14 @@ const getList = async () => {
     loading.value = false
   }
 }
-
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
 }
-
+onActivated(() => {
+  resetQuery()
+})
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()

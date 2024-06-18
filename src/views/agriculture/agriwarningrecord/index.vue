@@ -226,7 +226,7 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="show !==118">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118">
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -460,7 +460,7 @@ const getList = async () => {
   loading.value = true
   show.value = userName.value
   try {
-    console.log(1)
+    console.log(show.value)
     const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
