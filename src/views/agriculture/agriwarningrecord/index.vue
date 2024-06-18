@@ -1,7 +1,13 @@
 <template>
   <ContentWrap>
     <el-tabs v-model="activeName" @tab-click="handleClick">
+
       <el-tab-pane label="传感器设备预警" name="first">
+        <template #label>
+          <el-badge :value="total" class="item">
+            传感器设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -228,7 +234,12 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118 && show !==122">
+        <template #label>
+          <el-badge :value="totalA" class="item">
+            监控设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -456,10 +467,12 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const show = ref()
 const userStore = useUserStore()
+//获取部门ID
 const userName = computed(() => userStore.user.deptId ?? '0')
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  //show的值是部门ID的值
   show.value = userName.value
   try {
     console.log(show.value)
@@ -721,6 +734,7 @@ const getListA = async () => {
     loading.value = false
   }
 }
+getListA()
 /** 搜索按钮操作 */
 const handleQueryA = () => {
   queryParamsA.pageNo = 1

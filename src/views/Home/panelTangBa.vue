@@ -6,7 +6,7 @@
     <div class="flex justify-between items-start p-2 pb-1">
       <div>
         <div class="art-font">
-          <span class="pr-3">{{ title }}</span>
+          <span class="pr-3">{{ title }}{{curDeviceKind}}</span>
           <el-tag
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>
@@ -19,7 +19,11 @@
       <el-tab-pane label="设备概要" name="设备概要">
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">实时数据</div>
-          <div class="grid grid-cols-3 gap-2 py-2 min-h-[100px]" v-loading="runTimeDataLoading">
+          <div
+            class="grid grid-cols-3 gap-2 py-2 min-h-[100px]"
+            v-loading="runTimeDataLoading"
+            v-show="curDeviceKind !== '101' && curDeviceKind !== '102'"
+          >
             <div
               class="bg-slate-200 p-3 py-2 flex justify-between items-center"
               v-for="item in runTimeDataList"
@@ -32,7 +36,40 @@
               </div>
             </div>
           </div>
-          <div class="tab-title-wrapper mt-2">统计数据</div>
+          <div class="w-full box-border p-5" v-show="curDeviceKind === '101'">
+            <video :src="curVideoLink" controls muted loop class="w-full aspect-video"></video>
+          </div>
+          <div v-show="curDeviceKind === '102'" class="py-3 pb-[42px]">
+            <el-table
+              :data="growRuntimeDataList"
+              size="small"
+              border
+              v-loading="growRuntimeDataLoading"
+              stripe
+            >
+              <el-table-column label="基地名称" prop="baseName" />
+              <el-table-column label="地块名称" prop="massifName" />
+              <el-table-column label="设备名称" prop="facilityName" />
+              <el-table-column label="品种名称" prop="cropName" />
+              <el-table-column label="测量类型" prop="measureType" />
+              <el-table-column label="测量值" prop="measureNum" />
+              <el-table-column
+                label="测量时间"
+                prop="measureTime"
+                :formatter="(row) => {
+                  return formatTime(row.measureTime, 'yyyy-MM-dd HH:mm:ss')
+                }"
+              />
+            </el-table>
+            <Pagination
+              :total="growRuntimeDataTotal"
+              v-model:page="growRuntimeQueryParams.pageNo"
+              v-model:limit="growRuntimeQueryParams.pageSize"
+              @pagination="getPageA(updateForm.id)"
+            />
+          </div>
+          
+          <div class="tab-title-wrapper mt-2" v-show="curDeviceKind !== '101'">统计数据</div>
           <div id="chartWD" class="chart-ins"></div>
           <div id="chartSD" class="chart-ins"></div>
           <div id="chartPH" class="chart-ins"></div>
@@ -42,6 +79,7 @@
           <div id="chartK" class="chart-ins"></div>
           <div id="chartLight" class="chart-ins"></div>
           <div id="chartAtmos" class="chart-ins"></div>
+          <div id="chartGrow" class="chart-ins"></div>
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane label="报警" name="报警">
@@ -52,6 +90,7 @@
             border
             v-loading="warnDataLoading"
             stripe
+            v-show="curDeviceKind !== '101'"
           >
             <el-table-column label="报警类型" prop="warnType">
               <template #default="scope">
@@ -76,6 +115,26 @@
               prop="warnTime"
               :formatter="(row) => {
                 return formatTime(row.warnTime, 'yyyy-MM-dd HH:mm:ss')
+              }"
+            />
+          </el-table>
+          <el-table
+            :data="monitorWarnList"
+            size="small"
+            border
+            v-loading="monitorWarnLoading"
+            stripe
+            v-show="curDeviceKind === '101'"
+          >
+            <el-table-column label="设备名称" prop="deviceName" />
+            <el-table-column label="基地名称" prop="monitoringBaseName" />
+            <el-table-column label="地块名称" prop="monitoringPlotName" />
+            <el-table-column label="预警事件" prop="noticeEvent" />
+            <el-table-column
+              label="记录时间"
+              prop="recordTime"
+              :formatter="(row) => {
+                return formatTime(row.recordTime, 'yyyy-MM-dd HH:mm:ss')
               }"
             />
           </el-table>
@@ -148,7 +207,11 @@ import { DICT_TYPE } from "@/utils/dict"
 import {
   getEquipmentDataById,
   getWarningRecordList,
-  deviceInfoUpdate
+  deviceInfoUpdate,
+  getDeviceById,
+  getNoticeList,
+  pageA,
+  getLineChar
 } from './apis'
 import {
   initChartStatic,
@@ -156,6 +219,15 @@ import {
 } from "../../utils/bigscreenTool/index";
 import * as echarts from 'echarts'
 defineOptions({ name: 'PanelTangBa' })
+
+const generateXY = (arr:Array<any>) => {
+  const x:Array<any> = [], y:Array<any> = []
+  arr.forEach((item:any) => {
+    x.push(item.hour);
+    y.push(item.dataValue)
+  })
+  return { x, y }
+}
 
 const runTimeDataLoading = ref<boolean>(false)
 const runTimeDataList = ref<Array<any>>([])
@@ -181,15 +253,6 @@ const getRunTimeData = async (equipmentId) => {
     phosphorus = [],
     atmosphericPressure = []
   } = res
-
-  const generateXY = (arr:Array<any>) => {
-    const x:Array<any> = [], y:Array<any> = []
-    arr.forEach((item:any) => {
-      x.push(item.hour);
-      y.push(item.dataValue)
-    })
-    return { x, y }
-  }
 
   const { x:WDX, y:WDY } = generateXY(temperature)
   initChart('chartWD', WDX, WDY, '℃', '土壤温度')
@@ -227,7 +290,10 @@ const initChart = (
 ) => {
   if (xValue.length === 0) return
   const dom = document.getElementById(chartName)
-  if (dom) dom.style.height = '220px';
+  if (dom) {
+    dom.style.height = '220px';
+    dom.style.marginTop = '12px';
+  }
   nextTick(() => {
     initChartStatic(
       chartName,
@@ -330,6 +396,57 @@ const getWarnDataList = async (deviceCode) => {
   warnDataTotal.value = total
 }
 
+const curVideoLink = ref<string>('')
+const getMonitorVideo = async (deviceId:string) => {
+  curVideoLink.value = ''
+  const res = await getDeviceById({ deviceId })
+  console.log("getMonitorVideo", res);
+  curVideoLink.value = res.videoLink
+}
+
+const monitorWarnLoading = ref<boolean>(false)
+const monitorWarnList = ref<Array<any>>([])
+const getMonitorWarnList = async (deviceId) => {
+  monitorWarnLoading.value = true
+  const res = await getNoticeList({ deviceId }).catch(() => {
+    monitorWarnLoading.value = false
+  })
+  monitorWarnLoading.value = false
+  console.log("getMonitorWarnList", res);
+  if (Array.isArray(res)) monitorWarnList.value = res
+}
+
+const growRuntimeDataLoading = ref<boolean>(false)
+const growRuntimeDataList = ref<Array<any>>([])
+const growRuntimeDataTotal = ref<number>(0)
+const growRuntimeQueryParams = ref({
+  pageNo: 1,
+  pageSize: 10
+})
+const getPageA = async (facilityId) => {
+  growRuntimeDataLoading.value = true
+  const { list = [], total = 0 } = await pageA({
+    facilityId,
+    pageNo: growRuntimeQueryParams.value.pageNo,
+    pageSize: growRuntimeQueryParams.value.pageSize,
+  }).catch(() => {
+    growRuntimeDataLoading.value = false
+  })
+  growRuntimeDataLoading.value = false
+  console.log("getPageA", list);
+  if (Array.isArray(list)) {
+    growRuntimeDataList.value = list
+    growRuntimeDataTotal.value = total
+  }
+}
+
+const getGrowChartData = async (facilityId) => {
+  const res = await getLineChar({ facilityId })
+  console.log("getGrowChartData", res);
+  const { xValue = [], measureUnit = [], yValue = [] } = res
+  initChart('chartGrow', xValue, yValue, measureUnit[0] || '', '')
+}
+
 const title = ref<string>(''), time = ref<string>(''), curDeviceKind = ref<string>('')
 const curDeviceStatus = ref<string>('')
 const getDeviceInfoData = async (item) => {
@@ -346,6 +463,7 @@ const getDeviceInfoData = async (item) => {
     createTime = new Date().valueOf(),
     deviceMonitorType = '',
     deviceKind = '',
+    deviceId = '',
   } = item || {}
   curDeviceKind.value = deviceKind
   curDeviceStatus.value = deviceStatus
@@ -361,8 +479,21 @@ const getDeviceInfoData = async (item) => {
   time.value = '最新数据更新于' + formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
 
   setTimeout(() => { item.id && getRunTimeData(item.id) }, 300)
+
+  console.log("deviceKind", deviceId);
+
+  if (deviceKind === '102') {
+    // 生长监控
+    getPageA(id)
+    getGrowChartData(id)
+  }
   
-  item.deviceCode && getWarnDataList(item.deviceCode)
+  if (deviceKind === '101') {
+    getMonitorVideo(id)
+    getMonitorWarnList(id)
+  } else {
+    item.deviceCode && getWarnDataList(item.deviceCode)
+  }
 }
 
 const editEnabled = ref<boolean>(false)
@@ -391,11 +522,15 @@ const reset = () => {
   const chartInstances = document.querySelectorAll('.chart-ins')
   chartInstances.forEach((item: HTMLElement) => {
     item.style.height = '0px'
+    item.style.marginTop = '0px'
   })
   title.value = ''
   time.value = ''
   editEnabled.value = false
   activeTab.value = '设备概要'
+  curDeviceStatus.value = ''
+  curVideoLink.value = ''
+  curDeviceKind.value = ''
 }
 const handleClose = () => {
   reset()
@@ -460,11 +595,11 @@ window.addEventListener('resize', () => getCurrentHeight())
 #chartP,
 #chartK,
 #chartLight,
-#chartAtmos
+#chartAtmos,
+#chartGrow
 {
   background: linear-gradient(to top, #ebf3ff, #ebf3ff40);
   height: 0px;
-  margin-top: 12px;
   overflow: hidden;
 }
 </style>

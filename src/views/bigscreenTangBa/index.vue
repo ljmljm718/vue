@@ -67,8 +67,9 @@ export default defineComponent({
         total = '0',
         online = '0',
         offline = '0',
-        warningDevice = '0'
+        //warningDevice = '0'
       } = res
+      //console.log("res:",res)
       topDataList.value = [
         {
           value: total,
@@ -89,7 +90,7 @@ export default defineComponent({
           url: '/internetMonitor/device/deviceView?deviceStatus=offline'
         },
         {
-          value: warningDevice,
+          value: Number(res.warningEquipmentDevice) + Number(res.warningSensorDevice),
           label: '设备预警',
           color: '#ff8383',
           url: '/internetMonitor/warn/agri-warning-record'
@@ -109,7 +110,7 @@ export default defineComponent({
         }))
         deviceAmount.value = 0
         res.forEach(item => {
-          deviceAmount.value += (+item.total || 0)
+          deviceAmount.value += (+item.numByType || 0)
         })
       }
     }
@@ -543,7 +544,7 @@ export default defineComponent({
                           <div class="flex justify-between">
                             <div>
                               <span>{item.label}:</span>
-                              <span class="linear-title pl-2">{item.total}</span>
+                              <span class="linear-title pl-2">{item.numByType}</span>
                             </div>
                             <div>
                               <span>在线:</span>
@@ -554,7 +555,10 @@ export default defineComponent({
                             </div>
                           </div>
                           <div class="bg-[#04363c] h-[12px]">
-                            <div class="h-full w-[100px] high-light-bar"></div>
+                            <div
+                              class="h-full high-light-bar"
+                              style={{ width: `${(+item.online / +item.numByType) * 100}%` }}
+                            ></div>
                           </div>
                         </div>
                       ))
