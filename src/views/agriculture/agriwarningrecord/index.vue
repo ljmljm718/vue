@@ -182,6 +182,7 @@
                   type="primary"
                   @click="openForm('update', scope.row.id)"
                   v-hasPermi="['agriculture:agri-warning-record:update']"
+                  v-if="scope.row.warnStatus==='0'"
                 >
                   编辑
                 </el-button>
@@ -190,6 +191,7 @@
                   type="danger"
                   @click="handleDelete(scope.row.id)"
                   v-hasPermi="['agriculture:agri-warning-record:delete']"
+                  v-if="scope.row.warnStatus==='0'"
                 >
                   删除
                 </el-button>
