@@ -6,7 +6,7 @@
     <div class="flex justify-between items-start p-2 pb-1">
       <div>
         <div class="art-font">
-          <span class="pr-3">{{ title }}{{curDeviceKind}}</span>
+          <span class="pr-3">{{ title }}</span>
           <el-tag
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>
@@ -22,17 +22,17 @@
           <div
             class="grid grid-cols-3 gap-2 py-2 min-h-[100px]"
             v-loading="runTimeDataLoading"
-            v-show="curDeviceKind !== '101' && curDeviceKind !== '102'"
+            v-show="curDeviceKind === '103' || curDeviceKind === '104'"
           >
             <div
               class="bg-slate-200 p-3 py-2 flex justify-between items-center"
               v-for="item in runTimeDataList"
-              :key="item.type"
+              :key="item.id"
             >
-              <div>{{ item.type }}</div>
+              <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
-                <span>{{ item.units }}</span>
+                <span>{{ item.yyUnit }}</span>
               </div>
             </div>
           </div>
@@ -211,7 +211,9 @@ import {
   getDeviceById,
   getNoticeList,
   pageA,
-  getLineChar
+  getLineChar,
+  environmentalDataHomePageA,
+  environmentalDataHomePageC
 } from './apis'
 import {
   initChartStatic,
@@ -231,16 +233,19 @@ const generateXY = (arr:Array<any>) => {
 
 const runTimeDataLoading = ref<boolean>(false)
 const runTimeDataList = ref<Array<any>>([])
-const getRunTimeData = async (equipmentId) => {
+const getRunTimeData = async (equipmentId, deviceKind) => {
   if (!equipmentId) return
   runTimeDataLoading.value = true
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
   console.log("getRunTimeData", res);
   runTimeDataLoading.value = false
   runTimeDataList.value = []
-  Object.keys(res).forEach(item => {
-    if (Array.isArray(res[item]) && res[item].length > 0) runTimeDataList.value.push(res[item][0])
-  })
+
+  const activeApi = deviceKind === '103' ? environmentalDataHomePageA : deviceKind === '104' ? environmentalDataHomePageC : null
+  if (activeApi) {
+    const resp = await activeApi({ facilityId: equipmentId })
+    if (Array.isArray(resp)) runTimeDataList.value = resp
+  }
 
   const {
     temperature = [],
@@ -478,7 +483,7 @@ const getDeviceInfoData = async (item) => {
   title.value = parkDetailName + '-' + deviceName
   time.value = '最新数据更新于' + formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
 
-  setTimeout(() => { item.id && getRunTimeData(item.id) }, 300)
+  setTimeout(() => { item.id && getRunTimeData(item.id, deviceKind) }, 300)
 
   console.log("deviceKind", deviceId);
 
