@@ -67,4 +67,9 @@ export const DeviceInfoApi = {
     return await request.put({ url: `/agriculture/device-info/updateStatus?id=` + id + "&deviceStatus=" + deviceStatus})
   },
 
+  // 查询设备信息分页
+  getDeviceInfoByIds: async (data) => {
+    return await request.post({ url: `/agriculture/device-info/pageByIds`, data })
+  },
+
 }
