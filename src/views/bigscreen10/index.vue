@@ -277,7 +277,7 @@
                             <div style="color:#68fffe;">{{soilObj.soilHumidity}}</div>
                             <div style="font-size:14px;">土壤湿度</div>
                           </div>
-                        </div>·
+                        </div>
                         <div class="right1-warper4-item">
                           <div :class="['right1-warper4-icon','right1-warper4-3']"></div>
                           <div style="margin-left:8px;width: calc(100% - 2rem);">
