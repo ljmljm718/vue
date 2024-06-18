@@ -236,7 +236,7 @@ v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息"
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118  && show !==122 && show !==119 ">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118  && show !==122 && show !==119 && show !==120">
         <template #label>
           <el-badge :value="totalA" class="item">
             监控设备预警
@@ -738,7 +738,7 @@ const getListA = async () => {
     loading.value = false
   }
 }
-if(show.value === 119) getListA()
+if(show.value === 119||show.value===120) getListA()
 
 /** 搜索按钮操作 */
 const handleQueryA = () => {
