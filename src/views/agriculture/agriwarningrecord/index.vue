@@ -738,7 +738,8 @@ const getListA = async () => {
     loading.value = false
   }
 }
-getListA()
+if(show.value === 119) getListA()
+
 /** 搜索按钮操作 */
 const handleQueryA = () => {
   queryParamsA.pageNo = 1
