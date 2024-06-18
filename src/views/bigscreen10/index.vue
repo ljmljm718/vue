@@ -50,7 +50,7 @@
                       </div>
                       </el-carousel-item>
                     </el-carousel>
-                      
+
                     </div>
                 </div>
                 <div class="left2">
@@ -59,7 +59,7 @@
                       <div id='chart1'></div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="content-main-item middle-main-wrapper">
                 <div class="main-top">
@@ -109,7 +109,7 @@
                               <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
                               <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
                            </div>
-                           
+
                          </div>
                     </div>
                     <div class='sxt2' @click="sxt2Cli(index)" v-for="item,index in sxt2List" :key="index" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/20+'%':item.longitude+'%'}">
@@ -121,7 +121,7 @@
                               <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
                               <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
                            </div>
-                           
+
                          </div>
                     </div>
                     <div class='sxt3' @click="sxt3Cli(index)" v-for="item,index in sxt3List" :key="index" :style="{left:item.latitude>100?item.latitude/10+'%':item.latitude+'%',top:item.longitude>100?item.longitude/40+'%':item.longitude+'%'}">
@@ -145,11 +145,11 @@
                               <div v-show="item.deviceStatus=='offline'">状态：<span style="color:#c1c1c1;">离线</span></div>
                               <div v-show="item.deviceStatus=='fault'">状态：<span style="color:red;">故障</span></div>
                            </div>
-                           
+
                          </div>
                     </div>
-                      
-                      
+
+
                 </div>
                 <div class="middle-main-footer">
                     <div style="width: 49%;height:100%;">
@@ -216,7 +216,7 @@
                             </div>
                               <div :class="['right1-onlin','right1-1']">
                                 <div style="background-color:#0287d1;widht:100%;height:100%;border-radius:25px;"></div>
-                              </div>                                                      
+                              </div>
                           </div>
                         </div>
                       </div>
@@ -264,34 +264,34 @@
                         </div>
                       </div>
                       <div class="right1-warper4">
-                           <div class="right1-warper4-item">
-                            <div :class="['right1-warper4-icon','right1-warper4-1']"></div>
-                            <div style="margin-left:8px;width: calc(100% - 2rem);">
-                              <div style="color:#68fffe;">{{ soilObj.soilDepth }}</div>
-                              <div style="font-size:14px;">土壤温度</div>
-                            </div>
+                        <div class="right1-warper4-item">
+                          <div :class="['right1-warper4-icon','right1-warper4-1']"></div>
+                          <div style="margin-left:8px;width: calc(100% - 2rem);">
+                            <div style="color:#68fffe;">{{ soilObj.soilTemperature }}</div>
+                            <div style="font-size:14px;">土壤温度</div>
                           </div>
-                          <div class="right1-warper4-item">
-                            <div :class="['right1-warper4-icon','right1-warper4-2']"></div>
-                            <div style="margin-left:8px;width: calc(100% - 2rem);">
-                              <div style="color:#68fffe;">{{soilObj.soilTemperature}}</div>
-                              <div style="font-size:14px;">土壤湿度</div>
-                            </div>
+                        </div>
+                        <div class="right1-warper4-item">
+                          <div :class="['right1-warper4-icon','right1-warper4-2']"></div>
+                          <div style="margin-left:8px;width: calc(100% - 2rem);">
+                            <div style="color:#68fffe;">{{soilObj.soilHumidity}}</div>
+                            <div style="font-size:14px;">土壤湿度</div>
                           </div>
-                          <div class="right1-warper4-item">
-                            <div :class="['right1-warper4-icon','right1-warper4-3']"></div>
-                            <div style="margin-left:8px;width: calc(100% - 2rem);">
-                              <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilHumidity}}</div>
-                              <div style="font-size:14px;">PH值</div>
-                            </div>
+                        </div>
+                        <div class="right1-warper4-item">
+                          <div :class="['right1-warper4-icon','right1-warper4-3']"></div>
+                          <div style="margin-left:8px;width: calc(100% - 2rem);">
+                            <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilPH}}</div>
+                            <div style="font-size:14px;">PH值</div>
                           </div>
-                          <div class="right1-warper4-item">
-                            <div :class="['right1-warper4-icon','right1-warper4-4']"></div>
-                            <div style="margin-left:8px; width: calc(100% - 2rem);">
-                              <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilEC}}</div>
-                              <div style="font-size:13px;">土壤EC值</div>
-                            </div>
+                        </div>
+                        <div class="right1-warper4-item">
+                          <div :class="['right1-warper4-icon','right1-warper4-4']"></div>
+                          <div style="margin-left:8px; width: calc(100% - 2rem);">
+                            <div style="color:#68fffe;font-size: 13px;">{{soilObj.soilEC}}</div>
+                            <div style="font-size:13px;">土壤EC值</div>
                           </div>
+                        </div>
                       </div>
                     </div>
                 </div>
@@ -363,8 +363,8 @@ const initChart1= async ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -437,8 +437,8 @@ const initChart2= async ()=>{
               interval:0
             }
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -641,13 +641,13 @@ const getDevicePoint=()=>{
       }else{
         sxt4List.value.push(b[i])
       }
-      
+
     }
     console.log(sxt1List.value,'sxt1List');
     console.log(sxt2List.value,'sxt1List');
     console.log(sxt3List.value,'sxt1List');
     console.log(sxt4List.value,'sxt1List');
-    
+
   })
 }
 getDevicePoint()
@@ -779,12 +779,12 @@ const sxt4Cli=(index)=>{
             .xian{
               width: 100%;
               height:1%;
-              
+
               background-size: 100% 100;
               background-image: url(./assets/left2Xian.png);
             }
-            
-            
+
+
         }
     }
     .left2{
@@ -798,7 +798,7 @@ const sxt4Cli=(index)=>{
               height: 100%;
             }
         }
-    }    
+    }
   }
   .middle-main-wrapper{
     position: relative;
@@ -818,7 +818,7 @@ const sxt4Cli=(index)=>{
         height:5rem;
         background-size: 100% 100%;
       }
-      
+
     }
     .middle-main-item{
       position: absolute;
@@ -1020,7 +1020,7 @@ const sxt4Cli=(index)=>{
               grid-template-rows: 30% 30% calc(40% - 20px);
               gap:10px;
               .right1-warper-item{
-                
+
                 padding: 5px 10px;
                 box-sizing:border-box ;
                 width: 100%;
@@ -1033,9 +1033,9 @@ const sxt4Cli=(index)=>{
                     height: 10px;
                     background-size: 100% 100%;
                 }
-                
-                
-                
+
+
+
               }
             }
             .right1-warper2{
@@ -1066,8 +1066,8 @@ const sxt4Cli=(index)=>{
                   color:#000;
                   }
                 }
-                
-                
+
+
               }
             }
             .right1-warper3{
@@ -1156,7 +1156,7 @@ const sxt4Cli=(index)=>{
                 background-size: 100% 100%;
               }
               }
-              
+
             }
         }
     }

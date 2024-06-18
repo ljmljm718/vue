@@ -144,3 +144,37 @@ export const environmentalDataHomePageA = (params) => {
 export const waterQualityData2 = (params) => {
   return request.get({ url: `/yyang/equipment-data/waterQualityData`, params})
 }
+
+
+// 塘坝 设备监测列表
+export const getDeviceCategoryTree = (params) => {
+  return request.get({ url: `/agriculture/big-screen/getDeviceCategoryTree`, params})
+}
+
+// 设备属性详情-根据设备id查询
+export const getDeviceInfo = (params) => {
+  return request.get({ url: `/agriculture/device-info/get`, params})
+}
+
+// 监测设备的统计数据[根据设备ID查询最近24小时的数据检测数据(所有检测类型)]
+export const getEquipmentDataById = (params) => {
+  return request.get({ url: `/yyang/equipment-data/getEquipmentDataById`, params})
+}
+
+// 监控设备的报警数据
+export const getMonitorEquipNoticeList = (params) => {
+  return request.get({ url: `/agriculture/monitoring-equipment-notice/getList`, params})
+}
+
+
+// 监测设备的报警数据
+export const getWarningRecordList = (params) => {
+  return request.get({ url: `/agriculture/agri-warning-record/page`, params})
+}
+
+
+// 监测设备的报警数据
+export const deviceInfoUpdate = (data) => {
+  return request.put({ url: `/agriculture/device-info/update`, data})
+}
+

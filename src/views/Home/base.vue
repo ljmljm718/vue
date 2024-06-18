@@ -9,11 +9,12 @@
     <HomeBaidi v-else-if="deptId === 119" />
     <HomeMingYue v-else-if="deptId === 152" />
     <homeQianJiang v-else-if="deptId === 153" />
+    <HomeTangBa v-else-if="deptId === 154" />
     <div v-else v-loading class="w-full h-[30rem]"></div>
   </div>
 </template>
 <script setup lang="ts">
-import { getUserProfile } from '@/api/system/user/profile'                                          
+import { getUserProfile } from '@/api/system/user/profile'                                       
 import Index from './Index.vue'
 import Home from './home.vue'
 import Home1 from './home1.vue'
@@ -23,6 +24,7 @@ import HomeAiKou from './homeAiKou.vue'
 import HomeBaidi from './homeBaidi.vue'
 import HomeMingYue from './homeMingYue.vue'
 import homeQianJiang from './homeQianJiang.vue'
+import HomeTangBa from './homeTangBa.vue'
 import { ref } from 'vue'
 const deptId = ref(0)
 const judgeHomePage = async () => {

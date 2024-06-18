@@ -1,6 +1,9 @@
 <template>
   <div class="relative flex flex-col">
-    <div class="table-cell-border sticky left-0 top-0 flex items-center table-header-color">
+    <div
+      class="table-cell-border sticky left-0 top-0 flex items-center table-header-color"
+      :style="`background-color: ${props.headerBackgroundColor};`"
+    >
       <div
         v-for="item, index in props.columns"
         :key="index"
@@ -45,6 +48,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  headerBackgroundColor: {
+    type: String,
+    default: '#00000000'
   }
 })
 

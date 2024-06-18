@@ -355,6 +355,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path:'/bigscreenTB',
+    name:'bigscreenTangBa',
+    component:()=>import('@/views/bigscreenTangBa/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
     path:'/bigscreenQJ',
     name:'BigscreenQianJiang',
     component:()=>import('@/views/bigscreenQianJiang/index.vue'),
