@@ -1,7 +1,13 @@
 <template>
   <ContentWrap>
     <el-tabs v-model="activeName" @tab-click="handleClick">
+
       <el-tab-pane label="传感器设备预警" name="first">
+        <template #label>
+          <el-badge :value="total" class="item">
+            传感器设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -182,6 +188,7 @@
                   type="primary"
                   @click="openForm('update', scope.row.id)"
                   v-hasPermi="['agriculture:agri-warning-record:update']"
+                  v-if="scope.row.warnStatus==='0'"
                 >
                   编辑
                 </el-button>
@@ -190,6 +197,7 @@
                   type="danger"
                   @click="handleDelete(scope.row.id)"
                   v-hasPermi="['agriculture:agri-warning-record:delete']"
+                  v-if="scope.row.warnStatus==='0'"
                 >
                   删除
                 </el-button>
@@ -210,14 +218,16 @@
       <AgriWarningRecordForm ref="formRef" @success="getList"/>
 
       <!-- 处理预警信息对话框 -->
-      <el-dialog :title="title" v-model="openDeal" :rules="dealDataRules" width="40%" append-to-body
+      <el-dialog
+:title="title" v-model="openDeal" :rules="dealDataRules" width="40%" append-to-body
                  :close-on-click-modal="false">
         <el-form :model="dealData" size="small" label-width="68px">
           <el-form-item label="处理人" prop="dealPerson">
             <el-input v-model="dealData.dealPerson" placeholder="请输入处理人"/>
           </el-form-item>
           <el-form-item label="处理信息" prop="dealInfo">
-            <el-input v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息"
+            <el-input
+v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息"
                       clearable/>
           </el-form-item>
         </el-form>
@@ -226,7 +236,12 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118  && show !==122 && show !==119 && show !==120">
+        <template #label>
+          <el-badge :value="totalA" class="item">
+            监控设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -332,7 +347,8 @@
         </ContentWrap>
         <!-- 列表 -->
         <ContentWrap>
-          <el-table v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true"
+          <el-table
+v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true"
                     border>
             <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName"
             />
@@ -399,7 +415,8 @@
         <!-- 表单弹窗：添加/修改 -->
         <MonitoringEquipmentNoticeForm ref="formRefA" @success="getListA"/>
         <!-- 视频弹窗 -->
-        <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog"
+        <el-dialog
+v-model="isShow" width="900px" height="900px" @close="closeDialog"
                    class="videoBox">
           <video
             :src="videoUrl"
@@ -454,10 +471,12 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const show = ref()
 const userStore = useUserStore()
+//获取部门ID
 const userName = computed(() => userStore.user.deptId ?? '0')
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  //show的值是部门ID的值
   show.value = userName.value
   try {
     console.log(show.value)
@@ -719,6 +738,8 @@ const getListA = async () => {
     loading.value = false
   }
 }
+if(show.value === 119||show.value===120) getListA()
+
 /** 搜索按钮操作 */
 const handleQueryA = () => {
   queryParamsA.pageNo = 1

@@ -188,7 +188,7 @@
                          </div>
                       </div>
                       <div class='cgq' v-for="item,index in sensor" :key="index" @click="sensorCli(index)" :style="{left:item.latitude>100?item.latitude/15+'%':item.latitude+'%',top:item.longitude>100?item.longitude/15+'%':item.longitude+'%'}">
-                        <div :style="{visibility:sensorIndex==index?'visible':'hidden',top:-sensorHeight+'px',left:'-50px'}" class="message" ref="sensorList" > 
+                        <div :style="{visibility:sensorIndex==index?'visible':'hidden',top:-sensorHeight+'px',left:'-50px'}" class="message" ref="sensorList" >
                             <div class="message-item">
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.deviceCode}}</div>
                               <div style="font-size:12px;color:#c1c1c1;text-indent:1rem">{{item.parkName}}-{{item.plotName}}</div>
@@ -210,7 +210,7 @@
                                 {{item.warnTitle}}({{item.threshold}}),阈值{{item.currentValue}}
                             </div>
                          </div>
-                      </div> 
+                      </div>
                 </div>
                 <div class="middle-main-footer">
                     <div class="box-title3">柑橘生产数据分析</div>
@@ -256,7 +256,7 @@
                             </div>
                         </div>
                         <div :class="['right1-warper','right1Item-4']">
-                             <div style="margin-top:80px;cursor: pointer;"  @click="$router.push('/erp/sale/order')">
+                             <div style="margin-top:80px;cursor: pointer;"  @click="$router.push('/asset/inventory/sale/order')">
                                 <div style="text-align:center;color:#8bc4db;font-size:20px;margin-bottom: 10px;">{{Industry.price}}</div>
                                 <div style="text-align:center;color:#8bc4db; font-size:13px">销售总额(万元)</div>
                             </div>
@@ -273,7 +273,7 @@
                     <div class="box-title">鲁渝有礼</div>
                     <div class="right3-item">
                         <div class="right3-top">
-                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/basic/product/product')">
+                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/asset/inventory/product/product')">
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.productKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">特色产品</div>
                             </div>
@@ -281,7 +281,7 @@
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.brandKind}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">品牌认证</div>
                             </div>
-                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/erp/purchase/supplier')">
+                            <div class="right3-top-item" style="cursor: pointer;" @click="$router.push('/asset/inventory/purchase/supplier')">
                                 <div style="text-align:center;color:#8bb2b6;font-size:20px;">{{lyObj.supplier}}</div>
                                 <div style="text-align:center;color:#8bb2b6;font-size:14px;">注册商户</div>
                             </div>
@@ -328,7 +328,7 @@ import {
   MonthSaleData,
   LuYu,
   IndustryData
-  
+
 } from '@/api/kaizhou/bigscreen/index'
 import * as echarts from "echarts"
 import {ref,reactive,onMounted} from 'vue'
@@ -343,8 +343,8 @@ const initChart1=async ()=> {
     data.push({
       name:item.plant,
       value:item.area
-    })    
-  });  
+    })
+  });
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -388,7 +388,7 @@ const initChart2= async ()=>{
   let res =await YearSaleData()
   let bar1=[res.yields[0],res.sales[0]];
   let bar2=[res.yields[1],res.sales[1]]
- 
+
       initChartStatic(
         "chart2",
         generateBaseOptions({
@@ -401,8 +401,8 @@ const initChart2= async ()=>{
               },
             },
           },
-          legend: { 
-            show: true, 
+          legend: {
+            show: true,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -474,10 +474,10 @@ const initChart2= async ()=>{
           },
         })
       );
-    
+
 }
 const initChart3=async ()=>{
-  let res = await MonthSaleData()  
+  let res = await MonthSaleData()
       initChartStatic(
         "chart3",
         generateBaseOptions({
@@ -493,8 +493,8 @@ const initChart3=async ()=>{
             interval:0,
             }
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -562,7 +562,7 @@ const initChart3=async ()=>{
           },
         })
       );
-    
+
 }
 //柑橘数据分析
 const initChart4= async ()=>{
@@ -580,8 +580,8 @@ const initChart4= async ()=>{
               },
             },
           },
-          legend: { 
-            show: true, 
+          legend: {
+            show: true,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -675,7 +675,7 @@ const initChart4= async ()=>{
                 },
               },
             },
-            
+
           ],
           grid: {
             left: "5%",
@@ -707,7 +707,7 @@ let selectId=ref<any>('')
 let select2=ref<any>([])
 //园区
 const getParkBaseInfo=async (params)=>{
-  let res= await ParkBaseInfo(params)  
+  let res= await ParkBaseInfo(params)
   select.value=res
   getParkBaseInfo2({parentId:select.value[0].id})
 }
@@ -733,7 +733,7 @@ const selectCli2=(val:any)=>{
   if(typeof(val)=='string'){
     getIoTLatestData({plotId:selectId.value})
   }else{
-    getIoTLatestData({plotId:val.target.value}) 
+    getIoTLatestData({plotId:val.target.value})
   }
 }
 selectCli2(selectId.value)
@@ -742,7 +742,7 @@ const cropList=ref<any>([])
 const getCropBase=()=>{
   cropBase({pageNo:"1",pageSize:"10"}).then(res=>{
     cropList.value=res.list
-    
+
   })
 }
 getCropBase()
@@ -766,7 +766,7 @@ const getDeviceAndWarn=()=>{
     let i=7
     let i2=6
     let a= res.webcam
-    let b= res.sensor    
+    let b= res.sensor
     let c= res.warn
     a.forEach((item,index)=>{
       if(typeof(item.latitude)!='string') return  a.splice(index, 1)
@@ -943,7 +943,7 @@ getIndustryData()
             height: calc(100% - 3rem);
             background-size: 100% 100%;
             background-image: url('./assets/leftItemBg.png');
-            
+
         }
     }
     .left2{
@@ -1014,8 +1014,8 @@ getIndustryData()
               color:#000;
             }
           }
-          
-            
+
+
 
         }
         .left3-item{
@@ -1092,7 +1092,7 @@ getIndustryData()
         height: 100%;
         background-size: 100% 100%;
       }
-      
+
     }
     .middle-main-item{
       position: absolute;
@@ -1103,7 +1103,7 @@ getIndustryData()
       background-size: 100% 100%;
       background-image: url(./assets/mainBg.png);
       position: relative;
-      
+
       .sxt{
         position: absolute;
         cursor: pointer;
@@ -1201,7 +1201,7 @@ getIndustryData()
             }
         }
       }
-       
+
     }
     .middle-main-footer{
         position: absolute;

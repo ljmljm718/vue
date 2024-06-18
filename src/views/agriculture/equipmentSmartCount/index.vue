@@ -324,7 +324,7 @@ const initCollectConditionChart=async (dataStarTime='',dataEndTime='')=>{
         data:data,
         label: {
           // formatter: "{c|{c}},{d|{d}%}",
-          formatter: '{c} - {d}%',
+          formatter: '{c},{d}%',
           color: '#252525',
           borderWidth: 0,
           rich: {

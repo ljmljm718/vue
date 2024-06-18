@@ -12,19 +12,19 @@
             <div class="left1">
               <div class="box-title">农业资源</div>
               <div class="left1-item">
-                  <div @click="$router.push('/base/parkinfo')" :class="['left1-warper','leftTop-1']">
+                  <div @click="$router.push('/asset/base/parkinfo')" :class="['left1-warper','leftTop-1']">
                     <div style="color: #c1c1c1;margin-left: 120px;">基地</div>
                     <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.parkCount }}</div>
                   </div>
-                  <div @click="$router.push('/base/parkdetail')" :class="['left1-warper','leftTop-1']">
+                  <div @click="$router.push('/asset/base/parkdetail')" :class="['left1-warper','leftTop-1']">
                     <div style="color: #c1c1c1;margin-left: 120px;">棚区</div>
                     <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.plotCount }}</div>
                   </div>
-                  <div @click="$router.push('/base/parkinfo')" :class="['left1-warper','leftTop-1']">
+                  <div @click="$router.push('/asset/base/parkinfo')" :class="['left1-warper','leftTop-1']">
                     <div style="color: #c1c1c1;margin-left: 120px;">种植面积</div>
                     <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.area }}</div>
                   </div>
-                  <div @click="$router.push('/base/farmer-info')" :class="['left1-warper','leftTop-1']">
+                  <div @click="$router.push('/asset/base/farmer-info')" :class="['left1-warper','leftTop-1']">
                     <div style="color: #c1c1c1;margin-left: 120px;">农户</div>
                     <div style="font-weight:600;margin-left: 120px;font-size: 23px; font-family:TitleFont ;">{{ leftTop.farmer }}</div>
                   </div>
@@ -46,13 +46,13 @@
               <div class="left3-item">
                 <div @click="goPage(index,item.category)" v-for="item,index in leftTop3List" :key="index" :class="['left3-warper','left3Top-'+(index+1).toString()]">
                     <div style="color: #c1c1c1;margin-left: 50px;">{{ item.title }}</div>
-                 
+
                     <div style="font-weight:600;margin-left: 50px;font-size: 23px; font-family:TitleFont ;">{{ item.deviceCount }}</div>
                   </div>
               </div>
             </div>
             <div class="left4">
-              <div class="box-title" @click="$router.push('/crop/crop-base')">种植分布</div>
+              <div class="box-title" @click="$router.push('/farm_work/crop-base')">种植分布</div>
               <div class="left4-item">
                 <div id="chart1"></div>
               </div>
@@ -112,7 +112,7 @@
                     </div>
                     <div class='messageBar'></div>
                   </div>
-                  
+
                 </div>
               <div class="footer">
                 <div style="display: flex;align-items: center;"><div :class="['sxt-icon','sxt-1']"></div><div>监控设备</div> </div>
@@ -127,7 +127,7 @@
               <div class="right1-item">
                 <div class="right1-top">
                   <div v-for="item,index in deviceList" :key="index" :class="qxzIndex==index?'active':'actived'" @click="qxzCli(index,item.id)" style="margin-right:10px;">{{item.deviceName}}</div>
-                 
+
                 </div>
                 <div class="right1-warper">
                   <div  class="right1Bg">
@@ -279,12 +279,12 @@ let router=useRouter()
 const goPage=(index,id)=>{
   if(id==null) id=0
     router.push({
-      path:'/device/deviceView',
+      path:'/internetMonitor/device/deviceView',
       query:{
         id
       }
     })
-  
+
 }
 //农业资源
 let leftTop=ref<any>({})
@@ -308,7 +308,7 @@ getBaseCollect()
 const getHomeDeviceCard=()=>{
   homeDeviceCard().then(res=>{
     console.log(res,'设备资源2');
-    
+
     console.log(res.slice(1,6),'设备资源');
     leftTop3List.value=res.splice(1,6)
 
@@ -411,7 +411,7 @@ const getBigScreenDevicePoint=()=>{
     soilList.value=b
     largeList.value=c
 
-  
+
   })
 }
 getBigScreenDevicePoint()
@@ -606,7 +606,7 @@ gap: 10px;
       height: 50px;
       display: flex;
       align-items: center;
-      justify-content: space-around;      
+      justify-content: space-around;
       .active{
         padding: 5px 50px;
         height: 100%;
@@ -634,7 +634,7 @@ gap: 10px;
       left: calc(50% - 700px);
       top: calc(50% - 450px);
       background-size: 100% 100%;
-      background-image: url(./assets/mainBg.png); 
+      background-image: url(./assets/mainBg.png);
       position: relative;
       .sxt{
         z-index: 9999;
@@ -718,7 +718,7 @@ gap: 10px;
             width:100%;
             height: 150px;
             overflow-y: scroll;
-            
+
           }
           .message-content::-webkit-scrollbar {
             display: none;
@@ -768,7 +768,7 @@ gap: 10px;
             width:100%;
             height: 150px;
             overflow-y: scroll;
-            
+
           }
           .message-content::-webkit-scrollbar {
             display: none;
@@ -795,7 +795,7 @@ gap: 10px;
           margin-right:10px;
           background-size: 100% 100%;
         }
-      }   
+      }
       }
 
   }

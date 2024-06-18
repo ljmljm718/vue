@@ -12,7 +12,7 @@
             <div class="left1">
               <div class="box-title">设备信息</div>
               <div class="left1-item">
-                  <div class='left1-top' @click="$router.push('/device/deviceView')">
+                  <div class='left1-top' @click="$router.push('/internetMonitor/device/deviceView')">
                     <div style="font-size: 13px;margin-left: 5px;">设备总数</div>
                     <div style="color:#00e4ec;font-weight: 700;font-size: 20px;">{{leftTop.total}}</div>
                   </div>
@@ -114,7 +114,7 @@
                     </div>
                     <div class='messageBar'></div>
                   </div>
-                  
+
                 </div>
               <div class="footer">
                 <div style="display: flex;align-items: center;"><div :class="['sxt-icon','sxt-1']"></div><div>监控设备</div> </div>
@@ -125,16 +125,16 @@
           </div>
           <div class="right">
             <div class="right1">
-              <div class="box-title" @click="$router.push('/warn/agri-warning-record')">预警信息</div>
+              <div class="box-title" @click="$router.push('/internetMonitor/warn/agri-warning-record')">预警信息</div>
               <div class="right1-item">
-               <div class="right1-warper" @click="$router.push('/warn/agri-warning-rule')" v-for="item,index in warnInfo" :key='index'>
+               <div class="right1-warper" @click="$router.push('/internetMonitor/warn/agri-warning-rule')" v-for="item,index in warnInfo" :key='index'>
                 <div class="right1-left"><div class="tranig"></div>{{item.warnType}}</div>
                 <div class='right1-right'>
                   <div>{{item.warnInfo}}</div>
                   <div style="margin-top:10px;">{{new Date().toLocaleString(item.warnTime)}}</div>
                 </div>
                </div>
-               
+
               </div>
             </div>
             <div class="right2">
@@ -287,7 +287,7 @@ import {useRouter} from 'vue-router'
 let router=useRouter()
 const goPage=(val)=>{
   router.push({
-    path:'/device/deviceView',
+    path:'/internetMonitor/device/deviceView',
     query:{
       val
     }
@@ -297,7 +297,7 @@ const goPage=(val)=>{
 let leftTop=ref<any>({})
 let leftDevice=ref<any>([])
 const getDeviceInfoCard=async ()=>{
- 
+
 }
 getDeviceInfoCard()
 const initChart1=async ()=> {
@@ -308,7 +308,7 @@ const initChart1=async ()=> {
      let online= leftTop.value.online
      let offline= leftTop.value.offline
      let fault= leftTop.value.fault
-     
+
       initChartStatic(
         "chart1",
         generatePieOptions({
@@ -354,7 +354,7 @@ const initChart1=async ()=> {
 //设备运行统计
 const initChart2= async ()=>{
   let res= await deviceHistoryStatus()
-  
+
   let xAxisData=res.date
   let yAxisData=res.offline
   let yAxisData2=res.online
@@ -370,10 +370,10 @@ const initChart2= async ()=>{
               },
             },
           },
-          legend: { 
-            show: true, 
+          legend: {
+            show: true,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -437,7 +437,7 @@ const initChart2= async ()=>{
           },
         })
       );
-    
+
 }
 //获取基地
 let selecte1 =ref<any>([])
@@ -489,7 +489,7 @@ const getParkBase2=(val)=>{
   })
 }
 //气象点击
-let soilImg=ref(0)  
+let soilImg=ref(0)
 const soilCli=(val:any,index:any)=>{
 
   soilId.value=val
@@ -546,7 +546,7 @@ getEnvironmentData()
 //环境数据折线图
 let getEnvironmentView=()=>{
   console.log({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value},'jiegou');
-  
+
   environmentView({deviceType:soilId.value,belongPark:selecte1Id.value,belongPlot:select2Id.value}).then(res=>{
     console.log(res,'环境数据');
     footChart.value=res
@@ -574,7 +574,7 @@ const initChart3=  ()=>{
     });
   }
   fn(a)
-  
+
       initChartStatic(
         "chart3",
         generateBaseOptions({
@@ -587,10 +587,10 @@ const initChart3=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -622,7 +622,7 @@ const initChart3=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -638,7 +638,7 @@ const initChart3=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart4=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -663,10 +663,10 @@ const initChart4=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -698,7 +698,7 @@ const initChart4=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -714,7 +714,7 @@ const initChart4=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart5=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -739,10 +739,10 @@ const initChart5=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -774,7 +774,7 @@ const initChart5=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -790,7 +790,7 @@ const initChart5=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart6=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -815,10 +815,10 @@ const initChart6=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -850,7 +850,7 @@ const initChart6=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -866,7 +866,7 @@ const initChart6=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart7=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -891,10 +891,10 @@ const initChart7=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -926,7 +926,7 @@ const initChart7=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -942,7 +942,7 @@ const initChart7=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart8=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -967,10 +967,10 @@ const initChart8=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1002,7 +1002,7 @@ const initChart8=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1018,7 +1018,7 @@ const initChart8=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart9=  ()=>{
   let time=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -1043,10 +1043,10 @@ const initChart9=  ()=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1078,7 +1078,7 @@ const initChart9=  ()=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1094,7 +1094,7 @@ const initChart9=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart10=  (arr)=>{
  let time=[]
@@ -1115,10 +1115,10 @@ const initChart10=  (arr)=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1150,7 +1150,7 @@ const initChart10=  (arr)=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1166,7 +1166,7 @@ const initChart10=  (arr)=>{
           },
         })
       );
-    
+
 }
 const initChart11=  (arr)=>{
   let time=[]
@@ -1187,10 +1187,10 @@ const initChart11=  (arr)=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1222,7 +1222,7 @@ const initChart11=  (arr)=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1238,7 +1238,7 @@ const initChart11=  (arr)=>{
           },
         })
       );
-    
+
 }
 const initChart12=  (arr)=>{
   let time=[]
@@ -1259,10 +1259,10 @@ const initChart12=  (arr)=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1294,7 +1294,7 @@ const initChart12=  (arr)=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1310,7 +1310,7 @@ const initChart12=  (arr)=>{
           },
         })
       );
-    
+
 }
 const initChart13=  (arr)=>{
   let time=[]
@@ -1331,10 +1331,10 @@ const initChart13=  (arr)=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1366,7 +1366,7 @@ const initChart13=  (arr)=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1382,7 +1382,7 @@ const initChart13=  (arr)=>{
           },
         })
       );
-    
+
 }
 const initChart14=  (arr)=>{
   let time=[]
@@ -1403,10 +1403,10 @@ const initChart14=  (arr)=>{
               },
             },
           },
-          legend: { 
-            show: false, 
+          legend: {
+            show: false,
             orient:'horizontal',
-            left:'center'            
+            left:'center'
          },
           yAxis: [{
             type: "value",
@@ -1438,7 +1438,7 @@ const initChart14=  (arr)=>{
               name:'空气温度',
               data: data,
               type: "line",
-              barWidth:'20', 
+              barWidth:'20',
               smooth: false,
               symbol:'none',
               areaStyle: { // 区域面积
@@ -1454,7 +1454,7 @@ const initChart14=  (arr)=>{
           },
         })
       );
-    
+
 }
 
 onMounted(()=>{
@@ -1526,7 +1526,7 @@ const getBigScreenDevicePoint=()=>{
     soilList.value=b
     largeList.value=c
 
-  
+
   })
 }
 getBigScreenDevicePoint()
@@ -1682,7 +1682,7 @@ gap: 10px;
         }
       }
     }
-    
+
   }
   .left2::-webkit-scrollbar{
       display: none;
@@ -1737,7 +1737,7 @@ gap: 10px;
       height: 30px;
       display: flex;
       align-items: center;
-      justify-content: space-around;      
+      justify-content: space-around;
       .active{
         padding: 5px 50px;
         height: 100%;
@@ -1765,7 +1765,7 @@ gap: 10px;
       left: calc(50% - 600px);
       top: calc(50% - 300px);
       background-size: 100% 100%;
-      background-image: url(./assets/mainBg.png); 
+      background-image: url(./assets/mainBg.png);
       position: relative;
       .sxt{
         z-index: 999;
@@ -1852,7 +1852,7 @@ gap: 10px;
             width:100%;
             height: 150px;
             overflow-y: scroll;
-            
+
           }
           .message-content::-webkit-scrollbar {
             display: none;
@@ -1903,7 +1903,7 @@ gap: 10px;
             width:100%;
             height: 150px;
             overflow-y: scroll;
-            
+
           }
           .message-content::-webkit-scrollbar {
             display: none;
@@ -1930,7 +1930,7 @@ gap: 10px;
           margin-right:10px;
           background-size: 100% 100%;
         }
-      }   
+      }
       }
 
   }
@@ -2002,7 +2002,7 @@ gap: 10px;
   display:flex;
   justify-content:space-between;
   .footer-left{
-    z-index:9999; 
+    z-index:9999;
     width:60%;
     height:100%;
     display:grid;
@@ -2058,7 +2058,7 @@ gap: 10px;
         background-size:100% 100%;
         background-image:url(./assets/actived.png);
       }
-      
+
     }
     .footer-chart{
       width:100%;
@@ -2135,7 +2135,7 @@ gap: 10px;
     }
   }
   .footer-right{
-  z-index:9999; 
+  z-index:9999;
     width:39%;
     height:100%;
     .select{

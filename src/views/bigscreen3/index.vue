@@ -14,19 +14,19 @@
           <div class="left1">
             <div class="box-title">农业资源</div>
             <div class="left1-item">
-              <div class="left1-warper">
+              <div class="left1-warper"  @click="$router.push('/basic/parkbase')">
                 <div style="margin-top: -30px;">柑橘园区</div>
                 <div style="margin-top:10px;">{{ sources.park }}</div>
               </div>
-              <div class="left1-warper">
+              <div class="left1-warper"   @click="$router.push('/basic/parkbase')">
                 <div style="margin-top: -30px;">种植地块</div>
                 <div style="margin-top:10px;">{{ sources.plot }}</div>
               </div>
-              <div class="left1-warper">
+              <div class="left1-warper"   @click="$router.push('/basic/parkbase')">
                 <div style="margin-top: -30px;">种植面积</div>
                 <div style="margin-top:10px;">{{sources.area}}万亩</div>
               </div>
-              <div class="left1-warper">
+              <div class="left1-warper" @click="$router.push('/basic/cropbase')">
                 <div style="margin-top: -30px;">作物品种</div>
                 <div style="margin-top:10px;">{{ sources.crop }}</div>
               </div>
@@ -34,7 +34,7 @@
                 <div style="margin-top: -30px;">农户数量</div>
                 <div style="margin-top:10px;">{{sources.farmer}}</div>
               </div>
-              <div class="left1-warper">
+              <div class="left1-warper" @click="$router.push('/asset/inventory/purchase/supplier')">
                 <div style="margin-top: -30px;">公司数量</div>
                 <div style="margin-top:10px;">{{sources.company}}</div>
               </div>
@@ -151,7 +151,7 @@
               </div>
                 </div>
             </div>
-            
+
           </div>
           <div class="main-footer">
             <div v-for="item,index in mainList" :key="index" @click="goPage(index)" :class="mainIndex==index?'active':'actived'">
@@ -170,7 +170,7 @@
                     </div>
                     <div class="right1-right">
                       <div class="right1-top">
-                        <span style="font-weight: 600;font-size: 16px;">{{ item.cropName }}</span> 
+                        <span style="font-weight: 600;font-size: 16px;">{{ item.cropName }}</span>
                         <div class="right1-warper"></div>
                       </div>
                       <div style="font-size: 14px; color: #c1c1c1;margin-top: 10px;">
@@ -179,7 +179,7 @@
                     </div>
                         </el-carousel-item>
                       </el-carousel>
-              
+
             </div>
           </div>
           <div class="right2">
@@ -195,7 +195,7 @@
               <div id="chart3"></div>
             </div>
           </div>
-        </div>    
+        </div>
       </div>
   </div>
 </template>
@@ -228,18 +228,18 @@ const initChart1= ()=> {
             itemWidth: 12,
             itemHeight: 12,
           },
-          graphic: { // 这个属性用于在饼图内部添加图片  
-              elements: [{  
-                  type: 'image', // 类型为图片  
-                  style: {  
-                      image: img, // 图片路径  
-                      width: 50, // 图片宽度  
-                      height: 50 // 图片高度  
-                  },  
-                  left: 'center', // 图片水平居中  
-                  top: 'center' // 图片垂直居中  
-              }]  
-          },  
+          graphic: { // 这个属性用于在饼图内部添加图片
+              elements: [{
+                  type: 'image', // 类型为图片
+                  style: {
+                      image: img, // 图片路径
+                      width: 50, // 图片宽度
+                      height: 50 // 图片高度
+                  },
+                  left: 'center', // 图片水平居中
+                  top: 'center' // 图片垂直居中
+              }]
+          },
           color: ["#00ffff", "#0081ff", "#ffce54", ],
           series: [
             {
@@ -284,9 +284,9 @@ const initChart2=  ()=>{
               },
             },
           },
-          legend: { 
+          legend: {
             data:['长势预测','产量预测'],
-            show: true, 
+            show: true,
             orient:'horizontal',
          },
           yAxis: {
@@ -351,7 +351,7 @@ const initChart2=  ()=>{
           },
         })
       );
-    
+
 }
 const initChart3= ()=> {
       initChartStatic(
@@ -379,17 +379,17 @@ const initChart3= ()=> {
             itemWidth: 12,
             itemHeight: 12,
           },
-          
-          // graphic: {  
-          //     type: 'text',  
-          //     left: 'center',  
-          //     top: 'center',  
-          //     style: {  
-          //         text: '总访问量: ' + (335 + 310), 
-          //         textAlign: 'center',  
-          //         fontSize: 20,  
-          //         color: 'white'  
-          //     }  
+
+          // graphic: {
+          //     type: 'text',
+          //     left: 'center',
+          //     top: 'center',
+          //     style: {
+          //         text: '总访问量: ' + (335 + 310),
+          //         textAlign: 'center',
+          //         fontSize: 20,
+          //         color: 'white'
+          //     }
           // }  ,
           color: ["#00ffff", "#0081ff", "#ffffff", "#ffce54"],
           series: [
@@ -523,7 +523,7 @@ let messageHeight=ref<any>(0)
 const  dianCli=(val)=>{
   dianIndex.value=val
   messageHeight.value=message.value.offsetHeight
-} 
+}
 </script>
 <style lang='scss' scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -615,7 +615,7 @@ const  dianCli=(val)=>{
         .left2-item{
           width: 100%;
           overflow-y: auto;
-          
+
           height: calc( 100% - 2rem );
           .left2-warper{
             margin-top: 10px;
@@ -648,7 +648,7 @@ const  dianCli=(val)=>{
         }
       }
     }
-    .main{ 
+    .main{
       position: relative;
       grid-auto-columns: 100%;
       width: 100%;
@@ -762,7 +762,7 @@ const  dianCli=(val)=>{
         .table-wrapper::-webkit-scrollbar {
         width: 0px;
         }
-    
+
           }
         }
       }
