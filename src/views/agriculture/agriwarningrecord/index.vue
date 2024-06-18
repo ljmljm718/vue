@@ -218,14 +218,16 @@
       <AgriWarningRecordForm ref="formRef" @success="getList"/>
 
       <!-- 处理预警信息对话框 -->
-      <el-dialog :title="title" v-model="openDeal" :rules="dealDataRules" width="40%" append-to-body
+      <el-dialog
+:title="title" v-model="openDeal" :rules="dealDataRules" width="40%" append-to-body
                  :close-on-click-modal="false">
         <el-form :model="dealData" size="small" label-width="68px">
           <el-form-item label="处理人" prop="dealPerson">
             <el-input v-model="dealData.dealPerson" placeholder="请输入处理人"/>
           </el-form-item>
           <el-form-item label="处理信息" prop="dealInfo">
-            <el-input v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息"
+            <el-input
+v-model="dealData.dealInfo" type="textarea" placeholder="请填写处理信息"
                       clearable/>
           </el-form-item>
         </el-form>
@@ -234,7 +236,7 @@
           <el-button @click="openDeal = false">取 消</el-button>
         </template>
       </el-dialog>
-      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118 && show !==122">
+      <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118  && show !==122 && show !==119 ">
         <template #label>
           <el-badge :value="totalA" class="item">
             监控设备预警
@@ -345,7 +347,8 @@
         </ContentWrap>
         <!-- 列表 -->
         <ContentWrap>
-          <el-table v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true"
+          <el-table
+v-loading="loading" :data="listA" :stripe="true" :show-overflow-tooltip="true"
                     border>
             <el-table-column label="监控基地名称" align="center" prop="monitoringBaseName"
             />
@@ -412,7 +415,8 @@
         <!-- 表单弹窗：添加/修改 -->
         <MonitoringEquipmentNoticeForm ref="formRefA" @success="getListA"/>
         <!-- 视频弹窗 -->
-        <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog"
+        <el-dialog
+v-model="isShow" width="900px" height="900px" @close="closeDialog"
                    class="videoBox">
           <video
             :src="videoUrl"
