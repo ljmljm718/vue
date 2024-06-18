@@ -178,3 +178,24 @@ export const deviceInfoUpdate = (data) => {
   return request.put({ url: `/agriculture/device-info/update`, data})
 }
 
+// 监控设备的实时数据
+export const getDeviceById = (params) => {
+  return request.get({ url: `/agri/monitoring-equipment-data/get-device-id`, params })
+}
+
+
+// 监控设备的报警数据
+export const getNoticeList = (params) => {
+  return request.get({ url: `/agriculture/monitoring-equipment-notice/getList`, params })
+}
+
+// 生长记录仪的实时数据
+export const pageA = (params) => {
+  return request.get({ url: `/agriculture/grow-record/pageA`, params })
+}
+
+// 长势监控折线图
+export const getLineChar = (data) => {
+  return request.post({ url: `/agriculture/grow-record/getLineChar`, data })
+}
+
