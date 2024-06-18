@@ -67,8 +67,9 @@ export default defineComponent({
         total = '0',
         online = '0',
         offline = '0',
-        warningDevice = '0'
+        //warningDevice = '0'
       } = res
+      //console.log("res:",res)
       topDataList.value = [
         {
           value: total,
@@ -89,7 +90,7 @@ export default defineComponent({
           url: '/internetMonitor/device/deviceView?deviceStatus=offline'
         },
         {
-          value: warningDevice,
+          value: Number(res.warningEquipmentDevice) + Number(res.warningSensorDevice),
           label: '设备预警',
           color: '#ff8383',
           url: '/internetMonitor/warn/agri-warning-record'

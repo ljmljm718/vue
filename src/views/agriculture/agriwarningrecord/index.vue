@@ -1,7 +1,13 @@
 <template>
   <ContentWrap>
     <el-tabs v-model="activeName" @tab-click="handleClick">
+
       <el-tab-pane label="传感器设备预警" name="first">
+        <template #label>
+          <el-badge :value="total" class="item">
+            传感器设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -227,6 +233,11 @@
         </template>
       </el-dialog>
       <el-tab-pane label="监控设备预警" name="second" v-if="show !==117 && show !==118">
+        <template #label>
+          <el-badge :value="totalA" class="item">
+            监控设备预警
+          </el-badge>
+        </template>
         <ContentWrap>
           <!-- 搜索工作栏 -->
           <el-form
@@ -719,6 +730,7 @@ const getListA = async () => {
     loading.value = false
   }
 }
+getListA()
 /** 搜索按钮操作 */
 const handleQueryA = () => {
   queryParamsA.pageNo = 1
