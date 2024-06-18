@@ -279,6 +279,7 @@ export default defineComponent({
     }
     
     const agriResInfo = ref({
+      shelterAmount: 0,
       pottingAmount: 0,
       plantArea: 0
     })
@@ -518,7 +519,7 @@ export default defineComponent({
                   <div class="flex h-full justify-evenly">
                     <div class="agri-1 w-[185px] h-[212px] flex justify-center items-center">
                       <div class="text-[26px] art-font linear-title relative top-[50px]">
-                        {agriResInfo.value.pottingAmount}盆
+                        {agriResInfo.value.shelterAmount}
                       </div>
                     </div>
                     <div class="agri-2 w-[185px] h-[212px] flex justify-center items-center">
