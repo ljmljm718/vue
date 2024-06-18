@@ -310,7 +310,12 @@ export default defineComponent({
         deviceName: '',
         location: '',
         deviceStatus: ''
-      }
+      },
+      otherEquipment: {
+        deviceName: '',
+        location: '',
+        deviceStatus: ''
+      },
     })
     const getCenterMapData = async () => {
       const res = await getEquipmentMap({})
@@ -469,6 +474,23 @@ export default defineComponent({
                         ) : null
                       }
                     </div>
+
+                    <div class="bug-icon absolute left-[300px] top-[500px]" onClick={() => { activeMapIns.value = 'otherEquipment' }}>
+                      {
+                        activeMapIns.value === 'otherEquipment' ? (
+                          <div
+                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                          >
+                            <div class="w-full h-full p-2 px-3">
+                              <div>{centerMapData.value.otherEquipment.deviceName}</div>
+                              <div>{centerMapData.value.otherEquipment.location}</div>
+                              <div>{centerMapData.value.otherEquipment.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                            </div>
+                          </div>
+                        ) : null
+                      } 
+                    </div>
+
                   </div>
                   <div class="absolute top-1 w-full flex justify-between">
                     {

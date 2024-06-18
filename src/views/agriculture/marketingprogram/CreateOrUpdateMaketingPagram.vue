@@ -88,7 +88,7 @@
         </template> -->
       </template>
     </EditFrame>
-    
+
   </div>
 </template>
 <script setup lang="ts">

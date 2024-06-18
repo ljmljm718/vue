@@ -228,7 +228,7 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
    <!-- 文件预览 -->
-  
+
    <el-dialog
     v-model="dialogVisible"
     title="预览"
@@ -287,7 +287,7 @@ let fileUrl=ref()
 const filePreview=(url:any)=>{
   dialogVisible.value = true
   console.log("preview url", url);
-  
+
   if (url.endsWith('docx')) renderDocx(url)
   else if (url.endsWith('pdf')) renderPDF(url)
   else renderError()
@@ -324,7 +324,7 @@ const renderPDF = (url:string) => {
   setTimeout(() => {
     const _dom = document.getElementById("filePreview") as HTMLElement
     console.log("dom", _dom);
-    
+
     if (_dom) _dom.appendChild(_iframe)
   }, 200)
 }
@@ -341,7 +341,9 @@ const getList = async () => {
     loading.value = false
   }
 }
-
+onActivated(() => {
+  resetQuery()
+})
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
