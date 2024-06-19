@@ -199,7 +199,7 @@ export default defineComponent({
       ]
       baseEquipmentLoading.value = false
     }
-    getBaseEquipmentList()
+    //getBaseEquipmentList()
     return () => (
       baseTabPage()
     )
