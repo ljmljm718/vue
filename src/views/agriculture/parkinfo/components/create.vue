@@ -186,6 +186,12 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+//获取浏览器缓存
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
 // 手风琴展开项
 const activeName = ref<any>('1')
 </script>
@@ -198,13 +204,11 @@ const activeName = ref<any>('1')
             <el-button
             type="success"
             :icon="TopRight"
-            plain
             @click="submitForm"
           >提交</el-button>
           <el-button
             type="danger"
             :icon="Refresh"
-            plain
             @click="resetForm()"
           >清空
           </el-button>
@@ -217,7 +221,6 @@ const activeName = ref<any>('1')
             >返回</el-button>
             <el-button
             type="primary"
-            :icon="FolderChecked"
             plain
             @click="localSave()"
           >
