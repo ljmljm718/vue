@@ -3,7 +3,8 @@
     <!-- 搜索工作栏 -->
     	<el-card>
       <div class="flex justify-between">
-       <el-input v-model='queryParams.repositoryTitle'
+       <el-input
+v-model='queryParams.repositoryTitle'
        style="width: 16rem;"
        placeholder="请输入标题"
           @keyup.enter="handleQuery"
@@ -240,7 +241,7 @@ const resetQuery = () => {
       pageSize: 10,
       repositoryTitle: undefined,
       repositoryType: '',
-      repositoryLabel: '全部',
+      repositoryLabel: '',
       selectFlag:'1',
       writer: undefined,
       synopsis: undefined,
@@ -303,11 +304,12 @@ const handleCheckBoxChange1 = (item) => {
   if (Array.isArray(item) && item.length === 0) {
 
     console.log("全部123");
-    queryParams.repositoryType = '全部'
+    queryParams.repositoryType = ''
     handleQuery()
   }else{
     console.log(item[0],"else4123")
     console.log(queryParams.repositoryType,"--else")
+    if(item[0]!="全部")
     queryParams.repositoryType=item[0]
     handleQuery()
   }
@@ -326,15 +328,18 @@ let label=ref([])
 const handleCheckBoxChange2 = async (item) => {
   if (Array.isArray(item) && item.length === 0) {
     queryParams.repositoryLabel = ''
-    getRepositoryList()
-  }
-  const _item = await getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL).find(ele => {
+    handleQuery()
+  }else{
+    const _item = await getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL).find(ele => {
     return ele.label === item[0]
   }) as any
 console.log(_item,'saddddas')
+  if(_item.label!="全部")
   queryParams.repositoryLabel = _item.value
   // getRepositoryList()
   handleQuery()
+
+  }
 }
 const repositoryList = ref<Array<any>>([])
 const getRepositoryList = async () => {
