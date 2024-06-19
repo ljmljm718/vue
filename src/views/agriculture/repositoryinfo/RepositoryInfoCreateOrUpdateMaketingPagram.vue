@@ -26,6 +26,11 @@
           >清空
           </el-button>
         </div>
+        <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
       </template>
 
       <template #content>
@@ -73,7 +78,7 @@
               :value="dict.value"
               >
               <el-option
-              v-if="dict.value!='全部'"
+              v-if="dict.label!='全部'"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"/>
@@ -98,12 +103,16 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="内容" prop="repositoryContent">
+        <el-row>
+          <el-form-item label="内容" prop="repositoryContent">
           <Editor v-model="formData.repositoryContent" height="300px"/>
         </el-form-item>
-        <el-form-item label="附件文件" prop="attachmentFile">
-        <UploadFile v-model="formData.attachmentFile" :limit="1"/>
-      </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="附件文件" prop="attachmentFile">
+            <UploadFile v-model="formData.attachmentFile" :limit="1"/>
+          </el-form-item>
+        </el-row>
       </el-form>
 
       </template>
