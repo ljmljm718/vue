@@ -6,7 +6,7 @@
           <!--    待修改-->
           <el-table v-loading="loading" :data="listDevice" :show-overflow-tooltip="true"
                     :stripe="true">
-            <el-table-column label="设备名称" align="center" prop="equName" width="600"/>
+            <el-table-column label="设备名称" align="center" prop="equName" width="300"/>
             <el-table-column label="设备状态" align="center" prop="deviceStatus" width="200">
               <template #default="scope">
                 <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
@@ -17,9 +17,9 @@
               align="center"
               prop="inspectionTime"
               :formatter="dateFormatter"
-              width="180px"
+              width="200"
             />
-            <el-table-column label="操作" align="center">
+            <el-table-column label="操作" align="center" width="300">
               <template #default="scope">
                 <el-button
                   link
@@ -52,7 +52,7 @@
           <!--    待修改-->
           <el-table v-loading="loading" :data="listDevice" :show-overflow-tooltip="true"
                     :stripe="true">
-            <el-table-column label="设备名称" align="center" prop="equName" width="600"/>
+            <el-table-column label="设备名称" align="center" prop="equName" width="300"/>
             <el-table-column label="设备状态" align="center" prop="deviceStatus" width="200">
               <template #default="scope">
                 <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
@@ -63,9 +63,9 @@
               align="center"
               prop="inspectionTime"
               :formatter="dateFormatter"
-              width="180px"
+              width="200"
             />
-            <el-table-column label="操作" align="center">
+            <el-table-column label="操作" align="center" width="300">
               <template #default="scope">
                 <el-button
                   link
