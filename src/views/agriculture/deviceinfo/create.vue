@@ -215,7 +215,7 @@ const localSave = () => {
     formData.value.id ? formData.value.id : 'new_form',
     formData.value
   )
-  ElMessage.success('保存成功！')
+  ElMessage.success('暂存成功！')
 }
 
 const loadData = async (id = 'new_form') => {
@@ -236,14 +236,6 @@ const activeName = ref<any>('1')
       <template #header>
         <div class="flex">
           <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
-          <el-button
             type="success"
             :icon="TopRight"
             plain
@@ -255,6 +247,22 @@ const activeName = ref<any>('1')
             plain
             @click="resetForm()"
           >清空
+          </el-button>
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回</el-button>
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+            v-if="route.query.type as any !=='detail'"
+          >
+            暂存
           </el-button>
         </div>
       </template>

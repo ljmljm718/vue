@@ -186,6 +186,12 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+//获取浏览器缓存
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
 // 手风琴展开项
 const activeName = ref<any>('1')
 </script>
@@ -193,28 +199,34 @@ const activeName = ref<any>('1')
   <div>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
-          <el-button
+        <div class="flex justify-between w-full">
+          <div>
+            <el-button
             type="success"
             :icon="TopRight"
-            plain
             @click="submitForm"
           >提交</el-button>
           <el-button
             type="danger"
             :icon="Refresh"
-            plain
             @click="resetForm()"
           >清空
           </el-button>
+          </div>
+          <div>
+            <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
+            <el-button
+            type="primary"
+            plain
+            @click="localSave()"
+          >
+            暂存
+          </el-button>
+          </div>
         </div>
       </template>
       <template #content>

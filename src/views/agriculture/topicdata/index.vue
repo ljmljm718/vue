@@ -90,7 +90,7 @@
         <el-button
           type="primary"
           plain
-          :disabled="multiple"
+          :disabled="multiple || sub"
           @click="handleSubscribe"
           v-hasPermi="['agriculture:topic-data:subscribe']"
         >
@@ -99,7 +99,7 @@
         <el-button
           type="warning"
           plain
-          :disabled="multiple"
+          :disabled="multiple || unsub"
           @click="handleUnsubscribe"
           v-hasPermi="['agriculture:topic-data:unsubscribe']"
         >退订主题
@@ -278,11 +278,24 @@ const handleExport = async () => {
   }
 }
 
+const sub = ref(true)
+const unsub = ref(true)
 // 多选框选中数据
 const handleSelectionChange = async (selection) => {
-  multiple.value = !selection.length
+  if (selection.length === 1) {
+    multiple.value = false
+  } else {
+    multiple.value = true
+  }
   topicLists.value = [];
   selection.forEach(item => {
+    if (item.topicIsorder === '1'){
+      sub.value = true
+      unsub.value = false
+    } else {
+      sub.value = false
+      unsub.value = true
+    }
     topicLists.value.push(item)
   })
 }

@@ -9,7 +9,7 @@
             :icon="TopRight"
             plain
             @click="submitForm"
-            :disabled="isShow"
+            v-if="isShow"
           >提交
           </el-button>
           <el-button
@@ -17,8 +17,25 @@
             :icon="Refresh"
             plain
             @click="resetForm()"
-            :disabled="isShow"
+            v-if="isShow"
           >清空
+          </el-button>
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回
+          </el-button>
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+            v-if="route.query.type as any !=='detail'&&isShow"
+          >
+            暂存
           </el-button>
         </div>
       </template>
@@ -172,7 +189,7 @@
           </el-row>
         </el-form>
         <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
-        <AgriculturalBaseList ref="purchaseOrderInEnableListRef" :deviceTypeA = "deviceType"
+        <AgriculturalBaseList ref="purchaseOrderInEnableListRef" :deviceTypeA="deviceType"
                               @success="handlePurchaseOrderChange"/>
       </template>
     </EditFrame>
@@ -197,7 +214,7 @@ const ROUTE_PATH = route.path
 const FORMPAGE_NAME = '长势管理新增/编辑/详情'
 const ORIGIN_PATH = '/internetMonitor/deviceData/grow-record' // 关闭表单时跳转的路径
 const formRef = ref()
-const isShow = ref<boolean>(false);
+const isShow = ref<boolean>(true);
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
@@ -255,7 +272,7 @@ const localSave = () => {
   message.success('保存成功！')
 }
 if (route.query.type == 'select') {
-  isShow.value = true;
+  isShow.value = false;
 }
 onMounted(async () => {
   await open(route.query.type, route.query.id);
