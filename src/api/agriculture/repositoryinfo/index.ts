@@ -6,6 +6,7 @@ export interface RepositoryInfoVO {
   repositoryName: string // 知识库分类名称
   repositoryId: string // 分类ID
   repositoryTitle: string // 知识库标题
+  repositoryType: string // 类型
   repositoryContent: string // 内容
   attachmentFile: string // 附件
   repositoryLabel: string // 标签
