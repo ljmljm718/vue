@@ -370,6 +370,7 @@ const deviceName = ref() // 选中的设备名称
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  enableSwitch.value = false
   try {
     if (route.query.deviceStatus){
       let aa = route.query.deviceStatus;
@@ -387,6 +388,9 @@ const getList = async () => {
     })
   } finally {
     loading.value = false
+    nextTick(() => {
+      enableSwitch.value = true
+    })
   }
 }
 let route = useRoute()
@@ -567,7 +571,9 @@ watch(() => props.currCategory,
   })
 
 /** 开关机 */
+const enableSwitch = ref<boolean>(false)
 const handleStatus = async (item: any) => {
+  if (!enableSwitch.value) return
   let s = item.deviceStatus === 'online' ? '开机': '关机'
 
   try {
