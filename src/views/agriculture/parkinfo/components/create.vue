@@ -211,10 +211,14 @@ const activeName = ref<any>('1')
           </div>
           <div>
             <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
+            <el-button
             type="primary"
             :icon="FolderChecked"
             plain
-            style="float:right"
             @click="localSave()"
           >
             暂存
