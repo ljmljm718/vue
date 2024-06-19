@@ -12,6 +12,7 @@ import icon2 from './assets/icon2.png'
 import icon3 from './assets/icon3.png'
 import icon4 from './assets/icon4.png'
 import icon5 from './assets/icon5.png'
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 //存放基地信息
 const selectBase = ref([])
 const getBaseDataList = async () => {
@@ -166,6 +167,15 @@ const dataShowRadio = ref('气象站')
 let seletValue=ref()
 let options=ref([])
 const dataShowDate = ref('')
+const selectEquipmentType=ref([])
+//获取气象站等数据
+const getTopList= async ()=>{
+  const dataId = await DeviceCategoryApi.getDeviceCategoryList({categoryName:'监测设备'})
+  // console.log(dataId,"dataId");
+  selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({parentId : dataId[0].id}) 
+  dataShowRadio.value= selectEquipmentType.value[0].categoryName
+}
+getTopList()
 // //获取下拉
 const dataShowChange= async(val)=>{
   let res=await EquipmentDataApi.QueryCollectionType({monitoringType:val})
@@ -174,7 +184,7 @@ const dataShowChange= async(val)=>{
   console.log(res,'实时数据下拉')
   initDataShowChart(dataShowRadio.value,res[0],dataShowDate.value)
 }
-dataShowChange('气象站')
+dataShowChange(dataShowRadio.value)
 //下拉选择
 const selectCli=(e)=>{
   console.log(e,'value221')
@@ -504,10 +514,7 @@ watch(
             
             <div class="flex items-center space-x-2">
               <el-radio-group v-model="dataShowRadio" @change='dataShowChange'>
-                <el-radio-button label="气象站" value="气象站" />
-                <el-radio-button label="水质监测" value="水质监测" />
-                <el-radio-button label="土壤监测" value="土壤监测" />
-                <el-radio-button label="虫情监测" value="虫情监测" />
+                <el-radio-button v-for="item,index in  selectEquipmentType" :key="index" :label="item.categoryName" :value="item.categoryName" />
               </el-radio-group>
               <el-select
                 @change="selectCli"

@@ -193,16 +193,9 @@ const activeName = ref<any>('1')
   <div>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
-          <el-button
+        <div class="flex justify-between w-full">
+          <div>
+            <el-button
             type="success"
             :icon="TopRight"
             plain
@@ -215,6 +208,18 @@ const activeName = ref<any>('1')
             @click="resetForm()"
           >清空
           </el-button>
+          </div>
+          <div>
+            <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            style="float:right"
+            @click="localSave()"
+          >
+            暂存
+          </el-button>
+          </div>
         </div>
       </template>
       <template #content>
