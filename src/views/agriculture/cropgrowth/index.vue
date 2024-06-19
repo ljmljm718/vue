@@ -134,7 +134,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
-      <el-table-column label="名称" align="center" prop="cropName"/>
+      <el-table-column label="名称" align="center" prop="cropName" min-width="130"/>
       <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
@@ -153,25 +153,25 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="特点" align="center" prop="feature"/>
-      <el-table-column label="环境条件" align="center" prop="envCondition"/>
-      <el-table-column label="生长地点" align="center" prop="growSite"/>
-      <el-table-column label="所属园区" align="center" prop="parkName"/>
-      <el-table-column label="所属地块" align="center" prop="plotName"/>
+      <el-table-column label="所属园区" align="center" prop="parkName" min-width="140"/>
+      <el-table-column label="所属地块" align="center" prop="plotName" min-width="140"/>
       <el-table-column
         label="开始时间"
         align="center"
         prop="startTime"
         :formatter="dateFormatter2"
-        width="180px"
+        width="120px"
       />
       <el-table-column
         label="结束时间"
         align="center"
         prop="endTime"
         :formatter="dateFormatter2"
-        width="180px"
+        width="120px"
       />
+      <el-table-column label="特点" align="center" prop="feature" min-width="140"/>
+      <el-table-column label="环境条件" align="center" prop="envCondition" min-width="200"/>
+      <el-table-column label="生长地点" align="center" prop="growSite" min-width="200"/>
       <!--      <el-table-column label="备注" align="center" prop="remark" width="200px"/>-->
       <el-table-column
         label="创建时间"
@@ -180,7 +180,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="150px" fixed="right">
+      <el-table-column label="操作" align="center" width="160px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -333,6 +333,9 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+})
+onActivated(async () => {
+  await getList()
 })
 
 //基地的选择
