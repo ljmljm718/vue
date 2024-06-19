@@ -173,30 +173,32 @@
       <!--      />-->
       <el-table-column label="操作" align="center" fixed="right" width="200">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openErrorFrom('update', scope.row.id)"
-            v-hasPermi="['agriculture:check-logs:update']"
-          >
-            处理
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:check-logs:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:check-logs:delete']"
-          >
-            删除
-          </el-button>
+          <div v-if= "scope.row.dealPerson == null ">
+            <el-button
+              link
+              type="primary"
+              @click="openErrorFrom('update', scope.row.id)"
+              v-hasPermi="['agriculture:check-logs:update']"
+            >
+              处理
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['agriculture:check-logs:update']"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['agriculture:check-logs:delete']"
+            >
+              删除
+            </el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -321,4 +323,5 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
 </script>

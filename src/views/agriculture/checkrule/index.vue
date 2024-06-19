@@ -95,10 +95,18 @@
       <el-table-column
         label="操作"
         align="center"
-        width="250px"
+        width="400px"
         fixed="right"
       >
         <template #default="scope">
+          <el-button
+              link
+              type="primary"
+              @click="getDeviceId(scope.row.handlerParam)"
+            >
+              查看设备列表
+          </el-button>
+
           <el-button
             type="primary"
             link
@@ -151,6 +159,20 @@
     :multi="true"
     @confirm-device-info-list="handleBindDevice"
   />
+
+
+  <el-dialog
+    v-model="dialogVisible"
+    title="设备列表"
+    width="75%"
+  >
+  <DeviceInfoHelpers
+    ref="deviceInfoHelpersRef"
+    :multi="true"
+    :deviceInfoList="deviceInfoList"
+    @confirm-device-info-list="handleBindDevice"
+  />
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -162,11 +184,16 @@ import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {InfraJobStatusEnum} from "@/utils/constants";
 import DeviceInfoHelper from "@/views/components/DeviceInfoHelper/index.vue";
 import {JobVO} from "@/api/infra/job";
+import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 import {CACHE_KEY, useCache} from "@/hooks/web/useCache";
+
+import DeviceInfoHelpers from "@/views/agriculture/deviceinfo/showDeviceInfo.vue";
+
 
 /** 巡检规则 列表 */
 defineOptions({name: 'CheckRule'})
-
+//产看设备列表弹框
+const dialogVisible=ref(false)
 const {wsCache} = useCache()
 
 const message = useMessage() // 消息弹窗
@@ -306,4 +333,14 @@ const handleBindDevice = async (val) => {
 onMounted(() => {
   getList()
 })
+const deviceInfoList=ref([])
+const getDeviceId = async (str: any )=>{
+  const a = JSON.parse(str);
+  console.log(a.deviceIds);
+   deviceInfoList.value = await DeviceInfoApi.getDeviceInfoByIds([...a.deviceIds]);
+
+
+  dialogVisible.value=true
+  
+}
 </script>
