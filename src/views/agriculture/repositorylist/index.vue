@@ -134,7 +134,7 @@ const handleCheckBoxChange2 = (item) => {
     queryParams.repositoryLabel = ''
     getRepositoryList()
   }
-  const _item = getStrDictOptions(DICT_TYPE.MACHINE_REPOSITORY_TALLY).find(ele => {
+  const _item = getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL).find(ele => {
     return ele.label === item[0]
   }) as any
 
@@ -225,7 +225,7 @@ const handleRadioChange = (item) => {
           v-for="item, index in repositoryList"
           :key="index"
           style="border: 1px solid #838383;"
-          @click="router.push(`/pcg/repositoryInfoDetail?id=${item.id}`)"
+          @click="router.push(`/farm_work/knowledge/repositoryInfoDetail?id=${item.id}`)"
         >
           <div class="w-[16rem] aspect-video relative">
             <div class="absolute top-8 left-4 art-font" style="color:white;">{{ item.title }}</div>

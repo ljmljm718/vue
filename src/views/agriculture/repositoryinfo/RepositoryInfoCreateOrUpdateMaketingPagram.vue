@@ -47,7 +47,7 @@
               <el-select
                 v-model="formData.repositoryType"
               >
-              <div 
+              <div
               v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_TYPE)"
               :key="dict.value"
               :label="dict.label"
@@ -66,7 +66,7 @@
             </el-form-item>
             <el-form-item label="标签" prop="repositoryLabel">
               <el-select v-model="formData.repositoryLabel" placeholder="请选择标签">
-                <div 
+                <div
               v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
               :key="dict.value"
               :label="dict.label"
@@ -102,7 +102,7 @@
           <Editor v-model="formData.repositoryContent" height="300px"/>
         </el-form-item>
         <el-form-item label="附件文件" prop="attachmentFile">
-        <UploadFile v-model="formData.attachmentFile" />
+        <UploadFile v-model="formData.attachmentFile" :limit="1"/>
       </el-form-item>
       </el-form>
 
@@ -123,7 +123,7 @@ const router = useRouter()
 const ROUTE_PATH = route.path
 const FORMPAGE_NAME = ''
 const ORIGIN_PATH = '/pcg/repository-info' // 关闭表单时跳转的路径
-const formRef = ref() 
+const formRef = ref()
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({

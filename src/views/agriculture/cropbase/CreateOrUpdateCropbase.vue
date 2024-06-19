@@ -1,6 +1,3 @@
-//templateCreateOrUpdate_s
-//class="grid 2xl:grid-cols-2 gap-3 p-4"
-//class="col-span-2"
 <template>
   <div>
     <EditFrame>
@@ -203,7 +200,7 @@ const route = useRoute()
 const router = useRouter()
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
-const FORMPAGE_NAME = '菜单名称'
+const FORMPAGE_NAME = '种植管理'
 const ORIGIN_PATH = '/farm_work/crop-base' // 关闭表单时跳转的路由
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
