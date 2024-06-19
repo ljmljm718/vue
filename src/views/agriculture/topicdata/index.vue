@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="80px"
+      label-width="90px"
     >
       <el-row>
       <el-form-item label="主题名称" prop="topicName">

@@ -119,14 +119,14 @@
         align="center"
         prop="receiptStartTime"
         :formatter="dateFormatter2"
-        width="100px"
+        width="120px"
       />
       <el-table-column
         label="结束时间"
         align="center"
         prop="receiptEndTime"
         :formatter="dateFormatter2"
-        width="100px"
+        width="120px"
       />
       <el-table-column label="批次号" align="center" prop="batchCode" width="160px"/>
       <!--      <el-table-column label="是否采收" align="center" prop="recoveryNo" />-->
@@ -414,5 +414,8 @@ const getValByDict = (item) => {
 onMounted(async () => {
   await getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1})
+})
+onActivated(async () => {
+  await getList()
 })
 </script>
