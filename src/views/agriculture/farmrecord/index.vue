@@ -255,7 +255,7 @@
 <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="农事计划id" align="center" prop="planId" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
+      <el-table-column label="作物名称" align="center" prop="cropName" width="140" />
       <el-table-column label="基地名称" align="center" prop="parkName"  width="180" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName"  width="180" />
@@ -290,7 +290,7 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" width="100" />
+      <el-table-column label="责任人" align="center" prop="personName" width="130" />
 <!--      <el-table-column-->
 <!--        label="计划开始时间"-->
 <!--        align="center"-->
@@ -313,7 +313,7 @@
         width="180px"
       />
 <!--      <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="180" />-->
-      <el-table-column label="土地面积（亩）" align="center" prop="recordArea" width="180" />
+      <el-table-column label="土地面积（亩）" align="center" prop="recordArea" width="140" />
 
       <el-table-column
         label="创建时间"
@@ -322,7 +322,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" fixed="right" align="center" width="150">
+      <el-table-column label="操作" fixed="right" align="center" width="160">
         <template #default="scope">
           <el-button
             link
@@ -502,7 +502,9 @@ onMounted(async () => {
   getList()
   farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 })
-
+onActivated(async () => {
+  await getList()
+})
 
 //基地的选择
 const parkPopupRef = ref()

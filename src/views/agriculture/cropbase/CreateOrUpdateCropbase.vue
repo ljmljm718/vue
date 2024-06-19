@@ -48,6 +48,7 @@
             :rules="formRules"
             label-width="100px"
             v-loading="formLoading"
+            :disabled="disabled"
           >
             <el-form-item label="编号" prop="cropCode">
               <el-input v-model="formData.cropCode" disabled placeholder="系统自动生成...."/>
@@ -136,7 +137,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="图片" prop="imgId">
-                  <UploadImg v-model="formData.imgId"/>
+                  <UploadImg :disabled="disabled" v-model="formData.imgId"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -204,6 +205,7 @@ const ORIGIN_PATH = '/farm_work/crop-base' // 关闭表单时跳转的路由
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const disabled = ref<boolean>(false) //表单是否可编辑
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -278,6 +280,11 @@ const open = async (type: string, id?: number) => {
   }
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+// 详情页面判断
+if (route.query.type == 'detail') {
+  disabled.value = true;
+}
 
 //基地的选择
 const parkInfoPopupRef = ref()

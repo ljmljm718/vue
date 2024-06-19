@@ -161,6 +161,7 @@ import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPop
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import {MarketingProgramApi} from "@/api/agriculture/marketingprogram";
 import {VillageProductApi, VillageProductVO} from "@/api/digital/villageproduct";
+import {useTagsViewStore} from "@/store/modules/tagsView";
 
 /** 作物生长期管理 表单 */
 defineOptions({name: 'CropGrowthForm'})
@@ -350,6 +351,8 @@ const submitForm = async () => {
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
+    // 关闭当前页面
+    useTagsViewStore().delView(router.currentRoute.value);
     // 发送操作成功的事件
     emit('success')
     router.push(ORIGIN_PATH)

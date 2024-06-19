@@ -5,8 +5,8 @@
   >
     <div class="flex justify-between items-start p-2 pb-1">
       <div>
-        <div class="art-font">
-          <span class="pr-3">{{ title }}</span>
+        <div class="art-font flex items-center">
+          <span class="pr-3 text-[20px]">{{ title }}</span>
           <el-tag
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>

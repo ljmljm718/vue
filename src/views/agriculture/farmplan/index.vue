@@ -441,7 +441,9 @@ onMounted(async ()  => {
   getList()
   farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 })
-
+onActivated(async () => {
+  await getList()
+})
 
 //基地的选择
 const parkPopupRef = ref()

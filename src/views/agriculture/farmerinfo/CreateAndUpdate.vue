@@ -31,6 +31,11 @@
           >清空
           </el-button>
         </div>
+        <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
       </template>
        
 
