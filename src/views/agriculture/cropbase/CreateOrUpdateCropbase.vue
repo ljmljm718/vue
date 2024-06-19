@@ -5,32 +5,39 @@
   <div>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-            v-if="route.query.type as any !=='detail'"
-          >
-            保存
-          </el-button>
-          <el-button
-            type="success"
-            :icon="TopRight"
-            plain
-            @click="submitForm"
-            v-if="route.query.type as any !=='detail'"
-          >提交
-          </el-button>
-          <el-button
-            type="danger"
-            :icon="Refresh"
-            plain
-            @click="resetForm()"
-            v-if="route.query.type as any !=='detail'"
-          >清空
-          </el-button>
+        <div class="flex justify-between w-full">
+          <div>
+            <el-button
+              type="success"
+              :icon="TopRight"
+              @click="submitForm"
+              v-if="route.query.type as any !=='detail'"
+            >提交
+            </el-button>
+            <el-button
+              type="danger"
+              :icon="Refresh"
+              @click="resetForm()"
+              v-if="route.query.type as any !=='detail'"
+            >清空
+            </el-button>
+          </div>
+          <div>
+            <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
+            <el-button
+              type="primary"
+              :icon="FolderChecked"
+              plain
+              @click="localSave()"
+              v-if="route.query.type as any !=='detail'"
+            >
+              暂存
+            </el-button>
+          </div>
         </div>
       </template>
 

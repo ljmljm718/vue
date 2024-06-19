@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const { back } = useRouter() 
 defineOptions({ name: 'EditFrame' })
 </script>
 <template>
@@ -8,7 +7,6 @@ defineOptions({ name: 'EditFrame' })
             <slot name="header">
                 <div></div>
             </slot>
-            <el-button type="primary" plain @click="back()">返回</el-button>
         </div>
     </ContentWrap>
     <ContentWrap>

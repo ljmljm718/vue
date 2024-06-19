@@ -5,29 +5,36 @@
   <div>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
-          <el-button
-            type="success"
-            :icon="TopRight"
-            plain
-            @click="submitForm"
-          >提交
-          </el-button>
-          <el-button
-            type="danger"
-            :icon="Refresh"
-            plain
-            @click="resetForm()"
-          >清空
-          </el-button>
+        <div class="flex w-full justify-between">
+          <div>
+            <el-button
+              type="success"
+              :icon="TopRight"
+              @click="submitForm"
+            >提交
+            </el-button>
+            <el-button
+              type="danger"
+              :icon="Refresh"
+              @click="resetForm()"
+            >清空
+            </el-button>
+          </div>
+          <div>
+            <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
+            <el-button
+              type="primary"
+              :icon="FolderChecked"
+              plain
+              @click="localSave()"
+            >
+              暂存
+            </el-button>
+          </div>
         </div>
       </template>
 
