@@ -6,14 +6,6 @@
       <template #header>
         <div :disabled="isShow" class="flex">
           <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
-          <el-button
             type="success"
             :icon="TopRight"
             plain
@@ -28,6 +20,21 @@
             :disabled="isShow"
             @click="resetForm()"
           >清空
+          </el-button>
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回</el-button>
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+          >
+            暂存
           </el-button>
         </div>
       </template>

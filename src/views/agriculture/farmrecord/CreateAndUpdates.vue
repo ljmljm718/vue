@@ -5,30 +5,40 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-           <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button>
           <el-button
             type="success"
             :icon="TopRight"
             plain
             @click="submitForm"
+            v-if="route.query.type as any !=='select'"
           >提交</el-button>
           <el-button
             type="danger"
             :icon="Refresh"
             plain
             @click="resetForm()"
+            v-if="route.query.type as any !=='select'"
           >清空
           </el-button>
         </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回</el-button>
+          <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+            v-if="route.query.type as any !=='select'"
+          >
+            暂存
+          </el-button>
+        </div>
       </template>
-       
+
 
       <template #content>
         <el-scrollbar class="croll-bar-template">
@@ -262,7 +272,7 @@
         </el-scrollbar>
       </template>
     </EditFrame>
-    
+
 
   <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
 
@@ -522,8 +532,8 @@ const resetForm = () => {
 //     // 发送操作成功的事件
 //     router.push(ORIGIN_PATH)
 // 截至
-// 3.getFrom方法中  formData.value = await "后端函数" 
-// 改为open方法中 try 下方的第一行 即"fromData.value = await MarkeryingProgramApi.getMakertingProgram(id)" 
+// 3.getFrom方法中  formData.value = await "后端函数"
+// 改为open方法中 try 下方的第一行 即"fromData.value = await MarkeryingProgramApi.getMakertingProgram(id)"
 // 注意其中的id要改为 route.query.id as any
 // 4.const FORMPAGE_NAME = '产品手册' 将它改为菜单名称
 // 5.const ORIGIN_PATH = '/pcg/marketingCenter/productManual' // 将它改为保存之后的路由
