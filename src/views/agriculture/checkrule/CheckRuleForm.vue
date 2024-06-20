@@ -18,7 +18,7 @@
 <!--      </el-form-item>-->
       <el-form-item label="CRON 表达式" prop="cronExpression">
 <!--        <el-input v-model="formData.cronExpression" placeholder="请输入CRON 表达式"/>-->
-        <crontab v-model="formData.cronExpression" />
+        <crontab v-model="formData.cronExpression" placeholder="不建议选择每分钟/每秒自动生成"/>
       </el-form-item>
       <el-form-item label="重试次数" prop="retryCount">
         <el-input v-model="formData.retryCount" placeholder="请输入重试次数。设置为 0 时，不进行重试"/>
