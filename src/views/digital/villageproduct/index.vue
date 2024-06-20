@@ -216,6 +216,7 @@ const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
 }
+//新增或修改跳转列表后，自动刷新列表
 onActivated(() => {
   resetQuery()
 })

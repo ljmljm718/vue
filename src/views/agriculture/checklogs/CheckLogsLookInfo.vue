@@ -45,22 +45,23 @@
             <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
             <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
             <!--      </el-form-item>-->
-
-
-            <el-form-item label="设备编号" prop="equNum">
-              <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-              <el-input v-model="formData.equNum" readonly>
-                <template #append>
-                  <el-button @click="openPurchaseOrderInEnableList" disabled>
-                    <Icon icon="ep:search"/>
-                    选择
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
+            
 
             <el-row :gutter="3">
-              <el-col :span="12">
+              <el-col :span="8">
+                <el-form-item label="设备编号" prop="equNum">
+                  <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
+                  <el-input v-model="formData.equNum" readonly >
+                    <template #append>
+                      <el-button @click="openPurchaseOrderInEnableList" disabled>
+                        <Icon icon="ep:search"/>
+                        选择
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="巡检状态" prop="inspectionState">
                   <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态" disabled>
                     <el-option
@@ -72,7 +73,20 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+            </el-row>
+            <el-row :gutter="3">
+              <el-col :span="8">
+                <el-form-item label="巡检时间" prop="inspectionTime">
+                  <el-date-picker
+                    v-model="formData.inspectionTime"
+                    type="datetime"
+                    value-format="x"
+                    style="width: 100%;"
+                    placeholder="选择巡检时间" disabled
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="巡检结果状态" prop="resultState">
                   <el-select v-model="formData.resultState" placeholder="请选择巡检结果状态" disabled>
                     <el-option
@@ -86,28 +100,24 @@
               </el-col>
             </el-row>
             <el-row :gutter="3">
-              <el-col :span="24">
-                <el-form-item label="巡检结果" prop="inspectionResults">
-                  <el-input type="textarea" v-model="formData.inspectionResults"
-                            placeholder="请输入巡检结果" disabled/>
+              <el-col :span="8">
+                <el-form-item label="所属基地" prop="base">
+                  <el-input v-model="formData.base" placeholder="选择设备后自动填入" disabled/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
+                  <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
                 </el-form-item>
               </el-col>
             </el-row>
-
-
-            <el-form-item label="所属基地" prop="base">
-              <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
-            </el-form-item>
-            <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
-              <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
-            </el-form-item>
             <el-row :gutter="3">
-              <el-col :span="12">
-                <el-form-item label="巡检人id" prop="inspectorId">
+              <el-col :span="8">
+                <el-form-item label="巡检人编号" prop="inspectorId">
                   <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
                   <el-input v-model="formData.inspectorId" readonly>
                     <template #append>
-                      <el-button @click="openUserList" disabled>
+                      <el-button @click="openUserList">
                         <Icon icon="ep:search"/>
                         选择
                       </el-button>
@@ -115,38 +125,32 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item label="巡检人" prop="inspector">
                   <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>
                 </el-form-item>
               </el-col>
             </el-row>
-
-            <el-form-item label="巡检时间" prop="inspectionTime">
-              <el-date-picker
-                v-model="formData.inspectionTime"
-                type="datetime"
-                value-format="x"
-                style="width: 100%;"
-                placeholder="选择巡检时间"
-                disabled
-              />
-            </el-form-item>
             <el-row :gutter="3">
+
               <el-col :span="8">
-                <el-form-item label="巡检影像" prop="inspectionImage">
-                  <UploadImg v-model="formData.inspectionImage"/>
-<!--                  <el-image src="formData.inspectionImage"/>-->
-                  <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
+                <el-form-item label="巡检结果" prop="inspectionResults">
+                  <el-input type="textarea" v-model="formData.inspectionResults"
+                            placeholder="请输入巡检结果" readonly/>
                 </el-form-item>
               </el-col>
-              <el-col :span="16">
+              <el-col :span="8">
                 <el-form-item label="巡检内容" prop="content">
-                  <el-input type="textarea" :rows="6" v-model="formData.content"
-                            placeholder="请输入巡检内容" disabled/>
+                  <el-input type="textarea"  v-model="formData.content"
+                            placeholder="请输入巡检内容" readonly/>
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-form-item label="巡检影像" prop="inspectionImage">
+              <UploadImg v-model="formData.inspectionImage"/>
+              <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
+            </el-form-item>
+
 
           </el-form>
           <!-- 截至 -->

@@ -298,6 +298,11 @@ const handleExport = async () => {
   }
 }
 
+//新增或修改跳转列表后，自动刷新列表
+onActivated(() => {
+  resetQuery()
+})
+
 /** 初始化 **/
 onMounted(() => {
   getList()
