@@ -128,6 +128,7 @@ v-model='queryParams.repositoryTitle'
           <dict-tag :type="DICT_TYPE.AGRI_REPOSITORYINFO_LABEL" :value="scope.row.repositoryLabel" />
         </template>
       </el-table-column>
+      <el-table-column label="创建时间" :formatter="dateFormatter" prop="createTime" />
       <el-table-column label="作者" align="center" prop="writer" />
       <el-table-column label="简介" align="center" prop="synopsis" />
       <el-table-column label="封面图片" align="center" prop="attachmentImg">
@@ -176,6 +177,7 @@ v-model='queryParams.repositoryTitle'
 </template>
 
 <script setup lang="ts">
+import {dateFormatter} from '@/utils/formatTime'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import download from '@/utils/download'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
