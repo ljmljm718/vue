@@ -11,11 +11,11 @@
 <!--        <el-input v-model="formData.productCode" placeholder="请输入产品码" />-->
 <!--      </el-form-item>-->
       <el-form-item label="开始码" prop="startNum" v-if="formType === 'create'">
-        <el-input v-model="formData.startNum" placeholder="请输入开始码" type="number" min="1"
+        <el-input v-model="formData.startNum" placeholder="请输入开始码,只能输入整数" type="number" min="1"
         oninput="value=value.replace(/[^\d]/g,'')"/>
       </el-form-item>
       <el-form-item label="结束码" prop="endNum" v-if="formType === 'create'">
-        <el-input v-model="formData.endNum" placeholder="请输入结束码" type="number"
+        <el-input v-model="formData.endNum" placeholder="请输入结束码,只能输入整数，且要大于结束码" type="number"
                   oninput="value=value.replace(/[^\d]/g,'')"/>
       </el-form-item>
       <el-form-item label="企业名称" prop="firmName">
