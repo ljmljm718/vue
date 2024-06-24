@@ -7,8 +7,16 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="产品码" prop="productCode">
-        <el-input v-model="formData.productCode" placeholder="请输入产品码" />
+<!--      <el-form-item label="产品码" prop="productCode">-->
+<!--        <el-input v-model="formData.productCode" placeholder="请输入产品码" />-->
+<!--      </el-form-item>-->
+      <el-form-item label="开始码" prop="startNum" v-if="formType === 'create'">
+        <el-input v-model="formData.startNum" placeholder="请输入开始码" type="number" min="1"
+        oninput="value=value.replace(/[^\d]/g,'')"/>
+      </el-form-item>
+      <el-form-item label="结束码" prop="endNum" v-if="formType === 'create'">
+        <el-input v-model="formData.endNum" placeholder="请输入结束码" type="number"
+                  oninput="value=value.replace(/[^\d]/g,'')"/>
       </el-form-item>
       <el-form-item label="企业名称" prop="firmName">
         <el-input v-model="formData.firmName" placeholder="请输入企业名称" />
@@ -16,41 +24,20 @@
       <el-form-item label="原产地" prop="sourceArea">
         <el-input v-model="formData.sourceArea" placeholder="请输入原产地" />
       </el-form-item>
-      <el-form-item label="生产时间" prop="yieldTime">
-        <el-date-picker
-          v-model="formData.yieldTime"
-          type="date"
-          value-format="x"
-          placeholder="选择生产时间"
-        />
-      </el-form-item>
       <el-form-item label="产品认证" prop="productApprove">
         <el-input v-model="formData.productApprove" placeholder="请输入产品认证" />
       </el-form-item>
+      <el-form-item label="生产时间" prop="yieldTime">
+        <el-date-picker
+          v-model="formData.yieldTime"
+          type="datetime"
+          value-format="x"
+          placeholder="选择生产时间"
+          style="width: 100%"
+        />
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
-      </el-form-item>
-      <el-form-item label="开始时间" prop="receiptStartTime">
-        <el-date-picker
-          v-model="formData.receiptStartTime"
-          type="date"
-          value-format="x"
-          placeholder="选择开始时间"
-        />
-      </el-form-item>
-      <el-form-item label="结束时间" prop="receiptEndTime">
-        <el-date-picker
-          v-model="formData.receiptEndTime"
-          type="date"
-          value-format="x"
-          placeholder="选择结束时间"
-        />
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
-        <el-input v-model="formData.batchCode" placeholder="请输入批次号" />
-      </el-form-item>
-      <el-form-item label="批次二维码" prop="batchQrImg">
-        <UploadImg v-model="formData.batchQrImg" />
+        <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -83,12 +70,40 @@ const formData = ref({
   receiptStartTime: undefined,
   receiptEndTime: undefined,
   batchCode: undefined,
+  startNum: '',
+  endNum: '',
   batchQrImg: undefined
 })
 const formRules = reactive({
   firmName: [{ required: true, message: '企业名称不能为空', trigger: 'blur' }],
   sourceArea: [{ required: true, message: '原产地不能为空', trigger: 'blur' }],
-  yieldTime: [{ required: true, message: '生产时间不能为空', trigger: 'blur' }]
+  yieldTime: [{ required: true, message: '生产时间不能为空', trigger: 'blur' }],
+  startNum: [ [
+    { required: true, message: '请输入开始码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入整数值'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur'
+    }
+  ]],
+  endNum: [ [
+    { required: true, message: '请输入结束码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入整数值'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur'
+    }
+  ]]
 })
 const formRef = ref() // 表单 Ref
 
@@ -147,6 +162,8 @@ const resetForm = () => {
     receiptStartTime: undefined,
     receiptEndTime: undefined,
     batchCode: undefined,
+    startNum: '',
+    endNum: '',
     batchQrImg: undefined
   }
   formRef.value?.resetFields()

@@ -8,15 +8,15 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="产品码" prop="productCode">
-        <el-input
-          v-model="queryParams.productCode"
-          placeholder="请输入产品码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-180px"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="产品码" prop="productCode">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.productCode"-->
+      <!--          placeholder="请输入产品码"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-180px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="企业名称" prop="firmName">
         <el-input
           v-model="queryParams.firmName"
@@ -93,8 +93,12 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id"/>-->
-      <el-table-column label="序号" align="center" prop="id"/>
+      <!--      <el-table-column label="主键" align="center" prop="id"/>-->
+      <el-table-column label="序号" align="center" prop="id">
+        <template #default="scope">
+          {{ scope.$index + 1 }}
+        </template>
+      </el-table-column>
       <el-table-column label="产品码" align="center" prop="productCode"/>
       <el-table-column label="企业名称" align="center" prop="firmName"/>
       <el-table-column label="原产地" align="center" prop="sourceArea"/>
@@ -106,7 +110,16 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="二维码" align="center" prop="batchQrImg"/>
+      <!--      <el-table-column label="二维码" align="center" prop="batchQrImg"/>-->
+      <el-table-column label="二维码" align="center" prop="batchQrImg">
+        <template #default="scope">
+          <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
+                    style="object-fit: cover;width: 2rem;height: 2rem;"
+                    preview-teleported
+                    :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center">
         <template #default="scope">
