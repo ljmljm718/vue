@@ -91,7 +91,7 @@
       <!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
       <el-table-column label="所属基地" align="center" prop="parkName"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="所属基地" align="center" prop="plotName"/>
+      <el-table-column label="所属地块" align="center" prop="plotName"/>
       <el-table-column
         label="开始时间"
         align="center"
