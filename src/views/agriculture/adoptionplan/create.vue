@@ -62,12 +62,16 @@ const getFormInfo = async () => {
 
 // 页面禁用
 const disabled = ref<boolean>(false)
-
 if (route.query.id) {
   if (route.query.type === 'view'){
     disabled.value = true
   }
   getFormInfo()
+} else{
+  AdoptionPlanApi.getInitNumber().then(res =>{
+    formData.value.serialNumber = res
+    formData.value.id = res
+  })
 }
 
 // if (!route.query.id) getCategoryOptions()
