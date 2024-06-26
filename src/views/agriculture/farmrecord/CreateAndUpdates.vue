@@ -70,7 +70,7 @@
     <!--        </el-col>-->
     <!--      </el-row>-->
           <el-row :gutter="3">
-            <el-col :span="12">
+            <el-col :span="12" v-if="show !==117">
               <el-form-item label="作物编号" prop="cropId">
                 <el-input v-model="formData.cropId" disabled placeholder="请输入作物编号" >
                   <template #append>
@@ -82,7 +82,7 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" v-if="show !==117">
               <el-form-item label="作物名称" prop="cropName">
                 <el-input v-model="formData.cropName" disabled placeholder="请输入作物名称" />
               </el-form-item>
@@ -154,7 +154,7 @@
     <!--        </el-col>-->
     <!--      </el-row>-->
     <!--      <el-row :gutter="3">-->
-            <el-col :span="12">
+            <el-col :span="12" v-if="show !==117">
               <el-form-item label="批次码" prop="batchCode">
                 <el-input v-model="formData.batchCode" placeholder="请输入批次码" />
               </el-form-item>
@@ -249,7 +249,7 @@
     <!--        </el-col>-->
     <!--      </el-row>-->
     <!--      <el-row :gutter="3">-->
-            <el-col :span="12">
+            <el-col :span="12" v-if="show !==117">
               <el-form-item label="土地面积（亩）" prop="recordArea" label-width="120">
                 <el-input v-model="formData.recordArea" placeholder="请输入土地面积（亩）" />
               </el-form-item>
@@ -310,6 +310,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
+
 const formData = ref({
   id: undefined,
   planId: undefined,
@@ -344,7 +345,12 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 let farmDefineOptions = ref([])// 设备分类选项
 
-
+const show = ref()
+const userStore = useUserStore()
+//获取部门ID
+const userName = computed(() => userStore.user.deptId ?? '0')
+//show的值是部门ID的值
+show.value = userName.value
 //农事计划
 const selectFarmPlanRef = ref()
 const openFarmPlanPopup = () => {
@@ -539,6 +545,7 @@ const resetForm = () => {
 // 5.const ORIGIN_PATH = '/pcg/marketingCenter/productManual' // 将它改为保存之后的路由
 import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
 import { useTagsViewStore } from "@/store/modules/tagsView";
+import {useUserStore} from "@/store/modules/user";
 
 // 本地保存表单
 const route = useRoute()
