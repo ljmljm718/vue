@@ -87,7 +87,7 @@
 <!--          class="!w-240px"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="作物名称" prop="cropName">
+      <el-form-item label="作物名称" prop="cropName" v-if="show !==117">
         <el-input
           v-model="queryParams.cropName"
           placeholder="请输入作物名称"
@@ -255,11 +255,11 @@
 <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="农事计划id" align="center" prop="planId" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="作物名称" align="center" prop="cropName" width="140" />
-      <el-table-column label="基地名称" align="center" prop="parkName"  width="180" />
+      <el-table-column label="作物名称" align="center" prop="cropName" v-if="show !==117"/>
+      <el-table-column label="基地名称" align="center" prop="parkName"/>
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="地块名称" align="center" prop="plotName"  width="180" />
-      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
+      <el-table-column label="地块名称" align="center" prop="plotName" />
+      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="125%" >
         <template #default="scope">
           <el-select v-model="scope.row.farmDefineType" disabled>
             <el-option
@@ -278,19 +278,19 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 <!--      <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />-->
-      <el-table-column label="品种" align="center" prop="cropType" width="100">
+      <el-table-column label="品种" align="center" prop="cropType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
         </template>
       </el-table-column>
-      <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
+      <el-table-column label="批次码" align="center" prop="batchCode"  v-if="show !==117"/>
 <!--      <el-table-column label="计划状态" align="center" prop="planState" width="100">-->
 <!--        <template #default="scope">-->
 <!--          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />-->
 <!--        </template>-->
 <!--      </el-table-column>-->
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" width="130" />
+      <el-table-column label="责任人" align="center" prop="personName" />
 <!--      <el-table-column-->
 <!--        label="计划开始时间"-->
 <!--        align="center"-->
@@ -313,7 +313,7 @@
         width="180px"
       />
 <!--      <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="180" />-->
-      <el-table-column label="土地面积（亩）" align="center" prop="recordArea" width="140" />
+      <el-table-column label="土地面积（亩）" align="center" prop="recordArea"  v-if="show !==117"/>
 
       <el-table-column
         label="创建时间"
@@ -376,6 +376,7 @@ import FarmRecordForm from './FarmRecordForm.vue'
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {useUserStore} from "@/store/modules/user";
 
 /** 农事记录 列表 */
 defineOptions({ name: 'FarmRecord' })
@@ -412,7 +413,12 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+const show = ref()
+const userStore = useUserStore()
+//获取部门ID
+const userName = computed(() => userStore.user.deptId ?? '0')
+//show的值是部门ID的值
+show.value = userName.value
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
