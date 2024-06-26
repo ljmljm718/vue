@@ -345,7 +345,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await AdoptionOrderApi.getAdoptionOrderPage(queryParams)
-    console.log("订单信息",data.list)
     list.value = data.list
     total.value = data.total
   } finally {
