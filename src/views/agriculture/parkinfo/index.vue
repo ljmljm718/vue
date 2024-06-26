@@ -26,14 +26,14 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
       <el-form-item label="类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px" @click="handleClick()">
           <el-option
           v-for="dict in parkCategoryOptions"
                   :key="dict.value"
                   :label="dict.categoryLabel"
-                  :value="dict.id" 
+                  :value="dict.id"
           />
           </el-select>
          </el-form-item>
@@ -43,14 +43,14 @@
                 <template #append>亩</template>
               </el-input>
             </el-form-item>
-          
+
           <el-form-item label="联系人" prop="contact">
               <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px"/>
             </el-form-item>
             <el-form-item label="联系电话" prop="tel">
               <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px"/>
             </el-form-item>
-            
+
 
 
 
@@ -297,6 +297,6 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
-  
+
 })
 </script>
