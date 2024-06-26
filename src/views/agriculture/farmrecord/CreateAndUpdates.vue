@@ -299,6 +299,9 @@ import {CropBaseVO} from "@/api/agriculture/cropbase";
 import SelectFarmPlan from "@/views/agriculture/farmrecord/SelectFarmPlan.vue";
 import {FarmPlanVO} from "@/api/agriculture/farmplan";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
+import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
+import { useTagsViewStore } from "@/store/modules/tagsView";
+import {useUserStore} from "@/store/modules/user";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -525,27 +528,6 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
-// 需要修改的方法
-// 1.submitForm 中 if判断条件改为 !formData.value.id
-// 2.submitForm方法中 "emit('success')" 行后面添加
-// 开始
-//     deleteFormStorage(
-//       ROUTE_PATH,
-//       formData.value.id ? formData.value.id : 'new_form'
-//     )
-//     // 关闭当前页面
-//     useTagsViewStore().delView(router.currentRoute.value);
-//     // 发送操作成功的事件
-//     router.push(ORIGIN_PATH)
-// 截至
-// 3.getFrom方法中  formData.value = await "后端函数"
-// 改为open方法中 try 下方的第一行 即"fromData.value = await MarkeryingProgramApi.getMakertingProgram(id)"
-// 注意其中的id要改为 route.query.id as any
-// 4.const FORMPAGE_NAME = '产品手册' 将它改为菜单名称
-// 5.const ORIGIN_PATH = '/pcg/marketingCenter/productManual' // 将它改为保存之后的路由
-import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
-import { useTagsViewStore } from "@/store/modules/tagsView";
-import {useUserStore} from "@/store/modules/user";
 
 // 本地保存表单
 const route = useRoute()
