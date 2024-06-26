@@ -50,7 +50,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm()"
+          @click="openForm('create')"
           v-hasPermi="['agriculture:adoption-plan:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -110,7 +110,7 @@
           <el-button
             link
             type="primary"
-            @click="openForm(scope.row.id)"
+            @click="openForm('update', scope.row.id)"
             v-hasPermi="['agriculture:adoption-plan:update']"
           >
             编辑
@@ -118,7 +118,7 @@
           <el-button
             link
             type="success"
-            @click="openFormDetail(scope.row.id)"
+            @click="openForm('view', scope.row.id)"
             v-hasPermi="['agriculture:adoption-plan:update']"
           >
             详情
@@ -200,8 +200,8 @@ const resetQuery = () => {
 const router = useRouter() // 路由
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (id?: number) => {
-  if (id) router.push(`/adoption/adoption-plan/create?id=${id}`)
+const openForm = (type: string, id?: number) => {
+  if (id) router.push(`/adoption/adoption-plan/create?type=` + type + "&id=" + id)
   else router.push(`/adoption/adoption-plan/create`)
 }
 

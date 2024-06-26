@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import {
   EditFrame,
-  addFormStorage,
   addOrUpdateFormStorage,
   getFormStorage,
   deleteFormStorage
 } from '@/components/EditFrame/index'
 import {
-  FolderChecked,
   TopRight,
   Refresh
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useTagsViewStore } from "@/store/modules/tagsView";
-import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
-import ParkDetailForm from "@/views/agriculture/parkinfo/components/ParkDetailForm.vue";
 import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
 
 const route = useRoute()
@@ -27,20 +23,6 @@ const ORIGIN_PATH = '/adoption/adoption-plan' // 关闭表单时跳转的路径
 // TODO: name使用创建菜单时填写的组件名
 defineOptions({ name: 'AdoptionPlanDetail' })
 
-const getFormInfo = async () => {
-  resetForm()
-  formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
-}
-if (route.query.id) {
-  getFormInfo()
-}
-
-// if (!route.query.id) getCategoryOptions()
-// 页面 Loading
-const formLoading = ref<boolean>(false)
-
-// 表单 Ref
-const formRef = ref()
 
 // 表单字段数据
 const formData = ref({
@@ -55,6 +37,45 @@ const formData = ref({
   receivingEnd: undefined,
   planDescribe: undefined,
 })
+
+// 重置表单方法
+const resetForm = () => {
+  formData.value = {
+    id: undefined,
+    serialNumber: undefined,
+    planName: undefined,
+    planYear: undefined,
+    adoptionKind: undefined,
+    presaleStart: undefined,
+    presaleEnd: undefined,
+    receivingStart: undefined,
+    receivingEnd: undefined,
+    planDescribe: undefined,
+  }
+}
+
+const getFormInfo = async () => {
+  resetForm()
+  console.log("route.query.id", route.query.id)
+  formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
+}
+
+// 页面禁用
+const disabled = ref<boolean>(false)
+
+if (route.query.id) {
+  if (route.query.type === 'view'){
+    disabled.value = true
+  }
+  getFormInfo()
+}
+
+// if (!route.query.id) getCategoryOptions()
+// 页面 Loading
+const formLoading = ref<boolean>(false)
+
+// 表单 Ref
+const formRef = ref()
 
 // 表单校验规则
 const formRules = reactive({
@@ -108,22 +129,6 @@ const submitForm = async () => {
   }
 }
 
-// 重置表单方法
-const resetForm = () => {
-  formData.value = {
-    id: undefined,
-    serialNumber: undefined,
-    planName: undefined,
-    planYear: undefined,
-    adoptionKind: undefined,
-    presaleStart: undefined,
-    presaleEnd: undefined,
-    receivingStart: undefined,
-    receivingEnd: undefined,
-    planDescribe: undefined,
-  }
-}
-
 // 本地保存表单
 const localSave = () => {
   addOrUpdateFormStorage(
@@ -150,11 +155,13 @@ if (!formData.value.id) loadData()
           <div>
             <el-button
             type="success"
+            v-show="!disabled"
             :icon="TopRight"
             @click="submitForm"
           >提交</el-button>
           <el-button
             type="danger"
+            v-show="!disabled"
             :icon="Refresh"
             @click="resetForm()"
           >清空
@@ -168,6 +175,7 @@ if (!formData.value.id) loadData()
             >返回</el-button>
             <el-button
             type="primary"
+            v-show="!disabled"
             plain
             @click="localSave()"
           >
@@ -180,6 +188,7 @@ if (!formData.value.id) loadData()
         <el-scrollbar class="croll-bar-template">
           <el-form
             ref="formRef"
+            :disabled="disabled"
             :model="formData"
             :rules="formRules"
             label-width="100px"
@@ -187,7 +196,7 @@ if (!formData.value.id) loadData()
             class="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-2 p-4"
           >
             <el-form-item label="流水号" prop="serialNumber">
-              <el-input v-model="formData.serialNumber" placeholder="请输入流水号" />
+              <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
             </el-form-item>
             <el-form-item label="计划名称" prop="planName">
               <el-input v-model="formData.planName" placeholder="请输入计划名称" />
@@ -235,7 +244,7 @@ if (!formData.value.id) loadData()
                 placeholder="选择预计收货结束时间"
               />
             </el-form-item>
-            <el-form-item label="计划描述" prop="planDescribe">
+            <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
               <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
             </el-form-item>
           </el-form>
