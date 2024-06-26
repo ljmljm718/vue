@@ -8,39 +8,69 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="流水号" prop="serialNumber">
+      <el-form-item label="规则流水号" prop="ruleNumber">
         <el-input
-          v-model="queryParams.serialNumber"
-          placeholder="请输入流水号"
+          v-model="queryParams.ruleNumber"
+          placeholder="请输入规则流水号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="计划名称" prop="planName">
+      <el-form-item label="计划流水号" prop="planNumber">
         <el-input
-          v-model="queryParams.planName"
-          placeholder="请输入计划名称"
+          v-model="queryParams.planNumber"
+          placeholder="请输入计划流水号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="计划年度" prop="planYear">
+      <el-form-item label="规则类型" prop="ruleType">
+        <el-select
+          v-model="queryParams.ruleType"
+          placeholder="请选择规则类型"
+          clearable
+          class="!w-240px"
+        >
+          <el-option label="请选择字典生成" value="" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="规则概述" prop="ruleOverview">
         <el-input
-          v-model="queryParams.planYear"
-          placeholder="请输入计划年度"
+          v-model="queryParams.ruleOverview"
+          placeholder="请输入规则概述"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="认养品种" prop="adoptionKind">
+      <el-form-item label="具体说明" prop="ruleDescribe">
         <el-input
-          v-model="queryParams.adoptionKind"
-          placeholder="请输入认养品种"
+          v-model="queryParams.ruleDescribe"
+          placeholder="请输入具体说明"
           clearable
           @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input
+          v-model="queryParams.remark"
+          placeholder="请输入备注"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
@@ -51,7 +81,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['agriculture:adoption-plan:create']"
+          v-hasPermi="['agriculture:adoption-rule:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -60,7 +90,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['agriculture:adoption-plan:export']"
+          v-hasPermi="['agriculture:adoption-rule:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -71,63 +101,45 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <!-- 子表的列表 -->
+      <el-table-column type="expand">
+        <template #default="scope">
+          <el-tabs model-value="adoptionRuleSpecs">
+            <el-tab-pane label="认养规则规格" name="adoptionRuleSpecs">
+              <AdoptionRuleSpecsList :rule-number="scope.row.id" />
+            </el-tab-pane>
+          </el-tabs>
+        </template>
+      </el-table-column>
       <el-table-column label="主键id" align="center" prop="id" />
-      <el-table-column label="流水号" align="center" prop="serialNumber" />
-      <el-table-column label="计划名称" align="center" prop="planName" />
-      <el-table-column label="计划年度" align="center" prop="planYear" />
-      <el-table-column label="认养品种" align="center" prop="adoptionKind" />
+      <el-table-column label="规则流水号" align="center" prop="ruleNumber" />
+      <el-table-column label="计划流水号" align="center" prop="planNumber" />
+      <el-table-column label="规则类型" align="center" prop="ruleType" />
+      <el-table-column label="规则概述" align="center" prop="ruleOverview" />
+      <el-table-column label="具体说明" align="center" prop="ruleDescribe" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
-        label="预售开始时间"
+        label="创建时间"
         align="center"
-        prop="presaleStart"
+        prop="createTime"
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column
-        label="预售结束时间"
-        align="center"
-        prop="presaleEnd"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column
-        label="预计收货开始时间"
-        align="center"
-        prop="receivingStart"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column
-        label="预计收货结束时间"
-        align="center"
-        prop="receivingEnd"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="计划描述" align="center" prop="planDescribe" />
-      <el-table-column label="操作" align="center" fixed="right" width="160">
+      <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:adoption-plan:update']"
+            v-hasPermi="['agriculture:adoption-rule:update']"
           >
             编辑
           </el-button>
           <el-button
             link
-            type="success"
-            @click="openForm('view', scope.row.id)"
-            v-hasPermi="['agriculture:adoption-plan:update']"
-          >
-            详情
-          </el-button>
-          <el-button
-            link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:adoption-plan:delete']"
+            v-hasPermi="['agriculture:adoption-rule:delete']"
           >
             删除
           </el-button>
@@ -144,31 +156,35 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <AdoptionPlanForm ref="formRef" @success="getList" />
+  <AdoptionRuleForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { AdoptionPlanApi, AdoptionPlanVO } from '@/api/agriculture/adoptionplan'
-import AdoptionPlanForm from './AdoptionPlanForm.vue'
+import { AdoptionRuleApi, AdoptionRuleVO } from '@/api/agriculture/adoptionrule'
+import AdoptionRuleForm from './AdoptionRuleForm.vue'
+import AdoptionRuleSpecsList from './components/AdoptionRuleSpecsList.vue'
 
-/** 认养计划 列表 */
-defineOptions({ name: 'AdoptionPlan' })
+/** 认养规则 列表 */
+defineOptions({ name: 'AdoptionRule' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<AdoptionPlanVO[]>([]) // 列表的数据
+const list = ref<AdoptionRuleVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  serialNumber: undefined,
-  planName: undefined,
-  planYear: undefined,
-  adoptionKind: undefined,
+  ruleNumber: undefined,
+  planNumber: undefined,
+  ruleType: undefined,
+  ruleOverview: undefined,
+  ruleDescribe: undefined,
+  remark: undefined,
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -177,7 +193,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await AdoptionPlanApi.getAdoptionPlanPage(queryParams)
+    const data = await AdoptionRuleApi.getAdoptionRulePage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -197,12 +213,10 @@ const resetQuery = () => {
   handleQuery()
 }
 
-const router = useRouter() // 路由
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  if (id) router.push(`/adoption/adoption-plan/create?type=` + type + "&id=" + id)
-  else router.push(`/adoption/adoption-plan/create`)
+  formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
@@ -211,7 +225,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await AdoptionPlanApi.deleteAdoptionPlan(id)
+    await AdoptionRuleApi.deleteAdoptionRule(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -225,8 +239,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await AdoptionPlanApi.exportAdoptionPlan(queryParams)
-    download.excel(data, '认养计划.xls')
+    const data = await AdoptionRuleApi.exportAdoptionRule(queryParams)
+    download.excel(data, '认养规则.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -236,9 +250,5 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
-})
-
-onActivated(() => {
-  handleQuery()
 })
 </script>

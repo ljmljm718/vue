@@ -18,6 +18,8 @@ export interface ParkDetailVO {
   deptId: number // 部门编号
   userId: number // 用户编号
   qrImg: undefined
+  quantity: string // 数量
+  adoptionType: string // 认养模式
 }
 
 // 地块基本信息 API

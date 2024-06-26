@@ -98,6 +98,13 @@
           </el-form-item>
         </template>
       </el-table-column>
+      <el-table-column label="模式" min-width="150" align="center">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.adoptionType`" :rules="formRules.adoptionType" class="mb-0px!">
+            <el-input v-model="row.adoptionType" placeholder="请输入模式" />
+          </el-form-item>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.remark`" :rules="formRules.remark" class="mb-0px!">
@@ -192,7 +199,8 @@ const handleAdd = () => {
     remark: undefined,
     deptId: undefined,
     userId: undefined,
-    quantity: undefined
+    quantity: undefined,
+    adoptionType: undefined,
   }
   formData.value.push(row)
 }
