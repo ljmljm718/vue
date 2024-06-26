@@ -12,6 +12,8 @@ import {
 import { ElMessage } from 'element-plus'
 import { useTagsViewStore } from "@/store/modules/tagsView";
 import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
+import AdoptionRuleSpecsForm
+  from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -37,6 +39,26 @@ const formData = ref({
   receivingEnd: undefined,
   planDescribe: undefined,
 })
+
+const formData2 = ref({
+  id: undefined,
+  ruleNumber: undefined,
+  planNumber: undefined,
+  ruleType: undefined,
+  ruleOverview: undefined,
+  ruleDescribe: undefined,
+  remark: undefined
+})
+const formRules2 = reactive({
+  ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
+  planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
+  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
+  ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
+})
+const formRef2 = ref() // 表单 Ref
+/** 子表的表单 */
+const subTabsName = ref('adoptionRuleSpecs')
+const adoptionRuleSpecsFormRef = ref()
 
 // 重置表单方法
 const resetForm = () => {
@@ -259,7 +281,32 @@ const activeName = ref<any>(['1','2','3','4'])
               认养蟹塘
             </el-collapse-item>
             <el-collapse-item title="认养规则" name="3">
-              认养规则
+              <div class="grid grid-cols-3  ">
+                <div class="col-span-2">
+                  <!-- 子表的表单 -->
+                  <el-tabs v-model="subTabsName">
+                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData2.id" />
+                  </el-tabs>
+                </div>
+                <div class="col-span-1">
+                  <el-form
+                    ref="formRef2"
+                    :model="formData2"
+                    :rules="formRules2"
+                    label-width="100px"
+                    v-loading="formLoading"
+                  >
+                    <el-form-item label="认养" prop="ruleOverview">
+                      <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入规则概述" />
+                    </el-form-item>
+                    <el-form-item label="认养人权益" prop="ruleDescribe">
+                      <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入具体说明" />
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </div>
+
+
             </el-collapse-item>
             <el-collapse-item title="宣传包装图" name="4">
               宣传包装图
