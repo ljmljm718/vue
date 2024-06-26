@@ -8,10 +8,10 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="方案名称" prop="schemeName">
+      <el-form-item label="手册名称" prop="schemeName">
         <el-input
           v-model="queryParams.schemeName"
-          placeholder="请输入方案名称"
+          placeholder="请输入手册名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -143,7 +143,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-      <el-table-column label="方案名称" align="center" prop="schemeName" />
+      <el-table-column label="手册名称" align="center" prop="schemeName" />
       <el-table-column label="简介" align="center" prop="briefIntroduction" />
       <el-table-column label="创作人" align="center" prop="marketingCreator" />
       <el-table-column
@@ -386,7 +386,7 @@ const handleExport = async () => {
     // 发起导出
     exportLoading.value = true
     const data = await MarketingProgramApi.exportMarketingProgram(queryParams)
-    download.excel(data, '营销方案.xls')
+    download.excel(data, '产品手册.xls')
   } catch {
   } finally {
     exportLoading.value = false

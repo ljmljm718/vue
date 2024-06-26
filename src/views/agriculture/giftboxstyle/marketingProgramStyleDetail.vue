@@ -1,6 +1,21 @@
 <template>
   <div>
     <EditFrame>
+      <template #header>
+        <div class="flex ">
+           
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >
+            返回
+          </el-button>
+        </div>
+      </template>
+
       <template #content>
         <!-- 原内容 -->
         <el-form
@@ -10,6 +25,7 @@
           label-width="100px"
           v-loading="formLoading"
           :inline="true"
+          :disabled="true"
         >
           <el-form-item label="产品名称" prop="schemeName" >
             <el-input v-model="formData.schemeName" placeholder="请输入方案名称" style="width: 520px" />

@@ -3,9 +3,10 @@
   <div>
 
     <EditFrame>
-      <template #header v-if="show1">
-        <div class="flex  ">
+      <template #header >
+        <div class="flex" >
           <el-button
+          v-if="show1"
             class = '!bg-[#67c23a] !color-[#fff]'
             :icon="TopRight"
             plain
@@ -13,14 +14,15 @@
           >提交
           </el-button>
           <el-button
-           class = '!bg-[#f56c6c] !color-[#fff]'
+            v-if="show1"
+            class = '!bg-[#f56c6c] !color-[#fff]'
             :icon="Refresh"
             plain
             @click="resetForm()"
           >清空
           </el-button>
         </div>
-        <div class="flex">
+        <div class="flex" >
           <el-button 
           type="primary" 
           plain
@@ -29,6 +31,7 @@
             返回
           </el-button>
           <el-button
+           v-if="show1"
            type="primary"
            :icon="FolderChecked"
            plain
