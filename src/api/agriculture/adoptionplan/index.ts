@@ -45,4 +45,9 @@ export const AdoptionPlanApi = {
   exportAdoptionPlan: async (params) => {
     return await request.download({ url: `/agriculture/adoption-plan/export-excel`, params })
   },
+
+  // 获取初始流水号
+  getInitNumber: async () => {
+    return await request.get({ url: `/agriculture/adoption-plan/getInitNumber` })
+  },
 }
