@@ -145,7 +145,7 @@ const loadData = async (id = 'new_form') => {
   if (_form) formData.value = _form.formContent
 }
 if (!formData.value.id) loadData()
-
+const activeName = ref<any>(['1','2','3','4'])
 </script>
 <template>
   <div>
@@ -186,68 +186,86 @@ if (!formData.value.id) loadData()
       </template>
       <template #content>
         <el-scrollbar class="croll-bar-template">
-          <el-form
-            ref="formRef"
-            :disabled="disabled"
-            :model="formData"
-            :rules="formRules"
-            label-width="100px"
-            v-loading="formLoading"
-            class="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-2 p-4"
-          >
-            <el-form-item label="流水号" prop="serialNumber">
-              <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
-            </el-form-item>
-            <el-form-item label="计划名称" prop="planName">
-              <el-input v-model="formData.planName" placeholder="请输入计划名称" />
-            </el-form-item>
-            <el-form-item label="计划年度" prop="planYear">
-              <el-date-picker
-                v-model="formData.planYear"
-                type="year"
-                value-format="x"
-                placeholder="选择计划年度"
-              />
-            </el-form-item>
-            <el-form-item label="认养品种" prop="adoptionKind">
-              <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
-            </el-form-item>
-            <el-form-item label="预售开始时间" prop="presaleStart">
-              <el-date-picker
-                v-model="formData.presaleStart"
-                type="date"
-                value-format="x"
-                placeholder="选择预售开始时间"
-              />
-            </el-form-item>
-            <el-form-item label="预售结束时间" prop="presaleEnd">
-              <el-date-picker
-                v-model="formData.presaleEnd"
-                type="date"
-                value-format="x"
-                placeholder="选择预售结束时间"
-              />
-            </el-form-item>
-            <el-form-item label="预计收货开始时间" prop="receivingStart">
-              <el-date-picker
-                v-model="formData.receivingStart"
-                type="date"
-                value-format="x"
-                placeholder="选择预计收货开始时间"
-              />
-            </el-form-item>
-            <el-form-item label="预计收货结束时间" prop="receivingEnd">
-              <el-date-picker
-                v-model="formData.receivingEnd"
-                type="date"
-                value-format="x"
-                placeholder="选择预计收货结束时间"
-              />
-            </el-form-item>
-            <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
-              <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
-            </el-form-item>
-          </el-form>
+          <el-collapse v-model="activeName" simple>
+            <el-collapse-item title="认养计划" name="1">
+                <el-form
+                  ref="formRef"
+                  :disabled="disabled"
+                  :model="formData"
+                  :rules="formRules"
+                  label-width="100px"
+                  v-loading="formLoading"
+                  class="grid grid-cols-4 gap-2 p-4"
+                >
+                  <el-form-item label="流水号" prop="serialNumber">
+                    <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
+                  </el-form-item>
+                  <el-form-item label="计划名称" prop="planName">
+                    <el-input v-model="formData.planName" placeholder="请输入计划名称" />
+                  </el-form-item>
+                  <el-form-item label="计划年度" prop="planYear">
+                    <el-date-picker
+                      v-model="formData.planYear"
+                      type="year"
+                      value-format="x"
+                      placeholder="选择计划年度"
+                    />
+                  </el-form-item>
+                  <el-form-item label="认养品种" prop="adoptionKind">
+                    <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
+                  </el-form-item>
+                  <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
+                    <el-date-picker
+                      v-model="formData.presaleStart"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预售开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.presaleEnd"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预售结束时间"
+                    />
+                  </el-form-item>
+<!--                  <el-form-item label="预售结束时间" prop="presaleEnd">-->
+
+<!--                  </el-form-item>-->
+                  <el-form-item label="预计收货时间" prop="receivingStart" class="col-span-2">
+                    <el-date-picker
+                      v-model="formData.receivingStart"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预计收货开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.receivingEnd"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预计收货结束时间"
+                    />
+                  </el-form-item>
+<!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
+
+<!--                  </el-form-item>-->
+                  <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
+                    <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
+                  </el-form-item>
+                </el-form>
+            </el-collapse-item>
+            <el-collapse-item title="认养蟹塘" name="2">
+              认养蟹塘
+            </el-collapse-item>
+            <el-collapse-item title="认养规则" name="3">
+              认养规则
+            </el-collapse-item>
+            <el-collapse-item title="宣传包装图" name="4">
+              宣传包装图
+            </el-collapse-item>
+          </el-collapse>
+
         </el-scrollbar>
       </template>
     </EditFrame>
