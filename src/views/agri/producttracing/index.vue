@@ -100,6 +100,7 @@
         </template>
       </el-table-column>
       <el-table-column label="产品码" align="center" prop="productCode"/>
+      <el-table-column label="产品名称" align="center" prop="batchCode"/>
       <el-table-column label="企业名称" align="center" prop="firmName"/>
       <el-table-column label="原产地" align="center" prop="sourceArea"/>
       <el-table-column label="产品认证" align="center" prop="productApprove"/>
