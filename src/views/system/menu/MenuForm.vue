@@ -105,6 +105,12 @@
           <el-radio key="false" :label="false" border>不缓存</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item v-if="formData.type === 2" label="图片" prop="imgId">
+        <UploadImg v-model="formData.imgId" />
+      </el-form-item>
+      <el-form-item v-if="formData.type === 2" label="描述" prop="description">
+        <el-input type="textarea" v-model="formData.description" placeholder="描述将展示在门户首页，建议填写简洁明确、有信息量的内容" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button :disabled="formLoading" type="primary" @click="submitForm">确 定</el-button>
@@ -143,7 +149,9 @@ const formData = ref({
   status: CommonStatusEnum.ENABLE,
   visible: true,
   keepAlive: true,
-  alwaysShow: true
+  alwaysShow: true,
+  imgId: undefined,
+  description: undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
@@ -244,7 +252,9 @@ const resetForm = () => {
     status: CommonStatusEnum.ENABLE,
     visible: true,
     keepAlive: true,
-    alwaysShow: true
+    alwaysShow: true,
+    imgId: undefined,
+    description: undefined,
   }
   formRef.value?.resetFields()
 }
