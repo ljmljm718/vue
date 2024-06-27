@@ -13,9 +13,9 @@
       <el-form-item label="用户昵称" prop="nickName">
         <el-input v-model="formData.nickName" placeholder="请输入用户昵称"/>
       </el-form-item>
-      <el-form-item label="用户头像" prop="buyerImg">
-        <el-input v-model="formData.buyerImg" placeholder="请输入用户头像"/>
-      </el-form-item>
+      <!--      <el-form-item label="用户头像" prop="buyerImg">-->
+      <!--        <el-input v-model="formData.buyerImg" placeholder="请输入用户头像"/>-->
+      <!--      </el-form-item>-->
       <!--      <el-form-item label="备用字段1" prop="buyerOne">-->
       <!--        <el-input v-model="formData.buyerOne" placeholder="请输入备用字段1" />-->
       <!--      </el-form-item>-->
