@@ -66,9 +66,9 @@
       <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true" ref="multipleTableRef"
                 @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
         <el-table-column width="30" label="选择" type="selection"/>
+        <el-table-column label="蟹塘编号" align="center" prop="id" width="200"/>
+        <el-table-column label="蟹塘名称" align="center" prop="name" width="150"/>
         <el-table-column label="所属基地" align="center" prop="parkId" />
-        <el-table-column label="编号" align="center" prop="code" width="200"/>
-        <el-table-column label="名称" align="center" prop="name" width="150"/>
         <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
         <el-table-column label="纬度" align="center" prop="latitude" />
         <el-table-column label="经度" align="center" prop="longitude" />
