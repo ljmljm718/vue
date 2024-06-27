@@ -15,8 +15,11 @@
         oninput="value=value.replace(/[^\d]/g,'')"/>
       </el-form-item>
       <el-form-item label="结束码" prop="endNum" v-if="formType === 'create'">
-        <el-input v-model="formData.endNum" placeholder="请输入结束码,只能输入整数，且要大于结束码" type="number"
+        <el-input v-model="formData.endNum" placeholder="请输入结束码,只能输入整数，且要大于开始码" type="number"
                   oninput="value=value.replace(/[^\d]/g,'')"/>
+      </el-form-item>
+      <el-form-item label="产品名称" prop="batchCode">
+        <el-input v-model="formData.batchCode" placeholder="请输入产品名称" />
       </el-form-item>
       <el-form-item label="企业名称" prop="firmName">
         <el-input v-model="formData.firmName" placeholder="请输入企业名称" />
@@ -76,8 +79,10 @@ const formData = ref({
 })
 const formRules = reactive({
   firmName: [{ required: true, message: '企业名称不能为空', trigger: 'blur' }],
+  batchCode: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
   sourceArea: [{ required: true, message: '原产地不能为空', trigger: 'blur' }],
   yieldTime: [{ required: true, message: '生产时间不能为空', trigger: 'blur' }],
+  productApprove: [{ required: true, message: '产品认证不能为空', trigger: 'blur' }],
   startNum: [ [
     { required: true, message: '请输入开始码', trigger: 'blur' },
     {

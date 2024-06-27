@@ -23,6 +23,11 @@ export const AdoptionRuleApi = {
     return await request.get({ url: `/agriculture/adoption-rule/get?id=` + id })
   },
 
+  // 查询认养规则详情
+  getAdoptionRuleByPlanNumber: async (planId: any) => {
+    return await request.get({ url: `/agriculture/adoption-rule/getplan?plan=` + planId })
+  },
+
   // 新增认养规则
   createAdoptionRule: async (data: AdoptionRuleVO) => {
     return await request.post({ url: `/agriculture/adoption-rule/create`, data })
