@@ -14,6 +14,8 @@ import { useTagsViewStore } from "@/store/modules/tagsView";
 import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
 import AdoptionRuleSpecsForm
   from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
+import AdoptionPlanProfileForm
+  from "@/views/agriculture/adoptionplan/components/AdoptionPlanProfileForm.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -93,6 +95,7 @@ if (route.query.id) {
   AdoptionPlanApi.getInitNumber().then(res =>{
     formData.value.serialNumber = res
     formData.value.id = res
+    formData2.value.planNumber=res
   })
 }
 
@@ -255,9 +258,6 @@ const activeName = ref<any>(['1','2','3','4'])
                       placeholder="选择预售结束时间"
                     />
                   </el-form-item>
-<!--                  <el-form-item label="预售结束时间" prop="presaleEnd">-->
-
-<!--                  </el-form-item>-->
                   <el-form-item label="预计收货时间" prop="receivingStart" class="col-span-2">
                     <el-date-picker
                       v-model="formData.receivingStart"
@@ -288,8 +288,8 @@ const activeName = ref<any>(['1','2','3','4'])
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
                   <!-- 子表的表单 -->
-                  <el-tabs v-model="subTabsName">
-                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData2.id" />
+                  <el-tabs class="mt-[-12px]" v-model="subTabsName">
+                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData.serialNumber" />
                   </el-tabs>
                 </div>
                 <div class="col-span-1">
@@ -309,11 +309,15 @@ const activeName = ref<any>(['1','2','3','4'])
                   </el-form>
                 </div>
               </div>
-
-
             </el-collapse-item>
             <el-collapse-item title="宣传包装图" name="4">
-              宣传包装图
+              <div class="grid grid-cols-3  ">
+                <div class="col-span-2">
+                  <el-tabs class="mt-[-12px]" v-model="subTabsName">
+                      <AdoptionPlanProfileForm ref="adoptionPlanProfileFormRef" :serial-number="formData.serialNumber" />
+                  </el-tabs>
+                </div>
+              </div>
             </el-collapse-item>
           </el-collapse>
 

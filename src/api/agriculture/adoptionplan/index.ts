@@ -50,4 +50,10 @@ export const AdoptionPlanApi = {
   getInitNumber: async () => {
     return await request.get({ url: `/agriculture/adoption-plan/getInitNumber` })
   },
+  // ==================== 子表（认养计划附件） ====================
+
+  // 获得认养计划附件列表
+  getAdoptionPlanProfileListBySerialNumber: async (serialNumber) => {
+    return await request.get({ url: `/agriculture/adoption-plan/adoption-plan-profile/list-by-serial-number?serialNumber=` + serialNumber })
+  },
 }
