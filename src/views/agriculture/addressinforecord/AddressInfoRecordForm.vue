@@ -93,9 +93,16 @@ const formData = ref({
 const formRules = reactive({
   addressNumber: [{ required: true, message: '地址标识号不能为空', trigger: 'blur' }],
   contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
-  phoneNumber: [{ required: true, message: '手机号码不能为空', trigger: 'blur' }],
+  phoneNumber: [{ required: true, message: '手机号码不能为空', trigger: 'blur' },
+    {
+      required: true,
+      pattern: /^(?:(?:\+|00)86)?1(?:3[\d]|4[5-79]|5[0-35-9]|6[5-7]|7[0-8]|8[\d]|9[189])\d{8}$/,
+      message: '请输入正确的手机号码',
+      trigger: 'blur'
+    }],
   areaInfo: [{ required: true, message: '地区信息不能为空', trigger: 'blur' }],
   fullAddress: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
+  zipCode: [{pattern: /^[1-9]\d{5}$/, message: '请输入正确的邮政编码', trigger: 'blur' }],
   isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
