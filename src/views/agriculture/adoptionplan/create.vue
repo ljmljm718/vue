@@ -16,6 +16,9 @@ import AdoptionRuleSpecsForm
   from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
 import AdoptionPlanProfileForm
   from "@/views/agriculture/adoptionplan/components/AdoptionPlanProfileForm.vue";
+import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import AddParkDetail from "@/views/agriculture/adoptionplan/components/AddParkDetail.vue";
+import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 
 const route = useRoute()
 const router = useRouter()
@@ -115,6 +118,44 @@ const formRules = reactive({
 // const subTabsName = ref('parkDetail')
 // const parkDetailFormRef = ref()
 
+// 单选选中的地块id
+const parkDetailId = ref()
+// 选中行的索引
+const parkDetailIndex = ref()
+// 单选
+const handleCurrentChange = (val: any) => {
+  parkDetailId.value = val?.id
+  parkDetailIndex.value = val?.index
+}
+
+const message = useMessage() // 消息弹窗
+const parkDetailList = ref<ParkDetailVO[]>([]) // 蟹塘列表的数据
+// 计划蟹塘中间表数据
+// const formParkDetail = ref({
+//   planId: undefined,
+//   parkId: undefined,
+//   plotId: undefined,
+// })
+
+// 新增蟹塘
+const addParkDetailRef = ref()
+const addParkDetail = () => {
+  addParkDetailRef.value.open()
+}
+const handleParkDetailChange = (order: ParkDetailVO) => {
+  parkDetailList.value.splice(parkDetailList.value.length, 0, order[0])
+  console.log("parkDetailList.value", parkDetailList.value)
+}
+
+const tableRowClassName = ({row, rowIndex}) => {
+  row.index = rowIndex;
+}
+
+// 删除蟹塘
+const deleteParkDetail = (index) => {
+  parkDetailList.value.splice(index, 1)
+}
+
 // 提交表单
 const submitForm = async () => {
   // 校验表单
@@ -176,6 +217,7 @@ const loadData = async (id = 'new_form') => {
 if (!formData.value.id) loadData()
 const activeName = ref<any>(['1','2','3','4'])
 </script>
+
 <template>
   <div>
     <EditFrame>
@@ -276,13 +318,46 @@ const activeName = ref<any>(['1','2','3','4'])
 <!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
 
 <!--                  </el-form-item>-->
-                  <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
-                    <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
-                  </el-form-item>
-                </el-form>
+                <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
+                  <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
+                </el-form-item>
+              </el-form>
             </el-collapse-item>
             <el-collapse-item title="认养蟹塘" name="2">
-              认养蟹塘
+              <div style="margin-bottom:10px;">
+                <el-button
+                  type="primary"
+                  plain
+                  @click="addParkDetail()"
+                >增加
+                </el-button>
+                <el-button
+                  type="danger"
+                  plain
+                  :disabled="!parkDetailId"
+                  @click="deleteParkDetail(parkDetailIndex.value)"
+                >删除
+                </el-button>
+              </div>
+              <ContentWrap>
+                <el-table :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
+                          @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
+                  <el-table-column type="index" width="50" />
+                  <el-table-column label="蟹塘编号" align="center" prop="code" width="200"/>
+                  <el-table-column label="蟹塘名称" align="center" prop="name" width="200"/>
+                  <!--      <el-table-column label="类型" align="center" prop="type" />-->
+                  <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>
+                  <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
+                  <el-table-column label="海拔" align="center" prop="altitude"/>
+                  <el-table-column label="纬度" align="center" prop="latitude" width="120"/>
+                  <el-table-column label="经度" align="center" prop="longitude" width="120"/>
+                  <el-table-column label="通讯地址" align="center" prop="address"  width="200"/>
+                  <el-table-column label="联系人" align="center" prop="contact"/>
+                  <el-table-column label="联系电话" align="center" prop="tel"  width="120"/>
+                  <el-table-column label="面积" align="center" prop="area"/>
+                </el-table>
+              </ContentWrap>
+
             </el-collapse-item>
             <el-collapse-item title="认养规则" name="3">
               <div class="grid grid-cols-3  ">
@@ -325,6 +400,8 @@ const activeName = ref<any>(['1','2','3','4'])
       </template>
     </EditFrame>
   </div>
+
+  <AddParkDetail ref="addParkDetailRef" @success="handleParkDetailChange"/>
 </template>
 <style scoped>
 .scroll-bar-template {
