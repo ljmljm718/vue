@@ -16,6 +16,8 @@ export interface MenuVO {
   keepAlive: boolean
   alwaysShow?: boolean
   createTime: Date
+  imgId: string
+  description: string
 }
 
 // 查询菜单（精简）列表
