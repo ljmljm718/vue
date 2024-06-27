@@ -19,6 +19,7 @@ import AdoptionPlanProfileForm
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import AddParkDetail from "@/views/agriculture/adoptionplan/components/AddParkDetail.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import {AdoptionRuleApi, AdoptionRuleVO} from "@/api/agriculture/adoptionrule";
 
 const route = useRoute()
 const router = useRouter()
@@ -47,7 +48,7 @@ const formData = ref({
 
 const formData2 = ref({
   id: undefined,
-  ruleNumber: undefined,
+  ruleNumber:undefined,
   planNumber: undefined,
   ruleType: undefined,
   ruleOverview: undefined,
@@ -61,9 +62,6 @@ const formRules2 = reactive({
   ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
 })
 const formRef2 = ref() // 表单 Ref
-/** 子表的表单 */
-const subTabsName = ref('adoptionRuleSpecs')
-const adoptionRuleSpecsFormRef = ref()
 
 // 重置表单方法
 const resetForm = () => {
@@ -85,6 +83,8 @@ const getFormInfo = async () => {
   resetForm()
   console.log("route.query.id", route.query.id)
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
+  formData2.value= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
+  console.log('11111111122222222',formData2.value)
 }
 
 // 页面禁用
@@ -156,6 +156,12 @@ const deleteParkDetail = (index) => {
   parkDetailList.value.splice(index, 1)
 }
 
+/** 子表的表单 */
+const subTabsNameFile = ref('adoptionPlanProfile')
+const adoptionPlanProfileFormRef = ref()
+/** 子表的表单 */
+const subTabsNameRule = ref('adoptionRuleSpecs')
+const adoptionRuleSpecsFormRef = ref()
 // 提交表单
 const submitForm = async () => {
   // 校验表单
@@ -177,11 +183,31 @@ const submitForm = async () => {
     // })
     console.log("AdoptionPlan认养计划", formData.value)
     const data = formData.value as unknown as AdoptionPlanVO
-    if (!formData.value.id) {
+    // 拼接子表的数据
+    data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
+    const data2 = formData2.value as unknown as AdoptionRuleVO
+    console.log(data2,'data2')
+    data2.planNumber=data.serialNumber
+    console.log(data2,'data2---new')
+    data2.ruleType='1'
+    console.log(adoptionRuleSpecsFormRef.value.getData())
+    // 拼接子表的数据
+    data2.adoptionRuleSpecss = adoptionRuleSpecsFormRef.value.getData()
+    if (!route.query.id) {
       await AdoptionPlanApi.createAdoptionPlan(data)
+      if (!data2.id){
+        await AdoptionRuleApi.createAdoptionRule(data2)
+      }else {
+        await AdoptionRuleApi.updateAdoptionRule(data2)
+      }
       ElMessage.success('提交成功！')
     } else {
       await AdoptionPlanApi.updateAdoptionPlan(data)
+      if (!data2.id){
+        await AdoptionRuleApi.createAdoptionRule(data2)
+      }else {
+        await AdoptionRuleApi.updateAdoptionRule(data2)
+      }
       ElMessage.success('提交成功！')
     }
     // 表单已提交，从本地删除此表单
@@ -363,8 +389,8 @@ const activeName = ref<any>(['1','2','3','4'])
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
                   <!-- 子表的表单 -->
-                  <el-tabs class="mt-[-12px]" v-model="subTabsName">
-                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData.serialNumber" />
+                  <el-tabs class="mt-[-12px]" v-model="subTabsNameRule">
+                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData2.ruleNumber" />
                   </el-tabs>
                 </div>
                 <div class="col-span-1">
@@ -388,7 +414,7 @@ const activeName = ref<any>(['1','2','3','4'])
             <el-collapse-item title="宣传包装图" name="4">
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
-                  <el-tabs class="mt-[-12px]" v-model="subTabsName">
+                  <el-tabs class="mt-[-12px]" v-model="subTabsNameFile">
                       <AdoptionPlanProfileForm ref="adoptionPlanProfileFormRef" :serial-number="formData.serialNumber" />
                   </el-tabs>
                 </div>

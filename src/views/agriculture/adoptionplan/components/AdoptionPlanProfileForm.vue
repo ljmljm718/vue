@@ -16,7 +16,7 @@
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.detailType`" :rules="formRules.detailType" class="mb-0px!">
             <el-select v-model="row.detailType" placeholder="请选择明细类型">
-                <el-option label="请选择字典生成" value="" />
+                <el-option label="请选择字典生成" value="0" />
             </el-select>
           </el-form-item>
         </template>

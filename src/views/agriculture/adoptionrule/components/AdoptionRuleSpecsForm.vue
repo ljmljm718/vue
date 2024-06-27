@@ -21,7 +21,7 @@
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.ruleType`" :rules="formRules.ruleType" class="mb-0px!">
             <el-select v-model="row.ruleType" placeholder="请选择认养模式">
-                <el-option label="请选择字典生成" value="" />
+                <el-option label="请选择字典生成" value="1" />
             </el-select>
           </el-form-item>
         </template>
@@ -95,7 +95,9 @@ watch(
     }
     try {
       formLoading.value = true
+      console.log('11111111',val)
       formData.value = await AdoptionRuleApi.getAdoptionRuleSpecsListByRuleNumber(val)
+      console.log('2222222',formData.value )
     } finally {
       formLoading.value = false
     }
