@@ -1,8 +1,9 @@
 import request from '@/config/axios'
 
 //基础数据
-export const agResources = async () => {
+export const distinct = async (params) => {
   return await request.get({
-    url: '/shizhu/big-screen/agResources',
+    url: 'agri/user-table/select-distinct',
+    params
   })
 }

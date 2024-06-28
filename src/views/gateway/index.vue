@@ -18,28 +18,28 @@
               <div @mouseenter="mouseenterChange(1)" @mouseleave='mainNum=0' class="flex box-border py-[5px] bg-[#07494c] items-center justify-around">
                 <div class="data-icon"></div>
                 <div calss='flex-1'>
-                  <div class="text-center mb-[10px]">14</div>
+                  <div class="text-center mb-[10px]">{{ disVal }}</div>
                   <div>帮扶区县</div>
                 </div>
               </div>
               <div  @mouseenter="mouseenterChange(2)" @mouseleave='mainNum=0' class="flex box-border py-[5px] bg-[#0b4979] items-center justify-around">
                 <div class="data-icon"></div>
                 <div calss='flex-1'>
-                  <div class="text-center mb-[10px]">25</div>
+                  <div class="text-center mb-[10px]">{{ disVal2 }}</div>
                   <div>示范村</div>
                 </div>
               </div>
               <div  @mouseenter="mouseenterChange(3)" @mouseleave='mainNum=0' class="flex box-border py-[5px] bg-[#07494c] items-center justify-around">
                 <div class="data-icon"></div>
                 <div calss='flex-1'>
-                  <div class="text-center mb-[10px]">32</div>
+                  <div class="text-center mb-[10px]">{{ disVal3 }}</div>
                   <div>精准帮扶基地</div>
                 </div>
               </div>
               <div  @mouseenter="mouseenterChange(4)" @mouseleave='mainNum=0' class="flex box-border py-[5px] bg-[#0b4979] items-center justify-around">
                 <div class="data-icon"></div>
                 <div calss='flex-1'>
-                  <div class="text-center mb-[10px]">35</div>
+                  <div class="text-center mb-[10px]">{{ disVal4 }}</div>
                   <div>产业形态</div>
                 </div>
               </div>
@@ -59,8 +59,11 @@
               </div>
           </div>
           <template #footer v-if="mainNum>0">
-            <div class="card-header">
-              <span>移入展示数据</span>
+            <div class="flex flex-wrap justify-evenly">
+              <div class="flex mb-15px mr-10px" v-for="item,index in dataList" :key="index">
+                <div class="mr-15px">{{ item.name }}</div>
+                <div>{{ item.sum }}</div>
+              </div>
             </div>
           </template>
         </el-card>
@@ -78,13 +81,34 @@
 <script setup lang='ts'>
 import {ref} from 'vue'
 import {
-
+  distinct
 } from './api'
 const mainNum=ref(0)
+const dataList=ref([])
 //鼠标移入事件
-const mouseenterChange=(val)=>{
+const mouseenterChange=async (val)=>{
   mainNum.value=val
+  let res=await distinct({type:val})
+  console.log(res ,'基础数据')
+  dataList.value=res
 }
+//获取数据
+const disVal=ref()
+const disVal2=ref()
+const disVal3=ref()
+const disVal4=ref()
+const getDistinct=async ()=>{
+  let res=await distinct({type:1})
+  let res2=await distinct({type:2})
+  let res3=await distinct({type:3})
+  let res4=await distinct({type:4})
+  disVal.value=res.length
+  disVal2.value=res2.length
+  disVal3.value=res3.length
+  disVal4.value=res4.length
+}
+
+getDistinct()
 </script>
 <style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);
