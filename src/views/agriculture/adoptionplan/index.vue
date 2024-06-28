@@ -91,14 +91,14 @@
         width="180px"
       />
       <el-table-column
-        label="预计收货开始时间"
+        label="预计收获开始时间"
         align="center"
         prop="receivingStart"
         :formatter="dateFormatter"
         width="180px"
       />
       <el-table-column
-        label="预计收货结束时间"
+        label="预计收获结束时间"
         align="center"
         prop="receivingEnd"
         :formatter="dateFormatter"

@@ -333,19 +333,19 @@ const activeName = ref<any>(['1','2','3','4'])
                       placeholder="选择预售结束时间"
                     />
                   </el-form-item>
-                  <el-form-item label="预计收货时间" prop="receivingStart" class="col-span-2">
+                  <el-form-item label="预计收获时间" prop="receivingStart" class="col-span-2">
                     <el-date-picker
                       v-model="formData.receivingStart"
                       type="date"
                       value-format="x"
-                      placeholder="选择预计收货开始时间"
+                      placeholder="选择预计收获开始时间"
                     />
                     -
                     <el-date-picker
                       v-model="formData.receivingEnd"
                       type="date"
                       value-format="x"
-                      placeholder="选择预计收货结束时间"
+                      placeholder="选择预计收获结束时间"
                     />
                   </el-form-item>
 <!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
@@ -373,7 +373,7 @@ const activeName = ref<any>(['1','2','3','4'])
                 </el-button>
               </div>
               <ContentWrap>
-                <el-table :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
+                <el-table  v-loading="formLoading" :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
                           @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
                   <el-table-column type="index" width="50" />
                   <el-table-column label="蟹塘编号" align="center" prop="id" width="200"/>
@@ -395,7 +395,7 @@ const activeName = ref<any>(['1','2','3','4'])
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
                   <!-- 子表的表单 -->
-                  <el-tabs class="mt-[-12px]" v-model="subTabsNameRule">
+                  <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameRule">
                       <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData2.ruleNumber" />
                   </el-tabs>
                 </div>
@@ -429,7 +429,7 @@ const activeName = ref<any>(['1','2','3','4'])
             <el-collapse-item title="宣传包装图" name="4">
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
-                  <el-tabs class="mt-[-12px]" v-model="subTabsNameFile">
+                  <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameFile">
                       <AdoptionPlanProfileForm ref="adoptionPlanProfileFormRef" :serial-number="formData.serialNumber" />
                   </el-tabs>
                 </div>
