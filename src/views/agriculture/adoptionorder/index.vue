@@ -209,7 +209,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键id" align="center" prop="id" />
       <el-table-column label="计划流水号" align="center" prop="serialNumber" />
       <el-table-column label="订单流水号" align="center" prop="orderNumber" />
       <el-table-column label="基地编号" align="center" prop="parkId" />
@@ -345,6 +344,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await AdoptionOrderApi.getAdoptionOrderPage(queryParams)
+    console.log("打印查询到的订单",data)
     list.value = data.list
     total.value = data.total
   } finally {
