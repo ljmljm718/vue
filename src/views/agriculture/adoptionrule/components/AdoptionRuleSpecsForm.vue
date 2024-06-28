@@ -1,5 +1,5 @@
 <template>
-  <el-button type="primary" @click="handleAdd">新增</el-button>
+  <el-button type="primary" plain @click="handleAdd">新增</el-button>
 
   <el-form
     ref="formRef"
@@ -21,7 +21,8 @@
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.ruleType`" :rules="formRules.ruleType" class="mb-0px!">
             <el-select v-model="row.ruleType" placeholder="请选择认养模式">
-                <el-option label="请选择字典生成" value="1" />
+              <el-option label="亩" value="1" />
+              <el-option label="只" value="0" />
             </el-select>
           </el-form-item>
         </template>

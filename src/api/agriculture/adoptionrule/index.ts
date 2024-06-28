@@ -9,6 +9,7 @@ export interface AdoptionRuleVO {
   ruleOverview: string // 规则概述
   ruleDescribe: string // 具体说明
   remark: string // 备注
+  insuranceAmount: number
 }
 
 // 认养规则 API

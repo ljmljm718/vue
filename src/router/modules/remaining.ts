@@ -379,6 +379,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path:'/gateway',
+    name:'gateway',
+    component:()=>import('@/views/gateway/index.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
     path:'/bigscreenMYZH',
     name:'bigscreenMYZH',
     component:()=>import('@/views/bigscreenMingYue3/index.vue'),
