@@ -1,6 +1,6 @@
 <template>
   <el-row justify="start" class="mt-3">
-    <el-button @click="handleAdd" type="primary">新增</el-button>
+    <el-button plain @click="handleAdd" type="primary">新增</el-button>
   </el-row>
   <el-form
     ref="formRef"

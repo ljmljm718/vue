@@ -53,7 +53,8 @@ const formData2 = ref({
   ruleType: undefined,
   ruleOverview: undefined,
   ruleDescribe: undefined,
-  remark: undefined
+  remark: undefined,
+  insuranceAmount: undefined,
 })
 const formRules2 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
@@ -81,10 +82,8 @@ const resetForm = () => {
 
 const getFormInfo = async () => {
   resetForm()
-  console.log("route.query.id", route.query.id)
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
   formData2.value= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
-  console.log('11111111122222222',formData2.value)
   // 获取当前计划绑定的蟹塘
   const data = await AdoptionPlanApi.getPlanParkPlot(route.query.id as any)
   parkDetailList.value = data
@@ -191,7 +190,6 @@ const submitForm = async () => {
       }
 
     })
-    console.log(parkDetailList.value,2222)
 
     await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
 
@@ -199,11 +197,7 @@ const submitForm = async () => {
     // 拼接子表的数据
     data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
     const data2 = formData2.value as unknown as AdoptionRuleVO
-    console.log(data2,'data2')
     data2.planNumber=data.serialNumber
-    console.log(data2,'data2---new')
-    data2.ruleType='1'
-    console.log(adoptionRuleSpecsFormRef.value.getData())
     // 拼接子表的数据
     data2.adoptionRuleSpecss = adoptionRuleSpecsFormRef.value.getData()
     if (!route.query.id) {
@@ -368,7 +362,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   type="primary"
                   plain
                   @click="addParkDetail()"
-                >增加
+                >新增
                 </el-button>
                 <el-button
                   type="danger"
@@ -413,11 +407,20 @@ const activeName = ref<any>(['1','2','3','4'])
                     label-width="100px"
                     v-loading="formLoading"
                   >
+                    <el-form-item label="规则类型"  prop="ruleType" >
+                      <el-select v-model="formData2.ruleType" placeholder="请选择规则类型">
+                        <el-option label="亩" value="1" />
+                        <el-option label="只" value="0" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="保险价格" prop="insuranceAmount">
+                      <el-input-number style="width: 100%"  v-model="formData2.insuranceAmount" placeholder="请输入保险价格" />
+                    </el-form-item>
                     <el-form-item label="认养" prop="ruleOverview">
-                      <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入规则概述" />
+                      <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入认养" />
                     </el-form-item>
                     <el-form-item label="认养人权益" prop="ruleDescribe">
-                      <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入具体说明" />
+                      <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入认养人权益" />
                     </el-form-item>
                   </el-form>
                 </div>
