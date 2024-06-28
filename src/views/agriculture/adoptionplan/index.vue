@@ -192,6 +192,12 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await AdoptionPlanApi.getAdoptionPlanPage(queryParams)
+    data.list.forEach( item =>{
+      if (item.planYear){
+        const year = new Date().toLocaleDateString(item.planYear).split('/')
+        item.planYear = year[0]
+      }
+    })
     list.value = data.list
     total.value = data.total
   } finally {
