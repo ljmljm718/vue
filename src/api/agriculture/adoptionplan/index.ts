@@ -1,4 +1,5 @@
 import request from '@/config/axios'
+import {list} from "postcss";
 
 // 认养计划 VO
 export interface AdoptionPlanVO {
@@ -12,6 +13,12 @@ export interface AdoptionPlanVO {
   receivingStart: Date // 预计收货开始时间
   receivingEnd: Date // 预计收货结束时间
   planDescribe: string // 计划描述
+}
+// 计划蟹塘中间表数据
+export interface PlanParkPlot {
+  planId: string // 计划id
+  parkId: string // 基地id
+  plotId: string // 地块id（蟹塘）
 }
 
 // 认养计划 API
@@ -55,5 +62,15 @@ export const AdoptionPlanApi = {
   // 获得认养计划附件列表
   getAdoptionPlanProfileListBySerialNumber: async (serialNumber) => {
     return await request.get({ url: `/agriculture/adoption-plan/adoption-plan-profile/list-by-serial-number?serialNumber=` + serialNumber })
+  },
+
+  // 更新计划蟹塘中间表
+  updatePlanParkPlot: async (data:any, planId: string) => {
+    return await request.post({ url: `/agriculture/adoption-plan/updatePlanParkPlot?planId=` + planId, data })
+  },
+
+  // 查询认养计划蟹塘中间表数据
+  getPlanParkPlot: async (planId: string) => {
+    return await request.get({ url: `/agriculture/adoption-plan/getPlanParkPlot?planId=` + planId })
   },
 }

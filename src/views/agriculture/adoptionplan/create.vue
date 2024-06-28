@@ -11,7 +11,7 @@ import {
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useTagsViewStore } from "@/store/modules/tagsView";
-import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
+import {AdoptionPlanApi, AdoptionPlanVO, PlanParkPlot} from "@/api/agriculture/adoptionplan";
 import AdoptionRuleSpecsForm
   from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
 import AdoptionPlanProfileForm
@@ -85,6 +85,10 @@ const getFormInfo = async () => {
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
   formData2.value= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
   console.log('11111111122222222',formData2.value)
+  // 获取当前计划绑定的蟹塘
+  const data = await AdoptionPlanApi.getPlanParkPlot(route.query.id as any)
+  parkDetailList.value = data
+  console.log("parkDetailList", data)
 }
 
 // 页面禁用
@@ -130,12 +134,6 @@ const handleCurrentChange = (val: any) => {
 
 const message = useMessage() // 消息弹窗
 const parkDetailList = ref<ParkDetailVO[]>([]) // 蟹塘列表的数据
-// 计划蟹塘中间表数据
-// const formParkDetail = ref({
-//   planId: undefined,
-//   parkId: undefined,
-//   plotId: undefined,
-// })
 
 // 新增蟹塘
 const addParkDetailRef = ref()
@@ -143,8 +141,7 @@ const addParkDetail = () => {
   addParkDetailRef.value.open()
 }
 const handleParkDetailChange = (order: ParkDetailVO) => {
-  parkDetailList.value.splice(parkDetailList.value.length, 0, order[0])
-  console.log("parkDetailList.value", parkDetailList.value)
+    parkDetailList.value.splice(parkDetailList.value.length, 0, order[0])
 }
 
 const tableRowClassName = ({row, rowIndex}) => {
@@ -162,6 +159,10 @@ const adoptionPlanProfileFormRef = ref()
 /** 子表的表单 */
 const subTabsNameRule = ref('adoptionRuleSpecs')
 const adoptionRuleSpecsFormRef = ref()
+// 计划蟹塘中间表数据
+const planParkPlot = ref<PlanParkPlot>()
+const planParkPlotList = ref<PlanParkPlot[]>([])
+
 // 提交表单
 const submitForm = async () => {
   // 校验表单
@@ -181,7 +182,19 @@ const submitForm = async () => {
     //     parkDetail.parkId = formData.value.id
     //   }
     // })
-    console.log("AdoptionPlan认养计划", formData.value)
+    // 更新蟹塘
+    parkDetailList.value = parkDetailList.value.map (item=> {
+      return {
+        plotId: item.id,
+        parkId: item.parkId,
+        planId: formData.value.id,
+      }
+
+    })
+    console.log(parkDetailList.value,2222)
+
+    await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
+
     const data = formData.value as unknown as AdoptionPlanVO
     // 拼接子表的数据
     data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
@@ -369,18 +382,17 @@ const activeName = ref<any>(['1','2','3','4'])
                 <el-table :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
                           @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
                   <el-table-column type="index" width="50" />
-                  <el-table-column label="蟹塘编号" align="center" prop="code" width="200"/>
+                  <el-table-column label="蟹塘编号" align="center" prop="id" width="200"/>
                   <el-table-column label="蟹塘名称" align="center" prop="name" width="200"/>
                   <!--      <el-table-column label="类型" align="center" prop="type" />-->
                   <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>
-                  <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
-                  <el-table-column label="海拔" align="center" prop="altitude"/>
+                  <el-table-column label="海拔（米）" align="center" prop="altitude"/>
                   <el-table-column label="纬度" align="center" prop="latitude" width="120"/>
                   <el-table-column label="经度" align="center" prop="longitude" width="120"/>
                   <el-table-column label="通讯地址" align="center" prop="address"  width="200"/>
                   <el-table-column label="联系人" align="center" prop="contact"/>
                   <el-table-column label="联系电话" align="center" prop="tel"  width="120"/>
-                  <el-table-column label="面积" align="center" prop="area"/>
+                  <el-table-column label="面积（亩）" align="center" prop="area"/>
                 </el-table>
               </ContentWrap>
 
