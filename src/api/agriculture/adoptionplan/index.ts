@@ -13,6 +13,8 @@ export interface AdoptionPlanVO {
   receivingStart: Date // 预计收货开始时间
   receivingEnd: Date // 预计收货结束时间
   planDescribe: string // 计划描述
+  startTime: Date // 计划开始时间
+  endTime: Date // 计划结束时间
 }
 // 计划蟹塘中间表数据
 export interface PlanParkPlot {

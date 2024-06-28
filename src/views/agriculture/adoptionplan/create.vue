@@ -11,14 +11,13 @@ import {
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useTagsViewStore } from "@/store/modules/tagsView";
-import {AdoptionPlanApi, AdoptionPlanVO, PlanParkPlot} from "@/api/agriculture/adoptionplan";
+import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
 import AdoptionRuleSpecsForm
   from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
 import AdoptionPlanProfileForm
   from "@/views/agriculture/adoptionplan/components/AdoptionPlanProfileForm.vue";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import AddParkDetail from "@/views/agriculture/adoptionplan/components/AddParkDetail.vue";
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {AdoptionRuleApi, AdoptionRuleVO} from "@/api/agriculture/adoptionrule";
 
 const route = useRoute()
@@ -44,6 +43,8 @@ const formData = ref({
   receivingStart: undefined,
   receivingEnd: undefined,
   planDescribe: undefined,
+  startTime: undefined,
+  endTime: undefined,
 })
 
 const formData2 = ref({
@@ -77,6 +78,8 @@ const resetForm = () => {
     receivingStart: undefined,
     receivingEnd: undefined,
     planDescribe: undefined,
+    startTime: undefined,
+    endTime: undefined,
   }
 }
 
@@ -158,9 +161,6 @@ const adoptionPlanProfileFormRef = ref()
 /** 子表的表单 */
 const subTabsNameRule = ref('adoptionRuleSpecs')
 const adoptionRuleSpecsFormRef = ref()
-// 计划蟹塘中间表数据
-const planParkPlot = ref<PlanParkPlot>()
-const planParkPlotList = ref<PlanParkPlot[]>([])
 
 // 提交表单
 const submitForm = async () => {
@@ -301,7 +301,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   v-loading="formLoading"
                   class="grid grid-cols-4 gap-2 p-4"
                 >
-                  <el-form-item label="流水号" prop="serialNumber">
+                  <el-form-item label="计划流水号" prop="serialNumber">
                     <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
                   </el-form-item>
                   <el-form-item label="计划名称" prop="planName">
@@ -317,6 +317,21 @@ const activeName = ref<any>(['1','2','3','4'])
                   </el-form-item>
                   <el-form-item label="认养品种" prop="adoptionKind">
                     <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
+                  </el-form-item>
+                  <el-form-item label="订单生效时间" prop="startTime"  class="col-span-2" >
+                    <el-date-picker
+                      v-model="formData.startTime"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择订单开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.endTime"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择订单结束时间"
+                    />
                   </el-form-item>
                   <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
                     <el-date-picker
@@ -351,7 +366,7 @@ const activeName = ref<any>(['1','2','3','4'])
 <!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
 
 <!--                  </el-form-item>-->
-                <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
+                <el-form-item label="计划描述" prop="planDescribe" class="col-span-2">
                   <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
                 </el-form-item>
               </el-form>
