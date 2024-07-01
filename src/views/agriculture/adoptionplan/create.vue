@@ -11,14 +11,13 @@ import {
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useTagsViewStore } from "@/store/modules/tagsView";
-import {AdoptionPlanApi, AdoptionPlanVO, PlanParkPlot} from "@/api/agriculture/adoptionplan";
+import {AdoptionPlanApi, AdoptionPlanVO} from "@/api/agriculture/adoptionplan";
 import AdoptionRuleSpecsForm
   from "@/views/agriculture/adoptionrule/components/AdoptionRuleSpecsForm.vue";
 import AdoptionPlanProfileForm
   from "@/views/agriculture/adoptionplan/components/AdoptionPlanProfileForm.vue";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import AddParkDetail from "@/views/agriculture/adoptionplan/components/AddParkDetail.vue";
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {AdoptionRuleApi, AdoptionRuleVO} from "@/api/agriculture/adoptionrule";
 
 const route = useRoute()
@@ -44,6 +43,8 @@ const formData = ref({
   receivingStart: undefined,
   receivingEnd: undefined,
   planDescribe: undefined,
+  startTime: undefined,
+  endTime: undefined,
 })
 //按只认养的formdata
 const formData2 = ref({
@@ -96,6 +97,8 @@ const resetForm = () => {
     receivingStart: undefined,
     receivingEnd: undefined,
     planDescribe: undefined,
+    startTime: undefined,
+    endTime: undefined,
   }
 }
 
@@ -318,66 +321,81 @@ const activeTab = ref<any>('first')
         <el-scrollbar class="croll-bar-template">
           <el-collapse v-model="activeName" simple>
             <el-collapse-item title="认养计划" name="1">
-              <el-form
-                ref="formRef"
-                :disabled="disabled"
-                :model="formData"
-                :rules="formRules"
-                label-width="100px"
-                v-loading="formLoading"
-                class="grid grid-cols-4 gap-2 p-4"
-              >
-                <el-form-item label="流水号" prop="serialNumber">
-                  <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
-                </el-form-item>
-                <el-form-item label="计划名称" prop="planName">
-                  <el-input v-model="formData.planName" placeholder="请输入计划名称" />
-                </el-form-item>
-                <el-form-item label="计划年度" prop="planYear">
-                  <el-date-picker
-                    v-model="formData.planYear"
-                    type="year"
-                    value-format="x"
-                    placeholder="选择计划年度"
-                  />
-                </el-form-item>
-                <el-form-item label="认养品种" prop="adoptionKind">
-                  <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
-                </el-form-item>
-                <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
-                  <el-date-picker
-                    v-model="formData.presaleStart"
-                    type="date"
-                    value-format="x"
-                    placeholder="选择预售开始时间"
-                  />
-                  -
-                  <el-date-picker
-                    v-model="formData.presaleEnd"
-                    type="date"
-                    value-format="x"
-                    placeholder="选择预售结束时间"
-                  />
-                </el-form-item>
-                <el-form-item label="预计收获时间" prop="receivingStart" class="col-span-2">
-                  <el-date-picker
-                    v-model="formData.receivingStart"
-                    type="date"
-                    value-format="x"
-                    placeholder="选择预计收获开始时间"
-                  />
-                  -
-                  <el-date-picker
-                    v-model="formData.receivingEnd"
-                    type="date"
-                    value-format="x"
-                    placeholder="选择预计收获结束时间"
-                  />
-                </el-form-item>
-                <!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
+                <el-form
+                  ref="formRef"
+                  :disabled="disabled"
+                  :model="formData"
+                  :rules="formRules"
+                  label-width="100px"
+                  v-loading="formLoading"
+                  class="grid grid-cols-4 gap-2 p-4"
+                >
+                  <el-form-item label="计划流水号" prop="serialNumber">
+                    <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
+                  </el-form-item>
+                  <el-form-item label="计划名称" prop="planName">
+                    <el-input v-model="formData.planName" placeholder="请输入计划名称" />
+                  </el-form-item>
+                  <el-form-item label="计划年度" prop="planYear">
+                    <el-date-picker
+                      v-model="formData.planYear"
+                      type="year"
+                      value-format="x"
+                      placeholder="选择计划年度"
+                    />
+                  </el-form-item>
+                  <el-form-item label="认养品种" prop="adoptionKind">
+                    <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
+                  </el-form-item>
+                  <el-form-item label="订单生效时间" prop="startTime"  class="col-span-2" >
+                    <el-date-picker
+                      v-model="formData.startTime"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择订单开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.endTime"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择订单结束时间"
+                    />
+                  </el-form-item>
+                  <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
+                    <el-date-picker
+                      v-model="formData.presaleStart"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预售开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.presaleEnd"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预售结束时间"
+                    />
+                  </el-form-item>
+                  <el-form-item label="预计收获时间" prop="receivingStart" class="col-span-2">
+                    <el-date-picker
+                      v-model="formData.receivingStart"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预计收获开始时间"
+                    />
+                    -
+                    <el-date-picker
+                      v-model="formData.receivingEnd"
+                      type="date"
+                      value-format="x"
+                      placeholder="选择预计收获结束时间"
+                    />
+                  </el-form-item>
+<!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
 
-                <!--                  </el-form-item>-->
-                <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
+<!--                  </el-form-item>-->
+                <el-form-item label="计划描述" prop="planDescribe" class="col-span-2">
                   <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
                 </el-form-item>
               </el-form>
@@ -400,7 +418,7 @@ const activeTab = ref<any>('first')
               </div>
               <ContentWrap>
                 <el-table  v-loading="formLoading" :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
-                           @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
+                          @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
                   <el-table-column type="index" width="50" />
                   <el-table-column label="蟹塘编号" align="center" prop="id" width="200"/>
                   <el-table-column label="蟹塘名称" align="center" prop="name" width="200"/>

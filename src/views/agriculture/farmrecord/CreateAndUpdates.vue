@@ -9,7 +9,7 @@
             type="success"
             :icon="TopRight"
             plain
-            @click="submitForm"
+            @click="submitForm()"
             v-if="route.query.type as any !=='select'"
           >提交</el-button>
           <el-button
@@ -302,6 +302,7 @@ import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFormStorage} from '@/components/EditFrame/index'
 import { useTagsViewStore } from "@/store/modules/tagsView";
 import {useUserStore} from "@/store/modules/user";
+import { createA, updatestate } from '@/api/bigscreenMingYue'
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -314,7 +315,7 @@ const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 
-const formData = ref({
+const formData = ref<any>({
   id: undefined,
   planId: undefined,
   planName: undefined,
@@ -501,6 +502,13 @@ const submitForm = async () => {
   } finally {
     formLoading.value = false
   }
+
+  if (route.query.type === 'create' && route.query.id) {
+    updatestate({
+      id: route.query.id,
+      planState: 2
+    })
+  }
 }
 
 /** 重置表单 */
@@ -559,9 +567,16 @@ const getFrom = async () =>{
   resetForm();
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   formData.value.recordTime= new Date().toLocaleString(route.query.recordTime);
-  if(route.query.id)  {
+  if(route.query.id && route.query.type !== 'create')  {
     formData.value = await FarmRecordApi.getFarmRecord (route.query.id as any);
     loadData(route.query.id);
+  }
+  if (route.query && route.query.type === 'create') {
+    formData.value = { ...route.query }
+    console.log("formData", formData.value);
+    
+    formData.value.recordArea = route.query.area
+    formData.value.recordTime = new Date().toLocaleString(route.query.recordTime)
   }
 }
 

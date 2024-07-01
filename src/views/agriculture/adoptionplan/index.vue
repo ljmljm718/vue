@@ -71,38 +71,52 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键id" align="center" prop="id" />
-      <el-table-column label="流水号" align="center" prop="serialNumber" />
-      <el-table-column label="计划名称" align="center" prop="planName" />
-      <el-table-column label="计划年度" align="center" prop="planYear" />
-      <el-table-column label="认养品种" align="center" prop="adoptionKind" />
+<!--      <el-table-column label="主键id" align="center" prop="id" />-->
+      <el-table-column label="流水号" align="center" prop="serialNumber" width="150px"/>
+      <el-table-column label="计划名称" align="center" prop="planName" width="130px"/>
+      <el-table-column label="计划年度" align="center" prop="planYear" width="100px"/>
+      <el-table-column label="认养品种" align="center" prop="adoptionKind" width="100px"/>
+      <el-table-column
+        label="计划开始时间"
+        align="center"
+        prop="startTime"
+        :formatter="dateFormatter2"
+        width="130px"
+      />
+      <el-table-column
+        label="计划结束时间"
+        align="center"
+        prop="endTime"
+        :formatter="dateFormatter2"
+        width="130px"
+      />
       <el-table-column
         label="预售开始时间"
         align="center"
         prop="presaleStart"
-        :formatter="dateFormatter"
-        width="180px"
+        :formatter="dateFormatter2"
+        width="130px"
       />
       <el-table-column
         label="预售结束时间"
         align="center"
         prop="presaleEnd"
-        :formatter="dateFormatter"
-        width="180px"
+        :formatter="dateFormatter2"
+        width="130px"
       />
       <el-table-column
         label="预计收获开始时间"
         align="center"
         prop="receivingStart"
-        :formatter="dateFormatter"
-        width="180px"
+        :formatter="dateFormatter2"
+        width="130px"
       />
       <el-table-column
         label="预计收获结束时间"
         align="center"
         prop="receivingEnd"
-        :formatter="dateFormatter"
-        width="180px"
+        :formatter="dateFormatter2"
+        width="130px"
       />
       <el-table-column label="计划描述" align="center" prop="planDescribe" />
       <el-table-column label="操作" align="center" fixed="right" width="160">
@@ -148,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { AdoptionPlanApi, AdoptionPlanVO } from '@/api/agriculture/adoptionplan'
 import AdoptionPlanForm from './AdoptionPlanForm.vue'
@@ -178,6 +192,12 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await AdoptionPlanApi.getAdoptionPlanPage(queryParams)
+    data.list.forEach( item =>{
+      if (item.planYear){
+        const year = new Date().toLocaleDateString(item.planYear).split('/')
+        item.planYear = year[0]
+      }
+    })
     list.value = data.list
     total.value = data.total
   } finally {
