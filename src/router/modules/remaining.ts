@@ -379,6 +379,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path:'/home',
+    name:'HomePage',
+    component:()=>import('@/views/homePages/home.vue'),
+    meta:{
+      hidden: true
+    }
+  },
+  {
     path:'/gateway',
     name:'gateway',
     component:()=>import('@/views/gateway/index.vue'),

@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="150px"
     >
       <el-form-item label="计划流水号" prop="serialNumber">
         <el-input
@@ -263,7 +263,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column width="100px" label="操作" align="center">
         <template #default="scope">
           <el-button
             link
