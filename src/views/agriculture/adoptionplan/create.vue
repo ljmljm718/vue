@@ -45,12 +45,12 @@ const formData = ref({
   receivingEnd: undefined,
   planDescribe: undefined,
 })
-
+//按只认养的formdata
 const formData2 = ref({
   id: undefined,
   ruleNumber:undefined,
   planNumber: undefined,
-  ruleType: undefined,
+  ruleType: '0',
   ruleOverview: undefined,
   ruleDescribe: undefined,
   remark: undefined,
@@ -63,6 +63,25 @@ const formRules2 = reactive({
   ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
 })
 const formRef2 = ref() // 表单 Ref
+
+//按亩认养的formdata
+const formData3 = ref({
+  id: undefined,
+  ruleNumber:undefined,
+  planNumber: undefined,
+  ruleType: '1',
+  ruleOverview: undefined,
+  ruleDescribe: undefined,
+  remark: undefined,
+  insuranceAmount: undefined,
+})
+const formRules3 = reactive({
+  ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
+  planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
+  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
+  ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
+})
+const formRef3 = ref() // 表单 Ref
 
 // 重置表单方法
 const resetForm = () => {
@@ -83,11 +102,12 @@ const resetForm = () => {
 const getFormInfo = async () => {
   resetForm()
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
-  formData2.value= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
+  const result= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
+  formData2.value = result.filter(item => item.ruleType=='0')[0]
+  formData3.value = result.filter(item =>  item.ruleType=='1')[0]
   // 获取当前计划绑定的蟹塘
   const data = await AdoptionPlanApi.getPlanParkPlot(route.query.id as any)
   parkDetailList.value = data
-  console.log("parkDetailList", data)
 }
 
 // 页面禁用
@@ -117,9 +137,6 @@ const formRules = reactive({
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
 })
 
-/** 子表的表单 */
-// const subTabsName = ref('parkDetail')
-// const parkDetailFormRef = ref()
 
 // 单选选中的地块id
 const parkDetailId = ref()
@@ -140,7 +157,7 @@ const addParkDetail = () => {
   addParkDetailRef.value.open()
 }
 const handleParkDetailChange = (order: ParkDetailVO) => {
-    parkDetailList.value.splice(parkDetailList.value.length, 0, order[0])
+  parkDetailList.value.splice(parkDetailList.value.length, 0, order[0])
 }
 
 const tableRowClassName = ({row, rowIndex}) => {
@@ -157,10 +174,8 @@ const subTabsNameFile = ref('adoptionPlanProfile')
 const adoptionPlanProfileFormRef = ref()
 /** 子表的表单 */
 const subTabsNameRule = ref('adoptionRuleSpecs')
-const adoptionRuleSpecsFormRef = ref()
-// 计划蟹塘中间表数据
-const planParkPlot = ref<PlanParkPlot>()
-const planParkPlotList = ref<PlanParkPlot[]>([])
+const adoptionRuleSpecsFormRefZhi = ref()
+const adoptionRuleSpecsFormRefMu = ref()
 
 // 提交表单
 const submitForm = async () => {
@@ -176,11 +191,6 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    // formData.value.parkDetails.forEach(parkDetail => {
-    //   if (!parkDetail.parkId){
-    //     parkDetail.parkId = formData.value.id
-    //   }
-    // })
     // 更新蟹塘
     parkDetailList.value = parkDetailList.value.map (item=> {
       return {
@@ -188,7 +198,6 @@ const submitForm = async () => {
         parkId: item.parkId,
         planId: formData.value.id,
       }
-
     })
 
     await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
@@ -196,16 +205,27 @@ const submitForm = async () => {
     const data = formData.value as unknown as AdoptionPlanVO
     // 拼接子表的数据
     data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
+    //按只认养formData2
     const data2 = formData2.value as unknown as AdoptionRuleVO
     data2.planNumber=data.serialNumber
     // 拼接子表的数据
-    data2.adoptionRuleSpecss = adoptionRuleSpecsFormRef.value.getData()
+    data2.adoptionRuleSpecss = adoptionRuleSpecsFormRefZhi.value.getData()
+    //按亩认养formData3
+    const data3 = formData3.value as unknown as AdoptionRuleVO
+    data3.planNumber=data.serialNumber
+    data3.adoptionRuleSpecss = adoptionRuleSpecsFormRefMu.value.getData()
+    // adoptionRules
     if (!route.query.id) {
       await AdoptionPlanApi.createAdoptionPlan(data)
       if (!data2.id){
         await AdoptionRuleApi.createAdoptionRule(data2)
       }else {
         await AdoptionRuleApi.updateAdoptionRule(data2)
+      }
+      if (!data3.id){
+        await AdoptionRuleApi.createAdoptionRule(data3)
+      }else {
+        await AdoptionRuleApi.updateAdoptionRule(data3)
       }
       ElMessage.success('提交成功！')
     } else {
@@ -214,6 +234,11 @@ const submitForm = async () => {
         await AdoptionRuleApi.createAdoptionRule(data2)
       }else {
         await AdoptionRuleApi.updateAdoptionRule(data2)
+      }
+      if (!data3.id){
+        await AdoptionRuleApi.createAdoptionRule(data3)
+      }else {
+        await AdoptionRuleApi.updateAdoptionRule(data3)
       }
       ElMessage.success('提交成功！')
     }
@@ -249,6 +274,7 @@ const loadData = async (id = 'new_form') => {
 }
 if (!formData.value.id) loadData()
 const activeName = ref<any>(['1','2','3','4'])
+const activeTab = ref<any>('first')
 </script>
 
 <template>
@@ -258,18 +284,18 @@ const activeName = ref<any>(['1','2','3','4'])
         <div class="flex justify-between w-full">
           <div>
             <el-button
-            type="success"
-            v-show="!disabled"
-            :icon="TopRight"
-            @click="submitForm"
-          >提交</el-button>
-          <el-button
-            type="danger"
-            v-show="!disabled"
-            :icon="Refresh"
-            @click="resetForm()"
-          >清空
-          </el-button>
+              type="success"
+              v-show="!disabled"
+              :icon="TopRight"
+              @click="submitForm"
+            >提交</el-button>
+            <el-button
+              type="danger"
+              v-show="!disabled"
+              :icon="Refresh"
+              @click="resetForm()"
+            >清空
+            </el-button>
           </div>
           <div>
             <el-button
@@ -278,13 +304,13 @@ const activeName = ref<any>(['1','2','3','4'])
               @click="router.back()"
             >返回</el-button>
             <el-button
-            type="primary"
-            v-show="!disabled"
-            plain
-            @click="localSave()"
-          >
-            暂存
-          </el-button>
+              type="primary"
+              v-show="!disabled"
+              plain
+              @click="localSave()"
+            >
+              暂存
+            </el-button>
           </div>
         </div>
       </template>
@@ -292,65 +318,65 @@ const activeName = ref<any>(['1','2','3','4'])
         <el-scrollbar class="croll-bar-template">
           <el-collapse v-model="activeName" simple>
             <el-collapse-item title="认养计划" name="1">
-                <el-form
-                  ref="formRef"
-                  :disabled="disabled"
-                  :model="formData"
-                  :rules="formRules"
-                  label-width="100px"
-                  v-loading="formLoading"
-                  class="grid grid-cols-4 gap-2 p-4"
-                >
-                  <el-form-item label="流水号" prop="serialNumber">
-                    <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
-                  </el-form-item>
-                  <el-form-item label="计划名称" prop="planName">
-                    <el-input v-model="formData.planName" placeholder="请输入计划名称" />
-                  </el-form-item>
-                  <el-form-item label="计划年度" prop="planYear">
-                    <el-date-picker
-                      v-model="formData.planYear"
-                      type="year"
-                      value-format="x"
-                      placeholder="选择计划年度"
-                    />
-                  </el-form-item>
-                  <el-form-item label="认养品种" prop="adoptionKind">
-                    <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
-                  </el-form-item>
-                  <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
-                    <el-date-picker
-                      v-model="formData.presaleStart"
-                      type="date"
-                      value-format="x"
-                      placeholder="选择预售开始时间"
-                    />
-                    -
-                    <el-date-picker
-                      v-model="formData.presaleEnd"
-                      type="date"
-                      value-format="x"
-                      placeholder="选择预售结束时间"
-                    />
-                  </el-form-item>
-                  <el-form-item label="预计收获时间" prop="receivingStart" class="col-span-2">
-                    <el-date-picker
-                      v-model="formData.receivingStart"
-                      type="date"
-                      value-format="x"
-                      placeholder="选择预计收获开始时间"
-                    />
-                    -
-                    <el-date-picker
-                      v-model="formData.receivingEnd"
-                      type="date"
-                      value-format="x"
-                      placeholder="选择预计收获结束时间"
-                    />
-                  </el-form-item>
-<!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
+              <el-form
+                ref="formRef"
+                :disabled="disabled"
+                :model="formData"
+                :rules="formRules"
+                label-width="100px"
+                v-loading="formLoading"
+                class="grid grid-cols-4 gap-2 p-4"
+              >
+                <el-form-item label="流水号" prop="serialNumber">
+                  <el-input v-model="formData.serialNumber" placeholder="流水号后台自动生成" disabled/>
+                </el-form-item>
+                <el-form-item label="计划名称" prop="planName">
+                  <el-input v-model="formData.planName" placeholder="请输入计划名称" />
+                </el-form-item>
+                <el-form-item label="计划年度" prop="planYear">
+                  <el-date-picker
+                    v-model="formData.planYear"
+                    type="year"
+                    value-format="x"
+                    placeholder="选择计划年度"
+                  />
+                </el-form-item>
+                <el-form-item label="认养品种" prop="adoptionKind">
+                  <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
+                </el-form-item>
+                <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
+                  <el-date-picker
+                    v-model="formData.presaleStart"
+                    type="date"
+                    value-format="x"
+                    placeholder="选择预售开始时间"
+                  />
+                  -
+                  <el-date-picker
+                    v-model="formData.presaleEnd"
+                    type="date"
+                    value-format="x"
+                    placeholder="选择预售结束时间"
+                  />
+                </el-form-item>
+                <el-form-item label="预计收获时间" prop="receivingStart" class="col-span-2">
+                  <el-date-picker
+                    v-model="formData.receivingStart"
+                    type="date"
+                    value-format="x"
+                    placeholder="选择预计收获开始时间"
+                  />
+                  -
+                  <el-date-picker
+                    v-model="formData.receivingEnd"
+                    type="date"
+                    value-format="x"
+                    placeholder="选择预计收获结束时间"
+                  />
+                </el-form-item>
+                <!--                  <el-form-item label="预计收货结束时间" prop="receivingEnd">-->
 
-<!--                  </el-form-item>-->
+                <!--                  </el-form-item>-->
                 <el-form-item label="计划描述" prop="planDescribe" class="col-span-4">
                   <el-input type="textarea" v-model="formData.planDescribe" placeholder="请输入计划描述" />
                 </el-form-item>
@@ -374,7 +400,7 @@ const activeName = ref<any>(['1','2','3','4'])
               </div>
               <ContentWrap>
                 <el-table  v-loading="formLoading" :data="parkDetailList" :stripe="true" :show-overflow-tooltip="true"
-                          @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
+                           @current-change="handleCurrentChange" highlight-current-row :row-class-name="tableRowClassName">
                   <el-table-column type="index" width="50" />
                   <el-table-column label="蟹塘编号" align="center" prop="id" width="200"/>
                   <el-table-column label="蟹塘名称" align="center" prop="name" width="200"/>
@@ -392,45 +418,73 @@ const activeName = ref<any>(['1','2','3','4'])
 
             </el-collapse-item>
             <el-collapse-item title="认养规则" name="3">
-              <div class="grid grid-cols-3  ">
-                <div class="col-span-2">
-                  <!-- 子表的表单 -->
-                  <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameRule">
-                      <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRef" :rule-number="formData2.ruleNumber" />
-                  </el-tabs>
-                </div>
-                <div class="col-span-1">
-                  <el-form
-                    ref="formRef2"
-                    :model="formData2"
-                    :rules="formRules2"
-                    label-width="100px"
-                    v-loading="formLoading"
-                  >
-                    <el-form-item label="规则类型"  prop="ruleType" >
-                      <el-select v-model="formData2.ruleType" placeholder="请选择规则类型">
-                        <el-option label="亩" value="1" />
-                        <el-option label="只" value="0" />
-                      </el-select>
-                    </el-form-item>
-                    <el-form-item label="保险价格" prop="insuranceAmount">
-                      <el-input-number style="width: 100%"  v-model="formData2.insuranceAmount" placeholder="请输入保险价格" />
-                    </el-form-item>
-                    <el-form-item label="认养" prop="ruleOverview">
-                      <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入认养" />
-                    </el-form-item>
-                    <el-form-item label="认养人权益" prop="ruleDescribe">
-                      <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入认养人权益" />
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </div>
+              <el-tabs  v-model="activeTab"  v-loading="formLoading" type="card">
+                <el-tab-pane label="按只认养"  name="first">
+                  <div class="grid grid-cols-3  ">
+                    <div class="col-span-2">
+                      <!-- 子表的表单 -->
+                      <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameRule">
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefZhi" :rule-type="formData2.ruleType" :rule-number="formData2.ruleNumber" />
+                      </el-tabs>
+                    </div>
+                    <div class="col-span-1">
+                      <el-form
+                        ref="formRef2"
+                        :model="formData2"
+                        :rules="formRules2"
+                        label-width="100px"
+                        v-loading="formLoading"
+                      >
+                        <el-form-item label="保险价格" prop="insuranceAmount">
+                          <el-input-number style="width: 100%"  v-model="formData2.insuranceAmount" placeholder="请输入保险价格" />
+                        </el-form-item>
+                        <el-form-item label="认养" prop="ruleOverview">
+                          <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入认养" />
+                        </el-form-item>
+                        <el-form-item label="认养人权益" prop="ruleDescribe">
+                          <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入认养人权益" />
+                        </el-form-item>
+                      </el-form>
+                    </div>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane label="按亩认养" name="second">
+                  <div class="grid grid-cols-3  ">
+                    <div class="col-span-2">
+                      <!-- 子表的表单 -->
+                      <el-tabs class="mt-[-12px]"  v-model="subTabsNameRule">
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefMu" :rule-type="formData3.ruleType"  :rule-number="formData3.ruleNumber" />
+                      </el-tabs>
+                    </div>
+                    <div class="col-span-1">
+                      <el-form
+                        ref="formRef3"
+                        :model="formData3"
+                        :rules="formRules3"
+                        label-width="100px"
+                        v-loading="formLoading"
+                      >
+                        <el-form-item label="保险价格" prop="insuranceAmount">
+                          <el-input-number style="width: 100%"  v-model="formData3.insuranceAmount" placeholder="请输入保险价格" />
+                        </el-form-item>
+                        <el-form-item label="认养" prop="ruleOverview">
+                          <el-input type="textarea" v-model="formData3.ruleOverview" placeholder="请输入认养" />
+                        </el-form-item>
+                        <el-form-item label="认养人权益" prop="ruleDescribe">
+                          <el-input type="textarea" v-model="formData3.ruleDescribe" placeholder="请输入认养人权益" />
+                        </el-form-item>
+                      </el-form>
+                    </div>
+                  </div>
+                </el-tab-pane>
+              </el-tabs>
+
             </el-collapse-item>
             <el-collapse-item title="宣传包装图" name="4">
               <div class="grid grid-cols-3  ">
                 <div class="col-span-2">
                   <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameFile">
-                      <AdoptionPlanProfileForm ref="adoptionPlanProfileFormRef" :serial-number="formData.serialNumber" />
+                    <AdoptionPlanProfileForm ref="adoptionPlanProfileFormRef" :serial-number="formData.serialNumber" />
                   </el-tabs>
                 </div>
               </div>
