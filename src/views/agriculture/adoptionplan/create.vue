@@ -189,7 +189,82 @@ const adoptionRuleSpecsFormRefMu = ref()
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-    await formRef.value.validate()
+   const resdata1= await formRef.value.validate()
+  const resdatazhi= await formRef2.value.validate()
+  const resdatamu= await formRef3.value.validate()
+   const resdata2= await adoptionPlanProfileFormRef.value.validate()
+   const resdata3= await adoptionRuleSpecsFormRefZhi.value.validate()
+   const resdata4= await adoptionRuleSpecsFormRefMu.value.validate()
+    debugger
+  if (resdata1 &&resdatazhi &&resdatamu  &&resdata2 &&resdata3 &&resdata4){
+    formLoading.value = true
+    try {
+      // 更新蟹塘
+      parkDetailList.value = parkDetailList.value.map (item=> {
+        return {
+          plotId: item.id,
+          parkId: item.parkId,
+          planId: formData.value.id,
+        }
+      })
+
+      await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
+
+      const data = formData.value as unknown as AdoptionPlanVO
+      // 拼接子表的数据
+      data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
+      //按只认养formData2
+      const data2 = formData2.value as unknown as AdoptionRuleVO
+      data2.planNumber=data.serialNumber
+      // 拼接子表的数据
+      data2.adoptionRuleSpecss = adoptionRuleSpecsFormRefZhi.value.getData()
+      //按亩认养formData3
+      const data3 = formData3.value as unknown as AdoptionRuleVO
+      data3.planNumber=data.serialNumber
+      data3.adoptionRuleSpecss = adoptionRuleSpecsFormRefMu.value.getData()
+      // adoptionRules
+      if (!route.query.id) {
+        await AdoptionPlanApi.createAdoptionPlan(data)
+        if (!data2.id){
+          await AdoptionRuleApi.createAdoptionRule(data2)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data2)
+        }
+        if (!data3.id){
+          await AdoptionRuleApi.createAdoptionRule(data3)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data3)
+        }
+        ElMessage.success('提交成功！')
+      } else {
+        await AdoptionPlanApi.updateAdoptionPlan(data)
+        if (!data2.id){
+          await AdoptionRuleApi.createAdoptionRule(data2)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data2)
+        }
+        if (!data3.id){
+          await AdoptionRuleApi.createAdoptionRule(data3)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data3)
+        }
+        ElMessage.success('提交成功！')
+      }
+      // 表单已提交，从本地删除此表单
+      deleteFormStorage(
+        ROUTE_PATH,
+        formData.value.id ? formData.value.id : 'new_form'
+      )
+      // 关闭当前页面
+      useTagsViewStore().delView(router.currentRoute.value);
+      router.push(ORIGIN_PATH)
+    } catch (err) {
+      ElMessage.error('提交失败, 请联系管理员')
+    } finally {
+      formLoading.value = false
+    }
+  }
+
     // await adoptionPlanProfileFormRef.value.validate()
     // await adoptionRuleSpecsFormRefZhi.value.validate()
     // await adoptionRuleSpecsFormRefMu.value.validate()
@@ -201,72 +276,7 @@ const submitForm = async () => {
   //   return
   // }
   // 提交请求
-  formLoading.value = true
-  try {
-    // 更新蟹塘
-    parkDetailList.value = parkDetailList.value.map (item=> {
-      return {
-        plotId: item.id,
-        parkId: item.parkId,
-        planId: formData.value.id,
-      }
-    })
 
-    await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
-
-    const data = formData.value as unknown as AdoptionPlanVO
-    // 拼接子表的数据
-    data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
-    //按只认养formData2
-    const data2 = formData2.value as unknown as AdoptionRuleVO
-    data2.planNumber=data.serialNumber
-    // 拼接子表的数据
-    data2.adoptionRuleSpecss = adoptionRuleSpecsFormRefZhi.value.getData()
-    //按亩认养formData3
-    const data3 = formData3.value as unknown as AdoptionRuleVO
-    data3.planNumber=data.serialNumber
-    data3.adoptionRuleSpecss = adoptionRuleSpecsFormRefMu.value.getData()
-    // adoptionRules
-    if (!route.query.id) {
-      await AdoptionPlanApi.createAdoptionPlan(data)
-      if (!data2.id){
-        await AdoptionRuleApi.createAdoptionRule(data2)
-      }else {
-        await AdoptionRuleApi.updateAdoptionRule(data2)
-      }
-      if (!data3.id){
-        await AdoptionRuleApi.createAdoptionRule(data3)
-      }else {
-        await AdoptionRuleApi.updateAdoptionRule(data3)
-      }
-      ElMessage.success('提交成功！')
-    } else {
-      await AdoptionPlanApi.updateAdoptionPlan(data)
-      if (!data2.id){
-        await AdoptionRuleApi.createAdoptionRule(data2)
-      }else {
-        await AdoptionRuleApi.updateAdoptionRule(data2)
-      }
-      if (!data3.id){
-        await AdoptionRuleApi.createAdoptionRule(data3)
-      }else {
-        await AdoptionRuleApi.updateAdoptionRule(data3)
-      }
-      ElMessage.success('提交成功！')
-    }
-    // 表单已提交，从本地删除此表单
-    deleteFormStorage(
-      ROUTE_PATH,
-      formData.value.id ? formData.value.id : 'new_form'
-    )
-    // 关闭当前页面
-    useTagsViewStore().delView(router.currentRoute.value);
-    router.push(ORIGIN_PATH)
-  } catch (err) {
-    ElMessage.error('提交失败, 请联系管理员')
-  } finally {
-    formLoading.value = false
-  }
 }
 
 // 本地保存表单
