@@ -26,94 +26,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="基地编号" prop="parkId">
-        <el-input
-          v-model="queryParams.parkId"
-          placeholder="请输入基地编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="地块编号" prop="plotId">
-        <el-input
-          v-model="queryParams.plotId"
-          placeholder="请输入地块编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="订单类型" prop="orderType">
-        <el-select
-          v-model="queryParams.orderType"
-          placeholder="请选择订单类型"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="地址标识号" prop="addressNumber">
-        <el-input
-          v-model="queryParams.addressNumber"
-          placeholder="请输入地址标识号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="订单金额" prop="orderAmount">
-        <el-input
-          v-model="queryParams.orderAmount"
-          placeholder="请输入订单金额"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="实付金额" prop="realAmount">
-        <el-input
-          v-model="queryParams.realAmount"
-          placeholder="请输入实付金额"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="付款时间" prop="paymentTime">
-        <el-date-picker
-          v-model="queryParams.paymentTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="发货时间" prop="shippingTime">
-        <el-date-picker
-          v-model="queryParams.shippingTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="收货时间" prop="receiptTime">
-        <el-date-picker
-          v-model="queryParams.receiptTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select
           v-model="queryParams.status"
@@ -123,24 +35,6 @@
         >
           <el-option label="请选择字典生成" value="" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="订单赠送标识" prop="isPresented">
-        <el-input
-          v-model="queryParams.isPresented"
-          placeholder="请输入订单赠送标识"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="是否提醒" prop="isRemind">
-        <el-input
-          v-model="queryParams.isRemind"
-          placeholder="请输入是否提醒"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
       </el-form-item>
       <el-form-item label="预计收货日期（起）" prop="expectStart">
         <el-date-picker
@@ -159,26 +53,6 @@
           type="date"
           placeholder="选择预计收货日期（止）"
           clearable
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
@@ -218,13 +92,6 @@
       <el-table-column label="订单金额" align="center" prop="orderAmount" />
       <el-table-column label="实付金额" align="center" prop="realAmount" />
       <el-table-column
-        label="付款时间"
-        align="center"
-        prop="paymentTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column
         label="发货时间"
         align="center"
         prop="shippingTime"
@@ -255,15 +122,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column width="100px" label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
           <el-button
             link
