@@ -189,14 +189,12 @@ const adoptionRuleSpecsFormRefMu = ref()
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-   const resdata1= await formRef.value.validate()
-  const resdatazhi= await formRef2.value.validate()
-  const resdatamu= await formRef3.value.validate()
-   const resdata2= await adoptionPlanProfileFormRef.value.validate()
-   const resdata3= await adoptionRuleSpecsFormRefZhi.value.validate()
-   const resdata4= await adoptionRuleSpecsFormRefMu.value.validate()
-    debugger
-  if (resdata1 &&resdatazhi &&resdatamu  &&resdata2 &&resdata3 &&resdata4){
+  await formRef.value.validate()
+  await formRef2.value.validate()
+  await formRef3.value.validate()
+  await adoptionPlanProfileFormRef.value.validate()
+  await adoptionRuleSpecsFormRefZhi.value.validate()
+  await adoptionRuleSpecsFormRefMu.value.validate()
     formLoading.value = true
     try {
       // 更新蟹塘
@@ -263,7 +261,7 @@ const submitForm = async () => {
     } finally {
       formLoading.value = false
     }
-  }
+
 
     // await adoptionPlanProfileFormRef.value.validate()
     // await adoptionRuleSpecsFormRefZhi.value.validate()
