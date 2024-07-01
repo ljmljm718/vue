@@ -356,19 +356,19 @@ const activeTab = ref<any>('first')
                   <el-form-item label="认养品种" prop="adoptionKind">
                     <el-input v-model="formData.adoptionKind" placeholder="请输入认养品种" />
                   </el-form-item>
-                  <el-form-item label="订单生效时间" prop="startTime"  class="col-span-2" >
+                  <el-form-item label="计划生效时间" prop="startTime"  class="col-span-2" >
                     <el-date-picker
                       v-model="formData.startTime"
                       type="date"
                       value-format="x"
-                      placeholder="选择订单开始时间"
+                      placeholder="选择计划开始时间"
                     />
                     -
                     <el-date-picker
                       v-model="formData.endTime"
                       type="date"
                       value-format="x"
-                      placeholder="选择订单结束时间"
+                      placeholder="选择计划结束时间"
                     />
                   </el-form-item>
                   <el-form-item label="预售时间" prop="presaleStart"  class="col-span-2" >
