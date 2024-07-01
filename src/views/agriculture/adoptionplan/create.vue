@@ -106,8 +106,14 @@ const getFormInfo = async () => {
   resetForm()
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
   const result= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
-  formData2.value = result.filter(item => item.ruleType=='0')[0]
-  formData3.value = result.filter(item =>  item.ruleType=='1')[0]
+  result.forEach(item => {
+    if (item.ruleType=='0'){
+      formData2.value = item
+    }
+    if (item.ruleType=='1'){
+      formData3.value = item
+    }
+  })
   // 获取当前计划绑定的蟹塘
   const data = await AdoptionPlanApi.getPlanParkPlot(route.query.id as any)
   parkDetailList.value = data
@@ -445,7 +451,7 @@ const activeTab = ref<any>('first')
                     <div class="col-span-2">
                       <!-- 子表的表单 -->
                       <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameRule">
-                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefZhi" :rule-type="formData2.ruleType" :rule-number="formData2.ruleNumber" />
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefZhi" :rule-number="formData2.ruleNumber" />
                       </el-tabs>
                     </div>
                     <div class="col-span-1">
@@ -474,7 +480,7 @@ const activeTab = ref<any>('first')
                     <div class="col-span-2">
                       <!-- 子表的表单 -->
                       <el-tabs class="mt-[-12px]"  v-model="subTabsNameRule">
-                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefMu" :rule-type="formData3.ruleType"  :rule-number="formData3.ruleNumber" />
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefMu" :rule-number="formData3.ruleNumber" />
                       </el-tabs>
                     </div>
                     <div class="col-span-1">

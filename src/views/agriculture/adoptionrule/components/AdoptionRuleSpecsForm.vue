@@ -96,9 +96,7 @@ watch(
     }
     try {
       formLoading.value = true
-      console.log('11111111',val)
       formData.value = await AdoptionRuleApi.getAdoptionRuleSpecsListByRuleNumber(val)
-      console.log('2222222',formData.value )
     } finally {
       formLoading.value = false
     }
