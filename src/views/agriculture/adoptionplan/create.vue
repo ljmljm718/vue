@@ -61,7 +61,7 @@ const formRules2 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
 })
 const formRef2 = ref() // 表单 Ref
 
@@ -80,7 +80,7 @@ const formRules3 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '规则概述不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
 })
 const formRef3 = ref() // 表单 Ref
 
@@ -183,7 +183,10 @@ const adoptionRuleSpecsFormRefMu = ref()
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+    await formRef.value.validate()
+    // await adoptionPlanProfileFormRef.value.validate()
+    // await adoptionRuleSpecsFormRefZhi.value.validate()
+    // await adoptionRuleSpecsFormRefMu.value.validate()
   // 校验子表单
   // try {
   //   await parkDetailFormRef.value.validate()
