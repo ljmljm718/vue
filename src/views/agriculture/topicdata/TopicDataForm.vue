@@ -20,15 +20,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="主题关键字" prop="topicKey">
+<!--      <el-form-item label="主题关键字" prop="topicKey">
         <el-input v-model="formData.topicKey" placeholder="请输入主题关键字" />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="主题" prop="topicPath">
         <el-input v-model="formData.topicPath" placeholder="请输入主题" />
       </el-form-item>
-      <el-form-item label="单位" prop="topicUnit">
+<!--      <el-form-item label="单位" prop="topicUnit">
         <el-input v-model="formData.topicUnit" placeholder="请输入单位" />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="是否订阅" prop="topicIsorder">
         <el-select v-model="formData.topicIsorder" style="width: 100%;" disabled>
           <el-option
@@ -79,7 +79,6 @@ const formData = ref({
 })
 const formRules = reactive({
   topicName: [{ required: true, message: '主题名称不能为空', trigger: 'blur' }],
-  topicKey: [{ required: true, message: '主题关键字不能为空', trigger: 'blur' }],
   topicPath: [{ required: true, message: '主题不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref

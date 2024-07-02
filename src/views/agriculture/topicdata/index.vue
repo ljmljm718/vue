@@ -18,7 +18,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="主题关键字" prop="topicKey">
+<!--      <el-form-item label="主题关键字" prop="topicKey">
         <el-input
           v-model="queryParams.topicKey"
           placeholder="请输入主题关键字"
@@ -26,7 +26,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="是否订阅" prop="topicIsorder">
         <el-select
           v-model="queryParams.topicIsorder"
@@ -134,9 +134,9 @@
           <dict-tag :type="DICT_TYPE.AGRI_MQTT_TOPIC_TYPE" :value="scope.row.topicType" />
         </template>
       </el-table-column>
-      <el-table-column label="主题关键字" align="center" prop="topicKey"/>
+<!--      <el-table-column label="主题关键字" align="center" prop="topicKey"/>-->
       <el-table-column label="主题" align="center" prop="topicPath"/>
-      <el-table-column label="单位" align="center" prop="topicUnit"/>
+<!--      <el-table-column label="单位" align="center" prop="topicUnit"/>-->
       <el-table-column label="是否订阅" align="center" prop="topicIsorder">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_MQTT_SUBSCRIBE_STATUS" :value="scope.row.topicIsorder" />
@@ -151,7 +151,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="100">
         <template #default="scope">
           <el-button
             link
