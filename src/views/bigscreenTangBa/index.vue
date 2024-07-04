@@ -363,6 +363,9 @@ export default defineComponent({
                               <span>{ item.dataValue }</span>
                               <span class="pl-1">{ item.unit }</span>
                             </div>
+                            <div class="absolute left-[60px] art-font text-[#fff] top-[30px] text-[14px]">
+                              <span>{ item.monitoringType }</span>
+                            </div>
                           </div>
                         </div>
                       ))
