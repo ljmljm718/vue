@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-100vh main" style="overflow-y: auto">
-    <div class="w-full topBg">
+    <div class="w-full topBg relative">
       <div class="flex py-[15px] items-center">
         <div class="logo ml-[30px]"></div>
         <div class="color-[#fff] text-2xl">鲁渝协作乡村振兴示范村数字化赋能工程</div>
@@ -19,7 +19,10 @@
             >强化产业协作，实施"东产西移"，大力推动区域协同发展</div
           >
         </div>
-        <div class="w-50%">右边</div>
+        <div class="w-40% h-500px initMap" id="mainMap"></div>
+        <div class="absolute left--150px bottom--150px">
+          <img src="./assets/top-bg.png" class="w-300px h-300px" />
+        </div>
       </div>
     </div>
     <div class="center-bg w-full h-300px border-2 color-[#fff] grid grid-cols-6 box-border">
@@ -172,17 +175,17 @@
             <div class="table-header-row">
               <div
                 class="table-header-cell"
-                v-for="(column, index) in leftArr.tableColumns1"
+                v-for="(column, index) in leftArr3.tableColumns1"
                 :style="`width: ${column.width};`"
                 :key="index"
                 >{{ column.label }}</div
               >
             </div>
-            <div class="table-data-row" v-for="(item, index) in leftArr.tableData1" :key="index">
+            <div class="table-data-row" v-for="(item, index) in leftArr3.tableData1" :key="index">
               <div
                 v-show="item[column.key] != item.warnStatus"
                 class="table-data-cell"
-                v-for="(column, inde) in leftArr.tableColumns1"
+                v-for="(column, inde) in leftArr3.tableColumns1"
                 :key="inde"
                 :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
                 >{{ item[column.key] }}</div
@@ -228,10 +231,34 @@
               v-for="(column, index) in leftArr2.tableColumns1"
               :style="`width: ${column.width};`"
               :key="index"
-              >{{ column.label }}</div
-            >
+              >{{ column.label }}
+              <el-select
+                @change="selectChange"
+                class="!bg-[#3ac975] color-[#fff]"
+                v-show="column.label === '区县'"
+                v-model="county"
+                style="width: 100px"
+              >
+                <el-option class="color-[#fff]" label="全部" value="全部" />
+                <el-option
+                  class="color-[#fff]"
+                  v-for="item in options"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </div>
           </div>
           <div class="table-data-row" v-for="(item, index) in leftArr2.tableData1" :key="index">
+            <div
+              v-show="column.label === '序号'"
+              class="table-data-cell"
+              v-for="(column, inde) in leftArr2.tableColumns1"
+              :key="inde"
+              :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+              >{{ index + 1 }}</div
+            >
             <div
               v-show="item[column.key] != item.warnStatus"
               class="table-data-cell"
@@ -253,9 +280,18 @@
         >
       </div>
       <div class="flex justify-evenly items-center">
-        <div class="SAAS-bg1 w-32% h-[300px]"></div>
-        <div class="SAAS-bg2 w-32% h-[260px] mt-10px"></div>
-        <div class="SAAS-bg3 w-32% h-[300px]"></div>
+        <div class="w-32%">
+          <div class="SAAS-bg1 w-100% h-[300px]"> </div>
+          <div><img src="./assets/SAAS-bg-fall1.png" class="w-100%" alt="" /></div>
+        </div>
+        <div class="mt-[-90px] w-32%">
+          <div class="SAAS-bg2 w-100% h-[250px]"></div>
+          <div class="mt-10px"><img src="./assets/SAAS-bg-fall2.png" class="w-100%" alt="" /></div>
+        </div>
+        <div class="w-32%">
+          <div class="SAAS-bg3 w-100% h-[300px]"></div>
+          <div><img src="./assets/SAAS-bg-fall3.png" class="w-100%" alt="" /></div>
+        </div>
       </div>
     </div>
     <div class="py-[20px] bg-[#f7f7f7]">
@@ -298,9 +334,9 @@
             </div>
             <div class="w-1px h-70px bg-[#c1c1c1]"></div>
             <div class="w-78%">
-              <div>中共重庆市委、重庆市人民政府印发《重庆市建设深化集体...</div>
+              <div>关于学习运用“千村示范、万村政治”工程经验加快建设巴渝...</div>
               <div class="text-sm color-[#c1c1c1]"
-                >为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我市实际...</div
+                >建设现代化新重庆最艰巨繁重的任务在农村，最大的潜力和后劲也在农村。为贯彻落实《中共中央国务院关于学习运用“千村示范、万村整治”工程经验有力有效推进乡村全面振兴的意见…</div
               >
             </div>
           </div>
@@ -311,9 +347,9 @@
             </div>
             <div class="w-1px h-70px bg-[#c1c1c1]"></div>
             <div class="w-78%">
-              <div>中共重庆市委、重庆市人民政府印发《重庆市建设深化集体...</div>
+              <div>重庆市人民政府办公厅印发《关于推进生产功效信用“三位一...</div>
               <div class="text-sm color-[#c1c1c1]"
-                >为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我市实际...</div
+                >为深入贯彻落实党的二十大精神，巩固和完善农村基本经营制度，推动乡村全面振兴和农业农村现代化，推进生产、供销、信用“三位一体”改革（以下简称“三位一体”改革），构建新型为农服务体…</div
               >
             </div>
           </div>
@@ -324,22 +360,83 @@
             </div>
             <div class="w-1px h-70px bg-[#c1c1c1]"></div>
             <div class="w-78%">
-              <div>中共重庆市委、重庆市人民政府印发《重庆市建设深化集体...</div>
+              <div>开展国际农业合作 共享农业发展机遇：镜头里的弓箭“一带一路”...</div>
               <div class="text-sm color-[#c1c1c1]"
-                >为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我市实际...</div
+                >中共中央总书记、国家主席、中央军委主席习近平近日在重庆考察时强调，重庆要对标新时代新征程党的中心任务和党中央赋予的使命，充分发挥比较优势、后发优势，进一步全面深化改革开放…</div
               >
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="bg-[#fff] py-20px">
+      <div>
+        <div class="text-center text-3xl !decoration-8">数字农业综合解决案例</div>
+        <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
+          >构建全流程的新型农业一体化管理平台，融合农业数据管理、农业数据预警显示、多维数据综合显示、农产品生产周期预测、农业气象预警、信息<br />综合利用、信息发布服务、病虫害预警、溯源系统等功能与数据为一体，提供全方位、智慧化、立体可视化的运营保障服务</div
+        >
+      </div>
+      <div class="bigscreen-bg w-112% ml--107px mr-[-500px] h-350px"></div>
+    </div>
+    <div class="bg-[#345442] py-[20px]">
+      <div class="flex justify-evenly">
+        <div>
+          <div class="color-[#fff] text-lg mb-20px">成功案例</div>
+          <div class="color-[#c1c1c1] tex-sm">隘口镇山银花产业数字化赋能</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">白帝镇农文旅产业数字化赋能</div>
+          <div class="color-[#c1c1c1] tex-sm">奉节县鲁渝协作乡村振兴服务大屏</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">稻鱼鸭产业可视化数字驾驶舱</div>
+          <div class="color-[#c1c1c1] tex-sm">黑水镇鲁渝协作乡村振兴示范数字化赋能</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">开州区鲁渝协作乡村振兴示范数字化赋能</div>
+        </div>
+        <div>
+          <div class="color-[#fff] text-lg mb-20px">帮扶基地的</div>
+          <div class="color-[#c1c1c1] tex-sm">巫山县福田镇双凤村清霸茶叶基地</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">秀山县梅江镇兴隆坳现代茶叶农业园</div>
+          <div class="color-[#c1c1c1] tex-sm">奉节县鹤峰乡青杠村百果园</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">开州区临江镇明月村柑橘园</div>
+          <div class="color-[#c1c1c1] tex-sm">石柱县王场镇双龙村柑橘园</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">酉阳县黑水镇黑水村智慧化稻蟹养殖基地</div>
+        </div>
+        <div>
+          <div class="color-[#fff] text-lg mb-20px">政府政策</div>
+          <div class="color-[#c1c1c1] tex-sm">党中央国务院政策</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">部委</div>
+          <div class="color-[#c1c1c1] tex-sm">市委市政府</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">部委</div>
+        </div>
+        <div>
+          <div class="color-[#fff] text-lg mb-20px">SAAS平台</div>
+          <div class="color-[#c1c1c1] tex-sm">乡村振兴平台</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">数商兴农平台</div>
+          <div class="color-[#c1c1c1] tex-sm">乡村服务平台</div>
+          <div class="color-[#c1c1c1] tex-sm my-10px">数字化赋能平台</div>
+        </div>
+        <div>
+          <div class="color-[#fff] text-lg mb-10px ml-45px">联系我们</div>
+          <div class="color-[#c1c1c1] tex-sm">0531-00000000</div>
+          <img src="./assets/footLogo.png" class="w-100px h-90px mt-40px ml-30px" />
+        </div>
+      </div>
+      <div class="w-full h-1px mt-20px bg-[#496555]"></div>
+      <div class="mt-20px">
+        <div class="text-center color-[#c1c1c1] text-sm"
+          >Copyright © 2024 zhinengshengchan. | 鲁ICP备17022090号 | ©2024
+          山东浪潮智能生产技术有限公司</div
+        >
+      </div>
+    </div>
   </div>
 </template>
-<script setup lang='ts'>
-import { ref, reactive } from 'vue'
-import { distinct } from './api'
+<script setup lang="ts">
+import { ref, reactive, onMounted } from 'vue'
+import { distinct, page, selectMap } from './api'
+import * as echarts from 'echarts'
+import { jsonData } from './assets/chongqing'
 const mainNum = ref(0)
 const dataList = ref([])
+const county = ref('') //区县参数
+const options = ref([])
 //鼠标移入事件
 const mouseenterChange = async (val) => {
   mainNum.value = val
@@ -381,7 +478,7 @@ const leftArr = reactive({
     }
   ],
   tableData1: [
-    {
+  {
       index: '1',
       city: '济南市',
       county: '武隆区'
@@ -400,7 +497,32 @@ const leftArr = reactive({
       index: '4',
       city: '济宁市',
       county: '城口县'
-    }
+    },
+    {
+      index: '5',
+      city: '烟台市',
+      county: '巫溪县'
+    },
+    {
+      index: '6',
+      city: '威海市',
+      county: '巫山县'
+    },
+    {
+      index: '7',
+      city: '青岛市',
+      county: '开州区'
+    },
+    {
+      index: '8',
+      city: '临沂市',
+      county: '云阳县'
+    },
+    {
+      index: '9',
+      city: '聊城市',
+      county: '奉节县'
+    },
   ]
 })
 const leftArr2 = reactive({
@@ -416,12 +538,12 @@ const leftArr2 = reactive({
       width: '20%'
     },
     {
-      key: 'city',
+      key: 'village',
       label: '示范村',
       width: '21%'
     },
     {
-      key: 'industryType',
+      key: 'form',
       label: '产业类型',
       width: '20%'
     },
@@ -455,6 +577,72 @@ const leftArr2 = reactive({
     }
   ]
 })
+const leftArr3 = reactive({
+  tableColumns1: [
+    {
+      key: 'index',
+      label: '序号',
+      width: '33%'
+    },
+    {
+      key: 'city',
+      label: '帮扶基地',
+      width: '33%'
+    },
+    {
+      key: 'county',
+      label: '产业',
+      width: '33%'
+    }
+  ],
+  tableData1: [
+    {
+      index: '1',
+      city: '开州区竹溪县灵泉村好耍主席园',
+      county: '柑橘'
+    },
+    {
+      index: '2',
+      city: '万州区长滩镇龙泉社区四鼻鲤鱼养殖中心',
+      county: '鲤鱼'
+    },
+    {
+      index: '3',
+      city: '武隆区芙蓉街道堰塘村田园综合体',
+      county: '稻田'
+    },
+    {
+      index: '4',
+      city: '石柱县中益乡华溪村中药材基地',
+      county: '中药'
+    },
+    {
+      index: '5',
+      city: '彭水县润溪乡樱桃井村布福娜',
+      county: '樱桃'
+    },
+    {
+      index: '6',
+      city: '巫山县竹贤乡下庄村蔬菜大棚基地',
+      county: '蔬菜'
+    },
+    {
+      index: '7',
+      city: '云阳县鱼泉镇木瓜村李子园',
+      county: '李子'
+    },
+    {
+      index: '8',
+      city: '奉节县永乐镇大坝村柑橘园',
+      county: '感觉'
+    },
+    {
+      index: '9',
+      city: '巫溪县通城镇龙池村水果园',
+      county: '苹果'
+    },
+  ]
+})
 //获取数据
 const disVal = ref()
 const disVal2 = ref()
@@ -470,8 +658,168 @@ const getDistinct = async () => {
   disVal3.value = res3.length
   disVal4.value = res4.length
 }
-
 getDistinct()
+//初始化地图
+const initChinaMap = () => {
+  echarts.registerMap('chongqing', jsonData)
+  const chartDom = document.getElementById('mainMap')
+  const myChart = echarts.init(chartDom)
+  myChart.setOption(
+    {
+      baseOption: {
+        geo: {
+          aspectScale: 0.9, //长宽比
+          map: 'chongqing',
+          roam: false,
+          itemStyle: {
+            borderColor: '#1877cd',
+            borderWidth: 2,
+            areaColor: {
+              type: 'radial',
+              x: 0.5,
+              y: 0.5,
+              r: 0.8,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: '#000000' // 0% 处的颜色// 0% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: '#0335b5' // 100% 处的颜色 // 100% 处的颜色
+                }
+              ],
+              globalCoord: false // 缺省为 false
+            },
+            shadowColor: '#0938b6',
+            shadowOffsetX: -10,
+            shadowOffsetY: -10,
+            shadowBlur: 19,
+            emphasis: {
+              areaColor: {
+                type: 'radial',
+                x: 0.5,
+                y: 0.5,
+                r: 0.8,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#0335b5' // 0% 处的颜色// 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: '#fba509' // 100% 处的颜色 // 100% 处的颜色
+                  }
+                ],
+                globalCoord: false // 缺省为 false
+              },
+              borderWidth: 2,
+              borderColor: '#fda809'
+            }
+          }
+        },
+        tooltip: {
+          show: true,
+          className: 'tooltip-frame'
+        },
+        series: [
+          {
+            show: false,
+            type: 'map',
+            map: 'chongqing',
+            zoom: 1,
+            aspectScale: 0.9,
+            itemStyle: {
+              borderColor: '#05d6f8',
+              borderWidth: 2,
+              areaColor: {
+                type: 'radial',
+                x: 0.5,
+                y: 0.5,
+                r: 0.8,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#012188' // 0% 处的颜色// 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: '#0335b5' // 100% 处的颜色 // 100% 处的颜色
+                  }
+                ],
+                globalCoord: false // 缺省为 false
+              },
+              shadowColor: '#0938b6',
+              shadowOffsetX: -10,
+              shadowOffsetY: -10,
+              shadowBlur: 19,
+              emphasis: {
+                areaColor: {
+                  type: 'radial',
+                  x: 0.5,
+                  y: 0.5,
+                  r: 0.8,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: '#0335b5' // 0% 处的颜色// 0% 处的颜色
+                    },
+                    {
+                      offset: 1,
+                      color: '#fba509' // 100% 处的颜色 // 100% 处的颜色
+                    }
+                  ],
+                  globalCoord: false // 缺省为 false
+                },
+                borderWidth: 2,
+                borderColor: '#fda809'
+              }
+            },
+            label: {
+              show: true,
+              color: '#ffffff',
+              fontWeight: 'bold',
+              fontSize: '11',
+              emphasis: {
+                color: '#ffffff'
+              }
+            },
+            tooltip: {
+              show: false
+            }
+          }
+        ]
+      }
+    },
+    true
+  )
+
+  window.addEventListener('resize', () => {
+    myChart.resize()
+  })
+}
+onMounted(() => {
+  initChinaMap()
+})
+//获取区县
+const getPage = async () => {
+  let res = await page({ pageNo: 1, pageSize: 100 })
+  leftArr2.tableData1 = res.list
+  let list = []
+  res.list.forEach((item) => {
+    list.push(item.county)
+  })
+  options.value = Array.from(new Set(list))
+}
+getPage()
+//下拉框切换
+const selectChange = async (e) => {
+  console.log(e, 'eeeeeeeeeeeee')
+  county.value = e
+  let res = await page({ pageNo: 1, pageSize: 100, county: e == '全部' ? '' : e })
+  console.log(res, 'rrrrrrrrrrer')
+  leftArr2.tableData1 = res.list
+}
 </script>
 <style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);
@@ -486,6 +834,7 @@ getDistinct()
 }
 .topBg {
   background-size: 100% 100%;
+  overflow: hidden;
   background-image: url(./assets/topBg.png);
 }
 .el-timeline-item__timestamp.is-top {
@@ -506,9 +855,19 @@ getDistinct()
   background-size: 100% 100%;
   background-image: url(./assets/SAASImage3.png);
 }
+.initMap {
+  background-size: 90% 90%;
+  background-image: url(./assets/initMapBg.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
 .center-bg {
   background-size: 100% 100%;
   background-image: url(./assets/dataBg.png);
+}
+.bigscreen-bg {
+  background-size: 100% 100%;
+  background-image: url(./assets/bigscreenBg.png);
 }
 .data-icon {
   width: 4rem;
