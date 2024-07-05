@@ -148,10 +148,10 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const windSpeed = res['风速'] || []
 
   const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
-  initChart('chartWD', WDX, WDY, '℃', '土壤温度', WDMin, WDMax)
+  initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
 
   const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
-  initChart('chartSD', SDX, SDY, '%RH', '土壤湿度', SDMin, SDMax)
+  initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
 
   const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
   initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
@@ -204,6 +204,7 @@ const initChart = (
   const dom = document.getElementById(chartName)
   if (dom) {
     dom.style.display = 'block';
+    dom.style.height = '16rem';
   }
   nextTick(() => {
     initChartStatic(
@@ -300,11 +301,14 @@ const initChart = (
 }
 
 const handleSelect = async (item) => {
-  console.log("ITEM", item);
+  const chartInstances = document.querySelectorAll('.chart-ins')
+  chartInstances.forEach((item: HTMLElement) => {
+    item.style.height = '0px'
+    item.style.marginTop = '0px'
+  })
   
   const res = await getDeviceInfo({ id: item })
   const { deviceKind, id } = res
-  console.log("HERE");
   
   setTimeout(() => { id && getRunTimeData(id, deviceKind) }, 300)
 }
@@ -372,6 +376,7 @@ const getIconClass = (item) => {
   box-shadow: 2px 2px 2px #25252525, -2px -2px 2px #14141414;
   border-radius: 8px;
   background-color: #fff;
+  overflow: hidden;
 }
 
 .online-flag, .offline-flag {
