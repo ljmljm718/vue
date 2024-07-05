@@ -280,10 +280,10 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const windSpeed = res['风速'] || []
 
   const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
-  initChart('chartWD', WDX, WDY, '℃', '土壤温度', WDMin, WDMax)
+  initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
 
   const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
-  initChart('chartSD', SDX, SDY, '%RH', '土壤湿度', SDMin, SDMax)
+  initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
 
   const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
   initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
