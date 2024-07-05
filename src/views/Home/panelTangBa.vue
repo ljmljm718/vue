@@ -222,6 +222,9 @@ import {
   initChartStatic,
   generateBaseOptions
 } from "../../utils/bigscreenTool/index";
+import {
+  EquipmentDataApi
+} from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
 defineOptions({ name: 'PanelTangBa' })
 
@@ -252,11 +255,11 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   console.log("getRunTimeData", res);
   runTimeDataLoading.value = false
   runTimeDataList.value = []
-
-  const activeApi = deviceKind === '103' ? environmentalDataHomePageA : deviceKind === '104' ? environmentalDataHomePageC : null
+  
+  const activeApi = EquipmentDataApi.getEquipmentDataPage
   if (activeApi) {
-    const resp = await activeApi({ facilityId: equipmentId })
-    if (Array.isArray(resp)) runTimeDataList.value = resp
+    const { list } = await activeApi({ equipmentCode: equipmentId })
+    if (Array.isArray(list)) runTimeDataList.value = list
   }
 
   const {

@@ -2,7 +2,8 @@
 import {
   EditFrame,
   addOrUpdateFormStorage,
-  deleteFormStorage
+  deleteFormStorage,
+  getFormStorage
 } from '@/components/EditFrame/index'
 import {
   FolderChecked,
@@ -19,6 +20,7 @@ import { ParkDetailVO } from '@/api/agriculture/parkdetail'
 import {  ParkInfoVO } from '@/api/agriculture/parkinfo'
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import MapPosSelector from '@/components/MapPosSelector/index.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -229,9 +231,22 @@ onMounted(() => {
 })
 // 手风琴展开项
 const activeName = ref<any>('1')
+
+const openPosSelector = ref<boolean>(false)
+const handleSelectorChange = (val) => {
+  console.log("handleSelectorChange", val[0]);
+  if (val.length !== 2) return
+  formData.value.longitude = val[0]
+  formData.value.latitude = val[1]
+}
 </script>
 <template>
   <div>
+    <MapPosSelector
+      ref="mapPosSelectorRef"
+      v-model="openPosSelector"
+      @change="handleSelectorChange"
+    />
     <EditFrame>
       <template #header>
         <div class="flex">
@@ -339,10 +354,24 @@ const activeName = ref<any>('1')
               </el-radio-group>
             </el-form-item>
             <el-form-item label="经度" prop="longitude">
-              <el-input v-model="formData.longitude" placeholder="请输入经度" />
+              <el-input v-model="formData.longitude" placeholder="请输入经度">
+                <template #append>
+                  <el-button @click="openPosSelector = true">
+                    <Icon icon="ep:search"/>
+                    选择点
+                  </el-button>
+                </template>
+              </el-input>
             </el-form-item>
             <el-form-item label="纬度" prop="latitude">
-              <el-input v-model="formData.latitude" placeholder="请输入纬度" />
+              <el-input v-model="formData.latitude" placeholder="请输入纬度">
+                <template #append>
+                  <el-button @click="openPosSelector = true">
+                    <Icon icon="ep:search"/>
+                    选择点
+                  </el-button>
+                </template>
+              </el-input>
             </el-form-item>
             <el-form-item label="位置" prop="location">
               <el-input v-model="formData.location" placeholder="请输入位置" />
