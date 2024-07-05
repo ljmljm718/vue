@@ -105,10 +105,10 @@
           <el-radio key="false" :label="false" border>不缓存</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="formData.type === 2" label="图片" prop="imgId">
+      <el-form-item v-if="formData.type !== 3" label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId" />
       </el-form-item>
-      <el-form-item v-if="formData.type === 2" label="描述" prop="description">
+      <el-form-item v-if="formData.type !== 3" label="描述" prop="description">
         <el-input type="textarea" v-model="formData.description" placeholder="描述将展示在门户首页，建议填写简洁明确、有信息量的内容" />
       </el-form-item>
     </el-form>
