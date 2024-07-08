@@ -61,7 +61,7 @@ const formRules2 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
 })
 const formRef2 = ref() // 表单 Ref
 
@@ -80,7 +80,7 @@ const formRules3 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
 })
 const formRef3 = ref() // 表单 Ref
 
@@ -99,7 +99,7 @@ const formRulesaQuanBu = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
 })
 const formRef4 = ref() // 表单 Ref
 
