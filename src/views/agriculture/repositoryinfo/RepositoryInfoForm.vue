@@ -32,9 +32,9 @@
             </el-form-item>
           </div>
           <div class="row-span-4">
-            <el-form-item prop="attachmentFile">
+            <el-form-item prop="attachmentImg">
               <div>
-                <UploadImg v-model="formData.attachmentFile" ref="uploadImgRef"/>
+                <UploadImg v-model="formData.attachmentImg" ref="uploadImgRef"/>
                 <div class="flex space-x-2">
                   <div
                     class="w-full text-center rounded-md"
@@ -123,7 +123,8 @@ const formData = ref({
   repositoryId: undefined,
   repositoryTitle: undefined,
   repositoryContent: undefined,
-  attachmentFile: undefined,
+  attachmentFile:  [],
+  attachmentImg:undefined,
   repositoryLabel: '',
   writer: undefined,
   browseNum: undefined,
@@ -138,8 +139,9 @@ const queryParams = reactive({
   repositoryName: undefined,
   repositoryId: undefined,
   repositoryTitle: undefined,
+  attachmentImg:undefined,
   repositoryContent: undefined,
-  attachmentFile: undefined,
+  attachmentFile:  [],
   repositoryLabel: '',
   writer: undefined,
   browseNum: undefined,
@@ -184,6 +186,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
+    formData.value.attachmentFile=[]
     const data = formData.value as unknown as RepositoryInfoVO
     if (formType.value === 'create') {
       await RepositoryInfoApi.createRepositoryInfo(data)
@@ -208,7 +211,7 @@ const resetForm = () => {
     repositoryId: undefined,
     repositoryTitle: undefined,
     repositoryContent: undefined,
-    attachmentFile: undefined,
+    attachmentFile: [],
     repositoryLabel: '',
     writer: undefined,
     browseNum: undefined,
