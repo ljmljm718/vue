@@ -284,4 +284,7 @@ export enum DICT_TYPE {
   AGRI_MQTT_SUBSCRIBE_STATUS = 'agri_mqtt_subscribe_status', //主题订阅状态
   AGRI_MQTT_TOPIC_TYPE = 'agri_mqtt_topic_type',  //主题类型
 
+  // =========== agri -   大闸蟹 ==========
+  GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status'//赠送订单接收状态
+
 }

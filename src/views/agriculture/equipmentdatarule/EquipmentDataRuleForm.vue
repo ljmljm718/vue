@@ -75,6 +75,11 @@ const formData = ref({
   deviceName: undefined
 })
 const formRules = reactive({
+  dtuId: [{ required: true, message: '终端id不能为空', trigger: 'blur' }],
+  channelId: [{ required: true, message: '通道不能为空', trigger: 'blur' }],
+  param: [{ required: true, message: '参数不能为空', trigger: 'blur' }],
+  monitoringType: [{ required: true, message: '监测类型不能为空', trigger: 'blur' }],
+  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 

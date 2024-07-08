@@ -80,6 +80,9 @@
           <div id="chartLight" class="chart-ins"></div>
           <div id="chartAtmos" class="chart-ins"></div>
           <div id="chartGrow" class="chart-ins"></div>
+          <div id="chartRain" class="chart-ins"></div>
+          <div id="chartWindDirec" class="chart-ins"></div>
+          <div id="chartWindSpeed" class="chart-ins"></div>
         </el-scrollbar>
       </el-tab-pane>
       <el-tab-pane label="报警" name="报警">
@@ -219,6 +222,9 @@ import {
   initChartStatic,
   generateBaseOptions
 } from "../../utils/bigscreenTool/index";
+import {
+  EquipmentDataApi
+} from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
 defineOptions({ name: 'PanelTangBa' })
 
@@ -228,7 +234,16 @@ const generateXY = (arr:Array<any>) => {
     x.push(item.hour);
     y.push(item.dataValue)
   })
-  return { x, y }
+  let min = 0, max = 0
+  if (arr.length > 0) {
+    const {
+      suitable_environment_max,
+      suitable_environment_min
+    } = arr[0]
+    min = suitable_environment_max
+    max = suitable_environment_min
+  }
+  return { x, y, min, max }
 }
 
 const runTimeDataLoading = ref<boolean>(false)
@@ -240,59 +255,86 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   console.log("getRunTimeData", res);
   runTimeDataLoading.value = false
   runTimeDataList.value = []
-
-  const activeApi = deviceKind === '103' ? environmentalDataHomePageA : deviceKind === '104' ? environmentalDataHomePageC : null
+  
+  const activeApi = EquipmentDataApi.getEquipmentDataPage
   if (activeApi) {
-    const resp = await activeApi({ facilityId: equipmentId })
-    if (Array.isArray(resp)) runTimeDataList.value = resp
+    const { list } = await activeApi({ equipmentCode: equipmentId })
+    if (Array.isArray(list)) runTimeDataList.value = list
   }
 
   const {
-    temperature = [],
+    // temperature = [],
     potassium = [],
     ecValue = [],
-    humidity = [],
-    lightIntensity = [],
+    // humidity = [],
+    // lightIntensity = [],
     nitrogen = [],
     pHValue = [],
     phosphorus = [],
-    atmosphericPressure = []
+    // atmosphericPressure = []
   } = res
 
-  const { x:WDX, y:WDY } = generateXY(temperature)
-  initChart('chartWD', WDX, WDY, '℃', '土壤温度')
+  const temperature = res['温度'] || []
+  const lightIntensity = res['光照'] || []
+  const atmosphericPressure = res['大气压力'] || []
+  const humidity = res['湿度'] || []
+  const rain = res['雨量'] || []
+  const windDirection = res['风向'] || []
+  const windSpeed = res['风速'] || []
 
-  const { x:SDX, y:SDY } = generateXY(humidity)
-  initChart('chartSD', SDX, SDY, '%RH', '土壤湿度')
+  const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
+  initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
 
-  const { x:PHX, y:PHY } = generateXY(pHValue)
-  initChart('chartPH', PHX, PHY, 'ph', 'PH值')
+  const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
+  initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
 
-  const { x:ECX, y:ECY } = generateXY(ecValue)
-  initChart('chartEC', ECX, ECY, 'mS/cm', 'EC值')
+  const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
+  initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
 
-  const { x:LightX, y:LightY } = generateXY(lightIntensity)
-  initChart('chartLight', LightX, LightY, 'Lux', '光照')
+  const { x:ECX, y:ECY, min:ECMin, max:ECMax } = generateXY(ecValue)
+  initChart('chartEC', ECX, ECY, 'mS/cm', 'EC值', ECMin, ECMax)
 
-  const { x:NX, y:NY } = generateXY(nitrogen)
-  initChart('chartN', NX, NY, 'mg/Kg', '氮')
+  const { x:LightX, y:LightY, min:LightMin, max:LightMax } = generateXY(lightIntensity)
+  initChart('chartLight', LightX, LightY, 'Lux', '光照', LightMin, LightMax)
 
-  const { x:PX, y:PY } = generateXY(phosphorus)
-  initChart('chartP', PX, PY, 'mg/Kg', '磷')
+  const { x:NX, y:NY, min:NMin, max:NMax } = generateXY(nitrogen)
+  initChart('chartN', NX, NY, 'mg/Kg', '氮', NMin, NMax)
 
-  const { x:KX, y:KY } = generateXY(potassium)
-  initChart('chartK', KX, KY, 'mg/Kg', '钾')
+  const { x:PX, y:PY, min:PMin, max:PMax } = generateXY(phosphorus)
+  initChart('chartP', PX, PY, 'mg/Kg', '磷', PMin, PMax)
 
-  const { x:AtmosX, y:AtmosY } = generateXY(atmosphericPressure)
-  initChart('chartAtmos', AtmosX, AtmosY, 'hpa', '大气压力')
+  const { x:KX, y:KY, min:KMin, max:KMax } = generateXY(potassium)
+  initChart('chartK', KX, KY, 'mg/Kg', '钾', KMin, KMax)
+
+  const { x:AtmosX, y:AtmosY, min:AtmosMin, max:AtmosMax } = generateXY(atmosphericPressure)
+  initChart('chartAtmos', AtmosX, AtmosY, 'hpa', '大气压力', AtmosMin, AtmosMax)
+
+  const { x:RainX, y:RainY, min:RainMin, max:RainMax } = generateXY(rain)
+  initChart('chartRain', RainX, RainY, 'mm/min', '雨量', RainMin, RainMax)
+
+  const { x:WindDirecX, y:WindDirecY, min:WindDirecMin, max:WindDirecMax } = generateXY(windDirection)
+  initChart('chartWindDirec', WindDirecX, WindDirecY, '度°', '风向', WindDirecMin, WindDirecMax)
+
+  const { x:WindSpeedX, y:WindSpeedY, min:WindSpeedMin, max:WindSpeedMax } = generateXY(windSpeed)
+  initChart('chartWindSpeed', WindSpeedX, WindSpeedY, 'm/s', '风速', WindSpeedMin, WindSpeedMax)
 }
 
 const initChart = (
   chartName = '',
   xValue:Array<any> = [],
   yValue:Array<any> = [],
-  unit = '', text = ''
+  unit = '', text = '',
+  min = 0, max = 0
 ) => {
+  const markLines:Array<any> = []
+  if (min > 0) markLines.push({
+    name:'最小值',
+    yAxis: min
+  })
+  if (max > 0) markLines.push({
+    name:'最大值',
+    yAxis: max
+  })
   if (xValue.length === 0) return
   const dom = document.getElementById(chartName)
   if (dom) {
@@ -374,6 +416,10 @@ const initChart = (
               },
             },
             areaStyle: { normal: {} },
+            markLine: {
+              data: markLines,
+              silent: true
+            }
           }
         ],
         grid: {
@@ -601,7 +647,10 @@ window.addEventListener('resize', () => getCurrentHeight())
 #chartK,
 #chartLight,
 #chartAtmos,
-#chartGrow
+#chartGrow,
+#chartRain,
+#chartWindDirec,
+#chartWindSpeed
 {
   background: linear-gradient(to top, #ebf3ff, #ebf3ff40);
   height: 0px;
