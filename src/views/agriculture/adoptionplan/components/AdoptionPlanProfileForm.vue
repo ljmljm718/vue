@@ -24,11 +24,11 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="图片" min-width="150">
+      <el-table-column label="图片" min-width="80">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.imgId`" :rules="formRules.imgId" class="mb-0px!">
 <!--            <el-input v-model="row.imgId" placeholder="请输入图片" />-->
-            <UploadImg v-model="row.imgId" />
+            <UploadImg v-model="row.imgId" :height="'80px'" :width="'80px'" />
           </el-form-item>
         </template>
       </el-table-column>
