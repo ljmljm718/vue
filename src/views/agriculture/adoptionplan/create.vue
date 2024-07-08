@@ -197,7 +197,7 @@ const tableRowClassName = ({row, rowIndex}) => {
 
 // 删除蟹塘
 const deleteParkDetail = (index) => {
-  parkDetailList.value.splice(index, 1)
+  parkDetailList.value.splice(index.parkDetailIndex, 1)
 }
 
 /** 子表的表单 */
@@ -469,7 +469,7 @@ const activeTab = ref<any>('first')
                   type="danger"
                   plain
                   :disabled="!parkDetailId"
-                  @click="deleteParkDetail(parkDetailIndex.value)"
+                  @click="deleteParkDetail({parkDetailIndex})"
                 >删除
                 </el-button>
               </div>

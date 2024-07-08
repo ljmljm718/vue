@@ -82,6 +82,13 @@
           </el-form-item>
         </template>
       </el-table-column>
+      <el-table-column label="蟹塘图片" width="120" align="center">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.img`" :rules="formRules.img" class="mb-0px!">
+            <UploadImg v-model="row.img" :height="'100px'" :width="'100px'"/>
+          </el-form-item>
+        </template>
+      </el-table-column>
       <el-table-column label="面积" min-width="150" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.area`" :rules="formRules.area" class="mb-0px!">
@@ -148,6 +155,7 @@ const formRules = reactive({
     }
   ],
   area: [{ required: true, message: '面积不能为空', trigger: 'blur' }],
+  img: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
@@ -201,6 +209,7 @@ const handleAdd = () => {
     userId: undefined,
     quantity: undefined,
     adoptionType: undefined,
+    img: undefined,
   }
   formData.value.push(row)
 }
