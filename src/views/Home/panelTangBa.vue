@@ -255,10 +255,10 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   console.log("getRunTimeData", res);
   runTimeDataLoading.value = false
   runTimeDataList.value = []
-  
-  const activeApi = EquipmentDataApi.getEquipmentDataPage
+
+  const activeApi = EquipmentDataApi.getEquipmentDataByEquipmentCode
   if (activeApi) {
-    const { list } = await activeApi({ equipmentCode: equipmentId })
+    const list = await activeApi(equipmentId)
     if (Array.isArray(list)) runTimeDataList.value = list
   }
 
@@ -274,13 +274,13 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
     // atmosphericPressure = []
   } = res
 
-  const temperature = res['温度'] || []
-  const lightIntensity = res['光照'] || []
+  const temperature = res['空气温度'] || []
+  const lightIntensity = res['总辐射'] || []
   const atmosphericPressure = res['大气压力'] || []
-  const humidity = res['湿度'] || []
-  const rain = res['雨量'] || []
+  const humidity = res['空气湿度'] || []
+  const rain = res['当前雨量'] || []
   const windDirection = res['风向'] || []
-  const windSpeed = res['风速'] || []
+  const windSpeed = res['风力'] || []
 
   const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
   initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
