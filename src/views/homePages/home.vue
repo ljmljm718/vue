@@ -38,6 +38,7 @@
         v-for="item in menuList"
         :key="item.id"
         :style="`background-image: url(${item.imgId});background-size:cover;`"
+        @click="item.path && router.push(item.path)"
       >
         <div :class="`icon-${item.icon || 0} w-[5.3rem] h-[5.3rem]`"></div>
         <div class="text-[1.3rem] art-font linear-title" style="mix-blend-mode: difference;">{{ item.name }}</div>
@@ -55,6 +56,7 @@ import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 const input = ref('')
 const totalNum = ref(0)
 
+const router = useRouter()
 const { wsCache } = useCache()
 console.log("userStore", wsCache.get(CACHE_KEY.ROLE_ROUTERS));
 const staticMenus = [

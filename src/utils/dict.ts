@@ -285,6 +285,10 @@ export enum DICT_TYPE {
   AGRI_MQTT_TOPIC_TYPE = 'agri_mqtt_topic_type',  //主题类型
 
   // =========== agri -   大闸蟹 ==========
-  GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status'//赠送订单接收状态
+  GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status',//赠送订单接收状态
+  ADOPTION_ORDER_STATUS='adoption_order_status',//认养订单状态
+  ADOPTION_ORDER_GIFT_STATUS='adoption_order_gift_status',//认养订单赠送状态
+  ADOPTION_ORDER_TYPE='adoption_order_type',//认养订单类型
+  ADOPTION_ODER_REMIND_STATUS='adoption_oder_remind_status'//认养订单是否被提醒
 
 }

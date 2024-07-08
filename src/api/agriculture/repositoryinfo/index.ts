@@ -9,6 +9,7 @@ export interface RepositoryInfoVO {
   repositoryType: string // 类型
   repositoryContent: string // 内容
   attachmentFile: string // 附件
+  attachmentImg:string
   repositoryLabel: string // 标签
   writer: string // 作者
   browseNum: number // 浏览量

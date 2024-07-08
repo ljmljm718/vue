@@ -68,7 +68,7 @@ const getRepositoryList = async () => {
 
   repositoryList.value = list.map(item => ({
     ...item,
-    img: item.attachmentFile,
+    img: item.attachmentImg,
     title: item.repositoryTitle,
     intro: item.repositoryContent,
     label: item.repositoryLabel,

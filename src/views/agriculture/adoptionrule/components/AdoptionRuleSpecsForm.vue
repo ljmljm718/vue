@@ -20,9 +20,10 @@
       <el-table-column label="认养模式" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.ruleType`" :rules="formRules.ruleType" class="mb-0px!">
-            <el-select v-model="row.ruleType" placeholder="请选择认养模式">
+            <el-select v-model="row.ruleType" placeholder="请选择认养模式" disabled>
+              <el-option label="份" value="0" />
               <el-option label="亩" value="1" />
-              <el-option label="只" value="0" />
+              <el-option label="全部" value="2" />
             </el-select>
           </el-form-item>
         </template>
@@ -74,7 +75,8 @@
 import { AdoptionRuleApi } from '@/api/agriculture/adoptionrule'
 
 const props = defineProps<{
-  ruleNumber: undefined // 认养规则流水号（主表的关联字段）
+  ruleNumber: undefined, // 认养规则流水号（主表的关联字段），
+  ruleType: undefined // 认养规则流水号（主表的关联字段）
 }>()
 const formLoading = ref(false) // 表单的加载中
 const formData = ref([])
@@ -118,6 +120,7 @@ const handleAdd = () => {
     remark: undefined
   }
   row.ruleNumber = props.ruleNumber
+  row.ruleType = props.ruleType
   formData.value.push(row)
 }
 

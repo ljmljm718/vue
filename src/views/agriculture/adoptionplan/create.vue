@@ -61,7 +61,7 @@ const formRules2 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
 })
 const formRef2 = ref() // 表单 Ref
 
@@ -80,9 +80,28 @@ const formRules3 = reactive({
   ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
   planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  ruleOverview: [{ required: true, message: '认养不能为空', trigger: 'blur' }]
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
 })
 const formRef3 = ref() // 表单 Ref
+
+//全部认养的formdata
+const formDataQuanBu = ref({
+  id: undefined,
+  ruleNumber:undefined,
+  planNumber: undefined,
+  ruleType: '2',
+  ruleOverview: undefined,
+  ruleDescribe: undefined,
+  remark: undefined,
+  insuranceAmount: undefined,
+})
+const formRulesaQuanBu = reactive({
+  ruleNumber: [{ required: true, message: '规则流水号不能为空', trigger: 'blur' }],
+  planNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
+  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
+  ruleOverview: [{ required: true, message: '认养价格不能为空', trigger: 'blur' }]
+})
+const formRef4 = ref() // 表单 Ref
 
 // 重置表单方法
 const resetForm = () => {
@@ -112,6 +131,9 @@ const getFormInfo = async () => {
     }
     if (item.ruleType=='1'){
       formData3.value = item
+    }
+    if (item.ruleType=='2'){
+      formDataQuanBu.value = item
     }
   })
   // 获取当前计划绑定的蟹塘
@@ -175,7 +197,7 @@ const tableRowClassName = ({row, rowIndex}) => {
 
 // 删除蟹塘
 const deleteParkDetail = (index) => {
-  parkDetailList.value.splice(index, 1)
+  parkDetailList.value.splice(index.parkDetailIndex, 1)
 }
 
 /** 子表的表单 */
@@ -185,6 +207,7 @@ const adoptionPlanProfileFormRef = ref()
 const subTabsNameRule = ref('adoptionRuleSpecs')
 const adoptionRuleSpecsFormRefZhi = ref()
 const adoptionRuleSpecsFormRefMu = ref()
+const adoptionRuleSpecsFormRefQuanbu = ref()
 
 // 提交表单
 const submitForm = async () => {
@@ -192,10 +215,13 @@ const submitForm = async () => {
   await formRef.value.validate()
   await formRef2.value.validate()
   await formRef3.value.validate()
+  await formRef4.value.validate()
   await adoptionPlanProfileFormRef.value.validate()
   await adoptionRuleSpecsFormRefZhi.value.validate()
   await adoptionRuleSpecsFormRefMu.value.validate()
-    formLoading.value = true
+  await adoptionRuleSpecsFormRefQuanbu.value.validate()
+
+  formLoading.value = true
     try {
       // 更新蟹塘
       parkDetailList.value = parkDetailList.value.map (item=> {
@@ -220,6 +246,10 @@ const submitForm = async () => {
       const data3 = formData3.value as unknown as AdoptionRuleVO
       data3.planNumber=data.serialNumber
       data3.adoptionRuleSpecss = adoptionRuleSpecsFormRefMu.value.getData()
+      //全部认养
+      const data4 = formDataQuanBu.value as unknown as AdoptionRuleVO
+      data4.planNumber=data.serialNumber
+      data4.adoptionRuleSpecss = adoptionRuleSpecsFormRefQuanbu.value.getData()
       // adoptionRules
       if (!route.query.id) {
         await AdoptionPlanApi.createAdoptionPlan(data)
@@ -233,6 +263,11 @@ const submitForm = async () => {
         }else {
           await AdoptionRuleApi.updateAdoptionRule(data3)
         }
+        if (!data4.id){
+          await AdoptionRuleApi.createAdoptionRule(data4)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data4)
+        }
         ElMessage.success('提交成功！')
       } else {
         await AdoptionPlanApi.updateAdoptionPlan(data)
@@ -245,6 +280,11 @@ const submitForm = async () => {
           await AdoptionRuleApi.createAdoptionRule(data3)
         }else {
           await AdoptionRuleApi.updateAdoptionRule(data3)
+        }
+        if (!data4.id){
+          await AdoptionRuleApi.createAdoptionRule(data4)
+        }else {
+          await AdoptionRuleApi.updateAdoptionRule(data4)
         }
         ElMessage.success('提交成功！')
       }
@@ -429,7 +469,7 @@ const activeTab = ref<any>('first')
                   type="danger"
                   plain
                   :disabled="!parkDetailId"
-                  @click="deleteParkDetail(parkDetailIndex.value)"
+                  @click="deleteParkDetail({parkDetailIndex})"
                 >删除
                 </el-button>
               </div>
@@ -454,12 +494,12 @@ const activeTab = ref<any>('first')
             </el-collapse-item>
             <el-collapse-item title="认养规则" name="3">
               <el-tabs  v-model="activeTab"  v-loading="formLoading" type="card">
-                <el-tab-pane label="按只认养"  name="first">
+                <el-tab-pane label="按份认养"  name="first">
                   <div class="grid grid-cols-3  ">
                     <div class="col-span-2">
                       <!-- 子表的表单 -->
                       <el-tabs class="mt-[-12px]"  v-loading="formLoading" v-model="subTabsNameRule">
-                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefZhi" :rule-number="formData2.ruleNumber" />
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefZhi" :rule-type="formData2.ruleType" :rule-number="formData2.ruleNumber" />
                       </el-tabs>
                     </div>
                     <div class="col-span-1">
@@ -473,8 +513,8 @@ const activeTab = ref<any>('first')
                         <el-form-item label="保险价格" prop="insuranceAmount">
                           <el-input-number style="width: 100%"  v-model="formData2.insuranceAmount" placeholder="请输入保险价格" />
                         </el-form-item>
-                        <el-form-item label="认养" prop="ruleOverview">
-                          <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入认养" />
+                        <el-form-item label="认养价格" prop="ruleOverview">
+                          <el-input type="textarea" v-model="formData2.ruleOverview" placeholder="请输入认养价格" />
                         </el-form-item>
                         <el-form-item label="认养人权益" prop="ruleDescribe">
                           <el-input type="textarea" v-model="formData2.ruleDescribe" placeholder="请输入认养人权益" />
@@ -488,7 +528,7 @@ const activeTab = ref<any>('first')
                     <div class="col-span-2">
                       <!-- 子表的表单 -->
                       <el-tabs class="mt-[-12px]"  v-model="subTabsNameRule">
-                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefMu" :rule-number="formData3.ruleNumber" />
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefMu" :rule-type="formData3.ruleType" :rule-number="formData3.ruleNumber" />
                       </el-tabs>
                     </div>
                     <div class="col-span-1">
@@ -502,11 +542,40 @@ const activeTab = ref<any>('first')
                         <el-form-item label="保险价格" prop="insuranceAmount">
                           <el-input-number style="width: 100%"  v-model="formData3.insuranceAmount" placeholder="请输入保险价格" />
                         </el-form-item>
-                        <el-form-item label="认养" prop="ruleOverview">
-                          <el-input type="textarea" v-model="formData3.ruleOverview" placeholder="请输入认养" />
+                        <el-form-item label="认养价格" prop="ruleOverview">
+                          <el-input type="textarea" v-model="formData3.ruleOverview" placeholder="请输入认养价格" />
                         </el-form-item>
                         <el-form-item label="认养人权益" prop="ruleDescribe">
                           <el-input type="textarea" v-model="formData3.ruleDescribe" placeholder="请输入认养人权益" />
+                        </el-form-item>
+                      </el-form>
+                    </div>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane label="全部认养" name="third">
+                  <div class="grid grid-cols-3  ">
+                    <div class="col-span-2">
+                      <!-- 子表的表单 -->
+                      <el-tabs class="mt-[-12px]"  v-model="subTabsNameRule">
+                        <AdoptionRuleSpecsForm ref="adoptionRuleSpecsFormRefQuanbu" :rule-type="formDataQuanBu.ruleType" :rule-number="formDataQuanBu.ruleNumber" />
+                      </el-tabs>
+                    </div>
+                    <div class="col-span-1">
+                      <el-form
+                        ref="formRef4"
+                        :model="formDataQuanBu"
+                        :rules="formRulesaQuanBu"
+                        label-width="100px"
+                        v-loading="formLoading"
+                      >
+                        <el-form-item label="保险价格" prop="insuranceAmount">
+                          <el-input-number style="width: 100%"  v-model="formDataQuanBu.insuranceAmount" placeholder="请输入保险价格" />
+                        </el-form-item>
+                        <el-form-item label="认养价格" prop="ruleOverview">
+                          <el-input type="textarea" v-model="formDataQuanBu.ruleOverview" placeholder="请输入认养价格" />
+                        </el-form-item>
+                        <el-form-item label="认养人权益" prop="ruleDescribe">
+                          <el-input type="textarea" v-model="formDataQuanBu.ruleDescribe" placeholder="请输入认养人权益" />
                         </el-form-item>
                       </el-form>
                     </div>

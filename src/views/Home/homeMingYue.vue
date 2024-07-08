@@ -91,7 +91,7 @@
                     </div>
                     <div class=" mt-20px ml-30px">
                       <div style="color: #847d78; cursor: pointer; " @click="goPageWran(2)">近30天报警</div>
-                      <div 
+                      <div
                       @click="goPageWran(2)"
                         class="flex font-700 mt-10px; "
                         style="font-size: 20px; cursor: pointer;"
@@ -401,7 +401,7 @@ onMounted(() => { handleDeviceTypeRadioChange() })
 //今日预警跳转
 const goPageWran=(val)=>{
   router.push( `/internetMonitor/warn/agri-warning-record?time=${val}`)
-} 
+}
 //顶部跳转
 let router=useRouter()
 const goPage=(obj)=>{
@@ -690,7 +690,7 @@ const initChart3 = async () => {
   console.log("历史数据", res);
   const xAxis = res.map(item => (item.collectionTime))
   const series = res.map(item => (item.dataValue))
-  
+
   initChartStatic(
     'chart3',
     generateBaseOptions({
@@ -827,8 +827,8 @@ const getParkTree = () => {
 getParkTree()
 //基地选择
 const handleTreeChange = (data, b) => {
-  belongPark.value = b.data.id
-  belongPlot.value = b.parent.data.id
+  belongPark.value = b.parent.data.id
+  belongPlot.value = b.data.id
   getHomeCheckLog(data.id)
   getPageRealTimeData(b.parent.data.id, b.data.id)
   getpageWarningInfo(b.parent.data.id, b.data.id)
@@ -846,7 +846,7 @@ const getHomeCheckLog = (id='') => {
   }).then((res) => {
     console.log("及接口2", res);
     const { notCount, yesCount } = res['巡检进度'][0]
-    
+
     typeList.value = res['分组详情']
     deviceTotal.value = res['总设备数'][0].count
     devicePercent.value = (yesCount / (notCount + yesCount) * 100).toFixed(2)

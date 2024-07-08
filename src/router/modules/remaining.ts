@@ -53,7 +53,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/index',
+    redirect: '/homeIndex',
     name: 'Home',
     meta: {},
     children: [
@@ -381,15 +381,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path:'/home',
     name:'HomePage',
-    component:()=>import('@/views/homePages/home.vue'),
+    component:()=>import('@/views/gateway/index.vue'),
     meta:{
       hidden: true
     }
   },
   {
-    path:'/homes',
+    path:'/homeIndex',
     name:'HomePages',
-    component:()=>import('@/views/homePages/index.vue'),
+    component:()=>import('@/views/homePages/home.vue'),
     meta:{
       hidden: true
     }
