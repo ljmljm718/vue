@@ -20,6 +20,7 @@ export interface ParkDetailVO {
   qrImg: undefined
   quantity: string // 数量
   adoptionType: string // 认养模式
+  img: string // 蟹塘图片
 }
 
 // 地块基本信息 API

@@ -52,5 +52,11 @@ export const AdoptionOrderApi = {
   // 导出认养订单 Excel
   exportAdoptionOrder: async (params) => {
     return await request.download({ url: `/agriculture/adoption-order/export-excel`, params })
-  }
+  },
+  // ==================== 子表（认养订单明细） ====================
+
+  // 获得认养订单明细列表
+  getAdoptionOrderDetailListByOrderNumber: async (orderNumber) => {
+    return await request.get({ url: `/agriculture/adoption-order/adoption-order-detail/list-by-order-number?orderNumber=` + orderNumber })
+  },
 }
