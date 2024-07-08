@@ -6,11 +6,11 @@
         <div class="art-font">鲁渝协作</div>
       </div>
       <div class="flex items-center">
-        <el-input
+        <!-- <el-input
           v-model="input"
           style="border-radius: 10px;"
           placeholder="输入文字快速搜索"
-        />
+        /> -->
         <div class="power-logo w-[2rem] h-[1.3rem] ml-4" @click="logout"></div>
         <div
           class="w-[3rem] text-[#fff] text-[.8rem] pl-1"
@@ -20,7 +20,7 @@
     </div>
     <div class="top-bg w-full aspect-[24] flex px-[2rem] flex justify-between text-black items-center box-border mt-[.4rem] rounded-xl shadow-xl">
       <div class="text-[1.8rem] font-bold">鲁渝协作乡村振兴示范村数字化平台</div>
-      <div class="flex items-center cursor-pointer">
+      <div class="flex items-center cursor-pointer hidden">
         <div class="ling-logo w-[2rem] h-[1.3rem] ml-4"></div>
         <el-badge :value="totalNum" class="item">
           <div>
