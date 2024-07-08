@@ -53,6 +53,10 @@
 </template>
 <script setup lang="ts">
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import { ElMessageBox } from 'element-plus'
+import { useUserStore } from '@/store/modules/user'
+import { useTagsViewStore } from '@/store/modules/tagsView'
+
 const input = ref('')
 const totalNum = ref(0)
 
@@ -77,6 +81,23 @@ const staticMenus = [
   },
 ]
 const menuList = ref<Array<any>>([])
+
+const userStore = useUserStore()
+const tagsViewStore = useTagsViewStore()
+const { t } = useI18n()
+const { push, replace } = useRouter()
+const logout = async () => {
+  try {
+    await ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
+      confirmButtonText: t('common.ok'),
+      cancelButtonText: t('common.cancel'),
+      type: 'warning'
+    })
+    await userStore.loginOut()
+    tagsViewStore.delAllViews()
+    replace('/login')
+  } catch {}
+}
 
 const buildMenuList = () => {
   const activeMenus = wsCache.get(CACHE_KEY.ROLE_ROUTERS).filter(item => {
