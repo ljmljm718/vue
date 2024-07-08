@@ -25,118 +25,127 @@
         </div>
       </div>
     </div>
-    <div class="center-bg w-full h-300px border-2 color-[#fff] grid grid-cols-6 box-border">
+    <div class="w-100% flex justify-center center-bg">
       <div
-        @mouseenter="mouseenterChange(1)"
-        @mouseleave="mainNum = 0"
-        :class="`${
-          mainNum == 1 ? 'monve' : ''
-        } box-border flex py-[5px] justify-center flex-col items-center`"
+        class="!w-100vw h-300px border-2 color-[#fff] flex items-center justify-evenly box-border container"
       >
-        <div v-if="mainNum !== 1">
-          <div :class="['data-icon', 'data-icon-1']"></div>
-          <div calss="flex-1">
-            <div class="text-center mb-[10px]">{{ disVal }}</div>
-            <div>帮扶区县</div>
+        <div
+          @mouseenter="mouseenterChange(1)"
+          @mouseleave="mainNum = 0"
+          :class="`${
+            mainNum == 1 ? 'monve' : ''
+          } box-border  flex py-[5px] w-[16.6%] h-full justify-center flex-col items-center`"
+        >
+          <div v-if="mainNum !== 1">
+            <div :class="['data-icon', 'data-icon-1']"></div>
+            <div calss="flex-1">
+              <div class="text-center mb-[10px]">{{ disVal }}</div>
+              <div>帮扶区县</div>
+            </div>
+          </div>
+          <div
+            v-show="mainNum === 1"
+            class="h-290px py-[15px] px-[15px] monve-bg box-border"
+            style="overflow-y: scroll"
+          >
+            <div class="mb-20px text-center">帮扶区县({{ dataList.length }})</div>
+            <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
+              >{{ item.name }} <span v-show="item.sum">({{ item.sum }})</span></div
+            >
           </div>
         </div>
         <div
-          v-show="mainNum === 1"
-          class="h-290px py-[5px] monve-bg box-border"
-          style="overflow-y: scroll"
+          @mouseenter="mouseenterChange(2)"
+          @mouseleave="mainNum = 0"
+          :class="`${
+            mainNum == 2 ? 'monve' : ''
+          } flex box-border py-[5px] w-[16.6%] h-full items-center flex-col justify-center`"
         >
-          <div class="mb-20px text-center">帮扶区县({{ dataList.length }})</div>
-          <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
-            >{{ item.name }} <span v-show="item.sum">({{ item.sum }})</span></div
+          <div v-if="mainNum != 2">
+            <div :class="['data-icon', 'data-icon-2']"></div>
+            <div calss="flex-1">
+              <div class="text-center mb-[10px]">{{ disVal2 }}</div>
+              <div>示范村</div>
+            </div>
+          </div>
+          <div
+            v-show="mainNum === 2"
+            class="h-290px py-[15px] px-[15px] monve-bg box-border"
+            style="overflow-y: scroll"
           >
-        </div>
-      </div>
-      <div
-        @mouseenter="mouseenterChange(2)"
-        @mouseleave="mainNum = 0"
-        :class="`${
-          mainNum == 2 ? 'monve' : ''
-        } flex box-border py-[5px]  items-center flex-col justify-center`"
-      >
-        <div v-if="mainNum != 2">
-          <div :class="['data-icon', 'data-icon-2']"></div>
-          <div calss="flex-1">
-            <div class="text-center mb-[10px]">{{ disVal2 }}</div>
-            <div>示范村</div>
+            <div class="mb-20px">示范村({{ dataList.length }})</div>
+            <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
+              >{{ item.name }}<span v-show="item.sum">({{ item.sum }})</span></div
+            >
           </div>
         </div>
         <div
-          v-show="mainNum === 2"
-          class="h-290px py-[5px] monve-bg box-border"
-          style="overflow-y: scroll"
+          @mouseenter="mouseenterChange(3)"
+          @mouseleave="mainNum = 0"
+          :class="`${
+            mainNum == 3 ? 'monve' : ''
+          } flex box-border py-[5px] w-[16.6%] h-full  items-center flex-col justify-center`"
         >
-          <div class="mb-20px">示范村({{ dataList.length }})</div>
-          <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
-            >{{ item.name }}<span v-show="item.sum">({{ item.sum }})</span></div
-          >
-        </div>
-      </div>
-      <div
-        @mouseenter="mouseenterChange(3)"
-        @mouseleave="mainNum = 0"
-        :class="`${
-          mainNum == 3 ? 'monve' : ''
-        } flex box-border py-[5px]  items-center flex-col justify-center`"
-      >
-        <div v-if="mainNum != 3">
-          <div :class="['data-icon', 'data-icon-3']"></div>
-          <div calss="flex-1">
-            <div class="text-center mb-[10px]">{{ disVal3 }}</div>
-            <div>精准帮扶基地</div>
+          <div v-if="mainNum != 3">
+            <div :class="['data-icon', 'data-icon-3']"></div>
+            <div calss="flex-1">
+              <div class="text-center mb-[10px]">{{ disVal3 }}</div>
+              <div>精准帮扶基地</div>
+            </div>
           </div>
-        </div>
-        <div v-show="mainNum === 3" class="h-290px monve-bg box-border" style="overflow-y: scroll">
-          <div class="mb-20px text-center">精准帮扶基地({{ dataList.length }})</div>
-          <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
-            >{{ item.name }}<span v-show="item.sum">({{ item.sum }})</span></div
+          <div
+            v-show="mainNum === 3"
+            class="h-290px py-[15px] px-[15px] monve-bg box-border"
+            style="overflow-y: scroll"
           >
-        </div>
-      </div>
-      <div
-        @mouseenter="mouseenterChange(4)"
-        @mouseleave="mainNum = 0"
-        :class="`${
-          mainNum == 4 ? 'monve' : ''
-        } flex box-border py-[5px]  items-center flex-col justify-center`"
-      >
-        <div v-if="mainNum != 4">
-          <div :class="['data-icon', 'data-icon-4']"></div>
-          <div calss="flex-1">
-            <div class="text-center mb-[10px]">{{ disVal4 }}</div>
-            <div>产业形态</div>
+            <div class="mb-20px text-center">精准帮扶基地({{ dataList.length }})</div>
+            <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
+              >{{ item.name }}<span v-show="item.sum">({{ item.sum }})</span></div
+            >
           </div>
         </div>
         <div
-          v-show="mainNum === 4"
-          class="h-290px py-[5px] monve-bg box-border"
-          style="overflow-y: scroll"
+          @mouseenter="mouseenterChange(4)"
+          @mouseleave="mainNum = 0"
+          :class="`${
+            mainNum == 4 ? 'monve' : ''
+          } flex box-border py-[5px] w-[16.6%] h-full  items-center flex-col justify-center`"
         >
-          <div class="mb-20px">产业形态({{ dataList.length }})</div>
-          <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
-            >{{ item.name }}({{ item.sum }})</div
+          <div v-if="mainNum != 4">
+            <div :class="['data-icon', 'data-icon-4']"></div>
+            <div calss="flex-1">
+              <div class="text-center mb-[10px]">{{ disVal4 }}</div>
+              <div>产业形态</div>
+            </div>
+          </div>
+          <div
+            v-show="mainNum === 4"
+            class="h-290px py-[15px] px-[15px] monve-bg box-border"
+            style="overflow-y: scroll"
           >
+            <div class="mb-20px">产业形态({{ dataList.length }})</div>
+            <div class="mb-10px" v-for="(item, index) in dataList" :key="index"
+              >{{ item.name }}({{ item.sum }})</div
+            >
+          </div>
         </div>
-      </div>
-      <div class="flex items-center box-border py-[5px] justify-center flex-col">
-        <div :class="['data-icon', 'data-icon-5']"></div>
-        <div calss="flex-1">
-          <div class="text-center mb-[10px]">35</div>
-          <div>打造品牌</div>
+        <div class="flex items-center w-[16.6%] h-full box-border py-[5px] justify-center flex-col">
+          <div :class="['data-icon', 'data-icon-5']"></div>
+          <div calss="flex-1">
+            <div class="text-center mb-[10px]">35</div>
+            <div>打造品牌</div>
+          </div>
         </div>
-      </div>
-      <div class="flex items-center box-border py-[5px] justify-center flex-col">
-        <div :class="['data-icon', 'data-icon-6']"></div>
-        <div calss="flex-1">
-          <div class="text-center mb-[10px]">224</div>
-          <div>数字感知设备</div>
+        <div class="flex items-center w-[16.6%] h-full box-border py-[5px] justify-center flex-col">
+          <div :class="['data-icon', 'data-icon-6']"></div>
+          <div calss="flex-1">
+            <div class="text-center mb-[10px]">224</div>
+            <div>数字感知设备</div>
+          </div>
         </div>
       </div>
     </div>
+
     <div class="h-[500px] w-full bg-[#fff]">
       <div class="text-center text-3xl mt-50px">精准帮扶建设情况</div>
       <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
@@ -204,23 +213,50 @@
       </div>
       <div class="flex justify-evenly mt-40px">
         <div class="flex">
-          <el-timeline class="custom-timeline">
-            <el-timeline-item
-              v-for="(activity, index) in activities"
-              :key="index"
-              :color="index == 0 ? '#2ec66d' : ''"
-              :timestamp="activity.timestamp"
-              >{{ activity.content }}
-            </el-timeline-item>
-          </el-timeline>
+          <div class="flex flex-col items-center">
+            <div class="flex items-center" @click="tabTime(1, '2024')">
+              <div
+                class="w-10px h-10px rounded-full"
+                :style="`background-color:${timeNum == 1 ? '#17d46b' : '#c1c1c1'}`"
+              ></div>
+              <div class="ml-10px text-sm" :style="`color:${timeNum == 1 ? '#17d46b' : '#fff'}`"
+                >2024</div
+              >
+            </div>
+            <div class="w-2px h-40px bg-[#c1c1c1] mr-45px"></div>
+            <div class="flex items-center" @click="tabTime(2, '2023')">
+              <div
+                class="w-10px h-10px rounded-full"
+                :style="`background-color:${timeNum == 2 ? '#17d46b' : '#c1c1c1'}`"
+              ></div>
+              <div class="ml-10px text-sm" :style="`color:${timeNum == 2 ? '#17d46b' : '#fff'}`"
+                >2023</div
+              >
+            </div>
+            <div class="w-2px h-40px bg-[#c1c1c1] mr-45px"></div>
+            <div class="flex items-center" @click="tabTime(3, '2022')">
+              <div
+                class="w-10px h-10px rounded-full"
+                :style="`background-color:${timeNum == 3 ? '#17d46b' : '#c1c1c1'}`"
+              ></div>
+              <div class="ml-10px text-sm" :style="`color:${timeNum == 3 ? '#17d46b' : '#fff'}`"
+                >2022</div
+              >
+            </div>
+          </div>
           <div class="ml-15px">
-            <div class="text-lg">2024年，我们建设</div>
-            <div class="my-10px">示范村 <span class="text-lg color-[#38c874]">29</span>个 </div>
+            <div class="text-lg"
+              >{{ timeNum == 1 ? '2024' : timeNum == 2 ? '2023' : '2022' }}年，我们建设</div
+            >
+            <div class="my-10px"
+              >示范村 <span class="text-lg color-[#38c874]">{{ leftArr2.tableData1.length }}</span
+              >个
+            </div>
             <div
-              >区县<span class="text-lg color-[#38c874]">10</span>个|产业类型<span
-                class="text-lg color-[#38c874]"
-                >4</span
-              >个|产业形态<span class="text-lg color-[#38c874]">8</span>重</div
+              >区县<span class="text-lg color-[#38c874]">{{ options.length }}</span
+              >个 | 产业类型<span class="text-lg color-[#38c874]">{{ from }}</span
+              >个 | 产业形态<span class="text-lg color-[#38c874]">{{ industry }}</span
+              >种</div
             >
           </div>
         </div>
@@ -235,9 +271,10 @@
               <el-select
                 @change="selectChange"
                 class="!bg-[#3ac975] color-[#fff]"
-                v-show="column.label === '区县'"
+                v-show="column.label === ''"
                 v-model="county"
-                style="width: 100px"
+                placeholder="请选择区县"
+                style="width: 130px"
               >
                 <el-option class="color-[#fff]" label="全部" value="全部" />
                 <el-option
@@ -250,7 +287,13 @@
               </el-select>
             </div>
           </div>
-          <div class="table-data-row" v-for="(item, index) in leftArr2.tableData1" :key="index">
+          <div
+            class="table-data-row"
+            v-for="(item, index) in leftArr2.tableData1"
+            @click="goPage(item.bigscreen)"
+            style="cursor: pointer"
+            :key="index"
+          >
             <div
               v-show="column.label === '序号'"
               class="table-data-cell"
@@ -265,8 +308,8 @@
               v-for="(column, inde) in leftArr2.tableColumns1"
               :key="inde"
               :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-              >{{ item[column.key] }}</div
-            >
+              >{{ item[column.key] }}
+            </div>
           </div>
         </div>
       </div>
@@ -376,7 +419,90 @@
           >构建全流程的新型农业一体化管理平台，融合农业数据管理、农业数据预警显示、多维数据综合显示、农产品生产周期预测、农业气象预警、信息<br />综合利用、信息发布服务、病虫害预警、溯源系统等功能与数据为一体，提供全方位、智慧化、立体可视化的运营保障服务</div
         >
       </div>
-      <div class="bigscreen-bg w-112% ml--107px mr-[-500px] h-350px"></div>
+      <div class="w-100vw h-550px">
+        <div
+          class="w-100vw h-[170px]"
+          style="overflow: hidden; position: relative; display: inline-flex"
+        >
+          <div class="target-img h-100%" ref="el" @mouseenter="targetMouse">
+            <div class="num-one-1" @click="goPage2('')"></div>
+            <div class="num-one-2" @click="goPage2('')"></div>
+            <div
+              class="num-one-3"
+              @click="goPage2('https://yzl.qualink.com/iir-efficient-tools/#/shareView/YG160rnu')"
+            ></div>
+            <div class="num-one-4" @click="goPage2('')"></div>
+            <div class="num-one-5" @click="goPage2('')"></div>
+            <div class="num-one-6" @click="goPage2('')"></div>
+            <div class="num-one-7" @click="goPage2('')"></div>
+            <div class="num-one-8" @click="goPage2('')"></div>
+            <div class="num-one-9" @click="goPage2('')"></div>
+            <div class="num-one-10" @click="goPage2('')"></div>
+            <div class="num-one-11" @click="goPage2('')"></div>
+            <div class="num-one-12" @click="goPage2('')"></div>
+            <div class="num-one-13" @click="goPage2('')"></div>
+            <div class="num-one-14" @click="goPage2('')"></div>
+            <div class="num-one-15" @click="goPage2('')"></div>
+          </div>
+        </div>
+        <div
+          class="w-100vw h-[170px] my-15px"
+          style="overflow: hidden; position: relative; display: inline-flex"
+        >
+          <div class="target-img1 h-100%">
+            <div class="num-two-16" @click="goPage2('')"></div>
+            <div class="num-two-15" @click="goPage2('')"></div>
+            <div class="num-two-14" @click="goPage2('')"></div>
+            <div class="num-two-13" @click="goPage2('')"></div>
+            <div class="num-two-12" @click="goPage2('')"></div>
+            <div class="num-two-11" @click="goPage2('')"></div>
+            <div class="num-two-10" @click="goPage2('')"></div>
+            <div class="num-two-9" @click="goPage2('')"></div>
+            <div class="num-two-8" @click="goPage2('')"></div>
+            <div class="num-two-7" @click="goPage2('')"></div>
+            <div class="num-two-6" @click="goPage2('')"></div>
+            <div class="num-two-5" @click="goPage2('')"></div>
+            <div class="num-two-4" @click="goPage2('')"></div>
+            <div class="num-two-3" @click="goPage2('')"></div>
+            <div
+              class="num-two-2"
+              @click="goPage2('https://yzl.qualink.com/iir-efficient-tools/#/shareView/Odl2Pjp4')"
+            ></div>
+            <div
+              class="num-two-1"
+              @click="goPage2('https://yzl.qualink.com/iir-efficient-tools/#/shareView/XNq8Fc3f')"
+            ></div>
+          </div>
+        </div>
+        <div
+          class="w-100vw h-[170px]"
+          style="overflow: hidden; position: relative; display: inline-flex"
+        >
+          <div class="target-img h-100%">
+            <div
+              class="num-three-1"
+              @click="goPage2('https://yzl.qualink.com/iir-efficient-tools/#/shareView/KwF2EwRO')"
+            ></div>
+            <div class="num-three-2" @click="goPage2('')"></div>
+            <div class="num-three-3" @click="goPage2('')"></div>
+            <div
+              class="num-three-4"
+              @click="goPage2('https://yzl.qualink.com/iir-efficient-tools/#/shareView/V8xONDZo')"
+            ></div>
+            <div class="num-three-5" @click="goPage2('')"></div>
+            <div class="num-three-6" @click="goPage2('')"></div>
+            <div class="num-three-7" @click="goPage2('')"></div>
+            <div class="num-three-8" @click="goPage2('')"></div>
+            <div class="num-three-9" @click="goPage2('')"></div>
+            <div class="num-three-10" @click="goPage2('')"></div>
+            <div class="num-three-11" @click="goPage2('')"></div>
+            <div class="num-three-12" @click="goPage2('')"></div>
+            <div class="num-three-13" @click="goPage2('')"></div>
+            <div class="num-three-14" @click="goPage2('')"></div>
+            <div class="num-three-15" @click="goPage2('')"></div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="bg-[#345442] py-[20px]">
       <div class="flex justify-evenly">
@@ -390,7 +516,7 @@
           <div class="color-[#c1c1c1] tex-sm my-10px">开州区鲁渝协作乡村振兴示范数字化赋能</div>
         </div>
         <div>
-          <div class="color-[#fff] text-lg mb-20px">帮扶基地的</div>
+          <div class="color-[#fff] text-lg mb-20px">帮扶基地</div>
           <div class="color-[#c1c1c1] tex-sm">巫山县福田镇双凤村清霸茶叶基地</div>
           <div class="color-[#c1c1c1] tex-sm my-10px">秀山县梅江镇兴隆坳现代茶叶农业园</div>
           <div class="color-[#c1c1c1] tex-sm">奉节县鹤峰乡青杠村百果园</div>
@@ -433,6 +559,9 @@ import { ref, reactive, onMounted } from 'vue'
 import { distinct, page, selectMap } from './api'
 import * as echarts from 'echarts'
 import { jsonData } from './assets/chongqing'
+import { constant } from 'lodash'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const mainNum = ref(0)
 const dataList = ref([])
 const county = ref('') //区县参数
@@ -445,20 +574,9 @@ const mouseenterChange = async (val) => {
   dataList.value = res
 }
 //时间线
-const activities = [
-  {
-    content: '',
-    timestamp: '2024'
-  },
-  {
-    content: '',
-    timestamp: '2023'
-  },
-  {
-    content: '',
-    timestamp: '2022'
-  }
-]
+const timeNum = ref(1)
+const industry = ref()
+const from = ref()
 const leftArr = reactive({
   tableColumns1: [
     {
@@ -478,7 +596,7 @@ const leftArr = reactive({
     }
   ],
   tableData1: [
-  {
+    {
       index: '1',
       city: '济南市',
       county: '武隆区'
@@ -522,7 +640,7 @@ const leftArr = reactive({
       index: '9',
       city: '聊城市',
       county: '奉节县'
-    },
+    }
   ]
 })
 const leftArr2 = reactive({
@@ -534,7 +652,7 @@ const leftArr2 = reactive({
     },
     {
       key: 'county',
-      label: '区县',
+      label: '',
       width: '20%'
     },
     {
@@ -640,7 +758,7 @@ const leftArr3 = reactive({
       index: '9',
       city: '巫溪县通城镇龙池村水果园',
       county: '苹果'
-    },
+    }
   ]
 })
 //获取数据
@@ -802,16 +920,28 @@ onMounted(() => {
   initChinaMap()
 })
 //获取区县
-const getPage = async () => {
-  let res = await page({ pageNo: 1, pageSize: 100 })
+const getPage = async (years) => {
+  let res = await page({ pageNo: 1, pageSize: 100, years })
   leftArr2.tableData1 = res.list
   let list = []
+  let list2 = []
+  let list3 = []
   res.list.forEach((item) => {
     list.push(item.county)
+    list2.push(item.form)
+    list3.push(item.industry)
   })
+  console.log(list2, 'list22')
+  console.log(list3, 'list33333')
   options.value = Array.from(new Set(list))
+  from.value = Array.from(new Set(list2)).length
+  industry.value = Array.from(new Set(list3)).length
 }
-getPage()
+getPage('2024')
+const tabTime = (val, years) => {
+  timeNum.value = val
+  getPage(years)
+}
 //下拉框切换
 const selectChange = async (e) => {
   console.log(e, 'eeeeeeeeeeeee')
@@ -819,6 +949,9 @@ const selectChange = async (e) => {
   let res = await page({ pageNo: 1, pageSize: 100, county: e == '全部' ? '' : e })
   console.log(res, 'rrrrrrrrrrer')
   leftArr2.tableData1 = res.list
+}
+const goPage = (url) => {
+  window.open(url)
 }
 </script>
 <style lang="scss" scoped>
@@ -856,7 +989,7 @@ const selectChange = async (e) => {
   background-image: url(./assets/SAASImage3.png);
 }
 .initMap {
-  background-size: 90% 90%;
+  background-size: contain;
   background-image: url(./assets/initMapBg.png);
   background-repeat: no-repeat;
   background-position: center center;
@@ -960,9 +1093,121 @@ const selectChange = async (e) => {
   height: 100px;
   border: 1px solid red;
 }
+
+.num-one {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 @for $i from 1 through 6 {
   .data-icon-#{$i} {
     background-image: url(./assets/dataIcon#{$i}.png);
   }
+}
+@for $i from 1 through 15 {
+  .num-one-#{$i} {
+    background-image: url(./assets/num-one-#{$i}.png);
+    background-size: 100% 100%;
+    width: 20%;
+    height: 100%;
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+@for $i from 1 through 16 {
+  .num-two-#{$i} {
+    background-image: url(./assets/num-two-#{$i}.png);
+    background-size: 100% 100%;
+    width: 20%;
+    height: 100%;
+    margin-right: 15px;
+  }
+}
+@for $i from 1 through 15 {
+  .num-three-#{$i} {
+    background-image: url(./assets/num-three-#{$i}.png);
+    background-size: 100% 100%;
+    width: 20%;
+    margin-right: 15px;
+    height: 100%;
+  }
+}
+</style>
+<style lang="scss" scoped>
+.img-right {
+  position: relative;
+  left: 500px;
+  /* 这里的间距可以根据你想要的宽度自行调整 */
+}
+.target-img {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  animation: marquee 50s linear infinite;
+  /* 这里做了一个鼠标移入盒子放大的效果 */
+}
+.target-img div:hover {
+  transition: all 0.6s;
+  transform: scale(1.1);
+}
+
+.target-img div {
+  width: 400px;
+  flex-shrink: 0;
+}
+.target-img1 {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  animation: marquee1 50s linear infinite;
+  /* 这里做了一个鼠标移入盒子放大的效果 */
+}
+
+.target-img1 div:hover {
+  transition: all 0.6s;
+  transform: scale(1.1);
+}
+
+.target-img1 div {
+  width: 400px;
+  /* height: 310px; */
+  /*background: #ffffff;
+				  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.2);
+				  border-radius: 12px 12px 12px 12px;
+				  opacity: 1;
+				  margin-right: 100px;
+				  margin-top: 40px;*/
+  /* 无关的属性 */
+  flex-shrink: 0;
+  /* 禁止缩放盒子 */
+}
+/* 定义动画效果开始的位置以及消失的位置 */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-222vw);
+  }
+}
+
+@keyframes marquee1 {
+  0% {
+    transform: translateX(-250vw);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* 实现鼠标移入放大的效果 */
+.target-top:hover .target-img {
+  animation-play-state: paused;
+}
+
+.target-top:hover .target-img1 {
+  animation-play-state: paused;
 }
 </style>
