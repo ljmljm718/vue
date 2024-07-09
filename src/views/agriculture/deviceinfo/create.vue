@@ -93,7 +93,9 @@ const formData = ref({
   deviceKind: undefined,
   deviceMonitorType: undefined,
   parkName: undefined,
-  parkDetailName: undefined
+  parkDetailName: undefined,
+  channelId: undefined,
+  dtu: undefined
 })
 
 // 表单校验规则
@@ -204,7 +206,9 @@ const resetForm = () => {
     deviceKind: undefined,
     deviceMonitorType: undefined,
     parkName: undefined,
-    parkDetailName: undefined
+    parkDetailName: undefined,
+    channelId: undefined,
+    dtu: undefined
   }
   deviceType.value = []
 }
@@ -376,10 +380,16 @@ const handleSelectorChange = (val) => {
             <el-form-item label="位置" prop="location">
               <el-input v-model="formData.location" placeholder="请输入位置" />
             </el-form-item>
-            <el-form-item label="视频地址" prop="url">
-              <el-input v-model="formData.url" placeholder="请输入视频地址" />
+            <el-form-item label="终端" prop="dtu">
+              <el-input v-model="formData.dtu" placeholder="请输入终端" />
             </el-form-item>
-            <el-form-item label="备注" prop="remark">
+            <el-form-item label="通道" prop="channelId">
+              <el-input v-model="formData.channelId" placeholder="请输入通道" />
+            </el-form-item>
+            <el-form-item label="访问地址" prop="url">
+              <el-input v-model="formData.url" placeholder="请输入访问地址" />
+            </el-form-item>
+            <el-form-item label="备注" prop="remark" class="col-span-2">
               <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
             </el-form-item>
             <el-form-item label="图片" prop="imgId">

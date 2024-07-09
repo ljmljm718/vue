@@ -78,7 +78,7 @@
       <el-table-column label="规则类型" align="center" prop="ruleType" />
       <el-table-column label="系数" align="center" prop="rule" />
       <el-table-column label="单位" align="center" prop="ruleUnit" />
-      <el-table-column label="绑定设备" align="center" prop="deviceName" />
+<!--      <el-table-column label="绑定设备" align="center" prop="deviceName" />-->
       <el-table-column
         label="创建时间"
         align="center"

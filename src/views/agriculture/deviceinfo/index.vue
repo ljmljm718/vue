@@ -50,6 +50,24 @@
           />
         </el-select>
       </el-form-item>
+        <el-form-item label="终端" prop="dtu">
+          <el-input
+            v-model="queryParams.dtu"
+            placeholder="请输入终端"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="通道" prop="channelId">
+          <el-input
+            v-model="queryParams.channelId"
+            placeholder="请输入通道"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
       <!--      <el-form-item label="所属基地" prop="belongPark">
               <el-input
                 v-model="queryParams.belongPark"
@@ -358,7 +376,9 @@ const queryParams = reactive({
   location: undefined,
   deviceMonitorType: undefined,
   deviceKind: undefined,
-  status: undefined
+  status: undefined,
+  channelId: undefined,
+  dtu: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
