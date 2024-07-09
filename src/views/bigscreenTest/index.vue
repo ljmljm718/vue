@@ -881,7 +881,7 @@ export default defineComponent({
                                     ),
                                     default: () => (
                                         <>
-                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                            <div class="art-font px-3 py-2 pt-3" onClick={() => {
                                                 window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站")
                                             }}>气象监测</div>
                                             <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={weatherLoading.value} onClick={() => {
@@ -889,8 +889,8 @@ export default defineComponent({
                                             }}>
                                                 {
                                                     weatherList.value.map((item) => (
-                                                        <div class="inner-border flex justify-between px-4 items-center">
-                                                            <div class="flex space-x-2">
+                                                        <div class="inner-border flex justify-between px-4 py-2 items-center">
+                                                            <div class="flex space-x-2 items-center">
                                                                 <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
                                                             </div>
@@ -905,10 +905,10 @@ export default defineComponent({
                                                     ))
                                                 }
                                             </div>
-                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                            <div class="art-font px-3 py-1 pt-2 hidden" onClick={() => {
                                                 window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
                                             }}>土壤墒情</div>
-                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={soilLoading.value} onClick={() => {
+                                            <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px] hidden" v-loading={soilLoading.value} onClick={() => {
                                                 window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
                                             }}>
                                                 {
@@ -928,7 +928,7 @@ export default defineComponent({
                                                     ))
                                                 }
                                             </div>
-                                            <div class="art-font px-3 py-1 pt-2" onClick={() => {
+                                            <div class="art-font px-3 py-2 pt-5" onClick={() => {
                                                 window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测")
                                             }}>水质监测</div>
                                             <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]" v-loading={waterLoading.value} onClick={() => {
@@ -936,8 +936,8 @@ export default defineComponent({
                                             }}>
                                                 {
                                                     waterList.value.map((item) => (
-                                                        <div class="inner-border flex justify-between px-4 items-center">
-                                                            <div class="flex space-x-2">
+                                                        <div class="inner-border flex justify-between px-4 py-2 items-center">
+                                                            <div class="flex space-x-2 items-center">
                                                                 <div class={['icon-' + item.icon]}></div>
                                                                 <div>{item.label}</div>
                                                             </div>
@@ -1550,8 +1550,8 @@ export default defineComponent({
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
     background-size: 100% auto;
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 2rem;
+    height: 2rem;
   }
 }
 
