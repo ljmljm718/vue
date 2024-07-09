@@ -21,12 +21,7 @@
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType">
         <el-select v-model="formData.orderType" placeholder="请选择订单类型">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
+          <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
       <el-form-item label="地址标识号" prop="addressNumber">
@@ -36,7 +31,7 @@
         <el-input v-model="formData.orderAmount" placeholder="请输入订单金额" />
       </el-form-item>
       <el-form-item label="实付金额" prop="realAmount">
-        <el-input v-model="formData.realAmount" placeholder="请输入实付金额"  width="300"/>
+        <el-input v-model="formData.realAmount" placeholder="请输入实付金额" />
       </el-form-item>
       <el-form-item label="付款时间" prop="paymentTime">
         <el-date-picker
@@ -63,34 +58,15 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="formData.status" placeholder="请选择订单状态">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <el-radio-group v-model="formData.status">
+          <el-radio label="1">请选择字典生成</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="订单赠送标识" prop="isPresented">
-        <el-select v-model="formData.isPresented" placeholder="请选择订单赠送标识">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_GIFT_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <el-input v-model="formData.isPresented" placeholder="请输入订单赠送标识" />
       </el-form-item>
       <el-form-item label="是否提醒" prop="isRemind">
-        <el-select v-model="formData.isPresented" placeholder="请选择是否提醒">
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ODER_REMIND_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <el-input v-model="formData.isRemind" placeholder="请输入是否提醒" />
       </el-form-item>
       <el-form-item label="预计收货日期（起）" prop="expectStart">
         <el-date-picker
@@ -112,6 +88,12 @@
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
+    <!-- 子表的表单 -->
+    <el-tabs v-model="subTabsName">
+      <el-tab-pane label="认养订单明细" name="adoptionOrderDetail">
+        <AdoptionOrderDetailForm ref="adoptionOrderDetailFormRef" :order-number="formData.id" />
+      </el-tab-pane>
+    </el-tabs>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -120,7 +102,7 @@
 </template>
 <script setup lang="ts">
 import { AdoptionOrderApi, AdoptionOrderVO } from '@/api/agriculture/adoptionorder'
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import AdoptionOrderDetailForm from './components/AdoptionOrderDetailForm.vue'
 
 /** 认养订单 表单 */
 defineOptions({ name: 'AdoptionOrderForm' })
@@ -150,7 +132,7 @@ const formData = ref({
   isRemind: undefined,
   expectStart: undefined,
   expectEnd: undefined,
-  remark: undefined
+  remark: undefined,
 })
 const formRules = reactive({
   serialNumber: [{ required: true, message: '计划流水号不能为空', trigger: 'blur' }],
@@ -162,9 +144,13 @@ const formRules = reactive({
   shippingTime: [{ required: true, message: '发货时间不能为空', trigger: 'blur' }],
   receiptTime: [{ required: true, message: '收货时间不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
-  isPresented: [{ required: true, message: '订单赠送标识不能为空', trigger: 'blur' }]
+  isPresented: [{ required: true, message: '订单赠送标识不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
+
+/** 子表的表单 */
+const subTabsName = ref('adoptionOrderDetail')
+const adoptionOrderDetailFormRef = ref()
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -189,10 +175,19 @@ const emit = defineEmits(['success']) // 定义 success 事件，用于操作成
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
+  // 校验子表单
+  try {
+    await adoptionOrderDetailFormRef.value.validate()
+  } catch (e) {
+    subTabsName.value = 'adoptionOrderDetail'
+    return
+  }
   // 提交请求
   formLoading.value = true
   try {
     const data = formData.value as unknown as AdoptionOrderVO
+    // 拼接子表的数据
+    data.adoptionOrderDetails = adoptionOrderDetailFormRef.value.getData()
     if (formType.value === 'create') {
       await AdoptionOrderApi.createAdoptionOrder(data)
       message.success(t('common.createSuccess'))
@@ -228,19 +223,8 @@ const resetForm = () => {
     isRemind: undefined,
     expectStart: undefined,
     expectEnd: undefined,
-    remark: undefined
+    remark: undefined,
   }
   formRef.value?.resetFields()
 }
-
-//分转换成元
-const conversion = (num: number) => {
-    const str = num / 100 + "";
-    const intSum = str
-      .substring(0, str.indexOf("."))
-      .replace(/\B(?=(?:\d{3})+$)/g, ","); //取到整数部分
-    const dot = str.substring(str.length, str.indexOf(".")); //取到小数部分搜索
-    const ret = intSum + dot;
-    return ret;
-  };
 </script>

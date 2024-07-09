@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="dialogVisible" title="农资信息批量导入" width="400">
+  <Dialog v-model="dialogVisible" title="信息批量导入" width="400">
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
@@ -133,7 +133,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const uploadImportStandard = async () => {
-  const res = await ProductApi.uploadImportStandard()
-  download.excel(res, '农资导入标准模版.xls')
+  const res = await ProductApi.uploadImport()
+  download.excel(res, '导入标准模版.xls')
 }
 </script>

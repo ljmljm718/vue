@@ -65,6 +65,14 @@
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:adoption-order:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" /> 新增
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -88,7 +96,7 @@
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE. ADOPTION_ORDER_TYPE,scope.row.orderType)?.colorType">
                {{getDictLabel(DICT_TYPE.ADOPTION_ORDER_TYPE,scope.row.orderType)}}
-            </el-text> 
+            </el-text>
            </template>
       </el-table-column>
       <el-table-column label="地址信息" align="center" prop="fullAddress" width="350"  />
@@ -120,21 +128,21 @@
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE.ADOPTION_ORDER_STATUS,scope.row.status)?.colorType">
                {{getDictLabel(DICT_TYPE.ADOPTION_ORDER_STATUS,scope.row.status)}}
-            </el-text> 
+            </el-text>
            </template>
       </el-table-column>
       <el-table-column label="订单赠送标识" align="center" prop="isPresented">
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE. ADOPTION_ORDER_GIFT_STATUS,scope.row.isPresented)?.colorType">
                {{getDictLabel(DICT_TYPE. ADOPTION_ORDER_GIFT_STATUS,scope.row.isPresented)}}
-            </el-text> 
+            </el-text>
            </template>
       </el-table-column>
       <el-table-column label="是否提醒" align="center" prop="isRemind">
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE.ADOPTION_ODER_REMIND_STATUS,scope.row.isRemind)?.colorType">
                {{getDictLabel(DICT_TYPE.ADOPTION_ODER_REMIND_STATUS,scope.row.isRemind)}}
-            </el-text> 
+            </el-text>
            </template>
       </el-table-column>
       <el-table-column
@@ -156,19 +164,19 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm('view', scope.row.id)"
             v-hasPermi="['agriculture:adoption-order:update']"
           >
-            编辑
+            详情
           </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:adoption-order:delete']"
-          >
-            删除
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleDelete(scope.row.id)"-->
+<!--            v-hasPermi="['agriculture:adoption-order:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -255,8 +263,11 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
+
+const router=useRouter()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  if (id) router.push(`/adoption/order/create?type=` + type + "&id=" + id)
+  else router.push(`/adoption/order/create`)
 }
 
 /** 删除按钮操作 */

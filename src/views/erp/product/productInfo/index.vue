@@ -164,7 +164,7 @@ import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/categor
 import ProductForm from './ProductForm.vue'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { erpPriceTableColumnFormatter } from '@/utils'
-import ProductImportForm from "@/views/erp/product/product/ProductImportForm.vue";
+import ProductImportForm from "@/views/erp/product/productInfo/ProductImportForm.vue";
 
 /** ERP 产品列表 */
 defineOptions({ name: 'ErpProduct' })
