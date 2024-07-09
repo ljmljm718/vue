@@ -126,6 +126,7 @@ const getFormInfo = async () => {
   formData.value = await AdoptionPlanApi.getAdoptionPlan(route.query.id as any)
   const result= await AdoptionRuleApi.getAdoptionRuleByPlanNumber(formData.value.serialNumber? formData.value.serialNumber:route.query.id)
   result.forEach(item => {
+    item.insuranceAmount=item.insuranceAmount/100
     if (item.ruleType=='0'){
       formData2.value = item
     }
@@ -139,6 +140,7 @@ const getFormInfo = async () => {
   // 获取当前计划绑定的蟹塘
   const data = await AdoptionPlanApi.getPlanParkPlot(route.query.id as any)
   parkDetailList.value = data
+
 }
 
 // 页面禁用
@@ -233,22 +235,37 @@ const submitForm = async () => {
       })
 
       await AdoptionPlanApi.updatePlanParkPlot(parkDetailList.value, formData.value.id)
-
+      debugger
       const data = formData.value as unknown as AdoptionPlanVO
       // 拼接子表的数据
       data.adoptionPlanProfiles = adoptionPlanProfileFormRef.value.getData()
       //按只认养formData2
+      //金额*100
+      formData2.value.insuranceAmount=formData2.value.insuranceAmount*100
       const data2 = formData2.value as unknown as AdoptionRuleVO
       data2.planNumber=data.serialNumber
       // 拼接子表的数据
+      adoptionRuleSpecsFormRefZhi.value.getData().forEach((item)=>{
+        item.singlePrice=item.singlePrice*100
+      })
       data2.adoptionRuleSpecss = adoptionRuleSpecsFormRefZhi.value.getData()
       //按亩认养formData3
+      //金额*100
+      formData3.value.insuranceAmount=formData3.value.insuranceAmount*100
       const data3 = formData3.value as unknown as AdoptionRuleVO
       data3.planNumber=data.serialNumber
+      adoptionRuleSpecsFormRefMu.value.getData().forEach((item)=>{
+        item.singlePrice=item.singlePrice*100
+      })
       data3.adoptionRuleSpecss = adoptionRuleSpecsFormRefMu.value.getData()
       //全部认养
+      //金额*100
+      formDataQuanBu.value.insuranceAmount=formDataQuanBu.value.insuranceAmount*100
       const data4 = formDataQuanBu.value as unknown as AdoptionRuleVO
       data4.planNumber=data.serialNumber
+      adoptionRuleSpecsFormRefQuanbu.value.getData().forEach((item)=>{
+        item.singlePrice=item.singlePrice*100
+      })
       data4.adoptionRuleSpecss = adoptionRuleSpecsFormRefQuanbu.value.getData()
       // adoptionRules
       if (!route.query.id) {
