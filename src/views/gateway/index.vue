@@ -966,7 +966,7 @@ const selectChange = async (e) => {
   leftArr2.tableData1 = res.list
 }
 const goPage = (url) => {
-  window.open(url)
+  url? window.open(url):''
 }
 const list = ref([])
 const getfilePage = async () => {
