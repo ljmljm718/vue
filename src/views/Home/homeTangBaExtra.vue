@@ -50,7 +50,7 @@
       </el-scrollbar>
     </div>
     <div class="grow overflow-auto p-2">
-      <div class="bg-[#25252500] grid xl:grid-cols-2 2xl:grid-cols-3 gap-3 w-full">
+      <div class="bg-[#25252500] grid xl:grid-cols-2 2xl:grid-cols-3 gap-3 w-full" id="chartOutWrapper">
         <div id="chartWD" class="chart-ins"></div>
         <div id="chartSD" class="chart-ins"></div>
         <div id="chartPH" class="chart-ins"></div>
@@ -83,6 +83,7 @@ import {
   environmentalDataHomePageA,
   environmentalDataHomePageC
 } from './apis'
+import { pinyin } from "pinyin-pro";
 import * as echarts from 'echarts'
 import {
   initChartStatic,
@@ -127,61 +128,77 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
     if (Array.isArray(resp)) runTimeDataList.value = resp
   }
 
-  const {
-    // temperature = [],
-    potassium = [],
-    ecValue = [],
-    // humidity = [],
-    // lightIntensity = [],
-    nitrogen = [],
-    pHValue = [],
-    phosphorus = [],
-    // atmosphericPressure = []
-  } = res
+  // const {
+  //   // temperature = [],
+  //   potassium = [],
+  //   ecValue = [],
+  //   // humidity = [],
+  //   // lightIntensity = [],
+  //   nitrogen = [],
+  //   pHValue = [],
+  //   phosphorus = [],
+  //   // atmosphericPressure = []
+  // } = res
 
-  const temperature = res['温度'] || []
-  const lightIntensity = res['光照'] || []
-  const atmosphericPressure = res['大气压力'] || []
-  const humidity = res['湿度'] || []
-  const rain = res['雨量'] || []
-  const windDirection = res['风向'] || []
-  const windSpeed = res['风速'] || []
+  // const temperature = res['温度'] || []
+  // const lightIntensity = res['光照'] || []
+  // const atmosphericPressure = res['大气压力'] || []
+  // const humidity = res['湿度'] || []
+  // const rain = res['雨量'] || []
+  // const windDirection = res['风向'] || []
+  // const windSpeed = res['风速'] || []
 
-  const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
-  initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
+  const chartOutWrapper = document.getElementById("chartOutWrapper")
+  if (!chartOutWrapper) return
+  chartOutWrapper.innerHTML = ''
+  for (let key in res) {
+    const domName = pinyin(key, { toneType: "none", type: "array" }).join('')
+    const newDom = document.createElement("div")
+    newDom.id = domName
+    newDom.className = 'tangba-chart-wrapper'
+    chartOutWrapper.append(newDom)
+    nextTick(() => {
+      const unit = res[key][0].units || ''
+      const { x, y, min, max } = generateXY(res[key])
+      initChart(domName, x, y, unit, key, min, max)
+    })
+  }
 
-  const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
-  initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
+  // const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
+  // initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
 
-  const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
-  initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
+  // const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
+  // initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
 
-  const { x:ECX, y:ECY, min:ECMin, max:ECMax } = generateXY(ecValue)
-  initChart('chartEC', ECX, ECY, 'mS/cm', 'EC值', ECMin, ECMax)
+  // const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
+  // initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
 
-  const { x:LightX, y:LightY, min:LightMin, max:LightMax } = generateXY(lightIntensity)
-  initChart('chartLight', LightX, LightY, 'Lux', '光照', LightMin, LightMax)
+  // const { x:ECX, y:ECY, min:ECMin, max:ECMax } = generateXY(ecValue)
+  // initChart('chartEC', ECX, ECY, 'mS/cm', 'EC值', ECMin, ECMax)
 
-  const { x:NX, y:NY, min:NMin, max:NMax } = generateXY(nitrogen)
-  initChart('chartN', NX, NY, 'mg/Kg', '氮', NMin, NMax)
+  // const { x:LightX, y:LightY, min:LightMin, max:LightMax } = generateXY(lightIntensity)
+  // initChart('chartLight', LightX, LightY, 'Lux', '光照', LightMin, LightMax)
 
-  const { x:PX, y:PY, min:PMin, max:PMax } = generateXY(phosphorus)
-  initChart('chartP', PX, PY, 'mg/Kg', '磷', PMin, PMax)
+  // const { x:NX, y:NY, min:NMin, max:NMax } = generateXY(nitrogen)
+  // initChart('chartN', NX, NY, 'mg/Kg', '氮', NMin, NMax)
 
-  const { x:KX, y:KY, min:KMin, max:KMax } = generateXY(potassium)
-  initChart('chartK', KX, KY, 'mg/Kg', '钾', KMin, KMax)
+  // const { x:PX, y:PY, min:PMin, max:PMax } = generateXY(phosphorus)
+  // initChart('chartP', PX, PY, 'mg/Kg', '磷', PMin, PMax)
 
-  const { x:AtmosX, y:AtmosY, min:AtmosMin, max:AtmosMax } = generateXY(atmosphericPressure)
-  initChart('chartAtmos', AtmosX, AtmosY, 'hpa', '大气压力', AtmosMin, AtmosMax)
+  // const { x:KX, y:KY, min:KMin, max:KMax } = generateXY(potassium)
+  // initChart('chartK', KX, KY, 'mg/Kg', '钾', KMin, KMax)
 
-  const { x:RainX, y:RainY, min:RainMin, max:RainMax } = generateXY(rain)
-  initChart('chartRain', RainX, RainY, 'mm/min', '雨量', RainMin, RainMax)
+  // const { x:AtmosX, y:AtmosY, min:AtmosMin, max:AtmosMax } = generateXY(atmosphericPressure)
+  // initChart('chartAtmos', AtmosX, AtmosY, 'hpa', '大气压力', AtmosMin, AtmosMax)
 
-  const { x:WindDirecX, y:WindDirecY, min:WindDirecMin, max:WindDirecMax } = generateXY(windDirection)
-  initChart('chartWindDirec', WindDirecX, WindDirecY, '度°', '风向', WindDirecMin, WindDirecMax)
+  // const { x:RainX, y:RainY, min:RainMin, max:RainMax } = generateXY(rain)
+  // initChart('chartRain', RainX, RainY, 'mm/min', '雨量', RainMin, RainMax)
 
-  const { x:WindSpeedX, y:WindSpeedY, min:WindSpeedMin, max:WindSpeedMax } = generateXY(windSpeed)
-  initChart('chartWindSpeed', WindSpeedX, WindSpeedY, 'm/s', '风速', WindSpeedMin, WindSpeedMax)
+  // const { x:WindDirecX, y:WindDirecY, min:WindDirecMin, max:WindDirecMax } = generateXY(windDirection)
+  // initChart('chartWindDirec', WindDirecX, WindDirecY, '度°', '风向', WindDirecMin, WindDirecMax)
+
+  // const { x:WindSpeedX, y:WindSpeedY, min:WindSpeedMin, max:WindSpeedMax } = generateXY(windSpeed)
+  // initChart('chartWindSpeed', WindSpeedX, WindSpeedY, 'm/s', '风速', WindSpeedMin, WindSpeedMax)
 }
 
 const initChart = (
@@ -215,8 +232,8 @@ const initChart = (
           textStyle: {
             fontSize: 12
           },
-          x: '6',
-          y: '8'
+          x: '10',
+          y: '10'
         },
         xAxis: {
           data: xValue,
@@ -235,7 +252,7 @@ const initChart = (
         },
         color: ['#ffa773', '#36e1d9'],
         yAxis: {
-          name: unit,
+          name: unit + '    ',
           type: 'value',
           axisLine: {
             show: true,
@@ -243,12 +260,13 @@ const initChart = (
               color: '#ffffff80'
             }
           },
+          nameLocation: 'end',
           splitLine: {
             //网格线
             show: true, //是否显示
             lineStyle: {
               //网格线样式
-              color: '#ffffff80', //网格线颜色
+              color: '#25252525', //网格线颜色
               width: 1, //网格线的加粗程度
               type: 'dashed' //网格线类型
             }
@@ -290,10 +308,10 @@ const initChart = (
           }
         ],
         grid: {
-          left: '12%',
-          right: '8%',
-          top: '23%',
-          bottom: '15%'
+          left: '50',
+          right: '30',
+          top: '65',
+          bottom: '40'
         }
       })
     );
@@ -301,6 +319,9 @@ const initChart = (
 }
 
 const handleSelect = async (item) => {
+  const chartOutWrapper = document.getElementById("chartOutWrapper")
+  if (!chartOutWrapper) return
+  chartOutWrapper.innerHTML = ''
   const chartInstances = document.querySelectorAll('.chart-ins')
   chartInstances.forEach((item: HTMLElement) => {
     item.style.height = '0px'
@@ -414,4 +435,13 @@ const getIconClass = (item) => {
 
 .online-grow { background-image: url(./assets/tangba/onlineGrow.png); }
 .offline-grow { background-image: url(./assets/tangba/offlineGrow.png); }
+</style>
+<style>
+.tangba-chart-wrapper {
+  background: linear-gradient(to top, #ebf3ff, #ebf3ff40);
+  height: 0px;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid #25252540;
+}
 </style>
