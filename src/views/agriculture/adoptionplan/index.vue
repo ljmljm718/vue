@@ -26,15 +26,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="计划年度" prop="planYear">
-        <el-input
-          v-model="queryParams.planYear"
-          placeholder="请输入计划年度"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="认养品种" prop="adoptionKind">
         <el-input
           v-model="queryParams.adoptionKind"
@@ -72,8 +63,8 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键id" align="center" prop="id" />-->
-      <el-table-column label="流水号" align="center" prop="serialNumber" width="150px"/>
-      <el-table-column label="计划名称" align="center" prop="planName" width="130px"/>
+      <el-table-column label="流水号" align="center" prop="serialNumber" width="160px"/>
+      <el-table-column label="计划名称" align="center" prop="planName" width="160px"/>
       <el-table-column label="计划年度" align="center" prop="planYear" width="100px"/>
       <el-table-column label="认养品种" align="center" prop="adoptionKind" width="100px"/>
       <el-table-column
@@ -81,42 +72,42 @@
         align="center"
         prop="startTime"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column
         label="计划结束时间"
         align="center"
         prop="endTime"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column
         label="预售开始时间"
         align="center"
         prop="presaleStart"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column
         label="预售结束时间"
         align="center"
         prop="presaleEnd"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column
         label="预计收获开始时间"
         align="center"
         prop="receivingStart"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column
         label="预计收获结束时间"
         align="center"
         prop="receivingEnd"
         :formatter="dateFormatter2"
-        width="130px"
+        width="120px"
       />
       <el-table-column label="计划描述" align="center" prop="planDescribe" />
       <el-table-column label="操作" align="center" fixed="right" width="160">
