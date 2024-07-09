@@ -74,16 +74,31 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>
       <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
+      <el-table-column label="基地类型" align="center" prop="parkType" width="200"/>
       <el-table-column label="编号" align="center" prop="code" width="200"/>
       <el-table-column label="名称" align="center" prop="name" width="200"/>
-      <!--      <el-table-column label="类型" align="center" prop="type" />-->
-      <el-table-column label="海拔" align="center" prop="altitude"/>
+      <el-table-column label="地块类型" align="center" prop="type" width="150">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_PLOT_TYPE" :value="scope.row.type" />
+        </template>
+      </el-table-column>
+      <el-table-column label="海拔" align="center" prop="altitude">
+        <template #default="scope">
+          {{ scope.row.altitude != undefined ? scope.row.altitude + '米' : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column label="纬度" align="center" prop="latitude" width="120"/>
       <el-table-column label="经度" align="center" prop="longitude" width="120"/>
       <el-table-column label="通讯地址" align="center" prop="address"  width="200"/>
       <el-table-column label="联系人" align="center" prop="contact"/>
       <el-table-column label="联系电话" align="center" prop="tel"  width="120"/>
-      <el-table-column label="面积" align="center" prop="area"/>
+      <el-table-column label="面积" align="center" prop="area" width="100">
+        <template #default="scope">
+          {{ scope.row.area != undefined ? scope.row.area + '亩' : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="数量" align="center" prop="quantity" width="100"/>
+      <el-table-column label="模式" align="center" prop="adoptionType" width="100"/>
       <el-table-column label="备注" align="center" prop="remark"/>
 
       <el-table-column
@@ -95,7 +110,8 @@
       />
       <el-table-column label="二维码图片" fixed="right" align="center" prop="qrImg" width="200px">
         <template #default="scope">
-          <el-image :src="`data:image/png;base64,${scope.row.qrImg}`"
+          <el-image
+:src="`data:image/png;base64,${scope.row.qrImg}`"
                     style="object-fit: cover;width: 2rem;height: 2rem;"
                     preview-teleported
                     :preview-src-list="[`data:image/png;base64,${scope.row.qrImg}`]"
@@ -140,6 +156,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {ParkDetailApi, ParkDetailVO} from '@/api/agriculture/parkdetail'
 import ParkDetailForm from './ParkDetailForm.vue'
+import {  DICT_TYPE } from '@/utils/dict'
 
 /** 地块基本信息 列表 */
 defineOptions({name: 'ParkDetail'})

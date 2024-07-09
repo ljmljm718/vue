@@ -62,6 +62,10 @@ export const ProductApi = {
   uploadImportStandard: async () => {
     return await request.download({ url: `/erp/product/uploadStandard` })
   },
+  // 导出产品 Excel
+  uploadImport: async () => {
+    return await request.download({url: `/erp/product/uploadImport`})
+  },
 
   //提交认证与审核认证
   certifyProduct:async (id: number,certifyStatus:string) =>{

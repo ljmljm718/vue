@@ -206,7 +206,7 @@ const cardList = ref([
   },
   {
     id: '3',
-    title: '摄像头'
+    title: '视频监控'
   },
   {
     id: '4',
@@ -242,7 +242,7 @@ const getdeviceInfoByPark = async () => {
   }, ...res.filter(item => {
     if (item.categoryName === "气象站") return true
     if (item.categoryName === "水质监测") return true
-    if (item.categoryName === "摄像头") return true
+    if (item.categoryName === "视频监控") return true
     return false
   }).map(item => ({
     ...item,
@@ -401,7 +401,7 @@ onMounted(() => {
               style="border: 1px solid #5293EAA0;background-color: #5293EA30;"
             >
               <div class="t w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
-              <div>环境监测</div>
+              <div>气象站</div>
             </div>
             <div v-for="(item, index) in topDataList" :key="item.monitoringType"
                  class="flex space-x-2 p-2 pl-4"
