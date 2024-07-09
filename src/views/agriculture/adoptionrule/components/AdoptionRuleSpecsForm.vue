@@ -21,9 +21,12 @@
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.ruleType`" :rules="formRules.ruleType" class="mb-0px!">
             <el-select v-model="row.ruleType" placeholder="请选择认养模式" disabled>
-              <el-option label="份" value="0" />
-              <el-option label="亩" value="1" />
-              <el-option label="全部" value="2" />
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
             </el-select>
           </el-form-item>
         </template>
@@ -73,6 +76,7 @@
 </template>
 <script setup lang="ts">
 import { AdoptionRuleApi } from '@/api/agriculture/adoptionrule'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 const props = defineProps<{
   ruleNumber: undefined, // 认养规则流水号（主表的关联字段），
