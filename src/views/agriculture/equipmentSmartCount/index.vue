@@ -460,7 +460,7 @@ watch(
       </el-form>
     </el-card>
     <div class="mt-3 grid gap-3 2xl:grid-cols-12 xl:grid-cols-6">
-      <el-card class="col-span-6">
+      <el-card class="col-span-6" v-show="soilList.length !== 0">
         <template #header>
           <div class="flex items-center space-x-2">
             <el-icon><HelpFilled /></el-icon>
@@ -482,7 +482,7 @@ watch(
           </div>
         </div>
       </el-card>
-      <el-card class="col-span-6">
+      <el-card class="col-span-6" v-show="weather.length !== 0">
         <template #header>
           <div class="flex items-center space-x-2">
             <el-icon><HelpFilled /></el-icon>
@@ -504,7 +504,7 @@ watch(
           </div>
         </div>
       </el-card>
-      <el-card class="col-span-6">
+      <el-card class="col-span-6" v-show="waterQuality.length !== 0">
         <template #header>
           <div class="flex items-center space-x-2">
             <el-icon><HelpFilled /></el-icon>
@@ -526,7 +526,7 @@ watch(
           </div>
         </div>
       </el-card>
-      <el-card class="col-span-6">
+      <el-card class="col-span-6" v-show="infestation.length !== 0">
         <template #header>
           <div class="flex items-center space-x-2">
             <el-icon><HelpFilled /></el-icon>
