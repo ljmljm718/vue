@@ -99,7 +99,9 @@ watch(
     try {
       formLoading.value = true
       const res = await AdoptionRuleApi.getAdoptionRuleSpecsListByRuleNumber(val)
-      res[0].singlePrice=  res[0].singlePrice/100
+      res.forEach((item)=>{
+        item.singlePrice=  item.singlePrice/100
+      })
       formData.value= res
     } finally {
       formLoading.value = false
