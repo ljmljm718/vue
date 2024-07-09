@@ -336,12 +336,12 @@ const activeName = ref<any>('1')
             <el-form-item label="位置" prop="location">
               <el-input v-model="formData.location" placeholder="请输入位置" />
             </el-form-item>
-            <el-form-item label="备注" prop="remark" class="col-span-2">
+            <el-form-item label="视频地址" prop="url">
+              <el-input v-model="formData.url" placeholder="请输入视频地址" />
+            </el-form-item>
+            <el-form-item label="备注" prop="remark">
               <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
             </el-form-item>
-<!--            <el-form-item label="视频url" prop="url">
-              <el-input v-model="formData.url" placeholder="请输入视频url" />
-            </el-form-item>-->
             <el-form-item label="图片" prop="imgId">
               <UploadImg v-model="formData.imgId" disabled="true"/>
             </el-form-item>

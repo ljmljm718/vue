@@ -26,7 +26,7 @@ const soilList=ref([])
 // 获取土壤墒情信息
 const getSoilInfoList = async (belongPark?:any,belongPlot?:any) => {
   const res = await EquipmentDataApi.environmentalDataHomePageC({belongPark,belongPlot})
-  console.log("res", res);
+  console.log("土壤墒情", res);
   soilList.value=res
 }
 getSoilInfoList()
@@ -493,6 +493,28 @@ watch(
           <div
             class="min-w-32 flex px-3 py-2 justify-between items-center rounded-lg"
             v-for="item,index in weather"
+            :key="index"
+            style="border: 1px solid #888888;"
+          >
+            <i alt="" :class="`w-2rem h-2rem ${getIconFrame(item.monitoringType)}`"></i>
+            <div class="flex flex-col items-end justify-center">
+              <div style="font-size: 14px;">{{item.monitoringType}}({{item.yyUnit}})</div>
+              <div class="art-font text-lg">{{item.dataValue}}</div>
+            </div>
+          </div>
+        </div>
+      </el-card>
+      <el-card class="col-span-6">
+        <template #header>
+          <div class="flex items-center space-x-2">
+            <el-icon><HelpFilled /></el-icon>
+            <span>水质监测</span>
+          </div>
+        </template>
+        <div class="grid xl:grid-cols-3 2xl:grid-cols-4 gap-1 xl:gap-2">
+          <div
+            class="min-w-32 flex px-3 py-2 justify-between items-center rounded-lg"
+            v-for="item,index in waterQuality"
             :key="index"
             style="border: 1px solid #888888;"
           >
