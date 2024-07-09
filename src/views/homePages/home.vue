@@ -6,11 +6,11 @@
         <div class="art-font">鲁渝协作</div>
       </div>
       <div class="flex items-center">
-        <el-input
+        <!-- <el-input
           v-model="input"
           style="border-radius: 10px;"
           placeholder="输入文字快速搜索"
-        />
+        /> -->
         <div class="power-logo w-[2rem] h-[1.3rem] ml-4" @click="logout"></div>
         <div
           class="w-[3rem] text-[#fff] text-[.8rem] pl-1"
@@ -20,7 +20,7 @@
     </div>
     <div class="top-bg w-full aspect-[24] flex px-[2rem] flex justify-between text-black items-center box-border mt-[.4rem] rounded-xl shadow-xl">
       <div class="text-[1.8rem] font-bold">鲁渝协作乡村振兴示范村数字化平台</div>
-      <div class="flex items-center cursor-pointer">
+      <div class="flex items-center cursor-pointer hidden">
         <div class="ling-logo w-[2rem] h-[1.3rem] ml-4"></div>
         <el-badge :value="totalNum" class="item">
           <div>
@@ -53,6 +53,10 @@
 </template>
 <script setup lang="ts">
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import { ElMessageBox } from 'element-plus'
+import { useUserStore } from '@/store/modules/user'
+import { useTagsViewStore } from '@/store/modules/tagsView'
+
 const input = ref('')
 const totalNum = ref(0)
 
@@ -77,6 +81,23 @@ const staticMenus = [
   },
 ]
 const menuList = ref<Array<any>>([])
+
+const userStore = useUserStore()
+const tagsViewStore = useTagsViewStore()
+const { t } = useI18n()
+const { push, replace } = useRouter()
+const logout = async () => {
+  try {
+    await ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
+      confirmButtonText: t('common.ok'),
+      cancelButtonText: t('common.cancel'),
+      type: 'warning'
+    })
+    await userStore.loginOut()
+    tagsViewStore.delAllViews()
+    replace('/login')
+  } catch {}
+}
 
 const buildMenuList = () => {
   const activeMenus = wsCache.get(CACHE_KEY.ROLE_ROUTERS).filter(item => {

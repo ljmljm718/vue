@@ -672,7 +672,7 @@ export default defineComponent({
                 label: item.monitoringType || '--',
                 value: item.dataValue || '--',
                 unit: item.yyUnit || ''
-            })).slice(0, 8)
+            })).slice(0, res.length)
         }
         getWaterList()
 

@@ -264,18 +264,18 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
 
   const {
     // temperature = [],
-    potassium = [],
-    ecValue = [],
+    potassium = res['钾'] || [],
+    ecValue = res['EC值'] || [],
     // humidity = [],
     // lightIntensity = [],
-    nitrogen = [],
-    pHValue = [],
-    phosphorus = [],
+    nitrogen = res['氮'] || [],
+    pHValue = res['PH值'] || [],
+    phosphorus = res['磷'] || [],
     // atmosphericPressure = []
   } = res
 
-  const temperature = res['空气温度'] || []
-  const lightIntensity = res['总辐射'] || []
+  const temperature = res['空气温度'] || res['温度'] || []
+  const lightIntensity = res['总辐射'] || res['光照'] || []
   const atmosphericPressure = res['大气压力'] || []
   const humidity = res['空气湿度'] || []
   const rain = res['当前雨量'] || []
