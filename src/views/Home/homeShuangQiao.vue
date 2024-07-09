@@ -286,14 +286,14 @@ onMounted(() => {
         <div v-if="item.title === '设备总数' || item.title === '预警数量'" >
           <div class="flex items-center pt-2 h-[2.5rem] px-2">
             <span>{{ item.total }}</span>
-            <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;"  @click="$router.push('/device/deviceinfo')">台</span>
-            <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;" @click="$router.push('/warn/agri-warning-record')">个</span>
+            <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;"  @click="$router.push('/internetMonitor/device/deviceView')">台</span>
+            <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;" @click="$router.push('/internetMonitor/warn/agri-warning-record')">个</span>
           </div>
         </div>
         <div v-else>
           <div class="h-[1rem] p-1 pt-2 flex items-center">
             <span @click="$router.push({
-            path:'/device/deviceinfo',
+            path:'/internetMonitor/device/deviceView',
              query: {
                 deviceStatus: 'online',
                 deviceType:item.deviceType
@@ -304,7 +304,7 @@ onMounted(() => {
           </div>
           <div class="h-[1rem] p-1 flex items-center">
             <span  @click="$router.push({
-            path:'/device/deviceinfo',
+            path:'/internetMonitor/device/deviceView',
              query: {
                 deviceStatus: 'offline',
                 deviceType:item.deviceType
