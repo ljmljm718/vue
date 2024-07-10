@@ -8,7 +8,7 @@
     :inline-message="true"
   >
     <el-table :data="formData" class="-mt-10px">
-      <el-table-column label="序号" type="index" width="100" />
+<!--      <el-table-column label="序号" type="index" width="100" />-->
       <el-table-column label="明细编号" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.detailCode`" :rules="formRules.detailCode" class="mb-0px!">
@@ -30,13 +30,55 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="保险数量" min-width="150">
+      <el-table-column label="认养模式" min-width="150">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.guaranteeAmount`" :rules="formRules.guaranteeAmount" class="mb-0px!">
-            <el-input v-model="row.guaranteeAmount" placeholder="请输入保险数量" />
+          <el-form-item :prop="`${$index}.ruleType`" :rules="formRules.ruleType" class="mb-0px!">
+            <el-select v-model="row.ruleType" placeholder="请选择认养模式" disabled>
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
           </el-form-item>
         </template>
       </el-table-column>
+      <el-table-column label="规格" min-width="150">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.specs`" :rules="formRules.specs" class="mb-0px!">
+            <el-input v-model="row.specs" placeholder="请输入规格" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="单价" min-width="150">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.singlePrice`" :rules="formRules.singlePrice" class="mb-0px!">
+            <el-input-number v-model="row.singlePrice" placeholder="请输入单价" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="份数" min-width="150">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.servingNumber`" :rules="formRules.servingNumber" class="mb-0px!">
+            <el-input-number v-model="row.servingNumber" placeholder="请输入份数" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="数量" min-width="150">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.servingAmount`" :rules="formRules.servingAmount" class="mb-0px!">
+            <el-input-number v-model="row.servingAmount" placeholder="请输入数量" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="保险数量" min-width="150">-->
+<!--        <template #default="{ row, $index }">-->
+<!--          <el-form-item :prop="`${$index}.guaranteeAmount`" :rules="formRules.guaranteeAmount" class="mb-0px!">-->
+<!--            <el-input v-model="row.guaranteeAmount" placeholder="请输入保险数量" />-->
+<!--          </el-form-item>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="备注" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.remark`" :rules="formRules.remark" class="mb-0px!">
@@ -57,6 +99,8 @@
 </template>
 <script setup lang="ts">
 import { AdoptionOrderApi } from '@/api/agriculture/adoptionorder'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import {AdoptionRuleApi} from "@/api/agriculture/adoptionrule";
 
 const props = defineProps<{
   orderNumber: undefined // 订单流水号（主表的关联字段）
@@ -81,9 +125,11 @@ watch(
     }
     try {
       formLoading.value = true
-      debugger
-      formData.value = await AdoptionOrderApi.getAdoptionOrderDetailListByOrderNumber(val)
-      debugger
+      const res =  await AdoptionOrderApi.getAdoptionOrderDetailListByOrderNumber(val)
+      res.forEach((item)=>{
+        item.singlePrice=  item.singlePrice/100
+      })
+      formData.value= res
     } finally {
       formLoading.value = false
     }
