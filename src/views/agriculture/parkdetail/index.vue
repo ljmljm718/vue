@@ -89,6 +89,18 @@
       </el-table-column>
       <el-table-column label="纬度" align="center" prop="latitude" width="120"/>
       <el-table-column label="经度" align="center" prop="longitude" width="120"/>
+      <el-table-column label="图片" align="center" prop="img" >
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.img"
+            :preview-src-list="[row.img]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="通讯地址" align="center" prop="address"  width="200"/>
       <el-table-column label="联系人" align="center" prop="contact"/>
       <el-table-column label="联系电话" align="center" prop="tel"  width="120"/>
