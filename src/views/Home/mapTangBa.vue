@@ -13,6 +13,8 @@ const initMap = (center:Array<number> = [109.24604650765662, 31.41416444104432])
   // @ts-ignore
   mapIns = new AMap.Map("tangbaMap", {
     zoom: 13, center,
+    // @ts-ignore
+    layers: [new AMap.TileLayer.Satellite()],
     // mapStyle: 'amap://styles/blue', //设置地图的显示样式
   })
   mapIns && mapIns.on('click', (e) => {
