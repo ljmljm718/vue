@@ -88,11 +88,11 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="订单流水号" align="center" prop="orderNumber"  width="160"/>
-      <el-table-column label="计划名称" align="center" prop="planName" width="350" />
-      <el-table-column label="基地名称" align="center" prop="parkName" width="100"/>
-      <el-table-column label="地块名称" align="center" prop="plotName" />
-      <el-table-column label="订单类型" align="center" prop="orderType" >
+      <el-table-column label="订单流水号" align="center" prop="orderNumber"  width="200"/>
+      <el-table-column label="计划名称" align="center" prop="planName" width="400" />
+      <el-table-column label="基地名称" align="center" prop="parkName" width="150"/>
+      <el-table-column label="地块名称" align="center" prop="plotName" width="150" />
+      <el-table-column label="订单类型" align="center" prop="orderType" width="100" >
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE. ADOPTION_ORDER_TYPE,scope.row.orderType)?.colorType">
                {{getDictLabel(DICT_TYPE.ADOPTION_ORDER_TYPE,scope.row.orderType)}}
@@ -131,7 +131,7 @@
             </el-text>
            </template>
       </el-table-column>
-      <el-table-column label="订单赠送标识" align="center" prop="isPresented">
+      <el-table-column label="订单赠送标识" align="center" prop="isPresented" width="150">
         <template  #default="scope">
             <el-text :type="getDictObj(DICT_TYPE. ADOPTION_ORDER_GIFT_STATUS,scope.row.isPresented)?.colorType">
                {{getDictLabel(DICT_TYPE. ADOPTION_ORDER_GIFT_STATUS,scope.row.isPresented)}}

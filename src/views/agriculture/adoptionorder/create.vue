@@ -211,7 +211,7 @@ const activeName = ref<any>(['1','2','3','4'])
                 ref="formRef"
                 :model="formData"
                 :rules="formRules"
-                label-width="100px"
+                label-width="110px"
                 v-loading="formLoading"
                 class="grid xl:grid-cols-4 xl:grid-cols-3 xl:grid-cols-2 xl:grid-cols-1 xl:grid-cols-1 gap-2 p-4"
               >
@@ -250,6 +250,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.paymentTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择付款时间"
                   />
@@ -258,6 +259,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.shippingTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择发货时间"
                   />
@@ -266,6 +268,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.receiptTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择收货时间"
                   />
@@ -318,14 +321,14 @@ const activeName = ref<any>(['1','2','3','4'])
 <!--                <el-form-item label="预计收货日期（止）" prop="expectEnd">-->
 
 <!--                </el-form-item>-->
-                <el-form-item label="备注" prop="remark">
-                  <el-input v-model="formData.remark" placeholder="请输入备注" />
+                <el-form-item label="备注" prop="remark" class="col-span-3">
+                  <el-input type="textarea" v-model="formData.remark" placeholder="请输入备注" />
                 </el-form-item>
               </el-form>
               <!-- 子表的表单 -->
               <el-tabs v-model="subTabsName">
                 <el-tab-pane label="认养订单明细" name="adoptionOrderDetail">
-                  <AdoptionOrderDetailForm ref="adoptionOrderDetailFormRef" :order-number="formData.id" />
+                  <AdoptionOrderDetailForm ref="adoptionOrderDetailFormRef" :order-number="formData.orderNumber" />
                 </el-tab-pane>
               </el-tabs>
             </el-collapse-item>
