@@ -680,8 +680,8 @@ const initChart2 = async () => {
 const initChart3 = async () => {
   console.log(dateData.value,'length')
   const res = await DeviceCategoryApi.waterQualityDataLineChartA({
-    belongPark: belongPark.value,
-    belongPlot: belongPlot.value,
+    // belongPark: belongPark.value,
+    // belongPlot: belongPlot.value,
     lineChart: selectedMonitorType.value,
     collectionType: radio.value,
     startTime: dateData.value  ? formatTime(dateData.value[0], 'yyyy-MM-dd HH:mm:ss') : null,

@@ -1171,14 +1171,12 @@ const goPage3 = (url) => {
 .img-right {
   position: relative;
   left: 500px;
-  /* 这里的间距可以根据你想要的宽度自行调整 */
 }
 .target-img {
   width: 100%;
   display: inline-flex;
   justify-content: space-between;
   animation: marquee 50s linear infinite;
-  /* 这里做了一个鼠标移入盒子放大的效果 */
 }
 .target-img div:hover {
   transition: all 0.6s;
@@ -1194,7 +1192,6 @@ const goPage3 = (url) => {
   display: inline-flex;
   justify-content: space-between;
   animation: marquee1 50s linear infinite;
-  /* 这里做了一个鼠标移入盒子放大的效果 */
 }
 
 .target-img1 div:hover {
@@ -1204,16 +1201,7 @@ const goPage3 = (url) => {
 
 .target-img1 div {
   width: 400px;
-  /* height: 310px; */
-  /*background: #ffffff;
-				  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.2);
-				  border-radius: 12px 12px 12px 12px;
-				  opacity: 1;
-				  margin-right: 100px;
-				  margin-top: 40px;*/
-  /* 无关的属性 */
   flex-shrink: 0;
-  /* 禁止缩放盒子 */
 }
 /* 定义动画效果开始的位置以及消失的位置 */
 @keyframes marquee {
@@ -1222,13 +1210,13 @@ const goPage3 = (url) => {
   }
 
   100% {
-    transform: translateX(-222vw);
+    transform: translateX(-230vw);
   }
 }
 
 @keyframes marquee1 {
   0% {
-    transform: translateX(-250vw);
+    transform: translateX(-252vw);
   }
 
   100% {

@@ -87,7 +87,10 @@ const resetForm = () => {
 const getFormInfo = async (id) => {
   resetForm()
   if(route.query.id){
-    formData.value = await AdoptionOrderApi.getAdoptionOrder(id)
+     const result = await AdoptionOrderApi.getAdoptionOrder(id)
+    result.orderAmount= result.orderAmount/100
+    result.realAmount= result.realAmount/100
+    formData.value=result
   }
 }
 
@@ -211,7 +214,7 @@ const activeName = ref<any>(['1','2','3','4'])
                 ref="formRef"
                 :model="formData"
                 :rules="formRules"
-                label-width="100px"
+                label-width="110px"
                 v-loading="formLoading"
                 class="grid xl:grid-cols-4 xl:grid-cols-3 xl:grid-cols-2 xl:grid-cols-1 xl:grid-cols-1 gap-2 p-4"
               >
@@ -227,6 +230,12 @@ const activeName = ref<any>(['1','2','3','4'])
                 <el-form-item label="地块编号" prop="plotId">
                   <el-input v-model="formData.plotId" placeholder="请输入地块编号" />
                 </el-form-item>
+                <el-form-item label="基地名称" prop="parkName">
+                  <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
+                </el-form-item>
+                <el-form-item label="地块名称" prop="plotName">
+                  <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+                </el-form-item>
                 <el-form-item label="订单类型" prop="orderType">
                   <el-select v-model="formData.orderType" placeholder="请选择订单类型">
                     <el-option
@@ -240,6 +249,9 @@ const activeName = ref<any>(['1','2','3','4'])
                 <el-form-item label="地址标识号" prop="addressNumber">
                   <el-input v-model="formData.addressNumber" placeholder="请输入地址标识号" />
                 </el-form-item>
+                <el-form-item label="地址" prop="fullAddress">
+                  <el-input v-model="formData.fullAddress" placeholder="请输入地址" />
+                </el-form-item>
                 <el-form-item label="订单金额" prop="orderAmount">
                   <el-input v-model="formData.orderAmount" placeholder="请输入订单金额" />
                 </el-form-item>
@@ -250,6 +262,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.paymentTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择付款时间"
                   />
@@ -258,6 +271,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.shippingTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择发货时间"
                   />
@@ -266,6 +280,7 @@ const activeName = ref<any>(['1','2','3','4'])
                   <el-date-picker
                     v-model="formData.receiptTime"
                     type="date"
+                    style="width: 100%"
                     value-format="x"
                     placeholder="选择收货时间"
                   />
@@ -318,14 +333,14 @@ const activeName = ref<any>(['1','2','3','4'])
 <!--                <el-form-item label="预计收货日期（止）" prop="expectEnd">-->
 
 <!--                </el-form-item>-->
-                <el-form-item label="备注" prop="remark">
-                  <el-input v-model="formData.remark" placeholder="请输入备注" />
+                <el-form-item label="备注" prop="remark" class="col-span-3">
+                  <el-input type="textarea" v-model="formData.remark" placeholder="请输入备注" />
                 </el-form-item>
               </el-form>
               <!-- 子表的表单 -->
               <el-tabs v-model="subTabsName">
                 <el-tab-pane label="认养订单明细" name="adoptionOrderDetail">
-                  <AdoptionOrderDetailForm ref="adoptionOrderDetailFormRef" :order-number="formData.id" />
+                  <AdoptionOrderDetailForm ref="adoptionOrderDetailFormRef" :order-number="formData.orderNumber" />
                 </el-tab-pane>
               </el-tabs>
             </el-collapse-item>
