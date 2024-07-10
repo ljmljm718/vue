@@ -87,7 +87,10 @@ const resetForm = () => {
 const getFormInfo = async (id) => {
   resetForm()
   if(route.query.id){
-    formData.value = await AdoptionOrderApi.getAdoptionOrder(id)
+     const result = await AdoptionOrderApi.getAdoptionOrder(id)
+    result.orderAmount= result.orderAmount/100
+    result.realAmount= result.realAmount/100
+    formData.value=result
   }
 }
 
@@ -245,6 +248,9 @@ const activeName = ref<any>(['1','2','3','4'])
                 </el-form-item>
                 <el-form-item label="地址标识号" prop="addressNumber">
                   <el-input v-model="formData.addressNumber" placeholder="请输入地址标识号" />
+                </el-form-item>
+                <el-form-item label="地址" prop="fullAddress">
+                  <el-input v-model="formData.fullAddress" placeholder="请输入地址" />
                 </el-form-item>
                 <el-form-item label="订单金额" prop="orderAmount">
                   <el-input v-model="formData.orderAmount" placeholder="请输入订单金额" />
