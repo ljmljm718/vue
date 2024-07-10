@@ -187,7 +187,7 @@
           </el-row>
         </el-form>
         <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
-        <AgriculturalBaseList ref="purchaseOrderInEnableListRef" :deviceTypeA="deviceType"
+        <AgriculturalBaseList ref="purchaseOrderInEnableListRef"
                               @success="handlePurchaseOrderChange"/>
       </template>
     </EditFrame>
@@ -341,7 +341,7 @@ const resetForm = () => {
 
 //作物的选择
 const cropInfoPopupRef = ref()
-const deviceType = ref("99,102")
+// const deviceType = ref("99,102")
 const openCropInfoPopup = () => {
   cropInfoPopupRef.value.open()
 }
