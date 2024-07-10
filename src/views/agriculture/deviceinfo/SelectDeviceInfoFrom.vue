@@ -286,11 +286,11 @@ const props = defineProps({
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
-  if (props.deviceTypeA){
-    if (!queryParams.deviceType){
-      queryParams.deviceType = props.deviceTypeA
-    }
-  }
+  // if (props.deviceTypeA){
+  //   if (!queryParams.deviceType){
+  //     queryParams.deviceType = props.deviceTypeA
+  //   }
+  // }
   try {
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     list.value = data.list.map((item: any) => {

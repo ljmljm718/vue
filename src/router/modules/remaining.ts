@@ -1,6 +1,6 @@
-import { Layout } from '@/utils/routerHelper'
+import {Layout} from '@/utils/routerHelper'
 
-const { t } = useI18n()
+const {t} = useI18n()
 /**
  * redirect: noredirect        当设置 noredirect 的时候该路由在面包屑导航中不可被点击
  * name:'router-name'          设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
@@ -235,178 +235,186 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
-    path:'/bigscreen',
-    name:'bigscreen',
-    component:()=>import('@/views/bigscreen/index.vue'),
-    meta:{
+    path: '/bigscreen',
+    name: 'bigscreen',
+    component: () => import('@/views/bigscreen/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen2',
-    name:'bigscreen2',
-    component:()=>import('@/views/bigscreen2/index.vue'),
-    meta:{
+    path: '/bigscreen2',
+    name: 'bigscreen2',
+    component: () => import('@/views/bigscreen2/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen3',
-    name:'bigscreen3',
-    component:()=>import('@/views/bigscreen3/index.vue'),
-    meta:{
+    path: '/bigscreen3',
+    name: 'bigscreen3',
+    component: () => import('@/views/bigscreen3/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen4',
-    name:'bigscreen4',
-    component:()=>import('@/views/bigscreen4/index.vue'),
-    meta:{
+    path: '/bigscreen4',
+    name: 'bigscreen4',
+    component: () => import('@/views/bigscreen4/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen5',
-    name:'bigscreen5',
-    component:()=>import('@/views/bigscreen5/index.vue'),
-    meta:{
+    path: '/bigscreen5',
+    name: 'bigscreen5',
+    component: () => import('@/views/bigscreen5/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen6',
-    name:'bigscreen6',
-    component:()=>import('@/views/bigscreenYouyang/index.vue'),
-    meta:{
+    path: '/bigscreen6',
+    name: 'bigscreen6',
+    component: () => import('@/views/bigscreenYouyang/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenYouyang',
-    name:'bigscreenYouyang',
-    component:()=>import('@/views/bigscreenYouyang/index.vue'),
-    meta:{
+    path: '/bigscreenShuangQiao',
+    name: 'bigscreenShuangQiao',
+    component: () => import('@/views/bigscreenShuangQiao/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen7',
-    name:'bigscreen7',
-    component:()=>import('@/views/bigscreen7/index.vue'),
-    meta:{
+    path: '/bigscreenYouyang',
+    name: 'bigscreenYouyang',
+    component: () => import('@/views/bigscreenYouyang/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen8',
-    name:'bigscreen8',
-    component:()=>import('@/views/bigscreen8/index.vue'),
-    meta:{
+    path: '/bigscreen7',
+    name: 'bigscreen7',
+    component: () => import('@/views/bigscreen7/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen9',
-    name:'bigscreen9',
-    component:()=>import('@/views/bigscreen9/index.vue'),
-    meta:{
+    path: '/bigscreen8',
+    name: 'bigscreen8',
+    component: () => import('@/views/bigscreen8/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreen10',
-    name:'bigscreen10',
-    component:()=>import('@/views/bigscreen10/index.vue'),
-    meta:{
+    path: '/bigscreen9',
+    name: 'bigscreen9',
+    component: () => import('@/views/bigscreen9/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenWF',
-    name:'bigscreenWF',
-    component:()=>import('@/views/bigscreenWenfeng/index.vue'),
-    meta:{
+    path: '/bigscreen10',
+    name: 'bigscreen10',
+    component: () => import('@/views/bigscreen10/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenBB',
-    name:'bigscreenBB',
-    component:()=>import('@/views/bigscreenBaibu/index.vue'),
-    meta:{
+    path: '/bigscreenWF',
+    name: 'bigscreenWF',
+    component: () => import('@/views/bigscreenWenfeng/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenMYJD',
-    name:'bigscreenMYJD',
-    component:()=>import('@/views/bigscreenMingYue1/index.vue'),
-    meta:{
+    path: '/bigscreenBB',
+    name: 'bigscreenBB',
+    component: () => import('@/views/bigscreenBaibu/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenMY',
-    name:'bigscreenTest',
-    component:()=>import('@/views/bigscreenTest/index.vue'),
-    meta:{
+    path: '/bigscreenMYJD',
+    name: 'bigscreenMYJD',
+    component: () => import('@/views/bigscreenMingYue1/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenTB',
-    name:'bigscreenTangBa',
-    component:()=>import('@/views/bigscreenTangBa/index.vue'),
-    meta:{
+    path: '/bigscreenMY',
+    name: 'bigscreenTest',
+    component: () => import('@/views/bigscreenTest/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenQJ',
-    name:'BigscreenQianJiang',
-    component:()=>import('@/views/bigscreenQianJiang/index.vue'),
-    meta:{
+    path: '/bigscreenTB',
+    name: 'bigscreenTangBa',
+    component: () => import('@/views/bigscreenTangBa/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenMYFX',
-    name:'bigscreenMYFX',
-    component:()=>import('@/views/bigscreenMingYue2/index.vue'),
-    meta:{
+    path: '/bigscreenQJ',
+    name: 'BigscreenQianJiang',
+    component: () => import('@/views/bigscreenQianJiang/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/home',
-    name:'HomePage',
-    component:()=>import('@/views/gateway/index.vue'),
-    meta:{
+    path: '/bigscreenMYFX',
+    name: 'bigscreenMYFX',
+    component: () => import('@/views/bigscreenMingYue2/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/homeIndex',
-    name:'HomePages',
-    component:()=>import('@/views/homePages/home.vue'),
-    meta:{
+    path: '/home',
+    name: 'HomePage',
+    component: () => import('@/views/gateway/index.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/gateway',
-    name:'gateway',
-    component:()=>import('@/views/gateway/index.vue'),
-    meta:{
+    path: '/homeIndex',
+    name: 'HomePages',
+    component: () => import('@/views/homePages/home.vue'),
+    meta: {
       hidden: true
     }
   },
   {
-    path:'/bigscreenMYZH',
-    name:'bigscreenMYZH',
-    component:()=>import('@/views/bigscreenMingYue3/index.vue'),
-    meta:{
+    path: '/gateway',
+    name: 'gateway',
+    component: () => import('@/views/gateway/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/bigscreenMYZH',
+    name: 'bigscreenMYZH',
+    component: () => import('@/views/bigscreenMingYue3/index.vue'),
+    meta: {
       hidden: true
     }
   },
@@ -578,13 +586,13 @@ const remainingRouter: AppRouteRecordRaw[] = [
         path: 'order/detail/:id(\\d+)',
         component: () => import('@/views/mall/trade/order/detail/index.vue'),
         name: 'TradeOrderDetail',
-        meta: { title: '订单详情', icon: 'ep:view', activeMenu: '/mall/trade/order' }
+        meta: {title: '订单详情', icon: 'ep:view', activeMenu: '/mall/trade/order'}
       },
       {
         path: 'after-sale/detail/:id(\\d+)',
         component: () => import('@/views/mall/trade/afterSale/detail/index.vue'),
         name: 'TradeAfterSaleDetail',
-        meta: { title: '退款详情', icon: 'ep:view', activeMenu: '/mall/trade/after-sale' }
+        meta: {title: '退款详情', icon: 'ep:view', activeMenu: '/mall/trade/after-sale'}
       }
     ]
   },
@@ -592,7 +600,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/member',
     component: Layout,
     name: 'MemberCenter',
-    meta: { hidden: true },
+    meta: {hidden: true},
     children: [
       {
         path: 'user/detail/:id',
@@ -610,7 +618,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/pay',
     component: Layout,
     name: 'pay',
-    meta: { hidden: true },
+    meta: {hidden: true},
     children: [
       {
         path: 'cashier',
@@ -627,7 +635,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/diy',
     name: 'DiyCenter',
-    meta: { hidden: true },
+    meta: {hidden: true},
     component: Layout,
     children: [
       {
@@ -658,7 +666,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/crm',
     component: Layout,
     name: 'CrmCenter',
-    meta: { hidden: true },
+    meta: {hidden: true},
     children: [
       {
         path: 'clue/detail/:id',

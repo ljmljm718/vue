@@ -48,7 +48,7 @@
           label-width="101px"
           :label-position="labelPosition"
           v-loading="formLoading"
-          :disabled="isShow"
+          :disabled="!isShow"
           :inline="true"
           class="demo-form-inline"
         >
@@ -57,8 +57,7 @@
               <el-form-item label="设备编码" prop="facilityId">
                 <!-- <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" /> -->
                 <el-input style="width: 200px" v-model="formData.facilityId"
-                          placeholder="请选择设备编码"
-                          :disabled="true">
+                          placeholder="请选择设备编码">
                   <template #append>
                     <el-button @click="openPurchaseOrderInEnableList">
                       <Icon icon="ep:search"/>
@@ -70,7 +69,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="品种作物code" prop="cropId">
-                <el-input style="width: 200px" v-model="formData.cropCode" readonly
+                <el-input style="width: 200px" v-model="formData.cropCode"
                           placeholder="请选择">
                   <template #append>
                     <el-button @click="openCropInfoPopup()">
@@ -84,7 +83,7 @@
             <el-col :span="8">
               <el-form-item label="基地名称" prop="baseName">
                 <el-input style="width: 200px" v-model="formData.baseName"
-                          placeholder="请输入基地名称" disabled/>
+                          placeholder="请输入基地名称"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -92,21 +91,20 @@
             <el-col :span="8">
               <el-form-item label="设备名称" prop="facilityName">
                 <el-input v-model="formData.facilityName" placeholder="选择设备后自动填入名称"
-                          style="width: 200px"
-                          :disabled="true"/>
+                          style="width: 200px"/>
               </el-form-item>
 
             </el-col>
             <el-col :span="8">
               <el-form-item label="品种名称" prop="cropName">
                 <el-input style="width: 200px" v-model="formData.cropName"
-                          placeholder="请输入品种名称" disabled/>
+                          placeholder="请输入品种名称" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="地块名称" prop="massifName">
                 <el-input style="width: 200px" v-model="formData.massifName"
-                          placeholder="请输入地块名称" disabled/>
+                          placeholder="请输入地块名称" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -125,7 +123,7 @@
             <el-col :span="8">
               <el-form-item label="品种" prop="cropType">
                 <el-select style="width: 200px" v-model="formData.cropType" placeholder="请选择品种"
-                           disabled>
+                           >
                   <el-option
                     v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
                     :key="dict.value"
@@ -189,7 +187,7 @@
           </el-row>
         </el-form>
         <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
-        <AgriculturalBaseList ref="purchaseOrderInEnableListRef" :deviceTypeA="deviceType"
+        <AgriculturalBaseList ref="purchaseOrderInEnableListRef"
                               @success="handlePurchaseOrderChange"/>
       </template>
     </EditFrame>
@@ -343,7 +341,7 @@ const resetForm = () => {
 
 //作物的选择
 const cropInfoPopupRef = ref()
-const deviceType = ref("99,102")
+// const deviceType = ref("99,102")
 const openCropInfoPopup = () => {
   cropInfoPopupRef.value.open()
 }

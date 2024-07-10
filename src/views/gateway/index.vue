@@ -344,7 +344,7 @@
           >关注行业新闻，助农新政策早知道</div
         >
       </div>
-      <div class="flex justify-evenly">
+      <div class="flex justify-evenly items-center">
         <div class="w-35%">
           <img src="./assets/governmentImage.png" class="w-100% h-300px" />
           <div class="bg-[#fff]">
@@ -356,57 +356,20 @@
             >
           </div>
         </div>
-        <div class="w-50%">
-          <div class="flex mb-20px bg-[#fff] justify-evenly py-[15px] px-[15px] box-border">
-            <div>
-              <div class="text-lg color-[#6a6a6a]">06-30</div>
-              <div class="text-sm">2024</div>
-            </div>
+        <div class="w-50% h-350px city-scroll" style="overflow-y: auto">
+          <div
+            @click="goPage3(item.urlAddr)"
+            style="cursor: pointer"
+            v-for="(item, index) in list"
+            :key="index"
+            class="flex h-160px mb-20px items-center bg-[#fff] justify-evenly py-[15px] px-[15px] box-border"
+          >
+            <div class="text-lg color-[#6a6a6a]">{{ item.upTime }}</div>
+
             <div class="w-1px h-70px bg-[#c1c1c1]"></div>
             <div class="w-78%">
-              <div>中共重庆市委、重庆市人民政府印发《重庆市建设深化集体...</div>
-              <div class="text-sm color-[#c1c1c1]"
-                >为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我市实际...</div
-              >
-            </div>
-          </div>
-          <div class="flex mb-20px bg-[#fff] justify-evenly py-[15px] px-[15px] box-border">
-            <div>
-              <div class="text-lg color-[#6a6a6a]">06-29</div>
-              <div class="text-sm">2024</div>
-            </div>
-            <div class="w-1px h-70px bg-[#c1c1c1]"></div>
-            <div class="w-78%">
-              <div>关于学习运用“千村示范、万村政治”工程经验加快建设巴渝...</div>
-              <div class="text-sm color-[#c1c1c1]"
-                >建设现代化新重庆最艰巨繁重的任务在农村，最大的潜力和后劲也在农村。为贯彻落实《中共中央国务院关于学习运用“千村示范、万村整治”工程经验有力有效推进乡村全面振兴的意见…</div
-              >
-            </div>
-          </div>
-          <div class="flex mb-20px bg-[#fff] justify-evenly py-[15px] px-[15px] box-border">
-            <div>
-              <div class="text-lg color-[#6a6a6a]">06-28</div>
-              <div class="text-sm">2024</div>
-            </div>
-            <div class="w-1px h-70px bg-[#c1c1c1]"></div>
-            <div class="w-78%">
-              <div>重庆市人民政府办公厅印发《关于推进生产功效信用“三位一...</div>
-              <div class="text-sm color-[#c1c1c1]"
-                >为深入贯彻落实党的二十大精神，巩固和完善农村基本经营制度，推动乡村全面振兴和农业农村现代化，推进生产、供销、信用“三位一体”改革（以下简称“三位一体”改革），构建新型为农服务体…</div
-              >
-            </div>
-          </div>
-          <div class="flex mb-20px bg-[#fff] justify-evenly py-[15px] px-[15px] box-border">
-            <div>
-              <div class="text-lg color-[#6a6a6a]">06-26</div>
-              <div class="text-sm">2024</div>
-            </div>
-            <div class="w-1px h-70px bg-[#c1c1c1]"></div>
-            <div class="w-78%">
-              <div>开展国际农业合作 共享农业发展机遇：镜头里的弓箭“一带一路”...</div>
-              <div class="text-sm color-[#c1c1c1]"
-                >中共中央总书记、国家主席、中央军委主席习近平近日在重庆考察时强调，重庆要对标新时代新征程党的中心任务和党中央赋予的使命，充分发挥比较优势、后发优势，进一步全面深化改革开放…</div
-              >
+              <div>{{ item.title }}</div>
+              <div class="text-sm color-[#c1c1c1]">{{ item.content }}</div>
             </div>
           </div>
         </div>
@@ -555,12 +518,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { distinct, page, selectMap } from './api'
+import { ref, reactive, nextTick, onMounted } from 'vue'
+import { distinct, page, selectMap, filePage } from './api'
 import * as echarts from 'echarts'
 import { jsonData } from './assets/chongqing'
 import { constant } from 'lodash'
 import { useRouter } from 'vue-router'
+import meassageBg from './assets/meassageBg.png'
 const router = useRouter()
 const mainNum = ref(0)
 const dataList = ref([])
@@ -778,8 +742,30 @@ const getDistinct = async () => {
 }
 getDistinct()
 //初始化地图
+const mapList = ref([])
+const getselectMap = (val) => {
+  // let res=await selectMap({county:val})
+  // localStorage.setItem('obj',JSON.stringify(res))
+  // mapList.value=res
+  return new Promise((resolve, reject) => {
+    selectMap({ county: val }).then((res) => {
+      mapList.value = res
+      resolve(res)
+    })
+  })
+}
+
+const nameDataMap = {}
 const initChinaMap = () => {
   echarts.registerMap('chongqing', jsonData)
+  const nameArr = jsonData.features.map((item) => item.properties.name)
+
+  nameArr.forEach((item) => {
+    selectMap({ county: item }).then((res) => {
+      nameDataMap[item] = res
+    })
+  })
+
   const chartDom = document.getElementById('mainMap')
   const myChart = echarts.init(chartDom)
   myChart.setOption(
@@ -838,7 +824,39 @@ const initChinaMap = () => {
         },
         tooltip: {
           show: true,
-          className: 'tooltip-frame'
+          className: 'tooltip-frame',
+          trigger: 'item',
+          enterable: true, //鼠标是否可进入提示框浮层中，默认为false，
+          showContent: true, //是否显示提示框浮层
+          triggerOn: 'click', //提示框触发的条件(mousemove|click|none)
+          padding: [0, 0],
+          backgroundColor: 'none',
+          formatter: function (params) {
+            const mapData: any = nameDataMap[params.name]
+            console.log('mapData', mapData)
+            let str = ``
+            if (mapData.length == 0) {
+              str = ''
+            } else {
+              str = `<div class=" relative p-[20px]">
+                    <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
+                    <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
+                    <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
+                    <div class="color-[#fafafa] text-sm">${mapData[0]?.data[0].years}年示范村：${mapData[0]?.data[0].village}</div>
+                    </div>`
+            }
+            return str
+          },
+          rich: {
+            img: {
+              backgroundColor: {
+                image: './assets/meassageBg.png'
+              },
+              width: 100,
+              height: 100,
+              align: 'center'
+            }
+          }
         },
         series: [
           {
@@ -901,9 +919,6 @@ const initChinaMap = () => {
               emphasis: {
                 color: '#ffffff'
               }
-            },
-            tooltip: {
-              show: false
             }
           }
         ]
@@ -951,6 +966,18 @@ const selectChange = async (e) => {
   leftArr2.tableData1 = res.list
 }
 const goPage = (url) => {
+  url? window.open(url):''
+}
+const list = ref([])
+const getfilePage = async () => {
+  let res = await filePage()
+  res.list.forEach((item) => {
+    item.upTime = new Date().toLocaleDateString(item.upTime)
+  })
+  list.value = res.list
+}
+getfilePage()
+const goPage3 = (url) => {
   window.open(url)
 }
 </script>
@@ -994,6 +1021,10 @@ const goPage = (url) => {
   background-repeat: no-repeat;
   background-position: center center;
 }
+.tooltip-frame {
+  background-size: 100% 100%;
+  background-image: url(./assets/meassageBg.png);
+}
 .center-bg {
   background-size: 100% 100%;
   background-image: url(./assets/dataBg.png);
@@ -1001,6 +1032,9 @@ const goPage = (url) => {
 .bigscreen-bg {
   background-size: 100% 100%;
   background-image: url(./assets/bigscreenBg.png);
+}
+.city-scroll::-webkit-scrollbar {
+  display: none;
 }
 .data-icon {
   width: 4rem;
