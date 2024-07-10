@@ -138,7 +138,7 @@ const getMenuDataList = async () => {
       item.longitude,
       item.latitude,
       item.deviceName,
-      '/tangba/' + item.deviceStatus + kindMap[item.deviceKind] + '.png'
+      '/tangba/' + item.deviceStatus + (kindMap[item.deviceKind] || 'Monitor') + '.png'
     )
     marker.on('click', () => {
       handleSelect(item.id)
