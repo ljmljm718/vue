@@ -25,8 +25,9 @@ import {
   park,
   page2,
   page3,
-  list
+  list, environmentalDataHomePageA
 } from './apis'
+import dayjs from "dayjs";
 
 // 大屏中央右边监控设备(单条) 未完成
 // const singleMonitor = ref({
@@ -81,8 +82,8 @@ const leftTabSelected = ref('湿度')
 const getGetDeviceDataYouEnvironment = async (id) => {
   leftCurDeviceCode1.value = id;
   // leftCurDeviceCode2.value = belongPlot;
-  const res = await getDeviceDataYouEnvironment(id)
-  console.log("数据", res)
+  const res = await environmentalDataHomePageA(id)
+  console.log("数据1", res)
   envVal.value =res;
   console.log(leftTabSelected.value,id,'jiegoufuhzi')
   let id2=id.id
@@ -92,9 +93,9 @@ const getGetDeviceDataYouEnvironment = async (id) => {
 // 左下角设备监控
 const monitorEquipList = ref<Array<any>>([])
 const getMonitoringEquipment = async () => {
-  const res = await monitoringEquipment({pageNo:'1',pageSize:'10',deviceType:'30,31'})
+  const res = await monitoringEquipment({pageNo:'1',pageSize:'10',deviceType:'108,109'})
   console.log('左下角设备监控', res)
-  monitorEquipList.value = res.list
+  monitorEquipList.value = res.list.slice(0, 2)
 }
 getMonitoringEquipment()
 
@@ -130,7 +131,7 @@ getDeviceBasePage()
 //单个摄像头
 let sxtObj=ref([])
 const getPage2=()=>{
-  page2({pageSize:1,pageNo:1,deviceType:'30,31'}).then(res=>{
+  page2({pageSize:1,pageNo:1,deviceType:'108,109'}).then(res=>{
     console.log(res,'单个摄像头')
     sxtObj.value=res.list
   })
@@ -176,7 +177,7 @@ const getlargeScreenGetWarning = async () => {
       name: item.plotCode,
       device: item.deviceCode,
       info: item.warnInfo,
-      time: item.warnTime,
+      time:  dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss"),
       status: item.warnStatus === '0' ? '未处理' : '已处理'
     }))
   console.log("右下角", list)
@@ -380,79 +381,81 @@ const initChart1 = async (lineChart ) => {
     yAxisData.push(item.dataValue)
   })
   console.log(xAxisData, yAxisData,'data')
-  initChartStatic(
-    'chart1',
-    generateBaseOptions({
-      xAxis: {
-        data: xAxisData,
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#fff'
-          }
-        }
-      },
-      legend: {
-        show: false,
-        orient: 'horizontal',
-        itemWidth: 15,
-        itemHeight: 15
-      },
-      color: ['#ffa773'],
-      yAxis: {
-        name: leftUnitMap[lineChart],
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#fff'
+  nextTick(() => {
+    initChartStatic(
+      'chart1',
+      generateBaseOptions({
+        xAxis: {
+          data: xAxisData,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#fff'
+            }
           }
         },
-        splitLine: {
-          //网格线
-          show: false, //是否显示
-          lineStyle: {
-            //网格线样式
-            color: '#fff', //网格线颜色
-            width: 1, //网格线的加粗程度
-            type: 'dashed' //网格线类型
-          }
+        legend: {
+          show: false,
+          orient: 'horizontal',
+          itemWidth: 15,
+          itemHeight: 15
         },
-      },
-      series: [
-        {
-          name: leftLabelMap[lineChart],
-          data: yAxisData,
-          type: 'line',
-          smooth: true,
-          label: {
-            show: true, //开启显示
-            position: 'top', //在上方显示
-            textStyle: {
-              //数值样式
-              color: '#eee',
-              fontSize: 10
+        color: ['#ffa773'],
+        yAxis: {
+          name: leftUnitMap[lineChart],
+          type: 'value',
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#fff'
             }
           },
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {offset: 1, color: '#ffa77300'},
-                {offset: 0, color: '#ffa773'}
-              ])
-            },
+          splitLine: {
+            //网格线
+            show: false, //是否显示
+            lineStyle: {
+              //网格线样式
+              color: '#fff', //网格线颜色
+              width: 1, //网格线的加粗程度
+              type: 'dashed' //网格线类型
+            }
           },
-          areaStyle: {normal: {}},
+        },
+        series: [
+          {
+            name: leftLabelMap[lineChart],
+            data: yAxisData,
+            type: 'line',
+            smooth: true,
+            label: {
+              show: true, //开启显示
+              position: 'top', //在上方显示
+              textStyle: {
+                //数值样式
+                color: '#eee',
+                fontSize: 10
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {offset: 1, color: '#ffa77300'},
+                  {offset: 0, color: '#ffa773'}
+                ])
+              },
+            },
+            areaStyle: {normal: {}},
+          }
+        ],
+        grid: {
+          left: '8%',
+          right: '6%',
+          top: '13%',
+          bottom: '15%'
         }
-      ],
-      grid: {
-        left: '8%',
-        right: '6%',
-        top: '13%',
-        bottom: '15%'
-      }
-    })
-  )
+      })
+    )
+  })
 }
 let btnIndex=ref(0)
 const getChart=(val,index)=>{
@@ -662,7 +665,7 @@ const rightUnitMap = {
             </div>
           </div>
           <div class="main-item-container">
-            <div class="card-grid-wrapper">
+            <div class="card-grid-wrapper min-h-[16rem]">
               <div
                 :class="`card-grid-item ${leftTabSelected === item.monitoringType ? 'card-selected' : ''}`"
                 v-for="item,index in envVal"
@@ -691,7 +694,7 @@ const rightUnitMap = {
                 style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
             </div>
             <div
-              class="chart-wrapper"
+              class="grow"
               id="chart1"
             ></div>
           </div>
@@ -891,7 +894,7 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=30,31')">
+          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=108,109')">
             <div>监控设备</div>
           </div>
           <div
@@ -1194,7 +1197,7 @@ const rightUnitMap = {
       .info-rect {
         background-size: 100% 100%;
         width: 100%;
-        aspect-ratio: 1.1;
+        aspect-ratio: .8;
         background-image: url(./assets/infoRect.png);
 
         .text-info {
