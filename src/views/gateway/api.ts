@@ -21,3 +21,10 @@ export const selectMap = async (params) => {
     params
   })
 }
+//政府策略
+export const filePage = async () => {
+  return await request.get({
+    url: '/agri/headed-file/page',
+  })
+}
+

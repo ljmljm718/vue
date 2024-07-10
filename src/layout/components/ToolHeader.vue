@@ -56,6 +56,7 @@ export default defineComponent({
     const MatchRouteMap = async () => {
       const data = await getRouteByTenant({ id: tenantId })
       bigscreenRoute.value = data.bigScreen
+      console.log("Role", roles)
       if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
       if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
       if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
@@ -65,6 +66,7 @@ export default defineComponent({
       if (roles.indexOf('fuling_dashun_mingyue') !== -1) bigscreenRoute.value = '/bigscreenMY'
       if (roles.indexOf('qianjiang') !== -1) bigscreenRoute.value = '/bigscreenQJ'
       if (roles.indexOf('tianyin') !== -1) bigscreenRoute.value = '/bigscreenTB'
+      if (roles.indexOf('shuangqiao') !== -1) bigscreenRoute.value = '/bigscreenShuangQiao'
     }
     setTimeout(() => {
       MatchRouteMap()
