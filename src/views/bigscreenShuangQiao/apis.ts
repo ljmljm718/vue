@@ -51,7 +51,7 @@ export const deviceBasePage = async () => {
   return await request.get({
     url: '/agriculture/device-info/page',
     params: {
-      deviceType: '25,29'
+      deviceType: '111,112'
     }
   })
 }
@@ -76,6 +76,12 @@ export const viewMonitoring = async (params) => {
 export const getDeviceDataYouEnvironment = async (params) => {
   return await request.get({
     url: '/yyang/equipment-data/environmentalData',
+    params
+  })
+}
+export const environmentalDataHomePageA = async (params) => {
+  return await request.get({
+    url: '/yyang/equipment-data/environmentalDataHomePageA',
     params
   })
 }
