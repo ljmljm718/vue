@@ -227,6 +227,12 @@ const activeName = ref<any>(['1','2','3','4'])
                 <el-form-item label="地块编号" prop="plotId">
                   <el-input v-model="formData.plotId" placeholder="请输入地块编号" />
                 </el-form-item>
+                <el-form-item label="基地名称" prop="parkName">
+                  <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
+                </el-form-item>
+                <el-form-item label="地块名称" prop="plotName">
+                  <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+                </el-form-item>
                 <el-form-item label="订单类型" prop="orderType">
                   <el-select v-model="formData.orderType" placeholder="请选择订单类型">
                     <el-option
