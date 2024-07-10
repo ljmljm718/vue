@@ -59,7 +59,9 @@ const growthIndex = ref(0)
 const getGrowthPage = async (belongPark, belongPlot) => {
   const {list = []} = await growthPage({
     pageNo: 1,
-    pageSize: 1
+    pageSize: 1,
+    belongPark: curBelongPark.value,
+    belongPlot: curBelongPlot.value
   })
   console.log('getGrowthPage', list);
   growthTypes.value = list
@@ -126,14 +128,14 @@ const initChart = async () => {
         trigger: 'item'
       },
       legend: {
-        left: 'right',
-        top: 'center',
-        orient: "vertical",
+        left: 'center',
+        top: 'bottom',
+        orient: "horizontal",
         textStyle:{color:"#969393"}
       },
       graphic: {
         type: "text", //通过不同top值可以设置上下显示
-        left: "35%",
+        left: "center",
         top: "center",
         style: {
           text: `今日`,
@@ -147,8 +149,8 @@ const initChart = async () => {
         {
           name: '设备',
           type: 'pie',
-          radius: ['60%', '90%'],
-          center: ['40%', '50%'],
+          radius: ['50%', '70%'],
+          center: ['50%', '50%'],
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
@@ -156,7 +158,7 @@ const initChart = async () => {
             borderWidth: 2
           },
           label: {
-            formatter: "{c|{c}} , {per|{d}%}",
+            formatter: "{c|{c}}台 , {per|{d}%}",
             rich: {
               c: {
                 color: "#969393",
@@ -178,7 +180,7 @@ const initChart = async () => {
             }
           },
           labelLine: {
-            show: false
+            show: true
           },
           data: [
             {
@@ -513,7 +515,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 #chart {
-  height: 14rem;
+  height: 18rem;
 }
 
 .title-icon {
