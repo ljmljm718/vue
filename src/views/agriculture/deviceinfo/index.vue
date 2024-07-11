@@ -250,7 +250,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="150"
+        width="250"
         fixed="right"
         v-if="!readonly"
       >
@@ -271,6 +271,17 @@
                 equipmentCode:scope.row.id
               }
             })">查看数据
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
+            @click="$router.push({
+              path: '/internetMonitor/deviceData/equipment-data-rule',
+              query: {
+                dtuId:scope.row.deviceCode
+              }
+            })">安装配置
           </el-button>
 <!--          <el-button
             link
