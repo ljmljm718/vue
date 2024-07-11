@@ -147,10 +147,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备编码" prop="yyRemarks">
+      <el-form-item label="设备编号" prop="yyRemarks">
         <el-input
           v-model="queryParams.yyRemarks"
-          placeholder="请输入设备编码"
+          placeholder="请输入设备编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -256,7 +256,7 @@
       <el-table-column label="地块名称" align="center" prop="parkDname" />
 
       <el-table-column label="通道编码" align="center" prop="channelId" />
-      <el-table-column label="设备编码" align="center" prop="yyRemarks" />
+      <el-table-column label="设备编号" align="center" prop="yyRemarks" />
       <!-- <el-table-column label="设备id" align="center" prop="equipmentCode" /> -->
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />

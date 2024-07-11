@@ -120,8 +120,8 @@
           <el-form-item label="通道编码" prop="channelId">
             <el-input v-model="formData.channelId" placeholder="请输入通道编码" />
           </el-form-item>
-          <el-form-item label="设备编码" prop="yyRemarks">
-            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编码" />
+          <el-form-item label="设备编号" prop="yyRemarks">
+            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编号" :disabled="true"/>
           </el-form-item>
           <!-- <el-form-item label="备用一" prop="reserveOne">
             <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
@@ -221,8 +221,8 @@
           <el-form-item label="通道编码" prop="channelId">
             <el-input v-model="formData.channelId" placeholder="请输入通道编码" :disabled="true" />
           </el-form-item>
-          <el-form-item label="设备编码" prop="yyRemarks">
-            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编码" :disabled="true" />
+          <el-form-item label="设备编号" prop="yyRemarks">
+            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编号" :disabled="true" />
           </el-form-item>
           <!-- <el-form-item label="备用一" prop="reserveOne">
             <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
@@ -321,6 +321,8 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.baseCode = order[0].belongPark;
   //地块
   formData.value.plotCode = order[0].belongPlot
+  //设备编号
+  formData.value.yyRemarks = order[0].deviceCode
   //重置检查类型让他重新选择
   //formData.value.monitoringType = ''
   //给下拉列表赋值
