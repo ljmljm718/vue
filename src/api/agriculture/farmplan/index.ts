@@ -20,6 +20,8 @@ export interface FarmPlanVO {
   planArea: string // 计划面积（亩）
   area: string // 土地面积（亩）
   farmDefineType:string
+  planCode:string
+  planName:string
   finishArea:string
   batchCode:string
 }
