@@ -127,7 +127,12 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="计划ID" align="center" prop="id" />-->
+      <el-table-column label="计划名称" align="center" prop="planName"  >
+        <template  #default="scope">
+          <label style="cursor:pointer;color: #0072c6"  @click="lookPlanDetail(scope.row.planCode)"> {{ scope.row.planName }}</label>
+        </template>
+      </el-table-column>
+      <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
       <el-table-column label="基地名称" align="center" prop="parkName" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
@@ -266,6 +271,10 @@ const handleDetail = (row: any) => {
       id: row.id
     }
   })
+}
+
+const lookPlanDetail = (planId:any) => {
+  router.push('/farm_work/farmManage/createOrUpdate?type=view&id='+planId)
 }
 
 /** 取消请假操作 */
