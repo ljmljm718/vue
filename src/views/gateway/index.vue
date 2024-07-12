@@ -153,7 +153,7 @@
       >
       <div class="flex justify-evenly">
         <div class="container flex space-x-4 justify-center">
-          <div class="w-45%">
+          <div class="w-40%">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]"
               >对口帮扶地域</div
             >
@@ -179,7 +179,7 @@
               </div>
             </div>
           </div>
-          <div class="w-45%">
+          <div class="w-40%">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]">帮扶产业</div>
             <div class="table-wrapper">
               <div class="table-header-row">
@@ -207,7 +207,7 @@
 
       </div>
     </div>
-    <div class="village-Bg w-full h-450px mb-20px">
+    <div class="village-Bg w-full h-600px mb-20px">
       <div>
         <div class="text-center text-3xl mt-50px">示范村建设</div>
         <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
@@ -251,19 +251,19 @@
             <div class="text-lg"
               >{{ timeNum == 1 ? '2024' : timeNum == 2 ? '2023' : '2022' }}年，我们建设</div
             >
-            <div class="my-10px"
-              >示范村 <span class="text-lg color-[#38c874]">{{ leftArr2.tableData1.length }}</span
+            <div class="my-10px flex items-center"
+              >示范村 <div class="text-lg w-30px text-center color-[#38c874] ">{{ leftArr2.tableData1.length }}</div
               >个
             </div>
-            <div
-              >区县<span class="text-lg color-[#38c874]">{{ options.length }}</span
-              >个 | 产业类型<span class="text-lg color-[#38c874]">{{ from }}</span
-              >个 | 产业形态<span class="text-lg color-[#38c874]">{{ industry }}</span
+            <div class='flex items-center'
+              >区县<div class="text-lg w-30px text-center color-[#38c874]">{{ options.length }}</div
+              >个 | 产业类型<div class="text-lg w-30px text-center color-[#38c874]">{{ from }}</div
+              >个 | 产业形态<div class="text-lg w-30px text-center color-[#38c874]">{{ industry }}</div
               >种</div
             >
           </div>
         </div>
-        <div class="table-wrapper2 bg-[#feffff] w-30% h-220px rounded">
+        <div class="table-wrapper2 bg-[#feffff] w-30%  rounded" style="max-height:400px;min-height:250px;">
           <div class="table-header-row">
             <div
               class="table-header-cell"
@@ -554,17 +554,17 @@ const leftArr = reactive({
     {
       key: 'index',
       label: '序号',
-      width: '33%'
+      width: '20%'
     },
     {
       key: 'city',
       label: '帮扶城市',
-      width: '33%'
+      width: '40%'
     },
     {
       key: 'county',
       label: '挂职区县',
-      width: '33%'
+      width: '40%'
     }
   ],
   tableData1: [
@@ -695,17 +695,17 @@ const leftArr3 = reactive({
     {
       key: 'index',
       label: '序号',
-      width: '33%'
+      width: '19%'
     },
     {
       key: 'city',
       label: '帮扶基地',
-      width: '33%'
+      width: '40%'
     },
     {
       key: 'county',
       label: '产业',
-      width: '33%'
+      width: '40%'
     }
   ],
   tableData1: [
