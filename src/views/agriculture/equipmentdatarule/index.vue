@@ -151,7 +151,9 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+import { useRouter } from "vue-router";
+const { currentRoute } = useRouter()
+const route = currentRoute.value
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -212,6 +214,8 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
+  if (route.query.dtuId)
+    queryParams.dtuId = route.query.dtuId as string
   getList()
 })
 </script>

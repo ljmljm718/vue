@@ -1,8 +1,9 @@
 import { store } from '@/store'
 import { defineStore } from 'pinia'
-import { getAccessToken, removeToken } from '@/utils/auth'
+import { getAccessToken, getTenantId, removeToken } from '@/utils/auth'
 import { CACHE_KEY, useCache, deleteUserCache } from '@/hooks/web/useCache'
 import { getInfo, loginOut } from '@/api/login'
+import { getRouteByTenant } from '@/api/system/user'
 
 const { wsCache } = useCache()
 
@@ -63,6 +64,34 @@ export const useUserStore = defineStore('admin-user', {
       this.isSetUser = true
       wsCache.set(CACHE_KEY.USER, userInfo)
       wsCache.set(CACHE_KEY.ROLE_ROUTERS, userInfo.menus)
+
+      const getBigscreenPathByRole = async ():Promise<string> => {
+        return new Promise(async (resolve, reject) => {
+          const tenantId = getTenantId()
+          const data = await getRouteByTenant({ id: tenantId })
+          const remoteBigscreenUrl = data.bigScreen
+          const localPathMap = {
+            "wulong": "/bigscreen5",
+            "youyang": "/bigscreen6",
+            "aikou": "/bigscreen9",
+            "wenfeng": "/bigscreenWF",
+            "baibu": "/bigscreenBB",
+            "baidi": "/bigscreen10",
+            "fuling_dashun_mingyue": "/bigscreenMY",
+            "qianjiang": "/bigscreenQJ",
+            "tianyin": "/bigscreenTB",
+            "shuangqiao": "/bigscreenShuangQiao"
+          }
+          
+          let resPath = ''
+          if (Array.isArray(userInfo.roles)) userInfo.roles.forEach(item => {
+            if (localPathMap[item]) resPath = localPathMap[item]
+          })
+          if (!resPath) resPath = remoteBigscreenUrl
+          return resolve(resPath)
+        })
+      }
+      wsCache.set(CACHE_KEY.BIGSCREEN_PATH, await getBigscreenPathByRole());
     },
     async setUserAvatarAction(avatar: string) {
       const userInfo = wsCache.get(CACHE_KEY.USER)

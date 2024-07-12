@@ -11,13 +11,13 @@
       <el-form-item label="采集类型" prop="collectionType">
         <el-select  v-model="queryParams.collectionType" placeholder="请选择采集类型" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">  
+          class="!w-240px">
           <el-option
-            v-for="item in selectEquipmentType"  
+            v-for="item in selectEquipmentType"
             :key="item"
             :label="item.categoryName"
             :value="item.categoryName"
-            />   
+            />
         </el-select>
         <!-- <el-input
           v-model="queryParams.collectionType"
@@ -30,13 +30,13 @@
       <el-form-item label="监测类型" prop="monitoringType">
         <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择监测类型" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">  
+          class="!w-240px">
           <el-option
-            v-for="item in selectCollectionType"  
+            v-for="item in selectCollectionType"
             :key="item"
             :label="item"
             :value="item"
-            />   
+            />
         </el-select>
         <el-input v-else
           v-model="queryParams.monitoringType"
@@ -46,7 +46,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
 
       <!-- <el-form-item label="数据值" prop="dataValue">
         <el-input
@@ -86,17 +86,17 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
       <!-- <el-form-item label="基地名称" prop="parkName">
         <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">  
+          class="!w-240px">
           <el-option
-            v-for="item in selectBase"  
+            v-for="item in selectBase"
             :key="item"
             :label="item.name"
             :value="item.name"
-            />   
+            />
         </el-select> -->
         <!-- <el-input
           v-model="queryParams.parkName"
@@ -117,7 +117,7 @@
       </el-form-item>
        -->
 
-      
+
 
       <!-- <el-form-item label="地块名称" prop="parkDname">
         <el-input
@@ -147,10 +147,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备编码" prop="equipmentCode">
+      <el-form-item label="设备编号" prop="yyRemarks">
         <el-input
-          v-model="queryParams.equipmentCode"
-          placeholder="请输入设备编码"
+          v-model="queryParams.yyRemarks"
+          placeholder="请输入设备编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -239,7 +239,7 @@
         </template>
       </el-table-column> -->
 
-      
+
       <el-table-column label="监测类型" align="center" prop="monitoringType" />
       <el-table-column label="数据值" align="center" prop="dataValue" />
       <el-table-column label="单位" align="center" prop="yyUnit" />
@@ -256,8 +256,8 @@
       <el-table-column label="地块名称" align="center" prop="parkDname" />
 
       <el-table-column label="通道编码" align="center" prop="channelId" />
-      <el-table-column label="设备编码" align="center" prop="equipmentCode" />
-      <!-- <el-table-column label="备注" align="center" prop="yyRemarks" /> -->
+      <el-table-column label="设备编号" align="center" prop="yyRemarks" />
+      <!-- <el-table-column label="设备id" align="center" prop="equipmentCode" /> -->
       <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
       <el-table-column label="备用二" align="center" prop="reserveTwo" />
       <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
@@ -431,14 +431,14 @@ const queryType= async ()=>{
   // console.log(selectCollectionType,"selectCollectionType");
   }
 }
-watch(  
-  () => queryParams.collectionType, // 监听 queryParams.collectionType 的变化  
-  (newVal, oldVal) => {  
-    if (newVal !== oldVal) { // 确保值确实发生了变化  
+watch(
+  () => queryParams.collectionType, // 监听 queryParams.collectionType 的变化
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) { // 确保值确实发生了变化
       queryType()
-    }  
-  },  
-  { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整  
+    }
+  },
+  { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整
 );
 
 /** 查询列表 */
@@ -478,7 +478,7 @@ const router = useRouter()
 const openForm = (type: string, id?: number) => {
   if(type=='create') {
     router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData')
-  }else{ 
+  }else{
     router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type='+type+'&id='+id)
   }
   //formRef.value.open(type, id)

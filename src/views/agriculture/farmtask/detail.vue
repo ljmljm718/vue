@@ -1,6 +1,9 @@
 <template>
   <ContentWrap>
     <el-descriptions :column="1" border>
+      <el-descriptions-item label="计划名称">
+       <label style="cursor:pointer;color: #0072c6"    @click="lookPlanDetail(detailData.planCode)" > {{ detailData.planName }}</label>
+      </el-descriptions-item>
       <el-descriptions-item label="基地名称">
         {{ detailData.parkName }}
       </el-descriptions-item>
@@ -52,6 +55,11 @@ const getInfo = async () => {
 }
 defineExpose({ open: getInfo }) // 提供 open 方法，用于打开弹窗
 
+
+const router = useRouter();
+const lookPlanDetail = (planId:any) => {
+  router.push('/farm_work/farmManage/createOrUpdate?type=view&id='+planId)
+}
 /** 初始化 **/
 onMounted(() => {
   getInfo()

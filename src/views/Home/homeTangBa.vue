@@ -132,13 +132,19 @@ const getMenuDataList = async () => {
     "103": "Weather",
     "104": "Soil",
     "107": "Bug",
+    "79": "Monitor"
   }
   allDeviceDataList.value.forEach(item => {
+    const _item = JSON.parse(JSON.stringify(item))
+    if (!_item.longitude || !_item.latitude) {
+      return
+    }
+    
     const marker = mapTangBgRef.value.addMarkerToMap(
-      item.longitude,
-      item.latitude,
-      item.deviceName,
-      '/tangba/' + item.deviceStatus + (kindMap[item.deviceKind] || 'Monitor') + '.png'
+      _item.longitude,
+      _item.latitude,
+      _item.deviceName,
+      '/tangba/' + _item.deviceStatus + (kindMap[_item.deviceKind] || 'Monitor') + '.png'
     )
     marker.on('click', () => {
       handleSelect(item.id)

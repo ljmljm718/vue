@@ -50,24 +50,6 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="终端" prop="dtu">
-          <el-input
-            v-model="queryParams.dtu"
-            placeholder="请输入终端"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="通道" prop="channelId">
-          <el-input
-            v-model="queryParams.channelId"
-            placeholder="请输入通道"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
       <!--      <el-form-item label="所属基地" prop="belongPark">
               <el-input
                 v-model="queryParams.belongPark"
@@ -250,7 +232,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="150"
+        width="250"
         fixed="right"
         v-if="!readonly"
       >
@@ -271,6 +253,17 @@
                 equipmentCode:scope.row.id
               }
             })">查看数据
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
+            @click="$router.push({
+              path: '/internetMonitor/deviceData/equipment-data-rule',
+              query: {
+                dtuId:scope.row.deviceCode
+              }
+            })">安装配置
           </el-button>
 <!--          <el-button
             link

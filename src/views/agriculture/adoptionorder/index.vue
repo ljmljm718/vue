@@ -169,6 +169,14 @@
           >
             详情
           </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="createTicket(scope.row)"
+            v-if="scope.row.status != '5'"
+          >
+            生成提货卡
+          </el-button>
 <!--          <el-button-->
 <!--            link-->
 <!--            type="danger"-->
@@ -199,6 +207,8 @@ import download from '@/utils/download'
 import { AdoptionOrderApi, AdoptionOrderVO } from '@/api/agriculture/adoptionorder'
 import AdoptionOrderForm from './AdoptionOrderForm.vue'
 import { getDictObj,getDictLabel,getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import {assignWith} from "lodash-es";
+import {data} from "autoprefixer";
 
 /** 认养订单 列表 */
 defineOptions({ name: 'AdoptionOrder' })
@@ -308,6 +318,19 @@ const handleExport = async () => {
     const ret = intSum + dot;
     return ret;
   };
+
+const createTicket = async (row: any) => {
+  try {
+    await message.confirm("是否确认生成提货卡？","生成提货卡")
+    //生成提货卡
+    await AdoptionOrderApi.createTicket(row.id)
+    message.success("生成提货卡成功")
+    await getList();
+  } finally {
+  }
+
+
+}
 
 
 /** 初始化 **/

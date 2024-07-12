@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="编号" prop="code">
+<!--      <el-form-item label="编号" prop="code">
         <el-input
           v-model="queryParams.code"
           placeholder="请输入编号"
@@ -16,7 +16,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -72,10 +72,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>
+<!--      <el-table-column label="所属基地" align="center" prop="parkId" width="200"/>-->
       <el-table-column label="基地名称" align="center" prop="parkName" width="200"/>
       <el-table-column label="基地类型" align="center" prop="parkType" width="200"/>
-      <el-table-column label="编号" align="center" prop="code" width="200"/>
+<!--      <el-table-column label="编号" align="center" prop="code" width="200"/>-->
       <el-table-column label="名称" align="center" prop="name" width="200"/>
       <el-table-column label="地块类型" align="center" prop="type" width="150">
         <template #default="scope">

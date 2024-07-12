@@ -37,7 +37,7 @@
           </div>
         </div>
       </template>
-       
+
 
       <template #content>
         <el-scrollbar class="croll-bar-template">
@@ -50,9 +50,9 @@
           v-loading="formLoading"
           class="grid 2xl:grid-cols-2 gap-3 p-4"
         >
-          <el-form-item label="设备编码" prop="equipmentCode">
+          <el-form-item label="设备id" prop="equipmentCode">
             <!-- <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" /> -->
-            <el-input v-model="formData.equipmentCode" placeholder="请选择设备编码" :disabled="true">
+            <el-input v-model="formData.equipmentCode" placeholder="请选择设备id" :disabled="true">
               <template #append>
                 <el-button @click="openPurchaseOrderInEnableList">
                   <Icon icon="ep:search"/>
@@ -78,21 +78,21 @@
           </el-form-item>
           <el-form-item label="监测类型" prop="monitoringType">
             <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
-            <el-select  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+            <el-select  v-model="formData.monitoringType" placeholder="请输入监测类型">
                 <el-option
-                  v-for="item in selectList"  
+                  v-for="item in selectList"
                   :key="item"
                   :label="item"
                   :value="item"/>
               </el-select>
-            <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+            <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">
                 <el-option
-                  v-for="item in selectList"  
+                  v-for="item in selectList"
                   :key="item"
                   :label="item"
                   :value="item"/>
               </el-select> -->
-              <!-- <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+              <!-- <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">
                 <el-option value='' />
               </el-select> -->
           </el-form-item>
@@ -120,8 +120,8 @@
           <el-form-item label="通道编码" prop="channelId">
             <el-input v-model="formData.channelId" placeholder="请输入通道编码" />
           </el-form-item>
-          <el-form-item label="备注" prop="yyRemarks">
-            <el-input v-model="formData.yyRemarks" type="textarea" placeholder="请输入备注" />
+          <el-form-item label="设备编号" prop="yyRemarks">
+            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编号" :disabled="true"/>
           </el-form-item>
           <!-- <el-form-item label="备用一" prop="reserveOne">
             <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
@@ -136,7 +136,7 @@
         <!-- 截至 -->
         </el-scrollbar>
       </template>
-      
+
     </EditFrame>
     <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
                           @success="handlePurchaseOrderChange"/>
@@ -155,9 +155,9 @@
           v-loading="formLoading"
           class="grid 2xl:grid-cols-2 gap-3 p-4"
         >
-          <el-form-item label="设备编码" prop="equipmentCode">
+          <el-form-item label="设备id" prop="equipmentCode">
             <!-- <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" /> -->
-            <el-input v-model="formData.equipmentCode" placeholder="请选择设备编码" :disabled="true" />
+            <el-input v-model="formData.equipmentCode" placeholder="请选择设备id" :disabled="true" />
           </el-form-item>
 
           <el-form-item label="设备名称" prop="deviceName">
@@ -176,23 +176,23 @@
           </el-form-item>
           <el-form-item label="监测类型" prop="monitoringType">
             <!-- <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" /> -->
-            <el-select  v-model="formData.monitoringType" placeholder="请输入监测类型" :disabled="true" >  
+            <el-select  v-model="formData.monitoringType" placeholder="请输入监测类型" :disabled="true" >
                 <el-option
-                  v-for="item in selectList"  
+                  v-for="item in selectList"
                   :key="item"
                   :label="item"
                   :value="item"
-                  :disabled="true" 
+                  :disabled="true"
                   />
               </el-select>
-            <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+            <!-- <el-select  v-if="selectList"  v-model="formData.monitoringType" placeholder="请输入监测类型">
                 <el-option
-                  v-for="item in selectList"  
+                  v-for="item in selectList"
                   :key="item"
                   :label="item"
                   :value="item"/>
               </el-select> -->
-              <!-- <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">  
+              <!-- <el-select  v-else  v-model="formData.monitoringType" placeholder="请输入监测类型">
                 <el-option value='' />
               </el-select> -->
           </el-form-item>
@@ -209,7 +209,7 @@
               type="datetime"
               value-format="x"
               placeholder="选择采集时间"
-              :disabled="true" 
+              :disabled="true"
             />
           </el-form-item>
           <el-form-item label="基地编码" prop="baseCode">
@@ -221,8 +221,8 @@
           <el-form-item label="通道编码" prop="channelId">
             <el-input v-model="formData.channelId" placeholder="请输入通道编码" :disabled="true" />
           </el-form-item>
-          <el-form-item label="备注" prop="yyRemarks">
-            <el-input v-model="formData.yyRemarks" type="textarea" placeholder="请输入备注" :disabled="true" />
+          <el-form-item label="设备编号" prop="yyRemarks">
+            <el-input v-model="formData.yyRemarks" placeholder="请输入设备编号" :disabled="true" />
           </el-form-item>
           <!-- <el-form-item label="备用一" prop="reserveOne">
             <el-input v-model="formData.reserveOne" placeholder="请输入备用一" />
@@ -237,7 +237,7 @@
         <!-- 截至 -->
         </el-scrollbar>
       </template>
-      
+
     </EditFrame>
     <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
                           @success="handlePurchaseOrderChange"/>
@@ -298,7 +298,7 @@ const openPurchaseOrderInEnableList = () => {
 const getDeviceInfoType= async()=>{
   if(formData.value.equipmentCode){
     let order=await DeviceInfoApi.getDeviceInfo(formData.value.equipmentCode);
-    let res =order.deviceMonitorType.split(','); 
+    let res =order.deviceMonitorType.split(',');
     selectList.value=res
   }else{
     selectList.value= []
@@ -321,10 +321,12 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   formData.value.baseCode = order[0].belongPark;
   //地块
   formData.value.plotCode = order[0].belongPlot
+  //设备编号
+  formData.value.yyRemarks = order[0].deviceCode
   //重置检查类型让他重新选择
   //formData.value.monitoringType = ''
   //给下拉列表赋值
-  let res =order[0].deviceMonitorType.split(','); 
+  let res =order[0].deviceMonitorType.split(',');
   selectList.value=res
   //console.log(res,"==-==");
   // let a=order[0].deviceType[1]
@@ -333,7 +335,7 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
 
 }
 
-// 结尾  
+// 结尾
 /**
  * 设备分类级联选择器
  */
@@ -440,8 +442,8 @@ const resetForm = () => {
 //     // 发送操作成功的事件
 //     router.push(ORIGIN_PATH)
 // 截至
-// 3.getFrom方法中  formData.value = await "后端函数" 
-// 改为open方法中 try 下方的第一行 即"fromData.value = await MarkeryingProgramApi.getMakertingProgram(id)" 
+// 3.getFrom方法中  formData.value = await "后端函数"
+// 改为open方法中 try 下方的第一行 即"fromData.value = await MarkeryingProgramApi.getMakertingProgram(id)"
 // 注意其中的id要改为 route.query.id as any
 // 4.const FORMPAGE_NAME = '产品手册' 将它改为菜单名称
 // 5.const ORIGIN_PATH = '/pcg/marketingCenter/productManual' // 将它改为保存之后的路由

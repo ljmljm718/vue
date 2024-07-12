@@ -40,7 +40,26 @@
             <!-- TODO: 如果使用手风琴，参考下面的代码 下面的注意不用的话要删掉 -->
             <el-collapse v-model="activeName" simple>
               <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4"
-                                title="作物信息" name="1" >
+                                title="任务信息" name="1" >
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="农事计划" prop="planCode">
+                      <el-input v-model="formData.planCode" disabled placeholder="请选择农事计划" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openPlannfoPopup()">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="农事计划名称" prop="planName" label-width="120">
+                      <el-input v-model="formData.planName" disabled placeholder="请选择农事计划" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="所属基地" prop="belongPark">
@@ -160,7 +179,7 @@
 
 
   <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
-
+  <PlanInfoPopup ref="planInfoPopupRef" @success="handlePlanInfoPopupChange" />
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 </template>
 <script lang="ts" setup>
@@ -182,6 +201,9 @@ import {
   getFormStorage,
   deleteFormStorage
 } from '@/components/EditFrame/index'
+import {FarmPlanVO} from "@/api/agriculture/farmplan";
+import {AdoptionPlanApi} from "@/api/agriculture/adoptionplan";
+import {AdoptionRuleApi} from "@/api/agriculture/adoptionrule";
 
 defineOptions({ name: 'FarmTaskForm' })
 
@@ -211,6 +233,8 @@ const formData = ref({
   endTime: undefined,
   completeRequirement: undefined,
   acceptanceStandard: undefined,
+  planCode:undefined,
+  planName:undefined,
 })
 const formRules = reactive({
   parkName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],
@@ -231,6 +255,20 @@ const startUserSelectAssigneesFormRules = ref({}) // 发起人选择审批人的
 const userList = ref<any[]>([]) // 用户列表
 
 
+//计划的选择
+const planInfoPopupRef = ref()
+const openPlannfoPopup = () => {
+    planInfoPopupRef.value.open()
+}
+const handlePlanInfoPopupChange = (order: FarmPlanVO) => {
+    formData.value.planCode = String(order[0].id)
+    formData.value.planName = String(order[0].planName)
+    formData.value.belongPark = String(order[0].belongPark)
+    formData.value.parkName = String(order[0].parkName)
+    formData.value.belongPlot = String(order[0].belongPlot)
+    formData.value.plotName = String(order[0].plotName)
+}
+
 
 //基地的选择
 const parkInfoPopupRef = ref()
@@ -247,6 +285,7 @@ const handleParkInfoPopupChange = (order: ParkInfoVO) => {
     formData.value.parkName = String(order[0].name)
   } else formData.value.belongPlot = String(order[0].id)
 }
+
 
 //地块的选择
 const parkDetailPopupRef = ref()
@@ -304,6 +343,7 @@ const submitForm = async () => {
     formLoading.value = false
   }
 }
+
 
 /** 初始化 */
 onMounted(async () => {

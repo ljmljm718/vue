@@ -59,4 +59,9 @@ export const AdoptionOrderApi = {
   getAdoptionOrderDetailListByOrderNumber: async (orderNumber) => {
     return await request.get({ url: `/agriculture/adoption-order/adoption-order-detail/list-by-order-number?orderNumber=` + orderNumber })
   },
+
+  // 生成提货卡
+  createTicket: async (id : string) => {
+    return await request.put({ url: `/agriculture/ticket-info/createByOrderId?orderId=` + id })
+  },
 }
