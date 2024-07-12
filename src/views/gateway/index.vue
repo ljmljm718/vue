@@ -835,14 +835,25 @@ const initChinaMap = () => {
             const mapData: any = nameDataMap[params.name]
             console.log('mapData', mapData)
             let str = ``
+            let div=`
+            ${
+              mapData[0].data.map(item=>{
+                return `
+                <div class='mt--5px'>
+                      <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
+                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：${item.village}</div>  
+                    </div>
+                `
+              })
+            }`
             if (mapData.length == 0) {
               str = ''
             } else {
               str = `<div class=" relative p-[20px]">
                     <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
                     <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
-                    <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-                    <div class="color-[#fafafa] text-sm">${mapData[0]?.data[0].years}年示范村：${mapData[0]?.data[0].village}</div>
+                    ${div}
+
                     </div>`
             }
             return str
