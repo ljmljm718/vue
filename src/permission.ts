@@ -55,7 +55,9 @@ const whiteList = [
   '/register',
   '/oauthLogin/gitee',
   '/QRCode',
-  '/home'
+  '/home',
+  "/bigscreenMY",
+  "/bigscreenTB"
 ]
 
 // 路由加载前

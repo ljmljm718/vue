@@ -19,7 +19,7 @@
             >强化产业协作，实施"东产西移"，大力推动区域协同发展</div
           >
         </div>
-        <div class="w-40% h-500px initMap" id="mainMap"></div>
+        <div class="w-50% h-660px initMap" id="mainMap"></div>
         <div class="absolute left--150px bottom--150px">
           <img src="./assets/top-bg.png" class="w-300px h-300px" />
         </div>
@@ -152,56 +152,59 @@
         >基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数字挖掘、边缘计算、GIS遥感监测等多种技术手段融合显示精准帮扶，解决现有农业问题</div
       >
       <div class="flex justify-evenly">
-        <div class="w-45%">
-          <div class="rounded-t-xl bg-[#2ec66d] text-center py-[5px] color-[#fff]"
-            >对口帮扶地域</div
-          >
-          <div class="table-wrapper h-500px">
-            <div class="table-header-row">
-              <div
-                class="table-header-cell"
-                v-for="(column, index) in leftArr.tableColumns1"
-                :style="`width: ${column.width};`"
-                :key="index"
-                >{{ column.label }}</div
-              >
+        <div class="container flex space-x-4 justify-center">
+          <div class="w-45%">
+            <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]"
+              >对口帮扶地域</div
+            >
+            <div class="table-wrapper h-500px">
+              <div class="table-header-row">
+                <div
+                  class="table-header-cell"
+                  v-for="(column, index) in leftArr.tableColumns1"
+                  :style="`width: ${column.width};`"
+                  :key="index"
+                  >{{ column.label }}</div
+                >
+              </div>
+              <div class="table-data-row" v-for="(item, index) in leftArr.tableData1" :key="index">
+                <div
+                  v-show="item[column.key] != item.warnStatus"
+                  class="table-data-cell"
+                  v-for="(column, inde) in leftArr.tableColumns1"
+                  :key="inde"
+                  :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                  >{{ item[column.key] }}</div
+                >
+              </div>
             </div>
-            <div class="table-data-row" v-for="(item, index) in leftArr.tableData1" :key="index">
-              <div
-                v-show="item[column.key] != item.warnStatus"
-                class="table-data-cell"
-                v-for="(column, inde) in leftArr.tableColumns1"
-                :key="inde"
-                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-                >{{ item[column.key] }}</div
-              >
+          </div>
+          <div class="w-45%">
+            <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]">帮扶产业</div>
+            <div class="table-wrapper">
+              <div class="table-header-row">
+                <div
+                  class="table-header-cell"
+                  v-for="(column, index) in leftArr3.tableColumns1"
+                  :style="`width: ${column.width};`"
+                  :key="index"
+                  >{{ column.label }}</div
+                >
+              </div>
+              <div class="table-data-row" v-for="(item, index) in leftArr3.tableData1" :key="index">
+                <div
+                  v-show="item[column.key] != item.warnStatus"
+                  class="table-data-cell"
+                  v-for="(column, inde) in leftArr3.tableColumns1"
+                  :key="inde"
+                  :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                  >{{ item[column.key] }}</div
+                >
+              </div>
             </div>
           </div>
         </div>
-        <div class="w-45%">
-          <div class="rounded-t-xl bg-[#2ec66d] text-center py-[5px] color-[#fff]">帮扶产业</div>
-          <div class="table-wrapper">
-            <div class="table-header-row">
-              <div
-                class="table-header-cell"
-                v-for="(column, index) in leftArr3.tableColumns1"
-                :style="`width: ${column.width};`"
-                :key="index"
-                >{{ column.label }}</div
-              >
-            </div>
-            <div class="table-data-row" v-for="(item, index) in leftArr3.tableData1" :key="index">
-              <div
-                v-show="item[column.key] != item.warnStatus"
-                class="table-data-cell"
-                v-for="(column, inde) in leftArr3.tableColumns1"
-                :key="inde"
-                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-                >{{ item[column.key] }}</div
-              >
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
     <div class="village-Bg w-full h-450px mb-20px">
@@ -260,7 +263,7 @@
             >
           </div>
         </div>
-        <div class="table-wrapper2 bg-[#feffff] w-40% h-280px rounded">
+        <div class="table-wrapper2 bg-[#feffff] w-30% h-220px rounded">
           <div class="table-header-row">
             <div
               class="table-header-cell"
@@ -519,12 +522,13 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, nextTick, onMounted } from 'vue'
-import { distinct, page, selectMap, filePage } from './api'
+import { distinct, page, selectMap, filePage, selectHelp } from './api'
 import * as echarts from 'echarts'
 import { jsonData } from './assets/chongqing'
 import { constant } from 'lodash'
 import { useRouter } from 'vue-router'
 import meassageBg from './assets/meassageBg.png'
+
 const router = useRouter()
 const mainNum = ref(0)
 const dataList = ref([])
@@ -607,6 +611,29 @@ const leftArr = reactive({
     }
   ]
 })
+
+const getSelectedHelp = async (type) => {
+  if (!type) return
+  const list = await selectHelp({ type })
+  console.log("对口帮扶地域" + type, list);
+  if (Array.isArray(list)) {
+    if (type === '1') leftArr.tableData1 = list.map((item, index) => ({
+      ...item,
+      index: index + 1,
+    }))
+
+    if (type === '2') leftArr3.tableData1 = list.map((item, index) => ({
+      ...item,
+      index: index + 1,
+      city: item.village,
+      county: item.industry
+    }))
+
+    if (type === '3') return list
+  }
+}
+getSelectedHelp('1')
+getSelectedHelp('2')
 const leftArr2 = reactive({
   tableColumns1: [
     {
@@ -756,12 +783,20 @@ const getselectMap = (val) => {
 }
 
 const nameDataMap = {}
-const initChinaMap = () => {
+const initChinaMap = async () => {
+  const res:any = await getSelectedHelp('3')
+  
+  const highlightList = res.map(item => ({
+    name: item.county, value: 2000, selected: false
+  }))
+  
   echarts.registerMap('chongqing', jsonData)
   const nameArr = jsonData.features.map((item) => item.properties.name)
 
   nameArr.forEach((item) => {
     selectMap({ county: item }).then((res) => {
+      console.log("ddss", res);
+      
       nameDataMap[item] = res
     })
   })
@@ -772,11 +807,12 @@ const initChinaMap = () => {
     {
       baseOption: {
         geo: {
-          aspectScale: 0.9, //长宽比
+          zoom: 1.2,
+          aspectScale: 1.2, //长宽比
           map: 'chongqing',
           roam: false,
           itemStyle: {
-            borderColor: '#1877cd',
+            borderColor: '#196059',
             borderWidth: 2,
             areaColor: {
               type: 'radial',
@@ -786,11 +822,11 @@ const initChinaMap = () => {
               colorStops: [
                 {
                   offset: 0,
-                  color: '#000000' // 0% 处的颜色// 0% 处的颜色
+                  color: '#17895d' // 0% 处的颜色// 0% 处的颜色
                 },
                 {
                   offset: 1,
-                  color: '#0335b5' // 100% 处的颜色 // 100% 处的颜色
+                  color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
                 }
               ],
               globalCoord: false // 缺省为 false
@@ -808,11 +844,11 @@ const initChinaMap = () => {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#0335b5' // 0% 处的颜色// 0% 处的颜色
+                    color: '#17895d' // 0% 处的颜色// 0% 处的颜色
                   },
                   {
                     offset: 1,
-                    color: '#fba509' // 100% 处的颜色 // 100% 处的颜色
+                    color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
                   }
                 ],
                 globalCoord: false // 缺省为 false
@@ -834,17 +870,18 @@ const initChinaMap = () => {
           formatter: function (params) {
             const mapData: any = nameDataMap[params.name]
             console.log('mapData', mapData)
+            if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
             let str = ``
             let div=`
             ${
-              mapData[0].data.map(item=>{
+              mapData[0].data ? mapData[0].data.map(item=>{
                 return `
                 <div class='mt--5px'>
                       <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：${item.village}</div>  
+                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" style="color: white;">${item.village}</a></div>  
                     </div>
                 `
-              })
+              }) : ''
             }`
             if (mapData.length == 0) {
               str = ''
@@ -869,13 +906,20 @@ const initChinaMap = () => {
             }
           }
         },
+        dataRange: {
+          x: '-1000px',
+          y: '-1000px',
+          splitList: [
+            { start: 1, end: 1, label: '城口县', color: '' }
+          ]
+        },
         series: [
           {
-            show: false,
             type: 'map',
             map: 'chongqing',
-            zoom: 1,
-            aspectScale: 0.9,
+            zoom: 1.2,
+            roam: false,
+            aspectScale: 1.2,
             itemStyle: {
               borderColor: '#05d6f8',
               borderWidth: 2,
@@ -887,11 +931,11 @@ const initChinaMap = () => {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#012188' // 0% 处的颜色// 0% 处的颜色
+                    color: '#004647' // 0% 处的颜色// 0% 处的颜色
                   },
                   {
                     offset: 1,
-                    color: '#0335b5' // 100% 处的颜色 // 100% 处的颜色
+                    color: '#004647' // 100% 处的颜色 // 100% 处的颜色
                   }
                 ],
                 globalCoord: false // 缺省为 false
@@ -899,7 +943,7 @@ const initChinaMap = () => {
               shadowColor: '#0938b6',
               shadowOffsetX: -10,
               shadowOffsetY: -10,
-              shadowBlur: 19,
+              shadowBlur: 12,
               emphasis: {
                 areaColor: {
                   type: 'radial',
@@ -909,11 +953,11 @@ const initChinaMap = () => {
                   colorStops: [
                     {
                       offset: 0,
-                      color: '#0335b5' // 0% 处的颜色// 0% 处的颜色
+                      color: '#004647' // 0% 处的颜色// 0% 处的颜色
                     },
                     {
                       offset: 1,
-                      color: '#fba509' // 100% 处的颜色 // 100% 处的颜色
+                      color: '#004647' // 100% 处的颜色 // 100% 处的颜色
                     }
                   ],
                   globalCoord: false // 缺省为 false
@@ -929,8 +973,17 @@ const initChinaMap = () => {
               fontSize: '11',
               emphasis: {
                 color: '#ffffff'
+              },
+              formatter: (item) => {
+                const _name = item.name.replace("区", "").replace("自治县", "").replace("县", "")
+                const labelMap = [
+                  "九龙坡",
+                  "大渡口",
+                ]
+                return labelMap.indexOf(_name) !== -1 ? _name.split("").join('\n') : _name
               }
-            }
+            },
+            data: highlightList
           }
         ]
       }
@@ -1075,7 +1128,6 @@ const goPage3 = (url) => {
   .table-data-row {
     margin-top: 10px;
     width: 100%;
-    height: 18%;
     background-color: #f3fcf7;
 
     display: flex;
@@ -1110,7 +1162,6 @@ const goPage3 = (url) => {
   .table-data-row {
     margin-top: 10px;
     width: 100%;
-    height: 18%;
     display: flex;
     align-items: center;
     padding: 8px 0;

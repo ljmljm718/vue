@@ -28,3 +28,11 @@ export const filePage = async () => {
   })
 }
 
+//政府策略
+export const selectHelp = async (params) => {
+  return await request.get({
+    url: '/agri/user-table/select-help',
+    params
+  })
+}
+
