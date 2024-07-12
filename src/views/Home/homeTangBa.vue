@@ -6,7 +6,7 @@
       style="height: calc(100% - 4.5rem);"
       v-loading="menuDataLoading"
     >
-      <div class="art-font pb-2 pl-1">设备监测列表</div>
+      <div style="font-weight:600;" class=" pb-2 pl-1">设备监测列表</div>
       <el-scrollbar
         class="overflow-auto pr-2"
         height="calc(100% - 2rem)"
@@ -38,8 +38,10 @@
                 v-for="secMenu in subMenu.children"
                 :key="secMenu.id"
                 :index="secMenu.id"
-              >
-                <div class="flex items-center space-x-2">
+                :class="`${secMenuName==secMenu.name?'menu-bg':''}`"
+                @click='menuCli(secMenu.name)'
+                >
+                <div  :class="`flex items-center space-x-2 `">
                   <div
                     :class="`${getIconClass(secMenu)} w-[20px] h-[20px]`"
                   ></div>
@@ -63,6 +65,8 @@ import {
   getDeviceCategoryTree,
   getDeviceInfo
 } from './apis'
+import meassageTop from './assets/tangba/meassage-top.png'
+import meassageBg from './assets/tangba/meassage-bg.png'
 defineOptions({ name: 'HomeTangBa' })
 
 const mapTangBgRef = ref<any>()
@@ -78,8 +82,12 @@ const handleSelect = async (item) => {
     
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
     const infoString = `<div class="bg-[#e8f2fc] relative bottom-[35px]">
-        <div class="bg-[#95bbf8] p-2 px-3 art-font">${res.parkName}</div>
-        <div class="p-2 art-font text-[14px]">
+      <div class='relative'>
+        <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
+        <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${res.parkName}</div>
+        </div>
+       
+        <div class="p-2  text-[14px] meassage-bg">
           <div class="p-1 px-2">${res.parkDetailName}</div>
           <div class="p-1 px-2 flex space-x-2 items-center">
             <div class="${res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'} w-[8px] h-[8px] rounded-full"></div>
@@ -90,6 +98,11 @@ const handleSelect = async (item) => {
     mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
   }
+}
+
+const secMenuName=ref('')
+const menuCli=(val)=>{
+  secMenuName.value=val
 }
 
 const allDeviceDataList = ref<Array<any>>([])
@@ -188,6 +201,20 @@ const getIconClass = (item) => {
 .offline-flag {
   background-color: #a5320f;
 }
+.menu-bg{
+  width:150% !important;
+  height:100%;
+  background-size:100% 100%;
+  background-image: url(./assets/menu-bg.png) !important;
+}
+.meassage-top{
+  background-size: 100% 100%;
+  background-image: url(./assets/tangba/meassage-top.png);
+}
+.meassage-bg{
+  background-size: 100% 100%;
+  background-image: url(./assets/tangba/meassage-bg.png);
+}
 
 .online-bug, .offline-bug,
 .online-monitor, .offline-monitor,
@@ -210,4 +237,5 @@ const getIconClass = (item) => {
 
 .online-grow { background-image: url(./assets/tangba/onlineGrow.png); }
 .offline-grow { background-image: url(./assets/tangba/offlineGrow.png); }
+
 </style>

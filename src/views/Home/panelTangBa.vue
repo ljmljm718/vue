@@ -5,8 +5,8 @@
   >
     <div class="flex justify-between items-start p-2 pb-1">
       <div>
-        <div class="art-font flex items-center">
-          <span class="pr-3 text-[20px]">{{ title }}</span>
+        <div class=" flex items-center">
+          <span class="pr-3 text-[18px]">{{ title }}</span>
           <el-tag
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>
@@ -15,20 +15,35 @@
       </div>
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
-    <el-tabs v-model="activeTab" class="px-2">
-      <el-tab-pane label="设备概要" name="设备概要">
+    <el-tabs v-model="activeTab" class="px-2 w-100%" @tab-click='handleClick'>
+      <el-tab-pane name='设备概要' >
+        <template #label>
+          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">设备概要</div>
+        </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
           <div
-            class="grid grid-cols-3 gap-2 py-2 min-h-[100px]"
+            class="grid grid-cols-4 gap-2 py-2 min-h-[100px]"
             v-loading="runTimeDataLoading"
             v-show="!runTimeDataLoading && runTimeDataList.length > 0"
           >
             <div
-              class="bg-slate-200 p-3 py-2 flex justify-between items-center"
+              class="bg-slate-200 data-bg flex flex-col w-100% h-100px justify-evenly items-center"
               v-for="item in runTimeDataList"
               :key="item.id"
             >
+              <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
+              <div v-show="item.monitoringType=='湿度'" :class="`w-2rem h-2rem tb-home-2 `"></div>
+              <div v-show="item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
+              <div v-show="item.monitoringType=='EC值'" :class="`w-2rem h-2rem tb-home-4 `"></div>
+              <div v-show="item.monitoringType=='光照'" :class="`w-2rem h-2rem tb-home-5 `"></div>
+              <div v-show="item.monitoringType=='雨量'" :class="`w-2rem h-2rem tb-home-6 `"></div>
+              <div v-show="item.monitoringType=='氮'" :class="`w-2rem h-2rem tb-home-7 `"></div>
+              <div v-show="item.monitoringType=='磷'" :class="`w-2rem h-2rem tb-home-8 `"></div>
+              <div v-show="item.monitoringType=='钾'" :class="`w-2rem h-2rem tb-home-9 `"></div>
+              <div v-show="item.monitoringType=='风向'" :class="`w-2rem h-2rem tb-home-10 `"></div>
+              <div v-show="item.monitoringType=='风速'" :class="`w-2rem h-2rem tb-home-11 `"></div>
+              <div v-show="item.monitoringType=='大气压力'" :class="`w-2rem h-2rem tb-home-12 `"></div>
               <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -86,7 +101,10 @@
           <div id="chartWindSpeed" class="chart-ins"></div>
         </el-scrollbar>
       </el-tab-pane>
-      <el-tab-pane label="报警" name="报警">
+      <el-tab-pane  name="报警">
+        <template #label>
+          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">报警</div>
+        </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
             :data="warnDataList"
@@ -144,7 +162,10 @@
           </el-table>
         </el-scrollbar>
       </el-tab-pane>
-      <el-tab-pane label="设备属性" name="设备属性">
+      <el-tab-pane name="设备属性" >
+        <template #label>
+          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[180px] h-40px rounded text-center leading-40px`">设备属性</div>
+        </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
           <div class="flex flex-col items-center mt-4">
@@ -231,7 +252,12 @@ import * as echarts from 'echarts'
 defineOptions({ name: 'PanelTangBa' })
 
 console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }).join(''));
-
+//标签切换
+const tabsVal=ref('设备概要')
+const handleClick=(e)=>{
+  console.log(e.props.name,'eeeeeeeeeeeeeee')
+  tabsVal.value=e.props.name
+}
 const generateXY = (arr:Array<any>) => {
   const x:Array<any> = [], y:Array<any> = []
   arr.forEach((item:any) => {
@@ -256,7 +282,7 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   if (!equipmentId) return
   runTimeDataLoading.value = true
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
-  console.log("getRunTimeData", res);
+  console.log("getRunTimeData1234", res);
   runTimeDataLoading.value = false
   runTimeDataList.value = []
 
@@ -438,7 +464,9 @@ const initChart = (
                 ])
               },
             },
-            areaStyle: { normal: {} },
+            areaStyle: { 
+              normal: {},
+            },
             markLine: {
               data: markLines,
               silent: true
@@ -642,7 +670,13 @@ window.addEventListener('resize', () => getCurrentHeight())
 .panel-animation-out {
   animation: slide-out .7s ease forwards;
 }
-
+.active{
+  color: #fff;
+  background-color: #0c67ff;
+}
+.actived{
+  background-color: #e4eeff;
+}
 @keyframes slide-in {
   0% { transform: translateX(100%);}
   100% { transform: translateX(0%);}
@@ -652,9 +686,15 @@ window.addEventListener('resize', () => getCurrentHeight())
   0% { transform: translateX(0%);}
   100% { transform: translateX(100%);}
 }
-
+.el-tab-pane {
+  padding: 0 !important;
+}
+.el-tabs__item{
+  padding: 0 !important;
+}
 .tab-title-wrapper {
-  font-family: 'ArtFont';
+  // font-family: 'ArtFont';
+  font-weight: 500;
   padding: 0rem 1.4rem .4rem 2rem;
   background-image: url(./assets/tangba/itemHeader.png);
   background-size: 100% 100%;
@@ -667,6 +707,10 @@ window.addEventListener('resize', () => getCurrentHeight())
 #chartOutWrapper {
   display: flex;
   flex-direction: column;
+}
+.data-bg{
+  background-image: url(./assets/tb-home-bg.png);
+  background-size: 100% 100%;
 }
 
 
@@ -688,6 +732,12 @@ window.addEventListener('resize', () => getCurrentHeight())
   height: 0px;
   overflow: hidden;
 }
+@for $i from 1 through 12 {
+  .tb-home-#{$i} {
+    background-image: url(./assets/tb-home-#{$i}.png);
+    background-size:100% 100%;
+  }
+}
 </style>
 <style>
 .tangba-chart-wrapper {
@@ -697,4 +747,5 @@ window.addEventListener('resize', () => getCurrentHeight())
   border-radius: 5px;
   border: 1px solid #25252540;
 }
+
 </style>
