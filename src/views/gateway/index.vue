@@ -808,7 +808,7 @@ const initChinaMap = async () => {
       baseOption: {
         geo: {
           zoom: 1.2,
-          aspectScale: 1, //长宽比
+          aspectScale: 1.2, //长宽比
           map: 'chongqing',
           roam: false,
           itemStyle: {
@@ -822,11 +822,11 @@ const initChinaMap = async () => {
               colorStops: [
                 {
                   offset: 0,
-                  color: '#004647' // 0% 处的颜色// 0% 处的颜色
+                  color: '#17895d' // 0% 处的颜色// 0% 处的颜色
                 },
                 {
                   offset: 1,
-                  color: '#004647' // 100% 处的颜色 // 100% 处的颜色
+                  color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
                 }
               ],
               globalCoord: false // 缺省为 false
@@ -844,11 +844,11 @@ const initChinaMap = async () => {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#004647' // 0% 处的颜色// 0% 处的颜色
+                    color: '#17895d' // 0% 处的颜色// 0% 处的颜色
                   },
                   {
                     offset: 1,
-                    color: '#004647' // 100% 处的颜色 // 100% 处的颜色
+                    color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
                   }
                 ],
                 globalCoord: false // 缺省为 false
@@ -870,6 +870,7 @@ const initChinaMap = async () => {
           formatter: function (params) {
             const mapData: any = nameDataMap[params.name]
             console.log('mapData', mapData)
+            if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
             let str = ``
             let div=`
             ${
@@ -918,7 +919,7 @@ const initChinaMap = async () => {
             map: 'chongqing',
             zoom: 1.2,
             roam: false,
-            aspectScale: 1,
+            aspectScale: 1.2,
             itemStyle: {
               borderColor: '#05d6f8',
               borderWidth: 2,
@@ -930,11 +931,11 @@ const initChinaMap = async () => {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#17895d' // 0% 处的颜色// 0% 处的颜色
+                    color: '#004647' // 0% 处的颜色// 0% 处的颜色
                   },
                   {
                     offset: 1,
-                    color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
+                    color: '#004647' // 100% 处的颜色 // 100% 处的颜色
                   }
                 ],
                 globalCoord: false // 缺省为 false
@@ -952,11 +953,11 @@ const initChinaMap = async () => {
                   colorStops: [
                     {
                       offset: 0,
-                      color: '#17895d' // 0% 处的颜色// 0% 处的颜色
+                      color: '#004647' // 0% 处的颜色// 0% 处的颜色
                     },
                     {
                       offset: 1,
-                      color: '#17895d' // 100% 处的颜色 // 100% 处的颜色
+                      color: '#004647' // 100% 处的颜色 // 100% 处的颜色
                     }
                   ],
                   globalCoord: false // 缺省为 false
@@ -972,6 +973,14 @@ const initChinaMap = async () => {
               fontSize: '11',
               emphasis: {
                 color: '#ffffff'
+              },
+              formatter: (item) => {
+                const _name = item.name.replace("区", "").replace("自治县", "").replace("县", "")
+                const labelMap = [
+                  "九龙坡",
+                  "大渡口",
+                ]
+                return labelMap.indexOf(_name) !== -1 ? _name.split("").join('\n') : _name
               }
             },
             data: highlightList
