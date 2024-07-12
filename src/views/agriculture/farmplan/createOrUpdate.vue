@@ -128,6 +128,7 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
 }
 
 
+
 //工作人员的选择
 const selectSysUserRef = ref()
 const openSelectSysUser = (id: string) => {
@@ -226,7 +227,11 @@ const getFormInfo = async () => {
 const getTreeOptions = async () => {
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 }
+const Updisabled = ref<boolean>(false)
 if (route.query.id) {
+  if (route.query.type === 'view'){
+    Updisabled.value = true
+  }
   getFormInfo()
 } else {
   getTreeOptions()
@@ -244,6 +249,7 @@ const activeName = ref<any>(['1', '2'])
         <div class="flex">
           <el-button
             type="success"
+            v-show="!Updisabled"
             :icon="TopRight"
             plain
             @click="submitForm"
@@ -252,6 +258,7 @@ const activeName = ref<any>(['1', '2'])
           <el-button
             type="danger"
             :icon="Refresh"
+            v-show="!Updisabled"
             plain
             @click="resetForm()"
           >清空
@@ -268,6 +275,7 @@ const activeName = ref<any>(['1', '2'])
           <el-button
             type="primary"
             :icon="FolderChecked"
+            v-show="!Updisabled"
             plain
             @click="localSave()"
           >
@@ -281,6 +289,7 @@ const activeName = ref<any>(['1', '2'])
             ref="formRef"
             :model="formData"
             :rules="formRules"
+            :disabled="Updisabled"
             label-width="100px"
             v-loading="formLoading"
             class="grid gap-3 p-4"
