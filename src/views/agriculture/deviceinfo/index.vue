@@ -50,24 +50,6 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="终端" prop="dtu">
-          <el-input
-            v-model="queryParams.dtu"
-            placeholder="请输入终端"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="通道" prop="channelId">
-          <el-input
-            v-model="queryParams.channelId"
-            placeholder="请输入通道"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
       <!--      <el-form-item label="所属基地" prop="belongPark">
               <el-input
                 v-model="queryParams.belongPark"

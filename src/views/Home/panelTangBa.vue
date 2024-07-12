@@ -18,11 +18,11 @@
     <el-tabs v-model="activeTab" class="px-2">
       <el-tab-pane label="设备概要" name="设备概要">
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
-          <div class="tab-title-wrapper">实时数据</div>
+          <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
           <div
             class="grid grid-cols-3 gap-2 py-2 min-h-[100px]"
             v-loading="runTimeDataLoading"
-            v-show="curDeviceKind === '103' || curDeviceKind === '104'"
+            v-show="!runTimeDataLoading && runTimeDataList.length > 0"
           >
             <div
               class="bg-slate-200 p-3 py-2 flex justify-between items-center"
