@@ -204,7 +204,7 @@
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
     <div class="village-Bg w-full h-450px mb-20px">
@@ -534,13 +534,17 @@ const mainNum = ref(0)
 const dataList = ref([])
 const county = ref('') //区县参数
 const options = ref([])
+
+const mapDataList = ref<Array<any>>([])
 //鼠标移入事件
 const mouseenterChange = async (val) => {
   mainNum.value = val
   let res = await distinct({ type: val })
   console.log(res, '基础数据')
   dataList.value = res
+  if (val === '1') mapDataList.value = res
 }
+
 //时间线
 const timeNum = ref(1)
 const industry = ref()
@@ -784,19 +788,21 @@ const getselectMap = (val) => {
 
 const nameDataMap = {}
 const initChinaMap = async () => {
+  await mouseenterChange('1')
   const res:any = await getSelectedHelp('3')
-  
-  const highlightList = res.map(item => ({
-    name: item.county, value: 2000, selected: false
+  const highlightList = mapDataList.value.map(item => ({
+    name: item.name, value: 2000, selected: false
   }))
-  
+
+  console.log("vvv", highlightList)
+
   echarts.registerMap('chongqing', jsonData)
   const nameArr = jsonData.features.map((item) => item.properties.name)
 
   nameArr.forEach((item) => {
     selectMap({ county: item }).then((res) => {
       console.log("ddss", res);
-      
+
       nameDataMap[item] = res
     })
   })
@@ -878,7 +884,7 @@ const initChinaMap = async () => {
                 return `
                 <div class='mt--5px'>
                       <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" style="color: white;">${item.village}</a></div>  
+                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" style="color: white;">${item.village}</a></div>
                     </div>
                 `
               }) : ''
@@ -909,9 +915,9 @@ const initChinaMap = async () => {
         dataRange: {
           x: '-1000px',
           y: '-1000px',
-          splitList: [
-            { start: 1, end: 1, label: '城口县', color: '' }
-          ]
+          // splitList: [
+          //   { start: 1, end: 1, label: '城口县', color: '' }
+          // ]
         },
         series: [
           {
