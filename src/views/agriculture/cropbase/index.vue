@@ -141,8 +141,8 @@
       </el-table-column>
       <el-table-column label="采收状态" align="center" prop="recoveryNo">
         <template #default="scope">
-          <span v-if="scope.row.recoveryNo">已采收</span>
-          <span v-if="!scope.row.recoveryNo">未采收</span>
+          <el-tag type="success" v-if="scope.row.recoveryNo">已采收</el-tag>
+          <el-tag v-if="!scope.row.recoveryNo">未采收</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center" prop="cropDesc" width="240"/>
@@ -220,14 +220,13 @@
       <h3>生命周期-溯源</h3>
     </template>
     <template #default>
-      <el-timeline style="max-width: 600px">
-        <el-timeline-item
-          v-for="item, index in formData"
-          :key="index"
-          :timestamp="formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') "
-          placement="top"
-        >
-          <el-card>
+      <div class="relative">
+        <div v-if='formData.length>0' class="flex absolute top--30px left-50px flex-col items-center">
+          <div class="flex items-center"> <div class="w-15px h-15px rounded-full bg-[#089df7]"></div> <div class="ml-30px">{{formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss')}}</div> </div>
+          <div v-if='formData.length>1' class="w-2px h-240px bg-[#089df7] ml--185px"></div>
+          <div class="flex items-center" v-if='formData.length>1'><div class="w-15px h-15px rounded-full bg-[#089df7]"></div> <div  class="ml-30px">{{formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss')}}</div></div>
+        </div>
+        <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
             <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
             <p>品种：
               <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
@@ -235,8 +234,9 @@
             <p>作物名称：{{ item.cropName }}</p>
             <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>
-        </el-timeline-item>
-      </el-timeline>
+      </div>
+       
+          
     </template>
     <template #footer>
       <div style="flex: auto">
@@ -419,3 +419,5 @@ onActivated(async () => {
   await getList()
 })
 </script>
+<style lang="scss" scoped>
+</style>
