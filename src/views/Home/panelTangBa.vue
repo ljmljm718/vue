@@ -18,7 +18,7 @@
     <el-tabs v-model="activeTab" class="px-2 w-100%" @tab-click='handleClick'>
       <el-tab-pane name='设备概要' >
         <template #label>
-          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">设备概要</div>
+          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">设备概要</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
@@ -103,7 +103,7 @@
       </el-tab-pane>
       <el-tab-pane  name="报警">
         <template #label>
-          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">报警</div>
+          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">报警</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
@@ -164,7 +164,7 @@
       </el-tab-pane>
       <el-tab-pane name="设备属性" >
         <template #label>
-          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[180px] h-40px rounded text-center leading-40px`">设备属性</div>
+          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[130px] h-40px rounded text-center leading-40px`">设备属性</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
@@ -672,10 +672,19 @@ window.addEventListener('resize', () => getCurrentHeight())
 }
 .active{
   color: #fff;
+  padding: 0 !important;
   background-color: #0c67ff;
 }
 .actived{
   background-color: #e4eeff;
+  padding: 0 !important;
+}
+.el-tab > .el-tabs__item-label div { /* 注意：这里可能需要调整选择器以匹配实际的 DOM 结构 */  
+  padding: 0 !important; /* 使用 !important 来确保覆盖默认的样式，但请谨慎使用 */  
+  /* 其他样式调整 */  
+} 
+#tab-设备概要 .el-tabs_item .is-top .is-active{
+  padding-right:0 !important;
 }
 @keyframes slide-in {
   0% { transform: translateX(100%);}
