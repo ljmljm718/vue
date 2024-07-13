@@ -790,7 +790,7 @@ const nameDataMap = {}
 const initChinaMap = async () => {
   await mouseenterChange('1')
   const res:any = await getSelectedHelp('3')
-  const highlightList = mapDataList.value.map(item => ({
+  let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
 
@@ -801,11 +801,22 @@ const initChinaMap = async () => {
 
   nameArr.forEach((item) => {
     selectMap({ county: item }).then((res) => {
-      console.log("ddss", res);
-
       nameDataMap[item] = res
     })
   })
+
+  const fixData = () => {
+    highlightList = highlightList.map(_item => {
+      const _parseData = JSON.parse(JSON.stringify(_item))
+      nameArr.forEach(_name => {
+        const text1 = _name.substring(0, 2)
+        const text2 = _parseData.name.substring(0, 2)
+        if (text1 === text2) _parseData.name = _name
+      })
+      return _parseData
+    })
+  }
+  fixData()
 
   const chartDom = document.getElementById('mainMap')
   const myChart = echarts.init(chartDom)
@@ -838,9 +849,9 @@ const initChinaMap = async () => {
               globalCoord: false // 缺省为 false
             },
             shadowColor: '#0938b6',
-            shadowOffsetX: -10,
-            shadowOffsetY: -10,
-            shadowBlur: 19,
+            shadowOffsetX: -4,
+            shadowOffsetY: -4,
+            shadowBlur: 9,
             emphasis: {
               areaColor: {
                 type: 'radial',
@@ -915,9 +926,9 @@ const initChinaMap = async () => {
         dataRange: {
           x: '-1000px',
           y: '-1000px',
-          // splitList: [
-          //   { start: 1, end: 1, label: '城口县', color: '' }
-          // ]
+          splitList: [
+            { start: 1, end: 1, label: '城口县', color: '#17885e' }
+          ]
         },
         series: [
           {
@@ -947,9 +958,9 @@ const initChinaMap = async () => {
                 globalCoord: false // 缺省为 false
               },
               shadowColor: '#0938b6',
-              shadowOffsetX: -10,
-              shadowOffsetY: -10,
-              shadowBlur: 12,
+              shadowOffsetX: -4,
+              shadowOffsetY: -4,
+              shadowBlur: 9,
               emphasis: {
                 areaColor: {
                   type: 'radial',
@@ -959,11 +970,11 @@ const initChinaMap = async () => {
                   colorStops: [
                     {
                       offset: 0,
-                      color: '#004647' // 0% 处的颜色// 0% 处的颜色
+                      color: '#0ca556' // 0% 处的颜色// 0% 处的颜色
                     },
                     {
                       offset: 1,
-                      color: '#004647' // 100% 处的颜色 // 100% 处的颜色
+                      color: '#0ca556' // 100% 处的颜色 // 100% 处的颜色
                     }
                   ],
                   globalCoord: false // 缺省为 false
@@ -981,12 +992,15 @@ const initChinaMap = async () => {
                 color: '#ffffff'
               },
               formatter: (item) => {
-                const _name = item.name.replace("区", "").replace("自治县", "").replace("县", "")
+                const _name = item.name // .replace("区", "").replace("自治县", "").replace("县", "")
                 const labelMap = [
-                  "九龙坡",
-                  "大渡口",
+                  "九龙坡区",
+                  "大渡口区",
+                  "渝中区",
+                  "璧山区"
                 ]
-                return labelMap.indexOf(_name) !== -1 ? _name.split("").join('\n') : _name
+
+                return labelMap.indexOf(_name) !== -1 ? _name.replace("区", "").replace("自治县", "").replace("县", "").split("").join('\n') : _name
               }
             },
             data: highlightList
