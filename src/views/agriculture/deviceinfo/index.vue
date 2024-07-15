@@ -259,7 +259,7 @@
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
-              path: '/internetMonitor/deviceData/equipment-data-rule',
+              path: '/internetMonitor/interface/equipment-data-rule',
               query: {
                 dtuId:scope.row.deviceCode
               }
