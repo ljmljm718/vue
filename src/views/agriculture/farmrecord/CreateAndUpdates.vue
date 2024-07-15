@@ -303,6 +303,7 @@ import {EditFrame,addFormStorage,addOrUpdateFormStorage,getFormStorage,deleteFor
 import { useTagsViewStore } from "@/store/modules/tagsView";
 import {useUserStore} from "@/store/modules/user";
 import { createA, updatestate } from '@/api/bigscreenMingYue'
+import {UserVO} from "@/api/login/types";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -452,6 +453,7 @@ const handleSelectSysUserChange = (order: UserVO) => {
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
+  debugger
   dialogTitle.value = t('action.' + type)
   formType.value = type
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
@@ -565,16 +567,18 @@ if (!formData.value.id) loadData()
 //起步函数
 const getFrom = async () =>{
   resetForm();
+  debugger
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   formData.value.recordTime= new Date().toLocaleString(route.query.recordTime);
   if(route.query.id && route.query.type !== 'create')  {
     formData.value = await FarmRecordApi.getFarmRecord (route.query.id as any);
+    formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
     loadData(route.query.id);
   }
   if (route.query && route.query.type === 'create') {
     formData.value = { ...route.query }
     console.log("formData", formData.value);
-    
+
     formData.value.recordArea = route.query.area
     formData.value.recordTime = new Date().toLocaleString(route.query.recordTime)
   }

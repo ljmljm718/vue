@@ -194,6 +194,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import {ElMessage} from "element-plus";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import PlanInfoPopup from "@/views/agriculture/farmtask/PlanInfoPopup.vue";
 import {
   EditFrame,
   addFormStorage,
