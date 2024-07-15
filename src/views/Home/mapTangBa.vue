@@ -64,7 +64,12 @@ const setMapZoom = (zoom: number = 13) => {
 }
 
 const openInfoWindow = (info:string, location:Array<any>) => {
+  if (Array.isArray(location)) {
+    const [val1, val2] = location
+    if (!val1 || !val2) return
+  }
   if (!info || !location) return
+  
   // @ts-ignore
   const infoWindow = new AMap.InfoWindow({
     isCustom: true,
