@@ -1,7 +1,8 @@
 <template>
   <div class="w-full h-100vh main" style="overflow-y: auto">
-    <div class="w-full topBg relative">
-      <div class="flex py-[15px] items-center">
+    <div class="w-full topBg relative flex justify-center">
+      <div class="container">
+        <div class="flex py-[15px] items-center">
         <div class="logo ml-[30px]"></div>
         <div class="color-[#fff] text-2xl">鲁渝协作乡村振兴示范村数字化赋能工程</div>
       </div>
@@ -24,6 +25,8 @@
           <img src="./assets/top-bg.png" class="w-300px h-300px" />
         </div>
       </div>
+      </div>
+      
     </div>
     <div class="w-100% flex justify-center center-bg">
       <div
@@ -146,18 +149,19 @@
       </div>
     </div>
 
-    <div class="h-[500px] w-full bg-[#fff]">
-      <div class="text-center text-3xl mt-50px">精准帮扶建设情况</div>
+    <div class="h-[700px] w-100% flex justify-center  bg-[#fff]">
+      <div class='container'>
+        <div class="text-center text-3xl mt-50px">精准帮扶建设情况</div>
       <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
         >基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数字挖掘、边缘计算、GIS遥感监测等多种技术手段融合显示精准帮扶，解决现有农业问题</div
       >
-      <div class="flex justify-evenly">
+      <div class="flex justify-evenly" style="max-height:700px; min-height:400px;">
         <div class="container flex space-x-4 justify-center">
           <div class="w-40%">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]"
               >对口帮扶地域</div
             >
-            <div class="table-wrapper h-500px">
+            <div class="table-wrapper " style="max-height:500px; min-height:200px;">
               <div class="table-header-row">
                 <div
                   class="table-header-cell"
@@ -177,11 +181,24 @@
                   >{{ item[column.key] }}</div
                 >
               </div>
+                <el-pagination
+                v-model:currentPage="countyParams.pgeNo"
+                v-model:page-size="countyParams.pageSize"
+                :page-sizes="[1, 5, 10, 20]"
+                :small="small"
+                :disabled="disabled"
+                :background="background"
+                layout="->,total, sizes, prev, pager, next, jumper"
+                :total="total1"
+                @size-change="handleSizeChange2"
+                @current-change="handleCurrentChange2"
+              />
             </div>
+            
           </div>
           <div class="w-40%">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]">帮扶产业</div>
-            <div class="table-wrapper">
+            <div class="table-wrapper " style="max-height:500px; min-height:300px;">
               <div class="table-header-row">
                 <div
                   class="table-header-cell"
@@ -201,21 +218,37 @@
                   >{{ item[column.key] }}</div
                 >
               </div>
+              <el-pagination
+                class="mr-0"
+                v-model:currentPage="helpParams.pgeNo"
+                v-model:page-size="helpParams.pageSize"
+                :page-sizes="[1, 5, 10, 20]"
+                :small="small"
+                :disabled="disabled"
+                :background="background"
+                layout="->,total, sizes, prev, pager, next, jumper"
+                :total="total2"
+                @size-change="handleSizeChange3"
+                @current-change="handleCurrentChange3"
+              />
             </div>
           </div>
         </div>
 
       </div>
+      </div>
+      
     </div>
-    <div class="village-Bg w-full h-600px mb-20px">
-      <div>
-        <div class="text-center text-3xl mt-50px">示范村建设</div>
+    <div class="village-Bg w-full h-700px mt-20px flex justify-center">
+      <div class="container">
+        <div>
+        <div class="text-center text-3xl mt-20px">示范村建设</div>
         <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
           >数字监控全方位覆盖，多种设备及多种技术相结合的安全防范管理系统，为农业园区提供先进、快捷、行之有效的科技管理手段，加快数字新农业的发展</div
         >
       </div>
-      <div class="flex justify-evenly mt-40px">
-        <div class="flex">
+      <div class="flex justify-evenly items-center  " style="height:calc(100% - 200px)">
+        <div class="flex mt-5%">
           <div class="flex flex-col items-center">
             <div class="flex items-center" @click="tabTime(1, '2024')">
               <div
@@ -263,7 +296,7 @@
             >
           </div>
         </div>
-        <div class="table-wrapper2 bg-[#feffff] w-30%  rounded" style="max-height:400px;min-height:250px;">
+        <div class="table-wrapper2 bg-[#feffff] w-45%  rounded" style="max-height:550px;min-height:200px;">
           <div class="table-header-row">
             <div
               class="table-header-cell"
@@ -314,11 +347,27 @@
               >{{ item[column.key] }}
             </div>
           </div>
+          <el-pagination
+          class="mt-10px"
+            v-model:currentPage="params.pgeNo"
+            v-model:page-size="params.pageSize"
+            :page-sizes="[1, 5, 10, 20]"
+            :small="small"
+            :disabled="disabled"
+            :background="background"
+            layout="->,total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </div>
       </div>
+      </div>
+      
     </div>
-    <div class="mb-20px">
-      <div>
+    <div class="mb-20px w-100% flex justify-center">
+      <div class="container">
+        <div>
         <div class="text-center text-3xl mt-50px !decoration-8">精准农业SAAS平台</div>
         <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
           >农业设施监测 | 土壤监测 | 气象检测 | 水质检测 | 农田物联网检测 | 虫情灾害监测 | 智能农机
@@ -339,9 +388,12 @@
           <div><img src="./assets/SAAS-bg-fall3.png" class="w-100%" alt="" /></div>
         </div>
       </div>
+      </div>
+      
     </div>
-    <div class="py-[20px] bg-[#f7f7f7]">
-      <div>
+    <div class="py-[20px] bg-[#f7f7f7] w-100% flex justify-center">
+      <div class='container'>
+        <div>
         <div class="text-center text-3xl !decoration-8">政府政策</div>
         <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
           >关注行业新闻，助农新政策早知道</div
@@ -377,18 +429,21 @@
           </div>
         </div>
       </div>
+      </div>
+      
     </div>
-    <div class="bg-[#fff] py-20px">
-      <div>
+    <div class="bg-[#fff] w-100% flex justify-center">
+      <div class="container">
+        <div>
         <div class="text-center text-3xl !decoration-8">数字农业综合解决案例</div>
         <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
           >构建全流程的新型农业一体化管理平台，融合农业数据管理、农业数据预警显示、多维数据综合显示、农产品生产周期预测、农业气象预警、信息<br />综合利用、信息发布服务、病虫害预警、溯源系统等功能与数据为一体，提供全方位、智慧化、立体可视化的运营保障服务</div
         >
       </div>
-      <div class="w-100vw h-550px">
+      <div class="w-100% h-550px">
         <div
           class="w-100vw h-[170px]"
-          style="overflow: hidden; position: relative; display: inline-flex"
+          style=" position: relative; display: inline-flex"
         >
           <div class="target-img h-100%" ref="el" @mouseenter="targetMouse">
             <div class="num-one-1" @click="goPage2('')"></div>
@@ -413,7 +468,7 @@
         </div>
         <div
           class="w-100vw h-[170px] my-15px"
-          style="overflow: hidden; position: relative; display: inline-flex"
+          style=" position: relative; display: inline-flex"
         >
           <div class="target-img1 h-100%">
             <div class="num-two-16" @click="goPage2('')"></div>
@@ -442,7 +497,7 @@
         </div>
         <div
           class="w-100vw h-[170px]"
-          style="overflow: hidden; position: relative; display: inline-flex"
+          style=" position: relative; display: inline-flex"
         >
           <div class="target-img h-100%">
             <div
@@ -469,9 +524,12 @@
           </div>
         </div>
       </div>
+      </div>
+     
     </div>
-    <div class="bg-[#345442] py-[20px]">
-      <div class="flex justify-evenly">
+    <div class="bg-[#345442] py-[20px] w-100% flex justify-center">
+      <div class="container">
+        <div class="flex justify-evenly">
         <div>
           <div class="color-[#fff] text-lg mb-20px">成功案例</div>
           <div class="color-[#c1c1c1] tex-sm">隘口镇山银花产业数字化赋能</div>
@@ -517,31 +575,34 @@
           山东浪潮智能生产技术有限公司</div
         >
       </div>
+      </div>
+     
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, reactive, nextTick, onMounted } from 'vue'
-import { distinct, page, selectMap, filePage, selectHelp } from './api'
+import { distinct, page, selectMap, filePage, selectHelp,selectHelpPage,selectCountysPage } from './api'
 import * as echarts from 'echarts'
 import { jsonData } from './assets/chongqing'
 import { constant } from 'lodash'
 import { useRouter } from 'vue-router'
 import meassageBg from './assets/meassageBg.png'
+import { constants } from 'crypto'
 
 const router = useRouter()
-const mainNum = ref(0)
+const mainNum = ref(-1)
 const dataList = ref([])
 const county = ref('') //区县参数
 const options = ref([])
 
 const mapDataList = ref<Array<any>>([])
 //鼠标移入事件
-const mouseenterChange = async (val) => {
-  mainNum.value = val
+const mouseenterChange = async (val, flag = false) => {
+  if (!flag) mainNum.value = val
   let res = await distinct({ type: val })
   console.log(res, '基础数据')
-  dataList.value = res
+  if (!flag) dataList.value = res
   if (val === '1') mapDataList.value = res
 }
 
@@ -616,28 +677,28 @@ const leftArr = reactive({
   ]
 })
 
-const getSelectedHelp = async (type) => {
-  if (!type) return
-  const list = await selectHelp({ type })
-  console.log("对口帮扶地域" + type, list);
-  if (Array.isArray(list)) {
-    if (type === '1') leftArr.tableData1 = list.map((item, index) => ({
-      ...item,
-      index: index + 1,
-    }))
+// const getSelectedHelp = async (type) => {
+//   if (!type) return
+//   const list = await selectHelp({ type })
+//   console.log("对口帮扶地域" , list);
+//   if (Array.isArray(list)) {
+//     if (type === '1') leftArr.tableData1 = list.map((item, index) => ({
+//       ...item,
+//       index: index + 1,
+//     }))
 
-    if (type === '2') leftArr3.tableData1 = list.map((item, index) => ({
-      ...item,
-      index: index + 1,
-      city: item.village,
-      county: item.industry
-    }))
+//     if (type === '2') leftArr3.tableData1 = list.map((item, index) => ({
+//       ...item,
+//       index: index + 1,
+//       city: item.village,
+//       county: item.industry
+//     }))
 
-    if (type === '3') return list
-  }
-}
-getSelectedHelp('1')
-getSelectedHelp('2')
+//     if (type === '3') return list
+//   }
+// }
+// getSelectedHelp('1')
+// getSelectedHelp('2')
 const leftArr2 = reactive({
   tableColumns1: [
     {
@@ -698,62 +759,17 @@ const leftArr3 = reactive({
       width: '19%'
     },
     {
-      key: 'city',
+      key: 'village',
       label: '帮扶基地',
       width: '40%'
     },
     {
-      key: 'county',
+      key: 'industry',
       label: '产业',
       width: '40%'
     }
   ],
   tableData1: [
-    {
-      index: '1',
-      city: '开州区竹溪县灵泉村好耍主席园',
-      county: '柑橘'
-    },
-    {
-      index: '2',
-      city: '万州区长滩镇龙泉社区四鼻鲤鱼养殖中心',
-      county: '鲤鱼'
-    },
-    {
-      index: '3',
-      city: '武隆区芙蓉街道堰塘村田园综合体',
-      county: '稻田'
-    },
-    {
-      index: '4',
-      city: '石柱县中益乡华溪村中药材基地',
-      county: '中药'
-    },
-    {
-      index: '5',
-      city: '彭水县润溪乡樱桃井村布福娜',
-      county: '樱桃'
-    },
-    {
-      index: '6',
-      city: '巫山县竹贤乡下庄村蔬菜大棚基地',
-      county: '蔬菜'
-    },
-    {
-      index: '7',
-      city: '云阳县鱼泉镇木瓜村李子园',
-      county: '李子'
-    },
-    {
-      index: '8',
-      city: '奉节县永乐镇大坝村柑橘园',
-      county: '感觉'
-    },
-    {
-      index: '9',
-      city: '巫溪县通城镇龙池村水果园',
-      county: '苹果'
-    }
   ]
 })
 //获取数据
@@ -788,8 +804,8 @@ const getselectMap = (val) => {
 
 const nameDataMap = {}
 const initChinaMap = async () => {
-  await mouseenterChange('1')
-  const res:any = await getSelectedHelp('3')
+  await mouseenterChange('1', true)
+  // const res:any = await getSelectedHelp('3')
   let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
@@ -895,7 +911,7 @@ const initChinaMap = async () => {
                 return `
                 <div class='mt--5px'>
                       <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" style="color: white;">${item.village}</a></div>
+                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a  href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
                     </div>
                 `
               }) : ''
@@ -1019,8 +1035,18 @@ onMounted(() => {
   initChinaMap()
 })
 //获取区县
-const getPage = async (years) => {
-  let res = await page({ pageNo: 1, pageSize: 100, years })
+const total=ref(0)
+const total1=ref(0)
+const total2=ref(0)
+const params=reactive({
+  pageNo:1,
+  pageSize:10,
+  years:'2024'
+})
+const getPage = async () => {
+  let res = await page(params)
+  console.log(res,'区县')
+  total.value=res.total
   leftArr2.tableData1 = res.list
   let list = []
   let list2 = []
@@ -1030,23 +1056,97 @@ const getPage = async (years) => {
     list2.push(item.form)
     list3.push(item.industry)
   })
-  console.log(list2, 'list22')
-  console.log(list3, 'list33333')
   options.value = Array.from(new Set(list))
   from.value = Array.from(new Set(list2)).length
   industry.value = Array.from(new Set(list3)).length
 }
-getPage('2024')
+getPage()
 const tabTime = (val, years) => {
   timeNum.value = val
-  getPage(years)
+  params.years=years
+  getPage()
+}
+
+//示范村建设分页
+const handleSizeChange = (val: number) => {
+  console.log(`${val} items per page`)
+  params.pageSize=val
+  getPage()
+
+}
+const handleCurrentChange = (val: number) => {
+  console.log(`当前是第几页: ${val}`)
+  params.pageNo=val
+  getPage()
+
+}
+//对口帮扶地域
+const countyParams=reactive({
+  pageNo:1,
+  pageSize:10
+})
+const getSelectCountysPage=async ()=>{
+  const res=await selectCountysPage(countyParams)
+  console.log(res,'帮扶区县')
+  total1.value=res.total
+  if (Array.isArray(res.list)) {
+    leftArr.tableData1=res.list.map((item,index)=>{
+      return {
+        ...item,
+        index:index+1
+      }
+    })
+  }
+}
+getSelectCountysPage()
+const handleSizeChange2 = (val: number) => {
+  console.log(`${val} items per page`)
+  countyParams.pageSize=val
+  getSelectCountysPage()
+
+}
+const handleCurrentChange2 = (val: number) => {
+  console.log(`当前是第几页: ${val}`)
+  countyParams.pageNo=val
+  getSelectCountysPage()
+
+}
+//帮扶产业
+const helpParams=reactive({
+  pageNo:1,
+  pageSize:10
+})
+const getSelectHelpPage=async ()=>{
+  const res=await selectHelpPage(helpParams)
+  console.log(res,'帮扶产业')
+  total2.value=res.total
+  if(Array.isArray(res.list)){
+    leftArr3.tableData1=res.list.map((item,index)=>{
+      return {
+        ...item,
+        index:index+1
+      }
+    })
+  }
+}
+getSelectHelpPage()
+const handleSizeChange3 = (val: number) => {
+  console.log(`${val} items per page`)
+  helpParams.pageSize=val
+  getSelectHelpPage()
+
+}
+const handleCurrentChange3 = (val: number) => {
+  console.log(`当前是第几页: ${val}`)
+  helpParams.pageNo=val
+  getSelectHelpPage()
+
 }
 //下拉框切换
 const selectChange = async (e) => {
   console.log(e, 'eeeeeeeeeeeee')
   county.value = e
   let res = await page({ pageNo: 1, pageSize: 100, county: e == '全部' ? '' : e })
-  console.log(res, 'rrrrrrrrrrer')
   leftArr2.tableData1 = res.list
 }
 const goPage = (url) => {
@@ -1128,9 +1228,7 @@ const goPage3 = (url) => {
 }
 .table-wrapper {
   width: 100%;
-  height: calc(500px - 10rem);
   position: relative;
-  overflow: auto;
   background-color: #f3fcf7;
   font-size: 0.9rem;
   .table-header-row {
@@ -1149,7 +1247,6 @@ const goPage3 = (url) => {
     margin-top: 10px;
     width: 100%;
     background-color: #f3fcf7;
-
     display: flex;
     align-items: center;
     padding: 8px 0;
