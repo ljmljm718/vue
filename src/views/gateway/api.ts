@@ -35,4 +35,18 @@ export const selectHelp = async (params) => {
     params
   })
 }
+//帮扶产业
+export const selectHelpPage = async (params) => {
+  return await request.get({
+    url: '/agri/user-table/select-help-page',
+    params
+  })
+}
+//对口帮扶地区
+export const selectCountysPage = async (params) => {
+  return await request.get({
+    url: '/agri/user-table/select-countys-page',
+    params
+  })
+}
 

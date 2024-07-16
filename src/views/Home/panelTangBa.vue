@@ -11,7 +11,7 @@
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>
         </div>
-        <div class="text-sm">{{ time }}</div>
+        <div class="text-sm my-10px color-[#9b9b9b]">{{ time }}</div>
       </div>
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
@@ -34,7 +34,7 @@
             >
               <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
               <div v-show="item.monitoringType=='湿度'" :class="`w-2rem h-2rem tb-home-2 `"></div>
-              <div v-show="item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
+              <div v-show="item.monitoringType=='PH值' || item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
               <div v-show="item.monitoringType=='EC值'" :class="`w-2rem h-2rem tb-home-4 `"></div>
               <div v-show="item.monitoringType=='光照'" :class="`w-2rem h-2rem tb-home-5 `"></div>
               <div v-show="item.monitoringType=='雨量'" :class="`w-2rem h-2rem tb-home-6 `"></div>
@@ -44,6 +44,21 @@
               <div v-show="item.monitoringType=='风向'" :class="`w-2rem h-2rem tb-home-10 `"></div>
               <div v-show="item.monitoringType=='风速'" :class="`w-2rem h-2rem tb-home-11 `"></div>
               <div v-show="item.monitoringType=='大气压力'" :class="`w-2rem h-2rem tb-home-12 `"></div>
+              <div v-show="item.monitoringType=='虫害种类'" :class="`w-2rem h-2rem tb-home-13 `"></div>
+              <div v-show="item.monitoringType=='虫害数量'" :class="`w-2rem h-2rem tb-home-14 `"></div>
+              <div v-show="item.monitoringType=='TDS'" :class="`w-2rem h-2rem tb-home-15 `"></div>
+              <div v-show="item.monitoringType=='浊度'" :class="`w-2rem h-2rem tb-home-16 `"></div>
+              <div v-show="item.monitoringType=='溶解氧饱和度'" :class="`w-2rem h-2rem tb-home-17 `"></div>
+              <div v-show="item.monitoringType=='溶解氧浓度'" :class="`w-2rem h-2rem tb-home-18 `"></div>
+              <div v-show="item.monitoringType=='余氯浓度'" :class="`w-2rem h-2rem tb-home-19 `"></div>
+              <div v-show="item.monitoringType=='ORP'" :class="`w-2rem h-2rem tb-home-20 `"></div>
+              <div v-show="item.monitoringType=='电导率'" :class="`w-2rem h-2rem tb-home-21 `"></div>
+              <div v-show="item.monitoringType=='盐度'" :class="`w-2rem h-2rem tb-home-22 `"></div>
+              <div v-show="item.monitoringType=='总辐射'" :class="`w-2rem h-2rem tb-home-23 `"></div>
+              <div v-show="item.monitoringType=='当前雨量'" :class="`w-2rem h-2rem tb-home-24 `"></div>
+              <div v-show="item.monitoringType=='风力'" :class="`w-2rem h-2rem tb-home-25 `"></div>
+              <div v-show="item.monitoringType=='空气温度'" :class="`w-2rem h-2rem tb-home-26 `"></div>
+              <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div>
               <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -594,7 +609,7 @@ const getDeviceInfoData = async (item) => {
     getMonitorVideo(id)
     getMonitorWarnList(id)
   } else {
-    item.deviceCode && getWarnDataList(item.deviceCode)
+    item.deviceCode && getWarnDataList(item.id)
   }
 }
 
@@ -741,7 +756,7 @@ window.addEventListener('resize', () => getCurrentHeight())
   height: 0px;
   overflow: hidden;
 }
-@for $i from 1 through 12 {
+@for $i from 1 through 27 {
   .tb-home-#{$i} {
     background-image: url(./assets/tb-home-#{$i}.png);
     background-size:100% 100%;
