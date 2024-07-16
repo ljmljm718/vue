@@ -78,16 +78,18 @@ const envVal = ref([])
 const leftCurDeviceCode1 = ref(0);
 const leftCurDeviceCode2 = ref(0);
 const leftTabSelected = ref('湿度')
-
+const envLabel = ref('温度')
 const getGetDeviceDataYouEnvironment = async (id) => {
   leftCurDeviceCode1.value = id;
   // leftCurDeviceCode2.value = belongPlot;
   const res = await environmentalDataHomePageA(id)
-  console.log("数据1", res)
+  console.log("数据1 环境监测", res)
   envVal.value =res;
+  envLabel.value=res[0].monitoringType
   console.log(leftTabSelected.value,id,'jiegoufuhzi')
+
   let id2=id.id
-  await initChart1({typeName:leftTabSelected.value,id:id2})
+  await initChart1({typeName:res[0].monitoringType,id:id2})
 }
 
 // 左下角设备监控
@@ -334,7 +336,6 @@ const handleEnvSelectorChange = (val) => {
   getGetDeviceDataYouEnvironment({id:val.target.value})
 }
 
-const envLabel = ref('温度')
 
 const tableColumns = ref([
   {
@@ -566,7 +567,12 @@ const leftIconMap = {
   "风速": 5, //风速
   "气压": 6, //气压
   "雨量": 7, //降雨量
-  "风向": 8 //风向
+  "风向": 8, //风向
+  "空气温度":1,//空气温度
+  "空气湿度":2,//空气湿度
+  "大气压力":6,//大气压力
+  "光照强度":3,//光照强度
+  "PM2.5/101":9,//PM2.5/101
 }
 
 const leftUnitMap = {
@@ -577,7 +583,12 @@ const leftUnitMap = {
   "风速": 'm/s', //风速
   "气压": 'hPa', //气压
   "雨量": 'mm', //降雨量
-  "风向": '' //风向
+  "风向": '', //风向
+  "空气温度":'℃',//空气温度
+  "空气湿度":'%',//空气湿度
+  "大气压力":'hPa',//大气压力
+  "光照强度":'Lux',//光照强度
+  "PM2.5/101":'',//PM2.5/101
 }
 
 const leftLabelMap = {
@@ -675,9 +686,9 @@ const rightUnitMap = {
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ leftUnitMap[item.monitoringType] }}</span>
+                    <span class="unit">{{item.yyUnit }}</span>
                   </div>
-                  <div class="label-wrapper">{{ leftLabelMap[item.monitoringType] }}</div>
+                  <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
                 <div v-show="leftUnitMap[item.monitoringType]" :class="btnIndex==index? 'check-btn2':'check-btn'" @click="getChart(item.monitoringType,index)">
                   查看
