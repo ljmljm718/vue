@@ -21,6 +21,11 @@ export const CategoryManagementApi = {
     return await request.get({ url: `/agriculture/category-management/page`, params })
   },
 
+  // 查询未删除的且符合条件的所有品类管理
+  getAllCategoryManagement: async (params: any) => {
+    return await request.get({ url: `/agriculture/category-management/getAll`, params })
+  },
+
   // 查询品类管理详情
   getCategoryManagement: async (id: number) => {
     return await request.get({ url: `/agriculture/category-management/get?id=` + id })

@@ -26,79 +26,61 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="图片" prop="images">
-        <el-input
-          v-model="queryParams.images"
-          placeholder="请输入图片"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="品类ID" prop="categoryId">
-        <el-input
-          v-model="queryParams.categoryId"
-          placeholder="请输入品类ID"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="品种来源" prop="categorySource">
-        <el-input
-          v-model="queryParams.categorySource"
-          placeholder="请输入品种来源"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="品种特征" prop="categoryStigma">
-        <el-input
-          v-model="queryParams.categoryStigma"
-          placeholder="请输入品种特征"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="分布地区" prop="areaDistribution">
-        <el-input
-          v-model="queryParams.areaDistribution"
-          placeholder="请输入分布地区"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="简介" prop="briefIntroduction">
-        <el-input
-          v-model="queryParams.briefIntroduction"
-          placeholder="请输入简介"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="启用停用" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择启用停用"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
+        <el-select v-model="queryParams.categoryId" clearable placeholder="请选择品类" class="!w-240px">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="备注1" prop="remark2">
-        <el-input
-          v-model="queryParams.remark2"
-          placeholder="请输入备注1"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="品种来源" prop="categorySource">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.categorySource"-->
+      <!--          placeholder="请输入品种来源"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="品种特征" prop="categoryStigma">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.categoryStigma"-->
+      <!--          placeholder="请输入品种特征"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="分布地区" prop="areaDistribution">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.areaDistribution"-->
+      <!--          placeholder="请输入分布地区"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="简介" prop="briefIntroduction">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.briefIntroduction"-->
+      <!--          placeholder="请输入简介"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="是否启用" prop="status">-->
+      <!--        <el-select-->
+      <!--          v-model="queryParams.status"-->
+      <!--          placeholder="请选择启用停用"-->
+      <!--          clearable-->
+      <!--          class="!w-240px"-->
+      <!--        >-->
+      <!--          <el-option label="请选择字典生成" value="" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -111,43 +93,73 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:variety-management:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:variety-management:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
         </el-button>
+
       </el-form-item>
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:variety-management:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:variety-management:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="品种名称" align="center" prop="varietyName" />
-      <el-table-column label="品种编码" align="center" prop="varietyCode" />
-      <el-table-column label="图片" align="center" prop="images" />
-      <el-table-column label="品类ID" align="center" prop="categoryId" />
-      <el-table-column label="品种来源" align="center" prop="categorySource" />
-      <el-table-column label="品种特征" align="center" prop="categoryStigma" />
-      <el-table-column label="分布地区" align="center" prop="areaDistribution" />
-      <el-table-column label="简介" align="center" prop="briefIntroduction" />
-      <el-table-column label="启用停用" align="center" prop="status" />
-      <el-table-column label="备注1" align="center" prop="remark2" />
+      <!--      <el-table-column label="主键" align="center" prop="id"/>-->
+      <el-table-column label="品种名称" align="center" prop="varietyName"/>
+      <el-table-column label="品类ID" align="center" prop="categoryId"/>
+      <el-table-column label="品类名称" align="center" prop="categoryName"/>
+      <el-table-column label="品种编码" align="center" prop="varietyCode"/>
+      <el-table-column label="图片" align="center" prop="images">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.images"
+            :preview-src-list="[row.images]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="品种来源" align="center" prop="categorySource"/>
+      <el-table-column label="品种特征" align="center" prop="categoryStigma"/>
+      <el-table-column label="分布地区" align="center" prop="areaDistribution"/>
+      <el-table-column label="简介" align="center" prop="briefIntroduction"/>
+      <el-table-column label="启用停用" align="center" prop="status">
+        <template #default="{ row }">
+          <span v-if="row.status == '1'">启用</span>
+          <span v-if="row.status == '2'">停用</span>
+        </template>
+      </el-table-column>
+      <!--      <el-table-column label="备注1" align="center" prop="remark2" />-->
       <el-table-column
         label="创建时间"
         align="center"
@@ -186,23 +198,25 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <VarietyManagementForm ref="formRef" @success="getList" />
+  <VarietyManagementForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
+import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
 import VarietyManagementForm from './VarietyManagementForm.vue'
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 品种管理 列表 */
-defineOptions({ name: 'VarietyManagement' })
+defineOptions({name: 'VarietyManagement'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<VarietyManagementVO[]>([]) // 列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -219,6 +233,7 @@ const queryParams = reactive({
   remark2: undefined,
   createTime: []
 })
+const CategoryManagementQueryParams = reactive({})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
@@ -226,9 +241,11 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
+    listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list
     total.value = data.total
+    console.log(listCategoryManagement.value)
   } finally {
     loading.value = false
   }
@@ -262,7 +279,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

@@ -7,6 +7,9 @@
       label-width="100px"
       v-loading="formLoading"
     >
+      <el-form-item label="品类ID" prop="categoryId">
+        <el-input v-model="formData.categoryId" placeholder="请输入品类ID" />
+      </el-form-item>
       <el-form-item label="品种名称" prop="varietyName">
         <el-input v-model="formData.varietyName" placeholder="请输入品种名称" />
       </el-form-item>
@@ -14,31 +17,27 @@
         <el-input v-model="formData.varietyCode" placeholder="请输入品种编码" />
       </el-form-item>
       <el-form-item label="图片" prop="images">
-        <el-input v-model="formData.images" placeholder="请输入图片" />
-      </el-form-item>
-      <el-form-item label="品类ID" prop="categoryId">
-        <el-input v-model="formData.categoryId" placeholder="请输入品类ID" />
+        <UploadImg :disabled="diableForm" v-model="formData.images" />
       </el-form-item>
       <el-form-item label="品种来源" prop="categorySource">
-        <el-input v-model="formData.categorySource" placeholder="请输入品种来源" />
+        <el-input type="textarea" v-model="formData.categorySource" placeholder="请输入品种来源" />
       </el-form-item>
       <el-form-item label="品种特征" prop="categoryStigma">
-        <el-input v-model="formData.categoryStigma" placeholder="请输入品种特征" />
+        <el-input type="textarea" v-model="formData.categoryStigma" placeholder="请输入品种特征" />
       </el-form-item>
       <el-form-item label="分布地区" prop="areaDistribution">
-        <el-input v-model="formData.areaDistribution" placeholder="请输入分布地区" />
+        <el-input type="textarea" v-model="formData.areaDistribution" placeholder="请输入分布地区" />
       </el-form-item>
       <el-form-item label="简介" prop="briefIntroduction">
-        <el-input v-model="formData.briefIntroduction" placeholder="请输入简介" />
+        <el-input type="textarea" v-model="formData.briefIntroduction" placeholder="请输入简介" />
       </el-form-item>
-      <el-form-item label="启用停用" prop="status">
-        <el-radio-group v-model="formData.status">
-          <el-radio label="1">请选择字典生成</el-radio>
-        </el-radio-group>
+      <el-form-item label="是否启用" prop="status">
+        <el-radio v-model="formData.status" label="1">是</el-radio>
+        <el-radio v-model="formData.status" label="2">否</el-radio>
       </el-form-item>
-      <el-form-item label="备注1" prop="remark2">
-        <el-input v-model="formData.remark2" placeholder="请输入备注1" />
-      </el-form-item>
+<!--      <el-form-item label="备注1" prop="remark2">-->
+<!--        <el-input v-model="formData.remark2" placeholder="请输入备注1" />-->
+<!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -54,7 +53,8 @@ defineOptions({ name: 'VarietyManagementForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
-
+/** 将详情按钮 设为不可编辑 */
+const diableForm = ref<boolean>(false)
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
