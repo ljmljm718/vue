@@ -7,6 +7,7 @@ export interface VarietyManagementVO {
   varietyCode: string // 品种编码
   images: string // 图片
   categoryId: string // 品类ID
+  categoryName: string // 品类名称
   categorySource: string // 品种来源
   categoryStigma: string // 品种特征
   areaDistribution: string // 分布地区

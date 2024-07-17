@@ -26,7 +26,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品类ID" prop="categoryId">
+      <el-form-item label="品类名称" prop="categoryId">
         <el-select v-model="queryParams.categoryId" clearable placeholder="请选择品类" class="!w-240px">
           <el-option
             v-for="item in listCategoryManagement"
@@ -134,7 +134,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="品种名称" align="center" prop="varietyName"/>
-      <el-table-column label="品类ID" align="center" prop="categoryId"/>
+<!--      <el-table-column label="品类ID" align="center" prop="categoryId"/>-->
       <el-table-column label="品类名称" align="center" prop="categoryName"/>
       <el-table-column label="品种编码" align="center" prop="varietyCode"/>
       <el-table-column label="图片" align="center" prop="images">
@@ -216,7 +216,7 @@ const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<VarietyManagementVO[]>([]) // 列表的数据
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -245,7 +245,6 @@ const getList = async () => {
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list
     total.value = data.total
-    console.log(listCategoryManagement.value)
   } finally {
     loading.value = false
   }

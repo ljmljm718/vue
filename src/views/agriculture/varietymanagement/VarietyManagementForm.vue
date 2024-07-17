@@ -7,14 +7,20 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="品类ID" prop="categoryId">
-        <el-input v-model="formData.categoryId" placeholder="请输入品类ID" />
-      </el-form-item>
       <el-form-item label="品种名称" prop="varietyName">
         <el-input v-model="formData.varietyName" placeholder="请输入品种名称" />
       </el-form-item>
       <el-form-item label="品种编码" prop="varietyCode">
         <el-input v-model="formData.varietyCode" placeholder="请输入品种编码" />
+      </el-form-item>
+      <el-form-item label="品类名称" prop="categoryId">
+        <el-select v-model="formData.categoryId" clearable placeholder="请选择品类">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="图片" prop="images">
         <UploadImg :disabled="diableForm" v-model="formData.images" />
@@ -47,6 +53,7 @@
 </template>
 <script setup lang="ts">
 import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 品种管理 表单 */
 defineOptions({ name: 'VarietyManagementForm' })
@@ -74,8 +81,9 @@ const formData = ref({
 })
 const formRules = reactive({
 })
+const CategoryManagementQueryParams = reactive({})
 const formRef = ref() // 表单 Ref
-
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -86,6 +94,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
+      listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
       formData.value = await VarietyManagementApi.getVarietyManagement(id)
     } finally {
       formLoading.value = false
