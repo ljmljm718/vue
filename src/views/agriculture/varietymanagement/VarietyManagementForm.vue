@@ -80,6 +80,12 @@ const formData = ref({
   remark2: undefined
 })
 const formRules = reactive({
+  varietyName: [{ required: true, message: '品种名称不能为空', trigger: 'blur' }],
+  varietyCode: [{ required: true, message: '品种编码不能为空', trigger: 'blur' }],
+  categoryId: [{ required: true, message: '品类名称不能为空', trigger: 'blur' }],
+  images: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
+  status: [{ required: true, message: '是否启用不能为空', trigger: 'blur' }],
+  categoryStigma: [{ required: true, message: '品种特征不能为空', trigger: 'blur' }]
 })
 const CategoryManagementQueryParams = reactive({})
 const formRef = ref() // 表单 Ref
