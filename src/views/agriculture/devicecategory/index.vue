@@ -166,6 +166,14 @@
       <el-table-column label="操作" align="center" fixed="right">
         <template #default="scope">
           <el-button
+            v-if = ids.includes(scope.row.id)
+            link
+            type="primary"
+            @click="router.push('/internetMonitor/deviceData/monitoring-threshold')"
+          >
+            监测阈值配置
+          </el-button>
+          <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -204,10 +212,12 @@ import {handleTree} from '@/utils/tree'
 import download from '@/utils/download'
 import {DeviceCategoryApi, DeviceCategoryVO} from '@/api/agriculture/devicecategory'
 import DeviceCategoryForm from './DeviceCategoryForm.vue'
+import router from '@/router'
 
 /** 鲁渝协作设备分类 列表 */
 defineOptions({name: 'DeviceCategory'})
-
+//监测阈值配置
+const ids = [100,103,104];
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 

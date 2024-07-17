@@ -9,140 +9,140 @@
       label-width="68px"
     >
       <el-row>
-      <el-form-item label="设备编号" prop="deviceCode">
-        <el-input
-          v-model="queryParams.deviceCode"
-          placeholder="请输入设备编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="设备点位" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入设备点位"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-cascader
-          style="width: 100%"
-          v-model="deviceType"
-          :options="categoryOptions"
-          :props="categoryProps"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="deviceStatus">
-        <el-select
-          v-model="queryParams.deviceStatus"
-          placeholder="请选择状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+        <el-form-item label="设备编号" prop="deviceCode">
+          <el-input
+            v-model="queryParams.deviceCode"
+            placeholder="请输入设备编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
           />
-        </el-select>
-      </el-form-item>
-      <!--      <el-form-item label="所属基地" prop="belongPark">
-              <el-input
-                v-model="queryParams.belongPark"
-                placeholder="请输入所属基地"
-                clearable
-                @keyup.enter="handleQuery"
-                class="!w-240px"
-              />
-            </el-form-item>
-            <el-form-item label="所属地块" prop="belongPlot">
-              <el-input
-                v-model="queryParams.belongPlot"
-                placeholder="请输入所属地块"
-                clearable
-                @keyup.enter="handleQuery"
-                class="!w-240px"
-              />
-            </el-form-item>-->
-      <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px"/>
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
-          重置
-        </el-button>
-      </el-form-item>
+        </el-form-item>
+        <el-form-item label="设备点位" prop="deviceName">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请输入设备点位"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="设备类型" prop="deviceType">
+          <el-cascader
+            style="width: 100%"
+            v-model="deviceType"
+            :options="categoryOptions"
+            :props="categoryProps"
+          />
+        </el-form-item>
+        <el-form-item label="状态" prop="deviceStatus">
+          <el-select
+            v-model="queryParams.deviceStatus"
+            placeholder="请选择状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!--      <el-form-item label="所属基地" prop="belongPark">
+                <el-input
+                  v-model="queryParams.belongPark"
+                  placeholder="请输入所属基地"
+                  clearable
+                  @keyup.enter="handleQuery"
+                  class="!w-240px"
+                />
+              </el-form-item>
+              <el-form-item label="所属地块" prop="belongPlot">
+                <el-input
+                  v-model="queryParams.belongPlot"
+                  placeholder="请输入所属地块"
+                  clearable
+                  @keyup.enter="handleQuery"
+                  class="!w-240px"
+                />
+              </el-form-item>-->
+        <el-form-item>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px"/>
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
+        </el-form-item>
       </el-row>
       <el-row>
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openAddForm()"
-          v-hasPermi="['agriculture:device-info:create']"
-          v-if="!readonly"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          plain
-          type="success"
-          @click="openEditForm()"
-          v-hasPermi="['agriculture:device-info:update']"
-          :disabled="single"
-        >
-          <Icon icon="ep:edit" class="mr-5px"/>
-          编辑
-        </el-button>
-        <el-button
-          plain
-          type="primary"
-          @click="openFormDetail()"
-          :disabled="single"
-        >
-          <Icon icon="ep:view" class="mr-5px"/>
-          查看
-        </el-button>
-        <el-button
-          plain
-          type="danger"
-          @click="handleDelete()"
-          v-hasPermi="['agriculture:device-info:delete']"
-          :disabled="single"
-        >
-          <Icon icon="ep:delete" class="mr-5px"/>
-          删除
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:device-info:export']"
-          v-if="!readonly"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-        <el-button
-          type="warning"
-          plain
-          @click="openSubDeviceForm()"
-          v-hasPermi="['agriculture:sub-device:create']"
-          v-if="!readonly"
-          :disabled="single"
-        >
-          <Icon icon="ep:tools" class="mr-5px"/>
-          调试配置
-        </el-button>
-      </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openAddForm()"
+            v-hasPermi="['agriculture:device-info:create']"
+            v-if="!readonly"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            plain
+            type="success"
+            @click="openEditForm()"
+            v-hasPermi="['agriculture:device-info:update']"
+            :disabled="single"
+          >
+            <Icon icon="ep:edit" class="mr-5px"/>
+            编辑
+          </el-button>
+          <el-button
+            plain
+            type="primary"
+            @click="openFormDetail()"
+            :disabled="single"
+          >
+            <Icon icon="ep:view" class="mr-5px"/>
+            查看
+          </el-button>
+          <el-button
+            plain
+            type="danger"
+            @click="handleDelete()"
+            v-hasPermi="['agriculture:device-info:delete']"
+            :disabled="single"
+          >
+            <Icon icon="ep:delete" class="mr-5px"/>
+            删除
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:device-info:export']"
+            v-if="!readonly"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+          <el-button
+            type="warning"
+            plain
+            @click="openSubDeviceForm()"
+            v-hasPermi="['agriculture:sub-device:create']"
+            v-if="!readonly"
+            :disabled="single"
+          >
+            <Icon icon="ep:tools" class="mr-5px"/>
+            调试配置
+          </el-button>
+        </el-form-item>
       </el-row>
     </el-form>
   </ContentWrap>
@@ -159,17 +159,17 @@
       @selection-change="handleSelectionChange"
       height="calc(100vh - 470px)"
     >
-      <el-table-column  type="selection" width="55" :reserve-selection="true"/>
+      <el-table-column type="selection" width="55" :reserve-selection="true"/>
       <!-- 子设备的列表 -->
-<!--      <el-table-column type="expand">
-              <template #default="scope">
-                <el-tabs model-value="deviceDetail">
-                  <el-tab-pane label="子设备" name="deviceDetail">
-                    <SubDeviceList :device-id="scope.row.id"/>
-            </el-tab-pane>
-          </el-tabs>
-        </template>
-      </el-table-column>-->
+      <!--      <el-table-column type="expand">
+                    <template #default="scope">
+                      <el-tabs model-value="deviceDetail">
+                        <el-tab-pane label="子设备" name="deviceDetail">
+                          <SubDeviceList :device-id="scope.row.id"/>
+                  </el-tab-pane>
+                </el-tabs>
+              </template>
+            </el-table-column>-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
       <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
@@ -196,7 +196,7 @@
             active-value="online"
             inactive-value="offline"
             @change="handleStatus(scope.row)"
-           />
+          />
         </template>
       </el-table-column>
       <el-table-column label="经度" align="center" prop="longitude"/>
@@ -218,8 +218,8 @@
           />
         </template>
       </el-table-column>
-<!--      <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
-      <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>-->
+      <!--      <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+            <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>-->
       <el-table-column label="位置" align="center" prop="location"/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
@@ -246,6 +246,12 @@
           <el-button
             link
             type="primary"
+            v-if="scope.row.deviceKind=='101'&& scope.row.deviceStatus=='online'&&scope.row.url.indexOf('mp4')>0"
+            @click="openExternalLink(scope)">查看监控
+          </el-button>
+          <el-button
+            link
+            type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
               path: '/internetMonitor/deviceData/equipment-data-three',
@@ -259,44 +265,44 @@
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
             @click="$router.push({
-              path: '/internetMonitor/deviceData/equipment-data-rule',
+              path: '/internetMonitor/interface/equipment-data-rule',
               query: {
                 dtuId:scope.row.deviceCode
               }
             })">安装配置
           </el-button>
-<!--          <el-button
-            link
-            type="primary"
-            v-if="scope.row.userId===142&&deviceTypeMain.includes(scope.row.deviceType[4])"
-            @click="$router.push({
-              path: '/device/sub-device',
-              query: {
-                devicesId: scope.row.id
-              }
-            })">查看子设备
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            v-if="scope.row.userId=== 157 && mingYueDeviceTypeMain.includes(80) && scope.row.deviceKind === '88' "
-            @click="$router.push({
-              path: '/internetMonitor/device/sub-device',
-              query: {
-                devicesId: scope.row.id
-              }
-            })">查看子设备
-          </el-button>-->
+          <!--          <el-button
+                      link
+                      type="primary"
+                      v-if="scope.row.userId===142&&deviceTypeMain.includes(scope.row.deviceType[4])"
+                      @click="$router.push({
+                        path: '/device/sub-device',
+                        query: {
+                          devicesId: scope.row.id
+                        }
+                      })">查看子设备
+                    </el-button>
+                    <el-button
+                      link
+                      type="primary"
+                      v-if="scope.row.userId=== 157 && mingYueDeviceTypeMain.includes(80) && scope.row.deviceKind === '88' "
+                      @click="$router.push({
+                        path: '/internetMonitor/device/sub-device',
+                        query: {
+                          devicesId: scope.row.id
+                        }
+                      })">查看子设备
+                    </el-button>-->
 
-<!--          <el-button-->
-<!--            link-->
-<!--            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"-->
-<!--            @click="handleStatus(scope.row)"-->
-<!--            v-if="scope.row.deviceStatus === 'online' || scope.row.deviceStatus === 'offline'"-->
-<!--            v-hasPermi="['agriculture:device-info:update']"-->
-<!--          >-->
-<!--            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}-->
-<!--          </el-button>-->
+          <!--          <el-button-->
+          <!--            link-->
+          <!--            :type="scope.row.deviceStatus === 'online' ? 'danger' : 'primary'"-->
+          <!--            @click="handleStatus(scope.row)"-->
+          <!--            v-if="scope.row.deviceStatus === 'online' || scope.row.deviceStatus === 'offline'"-->
+          <!--            v-hasPermi="['agriculture:device-info:update']"-->
+          <!--          >-->
+          <!--            {{scope.row.deviceStatus === 'online' ? '关机' : '开机'}}-->
+          <!--          </el-button>-->
 
         </template>
       </el-table-column>
@@ -324,7 +330,7 @@ import DeviceInfoForm from './DeviceInfoForm.vue'
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
 import router from "@/router";
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import {useRoute, onBeforeRouteUpdate} from 'vue-router'
 import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
 import SubDeviceListForm from "@/views/agriculture/deviceinfo/components/SubDeviceListForm.vue";
 
@@ -377,16 +383,19 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 let categoryOptions = ref([])// 设备分类选项
 const deviceType = ref()
-const single= ref(true)  // 非单个禁用
+const single = ref(true)  // 非单个禁用
 const deviceId = ref() // 选中的设备id
 const deviceName = ref() // 选中的设备名称
-
+const openExternalLink = (scope) => {
+  const url = scope.row.url // 替换为你想要跳转的外部链接
+  window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
+}
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   enableSwitch.value = false
   try {
-    if (route.query.deviceStatus){
+    if (route.query.deviceStatus) {
       let aa = route.query.deviceStatus;
       queryParams.deviceStatus = aa;
     }
@@ -408,8 +417,8 @@ const getList = async () => {
   }
 }
 let route = useRoute()
-if(route.query.deviceType){
-  queryParams.deviceType=route.query.deviceType
+if (route.query.deviceType) {
+  queryParams.deviceType = route.query.deviceType
   getList()
 }
 getList()
@@ -561,7 +570,7 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
   multipleSelection.value = val
   emit('selectedDeviceInfo', multipleSelection.value)
 
-  single.value = val.length!==1
+  single.value = val.length !== 1
   deviceId.value = val.map(item => item.id)
   deviceName.value = val.map(item => item.deviceName)
 }
@@ -588,14 +597,14 @@ watch(() => props.currCategory,
 const enableSwitch = ref<boolean>(false)
 const handleStatus = async (item: any) => {
   if (!enableSwitch.value) return
-  let s = item.deviceStatus === 'online' ? '开机': '关机'
+  let s = item.deviceStatus === 'online' ? '开机' : '关机'
 
   try {
     // 开关机的二次确认
     await message.confirm("是否确认" + s + "?", s + "确认")
     // 发起开关机
-    let status = item.deviceStatus === 'online' ? 'online': 'offline'
-    await DeviceInfoApi.updateDeviceStatus(item.id,status)
+    let status = item.deviceStatus === 'online' ? 'online' : 'offline'
+    await DeviceInfoApi.updateDeviceStatus(item.id, status)
     message.alertSuccess(s + "成功")
     // 刷新列表
     await getList()
@@ -608,11 +617,11 @@ const handleData = async (item: any) => {
   loading.value = true
   try {
     await EquipmentDataApi.queryNewData(item.id)
-    message.success(item.deviceName+",采集最新数据成功")
+    message.success(item.deviceName + ",采集最新数据成功")
     router.push({
       path: '/internetMonitor/deviceData/equipment-data-three',
       query: {
-        equipmentCode:item.id
+        equipmentCode: item.id
       }
     })
   } finally {

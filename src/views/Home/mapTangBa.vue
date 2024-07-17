@@ -9,12 +9,13 @@ defineOptions({ name: 'MapTangBa' })
 
 // 初始化地图，点击地图自动选取坐标点
 let mapIns:any = null
+let satelliteLayer=  new AMap.TileLayer.Satellite()
 const initMap = (center:Array<number> = [109.24604650765662, 31.41416444104432]) => {
   // @ts-ignore
   mapIns = new AMap.Map("tangbaMap", {
     zoom: 13, center,
     // @ts-ignore
-    layers: [new AMap.TileLayer.Satellite()],
+    // layers: [ ],
     // mapStyle: 'amap://styles/blue', //设置地图的显示样式
   })
   mapIns && mapIns.on('click', (e) => {
@@ -25,7 +26,12 @@ const initMap = (center:Array<number> = [109.24604650765662, 31.41416444104432])
     mapIns.clearInfoWindow();
   })
 }
-
+const addSatellite=()=>{
+  mapIns.add(satelliteLayer)
+}
+const removeSatellite=()=>{
+  mapIns.remove(satelliteLayer)
+}
 const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
   if (!longitude || !latitude) return
   // @ts-ignore
@@ -58,7 +64,12 @@ const setMapZoom = (zoom: number = 13) => {
 }
 
 const openInfoWindow = (info:string, location:Array<any>) => {
+  if (Array.isArray(location)) {
+    const [val1, val2] = location
+    if (!val1 || !val2) return
+  }
   if (!info || !location) return
+  
   // @ts-ignore
   const infoWindow = new AMap.InfoWindow({
     isCustom: true,
@@ -71,8 +82,34 @@ defineExpose({
   addMarkerToMap,
   setMapCenter,
   setMapZoom,
-  openInfoWindow
+  openInfoWindow,
+  addSatellite,
+  removeSatellite
 })
 
 onMounted(() => { initMap() })
 </script>
+<style scoped lang="scss">
+.online-bug, .offline-bug,
+.online-monitor, .offline-monitor,
+.online-soil, .offline-soil,
+.online-weather, .offline-weather,
+.online-grow, .offline-grow {
+  background-size: 100% auto;
+}
+.online-bug { background-image: url(./assets/tangba/onlineBug.png); }
+.offline-bug { background-image: url(./assets/tangba/offlineBug.png); }
+
+.online-monitor { background-image: url(./assets/tangba/onlineMonitor.png); }
+.offline-monitor { background-image: url(./assets/tangba/offlineMonitor.png); }
+
+.online-soil { background-image: url(./assets/tangba/onlineSoil.png); }
+.offline-soil { background-image: url(./assets/tangba/offlineSoil.png); }
+
+.online-weather { background-image: url(./assets/tangba/onlineWeather.png); }
+.offline-weather { background-image: url(./assets/tangba/offlineWeather.png); }
+
+.online-grow { background-image: url(./assets/tangba/onlineGrow.png); }
+.offline-grow { background-image: url(./assets/tangba/offlineGrow.png); }
+
+</style>

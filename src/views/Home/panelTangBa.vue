@@ -11,14 +11,14 @@
             :type="`${curDeviceStatus === 'online' ? 'success' : 'danger'}`"
           >{{ curDeviceStatus === 'online' ? '在线' : '离线' }}</el-tag>
         </div>
-        <div class="text-sm">{{ time }}</div>
+        <div class="text-sm my-10px color-[#9b9b9b]">{{ time }}</div>
       </div>
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
     <el-tabs v-model="activeTab" class="px-2 w-100%" @tab-click='handleClick'>
       <el-tab-pane name='设备概要' >
         <template #label>
-          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">设备概要</div>
+          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">设备概要</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
@@ -34,7 +34,7 @@
             >
               <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
               <div v-show="item.monitoringType=='湿度'" :class="`w-2rem h-2rem tb-home-2 `"></div>
-              <div v-show="item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
+              <div v-show="item.monitoringType=='PH值' || item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
               <div v-show="item.monitoringType=='EC值'" :class="`w-2rem h-2rem tb-home-4 `"></div>
               <div v-show="item.monitoringType=='光照'" :class="`w-2rem h-2rem tb-home-5 `"></div>
               <div v-show="item.monitoringType=='雨量'" :class="`w-2rem h-2rem tb-home-6 `"></div>
@@ -44,6 +44,21 @@
               <div v-show="item.monitoringType=='风向'" :class="`w-2rem h-2rem tb-home-10 `"></div>
               <div v-show="item.monitoringType=='风速'" :class="`w-2rem h-2rem tb-home-11 `"></div>
               <div v-show="item.monitoringType=='大气压力'" :class="`w-2rem h-2rem tb-home-12 `"></div>
+              <div v-show="item.monitoringType=='虫害种类'" :class="`w-2rem h-2rem tb-home-13 `"></div>
+              <div v-show="item.monitoringType=='虫害数量'" :class="`w-2rem h-2rem tb-home-14 `"></div>
+              <div v-show="item.monitoringType=='TDS'" :class="`w-2rem h-2rem tb-home-15 `"></div>
+              <div v-show="item.monitoringType=='浊度'" :class="`w-2rem h-2rem tb-home-16 `"></div>
+              <div v-show="item.monitoringType=='溶解氧饱和度'" :class="`w-2rem h-2rem tb-home-17 `"></div>
+              <div v-show="item.monitoringType=='溶解氧浓度'" :class="`w-2rem h-2rem tb-home-18 `"></div>
+              <div v-show="item.monitoringType=='余氯浓度'" :class="`w-2rem h-2rem tb-home-19 `"></div>
+              <div v-show="item.monitoringType=='ORP'" :class="`w-2rem h-2rem tb-home-20 `"></div>
+              <div v-show="item.monitoringType=='电导率'" :class="`w-2rem h-2rem tb-home-21 `"></div>
+              <div v-show="item.monitoringType=='盐度'" :class="`w-2rem h-2rem tb-home-22 `"></div>
+              <div v-show="item.monitoringType=='总辐射'" :class="`w-2rem h-2rem tb-home-23 `"></div>
+              <div v-show="item.monitoringType=='当前雨量'" :class="`w-2rem h-2rem tb-home-24 `"></div>
+              <div v-show="item.monitoringType=='风力'" :class="`w-2rem h-2rem tb-home-25 `"></div>
+              <div v-show="item.monitoringType=='空气温度'" :class="`w-2rem h-2rem tb-home-26 `"></div>
+              <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div>
               <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -103,7 +118,7 @@
       </el-tab-pane>
       <el-tab-pane  name="报警">
         <template #label>
-          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[180px] h-40px rounded`">报警</div>
+          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">报警</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
@@ -164,7 +179,7 @@
       </el-tab-pane>
       <el-tab-pane name="设备属性" >
         <template #label>
-          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[180px] h-40px rounded text-center leading-40px`">设备属性</div>
+          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[130px] h-40px rounded text-center leading-40px`">设备属性</div>
         </template>
         <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
@@ -594,7 +609,7 @@ const getDeviceInfoData = async (item) => {
     getMonitorVideo(id)
     getMonitorWarnList(id)
   } else {
-    item.deviceCode && getWarnDataList(item.deviceCode)
+    item.deviceCode && getWarnDataList(item.id)
   }
 }
 
@@ -672,10 +687,19 @@ window.addEventListener('resize', () => getCurrentHeight())
 }
 .active{
   color: #fff;
+  padding: 0 !important;
   background-color: #0c67ff;
 }
 .actived{
   background-color: #e4eeff;
+  padding: 0 !important;
+}
+.el-tab > .el-tabs__item-label div { /* 注意：这里可能需要调整选择器以匹配实际的 DOM 结构 */  
+  padding: 0 !important; /* 使用 !important 来确保覆盖默认的样式，但请谨慎使用 */  
+  /* 其他样式调整 */  
+} 
+#tab-设备概要 .el-tabs_item .is-top .is-active{
+  padding-right:0 !important;
 }
 @keyframes slide-in {
   0% { transform: translateX(100%);}
@@ -732,7 +756,7 @@ window.addEventListener('resize', () => getCurrentHeight())
   height: 0px;
   overflow: hidden;
 }
-@for $i from 1 through 12 {
+@for $i from 1 through 27 {
   .tb-home-#{$i} {
     background-image: url(./assets/tb-home-#{$i}.png);
     background-size:100% 100%;

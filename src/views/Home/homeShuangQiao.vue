@@ -268,7 +268,7 @@ onMounted(() => {
     <div class="grid grid-cols-5 gap-4">
       <div
         :class="`top-bg-${index + 1} px-6 flex flex-col justify-center`"
-        style="aspect-ratio: 2;color: black;"
+        :style="`aspect-ratio: 2;color: ${index==0?'#1c64ba':index==1?'#1f887f':index==2?'#0a7ebc':index==3?'#765082':index==4?'#cb7e10':''};`"
         v-for="(item, index) in cardList"
         :key="item.id"
       >
@@ -280,20 +280,20 @@ onMounted(() => {
                 deviceType:item.deviceType
 
               }
-            })">{{
+            })" style="font-weight: 600;">{{
               (item.title !== '设备总数' && item.title !== '预警数量') ? (item.total + '台') : ''
             }}
           </div>
         </div>
         <div v-if="item.title === '设备总数' || item.title === '预警数量'" >
-          <div class="flex items-center pt-2 h-[2.5rem] px-2">
+          <div class="flex items-center pt-2 h-[2.5rem] px-2" style="font-weight: 600">
             <span>{{ item.total }}</span>
             <span v-if="item.title === '设备总数'"  style="padding-left: 2rem;"  @click="$router.push('/internetMonitor/device/deviceView')">台</span>
             <span v-if="item.title === '预警数量'"  style="padding-left: 2rem;" @click="$router.push('/internetMonitor/warn/agri-warning-record')">个</span>
           </div>
         </div>
         <div v-else>
-          <div class="h-[1rem] p-1 pt-2 flex items-center">
+          <div style="font-weight:600;" class="h-[1rem] p-1 pt-2 flex items-center">
             <span @click="$router.push({
             path:'/internetMonitor/device/deviceView',
              query: {
@@ -304,7 +304,7 @@ onMounted(() => {
             })">在线</span>
             <span style="padding-left: 2rem;">{{ item.online }}台</span>
           </div>
-          <div class="h-[1rem] p-1 flex items-center">
+          <div  style="font-weight:600;" class="h-[1rem] p-1 flex items-center">
             <span  @click="$router.push({
             path:'/internetMonitor/device/deviceView',
              query: {
@@ -312,7 +312,7 @@ onMounted(() => {
                 deviceType:item.deviceType
               }
             })">离线</span>
-            <span style="padding-left: 2rem;">{{ item.offline }}台</span>
+            <span  style="padding-left: 2rem;"> {{ item.offline }}台</span>
           </div>
         </div>
       </div>
@@ -355,21 +355,21 @@ onMounted(() => {
           <el-divider class="!my-3"/>
           <div class="p-1">
             <div
-              class="text-center py-2 text-24px font-bold"
-              style="background: linear-gradient(to right, #79cefe00, #79cefeA0, #79cefe00);"
+              class="text-center py-2 text-20px"
+              style="font-weight: 600; background: linear-gradient(to right, #79cefe00, #79cefeA0, #79cefe00);"
             >养殖物名称: 黄河口大闸蟹
             </div>
             <div class="p-1 mt-3 flex items-start" v-if="growthTypes.length !== 0">
 
-              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-50 object-cover"/>
-              <div class="px-2">
+              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-60% h-200px object-cover"/>
+              <div class="px-2 w-35% h-100%">
                 <div class="p-1">
-                  <span class="text-20px ">养殖品种: </span>
-                  <span class="pl-2">{{ growthTypes[growthIndex].cropType }}</span>
+                  <div class="text-20px">养殖品种: </div>
+                  <div class="pl-2 mt-5px">{{ growthTypes[growthIndex].cropType }}</div>
                 </div>
                 <div class="p-1">
-                  <span class="text-20px">当前生育期: </span>
-                  <span class="pl-2">{{ growthTypes[growthIndex].growth }}</span>
+                  <div class="text-20px">当前生育期: </div>
+                  <div class="pl-2 mt-5px">{{ growthTypes[growthIndex].growth }}</div>
                 </div>
                 <div class="p-1 py-2">
                   <div>开始时间:     {{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')}}</div>

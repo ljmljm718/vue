@@ -1,6 +1,6 @@
 <template>
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
-    <MapTangBa ref="mapTangBgRef" class="h-full" />
+    <MapTangBa ref="mapTangBgRef" class="h-full" @satellite="satellite"/>
     <div
       class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl"
       style="height: calc(100% - 4.5rem);"
@@ -38,8 +38,8 @@
                 v-for="secMenu in subMenu.children"
                 :key="secMenu.id"
                 :index="secMenu.id"
-                :class="`${secMenuName==secMenu.name?'menu-bg':''}`"
-                @click='menuCli(secMenu.name)'
+                :class="`${secMenuId==secMenu.id?'menu-bg':''}`"
+                @click='menuCli(secMenu.id)'
                 >
                 <div  :class="`flex items-center space-x-2 `">
                   <div
@@ -54,6 +54,12 @@
       </el-scrollbar>
     </div>
     <PanelTangBa ref="panelTangBaRef" class="absolute right-0 top-0" v-model="showPanel" />
+    <div @click="mapTileLayer" class=" absolute top-30px left-18% flex items-center bg-[#fff] rounded px-[8px] py-[2px]" style="cursor: pointer;" >
+      <img  v-if="mapTileLayerType" src="./assets/tangba/satelite2.png"  class="w-50px h-50px" alt=""/>
+      <img v-else src="./assets/tangba/satelite.png" class="w-50px h-50px" alt=""/>
+      <div v-if="mapTileLayerType" style="font-weight:600;" class="ml-10px color-[#014cc6] text-sm text-center">路网</div>
+      <div v-else style="font-weight:600" class="color-[#014cc6] ml-10px text-center">卫星</div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -88,7 +94,7 @@ const handleSelect = async (item) => {
         </div>
        
         <div class="p-2  text-[14px] meassage-bg">
-          <div class="p-1 px-2">${res.parkDetailName}</div>
+          <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${res.deviceName}</div>
           <div class="p-1 px-2 flex space-x-2 items-center">
             <div class="${res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'} w-[8px] h-[8px] rounded-full"></div>
             <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
@@ -100,9 +106,10 @@ const handleSelect = async (item) => {
   }
 }
 
-const secMenuName=ref('')
+const secMenuId=ref('')
 const menuCli=(val)=>{
-  secMenuName.value=val
+  console.log(val,'valvalvalval')
+  secMenuId.value=val
 }
 
 const allDeviceDataList = ref<Array<any>>([])
@@ -115,14 +122,21 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   })
   return resArr
 }
-
+//卫星图层切换
+const mapTileLayerType=ref(true)
+const mapTileLayer=()=>{
+  if( mapTileLayerType.value) mapTangBgRef.value.addSatellite()
+  else  mapTangBgRef.value.removeSatellite()
+  mapTileLayerType.value=!mapTileLayerType.value
+  
+}
 const menuDataList = ref<Array<any>>([])
 const menuDataLoading = ref<boolean>(false)
 const getMenuDataList = async () => {
   menuDataLoading.value = true
   menuDataList.value = []
   const res = await getDeviceCategoryTree({}).catch(() => { menuDataLoading.value = false })
-  console.log('getMenuDataList', res);
+  console.log('getMenuDataList14123', res);
   menuDataLoading.value = false
   if (Array.isArray(res)) menuDataList.value = res.map(_first => ({
     ..._first,
@@ -147,12 +161,12 @@ const getMenuDataList = async () => {
     "107": "Bug",
     "79": "Monitor"
   }
+  localStorage.setItem('maplist',JSON.stringify( allDeviceDataList.value))
   allDeviceDataList.value.forEach(item => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {
       return
     }
-    
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
@@ -172,12 +186,19 @@ const showPanel = ref<boolean>(false)
 
 const getIconClass = (item) => {
   const { deviceStatus = 'offline', deviceKind = '' } = item
+  console.log(deviceKind,'deviceKinddeviceKinddeviceKind')
   const kindMap = {
     "101": "monitor",
+    "79": "monitor",
+    "82": "grow",
     "102": "grow",
+    "103": "weather",
     "159": "weather",
+    "81": "weather",
+    "86": "soil",
     "104": "soil",
     "107": "bug",
+    "88": "bug",
   }
   return deviceStatus + '-' + (kindMap[deviceKind] || 'monitor')
 }
