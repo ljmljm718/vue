@@ -68,7 +68,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="品种" prop="cropType" >
+                <el-form-item label="品类" prop="cropType" >
 <!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
 <!--                    <el-option-->
 <!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
@@ -209,7 +209,7 @@ import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-// import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 //品种管理页面
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
@@ -271,7 +271,7 @@ if (!formData.value.id) loadData()
 const getFrom = async () => {
   console.log(route.query.type  as any)
   //获取所有品类的详情数据
-  //listCategoryManagement.value = await allDataCacheManager.getData({})
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   resetForm();
   if (route.query.id) {
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
