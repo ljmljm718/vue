@@ -244,6 +244,11 @@ const getList = async () => {
     listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list
+    // list.value.forEach(item=>{
+    //   listCategoryManagement.value.forEach(itm=>{
+    //     if(item.categoryId==itm.id) item.categoryId=itm.categoryName
+    //   })
+    // })
     total.value = data.total
   } finally {
     loading.value = false

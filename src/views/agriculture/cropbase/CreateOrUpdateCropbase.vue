@@ -61,13 +61,20 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="品种" prop="cropType">
-                  <el-select v-model="formData.cropType" placeholder="请选择品种">
+<!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
+<!--                    <el-option-->
+<!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
+<!--                      :key="dict.value"-->
+<!--                      :label="dict.label"-->
+<!--                      :value="dict.value"-->
+<!--                    />-->
+<!--                  </el-select>-->
+                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">
                     <el-option
-                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                      :key="dict.value"
-                      :label="dict.label"
-                      :value="dict.value"
-                    />
+                      v-for="item in listCategoryManagement"
+                      :key="item.id"
+                      :label="item.categoryName"
+                      :value="item.id"/>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -192,6 +199,7 @@ import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 鲁渝协作品种管理 表单 */
 defineOptions({name: 'CreateOrUpdateCropbase'})
@@ -210,6 +218,8 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const CategoryManagementQueryParams = reactive({})
 const formData = ref({
   id: undefined,
   cropCode: undefined,
@@ -247,6 +257,8 @@ if (!formData.value.id) loadData()
 //起步函数
 const getFrom = async () => {
   console.log(route.query.type  as any)
+  //获取所有品类的详情数据
+  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
   resetForm();
   if (route.query.id) {
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
