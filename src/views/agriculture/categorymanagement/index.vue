@@ -113,7 +113,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['agriculture:farmer-info:create']"
+          v-hasPermi="['agriculture:category-management:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -122,7 +122,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['agriculture:farmer-info:export']"
+          v-hasPermi="['agriculture:category-management:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -173,7 +173,7 @@
           >
             编辑
           </el-button>
-          
+
           <el-button
             link
             type="primary"
@@ -181,7 +181,7 @@
           >
             详情
           </el-button>
-          
+
           <el-button
             link
             type="danger"
