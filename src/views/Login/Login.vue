@@ -64,8 +64,11 @@ import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
 import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
 
 import { LoginForm, MobileForm, QrCodeForm, RegisterForm, SSOLoginVue } from './components'
+import { mainEventBus } from '@/utils/eventBus'
 
 defineOptions({ name: 'Login' })
+
+mainEventBus.emit("LOGIN", {})
 
 const { t } = useI18n()
 const appStore = useAppStore()
