@@ -189,7 +189,7 @@ const loginData = reactive({
   loginForm: {
     tenantName: '鲁渝协作乡村振兴示范村数字化赋能',
     username: 'admin',
-    password: 'Y123456a?',
+    password: '',
     captchaVerification: '',
     rememberMe: true // 默认记录我。如果不需要，可手动修改
   }
