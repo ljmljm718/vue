@@ -117,14 +117,6 @@ export const useRenderLayout = () => {
             <AppView></AppView>
           </ElScrollbar>
         </div>
-          <div style={"padding-top: 85px; background-color: white;"} class={'shadow-lg'} v-show={showRightPanel.value}>
-              <iframe
-                  src="http://117.73.12.23:18080/ui/chat/2b3f8c981d74f9e0"
-                  style="width: 300px; height: calc(100% - 85px);position: absolute;right: 0;"
-                  frameborder="0"
-                  allow="microphone">
-              </iframe>
-          </div>
       </>
     )
   }
