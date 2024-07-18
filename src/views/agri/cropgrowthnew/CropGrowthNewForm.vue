@@ -10,60 +10,98 @@
       <!--      <el-form-item label="编号" prop="cropCode">-->
       <!--        <el-input v-model="formData.cropCode" placeholder="请输入编号" />-->
       <!--      </el-form-item>-->
-      <el-form-item label="品种名称" prop="cropName">
-        <el-input v-model="formData.cropName" readonly placeholder="请选择品种名称">
-          <template #append>
-            <el-button @click="openCropInfoPopup()">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="品种名称" prop="cropName">
+            <el-input v-model="formData.cropName" readonly placeholder="请选择品种名称">
+              <template #append>
+                <el-button @click="openCropInfoPopup()">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="品种编号" prop="cropCode">
+            <el-input v-model="formData.cropCode" placeholder="选择品种自动输入品种编号" disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="品类名称" prop="cropType">
+            <el-input v-model="formData.cropType" readonly placeholder="选择品种自动输入品类名称"
+                      disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="品类编号" prop="cropId">
+            <el-input v-model="formData.cropId" placeholder="选择品种自动输入品类编号" disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="生长期" prop="growth">
+            <el-input v-model="formData.growth" placeholder="请输入生长期"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="周期（/天）" prop="cycle">
+            <el-input v-model="formData.cycle" placeholder="请输入周期"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="环境条件" prop="envCondition">
+            <el-input v-model="formData.envCondition" type="textarea" placeholder="请选择环境条件"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="特点" prop="feature">
+            <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="开始时间" prop="startTime">
+            <el-date-picker
+              v-model="formData.startTime"
+              type="date"
+              value-format="x"
+              placeholder="选择开始时间"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="结束时间" prop="endTime">
+            <el-date-picker
+              v-model="formData.endTime"
+              type="date"
+              value-format="x"
+              placeholder="选择结束时间"
+            />
+          </el-form-item>
+
+        </el-col>
+      </el-row>
+      <el-form-item label="生长地点" prop="growSite">
+        <el-input v-model="formData.growSite" placeholder="请输入生长地点"/>
       </el-form-item>
-      <el-form-item label="品种编号" prop="cropCode">
-        <el-input v-model="formData.cropCode" placeholder="选择品种自动输入品种编号" disabled/>
-      </el-form-item>
-      <el-form-item label="品类名称" prop="cropType">
-        <el-input v-model="formData.cropType" readonly placeholder="选择品种自动输入品类名称"
-                  disabled/>
-      </el-form-item>
-      <el-form-item label="品类编号" prop="cropId">
-        <el-input v-model="formData.cropId" placeholder="选择品种自动输入品类编号" disabled/>
-      </el-form-item>
+
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId"/>
       </el-form-item>
-      <el-form-item label="生长期" prop="growth">
-        <el-input v-model="formData.growth" placeholder="请输入生长期"/>
-      </el-form-item>
-      <el-form-item label="特点" prop="feature">
-        <el-input v-model="formData.feature" placeholder="请输入特点"/>
-      </el-form-item>
-      <el-form-item label="开始时间" prop="startTime">
-        <el-date-picker
-          v-model="formData.startTime"
-          type="date"
-          value-format="x"
-          placeholder="选择开始时间"
-        />
-      </el-form-item>
-      <el-form-item label="结束时间" prop="endTime">
-        <el-date-picker
-          v-model="formData.endTime"
-          type="date"
-          value-format="x"
-          placeholder="选择结束时间"
-        />
-      </el-form-item>
-      <el-form-item label="环境条件" prop="envCondition">
-        <el-input v-model="formData.envCondition" type="textarea" placeholder="请选择环境条件"/>
-      </el-form-item>
-      <el-form-item label="生长地点" prop="growSite">
-        <el-input v-model="formData.growSite" type="textarea" placeholder="请输入生长地点"/>
-      </el-form-item>
-      <el-form-item label="周期（/天）" prop="cycle">
-        <el-input v-model="formData.cycle" placeholder="请输入周期"/>
-      </el-form-item>
+
+
+
+
+
+
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
