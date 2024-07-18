@@ -254,7 +254,8 @@ import {
   pageA,
   getLineChar,
   environmentalDataHomePageA,
-  environmentalDataHomePageC
+  environmentalDataHomePageC,
+  getEquipmentDataByEquipmentCode
 } from './apis'
 import {
   initChartStatic,
@@ -563,10 +564,10 @@ const getGrowChartData = async (facilityId) => {
   const { xValue = [], measureUnit = [], yValue = [] } = res
   initChart('chartGrow', xValue, yValue, measureUnit[0] || '', '')
 }
-
 const title = ref<string>(''), time = ref<string>(''), curDeviceKind = ref<string>('')
 const curDeviceStatus = ref<string>('')
 const getDeviceInfoData = async (item) => {
+  let res=await getEquipmentDataByEquipmentCode({id:item.id})
   reset()
   const {
     id = '',
@@ -593,7 +594,8 @@ const getDeviceInfoData = async (item) => {
   updateForm.value.deviceMonitorType = [deviceMonitorType]
   updateForm.value.createTime = createTime
   title.value = parkDetailName + '-' + deviceName
-  time.value = '最新数据更新于' + formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
+  let timeDate=res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
+  time.value = '最新数据更新于:' + timeDate
 
   setTimeout(() => { item.id && getRunTimeData(item.id, deviceKind) }, 300)
 
@@ -685,6 +687,7 @@ window.addEventListener('resize', () => getCurrentHeight())
 .panel-animation-out {
   animation: slide-out .7s ease forwards;
 }
+
 .active{
   color: #fff;
   padding: 0 !important;

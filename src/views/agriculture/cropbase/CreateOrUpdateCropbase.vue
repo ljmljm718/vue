@@ -55,19 +55,34 @@
             </el-form-item>
             <el-row>
               <el-col :span="12">
+                
                 <el-form-item label="名称" prop="cropName">
-                  <el-input v-model="formData.cropName" placeholder="请输入名称"/>
+                  <el-input v-model="formData.cropName" placeholder="请输入名称">
+                    <template #append>
+                      <el-button @click="openBreedFrom()">
+                        <Icon icon="ep:search"/>
+                        选择
+                      </el-button>
+                    </template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="品种" prop="cropType">
-                  <el-select v-model="formData.cropType" placeholder="请选择品种">
+                <el-form-item label="品类" prop="cropType" >
+<!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
+<!--                    <el-option-->
+<!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
+<!--                      :key="dict.value"-->
+<!--                      :label="dict.label"-->
+<!--                      :value="dict.value"-->
+<!--                    />-->
+<!--                  </el-select>-->
+                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">
                     <el-option
-                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                      :key="dict.value"
-                      :label="dict.label"
-                      :value="dict.value"
-                    />
+                      v-for="item in listCategoryManagement"
+                      :key="item.id"
+                      :label="item.categoryName"
+                      :value="item.id"/>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -160,6 +175,8 @@
   <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
 
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
 </template>
 <script setup lang="ts">
 // 需要修改的方法
@@ -192,6 +209,9 @@ import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+//品种管理页面
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
 /** 鲁渝协作品种管理 表单 */
 defineOptions({name: 'CreateOrUpdateCropbase'})
@@ -210,9 +230,12 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const CategoryManagementQueryParams = reactive({})
 const formData = ref({
   id: undefined,
   cropCode: undefined,
+  breedId: undefined,
   cropName: undefined,
   cropType: undefined,
   imgId: undefined,
@@ -247,6 +270,8 @@ if (!formData.value.id) loadData()
 //起步函数
 const getFrom = async () => {
   console.log(route.query.type  as any)
+  //获取所有品类的详情数据
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   resetForm();
   if (route.query.id) {
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
@@ -286,6 +311,19 @@ if (route.query.type == 'detail') {
   disabled.value = true;
 }
 
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+const BreedFromSuccess = (order: any) => {
+  console.log(order,"---------=----");
+  formData.value.breedId = String(order[0].id)
+  formData.value.cropName = String(order[0].varietyName)
+  formData.value.cropType = String(order[0].categoryName)
+}
+
+
 //基地的选择
 const parkInfoPopupRef = ref()
 const openType = ref('')
@@ -315,7 +353,6 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
-
 }
 
 /** 提交表单 */

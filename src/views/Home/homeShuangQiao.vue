@@ -359,27 +359,27 @@ onMounted(() => {
               style="font-weight: 600; background: linear-gradient(to right, #79cefe00, #79cefeA0, #79cefe00);"
             >养殖物名称: 黄河口大闸蟹
             </div>
-            <div class="p-1 mt-3 flex items-start" v-if="growthTypes.length !== 0">
+            <div class="p-1 mt-3 " v-if="growthTypes.length !== 0">
 
-              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-60% h-200px object-cover"/>
-              <div class="px-2 w-35% h-100%">
-                <div class="p-1">
-                  <div class="text-20px">养殖品种: </div>
-                  <div class="pl-2 mt-5px">{{ growthTypes[growthIndex].cropType }}</div>
+              <img :src="growthTypes[growthIndex].imgId" alt="" class="w-100% object-cover"/>
+              <div class="px-2 w-100% h-100% mt-10px grid grid-cols-2 gap-3px">
+                <div class="p-1 flex items-center">
+                  <div class="text-15px">养殖品种: </div>
+                  <div class="pl-2">{{ growthTypes[growthIndex].cropType }}</div>
                 </div>
-                <div class="p-1">
-                  <div class="text-20px">当前生育期: </div>
-                  <div class="pl-2 mt-5px">{{ growthTypes[growthIndex].growth }}</div>
+                <div class="p-1 flex items-center ml-[-20px] grid-cols-2">
+                  <div class="text-15px">当前生育期: </div>
+                  <div class="pl-2">{{ growthTypes[growthIndex].growth }}</div>
                 </div>
                 <div class="p-1 py-2">
-                  <div>开始时间:     {{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')}}</div>
+                  <div>开始时间:{{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')}}</div>
 <!--                  <div class="pt-2">{{-->
 
 <!--                    }}-->
 <!--                  </div>-->
                 </div>
                 <div class="p-1 py-2">
-                  <div>结束时间:    {{
+                  <div>结束时间:{{
                       formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd')
                     }}</div>
 <!--                  <div class="pt-2">-->
@@ -488,7 +488,7 @@ onMounted(() => {
             <span>预警信息</span>
           </div>
           <el-divider class="!my-3"/>
-          <el-table :data="tableData" stripe max-height="240" fit border>
+          <el-table :data="tableData" stripe max-height="400" fit border>
             <el-table-column label="塘口编号" prop="plotCode" min-width="100px"
                              show-overflow-tooltip/>
             <el-table-column label="设备" prop="deviceCode" min-width="100px"
@@ -559,7 +559,7 @@ onMounted(() => {
 .selector-wrapper {
   select {
     margin: 0 0.3rem;
-    padding: 0.2rem 0.3rem;
+    padding: 0.2rem 0;
     border-radius: 0.4rem 0.4rem 0 0;
     background-color: #0a2019;
     color: white;

@@ -206,7 +206,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
 import VarietyManagementForm from './VarietyManagementForm.vue'
-import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager } from "@/api/agriculture/categorymanagement";
 
 /** 品种管理 列表 */
 defineOptions({name: 'VarietyManagement'})
@@ -241,9 +241,14 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
+    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list
+    // list.value.forEach(item=>{
+    //   listCategoryManagement.value.forEach(itm=>{
+    //     if(item.categoryId==itm.id) item.categoryId=itm.categoryName
+    //   })
+    // })
     total.value = data.total
   } finally {
     loading.value = false

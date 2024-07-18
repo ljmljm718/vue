@@ -68,15 +68,22 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="品种" prop="cropType">
-                <el-select v-model="formData.cropType" placeholder="请选择品种">
+              <el-form-item label="品类" prop="cropType">
+                <!-- <el-select v-model="formData.cropType" placeholder="请选择品种">
                   <el-option
                     v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
                     :key="dict.value"
                     :label="dict.label"
                     :value="dict.value"
                   />
-                </el-select>
+                </el-select> -->
+                <el-select v-model="formData.cropType" clearable placeholder="请选择品类">
+                    <el-option
+                      v-for="item in listCategoryManagement"
+                      :key="item.id"
+                      :label="item.categoryName"
+                      :value="item.id"/>
+                  </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -203,13 +210,12 @@ import {ParkDetailApi, ParkDetailVO} from '@/api/agriculture/parkdetail'
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import {MarketingProgramApi} from "@/api/agriculture/marketingprogram";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
 /** 作物生长期管理 表单 */
 defineOptions({name: 'CropGrowthForm'})
-
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
-
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -247,6 +253,9 @@ const router = useRouter()
 const ROUTE_PATH = route.path
 const FORMPAGE_NAME = ''
 const ORIGIN_PATH = '/farm_work/crop-growth' // 关闭表单时跳转的路径
+
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+
 
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
@@ -312,7 +321,6 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
   formData.value.plotName = (order[0].name).toString()
 
 }
-
 if (route.query.id) {
   let idNumber = route.query.id;
   CropGrowthApi.getCropGrowth(idNumber).then(res => {
@@ -349,6 +357,7 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  console.log("--===--",listCategoryManagement.value)
   resetForm()
   // 修改时，设置数据
   if (id) {
@@ -413,4 +422,8 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+const getType = async () =>{
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+}
+getType()
 </script>
