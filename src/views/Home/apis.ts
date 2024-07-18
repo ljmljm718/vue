@@ -199,3 +199,7 @@ export const getLineChar = (data) => {
   return request.post({ url: `/agriculture/grow-record/getLineChar`, data })
 }
 
+//获取设备时间
+export const getEquipmentDataByEquipmentCode = (params) => {
+  return request.get({ url: `/yyang/equipment-data/getEquipmentDataByEquipmentCode`, params })
+}

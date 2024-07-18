@@ -28,13 +28,13 @@ pipeline{
         stage('2.编译'){
             agent {
                 docker {
-                    image 'node:20-alpine'
+                    image 'node:20.15-slim'
                  }
             }
             steps {
                sh 'pwd && ls -alh'
                sh 'node -v'
-               sh 'cd ${WS} && npm install -g pnpm@8.6.0 && pnpm install --no-frozen-lockfile && npm run build:prod'
+               sh 'cd ${WS} && npm config set registry https://registry.npmmirror.com && npm install -g pnpm@8.6.0 && pnpm install --no-frozen-lockfile && npm run build:prod'
             }
         }
 
