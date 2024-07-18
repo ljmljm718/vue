@@ -97,10 +97,10 @@ const open = async (type: string, id?: number) => {
   formType.value = type
   resetForm()
   // 修改时，设置数据
+  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
   if (id) {
     formLoading.value = true
     try {
-      listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
       formData.value = await VarietyManagementApi.getVarietyManagement(id)
     } finally {
       formLoading.value = false
