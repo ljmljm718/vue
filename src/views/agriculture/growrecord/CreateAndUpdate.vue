@@ -108,27 +108,13 @@
             </el-col>-->
             <el-col :span="8">
               <el-form-item label="基地名称" prop="baseName">
-                <el-input style="width: 200px" v-model="formData.baseName" placeholder="请选择所属基地" disabled>
-                  <template #append>
-                    <el-button @click="openParkInfoPopup('0')">
-                      <Icon icon="ep:search"/>
-                      选择
-                    </el-button>
-                  </template>
-                </el-input>
+                <el-input style="width: 200px" v-model="formData.baseName" placeholder="请选择种植作物" disabled/>
                 <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="地块名称" prop="massifName">
-                <el-input style="width: 200px" v-model="formData.massifName" placeholder="请选择所属地块" disabled>
-                  <template #append>
-                    <el-button @click="openParkDetailPopup(formData.base)">
-                      <Icon icon="ep:search"/>
-                      选择
-                    </el-button>
-                  </template>
-                </el-input>
+                <el-input style="width: 200px" v-model="formData.massifName" placeholder="请选择种植作物" disabled/>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -198,12 +184,9 @@
 
           </el-row>
         </el-form>
-        <BreedFrom ref="BreedFromRef" @success="handleCropInfoPopupChange"/>
+        <CropInfoPopup ref="CropInfoRef" @success="handleCropInfoPopupChange"/>
         <AgriculturalBaseList ref="purchaseOrderInEnableListRef"
                               @success="handlePurchaseOrderChange"/>
-        <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
-
-        <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
       </template>
     </EditFrame>
 
@@ -217,10 +200,8 @@ import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
 import type {FormProps} from 'element-plus'
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
-import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
-import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 
 // 本地保存表单
 const route = useRoute()
@@ -361,10 +342,10 @@ const resetForm = () => {
 }
 
 //作物的选择
-const BreedFromRef = ref()
+const CropInfoRef = ref()
 // const deviceType = ref("99,102")
 const openCropInfoPopup = () => {
-  BreedFromRef.value.open()
+  CropInfoRef.value.open()
 }
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
@@ -373,8 +354,12 @@ const openPurchaseOrderInEnableList = () => {
 
 const handleCropInfoPopupChange = (order: any) => {
   formData.value.cropCode = String(order[0].id)
-  formData.value.cropName = String(order[0].varietyName)
-  formData.value.cropType = String(order[0].categoryName)
+  formData.value.cropName = String(order[0].cropName)
+  formData.value.cropType = String(order[0].cropType)
+  formData.value.base = String(order[0].belongPark)
+  formData.value.baseName = String(order[0].parkName)
+  formData.value.massif = String(order[0].belongPlot)
+  formData.value.massifName = String(order[0].plotName)
 }
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 
@@ -405,36 +390,6 @@ const handlePurchaseOrderChange = async (orderA: EquipmentDataVO) => {
   //console.log(selectList,"==selectList==");
 
 }
-//基地的选择
-const parkInfoPopupRef = ref()
-const openType = ref('')
-const openParkInfoPopup = (id: string) => {
-  openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    message.error("请选择基地")
-  } else parkInfoPopupRef.value.open(id)
-}
-const handleParkInfoPopupChange = (order: ParkInfoVO) => {
-  if (openType.value === '0') {
-    formData.value.base = String(order[0].code)
-    formData.value.baseName = String(order[0].name)
-  } else formData.value.belongPlot = String(order[0].id)
-}
-
-//地块的选择
-const parkDetailPopupRef = ref()
-const openType1 = ref('')
-const openParkDetailPopup = (id: string) => {
-  openType1.value = id;
-  if (!openType1.value) {
-    message.error("请选择基地")
-  } else parkDetailPopupRef.value.open(id)
-}
-const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-  formData.value.massif = String(order[0].id)
-  formData.value.massifName = String(order[0].name)
-}
-
 </script>
 
 <style>
