@@ -17,16 +17,24 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="品种名称" prop="varietyName">
-        <el-input
-          v-model="queryParams.varietyName"
-          placeholder="请输入品种名称"
+      <el-form-item label="品种名称" prop="varietyId">
+        <el-select
+          v-model="queryParams.varietyId"
+          placeholder="请选择品种"
           clearable
-          @keyup.enter="handleQuery"
+          :disabled="boo"
+          @change="handleVarietyChange"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in listVarietyManagement"
+            :key="dict.id"
+            :label="dict.varietyName"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="品种" prop="variety">
+      <el-form-item label="品类名称" prop="variety">
         <!-- <el-input
           v-model="queryParams.variety"
           placeholder="请输入品种"
@@ -36,15 +44,15 @@
         /> -->
         <el-select
           v-model="queryParams.variety"
-          placeholder="请选择品种"
+          placeholder="请选择品类或者选择品种后自动填入"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in listVarietyManagement"
+            :key="dict.categoryId"
+            :label="dict.categoryName"
+            :value="dict.categoryId"
           />
         </el-select>
       </el-form-item>
@@ -365,6 +373,10 @@ function cancelClick() {
   drawer2.value = false
 }
 
+const handleVarietyChange = (e) => {
+  const _item = listVarietyManagement.value.find(item => (item.id === e))
+  if (_item) queryParams.variety = _item.categoryId
+}
 const damn = async (row) => {
   queryParam.recoveryNum = row.id;
   const data = await VillageProcessingRecordsApi.getVillageProcessingRecordsPage(queryParam)
