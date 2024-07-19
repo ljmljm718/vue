@@ -127,10 +127,10 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="品种code" align="center" prop="cropCode"/>-->
-      <el-table-column label="品种名称" align="center" prop="cropName"/>
-      <el-table-column label="品种" align="center" prop="cropType">
+      <el-table-column label="种植作物" align="center" prop="cropName"/>
+      <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
+          <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="设备名称" align="center" prop="facilityName"/>

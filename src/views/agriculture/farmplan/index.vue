@@ -244,7 +244,7 @@
       <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
       <el-table-column label="品种" align="center" prop="cropType" width="100" >
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+          <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="计划状态" align="center" prop="planState" width="100" >
@@ -325,6 +325,9 @@ import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
@@ -360,6 +363,7 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 let farmDefineOptions = ref([])// 设备分类选项
 
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 查询列表 */
 const getList = async () => {
@@ -367,9 +371,17 @@ const getList = async () => {
   try {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
     console.log(data)
+    //请求品类信息
+    listCategoryManagement.value = await allDataCacheManager.getData({})
+    //把品类数据的name拼接到列表中
     data.list.forEach((item)=>{
       item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
+      listCategoryManagement.value.forEach(itm => {
+        if (item.cropType == itm.id)
+          item.cropType = itm.categoryName
+      })
     })
+
     list.value = data.list
     total.value = data.total
   } finally {

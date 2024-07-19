@@ -271,8 +271,8 @@ console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }
 //标签切换
 const tabsVal=ref('设备概要')
 const handleClick=(e)=>{
-  console.log(e.props.name,'eeeeeeeeeeeeeee')
-  tabsVal.value=e.props.name
+  if(!e.props) tabsVal.value=e
+  else  tabsVal.value=e.props.name
 }
 const generateXY = (arr:Array<any>) => {
   const x:Array<any> = [], y:Array<any> = []
@@ -659,7 +659,7 @@ const handleClose = () => {
   emit('update:modelValue', false)
 }
 
-defineExpose({ getDeviceInfoData })
+defineExpose({ getDeviceInfoData,handleClick })
 
 const props = defineProps({
   modelValue: {

@@ -55,9 +55,9 @@
             </el-form-item>
             <el-row>
               <el-col :span="12">
-                
-                <el-form-item label="名称" prop="cropName">
-                  <el-input v-model="formData.cropName" placeholder="请输入名称">
+
+                <el-form-item label="种植品种" prop="cropName">
+                  <el-input v-model="formData.cropName" placeholder="请选择品种">
                     <template #append>
                       <el-button @click="openBreedFrom()">
                         <Icon icon="ep:search"/>
@@ -317,10 +317,10 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----");
+  //console.log(order,"---------=----");
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
-  formData.value.cropType = String(order[0].categoryName)
+  // formData.value.cropType = String(order[0].categoryName)
 }
 
 

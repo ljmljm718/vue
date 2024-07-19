@@ -54,10 +54,10 @@
         >
           <el-row>
             <el-col :span="8">
-              <el-form-item label="设备编码" prop="facilityId">
+              <el-form-item label="设备名称" prop="facilityName">
                 <!-- <el-input v-model="formData.equipmentCode" placeholder="请输入设备编码" /> -->
-                <el-input style="width: 200px" v-model="formData.facilityId"
-                          placeholder="请选择设备编码">
+                <el-input style="width: 200px" v-model="formData.facilityName"
+                          placeholder="请选择设备">
                   <template #append>
                     <el-button @click="openPurchaseOrderInEnableList">
                       <Icon icon="ep:search"/>
@@ -68,9 +68,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="品种作物code" prop="cropId">
-                <el-input style="width: 200px" v-model="formData.cropCode"
-                          placeholder="请选择">
+              <el-form-item label="种植作物" prop="cropName">
+                <el-input style="width: 200px" v-model="formData.cropName"
+                          placeholder="请选择种植作物" disabled>
                   <template #append>
                     <el-button @click="openCropInfoPopup()">
                       <Icon icon="ep:search"/>
@@ -81,14 +81,19 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="基地名称" prop="baseName">
-                <el-input style="width: 200px" v-model="formData.baseName"
-                          placeholder="请输入基地名称"/>
+              <el-form-item label="品类" prop="cropType">
+                <el-select style="width: 200px" v-model="formData.cropType" clearable placeholder="请选择品类">
+                  <el-option
+                    v-for="item in listCategoryManagement"
+                    :key="item.id"
+                    :label="item.categoryName"
+                    :value="item.id"/>
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+<!--            <el-col :span="8">
               <el-form-item label="设备名称" prop="facilityName">
                 <el-input v-model="formData.facilityName" placeholder="选择设备后自动填入名称"
                           style="width: 200px"/>
@@ -96,19 +101,36 @@
 
             </el-col>
             <el-col :span="8">
-              <el-form-item label="品种名称" prop="cropName">
+              <el-form-item label="种植作物" prop="cropName">
                 <el-input style="width: 200px" v-model="formData.cropName"
-                          placeholder="请输入品种名称" />
+                          placeholder="请输入种植作物" />
+              </el-form-item>
+            </el-col>-->
+            <el-col :span="8">
+              <el-form-item label="基地名称" prop="baseName">
+                <el-input style="width: 200px" v-model="formData.baseName" placeholder="请选择所属基地" disabled>
+                  <template #append>
+                    <el-button @click="openParkInfoPopup('0')">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
+                <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="地块名称" prop="massifName">
-                <el-input style="width: 200px" v-model="formData.massifName"
-                          placeholder="请输入地块名称" />
+                <el-input style="width: 200px" v-model="formData.massifName" placeholder="请选择所属地块" disabled>
+                  <template #append>
+                    <el-button @click="openParkDetailPopup(formData.base)">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="8">
               <el-form-item label="测量时间" prop="measureTime">
                 <el-date-picker
@@ -120,27 +142,14 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="品种" prop="cropType">
-                <el-select style="width: 200px" v-model="formData.cropType" placeholder="请选择品种"
-                           >
-                  <el-option
-                    v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                    :key="dict.value"
-                    :label="dict.label"
-                    :value="dict.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="8">
               <el-form-item label="测量者" prop="measurer">
                 <el-input style="width: 200px" v-model="formData.measurer"
                           placeholder="请输入测量者"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="8">
               <el-form-item label="测量类型" prop="measureType">
                 <el-select style="width: 200px" v-model="formData.measureType"
@@ -160,23 +169,18 @@
                           placeholder="请输入测量值"/>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="8">
               <el-form-item label="测量单位" prop="measureUnit">
                 <el-input style="width: 200px" v-model="formData.measureUnit"
                           placeholder="请输入测量单位"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="8">
               <el-form-item label="变化量" prop="measureSpike">
                 <el-input style="width: 200px" v-model="formData.measureSpike"
                           placeholder="请输入变化量"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="抓拍图片" prop="imgUrl">
-                <UploadImg v-model="formData.imgUrl"/>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -185,10 +189,21 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="抓拍图片" prop="imgUrl">
+                <UploadImg v-model="formData.imgUrl"/>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
         </el-form>
-        <CropInfoPopup ref="cropInfoPopupRef" @success="handleCropInfoPopupChange"/>
+        <BreedFrom ref="BreedFromRef" @success="handleCropInfoPopupChange"/>
         <AgriculturalBaseList ref="purchaseOrderInEnableListRef"
                               @success="handlePurchaseOrderChange"/>
+        <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+
+        <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
       </template>
     </EditFrame>
 
@@ -199,11 +214,14 @@ import {EditFrame, addOrUpdateFormStorage} from '@/components/EditFrame/index'
 import {Refresh, TopRight} from '@element-plus/icons-vue'
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
-import {CropBaseVO} from "@/api/agriculture/cropbase";
-import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import type {FormProps} from 'element-plus'
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+
 // 本地保存表单
 const route = useRoute()
 const router = useRouter()
@@ -240,17 +258,18 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const {t} = useI18n() // 国际化
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 const formRules = reactive({
-  facilityName: [{required: true, message: '设备名称不能为空', trigger: 'blur'}],
+  facilityName: [{required: true, message: '设备名称不能为空', trigger: 'change'}],
   facilityId: [{required: true, message: '设备code不能为空', trigger: 'blur'}],
   cropCode: [{required: true, message: '品种code不能为空', trigger: 'blur'}],
-  cropName: [{required: true, message: '品种名称不能为空', trigger: 'blur'}],
+  cropName: [{required: true, message: '种植作物不能为空', trigger: 'change'}],
   base: [{required: true, message: '基地ID不能为空', trigger: 'blur'}],
-  baseName: [{required: true, message: '基地名称不能为空', trigger: 'blur'}],
-  cropType: [{required: true, message: '品种类型不能为空', trigger: 'blur'}],
+  baseName: [{required: true, message: '基地名称不能为空', trigger: 'change'}],
+  cropType: [{required: true, message: '品类不能为空', trigger: 'change'}],
   massif: [{required: true, message: '地块ID不能为空', trigger: 'blur'}],
-  massifName: [{required: true, message: '地块名称不能为空', trigger: 'blur'}],
+  massifName: [{required: true, message: '地块名称不能为空', trigger: 'change'}],
   measureTime: [{required: true, message: '测量时间不能为空', trigger: 'change'}],
   measurer: [{required: true, message: '测量者不能为空', trigger: 'change'}],
   measureType: [{required: true, message: '测量类型不能为空', trigger: 'change'}],
@@ -279,6 +298,8 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  //获取所有品类的详情数据
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   resetForm()
   // 修改时，设置数据
   if (id) {
@@ -340,24 +361,20 @@ const resetForm = () => {
 }
 
 //作物的选择
-const cropInfoPopupRef = ref()
+const BreedFromRef = ref()
 // const deviceType = ref("99,102")
 const openCropInfoPopup = () => {
-  cropInfoPopupRef.value.open()
+  BreedFromRef.value.open()
 }
 const purchaseOrderInEnableListRef = ref()
 const openPurchaseOrderInEnableList = () => {
   purchaseOrderInEnableListRef.value.open()
 }
 
-const handleCropInfoPopupChange = (order: CropBaseVO) => {
+const handleCropInfoPopupChange = (order: any) => {
   formData.value.cropCode = String(order[0].id)
-  formData.value.cropName = String(order[0].cropName)
-  formData.value.cropType = String(order[0].cropType)
-  formData.value.base = String(order[0].belongPark)
-  formData.value.massif = String(order[0].belongPlot)
-  formData.value.baseName = String(order[0].parkName)
-  formData.value.massifName = String(order[0].plotName)
+  formData.value.cropName = String(order[0].varietyName)
+  formData.value.cropType = String(order[0].categoryName)
 }
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 
@@ -388,6 +405,36 @@ const handlePurchaseOrderChange = async (orderA: EquipmentDataVO) => {
   //console.log(selectList,"==selectList==");
 
 }
+//基地的选择
+const parkInfoPopupRef = ref()
+const openType = ref('')
+const openParkInfoPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === "") {
+    message.error("请选择基地")
+  } else parkInfoPopupRef.value.open(id)
+}
+const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    formData.value.base = String(order[0].code)
+    formData.value.baseName = String(order[0].name)
+  } else formData.value.belongPlot = String(order[0].id)
+}
+
+//地块的选择
+const parkDetailPopupRef = ref()
+const openType1 = ref('')
+const openParkDetailPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value) {
+    message.error("请选择基地")
+  } else parkDetailPopupRef.value.open(id)
+}
+const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+  formData.value.massif = String(order[0].id)
+  formData.value.massifName = String(order[0].name)
+}
+
 </script>
 
 <style>
