@@ -51,8 +51,8 @@
         >
           <el-row :gutter="24">
             <el-col :span="8">
-              <el-form-item label="作物id" prop="cropId">
-                <el-input v-model="formData.cropId" readonly placeholder="请选择">
+              <el-form-item label="种植作物" prop="cropId">
+                <el-input v-model="formData.cropName" readonly placeholder="请选择">
                   <template #append>
                     <el-button @click="openCropInfoPopup()">
                       <Icon icon="ep:search"/>
@@ -62,11 +62,11 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+<!--        <el-col :span="8">
               <el-form-item label="名称" prop="cropName">
                 <el-input v-model="formData.cropName" placeholder="请输入名称"/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
             <el-col :span="8">
               <el-form-item label="品类" prop="cropType">
                 <!-- <el-select v-model="formData.cropType" placeholder="请选择品种">
@@ -83,16 +83,17 @@
                       :key="item.id"
                       :label="item.categoryName"
                       :value="item.id"/>
-                  </el-select>
+                </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="生长期" prop="growth">
                 <el-input v-model="formData.growth" placeholder="请输入生长期"/>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="24">
+
             <el-col :span="8">
               <el-form-item label="特点" prop="feature">
                 <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点"/>
@@ -103,8 +104,6 @@
                 <el-input v-model="formData.growSite" type="textarea" placeholder="请输入生长地点"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="环境条件" prop="envCondition">
                 <el-input
@@ -112,6 +111,8 @@
                   placeholder="请输入环境条件"/>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="备注" prop="remark">
                 <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
@@ -119,7 +120,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="所属基地" prop="belongPark">
-                <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
+                <el-input v-model="formData.parkName" placeholder="请输入所属基地">
                   <template #append>
                     <el-button @click="openParkInfoPopup('0')">
                       <Icon icon="ep:search"/>
@@ -129,16 +130,14 @@
                 </el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
-            <el-col :span="8">
+<!--        <el-col :span="8">
               <el-form-item label="基地名称" prop="parkName">
                 <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
             <el-col :span="8">
               <el-form-item label="所属地块" prop="belongPlot">
-                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
+                <el-input v-model="formData.plotName" placeholder="请输入所属地块">
                   <template #append>
                     <el-button @click="openParkDetailPopup(formData.belongPark)">
                       <Icon icon="ep:search"/>
@@ -148,11 +147,14 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+          </el-row>
+          <el-row :gutter="24">
+
+<!--        <el-col :span="8">
               <el-form-item label="地块名称" prop="plotName">
                 <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
           </el-row>
           <el-row :gutter="24">
             <el-col :span="8">
