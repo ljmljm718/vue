@@ -25,6 +25,8 @@ import {UserVO} from "@/api/login/types";
 import {FarmPlanApi, FarmPlanVO} from "@/api/agriculture/farmplan";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+
 
 const route = useRoute()
 const router = useRouter()
@@ -139,6 +141,10 @@ const handleSelectSysUserChange = (order: UserVO) => {
   formData.value.personName = String(order[0].nickname)
 }
 
+
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+
+
 let farmDefineOptions = ref([])// 设备分类选项
 const farmDefineType = ref()
 // 提交表单
@@ -222,9 +228,13 @@ const getFormInfo = async () => {
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   resetForm()
   formData.value = await FarmPlanApi.getFarmPlan(route.query.id)
+  //请求品类信息
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   formData.value.farmDefineType = formData.value.farmDefineType ? parseInt(formData.value.farmDefineType) : "";
 }
 const getTreeOptions = async () => {
+  //请求品类信息
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
 }
 const Updisabled = ref<boolean>(false)
@@ -363,11 +373,10 @@ const activeName = ref<any>(['1', '2'])
                     <el-form-item label="品种" prop="cropType">
                       <el-select v-model="formData.cropType" disabled placeholder="请选择品种">
                         <el-option
-                          v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                          :key="dict.value"
-                          :label="dict.label"
-                          :value="dict.value"
-                        />
+                          v-for="item in listCategoryManagement"
+                          :key="item.id"
+                          :label="item.categoryName"
+                          :value="item.id"/>
                       </el-select>
                     </el-form-item>
                   </el-col>

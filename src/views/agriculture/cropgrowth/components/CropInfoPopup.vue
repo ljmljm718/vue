@@ -1,7 +1,7 @@
 <!-- 基地/地块列表 -->
 <template>
   <Dialog
-    title="种植管理"
+    title="选择作物"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -68,9 +68,13 @@
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="编号" align="center" prop="cropCode" />
         <el-table-column label="名称" align="center" prop="cropName" />
-        <el-table-column label="品种" align="center" prop="categoryName">
+        <el-table-column label="品种" align="center" prop="cropType">
           <template #default="scope">
-            <el-tag >{{scope.row.categoryName}} </el-tag>
+            <div v-for="corp in listCategoryManagement" :key="corp.id" >
+              <el-tag v-if="corp.id==scope.row.cropType">
+                {{corp.categoryName}}
+              </el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="图片" align="center" prop="imgId" >
@@ -85,9 +89,9 @@
             />
           </template>
         </el-table-column>
-<!--        <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
+        <el-table-column label="所属基地" align="center" prop="belongPark"/>
         <el-table-column label="所属基地" align="center" prop="parkName"/>
-<!--        <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
+        <el-table-column label="所属地块" align="center" prop="belongPlot" />
         <el-table-column label="所属基地" align="center" prop="plotName"/>
         <el-table-column label="批次码" align="center" prop="batchCode" />
         <el-table-column label="描述" align="center" prop="cropDesc" />
@@ -144,7 +148,6 @@ const queryParams = reactive({
   recoveryNo:false,
 })
 const queryFormRef = ref() // 搜索的表单
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 选中操作 */
 const selectionList = ref<CropBaseVO[]>([])
@@ -174,21 +177,15 @@ const open = async (id: string) => {
   await resetQuery()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
-    listCategoryManagement.value = await allDataCacheManager.getData({})
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
-    //把品类数据的namep拼接到列表中
-    list.value.forEach(item=>{
-      listCategoryManagement.value.forEach(itm=>{
-        if (item.cropType == itm.id)
-          item.categoryName= itm.categoryName
-      })
-    })
     total.value = data.total
   } finally {
     loading.value = false
