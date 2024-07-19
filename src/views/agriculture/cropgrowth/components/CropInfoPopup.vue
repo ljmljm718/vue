@@ -70,7 +70,11 @@
         <el-table-column label="名称" align="center" prop="cropName" />
         <el-table-column label="品种" align="center" prop="cropType">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+            <div v-for="corp in listCategoryManagement" :key="corp.id" >
+              <el-tag v-if="corp.id==scope.row.cropType">
+                {{corp.categoryName}}
+              </el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="图片" align="center" prop="imgId" >
@@ -122,6 +126,7 @@ import {ElTable} from 'element-plus'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict"
 import {dateFormatter} from "@/utils/formatTime";
 import {CropBaseVO,CropBaseApi} from "@/api/agriculture/cropbase";
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 defineOptions({name: 'CropInfoPopup'})
 const list = ref<CropBaseVO[]>([]) // 列表的数据
@@ -172,10 +177,12 @@ const open = async (id: string) => {
   await resetQuery()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
