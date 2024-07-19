@@ -1,4 +1,6 @@
 import request from '@/config/axios'
+import CacheManager from '@/utils/cacheManager'
+import {CategoryManagementApi} from "@/api/agriculture/categorymanagement";
 
 // 品种管理 VO
 export interface VarietyManagementVO {
@@ -16,6 +18,8 @@ export interface VarietyManagementVO {
   remark2: string // 备注1
 }
 
+export const allDataCacheManager = new CacheManager()
+
 // 品种管理 API
 export const VarietyManagementApi = {
   // 查询品种管理分页
@@ -30,16 +34,19 @@ export const VarietyManagementApi = {
 
   // 新增品种管理
   createVarietyManagement: async (data: VarietyManagementVO) => {
+    allDataCacheManager.clearCache()
     return await request.post({ url: `/agriculture/variety-management/create`, data })
   },
 
   // 修改品种管理
   updateVarietyManagement: async (data: VarietyManagementVO) => {
+    allDataCacheManager.clearCache()
     return await request.put({ url: `/agriculture/variety-management/update`, data })
   },
 
   // 删除品种管理
   deleteVarietyManagement: async (id: number) => {
+    allDataCacheManager.clearCache()
     return await request.delete({ url: `/agriculture/variety-management/delete?id=` + id })
   },
 
@@ -48,3 +55,5 @@ export const VarietyManagementApi = {
     return await request.download({ url: `/agriculture/variety-management/export-excel`, params })
   }
 }
+
+allDataCacheManager.setFunc(VarietyManagementApi.getVarietyManagementPage)

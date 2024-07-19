@@ -1,7 +1,7 @@
 <!-- 基地列表 -->
 <template>
   <Dialog
-    title="选择品类"
+    title="选择种植品种"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -131,7 +131,7 @@ import {DICT_TYPE, getStrDictOptions} from "@/utils/dict"
 import {ParkInfoApi, ParkInfoVO} from '@/api/agriculture/parkinfo'
 import {dateFormatter} from "@/utils/formatTime";
 import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
-import {CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 defineOptions({name: 'SelectVarietyManagement'})
 const list = ref<VarietyManagementVO[]>([]) // 列表的数据
@@ -191,6 +191,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list

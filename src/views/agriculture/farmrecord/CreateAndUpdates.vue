@@ -129,15 +129,22 @@
 
           <el-row :gutter="3">
             <el-col :span="12">
-              <el-form-item label="品种" prop="cropType">
-                <el-select v-model="formData.cropType" placeholder="请选择品种">
+              <el-form-item label="种植品类" prop="cropType">
+                <el-select v-model="formData.cropType" disabled placeholder="请选择种植品类">
                   <el-option
-                    v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                    :key="dict.value"
-                    :label="dict.label"
-                    :value="dict.value"
-                  />
+                    v-for="item in listCategoryManagement"
+                    :key="item.id"
+                    :label="item.categoryName"
+                    :value="item.id"/>
                 </el-select>
+<!--                <el-input v-model="formData.cropType" placeholder="请选择种植品类">-->
+<!--                  <template #append>-->
+<!--                    <el-button @click="openBreedFrom()">-->
+<!--                      <Icon icon="ep:search"/>-->
+<!--                      选择-->
+<!--                    </el-button>-->
+<!--                  </template>-->
+<!--                </el-input>-->
               </el-form-item>
             </el-col>
     <!--        <el-col :span="12">-->
@@ -284,6 +291,7 @@
 
   <SelectFarmPlan ref="selectFarmPlanRef" @success="handleSelectFarmPlanChange"/>
 
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -304,6 +312,8 @@ import { useTagsViewStore } from "@/store/modules/tagsView";
 import {useUserStore} from "@/store/modules/user";
 import { createA, updatestate } from '@/api/bigscreenMingYue'
 import {UserVO} from "@/api/login/types";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -311,6 +321,7 @@ defineOptions({ name: 'FarmRecordForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -449,6 +460,19 @@ const handleSelectSysUserChange = (order: UserVO) => {
   formData.value.personName = String(order[0].nickname)
 }
 
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+const BreedFromSuccess = (order: any) => {
+  console.log(order,"---------=----");
+  formData.value.cropId = String(order[0].id)
+  formData.value.cropName = String(order[0].varietyName)
+  formData.value.cropType = String(order[0].categoryId)
+  console.log("formData", formData.value)
+}
+
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -567,7 +591,7 @@ if (!formData.value.id) loadData()
 //起步函数
 const getFrom = async () =>{
   resetForm();
-  debugger
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   formData.value.recordTime= new Date().toLocaleString(route.query.recordTime);
   if(route.query.id && route.query.type !== 'create')  {

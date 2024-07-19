@@ -17,10 +17,10 @@
       <!--            class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="名称" prop="cropName">
+      <el-form-item label="种植品种" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
-          placeholder="请输入名称"
+          placeholder="请输入种植品种"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -86,7 +86,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
-      <el-table-column label="名称" align="center" prop="cropName"/>
+      <el-table-column label="种植品种" align="center" prop="cropName" width="140"/>
       <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
           <el-tag >{{scope.row.cropType}} </el-tag>

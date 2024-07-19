@@ -48,6 +48,7 @@ const parseURL = (
 
 // 路由不重定向白名单
 const whiteList = [
+  "/tiandiMap",
   '/login',
   '/social-login',
   '/auth-redirect',
