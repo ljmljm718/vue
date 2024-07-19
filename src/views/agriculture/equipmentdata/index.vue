@@ -1,9 +1,9 @@
 <template>
   <ContentWrap>
-    <div class="flex items-center">
+    <div class="flex items-center relative">
     <!-- 搜索工作栏 -->
     <el-form
-      class="-mb-15px"
+      class="-mb-15px "
       :style="`width:${isCollapse2?'':'57vw'}`"
       :model="queryParams"
       ref="queryFormRef"
@@ -11,7 +11,7 @@
       label-width="68px"
     >
       <el-form-item label="采集类型" prop="collectionType">
-        <el-select  v-model="queryParams.collectionType" placeholder="请选择采集类型" clearable
+        <el-select  v-model="queryParams.collectionType" placeholder="请选择" clearable
           @keyup.enter="handleQuery"
           class="!w-240px">
           <el-option
@@ -42,7 +42,7 @@
         </el-select>
         <el-input v-else
           v-model="queryParams.monitoringType"
-          placeholder="请输入监测类型"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -82,7 +82,7 @@
       <el-form-item label="设备名称" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -143,7 +143,7 @@
       <el-form-item label="通道编码" prop="channelId">
         <el-input
           v-model="queryParams.channelId"
-          placeholder="请输入通道编码"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -152,7 +152,7 @@
       <el-form-item label="设备编号" prop="yyRemarks">
         <el-input
           v-model="queryParams.yyRemarks"
-          placeholder="请输入设备编号"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
           class="!w-260px"
@@ -196,11 +196,16 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item v-if='isCollapse2'>
-        <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-      </el-form-item>
+      
+      
     </el-form>
+    <div v-if="isCollapse2" class="absolute right-0 flex items-center">
+        <div  class='w-3px h-70px bg-[#f1f1f1] -ml-20px mr-10px'></div>
+        <el-form-item>
+          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        </el-form-item>
+      </div>
       <div v-if="!isCollapse2" class='w-3px h-70px bg-[#f1f1f1] -ml-10px'></div>
       <div v-if="!isCollapse2" class="ml-20px">
         <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>

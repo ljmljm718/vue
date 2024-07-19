@@ -169,4 +169,11 @@ const inputFoucs=()=>{
     }
   }
 }
+
+// 选中当前node的样式
+::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  // background: pink !important;
+  background-image: url('../../../../assets/imgs/treeActive.png') !important;
+  background-size:100% 100%  !important;
+}
 </style>
