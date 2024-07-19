@@ -15,6 +15,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import UnoCSS from 'unocss/vite'
+import cesium from 'vite-plugin-cesium'
 
 export function createVitePlugins() {
   const root = process.cwd()
@@ -95,6 +96,7 @@ export function createVitePlugins() {
       promiseExportName: '__tla',
       // The function to generate import names of top-level await promise in each chunk module
       promiseImportName: (i) => `__tla_${i}`
-    })
+    }),
+    cesium()
   ]
 }
