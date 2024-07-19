@@ -20,6 +20,7 @@ import {
   generatePieOptions
 } from "../../utils/bigscreenTool/index";
 import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
+import { CategoryManagementVO, allDataCacheManager } from "@/api/agriculture/categorymanagement";
 
 const optionsX = ref([])
 const handleSelectorChangeX = (e) => {
@@ -56,6 +57,26 @@ const getGetCountPageByBaseId = async (baseId) => {
 
 const growthTypes = ref([])
 const growthIndex = ref(0)
+const listCategoryManagement = ref<any>([]) // 品类列表的数据
+const getListCategaryData = async () => {
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+  console.log("listCategoryManagement", listCategoryManagement.value)
+}
+/**
+ * 根据品类ID获取分类名称
+ * @param id
+ */
+const getListCategaryLabelById = (id:string) => {
+  let res = ''
+  listCategoryManagement.value.forEach(item => {
+    if (item.id === id) res = item.categoryName
+  })
+  return res
+}
+/**
+ * 获取所有品类的ID和NAME
+ */
+getListCategaryData()
 const getGrowthPage = async (belongPark, belongPlot) => {
   const {list = []} = await growthPage({
     pageNo: 1,
@@ -364,8 +385,8 @@ onMounted(() => {
               <img :src="growthTypes[growthIndex].imgId" alt="" class="w-100% object-cover"/>
               <div class="px-2 w-100% h-100% mt-10px grid grid-cols-2 gap-3px">
                 <div class="p-1 flex items-center">
-                  <div class="text-15px">养殖品种: </div>
-                  <div class="pl-2">{{ growthTypes[growthIndex].cropType }}</div>
+                  <div class="text-15px">养殖品类: </div>
+                  <div class="pl-2">{{ getListCategaryLabelById(growthTypes[growthIndex].cropType) }}</div>
                 </div>
                 <div class="p-1 flex items-center ml-[-20px] grid-cols-2">
                   <div class="text-15px">当前生育期: </div>

@@ -129,15 +129,15 @@
 
           <el-row :gutter="3">
             <el-col :span="12">
-              <el-form-item label="品种" prop="cropType">
-                <el-select v-model="formData.cropType" placeholder="请选择品种">
-                  <el-option
-                    v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                    :key="dict.value"
-                    :label="dict.label"
-                    :value="dict.value"
-                  />
-                </el-select>
+              <el-form-item label="种植品种" prop="cropType">
+                <el-input v-model="formData.cropName" placeholder="请选择种植品种">
+                  <template #append>
+                    <el-button @click="openBreedFrom()">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
               </el-form-item>
             </el-col>
     <!--        <el-col :span="12">-->
@@ -284,6 +284,7 @@
 
   <SelectFarmPlan ref="selectFarmPlanRef" @success="handleSelectFarmPlanChange"/>
 
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -304,6 +305,7 @@ import { useTagsViewStore } from "@/store/modules/tagsView";
 import {useUserStore} from "@/store/modules/user";
 import { createA, updatestate } from '@/api/bigscreenMingYue'
 import {UserVO} from "@/api/login/types";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -447,6 +449,19 @@ const openSelectSysUser = (id: string) => {
 const handleSelectSysUserChange = (order: UserVO) => {
   formData.value.personId = String(order[0].id)
   formData.value.personName = String(order[0].nickname)
+}
+
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+const BreedFromSuccess = (order: any) => {
+  console.log(order,"---------=----");
+  formData.value.cropId = String(order[0].id)
+  formData.value.cropName = String(order[0].varietyName)
+  formData.value.cropType = String(order[0].categoryId)
+  console.log("formData", formData.value)
 }
 
 
