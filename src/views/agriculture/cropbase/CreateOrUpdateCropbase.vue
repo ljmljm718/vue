@@ -317,10 +317,10 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----");
+  //console.log(order,"---------=----");
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
-  formData.value.cropType = String(order[0].categoryName)
+  // formData.value.cropType = String(order[0].categoryName)
 }
 
 
