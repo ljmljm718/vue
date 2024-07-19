@@ -31,7 +31,6 @@ watch(filterText, (val) => {
   treeRef.value!.filter(val)
 })
 watch(isCollapse, (val) => {
-  console.log(val,'valvalval')
   if(!val){
     outputFous.value=''
     filterText2.value=''
@@ -41,6 +40,7 @@ watch(isCollapse, (val) => {
 /** 搜索节点过滤 */
 const filterNode = (value: string, data: Tree) => {
   if (!value) return true
+  console.log(data,'datadata')
   return data.name.includes(value)
 }
 //清空树节点
@@ -82,15 +82,13 @@ const inputFous=ref()
 const outputFous=ref('')
 const filterText2=ref('')
 const focusInput=(e)=>{
-  console.log(e,'99999999999999')
-  if(!e) {outputFous.value=''}
-else {  categoryTree.value.forEach(item=>{
-    if(item.name.includes(e)) outputFous.value=item.name
-    item.child.forEach(itm=>{
-      if(itm.name.includes(e)) outputFous.value=itm.name
-    })
-  })
+  if(e){
+    isCollapse.value=false
+    filterText.value=e
+  }
 }
+const inputFoucs=()=>{
+  
 }
 </script>
 
@@ -100,7 +98,7 @@ else {  categoryTree.value.forEach(item=>{
       <el-menu default-active="2" class="el-menu-vertical-demo h-100%" :collapse="isCollapse">
         <ContentWrap>
           <ContentWrap>
-            <el-input v-model="filterText" ref='inputFous' placeholder="输入关键字进行过滤"  clearable />
+            <el-input v-model="filterText" @focus="inputFoucs" ref='inputFous' placeholder="搜索基地"  clearable />
           </ContentWrap>
           <ContentWrap style="height: 62vh; overflow: auto">
             <el-tree
@@ -118,19 +116,20 @@ else {  categoryTree.value.forEach(item=>{
             />
           </ContentWrap>
         </ContentWrap>
-      </el-menu>
-      <div
+        <div
         @click="isCollapse = true"
-        class="absolute bottom-90px flex items-center justify-center w-180px h-50px rounded bg-[#e5f4f3] color-[#38aca1]"
-        style="cursor: pointer; left: calc(185px - 50%); font-weight: 600"
+        class=" mx-auto flex -mt-96px  items-center justify-center w-145px h-35px rounded bg-[#e5f4f3] color-[#38aca1]"
+        style="cursor: pointer; "
       >
         <img :src="img" class="w-12px h-7px mr-10px" /> 收起</div
       >
+      </el-menu>
+      
     </el-col>
     <div v-show="isCollapse" class="flex h-50px !w-[98.5%] m-auto bg-[#fff] rounded mb-15px">
       <el-input
         v-model="filterText2"
-        placeholder="输入关键字进行过滤"
+        placeholder="搜索基地"
         :prefix-icon="Search"
         class="pl-[10px] searchTop"
         @input="focusInput"
@@ -144,10 +143,10 @@ else {  categoryTree.value.forEach(item=>{
         展开
       </div>
     </div>
-    <div v-show="outputFous" class="bg-[#fff] mb-10px box-border pl-[20px] flex items-center h-50px !w-[98.5%] m-auto"> {{outputFous}} </div>
     <el-col :span="isCollapse ? 24 : 20">
       <ContentWrap style="height: 78vh; overflow: auto">
         <DeviceInfo
+          :isCollapse="isCollapse"
           :currCategory="currCategory"
           @clear-category="clearCategory"
           @reset="resetTreeSelections"

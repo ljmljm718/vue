@@ -82,7 +82,11 @@ const panelTangBaRef = ref<any>(null)
 const handleSelect = async (item) => {
   showPanel.value = true
   const res = await getDeviceInfo({ id: item })
-  if (panelTangBaRef.value) panelTangBaRef.value.getDeviceInfoData(res)
+  if (panelTangBaRef.value)
+  { 
+    panelTangBaRef.value.getDeviceInfoData(res)
+    panelTangBaRef.value.handleClick('设备概要')
+  }
   if (mapTangBgRef.value) {
     console.log("地图设备详情", res);
     
