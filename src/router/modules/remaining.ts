@@ -395,7 +395,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
-    path: 'tiandiMap',
+    path: '/tiandiMap',
     name: 'tiandiMap',
     component: () => import('@/views/tiandiMap/index.vue'),
     meta: {
