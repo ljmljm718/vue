@@ -194,8 +194,6 @@ const openParkDetailPopup = (id: string) => {
   } else parkDetailPopupRef.value.open(id)
 }
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-
-  console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.parkDetailName = String(order[0].name)

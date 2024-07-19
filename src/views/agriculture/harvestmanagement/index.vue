@@ -396,16 +396,11 @@ const getList = async () => {
     const data = await HarvestManagementApi.getHarvestManagementPage(queryParams)
     list.value = data.list
     list.value.forEach((item, index) => {
-      console.log(`Processing item at index ${index}:`, item);
       const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.varietyId))
       if (_itemA) {
-        console.log("1111111",_itemA)
         item.varietyName = _itemA.varietyName
         item.variety = _itemA.categoryName
       }
-      // 你还可以在这里修改 item 的值
-      // 例如:
-      // item.name = 'New Name';
     });
     total.value = data.total
   } finally {
