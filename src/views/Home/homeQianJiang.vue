@@ -149,6 +149,7 @@ const getDeviceCheckInfo = async () => {
     });
     mapIns.add(marker);
   })
+  mapIns.setFitView()
 }
 onMounted(() => { getDeviceCheckInfo() })
 

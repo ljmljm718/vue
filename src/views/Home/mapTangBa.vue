@@ -2,6 +2,7 @@
   <div id="tangbaMap" class="min-w-[100px] min-h-[100px]"></div>
 </template>
 <script setup lang="ts">
+import { debounce } from 'lodash-es'
 // @ts-ignore
 window._AMapSecurityConfig = { securityJsCode:'289153494763707d55b03878ace1cb08' }
 
@@ -51,9 +52,16 @@ const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offline
       imageSize: new AMap.Size(30, 32), //根据所设置的大小拉伸或压缩图片
     })
   });
-  if (mapIns) mapIns.add(marker);
+  if (mapIns) {
+    mapIns.add(marker);
+    fitMarkerOnMap()
+  }
   return marker
 }
+
+const fitMarkerOnMap = debounce(() => {
+  mapIns.setFitView()
+}, 250, { maxWait: 2000 })
 
 const setMapCenter = (longitude, latitude) => {
   if (!longitude || !latitude) return
