@@ -181,8 +181,6 @@ const getMenuDataList = async () => {
       handleSelect(item.id)
     })
   })
-  mapTangBgRef.value.setMapCenter(106.41226338163017, 30.05771932973406)
-  mapTangBgRef.value.setMapZoom(9)
 }
 getMenuDataList()
 
