@@ -13,7 +13,7 @@
       <el-form-item label="采集类型" prop="collectionType">
         <el-select  v-model="queryParams.collectionType" placeholder="请选择" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">
+          :class="`!w-${isCollapse2?'200px':'240px'}`">
           <el-option
             v-for="item in selectEquipmentType"
             :key="item"
@@ -32,7 +32,7 @@
       <el-form-item label="监测类型" prop="monitoringType">
         <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择监测类型" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">
+          :class="`!w-${isCollapse2?'200px':'240px'}`">
           <el-option
             v-for="item in selectCollectionType"
             :key="item"
@@ -45,7 +45,7 @@
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
 
@@ -76,7 +76,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'240px':'240px'}`"
         />
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
@@ -85,7 +85,7 @@
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
 
@@ -146,7 +146,7 @@
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
       <el-form-item label="设备编号" prop="yyRemarks">
@@ -201,13 +201,13 @@
     </el-form>
     <div v-if="isCollapse2" class="absolute right-0 flex items-center">
         <div  class='w-3px h-70px bg-[#f1f1f1] -ml-20px mr-10px'></div>
-        <el-form-item>
+        <el-form-item class='flex'>
           <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </el-form-item>
       </div>
-      <div v-if="!isCollapse2" class='w-3px h-70px bg-[#f1f1f1] -ml-10px'></div>
-      <div v-if="!isCollapse2" class="ml-20px">
+      <div v-if="!isCollapse2" class='w-3px h-70px bg-[#f1f1f1] -ml-10px mr-10px'></div>
+      <div v-if="!isCollapse2" class='flex'>
         <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </div>
