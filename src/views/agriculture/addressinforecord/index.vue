@@ -113,11 +113,7 @@
       <el-table-column label="地址标识号" align="center" prop="addressNumber" width="160" />
       <el-table-column label="联系人" align="center" prop="contact" width="160" />
       <el-table-column label="手机号码" align="center" prop="phoneNumber" width="160" />
-      <el-table-column label="地区信息" align="center" prop="areaInfo" width="200" >
-        <template #default="scope">
-          <span>{{(getCodeToText(scope.row.areaInfo))}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="地区信息" align="center" prop="areaInfo" width="200" />
       <el-table-column label="详细地址" align="center" prop="fullAddress" width="240" />
       <el-table-column label="邮政编码" align="center" prop="zipCode" width="160"/>
       <el-table-column label="是否默认" align="center" prop="isDefault" width="120" >
@@ -178,7 +174,6 @@ import download from '@/utils/download'
 import { AddressInfoRecordApi, AddressInfoRecordVO } from '@/api/agriculture/addressinforecord'
 import AddressInfoRecordForm from './AddressInfoRecordForm.vue'
 import {codeToText} from 'element-china-area-data';
-import {DeviceInfoApi} from "@/api/agriculture/deviceinfo";
 
 /** 地址信息记录 列表 */
 defineOptions({ name: 'AddressInfoRecord' })
