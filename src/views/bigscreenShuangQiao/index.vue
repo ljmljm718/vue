@@ -572,7 +572,7 @@ const leftIconMap = {
   "空气湿度":2,//空气湿度
   "大气压力":6,//大气压力
   "光照强度":3,//光照强度
-  "PM2.5/101":9,//PM2.5/101
+  "PM2.5/10":9,//PM2.5/101
 }
 
 const leftUnitMap = {
@@ -583,12 +583,12 @@ const leftUnitMap = {
   "风速": 'm/s', //风速
   "气压": 'hPa', //气压
   "雨量": 'mm', //降雨量
-  "风向": '', //风向
+  "风向": '度', //风向
   "空气温度":'℃',//空气温度
   "空气湿度":'%',//空气湿度
   "大气压力":'hPa',//大气压力
   "光照强度":'Lux',//光照强度
-  "PM2.5/101":'',//PM2.5/101
+  "PM2.5/10":'μg/m³',//PM2.5/101
 }
 
 const leftLabelMap = {
@@ -1154,7 +1154,7 @@ const rightUnitMap = {
   .extra-card-wrappper {
     .top-card-item {
       margin: 0 0.4rem;
-      padding: 0.8rem;
+      padding: 0.5rem;
       background-image: url(./assets/extraBg.png);
       background-size: 100% 100%;
       display: flex;
@@ -1363,7 +1363,7 @@ const rightUnitMap = {
   }
 }
 
-@for $i from 1 through 8 {
+@for $i from 1 through 9 {
   .l-icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
   }

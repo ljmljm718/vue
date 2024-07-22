@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
-import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
 /** 品种管理 表单 */
 defineOptions({ name: 'VarietyManagementForm' })
@@ -80,6 +80,12 @@ const formData = ref({
   remark2: undefined
 })
 const formRules = reactive({
+  varietyName: [{ required: true, message: '品种名称不能为空', trigger: 'blur' }],
+  varietyCode: [{ required: true, message: '品种编码不能为空', trigger: 'blur' }],
+  categoryId: [{ required: true, message: '品类名称不能为空', trigger: 'blur' }],
+  images: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
+  status: [{ required: true, message: '是否启用不能为空', trigger: 'blur' }],
+  categoryStigma: [{ required: true, message: '品种特征不能为空', trigger: 'blur' }]
 })
 const CategoryManagementQueryParams = reactive({})
 const formRef = ref() // 表单 Ref
@@ -91,10 +97,10 @@ const open = async (type: string, id?: number) => {
   formType.value = type
   resetForm()
   // 修改时，设置数据
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   if (id) {
     formLoading.value = true
     try {
-      listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
       formData.value = await VarietyManagementApi.getVarietyManagement(id)
     } finally {
       formLoading.value = false

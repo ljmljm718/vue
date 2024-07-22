@@ -11,19 +11,19 @@
       <el-form-item label="产品名称" prop="product">
         <el-input
           v-model="queryParams.product"
-          placeholder="请输入产品名称"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item label="所属基地" prop="park">
         <el-input
           v-model="queryParams.park"
-          placeholder="请输入所属基地"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-200px"
         />
       </el-form-item>
 <!--      <el-form-item label="产品码" prop="parkDetailId">-->
@@ -38,23 +38,27 @@
       <el-form-item label="所属地块" prop="parkDetail">
         <el-input
           v-model="queryParams.parkDetail"
-          placeholder="请输入所属地块"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item label="产品年份" prop="years">
         <el-input
           v-model="queryParams.years"
-          placeholder="请输入产品年份"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-200px"
         />
       </el-form-item>
+      <el-form-item label="" size="normal">
+        <div class="w-2px h-40px bg-[#e6e6e6]"></div>
+      </el-form-item>
+      
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" class='!bg-[#009688] !color-[#fff]'>
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -64,10 +68,16 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+   
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class="flex items-center justify-between mb-15px">
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
         <el-button
-          type="primary"
+        class='!bg-[#009688] !color-[#fff]'
           plain
           @click="openForm('create')"
           v-hasPermi="['digital:village-product:create']"
@@ -76,7 +86,6 @@
           新增
         </el-button>
         <el-button
-          type="success"
           plain
           @click="handleExport"
           :loading="exportLoading"
@@ -87,11 +96,32 @@
         </el-button>
       </el-form-item>
     </div>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <div class="flex">
+      <div @click="cardList=false" class="py-3px px-15px rounded-l" :style="`background-color: ${cardList?'':'#e5f4f3'}; border:1.5px solid ${cardList?'#e6e6e6':'#36a99e'}; color:${cardList?'':'#36a99e'}`">
+        <img :src="cardList?card2:card" class="w-10px h-10px" alt=""/>  
+        卡片
+      </div>
+      <div @click="cardList=true" class="py-3px px-15px rounded-r" :style="`border:1.5px solid ${cardList?'#36a99e':'#e6e6e6'};background-color: ${cardList?'#e5f4f3':''}; color:${cardList?'#36a99e':''}`">
+        <img :src="cardList?listImg:listImg2" class="w-10px h-10px" alt=""/>  
+        列表</div>
+    </div>
+    </div>
+    <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
+      <div v-for="item,index in list" :key="index" class="rounded bg-[#f5f5f5]" style="overflow: hidden;">
+        <img :src="item.photo" class="w-100% h-150px rounded" alt=""/>
+        <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
+          <div class="text-17px" style="font-weight:600">{{item.years}}{{item.product}} {{item.specifications}}Kg</div>
+          <div class="text-15px mt-10px mb-10px color-[#878787] " style="word-break:break-all" >
+            {{item.park}}-{{item.parkDetail}}-{{item.batchCode}}   
+          </div>
+          <div class="flex justify-end">
+            <div class="color-[#898989] text-sm">数量：{{item.inventory}}</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <el-table v-if="cardList" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="产品名称" align="center" prop="product"/>
       <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
@@ -170,13 +200,16 @@ import download from '@/utils/download'
 import {VillageProductApi, VillageProductVO} from '@/api/digital/villageproduct'
 import VillageProductForm from './VillageProductForm.vue'
 import {useRoute} from "vue-router";
-
+import card from '../../../assets/imgs/card-active.png'
+import card2 from '../../../assets/imgs/card-actived.png'
+import listImg from '../../../assets/imgs/list-active.png'
+import listImg2 from '../../../assets/imgs/list-actived.png'
 /** 特色产品 列表 */
 defineOptions({name: 'VillageProduct'})
 const router = useRouter() // 路由
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
-
+const cardList=ref(false)
 const loading = ref(true) // 列表的加载中
 const list = ref<VillageProductVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -205,6 +238,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await VillageProductApi.getVillageProductPage(queryParams)
+    console.log(data.list,'数据')
     list.value = data.list
     total.value = data.total
   } finally {

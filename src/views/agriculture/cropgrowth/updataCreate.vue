@@ -51,8 +51,8 @@
         >
           <el-row :gutter="24">
             <el-col :span="8">
-              <el-form-item label="作物id" prop="cropId">
-                <el-input v-model="formData.cropId" readonly placeholder="请选择">
+              <el-form-item label="种植作物" prop="cropId">
+                <el-input v-model="formData.cropName" readonly placeholder="请选择">
                   <template #append>
                     <el-button @click="openCropInfoPopup()">
                       <Icon icon="ep:search"/>
@@ -62,30 +62,38 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+<!--        <el-col :span="8">
               <el-form-item label="名称" prop="cropName">
                 <el-input v-model="formData.cropName" placeholder="请输入名称"/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
             <el-col :span="8">
-              <el-form-item label="品种" prop="cropType">
-                <el-select v-model="formData.cropType" placeholder="请选择品种">
+              <el-form-item label="品类" prop="cropType">
+                <!-- <el-select v-model="formData.cropType" placeholder="请选择品种">
                   <el-option
                     v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
                     :key="dict.value"
                     :label="dict.label"
                     :value="dict.value"
                   />
+                </el-select> -->
+                <el-select v-model="formData.cropType" clearable placeholder="请选择品类">
+                    <el-option
+                      v-for="item in listCategoryManagement"
+                      :key="item.id"
+                      :label="item.categoryName"
+                      :value="item.id"/>
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="生长期" prop="growth">
                 <el-input v-model="formData.growth" placeholder="请输入生长期"/>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="24">
+
             <el-col :span="8">
               <el-form-item label="特点" prop="feature">
                 <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点"/>
@@ -96,8 +104,6 @@
                 <el-input v-model="formData.growSite" type="textarea" placeholder="请输入生长地点"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="环境条件" prop="envCondition">
                 <el-input
@@ -105,6 +111,8 @@
                   placeholder="请输入环境条件"/>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="备注" prop="remark">
                 <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
@@ -112,7 +120,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="所属基地" prop="belongPark">
-                <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
+                <el-input v-model="formData.parkName" placeholder="请输入所属基地">
                   <template #append>
                     <el-button @click="openParkInfoPopup('0')">
                       <Icon icon="ep:search"/>
@@ -122,16 +130,14 @@
                 </el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
-            <el-col :span="8">
+<!--        <el-col :span="8">
               <el-form-item label="基地名称" prop="parkName">
                 <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
             <el-col :span="8">
               <el-form-item label="所属地块" prop="belongPlot">
-                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
+                <el-input v-model="formData.plotName" placeholder="请输入所属地块">
                   <template #append>
                     <el-button @click="openParkDetailPopup(formData.belongPark)">
                       <Icon icon="ep:search"/>
@@ -141,11 +147,14 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+          </el-row>
+          <el-row :gutter="24">
+
+<!--        <el-col :span="8">
               <el-form-item label="地块名称" prop="plotName">
                 <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
               </el-form-item>
-            </el-col>
+            </el-col>-->
           </el-row>
           <el-row :gutter="24">
             <el-col :span="8">
@@ -203,13 +212,12 @@ import {ParkDetailApi, ParkDetailVO} from '@/api/agriculture/parkdetail'
 import CropInfoPopup from "@/views/agriculture/cropgrowth/components/CropInfoPopup.vue";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import {MarketingProgramApi} from "@/api/agriculture/marketingprogram";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
 /** 作物生长期管理 表单 */
 defineOptions({name: 'CropGrowthForm'})
-
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
-
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -247,6 +255,9 @@ const router = useRouter()
 const ROUTE_PATH = route.path
 const FORMPAGE_NAME = ''
 const ORIGIN_PATH = '/farm_work/crop-growth' // 关闭表单时跳转的路径
+
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+
 
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
@@ -312,7 +323,6 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
   formData.value.plotName = (order[0].name).toString()
 
 }
-
 if (route.query.id) {
   let idNumber = route.query.id;
   CropGrowthApi.getCropGrowth(idNumber).then(res => {
@@ -349,6 +359,7 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  console.log("--===--",listCategoryManagement.value)
   resetForm()
   // 修改时，设置数据
   if (id) {
@@ -413,4 +424,8 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+const getType = async () =>{
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+}
+getType()
 </script>

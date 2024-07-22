@@ -17,28 +17,22 @@
       <!--            class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="名称" prop="cropName">
+      <el-form-item label="种植品种" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
-          placeholder="请输入名称"
+          placeholder="请输入种植品种"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品种" prop="cropType">
-        <el-select
-          v-model="queryParams.cropType"
-          placeholder="请选择品种"
-          clearable
-          class="!w-240px"
-        >
+      <el-form-item label="品类" prop="cropType">
+        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类" class="!w-240px">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -92,10 +86,10 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
-      <el-table-column label="名称" align="center" prop="cropName"/>
-      <el-table-column label="品种" align="center" prop="cropType">
+      <el-table-column label="种植品种" align="center" prop="cropName" width="140"/>
+      <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType"/>
+          <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="图片" align="center" prop="imgId">
@@ -235,8 +229,8 @@
             <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>
       </div>
-       
-          
+
+
     </template>
     <template #footer>
       <div style="flex: auto">
@@ -261,6 +255,7 @@ import router from "@/router";
 import {getTenantId} from "@/utils/auth";
 import {useUserStore} from "@/store/modules/user";
 import avatarImg from "@/assets/imgs/avatar.gif";
+import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -275,6 +270,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   cropCode: undefined,
+  breedId: undefined,
   cropName: undefined,
   cropType: undefined,
   createTime: [],
@@ -288,6 +284,7 @@ const queryParam = reactive({
   pageNo: 1,
   pageSize: 10,
   planId: undefined,
+  breedId: undefined,
   planName: undefined,
   belongPark: undefined,
   parkName: undefined,
@@ -312,14 +309,23 @@ const exportLoading = ref(false) // 导出的加载中
 const show = ref()
 const userStore = useUserStore()
 const userName = computed(() => userStore.user.deptId ?? '0')
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   show.value = userName.value
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
+    //把品类数据的namep拼接到列表中
+    list.value.forEach(item=>{
+      listCategoryManagement.value.forEach(itm=>{
+        if (item.cropType == itm.id)
+          item.cropType = itm.categoryName
+      })
+    })
     total.value = data.total
   } finally {
     loading.value = false

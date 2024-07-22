@@ -677,6 +677,30 @@ const initChart2 = async () => {
     })
   )
 }
+
+const defaultProps = {
+  children: 'child',
+  label: 'name'
+}
+onMounted(() => {
+  initChart2()
+})
+
+const test = ref()
+const test2 = ref()
+const monitorTypeList = ref([])
+const selectedMonitorType = ref()
+
+const handleRadioChange = async (monitoringType) => {
+  console.log(monitoringType,'monitoringTypemonitoringTypemonitoringType')
+  const res = await DeviceCategoryApi.QueryCollectionType({ monitoringType })
+  monitorTypeList.value = res
+  if (monitorTypeList.value.length > 0) {
+    handleSelectedMonitorTypeChange(res[0])
+    selectedMonitorType.value = res[0]
+    initChart3()
+  }
+}
 const initChart3 = async () => {
   console.log(dateData.value,'length')
   const res = await DeviceCategoryApi.waterQualityDataLineChartA({
@@ -754,29 +778,8 @@ const initChart3 = async () => {
     })
   )
 }
-const defaultProps = {
-  children: 'child',
-  label: 'name'
-}
-onMounted(() => {
-  initChart2()
-})
-
-const test = ref()
-const test2 = ref()
-const monitorTypeList = ref([])
-const selectedMonitorType = ref()
-
-const handleRadioChange = async (monitoringType) => {
-  console.log("test", monitoringType);
-  const res = await DeviceCategoryApi.QueryCollectionType({ monitoringType })
-  monitorTypeList.value = res
-  if (monitorTypeList.value.length > 0) {
-    handleSelectedMonitorTypeChange(res[0])
-    selectedMonitorType.value = res[0]
-  }
-}
 const handleSelectedMonitorTypeChange = async (item) => {
+  selectedMonitorType.value=item
   initChart3()
 }
 //获取顶部小卡片数据
@@ -827,6 +830,7 @@ const getParkTree = () => {
 getParkTree()
 //基地选择
 const handleTreeChange = (data, b) => {
+  if(!b.parent.data.id) return true 
   belongPark.value = b.parent.data.id
   belongPlot.value = b.data.id
   getHomeCheckLog(data.id)
@@ -928,7 +932,6 @@ const getEnvironmentView = (id, id2) => {
   environmentView({ deviceType: deviceType.value, belongPark: id, belongPlot: id2 }).then((res) => {
     console.log(res, '气象站历史数据')
     chartList.value = res
-    // initChart3(chartList.value.time, chartList.value.temperature)
   })
 }
 //获取土壤墒情和虫情监测

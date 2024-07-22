@@ -82,7 +82,11 @@ const panelTangBaRef = ref<any>(null)
 const handleSelect = async (item) => {
   showPanel.value = true
   const res = await getDeviceInfo({ id: item })
-  if (panelTangBaRef.value) panelTangBaRef.value.getDeviceInfoData(res)
+  if (panelTangBaRef.value)
+  { 
+    panelTangBaRef.value.getDeviceInfoData(res)
+    panelTangBaRef.value.handleClick('设备概要')
+  }
   if (mapTangBgRef.value) {
     console.log("地图设备详情", res);
     
@@ -108,7 +112,6 @@ const handleSelect = async (item) => {
 
 const secMenuId=ref('')
 const menuCli=(val)=>{
-  console.log(val,'valvalvalval')
   secMenuId.value=val
 }
 
@@ -123,7 +126,7 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   return resArr
 }
 //卫星图层切换
-const mapTileLayerType=ref(true)
+const mapTileLayerType=ref(false)
 const mapTileLayer=()=>{
   if( mapTileLayerType.value) mapTangBgRef.value.addSatellite()
   else  mapTangBgRef.value.removeSatellite()
@@ -177,8 +180,6 @@ const getMenuDataList = async () => {
       handleSelect(item.id)
     })
   })
-  mapTangBgRef.value.setMapCenter(106.41226338163017, 30.05771932973406)
-  mapTangBgRef.value.setMapZoom(9)
 }
 getMenuDataList()
 

@@ -1,17 +1,19 @@
 <template>
   <ContentWrap>
+    <div class="flex items-center relative">
     <!-- 搜索工作栏 -->
     <el-form
-      class="-mb-15px"
+      class="-mb-15px "
+      :style="`width:${isCollapse2?'':'57vw'}`"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
       label-width="68px"
     >
       <el-form-item label="采集类型" prop="collectionType">
-        <el-select  v-model="queryParams.collectionType" placeholder="请选择采集类型" clearable
+        <el-select  v-model="queryParams.collectionType" placeholder="请选择" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">
+          :class="`!w-${isCollapse2?'200px':'240px'}`">
           <el-option
             v-for="item in selectEquipmentType"
             :key="item"
@@ -30,7 +32,7 @@
       <el-form-item label="监测类型" prop="monitoringType">
         <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择监测类型" clearable
           @keyup.enter="handleQuery"
-          class="!w-240px">
+          :class="`!w-${isCollapse2?'200px':'240px'}`">
           <el-option
             v-for="item in selectCollectionType"
             :key="item"
@@ -40,10 +42,10 @@
         </el-select>
         <el-input v-else
           v-model="queryParams.monitoringType"
-          placeholder="请输入监测类型"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
 
@@ -74,16 +76,16 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'240px':'240px'}`"
         />
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
-          placeholder="请输入设备名称"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
 
@@ -141,19 +143,19 @@
       <el-form-item label="通道编码" prop="channelId">
         <el-input
           v-model="queryParams.channelId"
-          placeholder="请输入通道编码"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`!w-${isCollapse2?'200px':'240px'}`"
         />
       </el-form-item>
       <el-form-item label="设备编号" prop="yyRemarks">
         <el-input
           v-model="queryParams.yyRemarks"
-          placeholder="请输入设备编号"
+          placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-260px"
         />
       </el-form-item>
       <!-- <el-form-item label="备用一" prop="reserveOne">
@@ -194,15 +196,29 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-      </el-form-item>
+      
+      
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
+    <div v-if="isCollapse2" class="absolute right-0 flex items-center">
+        <div  class='w-3px h-70px bg-[#f1f1f1] -ml-20px mr-10px'></div>
+        <el-form-item class='flex'>
+          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        </el-form-item>
+      </div>
+      <div v-if="!isCollapse2" class='w-3px h-70px bg-[#f1f1f1] -ml-10px mr-10px'></div>
+      <div v-if="!isCollapse2" class='flex'>
+        <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+      </div>
+    </div>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div  class='mb-20px -mt-5px ml-10px'>
         <el-button
-              type="primary"
+              class="!bg-[#009688] !color-[#fff]"
               plain
               @click="openForm('create')"
               v-hasPermi="['yyang:equipment-data:create']"
@@ -210,7 +226,6 @@
               <Icon icon="ep:plus" class="mr-5px" /> 新增
             </el-button>
             <el-button
-              type="success"
               plain
               @click="handleExport"
               :loading="exportLoading"
@@ -218,12 +233,7 @@
             >
               <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-      </el-form-item>
     </div>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
@@ -370,7 +380,11 @@ const props = defineProps({
   },
   collectionType:{
     type:Object
-  }
+  },
+  isCollapse: {
+    type: Boolean,
+    default: false
+  },
 },
 )
 // 监听父组件category变化
@@ -391,6 +405,12 @@ watch(() => props.currCategory,
     handleQuery()
   })
 
+//监听父组件isCollapse变化
+const isCollapse2=ref(false)
+watch(()=>props.isCollapse,(val)=>{
+  console.log(val,'1234isCollapse')
+  isCollapse2.value=val
+})
 /**
  * 设备分类级联选择器
  */

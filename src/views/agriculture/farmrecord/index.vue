@@ -96,19 +96,13 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品种" prop="cropType">
-        <el-select
-          v-model="queryParams.cropType"
-          placeholder="请选择品种"
-          clearable
-          class="!w-240px"
-        >
+      <el-form-item label="品类" prop="cropType">
+        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类" class="!w-240px">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
         </el-select>
       </el-form-item>
 <!--      <el-form-item label="计划状态" prop="planState">-->
@@ -255,7 +249,7 @@
 <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="农事计划id" align="center" prop="planId" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="作物名称" align="center" prop="cropName" v-if="show !==117"/>
+      <el-table-column label="作物品种" align="center" prop="cropName" v-if="show !==117"/>
       <el-table-column label="基地名称" align="center" prop="parkName"/>
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
@@ -278,9 +272,9 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 <!--      <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />-->
-      <el-table-column label="品种" align="center" prop="cropType">
+      <el-table-column label="种植品类" align="center" prop="cropType" width="120">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+          <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="批次码" align="center" prop="batchCode"  v-if="show !==117"/>
@@ -377,6 +371,7 @@ import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {useUserStore} from "@/store/modules/user";
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 农事记录 列表 */
 defineOptions({ name: 'FarmRecord' })
@@ -385,6 +380,7 @@ const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 let farmDefineOptions = ref([])// 设备分类选项
 
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const loading = ref(true) // 列表的加载中
 const list = ref<FarmRecordVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -422,12 +418,21 @@ show.value = userName.value
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
+    console.log("queryParams", queryParams)
     const data = await FarmRecordApi.getFarmRecordPage(queryParams)
     data.list.forEach((item)=>{
       item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
     })
     list.value = data.list
+    //把品类数据的namep拼接到列表中
+    list.value.forEach(item=>{
+      listCategoryManagement.value.forEach(itm=>{
+        if (item.cropType == itm.id)
+          item.cropType = itm.categoryName
+      })
+    })
     total.value = data.total
   } finally {
     loading.value = false

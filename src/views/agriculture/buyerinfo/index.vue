@@ -17,15 +17,15 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="用户头像" prop="buyerImg">
-        <el-input
-          v-model="queryParams.buyerImg"
-          placeholder="请输入用户头像"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="用户头像" prop="buyerImg">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.buyerImg"-->
+      <!--          placeholder="请输入用户头像"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <!--      <el-form-item label="备用字段1" prop="buyerOne">-->
       <!--        <el-input-->
       <!--          v-model="queryParams.buyerOne"-->

@@ -11,28 +11,42 @@
       <!--        <el-input v-model="formData.recordNum" placeholder="请输入记录编号" />-->
       <!--      </el-form-item>-->
 
-      <el-form-item label="品种名称" prop="varietyName">
-        <el-input v-model="formData.varietyName" placeholder="请输入品种名称" :disabled="boo"/>
+      <el-form-item label="品种名称" prop="varietyId">
+        <el-select
+          v-model="formData.varietyId"
+          placeholder="请选择品种"
+          clearable
+          :disabled="boo"
+          @change="handleVarietyChange"
+        >
+          <el-option
+            v-for="dict in listVarietyManagement"
+            :key="dict.id"
+            :label="dict.varietyName"
+            :value="dict.id"
+          />
+        </el-select>
+        <!--        <el-input v-model="formData.varietyName" placeholder="请输入品种名称" :disabled="boo"/>-->
       </el-form-item>
-      <el-form-item label="品种" prop="variety">
+      <el-form-item label="品类" prop="variety">
         <!-- <el-input v-model="formData.variety" placeholder="请输入品种"/> -->
         <el-select
           v-model="formData.variety"
-          placeholder="请输入分类"
+          placeholder="选择品种后自动填入"
           clearable
-          :disabled="boo"
+          :disabled = "true"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in listVarietyManagement"
+            :key="dict.categoryId"
+            :label="dict.categoryName"
+            :value="dict.categoryId"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="品种ID" prop="varietyId">
-        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled="boo"/>
-      </el-form-item>
+      <!--      <el-form-item label="品种ID" prop="varietyId">-->
+      <!--        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled="boo"/>-->
+      <!--      </el-form-item>-->
       <!-- 获取批次号 -->
       <el-form-item label="批次码" prop="batchCode">
         <el-input v-model="formData.batchCode" placeholder="请输入批次码" :disabled="boo"/>
@@ -103,7 +117,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
-
+import {VarietyManagementVO, allDataCacheManager} from "@/api/agriculture/varietymanagement/index";
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {CropBaseApi} from "@/api/agriculture/cropbase";
 import {formatTime} from "@/utils";
@@ -112,6 +126,17 @@ import {FarmRecordVO} from "@/api/agriculture/farmrecord";
 
 /** 采收管理 表单 */
 defineOptions({name: 'HarvestManagementForm'})
+
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+const getTypeData = async () => {
+  listVarietyManagement.value = await allDataCacheManager.getData({})
+}
+getTypeData()
+
+const handleVarietyChange = (e) => {
+  const _item = listVarietyManagement.value.find(item => (item.id === e))
+  if (_item) formData.value.variety = _item.categoryId
+}
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -169,8 +194,6 @@ const openParkDetailPopup = (id: string) => {
   } else parkDetailPopupRef.value.open(id)
 }
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-
-  console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.parkDetailName = String(order[0].name)
