@@ -216,7 +216,6 @@ const dataShowDateChange = (val) => {
   let month = data.getMonth() + 1
   let day = data.getDate()
   dataShowDate.value = `${year}-${month}-${day}`
-  // initDataShowChart(dataShowRadio.value, seletValue.value, dataShowDate.value)
 }
 
 const queryChart = () => {
