@@ -81,7 +81,11 @@
               <el-table-column label="地块名称" prop="massifName" />
               <el-table-column label="设备名称" prop="facilityName" />
               <el-table-column label="品种名称" prop="cropName" />
-              <el-table-column label="测量类型" prop="measureType" />
+              <el-table-column label="测量类型" prop="measureType" >
+                <template #default="scope">
+                 <dict-tag :type="DICT_TYPE.AGRI_GROW_TYPE" :value="scope.row.measureType"/>
+                </template>
+              </el-table-column>
               <el-table-column label="测量值" prop="measureNum" />
               <el-table-column
                 label="测量时间"
