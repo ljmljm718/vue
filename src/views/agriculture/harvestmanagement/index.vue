@@ -17,16 +17,24 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="品种名称" prop="varietyName">
-        <el-input
-          v-model="queryParams.varietyName"
-          placeholder="请输入品种名称"
+      <el-form-item label="品种名称" prop="varietyId">
+        <el-select
+          v-model="queryParams.varietyId"
+          placeholder="请选择品种"
           clearable
-          @keyup.enter="handleQuery"
+          :disabled="boo"
+          @change="handleVarietyChange"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in listVarietyManagement"
+            :key="dict.id"
+            :label="dict.varietyName"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="品种" prop="variety">
+      <el-form-item label="品类名称" prop="variety">
         <!-- <el-input
           v-model="queryParams.variety"
           placeholder="请输入品种"
@@ -36,15 +44,15 @@
         /> -->
         <el-select
           v-model="queryParams.variety"
-          placeholder="请选择品种"
+          placeholder="请选择品类或者选择品种后自动填入"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in listCategoryManagement"
+            :key="dict.id"
+            :label="dict.categoryName"
+            :value="dict.id"
           />
         </el-select>
       </el-form-item>
@@ -189,15 +197,13 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
-      <el-table-column label="品种名称" align="center" prop="varietyName"  width="140" v-if="show !==118"/>
-      <el-table-column label="品种" align="center" prop="variety" width="120" v-if="show !==118">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.variety"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="品种名称" align="center" prop="varietyName" width="140"
+                       v-if="show !==118"/>
+      <el-table-column label="品种" align="center" prop="variety" width="120" v-if="show !==118"/>
 
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
-      <el-table-column label="批次码" align="center" prop="batchCode" width="180" v-if="show !==118"/>
+      <el-table-column label="批次码" align="center" prop="batchCode" width="180"
+                       v-if="show !==118"/>
       <el-table-column
         label="上传时间"
         align="center"
@@ -206,12 +212,12 @@
         width="180px"
       />
       <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
-      <el-table-column label="基地" align="center" prop="belongPark" width="180" />
+      <el-table-column label="基地" align="center" prop="belongPark" width="180"/>
       <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
-      <el-table-column label="地块" align="center" prop="belongPlot" width="180" />
-      <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180" />
-      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180" />
-      <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180" />
+      <el-table-column label="地块" align="center" prop="belongPlot" width="180"/>
+      <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
+      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
+      <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -282,9 +288,9 @@
           placement="top"
         >
           <el-card>
-            <h4>品种名称：{{item.product}}</h4>
+            <h4>品种名称：{{ item.product }}</h4>
             <p>批次码：{{ item.batchCode }}</p>
-            <p>消耗量：{{ item.remark+" "+"Kg" }}</p>
+            <p>消耗量：{{ item.remark + " " + "Kg" }}</p>
             <p>加工时间：{{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>
         </el-timeline-item>
@@ -316,6 +322,9 @@ import {
 } from "@/api/digital/villageprocessingrecords";
 import {getTenantId} from "@/utils/auth";
 import {useUserStore} from "@/store/modules/user";
+import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import CategoryManagement from "@/views/agriculture/categorymanagement/index.vue";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
@@ -361,8 +370,14 @@ const exportLoading = ref(false) // 导出的加载中
 const show = ref()
 const userStore = useUserStore()
 const userName = computed(() => userStore.user.deptId ?? '0')
+
 function cancelClick() {
   drawer2.value = false
+}
+
+const handleVarietyChange = (e) => {
+  const _item = listVarietyManagement.value.find(item => (item.id === e))
+  if (_item) queryParams.variety = _item.categoryId
 }
 const damn = async (row) => {
   queryParam.recoveryNum = row.id;
@@ -374,14 +389,20 @@ const damn = async (row) => {
   drawer2.value = true
 }
 
-
-
-
 // 采收管理
 const formVpRef = ref()
 const openVillageProductForm = async (type: string, id: number) => {
   formVpRef.value.open(type, await HarvestManagementApi.getHarvestManagement(id))
 }
+
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const getTypeData = async () => {
+  listVarietyManagement.value = await allDataCacheManager.getData({})
+  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({})
+}
+getTypeData()
+
 
 /** 查询列表 */
 const getList = async () => {
@@ -390,6 +411,13 @@ const getList = async () => {
   try {
     const data = await HarvestManagementApi.getHarvestManagementPage(queryParams)
     list.value = data.list
+    list.value.forEach((item, index) => {
+      const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.varietyId))
+      if (_itemA) {
+        item.varietyName = _itemA.varietyName
+        item.variety = _itemA.categoryName
+      }
+    });
     total.value = data.total
   } finally {
     loading.value = false

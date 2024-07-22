@@ -185,6 +185,16 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/tiandi',
+    component: () => import('@/views/tianDi/index.vue'),
+    name: 'Login',
+    meta: {
+      hidden: true,
+      title: t('router.login'),
+      noTagsView: true
+    }
+  },
+  {
     path: '/sso',
     component: () => import('@/views/Login/components/SSOLogin.vue'),
     name: 'SSOLogin',
@@ -390,6 +400,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/home',
     name: 'HomePage',
     component: () => import('@/views/gateway/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/tiandiMap',
+    name: 'tiandiMap',
+    component: () => import('@/views/tiandiMap/index.vue'),
     meta: {
       hidden: true
     }

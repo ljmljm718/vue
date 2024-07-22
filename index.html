@@ -1,10 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="http://api.tianditu.gov.cn/api?v=4.0&tk=3499364c33fd4aa4415dd8765d4c5b77"
+      type="text/javascript"
+    ></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta
       name="keywords"
       content="芋道管理系统 基于 vue3 + CompositionAPI + typescript + vite3 + element plus 的后台开源免费管理系统！"
@@ -147,13 +152,9 @@
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e8722adaace412f3d9d531a5cb019756&plugin=AMap.RectangleEditor"></script>
-
     <script
-            async
-            defer
-            src="http://117.73.12.23:18080/api/application/embed?protocol=http&host=117.73.12.23:18080&token=2b3f8c981d74f9e0">
-    </script>
-
+      type="text/javascript"
+      src="https://webapi.amap.com/maps?v=2.0&key=e8722adaace412f3d9d531a5cb019756&plugin=AMap.RectangleEditor"
+    ></script>
   </body>
 </html>

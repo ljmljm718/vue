@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
-import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
 /** 品种管理 表单 */
 defineOptions({ name: 'VarietyManagementForm' })
@@ -97,10 +97,10 @@ const open = async (type: string, id?: number) => {
   formType.value = type
   resetForm()
   // 修改时，设置数据
+  listCategoryManagement.value = await allDataCacheManager.getData({})
   if (id) {
     formLoading.value = true
     try {
-      listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement(CategoryManagementQueryParams)
       formData.value = await VarietyManagementApi.getVarietyManagement(id)
     } finally {
       formLoading.value = false

@@ -17,35 +17,43 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品种" prop="cropType">
-        <el-select
-          v-model="queryParams.cropType"
-          placeholder="请选择品种"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
+      <el-form-item label="品类" prop="cropId">
+        <el-select v-model="queryParams.cropId" clearable placeholder="请选择品类" class="!w-240px">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="生长期" prop="growth">
-        <el-input
-          v-model="queryParams.growth"
-          placeholder="请输入生长期"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+      <el-form-item label="品种" prop="cropName">
+        <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种" class="!w-240px">
+          <el-option
+            v-for="item in listVarietyManagementVO.list"
+            :key="item.varietyName"
+            :label="item.varietyName"
+            :value="item.varietyName"/>
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-form-item>
         <el-button
           type="primary"
-          plain
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth-new:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          新增
         </el-button>
         <el-button
           type="success"
@@ -54,21 +62,22 @@
           :loading="exportLoading"
           v-hasPermi="['agri:crop-growth-new:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </div>
+
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="品种名称" align="center" prop="cropName" />
-      <el-table-column label="品类名称" align="center" prop="cropType" />
-<!--      <el-table-column label="品种编号" align="center" prop="cropCode" />-->
-<!--      <el-table-column label="品类编号" align="center" prop="cropId" />-->
-<!--      <el-table-column label="图片" align="center" prop="imgId" />-->
+      <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="品种名称" align="center" prop="cropName"/>
+      <el-table-column label="品类名称" align="center" prop="cropType"/>
+      <!--      <el-table-column label="品种编号" align="center" prop="cropCode" />-->
+      <!--      <el-table-column label="品类编号" align="center" prop="cropId" />-->
+      <!--      <el-table-column label="图片" align="center" prop="imgId" />-->
       <el-table-column label="图片" align="center" prop="imgId">
         <template #default="{ row }">
           <el-image
@@ -81,7 +90,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="生长期" align="center" prop="growth" />
+      <el-table-column label="生长期" align="center" prop="growth"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -97,18 +106,18 @@
         width="180px"
       />
 
-      <el-table-column label="环境条件" align="center" prop="envCondition" />
-      <el-table-column label="生长地点" align="center" prop="growSite" />
-      <el-table-column label="周期（/天）" align="center" prop="cycle" />
-      <el-table-column label="特点" align="center" prop="feature" />
+      <el-table-column label="环境条件" align="center" prop="envCondition"/>
+      <el-table-column label="生长地点" align="center" prop="growSite"/>
+      <el-table-column label="周期（/天）" align="center" prop="cycle"/>
+      <el-table-column label="特点" align="center" prop="feature"/>
 
-<!--      <el-table-column-->
-<!--        label="创建时间"-->
-<!--        align="center"-->
-<!--        prop="createTime"-->
-<!--        :formatter="dateFormatter"-->
-<!--        width="180px"-->
-<!--      />-->
+      <!--      <el-table-column-->
+      <!--        label="创建时间"-->
+      <!--        align="center"-->
+      <!--        prop="createTime"-->
+      <!--        :formatter="dateFormatter"-->
+      <!--        width="180px"-->
+      <!--      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -140,23 +149,27 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CropGrowthNewForm ref="formRef" @success="getList" />
+  <CropGrowthNewForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew'
+import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
 import CropGrowthNewForm from './CropGrowthNewForm.vue'
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 
 /** 作物生长周期 列表 */
-defineOptions({ name: 'CropGrowthNew' })
+defineOptions({name: 'CropGrowthNew'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<CropGrowthNewVO[]>([]) // 列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const listVarietyManagementVO = ref<VarietyManagementVO[]>([]) // 品种列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -178,19 +191,22 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+const CategoryManagementQueryParams = reactive({})
+const VarietyManagementVOQueryParams = reactive({})
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
+    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
+    listVarietyManagementVO.value =await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
+    console.log(listVarietyManagementVO.value)
     list.value = data.list
     total.value = data.total
   } finally {
     loading.value = false
   }
 }
-
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
@@ -219,7 +235,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

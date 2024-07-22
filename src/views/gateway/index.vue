@@ -242,128 +242,106 @@
     <div class="village-Bg w-full h-700px mt-20px flex justify-center">
       <div class="container">
         <div>
-        <div class="text-center text-3xl mt-20px">示范村建设</div>
-        <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
-          >数字监控全方位覆盖，多种设备及多种技术相结合的安全防范管理系统，为农业园区提供先进、快捷、行之有效的科技管理手段，加快数字新农业的发展</div
-        >
-      </div>
-      <div class="flex justify-evenly items-center  " style="height:calc(100% - 200px)">
-        <div class="flex mt-5%">
-          <div class="flex flex-col items-center">
-            <div class="flex items-center" @click="tabTime(1, '2024')">
-              <div
-                class="w-10px h-10px rounded-full"
-                :style="`background-color:${timeNum == 1 ? '#17d46b' : '#c1c1c1'}`"
-              ></div>
-              <div class="ml-10px text-sm" :style="`color:${timeNum == 1 ? '#17d46b' : '#fff'}`"
-                >2024</div
-              >
-            </div>
-            <div class="w-2px h-40px bg-[#c1c1c1] mr-45px"></div>
-            <div class="flex items-center" @click="tabTime(2, '2023')">
-              <div
-                class="w-10px h-10px rounded-full"
-                :style="`background-color:${timeNum == 2 ? '#17d46b' : '#c1c1c1'}`"
-              ></div>
-              <div class="ml-10px text-sm" :style="`color:${timeNum == 2 ? '#17d46b' : '#fff'}`"
-                >2023</div
-              >
-            </div>
-            <div class="w-2px h-40px bg-[#c1c1c1] mr-45px"></div>
-            <div class="flex items-center" @click="tabTime(3, '2022')">
-              <div
-                class="w-10px h-10px rounded-full"
-                :style="`background-color:${timeNum == 3 ? '#17d46b' : '#c1c1c1'}`"
-              ></div>
-              <div class="ml-10px text-sm" :style="`color:${timeNum == 3 ? '#17d46b' : '#fff'}`"
-                >2022</div
-              >
-            </div>
-          </div>
-          <div class="ml-15px">
-            <div class="text-lg"
-              >{{ timeNum == 1 ? '2024' : timeNum == 2 ? '2023' : '2022' }}年，我们建设</div
-            >
-            <div class="my-10px flex items-center"
-              >示范村 <div class="text-lg w-30px text-center color-[#38c874] ">{{ leftArr2.tableData1.length }}</div
-              >个
-            </div>
-            <div class='flex items-center'
-              >区县<div class="text-lg w-30px text-center color-[#38c874]">{{ options.length }}</div
-              >个 | 产业类型<div class="text-lg w-30px text-center color-[#38c874]">{{ from }}</div
-              >个 | 产业形态<div class="text-lg w-30px text-center color-[#38c874]">{{ industry }}</div
-              >种</div
-            >
-          </div>
-        </div>
-        <div class="table-wrapper2 bg-[#feffff] w-45%  rounded" style="max-height:550px;min-height:200px;">
-          <div class="table-header-row">
-            <div
-              class="table-header-cell"
-              v-for="(column, index) in leftArr2.tableColumns1"
-              :style="`width: ${column.width};`"
-              :key="index"
-              >{{ column.label }}
-              <el-select
-                @change="selectChange"
-                class="!bg-[#3ac975] color-[#fff]"
-                v-show="column.label === ''"
-                v-model="county"
-                placeholder="请选择区县"
-                style="width: 130px"
-              >
-                <el-option class="color-[#fff]" label="全部" value="全部" />
-                <el-option
-                  class="color-[#fff]"
-                  v-for="item in options"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
-            </div>
-          </div>
-          <div
-            class="table-data-row"
-            v-for="(item, index) in leftArr2.tableData1"
-            @click="goPage(item.bigscreen)"
-            style="cursor: pointer"
-            :key="index"
+          <div class="text-center text-3xl mt-20px">示范村建设</div>
+          <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
+            >数字监控全方位覆盖，多种设备及多种技术相结合的安全防范管理系统，为农业园区提供先进、快捷、行之有效的科技管理手段，加快数字新农业的发展</div
           >
-            <div
-              v-show="column.label === '序号'"
-              class="table-data-cell"
-              v-for="(column, inde) in leftArr2.tableColumns1"
-              :key="inde"
-              :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-              >{{ index + 1 }}</div
-            >
-            <div
-              v-show="item[column.key] != item.warnStatus"
-              class="table-data-cell"
-              v-for="(column, inde) in leftArr2.tableColumns1"
-              :key="inde"
-              :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
-              >{{ item[column.key] }}
+        </div>
+        <div class="flex justify-center items-start space-x-[40px]">
+          <div>
+            <div class="font-bold text-[1.5rem]">{{ timeNum == 1 ? '2024' : timeNum == 2 ? '2023' : '2022' }}年，我们共建设</div>
+            <div class="text-[.9rem] my-[1rem] w-[500px]">
+              <span>示范村</span>
+              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ leftArr2.tableData1.length }}</span>
+              <span>个</span>
+              <span class="font-bold px-[.6rem]">|</span>
+              <span>区县</span>
+              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ options.length }}</span>
+              <span>个</span>
+              <span class="font-bold px-[.6rem]">|</span>
+              <span>产业类型</span>
+              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ from }}</span>
+              <span>种</span>
+              <span class="font-bold px-[.6rem]">|</span>
+              <span>产业形态</span>
+              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ industry }}</span>
+              <span>种</span>
+            </div>
+            <div class="flex mt-[40px]">
+                <div :class="[timeNum == 1 ? 'rect-selected' : 'rect-normal']" @click="tabTime(1, '2024')">2024</div>
+                <div :class="[timeNum == 2 ? 'rect-selected' : 'rect-normal']" @click="tabTime(2, '2023')">2023</div>
+                <div :class="[timeNum == 3 ? 'rect-selected' : 'rect-normal']" @click="tabTime(3, '2022')">2022</div>
+                <div class="rect-extra"></div>
+                <div class="rect-extra"></div>
             </div>
           </div>
-          <el-pagination
-          class="mt-10px"
-            v-model:currentPage="params.pgeNo"
-            v-model:page-size="params.pageSize"
-            :page-sizes="[1, 5, 10, 20]"
-            :small="small"
-            :disabled="disabled"
-            :background="background"
-            layout="->,total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
+          <div class="table-wrapper2 bg-[#feffff] w-[500px] rounded min-h-[200px] max-h-[550px]">
+            <div class="table-header-row px-[10px]">
+              <div
+                class="table-header-cell"
+                v-for="(column, index) in leftArr2.tableColumns1"
+                :style="`width: ${column.width};`"
+                :key="index"
+                >{{ column.label }}
+                <el-select
+                  @change="selectChange"
+                  class="!bg-[#3ac975] color-[#fff]"
+                  v-show="column.label === ''"
+                  v-model="county"
+                  placeholder="请选择区县"
+                  style="width: 130px"
+                >
+                  <el-option class="color-[#fff]" label="全部" value="全部" />
+                  <el-option
+                    class="color-[#fff]"
+                    v-for="item in options"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+              </div>
+            </div>
+            <div
+              class="table-data-row px-[10px]"
+              v-for="(item, index) in leftArr2.tableData1"
+              @click="goPage(item.bigscreen)"
+              style="cursor: pointer"
+              :key="index"
+            >
+              <div
+                v-show="column.label === '序号'"
+                class="table-data-cell"
+                v-for="(column, inde) in leftArr2.tableColumns1"
+                :key="inde"
+                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                >{{ index + 1 }}</div
+              >
+              <div
+                v-show="item[column.key] != item.warnStatus"
+                class="table-data-cell"
+                v-for="(column, inde) in leftArr2.tableColumns1"
+                :key="inde"
+                :style="`width: ${column.width};font-size:12px;color:#c1c1c1`"
+                >{{ item[column.key] }}
+              </div>
+            </div>
+            <el-pagination
+              class="mt-10px mr-[10px] mb-[10px]"
+              v-model:currentPage="params.pgeNo"
+              v-model:page-size="params.pageSize"
+              :page-sizes="[1, 5, 10, 20]"
+              :small="small"
+              :disabled="disabled"
+              :background="background"
+              layout="->,total, sizes, prev, pager, next, jumper"
+              :total="total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
         </div>
       </div>
-      </div>
-      
     </div>
     <div class="mb-20px w-100% flex justify-center">
       <div class="container">
@@ -1410,5 +1388,34 @@ const goPage3 = (url) => {
 
 .target-top:hover .target-img1 {
   animation-play-state: paused;
+}
+
+.rect-normal, .rect-selected, .rect-extra {
+  background-size: 100% 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 -3px;
+  font-weight: bold;
+}
+
+.rect-normal {
+  background-image: url(./assets/rect.png);
+  width: 7rem;
+  height: 2rem;
+  color: #2ec66d;
+}
+
+.rect-selected {
+  background-image: url(./assets/rect1.png);
+  width: 7rem;
+  height: 2rem;
+  color: #fff;
+}
+
+.rect-extra {
+  background-image: url(./assets/rect2.png);
+  height: 2rem;
+  width: 1rem;
 }
 </style>

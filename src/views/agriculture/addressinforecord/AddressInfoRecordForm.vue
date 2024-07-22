@@ -25,10 +25,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="地区信息" prop="areaInfo">
-            <!--        <el-input v-model="formData.areaInfo" placeholder="请输入地区信息" />-->
-            <el-cascader :options="areaSelectData" style="width: 100%"
-                         class="full-width" clearable
-                         v-model="formData.areaInfo" placeholder="请选择销售地"/>
+              <el-input v-model="formData.areaInfo" placeholder="请输入地区信息" />
+<!--            <el-cascader :options="areaSelectData" style="width: 100%"-->
+<!--                         class="full-width" clearable-->
+<!--                         v-model="formData.areaInfo" placeholder="请选择销售地"/>-->
           </el-form-item>
         </el-col>
         <el-col :span="24">
