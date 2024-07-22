@@ -58,7 +58,8 @@ const whiteList = [
   '/QRCode',
   '/home',
   "/bigscreenMY",
-  "/bigscreenTB"
+  "/bigscreenTB",
+  '/tiandi'
 ]
 
 // 路由加载前
