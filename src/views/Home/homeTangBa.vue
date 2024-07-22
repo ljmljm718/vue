@@ -112,7 +112,6 @@ const handleSelect = async (item) => {
 
 const secMenuId=ref('')
 const menuCli=(val)=>{
-  console.log(val,'valvalvalval')
   secMenuId.value=val
 }
 
@@ -127,7 +126,7 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   return resArr
 }
 //卫星图层切换
-const mapTileLayerType=ref(true)
+const mapTileLayerType=ref(false)
 const mapTileLayer=()=>{
   if( mapTileLayerType.value) mapTangBgRef.value.addSatellite()
   else  mapTangBgRef.value.removeSatellite()
