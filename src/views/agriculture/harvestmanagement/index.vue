@@ -49,10 +49,10 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in listVarietyManagement"
-            :key="dict.categoryId"
+            v-for="dict in listCategoryManagement"
+            :key="dict.id"
             :label="dict.categoryName"
-            :value="dict.categoryId"
+            :value="dict.id"
           />
         </el-select>
       </el-form-item>
@@ -323,6 +323,8 @@ import {
 import {getTenantId} from "@/utils/auth";
 import {useUserStore} from "@/store/modules/user";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import CategoryManagement from "@/views/agriculture/categorymanagement/index.vue";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
@@ -394,8 +396,10 @@ const openVillageProductForm = async (type: string, id: number) => {
 }
 
 const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const getTypeData = async () => {
   listVarietyManagement.value = await allDataCacheManager.getData({})
+  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({})
 }
 getTypeData()
 

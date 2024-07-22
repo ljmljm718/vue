@@ -7,8 +7,10 @@
       <el-button class="my-button" @click="markerTool.open()">标注开启 </el-button>
       <el-button class="my-button" @click="editMarker()">编辑标注 </el-button>
       <el-button class="my-button" @click="endeditMarker()">关闭标注编辑 </el-button>
-      <!-- <el-button class="my-button" @click="getDistance()">获取test</el-button> -->
       <el-button class="my-button" @click="showAlert()">获取线长度 </el-button>
+      <el-button class="my-button" @click="drawPolygon()">绘制地块</el-button>
+      <el-button class="my-button" @click="saveCoordinates()">保存地块坐标</el-button>
+      <el-button class="my-button" @click="removeLastPolygon()">清除上一地块</el-button>
     </div>
   </div>
 </template>
@@ -17,7 +19,7 @@ let map: any = null
 let markerTool: any = null
 let points: T.LngLat[] = []
 let pgpoints: T.LngLat[] = []
-
+let savedCoordinates = [] //保存地块坐标数组
 let getDistance: any
 let editMarker: any
 let showAlert: any
@@ -29,6 +31,37 @@ const endeditMarker = () => {
   }
 }
 
+//绘制地块功能
+const drawPolygon = () => {
+  let PolygonTool = new T.PolygonTool(map)
+  //清除地图上已有的覆盖物
+  // map.clearOverLays()
+  PolygonTool.open()
+
+  PolygonTool.addEventListener('draw', (e: any) => {
+    // console.log(e)
+    //获取地块的坐标点数组
+    let coordinates = e.currentLnglats
+    //保存坐标点到数组中
+    if (coordinates.length > 0) {
+      savedCoordinates.push(coordinates)
+    }
+    PolygonTool.close()
+    // console.log('ttttt', savedCoordinates)
+  })
+}
+const saveCoordinates = () => {
+  console.log(savedCoordinates)
+  // 将坐标点保存到本地存储
+  localStorage.setItem('polygonCoordinates', JSON.stringify(savedCoordinates))
+}
+//删除上一个绘制的地块
+const removeLastPolygon = () => {
+  if (savedCoordinates.length > 0) {
+    savedCoordinates.pop() // 从坐标数组中移除最后一个地块
+  }
+  //在地图上删除上一个地块？
+}
 const initMap = () => {
   const configureMap = (map: any) => {
     map.enableScrollWheelZoom()
@@ -45,15 +78,17 @@ const initMap = () => {
       maxZoom: 18
     }
   ])
-
+  //获取点击处坐标
   map.addEventListener('click', (e) => {
+    console.log(e)
+
     const { lnglat } = e
     const { lng, lat } = lnglat
     console.log('lng', lng)
     console.log('lat', lat)
+    //复制到剪贴板
     navigator.clipboard.writeText(`[${lng}, ${lat}],`)
   })
-  //console.log('MaP', map)
   //@ts-ignore
   const lnglat = new T.LngLat(116.40969, 39.89945)
   map.centerAndZoom(lnglat, 12)
@@ -73,7 +108,6 @@ const initMap = () => {
     for (let k = 0; k < points.length - 1; k++) {
       r += points[k].distanceTo(points[k + 1])
     }
-    // console.log('errrrrr' + r)
     return r
   }
 
