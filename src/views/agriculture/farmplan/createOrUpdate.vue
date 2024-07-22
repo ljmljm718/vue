@@ -370,8 +370,8 @@ const activeName = ref<any>(['1', '2'])
 
                 <el-row :gutter="3">
                   <el-col :span="12">
-                    <el-form-item label="品种" prop="cropType">
-                      <el-select v-model="formData.cropType" disabled placeholder="请选择品种">
+                    <el-form-item label="品类" prop="cropType">
+                      <el-select v-model="formData.cropType" disabled placeholder="请选择品类">
                         <el-option
                           v-for="item in listCategoryManagement"
                           :key="item.id"

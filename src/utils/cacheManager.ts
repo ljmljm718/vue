@@ -6,7 +6,7 @@ export default class CacheManager {
       this.clearCache()
     })
   }
-  
+
   private cacheDataMap:Map<string, Array<any>> = new Map()
 
   private cacheFunc:Function | null = null
@@ -16,7 +16,7 @@ export default class CacheManager {
 
   public async getData(params:any) {
     const paramsString:string = JSON.stringify(toRaw(params)) || 'default'
-    
+
     return new Promise(async (resolve, reject) => {
       if (this.cacheDataMap.get(paramsString)) {
         return resolve(this.cacheDataMap.get(paramsString))
@@ -29,10 +29,13 @@ export default class CacheManager {
         this.cacheDataMap.set(paramsString, res)
         return resolve(res)
       } else {
-        const { data } = res;
+        const { data, list } = res;
         if (data && Array.isArray(data)) {
           this.cacheDataMap.set(paramsString, data)
           return resolve(data)
+        } else if (list && Array.isArray(list)) {
+          this.cacheDataMap.set(paramsString, list)
+          return resolve(list)
         } else {
           return reject(new Error('返回数据未发现数组，请检查请求！'))
         }

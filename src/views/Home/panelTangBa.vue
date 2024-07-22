@@ -15,12 +15,14 @@
       </div>
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
-    <el-tabs v-model="activeTab" class="px-2 w-100%" @tab-click='handleClick'>
-      <el-tab-pane name='设备概要' >
-        <template #label>
-          <div :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">设备概要</div>
-        </template>
-        <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
+    <div class="w-full flex mb-10px items-center">
+      <div @click="handleClick('设备概要')" style="cursor: pointer;" :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-l`">设备概要</div>
+      <div @click="handleClick('报警')" style="cursor: pointer;" :class="`${tabsVal=='报警'?'active':'actived'} text-center leading-30px w-[33%] h-30px`">报警</div>
+      <div @click="handleClick('设备属性')" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
+    </div>
+    <div>
+      <div   v-if="tabsVal==='设备概要'">
+      <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
           <div
             class="grid grid-cols-4 gap-2 py-2 min-h-[100px]"
@@ -81,7 +83,11 @@
               <el-table-column label="地块名称" prop="massifName" />
               <el-table-column label="设备名称" prop="facilityName" />
               <el-table-column label="品种名称" prop="cropName" />
-              <el-table-column label="测量类型" prop="measureType" />
+              <el-table-column label="测量类型" prop="measureType" >
+                <template #default="scope">
+                 <dict-tag :type="DICT_TYPE.AGRI_GROW_TYPE" :value="scope.row.measureType"/>
+                </template>
+              </el-table-column>
               <el-table-column label="测量值" prop="measureNum" />
               <el-table-column
                 label="测量时间"
@@ -115,12 +121,9 @@
           <div id="chartWindDirec" class="chart-ins"></div>
           <div id="chartWindSpeed" class="chart-ins"></div>
         </el-scrollbar>
-      </el-tab-pane>
-      <el-tab-pane  name="报警">
-        <template #label>
-          <div :class="` ${tabsVal=='报警'?'active':'actived'} text-center leading-40px w-[130px] h-40px rounded`">报警</div>
-        </template>
-        <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
+    </div>
+    <div   v-if="tabsVal==='报警'">
+      <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
             :data="warnDataList"
             size="small"
@@ -176,12 +179,9 @@
             />
           </el-table>
         </el-scrollbar>
-      </el-tab-pane>
-      <el-tab-pane name="设备属性" >
-        <template #label>
-          <div :class="`${tabsVal=='设备属性'?'active':'actived'} w-[130px] h-40px rounded text-center leading-40px`">设备属性</div>
-        </template>
-        <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
+      </div>
+    <div   v-if="tabsVal==='设备属性'">
+      <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
           <div class="flex flex-col items-center mt-4">
             <div class="flex items-center space-x-2 p-4 py-2 mt-4">
@@ -237,8 +237,8 @@
             </div>
           </div>
         </el-scrollbar>
-      </el-tab-pane>
-    </el-tabs>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -270,9 +270,8 @@ defineOptions({ name: 'PanelTangBa' })
 console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }).join(''));
 //标签切换
 const tabsVal=ref('设备概要')
-const handleClick=(e)=>{
-  if(!e.props) tabsVal.value=e
-  else  tabsVal.value=e.props.name
+const handleClick=(val)=>{
+    tabsVal.value=val
 }
 const generateXY = (arr:Array<any>) => {
   const x:Array<any> = [], y:Array<any> = []

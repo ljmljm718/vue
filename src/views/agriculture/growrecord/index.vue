@@ -222,6 +222,7 @@ import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
 import GrowRecordForm from './GrowRecordForm.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import router from '@/router';
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 长势管理 列表 */
 defineOptions({name: 'GrowRecord'})
@@ -254,13 +255,22 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
+    listCategoryManagement.value = await allDataCacheManager.getData({})
     const data = await GrowRecordApi.getGrowRecordPage(queryParams)
     list.value = data.list
+    //把品类数据的namep拼接到列表中
+    list.value.forEach(item=>{
+      listCategoryManagement.value.forEach(itm=>{
+        if (item.cropType == itm.id)
+          item.cropType = itm.categoryName
+      })
+    })
     total.value = data.total
   } finally {
     loading.value = false
