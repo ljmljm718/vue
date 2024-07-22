@@ -199,7 +199,7 @@
 
       <el-table-column label="品种名称" align="center" prop="varietyName" width="140"
                        v-if="show !==118"/>
-      <el-table-column label="品种" align="center" prop="variety" width="120" v-if="show !==118"/>
+      <el-table-column label="品类名称" align="center" prop="variety" width="120" v-if="show !==118"/>
 
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
       <el-table-column label="批次码" align="center" prop="batchCode" width="180"
