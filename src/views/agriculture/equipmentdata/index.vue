@@ -537,9 +537,36 @@ let route=useRoute()
 /** 初始化 **/
 onMounted(() => {
   let location = route.query
+  console.log(window.innerWidth,'123456innerwidth')
   if (location) {
     queryParams.collectionType = location.collectionType
   }
   getList()
 })
 </script>
+<style lang="scss" scoped>
+@media screen and (min-width:1450px) {
+  .el-form{
+    .el-select{
+      width: 230px !important;
+    }
+    .el-input{
+      width: 230px !important;
+    }
+    .el-date-picker{
+      width: 160px !important;
+    }
+  }
+}
+@media screen and (max-width:1358px) { 
+  .el-form{
+    .el-select{
+      width: 230px !important;
+    }
+    .el-input{
+      width: 230px !important;
+    }
+  }
+  
+}
+</style>
