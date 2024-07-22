@@ -169,7 +169,9 @@ import download from '@/utils/download'
 import {ParkDetailApi, ParkDetailVO} from '@/api/agriculture/parkdetail'
 import ParkDetailForm from './ParkDetailForm.vue'
 import {  DICT_TYPE } from '@/utils/dict'
-
+import { useRoute } from 'vue-router'
+import router from '@/router'
+const route = useRoute();
 /** 地块基本信息 列表 */
 defineOptions({name: 'ParkDetail'})
 
@@ -214,6 +216,12 @@ const getList = async () => {
   }
 }
 
+if(route.query.type){
+  console.log("-----=",route.query.type);
+  
+  queryParams.type = route.query.type
+  getList();
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1

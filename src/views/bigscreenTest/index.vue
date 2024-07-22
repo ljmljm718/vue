@@ -329,8 +329,8 @@ export default defineComponent({
                 baseEquipmentList.value = [
                     { label: '池塘', value: res.pondCount + '个' },
                     { label: '鱼苗', value: res.fryCount + '条' },
-                    { label: '鸭舍', value: res1.duckCoopCount + '间', url: '/asset/agriculturalResourcesManagement/duck-house-management' },
-                    { label: '稻鸭', value: res1.riceDuckCount, url: '/asset/agriculturalResourcesManagement/duck-house-management' },
+                    { label: '鸭舍', value: res1.duckCoopCount + '间', url: '/asset/base/parkdetail?type=DuckCoop' },
+                    { label: '稻鸭', value: res1.riceDuckCount, url: '/asset/base/parkdetail?type=DuckCoop' },
                     { label: '示范基地', value: res2.parkSum + '亩', url: '/asset/base/parkinfo' },
                     { label: '基地数量', value: res2.parkCount + '个', url: '/asset/base/parkinfo' },
                     { label: '养殖农户', value: res2.farmerCount + '户', url: '/asset/base/farmer-info' },
