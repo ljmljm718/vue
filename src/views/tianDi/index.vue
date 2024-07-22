@@ -100,7 +100,14 @@ const initMap = () => {
   //@ts-ignore
   const lnglat = new T.LngLat(116.40969, 39.89945)
   map.centerAndZoom(lnglat, 12)
-
+  //标注工具
+  markerTool = new T.MarkTool(map, { follow: true })
+  editMarker = () => {
+    let markers = markerTool.getMarkers()
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].enableDragging()
+    }
+  }
   return
   //多边形
   const polyPoints = [
@@ -144,15 +151,6 @@ const initMap = () => {
   marker.addEventListener('click', () => {
     marker.openInfoWindow(markerInfoWin)
   }) // 将标注添加到地图中
-
-  //标注工具
-  markerTool = new T.MarkTool(map, { follow: true })
-  editMarker = () => {
-    let markers = markerTool.getMarkers()
-    for (let i = 0; i < markers.length; i++) {
-      markers[i].enableDragging()
-    }
-  }
 }
 
 onMounted(() => {
