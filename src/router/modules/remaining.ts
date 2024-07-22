@@ -187,7 +187,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/tiandi',
     component: () => import('@/views/tianDi/index.vue'),
-    name: 'Login',
+    name: 'TianDi',
     meta: {
       hidden: true,
       title: t('router.login'),
