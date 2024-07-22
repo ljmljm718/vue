@@ -18,6 +18,7 @@ const initMap = (center:Array<number> = [109.24604650765662, 31.41416444104432])
     // layers: [ ],
     // mapStyle: 'amap://styles/blue', //设置地图的显示样式
   })
+  mapIns.add(satelliteLayer)
   mapIns && mapIns.on('click', (e) => {
     navigator.clipboard.writeText(`[${e.lnglat.R.toString()}, ${e.lnglat.Q.toString()}],`)
   })
