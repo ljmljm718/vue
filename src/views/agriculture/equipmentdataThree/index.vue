@@ -1,53 +1,64 @@
 <template>
+  <!-- 第一栏 -->
   <ContentWrap>
-    <div class="floatRight">
-      <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
-        <el-option
-          v-for="item in refreshList"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-    </div>
-    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-7 mr-[120px]">
-      <div
-        class="weather-bg min-w-[8rem] rounded-lg py-2 px-4 flex justify-between items-center cursor-pointer space-x-3"
-        v-for="item,index in trendData"
-        :key="index"
-        :style="`background-color: ${getRandomColor(index)};`"
-        @click="tabCli(item.equipmentCode,item.monitoringType,index)"
-      >
-        <div :class="`w-[2rem] h-[2rem] icon-extra-${getIconClass(item.monitoringType)}`" style="background-size: 100% 100%;"></div>
-        <div class="flex flex-col items-end box-top">
-          <div>{{ item.monitoringType }}</div>
-          <div>
-            <span style="font-family: 'ArtFont';">{{ item.dataValue }}</span>
-            <span class="pl-1">{{ item.yyUnit }}</span>
+    <div class="top-area">
+      <!-- 标题 -->
+      <div class="clear-float">
+        <div class="top-area-title float-left">实时数据</div>
+        <div class="top-area-select float-right">
+          <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
+            <el-option
+              v-for="item in refreshList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+      </div>
+      <!-- 数据 -->
+      <div class="top-area-items">
+        <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
+          <!-- 单个项 -->
+          <div
+            class="weather-bg min-w-[8rem] rounded-lg py-2 px-3 flex justify-between items-center cursor-pointer space-x-3"
+            v-for="item,index in trendData"
+            :key="index"
+            @click="tabCli(item.equipmentCode,item.monitoringType,index)"
+          >
+            <!-- 左侧名称和数值 -->
+            <div class="top-area-item-data">
+              <div class="top-area-item-name">{{ item.monitoringType }}</div>
+              <div class="top-area-item-num">
+                <span>{{ item.dataValue }}</span>
+                <span class="top-area-item-unit">{{ item.yyUnit }}</span>
+              </div>
+            </div>
+            <!-- 右侧图标 -->
+            <div :class="`top-area-item-icon icon-extra-${getIconClass(item.monitoringType)}`"></div>
           </div>
         </div>
-        <!-- <div
-          @click="tabCli(item.equipmentCode,item.monitoringType,index)"
-          :class="active==index?'active':'actived'"
-        >查看趋势</div> -->
       </div>
     </div>
   </ContentWrap>
-  <ContentWrap>
-    <div class="flex justify-between">
-      <div></div>
-      <div class="flex items-center">
-        <span class="pr-2">折叠/展示:</span>
-        <el-switch v-model="collis" />
+  <!-- 第二栏 -->
+  <ContentWrap class="mid-area relative">
+    <div class="mid-area-fold">
+      <div class="flex items-center" @click="changeCollis">
+        <span>折叠/展示</span>
+        <el-icon>
+          <ArrowUp v-show="collis" />
+          <ArrowDown v-show="!collis" />
+        </el-icon>
       </div>
     </div>
     <div v-show="collis">
       <el-form
-        class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
         label-width="68px"
+        class="mid-area-form"
       >
         <el-form-item label="设备名称" prop="deviceName">
           <el-input
@@ -78,17 +89,19 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <el-button @click="handleQuery" class="mid-area-query">查询</el-button>
+          <el-button @click="resetQuery" class="mid-area-reset">重置</el-button>
           <el-button type="primary" @click="handleData"  v-if="route.query.equipmentCode != null && route.query.equipmentCode != undefined" >采集最新数据</el-button>
         </el-form-item>
       </el-form>
       <el-table
         v-loading="loading"
         :data="list"
-        :stripe="true"
+        :stripe="false"
         :show-overflow-tooltip="true"
-        style="margin-top: 15px;"
+        class="mid-area-table"
+        :header-cell-style="{'background-color': '#F5F5F5', 'padding-top': '15px', 'padding-bottom': '18px', border: 'none'}"
+        :row-style="{ height: '50px' }"
       >
         <el-table-column
           label="设备名称"
@@ -125,23 +138,20 @@
         @pagination="getList()"
       />
     </div>
-
   </ContentWrap>
-  <!-- 列表 -->
+  <!-- 第三栏 -->
   <ContentWrap>
     <div class="flex justify-between">
-      <span class="text-lg" style="font-family: 'ArtFont';">{{obj.monitoringType}}{{ obj.yyUnit?'('+obj.yyUnit+')':'' }}趋势</span>
+      <span class="bottom-area-title">{{obj.monitoringType}}趋势</span>
       <div class="flex items-center">
         <el-radio-group v-model="isLineRadio" size="small" @change="handleRadioChange">
-          <el-radio-button label="line" value="line">
-            <el-icon><Share /></el-icon>
-          </el-radio-button>
           <el-radio-button label="pie" value="pie">
-            <el-icon><Histogram /></el-icon>
+            柱状图
+          </el-radio-button>
+          <el-radio-button label="line" value="line">
+            折线图
           </el-radio-button>
         </el-radio-group>
-        <!-- <span class="pr-2">显示模式:</span>
-        <el-switch v-model="isLine" @change="handleSwitchChange" /> -->
       </div>
     </div>
     <div
@@ -171,38 +181,24 @@ const handleSwitchChange = (val) => {
 
 const getIconClass = (text:string) => {
     const iconMap = {
-        '温度': '1',
-        '湿度': '2',
-        'PH': '3',
-        'EC': '4',
-        '光': '5',
-        '雨': '6',
-        '二氧化碳': '7',
-        '气压': '8',
-        '虫': '9',
-        '类': '10',
-        'default': '1',
-        "磷": '11',
-        "氮": '12',
-        "钾": '13',
-        "深度": '14',
-        "种植面积": '18',
-        "农户": '17',
-        "大棚": '15',
-        "盆栽": '16',
-        "施肥": "19",
-        "虫害": "20",
-        "浇水": "21",
-        "除草": "22",
-        "打药": "23",
-        "采收": "24"
+        '溶解氧饱和度': '1',
+        '余氯浓度': '2',
+        '温度': '3',
+        '盐度': '4',
+        'ORP': '5',
+        '电导率': '6',
+        '溶解氧浓度': '7',
+        '浊度': '8',
+        'TDS': '9',
+        'PH': '10',
+        'default': '9',
     }
-    const iconLabel = Object.keys(iconMap);
-    let key = 'default'
-    iconLabel.forEach(item => {
-        if (text.indexOf(item) !== -1) key = item
-    })
-    return iconMap[key]
+    let keys = Object.keys(iconMap);
+    if (keys.includes(text)) {
+      return iconMap[text]
+    } else {
+      return iconMap['default']
+    }
 }
 
 const getIcon = (item) => {
@@ -222,6 +218,9 @@ const getIcon = (item) => {
 }
 
 const collis = ref(true)
+const changeCollis = () => {
+  collis.value = !collis.value
+}
 let route = useRoute()
 
 let active = ref(0)
@@ -428,7 +427,6 @@ const initChart = async (line = false) => {
     )
     obj.value = res[0]
   }
-  console.log(res, '==res')
   let xAxisData = []
   let yAxisData = []
   res.forEach((item) => {
@@ -446,17 +444,19 @@ const initChart = async (line = false) => {
             color: '#000'
           }
         },
-        nameTextStyle: {
-          color: '#000'
-        }
       },
-      legend: {
-        show: true,
-        orient: 'horizontal'
+      legend : {
+        show: false
       },
       yAxis: [
         {
           type: 'value',
+          name: `单位：${obj.value.yyUnit}`,
+          nameTextStyle: {
+            color: 'rgba(153, 153, 153, 1)',
+            "font-family": "AlibabaPuHuiTi",
+            fontSize: "13px",
+          },
           axisLine: {
             show: true,
             lineStyle: {
@@ -491,10 +491,7 @@ const initChart = async (line = false) => {
           smooth: false,
           itemStyle: {
             normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#28c3fd00' },
-                { offset: 0, color: '#28c3fd' }
-              ])
+              color: "rgba(0, 150, 136, 1)"
             },
           },
         }
@@ -529,65 +526,129 @@ const changeRefresh = async (value) => {
   }
 }
 </script>
+
 <style scoped lang="scss">
-.weather-bg {
-  background-size: 100% 100%;
+$percentage: 100%;
+.clear-float::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
 }
 
-.container {
+// ---------------- top-area start ------------------
+.top-area {
+  margin-top: -8px;
+  margin-right: 6px;
+}
+.top-area-title {
+  font: 18px AlibabaPuHuiTi;
+}
+.top-area-select {
+  width: 150px;
+  height: 30px;
+}
+.top-area-items {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  margin-top: 10px;
 }
-.box {
-  width: 5%;
-  display: flex;
-  margin-right: 20px;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  .box-top {
-    width: 100%;
-    padding: 3px 0;
-    height: 50px;
-    background-size: 100% 100%;
-    background-image: url(./assets/topBg.png);
-  }
-  .active {
-    width: 100%;
-    margin-top: 10px;
-    padding: 0 5px;
-    height: 50px;
-    text-align: center;
-    background-size: 100% 100%;
-    background-image: url(./assets/active.png);
-  }
-  .actived {
-    width: 100%;
-    margin-top: 10px;
-    height: 50px;
-    text-align: center;
-    background-size: 100% 100%;
-    background-image: url(./assets/actived.png);
-  }
+.weather-bg {
+  height: 80px;
+  background-size: $percentage 100%;
+  background-color: rgba(0, 150, 136, 0.08);
 }
-.floatRight {
-  position: absolute;
-  right: 30px;
-  top: 30px;
-  width: 120px;
+.top-area-item-name {
+  font: 13px PingFangSC;
+  color: rgba(51, 51, 51, 1);
 }
-
-@for $i from 1 through 8 {
-  .icon-#{$i} {
-    background-image: url(./assets/icon#{$i}.png);
-  }
+.top-area-item-num {
+  margin-top: 7px;
+  font: 20px, "PingFangSC";
+  color: rgba(0, 150, 136, 1);
+}
+.top-area-item-unit {
+  font-size: 14px;
+}
+.top-area-item-icon {
+  width: 36px;
+  height: 36px;
+  background-color: rgba(0, 150, 136, 1);
+  border-radius: 90%;
+  background-repeat: no-repeat;
+  background-size: 50% 50%;
+  background-position: center;
 }
 
 @for $i from 1 through 24 {
   .icon-extra-#{$i} {
-    background-image: url(../../bigscreenTest/assets/icon#{$i}.png);
+    background-image: url(./assets/icon#{$i}.png);
   }
 }
+// ---------------- top-area end ------------------
+
+// ---------------- mid-area start ------------------
+.mid-area .el-card__body {
+  padding: 0;
+}
+.mid-area-form {
+  margin-bottom: 20px;
+}
+.mid-area-fold {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font: 14px AlibabaPuHuiTi;
+  color: #009688;
+}
+.mid-area-fold:hover {
+  cursor: pointer;
+}
+.mid-area-query {
+  background-color: #009688;
+  color: #FFFFFF;
+}
+.mid-area-reset {
+  color: #666666;
+}
+.mid-area-table {
+  padding-top: 19px;
+  border-top: 1px solid #E5E5E5;
+}
+::v-deep.el-table__row ::v-deep.el-table__cell {
+  border-bottom: 1px dashed rgba(229, 229, 229, 1);
+}
+// ---------------- mid-area end ------------------
+
+// ---------------- bottom-area start ------------------
+.bottom-area-title {
+  color: rgba(51, 51, 51, 1);
+  font: 18px "PingFangSC";
+  font-weight: bold;
+}
+::v-deep.el-radio-button{
+  border-radius: 4px 0px 0px 4px;
+  width: 90px;
+  height: 30px;
+  .el-radio-button__inner {//修改按钮样式
+    width: 90px;
+    line-height: 30px;
+    vertical-align: middle;
+    background: #FFFFFF;
+    color:rgba(102, 102, 102, 1);
+    font: 14px;
+    text-align: center;
+  }
+  .el-radio-button__original-radio:checked + .el-radio-button__inner {// 修改按钮激活样式
+      color: rgba(0, 150, 136, 1);
+      border-color: rgba(0, 150, 136, 1);
+  }
+}
+// ---------------- bottom-area end ------------------
+
+
 </style>
