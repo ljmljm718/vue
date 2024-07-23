@@ -1476,53 +1476,55 @@ export default defineComponent({
             )
         }
         return () => (
-            <BigscreenAdapter>
-                <BigscreenContainer backgroundImage={mainBg}>
-                    <BigscreenHeader
-                        backgroundImage={headerBg}
-                        v-slots={{
-                            left: () => (
-                                <div class="flex space-x-4 relative">
-                                    <BigscreenTab
-                                        v-model={activeTab.value}
-                                        options={[
-                                            { key: 'base', label: '基地导览' },
-                                            { key: 'plant', label: '智慧种植' },
-                                            { key: 'risk', label: '风险预警' }
-                                        ]}
-                                        onChange={handleTabChange}
-                                    />
-                                    {
-                                        monitorDeviceLoading.value || monitorNoticeLoading.value ? (
-                                            <div
-                                                class="absolute left-0 top-0 w-230px h-30px"
-                                                onClick={(e) => { e.stopPropagation() }}
-                                            ></div>
-                                        ) : null
-                                    }
-                                    <BackOrHome />
-                                </div>
-                            ),
-                            right: () => (
-                                <BigScreenTime />
-                            ),
-                            default: () => (
-                                <div class="art-font tracking-wide">稻鱼鸭产业可视化数字驾驶舱</div>
-                            )
-                        }}
-                    ></BigscreenHeader>
-                    <BigscreenMain
-                        v-slots={{
-                            default: () => {
-                                if (activeTab.value === 'base') return baseTabPage()
-                                if (activeTab.value === 'plant') return plantTabPage()
-                                if (activeTab.value === 'risk') return riskTabPage()
-                            }
-                        }}
-                    />
-                    <BigscreenFooter height="30px" />
-                </BigscreenContainer>
-            </BigscreenAdapter>
+            <div class="bg-[#12153a] w-[100vw] h-[100vh]">
+                <BigscreenAdapter>
+                    <BigscreenContainer backgroundImage={mainBg}>
+                        <BigscreenHeader
+                            backgroundImage={headerBg}
+                            v-slots={{
+                                left: () => (
+                                    <div class="flex space-x-4 relative">
+                                        <BigscreenTab
+                                            v-model={activeTab.value}
+                                            options={[
+                                                { key: 'base', label: '基地导览' },
+                                                { key: 'plant', label: '智慧种植' },
+                                                { key: 'risk', label: '风险预警' }
+                                            ]}
+                                            onChange={handleTabChange}
+                                        />
+                                        {
+                                            monitorDeviceLoading.value || monitorNoticeLoading.value ? (
+                                                <div
+                                                    class="absolute left-0 top-0 w-230px h-30px"
+                                                    onClick={(e) => { e.stopPropagation() }}
+                                                ></div>
+                                            ) : null
+                                        }
+                                        <BackOrHome />
+                                    </div>
+                                ),
+                                right: () => (
+                                    <BigScreenTime />
+                                ),
+                                default: () => (
+                                    <div class="art-font tracking-wide">稻鱼鸭产业可视化数字驾驶舱</div>
+                                )
+                            }}
+                        ></BigscreenHeader>
+                        <BigscreenMain
+                            v-slots={{
+                                default: () => {
+                                    if (activeTab.value === 'base') return baseTabPage()
+                                    if (activeTab.value === 'plant') return plantTabPage()
+                                    if (activeTab.value === 'risk') return riskTabPage()
+                                }
+                            }}
+                        />
+                        <BigscreenFooter height="30px" />
+                    </BigscreenContainer>
+                </BigscreenAdapter>
+            </div>
         )
     },
 })
