@@ -168,6 +168,7 @@ const createText = (_viewer, position, text = '', _option = {}) => {
 }
 
 const enablePolygonEdit = ref<boolean>(false)
+const appendHeight2Arr = (arr:any[], height = 3) => arr.map(item => ([...item, height]))
 let tempPolygonIns:any = null
 let tempPolyPositions:Array<any> = []
 const handleMapClick = (_viewer, e) => {
@@ -187,12 +188,11 @@ const handleMapClick = (_viewer, e) => {
       ]
       tempPolygonIns = createPolygon(_viewer, tempPolyPositions, {}, true)
     } else {
-      tempPolygonIns.polygon.hierarchy = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
-        116.385847876651, 39.9210402682383, 1000,
-        116.39341037100495, 39.9121609191357, 1000,
-        116.39532922467104, 39.92160280388272, 1000
-
-      ]));
+      tempPolyPositions.push([longitude, latitude])
+      
+      tempPolygonIns.polygon.hierarchy = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights(
+        flattenDepth(appendHeight2Arr(tempPolyPositions), 3)
+      ));
       _viewer.scene.requestRender();
     }
     return
@@ -217,16 +217,18 @@ const handleMapClick = (_viewer, e) => {
 const handleMouseMove = (_viewer, e) => {
   // 正在绘制
   if (enablePolygonEdit.value && tempPolygonIns) {
-    console.log("tempPolygonIns", tempPolygonIns);
-    const _posArr = JSON.parse(JSON.stringify(tempPolyPositions))
-    if (Array.isArray(_posArr)) _posArr.pop()
     // const mousePosi = viewer.scene.camera.pickEllipsoid(e.position, viewer.scene.globe.ellipsoid)
-    tempPolygonIns.polygon.hierarchy = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
-      116.385847876651, 39.9210402682383, 1000,
-      116.39341037100495, 39.9121609191357, 1000,
-      116.39532922467104, 39.92160280388272, 1000
-
-    ]));
+    const cartesian = _viewer.camera.pickEllipsoid(
+      e.endPosition,
+      _viewer.scene.globe.ellipsoid
+    );
+    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+    const longitude = Cesium.Math.toDegrees(cartographic.longitude)
+    const latitude = Cesium.Math.toDegrees(cartographic.latitude)
+    
+    tempPolygonIns.polygon.hierarchy = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights(
+      flattenDepth(appendHeight2Arr([...tempPolyPositions, [longitude, latitude]]), 3)
+    ));
     _viewer.scene.requestRender();
   }
 }
@@ -244,6 +246,7 @@ const handleMapDoubleClick = (_viewer, e) => {
     // 双击停止绘制
     tempPolygonIns = null
     enablePolygonEdit.value = false;
+    tempPolyPositions = []
   }
 }
 
