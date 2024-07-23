@@ -172,8 +172,6 @@ const enablePolygonEdit = ref<boolean>(false)
 let tempPolygonIns: any = null
 let tempPolyPositions: Array<any> = []
 const appendHeight2Arr = (arr: any[], height = 3) => arr.map((item) => [...item, height])
-let tempPolygonIns: any = null
-let tempPolyPositions: Array<any> = []
 const handleMapClick = (_viewer, e) => {
   const cartesian = _viewer.camera.pickEllipsoid(e.position, _viewer.scene.globe.ellipsoid)
   const cartographic = Cesium.Cartographic.fromCartesian(cartesian)
