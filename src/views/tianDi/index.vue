@@ -9,13 +9,44 @@
       <el-button class="my-button" @click="saveCoordinates()">保存地块坐标</el-button>
       <el-button class="my-button" @click="deleteCoordinates()">删除地块</el-button>
     </div>
+    <div class="absolute z-36 left-[1rem] top-[1rem] bg-white p-2">
+      <Selector @change="handleSelectorChange" />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
+import Selector from './selector.vue'
+
 let map: any = null
 let markerTool: any = null
 let savedCoordinates: Array<any> = [] //保存地块坐标数组
 let editMarker: any
+
+// 创建一个标记点
+const createPoint = (position, label = '') => {
+  if (!Array.isArray(position)) return
+  if (position.length !== 2) return
+  const icon = new T.Icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/1483/1483336.png",
+    iconSize: new T.Point(30, 30),
+    iconAnchor: new T.Point(0, 10),
+  })
+  const _pos = new T.LngLat(position[0], position[1])
+  const marker = new T.Marker(_pos, { icon: icon });
+  
+  const labelItem = new T.Label({
+    text: label, //文本标注的内容
+    position: _pos, //文本标注的地理位置
+    offset: new T.Point(-25, -30) //文本标注的位置偏移值
+  })
+  map.addOverLay(marker);
+  map.addOverLay(labelItem);
+  map.centerAndZoom(_pos, 15)
+}
+
+const handleSelectorChange = (item) => {
+  createPoint(item.position, item.name)
+}
 
 // 删除已经绘制的地块
 const deleteCoordinates = () => {
