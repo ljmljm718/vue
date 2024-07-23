@@ -35,16 +35,56 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="操作" align="center" width="220" fixed="right">
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="handleDraw(scope.row.id)"
+            v-hasPermi="['agriculture:park-info:update']"
+          >
+            绘制围栏
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
+    <el-dialog
+      v-model="showDrawDialog"
+      title="绘制围栏"
+      width="1200px"
+      append-to-body
+      destroy-on-close
+    >
+      <div class="w-full aspect-video">
+        <TianDiMap ref="tiandiIns1" />
+      </div>
+      <template #footer>
+        <el-button size="small" @click="showDrawDialog = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="showDrawDialog = false">确 定</el-button>
+      </template>
+    </el-dialog>
   </ContentWrap>
 </template>
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo'
+import TianDiMap from '@/views/tianDi/index.vue'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
+
+// 绘制围栏
+const selectedDrawId = ref('')
+const showDrawDialog = ref<boolean>(false)
+const tiandiIns1 = ref()
+const handleDraw = (id) => {
+  selectedDrawId.value = id
+  showDrawDialog.value = true;
+  nextTick(() => {
+    tiandiIns1.value.initMap()
+  })
+}
 
 const props = defineProps<{
   parkId: undefined // 主表（主表的关联字段）
