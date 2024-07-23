@@ -1,6 +1,6 @@
 <template>
-  <div class="relative">
-    <div id="mapDom" class="w-[100vw] h-[100vh]"></div>
+  <div class="relative w-full h-full">
+    <div id="mapDom" class="w-full h-full"></div>
     <div class="absolute z-36 right-[1rem] top-[1rem] p-2 bg-white">
       <el-button type="primary" @click="enablePolygonEdit = true">开始绘制</el-button>
     </div>
