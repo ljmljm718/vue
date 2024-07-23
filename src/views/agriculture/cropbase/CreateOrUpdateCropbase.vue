@@ -151,6 +151,18 @@
             </el-row>
             <el-row>
               <el-col :span="12">
+                <el-form-item label="数量" prop="number">
+                  <el-input v-model="formData.number" placeholder="请输入数量" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="单位" prop="unit">
+                  <el-input v-model="formData.unit" placeholder="请输入单位" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
                 <el-form-item label="图片" prop="imgId">
                   <UploadImg :disabled="disabled" v-model="formData.imgId"/>
                 </el-form-item>
@@ -249,6 +261,8 @@ const formData = ref({
   userId: undefined,
   receiptStartTime: undefined,
   receiptEndTime: undefined,
+  number:undefined,
+  unit:undefined,
 })
 //保存到浏览器缓存
 const localSave = () => {
@@ -285,6 +299,8 @@ const formRules = reactive({
   imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}],
   belongPlot: [{required: true, message: '所属基地不能为空', trigger: 'blur'}],
   belongPark: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
+  number: [{required: true, message: '数量不能为空', trigger: 'blur'}],
+  unit: [{required: true, message: '单位不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
@@ -396,6 +412,8 @@ const resetForm = () => {
     plotName: undefined,
     deptId: undefined,
     userId: undefined,
+    number:undefined,
+    unit:undefined,
   }
   formRef.value?.resetFields()
 }

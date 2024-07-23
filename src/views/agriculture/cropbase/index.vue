@@ -109,6 +109,8 @@
       <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="所属地块" align="center" prop="plotName" width="160"/>
+      <el-table-column label="数量" align="center" prop="number" />
+      <el-table-column label="单位" align="center" prop="unit" />
       <el-table-column
         label="开始时间"
         align="center"
