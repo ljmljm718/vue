@@ -138,8 +138,16 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="150" fixed="right">
+      <el-table-column label="操作" align="center" width="220" fixed="right">
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="handleDraw(scope.row.id)"
+            v-hasPermi="['agriculture:park-info:update']"
+          >
+            绘制围栏
+          </el-button>
           <el-button
             link
             type="primary"
@@ -177,12 +185,28 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ParkInfoForm ref="formRef" @success="getList"/>
+  <el-dialog
+    v-model="showDrawDialog"
+    title="绘制围栏"
+    width="1200px"
+    append-to-body
+    destroy-on-close
+  >
+    <div class="w-full aspect-video">
+      <TianDiMap ref="tiandiIns" />
+    </div>
+    <template #footer>
+      <el-button size="small" @click="showDrawDialog = false">取 消</el-button>
+      <el-button size="small" type="primary" @click="showDrawDialog = false">确 定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {ParkInfoApi, ParkInfoVO} from '@/api/agriculture/parkinfo'
+import TianDiMap from '@/views/tianDi/index.vue'
 import ParkInfoForm from './ParkInfoForm.vue'
 import ParkDetailList from './components/ParkDetailList.vue'
 
@@ -222,6 +246,18 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+// 绘制围栏
+const selectedDrawId = ref('')
+const showDrawDialog = ref<boolean>(false)
+const tiandiIns = ref()
+const handleDraw = (id) => {
+  selectedDrawId.value = id
+  showDrawDialog.value = true;
+  nextTick(() => {
+    tiandiIns.value.initMap()
+  })
+}
 
 /** 查询列表 */
 const getList = async () => {

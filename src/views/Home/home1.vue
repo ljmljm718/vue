@@ -22,6 +22,7 @@ import {
 } from "../../utils/bigscreenTool/index";
 import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
 import { method } from 'lodash';
+import {  allDataCacheManager } from "@/api/agriculture/categorymanagement";
 
 const optionsX = ref([])
 const handleSelectorChangeX = (e) => {
@@ -260,7 +261,26 @@ const getdeviceInfoByPark = async () => {
   }]
 }
 getdeviceInfoByPark()
-
+const listCategoryManagement = ref<any>([]) // 品类列表的数据
+const getListCategaryData = async () => {
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+  console.log("listCategoryManagement", listCategoryManagement.value)
+}
+/**
+ * 根据品类ID获取分类名称
+ * @param id
+ */
+ const getListCategaryLabelById = (id:string) => {
+  let res = ''
+  listCategoryManagement.value.forEach(item => {
+    if (item.id === id) res = item.categoryName
+  })
+  return res
+}
+/**
+ * 获取所有品类的ID和NAME
+ */
+getListCategaryData()
 
 onMounted(() => {
   initChart()
@@ -277,7 +297,8 @@ onMounted(() => {
       >
         <div class="flex justify-between w-full items-center">
           <div style="font-family: 'ArtFont';font-size: 1.3rem;">{{ item.title }}</div>
-          <div @click="$router.push({
+          <div
+@click="$router.push({
             path:'/device/deviceinfo',
              query: {
                 deviceType:item.deviceType
@@ -297,7 +318,8 @@ onMounted(() => {
         </div>
         <div v-else>
           <div class="h-[1rem] p-1 pt-2 flex items-center">
-            <span @click="$router.push({
+            <span
+@click="$router.push({
             path:'/device/deviceinfo',
              query: {
                 deviceStatus: 'online',
@@ -308,7 +330,8 @@ onMounted(() => {
             <span style="padding-left: 2rem;">{{ item.online }}台</span>
           </div>
           <div class="h-[1rem] p-1 flex items-center">
-            <span  @click="$router.push({
+            <span
+@click="$router.push({
             path:'/device/deviceinfo',
              query: {
                 deviceStatus: 'offline',
@@ -368,7 +391,7 @@ onMounted(() => {
               <div class="px-2">
                 <div class="p-1">
                   <span class="text-20px ">养殖品种: </span>
-                  <span class="pl-2">{{ growthTypes[growthIndex].cropType }}</span>
+                  <span class="pl-2">{{ getListCategaryLabelById(growthTypes[growthIndex].cropType) }}</span>
                 </div>
                 <div class="p-1">
                   <span class="text-20px">当前生育期: </span>
@@ -408,10 +431,12 @@ onMounted(() => {
               <div class="t w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
               <div>环境监测</div>
             </div>
-            <div v-for="(item, index) in topDataList" :key="item.monitoringType"
+            <div
+v-for="(item, index) in topDataList" :key="item.monitoringType"
                  class="flex space-x-2 p-2 pl-4"
                  style="border: 1px solid #5293EAA0;background-color: #5293EA30;">
-              <div :class="`t-${index + 1} w-[2rem] h-[2rem]`"
+              <div
+:class="`t-${index + 1} w-[2rem] h-[2rem]`"
                    style="background-size: 100% 100%;"></div>
               <div>
                 <div>
@@ -428,9 +453,11 @@ onMounted(() => {
               <div class="b w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%;"></div>
               <div>水质监测</div>
             </div>
-            <div v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4"
+            <div
+v-for="(item, index) in bottomDataList" :key="item" class="flex space-x-2 p-2 pl-4"
                  style="border: 1px solid #b5ead8A0;background-color: #b5ead830;">
-              <div :class="`b-${index + 1} w-[2rem] h-[2rem]`"
+              <div
+:class="`b-${index + 1} w-[2rem] h-[2rem]`"
                    style="background-size: 100% 100%;"></div>
               <div>
                 <div>
@@ -463,9 +490,11 @@ onMounted(() => {
           <el-divider class="!my-3"/>
           <div class="grid grid-cols-3 gap-3">
             <div v-for="item in deviceCheckList" :key="item.deviceId">
-              <img src="/img.png" alt="" class="w-full h-[9rem]"
+              <img
+src="/img.png" alt="" class="w-full h-[9rem]"
                    style="object-fit: contain;border: 1px solid #ffffff20;"/>
-              <div class="flex items-center px-3 py-1"
+              <div
+class="flex items-center px-3 py-1"
                    style="background: linear-gradient(to right, #7acfffA0, #7acfff00);">
                 <span>{{ item.categoryName }}</span>
                 <span style="padding-left: .3rem;">{{ item.sumNum }}</span>
@@ -492,11 +521,14 @@ onMounted(() => {
           </div>
           <el-divider class="!my-3"/>
           <el-table :data="tableData" stripe max-height="240" fit border>
-            <el-table-column label="塘口编号" prop="plotCode" min-width="100px"
+            <el-table-column
+label="塘口编号" prop="plotCode" min-width="100px"
                              show-overflow-tooltip/>
-            <el-table-column label="设备" prop="deviceCode" min-width="100px"
+            <el-table-column
+label="设备" prop="deviceCode" min-width="100px"
                              show-overflow-tooltip/>
-            <el-table-column label="预警信息" prop="warnInfo" min-width="100px"
+            <el-table-column
+label="预警信息" prop="warnInfo" min-width="100px"
                              show-overflow-tooltip/>
             <el-table-column label="时间" prop="warnTime" min-width="100px" show-overflow-tooltip>
               <template #default="scope">
