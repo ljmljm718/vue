@@ -144,7 +144,6 @@ const initMap = () => {
   })
 
   //@ts-ignore
-  // const lnglat = new T.LngLat(116.40969, 39.89945)
   const lnglat = new T.LngLat(116.40769, 39.89945)
   map.centerAndZoom(lnglat, 12)
   return

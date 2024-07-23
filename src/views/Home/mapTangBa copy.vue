@@ -4,78 +4,98 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 // @ts-ignore
-window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
+// window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
 
 defineOptions({ name: 'MapTangBa' })
 
 // 初始化地图，点击地图自动选取坐标点
-let mapIns: any = null
-let satelliteLayer = new AMap.TileLayer.Satellite()
-const initMap = (center: Array<number> = [109.24604650765662, 31.41416444104432]) => {
+let map: any = null
+let info: any = null
+// let satelliteLayer = new AMap.TileLayer.Satellite()
+const initMap = () => {
   // @ts-ignore
-  mapIns = new AMap.Map('tangbaMap', {
-    zoom: 13,
-    center
-    // @ts-ignore
-    // layers: [ ],
-    // mapStyle: 'amap://styles/blue', //设置地图的显示样式
-  })
-  mapIns.add(satelliteLayer)
-  mapIns &&
-    mapIns.on('click', (e) => {
-      navigator.clipboard.writeText(`[${e.lnglat.R.toString()}, ${e.lnglat.Q.toString()}],`)
-    })
+  map = new T.Map('tangbaMap', [
+    {
+      projection: 'EPSG:900913',
+      minZoom: 5,
+      maxZoom: 18
+    }
+  ])
+  //@ts-ignore
+  const lnglat = new T.LngLat(116.40769, 39.89945)
+  map.centerAndZoom(lnglat, 12)
+  // map.add(satelliteLayer)
+  //获取点击处坐标
+  map.addEventListener('click', (e) => {
+    const { lnglat } = e
+    const { lng, lat } = lnglat
 
-  mapIns.on('dragstart', () => {
-    mapIns.clearInfoWindow()
+    //复制到剪贴板
+    navigator.clipboard.writeText(`[${lng}, ${lat}],`)
+  })
+
+  //   map.on('dragstart', () => {
+  //     map.clearInfoWindow()
+  //   })
+  // }
+
+  //开始拖拽后清除信息窗口
+  map.addEventListener('dragstart', (e) => {
+    map.closeInfoWindow()
   })
 }
-const addSatellite = () => {
-  mapIns.add(satelliteLayer)
-}
-const removeSatellite = () => {
-  mapIns.remove(satelliteLayer)
-}
+// const addSatellite = () => {
+//   map.add(satelliteLayer)
+// }
+// const removeSatellite = () => {
+//   map.remove(satelliteLayer)
+// }
+
 const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
   if (!longitude || !latitude) return
   // @ts-ignore
-  const marker = new AMap.Marker({
-    // @ts-ignore
-    position: new AMap.LngLat(longitude, latitude),
+  const marker = new T.Marker(new T.LngLat(longitude, latitude),
     title,
     // @ts-ignore
-    icon: new AMap.Icon({
-      image: icon,
+    icon: new T.Icon({
+      // image: icon,
+      iconUrl: '/tangba/offlineMonitor.png',
       // @ts-ignore
-      size: new AMap.Size(30, 32),
+      iconSize: new T.Point(30, 32)
       // @ts-ignore
       // imageOffset: new AMap.Pixel(-9, -3), //图像相对展示区域的偏移量，适于雪碧图等
+      // iconAnchor:Point(12, 41)//图标的定位锚点。此点用来决定图标与地理位置的关系，是相对于图标左上角的偏移值，默认等于图标宽度和高度的中间值。
       // @ts-ignore
-      imageSize: new AMap.Size(30, 32) //根据所设置的大小拉伸或压缩图片
-    })
-  })
-  if (mapIns) {
-    mapIns.add(marker)
-    fitMarkerOnMap()
+      // imageSize: new AMap.Size(30, 32) //根据所设置的大小拉伸或压缩图片
+    }),
+  )
+  if (map) {
+    map.addOverLay(marker)
+    // fitMarkerOnMap()
   }
   return marker
 }
 
 const fitMarkerOnMap = debounce(
   () => {
-    mapIns.setFitView()
+    map.setFitView()
   },
   250,
   { maxWait: 2000 }
 )
 
+// const setMapCenter = (longitude, latitude) => {
+//   if (!longitude || !latitude) return
+//   if (map) map.setCenter([longitude, latitude])
+// }
+//设置地图中心
 const setMapCenter = (longitude, latitude) => {
   if (!longitude || !latitude) return
-  if (mapIns) mapIns.setCenter([longitude, latitude])
+  if (map) map.panTo(new T.LngLat(longitude, latitude))
 }
 
 const setMapZoom = (zoom: number = 13) => {
-  if (mapIns) mapIns.setZoom(zoom)
+  if (map) map.setZoom(zoom)
 }
 
 const openInfoWindow = (info: string, location: Array<any>) => {
@@ -86,11 +106,12 @@ const openInfoWindow = (info: string, location: Array<any>) => {
   if (!info || !location) return
 
   // @ts-ignore
-  const infoWindow = new AMap.InfoWindow({
-    isCustom: true,
+  const infoWindow = new T.InfoWindow({
+    // isCustom: true,
     content: info
   })
-  infoWindow.open(mapIns, location)
+  // infoWindow.open(map, location)
+  map.openInfoWindow(infoWindow, location)
 }
 
 defineExpose({
