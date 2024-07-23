@@ -74,6 +74,7 @@
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
 import ParkDetailForm from './components/ParkDetailForm.vue'
 import {ParkCategoryApi, ParkCategoryVO} from "@/api/agriculture/parkcategory";
+import {updateDataSourceConfig} from "@/api/infra/dataSourceConfig";
 
 /** 基地基本信息 表单 */
 defineOptions({ name: 'ParkInfoForm' })
@@ -102,7 +103,8 @@ const formData = ref({
   userId: undefined,
   quantity: undefined,
   img: undefined,
-  parkDetails: []
+  parkDetails: [],
+  geofencing: undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -216,7 +218,8 @@ const resetForm = () => {
     userId: undefined,
     quantity: undefined,
     img: undefined,
-    parkDetails: []
+    parkDetails: [],
+    geofencing: undefined
   }
   formRef.value?.resetFields()
 }
