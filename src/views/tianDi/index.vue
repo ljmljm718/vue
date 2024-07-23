@@ -1,6 +1,6 @@
 <template>
-  <div class="relative">
-    <div id="mapDiv" class="w-[100vw] h-[100vh] z-0">TD</div>
+  <div class="relative w-full h-full min-w-[200px] min-h-[130px]">
+    <div id="mapDiv" class="w-full h-full z-0">TD</div>
     <div class="absolute z-36 left-[1rem] bottom-[1rem] bg-white p-2">
       <el-button class="my-button" @click="markerTool.open()">标注开启</el-button>
       <el-button class="my-button" @click="editMarker()">编辑标注</el-button>
@@ -184,7 +184,5 @@ const initMap = () => {
   }) // 将标注添加到地图中
 }
 
-onMounted(() => {
-  initMap()
-})
+defineExpose({ initMap })
 </script>
