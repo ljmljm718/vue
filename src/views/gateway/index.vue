@@ -331,7 +331,7 @@
             </div>
             <el-pagination
               :class="` absolute ${params.pageSize!=20?'bottom-0':''} mb-10px mr-20px`"
-              v-model:currentPage="params.pgeNo"
+              v-model:currentPage="params.pageNo"
               v-model:page-size="params.pageSize"
               :page-sizes="[1, 5, 10, 20]"
               :small="small"
