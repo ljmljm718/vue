@@ -1,10 +1,11 @@
 <template>
-  <div id="tangbaMap" class="min-w-[100px] min-h-[100px]"></div>
+  <div id="tangbaMap" class="min-w-[100px] min-h-[100px]"> </div>
 </template>
 <script setup lang="ts">
+import { log } from 'console'
 import { debounce } from 'lodash-es'
 // @ts-ignore
-// window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
+window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
 
 defineOptions({ name: 'MapTangBa' })
 
@@ -14,19 +15,38 @@ let info: any = null
 // let satelliteLayer = new AMap.TileLayer.Satellite()
 const initMap = () => {
   // @ts-ignore
-  map = new T.Map('tangbaMap', [
-    {
-      projection: 'EPSG:900913',
-      minZoom: 5,
-      maxZoom: 18
-    }
-  ])
+  // map = new T.Map('tangbaMap', [
+  //   {
+  //     projection: 'EPSG:900913',
+  //     minZoom: 5,
+  //     maxZoom: 18
+  //   }
+  // ])
+
+  //修改默认地图为卫星图+有注记
+  //影像地图图层
+  const imageURL =
+    'http://t0.tianditu.gov.cn/img_w/wmts?' +
+    'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles' +
+    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}' +
+    '&tk=	3499364c33fd4aa4415dd8765d4c5b77'
+  //影响注记图层
+  const imageURLT =
+    'http://t0.tianditu.gov.cn/cia_w/wmts?' +
+    'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles' +
+    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}' +
+    '&tk=	3499364c33fd4aa4415dd8765d4c5b77'
+  const lay = new T.TileLayer(imageURL, { minZoom: 1, maxZoom: 18 })
+  const lay2 = new T.TileLayer(imageURLT, { minZoom: 1, maxZoom: 18 })
+  const config = { layers: [lay, lay2] }
+  map = new T.Map('tangbaMap', config)
+
   //@ts-ignore
-  const lnglat = new T.LngLat(116.40769, 39.89945)
-  map.centerAndZoom(lnglat, 12)
-  //地图类型切换
-  const ctrl = new T.Control.MapType()
-  map.addControl(ctrl)
+  const lnglat = new T.LngLat(109.24604650765662, 31.41416444104432)
+  map.centerAndZoom(lnglat, 13)
+  // //地图类型切换
+  // const ctrl = new T.Control.MapType()
+  // map.addControl(ctrl)
 
   // map.add(satelliteLayer)
   //获取点击处坐标
@@ -54,18 +74,25 @@ const initMap = () => {
 // const removeSatellite = () => {
 //   map.remove(satelliteLayer)
 // }
-
+//设置地图投影类型
+const addSatellite = () => {
+  map.setMapType(map.TMAP_HYBRID_MAP)
+}
+const removeSatellite = () => {
+  map.setMapType(map.TMAP_TERRAIN_MAP)
+}
 const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
   if (!longitude || !latitude) return
+
   // @ts-ignore
   const marker = new T.Marker(
     new T.LngLat(longitude, latitude),
-    title,
+    // title,
     // @ts-ignore
     {
       icon: new T.Icon({
         // image: icon,
-        iconUrl: '/tangba/offlineMonitor.png',
+        iconUrl: icon,
         // @ts-ignore
         iconSize: new T.Point(30, 32)
         // @ts-ignore
@@ -117,8 +144,10 @@ const openInfoWindow = (info: string, location: Array<any>) => {
     // isCustom: true,
     content: info
   })
+  // infoWindow.setContent(info)
   // infoWindow.open(map, location)
   map.openInfoWindow(infoWindow, location)
+  console.log('infowindow', infoWindow)
 }
 
 defineExpose({
@@ -135,6 +164,10 @@ onMounted(() => {
 })
 </script>
 <style scoped lang="scss">
+//左下角版权
+// .tdt-control-copyright.tdt-control {
+//   display: none;
+// }
 .online-bug,
 .offline-bug,
 .online-monitor,

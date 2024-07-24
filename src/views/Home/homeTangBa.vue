@@ -1,6 +1,6 @@
 <template>
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
-    <MapTangBa ref="mapTangBgRef" class="h-full" @satellite="satellite" />
+    <MapTangBa ref="mapTangBgRef" class="h-full z-0" @satellite="satellite" />
     <div
       class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl"
       style="height: calc(100% - 4.5rem)"

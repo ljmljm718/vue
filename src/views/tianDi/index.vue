@@ -201,3 +201,8 @@ const initMap = () => {
 
 defineExpose({ initMap })
 </script>
+<style lang="scss">
+.tdt-control-copyright.tdt-control {
+  display: none;
+}
+</style>
