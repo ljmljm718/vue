@@ -14,7 +14,8 @@ const request = (option: any) => {
     ...config,
     responseType: responseType,
     headers: {
-      'Content-Type': headersType || default_headers
+      'Content-Type': headersType || default_headers,
+      "Origin": "https://www.zhuangbeizz.cn"
     }
   })
 }
