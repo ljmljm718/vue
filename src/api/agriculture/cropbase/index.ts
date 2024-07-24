@@ -20,6 +20,8 @@ export interface CropBaseVO {
   receiptStartTime: string// 开始时间
   receiptEndTime: string// 结束时间
   recoveryNo: boolean// 是否采收
+  number: string // 数量
+  unit: string // 单位
 }
 
 // 鲁渝协作品种管理 API

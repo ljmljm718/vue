@@ -185,16 +185,6 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
-    path: '/tiandi',
-    component: () => import('@/views/tianDi/index.vue'),
-    name: 'TianDi',
-    meta: {
-      hidden: true,
-      title: t('router.login'),
-      noTagsView: true
-    }
-  },
-  {
     path: '/sso',
     component: () => import('@/views/Login/components/SSOLogin.vue'),
     name: 'SSOLogin',
@@ -368,6 +358,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/bigscreenMY',
     name: 'bigscreenTest',
     component: () => import('@/views/bigscreenTest/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/bigscreenMYBase',
+    name: 'bigscreenMYBase',
+    component: () => import('@/views/bigscreenMingYueBase/index.vue'),
     meta: {
       hidden: true
     }

@@ -68,7 +68,8 @@ const formData = ref({
   userId: undefined,
   quantity: undefined,
   img: undefined,
-  parkDetails: []
+  parkDetails: [],
+  geofencing: undefined
 })
 
 // 表单校验规则
@@ -172,7 +173,8 @@ const resetForm = () => {
     userId: undefined,
     quantity: undefined,
     img: undefined,
-    parkDetails: []
+    parkDetails: [],
+    geofencing: undefined
   }
 }
 

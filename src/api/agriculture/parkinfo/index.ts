@@ -17,6 +17,7 @@ export interface ParkInfoVO {
   deptId: number // 部门编号
   userId: number // 用户编号
   quantity: string // 数量
+  geofencing: string // 地理围栏
 }
 
 // 基地基本信息 API

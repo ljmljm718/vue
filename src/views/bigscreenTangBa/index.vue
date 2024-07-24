@@ -325,281 +325,283 @@ export default defineComponent({
     }
     getCenterMapData()
     return () => (
-      <BigscreenAdapter>
-        <BigscreenContainer backgroundImage={mainBg}>
-          <BigscreenHeader
-            backgroundImage={headerBg}
-            height="80px"
-            v-slots={{
-              left: () => (
-                <div class="flex space-x-2 relative top-[-10px]">
-                  <BigscreenSelector
-                    width={'10rem'}
-                    options={baseOptions.value}
-                    v-model={selectedBase.value}
-                    onChange={(key) => getBasePlotOptions(key)}
-                  />
-                  <BigscreenSelector
-                    width={'12rem'}
-                    options={plotOptions.value}
-                    v-model={selectedPlot.value}
-                    onChange={() => refreshAllData()}
-                  />
-                </div>
-              ),
-              right: () => (<BigScreenTime class="relative top-[-9px]" />)
-            }}
-          />
-          <BigscreenMain>
-            <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
-              <div class="flex flex-col justify-between w-[420px]">
-                <div class="h-[382px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
-                  <div class="grid grid-cols-2 grid-rows-4 h-full">
-                    {
-                      weatherDataList.value.map((item:any) => (
-                        <div class="flex justify-center items-center">
-                          <div class={`w-[165px] h-[60px] relative ${item.icon}`}>
-                            <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
-                              <span>{ item.dataValue }</span>
-                              <span class="pl-1">{ item.unit }</span>
-                            </div>
-                            <div class="absolute left-[60px] art-font text-[#fff] top-[30px] text-[14px]">
-                              <span>{ item.monitoringType }</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                </div>
-                <div class="h-[295px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
-                  <div class="grid grid-cols-2 grid-rows-4 h-full gap-2">
-                    {
-                      soilDataList.value.map((item:any) => (
-                        <div class="flex justify-center items-center">
-                          <div class="w-[190px] h-[40px] soil-bg flex items-center justify-between px-3">
-                            <div>{item.monitoringType}</div>
-                            <div class="art-font linear-title">
-                              <span>{item.dataValue}</span>
-                              <span class="pl-1">{item.unit}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                </div>
-                <div class="h-[237px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
-                  <div class="h-full flex space-x-1 justify-between items-center">
-                    <div
-                      class="left-btn w-[9px] h-[16px]" 
-                      onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
-                    ></div>
-                    {
-                      parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
-                        <div class="flex flex-col space-y-2 items-center w-[170px]">
-                          <img src={item.monitoringEquipmentDataDO.capturedImage} class="w-full aspect-video object-cover" />
-                          <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
-                            <span>{item.monitoringEquipmentDataDO.monitoringPlotName}</span>
-                            <span class="mx-1">|</span>
-                            <span
-                              class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
-                            >{item.deviceStatus === 'online' ? "在线" : '离线'}</span>
-                          </div>
-                        </div>
-                      ))
-                    }
-                    <div
-                      class="right-btn w-[9px] h-[16px]"
-                      onClick={() => { if (parkDataIndex.value < parkDataList.value.length - 1) parkDataIndex.value++ }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col space-y-4 grow">
-                <div class="grow relative">
-                  <div class="w-full h-full relative">
-                    <div class="camera-icon absolute left-[740px] top-[280px]" onClick={() => { activeMapIns.value = 'camera' }}>
-                      {
-                        activeMapIns.value === 'camera' ? (
-                          <div
-                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
-                          >
-                            <div class="w-full h-full p-2 px-3">
-                              <div>{centerMapData.value.camera.deviceName}</div>
-                              <div>{centerMapData.value.camera.location}</div>
-                              <div>{centerMapData.value.camera.deviceStatus === 'online' ? '在线' : '离线'}</div>
-                            </div>
-                          </div>
-                        ) : null
-                      }
-                    </div>
-                    <div class="grow-icon absolute left-[150px] top-[400px]" onClick={() => { activeMapIns.value = 'grow' }}>
-                      {
-                        activeMapIns.value === 'grow' ? (
-                          <div
-                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
-                          >
-                            <div class="w-full h-full p-2 px-3">
-                              <div>{centerMapData.value.growthMonitoring.deviceName}</div>
-                              <div>{centerMapData.value.growthMonitoring.location}</div>
-                              <div>{centerMapData.value.growthMonitoring.deviceStatus === 'online' ? '在线' : '离线'}</div>
-                            </div>
-                          </div>
-                        ) : null
-                      }
-                    </div>
-                    <div class="meteo-icon absolute left-[400px] top-[300px]" onClick={() => { activeMapIns.value = 'meteo' }}>
-                      {
-                        activeMapIns.value === 'meteo' ? (
-                          <div
-                            class="dialog-bg w-[240px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
-                          >
-                            <div class="w-full h-full p-2 px-3">
-                              <div>{centerMapData.value.meteorologicalStation.deviceName}</div>
-                              <div>{centerMapData.value.meteorologicalStation.location}</div>
-                              <div>{centerMapData.value.meteorologicalStation.deviceStatus === 'online' ? '在线' : '离线'}</div>
-                            </div>
-                          </div>
-                        ) : null
-                      }
-                    </div>
-                    <div class="soil-icon absolute left-[700px] top-[500px]" onClick={() => { activeMapIns.value = 'soil' }}>
-                      {
-                        activeMapIns.value === 'soil' ? (
-                          <div
-                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
-                          >
-                            <div class="w-full h-full p-2 px-3">
-                              <div>{centerMapData.value.soilMoistureContent.deviceName}</div>
-                              <div>{centerMapData.value.soilMoistureContent.location}</div>
-                              <div>{centerMapData.value.soilMoistureContent.deviceStatus === 'online' ? '在线' : '离线'}</div>
-                            </div>
-                          </div>
-                        ) : null
-                      }
-                    </div>
-
-                    <div class="bug-icon absolute left-[300px] top-[500px]" onClick={() => { activeMapIns.value = 'otherEquipment' }}>
-                      {
-                        activeMapIns.value === 'otherEquipment' ? (
-                          <div
-                            class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
-                          >
-                            <div class="w-full h-full p-2 px-3">
-                              <div>{centerMapData.value.otherEquipment.deviceName}</div>
-                              <div>{centerMapData.value.otherEquipment.location}</div>
-                              <div>{centerMapData.value.otherEquipment.deviceStatus === 'online' ? '在线' : '离线'}</div>
-                            </div>
-                          </div>
-                        ) : null
-                      } 
-                    </div>
-
-                  </div>
-                  <div class="absolute top-1 w-full flex justify-between">
-                    {
-                      topDataList.value.map((item, index) => (
-                        <div
-                          class={`w-[235px] h-[76px] cursor-pointer relative topBg-${index + 1}`}
-                          onClick={() => WindowOpen(item.url)}
-                        >
-                          <div class="absolute left-[110px] art-font text-[26px]" style={{
-                            color: item.color
-                          }}>{item.value}</div>
-                          <div class="absolute left-[110px] top-[35px]">{item.label}</div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                  <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0"></div>
-                </div>
-                <div class="h-[237px] item-bg-4 box-border px-3 pt-[52px] pb-[22px]">
-                  <div class="h-full" id="chart"></div>
-                </div>
-              </div>
-              <div class="flex flex-col justify-between w-[420px]">
-                <div class="h-[308px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
-                  <div class="flex h-full justify-evenly">
-                    <div class="agri-1 w-[185px] h-[212px] flex justify-center items-center">
-                      <div class="text-[26px] art-font linear-title relative top-[50px]">
-                        {agriResInfo.value.shelterAmount}
-                      </div>
-                    </div>
-                    <div class="agri-2 w-[185px] h-[212px] flex justify-center items-center">
-                      <div class="text-[26px] art-font linear-title relative top-[50px]">
-                        {agriResInfo.value.plantArea}亩
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="h-[370px] item-bg-6 box-border px-3 pt-[59px] pb-[24px] flex flex-col items-center">
-                  <div class="device-header w-[378px] h-[50px] px-[40px] flex justify-between items-center box-border">
-                    <div>物联网设备</div>
-                    <div>
-                      <span>总数:</span>
-                      <span class="linear-title art-font pl-2">{deviceAmount.value}台</span>
-                    </div>
-                  </div>
-                  <div class="h-[230px] mt-[14px] w-full px-2 box-border flex flex-col justify-evenly">
-                    {
-                      deviceDataList.value.map(item => (
-                        <div class="flex flex-col space-y-1">
-                          <div class="flex justify-between">
-                            <div>
-                              <span>{item.label}:</span>
-                              <span class="linear-title pl-2">{item.numByType}</span>
-                            </div>
-                            <div>
-                              <span>在线:</span>
-                              <span class="linear-title pl-2">{item.online}</span>
-                              <span class="px-2">|</span>
-                              <span>离线:</span>
-                              <span class="linear-title pl-2">{item.offline}</span>
-                            </div>
-                          </div>
-                          <div class="bg-[#04363c] h-[12px]">
-                            <div
-                              class="h-full high-light-bar"
-                              style={{ width: `${(+item.online / +item.numByType) * 100}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                </div>
-                <div class="h-[237px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px] overflow-hidden">
-                  <div class="h-[220px] overflow-auto hidden-scroll-bar">
-                    <BigscreenTable
-                      headerBackgroundColor="#012831"
-                      columns={[
-                        {
-                          key: 'warnInfo',
-                          label: '预警信息',
-                          width: '12rem'
-                        },
-                        {
-                          key: 'warnTime',
-                          label: '报警时间',
-                          width: '7rem'
-                        },
-                        {
-                          key: 'warnStatus',
-                          label: '状态',
-                        },
-                      ]}
-                      dataList={preWarnList.value}
-                      loading={preWarnLoading.value}
+      <div class="bg-[#001922] w-[100vw] h-[100vh]">
+        <BigscreenAdapter>
+          <BigscreenContainer backgroundImage={mainBg}>
+            <BigscreenHeader
+              backgroundImage={headerBg}
+              height="80px"
+              v-slots={{
+                left: () => (
+                  <div class="flex space-x-2 relative top-[-10px]">
+                    <BigscreenSelector
+                      width={'10rem'}
+                      options={baseOptions.value}
+                      v-model={selectedBase.value}
+                      onChange={(key) => getBasePlotOptions(key)}
+                    />
+                    <BigscreenSelector
+                      width={'12rem'}
+                      options={plotOptions.value}
+                      v-model={selectedPlot.value}
+                      onChange={() => refreshAllData()}
                     />
                   </div>
+                ),
+                right: () => (<BigScreenTime class="relative top-[-9px]" />)
+              }}
+            />
+            <BigscreenMain>
+              <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
+                <div class="flex flex-col justify-between w-[420px]">
+                  <div class="h-[382px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
+                    <div class="grid grid-cols-2 grid-rows-4 h-full">
+                      {
+                        weatherDataList.value.map((item:any) => (
+                          <div class="flex justify-center items-center">
+                            <div class={`w-[165px] h-[60px] relative ${item.icon}`}>
+                              <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
+                                <span>{ item.dataValue }</span>
+                                <span class="pl-1">{ item.unit }</span>
+                              </div>
+                              <div class="absolute left-[60px] art-font text-[#fff] top-[30px] text-[14px]">
+                                <span>{ item.monitoringType }</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+                  <div class="h-[295px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
+                    <div class="grid grid-cols-2 grid-rows-4 h-full gap-2">
+                      {
+                        soilDataList.value.map((item:any) => (
+                          <div class="flex justify-center items-center">
+                            <div class="w-[190px] h-[40px] soil-bg flex items-center justify-between px-3">
+                              <div>{item.monitoringType}</div>
+                              <div class="art-font linear-title">
+                                <span>{item.dataValue}</span>
+                                <span class="pl-1">{item.unit}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+                  <div class="h-[237px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
+                    <div class="h-full flex space-x-1 justify-between items-center">
+                      <div
+                        class="left-btn w-[9px] h-[16px]" 
+                        onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
+                      ></div>
+                      {
+                        parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
+                          <div class="flex flex-col space-y-2 items-center w-[170px]">
+                            <img src={item.monitoringEquipmentDataDO.capturedImage} class="w-full aspect-video object-cover" />
+                            <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
+                              <span>{item.monitoringEquipmentDataDO.monitoringPlotName}</span>
+                              <span class="mx-1">|</span>
+                              <span
+                                class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
+                              >{item.deviceStatus === 'online' ? "在线" : '离线'}</span>
+                            </div>
+                          </div>
+                        ))
+                      }
+                      <div
+                        class="right-btn w-[9px] h-[16px]"
+                        onClick={() => { if (parkDataIndex.value < parkDataList.value.length - 1) parkDataIndex.value++ }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col space-y-4 grow">
+                  <div class="grow relative">
+                    <div class="w-full h-full relative">
+                      <div class="camera-icon absolute left-[740px] top-[280px]" onClick={() => { activeMapIns.value = 'camera' }}>
+                        {
+                          activeMapIns.value === 'camera' ? (
+                            <div
+                              class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                            >
+                              <div class="w-full h-full p-2 px-3">
+                                <div>{centerMapData.value.camera.deviceName}</div>
+                                <div>{centerMapData.value.camera.location}</div>
+                                <div>{centerMapData.value.camera.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                              </div>
+                            </div>
+                          ) : null
+                        }
+                      </div>
+                      <div class="grow-icon absolute left-[150px] top-[400px]" onClick={() => { activeMapIns.value = 'grow' }}>
+                        {
+                          activeMapIns.value === 'grow' ? (
+                            <div
+                              class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                            >
+                              <div class="w-full h-full p-2 px-3">
+                                <div>{centerMapData.value.growthMonitoring.deviceName}</div>
+                                <div>{centerMapData.value.growthMonitoring.location}</div>
+                                <div>{centerMapData.value.growthMonitoring.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                              </div>
+                            </div>
+                          ) : null
+                        }
+                      </div>
+                      <div class="meteo-icon absolute left-[400px] top-[300px]" onClick={() => { activeMapIns.value = 'meteo' }}>
+                        {
+                          activeMapIns.value === 'meteo' ? (
+                            <div
+                              class="dialog-bg w-[240px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                            >
+                              <div class="w-full h-full p-2 px-3">
+                                <div>{centerMapData.value.meteorologicalStation.deviceName}</div>
+                                <div>{centerMapData.value.meteorologicalStation.location}</div>
+                                <div>{centerMapData.value.meteorologicalStation.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                              </div>
+                            </div>
+                          ) : null
+                        }
+                      </div>
+                      <div class="soil-icon absolute left-[700px] top-[500px]" onClick={() => { activeMapIns.value = 'soil' }}>
+                        {
+                          activeMapIns.value === 'soil' ? (
+                            <div
+                              class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                            >
+                              <div class="w-full h-full p-2 px-3">
+                                <div>{centerMapData.value.soilMoistureContent.deviceName}</div>
+                                <div>{centerMapData.value.soilMoistureContent.location}</div>
+                                <div>{centerMapData.value.soilMoistureContent.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                              </div>
+                            </div>
+                          ) : null
+                        }
+                      </div>
+
+                      <div class="bug-icon absolute left-[300px] top-[500px]" onClick={() => { activeMapIns.value = 'otherEquipment' }}>
+                        {
+                          activeMapIns.value === 'otherEquipment' ? (
+                            <div
+                              class="dialog-bg w-[200px] h-[120px] absolute bottom-[60px] left-[60px] pl-[26px] pt-[12px] pr-[5px] pb-[38px] box-border"
+                            >
+                              <div class="w-full h-full p-2 px-3">
+                                <div>{centerMapData.value.otherEquipment.deviceName}</div>
+                                <div>{centerMapData.value.otherEquipment.location}</div>
+                                <div>{centerMapData.value.otherEquipment.deviceStatus === 'online' ? '在线' : '离线'}</div>
+                              </div>
+                            </div>
+                          ) : null
+                        } 
+                      </div>
+
+                    </div>
+                    <div class="absolute top-1 w-full flex justify-between">
+                      {
+                        topDataList.value.map((item, index) => (
+                          <div
+                            class={`w-[235px] h-[76px] cursor-pointer relative topBg-${index + 1}`}
+                            onClick={() => WindowOpen(item.url)}
+                          >
+                            <div class="absolute left-[110px] art-font text-[26px]" style={{
+                              color: item.color
+                            }}>{item.value}</div>
+                            <div class="absolute left-[110px] top-[35px]">{item.label}</div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0"></div>
+                  </div>
+                  <div class="h-[237px] item-bg-4 box-border px-3 pt-[52px] pb-[22px]">
+                    <div class="h-full" id="chart"></div>
+                  </div>
+                </div>
+                <div class="flex flex-col justify-between w-[420px]">
+                  <div class="h-[308px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
+                    <div class="flex h-full justify-evenly">
+                      <div class="agri-1 w-[185px] h-[212px] flex justify-center items-center">
+                        <div class="text-[26px] art-font linear-title relative top-[50px]">
+                          {agriResInfo.value.shelterAmount}
+                        </div>
+                      </div>
+                      <div class="agri-2 w-[185px] h-[212px] flex justify-center items-center">
+                        <div class="text-[26px] art-font linear-title relative top-[50px]">
+                          {agriResInfo.value.plantArea}亩
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="h-[370px] item-bg-6 box-border px-3 pt-[59px] pb-[24px] flex flex-col items-center">
+                    <div class="device-header w-[378px] h-[50px] px-[40px] flex justify-between items-center box-border">
+                      <div>物联网设备</div>
+                      <div>
+                        <span>总数:</span>
+                        <span class="linear-title art-font pl-2">{deviceAmount.value}台</span>
+                      </div>
+                    </div>
+                    <div class="h-[230px] mt-[14px] w-full px-2 box-border flex flex-col justify-evenly">
+                      {
+                        deviceDataList.value.map(item => (
+                          <div class="flex flex-col space-y-1">
+                            <div class="flex justify-between">
+                              <div>
+                                <span>{item.label}:</span>
+                                <span class="linear-title pl-2">{item.numByType}</span>
+                              </div>
+                              <div>
+                                <span>在线:</span>
+                                <span class="linear-title pl-2">{item.online}</span>
+                                <span class="px-2">|</span>
+                                <span>离线:</span>
+                                <span class="linear-title pl-2">{item.offline}</span>
+                              </div>
+                            </div>
+                            <div class="bg-[#04363c] h-[12px]">
+                              <div
+                                class="h-full high-light-bar"
+                                style={{ width: `${(+item.online / +item.numByType) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+                  <div class="h-[237px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px] overflow-hidden">
+                    <div class="h-[220px] overflow-auto hidden-scroll-bar">
+                      <BigscreenTable
+                        headerBackgroundColor="#012831"
+                        columns={[
+                          {
+                            key: 'warnInfo',
+                            label: '预警信息',
+                            width: '12rem'
+                          },
+                          {
+                            key: 'warnTime',
+                            label: '报警时间',
+                            width: '7rem'
+                          },
+                          {
+                            key: 'warnStatus',
+                            label: '状态',
+                          },
+                        ]}
+                        dataList={preWarnList.value}
+                        loading={preWarnLoading.value}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </BigscreenMain>
-          <BigscreenFooter height="30px" />
-        </BigscreenContainer>
-      </BigscreenAdapter>
+            </BigscreenMain>
+            <BigscreenFooter height="30px" />
+          </BigscreenContainer>
+        </BigscreenAdapter>
+      </div>
     )
   }
 })

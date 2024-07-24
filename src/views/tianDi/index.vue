@@ -1,29 +1,74 @@
 <template>
-  <div class="flex flex-col items-center p-4">
-    <div id="mapDiv" class="w-[90vw] h-[90vh]">TD</div>
-    <div>
-      <el-button class="my-button" @click="map.zoomIn()">放大地图 </el-button>
-      <el-button class="my-button" @click="map.zoomOut()">缩小地图 </el-button>
-      <el-button class="my-button" @click="markerTool.open()">标注开启 </el-button>
-      <el-button class="my-button" @click="editMarker()">编辑标注 </el-button>
-      <el-button class="my-button" @click="endeditMarker()">关闭标注编辑 </el-button>
-      <el-button class="my-button" @click="showAlert()">获取线长度 </el-button>
+  <div class="relative w-full h-full min-w-[200px] min-h-[130px]">
+    <div id="mapDiv" class="w-full h-full z-0">TD</div>
+    <div class="absolute z-36 left-[1rem] bottom-[1rem] bg-white p-2">
+      <!-- <el-button class="my-button" @click="markerTool.open()">标注开启</el-button>
+      <el-button class="my-button" @click="editMarker()">编辑标注</el-button>
+      <el-button class="my-button" @click="endeditMarker()">关闭标注编辑</el-button> -->
       <el-button class="my-button" @click="drawPolygon()">绘制地块</el-button>
       <el-button class="my-button" @click="saveCoordinates()">保存地块坐标</el-button>
-      <el-button class="my-button" @click="removeLastPolygon()">清除上一地块</el-button>
+      <el-button class="my-button" @click="deleteCoordinates()">删除地块</el-button>
+      <!-- <div id="setCtr">
+        经度<el-input v-model="lng" type="text" value="116.64899" /><br />
+        纬度<el-input v-model="lat" type="text" value="40.12948" /><br />
+        缩放级别<el-input v-model="zoom" type="text" value="10" /><br />
+        <el-input type="button" value="设置" @click="setCenterAndZoom()" />
+      </div> -->
+    </div>
+    <div class="absolute z-36 left-[1rem] top-[1rem] bg-white p-2">
+      <Selector @change="handleSelectorChange" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import Selector from './selector.vue'
+
 let map: any = null
 let markerTool: any = null
-let points: T.LngLat[] = []
-let pgpoints: T.LngLat[] = []
-let savedCoordinates = [] //保存地块坐标数组
-let getDistance: any
+let savedCoordinates: Array<any> = [] //保存地块坐标数组
 let editMarker: any
-let showAlert: any
 
+const lng = ref('116.64899')
+const lat = ref('40.12948')
+const zoom = ref()
+
+// 用经纬度设置中心点
+// const setCenterAndZoom = () => {
+//   map.centerAndZoom(new T.LngLat(lng.value, lat.value), zoom.value)
+// }
+// 创建一个标记点
+const createPoint = (position, label = '') => {
+  if (!Array.isArray(position)) return
+  if (position.length !== 2) return
+  const icon = new T.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/1483/1483336.png',
+    iconSize: new T.Point(30, 30),
+    iconAnchor: new T.Point(0, 10)
+  })
+  const _pos = new T.LngLat(position[0], position[1])
+  const marker = new T.Marker(_pos, { icon: icon })
+
+  const labelItem = new T.Label({
+    text: label, //文本标注的内容
+    position: _pos, //文本标注的地理位置
+    offset: new T.Point(-25, -30) //文本标注的位置偏移值
+  })
+  map.addOverLay(marker)
+  map.addOverLay(labelItem)
+  map.centerAndZoom(_pos, 15)
+}
+
+const handleSelectorChange = (item) => {
+  createPoint(item.position, item.name)
+}
+
+// 删除已经绘制的地块
+const deleteCoordinates = () => {
+  savedCoordinates = []
+  map.clearOverLays()
+}
+
+//关闭标注编辑
 const endeditMarker = () => {
   let markers = markerTool.getMarkers()
   for (let i = 0; i < markers.length; i++) {
@@ -39,9 +84,9 @@ const drawPolygon = () => {
   PolygonTool.open()
 
   PolygonTool.addEventListener('draw', (e: any) => {
-    // console.log(e)
+    console.log(e)
     //获取地块的坐标点数组
-    let coordinates = e.currentLnglats
+    const coordinates = e.currentLnglats
     //保存坐标点到数组中
     if (coordinates.length > 0) {
       savedCoordinates.push(coordinates)
@@ -52,24 +97,20 @@ const drawPolygon = () => {
 }
 const saveCoordinates = () => {
   console.log(savedCoordinates)
+  if (Array.isArray(savedCoordinates) && savedCoordinates.length === 0) return
   // 将坐标点保存到本地存储
   localStorage.setItem('polygonCoordinates', JSON.stringify(savedCoordinates))
 }
 //删除上一个绘制的地块
-const removeLastPolygon = () => {
-  if (savedCoordinates.length > 0) {
-    savedCoordinates.pop() // 从坐标数组中移除最后一个地块
-  }
-  //在地图上删除上一个地块？
-}
-const initMap = () => {
-  const configureMap = (map: any) => {
-    map.enableScrollWheelZoom()
-    map.enableDrag()
-    map.disableDoubleClickZoom()
-    map.disableKeyboard()
-  }
+// const removeLastPolygon = () => {
+//   if (savedCoordinates.length > 0) {
+//     savedCoordinates.pop() // 从坐标数组中移除最后一个地块
+//   }
+//在地图上删除上一个地块？
+// }
 
+// 初始化
+const initMap = () => {
   // @ts-ignore
   map = new T.Map('mapDiv', [
     {
@@ -78,42 +119,42 @@ const initMap = () => {
       maxZoom: 18
     }
   ])
+  //@ts-ignore
+  const lnglat = new T.LngLat(116.40769, 39.89945)
+  map.centerAndZoom(lnglat, 12)
+  //创建对象
+  const ctrl = new T.Control.MapType()
+  //添加控件
+  map.addControl(ctrl)
+
+  // 配置地图控制
+  const configureMap = (map: any) => {
+    map.enableScrollWheelZoom()
+    map.enableDrag()
+    map.disableDoubleClickZoom()
+    map.disableKeyboard()
+  }
+  configureMap(map)
+
   //获取点击处坐标
   map.addEventListener('click', (e) => {
-    console.log(e)
-
     const { lnglat } = e
     const { lng, lat } = lnglat
-    console.log('lng', lng)
-    console.log('lat', lat)
+
     //复制到剪贴板
     navigator.clipboard.writeText(`[${lng}, ${lat}],`)
   })
-  //@ts-ignore
-  const lnglat = new T.LngLat(116.40969, 39.89945)
-  map.centerAndZoom(lnglat, 12)
-  configureMap(map)
 
-  //线覆盖物、算距离
-  points.push(new T.LngLat(116.41136, 39.97569))
-  points.push(new T.LngLat(116.411794, 39.9068))
-  points.push(new T.LngLat(116.32969, 39.9294))
-  points.push(new T.LngLat(116.385438, 39.9061))
-  //创建线对象
-  let line = new T.Polyline(points)
-  //向地图上添加线
-  map.addOverLay(line)
-  getDistance = (points) => {
-    let r = 0
-    for (let k = 0; k < points.length - 1; k++) {
-      r += points[k].distanceTo(points[k + 1])
+  return
+  //标注工具
+  markerTool = new T.MarkTool(map, { follow: true })
+  editMarker = () => {
+    let markers = markerTool.getMarkers()
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].enableDragging()
     }
-    return r
   }
 
-  showAlert = () => {
-    alert(getDistance(points) + '米')
-  }
   //多边形
   const polyPoints = [
     [116.385847876651, 39.9210402682383],
@@ -131,6 +172,9 @@ const initMap = () => {
     [116.38728552280215, 39.92144261525425],
     [116.38555726696232, 39.92133226820324]
   ]
+
+  const pgpoints: T.LngLat[] = []
+
   polyPoints.forEach((item) => {
     const [long, lat] = item
     pgpoints.push(new T.LngLat(long, lat))
@@ -144,6 +188,7 @@ const initMap = () => {
     fillOpacity: 0.5
   })
   map.addOverLay(polygon)
+
   //信息窗口
   const point = new T.LngLat(116.400244, 39.92556)
   const marker = new T.Marker(point) // 创建标注
@@ -152,18 +197,7 @@ const initMap = () => {
   marker.addEventListener('click', () => {
     marker.openInfoWindow(markerInfoWin)
   }) // 将标注添加到地图中
-
-  //标注工具
-  markerTool = new T.MarkTool(map, { follow: true })
-  editMarker = () => {
-    let markers = markerTool.getMarkers()
-    for (let i = 0; i < markers.length; i++) {
-      markers[i].enableDragging()
-    }
-  }
 }
 
-onMounted(() => {
-  initMap()
-})
+defineExpose({ initMap })
 </script>

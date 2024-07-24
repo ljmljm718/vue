@@ -246,7 +246,7 @@
           <el-button
             link
             type="primary"
-            v-if=" scope.row.deviceStatus=='online'&&scope.row.url.indexOf('mp4')>0"
+            v-if="scope.row.deviceStatus=='online'&&scope.row.url!=null&&scope.row.url.indexOf('mp4')>0"
             @click="openExternalLink(scope)">查看监控
           </el-button>
           <el-button

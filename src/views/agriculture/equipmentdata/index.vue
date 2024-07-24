@@ -1,56 +1,65 @@
 <template>
   <ContentWrap>
     <div class="flex items-center relative">
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px "
-      :style="`width:${isCollapse2?'':'57vw'}`"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="采集类型" prop="collectionType">
-        <el-select  v-model="queryParams.collectionType" placeholder="请选择" clearable
-          @keyup.enter="handleQuery"
-          :class="`!w-${isCollapse2?'200px':'240px'}`">
-          <el-option
-            v-for="item in selectEquipmentType"
-            :key="item"
-            :label="item.categoryName"
-            :value="item.categoryName"
+      <!-- 搜索工作栏 -->
+      <el-form
+        class="-mb-15px"
+        :style="`width:${isCollapse2 ? '85%' : '85%'}`"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="70px"
+      >
+        <el-form-item label="采集类型" prop="collectionType">
+          <el-select
+            v-model="queryParams.collectionType"
+            placeholder="请选择"
+            clearable
+            @keyup.enter="handleQuery"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          >
+            <el-option
+              v-for="item in selectEquipmentType"
+              :key="item"
+              :label="item.categoryName"
+              :value="item.categoryName"
             />
-        </el-select>
-        <!-- <el-input
+          </el-select>
+          <!-- <el-input
           v-model="queryParams.collectionType"
           placeholder="请输入采集类型"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         /> -->
-      </el-form-item>
-      <el-form-item label="监测类型" prop="monitoringType">
-        <el-select v-if="queryParams.collectionType"  v-model="queryParams.monitoringType" placeholder="请选择监测类型" clearable
-          @keyup.enter="handleQuery"
-          :class="`!w-${isCollapse2?'200px':'240px'}`">
-          <el-option
-            v-for="item in selectCollectionType"
-            :key="item"
-            :label="item"
-            :value="item"
+        </el-form-item>
+        <el-form-item label="监测类型" prop="monitoringType">
+          <el-select
+            v-if="queryParams.collectionType"
+            v-model="queryParams.monitoringType"
+            placeholder="请选择监测类型"
+            clearable
+            @keyup.enter="handleQuery"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          >
+            <el-option
+              v-for="item in selectCollectionType"
+              :key="item"
+              :label="item"
+              :value="item"
             />
-        </el-select>
-        <el-input v-else
-          v-model="queryParams.monitoringType"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          :class="`!w-${isCollapse2?'200px':'240px'}`"
-        />
-      </el-form-item>
+          </el-select>
+          <el-input
+            v-else
+            v-model="queryParams.monitoringType"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          />
+        </el-form-item>
 
-
-      <!-- <el-form-item label="数据值" prop="dataValue">
+        <!-- <el-form-item label="数据值" prop="dataValue">
         <el-input
           v-model="queryParams.dataValue"
           placeholder="请输入数据值"
@@ -68,28 +77,28 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="采集时间" prop="collectionTime">
-        <el-date-picker
-          v-model="queryParams.collectionTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          :class="`!w-${isCollapse2?'240px':'240px'}`"
-        />
-      </el-form-item>
-      <el-form-item label="设备名称" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          :class="`!w-${isCollapse2?'200px':'240px'}`"
-        />
-      </el-form-item>
+        <el-form-item label="采集时间" prop="collectionTime">
+          <el-date-picker
+            v-model="queryParams.collectionTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          />
+        </el-form-item>
+        <el-form-item label="设备名称" prop="deviceName">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          />
+        </el-form-item>
 
-      <!-- <el-form-item label="基地名称" prop="parkName">
+        <!-- <el-form-item label="基地名称" prop="parkName">
         <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
           @keyup.enter="handleQuery"
           class="!w-240px">
@@ -107,8 +116,8 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         /> -->
-      <!-- </el-form-item> -->
-      <!-- <el-form-item label="基地编码" prop="baseCode">
+        <!-- </el-form-item> -->
+        <!-- <el-form-item label="基地编码" prop="baseCode">
         <el-input
           v-model="queryParams.baseCode"
           placeholder="请输入基地编码"
@@ -119,9 +128,7 @@
       </el-form-item>
        -->
 
-
-
-      <!-- <el-form-item label="地块名称" prop="parkDname">
+        <!-- <el-form-item label="地块名称" prop="parkDname">
         <el-input
           v-model="queryParams.parkDname"
           placeholder="请输入地块名称"
@@ -130,7 +137,7 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <!-- <el-form-item label="地块编码" prop="plotCode">
+        <!-- <el-form-item label="地块编码" prop="plotCode">
         <el-input
           v-model="queryParams.plotCode"
           placeholder="请输入地块编码"
@@ -140,25 +147,25 @@
         />
       </el-form-item> -->
 
-      <el-form-item label="通道编码" prop="channelId">
-        <el-input
-          v-model="queryParams.channelId"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          :class="`!w-${isCollapse2?'200px':'240px'}`"
-        />
-      </el-form-item>
-      <el-form-item label="设备编号" prop="yyRemarks">
-        <el-input
-          v-model="queryParams.yyRemarks"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-260px"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="备用一" prop="reserveOne">
+        <el-form-item label="通道编码" prop="channelId">
+          <el-input
+            v-model="queryParams.channelId"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+          />
+        </el-form-item>
+        <el-form-item label="设备编号" prop="yyRemarks">
+          <el-input
+            v-model="queryParams.yyRemarks"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-260px"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="备用一" prop="reserveOne">
         <el-input
           v-model="queryParams.reserveOne"
           placeholder="请输入备用一"
@@ -196,49 +203,46 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      
-      
-    </el-form>
-    <div v-if="isCollapse2" class="absolute right-0 flex items-center">
-        <div  class='w-3px h-70px bg-[#f1f1f1] -ml-20px mr-10px'></div>
-        <el-form-item class='flex'>
-          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+      </el-form>
+      <div
+        :class="`w-[${isCollapse2 ? '13%' : '15%'}]   flex items-center`"
+      >
+        <div class="w-3px h-70px bg-[#f1f1f1]"></div>
+        <el-form-item class="flex ml-15px">
+          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"
+            ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
+          >
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </el-form-item>
-      </div>
-      <div v-if="!isCollapse2" class='w-3px h-70px bg-[#f1f1f1] -ml-10px mr-10px'></div>
-      <div v-if="!isCollapse2" class='flex'>
-        <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </div>
     </div>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <div  class='mb-20px -mt-5px ml-10px'>
-        <el-button
-              class="!bg-[#009688] !color-[#fff]"
-              plain
-              @click="openForm('create')"
-              v-hasPermi="['yyang:equipment-data:create']"
-            >
-              <Icon icon="ep:plus" class="mr-5px" /> 新增
-            </el-button>
-            <el-button
-              plain
-              @click="handleExport"
-              :loading="exportLoading"
-              v-hasPermi="['yyang:equipment-data:export']"
-            >
-              <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+    <div class="mb-20px -mt-5px ml-10px">
+      <el-button
+        class="!bg-[#009688] !color-[#fff]"
+        plain
+        @click="openForm('create')"
+        v-hasPermi="['yyang:equipment-data:create']"
+      >
+        <Icon icon="ep:plus" class="mr-5px" /> 新增
+      </el-button>
+      <el-button
+        plain
+        @click="handleExport"
+        :loading="exportLoading"
+        v-hasPermi="['yyang:equipment-data:export']"
+      >
+        <Icon icon="ep:download" class="mr-5px" /> 导出
+      </el-button>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="采集类型" align="center" prop="collectionType" />
-        <!-- <template #default="scope">
+      <!-- <template #default="scope">
           <el-cascader
             style="width: 100%"
             v-model="scope.row.collectionType"
@@ -248,7 +252,6 @@
           />
         </template>
       </el-table-column> -->
-
 
       <el-table-column label="监测类型" align="center" prop="monitoringType" />
       <el-table-column label="数据值" align="center" prop="dataValue" />
@@ -278,13 +281,9 @@
         :formatter="dateFormatter"
         width="180px"
       /> -->
-      <el-table-column label="操作" align="center" width='200px'>
-        <template #default="scope" >
-          <el-button
-            link
-            type="primary"
-            @click="openForm('details', scope.row.id)"
-          >
+      <el-table-column label="操作" align="center" width="200px">
+        <template #default="scope">
+          <el-button link type="primary" @click="openForm('details', scope.row.id)">
             详情
           </el-button>
           <el-button
@@ -325,11 +324,11 @@ import download from '@/utils/download'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
 //导入设备分类
-import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
 //导入基地列表
-import {ParkInfoApi} from "@/api/agriculture/parkinfo";
-import {useRoute} from 'vue-router'
-import {defineProps} from 'vue'
+import { ParkInfoApi } from '@/api/agriculture/parkinfo'
+import { useRoute } from 'vue-router'
+import { defineProps } from 'vue'
 // import {defineExpose} from 'vue'
 // let props=defineExpose({
 //   currCategory:''
@@ -340,7 +339,6 @@ import {defineProps} from 'vue'
 // })
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
-
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -367,7 +365,7 @@ const queryParams = reactive({
   deviceName: undefined,
   parkName: undefined,
   parkDname: undefined,
-  createTime: [],
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -378,17 +376,17 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
-  collectionType:{
-    type:Object
+  collectionType: {
+    type: Object
   },
   isCollapse: {
     type: Boolean,
     default: false
-  },
-},
-)
+  }
+})
 // 监听父组件category变化
-watch(() => props.currCategory,
+watch(
+  () => props.currCategory,
   () => {
     if (props.currCategory) {
       if (props.currCategory.parkId === undefined) {
@@ -403,14 +401,18 @@ watch(() => props.currCategory,
       queryParams.plotCode = undefined
     }
     handleQuery()
-  })
+  }
+)
 
 //监听父组件isCollapse变化
-const isCollapse2=ref(false)
-watch(()=>props.isCollapse,(val)=>{
-  console.log(val,'1234isCollapse')
-  isCollapse2.value=val
-})
+const isCollapse2 = ref(false)
+watch(
+  () => props.isCollapse,
+  (val) => {
+    console.log(val, '1234isCollapse')
+    isCollapse2.value = val
+  }
+)
 /**
  * 设备分类级联选择器
  */
@@ -426,40 +428,45 @@ watch(()=>props.isCollapse,(val)=>{
 //   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
 //   await getList()
 // })
-const emit=defineEmits(['clearTree'])
+const emit = defineEmits(['clearTree'])
 //存放监测类型
-let selectEquipmentType=ref([])
+let selectEquipmentType = ref([])
 //存放基地信息
-let selectBase =ref([])
+let selectBase = ref([])
 //存放采集类型
-let selectCollectionType=ref([])
+let selectCollectionType = ref([])
 //查询上方列表
-const queryList=async ()=>{
-  const dataId = await DeviceCategoryApi.getDeviceCategoryList({categoryName:'监测设备'})
+const queryList = async () => {
+  const dataId = await DeviceCategoryApi.getDeviceCategoryList({ categoryName: '监测设备' })
   // console.log(dataId,"dataId");
-  selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({parentId : dataId[0].id})
+  selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({
+    parentId: dataId[0].id
+  })
   // console.log(selectEquipmentType,"selectEquipmentType");
-  const selectBaseList= await ParkInfoApi.getParkInfoPage({});
+  const selectBaseList = await ParkInfoApi.getParkInfoPage({})
   selectBase.value = selectBaseList.list
 }
 queryList()
 //查询采集类型列表
-const queryType= async ()=>{
-  if(queryParams.collectionType){
-  queryParams.monitoringType=undefined
-  selectCollectionType.value = await EquipmentDataApi.getCollectionType(queryParams.collectionType);
-  // console.log(selectCollectionType,"selectCollectionType");
+const queryType = async () => {
+  if (queryParams.collectionType) {
+    queryParams.monitoringType = undefined
+    selectCollectionType.value = await EquipmentDataApi.getCollectionType(
+      queryParams.collectionType
+    )
+    // console.log(selectCollectionType,"selectCollectionType");
   }
 }
 watch(
   () => queryParams.collectionType, // 监听 queryParams.collectionType 的变化
   (newVal, oldVal) => {
-    if (newVal !== oldVal) { // 确保值确实发生了变化
+    if (newVal !== oldVal) {
+      // 确保值确实发生了变化
       queryType()
     }
   },
   { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整
-);
+)
 
 /** 查询列表 */
 const getList = async () => {
@@ -472,13 +479,13 @@ const getList = async () => {
     loading.value = false
   }
 }
-if(props.collectionType){
-  queryParams.collectionType=props.collectionType.collectionType
+if (props.collectionType) {
+  queryParams.collectionType = props.collectionType.collectionType
   getList()
 }
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  if(queryParams.collectionTime == null){
+  if (queryParams.collectionTime == null) {
     queryParams.collectionTime = undefined
   }
   queryParams.pageNo = 1
@@ -496,10 +503,15 @@ const resetQuery = () => {
 const formRef = ref()
 const router = useRouter()
 const openForm = (type: string, id?: number) => {
-  if(type=='create') {
+  if (type == 'create') {
     router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData')
-  }else{
-    router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type='+type+'&id='+id)
+  } else {
+    router.push(
+      '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type=' +
+        type +
+        '&id=' +
+        id
+    )
   }
   //formRef.value.open(type, id)
 }
@@ -532,41 +544,15 @@ const handleExport = async () => {
   }
 }
 
-let route=useRoute()
+let route = useRoute()
 
 /** 初始化 **/
 onMounted(() => {
   let location = route.query
-  console.log(window.innerWidth,'123456innerwidth')
+  console.log(window.innerWidth, '123456innerwidth')
   if (location) {
     queryParams.collectionType = location.collectionType
   }
   getList()
 })
 </script>
-<style lang="scss" scoped>
-@media screen and (min-width:1450px) {
-  .el-form{
-    .el-select{
-      width: 230px !important;
-    }
-    .el-input{
-      width: 230px !important;
-    }
-    .el-date-picker{
-      width: 160px !important;
-    }
-  }
-}
-@media screen and (max-width:1358px) { 
-  .el-form{
-    .el-select{
-      width: 230px !important;
-    }
-    .el-input{
-      width: 230px !important;
-    }
-  }
-  
-}
-</style>
