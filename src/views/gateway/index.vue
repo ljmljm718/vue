@@ -155,13 +155,13 @@
       <div class="text-center mt-20px mb-30px color-[#c1c1c1] text-sm"
         >基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数字挖掘、边缘计算、GIS遥感监测等多种技术手段融合显示精准帮扶，解决现有农业问题</div
       >
-      <div class="flex justify-evenly" style="max-height:700px; min-height:400px;">
+      <div class="flex justify-evenly" style="max-height:500px; min-height:500px;">
         <div class="container flex space-x-4 justify-center">
-          <div class="w-40%">
+          <div class="w-40% relative">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]"
               >对口帮扶地域</div
             >
-            <div class="table-wrapper " style="max-height:500px; min-height:200px;">
+            <div class="table-wrapper " style="height:500px;">
               <div class="table-header-row">
                 <div
                   class="table-header-cell"
@@ -182,6 +182,8 @@
                 >
               </div>
                 <el-pagination
+                :class="`left-[50%] absolute ${countyParams.pageSize!=20?'bottom-0':''}`"
+                style="transform: translateX(-50%);"
                 v-model:currentPage="countyParams.pgeNo"
                 v-model:page-size="countyParams.pageSize"
                 :page-sizes="[1, 5, 10, 20]"
@@ -196,9 +198,9 @@
             </div>
             
           </div>
-          <div class="w-40%">
+          <div class="w-40% relative">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]">帮扶产业</div>
-            <div class="table-wrapper " style="max-height:500px; min-height:300px;">
+            <div class="table-wrapper " style="max-height:500px; min-height:500px;">
               <div class="table-header-row">
                 <div
                   class="table-header-cell"
@@ -219,7 +221,8 @@
                 >
               </div>
               <el-pagination
-                class="mr-0"
+                :class="`left-[50%] absolute ${helpParams.pageSize!=20?'bottom-0':''}`"
+                style="transform: translateX(-50%);"
                 v-model:currentPage="helpParams.pgeNo"
                 v-model:page-size="helpParams.pageSize"
                 :page-sizes="[1, 5, 10, 20]"
@@ -256,7 +259,7 @@
               <span>个</span>
               <span class="font-bold px-[.6rem]">|</span>
               <span>区县</span>
-              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ options.length }}</span>
+              <span class="text-[#67bf78] text-[1.4rem] px-[.4rem] font-bold">{{ total }}</span>
               <span>个</span>
               <span class="font-bold px-[.6rem]">|</span>
               <span>产业类型</span>
@@ -275,7 +278,7 @@
                 <div class="rect-extra"></div>
             </div>
           </div>
-          <div class="table-wrapper2 bg-[#feffff] w-[500px] rounded min-h-[200px] max-h-[550px]">
+          <div class=" relative table-wrapper2 bg-[#feffff] w-[500px] rounded h-[530px]">
             <div class="table-header-row px-[10px]">
               <div
                 class="table-header-cell"
@@ -327,7 +330,7 @@
               </div>
             </div>
             <el-pagination
-              class="mt-10px mr-[10px] mb-[10px]"
+              :class="` absolute ${params.pageSize!=20?'bottom-0':''} mb-10px mr-20px`"
               v-model:currentPage="params.pgeNo"
               v-model:page-size="params.pageSize"
               :page-sizes="[1, 5, 10, 20]"
@@ -1207,6 +1210,7 @@ const goPage3 = (url) => {
 .table-wrapper {
   width: 100%;
   position: relative;
+  overflow: auto;
   background-color: #f3fcf7;
   font-size: 0.9rem;
   .table-header-row {
