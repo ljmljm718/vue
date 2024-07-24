@@ -210,6 +210,7 @@ const handleAdd = () => {
     quantity: undefined,
     adoptionType: undefined,
     img: undefined,
+    geofencing: undefined
   }
   formData.value.push(row)
 }

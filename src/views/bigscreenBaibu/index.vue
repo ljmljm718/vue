@@ -463,545 +463,547 @@ getDeviceStateData(2)
 
 </script>
 <template>
-  <BigscreenAdapter>
-    <div class="bigscreen-main-wrapper">
-      <div class="header-main-wrapper header-bg">
-        <div class="header-left-part-wrapper">
-          <BigScreenTime/>
-        </div>
-        <div class="header-title-wrapper">彭水百部中药产业数字化赋能</div>
-        <div class="header-right-part-wrapper">
-          <BackOrHome />
-        </div>
-      </div>
-      <div class="content-main-wrapper grid-container">
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title title-bg">
-              <div>产业介绍</div>
-              <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                <select @change="handleProdSelectorChange">
-                  <option
-                    :value="item.id"
-                    v-for="item,index in productOptions"
-                    :key="index"
-                  >{{ item.cropName }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="main-item-container flex flex-col">
-              <div class="w-full flex justify-center h-[4.6rem]">
-                <div v-for="(item, index) in industryList" :key="index"
-                    class="flex flex-col items-center industry-bg h-full w-[28%] mx-1" @click="$router.push({
-                            path:item.url
-                    })">
-                  <div style="font-size: 1.2rem;font-family: 'TitleFont';">{{ item.value }}</div>
-                  <div style="font-size: .9rem;color: #00d4ff;">{{ item.title }}</div>
-                </div>
-              </div>
-              <div style="height: calc(100% - 19.5rem);padding: 1rem;">
-                <img :src="baibuIntroInfo.imgId" align="left" width="160"
-                    style="margin: .3rem 1rem 1rem .3rem;"/>
-                <span>{{ baibuIntroInfo.remark }}</span>
-              </div>
-              <div
-                class="sub-title-bg h-[2rem]"
-                style="margin-left: .7rem;width: calc(100% - .7rem);margin-bottom: .9rem;"
-                @click="$router.push({
-                            path:'/pcg/product/drying-process-management'
-                    })">烘干工艺
-              </div>
-              <div style="height: 12rem;">
-                <table>
-                  <thead>
-                  <tr>
-                    <th>烘干机</th>
-                    <th>温度(℃)</th>
-                    <th>转速(mm/s)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="item in manageList" :key="item.id">
-                    <td>{{ item.equipmentName }}</td>
-                    <td>{{ item.dryingTemperature }}</td>
-                    <td>{{ item.equipmentSpeed }}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+  <div class="w-[100vw] h-[100vh] bg-black">
+    <BigscreenAdapter>
+      <div class="bigscreen-main-wrapper">
+        <div class="header-main-wrapper header-bg">
+          <div class="header-left-part-wrapper">
+            <BigScreenTime/>
+          </div>
+          <div class="header-title-wrapper">彭水百部中药产业数字化赋能</div>
+          <div class="header-right-part-wrapper">
+            <BackOrHome />
           </div>
         </div>
-        <div class="gird-item-wrapper" style="grid-column: span 2;z-index: 0;">
-          <div id="mainMap">
-            <div class="tool-tip-wrapper" style="left: 250px;top: 200px;">
-              <div class="rect-bg">
-                <div class="rect-title">监控设备</div>
-                <div class="flex rect-line mt-2">
-                  <div class="w-[5rem]">坐标:</div>
-                  <div>经度: {{ mapMonitorData.longitude }}</div>
-                </div>
-                <div class="flex rect-line">
-                  <div class="w-[5rem]"></div>
-                  <div>纬度: {{ mapMonitorData.latitude }}</div>
-                </div>
-                <div class="flex rect-line">
-                  <div class="w-[5rem]">设备名称:</div>
-                  <div>{{ mapMonitorData.deviceName }}</div>
-                </div>
-                <div class="flex rect-line">
-                  <div class="w-[5rem]">状态:</div>
-                  <div
-                    :style="`color: ${mapMonitorData.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
-                  >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}
-                  </div>
+        <div class="content-main-wrapper grid-container">
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title title-bg">
+                <div>产业介绍</div>
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                  <select @change="handleProdSelectorChange">
+                    <option
+                      :value="item.id"
+                      v-for="item,index in productOptions"
+                      :key="index"
+                    >{{ item.cropName }}
+                    </option>
+                  </select>
                 </div>
               </div>
-              <img src="/images/bigscreen9/icon2.png" alt=""/>
-            </div>
-            <div class="tool-tip-wrapper" style="left: 470px;top: 360px;">
-              <div class="rect-bg" style="min-height: 13rem;">
-                <div class="rect-title">气象站</div>
-                <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
-                  <div
-                    class="flex"
-                    v-for="(item, index) in weatherData"
-                    :key="index"
-                  >
-                    <span>{{ item.monitoringType }}: </span>
-                    <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
-                  </div>
-                  <div>
-                    <span>状态:</span>
-                    <span
-                      class="pl-2"
-                      :style="`color: ${(weatherData && weatherData[0] && weatherData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                    >{{
-                        (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线'
-                      }}</span>
+              <div class="main-item-container flex flex-col">
+                <div class="w-full flex justify-center h-[4.6rem]">
+                  <div v-for="(item, index) in industryList" :key="index"
+                      class="flex flex-col items-center industry-bg h-full w-[28%] mx-1" @click="$router.push({
+                              path:item.url
+                      })">
+                    <div style="font-size: 1.2rem;font-family: 'TitleFont';">{{ item.value }}</div>
+                    <div style="font-size: .9rem;color: #00d4ff;">{{ item.title }}</div>
                   </div>
                 </div>
-              </div>
-              <img src="/images/bigscreen9/icon1.png" alt=""/>
-            </div>
-            <div class="tool-tip-wrapper" style="left: 540px;top: 100px;">
-              <div class="rect-bg" style="width: 9rem;min-height: 14rem;">
-                <div class="rect-title">虫情测报灯</div>
-                <div class="grid gap-1 pt-2 px-1" style="font-size: .9rem;">
-                  <div
-                    class="flex"
-                    v-for="(item, index) in bugData"
-                    :key="index"
-                  >
-                    <span>{{ item.monitoringType }}: </span>
-                    <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
-                  </div>
-                  <div>
-                    <span>状态:</span>
-                    <span
-                      class="pl-2"
-                      :style="`color: ${(bugData && bugData[0] && bugData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                    >{{
-                        (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线'
-                      }}</span>
-                  </div>
-                </div>
-              </div>
-              <img src="/images/bigscreen9/icon3.png" alt=""/>
-            </div>
-            <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
-              <div class="rect-bg" style="min-height: 13.5rem;">
-                <div class="rect-title">土壤传感</div>
-                <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
-                  <div
-                    class="flex"
-                    v-for="(item, index) in soilData"
-                    :key="index"
-                  >
-                    <span>{{ item.monitoringType }}: </span>
-                    <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
-                  </div>
-                  <div>
-                    <span>状态:</span>
-                    <span
-                      class="pl-2"
-                      :style="`color: ${(soilData && soilData[0] && soilData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
-                    >{{
-                        (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线'
-                      }}</span>
-                  </div>
-                </div>
-              </div>
-              <img src="/images/bigscreen9/icon4.png" alt=""/>
-            </div>
-          </div>
-          <div class="absolute flex bottom-[.3rem] pb-3 left-0">
-            <div class="flex items-center px-2">
-              <img src="/images/bigscreen9/icon1.png" alt=""/>
-              <span class="pl-1">气象站</span>
-            </div>
-            <div class="flex items-center px-2">
-              <img src="/images/bigscreen9/icon2.png" alt=""/>
-              <span class="pl-1">监控设备</span>
-            </div>
-            <div class="flex items-center px-2">
-              <img src="/images/bigscreen9/icon3.png" alt=""/>
-              <span class="pl-1">虫情测报灯</span>
-            </div>
-            <div class="flex items-center px-2">
-              <img src="/images/bigscreen9/icon4.png" alt=""/>
-              <span class="pl-1">土壤传感</span>
-            </div>
-          </div>
-        </div>
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title">智慧种植</div>
-            <div class="main-item-container flex flex-col">
-              <div class="grid grid-cols-2 gap-2">
-                <div class="bg-[length:100%_100%] card-width-bg flex justify-between p-3 col-span-2" @click="$router.push({
-                            path:'/internetMonitor/device/overview'
-                    })">
-                  <span>物联网设备</span>
-                  <span>
-                    <span>总数</span>
-                    <span style="color: #00ff96;font-family: 'TitleFont';padding: 0 .3rem;">{{
-                        deviceInfoTotal
-                      }}</span>
-                    <span>台</span>
-                  </span>
+                <div style="height: calc(100% - 19.5rem);padding: 1rem;">
+                  <img :src="baibuIntroInfo.imgId" align="left" width="160"
+                      style="margin: .3rem 1rem 1rem .3rem;"/>
+                  <span>{{ baibuIntroInfo.remark }}</span>
                 </div>
                 <div
-                  class="bg-[length:100%_100%] card-thin-bg p-1 px-3"
-                  v-for="item in deviceInfoPart"
-                  :key="item"
-                  style="font-size: .8rem;"
-                >
-                  <div class="flex justify-between px-2">
-                    <span>{{ item.categoryName }}</span>
-                    <span>{{ item.total }}</span>
+                  class="sub-title-bg h-[2rem]"
+                  style="margin-left: .7rem;width: calc(100% - .7rem);margin-bottom: .9rem;"
+                  @click="$router.push({
+                              path:'/pcg/product/drying-process-management'
+                      })">烘干工艺
+                </div>
+                <div style="height: 12rem;">
+                  <table>
+                    <thead>
+                    <tr>
+                      <th>烘干机</th>
+                      <th>温度(℃)</th>
+                      <th>转速(mm/s)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in manageList" :key="item.id">
+                      <td>{{ item.equipmentName }}</td>
+                      <td>{{ item.dryingTemperature }}</td>
+                      <td>{{ item.equipmentSpeed }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="gird-item-wrapper" style="grid-column: span 2;z-index: 0;">
+            <div id="mainMap">
+              <div class="tool-tip-wrapper" style="left: 250px;top: 200px;">
+                <div class="rect-bg">
+                  <div class="rect-title">监控设备</div>
+                  <div class="flex rect-line mt-2">
+                    <div class="w-[5rem]">坐标:</div>
+                    <div>经度: {{ mapMonitorData.longitude }}</div>
                   </div>
-                  <div class="flex justify-between px-2">
+                  <div class="flex rect-line">
+                    <div class="w-[5rem]"></div>
+                    <div>纬度: {{ mapMonitorData.latitude }}</div>
+                  </div>
+                  <div class="flex rect-line">
+                    <div class="w-[5rem]">设备名称:</div>
+                    <div>{{ mapMonitorData.deviceName }}</div>
+                  </div>
+                  <div class="flex rect-line">
+                    <div class="w-[5rem]">状态:</div>
+                    <div
+                      :style="`color: ${mapMonitorData.deviceStatus === 'online' ? '#10bd76' : '#e80909'};`"
+                    >{{ mapMonitorData.deviceStatus === 'online' ? '在线' : '离线' }}
+                    </div>
+                  </div>
+                </div>
+                <img src="/images/bigscreen9/icon2.png" alt=""/>
+              </div>
+              <div class="tool-tip-wrapper" style="left: 470px;top: 360px;">
+                <div class="rect-bg" style="min-height: 13rem;">
+                  <div class="rect-title">气象站</div>
+                  <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+                    <div
+                      class="flex"
+                      v-for="(item, index) in weatherData"
+                      :key="index"
+                    >
+                      <span>{{ item.monitoringType }}: </span>
+                      <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                    </div>
+                    <div>
+                      <span>状态:</span>
+                      <span
+                        class="pl-2"
+                        :style="`color: ${(weatherData && weatherData[0] && weatherData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                      >{{
+                          (weatherData && weatherData[0] && weatherData[0].status === 'online') ? '在线' : '离线'
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <img src="/images/bigscreen9/icon1.png" alt=""/>
+              </div>
+              <div class="tool-tip-wrapper" style="left: 540px;top: 100px;">
+                <div class="rect-bg" style="width: 9rem;min-height: 14rem;">
+                  <div class="rect-title">虫情测报灯</div>
+                  <div class="grid gap-1 pt-2 px-1" style="font-size: .9rem;">
+                    <div
+                      class="flex"
+                      v-for="(item, index) in bugData"
+                      :key="index"
+                    >
+                      <span>{{ item.monitoringType }}: </span>
+                      <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                    </div>
+                    <div>
+                      <span>状态:</span>
+                      <span
+                        class="pl-2"
+                        :style="`color: ${(bugData && bugData[0] && bugData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                      >{{
+                          (bugData && bugData[0] && bugData[0].status === 'online') ? '在线' : '离线'
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <img src="/images/bigscreen9/icon3.png" alt=""/>
+              </div>
+              <div class="tool-tip-wrapper" style="left: 770px;top: 260px;">
+                <div class="rect-bg" style="min-height: 13.5rem;">
+                  <div class="rect-title">土壤传感</div>
+                  <div class="grid grid-cols-2 gap-1 pt-2 px-1" style="font-size: .9rem;">
+                    <div
+                      class="flex"
+                      v-for="(item, index) in soilData"
+                      :key="index"
+                    >
+                      <span>{{ item.monitoringType }}: </span>
+                      <span style="padding-left: .1rem;">{{ item.dataValue + item.yyUnit }}</span>
+                    </div>
+                    <div>
+                      <span>状态:</span>
+                      <span
+                        class="pl-2"
+                        :style="`color: ${(soilData && soilData[0] && soilData[0].status === 'online') ? '#26bd70' : '#ff0000'};`"
+                      >{{
+                          (soilData && soilData[0] && soilData[0].status === 'online') ? '在线' : '离线'
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <img src="/images/bigscreen9/icon4.png" alt=""/>
+              </div>
+            </div>
+            <div class="absolute flex bottom-[.3rem] pb-3 left-0">
+              <div class="flex items-center px-2">
+                <img src="/images/bigscreen9/icon1.png" alt=""/>
+                <span class="pl-1">气象站</span>
+              </div>
+              <div class="flex items-center px-2">
+                <img src="/images/bigscreen9/icon2.png" alt=""/>
+                <span class="pl-1">监控设备</span>
+              </div>
+              <div class="flex items-center px-2">
+                <img src="/images/bigscreen9/icon3.png" alt=""/>
+                <span class="pl-1">虫情测报灯</span>
+              </div>
+              <div class="flex items-center px-2">
+                <img src="/images/bigscreen9/icon4.png" alt=""/>
+                <span class="pl-1">土壤传感</span>
+              </div>
+            </div>
+          </div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title">智慧种植</div>
+              <div class="main-item-container flex flex-col">
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="bg-[length:100%_100%] card-width-bg flex justify-between p-3 col-span-2" @click="$router.push({
+                              path:'/internetMonitor/device/overview'
+                      })">
+                    <span>物联网设备</span>
                     <span>
-                      在线
-                      <span class="pl-3" style="color: green;">{{ item.online }}</span>
-                    </span>
-                    <span>
-                      离线
-                      <span class="pl-3" style="color: red;">{{ item.offline }}</span>
+                      <span>总数</span>
+                      <span style="color: #00ff96;font-family: 'TitleFont';padding: 0 .3rem;">{{
+                          deviceInfoTotal
+                        }}</span>
+                      <span>台</span>
                     </span>
                   </div>
-                </div>
-              </div>
-              <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
-                            path:'/internetMonitor/deviceData/equipment-data-three',
-                            query:{
-                              collectionType:'气象站'
-                            }
-                    })">
-                <div>环境数据</div>
-                <div class="flex space-x-2">
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleParkEnvSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in parkOptions"
-                        :key="index"
-                      >{{ item.name }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleEnvSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in envOptions"
-                        :key="index"
-                      >{{ item.deviceName }}
-                      </option>
-                    </select>
+                  <div
+                    class="bg-[length:100%_100%] card-thin-bg p-1 px-3"
+                    v-for="item in deviceInfoPart"
+                    :key="item"
+                    style="font-size: .8rem;"
+                  >
+                    <div class="flex justify-between px-2">
+                      <span>{{ item.categoryName }}</span>
+                      <span>{{ item.total }}</span>
+                    </div>
+                    <div class="flex justify-between px-2">
+                      <span>
+                        在线
+                        <span class="pl-3" style="color: green;">{{ item.online }}</span>
+                      </span>
+                      <span>
+                        离线
+                        <span class="pl-3" style="color: red;">{{ item.offline }}</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
+                              path:'/internetMonitor/deviceData/equipment-data-three',
+                              query:{
+                                collectionType:'气象站'
+                              }
+                      })">
+                  <div>环境数据</div>
+                  <div class="flex space-x-2">
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleParkEnvSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in parkOptions"
+                          :key="index"
+                        >{{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleEnvSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in envOptions"
+                          :key="index"
+                        >{{ item.deviceName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
 
-              </div>
-              <div class="grid grid-cols-4 gap-1 p-1">
-                <div
-                  class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
-                  style="font-size: .8rem;">
-                  <div class="bg-[length:100%_100%] temp-icon"></div>
-                  <div style="font-family: 'TitleFont';" class="pt-1">{{ envTemp + '℃' }}</div>
                 </div>
-                <div
-                  class="bg-[length:100%_100%] card-bg px-1"
-                  style="font-size: .8rem;"
-                  v-for="(item, index) in envDataList"
-                  :key="index"
-                >
+                <div class="grid grid-cols-4 gap-1 p-1">
                   <div
-                    class="flex justify-between p-2"
-                    style="border-bottom: 1px solid #5fabd980;"
-                    v-for="ele in item"
-                    :key="ele.monitoringType"
-                  >
-                    <span>{{ ele.monitoringType }}</span>
-                    <span style="color: #68fffe;">{{ ele.dataValue + ele.unit }}</span>
+                    class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                    style="font-size: .8rem;">
+                    <div class="bg-[length:100%_100%] temp-icon"></div>
+                    <div style="font-family: 'TitleFont';" class="pt-1">{{ envTemp + '℃' }}</div>
                   </div>
-                </div>
-              </div>
-              <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center" @click="$router.push({
-                            path:'/internetMonitor/deviceData/equipment-data-three',
-                            query:{
-                              collectionType:'土壤墒情'
-                            }
-                    })">
-                <div >土壤数据</div>
-                <div class="flex space-x-2">
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleParkSoilSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in parkOptions"
-                        :key="index"
-                      >{{ item.name }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleSoilSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in soilOptions"
-                        :key="index"
-                      >{{ item.deviceName }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="grid grid-cols-4 gap-1 p-1">
-                <div
-                  class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
-                  style="font-size: .8rem;">
-                  <div class="bg-[length:100%_100%] temp-icon"></div>
-                  <div style="font-family: 'TitleFont';" class="pt-1">{{ soilTemp + '℃' }}</div>
-                </div>
-                <div
-                  class="bg-[length:100%_100%] card-bg px-1"
-                  style="font-size: .8rem;"
-                  v-for="(item, index) in soilDataList"
-                  :key="index"
-                >
                   <div
-                    class="flex justify-between p-2"
-                    style="border-bottom: 1px solid #5fabd980;"
-                    v-for="ele in item"
-                    :key="ele.monitoringType"
-                  >
-                    <span>{{ ele.monitoringType }}</span>
-                    <span style="color: #68fffe;">{{
-                        ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
-                      }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
-                            path:'/internetMonitor/deviceData/equipment-data-three',
-                            query:{
-                              collectionType:'虫情监测'
-                            }
-                    })">
-                <div>虫情监测</div>
-                <div class="flex space-x-2">
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleParkBugSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in parkOptions"
-                        :key="index"
-                      >{{ item.name }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                    <select @change="handleBugSelectorChange">
-                      <option
-                        :value="item.id"
-                        v-for="item,index in bugOptions"
-                        :key="index"
-                      >{{ item.deviceName }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="grid grid-cols-4 gap-1 p-1">
-                <div
-                  class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
-                  style="font-size: .8rem;">
-                  <div class="bg-[length:100%_100%] temp-icon"></div>
-                  <div style="font-family: 'TitleFont';" class="pt-1">{{ bugTemp + '℃' }}</div>
-                </div>
-                <div
-                  class="bg-[length:100%_100%] card-bg px-1"
-                  style="font-size: .8rem;"
-                  v-for="(item, index) in bugDataList"
-                  :key="index"
-                >
-                  <div
-                    class="flex justify-between p-2"
-                    style="border-bottom: 1px solid #5fabd980;"
-                    v-for="ele in item"
-                    :key="ele.monitoringType"
-                  >
-                    <span>{{ ele.monitoringType }}</span>
-                    <span style="color: #68fffe;">{{
-                        ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
-                      }}</span>
-                  </div>
-                </div>
-                <div
-                  class="bg-[length:100%_100%] card-bg px-1"
-                  style="font-size: .8rem;"
-                  v-for="(item, index) in subDeviceList"
-                  :key="index"
-                >
-                  <div
-                    class="flex justify-between p-2 items-center"
-                    style="border-bottom: 1px solid #5fabd980;"
-                    v-for="ele in item"
-                    :key="ele.id"
-                  >
-                    <span>{{ ele.subDevicesName }}</span>
-                    <el-switch
-                      v-model="ele.button"
-                      size="small"
-                      @change="(e) => { handleSwitchChange(e, ele) }"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title"
-                @click="$router.push({
-                            path:'/internetMonitor/device/deviceView',
-                            query:{
-                                deviceType:'60'
-                            }
-                    })">工业设备
-            </div>
-            <div class="main-item-container">
-              <div class="flex justify-between h-full">
-                <img
-                  src="/device.jpg"
-                  alt=""
-                  style="width: calc(100% - 10rem);height: 100%;object-fit: cover;"
-                />
-
-                <div class="w-[8rem] px-3">
-                  <div
-                    class="flex justify-between"
-                    v-for="(item, index) in deviceInfo"
+                    class="bg-[length:100%_100%] card-bg px-1"
+                    style="font-size: .8rem;"
+                    v-for="(item, index) in envDataList"
                     :key="index"
                   >
-                    <span>{{ item.categoryName }}</span>
-                    <span>{{ item.total }}</span>
+                    <div
+                      class="flex justify-between p-2"
+                      style="border-bottom: 1px solid #5fabd980;"
+                      v-for="ele in item"
+                      :key="ele.monitoringType"
+                    >
+                      <span>{{ ele.monitoringType }}</span>
+                      <span style="color: #68fffe;">{{ ele.dataValue + ele.unit }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center" @click="$router.push({
+                              path:'/internetMonitor/deviceData/equipment-data-three',
+                              query:{
+                                collectionType:'土壤墒情'
+                              }
+                      })">
+                  <div >土壤数据</div>
+                  <div class="flex space-x-2">
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleParkSoilSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in parkOptions"
+                          :key="index"
+                        >{{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleSoilSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in soilOptions"
+                          :key="index"
+                        >{{ item.deviceName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-4 gap-1 p-1">
+                  <div
+                    class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                    style="font-size: .8rem;">
+                    <div class="bg-[length:100%_100%] temp-icon"></div>
+                    <div style="font-family: 'TitleFont';" class="pt-1">{{ soilTemp + '℃' }}</div>
+                  </div>
+                  <div
+                    class="bg-[length:100%_100%] card-bg px-1"
+                    style="font-size: .8rem;"
+                    v-for="(item, index) in soilDataList"
+                    :key="index"
+                  >
+                    <div
+                      class="flex justify-between p-2"
+                      style="border-bottom: 1px solid #5fabd980;"
+                      v-for="ele in item"
+                      :key="ele.monitoringType"
+                    >
+                      <span>{{ ele.monitoringType }}</span>
+                      <span style="color: #68fffe;">{{
+                          ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="sub-title-bg w-full h-[2rem] flex justify-between items-center"  @click="$router.push({
+                              path:'/internetMonitor/deviceData/equipment-data-three',
+                              query:{
+                                collectionType:'虫情监测'
+                              }
+                      })">
+                  <div>虫情监测</div>
+                  <div class="flex space-x-2">
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleParkBugSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in parkOptions"
+                          :key="index"
+                        >{{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                      <select @change="handleBugSelectorChange">
+                        <option
+                          :value="item.id"
+                          v-for="item,index in bugOptions"
+                          :key="index"
+                        >{{ item.deviceName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-4 gap-1 p-1">
+                  <div
+                    class="bg-[length:100%_100%] card-bg p-2 flex flex-col items-center justify-center"
+                    style="font-size: .8rem;">
+                    <div class="bg-[length:100%_100%] temp-icon"></div>
+                    <div style="font-family: 'TitleFont';" class="pt-1">{{ bugTemp + '℃' }}</div>
+                  </div>
+                  <div
+                    class="bg-[length:100%_100%] card-bg px-1"
+                    style="font-size: .8rem;"
+                    v-for="(item, index) in bugDataList"
+                    :key="index"
+                  >
+                    <div
+                      class="flex justify-between p-2"
+                      style="border-bottom: 1px solid #5fabd980;"
+                      v-for="ele in item"
+                      :key="ele.monitoringType"
+                    >
+                      <span>{{ ele.monitoringType }}</span>
+                      <span style="color: #68fffe;">{{
+                          ele.dataValue + (ele.monitoringType !== "EC值" ? ele.unit : '')
+                        }}</span>
+                    </div>
+                  </div>
+                  <div
+                    class="bg-[length:100%_100%] card-bg px-1"
+                    style="font-size: .8rem;"
+                    v-for="(item, index) in subDeviceList"
+                    :key="index"
+                  >
+                    <div
+                      class="flex justify-between p-2 items-center"
+                      style="border-bottom: 1px solid #5fabd980;"
+                      v-for="ele in item"
+                      :key="ele.id"
+                    >
+                      <span>{{ ele.subDevicesName }}</span>
+                      <el-switch
+                        v-model="ele.button"
+                        size="small"
+                        @change="(e) => { handleSwitchChange(e, ele) }"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title" @click="$router.push({
-                            path:'/pcg/sale/sales-management'
-                    })">商品流通
-            </div>
-            <div class="main-item-container">
-              <div id="chart2"></div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title"
+                  @click="$router.push({
+                              path:'/internetMonitor/device/deviceView',
+                              query:{
+                                  deviceType:'60'
+                              }
+                      })">工业设备
+              </div>
+              <div class="main-item-container">
+                <div class="flex justify-between h-full">
+                  <img
+                    src="/device.jpg"
+                    alt=""
+                    style="width: calc(100% - 10rem);height: 100%;object-fit: cover;"
+                  />
+
+                  <div class="w-[8rem] px-3">
+                    <div
+                      class="flex justify-between"
+                      v-for="(item, index) in deviceInfo"
+                      :key="index"
+                    >
+                      <span>{{ item.categoryName }}</span>
+                      <span>{{ item.total }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title" @click="$router.push({
-                            path:'/internetMonitor/warn/agri-warning-record',
-                    })">报警信息</div>
-            <div class="main-item-container warn-bg">
-              <div
-                class="flex"
-                v-for="(item, index) in warningList"
-                :key="index"
-                style="color: #fffffff0;padding: .2rem 0;border-bottom: 1px solid #ffffff60;"
-              >
-                <div :class="['w-[6.5rem]']">{{ item.warnTitle }}</div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title" @click="$router.push({
+                              path:'/pcg/sale/sales-management'
+                      })">商品流通
+              </div>
+              <div class="main-item-container">
+                <div id="chart2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title" @click="$router.push({
+                              path:'/internetMonitor/warn/agri-warning-record',
+                      })">报警信息</div>
+              <div class="main-item-container warn-bg">
                 <div
-                  style="width: calc(100% - 15.4rem);padding: 0 .4rem;"
-                  :title="item.warnInfo"
-                  class="line-clamp-2"
-                >{{ item.warnInfo }}
-                </div>
-                <div class="w-[8rem] text-center">{{
-                    formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss')
-                  }}
+                  class="flex"
+                  v-for="(item, index) in warningList"
+                  :key="index"
+                  style="color: #fffffff0;padding: .2rem 0;border-bottom: 1px solid #ffffff60;"
+                >
+                  <div :class="['w-[6.5rem]']">{{ item.warnTitle }}</div>
+                  <div
+                    style="width: calc(100% - 15.4rem);padding: 0 .4rem;"
+                    :title="item.warnInfo"
+                    class="line-clamp-2"
+                  >{{ item.warnInfo }}
+                  </div>
+                  <div class="w-[8rem] text-center">{{
+                      formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss')
+                    }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="gird-item-wrapper">
-          <div class="grid-main-item">
-            <div class="main-item-title" @click="$router.push({
-                            path:'/internetMonitor/device/deviceView',
-                            query:{
-                              deviceType:'58,61'
-                            }
-                    })">
-              <div>监控设备</div>
-              <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                <select @change="handleMonitorSelectorChange">
-                  <option
-                    :value="item.id"
-                    v-for="item,index in monitorOptions"
-                    :key="index"
-                  >{{ item.name }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div
-              class="main-item-container !grid"
-              style="grid-template-columns: 5% repeat(3, 30%) 5%;"
-            >
-              <div class="left-arrow-bg h-full" @click="handleArrowClick(-1)"></div>
-              <div
-                v-for="(item, index) in monitorDeviceList"
-                :key="index"
-                class="flex flex-col px-1"
-              >
-                <img :src="item.img" alt=""
-                    style="width: 100%;aspect-ratio: 1.3;object-fit: contain;"/>
-                <div>{{ item.title }}</div>
-                <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">
-                  {{ item.online ? '在线' : '离线' }}
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title" @click="$router.push({
+                              path:'/internetMonitor/device/deviceView',
+                              query:{
+                                deviceType:'58,61'
+                              }
+                      })">
+                <div>监控设备</div>
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                  <select @change="handleMonitorSelectorChange">
+                    <option
+                      :value="item.id"
+                      v-for="item,index in monitorOptions"
+                      :key="index"
+                    >{{ item.name }}
+                    </option>
+                  </select>
                 </div>
               </div>
               <div
-                class="right-arrow-bg h-full"
-                v-show="monitorDeviceList.length === 3"
-                @click="handleArrowClick(1)"
-              ></div>
+                class="main-item-container !grid"
+                style="grid-template-columns: 5% repeat(3, 30%) 5%;"
+              >
+                <div class="left-arrow-bg h-full" @click="handleArrowClick(-1)"></div>
+                <div
+                  v-for="(item, index) in monitorDeviceList"
+                  :key="index"
+                  class="flex flex-col px-1"
+                >
+                  <img :src="item.img" alt=""
+                      style="width: 100%;aspect-ratio: 1.3;object-fit: contain;"/>
+                  <div>{{ item.title }}</div>
+                  <div :style="`color: ${item.online ? '#0fc87c' : '#ff0000'};`">
+                    {{ item.online ? '在线' : '离线' }}
+                  </div>
+                </div>
+                <div
+                  class="right-arrow-bg h-full"
+                  v-show="monitorDeviceList.length === 3"
+                  @click="handleArrowClick(1)"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </BigscreenAdapter>
+    </BigscreenAdapter>
+  </div>
 </template>
 <style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);

@@ -203,3 +203,7 @@ export const getLineChar = (data) => {
 export const getEquipmentDataByEquipmentCode = (params) => {
   return request.get({ url: `/yyang/equipment-data/getEquipmentDataByEquipmentCode`, params })
 }
+//获取设备时间
+export const warningRecordPage = () => {
+  return request.get({ url: `/agriculture/agri-warning-record/page` })
+}

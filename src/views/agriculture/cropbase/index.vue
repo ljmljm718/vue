@@ -27,7 +27,8 @@
         />
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
-        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类" class="!w-240px">
+        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
+                   class="!w-240px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -89,7 +90,7 @@
       <el-table-column label="种植品种" align="center" prop="cropName" width="140"/>
       <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
-          <el-tag >{{scope.row.cropType}} </el-tag>
+          <el-tag>{{ scope.row.cropType }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="图片" align="center" prop="imgId">
@@ -108,6 +109,8 @@
       <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="所属地块" align="center" prop="plotName" width="160"/>
+      <el-table-column label="数量" align="center" prop="number" />
+      <el-table-column label="单位" align="center" prop="unit" />
       <el-table-column
         label="开始时间"
         align="center"
@@ -140,7 +143,8 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center" prop="cropDesc" width="240"/>
-      <el-table-column label="备注" align="center" prop="remark" width="180"/>
+      <el-table-column :label="deptId === 156 ? '数量' : '备注'" align="center" prop="remark"
+                       width="180"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -215,19 +219,28 @@
     </template>
     <template #default>
       <div class="relative">
-        <div v-if='formData.length>0' class="flex absolute top--30px left-50px flex-col items-center">
-          <div class="flex items-center"> <div class="w-15px h-15px rounded-full bg-[#089df7]"></div> <div class="ml-30px">{{formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss')}}</div> </div>
+        <div v-if='formData.length>0'
+             class="flex absolute top--30px left-50px flex-col items-center">
+          <div class="flex items-center">
+            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
+            <div class="ml-30px">{{ formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss') }}
+            </div>
+          </div>
           <div v-if='formData.length>1' class="w-2px h-240px bg-[#089df7] ml--185px"></div>
-          <div class="flex items-center" v-if='formData.length>1'><div class="w-15px h-15px rounded-full bg-[#089df7]"></div> <div  class="ml-30px">{{formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss')}}</div></div>
+          <div class="flex items-center" v-if='formData.length>1'>
+            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
+            <div class="ml-30px">{{ formatTime(formData[0].recordTime, 'yyyy-MM-dd HH:mm:ss') }}
+            </div>
+          </div>
         </div>
         <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
-            <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
-            <p>品种：
-              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
-            </p>
-            <p>作物名称：{{ item.cropName }}</p>
-            <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
-          </el-card>
+          <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
+          <p>品种：
+            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
+          </p>
+          <p>作物名称：{{ item.cropName }}</p>
+          <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
+        </el-card>
       </div>
 
 
@@ -255,7 +268,8 @@ import router from "@/router";
 import {getTenantId} from "@/utils/auth";
 import {useUserStore} from "@/store/modules/user";
 import avatarImg from "@/assets/imgs/avatar.gif";
-import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import {CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import {getUserProfile} from "@/api/system/user/profile";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -310,7 +324,12 @@ const show = ref()
 const userStore = useUserStore()
 const userName = computed(() => userStore.user.deptId ?? '0')
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-
+const deptId = ref(0)
+const judgeHomePage = async () => {
+  const data = await getUserProfile()
+  deptId.value = data.dept.id
+}
+judgeHomePage()
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -320,8 +339,8 @@ const getList = async () => {
     const data = await CropBaseApi.getCropBasePage(queryParams)
     list.value = data.list
     //把品类数据的namep拼接到列表中
-    list.value.forEach(item=>{
-      listCategoryManagement.value.forEach(itm=>{
+    list.value.forEach(item => {
+      listCategoryManagement.value.forEach(itm => {
         if (item.cropType == itm.id)
           item.cropType = itm.categoryName
       })

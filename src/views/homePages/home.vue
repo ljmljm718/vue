@@ -1,57 +1,62 @@
 <template>
-  <div class="w-[100vw] h-[100vh] overflow-hidden home-bg">
-    <div class="h-[8%] bg-[#000] flex justify-center items-center header-title mb-[1%]">
-      鲁渝协作乡村振兴数商兴农大数据平台
-    </div>
-    <div class="h-[91%] flex justify-center items-center relative bottom-bg bg-[#00000030]">
-      <div class="relative top-[-10em] z-20 w-[32em] h-[32em]">
-        <div class="up-down-frame" @click="routerHandler('可视化驾驶舱')">
-          <div class="absolute left-0 top-0 circle-bg w-[32em] h-[32em]"></div>
-          <div class="absolute center-bg w-[31em] h-[31em] left-[1em] top-[1em]">
-            <div :class="['icon-frame', 'icon-' + curIcon]"></div>
+  <div class="bg-[#0e2c46] w-[100vw] h-[100vh]">
+    <ScaleBox>
+      <div class="w-full h-full overflow-hidden home-bg">
+        <div class="h-[8%] bg-[#000] flex justify-center items-center header-title mb-[1%]">
+          鲁渝协作乡村振兴数商兴农大数据平台
+        </div>
+        <div class="h-[91%] flex justify-center items-center relative bottom-bg bg-[#00000030]">
+          <div class="relative top-[-10em] z-20 w-[32em] h-[32em]">
+            <div class="up-down-frame" @click="routerHandler('可视化驾驶舱')">
+              <div class="absolute left-0 top-0 circle-bg w-[32em] h-[32em]"></div>
+              <div class="absolute center-bg w-[31em] h-[31em] left-[1em] top-[1em]">
+                <div :class="['icon-frame', 'icon-' + curIcon]"></div>
+              </div>
+            </div>
+            <div class="up-line">
+              <div class="sensor-bg relative left-[-7em] top-[-10em]" @click="routerHandler('智能感知')"></div>
+              <div class="resource-bg absolute right-[-7em] top-[-10em]" @click="routerHandler('农业资源')"></div>
+            </div>
+            <div class="left-line">
+              <div class="agri-bg relative left-[-9em] top-[1em]" @click="routerHandler('智慧农事')"></div>
+            </div>
+            <div class="right-line">
+              <div class="digital-bg relative right-[-9em] top-[1em]" @click="routerHandler('数字产销')"></div>
+            </div>
+            <div class="down-line">
+              <div class="monitor-bg relative left-[0em] top-[8em]" @click="routerHandler('视频监控')"></div>
+            </div>
+            <div class="rect-bg text-[#fff] text-[1.2em] relative">
+              <div class="lt-label-1 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.7em] top-[2em]" @click="routerHandler('GIS一张图')">GIS一张图</div>
+              <div class="lt-label-2 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-14.5em] top-[6.8em]" @click="routerHandler('数字监测')">数字监测</div>
+              <div class="lt-label-3 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-15.9em] top-[11.6em]" @click="routerHandler('智能预警')">智能预警</div>
+              <div class="lt-label-4 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-16.9em] top-[16.4em]" @click="routerHandler('设备巡检')">设备巡检</div>
+
+              <div class="lb-label-1 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.2em] top-[38.6em]" @click="routerHandler('农事活动')">农事活动</div>
+              <div class="lb-label-2 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-15em] top-[29.9em]" @click="routerHandler('物侯管理')">物侯管理</div>
+              <div class="lb-label-3 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-16.3em] top-[21.2em]" @click="routerHandler('种植管理')">种植管理</div>
+              <div class="lb-label-4 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-17.2em] top-[12.5em]" @click="routerHandler('农事概览')">农事概览</div>
+
+              <div class="rt-label-1 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[88.4em] top-[-13.2em]" @click="routerHandler('基地总览')">基地总览</div>
+              <div class="rt-label-2 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[90.2em] top-[-12.6em]" @click="routerHandler('农资管理')">农资管理</div>
+              <div class="rt-label-3 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[91.7em] top-[-11.9em]" @click="routerHandler('仓储管理')">仓储管理</div>
+              <div class="relative w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[92.6em] top-[-11.2em]"></div>
+
+              <div class="rb-label-1 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[88.5em] top-[7.2em]" @click="routerHandler('特色产品')">特色产品</div>
+              <div class="rb-label-2 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[90.4em] top-[-1.5em]" @click="routerHandler('营销管理')">营销管理</div>
+              <div class="rb-label-3 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[91.7em] top-[-10.1em]" @click="routerHandler('销售管理')">销售管理</div>
+              <div class="rb-label-4 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[92.6em] top-[-18.8em]" @click="routerHandler('生产管理')">生产管理</div>
+            </div>
           </div>
         </div>
-        <div class="up-line">
-          <div class="sensor-bg relative left-[-7em] top-[-10em]" @click="routerHandler('智能感知')"></div>
-          <div class="resource-bg absolute right-[-7em] top-[-10em]" @click="routerHandler('农业资源')"></div>
-        </div>
-        <div class="left-line">
-          <div class="agri-bg relative left-[-9em] top-[1em]" @click="routerHandler('智慧农事')"></div>
-        </div>
-        <div class="right-line">
-          <div class="digital-bg relative right-[-9em] top-[1em]" @click="routerHandler('数字产销')"></div>
-        </div>
-        <div class="down-line">
-          <div class="monitor-bg relative left-[0em] top-[8em]" @click="routerHandler('视频监控')"></div>
-        </div>
-        <div class="rect-bg text-[#fff] text-[1.2em] relative">
-          <div class="lt-label-1 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.7em] top-[2em]" @click="routerHandler('GIS一张图')">GIS一张图</div>
-          <div class="lt-label-2 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-14.5em] top-[6.8em]" @click="routerHandler('数字监测')">数字监测</div>
-          <div class="lt-label-3 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-15.9em] top-[11.6em]" @click="routerHandler('智能预警')">智能预警</div>
-          <div class="lt-label-4 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-16.9em] top-[16.4em]" @click="routerHandler('设备巡检')">设备巡检</div>
-
-          <div class="lb-label-1 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.2em] top-[38.6em]" @click="routerHandler('农事活动')">农事活动</div>
-          <div class="lb-label-2 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-15em] top-[29.9em]" @click="routerHandler('物侯管理')">物侯管理</div>
-          <div class="lb-label-3 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-16.3em] top-[21.2em]" @click="routerHandler('种植管理')">种植管理</div>
-          <div class="lb-label-4 w-[15em] h-[4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-17.2em] top-[12.5em]" @click="routerHandler('农事概览')">农事概览</div>
-
-          <div class="rt-label-1 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[88.4em] top-[-13.2em]" @click="routerHandler('基地总览')">基地总览</div>
-          <div class="rt-label-2 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[90.2em] top-[-12.6em]" @click="routerHandler('农资管理')">农资管理</div>
-          <div class="rt-label-3 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[91.7em] top-[-11.9em]" @click="routerHandler('仓储管理')">仓储管理</div>
-          <div class="relative w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[92.6em] top-[-11.2em]"></div>
-
-          <div class="rb-label-1 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[88.5em] top-[7.2em]" @click="routerHandler('特色产品')">特色产品</div>
-          <div class="rb-label-2 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[90.4em] top-[-1.5em]" @click="routerHandler('营销管理')">营销管理</div>
-          <div class="rb-label-3 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[91.7em] top-[-10.1em]" @click="routerHandler('销售管理')">销售管理</div>
-          <div class="rb-label-4 w-[15em] h-[4em] flex items-center pl-[2em] absolute left-[92.6em] top-[-18.8em]" @click="routerHandler('生产管理')">生产管理</div>
-        </div>
       </div>
-    </div>
+    </ScaleBox>
   </div>
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import ScaleBox from "vue3-scale-box";
 
 const { wsCache } = useCache()
 

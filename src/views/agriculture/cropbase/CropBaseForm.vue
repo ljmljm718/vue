@@ -70,6 +70,12 @@
           placeholder="选择结束时间"
         />
       </el-form-item>
+      <el-form-item label="数量" prop="number">
+        <el-input v-model="formData.number" placeholder="请输入数量" />
+      </el-form-item>
+      <el-form-item label="单位" prop="unit">
+        <el-input v-model="formData.unit" placeholder="请输入单位" />
+      </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId"/>
       </el-form-item>

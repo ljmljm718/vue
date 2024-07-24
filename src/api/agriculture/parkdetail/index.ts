@@ -21,6 +21,7 @@ export interface ParkDetailVO {
   quantity: string // 数量
   adoptionType: string // 认养模式
   img: string // 蟹塘图片
+  geofencing: string // 地理围栏
 }
 
 // 地块基本信息 API

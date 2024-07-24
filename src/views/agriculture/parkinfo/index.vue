@@ -28,31 +28,33 @@
       </el-form-item>
 
       <el-form-item label="类型" prop="type">
-        <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px" @click="handleClick()">
+        <el-select
+          v-model="queryParams.type"
+          placeholder="请选择类型"
+          class="!w-240px"
+          @click="handleClick()"
+        >
           <el-option
-          v-for="dict in parkCategoryOptions"
-                  :key="dict.value"
-                  :label="dict.categoryLabel"
-                  :value="dict.id"
+            v-for="dict in parkCategoryOptions"
+            :key="dict.value"
+            :label="dict.categoryLabel"
+            :value="dict.id"
           />
-          </el-select>
-         </el-form-item>
+        </el-select>
+      </el-form-item>
 
-         <el-form-item label="面积" prop="area">
-              <el-input v-model="queryParams.area" placeholder="请输入面积" >
-                <template #append>亩</template>
-              </el-input>
-            </el-form-item>
+      <el-form-item label="面积" prop="area">
+        <el-input v-model="queryParams.area" placeholder="请输入面积">
+          <template #append>亩</template>
+        </el-input>
+      </el-form-item>
 
-          <el-form-item label="联系人" prop="contact">
-              <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px"/>
-            </el-form-item>
-            <el-form-item label="联系电话" prop="tel">
-              <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px"/>
-            </el-form-item>
-
-
-
+      <el-form-item label="联系人" prop="contact">
+        <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
+      </el-form-item>
+      <el-form-item label="联系电话" prop="tel">
+        <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
+      </el-form-item>
 
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
@@ -60,13 +62,12 @@
           搜索
         </el-button>
         <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
+          <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
       </el-form-item>
-
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+    <div style="margin-top: 20px; margin-left: 30px; height: 30px">
       <el-form-item>
         <el-button
           type="primary"
@@ -74,7 +75,7 @@
           @click="openForm()"
           v-hasPermi="['agriculture:park-info:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px"/>
+          <Icon icon="ep:plus" class="mr-5px" />
           新增
         </el-button>
         <el-button
@@ -84,12 +85,11 @@
           :loading="exportLoading"
           v-hasPermi="['agriculture:park-info:export']"
         >
-          <Icon icon="ep:download" class="mr-5px"/>
+          <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
       </el-form-item>
     </div>
-
   </ContentWrap>
 
   <!-- 列表 -->
@@ -100,24 +100,24 @@
         <template #default="scope">
           <el-tabs model-value="parkDetail">
             <el-tab-pane label="农业资源列表" name="parkDetail">
-              <ParkDetailList :park-id="scope.row.id"/>
+              <ParkDetailList :park-id="scope.row.id" />
             </el-tab-pane>
           </el-tabs>
         </template>
       </el-table-column>
       <!--      <el-table-column label="编号" align="center" prop="code" width="200"/>-->
-      <el-table-column label="名称" align="center" prop="name" width="150"/>
-      <el-table-column label="类型" align="center" prop="categoryName" width="150"/>
+      <el-table-column label="名称" align="center" prop="name" width="150" />
+      <el-table-column label="类型" align="center" prop="categoryName" width="150" />
       <el-table-column label="海拔" align="center" prop="altitude" width="100">
         <template #default="scope">
           {{ scope.row.altitude != undefined ? scope.row.altitude + '米' : '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="纬度" align="center" prop="latitude"/>
-      <el-table-column label="经度" align="center" prop="longitude"/>
-      <el-table-column label="通讯地址" align="center" prop="address"/>
-      <el-table-column label="联系人" align="center" prop="contact"/>
-      <el-table-column label="联系电话" align="center" prop="tel"/>
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="通讯地址" align="center" prop="address" />
+      <el-table-column label="联系人" align="center" prop="contact" />
+      <el-table-column label="联系电话" align="center" prop="tel" />
       <el-table-column label="面积" align="center" prop="area" width="100">
         <template #default="scope">
           {{ scope.row.area != undefined ? scope.row.area + '亩' : '-' }}
@@ -126,11 +126,15 @@
       <el-table-column label="数量" align="center" prop="quantity" width="100">
         <template #default="scope">
           {{
-            scope.row.quantity != undefined ? scope.row.type === "chicken" ? scope.row.quantity + '只' : scope.row.quantity + '株' : '-'
+            scope.row.quantity != undefined
+              ? scope.row.type === 'chicken'
+                ? scope.row.quantity + '只'
+                : scope.row.quantity + '株'
+              : '-'
           }}
         </template>
       </el-table-column>
-      <el-table-column label="简介" align="center" prop="remark"/>
+      <el-table-column label="简介" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -138,8 +142,16 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="150" fixed="right">
+      <el-table-column label="操作" align="center" width="220" fixed="right">
         <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="handleDraw(scope.row.id)"
+            v-hasPermi="['agriculture:park-info:update']"
+          >
+            绘制围栏
+          </el-button>
           <el-button
             link
             type="primary"
@@ -148,13 +160,7 @@
           >
             编辑
           </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openFormDetail(scope.row.id)"
-          >
-            详情
-          </el-button>
+          <el-button link type="primary" @click="openFormDetail(scope.row.id)"> 详情 </el-button>
           <el-button
             link
             type="danger"
@@ -176,27 +182,43 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <ParkInfoForm ref="formRef" @success="getList"/>
+  <ParkInfoForm ref="formRef" @success="getList" />
+  <el-dialog
+    v-model="showDrawDialog"
+    title="绘制围栏"
+    width="1200px"
+    append-to-body
+    destroy-on-close
+  >
+    <div class="w-full aspect-video">
+      <TianDiMap ref="tiandiIns" />
+    </div>
+    <template #footer>
+      <el-button size="small" @click="showDrawDialog = false">取 消</el-button>
+      <el-button size="small" type="primary" @click="showDrawDialog = false">确 定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {ParkInfoApi, ParkInfoVO} from '@/api/agriculture/parkinfo'
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
+import TianDiMap from '@/views/tianDi/index.vue'
 import ParkInfoForm from './ParkInfoForm.vue'
 import ParkDetailList from './components/ParkDetailList.vue'
 
-import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
+import { ParkCategoryApi } from '@/api/agriculture/parkcategory'
 const parkCategoryOptions = ref() //基地分类列表
-const handleClick = async()=> {
+const handleClick = async () => {
   parkCategoryOptions.value = await ParkCategoryApi.getAllParkCategory()
 }
 
 /** 基地基本信息 列表 */
-defineOptions({name: 'ParkInfo'})
+defineOptions({ name: 'ParkInfo' })
 
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<ParkInfoVO[]>([]) // 列表的数据
@@ -222,6 +244,18 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+// 绘制围栏
+const selectedDrawId = ref('')
+const showDrawDialog = ref<boolean>(false)
+const tiandiIns = ref()
+const handleDraw = (id) => {
+  selectedDrawId.value = id
+  showDrawDialog.value = true
+  nextTick(() => {
+    tiandiIns.value.initMap()
+  })
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -270,8 +304,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {
-  }
+  } catch {}
 }
 
 /** 查看操作 */
@@ -297,6 +330,5 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
-
 })
 </script>

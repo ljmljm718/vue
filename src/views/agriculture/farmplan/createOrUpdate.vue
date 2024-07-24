@@ -63,6 +63,7 @@ const formData = ref({
   finishArea: undefined,
   farmDefineType: undefined,
   batchCode: undefined,
+  planDesc: undefined,
 })
 // 表单校验规则
 const formRules = reactive({
@@ -204,6 +205,7 @@ const resetForm = () => {
     farmDefineType: undefined,
     finishArea: undefined,
     batchCode: undefined,
+    planDesc: undefined,
   }
   formRef.value?.resetFields()
 }
@@ -476,6 +478,11 @@ const activeName = ref<any>(['1', '2'])
                           :value="dict.value"
                         />
                       </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="计划描述" prop="planDesc">
+                      <el-input v-model="formData.planDesc" placeholder="请输入计划描述" />
                     </el-form-item>
                   </el-col>
                 </el-row>

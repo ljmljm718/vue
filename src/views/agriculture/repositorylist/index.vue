@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {ref, reactive} from 'vue'
-import {Search, Plus, Sort, Edit, Delete} from '@element-plus/icons-vue'
-import {RepositoryInfoApi} from '@/api/agriculture/repositoryinfo'
-import {RepositoryTypeApi} from '@/api/agriculture/repositorytype'
-import {getStrDictOptions, DICT_TYPE} from "@/utils/dict";
+import { ref, reactive } from 'vue'
+import { Search, Plus, Sort, Edit, Delete } from '@element-plus/icons-vue'
+import { RepositoryInfoApi } from '@/api/agriculture/repositoryinfo'
+import { RepositoryTypeApi } from '@/api/agriculture/repositorytype'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import RepositoryInfoForm from '../repositoryinfo/RepositoryInfoForm.vue'
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const typeListAll = ref([])
@@ -17,11 +17,11 @@ getTypeList()
 
 const loading = ref(false)
 const getRandomElementFromArray = (array) => {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+  const randomIndex = Math.floor(Math.random() * array.length)
+  return array[randomIndex]
 }
 const getDefaultImg = () => {
-  const baseMap = [1, 2, 3, 4].map(item => `/images/repositoryList/img${item}.png`)
+  const baseMap = [1, 2, 3, 4].map((item) => `/images/repositoryList/img${item}.png`)
   return getRandomElementFromArray(baseMap)
 }
 const inputVal = ref('')
@@ -60,13 +60,12 @@ const resetQuery = () => {
 const total = ref(0)
 const getRepositoryList = async () => {
   loading.value = true
-  const {
-    list = [],
-    total: _total = 0
-  } = await RepositoryInfoApi.getRepositoryInfoPage({...queryParams})
+  const { list = [], total: _total = 0 } = await RepositoryInfoApi.getRepositoryInfoPage({
+    ...queryParams
+  })
   loading.value = false
 
-  repositoryList.value = list.map(item => ({
+  repositoryList.value = list.map((item) => ({
     ...item,
     img: item.attachmentImg,
     title: item.repositoryTitle,
@@ -80,7 +79,7 @@ getRepositoryList()
 
 const getRep = (item) => {
   getTypeList()
-  let resStr = "";
+  let resStr = ''
   typeListAll.value.forEach((itm) => {
     if (item.repositoryId == itm.id) {
       resStr = itm.repositoryName
@@ -102,7 +101,7 @@ const openForm = (type: string, id?: number) => {
 
 /** 删除按钮操作 */
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
@@ -112,8 +111,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getRepositoryList()
-  } catch {
-  }
+  } catch {}
 }
 
 const handleCheckBoxChange1 = (item) => {
@@ -130,11 +128,13 @@ const handleCheckBoxChange1 = (item) => {
 }
 
 const handleCheckBoxChange2 = (item) => {
+  console.log('item', item)
+
   if (Array.isArray(item) && item.length === 0) {
     queryParams.repositoryLabel = ''
     getRepositoryList()
   }
-  const _item = getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL).find(ele => {
+  const _item = getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL).find((ele) => {
     return ele.label === item[0]
   }) as any
 
@@ -152,153 +152,261 @@ const handleRadioChange = (item) => {
     getRepositoryList()
   }
 }
+
+const selectedType = ref<string>('')
+const handleTypeClick = (item) => {
+  selectedType.value = item.repositoryName
+  // TODO: 组装参数，发送请求
+  handleCheckBoxChange1([selectedType.value])
+}
+
+const selectedLabel = ref<string>('')
+const handleLabelClick = (item) => {
+  selectedLabel.value = item.label
+  // TODO: 组装参数，发送请求
+  if (selectedLabel.value) handleCheckBoxChange2([selectedLabel.value])
+}
 </script>
 <template>
   <div>
-    <el-card>
-      <div class="flex justify-between">
+    <el-card class="flex justify-center items-center mb-3">
+      <div class="flex justify-center items-center h-8 space-x-2">
+        <img src="./repository.png" alt="repository" width="50px" height="23px" class="mt-1 mr-2" />
         <el-input
-          placeholder="请输入标题"
+          placeholder="请输入标题搜索"
+          prefix-icon="Search"
           v-model="queryParams.repositoryTitle"
-          style="width: 25rem;"
           @keyup.enter="getRepositoryList"
-        >
-          <template #append>
-            <el-button :icon="Search" @click="getRepositoryList"/>
-          </template>
-        </el-input>
-        <div class="flex space-x-2">
-          <el-button type="primary" :icon="Plus" @click="openForm('create')">新增</el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
-            重置
-          </el-button>
-          <el-radio-group v-model="radioVal" @change="handleRadioChange">
-            <el-radio-button label="时间正序" value="时间正序"/>
-            <el-radio-button label="时间倒序" value="时间倒序"/>
-          </el-radio-group>
-          <el-button-group style="display: none;">
-            <el-button type="primary" :icon="Sort">按匹配度</el-button>
-            <el-button type="primary" :icon="Sort">按时间</el-button>
-          </el-button-group>
+          style="width: 300px"
+        />
+        <el-button @click="getRepositoryList" style="color: val" type="primary">搜索 </el-button>
+      </div>
+    </el-card>
+    <el-card class="mb-2">
+      <div>
+        <div class="flex items-center mb-2">
+          <div class="px-2" style="font-size: 14px; padding-top: 1px;">分类:</div>
+          <div class="flex space-x-1 items-center">
+            <div
+              v-for="item in typeListAll"
+              :key="item.id"
+              :class="[selectedType !== item.repositoryName ? 'sub-btn' : 'sub-btn-selected']"
+              @click="handleTypeClick(item)"
+       
+              >{{ item.repositoryName }}</div
+            >
+          </div>
         </div>
       </div>
-      <div class="flex flex-col py-2 space-y-2">
-        <div class="flex items-center">
-          <div class="px-2">分类:</div>
-          <el-checkbox-group
-            v-model="checkboxGroup1"
-            @change="handleCheckBoxChange1"
-            :min="0"
-            :max="1"
-          >
-            <el-checkbox-button
-              v-for="item in typeListAll"
-              :label="item.repositoryName"
-              :value="item.id"
-              :key="item.id"
-            />
-          </el-checkbox-group>
-        </div>
-        <div class="flex items-center">
-          <div class="px-2">标签:</div>
-          <el-checkbox-group
-            v-model="checkboxGroup2"
-            @change="handleCheckBoxChange2"
-            :min="0"
-            :max="1"
-          >
-            <el-checkbox-button
-              v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-checkbox-group>
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div class="flex justify-content">
+            <span class="px-2" style="font-size: 14px; padding-top: 3px;">标签:</span>
+            <div class="flex space-x-1 items-center">
+              <div
+                v-for="item in getStrDictOptions(DICT_TYPE.AGRI_REPOSITORYINFO_LABEL)"
+                :key="item.value"
+                :class="[selectedLabel !== item.label ? 'sub-btn' : 'sub-btn-selected']"
+                @click="handleLabelClick(item)"
+                >{{ item.label }}</div
+              >
+            </div>
+          </div>
+          <div>
+            <el-button @click="resetQuery" class="flex-end"> 重置 </el-button>
+          </div>
         </div>
       </div>
     </el-card>
-    <el-card class="mt-4" v-loading="loading">
-      <div class="grid gap-3 lg:grid-cols-1 xl:grid-cols-2">
+    <el-card>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <el-button type="primary" :icon="Plus" @click="openForm('create')">新增</el-button>
+        <el-radio-group v-model="radioVal" @change="handleRadioChange">
+          <el-radio-button label="时间正序" value="时间正序" />
+          <el-radio-button label="时间倒序" value="时间倒序" />
+        </el-radio-group>
+      </div>
+    </el-card>
+    <el-card v-loading="loading">
+      <div class="grid gap-3 lg:grid-cols-1 xl:grid-cols-1">
         <div
           class="flex rounded-lg overflow-hidden p-2 items-start"
-          v-for="item, index in repositoryList"
+          v-for="(item, index) in repositoryList"
           :key="index"
-          style="border: 1px solid #838383;"
+          style="border-width: 0 0 1px 0; border-style: dashed; border-color: #cccccc"
           @click="router.push(`/farm_work/knowledge/repositoryInfoDetail?id=${item.id}`)"
         >
           <div class="w-[16rem] aspect-video relative">
-            <div class="absolute top-8 left-4 art-font" style="color:white;">{{ item.title }}</div>
-            <img :src="item.img ? item.img : getDefaultImg()" alt=""
-                 style="width: 100%;height:100%;object-fit: cover;"/>
+            <div class="title"> {{ item.title }}</div>
+            <!-- <div class="absolute top-8 left-4 art-font" style="color: white">{{ item.title }}</div> -->
+            <img
+              :src="item.img ? item.img : getDefaultImg()"
+              alt=""
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
           </div>
-          <div style="width: calc(100% - 16rem);" class="px-4 pr-2 flex flex-col space-y-2">
+          <div style="width: calc(100% - 16rem)" class="px-4 pr-2 flex flex-col space-y-2 mt-4">
             <div class="flex justify-between">
-              <span class="art-font">{{ item.title }}</span>
-              <div class="flex space-x-2" @click="(e) => e.stopPropagation()">
-                <el-button type="primary" :icon="Edit" size="small" circle
-                           @click="openForm('update', item.id)"/>
-                <el-button type="danger" :icon="Delete" size="small" circle
-                           @click="handleDelete(item.id)"/>
+              <!-- <span class="art-font">{{ item.title }}</span> -->
+              <div class="flex space-x-2" @click="(e) => e.stopPropagation()" style="display: none">
+                <el-button
+                  type="primary"
+                  :icon="Edit"
+                  size="small"
+                  circle
+                  @click="openForm('update', item.id)"
+                />
+                <el-button
+                  type="danger"
+                  :icon="Delete"
+                  size="small"
+                  circle
+                  @click="handleDelete(item.id)"
+                />
               </div>
             </div>
-            <div class="line-clamp-2 flex">
-              <span>简介:</span>
-              <el-popover
-                placement="bottom-start"
-                title=""
-                :width="800"
-                trigger="hover"
-              >
+            <div class="line-clamp-3 flex" style="margin-bottom: 45px">
+              <!-- <span>简介:</span> -->
+              <el-popover placement="bottom-start" title="" :width="800" trigger="hover">
                 <template #reference>
-                  <span class="pl-2">{{ item.intro.replace(/<[^>]+>/g, "") }}</span>
+                  <span class="pl-3 mt-20" style="font-size: 14px; color: #666666">{{
+                    item.intro.replace(/<[^>]+>/g, '')
+                  }}</span>
                 </template>
                 <div v-html="item.intro" class="h-[14rem] overflow-auto p-4"></div>
               </el-popover>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex space-x-3 items-center">
+                <!-- <span>标签:</span> -->
+                <div v-for="ele in item.label" :key="ele">
+                  <dict-tag
+                    :type="DICT_TYPE.AGRI_REPOSITORYINFO_LABEL"
+                    :value="ele"
+                    style="
+                      width: 100px;
+                      height: 30px;
+                      border-radius: 4px;
+                      opacity: 1;
+                      font-family: AlibabaPuHuiTi;
+                      font-size: 14px;
+                      font-weight: normal;
+                      line-height: normal;
+                      letter-spacing: 0px;
 
-            </div>
-            <div class="flex space-x-3">
-              <span>标签:</span>
-              <div
-                v-for="ele in item.label"
-                :key="ele"
-              >
-                <dict-tag :type="DICT_TYPE.AGRI_REPOSITORYINFO_LABEL" :value="ele" />
+                      color: #009688;
+                      background: #e5f4f3;
+                    "
+                  />
+                </div>
+
+                <span class="tag1">{{ item.repositoryId }}</span>
               </div>
-            </div>
-            <div class="flex space-x-5">
-              <div>
-                <span>分类:</span>
-                <span class="pl-3">{{ item.repositoryId }}</span>
-              </div>
-              <div>
-                <span>浏览量:</span>
-                <span class="pl-3" style="color: #409eff;">{{ item.browseNum }}</span>
+              <div class="flex justify-center items-center">
+                <el-icon class="pr-1" style="color: #999999"><View /></el-icon>
+                <span style="font-size: 14px; color: #999999">浏览量:</span>
+                <span class="pl-1" style="font-size: 14px; color: #999999">{{
+                  item.browseNum
+                }}</span>
               </div>
             </div>
           </div>
+          <!-- </div> -->
         </div>
         <div
           v-show="repositoryList.length === 0"
           class="w-full flex flex-col py-5 items-center col-span-2"
         >
-<!--          <img src="/nodata.png" alt="" class="w-[6rem]"/>-->
+          <!--          <img src="/nodata.png" alt="" class="w-[6rem]"/>-->
           暂无数据
         </div>
       </div>
-      <Pagination
+      <!-- <Pagination
         :total="total"
         v-model:page="queryParams.pageNo"
         v-model:limit="queryParams.pageSize"
         @pagination="getRepositoryList"
-      />
+      /> -->
     </el-card>
     <!-- 表单弹窗：添加/修改 -->
-    <RepositoryInfoForm
-      ref="repositoryRef"
-      @success="getRepositoryList"
-    />
+    <RepositoryInfoForm ref="repositoryRef" @success="getRepositoryList" />
   </div>
 </template>
 <style lang="scss" scoped>
+.el-checkbox-button {
+  display: inline;
+  width: 3.13%;
+  height: 2.78%;
+  border-radius: 4px;
+  opacity: 1;
+
+  background: #f5f5f5;
+}
+.title {
+  //   position: absolute;
+  // left: 0px;
+  // top: 0px;
+  width: 738px;
+  height: 22px;
+  opacity: 1;
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-family: AlibabaPuHuiTi;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0px;
+
+  color: #333333;
+}
+.tag {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0px;
+}
+.tag1 {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  width: 100px;
+  height: 30px;
+  border-radius: 4px;
+  opacity: 1;
+  font-family: AlibabaPuHuiTi;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0px;
+  padding-left: 7px;
+  padding-right: 7px;
+  color: #009688;
+  background: #e5f4f3;
+}
+
+.sub-btn,
+.sub-btn-selected {
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  opacity: 1;
+  border-style: none;
+  font-size: 14px;
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  
+}
+
+.sub-btn {
+  color: #666666;
+  background: #F5F5F5;
+}
+
+.sub-btn-selected {
+  background: #E5F4F3;
+  color: #009688;
+}
 </style>

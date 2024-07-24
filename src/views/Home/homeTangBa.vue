@@ -1,36 +1,22 @@
 <template>
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
-    <MapTangBa ref="mapTangBgRef" class="h-full" @satellite="satellite"/>
+    <MapTangBa ref="mapTangBgRef" class="h-full z-0" @satellite="satellite" />
     <div
       class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl"
-      style="height: calc(100% - 4.5rem);"
+      style="height: calc(100% - 4.5rem)"
       v-loading="menuDataLoading"
     >
-      <div style="font-weight:600;" class=" pb-2 pl-1">设备监测列表</div>
-      <el-scrollbar
-        class="overflow-auto pr-2"
-        height="calc(100% - 2rem)"
-      >
-        <el-menu
-          class="el-menu-vertical-demo min-w-[230px]"
-          @select="handleSelect"
-        >
-          <el-sub-menu
-            :index="item.id"
-            v-for="item in menuDataList"
-            :key="item.id"
-          >
+      <div style="font-weight: 600" class="pb-2 pl-1">设备监测列表</div>
+      <el-scrollbar class="overflow-auto pr-2" height="calc(100% - 2rem)">
+        <el-menu class="el-menu-vertical-demo min-w-[230px]" @select="handleSelect">
+          <el-sub-menu :index="item.id" v-for="item in menuDataList" :key="item.id">
             <template #title>
               <div class="flex space-x-2 items-center">
                 <div class="w-[4px] h-[13px] bg-[#0160ff]"></div>
                 <div>{{ item.name }}</div>
               </div>
             </template>
-            <el-sub-menu
-              :index="subMenu.id"
-              v-for="subMenu in item.children"
-              :key="subMenu.id"
-            >
+            <el-sub-menu :index="subMenu.id" v-for="subMenu in item.children" :key="subMenu.id">
               <template #title>
                 <span>{{ subMenu.name }}</span>
               </template>
@@ -38,13 +24,11 @@
                 v-for="secMenu in subMenu.children"
                 :key="secMenu.id"
                 :index="secMenu.id"
-                :class="`${secMenuId==secMenu.id?'menu-bg':''}`"
-                @click='menuCli(secMenu.id)'
-                >
-                <div  :class="`flex items-center space-x-2 `">
-                  <div
-                    :class="`${getIconClass(secMenu)} w-[20px] h-[20px]`"
-                  ></div>
+                :class="`${secMenuId == secMenu.id ? 'menu-bg' : ''}`"
+                @click="menuCli(secMenu.id)"
+              >
+                <div :class="`flex items-center space-x-2 `">
+                  <div :class="`${getIconClass(secMenu)} w-[20px] h-[20px]`"></div>
                   <div>{{ secMenu.name }}</div>
                 </div>
               </el-menu-item>
@@ -54,23 +38,36 @@
       </el-scrollbar>
     </div>
     <PanelTangBa ref="panelTangBaRef" class="absolute right-0 top-0" v-model="showPanel" />
-    <div @click="mapTileLayer" class=" absolute top-30px left-18% flex items-center bg-[#fff] rounded px-[8px] py-[2px]" style="cursor: pointer;" >
-      <img  v-if="mapTileLayerType" src="./assets/tangba/satelite2.png"  class="w-50px h-50px" alt=""/>
-      <img v-else src="./assets/tangba/satelite.png" class="w-50px h-50px" alt=""/>
-      <div v-if="mapTileLayerType" style="font-weight:600;" class="ml-10px color-[#014cc6] text-sm text-center">路网</div>
-      <div v-else style="font-weight:600" class="color-[#014cc6] ml-10px text-center">卫星</div>
+    <div
+      @click="mapTileLayer"
+      class="absolute top-30px left-18% flex items-center bg-[#fff] rounded px-[8px] py-[2px]"
+      style="cursor: pointer"
+    >
+      <img
+        v-if="mapTileLayerType"
+        src="./assets/tangba/satelite2.png"
+        class="w-50px h-50px"
+        alt=""
+      />
+      <img v-else src="./assets/tangba/satelite.png" class="w-50px h-50px" alt="" />
+      <div
+        v-if="mapTileLayerType"
+        style="font-weight: 600"
+        class="ml-10px color-[#014cc6] text-sm text-center"
+        >路网</div
+      >
+      <div v-else style="font-weight: 600" class="color-[#014cc6] ml-10px text-center">卫星</div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 // @ts-ignore
-import MapTangBa from './mapTangBa.vue'
+// import MapTangBa from './mapTangBa.vue'
+import MapTangBa from './mapTangBacopy.vue'
+
 // @ts-ignore
 import PanelTangBa from './panelTangBa.vue'
-import {
-  getDeviceCategoryTree,
-  getDeviceInfo
-} from './apis'
+import { getDeviceCategoryTree, getDeviceInfo } from './apis'
 import meassageTop from './assets/tangba/meassage-top.png'
 import meassageBg from './assets/tangba/meassage-bg.png'
 defineOptions({ name: 'HomeTangBa' })
@@ -82,25 +79,30 @@ const panelTangBaRef = ref<any>(null)
 const handleSelect = async (item) => {
   showPanel.value = true
   const res = await getDeviceInfo({ id: item })
-  if (panelTangBaRef.value)
-  { 
+  if (panelTangBaRef.value) {
     panelTangBaRef.value.getDeviceInfoData(res)
     panelTangBaRef.value.handleClick('设备概要')
   }
   if (mapTangBgRef.value) {
-    console.log("地图设备详情", res);
-    
+    console.log('地图设备详情', res)
+
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
     const infoString = `<div class="bg-[#e8f2fc] relative bottom-[35px]">
       <div class='relative'>
         <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
-        <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${res.parkName}</div>
+        <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
+          res.parkName
+        }</div>
         </div>
        
         <div class="p-2  text-[14px] meassage-bg">
-          <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${res.deviceName}</div>
+          <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${
+            res.deviceName
+          }</div>
           <div class="p-1 px-2 flex space-x-2 items-center">
-            <div class="${res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'} w-[8px] h-[8px] rounded-full"></div>
+            <div class="${
+              res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'
+            } w-[8px] h-[8px] rounded-full"></div>
             <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
           </div>
         </div>
@@ -110,15 +112,15 @@ const handleSelect = async (item) => {
   }
 }
 
-const secMenuId=ref('')
-const menuCli=(val)=>{
-  secMenuId.value=val
+const secMenuId = ref('')
+const menuCli = (val) => {
+  secMenuId.value = val
 }
 
 const allDeviceDataList = ref<Array<any>>([])
 const getAllLocationDevice = (arr: Array<any>): Array<any> => {
-  let resArr:Array<any> = []
-  arr.forEach(item => {
+  let resArr: Array<any> = []
+  arr.forEach((item) => {
     if (item.children) {
       resArr = [...resArr, ...getAllLocationDevice(item.children)]
     } else resArr.push(item)
@@ -126,46 +128,50 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   return resArr
 }
 //卫星图层切换
-const mapTileLayerType=ref(false)
-const mapTileLayer=()=>{
-  if( mapTileLayerType.value) mapTangBgRef.value.addSatellite()
-  else  mapTangBgRef.value.removeSatellite()
-  mapTileLayerType.value=!mapTileLayerType.value
-  
+const mapTileLayerType = ref(false)
+const mapTileLayer = () => {
+  if (mapTileLayerType.value) mapTangBgRef.value.addSatellite()
+  else mapTangBgRef.value.removeSatellite()
+  mapTileLayerType.value = !mapTileLayerType.value
 }
 const menuDataList = ref<Array<any>>([])
 const menuDataLoading = ref<boolean>(false)
 const getMenuDataList = async () => {
   menuDataLoading.value = true
   menuDataList.value = []
-  const res = await getDeviceCategoryTree({}).catch(() => { menuDataLoading.value = false })
-  console.log('getMenuDataList14123', res);
+  const res = await getDeviceCategoryTree({}).catch(() => {
+    menuDataLoading.value = false
+  })
+  console.log('getMenuDataList14123', res)
   menuDataLoading.value = false
-  if (Array.isArray(res)) menuDataList.value = res.map(_first => ({
-    ..._first,
-    id: _first.id.toString(),
-    children: _first.children.map(_sec => ({
-      ..._sec,
-      id: _sec.id.toString(),
-      children: _sec.children.map(_third => ({
-        ..._third,
-        id: _third.id.toString()
-      })) || []
-    })) || []
-  }))
+  if (Array.isArray(res))
+    menuDataList.value = res.map((_first) => ({
+      ..._first,
+      id: _first.id.toString(),
+      children:
+        _first.children.map((_sec) => ({
+          ..._sec,
+          id: _sec.id.toString(),
+          children:
+            _sec.children.map((_third) => ({
+              ..._third,
+              id: _third.id.toString()
+            })) || []
+        })) || []
+    }))
 
   if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res)
-  console.log("allDeviceDataList", allDeviceDataList.value);
+  console.log('allDeviceDataList', allDeviceDataList.value)
   const kindMap = {
-    "101": "Monitor",
-    "102": "Grow",
-    "103": "Weather",
-    "104": "Soil",
-    "107": "Bug",
-    "79": "Monitor"
+    '101': 'Monitor',
+    '102': 'Grow',
+    '103': 'Weather',
+    '104': 'Soil',
+    '107': 'Bug',
+    '79': 'Monitor'
   }
-  localStorage.setItem('maplist',JSON.stringify( allDeviceDataList.value))
-  allDeviceDataList.value.forEach(item => {
+  localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
+  allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {
       return
@@ -187,19 +193,19 @@ const showPanel = ref<boolean>(false)
 
 const getIconClass = (item) => {
   const { deviceStatus = 'offline', deviceKind = '' } = item
-  console.log(deviceKind,'deviceKinddeviceKinddeviceKind')
+  console.log(deviceKind, 'deviceKinddeviceKinddeviceKind')
   const kindMap = {
-    "101": "monitor",
-    "79": "monitor",
-    "82": "grow",
-    "102": "grow",
-    "103": "weather",
-    "159": "weather",
-    "81": "weather",
-    "86": "soil",
-    "104": "soil",
-    "107": "bug",
-    "88": "bug",
+    '101': 'monitor',
+    '79': 'monitor',
+    '82': 'grow',
+    '102': 'grow',
+    '103': 'weather',
+    '159': 'weather',
+    '81': 'weather',
+    '86': 'soil',
+    '104': 'soil',
+    '107': 'bug',
+    '88': 'bug'
   }
   return deviceStatus + '-' + (kindMap[deviceKind] || 'monitor')
 }
@@ -210,10 +216,11 @@ const getIconClass = (item) => {
   position: relative;
 }
 
-.online-flag, .offline-flag {
-  width: .8rem;
-  height: .8rem;
-  border-radius: .4rem;
+.online-flag,
+.offline-flag {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 0.4rem;
 }
 
 .online-flag {
@@ -223,41 +230,65 @@ const getIconClass = (item) => {
 .offline-flag {
   background-color: #a5320f;
 }
-.menu-bg{
-  width:150% !important;
-  height:100%;
-  background-size:100% 100%;
+.menu-bg {
+  width: 150% !important;
+  height: 100%;
+  background-size: 100% 100%;
   background-image: url(./assets/menu-bg.png) !important;
 }
-.meassage-top{
+.meassage-top {
   background-size: 100% 100%;
   background-image: url(./assets/tangba/meassage-top.png);
 }
-.meassage-bg{
+.meassage-bg {
   background-size: 100% 100%;
   background-image: url(./assets/tangba/meassage-bg.png);
 }
 
-.online-bug, .offline-bug,
-.online-monitor, .offline-monitor,
-.online-soil, .offline-soil,
-.online-weather, .offline-weather,
-.online-grow, .offline-grow {
+.online-bug,
+.offline-bug,
+.online-monitor,
+.offline-monitor,
+.online-soil,
+.offline-soil,
+.online-weather,
+.offline-weather,
+.online-grow,
+.offline-grow {
   background-size: 100% auto;
 }
-.online-bug { background-image: url(./assets/tangba/onlineBug.png); }
-.offline-bug { background-image: url(./assets/tangba/offlineBug.png); }
+.online-bug {
+  background-image: url(./assets/tangba/onlineBug.png);
+}
+.offline-bug {
+  background-image: url(./assets/tangba/offlineBug.png);
+}
 
-.online-monitor { background-image: url(./assets/tangba/onlineMonitor.png); }
-.offline-monitor { background-image: url(./assets/tangba/offlineMonitor.png); }
+.online-monitor {
+  background-image: url(./assets/tangba/onlineMonitor.png);
+}
+.offline-monitor {
+  background-image: url(./assets/tangba/offlineMonitor.png);
+}
 
-.online-soil { background-image: url(./assets/tangba/onlineSoil.png); }
-.offline-soil { background-image: url(./assets/tangba/offlineSoil.png); }
+.online-soil {
+  background-image: url(./assets/tangba/onlineSoil.png);
+}
+.offline-soil {
+  background-image: url(./assets/tangba/offlineSoil.png);
+}
 
-.online-weather { background-image: url(./assets/tangba/onlineWeather.png); }
-.offline-weather { background-image: url(./assets/tangba/offlineWeather.png); }
+.online-weather {
+  background-image: url(./assets/tangba/onlineWeather.png);
+}
+.offline-weather {
+  background-image: url(./assets/tangba/offlineWeather.png);
+}
 
-.online-grow { background-image: url(./assets/tangba/onlineGrow.png); }
-.offline-grow { background-image: url(./assets/tangba/offlineGrow.png); }
-
+.online-grow {
+  background-image: url(./assets/tangba/onlineGrow.png);
+}
+.offline-grow {
+  background-image: url(./assets/tangba/offlineGrow.png);
+}
 </style>

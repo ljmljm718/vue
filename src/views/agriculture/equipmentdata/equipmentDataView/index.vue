@@ -94,8 +94,8 @@ const inputFoucs=()=>{
 
 <template>
   <el-row :gutter="20" v-loading="loading">
-    <el-col :span="isCollapse ? 0 : 4" class="relative h-800px">
-      <el-menu default-active="2" class="el-menu-vertical-demo h-100%" :collapse="isCollapse">
+    <el-col :span="isCollapse ? 0 : 4" class="relative">
+      <el-menu default-active="2" class="el-menu-vertical-demo relative h-full" :collapse="isCollapse">
         <ContentWrap>
           <ContentWrap>
             <el-input v-model="filterText" @focus="inputFoucs" ref='inputFous' placeholder="搜索基地"  clearable />
@@ -118,8 +118,8 @@ const inputFoucs=()=>{
         </ContentWrap>
         <div
         @click="isCollapse = true"
-        class=" mx-auto flex -mt-96px  items-center justify-center w-145px h-35px rounded bg-[#e5f4f3] color-[#38aca1]"
-        style="cursor: pointer; "
+        class="  flex absolute bottom-2 left-50%  items-center justify-center w-145px h-35px rounded bg-[#e5f4f3] color-[#38aca1]"
+        style="cursor: pointer; transform: translateX(-50%)"
       >
         <img :src="img" class="w-12px h-7px mr-10px" /> 收起</div
       >

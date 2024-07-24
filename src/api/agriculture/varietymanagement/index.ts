@@ -1,6 +1,5 @@
 import request from '@/config/axios'
 import CacheManager from '@/utils/cacheManager'
-import {CategoryManagementApi} from "@/api/agriculture/categorymanagement";
 
 // 品种管理 VO
 export interface VarietyManagementVO {
