@@ -276,6 +276,7 @@
         width="180px"
       />
       <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="150" />
+      <el-table-column label="计划描述" align="center" prop="planDesc" />
 <!--      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>-->
 <!--      <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />-->
       <el-table-column label="操作" align="center" fixed="right" width="150">
