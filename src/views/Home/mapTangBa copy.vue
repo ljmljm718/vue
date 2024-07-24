@@ -24,6 +24,10 @@ const initMap = () => {
   //@ts-ignore
   const lnglat = new T.LngLat(116.40769, 39.89945)
   map.centerAndZoom(lnglat, 12)
+  //地图类型切换
+  const ctrl = new T.Control.MapType()
+  map.addControl(ctrl)
+
   // map.add(satelliteLayer)
   //获取点击处坐标
   map.addEventListener('click', (e) => {
@@ -54,20 +58,23 @@ const initMap = () => {
 const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
   if (!longitude || !latitude) return
   // @ts-ignore
-  const marker = new T.Marker(new T.LngLat(longitude, latitude),
+  const marker = new T.Marker(
+    new T.LngLat(longitude, latitude),
     title,
     // @ts-ignore
-    icon: new T.Icon({
-      // image: icon,
-      iconUrl: '/tangba/offlineMonitor.png',
-      // @ts-ignore
-      iconSize: new T.Point(30, 32)
-      // @ts-ignore
-      // imageOffset: new AMap.Pixel(-9, -3), //图像相对展示区域的偏移量，适于雪碧图等
-      // iconAnchor:Point(12, 41)//图标的定位锚点。此点用来决定图标与地理位置的关系，是相对于图标左上角的偏移值，默认等于图标宽度和高度的中间值。
-      // @ts-ignore
-      // imageSize: new AMap.Size(30, 32) //根据所设置的大小拉伸或压缩图片
-    }),
+    {
+      icon: new T.Icon({
+        // image: icon,
+        iconUrl: '/tangba/offlineMonitor.png',
+        // @ts-ignore
+        iconSize: new T.Point(30, 32)
+        // @ts-ignore
+        // imageOffset: new AMap.Pixel(-9, -3), //图像相对展示区域的偏移量，适于雪碧图等
+        // iconAnchor:Point(12, 41)//图标的定位锚点。此点用来决定图标与地理位置的关系，是相对于图标左上角的偏移值，默认等于图标宽度和高度的中间值。
+        // @ts-ignore
+        // imageSize: new AMap.Size(30, 32) //根据所设置的大小拉伸或压缩图片
+      })
+    }
   )
   if (map) {
     map.addOverLay(marker)

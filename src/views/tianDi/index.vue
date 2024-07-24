@@ -119,7 +119,9 @@ const initMap = () => {
       maxZoom: 18
     }
   ])
-
+  //@ts-ignore
+  const lnglat = new T.LngLat(116.40769, 39.89945)
+  map.centerAndZoom(lnglat, 12)
   //创建对象
   const ctrl = new T.Control.MapType()
   //添加控件
@@ -143,9 +145,6 @@ const initMap = () => {
     navigator.clipboard.writeText(`[${lng}, ${lat}],`)
   })
 
-  //@ts-ignore
-  const lnglat = new T.LngLat(116.40769, 39.89945)
-  map.centerAndZoom(lnglat, 12)
   return
   //标注工具
   markerTool = new T.MarkTool(map, { follow: true })
