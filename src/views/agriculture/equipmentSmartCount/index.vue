@@ -441,8 +441,8 @@ const getIconFrame = (text: string) => {
     湿度: 'icon-6',
     EC: 'icon-7',
     虫害种类: 'icon-8',
-    光: 'icon-9',
-    // 风: 'icon-10',
+    光: 'icon-27',
+    风速: 'icon-17',
     风向: 'icon-10',
     风力: 'icon-17',
     雨量: 'icon-12',
@@ -458,7 +458,8 @@ const getIconFrame = (text: string) => {
     余: 'icon-22',
     溶解氧浓度: 'icon-23',
     溶解氧饱和度: 'icon-24',
-    电: 'icon-25'
+    电: 'icon-25',
+    大气压力:'icon-26'
   }
   let res: string = 'icon-11'
   let flag: boolean = false
@@ -867,7 +868,7 @@ watch(
   border-radius: 50%; /* 使div变成圆形 */
 }
 
-@for $i from 1 through 25 {
+@for $i from 1 through 27 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
     background-size: 100% 100%;
