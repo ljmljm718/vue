@@ -13,6 +13,60 @@ defineOptions({ name: 'MapTangBa' })
 let map: any = null
 let info: any = null
 // let satelliteLayer = new AMap.TileLayer.Satellite()
+
+interface LatLon {
+  lat: number
+  lon: number
+}
+//封装转换坐标函数高德转天地图
+const createGcjToWgsConverter = () => {
+  const PI = 3.1415926536
+  const a = 6378245.0
+  const ee = 0.0066934216
+
+  const transformLat = (x: number, y: number): number => {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x))
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0
+    ret += ((20.0 * Math.sin(y * PI) + 40.0 * Math.sin((y / 3.0) * PI)) * 2.0) / 3.0
+    ret += ((160.0 * Math.sin((y / 12.0) * PI) + 320 * Math.sin((y * PI) / 30.0)) * 2.0) / 3.0
+    return ret
+  }
+
+  const transformLon = (x: number, y: number): number => {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x))
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0
+    ret += ((20.0 * Math.sin(x * PI) + 40.0 * Math.sin((x / 3.0) * PI)) * 2.0) / 3.0
+    ret += ((150.0 * Math.sin((x / 12.0) * PI) + 300.0 * Math.sin((x / 30.0) * PI)) * 2.0) / 3.0
+    return ret
+  }
+
+  const delta = (lat: number, lon: number): LatLon => {
+    let dLat = transformLat(lon - 105.0, lat - 35.0)
+    let dLon = transformLon(lon - 105.0, lat - 35.0)
+    let radLat = (lat / 180.0) * PI
+    let magic = Math.sin(radLat)
+    magic = 1 - ee * magic * magic
+    let sqrtMagic = Math.sqrt(magic)
+    dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * PI)
+    dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * PI)
+    return { lat: dLat, lon: dLon }
+  }
+
+  const transformGCJ2WGS = (gcjLon: number, gcjLat: number): LatLon => {
+    let d = delta(gcjLat, gcjLon)
+    return { lat: gcjLat - d.lat, lon: gcjLon - d.lon }
+  }
+
+  const gcj_wgs_encrypts = (latlons: { lat: number; lng: number }[]): LatLon[] => {
+    return latlons.map((latlon) => transformGCJ2WGS(latlon.lng, latlon.lat))
+  }
+
+  return { transformGCJ2WGS, gcj_wgs_encrypts }
+}
+
+// 创建转换器实例
+const { transformGCJ2WGS } = createGcjToWgsConverter()
+
 const initMap = () => {
   // @ts-ignore
   // map = new T.Map('tangbaMap', [
@@ -81,12 +135,19 @@ const addSatellite = () => {
 const removeSatellite = () => {
   map.setMapType(map.TMAP_TERRAIN_MAP)
 }
-const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
+const addMarkerToMap = (
+  longitude: number,
+  latitude: number,
+  title = '',
+  icon = '/tangba/offlineMonitor.png'
+) => {
   if (!longitude || !latitude) return
+  const { lon, lat} = transformGCJ2WGS(longitude, latitude)
 
+  
   // @ts-ignore
   const marker = new T.Marker(
-    new T.LngLat(longitude, latitude),
+    new T.LngLat(lon, lat),
     // title,
     // @ts-ignore
     {
@@ -124,8 +185,15 @@ const fitMarkerOnMap = debounce(
 // }
 //设置地图中心
 const setMapCenter = (longitude, latitude) => {
+  
   if (!longitude || !latitude) return
-  if (map) map.panTo(new T.LngLat(longitude, latitude))
+  //调用转换坐标
+  const { lon, lat } = transformGCJ2WGS(longitude, latitude)
+  console.log("longitude", longitude);
+  console.log("lon", lon);
+  
+  if (map) map.panTo(new T.LngLat(lon, lat))
+  console.log('tttttt',longitude,lon);
 }
 
 const setMapZoom = (zoom: number = 13) => {

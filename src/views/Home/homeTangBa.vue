@@ -107,7 +107,7 @@ const handleSelect = async (item) => {
           </div>
         </div>
       </div>`
-    mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+    // mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
   }
 }
@@ -183,6 +183,8 @@ const getMenuDataList = async () => {
       '/tangba/' + _item.deviceStatus + (kindMap[_item.deviceKind] || 'Monitor') + '.png'
     )
     marker.on('click', () => {
+      console.log("ITM", item);
+      
       handleSelect(item.id)
     })
   })
