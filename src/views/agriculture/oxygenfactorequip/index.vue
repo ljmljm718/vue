@@ -85,8 +85,10 @@
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="因素ID" align="center" prop="factorId" />
       <el-table-column label="增氧设备ID" align="center" prop="equipId" />
+      <el-table-column label="增氧设备名称" align="center" prop="equipName" />
       <el-table-column label="基地ID" align="center" prop="baseId" />
       <el-table-column label="地块ID" align="center" prop="plotId" />
+      <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column
         label="创建时间"
         align="center"
