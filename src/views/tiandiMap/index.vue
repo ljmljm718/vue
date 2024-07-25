@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-full h-full">
     <div id="mapDom" class="w-full h-full"></div>
-    <div class="absolute z-36 right-[1rem] top-[1rem] p-2 bg-white">
+    <div class="absolute z-36 right-[1rem] top-[1rem] p-2 bg-white hidden">
       <el-button type="primary" @click="enablePolygonEdit = true">开始绘制</el-button>
     </div>
   </div>
@@ -398,23 +398,6 @@ const initMap = async () => {
     (e) => handleMapDoubleClick(viewer, e),
     Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
   )
-
-  // createPolygon(viewer, [
-  //   [116.385847876651, 39.9210402682383],
-  //   [116.38588586818327, 39.91791209924505],
-  //   [116.38602487924092, 39.91528994215974],
-  //   [116.38630297230759, 39.91349316819115],
-  //   [116.38631477702901, 39.91201137488362],
-  //   [116.3895384976908, 39.91198656412521],
-  //   [116.39341037100495, 39.9121609191357],
-  //   [116.39585409430356, 39.91231985723424],
-  //   [116.39563952946072, 39.916049640551165],
-  //   [116.39548628069143, 39.91909486756313],
-  //   [116.39532922467104, 39.92160280388272],
-  //   [116.39102396555478, 39.92161518252694],
-  //   [116.38728552280215, 39.92144261525425],
-  //   [116.38555726696232, 39.92133226820324],
-  // ])
 }
 onMounted(() => {
   initMap()

@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash-es'
 import remainingRouter from '@/router/modules/remaining'
 import { flatMultiLevelRoutes, generateRoute } from '@/utils/routerHelper'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import { usersPassPage } from '@/api/login/index'
 
 const { wsCache } = useCache()
 
@@ -11,13 +12,15 @@ export interface PermissionState {
   routers: AppRouteRecordRaw[]
   addRouters: AppRouteRecordRaw[]
   menuTabRouters: AppRouteRecordRaw[]
+  userPassList: any[]
 }
 
 export const usePermissionStore = defineStore('permission', {
   state: (): PermissionState => ({
     routers: [],
     addRouters: [],
-    menuTabRouters: []
+    menuTabRouters: [],
+    userPassList: []
   }),
   getters: {
     getRouters(): AppRouteRecordRaw[] {
@@ -28,6 +31,9 @@ export const usePermissionStore = defineStore('permission', {
     },
     getMenuTabRouters(): AppRouteRecordRaw[] {
       return this.menuTabRouters
+    },
+    getUserPassList(): any[] {
+      return this.userPassList
     }
   },
   actions: {
@@ -58,9 +64,18 @@ export const usePermissionStore = defineStore('permission', {
     },
     setMenuTabRouters(routers: AppRouteRecordRaw[]): void {
       this.menuTabRouters = routers
+    },
+    async setUserPassList() {
+      return new Promise<void>(async (resolve, reject) => {
+        const { list = [] } = await usersPassPage()
+        if (Array.isArray(list)) {
+          this.userPassList = list
+          resolve()
+        } else reject()
+      })
     }
   },
-  persist: false
+  persist: true
 })
 
 export const usePermissionStoreWithOut = () => {

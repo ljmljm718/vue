@@ -1,7 +1,9 @@
 export type UserLoginVO = {
   username: string
   password: string
-  captchaVerification: string
+  tenantName?: string
+  rememberMe?: boolean
+  captchaVerification?: string
   socialType?: string
   socialCode?: string
   socialState?: string

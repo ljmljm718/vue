@@ -4,8 +4,6 @@
 <script setup lang="ts">
 import { log } from 'console'
 import { debounce } from 'lodash-es'
-// @ts-ignore
-window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
 
 defineOptions({ name: 'MapTangBa' })
 
@@ -68,15 +66,6 @@ const createGcjToWgsConverter = () => {
 const { transformGCJ2WGS } = createGcjToWgsConverter()
 
 const initMap = () => {
-  // @ts-ignore
-  // map = new T.Map('tangbaMap', [
-  //   {
-  //     projection: 'EPSG:900913',
-  //     minZoom: 5,
-  //     maxZoom: 18
-  //   }
-  // ])
-
   //修改默认地图为卫星图+有注记
   //影像地图图层
   const imageURL =
@@ -94,6 +83,34 @@ const initMap = () => {
   const lay2 = new T.TileLayer(imageURLT, { minZoom: 1, maxZoom: 18 })
   const config = { layers: [lay, lay2] }
   map = new T.Map('tangbaMap', config)
+  
+  const mapTypeSelect = [{
+    'title': '地图', //地图控件上所要显示的图层名称
+    'icon': 'http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png', //地图控件上所要显示的图层图标（默认图标大小80x80）
+    'layer': window.TMAP_NORMAL_MAP //地图类型对象，即MapType。
+  },
+    {
+      'title': '卫星',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png',
+      'layer': window.TMAP_SATELLITE_MAP
+    }, {
+      'title': '卫星混合',
+      'http': 'api.tianditu.gov.cn/v4.0/image/map/maptype/satellitepoi.png',
+      'layer': 'TMAP_HYBRID_MAP'
+    }, {
+      'title': '地形',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrain.png',
+      'layer': window.TMAP_TERRAIN_MAP
+    },
+    {
+      'title': '地形混合',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrainpoi.png',
+      'layer': window.TMAP_TERRAIN_HYBRID_MAP
+    }
+  ];
+  const ctrl = new T.Control.MapType({ mapTypes: mapTypeSelect }); // 初始化地图类型选择控件
+  map.addControl(ctrl); //添加地图选择控件
+  
 
   //@ts-ignore
   const lnglat = new T.LngLat(109.24604650765662, 31.41416444104432)
@@ -135,12 +152,9 @@ const addSatellite = () => {
 const removeSatellite = () => {
   map.setMapType(map.TMAP_TERRAIN_MAP)
 }
-const addMarkerToMap = (
-  longitude: number,
-  latitude: number,
-  title = '',
-  icon = '/tangba/offlineMonitor.png'
-) => {
+
+const markerList:Map<string, any> = new Map()
+const addMarkerToMap = (longitude: number, latitude:number, title = '', icon = '/tangba/offlineMonitor.png') => {
   if (!longitude || !latitude) return
   const { lon, lat} = transformGCJ2WGS(longitude, latitude)
 
@@ -164,6 +178,13 @@ const addMarkerToMap = (
       })
     }
   )
+  markerList.set(longitude + '_' + latitude, marker)
+
+  marker.on('click', (e) => {
+    const { lnglat } = e;
+    const { lat, lng } = lnglat
+    map.centerAndZoom(new T.LngLat(lng, lat), 16)
+  })
   if (map) {
     map.addOverLay(marker)
     // fitMarkerOnMap()
@@ -206,16 +227,14 @@ const openInfoWindow = (info: string, location: Array<any>) => {
     if (!val1 || !val2) return
   }
   if (!info || !location) return
-
+  const _marker = markerList.get(location[0] + '_' + location[1])
+  
   // @ts-ignore
-  const infoWindow = new T.InfoWindow({
-    // isCustom: true,
-    content: info
-  })
+  const infoWindow = new T.InfoWindow()
+  infoWindow.setContent(info)
   // infoWindow.setContent(info)
   // infoWindow.open(map, location)
-  map.openInfoWindow(infoWindow, location)
-  console.log('infowindow', infoWindow)
+  if (_marker) _marker.openInfoWindow(infoWindow)
 }
 
 defineExpose({
