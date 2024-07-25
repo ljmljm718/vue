@@ -78,6 +78,7 @@
       <el-table-column label="规则类型" align="center" prop="ruleType" />
       <el-table-column label="系数" align="center" prop="rule" />
       <el-table-column label="单位" align="center" prop="ruleUnit" />
+      <el-table-column label="备注" align="center" prop="remark" />
 <!--      <el-table-column label="绑定设备" align="center" prop="deviceName" />-->
       <el-table-column
         label="创建时间"
@@ -148,6 +149,7 @@ const queryParams = reactive({
   deviceId: undefined,
   deviceName: undefined,
   createTime: [],
+  remark:undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

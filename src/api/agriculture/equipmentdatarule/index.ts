@@ -11,6 +11,7 @@ export interface EquipmentDataRuleVO {
   rule: string // 规则
   ruleUnit: string // 单位
   deviceId: string // 设备编号
+  remark: string // 备注
 }
 
 // 设备数据规则 API
@@ -44,4 +45,4 @@ export const EquipmentDataRuleApi = {
   exportEquipmentDataRule: async (params) => {
     return await request.download({ url: `/agriculture/equipment-data-rule/export-excel`, params })
   },
-}
+}
