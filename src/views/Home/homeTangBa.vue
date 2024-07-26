@@ -166,11 +166,17 @@ const getMenuDataList = async () => {
   console.log('allDeviceDataList', allDeviceDataList.value)
   const kindMap = {
     '101': 'Monitor',
+    '79': 'Monitor',
+    '82': 'Grow',
     '102': 'Grow',
     '103': 'Weather',
+    '159': 'Weather',
+    '81': 'Weather',
+    '86': 'Soil',
     '104': 'Soil',
     '107': 'Bug',
-    '79': 'Monitor'
+    '88': 'Bug'
+    
   }
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
   
