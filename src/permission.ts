@@ -56,7 +56,6 @@ const whiteList = [
   '/register',
   '/oauthLogin/gitee',
   '/QRCode',
-  '/home',
   "/bigscreenMY",
   "/bigscreenTB",
   '/tiandi'
