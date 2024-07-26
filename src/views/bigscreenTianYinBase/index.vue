@@ -3,11 +3,11 @@ import BigscreenBuilder from '@/components/BigscreenBuilder'
 import headerBg from './assets/headerBg.png'
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import {
-  getParkBaseInfo,
   getParkList,
   getLeftListInfo
 } from './api'
 import titleBar from './assets/titleBar.png'
+import { log } from 'console'
 
 const {
   BigscreenAdapter,
@@ -25,7 +25,7 @@ export default defineComponent({
       showSidePanel.value = true
     }, 100)
 
-    // 中间部分选择地块
+    // 中间部分选择基地
     const selectedBase = ref<string>('枳壳树种植基地')
     const parkDataList = ref<any[]>([])
     const getParkData = async () => {
@@ -34,13 +34,13 @@ export default defineComponent({
         parkDataList.value = res
         if (res.length > 0) {
           getMainDataList(res[0].id)
+
         }
       }
     }
     getParkData()
 
-    // 获取主体部分数据
-    const mainData = ref<any[]>([])
+    // 获取除标题外的外层数据
     const getMainDataList = async (parkId) => {
       const res = await getLeftListInfo({ parkId })
       console.log("getMainDataList", res);
@@ -60,170 +60,15 @@ export default defineComponent({
         const num = _res.length / 2
         leftDataList.value = _res.slice(0, num)
         rightDataList.value = _res.slice(num)
+        console.log('tttttttt',res,'1111111111',_res);
         
         console.log(leftDataList.value);
         console.log(rightDataList.value);
       }
     }
 
-    
-
-    const leftDataList = ref<any[]>([
-      {
-        area: "3",
-        code: "1787662656924282881",
-        name: "香满园",
-        child: [
-          {
-            cropName: "连梗11号",
-            startTime: "2024-07-06",
-            endTime: "2024-08-05",
-            growth: "分蘖期"
-          },
-          {
-            cropName: "稻田鱼",
-            startTime: "2024-07-01",
-            endTime: "2024-07-31",
-            growth: "生长期"
-          }
-        ]
-      }
-    ])
-
-    const getLeftDataList = async () => {
-      const res: any = await getParkBaseInfo({})
-      const {
-        area = '0',
-        code = '0',
-        name = '未知',
-        child = []
-      } = res;
-      const innerData = child.map((c) => {
-        const {
-          cropName = '未知作物',
-          startTime = '未知开始时间',
-          endTime = '未知结束时间',
-          growth = '未知生长期'
-        } = c;
-        return { cropName, startTime, endTime, growth }
-      })
-      return { area, code, name, child }
-    }
-
-
-    //右侧地块
-    const rightDataList = ref<any[]>([
-      {
-        id: '1',
-        title: '标题',
-        children: [
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-        ]
-      },
-      {
-        id: '2',
-        title: '标题',
-        children: [
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-        ]
-      },
-      {
-        id: '3',
-        title: '标题',
-        children: [
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-        ]
-      },
-      {
-        id: '24',
-        title: '标题',
-        children: [
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-        ]
-      },
-      {
-        id: '25',
-        title: '标题',
-        children: [
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-          {
-            title: '地块编号',
-            value: '2325453453'
-          },
-        ]
-      },
-    ])
+    const leftDataList = ref<any[]>([])
+    const rightDataList = ref<any[]>([])
 
     const TitleValue = ({ title, value }) => {
       return (
@@ -282,7 +127,7 @@ export default defineComponent({
                                   {
                                     item.child.map(item => (
                                       <div class="grid grid-cols-2 gap-2">
-                                        <TitleValue title="种植作物" value={item.cropName} />
+                                        <TitleValue title="种植作物" value={item.cropName}/>
                                         <TitleValue title="物候期" value={item.growth} />
                                         <TitleValue title="开始种植时间" value={item.startTime} />
                                         <TitleValue title="预计收获时间" value={item.endTime} />
@@ -298,6 +143,7 @@ export default defineComponent({
                     }
                   </div>
                 </div>
+                {/* 右侧 */}
                 <div
                   class="z-10 absolute right-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)] transition-all duration-100"
                   style={{
@@ -322,6 +168,22 @@ export default defineComponent({
                                   <div class="pl-1rem text-[#daf5fa]">{ele.value}</div>
                                 </div>
                               )) : null
+                            }
+                            {
+                              Array.isArray(item.child) ? (
+                                <div class="col-span-2">
+                                  {
+                                    item.child.map(item => (
+                                      <div class="grid grid-cols-2 gap-2">
+                                        <TitleValue title="种植作物" value={item.cropName} />
+                                        <TitleValue title="物候期" value={item.growth} />
+                                        <TitleValue title="开始种植时间" value={item.startTime} />
+                                        <TitleValue title="预计收获时间" value={item.endTime} />
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                              ) : null
                             }
                           </div>
                         </div>

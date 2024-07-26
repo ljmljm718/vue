@@ -23,10 +23,3 @@ export const getLeftListInfo = async (params) => {
 //   })
 // }
 
-// 基地地块选择框
-export const getParkBaseInfo = async (params) => {
-  return await request.get({
-    url: '/agriculture/big-screen/getParkBaseInfo',
-    params
-  })
-}
