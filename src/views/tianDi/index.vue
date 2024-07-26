@@ -76,6 +76,17 @@ const endeditMarker = () => {
   }
 }
 
+const createPolygon = (_polyPoints:any[]) => {
+  const _polygon = new T.Polygon(_polyPoints, {
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWidth: 3,
+    fillColor: "#FF0000",
+    fillOpacity: 0.3
+  })
+  map.addOverLay(_polygon)
+}
+
 //绘制地块功能
 const drawPolygon = () => {
   let PolygonTool = new T.PolygonTool(map)
@@ -199,7 +210,21 @@ const initMap = () => {
   }) // 将标注添加到地图中
 }
 
-defineExpose({ initMap })
+const getCurrentSaveCoordinates = () => {
+  return savedCoordinates
+}
+
+const setCenterZoom = (_pos:any[], _zoom:number = 13) => {
+  map.centerAndZoom(new T.LngLat(_pos[0], _pos[1]), _zoom)
+}
+
+
+defineExpose({
+  initMap,
+  getCurrentSaveCoordinates,
+  createPolygon,
+  setCenterZoom
+})
 </script>
 <style lang="scss">
 .tdt-control-copyright.tdt-control {
