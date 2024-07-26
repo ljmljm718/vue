@@ -147,7 +147,7 @@
           <el-button
             link
             type="primary"
-            @click="handleDraw(scope.row.id)"
+            @click="handleDraw(scope.row)"
             v-hasPermi="['agriculture:park-info:update']"
           >
             绘制围栏
@@ -194,8 +194,8 @@
       <TianDiMap ref="tiandiIns" />
     </div>
     <template #footer>
-      <el-button size="small" @click="showDrawDialog = false">取 消</el-button>
-      <el-button size="small" type="primary" @click="showDrawDialog = false">确 定</el-button>
+      <el-button size="small" @click="handleCancel()">取 消</el-button>
+      <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
     </template>
   </el-dialog>
 </template>
@@ -209,9 +209,36 @@ import ParkInfoForm from './ParkInfoForm.vue'
 import ParkDetailList from './components/ParkDetailList.vue'
 
 import { ParkCategoryApi } from '@/api/agriculture/parkcategory'
+import { ElMessage } from 'element-plus'
+import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
+import * as turf from '@turf/turf'
+
 const parkCategoryOptions = ref() //基地分类列表
 const handleClick = async () => {
   parkCategoryOptions.value = await ParkCategoryApi.getAllParkCategory()
+}
+
+// 确定保存围栏信息
+const tiandiIns = ref()
+const handleConfirm = async () => {
+  const geofencing = tiandiIns.value.getCurrentSaveCoordinates()
+  if (!Array.isArray(geofencing)) return ElMessage.error('您还未选择区域!')
+  if (geofencing.length < 1) return ElMessage.error('您还未选择区域!')
+  const data = await CropGrowthNewApi.saveGeofencing({
+    id: selectedDrawId.value,
+    geofencing: JSON.stringify(geofencing),
+    infraType: "1"
+  })
+
+  if (data) ElMessage.success('保存成功!')
+  else ElMessage.error("保存失败！")
+  showDrawDialog.value = false
+  selectedDrawId.value = ''
+}
+
+const handleCancel = () => {
+  selectedDrawId.value = ''
+  showDrawDialog.value = false
 }
 
 /** 基地基本信息 列表 */
@@ -248,12 +275,42 @@ const exportLoading = ref(false) // 导出的加载中
 // 绘制围栏
 const selectedDrawId = ref('')
 const showDrawDialog = ref<boolean>(false)
-const tiandiIns = ref()
-const handleDraw = (id) => {
+const areaMatchZoom = (_pos:any[]) => {
+  const area = turf.area(turf.polygon([
+    [..._pos, _pos[0]]
+  ]));
+  if (area < 3000) return 17;
+  if (area > 3600000000) return 5;
+  return Math.floor(17 - (12 * area / 3600000000))
+}
+const handleDraw = (item) => {
+  const { id, geofencing } = item
+  if (!id) {
+    ElMessage.error('当前数据ID不存在')
+    return
+  }
   selectedDrawId.value = id
   showDrawDialog.value = true
   nextTick(() => {
     tiandiIns.value.initMap()
+    if (geofencing) {
+      const _arr = JSON.parse(geofencing)
+      if (Array.isArray(_arr) && _arr.length === 1) {
+        const _polyArr =  _arr[0].map(ele => {
+          return T.LngLat(ele.lng, ele.lat)
+        })
+        
+        const _zoom = areaMatchZoom(_arr[0].map(_ele => ([_ele.lng, _ele.lat])))
+        
+        tiandiIns.value.createPolygon(_polyArr)
+        const _center = turf.center(turf.points(_arr[0].map(ele => {
+          return [ele.lng, ele.lat]
+        })))
+        const { geometry } = _center;
+        const { coordinates } = geometry
+        tiandiIns.value.setCenterZoom(coordinates, _zoom)
+      }
+    }
   })
 }
 

@@ -76,6 +76,9 @@
       <el-form-item label="单位" prop="unit">
         <el-input v-model="formData.unit" placeholder="请输入单位" />
       </el-form-item>
+      <el-form-item label="预计产量" prop="predictedOutput">
+        <el-input v-model="formData.predictedOutput" placeholder="请输入预计产量" />
+      </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId"/>
       </el-form-item>
@@ -129,6 +132,7 @@ const formData = ref({
   userId: undefined,
   receiptStartTime: undefined,
   receiptEndTime: undefined,
+  predictedOutput: undefined,
 })
 const formRules = reactive({
   cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
@@ -231,6 +235,7 @@ const resetForm = () => {
     plotName: undefined,
     deptId: undefined,
     userId: undefined,
+    predictedOutput: undefined,
   }
   formRef.value?.resetFields()
 }

@@ -49,4 +49,9 @@ export const CropGrowthNewApi = {
   exportCropGrowthNew: async (params) => {
     return await request.download({ url: `/agri/crop-growth-new/export-excel`, params })
   },
-}
+
+  // 保存电子围栏
+  saveGeofencing: async (data) => {
+    return await request.put({ url: `/agriculture/park-info/save-geofencing`, data })
+  },
+}

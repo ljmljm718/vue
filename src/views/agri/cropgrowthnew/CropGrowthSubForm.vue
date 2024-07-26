@@ -14,7 +14,7 @@
         <el-input v-model="formData.itemName" placeholder="请输入事项名称" />
       </el-form-item>
       <el-form-item label="事项内容" prop="itemContent">
-        <Editor v-model="formData.itemContent" height="150px" />
+        <el-input v-model="formData.itemContent" height="150px" type="textarea"/>
       </el-form-item>
       <!-- <el-form-item label="备注1" prop="remark1">
         <el-input v-model="formData.remark1" placeholder="请输入备注1" />
@@ -105,6 +105,7 @@ const subformRef = ref() // 表单 Ref
 const open = async (type: string, id?: number) => {
   console.log("ID", id);
   
+
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type

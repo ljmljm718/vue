@@ -9,17 +9,28 @@
       :rules="formRules"
     >
       <el-table :data="formData" class="-mt-10px">
-        <el-table-column label="子设备名称" prop="subDevicesName">
+        <el-table-column label="参数名称" prop="subDevicesName">
           <template #default="{ row, $index }">
-            <el-form-item :prop="`${$index}.subDevicesName`" class="mb-0px!"
+            <el-form-item
+:prop="`${$index}.subDevicesName`" class="mb-0px!"
                           :rules="formRules.subDevicesName">
               <el-input v-model="row.subDevicesName"/>
             </el-form-item>
           </template>
         </el-table-column>
+        <el-table-column label="参数值" prop="parameterValue">
+          <template #default="{ row, $index }">
+            <el-form-item
+:prop="`${$index}.parameterValue`" class="mb-0px!"
+                          :rules="formRules.parameterValue">
+              <el-input v-model="row.parameterValue"/>
+            </el-form-item>
+          </template>
+        </el-table-column>
         <el-table-column label="开关状态" prop="swithState">
           <template #default="{ row, $index }">
-            <el-form-item :prop="`${$index}.swithState`" class="mb-0px!"
+            <el-form-item
+:prop="`${$index}.swithState`" class="mb-0px!"
                           :rules="formRules.swithState">
               <el-switch v-model="row.status" active-color="#13ce66" inactive-color="#ff4949"/>
             </el-form-item>
@@ -114,6 +125,7 @@ const handleAdd = () => {
     swithState: '1',
     remark: undefined,
     status: false,
+    parameterValue:undefined,
   }
   row.devicesId = masterId.value
   formData.value.push(row)

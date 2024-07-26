@@ -139,8 +139,16 @@
         <!--        :formatter="dateFormatter"-->
         <!--        width="180px"-->
         <!--      />-->
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="230px">
           <template #default="scope">
+            <el-button
+              link
+              type="success"
+              plain
+              @click="damn(scope.row)"
+            >
+              事项查看
+            </el-button>
             <el-button
               link
               type="warning"
@@ -277,6 +285,48 @@
   <!-- 表单弹窗：添加/修改 -->
   <CropGrowthNewForm ref="formRef" @success="getList"/>
   <CropGrowthSubForm ref="subformRef" @success="getList" />
+  <!-- start事项查看弹窗 -->
+  <el-drawer v-model="drawer2" :direction="direction" :data="formData">
+    <template #header>
+      <h3>生命周期-溯源</h3>
+    </template>
+    <template #default>
+      <div class="relative">
+        <div v-if='formData.length>0'
+             class="flex absolute top--30px left-50px flex-col items-center">
+          <div class="flex items-center">
+            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
+            <div class="ml-30px">{{ formatTime(formData[0].createTime, 'yyyy-MM-dd HH:mm:ss') }}
+            </div>
+          </div>
+          <div v-if='formData.length>1' class="w-2px h-190px bg-[#089df7] ml--185px"></div>
+          <div class="flex items-center" v-if='formData.length>1'>
+            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
+            <div class="ml-30px">{{ formatTime(formData[0].createTime, 'yyyy-MM-dd HH:mm:ss') }}
+            </div>
+          </div>
+        </div>
+        <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
+          <!-- <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
+          <p>品种：
+            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
+          </p>
+          <p>作物名称：{{ item.cropName }}</p>
+          <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p> -->
+          <p>品种:{{ thisCropType }}</p>
+          <p>事项名称:{{ item.itemName }}</p>
+          <p>事项内容：{{ item.itemContent }}</p>
+        </el-card>
+      </div>
+    </template>
+    <template #footer>
+      <div style="flex: auto">
+        <el-button @click="cancelClick">cancel</el-button>
+      </div>
+    </template>
+  </el-drawer>
+  <!-- end事项查看弹窗 -->
+
 </template>
 
 <script setup lang="ts">
@@ -288,7 +338,10 @@ import CropGrowthNewForm from './CropGrowthNewForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import CropGrowthSubForm from './CropGrowthSubForm.vue'
-
+//本次请求接口 生长周期子表接口 
+import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
+// 时间格式化工具类
+import {formatTime} from '@/utils/index'
 /** 作物生长周期 列表 */
 defineOptions({name: 'CropGrowthNew'})
 
@@ -351,14 +404,30 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const CategoryManagementQueryParams = reactive({})
 const VarietyManagementVOQueryParams = reactive({})
+
+//start事件查看方法
+const drawer2 = ref(false)
+function cancelClick() {
+  thisCropType.value = undefined
+  drawer2.value = false
+}
+const formData = ref<CropGrowthSubVO[]>([])
+const thisCropType = ref()
+const damn = async (row) =>{
+  thisCropType.value = row.cropType
+  const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode:row.id});
+  formData.value = datas.list;
+  drawer2.value = true
+}
+//end事件查看
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
-    
+  
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-    
     
     // const pageRes = await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
     // if (Array.isArray(pageRes.list)) listVarietyManagementVO.value = pageRes

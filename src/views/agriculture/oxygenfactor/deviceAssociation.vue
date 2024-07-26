@@ -126,8 +126,8 @@ const submitForm = async () => {
       id: undefined,
       factorId: formData.value.id,
       equipId: formData.value.deviceCode,
-      baseId: formData.value.plotCode,
-      plotId: formData.value.parkCode
+      baseId: formData.value.parkCode,
+      plotId: formData.value.plotCode
     }
     const data = obj
     await OxygenFactorEquipApi.createOxygenFactorEquip(data)
