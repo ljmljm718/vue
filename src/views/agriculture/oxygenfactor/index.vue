@@ -103,7 +103,31 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="设备关联" align="center">
+        <template #default="scope">
+         
+            <el-button
+            plain
+            type="primary"
+            @click="deviceForm('deviceForm',scope.row)"
+            style="border:1px solid"
+            v-hasPermi="['agriculture:oxygen-factor:delete']"
+          >
+          <Icon icon="ep:plus" class="mr-5px" size='10' />绑定设备
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="deviceForm('drawerList',scope.row)"
+            class="!color-[#67c23a] !bdDevice !px-7px !py-6px"
+            style="border:1px solid #67c23a"
+            v-hasPermi="['agriculture:oxygen-factor:delete']"
+          >
+          已绑定设备
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -136,6 +160,8 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <OxygenFactorForm ref="formRef" @success="getList" />
+  <!-- 关联设备弹窗 -->
+  <deviceAssociation ref="formDevice"  @success="getList()"/>
 </template>
 
 <script setup lang="ts">
@@ -143,10 +169,10 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { OxygenFactorApi, OxygenFactorVO } from '@/api/agriculture/oxygenfactor'
 import OxygenFactorForm from './OxygenFactorForm.vue'
-
+import deviceAssociation from './deviceAssociation.vue'
 /** 溶解氧因素 列表 */
 defineOptions({ name: 'OxygenFactor' })
-
+//因素名称 设备编号 设备名称 基地编号 地块编号
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -223,9 +249,21 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
+// 绑定设备 已绑定设备
+const formDevice=ref()
+const deviceForm=( val,item)=>{
+  val=='deviceForm'? formDevice.value.open(item):formDevice.value.drawerList(item)
+ 
+}
 
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style lang="scss" scoped>
+.bdDevice::hover{
+  color:#fff  !important;
+  background-color: #67c23a !important; 
+}
+</style>
