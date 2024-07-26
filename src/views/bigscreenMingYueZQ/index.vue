@@ -277,6 +277,10 @@ export default defineComponent({
   background-image: url(./assets/itemWrapper.png);
   background-size: 100% 100%;
 }
+.item-wrapper:hover {
+  background-image: url(./assets/itemWrapperHover.png);
+  background-size: 100% 100%;
+}
 
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0;
