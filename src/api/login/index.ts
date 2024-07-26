@@ -79,9 +79,3 @@ export const getCode = (data) => {
 export const reqCheck = (data) => {
   return request.postOriginal({ url: 'system/captcha/check', data })
 }
-
-
-// 返回用户名密码列表
-export const usersPassPage = () => {
-  return request.get({ url: '/agri/users-password/page' })
-}

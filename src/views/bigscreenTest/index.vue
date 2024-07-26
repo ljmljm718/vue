@@ -45,11 +45,8 @@ import {
     selectCount,
     getCountRiceDuckSum
 } from './api'
-import { usePermissionStore } from '@/store/modules/permission'
-import * as LoginApi from '@/api/login'
-import * as authUtil from '@/utils/auth'
-
-const permissionStore = usePermissionStore()
+import router from '@/router'
+import {object} from "vue-types";
 
 const {
     BigscreenAdapter,
@@ -60,6 +57,8 @@ const {
     BigscreenCard,
 
     BigscreenTab,
+    // BigscreenSelector,
+    BigscreenTable,
 } = BigscreenBuilder
 
 // 设备列表项
@@ -143,7 +142,7 @@ export default defineComponent({
             if (!Array.isArray(res)) return
             baseParkTreeList.value = res
         }
-        // getBaseParkTreeList()
+        getBaseParkTreeList()
 
         // 获取监控设备列表
         const monitorDeviceLoading = ref<boolean>(false)
@@ -165,7 +164,7 @@ export default defineComponent({
                 online: item.deviceStatus === 'online'
             })).slice(0, 9)
         }
-        // getMonitorDeviceList()
+        getMonitorDeviceList()
         const activeTab = ref('base')
 
 
@@ -194,7 +193,7 @@ export default defineComponent({
             }))
             noticeListTotal.value = total
         }
-        // getMonitorNoticeList()
+        getMonitorNoticeList()
 
         const noticeList = ref<Array<NoticeItemType>>([])
         const handleMenuChange = (key: string, keyPath: string[]) => {
@@ -344,7 +343,7 @@ export default defineComponent({
 
             baseEquipmentLoading.value = false
         }
-        // getBaseEquipmentList()
+        getBaseEquipmentList()
 
         // 生长分析折线图
         const getGrowthLineChartData = async () => {
@@ -535,12 +534,12 @@ export default defineComponent({
                 })
             );
         }
-        // addTabChangeMap('plant', () => {
-        //     nextTick(() => {
-        //         getGrowthLineChartData()
-        //         getHarvestChartData()
-        //     })
-        // })
+        addTabChangeMap('plant', () => {
+            nextTick(() => {
+                getGrowthLineChartData()
+                getHarvestChartData()
+            })
+        })
 
         // 设备信息
         const deviceInfoLoading = ref<boolean>(false)
@@ -575,7 +574,7 @@ export default defineComponent({
             deviceInfoList.value = buildArr.map(item => ({ ...item, rate: getRateByData(item) }))
             buildArr.forEach(item => { deviceInfoTotal.value += parseInt(item.total) })
         }
-        // getDeviceInfoList()
+        getDeviceInfoList()
 
         // 特色产品
         const villageProductPageLoading = ref<boolean>(false)
@@ -612,7 +611,7 @@ export default defineComponent({
             })
             showedProductPageList.value = villageProductPageList.value.slice(0, 2)
         }
-        // getvillageProductPage()
+        getvillageProductPage()
 
         // 气象站
         const weatherLoading = ref<boolean>(false)
@@ -633,7 +632,7 @@ export default defineComponent({
                 unit: item.yyUnit || ''
             })).slice(0, 8)
         }
-        // getWeatherList()
+        getWeatherList()
 
         // 土壤墒情
         const soilLoading = ref<boolean>(false)
@@ -654,7 +653,7 @@ export default defineComponent({
                 unit: item.yyUnit || ''
             })).slice(0, 8)
         }
-        // getsoilList()
+        getsoilList()
 
         // 水质
         const waterLoading = ref<boolean>(false)
@@ -675,7 +674,7 @@ export default defineComponent({
                 unit: item.yyUnit || ''
             })).slice(0, res.length)
         }
-        // getWaterList()
+        getWaterList()
 
         // 中间顶部
         const plantCenterTopCardList = ref<Array<any>>([])
@@ -705,7 +704,7 @@ export default defineComponent({
                 },
             ]
         }
-        // getPlantCenterTopCardList()
+        getPlantCenterTopCardList()
         const plantTabPage = () => {
             return (
                 <div class="w-full h-full box-border pb-1 px-5 py-3">
@@ -983,7 +982,7 @@ export default defineComponent({
                 warnStatus: item.warnStatus === '0' ? '未处理' : '已处理'
             }))
         }
-        // getPreWarnList()
+        getPreWarnList()
 
         // 预警分布Echarts
         const initChartWarnLayout = async () => {
@@ -1153,12 +1152,12 @@ export default defineComponent({
                 })
             )
         }
-        // addTabChangeMap('risk', () => {
-        //     nextTick(() => {
-        //         initChartWarnLayout()
-        //         initBugCountChart()
-        //     })
-        // })
+        addTabChangeMap('risk', () => {
+            nextTick(() => {
+                initChartWarnLayout()
+                initBugCountChart()
+            })
+        })
 
         // 报警信息处理情况
         const warnHandleInfo = ref<Array<any>>([])
@@ -1176,7 +1175,7 @@ export default defineComponent({
                 value: item.num
             }))
         }
-        // getWarnHandleInfoList()
+        getWarnHandleInfoList()
 
         // 报警信息处理情况列表
         const warnInfoHandleLoading = ref<boolean>(false)
@@ -1195,7 +1194,7 @@ export default defineComponent({
                 }
             })
         }
-        // getWarnInfoHandleList()
+        getWarnInfoHandleList()
 
         // 指挥调度
         const commandLoading = ref<boolean>(false)
@@ -1234,7 +1233,7 @@ export default defineComponent({
                 getCommandInfoList(farmTopList.value[0].id)
             }
         }
-        // getFarmTopList()
+        getFarmTopList()
         //跳转农事记录添加接口，定义可传递的参数
         const generateUrlParams = (params:object) => {
           const _keys = Object.keys(params)
@@ -1476,47 +1475,6 @@ export default defineComponent({
                 </div>
             )
         }
-
-        const initPage = async () => {
-            const userInfo = permissionStore.getUserPassList.find(item => item.id === '157')
-            if (!userInfo.users || !userInfo.password) return;
-            const res = await LoginApi.login({
-                tenantName: '鲁渝协作乡村振兴示范村数字化赋能',
-                username: userInfo.users,
-                password: userInfo.password,
-                rememberMe: true // 默认记录我。如果不需要，可手动修改
-            })
-            if (res) authUtil.setToken(res)
-
-            getBaseParkTreeList()
-            getMonitorDeviceList()
-            getMonitorNoticeList()
-            getBaseEquipmentList()
-            addTabChangeMap('plant', () => {
-                nextTick(() => {
-                    getGrowthLineChartData()
-                    getHarvestChartData()
-                })
-            })
-            getDeviceInfoList()
-            getvillageProductPage()
-            getWeatherList()
-            getsoilList()
-            getWaterList()
-            getPlantCenterTopCardList()
-            getPreWarnList()
-            addTabChangeMap('risk', () => {
-                nextTick(() => {
-                    initChartWarnLayout()
-                    initBugCountChart()
-                })
-            })
-            getWarnHandleInfoList()
-            getWarnInfoHandleList()
-            getFarmTopList()
-        }
-        initPage()
-
         return () => (
             <div class="bg-[#12153a] w-[100vw] h-[100vh]">
                 <BigscreenAdapter>

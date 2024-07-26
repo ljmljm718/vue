@@ -53,7 +53,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
+    redirect: '/homeIndex',
     name: 'Home',
     meta: {},
     children: [
