@@ -59,11 +59,8 @@ export default defineComponent({
         }))
         const num = _res.length / 2
         leftDataList.value = _res.slice(0, num)
-        rightDataList.value = _res.slice(num)
-        console.log('tttttttt',res,'1111111111',_res);
-        
+        rightDataList.value = _res.slice(num)   
         console.log(leftDataList.value);
-        console.log(rightDataList.value);
       }
     }
 
