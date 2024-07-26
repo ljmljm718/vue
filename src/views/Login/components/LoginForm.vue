@@ -254,7 +254,9 @@ const handleLogin = async (params) => {
     }
     loginData.loginForm.captchaVerification = params.captchaVerification
     const res = await LoginApi.login(loginData.loginForm)
-    if (!res) return;
+    if (!res) {
+      return
+    }
     loading.value = ElLoading.service({
       lock: true,
       text: '正在加载系统中...',
@@ -267,11 +269,7 @@ const handleLogin = async (params) => {
     }
     authUtil.setToken(res)
     if (!redirect.value) {
-      if (loginData.loginForm.username === 'admin') {
-        await permissionStore.setUserPassList()
-        redirect.value = '/home'
-      }
-      else redirect.value = '/homeIndex'
+      redirect.value = '/'
     }
     // 判断是否为SSO登录
     if (redirect.value.indexOf('sso') !== -1) {
