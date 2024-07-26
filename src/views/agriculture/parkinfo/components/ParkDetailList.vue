@@ -40,7 +40,7 @@
           <el-button
             link
             type="primary"
-            @click="handleDraw(scope.row.id)"
+            @click="handleDraw(scope.row)"
             v-hasPermi="['agriculture:park-info:update']"
           >
             绘制围栏
@@ -59,8 +59,8 @@
         <TianDiMap ref="tiandiIns1" />
       </div>
       <template #footer>
-        <el-button size="small" @click="showDrawDialog = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="showDrawDialog = false">确 定</el-button>
+        <el-button size="small" @click="handleCancel()">取 消</el-button>
+        <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
       </template>
     </el-dialog>
   </ContentWrap>
@@ -69,6 +69,9 @@
 import { dateFormatter } from '@/utils/formatTime'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo'
 import TianDiMap from '@/views/tianDi/index.vue'
+import { ElMessage } from 'element-plus'
+import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
+import * as turf from '@turf/turf'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 const { t } = useI18n() // 国际化
@@ -78,12 +81,64 @@ const message = useMessage() // 消息弹窗
 const selectedDrawId = ref('')
 const showDrawDialog = ref<boolean>(false)
 const tiandiIns1 = ref()
-const handleDraw = (id) => {
+const areaMatchZoom = (_pos:any[]) => {
+  const area = turf.area(turf.polygon([
+    [..._pos, _pos[0]]
+  ]));
+  if (area < 3000) return 17;
+  if (area > 3600000000) return 5;
+  return Math.floor(17 - (12 * area / 3600000000))
+}
+const handleDraw = (item) => {
+  const { id, geofencing } = item
+  if (!id) {
+    ElMessage.error('当前数据ID不存在')
+    return
+  }
   selectedDrawId.value = id
   showDrawDialog.value = true;
   nextTick(() => {
     tiandiIns1.value.initMap()
+    if (geofencing) {
+      const _arr = JSON.parse(geofencing)
+      if (Array.isArray(_arr) && _arr.length === 1) {
+        const _polyArr =  _arr[0].map(ele => {
+          return T.LngLat(ele.lng, ele.lat)
+        })
+        
+        tiandiIns1.value.createPolygon(_polyArr)
+        const _center = turf.center(turf.points(_arr[0].map(ele => {
+          return [ele.lng, ele.lat]
+        })))
+        const { geometry } = _center;
+        const { coordinates } = geometry
+        const _zoom = areaMatchZoom(_arr[0].map(_ele => ([_ele.lng, _ele.lat])))
+        tiandiIns1.value.setCenterZoom(coordinates, _zoom)
+      }
+    }
   })
+}
+
+// 确定保存围栏信息
+const handleConfirm = async () => {
+  const geofencing = tiandiIns1.value.getCurrentSaveCoordinates()
+  if (!Array.isArray(geofencing)) return ElMessage.error('您还未选择区域!')
+  if (geofencing.length < 1) return ElMessage.error('您还未选择区域!')
+  const data = await CropGrowthNewApi.saveGeofencing({
+    id: selectedDrawId.value,
+    geofencing: JSON.stringify(geofencing),
+    infraType: '2'
+  })
+
+  if (data) ElMessage.success('保存成功!')
+  else ElMessage.error("保存失败！")
+  showDrawDialog.value = false
+  selectedDrawId.value = ''
+}
+
+const handleCancel = () => {
+  selectedDrawId.value = ''
+  showDrawDialog.value = false
 }
 
 const props = defineProps<{
