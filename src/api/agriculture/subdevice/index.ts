@@ -8,6 +8,7 @@ export interface SubDeviceVO {
   subDevicesName: string // 子设备名称
   swithState: string // 开关状态
   remark: string // 备注
+  parameterValue:string//参数值
 }
 
 // 子设备管理 API
