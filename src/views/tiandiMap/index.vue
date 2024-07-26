@@ -26,7 +26,7 @@ let viewer: any = null
 let viewEntities: Array<any> = []
 
 // 绘制多边形， custom为true时，不添加到 viewEntities 中
-const createPolygon = (_viewer, polylinePoints: Array<Array<any>>, option = {}, custom = false) => {
+const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, option = {}, custom = false) => {
   if (!_viewer) return
   const hierarchyPositionArr = flattenDepth(polylinePoints, 3)
   const polygon = Object.assign(
@@ -49,7 +49,8 @@ const createPolygon = (_viewer, polylinePoints: Array<Array<any>>, option = {}, 
       // 边框尺寸
       outlineWidth: 2,
       // 填充的颜色，withAlpha透明度
-      material: Cesium.Color.GREEN.withAlpha(0.5),
+      // material: Cesium.Color.GREEN.withAlpha(0.5),
+      material: Cesium.Color.fromRandom({alpha: 0.5}),
       // 是否被提供的材质填充
       fill: true,
       // 恒定高度
@@ -167,6 +168,34 @@ const createText = (_viewer, position, text = '', _option = {}) => {
     })
   )
 }
+
+// 飞到某个地点
+const flyTo = (
+  _viewer = viewer,
+  position,
+  option = {
+    orientation: {
+      heading: Cesium.Math.toRadians(360),
+      pitch: Cesium.Math.toRadians(-90),
+      roll: Cesium.Math.toRadians(0)
+    },
+  },
+  callback = () => {}
+) => {
+  const [lng, lat, height] = position
+  _viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(lng, lat, height),
+    ...option,
+    complete: callback
+  })
+}
+
+defineExpose({
+  createPolygon,
+  createPoint,
+  createText,
+  flyTo
+})
 
 const enablePolygonEdit = ref<boolean>(false)
 let tempPolygonIns: any = null
@@ -363,10 +392,10 @@ const initMap = async () => {
   //   })))
 
   viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(116.39, 39.89, 8850000),
+    destination: Cesium.Cartesian3.fromDegrees(103.1433262495028, 34.31878650449927, 8850000),
     orientation: {
       heading: Cesium.Math.toRadians(360),
-      pitch: Cesium.Math.toRadians(-85),
+      pitch: Cesium.Math.toRadians(-90),
       roll: Cesium.Math.toRadians(0)
     },
     duration: 0,
@@ -374,21 +403,6 @@ const initMap = async () => {
       // 定位完成之后的回调函数
     }
   })
-
-  // 将三维球定位到中国
-  setTimeout(() => {
-    viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(116.39, 39.89, 2850),
-      orientation: {
-        heading: Cesium.Math.toRadians(360),
-        pitch: Cesium.Math.toRadians(-75),
-        roll: Cesium.Math.toRadians(0)
-      },
-      complete: function callback() {
-        // 定位完成之后的回调函数
-      }
-    })
-  }, 3000)
 
   // 鼠标单击事件
   const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
