@@ -92,6 +92,7 @@
       v-show="showType === 'list'"
     >
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+        <!-- <el-table-column type="selection" width="55" /> -->
         <!--      <el-table-column label="主键" align="center" prop="id" />-->
         <el-table-column label="品种名称" align="center" prop="cropName"/>
         <el-table-column label="品类名称" align="center" prop="cropType"/>
@@ -140,6 +141,14 @@
         <!--      />-->
         <el-table-column label="操作" align="center">
           <template #default="scope">
+            <el-button
+              link
+              type="warning"
+              plain
+              @click="openSubDeviceForm(scope.row.id)"
+            >
+              事项添加
+            </el-button>
             <el-button
               link
               type="primary"
@@ -267,6 +276,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CropGrowthNewForm ref="formRef" @success="getList"/>
+  <CropGrowthSubForm ref="subformRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -277,6 +287,7 @@ import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
 import CropGrowthNewForm from './CropGrowthNewForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import CropGrowthSubForm from './CropGrowthSubForm.vue'
 
 /** 作物生长周期 列表 */
 defineOptions({name: 'CropGrowthNew'})
@@ -345,11 +356,17 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
+    
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-    listVarietyManagementVO.value =await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
-    console.log(listVarietyManagementVO.value)
+    
+    
+    // const pageRes = await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
+    // if (Array.isArray(pageRes.list)) listVarietyManagementVO.value = pageRes
+    // console.log(listVarietyManagementVO.value)
     list.value = data.list
     total.value = data.total
+  } catch (err) {
+    console.error(err);
   } finally {
     loading.value = false
   }
@@ -399,6 +416,12 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 添加生长周期子表操作 */
+const subformRef = ref()
+const openSubDeviceForm = (id) => {
+  subformRef.value.open('create', id)
 }
 
 /** 初始化 **/

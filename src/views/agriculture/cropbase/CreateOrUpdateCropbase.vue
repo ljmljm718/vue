@@ -160,6 +160,11 @@
                   <el-input v-model="formData.unit" placeholder="请输入单位" />
                 </el-form-item>
               </el-col>
+              <el-col :span="12">
+                <el-form-item label="预计产量" prop="predictedOutput">
+                  <el-input v-model="formData.predictedOutput" placeholder="请输入预计产量" />
+                </el-form-item>
+              </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
@@ -263,6 +268,7 @@ const formData = ref({
   receiptEndTime: undefined,
   number:undefined,
   unit:undefined,
+  predictedOutput: undefined,
 })
 //保存到浏览器缓存
 const localSave = () => {
@@ -414,6 +420,7 @@ const resetForm = () => {
     userId: undefined,
     number:undefined,
     unit:undefined,
+    predictedOutput: undefined,
   }
   formRef.value?.resetFields()
 }
