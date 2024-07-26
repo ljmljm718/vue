@@ -288,7 +288,7 @@
   <!-- start事项查看弹窗 -->
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
-      <h3>生命周期-溯源</h3>
+      <h3>{{ thisGrowth }}注意事项</h3>
     </template>
     <template #default>
       <div class="relative">
@@ -409,12 +409,15 @@ const VarietyManagementVOQueryParams = reactive({})
 const drawer2 = ref(false)
 function cancelClick() {
   thisCropType.value = undefined
+  thisGrowth.value = undefined
   drawer2.value = false
 }
 const formData = ref<CropGrowthSubVO[]>([])
 const thisCropType = ref()
+const thisGrowth = ref()
 const damn = async (row) =>{
   thisCropType.value = row.cropType
+  thisGrowth.value = row.growth
   const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode:row.id});
   formData.value = datas.list;
   drawer2.value = true
