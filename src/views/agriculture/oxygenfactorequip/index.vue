@@ -6,53 +6,55 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="78px"
     >
-      <el-form-item label="终端" prop="dtuId">
+      <el-form-item label="因素ID" prop="factorId">
         <el-input
-          v-model="queryParams.dtuId"
-          placeholder="请输入终端"
+          v-model="queryParams.factorId"
+          placeholder="请输入因素ID"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="通道" prop="channelId">
+      <el-form-item label="增氧设备ID" prop="equipId">
         <el-input
-          v-model="queryParams.channelId"
-          placeholder="请输入通道"
+          v-model="queryParams.equipId"
+          placeholder="请输入增氧设备ID"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="监测类型" prop="monitoringType">
+      <el-form-item label="基地ID" prop="baseId">
         <el-input
-          v-model="queryParams.monitoringType"
-          placeholder="请输入监测类型"
+          v-model="queryParams.baseId"
+          placeholder="请输入基地ID"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="规则类型" prop="ruleType">
+      <el-form-item label="地块ID" prop="plotId">
         <el-input
-          v-model="queryParams.ruleType"
-          placeholder="请输入规则类型"
+          v-model="queryParams.plotId"
+          placeholder="请输入地块ID"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="设备" prop="deviceId">
-        <el-input
-          v-model="queryParams.deviceId"
-          placeholder="请输入设备"
-          clearable
-          @keyup.enter="handleQuery"
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -60,9 +62,18 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['agriculture:equipment-data-rule:create']"
+          v-hasPermi="['agriculture:oxygen-factor-equip:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:oxygen-factor-equip:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -71,15 +82,13 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="终端" align="center" prop="dtuId" />
-      <el-table-column label="通道" align="center" prop="channelId" />
-      <el-table-column label="参数" align="center" prop="param" />
-      <el-table-column label="监测类型" align="center" prop="monitoringType" />
-      <el-table-column label="规则类型" align="center" prop="ruleType" />
-      <el-table-column label="系数" align="center" prop="rule" />
-      <el-table-column label="单位" align="center" prop="ruleUnit" />
-      <el-table-column label="备注" align="center" prop="remark" />
-<!--      <el-table-column label="绑定设备" align="center" prop="deviceName" />-->
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="因素ID" align="center" prop="factorId" />
+      <el-table-column label="增氧设备ID" align="center" prop="equipId" />
+      <el-table-column label="增氧设备名称" align="center" prop="equipName" />
+      <el-table-column label="基地ID" align="center" prop="baseId" />
+      <el-table-column label="地块ID" align="center" prop="plotId" />
+      <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -93,7 +102,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:equipment-data-rule:update']"
+            v-hasPermi="['agriculture:oxygen-factor-equip:update']"
           >
             编辑
           </el-button>
@@ -101,7 +110,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:equipment-data-rule:delete']"
+            v-hasPermi="['agriculture:oxygen-factor-equip:delete']"
           >
             删除
           </el-button>
@@ -118,49 +127,41 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <EquipmentDataRuleForm ref="formRef" @success="getList" />
+  <OxygenFactorEquipForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { EquipmentDataRuleApi, EquipmentDataRuleVO } from '@/api/agriculture/equipmentdatarule'
-import EquipmentDataRuleForm from './EquipmentDataRuleForm.vue'
+import { OxygenFactorEquipApi, OxygenFactorEquipVO } from '@/api/agriculture/oxygenfactorequip'
+import OxygenFactorEquipForm from './OxygenFactorEquipForm.vue'
 
-/** 设备数据规则 列表 */
-defineOptions({ name: 'EquipmentDataRule' })
+/** 溶解氧因素与增氧设备关联 列表 */
+defineOptions({ name: 'OxygenFactorEquip' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<EquipmentDataRuleVO[]>([]) // 列表的数据
+const list = ref<OxygenFactorEquipVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  dtuId: undefined,
-  channelId: undefined,
-  param: undefined,
-  monitoringType: undefined,
-  ruleType: undefined,
-  rule: undefined,
-  ruleUnit: undefined,
-  deviceId: undefined,
-  deviceName: undefined,
+  factorId: undefined,
+  equipId: undefined,
+  baseId: undefined,
+  plotId: undefined,
   createTime: [],
-  remark:undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-import { useRouter } from "vue-router";
-const { currentRoute } = useRouter()
-const route = currentRoute.value
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await EquipmentDataRuleApi.getEquipmentDataRulePage(queryParams)
+    const data = await OxygenFactorEquipApi.getOxygenFactorEquipPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -192,7 +193,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await EquipmentDataRuleApi.deleteEquipmentDataRule(id)
+    await OxygenFactorEquipApi.deleteOxygenFactorEquip(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -206,8 +207,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await EquipmentDataRuleApi.exportEquipmentDataRule(queryParams)
-    download.excel(data, '设备数据规则.xls')
+    const data = await OxygenFactorEquipApi.exportOxygenFactorEquip(queryParams)
+    download.excel(data, '溶解氧因素与增氧设备关联.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -216,8 +217,6 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
-  if (route.query.dtuId)
-    queryParams.dtuId = route.query.dtuId as string
   getList()
 })
 </script>

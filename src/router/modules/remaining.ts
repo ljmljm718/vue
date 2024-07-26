@@ -53,7 +53,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/homeIndex',
+    redirect: '/home',
     name: 'Home',
     meta: {},
     children: [
@@ -366,6 +366,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/bigscreenMYBase',
     name: 'bigscreenMYBase',
     component: () => import('@/views/bigscreenMingYueBase/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/bigscreenTYBase',
+    name: 'bigscreenTYBase',
+    component: () => import('@/views/bigscreenTianYinBase/index.vue'),
     meta: {
       hidden: true
     }

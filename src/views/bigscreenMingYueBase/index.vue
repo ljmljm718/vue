@@ -1,6 +1,7 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import headerBg from './assets/headerBg.png'
+// @ts-ignore
 import CesiumMap from '@/views/tiandiMap/index.vue'
 
 const {

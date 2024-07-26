@@ -21,6 +21,11 @@ import {
   getLineChar
 } from './apis'
 import { formatTime } from '@/utils'
+import { usePermissionStore } from '@/store/modules/permission'
+import * as LoginApi from '@/api/login'
+import * as authUtil from '@/utils/auth'
+
+const permissionStore = usePermissionStore()
 
 const {
   BigscreenAdapter,
@@ -97,7 +102,7 @@ export default defineComponent({
         },
       ]
     }
-    getTopDataList()
+    // getTopDataList()
 
     const deviceDataList = ref<Array<any>>([])
     const deviceAmount = ref<number>(0)
@@ -114,7 +119,7 @@ export default defineComponent({
         })
       }
     }
-    getDeviceDataList()
+    // getDeviceDataList()
 
     const baseOptions = ref<Array<any>>([])
     const plotOptions = ref<Array<any>>([
@@ -162,7 +167,7 @@ export default defineComponent({
         }
       }
     }
-    getBasePlotOptions()
+    // getBasePlotOptions()
 
     const initChart = async () => {
       const res = await getLineChar({
@@ -250,7 +255,7 @@ export default defineComponent({
       )
     }
 
-    onMounted(() => { initChart() })
+    // onMounted(() => { initChart() })
 
     const preWarnLoading = ref<boolean>(false)
     const preWarnList = ref<Array<any>>([])
@@ -262,7 +267,7 @@ export default defineComponent({
         warnStatus: item.warnStatus === '0' ? '未处理' : '已处理'
       }))
     }
-    getPreWarnList()
+    // getPreWarnList()
 
     const WindowOpen = (url:string) => {
       if (url) window.open(url)
@@ -288,7 +293,7 @@ export default defineComponent({
       const res = await getQianjiangAgriResource({})
       agriResInfo.value = res
     }
-    getAgriResourceData()
+    // getAgriResourceData()
 
     // 正中间
     const activeMapIns = ref<string>('')
@@ -323,7 +328,28 @@ export default defineComponent({
       const res = await getEquipmentMap({})
       centerMapData.value = res
     }
-    getCenterMapData()
+    // getCenterMapData()
+
+    const initPage = async () => {
+      const userInfo = permissionStore.getUserPassList.find(item => item.id === '159')
+      if (!userInfo.users || !userInfo.password) return;
+      const res = await LoginApi.login({
+        tenantName: '鲁渝协作乡村振兴示范村数字化赋能',
+        username: userInfo.users,
+        password: userInfo.password,
+        rememberMe: true // 默认记录我。如果不需要，可手动修改
+      })
+      if (res) authUtil.setToken(res)
+
+      getTopDataList()
+      getDeviceDataList()
+      getBasePlotOptions()
+      nextTick(() => { initChart() })
+      getPreWarnList()
+      getAgriResourceData()
+      getCenterMapData()
+    }
+    initPage()
     return () => (
       <div class="bg-[#001922] w-[100vw] h-[100vh]">
         <BigscreenAdapter>

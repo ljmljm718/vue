@@ -4,8 +4,6 @@
 <script setup lang="ts">
 import { log } from 'console'
 import { debounce } from 'lodash-es'
-// @ts-ignore
-window._AMapSecurityConfig = { securityJsCode: '289153494763707d55b03878ace1cb08' }
 
 defineOptions({ name: 'MapTangBa' })
 
@@ -13,16 +11,61 @@ defineOptions({ name: 'MapTangBa' })
 let map: any = null
 let info: any = null
 // let satelliteLayer = new AMap.TileLayer.Satellite()
-const initMap = () => {
-  // @ts-ignore
-  // map = new T.Map('tangbaMap', [
-  //   {
-  //     projection: 'EPSG:900913',
-  //     minZoom: 5,
-  //     maxZoom: 18
-  //   }
-  // ])
 
+interface LatLon {
+  lat: number
+  lon: number
+}
+//封装转换坐标函数高德转天地图
+const createGcjToWgsConverter = () => {
+  const PI = 3.1415926536
+  const a = 6378245.0
+  const ee = 0.0066934216
+
+  const transformLat = (x: number, y: number): number => {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x))
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0
+    ret += ((20.0 * Math.sin(y * PI) + 40.0 * Math.sin((y / 3.0) * PI)) * 2.0) / 3.0
+    ret += ((160.0 * Math.sin((y / 12.0) * PI) + 320 * Math.sin((y * PI) / 30.0)) * 2.0) / 3.0
+    return ret
+  }
+
+  const transformLon = (x: number, y: number): number => {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x))
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0
+    ret += ((20.0 * Math.sin(x * PI) + 40.0 * Math.sin((x / 3.0) * PI)) * 2.0) / 3.0
+    ret += ((150.0 * Math.sin((x / 12.0) * PI) + 300.0 * Math.sin((x / 30.0) * PI)) * 2.0) / 3.0
+    return ret
+  }
+
+  const delta = (lat: number, lon: number): LatLon => {
+    let dLat = transformLat(lon - 105.0, lat - 35.0)
+    let dLon = transformLon(lon - 105.0, lat - 35.0)
+    let radLat = (lat / 180.0) * PI
+    let magic = Math.sin(radLat)
+    magic = 1 - ee * magic * magic
+    let sqrtMagic = Math.sqrt(magic)
+    dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * PI)
+    dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * PI)
+    return { lat: dLat, lon: dLon }
+  }
+
+  const transformGCJ2WGS = (gcjLon: number, gcjLat: number): LatLon => {
+    let d = delta(gcjLat, gcjLon)
+    return { lat: gcjLat - d.lat, lon: gcjLon - d.lon }
+  }
+
+  const gcj_wgs_encrypts = (latlons: { lat: number; lng: number }[]): LatLon[] => {
+    return latlons.map((latlon) => transformGCJ2WGS(latlon.lng, latlon.lat))
+  }
+
+  return { transformGCJ2WGS, gcj_wgs_encrypts }
+}
+
+// 创建转换器实例
+const { transformGCJ2WGS } = createGcjToWgsConverter()
+
+const initMap = () => {
   //修改默认地图为卫星图+有注记
   //影像地图图层
   const imageURL =
@@ -40,6 +83,34 @@ const initMap = () => {
   const lay2 = new T.TileLayer(imageURLT, { minZoom: 1, maxZoom: 18 })
   const config = { layers: [lay, lay2] }
   map = new T.Map('tangbaMap', config)
+  
+  const mapTypeSelect = [{
+    'title': '地图', //地图控件上所要显示的图层名称
+    'icon': 'http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png', //地图控件上所要显示的图层图标（默认图标大小80x80）
+    'layer': window.TMAP_NORMAL_MAP //地图类型对象，即MapType。
+  },
+    {
+      'title': '卫星',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png',
+      'layer': window.TMAP_SATELLITE_MAP
+    }, {
+      'title': '卫星混合',
+      'http': 'api.tianditu.gov.cn/v4.0/image/map/maptype/satellitepoi.png',
+      'layer': 'TMAP_HYBRID_MAP'
+    }, {
+      'title': '地形',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrain.png',
+      'layer': window.TMAP_TERRAIN_MAP
+    },
+    {
+      'title': '地形混合',
+      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrainpoi.png',
+      'layer': window.TMAP_TERRAIN_HYBRID_MAP
+    }
+  ];
+  const ctrl = new T.Control.MapType({ mapTypes: mapTypeSelect }); // 初始化地图类型选择控件
+  map.addControl(ctrl); //添加地图选择控件
+  
 
   //@ts-ignore
   const lnglat = new T.LngLat(109.24604650765662, 31.41416444104432)
@@ -81,12 +152,16 @@ const addSatellite = () => {
 const removeSatellite = () => {
   map.setMapType(map.TMAP_TERRAIN_MAP)
 }
-const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offlineMonitor.png') => {
-  if (!longitude || !latitude) return
 
+const markerList:Map<string, any> = new Map()
+const addMarkerToMap = (longitude: number, latitude:number, title = '', icon = '/tangba/offlineMonitor.png') => {
+  if (!longitude || !latitude) return
+  const { lon, lat} = transformGCJ2WGS(longitude, latitude)
+
+  
   // @ts-ignore
   const marker = new T.Marker(
-    new T.LngLat(longitude, latitude),
+    new T.LngLat(lon, lat),
     // title,
     // @ts-ignore
     {
@@ -103,6 +178,13 @@ const addMarkerToMap = (longitude, latitude, title = '', icon = '/tangba/offline
       })
     }
   )
+  markerList.set(longitude + '_' + latitude, marker)
+
+  marker.on('click', (e) => {
+    const { lnglat } = e;
+    const { lat, lng } = lnglat
+    map.centerAndZoom(new T.LngLat(lng, lat), 16)
+  })
   if (map) {
     map.addOverLay(marker)
     // fitMarkerOnMap()
@@ -124,8 +206,15 @@ const fitMarkerOnMap = debounce(
 // }
 //设置地图中心
 const setMapCenter = (longitude, latitude) => {
+  
   if (!longitude || !latitude) return
-  if (map) map.panTo(new T.LngLat(longitude, latitude))
+  //调用转换坐标
+  const { lon, lat } = transformGCJ2WGS(longitude, latitude)
+  console.log("longitude", longitude);
+  console.log("lon", lon);
+  
+  if (map) map.panTo(new T.LngLat(lon, lat))
+  console.log('tttttt',longitude,lon);
 }
 
 const setMapZoom = (zoom: number = 13) => {
@@ -138,16 +227,14 @@ const openInfoWindow = (info: string, location: Array<any>) => {
     if (!val1 || !val2) return
   }
   if (!info || !location) return
-
+  const _marker = markerList.get(location[0] + '_' + location[1])
+  
   // @ts-ignore
-  const infoWindow = new T.InfoWindow({
-    // isCustom: true,
-    content: info
-  })
+  const infoWindow = new T.InfoWindow()
+  infoWindow.setContent(info)
   // infoWindow.setContent(info)
   // infoWindow.open(map, location)
-  map.openInfoWindow(infoWindow, location)
-  console.log('infowindow', infoWindow)
+  if (_marker) _marker.openInfoWindow(infoWindow)
 }
 
 defineExpose({

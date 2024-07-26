@@ -40,23 +40,23 @@
     <PanelTangBa ref="panelTangBaRef" class="absolute right-0 top-0" v-model="showPanel" />
     <div
       @click="mapTileLayer"
-      class="absolute top-30px left-18% flex items-center bg-[#fff] rounded px-[8px] py-[2px]"
-      style="cursor: pointer"
+      class="absolute top-20px left-[19rem] flex items-center bg-[#fff] rounded px-[12px] py-[5px]"
+      style="cursor: pointer;display:none;"
     >
       <img
         v-if="mapTileLayerType"
         src="./assets/tangba/satelite2.png"
-        class="w-50px h-50px"
+        class="w-30px h-30px"
         alt=""
       />
-      <img v-else src="./assets/tangba/satelite.png" class="w-50px h-50px" alt="" />
+      <img v-else src="./assets/tangba/satelite.png" class="w-30px h-30px" alt="" />
       <div
         v-if="mapTileLayerType"
         style="font-weight: 600"
-        class="ml-10px color-[#014cc6] text-sm text-center"
+        class="ml-10px color-[#014cc6] text-sm text-center w-[2rem]"
         >路网</div
       >
-      <div v-else style="font-weight: 600" class="color-[#014cc6] ml-10px text-center">卫星</div>
+      <div v-else style="font-weight: 600" class="color-[#014cc6] ml-10px text-center w-[2rem]">卫星</div>
     </div>
   </div>
 </template>
@@ -87,7 +87,7 @@ const handleSelect = async (item) => {
     console.log('地图设备详情', res)
 
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
-    const infoString = `<div class="bg-[#e8f2fc] relative bottom-[35px]">
+    const infoString = `<div class="bg-[#e8f2fc] relative">
       <div class='relative'>
         <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
         <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
@@ -107,7 +107,7 @@ const handleSelect = async (item) => {
           </div>
         </div>
       </div>`
-    mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+    // mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
   }
 }
@@ -183,6 +183,8 @@ const getMenuDataList = async () => {
       '/tangba/' + _item.deviceStatus + (kindMap[_item.deviceKind] || 'Monitor') + '.png'
     )
     marker.on('click', () => {
+      console.log("ITM", item);
+      
       handleSelect(item.id)
     })
   })

@@ -892,7 +892,7 @@ const initChinaMap = async () => {
                 return `
                 <div class='mt--5px'>
                       <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a  href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
+                      <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
                     </div>
                 `
               }) : ''
