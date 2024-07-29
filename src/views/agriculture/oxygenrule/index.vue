@@ -124,7 +124,13 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
-      <el-table-column label="因素" align="center" prop="oxygenId"/>
+      <el-table-column label="因素" align="center" prop="oxygenId">
+        <template #default="scope">
+          <span v-for="item in formOxygenFactorAll" :key="item.id" v-show="scope.row.oxygenId === item.id">
+            {{ item.factorName }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="最小值" align="center" prop="minNum"/>
       <el-table-column label="最大值" align="center" prop="maxNum"/>
       <el-table-column label="评分值" align="center" prop="scoreNum"/>
@@ -189,6 +195,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {OxygenRuleApi, OxygenRuleVO} from '@/api/agriculture/oxygenrule'
 import OxygenRuleForm from './OxygenRuleForm.vue'
+import {OxygenFactorApi} from "@/api/agriculture/oxygenfactor";
 
 /** 因素评分规则 列表 */
 defineOptions({name: 'OxygenRule'})
@@ -220,11 +227,13 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const formOxygenFactorAll = ref([])
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
+    formOxygenFactorAll.value = await OxygenFactorApi.getAll()
     const data = await OxygenRuleApi.getOxygenRulePage(queryParams)
     list.value = data.list
     total.value = data.total
