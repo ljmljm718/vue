@@ -69,6 +69,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="品类" prop="cropType" >
+                  <el-input v-model="formData.cropType" placeholder="选择品种后自动写入" readonly disabled/>
 <!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
 <!--                    <el-option-->
 <!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
@@ -77,13 +78,13 @@
 <!--                      :value="dict.value"-->
 <!--                    />-->
 <!--                  </el-select>-->
-                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">
-                    <el-option
-                      v-for="item in listCategoryManagement"
-                      :key="item.id"
-                      :label="item.categoryName"
-                      :value="item.id"/>
-                  </el-select>
+<!--                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">-->
+<!--                    <el-option-->
+<!--                      v-for="item in listCategoryManagement"-->
+<!--                      :key="item.id"-->
+<!--                      :label="item.categoryName"-->
+<!--                      :value="item.id"/>-->
+<!--                  </el-select>-->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -103,7 +104,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="基地名称" prop="parkName">
-                  <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly/>
+                  <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly disabled/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -121,7 +122,7 @@
               </el-form-item></el-col>
               <el-col :span="12">
                 <el-form-item label="地块名称" prop="plotName">
-                  <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly/>
+                  <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly disabled/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -339,9 +340,10 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  //console.log(order,"---------=----");
+  console.log(order,"---------=----");
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
+  formData.value.cropType = String(order[0].categoryName)
   // formData.value.cropType = String(order[0].categoryName)
 }
 
