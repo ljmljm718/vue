@@ -127,14 +127,14 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="计划名称" align="center" prop="planName"  >
+      <el-table-column label="计划名称" align="center" prop="planName"  width="200" >
         <template  #default="scope">
           <label style="cursor:pointer;color: #0072c6"  @click="lookPlanDetail(scope.row.planCode)"> {{ scope.row.planName }}</label>
         </template>
       </el-table-column>
       <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
 <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="基地名称" align="center" prop="parkName" />
+      <el-table-column label="基地名称" align="center" prop="parkName" width="180" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="审批状态" align="center" prop="status" >
@@ -165,7 +165,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button
             v-hasPermi="['agriculture:farm-task:query']"

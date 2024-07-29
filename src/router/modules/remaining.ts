@@ -67,7 +67,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
           noCache: false,
           affix: true
         }
-      }
+      },
+      {
+        path: 'DOPrediction',
+        name: 'DOPrediction',
+        component: () => import('@/views/agriculture/DOPrediction/index.vue'),
+        meta: {
+          hidden: true
+        }
+      },
     ]
   },
   {
@@ -386,6 +394,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
       hidden: true
     }
   },
+  
   {
     path: '/bigscreenTB',
     name: 'bigscreenTangBa',
