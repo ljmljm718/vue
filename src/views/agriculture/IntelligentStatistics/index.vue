@@ -107,7 +107,7 @@
             end-placeholder="结束时间"
           />
         </div>
-        <el-button type="primary" @click="initChart3">查询</el-button>
+      
       </div>
       <div class="w-[100] h-280px relative">
         <div id="chartLine" class="w-100% h-100%"></div>
@@ -286,7 +286,10 @@ const initChartBar1 = async () => {
         }
       },
       legend: {
-        show: true
+        show: true,
+        textStyle:{
+          color: '#000'
+        }
       },
       yAxis: [
         {
@@ -372,7 +375,10 @@ const initChartBar2 = async () => {
       legend: {
         show: true,
         top: 'top',
-        left: 'center'
+        left: 'center',
+        textStyle:{
+          color: '#000'
+        }
       },
       yAxis: [
         {
@@ -460,7 +466,10 @@ const initChartBar3 = async () => {
         }
       },
       legend: {
-        show: true
+        show: true,
+        textStyle:{
+          color: '#000'
+        }
       },
       yAxis: [
         {
@@ -777,7 +786,10 @@ const initChartLine = async (val, num,type) => {
         }
       },
       legend: {
-        show: true
+        show: true,
+        textStyle:{
+          color: '#000'
+        }
       },
       yAxis: [
         {
@@ -815,7 +827,7 @@ const initChartLine = async (val, num,type) => {
       color: ['#5470c6'],
       series: [
         {
-          name: '农事活动',
+          name: '收获趋势图',
           data: yAxisData,
           type: 'line',
           smooth: false
@@ -892,7 +904,7 @@ const dataTime = (e) => {
     }else{
       let _Day= (30- Number(day)) +  Number(day2)
       console.log(_Day,'000009999999999')
-      _Day>=30?message.warning('选择的日期不能超过30天'): initChartLine(e,4,'month')
+      _Day>=30?message.warning('选择的日期不能超过30天'):initChartLine(e,4,'month')
     }
       
     
