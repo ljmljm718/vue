@@ -11,6 +11,17 @@ import * as Cesium from 'cesium'
 import { generateUUID } from '@/utils/index'
 import { TdtImageryProvider } from '@cesium-china/cesium-map'
 import { flattenDepth } from 'lodash-es'
+import request from '@/config/axios'
+import * as turf from '@turf/turf'
+import itemBG from './assets/item.png'
+import itemBG1 from './assets/item1.png'
+import innerBg from './assets/bg.png'
+import titleBar from './assets/titleBar.png'
+
+
+const getPlotAreaData = async (params: any) => {
+  return await request.get({ url: `/agriculture/crop-base/farmOverviewPlotInfo`, params })
+}
 
 // @ts-ignore
 window.Cesium = Cesium
@@ -50,11 +61,11 @@ const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, opti
       outlineWidth: 2,
       // 填充的颜色，withAlpha透明度
       // material: Cesium.Color.GREEN.withAlpha(0.5),
-      material: Cesium.Color.fromRandom({alpha: 0.5}),
+      material: Cesium.Color.fromRandom({ alpha: 0.5 }),
       // 是否被提供的材质填充
       fill: true,
       // 恒定高度
-      height: 5,
+      height: 15,
       // 显示在距相机的距离处的属性，多少区间内是可以显示的
       distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 10000000),
       // 是否显示
@@ -197,6 +208,182 @@ defineExpose({
   flyTo
 })
 
+let popupContainer:any = null
+const createPopup = () => {
+  popupContainer = document.createElement("div")
+  popupContainer.style.position = 'absolute';
+  popupContainer.style.display = 'none'
+  viewer.cesiumWidget.container.appendChild(popupContainer)
+}
+
+const labelMap:Map<string, any> = new Map()
+const getDataList = async () => {
+  const res = await getPlotAreaData({});
+  console.log("getDataList", res);
+  if (!popupContainer) createPopup();
+  viewer.camera.moveStart.addEventListener((movement) => {
+    if (popupContainer) popupContainer.style.display = 'none'
+  });
+  labelMap.clear()
+  if (Array.isArray(res)) {
+    res.forEach(item => {
+      const parkGeofencing = JSON.parse(item.parkGeofencing)
+      if (Array.isArray(parkGeofencing) && parkGeofencing.length > 0) {
+        const _posi = parkGeofencing[0].map(ele => ([ele.lng, ele.lat]))
+        
+        createPolygon(undefined, _posi, {
+          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 1000000),
+        })
+
+        const features = turf.points(_posi);
+        const _POS_ = turf.center(features);
+        const { geometry } = _POS_;
+        const { coordinates } = geometry
+        flyTo(
+          undefined,
+          [...coordinates, 1400]
+        )
+        viewer.entities.add({
+          id: generateUUID(),
+          name: item.parkName,
+          label: {
+            text: item.parkName,
+            font: '500 30px Helvetica',// 15pt monospace
+            scale: 0.6,
+            style: Cesium.LabelStyle.FILL,
+            fillColor: Cesium.Color.WHITE,
+            pixelOffset: new Cesium.Cartesian2(0, -50), //偏移量
+            showBackground: true,
+            backgroundColor: new Cesium.Color(0.13, 0.29, 0.29, 1.0),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 5000),
+          },
+          position: Cesium.Cartesian3.fromDegrees(
+            coordinates[0],
+            coordinates[1],
+            20
+          ),
+          billboard: {
+            image: itemBG,
+            scale: 1.0,
+            horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+            verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 5000),
+          }
+        })
+        
+        flyTo(
+          undefined,
+          [...coordinates, 1400]
+        )
+
+        const childItem = item.plotList;
+        if (Array.isArray(childItem)) {
+          childItem.forEach(child => {
+            const childGeofencing = JSON.parse(child.plotGeofencing);
+            if (Array.isArray(childGeofencing) && childGeofencing.length > 0) {
+              const childPos = childGeofencing[0].map(ele => ([ele.lng, ele.lat]))
+              const createdPolygonItem = createPolygon(undefined, childPos, {
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
+              })
+              const features1 = turf.points(childPos);
+              const _POS_1 = turf.center(features1);
+              const { geometry: geometry1 } = _POS_1;
+              const { coordinates: coordinates1 } = geometry1
+              viewer.entities.add({
+                id: generateUUID(),
+                name: child.plotName,
+                label: {
+                  text: child.plotName,
+                  font: '500 34px Helvetica',// 15pt monospace
+                  scale: 0.6,
+                  style: Cesium.LabelStyle.FILL,
+                  fillColor: Cesium.Color.WHITE,
+                  pixelOffset: new Cesium.Cartesian2(0, -50), //偏移量
+                  showBackground: true,
+                  backgroundColor: new Cesium.Color(0.13, 0.29, 0.29, 1.0),
+                  distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
+                },
+                position: Cesium.Cartesian3.fromDegrees(
+                  coordinates1[0],
+                  coordinates1[1],
+                  20
+                ),
+                billboard: {
+                  image: itemBG1,
+                  scale: 1.0,
+                  horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+                  verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
+                  distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
+                },
+              });
+
+              if (Array.isArray(child.plantList) && child.plantList.length > 0) {
+                const plantItem = child.plantList[0]
+                const buildArr = [
+                  {
+                    title: '作物名称',
+                    value: plantItem.cropName
+                  },
+                  {
+                    title: '地块面积',
+                    value: plantItem.area
+                  },
+                  {
+                    title: '物候期',
+                    value: plantItem.growth
+                  },
+                  {
+                    title: '预计产量',
+                    value: plantItem.yield || '未知'
+                  },
+                  {
+                    title: '开始种植时间',
+                    value: plantItem.startTime
+                  },
+                  {
+                    title: '预计收获时间',
+                    value: plantItem.endTime
+                  },
+                ]
+                const domTitle = child.plotName;
+                const labelMapId = createdPolygonItem.id
+                labelMap.set(labelMapId, {
+                  position: Cesium.Cartesian3.fromDegrees(
+                    coordinates1[0],
+                    coordinates1[1],
+                    20
+                  ),
+                  html: `
+                    <div class="w-[360px] relative bottom-[60px] min-h-[270px] p-3">
+                      <img src="${innerBg}" class="w-full h-full absolute left-0 top-0 z-0" />
+                      <div class="py-[1.6rem] pb-[.6rem] pt-[1.6rem] w-full text-center relative z-10 text-[1.2rem]">${domTitle}</div>
+                      <div class="grid grid-cols-2 gap-2 relative z-10 px-[1.3rem]">
+                        ${
+                          buildArr.map(_i => {
+                            return `
+                              <div class="p-3 py-1">
+                                <div class="text-white">
+                                  <img src=${titleBar} class="w-[.8rem] h-[.8rem]" />
+                                  <span class="pl-[.3rem]">${_i.title}</span>
+                                </div>
+                                <div class="text-[#f1f1f1] pl-[1.3rem]">${_i.value}</div>
+                              </div>
+                            `
+                          }).join("")
+                        }
+                      </div>
+                    </div>
+                  `
+                })
+              }
+            }
+          })
+        }
+      }
+    })
+  }
+}
+
 const enablePolygonEdit = ref<boolean>(false)
 let tempPolygonIns: any = null
 let tempPolyPositions: Array<any> = []
@@ -233,21 +420,30 @@ const handleMapClick = (_viewer, e) => {
     }
     return
   }
+  
   const pick = _viewer.scene.pick(e.position)
-
+  
   if (pick) {
     if (!pick.id || !pick.id.id) return
     // 点击后删除这个实体
-    const _selectedEntity = viewEntities.find((item) => item.id === pick.id.id)
-    if (_selectedEntity) {
-      _viewer.entities.remove(_selectedEntity)
-      if (pick?.id?.id) viewEntities = viewEntities.filter((item) => item.id !== pick.id.id)
+    const _selectedLabel = labelMap.get(pick.id.id)
+    
+    if (!_selectedLabel) return;
+    popupContainer.style.display = 'block';
+    popupContainer.innerHTML = _selectedLabel.html
+    const _positionBase = Cesium.SceneTransforms.worldToWindowCoordinates(
+      viewer.scene,
+      _selectedLabel.position
+    )
+    
+    if (_positionBase) {
+      popupContainer.style.left = _positionBase.x - popupContainer.offsetWidth / 2 + 'px';
+      popupContainer.style.top = _positionBase.y - popupContainer.offsetHeight + 'px';
     }
-    return
   }
 
   navigator.clipboard.writeText(`[${longitude}, ${latitude}],`)
-  createText(_viewer, [longitude, latitude], '中国有句古话')
+  // createText(_viewer, [longitude, latitude], '中国有句古话')
 }
 
 const handleMouseMove = (_viewer, e) => {
@@ -412,6 +608,8 @@ const initMap = async () => {
     (e) => handleMapDoubleClick(viewer, e),
     Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
   )
+
+  getDataList()
 }
 onMounted(() => {
   initMap()

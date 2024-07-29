@@ -53,14 +53,15 @@ export default defineComponent({
             },
             {
               title: '地块面积',
-              value: item.area
+              value: item.area + ' 亩'
             },
           ],
         }))
         const num = _res.length / 2
         leftDataList.value = _res.slice(0, num)
         rightDataList.value = _res.slice(num)   
-        console.log(leftDataList.value);
+        console.log('leftDataList.value',leftDataList.value);
+        console.log('leftDataList.value',leftDataList.value[0]);
       }
     }
 

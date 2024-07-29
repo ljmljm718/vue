@@ -345,8 +345,8 @@ const collectChange = () => {
   getTime(collectConditionDateRange.value)
 }
 //数据采集量情况
-const initCollectConditionChart = async (dataStarTime = '', dataEndTime = '') => {
-  const res = await EquipmentDataApi.getPieDataList({ dataStarTime, dataEndTime })
+const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') => {
+  const res = await EquipmentDataApi.getPieDataList({ dataStartTime, dataEndTime })
   console.log('数据采集量情况', res)
   const data: Array<any> = []
   res.forEach((item) => {

@@ -38,7 +38,7 @@ export const getInOrOutAnalysis = async (params) => {
 //产量一览图
 export const selectHarvest = async (params) => {
   return await request.get({
-    url:'/agriculture/harvest-management/selectHarvest',
+    url:'/agriculture/harvest-management/selectHarvestBanqiao',
     params
   })
 }

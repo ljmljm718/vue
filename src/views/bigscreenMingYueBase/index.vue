@@ -29,8 +29,8 @@ export default defineComponent({
         const _arr = list.map(item => (JSON.parse(item.geofencing)))
         _arr.forEach(item => {
           if (Array.isArray(item) && item.length > 0) {
-            const polyArr = item[0].map(ele => ([ele.lng, ele.lat]))
-            cesiumIns.value.createPolygon(undefined, polyArr)
+            // const polyArr = item[0].map(ele => ([ele.lng, ele.lat]))
+            // if (cesiumIns.value) cesiumIns.value.createPolygon(undefined, polyArr)
           }
         })
 
@@ -66,7 +66,7 @@ export default defineComponent({
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
-                  { /* <CesiumMap ref={e => cesiumIns.value = e} /> */ }
+                  <CesiumMap ref={e => cesiumIns.value = e} />
                   <div class="meng-ban z-0"></div>
                 </div>
                 <div
