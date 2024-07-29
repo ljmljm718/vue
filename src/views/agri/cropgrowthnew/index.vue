@@ -116,14 +116,14 @@
           label="开始时间"
           align="center"
           prop="startTime"
-          :formatter="dateFormatter2"
+          :formatter="dateFormatter3"
           width="180px"
         />
         <el-table-column
           label="结束时间"
           align="center"
           prop="endTime"
-          :formatter="dateFormatter2"
+          :formatter="dateFormatter3"
           width="180px"
         />
 
@@ -330,7 +330,7 @@
 </template>
 
 <script setup lang="ts">
-import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2, dateFormatter3} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { Menu, List } from '@element-plus/icons-vue'
 import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
@@ -338,7 +338,7 @@ import CropGrowthNewForm from './CropGrowthNewForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import CropGrowthSubForm from './CropGrowthSubForm.vue'
-//本次请求接口 生长周期子表接口 
+//本次请求接口 生长周期子表接口
 import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
 // 时间格式化工具类
 import {formatTime} from '@/utils/index'
@@ -429,9 +429,9 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
-  
+
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-    
+
     // const pageRes = await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
     // if (Array.isArray(pageRes.list)) listVarietyManagementVO.value = pageRes
     // console.log(listVarietyManagementVO.value)

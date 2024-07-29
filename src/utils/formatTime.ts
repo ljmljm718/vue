@@ -212,6 +212,10 @@ export function dateFormatter2(_row: any, _column: TableColumnCtx<any>, cellValu
   return cellValue ? formatDate(cellValue, 'YYYY-MM-DD') : ''
 }
 
+export function dateFormatter3(_row: any, _column: TableColumnCtx<any>, cellValue: any): string {
+  return cellValue ? formatDate(cellValue, 'MM-DD') : ''
+}
+
 /**
  * 设置起始日期，时间为00:00:00
  * @param param 传入日期
