@@ -7,8 +7,15 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="因素ID" prop="oxygenId">
-        <el-input v-model="formData.oxygenId" placeholder="请输入因素ID" />
+      <el-form-item label="因素" prop="oxygenId">
+<!--        <el-input v-model="formData.oxygenId" placeholder="请输入因素ID" />-->
+        <el-select v-model="formData.oxygenId" placeholder="因素">
+          <el-option
+            v-for="item in formOxygenFactorAll"
+            :key="item.id"
+            :label="'因素名称：' +item.factorName + '(绑定设备：' + item.deviceNames+ ')'"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="最小值" prop="minNum">
         <el-input v-model="formData.minNum" placeholder="请输入最小值" />
@@ -67,6 +74,7 @@
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { OxygenRuleApi, OxygenRuleVO } from '@/api/agriculture/oxygenrule'
+import {OxygenFactorApi} from "@/api/agriculture/oxygenfactor";
 
 /** 因素评分规则 表单 */
 defineOptions({ name: 'OxygenRuleForm' })
@@ -95,6 +103,7 @@ const formData = ref({
   warnContent: undefined,
   remark: undefined
 })
+const formOxygenFactorAll =  ref([])
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
@@ -105,6 +114,7 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  formOxygenFactorAll.value = await OxygenFactorApi.getAll()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
