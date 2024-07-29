@@ -84,18 +84,18 @@ const getGetDeviceDataYouEnvironment = async (id) => {
   // leftCurDeviceCode2.value = belongPlot;
   const res = await environmentalDataHomePageA(id)
   console.log("数据1 环境监测", res)
-  envVal.value =res;
-  envLabel.value=res[0].monitoringType
-  console.log(leftTabSelected.value,id,'jiegoufuhzi')
+  envVal.value = res;
+  envLabel.value = res[0].monitoringType
+  console.log(leftTabSelected.value, id, 'jiegoufuhzi')
 
-  let id2=id.id
-  await initChart1({typeName:res[0].monitoringType,id:id2})
+  let id2 = id.id
+  await initChart1({typeName: res[0].monitoringType, id: id2})
 }
 
 // 左下角设备监控
 const monitorEquipList = ref<Array<any>>([])
 const getMonitoringEquipment = async () => {
-  const res = await monitoringEquipment({pageNo:'1',pageSize:'10',deviceType:'108,109'})
+  const res = await monitoringEquipment({pageNo: '1', pageSize: '10', deviceType: '108,109'})
   console.log('左下角设备监控', res)
   monitorEquipList.value = res.list.slice(0, 2)
 }
@@ -125,35 +125,35 @@ const getDeviceBasePage = async () => {
     })))
     : null;
 
-    console.log(list,'id')
-     getGetDeviceDataYouEnvironment({id:list[0].id})
-    await initChart1({typeName:'温度',id:list[0].id})
+  console.log(list, 'id')
+  getGetDeviceDataYouEnvironment({id: list[0].id})
+  await initChart1({typeName: '温度', id: list[0].id})
 }
 getDeviceBasePage()
 //单个摄像头
-let sxtObj=ref([])
-const getPage2=()=>{
-  page2({pageSize:1,pageNo:1,deviceType:'108,109'}).then(res=>{
-    console.log(res,'单个摄像头')
-    sxtObj.value=res.list
+let sxtObj = ref([])
+const getPage2 = () => {
+  page2({pageSize: 1, pageNo: 1, deviceType: '108,109'}).then(res => {
+    console.log(res, '单个摄像头')
+    sxtObj.value = res.list
   })
 }
 getPage2()
 //单个数据采集
-let sjList=ref({})
-const getPage3=()=>{
-  page3({pageSize:1,pageNo:1}).then(res=>{
-    console.log(res,'单个shuju')
-    sjList.value=res.list[0]
+let sjList = ref({})
+const getPage3 = () => {
+  page3({pageSize: 1, pageNo: 1}).then(res => {
+    console.log(res, '单个shuju')
+    sjList.value = res.list[0]
   })
 }
 getPage3()
 //预警信息
-let warnList=ref({})
-const getList=()=>{
-  list({pageSize:1,pageNo:1}).then(res=>{
-    console.log(res,'单个yujing')
-    warnList.value=res.list[0]
+let warnList = ref({})
+const getList = () => {
+  list({pageSize: 1, pageNo: 1}).then(res => {
+    console.log(res, '单个yujing')
+    warnList.value = res.list[0]
   })
 }
 getList()
@@ -179,7 +179,7 @@ const getlargeScreenGetWarning = async () => {
       name: item.plotCode,
       device: item.deviceCode,
       info: item.warnInfo,
-      time:  dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss"),
+      time: dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss"),
       status: item.warnStatus === '0' ? '未处理' : '已处理'
     }))
   console.log("右下角", list)
@@ -191,7 +191,7 @@ getlargeScreenGetWarning()
 const deviceNumCount = ref<Array<any>>([])
 const getSelectStateNum = async () => {
   const res = await selectStateNum()
-  Array.isArray(res) ? (deviceNumCount.value = [res[0], res[1],res[2],res[3 ]]) : null
+  Array.isArray(res) ? (deviceNumCount.value = [res[0], res[1], res[2], res[3]]) : null
   console.log(res)
 }
 getSelectStateNum()
@@ -267,38 +267,38 @@ const options1 = ref<Array<any>>([])
 // getOptions1()
 
 //获取基地
-let selecteId1=ref('')
-const getPage=()=>{
-  page({}).then(res=>{
-    console.log(res,'基地')
-    options1.value=res.list
-    selecteId1.value=res.list[0].id
-    getPark({parkId :res.list[0].id})
+let selecteId1 = ref('')
+const getPage = () => {
+  page({}).then(res => {
+    console.log(res, '基地')
+    options1.value = res.list
+    selecteId1.value = res.list[0].id
+    getPark({parkId: res.list[0].id})
   })
 }
 getPage()
 //获取堂口
 const rightTabSelected = ref('溶氧量')
 const options2 = ref<Array<any>>([])
-const getPark=(id)=>{
-  park(id).then(res=>{
-    console.log(res,'塘口')
-    options2.value=res
+const getPark = (id) => {
+  park(id).then(res => {
+    console.log(res, '塘口')
+    options2.value = res
     initChart2(rightTabSelected.value)
-    getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:res[0].id})
+    getWaterDetectionType2({belongPark: selecteId1.value, belongPlot: res[0].id})
 
   })
 }
 //获取八项
-const getWaterDetectionType2=(val)=>{
-  waterDetectionType(val).then(res=>{
-    console.log(res,'八项参数')
-    waterTypeList.value=res
+const getWaterDetectionType2 = (val) => {
+  waterDetectionType(val).then(res => {
+    console.log(res, '八项参数')
+    waterTypeList.value = res
 
   })
 }
-const selecte2=(val)=>{
-  getWaterDetectionType2({belongPark:selecteId1.value,belongPlot:val.target.value})
+const selecte2 = (val) => {
+  getWaterDetectionType2({belongPark: selecteId1.value, belongPlot: val.target.value})
 }
 const getOptions2 = async (parentId) => {
   curBelongPark.value = parentId
@@ -311,7 +311,7 @@ const getOptions2 = async (parentId) => {
 const curBelongPark = ref('')
 const handleSelectorChange1 = (val) => {
   selecteId1.value = val.target.value
-  getPark({parkId :val.target.value})
+  getPark({parkId: val.target.value})
 }
 const curBelongPlot = ref('')
 const handleSelectorChange2 = (val) => {
@@ -329,11 +329,11 @@ const handleSelectorChange2 = (val) => {
 // 环境监测 options
 const envOptions = ref<Array<any>>([])
 const handleEnvSelectorChange = (val) => {
-  console.log(val.target.value,'huanjjcid')
+  console.log(val.target.value, 'huanjjcid')
   const item = envOptions.value.find(item => {
     return item.id === val.target.value
   })
-  getGetDeviceDataYouEnvironment({id:val.target.value})
+  getGetDeviceDataYouEnvironment({id: val.target.value})
 }
 
 
@@ -367,21 +367,21 @@ const tableColumns = ref([
 
 const tableData = ref<Array<any>>([])
 
-const initChart1 = async (lineChart ) => {
+const initChart1 = async (lineChart) => {
   const deviceCode1 = leftCurDeviceCode1.value;
   const deviceCode2 = leftCurDeviceCode2.value;
-  if (!lineChart  || !deviceCode1) return
-  console.log('lineChart ', lineChart )
+  if (!lineChart || !deviceCode1) return
+  console.log('lineChart ', lineChart)
 
-  const res = await getDeviceDataYouEnvironmentLine( lineChart )
+  const res = await getDeviceDataYouEnvironmentLine(lineChart)
   console.log('getDeviceDataYouEnvironmentLine ==', res);
-  let xAxisData=[]
-  let yAxisData=[]
-  res.forEach(item=>{
+  let xAxisData = []
+  let yAxisData = []
+  res.forEach(item => {
     xAxisData.push(item.collectionTime)
     yAxisData.push(item.dataValue)
   })
-  console.log(xAxisData, yAxisData,'data')
+  console.log(xAxisData, yAxisData, 'data')
   nextTick(() => {
     initChartStatic(
       'chart1',
@@ -458,22 +458,22 @@ const initChart1 = async (lineChart ) => {
     )
   })
 }
-let btnIndex=ref(0)
-const getChart=(val,index)=>{
+let btnIndex = ref(0)
+const getChart = (val, index) => {
   leftTabSelected.value = val
-  envLabel.value=val
-  btnIndex.value=index
-  initChart1({typeName:val,id:leftCurDeviceCode1.value.id})
+  envLabel.value = val
+  btnIndex.value = index
+  initChart1({typeName: val, id: leftCurDeviceCode1.value.id})
 }
-const initChart2 = async (lineChart , belongPark, belongPlot) => {
+const initChart2 = async (lineChart, belongPark, belongPlot) => {
   // 水质监测（折线图）
-  const res = await waterDetection({lineChart , belongPark, belongPlot})
+  const res = await waterDetection({lineChart, belongPark, belongPlot})
   console.log('水质监测（折线图）', res)
   const seriseName = rightLabelMap[res[0].type]
   const yName = rightUnitMap[res[0].type]
-  let xAxisData=[]
-  let yAxisData=[]
-  res.forEach(item=>{
+  let xAxisData = []
+  let yAxisData = []
+  res.forEach(item => {
     xAxisData.push(item.collectionTime)
     yAxisData.push(item.dataValue)
   })
@@ -481,7 +481,7 @@ const initChart2 = async (lineChart , belongPark, belongPlot) => {
     'chart2',
     generateBaseOptions({
       xAxis: {
-        data:xAxisData,
+        data: xAxisData,
         axisLine: {
           show: true,
           lineStyle: {
@@ -556,7 +556,7 @@ watch(
   () => leftTabSelected.value,
   (newValue) => {
     console.log('newValue', newValue)
-    initChart1({typeName:newValue,id:leftCurDeviceCode1.value.id})
+    initChart1({typeName: newValue, id: leftCurDeviceCode1.value.id})
   }
 )
 const leftIconMap = {
@@ -568,11 +568,11 @@ const leftIconMap = {
   "气压": 6, //气压
   "雨量": 7, //降雨量
   "风向": 8, //风向
-  "空气温度":1,//空气温度
-  "空气湿度":2,//空气湿度
-  "大气压力":6,//大气压力
-  "光照强度":3,//光照强度
-  "PM2.5/10":9,//PM2.5/101
+  "空气温度": 1,//空气温度
+  "空气湿度": 2,//空气湿度
+  "大气压力": 6,//大气压力
+  "光照强度": 3,//光照强度
+  "PM2.5/10": 9,//PM2.5/101
 }
 
 const leftUnitMap = {
@@ -584,11 +584,11 @@ const leftUnitMap = {
   "气压": 'hPa', //气压
   "雨量": 'mm', //降雨量
   "风向": '度', //风向
-  "空气温度":'℃',//空气温度
-  "空气湿度":'%',//空气湿度
-  "大气压力":'hPa',//大气压力
-  "光照强度":'Lux',//光照强度
-  "PM2.5/10":'μg/m³',//PM2.5/101
+  "空气温度": '℃',//空气温度
+  "空气湿度": '%',//空气湿度
+  "大气压力": 'hPa',//大气压力
+  "光照强度": 'Lux',//光照强度
+  "PM2.5/10": 'μg/m³',//PM2.5/101
 }
 
 const leftLabelMap = {
@@ -603,12 +603,12 @@ const leftLabelMap = {
 }
 
 
-let btnIndex2=ref(0)
-let right2Val=ref('溶氧量')
-const btnCli=(val,index)=>{
+let btnIndex2 = ref(0)
+let right2Val = ref('溶氧量')
+const btnCli = (val, index) => {
   rightTabSelected.value = val.monitoringType
-  right2Val.value=val.monitoringType
-  btnIndex2.value=index
+  right2Val.value = val.monitoringType
+  btnIndex2.value = index
   initChart2(rightTabSelected.value)
 }
 watch(
@@ -649,6 +649,8 @@ const rightUnitMap = {
   ammonia_oxygen: 'mg/L',
   nitrite_nitrogen: 'mg/L'
 }
+
+const windowOpen = item => window.open(item)
 </script>
 <template>
   <div class="bigscreen-main-wrapper">
@@ -662,7 +664,9 @@ const rightUnitMap = {
     <div class="content-main-wrapper grid-container">
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')">
+          <div class="main-item-title title-bg"
+               @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')"
+          >
             <div>环境监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleEnvSelectorChange">
@@ -686,11 +690,13 @@ const rightUnitMap = {
                 <div class="label-val-wrapper">
                   <div class="value-wrapper">
                     <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{item.yyUnit }}</span>
+                    <span class="unit">{{ item.yyUnit }}</span>
                   </div>
                   <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
-                <div v-show="leftUnitMap[item.monitoringType]" :class="btnIndex==index? 'check-btn2':'check-btn'" @click="getChart(item.monitoringType,index)">
+                <div v-show="leftUnitMap[item.monitoringType]"
+                     :class="btnIndex==index? 'check-btn2':'check-btn'"
+                     @click="getChart(item.monitoringType,index)">
                   查看
                 </div>
               </div>
@@ -746,9 +752,9 @@ const rightUnitMap = {
             >
               <div class="info-rect">
                 <div class="text-info" v-for="(item, index) in sxtObj" :key="index">
-                  <div class="text-row">编号: {{item.deviceCode}}</div>
-                  <div class="text-row">位置: {{item.location}}</div>
-                  <div class="text-row">设备: {{item.deviceName}}</div>
+                  <div class="text-row">编号: {{ item.deviceCode }}</div>
+                  <div class="text-row">位置: {{ item.location }}</div>
+                  <div class="text-row">设备: {{ item.deviceName }}</div>
                   <div class="text-row">状态: <span
                     :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
                       item.deviceStatus === 'online' ? '在线' : '离线'
@@ -770,7 +776,7 @@ const rightUnitMap = {
                   <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
                   <div class="text-row">位置: {{ sjList.parkName }}</div>
                   <div class="text-row">设备: {{ sjList.deviceName }}</div>
-                  <div class="text-row">当前读数: {{ sjList.dataValue + " "+sjList.yyUnit }}</div>
+                  <div class="text-row">当前读数: {{ sjList.dataValue + " " + sjList.yyUnit }}</div>
                 </div>
               </div>
               <img
@@ -801,19 +807,21 @@ const rightUnitMap = {
           <div class="top-card-wrapper">
             <div class="top-card-item">
               <div class="label-card">设备总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView')">
+              <div class="value-card" @click="windowOpen('/internetMonitor/device/deviceView')">
                 {{ deviceBaseInfo.total }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=online')">
+              <div class="value-card"
+                   @click="windowOpen('/internetMonitor/device/deviceView?val=online')">
                 {{ deviceBaseInfo.online }}
               </div>
             </div>
             <div class="top-card-item">
               <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=offline')">
+              <div class="value-card"
+                   @click="windowOpen('/internetMonitor/device/deviceView?val=offline')">
                 {{ deviceBaseInfo.offline }}
               </div>
             </div>
@@ -845,7 +853,8 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
+          <div class="main-item-title title-bg"
+               @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
             <div>水质监测</div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
               <select @change="handleSelectorChange1">
@@ -882,7 +891,7 @@ const rightUnitMap = {
                   <div class="label-wrapper">{{ item.monitoringType }}</div>
                 </div>
                 <div
-                :class="btnIndex2==index? 'check-btn2':'check-btn'"
+                  :class="btnIndex2==index? 'check-btn2':'check-btn'"
                   @click="btnCli(item,index)"
                 >查看
                 </div>
@@ -905,7 +914,8 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=108,109')">
+          <div class="main-item-title title-bg"
+               @click="windowOpen('/internetMonitor/device/deviceView?deviceType=108,109')">
             <div>监控设备</div>
           </div>
           <div
@@ -942,7 +952,8 @@ const rightUnitMap = {
       </div>
       <div class="gird-item-wrapper">
         <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/warn/agri-warning-record')">
+          <div class="main-item-title title-bg"
+               @click="windowOpen('/internetMonitor/warn/agri-warning-record')">
             <div>预警信息</div>
           </div>
           <div class="main-item-container pre-warn-table">
@@ -1084,6 +1095,7 @@ const rightUnitMap = {
               border-radius: 0.6rem;
               cursor: pointer;
             }
+
             .check-btn2 {
               position: absolute;
               right: 0.8rem;
