@@ -457,7 +457,7 @@ export default defineComponent({
                     "rice": "稻谷"
                 }
                 return {
-                    name: nameMap[item],
+                    name: item,
                     data: xAxis.map(x => {
                         return findValByTimeAndvariety({
                             time: x,
