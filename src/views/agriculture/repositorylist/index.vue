@@ -138,6 +138,11 @@ const handleCheckBoxChange2 = (item) => {
     return ele.label === item[0]
   }) as any
 
+  if(_item.label=='全部'){
+    queryParams.repositoryLabel = ''
+    getRepositoryList()
+    return
+  }
   queryParams.repositoryLabel = _item.value as any
   getRepositoryList()
 }
@@ -192,7 +197,7 @@ const handleLabelClick = (item) => {
               :key="item.id"
               :class="[selectedType !== item.repositoryName ? 'sub-btn' : 'sub-btn-selected']"
               @click="handleTypeClick(item)"
-       
+
               >{{ item.repositoryName }}</div
             >
           </div>
@@ -397,7 +402,7 @@ const handleLabelClick = (item) => {
   padding-right: 13px;
   padding-top: 3px;
   padding-bottom: 3px;
-  
+
 }
 
 .sub-btn {
