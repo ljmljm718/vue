@@ -887,9 +887,14 @@ const dataTime = (e) => {
   let day=e[0].split('-')[2]
   let day2=e[1].split('-')[2]
   if(month2 - month ==1  || month2 - month ==0){
+    if(month == month2){
+     initChartLine(e,4,'month')
+    }else{
       let _Day= (30- Number(day)) +  Number(day2)
       console.log(_Day,'000009999999999')
-      _Day>=30?message.warning('选择的日期不能超过30天'): initChartLine(e,4)
+      _Day>=30?message.warning('选择的日期不能超过30天'): initChartLine(e,4,'month')
+    }
+      
     
   }
 }
