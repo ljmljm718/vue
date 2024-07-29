@@ -7,19 +7,48 @@ import { getParkListApi, getBaseInfoApi, getDuckHouseApi } from './apis'
 import { Select } from '@element-plus/icons-vue/dist/types'
 import icon from './assets/icon.png'
 import { ChildProcess } from 'child_process'
+import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
+import * as turf from '@turf/turf'
 
 const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenMain } = BigscreenBuilder
 
 export default defineComponent({
-  name: 'BigscreenMingYueZQ',
+  name: 'BigscreenMingYueBaseView',
   setup() {
     const showSidePanel = ref<boolean>(false)
     setTimeout(() => {
       showSidePanel.value = true
     }, 100)
+    // ---------画地图-----------
+    const cesiumIns = ref()
+    const getParkData = async () => {
+      const { list } = await ParkInfoApi.getParkInfoPage({})
+      if (Array.isArray(list) && list.length > 0) {
+        const _arr = list.map(item => (JSON.parse(item.geofencing)))
+        _arr.forEach(item => {
+          if (Array.isArray(item) && item.length > 0) {
+            // const polyArr = item[0].map(ele => ([ele.lng, ele.lat]))
+            // if (cesiumIns.value) cesiumIns.value.createPolygon(undefined, polyArr)
+          }
+        })
 
-    const baseList = ref<any[]>([])
+        if (Array.isArray(_arr) && _arr.length > 0) {
+          const features = turf.points([
+            ..._arr[0][0].map(item => ([item.lng, item.lat]))
+          ]);
+
+          const _POS_ = turf.center(features);
+          const { geometry } = _POS_;
+          const { coordinates } = geometry
+          cesiumIns.value.flyTo(
+            undefined,
+            [...coordinates, 1400]
+          )
+        }
+      }
+    }
     //-------------获取基地信息-----------------
+    const baseList = ref<any[]>([])
     const getBaseList = async () => {
       const res = await getBaseInfoApi()
       console.log('getBaseInfoApi res =>', res)
@@ -74,10 +103,6 @@ export default defineComponent({
 
     }
 
-
-
-
-
     //------------------------------------------
     const TitleValue = ({ title = '', value = '' }) => {
       return (
@@ -91,7 +116,11 @@ export default defineComponent({
       )
     }
 
-
+    onMounted(() => {
+      setTimeout(() => {
+        getParkData()
+      }, 2000)
+    })
     // ----------------------------------
     return () => (
       <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
@@ -101,16 +130,16 @@ export default defineComponent({
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
-                  { /* <CesiumMap /> */}
+                  <CesiumMap ref={e => cesiumIns.value = e} />
                   <div class="meng-ban z-0"></div>
                 </div>
                 <div
-                  class="z-10 absolute left-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)] transition-all duration-1000 p-2 space-y-2"
+                  class="z-10 absolute left-[1rem]  w-[22%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
                   style={{
                     left: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="left-title w-full h-[3.2rem]"></div>
+                  <div class="left-title w-full h-[4.3rem]"></div>
                   <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.8rem)">
                     {
                       dataList.value.map(item => (
@@ -188,12 +217,12 @@ export default defineComponent({
                   </select>
                 </div>
                 <div
-                  class="z-10 absolute right-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)]  transition-all duration-1000 p-2"
+                  class="z-10 absolute right-[1rem]  w-[22%] h-[calc(100%)]  transition-all duration-1000 p-2"
                   style={{
                     right: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="right-title w-full h-[4.5rem]"></div>
+                  <div class="right-title w-full h-[4.3rem]"></div>
                   <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 4.5rem) ">
                     {
                       duckHouseList.value.map((item) => (
@@ -277,6 +306,7 @@ export default defineComponent({
   background-image: url(./assets/itemWrapper.png);
   background-size: 100% 100%;
 }
+
 .item-wrapper:hover {
   background-image: url(./assets/itemWrapperHover.png);
   background-size: 100% 100%;
@@ -315,7 +345,7 @@ export default defineComponent({
   left: calc(50% - 163px);
   width: 326px;
   height: 60px;
-  top: 3rem;
+  top: 1rem;
   z-index: 999;
 }
 </style>
