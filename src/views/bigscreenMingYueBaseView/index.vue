@@ -1,6 +1,5 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
-import headerBg from './assets/headerBg.png'
 import titleLeft from './assets/titleLeft.png'
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import { getParkListApi, getBaseInfoApi, getDuckHouseApi } from './apis'
@@ -10,7 +9,7 @@ import { ChildProcess } from 'child_process'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
 import * as turf from '@turf/turf'
 
-const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenMain } = BigscreenBuilder
+const { BigscreenContainer, BigscreenMain } = BigscreenBuilder
 
 export default defineComponent({
   name: 'BigscreenMingYueBaseView',
@@ -75,7 +74,7 @@ export default defineComponent({
           },
           {
             title: '地块面积',
-            value: item.area || ''
+            value: item.area + '亩' || ''
           }
         ]
       }))
@@ -87,20 +86,7 @@ export default defineComponent({
 
       const res = await getDuckHouseApi({ parkId: param })
       console.log('hello duck', res)
-      if (Array.isArray(res)) duckHouseList.value = res.map(item => ({
-
-        ...item, children: [
-          {
-            title: '面积',
-            value: item.area || ''
-          },
-          {
-            title: '面积',
-            value: item.area || ''
-          },
-        ]
-      }))
-
+      if (Array.isArray(res)) duckHouseList.value = res
     }
 
     //------------------------------------------
@@ -108,10 +94,10 @@ export default defineComponent({
       return (
         <div class="space-y-2">
           <div class="flex items-center">
-            <img src={icon} class="w-.8rem h-.8rem mr-.4rem" />
-            <div>{title}</div>
+            <img src={icon} class="w-1rem h-.6rem mr-.4rem" />
+            <div style="font-size:12px">{title}</div>
           </div>
-          <div class="pl-[1.2rem]">{value}</div>
+          <div class="pl-[1.2rem]" style="font-size:12px">{value}</div>
         </div>
       )
     }
@@ -123,10 +109,10 @@ export default defineComponent({
     })
     // ----------------------------------
     return () => (
-      <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
-        <BigscreenAdapter>
-          <BigscreenContainer>
-            <BigscreenHeader backgroundImage={headerBg} height="100px" />
+      <div class="w-full aspect-[1.8] bg-[#0d1724]">
+        <div>
+          <BigscreenContainer width="1400px" height="800px">
+            {/* <BigscreenHeader backgroundImage={headerBg} height="100px" /> */}
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
@@ -134,17 +120,18 @@ export default defineComponent({
                   <div class="meng-ban z-0"></div>
                 </div>
                 <div
-                  class="z-10 absolute left-[1rem]  w-[22%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
+                  class="z-10 absolute   w-[27%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
                   style={{
                     left: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="left-title w-full h-[4.3rem]"></div>
-                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.8rem)">
+                  <div class="left-title w-full h-[3.3rem]"></div>
+                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
                     {
                       dataList.value.map(item => (
-                        <div class="item-wrapper w-full min-h-[3rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-3 text-[18px]">{item.name}</div>
+                        item.name.includes('鱼塘') ?
+                        <div class="item-wrapper w-full min-h-[1rem]">
+                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
                           <div class="split-bar w-full h-[3px]"></div>
                           <div class="grid grid-cols-2 gap-3 p-2">
                             {
@@ -170,7 +157,7 @@ export default defineComponent({
                               </div>
                             ) : null
                           }
-                        </div>
+                        </div>: null
                       ))
                     }
                   </div>
@@ -184,7 +171,7 @@ export default defineComponent({
                           background-clip: text;
                           text-fill-color: transparent;                  
                           font-family: AlibabaPuHuiTi;
-                          font-size: 18px;
+                          font-size: 14px;
                           font-weight: normal;
                           line-height: normal;
                           text-align: center;
@@ -217,35 +204,30 @@ export default defineComponent({
                   </select>
                 </div>
                 <div
-                  class="z-10 absolute right-[1rem]  w-[22%] h-[calc(100%)]  transition-all duration-1000 p-2"
+                  class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
                   style={{
                     right: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="right-title w-full h-[4.3rem]"></div>
-                  <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 4.5rem) ">
+                  <div class="right-title w-full h-[3.3rem]"></div>
+                  <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3.3rem) ">
                     {
                       duckHouseList.value.map((item) => (
                         <div class="item-wrapper w-full min-h-[3rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-3 text-[18px]">{item.name}</div>
+                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
                           <div class="split-bar w-full h-[3px]"></div>
                           <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.children) ? item.children.map(ele => (
-                                <div class="inner-rect p-2 px-3 space-y-2">
-                                  <TitleValue title={ele.title} value={ele.value} />
-                                </div>
-                              )) : null
-                            }
-
                             {
                               Array.isArray(item.child) ? (
                                 <div class="grid grid-cols-1 gap-2 col-span-2">
                                   {
                                     item.child.map(_ele => (
-                                      <div class="gap-1 grid grid-cols-2">
+                                      <div class="gap-2 grid grid-cols-2">
                                         <div class="inner-rect p-2 px-3">
                                           <TitleValue title="养殖品种" value={_ele.cropName} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3">
+                                          <TitleValue title="养殖数量" value={_ele.amount} />
                                         </div>
                                         <div class="inner-rect p-2 px-3">
                                           <TitleValue title="开始养殖时间时间" value={_ele.startTime} />
@@ -256,17 +238,55 @@ export default defineComponent({
                                         <div class="inner-rect p-2 px-3">
                                           <TitleValue title="物候期" value={_ele.growth} />
                                         </div>
-
-
-
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title='面积' value={item.area + '亩'} />
+                                        </div>
                                       </div>
                                     ))
                                   }
                                 </div>
                               ) : null
                             }
+
+
                           </div>
                         </div>
+                      ))
+                    }
+                  </div>
+                  <div class="left-title w-full h-[3.3rem]"></div>
+                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
+                    {
+                      dataList.value.map(item => (
+                        item.name.includes('稻田') ?
+                        <div class="item-wrapper w-full min-h-[1rem]">
+                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                          <div class="split-bar w-full h-[3px]"></div>
+                          <div class="grid grid-cols-2 gap-3 p-2">
+                            {
+                              Array.isArray(item.children) ? item.children.map(ele => (
+                                <div class="inner-rect p-2 px-3 space-y-2">
+                                  <TitleValue title={ele.title} value={ele.value} />
+                                </div>
+                              )) : null
+                            }
+                          </div>
+                          {
+                            Array.isArray(item.child) ? (
+                              <div class="grid grid-cols-2 gap-3 p-2">
+                                {
+                                  item.child.map(_ele => (
+                                    <div class="inner-rect p-2 px-3 space-y-3">
+                                      <TitleValue title="种植作物" value={_ele.cropName} />
+                                      <TitleValue title="种植开始时间" value={_ele.startTime} />
+                                      <TitleValue title="预计收获时间" value={_ele.endTime} />
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            ) : null
+                          }
+                        </div>:null
                       ))
                     }
                   </div>
@@ -274,7 +294,7 @@ export default defineComponent({
               </div>
             </BigscreenMain>
           </BigscreenContainer>
-        </BigscreenAdapter>
+        </div>
       </div>
     )
   }
@@ -343,8 +363,8 @@ export default defineComponent({
   color: #fff;
   position: absolute;
   left: calc(50% - 163px);
-  width: 326px;
-  height: 60px;
+  width: 300px;
+  height: 40px;
   top: 1rem;
   z-index: 999;
 }
