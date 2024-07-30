@@ -111,8 +111,7 @@ const { transformGCJ2WGS } = createGcjToWgsConverter()
 const initMap = () => {
   //修改默认地图为卫星图+有注记
   const imgLayer = new T.TileLayer(tdtUrl + 'DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18 })
-  const wtfsLayer = new T.TileLayer(tdtUrl + 'DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18 })
-  const vecLayer = new T.TileLayer(tdtUrl + 'DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18 })
+  const wtfsLayer = new T.TileLayer(tdtUrl + 'DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18, zIndex: 999 })
   const config = { layers: [imgLayer, wtfsLayer] }
   map = new T.Map('tangbaMap', config)
 
