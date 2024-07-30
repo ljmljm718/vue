@@ -13,6 +13,10 @@ pipeline{
       DOCKER_NETWORK = "inspur"
     }
 
+    triggers {
+        cron('TZ=Asia/Shanghai\nH 19 * * *') // 每天下午19-20点随机一个时间执行
+    }
+
     //定义流水线的加工流程
     stages {
         //流水线的所有阶段
