@@ -114,13 +114,13 @@ const open = async (type: string, id?: number) => {
   resetForm()
   // 修改时，设置数据
   if (id) {
-    formData.value.cropCode = id
     formLoading.value = true
     try {
-      // const res = await CropGrowthSubApi.getCropGrowthSub(id)
-      // console.log("RES", res);
-
-      // formData.value = res
+      if (formType.value == 'create'){
+        formData.value.cropCode = id
+      }else {
+        formData.value = await CropGrowthSubApi.getCropGrowthSub(id)
+      }
     } finally {
       formLoading.value = false
     }
