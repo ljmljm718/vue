@@ -307,6 +307,7 @@ export default defineComponent({
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
+                  <CesiumMap ref={e => cesiumIns.value = e} />
                   { /*<CesiumMap ref={e => cesiumIns.value = e} /> */ }
                   <div class="meng-ban z-0"></div>
                 </div>
@@ -345,7 +346,7 @@ export default defineComponent({
                         showOptions.value = true
                       }}>{getLabelByValue(selectedPlot.value)}</div>
                         {
-                          showOptions.value ? <div class="absolute left-0 top-[1.4rem] w-full max-h-[8rem] overflow-auto">
+                          showOptions.value ? <div class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem] overflow-auto">
                             {
                               Array.isArray(options.value) ? options.value.map(item => (
                                 <div
@@ -430,7 +431,6 @@ export default defineComponent({
                       <div class="mission-bg flex justify-center items-center flex-col w-[8rem] text-[.8rem]">
                         <div>
                           <span class="text-[1.3rem] pr-1">{planInfo.finishRate}</span>
-                          <span>%</span>
                         </div>
                         <div>任务完成率</div>
                       </div>
