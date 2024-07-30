@@ -18,15 +18,52 @@
     <div class="absolute z-36 left-[1rem] top-[1rem] bg-white p-2">
       <Selector @change="handleSelectorChange" />
     </div>
+    <div class="absolute right-3 top-3 bg-white rounded-2 shadow-md z-20 p-1">
+      <div v-if="curLayer === 'img'" class="flex items-center" @click="turn2vec()">
+        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png" alt="" class="w-[4rem]" />
+      </div>
+      <div v-else class="flex items-center" @click="turn2img()">
+        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png" alt="" class="w-[4rem]" />
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import Selector from './selector.vue'
 
+// 服务域名
+const tdtUrl = 'https://www.zhuangbeizz.cn/tiandi/'
+// 服务负载子域
+const subdomains = ['0', '1', '2', '3', '4', '5', '6', '7']
+const token = '7eb5c1eba47d10073b06a4bb8d5a1e3c'
+
 let map: any = null
 let markerTool: any = null
 let savedCoordinates: Array<any> = [] //保存地块坐标数组
 let editMarker: any
+
+const curLayer = ref('img')
+const turn2vec = () => {
+  curLayer.value = 'vec'
+  const vecLayer = new T.TileLayer(
+    tdtUrl + 'DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + token,
+    { minZoom: 1, maxZoom: 18 }
+  )
+  map && map.addLayer(vecLayer)
+}
+const turn2img = () => {
+  if (!map) return
+  const layers = map.getLayers()
+  if (!Array.isArray(layers)) return
+  curLayer.value = 'img'
+  for (let i = 0; i < layers.length; i++) {
+    const _layer = layers[i];
+    const { FR = '' } = _layer;
+    if (FR.indexOf("T=vec_w") !== -1) {
+      map.removeLayer(_layer)
+    }
+  }
+}
 
 const lng = ref('116.64899')
 const lat = ref('40.12948')
@@ -122,21 +159,13 @@ const saveCoordinates = () => {
 
 // 初始化
 const initMap = () => {
-  // @ts-ignore
-  map = new T.Map('mapDiv', [
-    {
-      projection: 'EPSG:900913',
-      minZoom: 5,
-      maxZoom: 18
-    }
-  ])
+  const imgLayer = new T.TileLayer(tdtUrl + 'DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18 })
+  const wtfsLayer = new T.TileLayer(tdtUrl + 'DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18, zIndex: 999 })
+  const config = { layers: [imgLayer, wtfsLayer], projection: 'EPSG:900913', minZoom: 5, maxZoom: 18 }
+  map = new T.Map('mapDiv', config)
   //@ts-ignore
   const lnglat = new T.LngLat(116.40769, 39.89945)
   map.centerAndZoom(lnglat, 12)
-  //创建对象
-  const ctrl = new T.Control.MapType()
-  //添加控件
-  map.addControl(ctrl)
 
   // 配置地图控制
   const configureMap = (map: any) => {

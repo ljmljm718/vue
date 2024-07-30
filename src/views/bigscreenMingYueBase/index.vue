@@ -3,8 +3,22 @@ import BigscreenBuilder from '@/components/BigscreenBuilder'
 import headerBg from './assets/headerBg.png'
 // @ts-ignore
 import CesiumMap from '@/views/tiandiMap/index.vue'
-import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
-import * as turf from '@turf/turf'
+import dayjs from "dayjs";
+import titleBar from './assets/titleBar.png'
+import BigscreenCalendar from './components/calendar.vue'
+import {
+  getBreedCategory,
+  getBreedVariety,
+  farmPlanSchedule,
+  getWeather,
+  getPlan,
+  getParkBaseInfo
+} from './apis'
+import {
+  initChartStatic,
+  generatePieOptions,
+  generateBaseOptions
+} from '../../utils/bigscreenTool/index'
 
 const {
   BigscreenAdapter,
@@ -23,37 +37,264 @@ export default defineComponent({
     }, 100)
 
     const cesiumIns = ref()
-    const getParkData = async () => {
-      const { list } = await ParkInfoApi.getParkInfoPage({})
-      if (Array.isArray(list) && list.length > 0) {
-        const _arr = list.map(item => (JSON.parse(item.geofencing)))
-        _arr.forEach(item => {
-          if (Array.isArray(item) && item.length > 0) {
-            // const polyArr = item[0].map(ele => ([ele.lng, ele.lat]))
-            // if (cesiumIns.value) cesiumIns.value.createPolygon(undefined, polyArr)
-          }
+
+    const TitleValue = ({ title, value, active }) => {
+      return (
+        <div class={["p-3 py-2", active ? 'active-rect' : 'inner-rect']}>
+          <div class="flex items-center">
+            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+            <div>{title}</div>
+          </div>
+          <div class="pl-1rem text-[#daf5fa]">{value}</div>
+        </div>
+      )
+    }
+
+    const selectedPlot = ref<string>('')
+    const options = ref<any[]>([])
+    const getLabelByValue = (val) => {
+      let res = '------'
+      if (Array.isArray(options.value)) {
+        options.value.forEach(item => {
+          if (item.value === val) res = item.label
         })
+      }
+      return res
+    }
+    
+    // 获取作业排期
+    const calendarIns = ref(), remindArr = ref<any[]>([])
+    const farmPlanScheduleList = ref<any[]>([])
+    const getFarmPlanSchedule = async (yearMonth, belongPlot) => {
+      const res = await farmPlanSchedule({ yearMonth, belongPlot });
+      console.log("getFarmPlanSchedule", res);
+      if (Array.isArray(res)) {
+        farmPlanScheduleList.value = res
+        remindArr.value = res.filter(item => (Array.isArray(item.planList) && item.planList.length > 0)).map(item => item.monthDate)
+      }
+    }
 
-        if (Array.isArray(_arr) && _arr.length > 0) {
-          const features = turf.points([
-            ..._arr[0][0].map(item => ([item.lng, item.lat]))
-          ]);
-
-          const _POS_ = turf.center(features);
-          const { geometry } = _POS_;
-          const { coordinates } = geometry
-          cesiumIns.value.flyTo(
-            undefined,
-            [...coordinates, 1400]
-          )
+    const getPlotData = async (parentId) => {
+      const res = await getParkBaseInfo({ parentId })
+      console.log("getPlotData", res);
+      if (Array.isArray(res)) {
+        options.value = res.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+        if (res.length > 0) {
+          selectedPlot.value = res[0].id
+          getFarmPlanSchedule('2024-7', res[0].id)
         }
       }
     }
-    
-    onMounted(() => {
-      setTimeout(() => {
-        getParkData()
-      }, 2000)
+    getPlotData("1787680115895037952")
+
+    const breedCategoryList = ref<any[]>([])
+    const activeBreedCategoryId = ref<string>('')
+    const getBreedCategoryData = async () => {
+      const res = await getBreedCategory()
+      console.log("getBreedCategoryData", res);
+      if (Array.isArray(res)) {
+        breedCategoryList.value = res.filter(item => (item.category_name && item.number))
+        if (Array.isArray(breedCategoryList.value) && breedCategoryList.value.length > 0) {
+          activeBreedCategoryId.value = breedCategoryList.value[0].id
+          nextTick(() => { initChart(activeBreedCategoryId.value) })
+        }
+      }
+    }
+    getBreedCategoryData()
+
+    const initChart = async (categoryId) => {
+      const res = await getBreedVariety({ categoryId })
+      if (!Array.isArray(res)) return
+      initChartStatic(
+        "chartPlant",
+        generatePieOptions({
+          legend: {
+            show: true,
+            top: "center",
+            left: "right",
+            bottom:'0',
+            orient:'vertical',
+            itemWidth: 12,
+            itemHeight: 12,
+          },  
+          color: ["#beee36", "#1cf0d8", "#1af796", '#ff9f15'],
+          series: [
+            {
+              nam: "种植品种",
+              type: "pie",
+              radius: ["35%", "60%"],
+              center: "center",
+              data: res.map(item => ({
+                name: item.crop_name,
+                value: item.number
+              })),
+              label: {
+                // formatter: "{c|{c}},{d|{d}%}",
+                color: '#fff',
+                formatter: "{c} {d}%",
+                rich: {
+                  c: {
+                    color: "#c1c1c1",
+                    fontSize: 10,
+                  },
+                  d: {
+                    color: "#c1c1c1",
+                    fontSize: 10,
+                  },
+                },
+              },
+            },
+          ],
+        })
+      );
+    }
+
+    const bottomDataList = ref<any[]>([])
+    const handleCalendarClick = (item) => {
+      const formatMonthDay = (val) => val > 9 ? val : ('0' + val)
+      bottomDataList.value = [];
+      farmPlanScheduleList.value.forEach(ele => {
+        const _date_ = item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)
+        if (_date_ === ele.monthDate) {
+          if (Array.isArray(ele.planList)) {
+            bottomDataList.value = ele.planList
+            console.log('bottomDataList', bottomDataList.value);
+          }
+        }
+      })
+    }
+
+    const curWeather = ref<any>({}), hourTemp = ref<any[]>([]), hourWeather = ref<any[]>([])
+    const initWeatherChart = (xAxisData:any[] = [], yAxisData:any[] = []) => {
+      initChartStatic(
+        'weatherDom',
+        generateBaseOptions({
+          xAxis: {
+            data: xAxisData,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: '#666666'
+              }
+            },
+          },
+          legend : {
+            show: false
+          },
+          yAxis: [
+            {
+              type: 'value',
+              name: `单位：℃`,
+              max: 50,
+              nameTextStyle: {
+                color: 'rgba(153, 153, 153, 1)',
+                "font-family": "AlibabaPuHuiTi",
+                fontSize: "13px",
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  color: '#666666'
+                }
+              },
+              axisLabel: {
+                color: '#666666'
+              },
+              splitLine: {
+                //网格线
+                show: true, //是否显示
+                lineStyle: {
+                  //网格线样式
+                  color: '#666666', //网格线颜色
+                  width: 1, //网格线的加粗程度
+                  type: 'dashed' //网格线类型
+                }
+              },
+              splitArea: {
+                //网格区域
+                show: false //是否显示
+              }
+            }
+          ],
+
+          series: [
+            {
+              name: '温度',
+              data: yAxisData,
+              type: 'line',
+              smooth: false,
+              itemStyle: {
+                normal: {
+                  color: "rgba(0, 150, 136, 1)"
+                },
+              },
+            }
+          ],
+          grid: {
+            left: '10%',
+            right: '5%',
+            top: '19%',
+            bottom: '15%'
+          }
+        })
+      )
+    }
+    const getWeatherData = async () => {
+      const res = await getWeather({
+        location: '117.12,36.66',
+        key: 'c8d24d8285274a3a89617fa7cb2f2eaa'
+      })
+
+      const {
+        currentWeather,
+        hourTemperature,
+        dayWeather
+      } = res;
+      curWeather.value = currentWeather;
+      if (Array.isArray(hourTemperature)) {
+        hourTemp.value = hourTemperature
+        nextTick(() => {
+          initWeatherChart(
+            hourTemperature.map(item => item.fxTime),
+            hourTemperature.map(item => item.temp)
+          )
+        })
+      }
+      if (Array.isArray(dayWeather)) {
+        hourWeather.value = dayWeather.slice(1,3)
+      }
+    }
+    getWeatherData()
+
+    const planInfo = reactive({
+      totalPlan: '0',
+      finishPlan: '0',
+      notStartPlan: '0',
+      finishRate: '0%'
+    })
+    const planList = ref<any[]>([])
+    const getPlanData = async () => {
+      const res = await getPlan({})
+      console.log("getPlanData", res);
+      if (res) {
+        planInfo.totalPlan = res.totalPlan ?? '0'
+        planInfo.finishPlan = res.finishPlan ?? '0'
+        planInfo.notStartPlan = res.notStartPlan ?? '0'
+        planInfo.finishRate = res.finishRate ?? '0%'
+      }
+      if (Array.isArray(res.list)) {
+        planList.value = res.list
+      }
+    }
+    getPlanData()
+
+    const showOptions = ref<boolean>(false)
+
+    window.addEventListener('click', () => {
+      showOptions.value = false
     })
     return () => (
       <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
@@ -66,7 +307,7 @@ export default defineComponent({
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
-                  <CesiumMap ref={e => cesiumIns.value = e} />
+                  { /*<CesiumMap ref={e => cesiumIns.value = e} /> */ }
                   <div class="meng-ban z-0"></div>
                 </div>
                 <div
@@ -76,10 +317,75 @@ export default defineComponent({
                   }}
                 >
                   <div class="title-1 w-full h-[4rem]"></div>
-                  <div class="item-bg w-full">
-                    <div class="flex"></div>
+                  <div class="item-bg w-full p-4 box-border">
+                    <div class="flex justify-between">
+                      {
+                        breedCategoryList.value.map(item => (
+                          <div class="w-[32%]" onClick={() => {
+                            activeBreedCategoryId.value = item.id
+                            nextTick(() => { initChart(item.id) })
+                          }}>
+                            <TitleValue
+                              active={activeBreedCategoryId.value === item.id}
+                              title={item.category_name}
+                              value={item.number + (item.unit ?? '')}
+                            />
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <div id="chartPlant"></div>
                   </div>
                   <div class="title-2 w-full h-[4rem]"></div>
+                  <div class="item-bg">
+                    <div class="flex justify-center py-4 items-center text-[#11eeaf]">
+                    <div class="relative h-[1.4rem] w-[10rem]">
+                      <div class="h-full text-center cursor-pointer" onClick={(e) => {
+                        e.stopPropagation()
+                        showOptions.value = true
+                      }}>{getLabelByValue(selectedPlot.value)}</div>
+                        {
+                          showOptions.value ? <div class="absolute left-0 top-[1.4rem] w-full max-h-[8rem] overflow-auto">
+                            {
+                              Array.isArray(options.value) ? options.value.map(item => (
+                                <div
+                                  class="py-3 text-center w-full bg-[#0d1724]"
+                                  onClick={() => {
+                                    selectedPlot.value = item.value
+                                    getFarmPlanSchedule('2024-7', item.value)
+                                  }}
+                                >{item.label}</div>
+                              )) : null
+                            }
+                          </div> : null
+                        }
+                      </div>
+                    </div>
+                    <div class="split-line w-full h-[2px]"></div>
+                    <div class="w-full box-border p-3 py-4">
+                      <BigscreenCalendar
+                        ref={e => calendarIns.value = e}
+                        remind={remindArr.value}
+                        onSelect={(item) => { handleCalendarClick(item) }}
+                      />
+                      <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
+                        {
+                          bottomDataList.value.map(item => (
+                            <>
+                              <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                  <div class="w-[.3rem] h-[1rem] bg-[#11f47f]"></div>
+                                  <div>{item.planName}</div>
+                                </div>
+                                <div>{item.planState}</div>
+                              </div>
+                              <div class="line-clamp-4 mt-1 mb-2 leading-6 px-3 text-[#DAF5FA]">{item.planDesc ?? '暂无详细介绍'}</div>
+                            </>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div
                   class="z-10 absolute right-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)] transition-all duration-100"
@@ -88,7 +394,93 @@ export default defineComponent({
                   }}
                 >
                   <div class="title-3 w-full h-[4rem]"></div>
+                  <div class="item-bg">
+                    <div class="flex justify-center py-4 items-center text-[#11eeaf]">
+                      重庆市-塘坝镇-天印村
+                    </div>
+                    <div class="split-line w-full h-[2px]"></div>
+                    <div class="w-full box-border p-3 py-4">
+                      <div class="flex justify-between items-center px-3">
+                        <div class="flex justify-between items-center">
+                          <div class="text-[1.5rem]">{curWeather.value.temp ?? '--' }</div>
+                          <div class="pl-3 text-[13px] space-x-2">
+                            <span>{curWeather.value.text ?? '--' }</span>
+                            <span>{curWeather.value.windDir ?? '--' }</span>
+                            <span>{curWeather.value.windScale ?? '--' }</span>
+                          </div>
+                        </div>
+                        <i class="qi-100-fill text-[2rem]"></i>
+                      </div>
+                      <div id="weatherDom"></div>
+                      <div class="flex justify-evenly space-x-2">
+                        {
+                          hourWeather.value.map(item => (
+                            <div class="item-bg w-50% p-1 px-4 flex items-center space-x-7">
+                              <i class={`qi-${item.iconDay}-fill text-[2rem]`}></i>
+                              <span>{item.fxDate}</span>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </div>
                   <div class="title-4 w-full h-[4rem]"></div>
+                  <div class="item-bg p-2 box-border">
+                    <div class="w-full space-x-2 flex">
+                      <div class="mission-bg flex justify-center items-center flex-col w-[8rem] text-[.8rem]">
+                        <div>
+                          <span class="text-[1.3rem] pr-1">{planInfo.finishRate}</span>
+                          <span>%</span>
+                        </div>
+                        <div>任务完成率</div>
+                      </div>
+                      <div class="flex flex-col space-y-2 grow">
+                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
+                          <div class="flex items-center">
+                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                            <span>总农事任务:</span>
+                          </div>
+                          <div>{planInfo.totalPlan}</div>
+                        </div>
+                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
+                          <div class="flex items-center">
+                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                            <span>已执行:</span>
+                          </div>
+                          <div>{planInfo.finishPlan}</div>
+                        </div>
+                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
+                          <div class="flex items-center">
+                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                            <span>未执行:</span>
+                          </div>
+                          <div>{planInfo.notStartPlan}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="py-3 box-border h-[17rem] hidden-scrollbar">
+                      {
+                        planList.value.map(item => (
+                          <div class="rb-item w-full h-[6rem] pl-[2rem] box-border pb-[1rem]">
+                            <div class="w-full h-full p-4 box-border">
+                              <div class="flex justify-between items-center">
+                                <div class="flex space-x-2">
+                                  <div class="w-[3px] h-[1rem] bg-[#11f47f]"></div>
+                                  <div>{item.planName}</div>
+                                </div>
+                                <div>{item.planState === '0' ? '未开始' : ''}</div>
+                              </div>
+                              <div class="flex space-x-2 mt-3 text-[#DAF5FA] pl-2">
+                                <span>{item.plotName}</span>
+                                <span>|</span>
+                                <span>{dayjs(item.startTime).format('YYYY-MM-DD')}-{dayjs(item.endTime).format('YYYY-MM-DD')}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
             </BigscreenMain>
@@ -121,5 +513,50 @@ export default defineComponent({
 .item-bg {
   background-size: 100% 100%;
   background-image: url(./assets/itemBg.png);
+}
+
+.item-bg::-webkit-scrollbar {
+  width: 0px;
+}
+
+.inner-rect {
+  background-image: url(./assets/innerRect.png);
+  background-size: 100% 100%;
+}
+
+.active-rect {
+  background-image: url(./assets/activeBg.png);
+  background-size: 100% 100%;
+}
+
+#chartPlant {
+  width: 100%;
+  height: 220px;
+  margin-top: .5rem;
+}
+
+#weatherDom {
+  width: 100%;
+  height: 220px;
+  margin-top: .5rem;
+}
+
+.mission-bg {
+  background-image: url(./assets/missionBg.png);
+  background-size: 100% 100%;
+}
+
+.split-line {
+  background-image: url(./assets/splitLine.png);
+  background-size: 100% 100%;
+}
+
+.rb-item {
+  background-image: url(./assets/rbItem.png);
+  background-size: 100% 100%;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 0px;
 }
 </style>

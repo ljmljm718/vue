@@ -41,11 +41,10 @@
         <!-- </Transition> -->
         <div class="cont">
           <div class="left">
-            <div style="margin-top: 4%;margin-left: 6%;font-weight: 600;color: #f1f1f1;">数 字 乡 村 振 兴 服 务 管 理 平 台</div>
-            <div style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 600;color:#fff;">助推乡村振兴</div>
-            <div  style="margin-top: 2%;margin-left: 6%;font-size: 35px;font-weight: 550;color:#fff;">建设美丽新农村</div>
+            <div class="left-top"></div>
+            <div class="left-content"></div>
           </div>
-          <div style="width: 30%;height: 100%;background: #fff;">
+          <div style="width: 35%;height: 100%;">
               <LoginForm />
           </div>
         </div>
@@ -106,17 +105,27 @@ $prefix-cls: #{$namespace}-login;
   justify-content: center;
   align-items: center;
   .cont{
-    width: 1200px;
+    width: 1300px;
     border-radius: 20px;
     overflow: hidden;
-    background: #fff;
     display: flex;
     align-items: center;
     .left{
-      width: 75%;
-      height: 500px;
-      background-size: 100% 100%;
-      background-image:url('@/assets/imgs/left.png');
+      width: 100%;
+      .left-top{
+        width: 200px;
+        height: 70px;
+        margin: auto;
+        background-size: 100% 100%;
+        background-image: url(@/assets/imgs/left-top.png);
+      }
+      .left-content{
+        width: 65%;
+        margin: auto;
+        height: calc(500px - 50px);
+        background-size: 100% 100%;
+        background-image: url(@/assets/imgs/left-content.png);
+      }
     }
 }
 }
@@ -127,11 +136,12 @@ $prefix-cls: #{$namespace}-login;
   position: absolute;
   top: 5%;
   z-index: 999;
-  left: 5%;
-  width: 15rem;
-  height: 4rem;
+  left: 3%;
+  width: 35rem;
+  height: 20px;
   background-size: 100% 100%;
-  background-image: url('@/assets/imgs/Logo2.png');
+  object-fit:container;
+  background-image: url(@/assets/imgs/Logo2.png);
 }
 }
 
