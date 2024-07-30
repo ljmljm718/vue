@@ -109,7 +109,7 @@ const handleSelect = async (item) => {
           </div>
         </div>
       </div>`
-    // mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+    mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
   }
 }

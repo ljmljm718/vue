@@ -210,11 +210,8 @@ const setMapCenter = (longitude, latitude) => {
   if (!longitude || !latitude) return
   //调用转换坐标
   const { lon, lat } = transformGCJ2WGS(longitude, latitude)
-  console.log("longitude", longitude);
-  console.log("lon", lon);
   
   if (map) map.panTo(new T.LngLat(lon, lat))
-  console.log('tttttt',longitude,lon);
 }
 
 const setMapZoom = (zoom: number = 13) => {
@@ -232,8 +229,6 @@ const openInfoWindow = (info: string, location: Array<any>) => {
   // @ts-ignore
   const infoWindow = new T.InfoWindow()
   infoWindow.setContent(info)
-  // infoWindow.setContent(info)
-  // infoWindow.open(map, location)
   if (_marker) _marker.openInfoWindow(infoWindow)
 }
 
