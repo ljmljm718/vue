@@ -21,7 +21,7 @@ const parseURL = (
     return { basePath: '', paramsObject: {} }
   }
 
-  // 找到问号 (?) 的位置，它之前是基础路径，之后是查询参数
+  // 找到问号 (?) 的位置，它之前是基础路径，之后是查询参数 
   const questionMarkIndex = url.indexOf('?')
   let basePath = url
   const paramsObject: { [key: string]: string } = {}

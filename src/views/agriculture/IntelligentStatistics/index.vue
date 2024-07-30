@@ -1,7 +1,7 @@
 <template>
   <div class="bg-[#f5f5f5]">
-    <div class="bg-[#fff] flex items-center">
-      <el-form :model="formData" label-width="80px" :inline="true">
+    <div class="bg-[#fff] flex h-40px items-center ">
+      <el-form :model="formData" label-width="80px" class="!h-25px" :inline="true">
         <el-form-item label="选择基地">
           <el-select class="!w-300px" v-model="formData.baseCode">
             <el-option
@@ -29,7 +29,7 @@
           <el-button @click="offSubmit">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </div>     
     <div class="grid grid-cols-3 mt-15px gap-15px w-100% h-300px">
       <el-card class="w-100% h-100%">
         <template #header>

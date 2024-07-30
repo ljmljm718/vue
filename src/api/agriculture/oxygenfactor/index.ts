@@ -21,7 +21,7 @@ export const OxygenFactorApi = {
   getOxygenFactor: async (id: number) => {
     return await request.get({ url: `/agriculture/oxygen-factor/get?id=` + id })
   },
-
+  
   // 新增溶解氧因素
   createOxygenFactor: async (data: OxygenFactorVO) => {
     return await request.post({ url: `/agriculture/oxygen-factor/create`, data })
@@ -41,4 +41,9 @@ export const OxygenFactorApi = {
   exportOxygenFactor: async (params) => {
     return await request.download({ url: `/agriculture/oxygen-factor/export-excel`, params })
   },
-}
+
+  // 查询溶解氧因素详情
+  getAll: async () => {
+    return await request.get({ url: `/agriculture/oxygen-factor/getAll` })
+  },
+}

@@ -1,11 +1,30 @@
 <template>
-  <div id="tangbaMap" class="min-w-[100px] min-h-[100px]"> </div>
+  <div class="relative h-full">
+    <div
+      id="tangbaMap"
+      class="min-w-[100px] min-h-[100px] h-full relative z-0"
+    ></div>
+    <div class="absolute right-3 top-3 bg-white rounded-2 shadow-md z-20 p-1">
+      <div v-if="curLayer === 'img'" class="flex items-center" @click="turn2vec()">
+        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png" alt="" class="w-[4rem]" />
+      </div>
+      <div v-else class="flex items-center" @click="turn2img()">
+        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png" alt="" class="w-[4rem]" />
+      </div>
+    </div>
+  </div>
 </template>
 <script setup lang="ts">
 import { log } from 'console'
 import { debounce } from 'lodash-es'
 
 defineOptions({ name: 'MapTangBa' })
+
+// 服务域名
+const tdtUrl = 'https://www.zhuangbeizz.cn/tiandi/'
+// 服务负载子域
+const subdomains = ['0', '1', '2', '3', '4', '5', '6', '7']
+const token = '7eb5c1eba47d10073b06a4bb8d5a1e3c'
 
 // 初始化地图，点击地图自动选取坐标点
 let map: any = null
@@ -16,6 +35,30 @@ interface LatLon {
   lat: number
   lon: number
 }
+
+const curLayer = ref('img')
+const turn2vec = () => {
+  curLayer.value = 'vec'
+  const vecLayer = new T.TileLayer(
+    tdtUrl + 'DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + token,
+    { minZoom: 1, maxZoom: 18 }
+  )
+  map && map.addLayer(vecLayer)
+}
+const turn2img = () => {
+  if (!map) return
+  const layers = map.getLayers()
+  if (!Array.isArray(layers)) return
+  curLayer.value = 'img'
+  for (let i = 0; i < layers.length; i++) {
+    const _layer = layers[i];
+    const { FR = '' } = _layer;
+    if (FR.indexOf("T=vec_w") !== -1) {
+      map.removeLayer(_layer)
+    }
+  }
+}
+
 //封装转换坐标函数高德转天地图
 const createGcjToWgsConverter = () => {
   const PI = 3.1415926536
@@ -67,50 +110,34 @@ const { transformGCJ2WGS } = createGcjToWgsConverter()
 
 const initMap = () => {
   //修改默认地图为卫星图+有注记
-  //影像地图图层
-  const imageURL =
-    'http://t0.tianditu.gov.cn/img_w/wmts?' +
-    'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles' +
-    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}' +
-    '&tk=	3499364c33fd4aa4415dd8765d4c5b77'
-  //影响注记图层
-  const imageURLT =
-    'http://t0.tianditu.gov.cn/cia_w/wmts?' +
-    'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles' +
-    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}' +
-    '&tk=	3499364c33fd4aa4415dd8765d4c5b77'
-  const lay = new T.TileLayer(imageURL, { minZoom: 1, maxZoom: 18 })
-  const lay2 = new T.TileLayer(imageURLT, { minZoom: 1, maxZoom: 18 })
-  const config = { layers: [lay, lay2] }
+  const imgLayer = new T.TileLayer(tdtUrl + 'DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18 })
+  const wtfsLayer = new T.TileLayer(tdtUrl + 'DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + token, { minZoom: 1, maxZoom: 18, zIndex: 999 })
+  const config = { layers: [imgLayer, wtfsLayer] }
   map = new T.Map('tangbaMap', config)
-  
-  const mapTypeSelect = [{
-    'title': '地图', //地图控件上所要显示的图层名称
-    'icon': 'http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png', //地图控件上所要显示的图层图标（默认图标大小80x80）
-    'layer': window.TMAP_NORMAL_MAP //地图类型对象，即MapType。
-  },
-    {
-      'title': '卫星',
-      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png',
-      'layer': window.TMAP_SATELLITE_MAP
-    }, {
-      'title': '卫星混合',
-      'http': 'api.tianditu.gov.cn/v4.0/image/map/maptype/satellitepoi.png',
-      'layer': 'TMAP_HYBRID_MAP'
-    }, {
-      'title': '地形',
-      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrain.png',
-      'layer': window.TMAP_TERRAIN_MAP
-    },
-    {
-      'title': '地形混合',
-      'icon': ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/terrainpoi.png',
-      'layer': window.TMAP_TERRAIN_HYBRID_MAP
-    }
-  ];
-  const ctrl = new T.Control.MapType({ mapTypes: mapTypeSelect }); // 初始化地图类型选择控件
-  map.addControl(ctrl); //添加地图选择控件
-  
+
+  setTimeout(() => {
+    map.addLayer(imgLayer)
+  }, 2000)
+
+  setTimeout(() => {
+    const layers = map.getLayers()
+    console.log("Layers", layers);
+  }, 7000)
+
+  // const mapTypeSelect = [
+  //   {
+  //     title: '地图', //地图控件上所要显示的图层名称
+  //     icon: 'http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png', //地图控件上所要显示的图层图标（默认图标大小80x80）
+  //     layer: wtfsLayer //地图类型对象，即MapType。
+  //   },
+  //   {
+  //     title: '卫星',
+  //     icon: ' http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png',
+  //     layer: imgLayer
+  //   },
+  // ]
+  // const ctrl = new T.Control.MapType({ mapTypes: mapTypeSelect }) // 初始化地图类型选择控件
+  // map.addControl(ctrl) //添加地图选择控件
 
   //@ts-ignore
   const lnglat = new T.LngLat(109.24604650765662, 31.41416444104432)
@@ -153,12 +180,16 @@ const removeSatellite = () => {
   map.setMapType(map.TMAP_TERRAIN_MAP)
 }
 
-const markerList:Map<string, any> = new Map()
-const addMarkerToMap = (longitude: number, latitude:number, title = '', icon = '/tangba/offlineMonitor.png') => {
+const markerList: Map<string, any> = new Map()
+const addMarkerToMap = (
+  longitude: number,
+  latitude: number,
+  title = '',
+  icon = '/tangba/offlineMonitor.png'
+) => {
   if (!longitude || !latitude) return
-  const { lon, lat} = transformGCJ2WGS(longitude, latitude)
+  const { lon, lat } = transformGCJ2WGS(longitude, latitude)
 
-  
   // @ts-ignore
   const marker = new T.Marker(
     new T.LngLat(lon, lat),
@@ -181,7 +212,7 @@ const addMarkerToMap = (longitude: number, latitude:number, title = '', icon = '
   markerList.set(longitude + '_' + latitude, marker)
 
   marker.on('click', (e) => {
-    const { lnglat } = e;
+    const { lnglat } = e
     const { lat, lng } = lnglat
     map.centerAndZoom(new T.LngLat(lng, lat), 16)
   })
@@ -206,15 +237,11 @@ const fitMarkerOnMap = debounce(
 // }
 //设置地图中心
 const setMapCenter = (longitude, latitude) => {
-  
   if (!longitude || !latitude) return
   //调用转换坐标
   const { lon, lat } = transformGCJ2WGS(longitude, latitude)
-  console.log("longitude", longitude);
-  console.log("lon", lon);
-  
+
   if (map) map.panTo(new T.LngLat(lon, lat))
-  console.log('tttttt',longitude,lon);
 }
 
 const setMapZoom = (zoom: number = 13) => {
@@ -232,8 +259,6 @@ const openInfoWindow = (info: string, location: Array<any>) => {
   // @ts-ignore
   const infoWindow = new T.InfoWindow()
   infoWindow.setContent(info)
-  // infoWindow.setContent(info)
-  // infoWindow.open(map, location)
   if (_marker) _marker.openInfoWindow(infoWindow)
 }
 

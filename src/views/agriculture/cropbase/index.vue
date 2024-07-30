@@ -109,9 +109,9 @@
       <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="所属地块" align="center" prop="plotName" width="160"/>
-      <el-table-column label="数量" align="center" prop="number" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="预计产量" align="center" prop="predictedOutput" />
+      <el-table-column label="数量" align="center" prop="number"/>
+      <el-table-column label="单位" align="center" prop="unit"/>
+      <el-table-column label="预计产量" align="center" prop="predictedOutput"/>
       <el-table-column
         label="开始时间"
         align="center"
@@ -213,7 +213,7 @@
   <!-- 表单弹窗：添加/修改 -->
   <CropBaseForm ref="formRef" @success="getList"/>
   <!-- 表单弹窗：添加/修改 -->
-  <HarvestManagementForm ref="formRefA" @success="getList"/>
+  <HarvestManagementAdd ref="formRefA" @success="getList"/>
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
       <h3>生命周期-溯源</h3>
@@ -237,7 +237,8 @@
         <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
           <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
           <p>品种：
-            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
+            <el-tag>{{ item.cropType }}</el-tag>
+            <!--            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>-->
           </p>
           <p>作物名称：{{ item.cropName }}</p>
           <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
@@ -261,7 +262,7 @@ import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import download from '@/utils/download'
 import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
-import HarvestManagementForm from "@/views/agriculture/harvestmanagement/HarvestManagementForm.vue";
+import HarvestManagementAdd from "@/views/agriculture/varietymanagement/HarvestManagementAdd.vue";
 import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'

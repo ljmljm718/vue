@@ -239,6 +239,10 @@ const getDataList = async () => {
         const _POS_ = turf.center(features);
         const { geometry } = _POS_;
         const { coordinates } = geometry
+        flyTo(
+          undefined,
+          [...coordinates, 1400]
+        )
         viewer.entities.add({
           id: generateUUID(),
           name: item.parkName,
