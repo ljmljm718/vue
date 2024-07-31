@@ -77,6 +77,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
           title: '溶解氧预警与调控模型'
         }
       },
+      {
+        path: 'aaa',
+        name: 'aaa',
+        component: () => import('@/views/growth/index.vue'),
+        meta: {
+          hidden: true,
+          title: '模型监测'
+        }
+      },
     ]
   },
   {
