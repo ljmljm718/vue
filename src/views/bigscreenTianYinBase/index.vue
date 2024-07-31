@@ -81,13 +81,8 @@ export default defineComponent({
     }
 
     return () => (
-      <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
-        <BigscreenAdapter>
-          <BigscreenContainer >
-            <BigscreenHeader
-              backgroundImage={headerBg}
-              height="100px"
-            />
+      <div class="w-[100%] bg-[#0d1724]">
+          <BigscreenContainer width="100%" extraClass="aspect-[2]">
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
@@ -196,7 +191,7 @@ export default defineComponent({
               </div>
             </BigscreenMain>
           </BigscreenContainer>
-        </BigscreenAdapter>
+
       </div>
     )
   }
