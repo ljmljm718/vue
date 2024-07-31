@@ -18,22 +18,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="最小值" prop="minNum">
-        <el-input v-model="formData.minNum" placeholder="请输入最小值" />
+        <el-input v-model="formData.minNum" placeholder="请输入最小值,不得大于最大值" />
       </el-form-item>
       <el-form-item label="最大值" prop="maxNum">
-        <el-input v-model="formData.maxNum" placeholder="请输入最大值" />
+        <el-input v-model="formData.maxNum" placeholder="请输入最大值，不得小于最小值" />
       </el-form-item>
       <el-form-item label="目标分值" prop="targetNum">
-        <el-input v-model="formData.targetNum" placeholder="请输入目标分值" />
+        <el-input v-model="formData.targetNum" placeholder="请输入目标分值，建议100" />
       </el-form-item>
       <el-form-item label="评分值" prop="scoreNum">
-        <el-input v-model="formData.scoreNum" placeholder="请输入评分值" />
+        <el-input v-model="formData.scoreNum" placeholder="请输入评分值，不得大于目标分值" />
       </el-form-item>
       <el-form-item label="调整建议" prop="suggestText">
-        <el-input v-model="formData.suggestText" placeholder="请输入调整建议" />
+        <el-input v-model="formData.suggestText" placeholder="请输入调整建议，例如：当前XX值异常，请及时调整" />
       </el-form-item>
       <el-form-item label="建议功率" prop="suggestNum">
-        <el-input v-model="formData.suggestNum" placeholder="请输入建议功率" />
+        <el-input v-model="formData.suggestNum" placeholder="请输入建议功率，例如：43%" />
       </el-form-item>
 <!--      <el-form-item label="增氧设备ID" prop="equipId">-->
 <!--        <el-input v-model="formData.equipId" placeholder="请输入增氧设备ID" />-->

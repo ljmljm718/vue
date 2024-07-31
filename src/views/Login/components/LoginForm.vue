@@ -1,22 +1,23 @@
 <template>
   <div style="display:flex;flex-direction: column;align-items: center;">
-  <LoginFormTitle style="margin-bottom:10px;"/>
   <el-form
     v-show="getShow"
     ref="formLogin"
     :model="loginData.loginForm"
     :rules="LoginRules"
-    class="login-form"
+    class="login-form !px-[15px] mt-[-30px] !py-[20px]"
     label-position="top"
     label-width="120px"
     size="large"
-    style="background: #fff;padding:40px 20px 10px 20px"
   >
+  <LoginFormTitle style="margin-bottom:10px;"/>
+
     <el-row style="margin-right: -10px; margin-left: -10px;">
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
-        <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
+      <el-col :span="24" class="px-[30px]"  >
+        <el-form-item  style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
-          class="login-input"
+            class="login-input "
+            style="border:none"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
@@ -26,18 +27,20 @@
         </el-form-item>
       </el-col>
 
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
+      <el-col :span="24" class="px-[30px]">
         <el-form-item prop="username">
           <el-input
+            class="login-input"
             v-model="loginData.loginForm.username"
             :placeholder="t('login.usernamePlaceholder')"
             :prefix-icon="iconAvatar"
           />
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px;">
+      <el-col :span="24" class="px-[30px]">
         <el-form-item prop="password">
           <el-input
+            class="login-input"
             v-model="loginData.loginForm.password"
             :placeholder="t('login.passwordPlaceholder')"
             :prefix-icon="iconLock"
@@ -47,30 +50,27 @@
           />
         </el-form-item>
       </el-col>
-      <el-col
-        :span="24"
-        style="padding-right: 10px; padding-left: 10px; margin-top: -20px;"
+      <el-col class="px-[30px] mt-[-20px]"
       >
         <el-form-item>
           <el-row justify="space-between" style="width: 100%">
-            <el-col :span="6">
-              <el-checkbox v-model="loginData.loginForm.rememberMe">
+            <el-col class="!color-[#46696c]" :span="6">
+              <el-checkbox class="!color-[#46696c]"  v-model="loginData.loginForm.rememberMe">
                 {{ t('login.remember') }}
               </el-checkbox>
             </el-col>
-            <el-col :offset="6" :span="12">
-              <el-link style="float: right" type="primary">{{ t('login.forgetPassword') }}</el-link>
+            <el-col :offset="6"  :span="12">
+              <el-link style="float: right;" class="!color-[#46696c]" type="primary">{{ t('login.forgetPassword') }}</el-link>
             </el-col>
           </el-row>
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
+      <el-col :span="24" class="px-[30px]">
         <el-form-item>
           <XButton
             :loading="loginLoading"
             :title="t('login.login')"
-            class="w-[100%]"
-            type="primary"
+            class="w-[100%] btn-bg mb-20px !color-[#0fda75] "
             @click="getCode()"
           />
         </el-form-item>
@@ -356,5 +356,33 @@ onMounted(() => {
 }
 .el-input{
   --el-input-text-color:#000 !important;
+  
+}
+.login-form{
+  background-image: url(@/assets/imgs/Login-Form.png);
+  background-size: 100% 100%;
+
+}
+.btn-bg{
+  box-sizing: border-box;
+  background-color: transparent !important;
+  border: none !important;
+  background-size: 100% 100% !important;
+  background-image: url(@/assets/imgs/btn-bg.png) !important;
+}
+
+::v-deep .el-input__wrapper{
+  background-color: transparent !important; 
+  background-size: 100% 100% !important;
+  background-image: url(@/assets/imgs/form-input.png) !important;
+  
+}
+/* 针对el-input的自动填充样式 */
+::v-deep .el-input__inner:-webkit-autofill {
+  -webkit-border-radius: 4px; 
+  border-radius: 4px; 
+  background-color: pink !important; 
+  color: #46696c;
+  transition: background-color 50000s ease-in-out 0s; 
 }
 </style>
