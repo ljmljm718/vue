@@ -89,7 +89,7 @@
       <el-table-column label="权重" align="center" prop="weight" />
       <el-table-column label="是否默认" align="center" prop="isDefault" >
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ADOPTION_ODER_REMIND_STATUS" :value="scope.row.modelType" />
+          <dict-tag :type="DICT_TYPE.ADOPTION_ODER_REMIND_STATUS" :value="scope.row.isDefault" />
         </template>
       </el-table-column>
       <el-table-column label="实现类" align="center" prop="implementationClass" />
@@ -143,6 +143,10 @@ import download from '@/utils/download'
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
 import ModelMonitorIndicatorForm from './ModelMonitorIndicatorForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
+import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
+import {CropGrowthApi, CropGrowthVO} from "@/api/agriculture/cropgrowth";
 
 /** 监测指标 列表 */
 defineOptions({ name: 'ModelMonitorIndicator' })
@@ -170,9 +174,14 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-//根据选中模型获取关联的品种品类
-const categoryId = ref() //品类
-const varietyId = ref() //品种
+
+const listModelManagement = ref<ModelManagementVO[]>([]) // 模型列表的数据
+const listCropGrowth = ref<CropGrowthVO[]>([]) // 生长周期列表的数据
+const getTypeData = async () => {
+  listModelManagement.value = await ModelManagementApi.getModelManagementPage({})
+  listCropGrowth.value = await CropGrowthApi.getCropGrowthPage({})
+}
+getTypeData()
 
 /** 查询列表 */
 const getList = async () => {
@@ -180,6 +189,16 @@ const getList = async () => {
   try {
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
     list.value = data.list
+    list.value.forEach((item, index) => {
+      const _itemA = listModelManagement.value.find(itemA => (itemA.id === item.modelId))
+      const _itemB = listCropGrowth.value.find(itemA => (itemB.id === item.growthPeriodId))
+      if (_itemA) {
+        item.modelId = _itemA.modelName
+      }
+      if (_itemB) {
+        item.growthPeriodId = _itemB.growth
+      }
+    });
     total.value = data.total
   } finally {
     loading.value = false
@@ -240,8 +259,6 @@ const openModelSelectPopup = (id: string) => {
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
   queryParams.modelId = String(order[0].id)
   queryParams.name = String(order[0].modelName)
-  categoryId.value = String(order[0].belongCategoryId)
-  varietyId.value = String(order[0].belongVarietyId)
 }
 
 /** 初始化 **/

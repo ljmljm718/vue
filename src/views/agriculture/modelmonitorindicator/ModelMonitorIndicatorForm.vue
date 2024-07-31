@@ -7,11 +7,25 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="模型id" prop="modelId">
-        <el-input v-model="formData.modelId" placeholder="请输入模型id" />
+      <el-form-item label="模型名称" prop="modelId">
+        <el-input v-model="modelName" placeholder="请选择模型" >
+          <template #append>
+            <el-button @click="openModelSelectPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="生长周期id" prop="growthPeriodId">
-        <el-input v-model="formData.growthPeriodId" placeholder="请输入生长周期id" />
+      <el-form-item label="生长周期" prop="growthPeriodId">
+        <el-input v-model="growthName" placeholder="请选择生长周期" >
+          <template #append>
+            <el-button @click="openCropGrowthPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="指标名称" prop="indicatorName">
         <el-input v-model="formData.indicatorName" placeholder="请输入指标名称" />
@@ -33,7 +47,13 @@
       </el-form-item>
       <el-form-item label="是否默认" prop="isDefault">
         <el-radio-group v-model="formData.isDefault">
-          <el-radio label="1">请选择字典生成</el-radio>
+          <el-radio
+            v-for="dict in getIntDictOptions(DICT_TYPE.ADOPTION_ODER_REMIND_STATUS)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="实现类" prop="implementationClass">
@@ -45,9 +65,17 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择模型-->
+  <ModelSelectPopup ref="modelSelectPopupRef" @success="handleModelSelectPopupChange"/>
+
+  <!--  选择生长周期-->
+  <CropGrowthPopup ref="cropGrowthPopupRef" @success="handleCropGrowthPopupChange"/>
 </template>
 <script setup lang="ts">
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
+import {CropGrowthVO} from "@/api/agriculture/cropgrowth";
 
 /** 监测指标 表单 */
 defineOptions({ name: 'ModelMonitorIndicatorForm' })
@@ -69,11 +97,13 @@ const formData = ref({
   indicatorResult: undefined,
   healthScore: undefined,
   weight: undefined,
-  isDefault: undefined,
+  isDefault: 0,
   implementationClass: undefined,
 })
 const formRules = reactive({
-  modelId: [{ required: true, message: '模型id不能为空', trigger: 'blur' }],
+  // modelName: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
+  modelId: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
+  // growthName: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
   growthPeriodId: [{ required: true, message: '生长周期id不能为空', trigger: 'blur' }],
   isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
 })
@@ -106,6 +136,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as ModelMonitorIndicatorVO
+    console.log("data", data)
     if (formType.value === 'create') {
       await ModelMonitorIndicatorApi.createModelMonitorIndicator(data)
       message.success(t('common.createSuccess'))
@@ -121,6 +152,30 @@ const submitForm = async () => {
   }
 }
 
+//模型名称
+const modelName = ref()
+//模型的选择
+const modelSelectPopupRef = ref()
+const openModelSelectPopup = (id: string) => {
+  modelSelectPopupRef.value.open(id)
+}
+const handleModelSelectPopupChange = (order: ModelManagementVO) => {
+  formData.value.modelId = String(order[0].id)
+  modelName.value = String(order[0].modelName)
+}
+
+//生长周期
+const growthName = ref()
+//生长周期的选择
+const cropGrowthPopupRef = ref()
+const openCropGrowthPopup = (id: string) => {
+  cropGrowthPopupRef.value.open(id)
+}
+const handleCropGrowthPopupChange = (order: CropGrowthVO) => {
+  formData.value.growthPeriodId = String(order[0].id)
+  growthName.value = String(order[0].growth)
+}
+
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
@@ -133,9 +188,11 @@ const resetForm = () => {
     indicatorResult: undefined,
     healthScore: undefined,
     weight: undefined,
-    isDefault: undefined,
+    isDefault: 0,
     implementationClass: undefined,
   }
   formRef.value?.resetFields()
+  modelName.value = undefined
+  growthName.value = undefined
 }
 </script>
