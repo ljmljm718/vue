@@ -2,10 +2,10 @@
   <div style="display:flex;flex-direction: column;align-items: center;">
   <el-form
     v-show="getShow"
-    ref="formLogin !px-[15px] mt-[-30px] !py-[20px]"
+    ref="formLogin"
     :model="loginData.loginForm"
     :rules="LoginRules"
-    class="login-form"
+    class="login-form !px-[15px] mt-[-30px] !py-[20px]"
     label-position="top"
     label-width="120px"
     size="large"
