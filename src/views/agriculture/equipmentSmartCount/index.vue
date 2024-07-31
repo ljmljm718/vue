@@ -560,8 +560,8 @@ watch(
       </el-card>
       <!-- 土壤 -->
       <!-- <el-card class="card2" v-show="soilList.length !== 0"> -->
-      <el-card class="col-span-6">
-        <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 土壤墒情 </div>
+      <el-card class="col-span-6" v-if="soilList?.length > 0">
+        <div class="flex items-center border-b-0" style="margin-bottom: 16px">土壤墒情</div>
         <!-- </template> -->
         <div class="grid xl:grid-cols-3 2xl:grid-cols-3 gap-1 xl:gap-2 border-t-0">
           <div class="weather_div" v-for="(item, index) in soilList" :key="index">
