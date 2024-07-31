@@ -7,7 +7,7 @@ import BigscreenCard from './src/frame/card.vue'
 
 import BigscreenTab from './src/components/tab.vue'
 import BigscreenSelector from './src/components/selector.vue'
-import BigscreenTable from './src/components/table.vue'
+import BigscreenTable from './src/components/builderTable.vue'
 
 export interface KeyLabelObject {
     key: string,
