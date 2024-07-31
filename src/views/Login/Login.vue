@@ -3,7 +3,6 @@
     :class="prefixCls"
     class="relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px login"
   >
-  <scale-box>
     <div class="logo"></div>
     <div class="relative mx-auto h-full flex">
       
@@ -53,7 +52,6 @@
         
       </div>
     </div>
-  </scale-box>
     
   </div>
 </template>
