@@ -3,6 +3,7 @@
     :class="prefixCls"
     class="relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px login"
   >
+  <scale-box>
     <div class="logo"></div>
     <div class="relative mx-auto h-full flex">
       
@@ -52,10 +53,13 @@
         
       </div>
     </div>
+  </scale-box>
+    
   </div>
 </template>
 <script lang="ts" setup>
 import { underlineToHump } from '@/utils'
+import ScaleBox from "vue3-scale-box";
 
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAppStore } from '@/store/modules/app'
@@ -137,7 +141,7 @@ $prefix-cls: #{$namespace}-login;
   top: 5%;
   z-index: 999;
   left: 3%;
-  width: 35rem;
+  width: 38rem;
   height: 20px;
   background-size: 100% 100%;
   object-fit:container;
