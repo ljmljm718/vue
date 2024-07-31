@@ -13,13 +13,13 @@ export const getCurrentPower = async(params)=>{
     params
   })
 }
-export const getScore = async(params)=>{
+export const getOxygenRuleInfo = async(params)=>{
   return await request.get({
     url:'/agriculture/oxygen-rule/getOxygenRuleInfo',
     params
   })
 }
-export const getChartData = async(params)=>{
+export const getlineChartData = async(params)=>{
   return await request.get({
     url:'/yyang/equipment-data/get-real-time-scoring',
     params

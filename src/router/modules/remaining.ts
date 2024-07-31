@@ -73,7 +73,8 @@ const remainingRouter: AppRouteRecordRaw[] = [
         name: 'DOPrediction',
         component: () => import('@/views/agriculture/DOPrediction/index.vue'),
         meta: {
-          hidden: true
+          hidden: true,
+          title: '溶解氧预警与调控模型'
         }
       },
     ]

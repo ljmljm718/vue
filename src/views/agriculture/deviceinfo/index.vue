@@ -526,8 +526,13 @@ onMounted(async () => {
   }
   let location = route.query
   if (location) {
+    queryParams.deviceCode = location.deviceCode
     queryParams.deviceKind = location.id
     queryParams.deviceStatus = location.val
+    if (queryParams.deviceCode) {
+      deviceId.value = location.deviceCode
+      setTimeout(() => { openSubDeviceForm() }, 1000)
+    }
   }
   await getList()
 })
