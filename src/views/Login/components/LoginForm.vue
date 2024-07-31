@@ -14,9 +14,9 @@
 
     <el-row style="margin-right: -10px; margin-left: -10px;">
       <el-col :span="24" class="px-[30px]"  >
-        <el-form-item  style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
+        <el-form-item class="form-item" style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
-            class="login-input "
+            class="login-input is-empty"
             style="border:none"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
@@ -28,7 +28,7 @@
       </el-col>
 
       <el-col :span="24" class="px-[30px]">
-        <el-form-item prop="username">
+        <el-form-item prop="username" class="form-item">
           <el-input
             class="login-input"
             v-model="loginData.loginForm.username"
@@ -38,7 +38,7 @@
         </el-form-item>
       </el-col>
       <el-col :span="24" class="px-[30px]">
-        <el-form-item prop="password">
+        <el-form-item prop="password" class="form-item">
           <el-input
             class="login-input"
             v-model="loginData.loginForm.password"
@@ -373,10 +373,22 @@ onMounted(() => {
 
 ::v-deep .el-input__wrapper{
   background-color: transparent !important; 
+  border-color: transparent !important;
   background-size: 100% 100% !important;
   background-image: url(@/assets/imgs/form-input.png) !important;
   
 }
+
+.form-item {
+  :deep(.el-input__wrapper) {
+    box-shadow: 0 0 0 0px var(--el-input-border-color, var(--el-border-color)) inset;
+    cursor: default;
+    .el-input__inner {
+      cursor: default !important;
+    }
+  }
+}
+
 /* 针对el-input的自动填充样式 */
 ::v-deep .el-input__inner:-webkit-autofill {
   -webkit-border-radius: 4px; 
