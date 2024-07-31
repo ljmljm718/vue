@@ -4,17 +4,18 @@ import { defineComponent } from 'vue'
 interface BigscreenContainerProps {
     width?: string,
     height?: string,
-    backgroundImage: any
+    backgroundImage: any,
+    extraClass?: string
 }
 export default defineComponent({
     name: 'BigscreenContainer',
-    props: ['width', 'height', 'backgroundImage'],
+    props: ['width', 'height', 'backgroundImage', 'extraClass'],
     setup(props:BigscreenContainerProps, { slots }) {
-        const { width = '1920px', height = '1080px', backgroundImage } = props;
+        const { width = '1920px', height = '1080px', backgroundImage, extraClass = '' } = props;
         return () => (
             <div
                 style={`width: ${width};height: ${height};`}
-                class="bigscreen-container-wrapper"
+                class={["bigscreen-container-wrapper", extraClass]}
             >
                 {
                     backgroundImage ?  <img class="w-full h-full absolute left-0 top-0 z-0" src={backgroundImage} /> : null
