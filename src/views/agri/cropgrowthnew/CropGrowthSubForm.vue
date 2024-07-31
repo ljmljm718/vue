@@ -16,10 +16,12 @@
       <el-form-item label="事项内容" prop="itemContent">
         <el-input v-model="formData.itemContent" height="150px" type="textarea"/>
       </el-form-item>
-      <!-- <el-form-item label="备注1" prop="remark1">
-        <el-input v-model="formData.remark1" placeholder="请输入备注1" />
+      <el-form-item label="周期" prop="remark1">
+        <el-input v-model="formData.remark1" placeholder="请输入周期">
+          <template #append>天</template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="备注2" prop="remark">
+      <!--<el-form-item label="备注2" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注2" />
       </el-form-item>
       <el-form-item label="所属基地" prop="belongPark">
@@ -104,7 +106,7 @@ const subformRef = ref() // 表单 Ref
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   console.log("ID", id);
-  
+
 
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
@@ -112,13 +114,13 @@ const open = async (type: string, id?: number) => {
   resetForm()
   // 修改时，设置数据
   if (id) {
-    formData.value.cropCode = id
     formLoading.value = true
     try {
-      // const res = await CropGrowthSubApi.getCropGrowthSub(id)
-      // console.log("RES", res);
-      
-      // formData.value = res
+      if (formType.value == 'create'){
+        formData.value.cropCode = id
+      }else {
+        formData.value = await CropGrowthSubApi.getCropGrowthSub(id)
+      }
     } finally {
       formLoading.value = false
     }
@@ -130,7 +132,7 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   console.log("DDD");
-  
+
   // 校验表单
   await subformRef.value.validate()
   // 提交请求
