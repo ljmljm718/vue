@@ -16,6 +16,7 @@ export interface CropGrowthNewVO {
   envCondition: string // 环境条件
   growSite: string // 生长地点
   cycle: string // 周期
+  farmAdvice: string // 农事建议
 }
 
 // 作物生长周期 API

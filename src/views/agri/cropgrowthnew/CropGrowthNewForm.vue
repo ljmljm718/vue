@@ -100,7 +100,9 @@
       <el-form-item label="生长地点" prop="growSite">
         <el-input v-model="formData.growSite" placeholder="请输入生长地点"/>
       </el-form-item>
-
+      <el-form-item label="农事建议" prop="farmAdvice">
+        <el-input v-model="formData.farmAdvice" placeholder="请输入农事建议" />
+      </el-form-item>
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId"/>
       </el-form-item>
@@ -156,6 +158,7 @@ const formData = ref({
   envCondition: undefined,
   growSite: undefined,
   cycle: undefined,
+  farmAdvice: undefined,
 })
 const formRules = reactive({
   cropType: [{required: true, message: '名称不能为空', trigger: 'blur'}],
@@ -250,6 +253,7 @@ const resetForm = () => {
     envCondition: undefined,
     growSite: undefined,
     cycle: undefined,
+    farmAdvice: undefined,
   }
   formRef.value?.resetFields()
 }

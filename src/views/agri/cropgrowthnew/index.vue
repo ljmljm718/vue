@@ -130,7 +130,7 @@
         <el-table-column label="生长地点" align="center" prop="growSite"/>
         <el-table-column label="周期（/天）" align="center" prop="cycle"/>
         <el-table-column label="特点" align="center" prop="feature"/>
-
+        <el-table-column label="农事建议" align="center" prop="farmAdvice" />
         <!--      <el-table-column-->
         <!--        label="创建时间"-->
         <!--        align="center"-->
@@ -399,6 +399,7 @@ const queryParams = reactive({
   envCondition: undefined,
   growSite: undefined,
   cycle: undefined,
+  farmAdvice: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
