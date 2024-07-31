@@ -289,6 +289,9 @@ export enum DICT_TYPE {
   ADOPTION_ORDER_STATUS='adoption_order_status',//认养订单状态
   ADOPTION_ORDER_GIFT_STATUS='adoption_order_gift_status',//认养订单赠送状态
   ADOPTION_ORDER_TYPE='adoption_order_type',//认养订单类型
-  ADOPTION_ODER_REMIND_STATUS='adoption_oder_remind_status'//认养订单是否被提醒
+  ADOPTION_ODER_REMIND_STATUS='adoption_oder_remind_status',//认养订单是否被提醒
+
+  // =========== agri -   生长监测 ==========
+  GROWTH_MODEL_TYPE='growth_model_type',//生长模型类型
 
 }
