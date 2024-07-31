@@ -297,13 +297,9 @@ export default defineComponent({
       showOptions.value = false
     })
     return () => (
-      <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
-        <BigscreenAdapter>
-          <BigscreenContainer>
-            <BigscreenHeader
-              backgroundImage={headerBg}
-              height="100px"
-            />
+      <div class="w-[100%] aspect-[2] bg-[#0d1724]">
+
+          <BigscreenContainer width="100%" height="auto" extraClass="aspect-[1]">
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
@@ -317,12 +313,12 @@ export default defineComponent({
                     left: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="title-1 w-full h-[4rem]"></div>
+                  <div class="title-1 w-full aspect-[6]"></div>
                   <div class="item-bg w-full p-4 box-border">
-                    <div class="flex justify-between">
+                    <div class="flex justify-between space-x-2">
                       {
                         breedCategoryList.value.map(item => (
-                          <div class="w-[32%]" onClick={() => {
+                          <div class="grow cursor-pointer" onClick={() => {
                             activeBreedCategoryId.value = item.id
                             nextTick(() => { initChart(item.id) })
                           }}>
@@ -337,7 +333,7 @@ export default defineComponent({
                     </div>
                     <div id="chartPlant"></div>
                   </div>
-                  <div class="title-2 w-full h-[4rem]"></div>
+                  <div class="title-2 w-full aspect-[6]"></div>
                   <div class="item-bg">
                     <div class="flex justify-center py-4 items-center text-[#11eeaf]">
                     <div class="relative h-[1.4rem] w-[10rem]">
@@ -394,7 +390,7 @@ export default defineComponent({
                     right: showSidePanel.value ? '1rem' : '-40rem'
                   }}
                 >
-                  <div class="title-3 w-full h-[4rem]"></div>
+                  <div class="title-3 w-full aspect-[6]"></div>
                   <div class="item-bg">
                     <div class="flex justify-center py-4 items-center text-[#11eeaf]">
                       重庆市-塘坝镇-天印村
@@ -425,7 +421,7 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <div class="title-4 w-full h-[4rem]"></div>
+                  <div class="title-4 w-full aspect-[6]"></div>
                   <div class="item-bg p-2 box-border">
                     <div class="w-full space-x-2 flex">
                       <div class="mission-bg flex justify-center items-center flex-col w-[8rem] text-[.8rem]">
@@ -485,7 +481,7 @@ export default defineComponent({
               </div>
             </BigscreenMain>
           </BigscreenContainer>
-        </BigscreenAdapter>
+
       </div>
     )
   }
@@ -531,7 +527,7 @@ export default defineComponent({
 
 #chartPlant {
   width: 100%;
-  height: 220px;
+  height: 130px;
   margin-top: .5rem;
 }
 
