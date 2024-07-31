@@ -72,7 +72,7 @@
       <el-card>
         <div class="font-bold mb-4">评分占比分析图</div>
         <div class="flex justify-center items-center w-full">
-          <div id="radarChart" class="w-[100%] h-50"></div>
+          <div id="radarChart" class="w-[100%] h-[270px]"></div>
           <!-- <div id="radarChart" clas s="w-[50%] h-[50%] mx-auto"></div> -->
         </div>
       </el-card>
@@ -185,10 +185,24 @@ const getScoreInfo = async (equipId) => {
 }
 
 //画图一
+let chartIns:any = null
 const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
-  if (!Array.isArray(targetNum) || !Array.isArray(currentNum) || !Array.isArray(factorName)) return
-  if (targetNum.length === 0 || currentNum.length === 0 || factorName.length === 0) return
-  initChartStatic('radarChart', {
+  if (
+    !Array.isArray(targetNum)
+    ||
+    !Array.isArray(currentNum)
+    ||
+    !Array.isArray(factorName)
+    ||
+    targetNum.length === 0
+    ||
+    currentNum.length === 0
+    ||
+    factorName.length === 0
+  ) {
+    chartIns && chartIns.clear()
+  }
+  chartIns = initChartStatic('radarChart', {
     title: {
       // text: '评估评分占比分析图'
     },
