@@ -7,9 +7,10 @@ import { Select } from '@element-plus/icons-vue/dist/types'
 import icon from './assets/icon.png'
 import { ChildProcess } from 'child_process'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
+
 import * as turf from '@turf/turf'
 
-const { BigscreenContainer, BigscreenMain } = BigscreenBuilder
+const { BigscreenContainer, BigscreenMain, BigscreenAdapter } = BigscreenBuilder
 
 export default defineComponent({
   name: 'BigscreenMingYueBaseView',
@@ -110,26 +111,25 @@ export default defineComponent({
     // ----------------------------------
     return () => (
       <div class="w-full aspect-[1.8] bg-[#0d1724]">
-        <div>
-          <BigscreenContainer width="1400px" height="800px">
-            {/* <BigscreenHeader backgroundImage={headerBg} height="100px" /> */}
-            <BigscreenMain>
-              <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
-                <div class="absolute z-2 w-full h-full">
-                  <CesiumMap ref={e => cesiumIns.value = e} />
-                  <div class="meng-ban z-0"></div>
-                </div>
-                <div
-                  class="z-10 absolute   w-[27%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
-                  style={{
-                    left: showSidePanel.value ? '1rem' : '-40rem'
-                  }}
-                >
-                  <div class="left-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
-                    {
-                      dataList.value.map(item => (
-                        item.name.includes('鱼塘') ?
+        <BigscreenContainer width="100%" height="auto" extraClass="aspect-[1]">
+          {/* <BigscreenHeader backgroundImage={headerBg} height="100px" /> */}
+          <BigscreenMain>
+            <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
+              <div class="absolute z-2 w-full h-full">
+                <CesiumMap ref={e => cesiumIns.value = e} />
+                <div class="meng-ban z-0"></div>
+              </div>
+              <div
+                class="z-10 absolute   w-[27%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
+                style={{
+                  left: showSidePanel.value ? '1rem' : '-40rem'
+                }}
+              >
+                <div class="left-title w-full h-[4rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                  {
+                    dataList.value.map(item => (
+                      item.name.includes('鱼塘') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
                           <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
                           <div class="split-bar w-full h-[3px]"></div>
@@ -148,25 +148,25 @@ export default defineComponent({
                                 {
                                   item.child.map(_ele => (
                                     <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="种植作物" value={_ele.cropName} />
-                                      <TitleValue title="种植开始时间" value={_ele.startTime} />
-                                      <TitleValue title="预计收获时间" value={_ele.endTime} />
+                                      <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                      <TitleValue title="开始时间" value={_ele.startTime} />
+                                      <TitleValue title="结束时间" value={_ele.endTime} />
                                     </div>
                                   ))
                                 }
                               </div>
                             ) : null
                           }
-                        </div>: null
-                      ))
-                    }
-                  </div>
-
+                        </div> : null
+                    ))
+                  }
                 </div>
-                <div class="center-title">
-                  <select
-                    class="bg=[#ffffff00]"
-                    style="
+
+              </div>
+              <div class="center-title">
+                <select
+                  class="bg=[#ffffff00]"
+                  style="
                           -webkit-text-fill-color: transparent;
                           background-clip: text;
                           text-fill-color: transparent;                  
@@ -177,88 +177,88 @@ export default defineComponent({
                           text-align: center;
                           letter-spacing: 0px;
                           border:none;"
-                    onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }
+                  onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }
 
-                    }
-                  >
-                    {
-                      baseList.value.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div class="z-10 absolute left-[60rem] top-[1rem] w-[22%] hidden">
-                  这里是下拉列表
-                  <select onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}>
-                    <option value="">请选择基地</option>
-                    {
-                      baseList.value.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div
-                  class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
-                  style={{
-                    right: showSidePanel.value ? '1rem' : '-40rem'
-                  }}
+                  }
                 >
-                  <div class="right-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3.3rem) ">
-                    {
-                      duckHouseList.value.map((item) => (
-                        <div class="item-wrapper w-full min-h-[3rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                          <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.child) ? (
-                                <div class="grid grid-cols-1 gap-2 col-span-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class="gap-2 grid grid-cols-2">
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="养殖品种" value={_ele.cropName} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="养殖数量" value={_ele.amount} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="开始养殖时间时间" value={_ele.startTime} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="预计收货时间" value={_ele.endTime} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="物候期" value={_ele.growth} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title='面积' value={item.area + '亩'} />
-                                        </div>
+                  {
+                    baseList.value.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+              <div class="z-10 absolute left-[60rem] top-[1rem] w-[22%] hidden">
+                这里是下拉列表
+                <select onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}>
+                  <option value="">请选择基地</option>
+                  {
+                    baseList.value.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+              <div
+                class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
+                style={{
+                  right: showSidePanel.value ? '1rem' : '-40rem'
+                }}
+              >
+                <div class="right-title w-full h-[4rem]"></div>
+                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 4rem) ">
+                  {
+                    duckHouseList.value.map((item) => (
+                      <div class="item-wrapper w-full min-h-[3rem]">
+                        <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                        <div class="split-bar w-full h-[3px]"></div>
+                        <div class="grid grid-cols-2 gap-3 p-2">
+                          {
+                            Array.isArray(item.child) ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                                {
+                                  item.child.map(_ele => (
+                                    <div class="gap-2 grid grid-cols-2">
+                                      <div class="inner-rect p-2 px-3">
+                                        <TitleValue title="养殖品种" value={_ele.cropName} />
                                       </div>
-                                    ))
-                                  }
-                                </div>
-                              ) : null
-                            }
+                                      <div class="inner-rect p-2 px-3">
+                                        <TitleValue title="养殖数量" value={_ele.amount} />
+                                      </div>
+                                      <div class="inner-rect p-2 px-3">
+                                        <TitleValue title="开始养殖时间时间" value={_ele.startTime} />
+                                      </div>
+                                      <div class="inner-rect p-2 px-3">
+                                        <TitleValue title="预计收货时间" value={_ele.endTime} />
+                                      </div>
+                                      <div class="inner-rect p-2 px-3">
+                                        <TitleValue title="物候期" value={_ele.growth} />
+                                      </div>
+                                      <div class="inner-rect p-2 px-3 space-y-2">
+                                        <TitleValue title='面积' value={item.area + '亩'} />
+                                      </div>
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            ) : null
+                          }
 
 
-                          </div>
                         </div>
-                      ))
-                    }
-                  </div>
-                  <div class="left-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
-                    {
-                      dataList.value.map(item => (
-                        item.name.includes('稻田') ?
+                      </div>
+                    ))
+                  }
+                </div>
+                <div class="left-title w-full h-[4rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                  {
+                    dataList.value.map(item => (
+                      item.name.includes('稻田') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
                           <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
                           <div class="split-bar w-full h-[3px]"></div>
@@ -277,25 +277,26 @@ export default defineComponent({
                                 {
                                   item.child.map(_ele => (
                                     <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="种植作物" value={_ele.cropName} />
-                                      <TitleValue title="种植开始时间" value={_ele.startTime} />
-                                      <TitleValue title="预计收获时间" value={_ele.endTime} />
+                                      <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                      <TitleValue title="开始时间" value={_ele.startTime} />
+                                      <TitleValue title="结束时间" value={_ele.endTime} />
                                     </div>
                                   ))
                                 }
                               </div>
                             ) : null
                           }
-                        </div>:null
-                      ))
-                    }
-                  </div>
+                        </div> : null
+                    ))
+                  }
                 </div>
               </div>
-            </BigscreenMain>
-          </BigscreenContainer>
-        </div>
+            </div>
+          </BigscreenMain>
+        </BigscreenContainer>
+
       </div>
+
     )
   }
 })
