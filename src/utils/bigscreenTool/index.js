@@ -17,6 +17,7 @@ export const initChartStatic = (id = '', option = {}, type = 'default') => {
             chartInstance && chartInstance.resize();
         }, 10)
     })
+    return chartInstance
 }
 
 /**
