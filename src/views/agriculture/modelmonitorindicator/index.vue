@@ -196,10 +196,7 @@ const getList = async () => {
         growth: cropItem ? cropItem.growth : ''
       }
     })
-    console.log("list.value111", list.value)
-    console.log("listModelManagement.value", listModelManagement.value)
     total.value = data.total
-    console.log("list.value", list.value)
   } finally {
     loading.value = false
   }
