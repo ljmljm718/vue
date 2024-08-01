@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap>
+  <ContentWrap v-show="showType !== 'card'">
     <div class="flex items-start">
       <el-form
         class="grow"
@@ -18,7 +18,8 @@
           />
         </el-form-item>
         <el-form-item label="品类" prop="cropId">
-          <el-select v-model="queryParams.cropId" clearable placeholder="请选择品类" class="!w-240px">
+          <el-select v-model="queryParams.cropId" clearable placeholder="请选择品类"
+                     class="!w-240px">
             <el-option
               v-for="item in listCategoryManagement"
               :key="item.id"
@@ -27,7 +28,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="品种" prop="cropName">
-          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种" class="!w-240px">
+          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种"
+                     class="!w-240px">
             <el-option
               v-for="item in listVarietyManagementVO.list"
               :key="item.varietyName"
@@ -37,7 +39,8 @@
         </el-form-item>
       </el-form>
       <div class="w-[1px] bg-#25252545 h-[3rem] mx-2"></div>
-      <div class="w-[100px] flex space-x-2 lg:w-[150px] lg:flex-row flex-col space-y-2 items-center">
+      <div
+        class="w-[100px] flex space-x-2 lg:w-[150px] lg:flex-row flex-col space-y-2 items-center">
         <div class="w-0 h-0 sm:hidden"></div>
         <el-button @click="handleQuery" class="!bg-[#009688] !text-[#fff]">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -58,14 +61,16 @@
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth-new:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" />新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agri:crop-growth-new:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" />导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </div>
       <div class="flex items-center">
@@ -74,7 +79,9 @@
           style="border-radius: 5px 0 0 5px"
           @click="showType = 'card'"
         >
-          <el-icon><Menu /></el-icon>
+          <el-icon>
+            <Menu/>
+          </el-icon>
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
         <div
@@ -82,7 +89,9 @@
           style="border-radius: 0 5px 5px 0"
           @click="showType = 'list'"
         >
-          <el-icon><List /></el-icon>
+          <el-icon>
+            <List/>
+          </el-icon>
           <div class="pl-1 text-[13px]">列表</div>
         </div>
       </div>
@@ -130,7 +139,7 @@
         <el-table-column label="生长地点" align="center" prop="growSite"/>
         <el-table-column label="周期（/天）" align="center" prop="cycle"/>
         <el-table-column label="特点" align="center" prop="feature"/>
-        <el-table-column label="农事建议" align="center" prop="farmAdvice" />
+        <el-table-column label="农事建议" align="center" prop="farmAdvice"/>
         <!--      <el-table-column-->
         <!--        label="创建时间"-->
         <!--        align="center"-->
@@ -244,7 +253,8 @@
             </div>
           </div>
           <div class="w-[1px] bg-[#66666640] h-[7rem] mt-3 mx-5"></div>
-          <div class="w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
+          <div
+            class="w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
             <div>{{ item.growth }}</div>
             <div>{{ item.cycle + '天' }}</div>
           </div>
@@ -258,7 +268,8 @@
               >
                 <div>{{ ele.growth }}</div>
                 <div>{{ ele.cycle }}天</div>
-                <div :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
+                <div
+                  :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
               </div>
             </div>
             <div class="flex mt-2">
@@ -267,7 +278,8 @@
                 v-for="child, flag in item.child2"
                 :key="flag"
                 @click="item.activeBar = child.id"
-              >{{ child.itemName }}</div>
+              >{{ child.itemName }}
+              </div>
             </div>
             <div class="px-[1rem] pt-3">{{ getLabelById(item.child2, item.activeBar) }}</div>
           </div>
@@ -284,7 +296,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CropGrowthNewForm ref="formRef" @success="getList"/>
-  <CropGrowthSubForm ref="subformRef" @success="getList" />
+  <CropGrowthSubForm ref="subformRef" @success="getList"/>
   <!-- start事项查看弹窗 -->
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
@@ -340,9 +352,11 @@ import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varie
 // @ts-ignore
 import CropGrowthSubForm from './CropGrowthSubForm.vue'
 //本次请求接口 生长周期子表接口
-import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
+import {CropGrowthSubApi, CropGrowthSubVO} from '@/api/agriculture/cropgrowthsub'
 // 时间格式化工具类
 import {formatTime} from '@/utils/index'
+import {dateFormatter2, dateFormatter3} from "@/utils/formatTime";
+
 /** 作物生长周期 列表 */
 defineOptions({name: 'CropGrowthNew'})
 
@@ -409,25 +423,27 @@ const VarietyManagementVOQueryParams = reactive({})
 
 //start事件查看方法
 const drawer2 = ref(false)
+
 function cancelClick() {
   thisCropType.value = undefined
   thisGrowth.value = undefined
   drawer2.value = false
 }
+
 const formData = ref<CropGrowthSubVO[]>([])
 const thisCropType = ref()
 const thisGrowth = ref()
-const damn = async (row) =>{
+const damn = async (row) => {
   thisCropType.value = row.cropType
   thisGrowth.value = row.growth
-  const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode:row.id});
+  const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode: row.id});
   formData.value = datas.list;
   drawer2.value = true
 }
 //end事件查看
 
 // TODO: 生长周期卡片 接口参数
-const getLabelById = (arr:any[], id:string) => {
+const getLabelById = (arr: any[], id: string) => {
   const _item = arr.find(item => item.id === id)
   if (_item) return _item.itemContent;
   return ''
@@ -435,7 +451,7 @@ const getLabelById = (arr:any[], id:string) => {
 const cardDataList = ref<any[]>([])
 const getCardDataList = async () => {
   const res = await CropGrowthNewApi.getCropGrowthCardMap({})
-  console.log("getCardDataList", getCardDataList); 
+  console.log("getCardDataList", getCardDataList);
   if (Array.isArray(res)) cardDataList.value = res.map(item => ({
     ...item,
     activeBar: Array.isArray(item.child2) && item.child2.length > 0 ? item.child2[0].id : ''
