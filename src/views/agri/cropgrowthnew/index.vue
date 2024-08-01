@@ -181,35 +181,34 @@
       v-show="showType === 'card'"
     >
       <div
-        v-for="item in list"
-        :key="item.id"
+        v-for="item, index in cardDataList"
+        :key="index"
         class="p-3 rounded-2 px-4"
         style="border: 1px solid #66666666"
       >
         <div class="w-full flex justify-between items-center mb-2">
-          <div class="text-[1rem] font-bold">{{ item.cropName + ' - ' + item.cropType }}</div>
+          <div class="text-[1rem] font-bold">{{ item.cropName }}</div>
           <div class="space-x-2">
-            <el-button
+            <!-- <el-button
               class="!hover:bg-[#009688] !hover:text-white"
               @click="openForm('update', item.id)"
               v-hasPermi="['agri:crop-growth-new:update']"
             >编辑</el-button>
-            <!-- <el-button>详情</el-button> -->
             <el-button
               class="!hover:bg-[#009688] !hover:text-white"
               @click="handleDelete(item.id)"
               v-hasPermi="['agri:crop-growth-new:delete']"
-            >删除</el-button>
+            >删除</el-button> -->
           </div>
         </div>
         <div class="flex justify-between item-start">
           <div class="text-[15px]">
             <div class="text-[#666666]">
               <span>品类:</span>
-              <span>{{ item.cropName }}</span>
+              <span>{{ item.cropType }}</span>
               <span>|</span>
               <span>品种:</span>
-              <span>{{ item.cropType }}</span>
+              <span>{{ item.cropName }}</span>
             </div>
             <div class="flex items-start mt-[1rem]">
               <el-image
@@ -253,22 +252,24 @@
           <div class="right-content-wrapper">
             <div class="flex justify-between items-center mt-3 px-6 overflow-hidden pb-[25px]">
               <div
-                v-for="item, index in growthDateList"
-                :key="index"
+                v-for="ele, idx in item.child1"
+                :key="idx"
                 class="relative"
               >
-                <div>{{ item.label }}</div>
-                <div>{{ item.value }}</div>
-                <div :class="[item.actived ? 'progress-bar-active' : 'progress-bar']"></div>
+                <div>{{ ele.growth }}</div>
+                <div>{{ ele.cycle }}天</div>
+                <div :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
               </div>
             </div>
             <div class="flex mt-2">
-              <div class="grow text-[#ffffff] bg-[#009688] text-center py-2">幼苗期栽培要点</div>
-              <div class="grow text-[#666666] bg-[#f5f5f5] text-center py-2">幼苗期栽培要点</div>
-              <div class="grow text-[#666666] bg-[#f5f5f5] text-center py-2">幼苗期栽培要点</div>
-              <div class="grow text-[#666666] bg-[#f5f5f5] text-center py-2">幼苗期栽培要点</div>
+              <div
+                :class="`grow text-[#ffffff] ${child.id === item.activeBar ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'} text-center py-2`"
+                v-for="child, flag in item.child2"
+                :key="flag"
+                @click="item.activeBar = child.id"
+              >{{ child.itemName }}</div>
             </div>
-            <div class="px-[1rem] pt-3">{{ item.growSite }}</div>
+            <div class="px-[1rem] pt-3">{{ getLabelById(item.child2, item.activeBar) }}</div>
           </div>
         </div>
       </div>
@@ -330,13 +331,13 @@
 </template>
 
 <script setup lang="ts">
-import {dateFormatter, dateFormatter2, dateFormatter3} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { Menu, List } from '@element-plus/icons-vue'
 import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
+// @ts-ignore
 import CropGrowthNewForm from './CropGrowthNewForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+// @ts-ignore
 import CropGrowthSubForm from './CropGrowthSubForm.vue'
 //本次请求接口 生长周期子表接口
 import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
@@ -424,6 +425,23 @@ const damn = async (row) =>{
   drawer2.value = true
 }
 //end事件查看
+
+// TODO: 生长周期卡片 接口参数
+const getLabelById = (arr:any[], id:string) => {
+  const _item = arr.find(item => item.id === id)
+  if (_item) return _item.itemContent;
+  return ''
+}
+const cardDataList = ref<any[]>([])
+const getCardDataList = async () => {
+  const res = await CropGrowthNewApi.getCropGrowthCardMap({})
+  console.log("getCardDataList", getCardDataList); 
+  if (Array.isArray(res)) cardDataList.value = res.map(item => ({
+    ...item,
+    activeBar: Array.isArray(item.child2) && item.child2.length > 0 ? item.child2[0].id : ''
+  }));
+}
+getCardDataList()
 
 /** 查询列表 */
 const getList = async () => {
@@ -532,7 +550,7 @@ onMounted(() => {
   position: absolute;
   left: 0px;
   bottom: -15px;
-  width: 400px;
+  width: 1400px;
   height: 2px;
   background-color: #b7b7b7;
 }
@@ -551,7 +569,7 @@ onMounted(() => {
   position: absolute;
   left: 0px;
   bottom: -15px;
-  width: 400px;
+  width: 1400px;
   height: 2px;
   background-color: #b7b7b7;
 }
