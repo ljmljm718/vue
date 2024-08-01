@@ -112,8 +112,8 @@
           <dict-tag :type="DICT_TYPE.GROWTH_MODEL_TYPE" :value="scope.row.modelType" />
         </template>
       </el-table-column>
-      <el-table-column label="关联品种" align="center" prop="belongVarietyId" />
-      <el-table-column label="关联品类" align="center" prop="belongCategoryId" />
+      <el-table-column label="关联品种" align="center" prop="varietyName" />
+      <el-table-column label="关联品类" align="center" prop="categoryName" />
 <!--      <el-table-column label="关联品类" align="center" prop="belongCategory" />-->
 <!--      <el-table-column label="关联品种" align="center" prop="belongVariety" />-->
       <el-table-column label="模型图片" align="center" prop="modelImageId" >
@@ -190,10 +190,11 @@ defineOptions({ name: 'ModelManagement' })
 const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const getTypeData = async () => {
-  listVarietyManagement.value = await allDataCacheManager.getData({})
-  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({})
+  const res = await allDataCacheManager.getData({})
+  if (Array.isArray(res)) listVarietyManagement.value = res
+  const res1 = await CategoryManagementApi.getAllCategoryManagement({})
+  if (Array.isArray(res1)) listCategoryManagement.value = res1
 }
-getTypeData()
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -229,14 +230,15 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ModelManagementApi.getModelManagementPage(queryParams)
-    list.value = data.list
-    list.value.forEach((item, index) => {
-      const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.belongVarietyId))
-      if (_itemA) {
-        item.belongVarietyId = _itemA.varietyName
-        item.belongCategoryId = _itemA.categoryName
+    list.value = data.list.map(item => {
+      const element = listVarietyManagement.value.find(ele => (ele.id === item.belongVarietyId))
+      if (!element) return item;
+      return {
+        ...item,
+        varietyName: element.varietyName,
+        categoryName: element.categoryName
       }
-    });
+    })
     total.value = data.total
   } finally {
     loading.value = false
@@ -306,8 +308,13 @@ const handleStatusChange = async (row: ModelManagementApi.ModelManagementVO) => 
   }
 }
 
+const init = async () => {
+  await getTypeData()
+  await getList()
+}
+
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  init()
 })
 </script>

@@ -10,7 +10,7 @@
     >
       <el-form-item label="模型名称" prop="name">
         <el-input
-          v-model="queryParams.name"
+          v-model="modelName"
           placeholder="请选择模型"
           clearable
           @keyup.enter="handleQuery"
@@ -79,8 +79,8 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="指标编号" align="center" prop="id" />
-      <el-table-column label="模型名称" align="center" prop="modelId" />
-      <el-table-column label="生长周期" align="center" prop="growthPeriodId" />
+      <el-table-column label="模型名称" align="center" prop="modelName" />
+      <el-table-column label="生长周期" align="center" prop="growth" />
       <el-table-column label="指标名称" align="center" prop="indicatorName" />
       <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
       <el-table-column label="指标范围" align="center" prop="indicatorRange" />
@@ -138,15 +138,13 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
 import ModelMonitorIndicatorForm from './ModelMonitorIndicatorForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
-import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
-import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
 import {CropGrowthApi, CropGrowthVO} from "@/api/agriculture/cropgrowth";
+import ModelSelectPopup from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue"
 
 /** 监测指标 列表 */
 defineOptions({ name: 'ModelMonitorIndicator' })
@@ -168,7 +166,7 @@ const queryParams = reactive({
   indicatorResult: undefined,
   healthScore: undefined,
   weight: undefined,
-  isDefault: 0,
+  isDefault: undefined,
   implementationClass: undefined,
   createTime: [],
 })
@@ -178,28 +176,30 @@ const exportLoading = ref(false) // 导出的加载中
 const listModelManagement = ref<ModelManagementVO[]>([]) // 模型列表的数据
 const listCropGrowth = ref<CropGrowthVO[]>([]) // 生长周期列表的数据
 const getTypeData = async () => {
-  listModelManagement.value = await ModelManagementApi.getModelManagementPage({})
-  listCropGrowth.value = await CropGrowthApi.getCropGrowthPage({})
+  const { list } = await ModelManagementApi.getModelManagementPage({})
+  if (Array.isArray(list)) listModelManagement.value = list
+  const { list: growthList } = await CropGrowthApi.getCropGrowthPage({})
+  if (Array.isArray(growthList)) listCropGrowth.value = growthList
 }
-getTypeData()
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
-    list.value = data.list
-    list.value.forEach((item, index) => {
-      const _itemA = listModelManagement.value.find(itemA => (itemA.id === item.modelId))
-      const _itemB = listCropGrowth.value.find(itemA => (itemB.id === item.growthPeriodId))
-      if (_itemA) {
-        item.modelId = _itemA.modelName
+    list.value = data.list.map(item => {
+      const element = Array.isArray(listModelManagement.value) ? listModelManagement.value.find(ele => (ele.id === item.modelId)) : null
+      const cropItem = Array.isArray(listCropGrowth.value) ? listCropGrowth.value.find(ele => ele.id === item.growthPeriodId) : null
+      return {
+        ...item,
+        modelName: element ? element.modelName : '',
+        growth: cropItem ? cropItem.growth : ''
       }
-      if (_itemB) {
-        item.growthPeriodId = _itemB.growth
-      }
-    });
+    })
+    console.log("list.value111", list.value)
+    console.log("listModelManagement.value", listModelManagement.value)
     total.value = data.total
+    console.log("list.value", list.value)
   } finally {
     loading.value = false
   }
@@ -256,13 +256,18 @@ const modelSelectPopupRef = ref()
 const openModelSelectPopup = (id: string) => {
   modelSelectPopupRef.value.open(id)
 }
+const modelName = ref()
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
   queryParams.modelId = String(order[0].id)
-  queryParams.name = String(order[0].modelName)
+  modelName = String(order[0].modelName)
 }
 
+const init = async () => {
+  await getTypeData()
+  await getList()
+}
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  init()
 })
 </script>

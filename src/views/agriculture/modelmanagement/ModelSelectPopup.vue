@@ -64,8 +64,8 @@
               <dict-tag :type="DICT_TYPE.GROWTH_MODEL_TYPE" :value="scope.row.modelType" />
             </template>
           </el-table-column>
-          <el-table-column label="关联品种" align="center" prop="belongVarietyId" />
-          <el-table-column label="关联品类" align="center" prop="belongCategoryId" />
+          <el-table-column label="关联品种" align="center" prop="varietyName" />
+          <el-table-column label="关联品类" align="center" prop="categoryName" />
           <!--      <el-table-column label="关联品类" align="center" prop="belongCategory" />-->
           <!--      <el-table-column label="关联品种" align="center" prop="belongVariety" />-->
           <el-table-column label="模型图片" align="center" prop="modelImageId" >
@@ -108,6 +108,8 @@
 import {ElTable} from 'element-plus'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict"
 import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
+import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 defineOptions({name: 'ModelSelectPopup'})
 const list = ref<ModelManagementVO[]>([]) // 列表的数据
@@ -131,6 +133,15 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const getTypeData = async () => {
+  const res = await allDataCacheManager.getData({})
+  if (Array.isArray(res)) listVarietyManagement.value = res
+  const res1 = await CategoryManagementApi.getAllCategoryManagement({})
+  if (Array.isArray(res1)) listCategoryManagement.value = res1
+}
+
 /** 选中操作 */
 const selectionList = ref<ModelManagementVO[]>([])
 const handleSelectionChange = (rows: ModelManagementVO[]) => {
@@ -153,6 +164,7 @@ const submitForm = () => {
 
 /** 打开弹窗 */
 const open = async (id: string) => {
+  getTypeData()
   dialogVisible.value = true
   console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
@@ -166,7 +178,15 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ModelManagementApi.getModelManagementPage(queryParams)
-    list.value = data.list
+    list.value = data.list.map(item => {
+      const element = listVarietyManagement.value.find(ele => (ele.id === item.belongVarietyId))
+      if (!element) return item;
+      return {
+        ...item,
+        varietyName: element.varietyName,
+        categoryName: element.categoryName
+      }
+    })
     total.value = data.total
   } finally {
     loading.value = false
