@@ -76,6 +76,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
           hidden: true
         }
       },
+      {
+        path: 'growthCycle',
+        name: 'growthCycle',
+        component: () => import('@/views/agriculture/categorymanagement/growthCycle.vue'),
+        meta: {
+          hidden: true
+        }
+      },
     ]
   },
   {
