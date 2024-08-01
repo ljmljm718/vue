@@ -491,9 +491,9 @@ onMounted(()=>{
               <div class="box-title">模型要素</div>
               <div class="box-item">
                 <div class='flex justify-evenly'>
-                  <div onClick={()=>{ getFn(1) }} style="cursor:pointer;" class={rightNum.value==1?'right-active':'right-actived'}>气象指标</div>
-                  <div onClick={()=>{ getFn(2) }} style="cursor:pointer;" class={rightNum.value==2?'right-active':'right-actived'}>土壤指标</div>
-                  <div onClick={()=>{ getFn(3) }} style="cursor:pointer;" class={rightNum.value==3?'right-active':'right-actived'}>物候指标</div>
+                  <div onClick={()=>{ tabFn(1) }} style="cursor:pointer;" class={rightNum.value==1?'right-active':'right-actived'}>气象指标</div>
+                  <div onClick={()=>{ tabFn(2) }} style="cursor:pointer;" class={rightNum.value==2?'right-active':'right-actived'}>土壤指标</div>
+                  <div onClick={()=>{ tabFn(3) }} style="cursor:pointer;" class={rightNum.value==3?'right-active':'right-actived'}>物候指标</div>
                 </div>
                 <div id="radarChart" class='w-100%  mt-10px' style="height: calc(100% - 80px);"></div>
               </div>
