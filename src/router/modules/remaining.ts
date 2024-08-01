@@ -86,6 +86,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
           title: '模型监测'
         }
       },
+      {
+        path: 'growthCycle',
+        name: 'growthCycle',
+        component: () => import('@/views/agriculture/categorymanagement/growthCycle.vue'),
+        meta: {
+          hidden: true
+        }
+      },
     ]
   },
   {
@@ -392,6 +400,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/bigscreenMYBaseView',
     name: 'bigscreenMYBaseView',
     component: () => import('@/views/bigscreenMingYueBaseView/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/bigscreenModel',
+    name: 'bigscreenModel',
+    component: () => import('@/views/bigscreenModel/index.vue'),
     meta: {
       hidden: true
     }

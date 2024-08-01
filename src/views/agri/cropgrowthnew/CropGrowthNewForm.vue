@@ -264,7 +264,7 @@ const resetForm = () => {
 
 /** 计算日期之间的天数差 */
 const calculateDays = () => {
-  if (formData.value.startTime && formData.value.endTime < formData.value.startTime) {
+  if (formData.value.startTime && formData.value.endTime && formData.value.endTime < formData.value.startTime) {
     formData.value.endTime='';
     message.error('结束时间不能早于开始时间');
   }
