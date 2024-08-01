@@ -418,7 +418,7 @@ getLineChartInfo('2024-07-18')
 const init = async () => {
   await getallData(119)
   if (allData.value.length > 0) {
-    selectedDeviceName.value = allData.value[0].deviceName
+    selectedDeviceName.value = allData.value[3].deviceName
     filterData()
   }
   await getScoreInfo('1777173933829857345')
