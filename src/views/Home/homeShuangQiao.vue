@@ -296,10 +296,9 @@ onMounted(() => {
         <div class="flex justify-between w-full items-center">
           <div style="font-family: 'ArtFont';font-size: 1.3rem;">{{ item.title }}</div>
           <div @click="$router.push({
-            path:'/device/deviceinfo',
+            path:'/internetMonitor/device/deviceView',
              query: {
                 deviceType:item.deviceType
-
               }
             })" style="font-weight: 600;">{{
               (item.title !== '设备总数' && item.title !== '预警数量') ? (item.total + '台') : ''

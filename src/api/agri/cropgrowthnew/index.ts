@@ -26,6 +26,11 @@ export const CropGrowthNewApi = {
     return await request.get({ url: `/agri/crop-growth-new/page`, params })
   },
 
+  // 生长周期卡片
+  getCropGrowthCardMap: async (params: any) => {
+    return await request.get({ url: `/agri/crop-growth-new/card-map`, params })
+  },
+
   // 查询作物生长周期详情
   getCropGrowthNew: async (id: number) => {
     return await request.get({ url: `/agri/crop-growth-new/get?id=` + id })

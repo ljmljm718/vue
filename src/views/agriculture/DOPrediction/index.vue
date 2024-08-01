@@ -33,18 +33,23 @@
             <span v-if="dataValue !== '暂无数据'">{{ yyUnit }}</span>
           </div>
         </div>
-        <div class="flex items-center my-2 bg-[#fdeceb] text-[#E31205] p-2">
+        <div
+          class="flex items-center my-2 bg-[#fdeceb] text-[#E31205] text-lg p-2"
+          v-for="(warning, index) in warningMessage"
+          :key="index"
+        >
           <img src="./assets/warnIcon.png" class="w-4 h-4 mr-2" />
-          <span>设备警告：{{ warningMessage }}</span>
+          <span>设备警告：</span>
+          <span>{{ warning }}</span>
         </div>
-
       </el-card>
       <el-card class="w-full">
         <div class="font-bold mb-4">增氧机参数</div>
         <div class="flex h-17 gap-3 mx-3">
           <div
             class="flex-1 bg-#E5F4F3 text-center border-0 border-t-3.5 border-t-#009688 border-solid p-2"
-            ><span class="text-#666 block">当前功率</span>
+          >
+            <span class="text-#666 block">当前功率</span>
             <span class="text-#333 block">{{ currentPower }}</span></div
           >
           <div
@@ -57,11 +62,19 @@
         <div class="text-#009688 mx-3 my-2">调整建议：</div>
         <span class="block mx-3">{{ suggestMessage }}</span>
         <div class="flex justify-end mr-3">
-          <el-button type="primary" color="#009688">去调整</el-button></div
+          <el-button
+            type="primary"
+            color="#009688"
+            @click="router.push('/internetMonitor/device/deviceView?deviceCode=' + currentId)"
+          >去调整</el-button></div
         >
       </el-card>
       <el-card>
         <div class="font-bold mb-4">评分占比分析图</div>
+        <div class="flex justify-center items-center w-full">
+          <div id="radarChart" class="w-[100%] h-[270px]"></div>
+          <!-- <div id="radarChart" clas s="w-[50%] h-[50%] mx-auto"></div> -->
+        </div>
       </el-card>
     </div>
 
@@ -70,19 +83,7 @@
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
           <div class="flex items-center">
-            <div class="flex items-center mr-9">
-              <img src="./assets/data1.png" class="w-6 h-3 mr-2" />
-              <div>数据1</div>
-            </div>
-            <div class="flex items-center mr-9">
-              <img src="./assets/data2.png" class="w-6 h-3 mr-2" />
-              <div>数据2</div>
-            </div>
-            <div class="flex items-center mr-9">
-              <img src="./assets/data3.png" class="w-6 h-3 mr-2" />
-              <div>数据3</div>
-            </div>
-            <el-select v-model="value" placeholder="2024-07-24" size="large" style="width: 240px">
+            <el-select v-model="value" placeholder="2024-07-18" size="large" style="width: 240px">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -92,25 +93,30 @@
             </el-select>
           </div>
         </div>
+        <div id="lineChart" class="w-full aspect-[6]"></div>
       </el-card>
-      <div id="radarChart" class="w-400 h-30"></div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import * as echarts from 'echarts'
-import { getBasicInfo, getChartData, getCurrentPower, getScore } from './api'
-import { log } from 'console'
-//基本信息
-const allData = ref<any[]>([])
+import { getBasicInfo, getlineChartData, getCurrentPower, getOxygenRuleInfo } from './api'
+import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index'
+const router = useRouter() // 路由
+
 const selectedDeviceName = ref('')
 const filteredData = ref<any[]>([])
 const collectionTime = ref('')
 const dataValue = ref('')
 const yyUnit = ref('')
+
+// 获取全部数据
+//基本信息
+const allData = ref<any[]>([])
 const getallData = async (deviceKind) => {
   const res = await getBasicInfo({ deviceKind })
-  console.log('ssssss', res)
+  console.log('getallData', res)
+  if (!Array.isArray(res)) return
   allData.value = res
   if (res.length > 0) {
     yyUnit.value = res[0].yyUnit
@@ -123,9 +129,14 @@ const getallData = async (deviceKind) => {
       : 'Invalid Date'
   }
 }
+
+const currentId = ref<string>('1777173933829857345')
 const filterData = () => {
   const selectedItem = allData.value.find((item) => item.deviceName === selectedDeviceName.value)
   if (selectedItem) {
+    currentId.value = selectedItem.id
+    getCurrentPowerInfo(selectedItem.id, '当前功率')
+    getScoreInfo(selectedItem.id)
     dataValue.value = selectedItem.dataValue
     filteredData.value = [
       { title: '增氧机状态', value: selectedItem.deviceStatus },
@@ -146,56 +157,272 @@ const currentPower = ref<any[]>([])
 const getCurrentPowerInfo = async (devicesId, subDevicesName) => {
   const _res = await getCurrentPower({ devicesId, subDevicesName })
   currentPower.value = _res
-  // console.log('currentPower',currentPower.value);
 }
 getCurrentPowerInfo('1777173933829857345', '当前功率')
-//当前功率写死放在哪个参数上（还有设备id119）
 
-const ScoreData = ref<any[]>([])
-
-const factorName = ref<string[]>([])
-const targetNum = ref<number[]>([])
-const currentNum = ref<number[]>([])
 const suggestNumList = ref<string[]>([])
 const warningList = ref<string[]>([])
 const suggestList = ref<string[]>([])
-const warningMessage = ref<string>('')
+const warningMessage = ref<string[]>([])
 const suggestMessage = ref<string>('')
 
 const getScoreInfo = async (equipId) => {
-  const ScoreData = await getScore({ equipId })
+  const ScoreData = await getOxygenRuleInfo({ equipId })
   console.log('score', ScoreData)
-  targetNum.value = ScoreData.targetNum.map(Number) || []
-  currentNum.value = ScoreData.currentNum.map(Number) || []
+  const targetNum = ScoreData.targetNum.map(Number) || []
+  const currentNum = ScoreData.currentNum.map(Number) || []
   // suggestNumList.value = ScoreData.suggestNumList.map((item) => Number(item.replace('%', ''))) || []
   suggestNumList.value = ScoreData.suggestNumList || []
-  factorName.value = ScoreData.factorName || []
+  const factorName = ScoreData.factorName || []
+  console.log('warningList', ScoreData.warningList)
+
   suggestList.value = ScoreData.suggestList || []
   warningList.value = ScoreData.warningList || []
   // console.log('sdadsdasds',targetNum.value,currentNum.value,suggestNumList.value,factorName.value,suggestList.value,warningList.value);
-  warningMessage.value = warningList.value.join('; ');
-  suggestMessage.value = suggestList.value.join('; ');
+  warningMessage.value = warningList.value
+  suggestMessage.value = suggestList.value.join('; ')
+  drawRadarChart(targetNum, currentNum, factorName)
 }
-getScoreInfo('1777173933829857345')
 
+//画图一
+let chartIns:any = null
+const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
+  if (
+    !Array.isArray(targetNum)
+    ||
+    !Array.isArray(currentNum)
+    ||
+    !Array.isArray(factorName)
+    ||
+    targetNum.length === 0
+    ||
+    currentNum.length === 0
+    ||
+    factorName.length === 0
+  ) {
+    chartIns && chartIns.clear()
+  }
+  chartIns = initChartStatic('radarChart', {
+    title: {
+      // text: '评估评分占比分析图'
+    },
+    tooltip: {},
+    radar: [
+      {
+        indicator: factorName.map((name, i) => ({ name, max: targetNum[i] || 100 })),
+        name: {
+          textStyle: {
+            fontSize: 15,
+            color: '#666666',
+            fontWeight: 'bold'
+          }
+        },
+        splitArea: {
+          // 坐标轴在 grid 区域中的分隔区域，默认不显示。
+          show: true,
+          areaStyle: {
+            // 分隔区域的样式设置。
+            color: ['rgba(251, 251, 251)', 'rgba(253, 253, 253)'] // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
+          }
+        },
+        axisLine: {
+          // 设置雷达图中间射线的颜色
+          lineStyle: {
+            color: '#rgba(241, 241, 241)'
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(241, 241, 241)'
+          }
+        }
+      }
+    ],
+    series: [
+      {
+        name: 'Current Values',
+        type: 'radar',
+        data: [
+          {
+            value: currentNum,
+            name: 'Current Values',
+            itemStyle: {
+              normal: {
+                color: 'rgba(198, 234, 230)',
+                lineStyle: {
+                  color: 'rgba(0, 157, 143)'
+                }
+              }
+            }
+          }
+        ],
+        symbol: 'circle',
+        symbolSize: 6,
+        itemStyle: {
+          color: '#00AD8F',
+          borderColor: '#00AD8F',
+          borderWidth: 2
+        },
+        areaStyle: {
+          color: 'rgba(198, 234, 230, 0.5)'
+        }
+      }
+    ]
+  })
+}
 
-//画图
-// const radarChartRef = ref(null)
-// const initRadarChart = () => {
-
-// }
+// 实时数据 Chart
+const getLineChartInfo = async (date) => {
+  const LineChartData = await getlineChartData({ date })
+  const PH = LineChartData.PH,
+    Temp = LineChartData['温度'],
+    Light = LineChartData['光照强度']
+  const xValue = PH.map((item) => item.dateTime.split(' ')[1])
+  initChartStatic(
+    'lineChart',
+    generateBaseOptions({
+      xAxis: {
+        data: xValue,
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#a1a1aa80'
+          }
+        }
+      },
+      legend: {
+        show: true,
+        orient: 'horizontal',
+        itemWidth: 15,
+        itemHeight: 15,
+        left: '85%',
+        textStyle: {
+          color: '#999999',
+          fontSize: 14
+        }
+      },
+      color: ['#ffa773', '#36e1d9'],
+      yAxis: {
+        name: '',
+        type: 'value',
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#a1a1aa80'
+          }
+        },
+        splitLine: {
+          //网格线
+          show: true, //是否显示
+          lineStyle: {
+            //网格线样式
+            color: '#a1a1aa80', //网格线颜色
+            width: 1, //网格线的加粗程度
+            type: 'dashed' //网格线类型
+          }
+        },
+        splitArea: {
+          //网格区域
+          show: false //是否显示
+        }
+      },
+      series: [
+        {
+          name: 'PH',
+          data: PH.map((item) => item.dataValue),
+          barWidth: 30,
+          type: 'line',
+          smooth: true,
+          label: {
+            show: true, //开启显示
+            position: 'top', //在上方显示
+            textStyle: {
+              //数值样式
+              color: '#eee',
+              fontSize: 10
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 1, color: '#1bcad600' },
+                { offset: 0, color: '#1bcad6' }
+              ])
+            }
+          },
+          areaStyle: { normal: {} }
+        },
+        {
+          name: '温度',
+          data: Temp.map((item) => item.dataValue),
+          barWidth: 30,
+          type: 'line',
+          smooth: true,
+          label: {
+            show: true, //开启显示
+            position: 'top', //在上方显示
+            textStyle: {
+              //数值样式
+              color: '#eee',
+              fontSize: 10
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 1, color: '#d54b3f00' },
+                { offset: 0, color: '#d54b3f' }
+              ])
+            }
+          },
+          areaStyle: { normal: {} }
+        },
+        {
+          name: '光照强度',
+          data: Light.map((item) => item.dataValue),
+          barWidth: 30,
+          type: 'line',
+          smooth: true,
+          label: {
+            show: true, //开启显示
+            position: 'top', //在上方显示
+            textStyle: {
+              //数值样式
+              color: '#eee',
+              fontSize: 10
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 1, color: '#bfa26b00' },
+                { offset: 0, color: '#bfa26b' }
+              ])
+            }
+          },
+          areaStyle: { normal: {} }
+        }
+      ],
+      grid: {
+        left: '6%',
+        right: '4%',
+        top: '16%',
+        bottom: '15%'
+      }
+    })
+  )
+}
+getLineChartInfo('2024-07-18')
 
 // 初始化
-onMounted(async () => {
+const init = async () => {
   await getallData(119)
   if (allData.value.length > 0) {
-    selectedDeviceName.value = allData.value[0].deviceName
+    selectedDeviceName.value = allData.value[3].deviceName
     filterData()
   }
-})
-//根据下拉框获取设备id？
-// const handleSelectChange = (item) => {
-//   console.log("ITEM", item);
-//   getBasicData(item)
-// }
+  await getScoreInfo('1777173933829857345')
+}
+// 初始化
+onMounted(() => init())
 </script>
