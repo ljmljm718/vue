@@ -16,13 +16,12 @@
       <el-col :span="24" class="px-[30px]"  >
         <el-form-item class="form-item" style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
-            class="login-input is-empty"
-            style="border:none"
+            class="login-input is-empty !text-white"
+            style="border:none;color:white;"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
             link
-            type="primary"
           />
         </el-form-item>
       </el-col>
@@ -411,5 +410,9 @@ onMounted(() => {
 }
 ::v-deep .el-checkbox__input.is-focus .el-checkbox__inner {
   border-color: #46696c!important;
+}
+
+::v-deep .login-input .el-input__inner {
+  color: white !important;
 }
 </style>
