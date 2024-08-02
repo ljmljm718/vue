@@ -272,7 +272,7 @@ const handleQuery = () => {
 const goGrowthCycle = ( id: number) =>{
 
   // console.log('id',id)
-  router.push({ path:'/growthCycle', query: { cropId: id }})
+  router.push({ path:'/growthCycle', query: { cropId: id } })
 }
 /** 重置按钮操作 */
 const resetQuery = () => {

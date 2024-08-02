@@ -1,11 +1,20 @@
 import request from '@/config/axios'
 
+// 获取品类的列表
 export const getGrowthCycleListApi = async (params) =>{
   return await request.get({
     url:'/agri/crop-growth-new/list-by-cropId',
     params
   })
 }
+// 获取品种的列表
+export const getVarietyGrowthList = async (params) =>{
+  return await request.get({
+    url:'/agri/crop-growth-new/list-by-cropCode',
+    params
+  })
+}
+//获取事件列表
 export const getEventListApi = async (params) =>{
   return await request.get({
     url:'/agriculture/crop-growth-sub/page',
