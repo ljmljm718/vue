@@ -182,7 +182,6 @@ import {DICT_TYPE, getIntDictOptions, getStrDictOptions} from '@/utils/dict'
 import {CommonStatusEnum} from "@/utils/constants";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 
 /** 模型管理 列表 */
 defineOptions({ name: 'ModelManagement' })
