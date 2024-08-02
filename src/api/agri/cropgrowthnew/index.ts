@@ -60,4 +60,9 @@ export const CropGrowthNewApi = {
   saveGeofencing: async (data) => {
     return await request.put({ url: `/agriculture/park-info/save-geofencing`, data })
   },
+
+  // 查询作物生长周期不分页
+  getCropGrowthNewNoPage: async (params: any) => {
+    return await request.get({ url: `/agri/crop-growth-new/noPage`, params })
+  },
 }

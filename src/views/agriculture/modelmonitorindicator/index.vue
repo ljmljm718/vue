@@ -218,7 +218,7 @@ import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agricul
 import ModelMonitorIndicatorForm from './ModelMonitorIndicatorForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
 import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
-import {CropGrowthApi, CropGrowthVO} from "@/api/agriculture/cropgrowth";
+import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
 // @ts-ignore
 import ModelSelectPopup from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue"
 import {
@@ -270,12 +270,13 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
 const listModelManagement = ref<ModelManagementVO[]>([]) // 模型列表的数据
-const listCropGrowth = ref<CropGrowthVO[]>([]) // 生长周期列表的数据
+const listCropGrowthNew = ref<CropGrowthNewVO[]>([]) // 生长周期列表的数据
 const getTypeData = async () => {
-  const { list } = await ModelManagementApi.getModelManagementPage({})
-  if (Array.isArray(list)) listModelManagement.value = list
-  const { list: growthList } = await CropGrowthApi.getCropGrowthPage({})
-  if (Array.isArray(growthList)) listCropGrowth.value = growthList
+  const { list: list1 } = await ModelManagementApi.getModelManagementNoPage({})
+  if (Array.isArray(list1)) listModelManagement.value = list1
+  const { list: growthNewList } = await CropGrowthNewApi.getCropGrowthNewNoPage({})
+  console.log("growthNewList", growthNewList)
+  if (Array.isArray(growthNewList)) listCropGrowthNew.value = growthNewList
 }
 
 // 获取左侧生长期列表
@@ -338,21 +339,33 @@ const initCharts = () => {
   })
 }
 
+
+watch(showType, (val:string) => {
+  if (val === 'card') {
+    nextTick(() => {
+      initCharts()
+    })
+  }
+})
+
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     if (selectedKey.value) queryParams.growthPeriodId = selectedKey.value
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
+    console.log("data", data.list)
     list.value = data.list.map(item => {
       const element = Array.isArray(listModelManagement.value) ? listModelManagement.value.find(ele => (ele.id === item.modelId)) : null
-      const cropItem = Array.isArray(listCropGrowth.value) ? listCropGrowth.value.find(ele => ele.id === item.growthPeriodId) : null
+      const cropItem = Array.isArray(listCropGrowthNew.value) ? listCropGrowthNew.value.find(ele => ele.id === item.growthPeriodId) : null
       return {
         ...item,
         modelName: element ? element.modelName : '',
         growth: cropItem ? cropItem.growth : ''
       }
     })
+    console.log("list", list.value)
     total.value = data.total
   } finally {
     loading.value = false
