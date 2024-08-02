@@ -539,11 +539,10 @@ const initChartLine = async (val, num,type) => {
   console.log(res, '收获趋势图')
   let yData = res.map((item) => item.sumNum)
   let xData = res.map((item) => item.dateContent)
-  console.log(yData, 'yDatayData')
   console.log(xData, 'xData')
   let yAxisData = []
   let xAxisData = []
-  if (radio.value == '本月') {
+  if (radio.value == '本月' && xData.length!=0) {
     
     if (num == 1) {
       let month = xData[0]
@@ -597,7 +596,8 @@ const initChartLine = async (val, num,type) => {
     
     console.log(yAxisData, 'yAxisDatayAxisData')
   }
-  if(xData.length==0){
+  if(xData.length==0 && radio.value == '本月'){
+    console.log('enyeumeishuju')
       let _Ydata = []
       let _X = []
       let month = val[0]
@@ -757,7 +757,7 @@ const initChartLine = async (val, num,type) => {
       }
        
   }
-  if(radio.value == '本年'){
+  if(radio.value == '本年' && xData.length!==0){
     console.log(123)
     let _Y=[]
     for(let i= 1 ; i<=12 ; i++){
@@ -772,6 +772,19 @@ const initChartLine = async (val, num,type) => {
     yData
     console.log(_Y,'33333333333')
     yAxisData=_Y
+  }
+  if(radio.value == '本年' && xData.length===0){
+    let _Y=[]
+    for(let i= 1 ; i<=12 ; i++){
+      xAxisData.push(`${val[0].split('-')[0]}-${i>=10?i: '0' + i}`)
+      _Y.push(0)
+    }
+   
+    console.log(_Y,'33333333333y')
+    console.log( xAxisData,'33333333333xdata')
+    yAxisData=_Y
+    console.log( yAxisData,'33333333333yAxisData')
+
   }
   initChartStatic(
     'chartLine',
