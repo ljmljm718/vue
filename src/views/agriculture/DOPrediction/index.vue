@@ -272,10 +272,7 @@ const getLineChartInfo = async (date) => {
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
     Light = LineChartData['光照强度']
-  const xValue = PH.map((item) => {
-    if (!item?.dateTime) return item.dateTime ?? ''
-    return item.dateTime.split(' ')[1]
-  })
+  const xValue = PH.map((item) => (item.hour ?? ''))
   initChartStatic(
     'lineChart',
     generateBaseOptions({
