@@ -145,6 +145,13 @@
           <el-button
             link
             type="primary"
+            @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${scope.row.id}&belongVarietyId=${scope.row.belongVarietyId}`)"
+          >
+            监测指标
+          </el-button>
+          <el-button
+            link
+            type="primary"
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['agriculture:model-management:update']"
           >
@@ -195,6 +202,7 @@ const getTypeData = async () => {
   if (Array.isArray(res1)) listCategoryManagement.value = res1
 }
 
+const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 

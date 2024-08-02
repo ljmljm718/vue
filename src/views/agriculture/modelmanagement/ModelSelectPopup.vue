@@ -170,8 +170,16 @@ const open = async (id: string) => {
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
+  
+  if (typeof id === 'string' && id.length > 1) {
+    const activeItem = list.value.find(ele => ele.id === id)
+    if (!activeItem) return;
+    selectionList.value = [activeItem]
+    submitForm()
+  }
+  
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 加载列表  */
 const getList = async () => {
@@ -194,15 +202,15 @@ const getList = async () => {
 }
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+const resetQuery = async () => {
   queryFormRef.value.resetFields()
-  handleQuery()
+  await handleQuery()
 }
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+const handleQuery = async () => {
   queryParams.pageNo = 1
-  getList()
+  await getList()
 }
 
 // 单选
