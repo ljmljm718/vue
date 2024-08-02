@@ -66,7 +66,7 @@
       <el-form-item label="启用状态" prop="enabledStatus">
         <el-select
           v-model="queryParams.enabledStatus"
-          placeholder="启用状态"
+          placeholder="请选择启用状态"
           clearable
           class="!w-240px"
         >
@@ -182,7 +182,6 @@ import {DICT_TYPE, getIntDictOptions, getStrDictOptions} from '@/utils/dict'
 import {CommonStatusEnum} from "@/utils/constants";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 
 /** 模型管理 列表 */
 defineOptions({ name: 'ModelManagement' })

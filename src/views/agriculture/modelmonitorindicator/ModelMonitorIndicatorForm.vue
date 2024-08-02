@@ -76,6 +76,7 @@
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {CropGrowthVO} from "@/api/agriculture/cropgrowth";
+import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 
 /** 监测指标 表单 */
 defineOptions({ name: 'ModelMonitorIndicatorForm' })
@@ -87,7 +88,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formData = ref<any>({
   id: undefined,
   modelId: undefined,
   growthPeriodId: undefined,
@@ -160,8 +161,8 @@ const openModelSelectPopup = (id: string) => {
   modelSelectPopupRef.value.open(id)
 }
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
-  formData.value.modelId = String(order[0].id)
-  modelName.value = String(order[0].modelName)
+  formData.value.modelId = order[0].id?.toString()
+  modelName.value = order[0].modelName?.toString()
 }
 
 //生长周期
@@ -172,8 +173,8 @@ const openCropGrowthPopup = (id: string) => {
   cropGrowthPopupRef.value.open(id)
 }
 const handleCropGrowthPopupChange = (order: CropGrowthVO) => {
-  formData.value.growthPeriodId = String(order[0].id)
-  growthName.value = String(order[0].growth)
+  formData.value.growthPeriodId = order[0].id?.toString()
+  growthName.value = order[0].growth?.toString()
 }
 
 /** 重置表单 */
