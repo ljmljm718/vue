@@ -102,6 +102,7 @@
 import * as echarts from 'echarts'
 import { getBasicInfo, getlineChartData, getCurrentPower, getOxygenRuleInfo } from './api'
 import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index'
+import dayjs from 'dayjs';
 const router = useRouter() // 路由
 
 const selectedDeviceName = ref('')
@@ -120,13 +121,7 @@ const getallData = async (deviceKind) => {
   allData.value = res
   if (res.length > 0) {
     yyUnit.value = res[0].yyUnit
-    const isValidTimestamp = (timestamp) => {
-      const date = new Date(timestamp)
-      return !isNaN(date.getTime())
-    }
-    collectionTime.value = isValidTimestamp(res[0].collectionTime)
-      ? new Date(res[0].collectionTime).toISOString().split('T')[0]
-      : 'Invalid Date'
+    collectionTime.value = dayjs(res[0].collectionTime).format("YYYY-MM-DD HH:mm:ss")
   }
 }
 
