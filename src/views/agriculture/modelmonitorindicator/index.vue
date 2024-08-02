@@ -211,6 +211,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  modelName.value = undefined
   handleQuery()
 }
 
@@ -255,8 +256,8 @@ const openModelSelectPopup = (id: string) => {
 }
 const modelName = ref()
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
-  queryParams.modelId = String(order[0].id)
-  modelName = String(order[0].modelName)
+  queryParams.modelId = order[0].id?.toString()
+  modelName.value = order[0].modelName?.toString()
 }
 
 const init = async () => {
