@@ -29,3 +29,7 @@ export const deleteCropGrowthNewApi = async (id: number) => {
 export const deleteEventApi = async (id: number) => {
   return await request.delete({ url: `/agriculture/crop-growth-sub/delete?id=` + id })
 }
+//导出文件
+export const CropGrowthNew = async (params) => {
+  return await request.download({ url: `/agri/crop-growth-new/export-excel`, params })
+}

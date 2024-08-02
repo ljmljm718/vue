@@ -6,7 +6,7 @@
           v-hasPermi="['agri:crop-growth-new:create']">
           <Icon icon="ep:plus" class="mr-5px" />新增
         </el-button>
-        <el-button :loading="exportLoading" v-hasPermi="['agri:crop-growth-new:export']">
+        <el-button @click="handleExport" :loading="exportLoading" v-hasPermi="['agri:crop-growth-new:export']">
           <Icon icon="ep:download" class="mr-5px" />导出
         </el-button>
       </div>
@@ -93,11 +93,12 @@ import {
   getGrowthCycleListApi,
   getEventListApi,
   deleteCropGrowthNewApi,
-  deleteEventApi
+  deleteEventApi,
+  CropGrowthNew
 } from './growthCycleApi'
 
 import { useRoute } from 'vue-router'
-
+import download from '@/utils/download'
 
 const slectedItem = ref<string>('')
 
@@ -194,19 +195,19 @@ const editGrowth = () => {
 
 }
 /** 导出按钮操作 */
-// const handleExport = async () => {
-//   try {
-//     // 导出的二次确认
-//     await message.exportConfirm()
-//     // 发起导出
-//     exportLoading.value = true
-//     const data1 = await CropGrowthNewApi.exportCropGrowthNew(queryParams)
-//     download.excel(data1, '作物生长周期.xls')
-//   } catch {
-//   } finally {
-//     exportLoading.value = false
-//   }
-// }
+const handleExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    exportLoading.value = true
+    const data1 =await CropGrowthNew({cropId:cropId})
+    download.excel(data1, '作物生长周期.xls')
+  } catch {
+  } finally {
+    exportLoading.value = false
+  }
+}
 /** 删除按钮操作 */
 const handleDelete = async (id: number, tag: string) => {
   try {
