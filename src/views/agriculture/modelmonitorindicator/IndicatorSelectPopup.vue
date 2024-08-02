@@ -1,7 +1,7 @@
-<!-- 模型列表 -->
+<!-- 指标列表 -->
 <template>
   <Dialog
-    title="选择模型"
+    title="选择监测指标"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -16,29 +16,21 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="模型名称" prop="modelName">
+        <el-form-item label="模型名称" prop="modelId">
           <el-input
-            v-model="queryParams.modelName"
-            placeholder="请输入模型名称"
+            v-model="modelName"
+            placeholder="请选择模型"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="模型类型" prop="modelType">
-          <el-select
-            v-model="queryParams.modelType"
-            placeholder="请选择模型类型"
-            clearable
-            class="!w-240px"
           >
-            <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.GROWTH_MODEL_TYPE)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
+            <template #append>
+              <el-button @click="openModelSelectPopup('0')">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
@@ -58,34 +50,21 @@
                 @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
           <!--      <el-table-column label="主键（模型编码）" align="center" prop="id" />-->
         <el-table-column width="30" label="选择" type="selection"/>
-          <el-table-column label="模型名称" align="center" prop="modelName" />
-          <el-table-column label="模型类型" align="center" prop="modelType" >
-            <template #default="scope">
-              <dict-tag :type="DICT_TYPE.GROWTH_MODEL_TYPE" :value="scope.row.modelType" />
-            </template>
-          </el-table-column>
-          <el-table-column label="关联品种" align="center" prop="varietyName" />
-          <el-table-column label="关联品类" align="center" prop="categoryName" />
-          <!--      <el-table-column label="关联品类" align="center" prop="belongCategory" />-->
-          <!--      <el-table-column label="关联品种" align="center" prop="belongVariety" />-->
-          <el-table-column label="模型图片" align="center" prop="modelImageId" >
-            <template #default="{ row }">
-              <el-image
-                class="h-50px w-50px"
-                lazy
-                :src="row.modelImageId"
-                :preview-src-list="[row.modelImageId]"
-                preview-teleported
-                fit="cover"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="启用状态" align="center" prop="enabledStatus" >
-            <template #default="scope">
-              <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.enabledStatus" />
-            </template>
-          </el-table-column>
-          <el-table-column label="描述" align="center" prop="description" width="240"/>
+        <el-table-column label="指标编号" align="center" prop="id" />
+        <el-table-column label="模型名称" align="center" prop="modelName" />
+        <el-table-column label="生长周期" align="center" prop="growth" />
+        <el-table-column label="指标名称" align="center" prop="indicatorName" />
+        <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
+<!--        <el-table-column label="指标范围" align="center" prop="indicatorRange" />-->
+<!--        <el-table-column label="指标结果" align="center" prop="indicatorResult" />-->
+        <el-table-column label="健康分值" align="center" prop="healthScore" />
+        <el-table-column label="权重" align="center" prop="weight" />
+        <el-table-column label="是否默认" align="center" prop="isDefault" >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ADOPTION_ODER_REMIND_STATUS" :value="scope.row.isDefault" />
+          </template>
+        </el-table-column>
+        <el-table-column label="实现类" align="center" prop="implementationClass" />
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -102,6 +81,9 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择模型-->
+  <ModelSelectPopup ref="modelSelectPopupRef" @success="handleModelSelectPopupChange"/>
 </template>
 
 <script lang="ts" setup>
@@ -110,47 +92,57 @@ import {DICT_TYPE, getStrDictOptions} from "@/utils/dict"
 import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import ModelSelectPopup from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
+import {CropGrowthApi, CropGrowthVO} from "@/api/agriculture/cropgrowth";
+import {
+  ModelIndicatorElementApi,
+  ModelIndicatorElementVO
+} from "@/api/agriculture/modelindicatorelement";
+import {
+  ModelMonitorIndicatorApi,
+  ModelMonitorIndicatorVO
+} from "@/api/agriculture/modelmonitorindicator";
 
-defineOptions({name: 'ModelSelectPopup'})
-const list = ref<ModelManagementVO[]>([]) // 列表的数据
+defineOptions({name: 'IndicatorSelectPopup'})
+const list = ref<ModelMonitorIndicatorVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
 const dialogVisible = ref(false) // 弹窗的是否展示
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  modelName: undefined,
-  modelType: undefined,
-  belongCategoryId: undefined,
-  belongCategory: undefined,
-  belongVarietyId: undefined,
-  belongVariety: undefined,
-  modelImageId: undefined,
-  modelFileId: undefined,
-  enabledStatus: undefined,
-  description: undefined,
+  modelId: undefined,
+  growthPeriodId: undefined,
+  indicatorName: undefined,
+  indicatorDescription: undefined,
+  indicatorRange: undefined,
+  indicatorResult: undefined,
+  healthScore: undefined,
+  weight: undefined,
+  isDefault: undefined,
+  implementationClass: undefined,
   createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
 
-const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const listModelManagement = ref<ModelManagementVO[]>([]) // 模型列表的数据
+const listCropGrowth = ref<CropGrowthVO[]>([]) // 生长周期列表的数据
 const getTypeData = async () => {
-  const res = await allDataCacheManager.getData({})
-  if (Array.isArray(res)) listVarietyManagement.value = res
-  const res1 = await CategoryManagementApi.getAllCategoryManagement({})
-  if (Array.isArray(res1)) listCategoryManagement.value = res1
+  const { list } = await ModelManagementApi.getModelManagementPage({})
+  if (Array.isArray(list)) listModelManagement.value = list
+  const { list: growthList } = await CropGrowthApi.getCropGrowthPage({})
+  if (Array.isArray(growthList)) listCropGrowth.value = growthList
 }
 
 /** 选中操作 */
-const selectionList = ref<ModelManagementVO[]>([])
-const handleSelectionChange = (rows: ModelManagementVO[]) => {
+const selectionList = ref<ModelMonitorIndicatorVO[]>([])
+const handleSelectionChange = (rows: ModelMonitorIndicatorVO[]) => {
   selectionList.value = rows
 }
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: ModelManagementVO[]): void
+  (e: 'success', value: ModelMonitorIndicatorVO[]): void
 }>()
 const submitForm = () => {
   try {
@@ -161,38 +153,29 @@ const submitForm = () => {
   }
 }
 
-
 /** 打开弹窗 */
 const open = async (id: string) => {
-  getTypeData()
+  await getTypeData()
   dialogVisible.value = true
   console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
-  
-  if (typeof id === 'string' && id.length > 1) {
-    const activeItem = list.value.find(ele => ele.id === id)
-    if (!activeItem) return;
-    selectionList.value = [activeItem]
-    submitForm()
-  }
-  
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await ModelManagementApi.getModelManagementPage(queryParams)
+    const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
     list.value = data.list.map(item => {
-      const element = listVarietyManagement.value.find(ele => (ele.id === item.belongVarietyId))
-      if (!element) return item;
+      const element = Array.isArray(listModelManagement.value) ? listModelManagement.value.find(ele => (ele.id === item.modelId)) : null
+      const cropItem = Array.isArray(listCropGrowth.value) ? listCropGrowth.value.find(ele => ele.id === item.growthPeriodId) : null
       return {
         ...item,
-        varietyName: element.varietyName,
-        categoryName: element.categoryName
+        modelName: element ? element.modelName : '',
+        growth: cropItem ? cropItem.growth : ''
       }
     })
     total.value = data.total
@@ -202,15 +185,15 @@ const getList = async () => {
 }
 
 /** 重置按钮操作 */
-const resetQuery = async () => {
+const resetQuery = () => {
   queryFormRef.value.resetFields()
-  await handleQuery()
+  handleQuery()
 }
 
 /** 搜索按钮操作 */
-const handleQuery = async () => {
+const handleQuery = () => {
   queryParams.pageNo = 1
-  await getList()
+  getList()
 }
 
 // 单选
@@ -243,6 +226,18 @@ const selectClick = (row) => {
     multipleTableRef.value.toggleRowSelection(row, true);
   }
 }
+
+//模型的选择
+const modelSelectPopupRef = ref()
+const openModelSelectPopup = (id: string) => {
+  modelSelectPopupRef.value.open(id)
+}
+const modelName = ref()
+const handleModelSelectPopupChange = (order: ModelManagementVO) => {
+  queryParams.modelId = String(order[0].id)
+  modelName = String(order[0].modelName)
+}
+
 </script>
 
 <style scoped lang='scss'>

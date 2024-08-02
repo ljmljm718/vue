@@ -46,4 +46,10 @@ export const ModelMonitorIndicatorApi = {
   exportModelMonitorIndicator: async (params) => {
     return await request.download({ url: `/agriculture/model-monitor-indicator/export-excel`, params })
   },
+
+  // 根据品种id获取生长周期
+  getGrowthByVarietyId: async (params) => {
+    return await request.download({ url: `/agriculture/model-management/getGrowthByVarietyId`, params })
+  },
+  
 }

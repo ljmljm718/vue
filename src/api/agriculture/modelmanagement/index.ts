@@ -22,6 +22,11 @@ export const ModelManagementApi = {
     return await request.get({ url: `/agriculture/model-management/page`, params })
   },
 
+  // 查询模型管理不分页
+  getModelManagementNoPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/model-management/noPage`, params })
+  },
+
   // 查询模型管理详情
   getModelManagement: async (id: number) => {
     return await request.get({ url: `/agriculture/model-management/get?id=` + id })

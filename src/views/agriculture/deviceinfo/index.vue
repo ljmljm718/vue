@@ -479,6 +479,7 @@ const handleDelete = async () => {
     const id = deviceId.value.toString()
     await DeviceInfoApi.deleteDeviceInfo(id)
     message.success(t('common.delSuccess'))
+    deviceInfoTableRef.value.clearSelection(); //清除之前的选中状态
     // 刷新列表
     await getList()
   } catch {

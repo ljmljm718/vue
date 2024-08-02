@@ -38,12 +38,12 @@
     </Dialog>
   </div>
   <!-- 选择设备 -->
-  <AgriculturalBaseList ref="AgriculturalBaseListRef" @success="deviceBaseList" />
+  <AgriculturalBaseList ref="AgriculturalBaseListRef" @success="deviceBaseList"  />
   <!-- 已绑定设备 抽屉 -->
   <el-drawer v-model="drawer" :direction="direction" :before-close="handleClose">
     <template #header="{ titleId }">
       <h3 :id="titleId" class="text-xl color-[#000]" style="font-weight: 600"
-        >因素名称：{{ drawerTile }}</h3
+        >因素名称：{{ queryParams.drawerTile }}</h3
       >
     </template>
     <el-table v-loading="loading" :data="tableData" :stripe="true" :show-overflow-tooltip="true">
@@ -63,11 +63,24 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      v-model:currentPage="queryParams.obj.pageNo"
+      v-model:page-size="queryParams.obj.pageSize"
+      :page-sizes="[5, 10, 15, 20]"
+      :small="small"
+      :disabled="disabled"
+      :background="background"
+      layout=" total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </el-drawer>
 </template>
 
-<script setup >
-import { ref, reactive } from 'vue'
+<script setup lang='ts'>
+import { ref, reactive,watch } from 'vue'
 import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue'
 import { OxygenFactorEquipApi } from '@/api/agriculture/oxygenfactorequip'
 const dialogVisible = ref(false)
@@ -152,15 +165,25 @@ const drawer = ref(false)
 const drawerTile = ref('')
 const tableData = ref([])
 const deviceId = ref({})
+const total=ref(0)
+const queryParams=reactive(
+  {
+    obj:{
+      pageNo: 1,
+      pageSize: 10,
+      factorId: ''
+    },
+    drawerTile:''
+  }
+)
 const drawerList = async (item) => {
   drawer.value = true
   deviceId.value = item
-  drawerTile.value = item.factorName
-  let res = await OxygenFactorEquipApi.getOxygenFactorEquipPage({
-    pageNo: 1,
-    pageSize: 10,
-    factorId: item.id
-  })
+  queryParams.drawerTile= item.factorName?item.factorName:queryParams.drawerTile
+  console.log(item.id,'item.iditem.iditem.id')
+  queryParams.obj.factorId=item.id?item.id:queryParams.obj.factorId
+  let res = await OxygenFactorEquipApi.getOxygenFactorEquipPage(queryParams.obj)
+  total.value=res.total
   tableData.value = res.list
 }
 //删除设备
@@ -182,6 +205,30 @@ defineExpose({
   drawerList,
   open
 })
+const handleSizeChange = (val: number) => {
+  console.log(`${val} items per page`)
+  queryParams.obj.pageSize=val
+  console.log(queryParams,'queryParamsqueryParams')
+  drawerList(queryParams)
+}
+const handleCurrentChange = (val: number) => {
+  console.log(`current page: ${val}`)
+  queryParams.obj.pageNo=val
+  drawerList(queryParams)
+}
+watch(()=>drawer.value,(val)=>{
+  if(!val){
+    queryParams.obj={
+      pageNo: 1,
+      pageSize: 10,
+      factorId: ''
+    }
+    queryParams.drawerTile=''
+    console.log(queryParams,'ddddd123')
+
+  }
+},
+)    
 </script>
 <style lang='scss' scoped>
 </style>

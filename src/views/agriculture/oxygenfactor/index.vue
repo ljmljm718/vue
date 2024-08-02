@@ -104,7 +104,7 @@
         width="180px"
       />
       <el-table-column label="备注" align="center" prop="remark"/>
-      <el-table-column label="设备关联" align="center">
+      <el-table-column label="设备关联" align="center" width="200px">
         <template #default="scope">
          
             <el-button

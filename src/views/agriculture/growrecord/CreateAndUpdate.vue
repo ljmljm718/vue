@@ -367,7 +367,7 @@ const handlePurchaseOrderChange = async (orderA: EquipmentDataVO) => {
   // 将订单设置到入库单
   // console.log("--->>查看查到设备信息", orderA[0])
   //赋值id
-  formData.value.facilityId = String(orderA[0].deviceCode)
+  formData.value.facilityId = String(orderA[0].id)
   // //赋值设备名称
   formData.value.facilityName = String(orderA[0].deviceName);
   //赋值采集类型

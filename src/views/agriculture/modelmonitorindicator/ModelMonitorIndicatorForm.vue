@@ -18,9 +18,9 @@
         </el-input>
       </el-form-item>
       <el-form-item label="生长周期" prop="growthPeriodId">
-        <el-input v-model="growthName" placeholder="请选择生长周期" >
+        <el-input v-model="growthNewName" placeholder="请选择生长周期" >
           <template #append>
-            <el-button @click="openCropGrowthPopup('0')">
+            <el-button @click="openCropGrowthNewPopup('0')">
               <Icon icon="ep:search"/>
               选择
             </el-button>
@@ -70,12 +70,13 @@
   <ModelSelectPopup ref="modelSelectPopupRef" @success="handleModelSelectPopupChange"/>
 
   <!--  选择生长周期-->
-  <CropGrowthPopup ref="cropGrowthPopupRef" @success="handleCropGrowthPopupChange"/>
+  <CropGrowthNewPopup ref="cropGrowthNewPopupRef" @success="handleCropGrowthNewPopupChange"/>
 </template>
 <script setup lang="ts">
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
-import {CropGrowthVO} from "@/api/agriculture/cropgrowth";
+import {CropGrowthNewVO} from "@/api/agri/cropgrowthnew";
+import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 
 /** 监测指标 表单 */
 defineOptions({ name: 'ModelMonitorIndicatorForm' })
@@ -87,7 +88,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formData = ref<any>({
   id: undefined,
   modelId: undefined,
   growthPeriodId: undefined,
@@ -103,8 +104,8 @@ const formData = ref({
 const formRules = reactive({
   // modelName: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
   modelId: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
-  // growthName: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
-  growthPeriodId: [{ required: true, message: '生长周期id不能为空', trigger: 'blur' }],
+  // growthNewName: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
+  growthPeriodId: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
   isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
@@ -160,20 +161,20 @@ const openModelSelectPopup = (id: string) => {
   modelSelectPopupRef.value.open(id)
 }
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
-  formData.value.modelId = String(order[0].id)
-  modelName.value = String(order[0].modelName)
+  formData.value.modelId = order[0].id?.toString()
+  modelName.value = order[0].modelName?.toString()
 }
 
 //生长周期
-const growthName = ref()
+const growthNewName = ref()
 //生长周期的选择
-const cropGrowthPopupRef = ref()
-const openCropGrowthPopup = (id: string) => {
-  cropGrowthPopupRef.value.open(id)
+const cropGrowthNewPopupRef = ref()
+const openCropGrowthNewPopup = (id: string) => {
+  cropGrowthNewPopupRef.value.open(id)
 }
-const handleCropGrowthPopupChange = (order: CropGrowthVO) => {
-  formData.value.growthPeriodId = String(order[0].id)
-  growthName.value = String(order[0].growth)
+const handleCropGrowthNewPopupChange = (order: CropGrowthNewVO) => {
+  formData.value.growthPeriodId = order[0].id?.toString()
+  growthNewName.value = order[0].growth?.toString()
 }
 
 /** 重置表单 */
@@ -193,6 +194,6 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
   modelName.value = undefined
-  growthName.value = undefined
+  growthNewName.value = undefined
 }
 </script>
