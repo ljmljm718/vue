@@ -181,7 +181,14 @@
           >
             详情
           </el-button>
-
+          <el-button
+            link
+            type="primary"
+            @click="goGrowthCycle(scope.row.id)"
+            v-hasPermi="['agriculture:category-management:update']"
+          >
+            生长周期
+          </el-button>
           <el-button
             link
             type="danger"
@@ -191,14 +198,7 @@
             删除
           </el-button>
           
-          <el-button
-            link
-            type="primary"
-            @click="goGrowthCycle(scope.row.id)"
-            v-hasPermi="['agriculture:category-management:update']"
-          >
-            生长周期
-          </el-button>
+
         
         </template>
       </el-table-column>
@@ -272,7 +272,7 @@ const handleQuery = () => {
 const goGrowthCycle = ( id: number) =>{
 
   // console.log('id',id)
-  router.push({ path:'/growthCycle', query: { cropId: id } })
+  router.push({ path:'/growthCycle', query: { cropId: id ,tag:'category'} })
 }
 /** 重置按钮操作 */
 const resetQuery = () => {

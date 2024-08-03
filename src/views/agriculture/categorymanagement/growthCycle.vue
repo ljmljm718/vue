@@ -44,7 +44,7 @@
                   编辑
                 </el-button>
                 <el-button link type="danger" @click="handleDelete(scope.row.id, '1')"
-                  v-hasPermi="['agri:crop-growth-new:delete']" >
+                  v-hasPermi="['agri:crop-growth-new:delete']">
                   删除
                 </el-button>
               </template>
@@ -91,6 +91,7 @@ import CropGrowthSubForm from '../../agri/cropgrowthnew/CropGrowthSubForm.vue'
 import { isArray } from 'min-dash'
 import {
   getGrowthCycleListApi,
+  getVarietyGrowthList,
   getEventListApi,
   deleteCropGrowthNewApi,
   deleteEventApi,
@@ -105,9 +106,10 @@ const slectedItem = ref<string>('')
 const route = useRoute()
 console.log('route.query=>', route.query.cropId)
 const cropId = route.query.cropId
+const tag = route.query.tag
 const growthList = ref<any[]>([])
 const growthPeriod = ref<any[]>([])
-let  showList = ref<any[]>([])
+let showList = ref<any[]>([])
 //--- 查询周期-----
 const getGrowthPeriod = () => {
   growthPeriod.value = growthList.value.map((item) => ({
@@ -118,20 +120,28 @@ const getGrowthPeriod = () => {
   }))
   console.log('growthPeriod.value=>', growthPeriod.value)
 }
-//--- 查询生长周期列表-----
+//--- 查询品类生长周期列表-----
 const getCropGrowthList = async (id = route.query.cropId) => {
   if (!id) return ElMessage.warning('CropId 不存在!')
   growthList.value = await getGrowthCycleListApi({ cropId: id })
   console.log('growthList.value=>', growthList.value)
   getGrowthPeriod()
 }
+//--- 查询品种生长周期列表-----
+const getVarietyList = async (id = route.query.cropId) => {
+  if (!id) return ElMessage.warning('CropId 不存在!')
+  console.log("getVarietyList")
+  growthList.value = await getVarietyGrowthList({ cropCode: id })
+  console.log('growthList.value=>', growthList.value)
+  getGrowthPeriod()
+}
 
-
-getCropGrowthList(cropId)
+if (tag == 'category') getCropGrowthList(cropId)
+if (tag == 'variety') getVarietyList(cropId)
 
 // ------------获得事项列表------------
 const EventList = ref<any[]>([])
-const getEventList = async (id=selectId.value , numPage = 1, size = 10) => {
+const getEventList = async (id = selectId.value, numPage = 1, size = 10) => {
   const myevents = await getEventListApi({ cropCode: id, pageNo: numPage, pageSize: size })
   EventList.value = myevents.list
   console.log('EventList.value=>', EventList.value)
@@ -147,12 +157,11 @@ const selectGrowth = (key) => {
   slectedItem.value = key
   const growthItem = growthList.value.find((item) => item.id == key)
   if (growthItem) showList.value = [growthItem]
-  
+
   cycleId.value = Number(key)
   console.log('事项值的传入', key)
   selectId.value = key
   getEventList(key, 1, 10)
-
 }
 //
 
@@ -160,10 +169,10 @@ const selectGrowth = (key) => {
 
 const subformRef = ref()
 const openSubDeviceForm = () => {
-  console.log('生长期的id', selectId.value)
-  subformRef.value.open('create', selectId.value)
-
-
+  if (!selectId.value)
+    return ElMessage.warning('请选择生长期')
+  else
+    subformRef.value.open('create', selectId.value)
 }
 //-----------事项的编辑-----------------
 
@@ -178,21 +187,19 @@ const exportLoading = ref(false) // 导出的加载中
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   console.log('id', id)
- 
+
   formRef.value.open(type, id)
 }
 
 const editGrowth = () => {
-  getCropGrowthList(cropId)
+  if (tag == 'category') getCropGrowthList(cropId)
+  if (tag == 'variety') getVarietyList(cropId)
   if (cycleId.value !== 0) {
     console.log('编辑时候选中的cycleId', selectId.value)
-    
     setTimeout(() => {
       selectGrowth(selectId.value)
     }, 500)
-    
   }
-
 }
 /** 导出按钮操作 */
 const handleExport = async () => {
@@ -201,7 +208,7 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data1 =await CropGrowthNew({cropId:cropId})
+    const data1 = await CropGrowthNew({ cropId: cropId })
     download.excel(data1, '作物生长周期.xls')
   } catch {
   } finally {
@@ -209,23 +216,23 @@ const handleExport = async () => {
   }
 }
 /** 删除按钮操作 */
-const handleDelete = async (id: number, tag: string) => {
+const handleDelete = async (id: number, deleteTag: string) => {
   try {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    if (tag == '1') {
+    if (deleteTag == '1') {
       await deleteCropGrowthNewApi(id)
-      await getCropGrowthList(cropId)
-       showList.value = [] // 清空数组
-      
+      if (tag == 'category') await getCropGrowthList(cropId)
+      if (tag == 'variety') await getVarietyList(cropId)
+      showList.value = [] // 清空数组
+      EventList.value = []
     } else {
       await deleteEventApi(id)
       await getEventList(selectId.value, 1, 10)
     }
 
     message.success(t('common.delSuccess'))
-    
   } catch { }
 }
 </script>

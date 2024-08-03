@@ -153,7 +153,7 @@
       <el-table-column label="品种特征" align="center" prop="categoryStigma"/>
       <el-table-column label="分布地区" align="center" prop="areaDistribution"/>
       <el-table-column label="简介" align="center" prop="briefIntroduction"/>
-      <el-table-column label="启用停用" align="center" prop="status">
+      <el-table-column label="启用停用" align="center" prop="status" width="70px">
         <template #default="{ row }">
           <span v-if="row.status == '1'">启用</span>
           <span v-if="row.status == '2'">停用</span>
@@ -165,9 +165,9 @@
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
-        width="180px"
+        width="100px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="170px"> 
         <template #default="scope">
           <el-button
             link
@@ -176,6 +176,14 @@
             v-hasPermi="['agriculture:variety-management:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="goGrowthCycle(scope.row.id)"
+            v-hasPermi="['agriculture:variety-management:update']"
+          >
+            生长周期
           </el-button>
           <el-button
             link
@@ -207,7 +215,7 @@ import download from '@/utils/download'
 import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
 import VarietyManagementForm from './VarietyManagementForm.vue'
 import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager } from "@/api/agriculture/categorymanagement";
-
+import router from "@/router"
 /** 品种管理 列表 */
 defineOptions({name: 'VarietyManagement'})
 
@@ -254,7 +262,11 @@ const getList = async () => {
     loading.value = false
   }
 }
+const goGrowthCycle = ( id: number) =>{
 
+// console.log('id',id)
+router.push({ path:'/growthCycle', query: { cropId: id ,tag:'variety'} })
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1

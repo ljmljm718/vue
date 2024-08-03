@@ -25,7 +25,7 @@ export const getEventListApi = async (params) =>{
 export const deleteCropGrowthNewApi = async (id: number) => {
     return await request.delete({ url: `/agri/crop-growth-new/delete?id=` + id })
 }
-//删除事项
+//删除事项1
 export const deleteEventApi = async (id: number) => {
   return await request.delete({ url: `/agriculture/crop-growth-sub/delete?id=` + id })
 }
