@@ -178,7 +178,7 @@ const openIndicatorSelectPopup = (id: string) => {
   indicatorSelectPopupRef.value.open(id)
 }
 const handleIndicatorSelectPopupChange = (order: ModelMonitorIndicatorVO) => {
-  formData.value.indicatorId = String(order[0].id)
-  indicatorName.value = String(order[0].indicatorName)
+  formData.value.indicatorId = order[0].id?.toString()
+  indicatorName.value = order[0].indicatorName?.toString()
 }
 </script>

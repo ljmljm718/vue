@@ -193,7 +193,7 @@ import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/cat
 /** 模型管理 列表 */
 defineOptions({ name: 'ModelManagement' })
 
-const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品种列表的数据
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const getTypeData = async () => {
   const res = await allDataCacheManager.getData({})
