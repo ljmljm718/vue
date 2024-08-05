@@ -8,50 +8,50 @@
     :inline-message="true"
   >
     <el-table :data="formData" class="-mt-10px">
-      <el-table-column label="序号" type="index" width="100" />
-       <el-table-column label="下限" min-width="100">
+<!--      <el-table-column label="序号" type="index" width="50" />-->
+       <el-table-column label="下限" align="center" min-width="100">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.lowLimit`" :rules="formRules.lowLimit" class="mb-0px!">
             <el-input v-model="row.lowLimit" placeholder="请输入下限" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="上限" min-width="100">
+      <el-table-column label="上限" align="center" min-width="100">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.highLimit`" :rules="formRules.highLimit" class="mb-0px!">
             <el-input v-model="row.highLimit" placeholder="请输入上限" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="单位" min-width="80">
+      <el-table-column label="单位" align="center" min-width="80">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.unit`" :rules="formRules.unit" class="mb-0px!">
             <el-input v-model="row.unit" placeholder="请输入单位" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="健康比例" min-width="120">
+      <el-table-column label="健康比例" align="center" min-width="120">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.healthRatio`" :rules="formRules.healthRatio" class="mb-0px!">
             <el-input v-model="row.healthRatio" placeholder="请输入健康比例" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="健康等级" min-width="120">
+      <el-table-column label="健康等级" align="center" min-width="120">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.healthLevel`" :rules="formRules.healthLevel" class="mb-0px!">
             <el-input v-model="row.healthLevel" placeholder="请输入健康等级" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="指标结果" min-width="150">
+      <el-table-column label="指标结果" align="center" min-width="150">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.indicatorResult`" :rules="formRules.indicatorResult" class="mb-0px!">
             <el-input v-model="row.indicatorResult" placeholder="请输入指标结果" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="排序" min-width="100">
+      <el-table-column label="排序" align="center" min-width="100">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.sortBy`" :rules="formRules.sortBy" class="mb-0px!">
             <el-input v-model="row.sortBy" placeholder="请输入排序" />

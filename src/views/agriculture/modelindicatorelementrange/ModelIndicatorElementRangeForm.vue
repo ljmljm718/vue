@@ -7,29 +7,45 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="指标要素id" prop="indicatorElementId">
-        <el-input v-model="formData.indicatorElementId" placeholder="请输入指标要素id" />
+      <el-form-item label="指标要素" prop="indicatorElementId">
+        <el-input v-model="formData.indicatorElementId" placeholder="请输入指标要素" />
       </el-form-item>
-      <el-form-item label="下限" prop="lowLimit">
-        <el-input v-model="formData.lowLimit" placeholder="请输入下限" />
-      </el-form-item>
-      <el-form-item label="上限" prop="highLimit">
-        <el-input v-model="formData.highLimit" placeholder="请输入上限" />
-      </el-form-item>
-      <el-form-item label="单位" prop="unit">
-        <el-input v-model="formData.unit" placeholder="请输入单位" />
-      </el-form-item>
-      <el-form-item label="健康比例" prop="healthRatio">
-        <el-input v-model="formData.healthRatio" placeholder="请输入健康比例" />
-      </el-form-item>
-      <el-form-item label="健康等级" prop="healthLevel">
-        <el-input v-model="formData.healthLevel" placeholder="请输入健康等级" />
-      </el-form-item>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="下限" prop="lowLimit">
+            <el-input v-model="formData.lowLimit" placeholder="请输入下限" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="上限" prop="highLimit">
+            <el-input v-model="formData.highLimit" placeholder="请输入上限" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="单位" prop="unit">
+            <el-input v-model="formData.unit" placeholder="请输入单位" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="健康比例" prop="healthRatio">
+            <el-input v-model="formData.healthRatio" placeholder="请输入健康比例" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="健康等级" prop="healthLevel">
+            <el-input v-model="formData.healthLevel" placeholder="请输入健康等级" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="排序" prop="sortBy">
+            <el-input v-model="formData.sortBy" placeholder="请输入排序" />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="指标结果" prop="indicatorResult">
         <el-input v-model="formData.indicatorResult" placeholder="请输入指标结果" />
-      </el-form-item>
-      <el-form-item label="排序" prop="sortBy">
-        <el-input v-model="formData.sortBy" placeholder="请输入排序" />
       </el-form-item>
     </el-form>
     <template #footer>

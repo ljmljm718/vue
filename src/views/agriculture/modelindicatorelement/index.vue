@@ -124,7 +124,14 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="router.push(`/growth_monitor/model-indicator-element-range?indicatorElementId=${scope.row.id}`)"
+          >
+            指标范围
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row)"
             v-hasPermi="['agriculture:model-indicator-element:update']"
           >
             编辑
@@ -163,6 +170,7 @@ import {CommonStatusEnum} from "@/utils/constants";
 /** 指标要素 列表 */
 defineOptions({ name: 'ModelIndicatorElement' })
 
+const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -210,8 +218,9 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, item: any) => {
+  console.log("item", item)
+  formRef.value.open(type, item)
 }
 
 /** 删除按钮操作 */

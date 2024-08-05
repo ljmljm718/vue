@@ -63,7 +63,11 @@
 <script setup lang="ts">
 import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agriculture/modelindicatorelement'
 import ModelIndicatorElementRangeForm from './components/ModelIndicatorElementRangeForm.vue'
-import {ModelMonitorIndicatorVO} from "@/api/agriculture/modelmonitorindicator";
+import {
+  ModelMonitorIndicatorApi,
+  ModelMonitorIndicatorVO
+} from "@/api/agriculture/modelmonitorindicator";
+import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -95,7 +99,8 @@ const subTabsName = ref('modelIndicatorElementRange')
 const modelIndicatorElementRangeFormRef = ref()
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, item: any) => {
+  const { id, indicatorId:_indicatorId } = item;
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -105,6 +110,8 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
+      const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
+      indicatorName.value = indicator.indicatorName
     } finally {
       formLoading.value = false
     }

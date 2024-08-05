@@ -108,7 +108,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="指标要素" align="center" prop="indicatorElementId" />
+      <el-table-column label="指标要素" align="center" prop="indicatorElementId" width="220"/>
       <el-table-column label="下限" align="center" prop="lowLimit" />
       <el-table-column label="上限" align="center" prop="highLimit" />
       <el-table-column label="单位" align="center" prop="unit" />
