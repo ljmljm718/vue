@@ -173,6 +173,7 @@ defineOptions({ name: 'ModelIndicatorElement' })
 const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
+const route = useRoute()
 
 const loading = ref(true) // 列表的加载中
 const list = ref<ModelIndicatorElementVO[]>([]) // 列表的数据
@@ -191,6 +192,10 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+onMounted( () => {
+  if (route.query) queryParams.indicatorId = route.query.indicatorId
+})
 
 /** 查询列表 */
 const getList = async () => {
@@ -213,13 +218,13 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.indicatorId = undefined
   handleQuery()
 }
 
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, item: any) => {
-  console.log("item", item)
   formRef.value.open(type, item)
 }
 

@@ -100,20 +100,22 @@ const modelIndicatorElementRangeFormRef = ref()
 
 /** 打开弹窗 */
 const open = async (type: string, item: any) => {
-  const { id, indicatorId:_indicatorId } = item;
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
-      const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
-      indicatorName.value = indicator.indicatorName
-    } finally {
-      formLoading.value = false
+  if ( item !== null && item !== undefined) {
+    const { id, indicatorId:_indicatorId } = item;
+    // 修改时，设置数据
+    if (id) {
+      formLoading.value = true
+      try {
+        formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
+        const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
+        indicatorName.value = indicator.indicatorName
+      } finally {
+        formLoading.value = false
+      }
     }
   }
 }

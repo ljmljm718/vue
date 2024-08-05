@@ -78,6 +78,7 @@ import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 import {CropGrowthNewVO} from "@/api/agri/cropgrowthnew";
 import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 import ModelSelectPopup from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
+import CropGrowthNewPopup from "@/views/agri/cropgrowthnew/components/CropGrowthNewPopup.vue";
 
 /** 监测指标 表单 */
 defineOptions({ name: 'ModelMonitorIndicatorForm' })
@@ -112,24 +113,27 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, item: any) => {
-  const { id, modelName:_modelName, growth } = item;
+const open = async (type: string, item?: any) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await ModelMonitorIndicatorApi.getModelMonitorIndicator(id)
-      formData.value.isDefault = parseInt(formData.value.isDefault)
-      modelName.value = _modelName;
-      growthNewName.value = growth;
-    } finally {
-      formLoading.value = false
+  if ( item !== null && item !== undefined) {
+    const { id, modelName:_modelName, growth } = item;
+    // 修改时，设置数据
+    if (id) {
+      formLoading.value = true
+      try {
+        formData.value = await ModelMonitorIndicatorApi.getModelMonitorIndicator(id)
+        formData.value.isDefault = parseInt(formData.value.isDefault)
+        modelName.value = _modelName;
+        growthNewName.value = growth;
+      } finally {
+        formLoading.value = false
+      }
     }
   }
+
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 

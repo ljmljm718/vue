@@ -177,6 +177,13 @@
                 <el-button
                   link
                   type="primary"
+                  @click="router.push(`/growth_monitor/model-indicator-element?indicatorId=${scope.row.id}`)"
+                >
+                  监测指标
+                </el-button>
+                <el-button
+                  link
+                  type="primary"
                   @click="openForm('update', scope.row)"
                   v-hasPermi="['agriculture:model-monitor-indicator:update']"
                 >
@@ -237,6 +244,7 @@ const handleLeftItemClick = (item) => {
   getList()
 }
 
+const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const route = useRoute()
@@ -391,7 +399,7 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, item: any) => {
+const openForm = (type: string, item?: any) => {
   formRef.value.open(type, item)
 }
 

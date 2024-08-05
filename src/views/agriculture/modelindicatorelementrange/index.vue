@@ -11,7 +11,7 @@
       <el-form-item label="指标要素" prop="indicatorElementId">
         <el-input
           v-model="queryParams.indicatorElementId"
-          placeholder="请输入指标要素id"
+          placeholder="请输入指标要素"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -108,13 +108,18 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="指标要素" align="center" prop="indicatorElementId" width="220"/>
-      <el-table-column label="下限" align="center" prop="lowLimit" />
-      <el-table-column label="上限" align="center" prop="highLimit" />
-      <el-table-column label="单位" align="center" prop="unit" />
+      <el-table-column label="指标要素" align="center" prop="indicatorElementId" width="240"/>
+      <el-table-column label="指标范围" align="center" width="240">
+        <template #default="scope">
+          {{ scope.row.lowLimit + '  ~  ' + scope.row.highLimit + '  ' + scope.row.unit}}
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="下限" align="center" prop="lowLimit" />-->
+<!--      <el-table-column label="上限" align="center" prop="highLimit" />-->
+<!--      <el-table-column label="单位" align="center" prop="unit" />-->
       <el-table-column label="健康比例" align="center" prop="healthRatio" />
       <el-table-column label="健康等级" align="center" prop="healthLevel" />
-      <el-table-column label="指标结果" align="center" prop="indicatorResult" />
+      <el-table-column label="指标结果" align="center" prop="indicatorResult" width="240"/>
       <el-table-column label="排序" align="center" prop="sortBy" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
@@ -180,6 +185,11 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+const route = useRoute()
+onMounted(() => {
+  if (route.query) queryParams.indicatorElementId = route.query.indicatorElementId
+})
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -201,6 +211,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  // queryParams.indicatorElementId = undefined
   handleQuery()
 }
 
