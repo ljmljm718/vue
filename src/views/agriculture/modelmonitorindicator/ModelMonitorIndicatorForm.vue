@@ -70,7 +70,7 @@
   <ModelSelectPopup ref="modelSelectPopupRef" @success="handleModelSelectPopupChange"/>
 
   <!--  选择生长周期-->
-  <CropGrowthNewPopup ref="cropGrowthNewPopupRef" @success="handleCropGrowthNewPopupChange"/>
+  <CropGrowthNewPopup ref="cropGrowthNewPopupRef"  :crop="crop" @success="handleCropGrowthNewPopupChange"/>
 </template>
 <script setup lang="ts">
 import { ModelMonitorIndicatorApi, ModelMonitorIndicatorVO } from '@/api/agriculture/modelmonitorindicator'
@@ -169,9 +169,18 @@ const modelSelectPopupRef = ref()
 const openModelSelectPopup = (id: string) => {
   modelSelectPopupRef.value.open(id)
 }
+const crop=ref({
+  //品类
+  category: undefined,
+  //品种
+  variety: undefined
+})
+
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
   formData.value.modelId = order[0].id?.toString()
   modelName.value = order[0].modelName?.toString()
+  crop.value.category = order[0].belongCategoryId?.toString()
+  crop.value.variety = order[0].belongVarietyId?.toString()
 }
 
 //生长周期
@@ -179,7 +188,11 @@ const growthNewName = ref()
 //生长周期的选择
 const cropGrowthNewPopupRef = ref()
 const openCropGrowthNewPopup = (id: string) => {
-  cropGrowthNewPopupRef.value.open(id)
+  if (!crop.value.variety){
+    ElMessage.error("请先选择模型！")
+    return
+  }
+  cropGrowthNewPopupRef.value.openGrowth(crop)
 }
 const handleCropGrowthNewPopupChange = (order: CropGrowthNewVO) => {
   formData.value.growthPeriodId = order[0].id?.toString()
