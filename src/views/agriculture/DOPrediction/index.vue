@@ -328,7 +328,7 @@ const getLineChartInfo = async (date) => {
           fontSize: 14
         }
       },
-      color: ['#ffa773', '#36e1d9'],
+      color: ['#ffa773', '#36e1d9','red','pink','yellow'],
       yAxis: {
         name: '',
         type: 'value',
@@ -338,6 +338,7 @@ const getLineChartInfo = async (date) => {
             color: '#a1a1aa80'
           }
         },
+        // minInterval:1,
         splitLine: {
           //网格线
           show: true, //是否显示
