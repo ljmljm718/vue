@@ -208,7 +208,7 @@ export default defineComponent({
       return (
         <div class="w-full h-full box-border pb-1 px-5 py-3">
           <div class="inner-border w-full h-full p-3 flex space-x-3 box-border">
-            <div class="inner-border w-[10rem] p-3">
+            <div class="inner-border w-[12rem] max-h-[55.8rem] overflow-auto hidden-scrollbar p-3">
               <el-menu
                 active-text-color="#ffd04b"
                 background-color="#1b2a58"
@@ -1021,7 +1021,7 @@ export default defineComponent({
         generatePieOptions({
           legend: {
             show: true,
-            top: "90%",
+            top: "84%",
             left: "center",
             orient: 'horizontal',
           },
@@ -1031,13 +1031,14 @@ export default defineComponent({
               nam: "预警分布",
               type: "pie",
               radius: ["30%", "50%"],
-              center: "center",
+              center: ["50%", "47%"],
               data: res.map(item => ({
                 name: item.warnType,
                 value: item.warnRatio
               })),
               label: {
-                formatter: "{c},{d}%",
+                formatter: "{b}\n{c},{d}%",
+                color: '#fff',
                 rich: {
                   c: {
                     color: "#c1c1c1",
@@ -1608,5 +1609,9 @@ export default defineComponent({
     content: '';
     background-color: #00d3b6;
   }
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 0;
 }
 </style>
