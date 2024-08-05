@@ -110,7 +110,6 @@
             <div
               v-for="item in list"
               :key="item.id"
-              @click="handleParkClick(item)"
               :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-2 ${activeItemId === item.id ? '!border-green-400 shadow-md' : ''}`"
             >
               <div class="flex space-x-3">
@@ -171,6 +170,13 @@
                     绘制围栏
                   </el-button>
                   <el-button
+                    class="!bg-[#009688] text-white"
+                    type="primary"
+                    @click="handleParkClick(item)"
+                  >
+                    查看地块
+                  </el-button>
+                  <el-button
                     @click="openForm(item.id)"
                     v-hasPermi="['agriculture:park-info:update']"
                   >
@@ -211,7 +217,7 @@
                   fit="cover"
                 />
                 <div class="space-y-1 text-[.8rem] px-3 text-[#666666]">
-                  <div>
+                  <div class="hidden">
                     <span>基地名称:</span>
                     <span class="pl-2">{{ item.parkName }}</span>
                   </div>
