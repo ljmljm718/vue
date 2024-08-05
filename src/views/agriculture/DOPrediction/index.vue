@@ -29,8 +29,8 @@
         <div class="flex mb-4">
           <div class="font-bold">溶解氧当前值：</div>
           <div class="font-bold text-#009688">
-            {{ dataValue }}
-            <span v-if="dataValue !== '暂无数据'">{{ yyUnit }}</span>
+            {{ CurrentDoInfo.dataValue }}
+            <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
           </div>
         </div>
         <div
@@ -66,7 +66,8 @@
             type="primary"
             color="#009688"
             @click="router.push('/internetMonitor/device/deviceView?deviceCode=' + currentId)"
-          >去调整</el-button></div
+            >去调整</el-button
+          ></div
         >
       </el-card>
       <el-card>
@@ -83,14 +84,24 @@
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
           <div class="flex items-center">
-            <el-select v-model="value" placeholder="2024-07-18" size="large" style="width: 240px">
+            <!-- <el-select v-model="value" placeholder="2024-07-18" size="large" style="width: 240px">
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               />
-            </el-select>
+            </el-select> -->
+
+            <el-date-picker
+              v-model="SelectedDate"
+              type="date"
+              placeholder="请输入查询日期"
+              size="large"
+              @change="onFilterDate"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+            />
           </div>
         </div>
         <div id="lineChart" class="w-full aspect-[6]"></div>
@@ -100,9 +111,15 @@
 </template>
 <script lang="ts" setup>
 import * as echarts from 'echarts'
-import { getBasicInfo, getlineChartData, getCurrentPower, getOxygenRuleInfo } from './api'
+import {
+  getBasicInfo,
+  getlineChartData,
+  getCurrentPower,
+  getOxygenRuleInfo,
+  getCurrentDO
+} from './api'
 import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index'
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 const router = useRouter() // 路由
 
 const selectedDeviceName = ref('')
@@ -121,7 +138,7 @@ const getallData = async (deviceKind) => {
   allData.value = res
   if (res.length > 0) {
     yyUnit.value = res[0].yyUnit
-    collectionTime.value = dayjs(res[0].collectionTime).format("YYYY-MM-DD HH:mm:ss")
+    collectionTime.value = dayjs(res[0].collectionTime).format('YYYY-MM-DD HH:mm:ss')
   }
 }
 
@@ -146,6 +163,14 @@ const filterData = () => {
     filteredData.value = []
     yyUnit.value = ''
   }
+  getDoInfo(currentId.value)
+}
+
+const CurrentDoInfo = ref<any[]>([])
+const getDoInfo = async (equipmentId) => {
+  CurrentDoInfo.value = await getCurrentDO({ equipmentId })
+  // console.log('CurrentDoInfo',CurrentDoInfo.value.dataValue)
+  // console.log('currentId',currentId)
 }
 
 const currentPower = ref<any[]>([])
@@ -180,19 +205,14 @@ const getScoreInfo = async (equipId) => {
 }
 
 //画图一
-let chartIns:any = null
+let chartIns: any = null
 const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
   if (
-    !Array.isArray(targetNum)
-    ||
-    !Array.isArray(currentNum)
-    ||
-    !Array.isArray(factorName)
-    ||
-    targetNum.length === 0
-    ||
-    currentNum.length === 0
-    ||
+    !Array.isArray(targetNum) ||
+    !Array.isArray(currentNum) ||
+    !Array.isArray(factorName) ||
+    targetNum.length === 0 ||
+    currentNum.length === 0 ||
     factorName.length === 0
   ) {
     chartIns && chartIns.clear()
@@ -269,10 +289,22 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
 // 实时数据 Chart
 const getLineChartInfo = async (date) => {
   const LineChartData = await getlineChartData({ date })
+  console.log('Line Data', LineChartData)
+  const LineSeriesData: any[] = []
+  for (let key in LineChartData) {
+    const seriesName = key
+    const seriesData = LineChartData[key]
+    LineSeriesData.push({
+      name: seriesName,
+      data: seriesData.map((item) => item.dataValue)
+    })
+    console.log('LineSeriesData', LineSeriesData)
+  }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
     Light = LineChartData['光照强度']
-  const xValue = PH.map((item) => (item.hour ?? ''))
+  const xValue = PH.map((item) => item.hour ?? '')
+
   initChartStatic(
     'lineChart',
     generateBaseOptions({
@@ -321,83 +353,99 @@ const getLineChartInfo = async (date) => {
           show: false //是否显示
         }
       },
-      series: [
-        {
-          name: 'PH',
-          data: PH.map((item) => item.dataValue),
-          barWidth: 30,
-          type: 'line',
-          smooth: true,
-          label: {
-            show: true, //开启显示
-            position: 'top', //在上方显示
-            textStyle: {
-              //数值样式
-              color: '#eee',
-              fontSize: 10
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#1bcad600' },
-                { offset: 0, color: '#1bcad6' }
-              ])
-            }
-          },
-          areaStyle: { normal: {} }
-        },
-        {
-          name: '温度',
-          data: Temp.map((item) => item.dataValue),
-          barWidth: 30,
-          type: 'line',
-          smooth: true,
-          label: {
-            show: true, //开启显示
-            position: 'top', //在上方显示
-            textStyle: {
-              //数值样式
-              color: '#eee',
-              fontSize: 10
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#d54b3f00' },
-                { offset: 0, color: '#d54b3f' }
-              ])
-            }
-          },
-          areaStyle: { normal: {} }
-        },
-        {
-          name: '光照强度',
-          data: Light.map((item) => item.dataValue),
-          barWidth: 30,
-          type: 'line',
-          smooth: true,
-          label: {
-            show: true, //开启显示
-            position: 'top', //在上方显示
-            textStyle: {
-              //数值样式
-              color: '#eee',
-              fontSize: 10
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 1, color: '#bfa26b00' },
-                { offset: 0, color: '#bfa26b' }
-              ])
-            }
-          },
-          areaStyle: { normal: {} }
+      series: LineSeriesData.map((item) => ({
+        name: item.name,
+        data: item.data,
+        barWidth: 30,
+        type: 'line',
+        smooth: true,
+        label: {
+          show: true, //开启显示
+          position: 'top', //在上方显示
+          textStyle: {
+            //数值样式
+            color: '#eee',
+            fontSize: 10
+          }
         }
-      ],
+      })),
+      // series: [
+      //   {
+      //     name: 'PH',
+      //     data: PH.map((item) => item.dataValue),
+      //     barWidth: 30,
+      //     type: 'line',
+      //     smooth: true,
+      //     label: {
+      //       show: true, //开启显示
+      //       position: 'top', //在上方显示
+      //       textStyle: {
+      //         //数值样式
+      //         color: '#eee',
+      //         fontSize: 10
+      //       }
+      //     },
+      //     itemStyle: {
+      //       normal: {
+      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+      //           { offset: 1, color: '#1bcad600' },
+      //           { offset: 0, color: '#1bcad6' }
+      //         ])
+      //       }
+      //     },
+      //     areaStyle: { normal: {} }
+      //   },
+      //   {
+      //     name: '温度',
+      //     data: Temp.map((item) => item.dataValue),
+      //     barWidth: 30,
+      //     type: 'line',
+      //     smooth: true,
+      //     label: {
+      //       show: true, //开启显示
+      //       position: 'top', //在上方显示
+      //       textStyle: {
+      //         //数值样式
+      //         color: '#eee',
+      //         fontSize: 10
+      //       }
+      //     },
+      //     itemStyle: {
+      //       normal: {
+      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+      //           { offset: 1, color: '#d54b3f00' },
+      //           { offset: 0, color: '#d54b3f' }
+      //         ])
+      //       }
+      //     },
+      //     areaStyle: { normal: {} }
+      //   },
+      //   {
+      //     name: '光照强度',
+      //     data: Light.map((item) => item.dataValue),
+      //     barWidth: 30,
+      //     type: 'line',
+      //     smooth: true,
+      //     label: {
+      //       show: true, //开启显示
+      //       position: 'top', //在上方显示
+      //       textStyle: {
+      //         //数值样式
+      //         color: '#eee',
+      //         fontSize: 10
+      //       }
+      //     },
+      //     itemStyle: {
+      //       normal: {
+      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+      //           { offset: 1, color: '#bfa26b00' },
+      //           { offset: 0, color: '#bfa26b' }
+      //         ])
+      //       }
+      //     },
+      //     areaStyle: { normal: {} }
+      //   }
+      // ],
       grid: {
         left: '6%',
         right: '4%',
@@ -407,14 +455,20 @@ const getLineChartInfo = async (date) => {
     })
   )
 }
-getLineChartInfo('2024-07-18')
 
+const SelectedDate = ref('2024-07-18')
+  const onFilterDate = () => {
+    const date = SelectedDate.value
+    console.log('sdadsdasds', date)
+    getLineChartInfo(date)
+  }
 // 初始化
 const init = async () => {
   await getallData(119)
   if (allData.value.length > 0) {
     selectedDeviceName.value = allData.value[3].deviceName
     filterData()
+    onFilterDate()
   }
   await getScoreInfo('1777173933829857345')
 }

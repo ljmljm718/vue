@@ -25,3 +25,10 @@ export const getlineChartData = async(params)=>{
     params
   })
 }
+
+export const getCurrentDO = async(params)=>{
+  return await request.get({
+    url:'/yyang/equipment-data/get-equipment-date-by-equipment-id',
+    params
+  })
+}
