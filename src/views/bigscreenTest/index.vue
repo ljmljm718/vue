@@ -15,6 +15,7 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
+// @ts-ignore
 import Pagination from '@/components/Pagination/index.vue'
 import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
@@ -45,8 +46,6 @@ import {
   selectCount,
   getCountRiceDuckSum
 } from './api'
-import router from '@/router'
-import {object} from "vue-types";
 
 const {
   BigscreenAdapter,
@@ -55,10 +54,7 @@ const {
   BigscreenFooter,
   BigscreenMain,
   BigscreenCard,
-
   BigscreenTab,
-  // BigscreenSelector,
-  BigscreenTable,
 } = BigscreenBuilder
 
 // 设备列表项
