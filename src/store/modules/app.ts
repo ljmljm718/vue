@@ -75,7 +75,7 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单边框颜色
         leftMenuBorderColor: 'inherit',
         // 左侧菜单背景颜色
-        leftMenuBgColor: '#001529',
+        leftMenuBgColor: '#fff',
         // 左侧菜单浅色背景颜色
         leftMenuBgLightColor: '#0f2438',
         // 左侧菜单选中背景颜色
@@ -91,7 +91,7 @@ export const useAppStore = defineStore('app', {
         // logo边框颜色
         logoBorderColor: 'inherit',
         // 头部背景颜色
-        topHeaderBgColor: '#fff',
+        topHeaderBgColor: '#009688',
         // 头部字体颜色
         topHeaderTextColor: 'inherit',
         // 头部悬停颜色
