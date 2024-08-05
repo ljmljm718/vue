@@ -298,7 +298,6 @@ watch(showType, (val:string) => {
 const initCharts = () => {
   if (!Array.isArray(list.value)) return;
   list.value.forEach(item => {
-    console.log("SSSS", item);
     const chartId = 'chart_' + item.id
     initChartStatic(chartId, generatePieOptions({
       legend: { show: false },
@@ -317,8 +316,9 @@ const initCharts = () => {
           radius: ["35%", "65%"],
           center: ["50%", "50%"],
           data: [
-            { value: 81, name: 'Search Engine' },
-            { value: 19, name: 'Direct' },
+            { value: 46, name: '温度' },
+            { value: 29, name: '湿度' },
+            { value: 25, name: '光照' },
           ],
           label: {
             formatter: "{b} | {c} - {d}%",
