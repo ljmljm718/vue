@@ -91,7 +91,8 @@ const remainingRouter: AppRouteRecordRaw[] = [
         name: 'growthCycle',
         component: () => import('@/views/agriculture/categorymanagement/growthCycle.vue'),
         meta: {
-          hidden: true
+          hidden: true,
+          title: '生长周期'
         }
       },
     ]
