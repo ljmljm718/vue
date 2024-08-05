@@ -84,23 +84,12 @@
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
           <div class="flex items-center">
-            <!-- <el-select v-model="value" placeholder="2024-07-18" size="large" style="width: 240px">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select> -->
-
             <el-date-picker
               v-model="SelectedDate"
               type="date"
               placeholder="请输入查询日期"
               size="large"
               @change="onFilterDate"
-              format="YYYY/MM/DD"
-              value-format="YYYY-MM-DD"
             />
           </div>
         </div>
@@ -133,7 +122,6 @@ const yyUnit = ref('')
 const allData = ref<any[]>([])
 const getallData = async (deviceKind) => {
   const res = await getBasicInfo({ deviceKind })
-  console.log('getallData', res)
   if (!Array.isArray(res)) return
   allData.value = res
   if (res.length > 0) {
@@ -169,8 +157,6 @@ const filterData = () => {
 const CurrentDoInfo = ref<any[]>([])
 const getDoInfo = async (equipmentId) => {
   CurrentDoInfo.value = await getCurrentDO({ equipmentId })
-  // console.log('CurrentDoInfo',CurrentDoInfo.value.dataValue)
-  // console.log('currentId',currentId)
 }
 
 const currentPower = ref<any[]>([])
@@ -188,17 +174,13 @@ const suggestMessage = ref<string>('')
 
 const getScoreInfo = async (equipId) => {
   const ScoreData = await getOxygenRuleInfo({ equipId })
-  console.log('score', ScoreData)
   const targetNum = ScoreData.targetNum.map(Number) || []
   const currentNum = ScoreData.currentNum.map(Number) || []
   // suggestNumList.value = ScoreData.suggestNumList.map((item) => Number(item.replace('%', ''))) || []
   suggestNumList.value = ScoreData.suggestNumList || []
   const factorName = ScoreData.factorName || []
-  console.log('warningList', ScoreData.warningList)
-
   suggestList.value = ScoreData.suggestList || []
   warningList.value = ScoreData.warningList || []
-  // console.log('sdadsdasds',targetNum.value,currentNum.value,suggestNumList.value,factorName.value,suggestList.value,warningList.value);
   warningMessage.value = warningList.value
   suggestMessage.value = suggestList.value.join('; ')
   drawRadarChart(targetNum, currentNum, factorName)
@@ -289,7 +271,6 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
 // 实时数据 Chart
 const getLineChartInfo = async (date) => {
   const LineChartData = await getlineChartData({ date })
-  console.log('Line Data', LineChartData)
   const LineSeriesData: any[] = []
   for (let key in LineChartData) {
     const seriesName = key
@@ -298,7 +279,6 @@ const getLineChartInfo = async (date) => {
       name: seriesName,
       data: seriesData.map((item) => item.dataValue)
     })
-    console.log('LineSeriesData', LineSeriesData)
   }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
@@ -460,7 +440,6 @@ const getLineChartInfo = async (date) => {
 const SelectedDate = ref('2024-07-18')
   const onFilterDate = () => {
     const date = SelectedDate.value
-    console.log('sdadsdasds', date)
     getLineChartInfo(date)
   }
 // 初始化
