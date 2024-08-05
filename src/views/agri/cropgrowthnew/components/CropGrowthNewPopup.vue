@@ -34,13 +34,13 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="品种" prop="cropName">
-          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种" class="!w-240px">
+        <el-form-item label="品种" prop="cropCode">
+          <el-select v-model="queryParams.cropCode" clearable placeholder="请选择品种" class="!w-240px">
             <el-option
-              v-for="item in listVarietyManagementVO.list"
-              :key="item.varietyName"
+              v-for="item in listVarietyManagement"
+              :key="item.id"
               :label="item.varietyName"
-              :value="item.varietyName"/>
+              :value="item.id"/>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -118,9 +118,12 @@
 <script lang="ts" setup>
 import {ElTable} from 'element-plus'
 import {dateFormatter3} from "@/utils/formatTime";
-import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {
+  CategoryManagementApi,
+  CategoryManagementVO
+} from "@/api/agriculture/categorymanagement";
 import {CropGrowthNewVO, CropGrowthNewApi} from "@/api/agri/cropgrowthnew";
-import {VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import {allDataCacheManager,VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 
 defineOptions({name: 'CropGrowthNewPopup'})
 const list = ref<CropGrowthNewVO[]>([]) // 列表的数据
@@ -151,7 +154,7 @@ const queryFormRef = ref() // 搜索的表单
 
 const CategoryManagementQueryParams = reactive({})
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-const listVarietyManagementVO = ref<VarietyManagementVO[]>([]) // 品种列表的数据
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品种列表的数据
 
 /** 选中操作 */
 const selectionList = ref<CropGrowthNewVO[]>([])
@@ -179,15 +182,30 @@ const open = async (id: string) => {
   // 加载下属地块列表
   await resetQuery()
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+const openGrowth = async (crop: any) => {
+  queryParams.cropId = crop.value.category;
+  queryParams.cropCode = crop.value.variety;
+  dialogVisible.value = true
+  await nextTick() // 等待，避免 queryFormRef 为空
+  // 加载下属地块列表
+  queryParams.pageNo = 1
+  getList()
+}
+defineExpose({open,openGrowth}) // 提供 open 方法，用于打开弹窗
+
+
+/** 打开弹窗 */
 
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
-  listCategoryManagement.value = await allDataCacheManager.getData({})
+  const res = await allDataCacheManager.getData({})
+  if (Array.isArray(res)) listVarietyManagement.value = res
+  const res1 = await CategoryManagementApi.getAllCategoryManagement({})
+  if (Array.isArray(res1)) listCategoryManagement.value = res1
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
-    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
+    // listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     list.value = data.list
     total.value = data.total
   } finally {

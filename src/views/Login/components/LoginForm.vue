@@ -13,7 +13,7 @@
   <LoginFormTitle style="margin-bottom:10px;"/>
 
     <el-row style="margin-right: -10px; margin-left: -10px;">
-      <el-col :span="24" class="px-[30px]"  >
+      <el-col :span="24" class="px-[20px]"  >
         <el-form-item class="form-item" style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
             class="login-input is-empty !text-white"
@@ -26,7 +26,7 @@
         </el-form-item>
       </el-col>
 
-      <el-col :span="24" class="px-[30px]">
+      <el-col :span="24" class="px-[20px]">
         <el-form-item prop="username" class="form-item">
           <el-input
             class="login-input"
@@ -36,7 +36,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="24" class="px-[30px]">
+      <el-col :span="24" class="px-[20px]">
         <el-form-item prop="password" class="form-item">
           <el-input
             class="login-input"
@@ -49,7 +49,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col class="px-[30px] mt-[-20px]"
+      <el-col class="px-[20px] mt-[-20px]"
       >
         <el-form-item>
           <el-row justify="space-between" style="width: 100%">
@@ -64,7 +64,7 @@
           </el-row>
         </el-form-item>
       </el-col>
-      <el-col :span="24" class="px-[30px]">
+      <el-col :span="24" class="px-[20px]">
         <el-form-item>
           <XButton
             :loading="loginLoading"
@@ -381,9 +381,9 @@ onMounted(() => {
 .form-item {
   :deep(.el-input__wrapper) {
     box-shadow: 0 0 0 0px var(--el-input-border-color, var(--el-border-color)) inset;
-    cursor: default;
+    cursor: text;
     .el-input__inner {
-      cursor: default !important;
+      cursor: text !important;
     }
   }
 }
@@ -392,8 +392,8 @@ onMounted(() => {
 ::v-deep .el-input__inner:-webkit-autofill {
   -webkit-border-radius: 4px; 
   border-radius: 4px; 
-  background-color: pink !important; 
-  color: #46696c;
+  color: pink !important;
+  -webkit-text-fill-color:#fff; 
   transition: background-color 50000s ease-in-out 0s; 
 }
 
@@ -414,5 +414,8 @@ onMounted(() => {
 
 ::v-deep .login-input .el-input__inner {
   color: white !important;
+}
+::v-deep .login-input .el-input__inner:hover{
+  cursor: text !important;
 }
 </style>

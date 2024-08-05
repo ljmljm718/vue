@@ -181,7 +181,7 @@ const getMenuDataList = async () => {
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
   
   // 添加 Marker 到地图上
-  const _center = turf.center(turf.points(allDeviceDataList.value.map(ele => {
+  const _center = turf.centroid(turf.points(allDeviceDataList.value.map(ele => {
     const _item = JSON.parse(JSON.stringify(ele))
     return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
   })))
@@ -190,7 +190,7 @@ const getMenuDataList = async () => {
   const { coordinates } = geometry
   const [_lng, _lat] = coordinates
   mapTangBgRef.value.setMapCenter(_lng, _lat)
-  mapTangBgRef.value.setMapZoom(15)
+  mapTangBgRef.value.setMapZoom(17)
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {

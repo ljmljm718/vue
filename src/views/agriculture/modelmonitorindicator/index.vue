@@ -54,7 +54,7 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        
+
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -177,7 +177,14 @@
                 <el-button
                   link
                   type="primary"
-                  @click="openForm('update', scope.row.id)"
+                  @click="router.push(`/growth_monitor/model-indicator-element?indicatorId=${scope.row.id}`)"
+                >
+                  监测指标
+                </el-button>
+                <el-button
+                  link
+                  type="primary"
+                  @click="openForm('update', scope.row)"
                   v-hasPermi="['agriculture:model-monitor-indicator:update']"
                 >
                   编辑
@@ -237,6 +244,7 @@ const handleLeftItemClick = (item) => {
   getList()
 }
 
+const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const route = useRoute()
@@ -284,7 +292,7 @@ const getGrowthDataList = async (varietyId:string) => {
   if (!varietyId) return;
   const { data } = await ModelMonitorIndicatorApi.getGrowthByVarietyId({ varietyId })
   console.log("左侧生长期列表", data);
-  
+
   if (Array.isArray(data)) leftDataList.value = data;
 }
 
@@ -298,7 +306,6 @@ watch(showType, (val:string) => {
 const initCharts = () => {
   if (!Array.isArray(list.value)) return;
   list.value.forEach(item => {
-    console.log("SSSS", item);
     const chartId = 'chart_' + item.id
     initChartStatic(chartId, generatePieOptions({
       legend: { show: false },
@@ -317,8 +324,9 @@ const initCharts = () => {
           radius: ["35%", "65%"],
           center: ["50%", "50%"],
           data: [
-            { value: 81, name: 'Search Engine' },
-            { value: 19, name: 'Direct' },
+            { value: 46, name: '温度' },
+            { value: 29, name: '湿度' },
+            { value: 25, name: '光照' },
           ],
           label: {
             formatter: "{b} | {c} - {d}%",
@@ -391,8 +399,8 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, item?: any) => {
+  formRef.value.open(type, item)
 }
 
 /** 删除按钮操作 */

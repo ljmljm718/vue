@@ -63,7 +63,11 @@
 <script setup lang="ts">
 import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agriculture/modelindicatorelement'
 import ModelIndicatorElementRangeForm from './components/ModelIndicatorElementRangeForm.vue'
-import {ModelMonitorIndicatorVO} from "@/api/agriculture/modelmonitorindicator";
+import {
+  ModelMonitorIndicatorApi,
+  ModelMonitorIndicatorVO
+} from "@/api/agriculture/modelmonitorindicator";
+import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -95,18 +99,23 @@ const subTabsName = ref('modelIndicatorElementRange')
 const modelIndicatorElementRangeFormRef = ref()
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, item: any) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
-    } finally {
-      formLoading.value = false
+  if ( item !== null && item !== undefined) {
+    const { id, indicatorId:_indicatorId } = item;
+    // 修改时，设置数据
+    if (id) {
+      formLoading.value = true
+      try {
+        formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
+        const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
+        indicatorName.value = indicator.indicatorName
+      } finally {
+        formLoading.value = false
+      }
     }
   }
 }
@@ -169,7 +178,7 @@ const openIndicatorSelectPopup = (id: string) => {
   indicatorSelectPopupRef.value.open(id)
 }
 const handleIndicatorSelectPopupChange = (order: ModelMonitorIndicatorVO) => {
-  formData.value.indicatorId = String(order[0].id)
-  indicatorName.value = String(order[0].indicatorName)
+  formData.value.indicatorId = order[0].id?.toString()
+  indicatorName.value = order[0].indicatorName?.toString()
 }
 </script>
