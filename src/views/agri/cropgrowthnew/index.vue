@@ -161,7 +161,7 @@
               link
               type="warning"
               plain
-              @click="openSubDeviceForm(scope.row.id)"
+              @click="openSubDeviceForm(scope.row.id,scope.row.growth)"
             >
               事项添加
             </el-button>
@@ -434,7 +434,7 @@ const formData = ref<CropGrowthSubVO[]>([])
 const thisCropType = ref()
 const thisGrowth = ref()
 const damn = async (row) => {
-  thisCropType.value = row.cropType
+  thisCropType.value = row.cropName
   thisGrowth.value = row.growth
   const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode: row.id});
   formData.value = datas.list;
@@ -527,8 +527,8 @@ const handleExport = async () => {
 
 /** 添加生长周期子表操作 */
 const subformRef = ref()
-const openSubDeviceForm = (id) => {
-  subformRef.value.open('create', id)
+const openSubDeviceForm = (id, growth) => {
+  subformRef.value.open('create', id, growth)
 }
 
 /** 初始化 **/

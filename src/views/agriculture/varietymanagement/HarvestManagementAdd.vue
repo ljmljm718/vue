@@ -212,7 +212,9 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 /** 打开弹窗 */
 const open = async (type: string, id?: any) => {
   dialogVisible.value = true
+  console.log("type", type)
   dialogTitle.value = t('action.' + type)
+  if (type === 'create') dialogTitle.value = t('新增' + id.cropName + '产量')
   formType.value = type
   resetForm()
   if (typeof id === 'object') {

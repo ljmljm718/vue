@@ -7,11 +7,14 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="生长期id" prop="cropCode">
-        <el-input disabled v-model="formData.cropCode" placeholder="请输入生长期id" />
+      <!--      <el-form-item label="生长期" prop="cropCode">-->
+      <!--        <el-input disabled v-model="formData.cropCode" placeholder="请输入生长期" />-->
+      <!--      </el-form-item>-->
+      <el-form-item label="生长期" prop="growth">
+        <el-input disabled v-model="formData.growth" placeholder="请输入生长期"/>
       </el-form-item>
       <el-form-item label="事项名称" prop="itemName">
-        <el-input v-model="formData.itemName" placeholder="请输入事项名称" />
+        <el-input v-model="formData.itemName" placeholder="请输入事项名称"/>
       </el-form-item>
       <el-form-item label="事项内容" prop="itemContent">
         <el-input v-model="formData.itemContent" height="150px" type="textarea"/>
@@ -69,12 +72,12 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
+import {CropGrowthSubApi, CropGrowthSubVO} from '@/api/agriculture/cropgrowthsub'
 
 /** 生长周期子表 表单 */
-defineOptions({ name: 'CropGrowthSubForm' })
+defineOptions({name: 'CropGrowthSubForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -96,15 +99,16 @@ const formData = ref({
   envCondition: undefined,
   growSite: undefined,
   parkName: undefined,
-  plotName: undefined
+  plotName: undefined,
+  growth: undefined
 })
 const formRules = reactive({
-  itemName: [{ required: true, message: '事项名称不能为空', trigger: 'blur' }]
+  itemName: [{required: true, message: '事项名称不能为空', trigger: 'blur'}]
 })
 const subformRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, growth?: string) => {
   console.log("ID", id);
 
 
@@ -116,9 +120,10 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      if (formType.value == 'create'){
+      if (formType.value == 'create') {
         formData.value.cropCode = id
-      }else {
+        formData.value.growth = growth
+      } else {
         formData.value = await CropGrowthSubApi.getCropGrowthSub(id)
       }
     } finally {
@@ -126,7 +131,7 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
