@@ -2,7 +2,7 @@
   <div>
     <div class="bg-white p-3">
       <div>
-        <el-button class="!text-white !bg-[#009688]" @click="openForm('create')"
+        <el-button class="!text-white !bg-[#009688]" @click="openForm1('create')"
           v-hasPermi="['agri:crop-growth-new:create']">
           <Icon icon="ep:plus" class="mr-5px" />新增
         </el-button>
@@ -106,10 +106,11 @@ const slectedItem = ref<string>('')
 const route = useRoute()
 console.log('route.query=>', route.query.cropId)
 const cropId = route.query.cropId
-const tag = route.query.tag
-const growthList = ref<any[]>([])
-const growthPeriod = ref<any[]>([])
+const tag = route.query.tag  //品种/品类的标签
+const growthList = ref<any[]>([]) //所以周期信息的列表
+const growthPeriod = ref<any[]>([]) //只有周期
 let showList = ref<any[]>([])
+
 //--- 查询周期-----
 const getGrowthPeriod = () => {
   growthPeriod.value = growthList.value.map((item) => ({
@@ -124,13 +125,13 @@ const getGrowthPeriod = () => {
 const getCropGrowthList = async (id = route.query.cropId) => {
   if (!id) return ElMessage.warning('CropId 不存在!')
   growthList.value = await getGrowthCycleListApi({ cropId: id })
-  console.log('growthList.value=>', growthList.value)
+  console.log('growthList.value=>', growthList.value[0])
   getGrowthPeriod()
 }
 //--- 查询品种生长周期列表-----
 const getVarietyList = async (id = route.query.cropId) => {
   if (!id) return ElMessage.warning('CropId 不存在!')
-  console.log("getVarietyList")
+  console.log('getVarietyList')
   growthList.value = await getVarietyGrowthList({ cropCode: id })
   console.log('growthList.value=>', growthList.value)
   getGrowthPeriod()
@@ -145,7 +146,6 @@ const getEventList = async (id = selectId.value, numPage = 1, size = 10) => {
   const myevents = await getEventListApi({ cropCode: id, pageNo: numPage, pageSize: size })
   EventList.value = myevents.list
   console.log('EventList.value=>', EventList.value)
-  // console.log('事项列表显示周期id', cycleId.value)
 }
 
 //-----------点击生长周期按钮显示数据---------------
@@ -169,10 +169,8 @@ const selectGrowth = (key) => {
 
 const subformRef = ref()
 const openSubDeviceForm = () => {
-  if (!selectId.value)
-    return ElMessage.warning('请选择生长期')
-  else
-    subformRef.value.open('create', selectId.value)
+  if (!selectId.value) return ElMessage.warning('请选择生长期')
+  else subformRef.value.open('create', selectId.value)
 }
 //-----------事项的编辑-----------------
 
@@ -189,6 +187,9 @@ const openForm = (type: string, id?: number) => {
   console.log('id', id)
 
   formRef.value.open(type, id)
+}
+const openForm1 = (type: string) => {
+  formRef.value.open1(type, cropId, tag)
 }
 
 const editGrowth = () => {
@@ -208,7 +209,9 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data1 = await CropGrowthNew({ cropId: cropId })
+    let data1
+    if (tag == 'category') data1 = await CropGrowthNew({ cropId: cropId, growthType: 'category' })
+    if (tag == 'variety') data1 = await CropGrowthNew({ cropCode: cropId, growthType: 'variety' })
     download.excel(data1, '作物生长周期.xls')
   } catch {
   } finally {

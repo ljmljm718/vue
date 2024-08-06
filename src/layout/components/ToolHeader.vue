@@ -103,27 +103,32 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          <div class="custom-hover" color="var(--top-header-text-color)">
-            <a
-              href={bigscreenRoute.value}
-              target="_blank"
-              style="color: var(--top-header-text-color);transform:scale(.8);margin-bottom: -1px;margin-right: .4rem;"
-            >
-              <el-icon>
-                <Platform />
-              </el-icon>
-            </a>
-            <span
-              onClick={() => {
-                drawer.value = true
-                getAllStorageList()
-              }}
-              style="color: var(--top-header-text-color);transform:scale(1.2);margin: .5rem .8rem 0 .8rem;"
-            >
-              <el-icon>
-                <Management />
-              </el-icon>
-            </span>
+          <div class="icon-container" color="var(--top-header-text-color)">
+            <div class="custom-hover">
+              <a
+                href={bigscreenRoute.value}
+                target="_blank"
+                style="color: var(--top-header-text-color);transform:scale(.8);"
+              >
+                <el-icon>
+                  <Platform />
+                </el-icon>
+              </a>
+            </div>
+            <div class="custom-hover">
+              <div
+                onClick={() => {
+                  drawer.value = true
+                  getAllStorageList()
+                }}
+                style="color: var(--top-header-text-color);transform:scale(1.2);margin: 0 .2rem;"
+                class="flex justify-center items-center"
+              >
+                <el-icon>
+                  <Management />
+                </el-icon>
+              </div>
+            </div>
             <el-drawer v-model={drawer.value} title="暂存列表" direction="rtl">
               <el-table
                 data={storageList.value}
@@ -175,7 +180,7 @@ export default defineComponent({
             {screenfull.value ? (
               <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
             ) : undefined}
-            {search.value ? <RouterSearch isModal={false} /> : undefined}
+            {search.value ? <RouterSearch color="var(--top-header-text-color)" isModal={false} /> : undefined}
             {size.value ? (
               <SizeDropdown
                 class="custom-hover"
@@ -189,7 +194,10 @@ export default defineComponent({
               ></LocaleDropdown>
             ) : undefined}
             {message.value ? (
-              <Message class="custom-hover" color="var(--top-header-text-color)"></Message>
+              <Message
+                class="custom-hover relative top-[.2rem]"
+                color="var(--top-header-text-color)"
+              ></Message>
             ) : undefined}
             <UserInfo />
           </div>
@@ -219,5 +227,13 @@ a {
   margin: 0 6px 0 6px;
   position: relative;
   z-index: 999;
+}
+
+.icon-container {
+  display: flex;
+  height: 100%;
+  padding: 1px 10px 0;
+  cursor: pointer;
+  align-items: center;
 }
 </style>

@@ -235,7 +235,7 @@ export enum DICT_TYPE {
   WUSHAN_FARM_WORK = 'wushan_farm_work', // 巫山园区类型
   DEVICE_CONNECT = 'device_connect', // 设备连接类型
   EQU_STATE = 'equ_state', // 设备在线状态
-  KAIZHOU_PLANT_PLAN_CATEGORY='kaizhou_plant_plan_category',//开州区种植计划作物类别
+  KAIZHOU_PLANT_PLAN_CATEGORY = 'kaizhou_plant_plan_category',//开州区种植计划作物类别
 
 
   // ========== WUSHAN -巫山  ==========
@@ -249,7 +249,7 @@ export enum DICT_TYPE {
 
   // ========== AGRI - 武隆  ==========
   AGRI_PARK_TYPE = 'agri_park_type', //基地种植类型
-  AGRI_CROP_CULTIVARS='agri_crop_cultivars',//作物品种
+  AGRI_CROP_CULTIVARS = 'agri_crop_cultivars',//作物品种
   AGRI_MONITOR_TYPE = 'agri_monitor_type', //预警类型
   AGRI_MONITOR_UNIT = 'agri_monitor_unit', //预警单位
   AGRI_WARN_LEVEL = 'agri_warn_level',//预警等级
@@ -257,9 +257,9 @@ export enum DICT_TYPE {
   // =========== YYANG -  酉阳 ==========
   YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
-  CHECK_STATE='check_state',
-  CHECK_RESULT_STATE='check_result_state',
-  YYANG_ENVIRONMENTAL_MONITORING='yyang_environmental_monitoring',//环境监测
+  CHECK_STATE = 'check_state',
+  CHECK_RESULT_STATE = 'check_result_state',
+  YYANG_ENVIRONMENTAL_MONITORING = 'yyang_environmental_monitoring',//环境监测
 
   // =========== agri -  隘口 ==========
   AGRI_GROW_TYPE = 'agri_grow_type', //长势管理测量类型
@@ -268,16 +268,16 @@ export enum DICT_TYPE {
   AGRI_SCENIC_STAR = 'agri_scenic_star',//星级
 
   // =========== agri -  百部 ==========
-  DRYING_METHOD= 'drying_method',//烘干方式
+  DRYING_METHOD = 'drying_method',//烘干方式
 
-  FARM_PLAN_STATE='farm_plan_state',//农事计划状态
-  FARM_RECORD_STATE='farm_record_state',//农事记录状态
+  FARM_PLAN_STATE = 'farm_plan_state',//农事计划状态
+  FARM_RECORD_STATE = 'farm_record_state',//农事记录状态
   // =========== agri -   明月 ==========
   AGRI_DUCKHOUSE_CLASSIFICATION = 'agri_duckhouse_classification', //鸭舍分类
   AGRI_PLOT_TYPE = 'agri_plot_type', //鸭舍分类
-  AGRI_REPOSITORYINFO_TYPE='agri_repositoryinfo_type',//产业模型服务类型
-  AGRI_REPOSITORYINFO_LABEL='agri_repositoryinfo_label',//产业模型服务标签
-  AGRI_REPOSITORY_STATUS='agri_repository_status',
+  AGRI_REPOSITORYINFO_TYPE = 'agri_repositoryinfo_type',//产业模型服务类型
+  AGRI_REPOSITORYINFO_LABEL = 'agri_repositoryinfo_label',//产业模型服务标签
+  AGRI_REPOSITORY_STATUS = 'agri_repository_status',
   AGRI_NOTICEEVENT_TYPE = 'agri_noticeevent_type', //通知事件类型
 
   // =========== agri -   MQTT ==========
@@ -286,12 +286,14 @@ export enum DICT_TYPE {
 
   // =========== agri -   大闸蟹 ==========
   GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status',//赠送订单接收状态
-  ADOPTION_ORDER_STATUS='adoption_order_status',//认养订单状态
-  ADOPTION_ORDER_GIFT_STATUS='adoption_order_gift_status',//认养订单赠送状态
-  ADOPTION_ORDER_TYPE='adoption_order_type',//认养订单类型
-  ADOPTION_ODER_REMIND_STATUS='adoption_oder_remind_status',//认养订单是否被提醒
+  ADOPTION_ORDER_STATUS = 'adoption_order_status',//认养订单状态
+  ADOPTION_ORDER_GIFT_STATUS = 'adoption_order_gift_status',//认养订单赠送状态
+  ADOPTION_ORDER_TYPE = 'adoption_order_type',//认养订单类型
+  ADOPTION_ODER_REMIND_STATUS = 'adoption_oder_remind_status',//认养订单是否被提醒
 
   // =========== agri -   生长监测 ==========
-  GROWTH_MODEL_TYPE='growth_model_type',//生长模型类型
+  GROWTH_MODEL_TYPE = 'growth_model_type',//生长模型类型
+  MONITOR_TYPE = 'monitor_type',//因子类别
+  FACTOR_TYPE = 'factor_type',//传感器监测类型
 
 }

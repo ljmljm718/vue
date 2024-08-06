@@ -125,8 +125,8 @@ export default defineComponent({
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="left-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                <div class="left-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
                       item.name.includes('鱼塘') ?
@@ -142,19 +142,40 @@ export default defineComponent({
                               )) : null
                             }
                           </div>
+                          
                           {
                             Array.isArray(item.child) ? (
-                              <div class="grid grid-cols-2 gap-3 p-2">
-                                {
-                                  item.child.map(_ele => (
-                                    <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
-                                      <TitleValue title="开始时间" value={_ele.startTime} />
-                                      <TitleValue title="结束时间" value={_ele.endTime} />
-                                    </div>
-                                  ))
-                                }
-                              </div>
+                              item.child.length > 1 ? 
+                                <div class="grid grid-cols-2 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class="inner-rect p-2 px-3 space-y-3">
+                                        <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        <TitleValue title="开始时间" value={_ele.startTime} />
+                                        <TitleValue title="结束时间" value={_ele.endTime} />
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                                : <div class="grid grid-cols-1 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class=" grid grid-cols-2 gap-3">
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        </div>
+                                        
+                                      </div>
+                                    ))
+                                  }
+                                  
+                                </div>
                             ) : null
                           }
                         </div> : null
@@ -209,8 +230,8 @@ export default defineComponent({
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="right-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 4rem) ">
+                <div class="right-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3rem) ">
                   {
                     duckHouseList.value.map((item) => (
                       <div class="item-wrapper w-full min-h-[3rem]">
@@ -254,8 +275,8 @@ export default defineComponent({
                     ))
                   }
                 </div>
-                <div class="left-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                <div class="left-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
                       item.name.includes('稻田') ?
@@ -273,6 +294,7 @@ export default defineComponent({
                           </div>
                           {
                             Array.isArray(item.child) ? (
+                              item.child.length > 1 ?
                               <div class="grid grid-cols-2 gap-3 p-2">
                                 {
                                   item.child.map(_ele => (
@@ -284,6 +306,26 @@ export default defineComponent({
                                   ))
                                 }
                               </div>
+                              :<div class="grid grid-cols-1 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class=" grid grid-cols-2 gap-3">
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        </div>
+                                        
+                                      </div>
+                                    ))
+                                  }
+                                  
+                                </div>
+
                             ) : null
                           }
                         </div> : null
