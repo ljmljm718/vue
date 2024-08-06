@@ -71,7 +71,7 @@ export const useAppStore = defineStore('app', {
       currentSize: wsCache.get('currentSize') || 'small', // 组件尺寸
       theme: wsCache.get(CACHE_KEY.THEME) || {
         // 主题色
-        elColorPrimary: '#409eff',
+        elColorPrimary: '#009688',
         // 左侧菜单边框颜色
         leftMenuBorderColor: '#eee',
         // 左侧菜单背景颜色
@@ -93,11 +93,11 @@ export const useAppStore = defineStore('app', {
         // 头部背景颜色
         topHeaderBgColor: '#009688',
         // 头部字体颜色
-        topHeaderTextColor: 'inherit',
+        topHeaderTextColor: '#fff',
         // 头部悬停颜色
-        topHeaderHoverColor: '#f6f6f6',
+        topHeaderHoverColor: '#0fa597',
         // 头部边框颜色
-        topToolBorderColor: '#eee'
+        topToolBorderColor: '#009688'
       },
       // 展示AI小助手
       showAiAssistant: false,
