@@ -326,7 +326,7 @@
           </p>
           <p>作物名称：{{ item.cropName }}</p>
           <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p> -->
-          <p>品种: {{ thisCropType }}</p>
+          <p v-if='thisCropType'>品种: {{ thisCropType }}</p>
           <p>事项名称: {{ item.itemName }}</p>
           <p>事项内容：{{ item.itemContent }}</p>
         </el-card>
