@@ -169,9 +169,9 @@
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
         <el-button
-          type="primary"
+          type="info"
           plain
-          @click="openForm('create')"
+          @click="openForm1()"
           v-hasPermi="['agriculture:harvest-management:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
@@ -199,7 +199,8 @@
 
       <el-table-column label="品种名称" align="center" prop="varietyName" width="140"
                        v-if="show !==118"/>
-      <el-table-column label="品类名称" align="center" prop="variety" width="120" v-if="show !==118"/>
+      <el-table-column label="品类名称" align="center" prop="variety" width="120"
+                       v-if="show !==118"/>
 
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
       <el-table-column label="批次码" align="center" prop="batchCode" width="180"
@@ -440,6 +441,9 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+const openForm1 = () => {
+  message.alertWarning(t('新增需前往种植管理进行采收'))
 }
 
 /** 删除按钮操作 */

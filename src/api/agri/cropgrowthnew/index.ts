@@ -17,6 +17,7 @@ export interface CropGrowthNewVO {
   growSite: string // 生长地点
   cycle: string // 周期
   farmAdvice: string // 农事建议
+  growthType: string // 生长期类别
 }
 
 // 作物生长周期 API

@@ -216,7 +216,7 @@
   <HarvestManagementAdd ref="formRefA" @success="getList"/>
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
-      <h3>生命周期-溯源</h3>
+      <h3>种植管理-溯源</h3>
     </template>
     <template #default>
       <div class="relative">
@@ -236,7 +236,7 @@
         </div>
         <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
           <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
-          <p>品种：
+          <p>品类：
             <el-tag>{{ item.cropType }}</el-tag>
             <!--            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>-->
           </p>

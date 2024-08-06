@@ -124,7 +124,14 @@
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="router.push(`/growth_monitor/model-indicator-element-range?indicatorElementId=${scope.row.id}`)"
+          >
+            指标范围
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row)"
             v-hasPermi="['agriculture:model-indicator-element:update']"
           >
             编辑
@@ -163,8 +170,10 @@ import {CommonStatusEnum} from "@/utils/constants";
 /** 指标要素 列表 */
 defineOptions({ name: 'ModelIndicatorElement' })
 
+const router = useRouter()
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
+const route = useRoute()
 
 const loading = ref(true) // 列表的加载中
 const list = ref<ModelIndicatorElementVO[]>([]) // 列表的数据
@@ -183,6 +192,10 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+onMounted( () => {
+  if (route.query) queryParams.indicatorId = route.query.indicatorId
+})
 
 /** 查询列表 */
 const getList = async () => {
@@ -205,13 +218,14 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.indicatorId = undefined
   handleQuery()
 }
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, item: any) => {
+  formRef.value.open(type, item)
 }
 
 /** 删除按钮操作 */
