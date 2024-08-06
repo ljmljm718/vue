@@ -8,10 +8,10 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="名称" prop="cropName">
+        <el-form-item label="品种名称" prop="cropName">
           <el-input
             v-model="queryParams.cropName"
-            placeholder="请输入名称"
+            placeholder="请输入品种名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -27,16 +27,16 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="品种" prop="cropName">
-          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种"
-                     class="!w-240px">
-            <el-option
-              v-for="item in listVarietyManagementVO.list"
-              :key="item.varietyName"
-              :label="item.varietyName"
-              :value="item.varietyName"/>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="品种" prop="cropName">-->
+<!--          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种"-->
+<!--                     class="!w-240px">-->
+<!--            <el-option-->
+<!--              v-for="item in listVarietyManagementVO.list"-->
+<!--              :key="item.varietyName"-->
+<!--              :label="item.varietyName"-->
+<!--              :value="item.varietyName"/>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
       </el-form>
       <div class="w-[1px] bg-#25252545 h-[3rem] mx-2"></div>
       <div
