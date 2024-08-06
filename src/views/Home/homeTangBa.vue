@@ -184,6 +184,10 @@ const getMenuDataList = async () => {
   const _center = turf.centroid(turf.points(allDeviceDataList.value.map(ele => {
     const _item = JSON.parse(JSON.stringify(ele))
     return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+  }).filter(item => {
+    const [a, b] = item;
+    if (isNaN(a) || isNaN(b) || !a || !b) return false;
+    return true;;
   })))
   
   const { geometry } = _center;
@@ -196,15 +200,16 @@ const getMenuDataList = async () => {
     if (!_item.longitude || !_item.latitude) {
       return
     }
+    const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
+    console.log("ImgSrc", `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`);
+    
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
       _item.deviceName,
-      '/tangba/' + _item.deviceStatus + (kindMap[_item.deviceKind] || 'Monitor') + '.png'
+      `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
     )
     marker.on('click', () => {
-      console.log("ITM", item);
-      
       handleSelect(item.id)
     })
   })
@@ -215,7 +220,6 @@ const showPanel = ref<boolean>(false)
 
 const getIconClass = (item) => {
   const { deviceStatus = 'offline', deviceKind = '' } = item
-  console.log(deviceKind, 'deviceKinddeviceKinddeviceKind')
   const kindMap = {
     '101': 'monitor',
     '79': 'monitor',
