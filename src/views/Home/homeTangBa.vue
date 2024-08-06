@@ -193,8 +193,13 @@ const getMenuDataList = async () => {
   const { geometry } = _center;
   const { coordinates } = geometry
   const [_lng, _lat] = coordinates
+  mapTangBgRef.value.setViewport(allDeviceDataList.value.map(item => {
+    return { lng: item.longitude, lat: item.latitude }
+  }))
   mapTangBgRef.value.setMapCenter(_lng, _lat)
-  mapTangBgRef.value.setMapZoom(17)
+  // mapTangBgRef.value.setMapZoom(17)
+  
+  
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {
