@@ -18,7 +18,7 @@
     </el-select>
   </ElDialog>
   <div v-else class="custom-hover" @click.stop="showTopSearch = !showTopSearch">
-    <Icon icon="ep:search" />
+    <Icon icon="ep:search" :color="color" />
     <el-select
       filterable
       :reserve-keyword="false"
@@ -44,6 +44,10 @@ defineProps({
   isModal: {
     type: Boolean,
     default: true
+  },
+  color: {
+    type: String,
+    default: 'white'
   }
 })
 

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { formatDate } from '@/utils/formatTime'
 import * as NotifyMessageApi from '@/api/system/notify/message'
+import { propTypes } from '@/utils/propTypes'
 
 defineOptions({ name: 'Message' })
+defineProps({ color: propTypes.string.def('') })
 
 const { push } = useRouter()
 const activeName = ref('notice')
@@ -49,7 +51,7 @@ onMounted(() => {
     <ElPopover :width="400" placement="bottom" trigger="click">
       <template #reference>
         <ElBadge :is-dot="unreadCount > 0" class="item">
-          <Icon :size="18" class="cursor-pointer" icon="ep:bell" @click="getList" />
+          <Icon :size="18" class="cursor-pointer" :color="color" icon="ep:bell" @click="getList" />
         </ElBadge>
       </template>
       <ElTabs v-model="activeName">
