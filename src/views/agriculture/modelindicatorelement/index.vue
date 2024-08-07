@@ -79,15 +79,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:model-indicator-element:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleExport"-->
+<!--          :loading="exportLoading"-->
+<!--          v-hasPermi="['agriculture:model-indicator-element:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -100,7 +100,7 @@
       <el-table-column label="要素名称" align="center" prop="elementName" width="110"/>
       <el-table-column label="权重" align="center" prop="weight" width="90"/>
       <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
-      <el-table-column label="绑定设备" align="center" prop="bindDevice" />
+      <el-table-column label="绑定设备" align="center" prop="deviceName" />
       <el-table-column label="状态" align="center" prop="status" width="110">
         <template #default="scope">
           <el-switch
@@ -166,6 +166,9 @@ import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agricul
 import ModelIndicatorElementForm from './ModelIndicatorElementForm.vue'
 import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
 import {CommonStatusEnum} from "@/utils/constants";
+import {ModelManagementApi, ModelManagementVO} from "@/api/agriculture/modelmanagement";
+import {DeviceInfoApi, DeviceInfoVO} from "@/api/agriculture/deviceinfo";
+import {CropGrowthNewApi} from "@/api/agri/cropgrowthnew";
 
 /** 指标要素 列表 */
 defineOptions({ name: 'ModelIndicatorElement' })
@@ -193,16 +196,30 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+const listDeviceInfo = ref<DeviceInfoVO[]>([]) // 设备列表的数据
+const getTypeData = async () => {
+  const { list: list1 } = await DeviceInfoApi.getDeviceInfoNoPage({})
+  if (Array.isArray(list1)) listDeviceInfo.value = list1
+}
+
 onMounted( () => {
   if (route.query) queryParams.indicatorId = route.query.indicatorId
 })
+
+const deviceName = ref()
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await ModelIndicatorElementApi.getModelIndicatorElementPage(queryParams)
-    list.value = data.list
+    list.value = data.list.map(item => {
+      const element = Array.isArray(listDeviceInfo.value) ? listDeviceInfo.value.find(ele => (ele.id === item.bindDevice)) : null
+      return {
+        ...item,
+        deviceName: element ? element.deviceName : ''
+      }
+    })
     total.value = data.total
   } finally {
     loading.value = false
@@ -273,8 +290,13 @@ const handleStatusChange = async (row: ModelIndicatorElementApi.ModelIndicatorEl
   }
 }
 
+const init = async () => {
+  await getTypeData()
+  await getList()
+}
+
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  init()
 })
 </script>

@@ -34,6 +34,11 @@ export const DeviceInfoApi = {
     return await request.get({ url: `/agriculture/device-info/page`, params })
   },
 
+  // 查询设备信息不分页
+  getDeviceInfoNoPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/device-info/noPage`, params })
+  },
+
   // 查询设备信息详情
   getDeviceInfo: async (id: number) => {
     return await request.get({ url: `/agriculture/device-info/get?id=` + id })

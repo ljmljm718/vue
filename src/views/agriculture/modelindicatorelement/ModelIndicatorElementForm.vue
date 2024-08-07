@@ -34,7 +34,14 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="绑定设备" prop="bindDevice">
-            <el-input v-model="formData.bindDevice" placeholder="请输入绑定设备" />
+            <el-input v-model="deviceName" placeholder="请选择绑定设备" >
+              <template #append>
+                <el-button @click="openDeviceSelectPopup('0')">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -59,6 +66,9 @@
 
   <!--  选择检测指标-->
   <IndicatorSelectPopup ref="indicatorSelectPopupRef" @success="handleIndicatorSelectPopupChange"/>
+
+  <!--  选择设备-->
+  <DeviceInfo ref="deviceSelectRef" @success="handleDeviceSelectPopupChange"/>
 </template>
 <script setup lang="ts">
 import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agriculture/modelindicatorelement'
@@ -68,6 +78,8 @@ import {
   ModelMonitorIndicatorVO
 } from "@/api/agriculture/modelmonitorindicator";
 import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
+import DeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue"
+import {DeviceInfoVO} from "@/api/agriculture/deviceinfo";
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -113,6 +125,7 @@ const open = async (type: string, item: any) => {
         formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
         const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
         indicatorName.value = indicator.indicatorName
+        deviceName.value = item.deviceName
       } finally {
         formLoading.value = false
       }
@@ -168,11 +181,12 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
   indicatorName.value = undefined
+  deviceName.value = undefined
 }
 
-//模型名称
+//监测指标名称
 const indicatorName = ref()
-//模型的选择
+//监测指标的选择
 const indicatorSelectPopupRef = ref()
 const openIndicatorSelectPopup = (id: string) => {
   indicatorSelectPopupRef.value.open(id)
@@ -180,5 +194,16 @@ const openIndicatorSelectPopup = (id: string) => {
 const handleIndicatorSelectPopupChange = (order: ModelMonitorIndicatorVO) => {
   formData.value.indicatorId = order[0].id?.toString()
   indicatorName.value = order[0].indicatorName?.toString()
+}
+
+const deviceName = ref()
+//设备的选择
+const deviceSelectRef = ref()
+const openDeviceSelectPopup = (id: string) => {
+  deviceSelectRef.value.open(id)
+}
+const handleDeviceSelectPopupChange = (order: DeviceInfoVO) => {
+  formData.value.bindDevice = order[0].id?.toString()
+  deviceName.value = order[0].deviceName?.toString()
 }
 </script>

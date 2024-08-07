@@ -1,63 +1,63 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="模型名称" prop="name">
-        <el-input
-          v-model="modelName"
-          placeholder="请选择模型"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        >
-          <template #append>
-            <el-button @click="openModelSelectPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-<!--      <el-form-item label="生长周期" prop="growthPeriodId">-->
+<!--  <ContentWrap>-->
+<!--    &lt;!&ndash; 搜索工作栏 &ndash;&gt;-->
+<!--    <el-form-->
+<!--      class="-mb-15px"-->
+<!--      :model="queryParams"-->
+<!--      ref="queryFormRef"-->
+<!--      :inline="true"-->
+<!--      label-width="68px"-->
+<!--    >-->
+<!--      <el-form-item label="模型名称" prop="name">-->
 <!--        <el-input-->
-<!--          v-model="queryParams.growthPeriodId"-->
-<!--          placeholder="请输入生长周期"-->
+<!--          v-model="modelName"-->
+<!--          placeholder="请选择模型"-->
 <!--          clearable-->
 <!--          @keyup.enter="handleQuery"-->
 <!--          class="!w-240px"-->
-<!--        />-->
+<!--        >-->
+<!--          <template #append>-->
+<!--            <el-button @click="openModelSelectPopup('0')">-->
+<!--              <Icon icon="ep:search"/>-->
+<!--              选择-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-input>-->
 <!--      </el-form-item>-->
-<!--      <el-form-item label="指标名称" prop="indicatorName">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.indicatorName"-->
-<!--          placeholder="请输入指标名称"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="指标范围" prop="indicatorRange">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.indicatorRange"-->
-<!--          placeholder="请输入指标范围"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+<!--&lt;!&ndash;      <el-form-item label="生长周期" prop="growthPeriodId">&ndash;&gt;-->
+<!--&lt;!&ndash;        <el-input&ndash;&gt;-->
+<!--&lt;!&ndash;          v-model="queryParams.growthPeriodId"&ndash;&gt;-->
+<!--&lt;!&ndash;          placeholder="请输入生长周期"&ndash;&gt;-->
+<!--&lt;!&ndash;          clearable&ndash;&gt;-->
+<!--&lt;!&ndash;          @keyup.enter="handleQuery"&ndash;&gt;-->
+<!--&lt;!&ndash;          class="!w-240px"&ndash;&gt;-->
+<!--&lt;!&ndash;        />&ndash;&gt;-->
+<!--&lt;!&ndash;      </el-form-item>&ndash;&gt;-->
+<!--&lt;!&ndash;      <el-form-item label="指标名称" prop="indicatorName">&ndash;&gt;-->
+<!--&lt;!&ndash;        <el-input&ndash;&gt;-->
+<!--&lt;!&ndash;          v-model="queryParams.indicatorName"&ndash;&gt;-->
+<!--&lt;!&ndash;          placeholder="请输入指标名称"&ndash;&gt;-->
+<!--&lt;!&ndash;          clearable&ndash;&gt;-->
+<!--&lt;!&ndash;          @keyup.enter="handleQuery"&ndash;&gt;-->
+<!--&lt;!&ndash;          class="!w-240px"&ndash;&gt;-->
+<!--&lt;!&ndash;        />&ndash;&gt;-->
+<!--&lt;!&ndash;      </el-form-item>&ndash;&gt;-->
+<!--&lt;!&ndash;      <el-form-item label="指标范围" prop="indicatorRange">&ndash;&gt;-->
+<!--&lt;!&ndash;        <el-input&ndash;&gt;-->
+<!--&lt;!&ndash;          v-model="queryParams.indicatorRange"&ndash;&gt;-->
+<!--&lt;!&ndash;          placeholder="请输入指标范围"&ndash;&gt;-->
+<!--&lt;!&ndash;          clearable&ndash;&gt;-->
+<!--&lt;!&ndash;          @keyup.enter="handleQuery"&ndash;&gt;-->
+<!--&lt;!&ndash;          class="!w-240px"&ndash;&gt;-->
+<!--&lt;!&ndash;        />&ndash;&gt;-->
+<!--&lt;!&ndash;      </el-form-item>&ndash;&gt;-->
+<!--      <el-form-item>-->
+<!--        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>-->
+<!--        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>-->
 
-      </el-form-item>
-    </el-form>
-  </ContentWrap>
+<!--      </el-form-item>-->
+<!--    </el-form>-->
+<!--  </ContentWrap>-->
 
   <!-- 列表 -->
   <ContentWrap>
@@ -70,15 +70,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:model-monitor-indicator:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleExport"-->
+<!--          :loading="exportLoading"-->
+<!--          v-hasPermi="['agriculture:model-monitor-indicator:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </div>
       <div class="flex rounded-md">
         <div
