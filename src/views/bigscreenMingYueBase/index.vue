@@ -1,6 +1,6 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
-import headerBg from './assets/headerBg.png'
+// import headerBg from './assets/headerBg.png'
 // @ts-ignore
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import dayjs from "dayjs";
@@ -19,6 +19,8 @@ import {
   generatePieOptions,
   generateBaseOptions
 } from '../../utils/bigscreenTool/index'
+import axios from 'axios';
+import { useUserStore } from "@/store/modules/user";
 
 const {
   BigscreenAdapter,
@@ -31,7 +33,26 @@ const {
 export default defineComponent({
   name: 'BigscreenMingYueBase',
   setup() {
+    const userStore = useUserStore()
     const showSidePanel = ref<boolean>(false)
+
+    // 获取经纬度对应的地名
+    const getPositionName = async(keyWord:string, lng:string, lat: string) => {
+      const res = await axios.get(`http://api.tianditu.gov.cn/search?postStr={"keyWord":"${keyWord}","level":"15","mapBound":"${lng},${lat},116.45119,39.93542","queryType":"7","count":"20","start":"0","queryTerminal":"10000"}&type=query&tk=您的密钥`)
+      console.log("🚀 ~ getPositionName ~ res:", res)
+    }
+
+    // 获取当前坐标点
+    const getLocation = () => {
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            resolve([position.coords.longitude, position.coords.latitude])
+          })
+        } else reject()
+      })
+    }
+
     setTimeout(() => {
       showSidePanel.value = true
     }, 100)
@@ -244,7 +265,7 @@ export default defineComponent({
     }
     const getWeatherData = async () => {
       const res = await getWeather({
-        location: '117.12,36.66',
+        location: '107.04821,29.46118',
         key: 'c8d24d8285274a3a89617fa7cb2f2eaa'
       })
 
@@ -393,7 +414,7 @@ export default defineComponent({
                   <div class="title-3 w-full aspect-[6]"></div>
                   <div class="item-bg">
                     <div class="flex justify-center py-4 items-center text-[#11eeaf]">
-                      重庆市-塘坝镇-天印村
+                      {userStore.user.nickname.replace('用户', '')}
                     </div>
                     <div class="split-line w-full h-[2px]"></div>
                     <div class="w-full box-border p-3 py-4">
