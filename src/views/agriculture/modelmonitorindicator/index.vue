@@ -251,9 +251,15 @@ const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const route = useRoute()
 
-const checkModelParam = () => {
+const checkModelParam = async () => {
   const { modelId, belongVarietyId } = route.query;
-  if (typeof modelId === 'string') openModelSelectPopup(modelId)
+  if (typeof modelId === 'string') {
+    const { list = [] } = await ModelManagementApi.getModelManagementPage({ pageNo: 1, pageSize: 30 })
+    if (Array.isArray(list)) {
+      const _item = list.find(item => item.id === modelId)
+      if (_item) handleModelSelectPopupChange(_item)
+    }
+  }
   if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId)
 }
 onMounted(() => checkModelParam())
