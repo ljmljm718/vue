@@ -55,11 +55,9 @@ export default defineComponent({
       if (Array.isArray(res)) {
         baseList.value = res
         console.log("RES", res);
-        
         options.value = res.map(item => ({
           ...item, label: item.name, value: item.id
         }))
-
         const _id = res[0].id
         if (_id) {
           selectedPlot.value = _id
@@ -153,7 +151,7 @@ export default defineComponent({
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="left-title w-full h-[3rem]"></div>
+                <div class="left-title w-full aspect-[6]"></div>
                 <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
@@ -265,7 +263,7 @@ export default defineComponent({
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="right-title w-full h-[3rem]"></div>
+                <div class="right-title w-full aspect-[6]"></div>
                 <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3rem) ">
                   {
                     duckHouseList.value.map((item) => (
@@ -310,7 +308,7 @@ export default defineComponent({
                     ))
                   }
                 </div>
-                <div class="left-title w-full h-[3rem]"></div>
+                <div class="left-title w-full aspect-[6]"></div>
                 <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
