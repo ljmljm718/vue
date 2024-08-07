@@ -112,19 +112,19 @@
             <div style="font-size:14px;margin-bottom: 5px;">品种：{{ item.varietyName }}</div>
           </div>
           <div>
-            <img :src="item.modelImageId" style="width:120px;height: 80px; " />
+            <img :src="item.modelImageId" style="width:130px;height: 85px; " />
           </div>
         </div>
         <div class="mt-15px flex items-">
-          <el-button style="font-size:12px;" class="changeBtnColor"
+          <el-button style="font-size:12px; " class="changeBtnColor"
             @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`)">
             监测指标
           </el-button>
-          <el-button style="font-size:12px;" class="changeBtnColor" @click="openForm('update', item.id)"
+          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor" @click="openForm('update', item.id)"
             v-hasPermi="['agriculture:model-management:update']">
             编辑
           </el-button>
-          <el-button style="font-size:12px;" class="changeBtnColor" @click="handleDelete(item.id)"
+          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor" @click="handleDelete(item.id)"
             v-hasPermi="['agriculture:model-management:delete']">
             删除
           </el-button>
@@ -356,15 +356,22 @@ onMounted(() => {
   background: #009688;
 }
 
-@media screen and (min-width: 1680px) {
-  .changecols {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
+// @media screen and (min-width: 1680px) {
+//   .changecols {
+//     grid-template-columns: repeat(5, minmax(0, 1fr));
+//   }
+// }
 
-@media screen and (min-width: 1920px) {
-  .changecols {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+// @media screen and (min-width: 1920px) {
+//   .changecols {
+//     grid-template-columns: repeat(7, minmax(0, 1fr));
+//   }
+// }
+@for $i from 1 through 10 {
+  @media screen and (min-width: calc(400px + calc(#{$i} * 300px))) {
+    .changecols {
+      grid-template-columns: repeat(#{$i}, 1fr);
+    }
   }
 }
 
