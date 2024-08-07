@@ -16,8 +16,8 @@
       <el-col :span="24" class="px-[20px]"  >
         <el-form-item class="form-item" style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
-            class="login-input is-empty !text-white"
-            style="border:none;color:white;"
+            class="login-input is-empty "
+            style="border:none;"
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
@@ -388,7 +388,7 @@ onMounted(() => {
   -webkit-border-radius: 4px; 
   border-radius: 4px; 
   color: pink !important;
-  -webkit-text-fill-color:#fff; 
+  -webkit-text-fill-color:#000000; 
   transition: background-color 50000s ease-in-out 0s; 
 }
 
