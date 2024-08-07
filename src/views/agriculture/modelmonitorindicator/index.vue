@@ -65,7 +65,7 @@
       <div>
         <el-button
           class="!bg-[#009688] !text-white"
-          @click="openForm('create')"
+          @click="createOpenForm('create')"
           v-hasPermi="['agriculture:model-monitor-indicator:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -150,7 +150,7 @@
         </div>
         <div v-else>
           <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-            <el-table-column label="指标编号" align="center" prop="id" />
+            <el-table-column label="指标编号" align="center" prop="id" width="160"/>
             <el-table-column label="模型名称" align="center" prop="modelName" />
             <el-table-column label="生长周期" align="center" prop="growth" />
             <el-table-column label="指标名称" align="center" prop="indicatorName" />
@@ -158,13 +158,13 @@
             <el-table-column label="指标范围" align="center" prop="indicatorRange" />
             <el-table-column label="指标结果" align="center" prop="indicatorResult" />
             <el-table-column label="健康分值" align="center" prop="healthScore" />
-            <el-table-column label="权重" align="center" prop="weight" />
+            <el-table-column label="权重" align="center" prop="weight" width="60"/>
             <el-table-column label="是否默认" align="center" prop="isDefault" >
               <template #default="scope">
                 <dict-tag :type="DICT_TYPE.ADOPTION_ODER_REMIND_STATUS" :value="scope.row.isDefault" />
               </template>
             </el-table-column>
-            <el-table-column label="实现类" align="center" prop="implementationClass" />
+<!--            <el-table-column label="实现类" align="center" prop="implementationClass" />-->
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -172,14 +172,14 @@
       <!--        :formatter="dateFormatter"-->
       <!--        width="180px"-->
       <!--      />-->
-            <el-table-column label="操作" align="center">
+            <el-table-column label="操作" align="center" fixed="right" width="190">
               <template #default="scope">
                 <el-button
                   link
                   type="primary"
                   @click="router.push(`/growth_monitor/model-indicator-element?indicatorId=${scope.row.id}`)"
                 >
-                  监测指标
+                  指标要素
                 </el-button>
                 <el-button
                   link
@@ -238,9 +238,11 @@ defineOptions({ name: 'ModelMonitorIndicator' })
 
 const showType = ref("card")
 const selectedKey = ref<string>('')
+const selectedName = ref<string>('')
 const leftDataList = ref<any[]>([])
 const handleLeftItemClick = (item) => {
   selectedKey.value = item.id;
+  selectedName.value=item.growth;
   getList()
 }
 
@@ -401,6 +403,17 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, item?: any) => {
   formRef.value.open(type, item)
+}
+
+/** 新增操作，自动添加模型与生长期 */
+const createOpenForm = (type: string) => {
+  // if (selectedKey.value){
+    const item={growthPeriodId:selectedKey.value,growth:selectedName.value,modelId:queryParams.modelId,modelName:modelName.value};
+    formRef.value.createOpen(type, item)
+  // }else {
+  //  ElMessage.error("请选择生长期后再新增")
+  // }
+
 }
 
 /** 删除按钮操作 */

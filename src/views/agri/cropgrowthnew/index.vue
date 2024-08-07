@@ -465,6 +465,7 @@ const getList = async () => {
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
 
+    // @ts-ignore
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
 
     // const pageRes = await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)

@@ -135,7 +135,27 @@ const open = async (type: string, item?: any) => {
   }
 
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+/** 打开弹窗，新增时走这个，修改走原来的open方法 */
+const createOpen = async (type: string, item?: any) => {
+  dialogVisible.value = true
+  dialogTitle.value = t('action.' + type)
+  formType.value = type
+  resetForm()
+  formLoading.value = true
+  if ( item !== null && item !== undefined) {
+    const { modelId, modelName:_modelName, growth,growthPeriodId } = item;
+    // 设置数据
+    modelName.value = _modelName;
+    growthNewName.value = growth;
+    formData.value.modelId=modelId;
+    formData.value.growthPeriodId=growthPeriodId;
+  }
+  formLoading.value = false
+
+}
+
+defineExpose({ open,createOpen }) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
