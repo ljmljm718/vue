@@ -86,7 +86,7 @@
       <el-table-column label="生长期" align="center" prop="growthPeriod" />
       <el-table-column label="重量(克)" align="center" prop="weight" />
       <el-table-column label="数量(只)" align="center" prop="quantity" />
-      <el-table-column label="基数" align="center" prop="baseNumber" />
+      <el-table-column label="基数(%)" align="center" prop="baseNumber" />
       <el-table-column label="策略" align="center" prop="strategy" />
       <el-table-column
         label="创建时间"
