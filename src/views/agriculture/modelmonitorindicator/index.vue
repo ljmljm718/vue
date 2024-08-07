@@ -117,7 +117,7 @@
       </div>
       <div class="grow" v-loading="loading">
         <div v-if="showType === 'card'">
-          <div class="grid grid-cols-3">
+          <div class="grid gap-4 grid-custom-col w-full">
             <div
               v-for="item, index in list"
               :key="index"
@@ -391,6 +391,17 @@ const getList = async () => {
   }
 }
 
+window.addEventListener('resize', () => {
+  const _list = list.value;
+  list.value = [];
+  nextTick(() => {
+    list.value = _list;
+    nextTick(() => {
+      initCharts()
+    })
+  })
+})
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
@@ -526,5 +537,13 @@ onMounted(() => {
   height: 0;
   border: 8px solid;
   border-color: #666666 transparent transparent transparent;
+}
+
+@for $i from 1 through 10 {
+  @media screen and (min-width: calc(400px + calc(#{$i} * 500px))) {
+    .grid-custom-col {
+      grid-template-columns: repeat(#{$i}, 1fr);
+    }
+  }
 }
 </style>
