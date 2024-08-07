@@ -14,9 +14,9 @@
         <el-select v-model="formData.monitorType" placeholder="请选择传感器监测类型" class="w-1/1">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.MONITOR_TYPE)"
-            :key="dict.value"
+            :key="dict.label"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>
@@ -24,20 +24,20 @@
         <el-select v-model="formData.factorType" placeholder="请选择因子类别" class="w-1/1">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.FACTOR_TYPE)"
-            :key="dict.value"
+            :key="dict.label"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="影响类别" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入影响类别"/>
       </el-form-item>
       <el-form-item label="影响结果" prop="influence">
         <el-input v-model="formData.influence" type="textarea" placeholder="请输入影响结果"/>
       </el-form-item>
       <el-form-item label="建议" prop="proposal">
         <el-input v-model="formData.proposal" type="textarea" placeholder="请输入建议"/>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -84,8 +84,8 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await InfluenceFactorApi.getInfluenceFactor(id)
       console.log("SSS", formData.value)
-      formData.value.monitorType = parseInt(formData.value.monitorType)
-      formData.value.factorType = parseInt(formData.value.factorType)
+      // formData.value.monitorType = parseInt(formData.value.monitorType)
+      // formData.value.factorType = parseInt(formData.value.factorType)
     } finally {
       formLoading.value = false
     }

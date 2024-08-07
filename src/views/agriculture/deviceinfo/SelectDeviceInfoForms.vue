@@ -1,3 +1,4 @@
+<!-- 区别：在页面开始时，传入默认的基地和地块；使用“在线检测-监控视频”-->
 <template>
   <Dialog     title="设备列表"
               v-model="dialogVisible"

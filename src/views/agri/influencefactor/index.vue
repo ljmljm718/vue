@@ -47,6 +47,15 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="影响类别" prop="remark">
+        <el-input
+          v-model="queryParams.remark"
+          placeholder="请输入影响类别"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -97,16 +106,16 @@
           <dict-tag :type="DICT_TYPE.FACTOR_TYPE" :value="scope.row.factorType"/>
         </template>
       </el-table-column>
+      <el-table-column label="影响类别" align="center" prop="remark"/>
       <el-table-column label="影响结果" align="center" prop="influence"/>
       <el-table-column label="建议" align="center" prop="proposal"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+      <!--      <el-table-column-->
+      <!--        label="创建时间"-->
+      <!--        align="center"-->
+      <!--        prop="createTime"-->
+      <!--        :formatter="dateFormatter"-->
+      <!--        width="180px"-->
+      <!--      />-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
