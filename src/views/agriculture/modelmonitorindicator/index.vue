@@ -65,7 +65,7 @@
       <div>
         <el-button
           class="!bg-[#009688] !text-white"
-          @click="openForm('create')"
+          @click="createOpenForm('create')"
           v-hasPermi="['agriculture:model-monitor-indicator:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -238,9 +238,11 @@ defineOptions({ name: 'ModelMonitorIndicator' })
 
 const showType = ref("card")
 const selectedKey = ref<string>('')
+const selectedName = ref<string>('')
 const leftDataList = ref<any[]>([])
 const handleLeftItemClick = (item) => {
   selectedKey.value = item.id;
+  selectedName.value=item.growth;
   getList()
 }
 
@@ -401,6 +403,17 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, item?: any) => {
   formRef.value.open(type, item)
+}
+
+/** 新增操作，自动添加模型与生长期 */
+const createOpenForm = (type: string) => {
+  // if (selectedKey.value){
+    const item={growthPeriodId:selectedKey.value,growth:selectedName.value,modelId:queryParams.modelId,modelName:modelName.value};
+    formRef.value.createOpen(type, item)
+  // }else {
+  //  ElMessage.error("请选择生长期后再新增")
+  // }
+
 }
 
 /** 删除按钮操作 */

@@ -1,7 +1,7 @@
 <template>
-  <h2 class="enter-x !my-20px text-center  text-xl  color-[#12bb86]" style="font-weight:500" >
+  <h2 class="enter-x !my-20px text-center  text-2xl tracking-[0.05em]  color-[#4D4D4D]" style="font-weight: 550;" >
      <!-- 开州区鲁渝协作乡村振兴示范村数字化赋能 -->
-     欢迎登陆
+     欢迎登录
   </h2>
 </template>
 <script lang="ts" setup>

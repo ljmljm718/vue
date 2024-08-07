@@ -1,17 +1,17 @@
 <template>
-  <div style="display:flex;flex-direction: column;align-items: center;">
+  <div class="flex flex-col items-center">
   <el-form
     v-show="getShow"
     ref="formLogin"
     :model="loginData.loginForm"
     :rules="LoginRules"
-    class="login-form !px-[15px] mt-[-30px] !py-[20px]"
+    class=" bg-[#ffffff] !px-[25px] mt-[-30px] !py-[40px] rounded-3"
     label-position="top"
     label-width="120px"
     size="large"
   >
-  <LoginFormTitle style="margin-bottom:10px;"/>
-
+  <!-- <LoginFormTitle style="margin-bottom:10px;"/> -->
+  <LoginFormTitle class="mt-2 mb-1"/>
     <el-row style="margin-right: -10px; margin-left: -10px;">
       <el-col :span="24" class="px-[20px]"  >
         <el-form-item class="form-item" style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
@@ -69,7 +69,7 @@
           <XButton
             :loading="loginLoading"
             :title="t('login.login')"
-            class="w-[100%] btn-bg mb-20px !color-[#0fda75] "
+            class="w-[100%] btn-bg mb-20px !color-[#fff] "
             @click="getCode()"
           />
         </el-form-item>
@@ -357,24 +357,19 @@ onMounted(() => {
   --el-input-text-color:#000 !important;
   
 }
-.login-form{
-  background-image: url(@/assets/imgs/Login-Form.png);
-  background-size: 100% 100%;
-
-}
 .btn-bg{
   box-sizing: border-box;
-  background-color: transparent !important;
+  background-color: #00AA52;
   border: none !important;
   background-size: 100% 100% !important;
-  background-image: url(@/assets/imgs/btn-bg.png) !important;
+  // background-image: url(@/assets/imgs/btn-bg.png) !important;
 }
 
 ::v-deep .el-input__wrapper{
   background-color: transparent !important; 
   border-color: transparent !important;
   background-size: 100% 100% !important;
-  background-image: url(@/assets/imgs/form-input.png) !important;
+  background-image: url('../assets/formInput.png') !important;
   
 }
 
@@ -412,9 +407,6 @@ onMounted(() => {
   border-color: #46696c!important;
 }
 
-::v-deep .login-input .el-input__inner {
-  color: white !important;
-}
 ::v-deep .login-input .el-input__inner:hover{
   cursor: text !important;
 }
