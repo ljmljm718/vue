@@ -17,8 +17,8 @@
         <el-form-item label="数量(只)" prop="quantity">
           <el-input-number class='!w-100%' v-model="formData.quantity" placeholder="请输入数量" />
         </el-form-item>
-        <el-form-item label="基数" prop="baseNumber">
-          <el-input-number class='!w-100%' v-model="formData.baseNumber" placeholder="请输入基数" />
+        <el-form-item label="基数(%)" prop="baseNumber">
+          <el-input-number class='!w-100%' v-model="formData.baseNumber" placeholder="请输入基数,日喂食量等于螃蟹体重乘基数百分比" />
         </el-form-item>
       <!-- </div> -->
       <el-form-item label="策略" prop="strategy">
