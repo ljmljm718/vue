@@ -2,8 +2,8 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <div class="flex">
-      <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px"
-        :style="{ height: '22px' }" class='w-full flex'>
+      <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px" :style="{ height: '22px' }"
+        class='w-full flex'>
         <el-form-item label="模型名称" prop="modelName" class="flex">
           <el-input v-model="queryParams.modelName" placeholder="请输入" clearable @keyup.enter="handleQuery"
             class="!w-160px" />
@@ -26,7 +26,8 @@
         <el-form-item label="品种" prop="belongVarietyId" class="flex">
           <el-select v-model="queryParams.belongVarietyId" placeholder="请选择" clearable @change="handleVarietyChange"
             class="!w-160px">
-            <el-option v-for="dict in listVarietyManagement" :key="dict.id" :label="dict.varietyName" :value="dict.id" />
+            <el-option v-for="dict in listVarietyManagement" :key="dict.id" :label="dict.varietyName"
+              :value="dict.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="品类" prop="belongCategoryId" class="flex">
@@ -102,32 +103,32 @@
         </div>
       </div>
     </div>
-    <div v-if="showType === 'card'" class="grid grid-cols-3 gap-10px ">
-      <div v-for="item, index in list" :key="index" class="flex justify-between p-5 bg-[#f5f5f5]">
-        <div>
-          <div style="font-size: 18px; margin-bottom: 10px;">{{ item.modelName }}</div>
-          <div style="font-size:14px;margin-bottom: 5px;">品类：{{ item.categoryName }}</div>
-          <div style="font-size:14px;margin-bottom: 5px;">品种：{{ item.varietyName }}</div>
-          <div class="mt-15px">
-            <el-button style="font-size:12px;" class="changeBtnColor"
-              @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`)">
-              监测指标
-            </el-button>
-            <el-button style="font-size:12px;" class="changeBtnColor" @click="openForm('update', item.id)"
-              v-hasPermi="['agriculture:model-management:update']">
-              编辑
-            </el-button>
-            <el-button style="font-size:12px;" class="changeBtnColor" @click="handleDelete(item.id)"
-              v-hasPermi="['agriculture:model-management:delete']">
-              删除
-            </el-button>
+    <div v-if="showType === 'card'" class="mt-3 mb-3 grid gap-3 grid-cols-3  2xl:grid-cols-4 changecols">
+      <div v-for="item, index in list" :key="index" class=" justify-between p-5 bg-[#f5f5f5]">
+        <div class="flex justify-between">
+          <div>
+            <div style="font-size: 18px; margin-bottom: 10px;">{{ item.modelName }}</div>
+            <div style="font-size:14px;margin-bottom: 5px;">品类：{{ item.categoryName }}</div>
+            <div style="font-size:14px;margin-bottom: 5px;">品种：{{ item.varietyName }}</div>
+          </div>
+          <div>
+            <img :src="item.modelImageId" style="width:120px;height: 80px; " />
           </div>
         </div>
-
-        <div>
-          <img :src="item.modelImageId" style="width:120px;height: 80px; " />
+        <div class="mt-15px flex items-">
+          <el-button style="font-size:12px;" class="changeBtnColor"
+            @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`)">
+            监测指标
+          </el-button>
+          <el-button style="font-size:12px;" class="changeBtnColor" @click="openForm('update', item.id)"
+            v-hasPermi="['agriculture:model-management:update']">
+            编辑
+          </el-button>
+          <el-button style="font-size:12px;" class="changeBtnColor" @click="handleDelete(item.id)"
+            v-hasPermi="['agriculture:model-management:delete']">
+            删除
+          </el-button>
         </div>
-
       </div>
     </div>
 
@@ -212,7 +213,7 @@ const { t } = useI18n() // 国际化
 const loading = ref(true) // 列表的加载中
 const list = ref<ModelManagementVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
-const showType = ref("list")  //布局切换类型
+const showType = ref("card")  //布局切换类型
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -354,4 +355,17 @@ onMounted(() => {
   color: #FFFFFF;
   background: #009688;
 }
+
+@media screen and (min-width: 1680px) {
+  .changecols {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .changecols {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
 </style>
