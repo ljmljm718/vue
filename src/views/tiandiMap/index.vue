@@ -44,7 +44,8 @@ const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, opti
     {
       // 获取指定属性（positions，holes（图形内需要挖空的区域））
       hierarchy: {
-        positions: Cesium.Cartesian3.fromDegreesArray(hierarchyPositionArr)
+        positions: Cesium.Cartesian3.fromDegreesArray(hierarchyPositionArr),
+
         // holes: [{
         //   positions: Cesium.Cartesian3.fromDegreesArray([
         //     119, 32,
@@ -54,7 +55,7 @@ const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, opti
         // }]
       },
       // 边框
-      outline: true,
+      outline: false,
       // 边框颜色
       outlineColor: Cesium.Color.WHITE,
       // 边框尺寸
@@ -77,7 +78,14 @@ const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, opti
   )
   const _entities = _viewer.entities.add({
     id: generateUUID(),
-    polygon
+    polygon,
+    polyline: {
+      positions: Cesium.Cartesian3.fromDegreesArray(hierarchyPositionArr),
+      width: 5,
+      height: polygon.height,
+      distanceDisplayCondition: polygon.distanceDisplayCondition,
+      material: new Cesium.PolylineGlowMaterialProperty({ color: Cesium.Color.WHITE })
+    }
   })
   if (!custom) viewEntities.push(_entities)
   return _entities
@@ -283,6 +291,8 @@ const getDataList = async () => {
             if (Array.isArray(childGeofencing) && childGeofencing.length > 0) {
               const childPos = childGeofencing[0].map(ele => ([ele.lng, ele.lat]))
               const createdPolygonItem = createPolygon(undefined, childPos, {
+                height: 3,
+                outlineWidth: 15000,
                 distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
               })
               const features1 = turf.points(childPos);
@@ -294,13 +304,13 @@ const getDataList = async () => {
                 name: child.plotName,
                 label: {
                   text: child.plotName,
-                  font: '500 34px Helvetica',// 15pt monospace
-                  scale: 0.6,
+                  font: '500 24px Helvetica',// 15pt monospace
+                  scale: 0.9,
                   style: Cesium.LabelStyle.FILL,
                   fillColor: Cesium.Color.WHITE,
-                  pixelOffset: new Cesium.Cartesian2(0, -50), //偏移量
+                  pixelOffset: new Cesium.Cartesian2(0, -30), //偏移量
                   showBackground: true,
-                  backgroundColor: new Cesium.Color(0.13, 0.29, 0.29, 1.0),
+                  backgroundColor: new Cesium.Color(0.13, 0.29, 0.29, .6),
                   distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
                 },
                 position: Cesium.Cartesian3.fromDegrees(
@@ -310,7 +320,7 @@ const getDataList = async () => {
                 ),
                 billboard: {
                   image: itemBG1,
-                  scale: 1.0,
+                  scale: .6,
                   horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
                   verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
                   distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
@@ -354,9 +364,9 @@ const getDataList = async () => {
                     20
                   ),
                   html: `
-                    <div class="w-[360px] relative bottom-[60px] min-h-[270px] p-3">
+                    <div class="w-[350px] relative bottom-[40px] min-h-[260px]">
                       <img src="${innerBg}" class="w-full h-full absolute left-0 top-0 z-0" />
-                      <div class="py-[1.6rem] pb-[.6rem] pt-[1.6rem] w-full text-center relative z-10 text-[1.2rem]">${domTitle}</div>
+                      <div class="py-[1.6rem] pb-[.6rem] pt-[1rem] w-full text-center relative z-10 text-[1.2rem]">${domTitle}</div>
                       <div class="grid grid-cols-2 gap-2 relative z-10 px-[1.3rem]">
                         ${
                           buildArr.map(_i => {
