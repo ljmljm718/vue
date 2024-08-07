@@ -12,7 +12,7 @@
       :on-error="excelUploadError"
       :on-exceed="handleExceed"
       :on-preview="handlePreview"
-      :on-remove="handleRemove"
+      :before-remove="handleRemove"
       :on-success="handleFileSuccess"
       :show-file-list="true"
       :http-request="httpRequest"

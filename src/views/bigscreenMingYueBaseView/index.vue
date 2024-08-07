@@ -54,8 +54,18 @@ export default defineComponent({
       console.log('getBaseInfoApi res =>', res)
       if (Array.isArray(res)) {
         baseList.value = res
-        if (res[0].id) getPlotDataList(res[0].id)
-        if (res[0].id) getDuckHouse(res[0].id)
+        console.log("RES", res);
+        
+        options.value = res.map(item => ({
+          ...item, label: item.name, value: item.id
+        }))
+
+        const _id = res[0].id
+        if (_id) {
+          selectedPlot.value = _id
+          getPlotDataList(_id)
+          getDuckHouse(_id)
+        }
       }
     }
     getBaseList()
@@ -107,7 +117,25 @@ export default defineComponent({
       setTimeout(() => {
         getParkData()
       }, 2000)
+      
     })
+    const showOptions = ref<boolean>(false)
+
+    window.addEventListener('click', () => {
+      showOptions.value = false
+    })
+
+    const selectedPlot = ref<string>('')
+    const options = ref<any[]>([])
+    const getLabelByValue = (val) => {
+      let res = '------'
+      if (Array.isArray(options.value)) {
+        options.value.forEach(item => {
+          if (item.value === val) res = item.label
+        })
+      }
+      return res
+    }
     // ----------------------------------
     return () => (
       <div class="w-full aspect-[1.8] bg-[#0d1724]">
@@ -125,8 +153,8 @@ export default defineComponent({
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="left-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                <div class="left-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
                       item.name.includes('鱼塘') ?
@@ -142,19 +170,40 @@ export default defineComponent({
                               )) : null
                             }
                           </div>
+
                           {
                             Array.isArray(item.child) ? (
-                              <div class="grid grid-cols-2 gap-3 p-2">
-                                {
-                                  item.child.map(_ele => (
-                                    <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
-                                      <TitleValue title="开始时间" value={_ele.startTime} />
-                                      <TitleValue title="结束时间" value={_ele.endTime} />
-                                    </div>
-                                  ))
-                                }
-                              </div>
+                              item.child.length > 1 ?
+                                <div class="grid grid-cols-2 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class="inner-rect p-2 px-3 space-y-3">
+                                        <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        <TitleValue title="开始时间" value={_ele.startTime} />
+                                        <TitleValue title="结束时间" value={_ele.endTime} />
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                                : <div class="grid grid-cols-1 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class=" grid grid-cols-2 gap-3">
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        </div>
+
+                                      </div>
+                                    ))
+                                  }
+
+                                </div>
                             ) : null
                           }
                         </div> : null
@@ -164,22 +213,41 @@ export default defineComponent({
 
               </div>
               <div class="center-title">
+                <div class="relative h-[1.4rem] w-[18rem]">
+                  <div class="h-full text-center cursor-pointer" onClick={(e) => {
+                    e.stopPropagation()
+                    showOptions.value = true
+                  }}>{getLabelByValue(selectedPlot.value)}</div>
+                  {
+                    showOptions.value ? <div class="absolute left-0 top-[1.8rem] z-1000 w-full max-h-[8rem] overflow-auto">
+                      {
+                        Array.isArray(options.value) ? options.value.map(item => (
+                          <div
+                            class="py-3 text-center w-full bg-[#0d1724]"
+                            onClick={() => {
+                              selectedPlot.value = item.value
+                              getPlotDataList(item.value)
+                              getDuckHouse(item.value)
+                            }}
+                          >{item.label}</div>
+                        )) : null
+                      }
+                    </div> : null
+                  }
+                </div>
                 <select
-                  class="bg=[#ffffff00]"
+                  class="bg=[#ffffff00] !hidden"
                   style="
                           -webkit-text-fill-color: transparent;
                           background-clip: text;
                           text-fill-color: transparent;                  
                           font-family: AlibabaPuHuiTi;
                           font-size: 14px;
-                          font-weight: normal;
-                          line-height: normal;
                           text-align: center;
                           letter-spacing: 0px;
                           border:none;"
-                  onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }
-
-                  }
+                  onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}
+                  defaultValue = {baseList.value[0]?.id}
                 >
                   {
                     baseList.value.map((item) => (
@@ -190,27 +258,15 @@ export default defineComponent({
                   }
                 </select>
               </div>
-              <div class="z-10 absolute left-[60rem] top-[1rem] w-[22%] hidden">
-                这里是下拉列表
-                <select onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}>
-                  <option value="">请选择基地</option>
-                  {
-                    baseList.value.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))
-                  }
-                </select>
-              </div>
+
               <div
                 class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
                 style={{
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="right-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 4rem) ">
+                <div class="right-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3rem) ">
                   {
                     duckHouseList.value.map((item) => (
                       <div class="item-wrapper w-full min-h-[3rem]">
@@ -254,8 +310,8 @@ export default defineComponent({
                     ))
                   }
                 </div>
-                <div class="left-title w-full h-[4rem]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 4rem)">
+                <div class="left-title w-full h-[3rem]"></div>
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
                   {
                     dataList.value.map(item => (
                       item.name.includes('稻田') ?
@@ -273,17 +329,38 @@ export default defineComponent({
                           </div>
                           {
                             Array.isArray(item.child) ? (
-                              <div class="grid grid-cols-2 gap-3 p-2">
-                                {
-                                  item.child.map(_ele => (
-                                    <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
-                                      <TitleValue title="开始时间" value={_ele.startTime} />
-                                      <TitleValue title="结束时间" value={_ele.endTime} />
-                                    </div>
-                                  ))
-                                }
-                              </div>
+                              item.child.length > 1 ?
+                                <div class="grid grid-cols-2 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class="inner-rect p-2 px-3 space-y-3">
+                                        <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        <TitleValue title="开始时间" value={_ele.startTime} />
+                                        <TitleValue title="结束时间" value={_ele.endTime} />
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                                : <div class="grid grid-cols-1 gap-3 p-2">
+                                  {
+                                    item.child.map(_ele => (
+                                      <div class=" grid grid-cols-2 gap-3">
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        </div>
+                                        <div class="inner-rect p-2 px-3 space-y-2">
+                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        </div>
+
+                                      </div>
+                                    ))
+                                  }
+
+                                </div>
+
                             ) : null
                           }
                         </div> : null
