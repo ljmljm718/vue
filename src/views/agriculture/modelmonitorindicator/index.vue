@@ -406,6 +406,8 @@ window.addEventListener('resize', () => {
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  const { belongVarietyId } = route.query;
+  if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId)
 }
 
 /** 重置按钮操作 */
