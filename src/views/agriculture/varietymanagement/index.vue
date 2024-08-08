@@ -27,7 +27,8 @@
         />
       </el-form-item>
       <el-form-item label="品类名称" prop="categoryId">
-        <el-select v-model="queryParams.categoryId" clearable placeholder="请选择品类" class="!w-240px">
+        <el-select v-model="queryParams.categoryId" clearable placeholder="请选择品类"
+                   class="!w-240px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -134,7 +135,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="品种名称" align="center" prop="varietyName"/>
-<!--      <el-table-column label="品类ID" align="center" prop="categoryId"/>-->
+      <!--      <el-table-column label="品类ID" align="center" prop="categoryId"/>-->
       <el-table-column label="品类名称" align="center" prop="categoryName"/>
       <el-table-column label="品种编码" align="center" prop="varietyCode"/>
       <el-table-column label="图片" align="center" prop="images">
@@ -167,7 +168,7 @@
         :formatter="dateFormatter"
         width="100px"
       />
-      <el-table-column label="操作" align="center" width="170px"> 
+      <el-table-column label="操作" align="center" width="170px">
         <template #default="scope">
           <el-button
             link
@@ -214,8 +215,13 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
 import VarietyManagementForm from './VarietyManagementForm.vue'
-import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager } from "@/api/agriculture/categorymanagement";
+import {
+  CategoryManagementApi,
+  CategoryManagementVO,
+  allDataCacheManager
+} from "@/api/agriculture/categorymanagement";
 import router from "@/router"
+
 /** 品种管理 列表 */
 defineOptions({name: 'VarietyManagement'})
 
@@ -249,6 +255,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
+    //@ts-ignore
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     const data = await VarietyManagementApi.getVarietyManagementPage(queryParams)
     list.value = data.list
@@ -262,10 +269,10 @@ const getList = async () => {
     loading.value = false
   }
 }
-const goGrowthCycle = ( id: number) =>{
+const goGrowthCycle = (id: number) => {
 
 // console.log('id',id)
-router.push({ path:'/growthCycle', query: { cropId: id ,tag:'variety'} })
+  router.push({path: '/growthCycle', query: {cropId: id, tag: 'variety'}})
 }
 /** 搜索按钮操作 */
 const handleQuery = () => {
