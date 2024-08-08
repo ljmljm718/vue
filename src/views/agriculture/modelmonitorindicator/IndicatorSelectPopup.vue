@@ -235,7 +235,7 @@ const openModelSelectPopup = (id: string) => {
 const modelName = ref()
 const handleModelSelectPopupChange = (order: ModelManagementVO) => {
   queryParams.modelId = String(order[0].id)
-  modelName = String(order[0].modelName)
+  modelName.value = String(order[0].modelName)
 }
 
 </script>

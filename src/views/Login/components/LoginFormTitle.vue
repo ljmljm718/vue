@@ -1,5 +1,5 @@
 <template>
-  <h2 class="enter-x !my-20px text-center  text-2xl tracking-[0.05em]  color-[#4D4D4D]" style="font-weight: 550;" >
+  <h2 class="enter-x !mt-15px !mb-15px text-center  text-3xl tracking-[0.2em]  color-[#4D4D4D]" style="font-weight: 550;" >
      <!-- 开州区鲁渝协作乡村振兴示范村数字化赋能 -->
      欢迎登录
   </h2>

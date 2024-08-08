@@ -254,11 +254,12 @@ const route = useRoute()
 const checkModelParam = async () => {
   const { modelId, belongVarietyId } = route.query;
   if (typeof modelId === 'string') {
-    const { list = [] } = await ModelManagementApi.getModelManagementPage({ pageNo: 1, pageSize: 30 })
-    if (Array.isArray(list)) {
-      const _item = list.find(item => item.id === modelId)
+    // const { list = [] } = await ModelManagementApi.getModelManagementPage({ pageNo: 1, pageSize: 30 })
+    // if (Array.isArray(list)) {
+    //   const _item = list.find(item => item.id === modelId)
+      const _item = await ModelManagementApi.getModelManagement(modelId)
       if (_item) handleModelSelectPopupChange(_item)
-    }
+    // }
   }
   if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId)
 }
@@ -470,9 +471,9 @@ const openModelSelectPopup = (id: string) => {
 }
 const modelName = ref()
 const handleModelSelectPopupChange = (order: ModelManagementVO[]) => {
-  if (!Array.isArray(order)) return;
+  // if (!Array.isArray(order)) return;
   if (order.length === 0) return;
-  const _order = order[0];
+  const _order = order;
   if (!_order.id) return;
   queryParams.modelId = _order.id.toString()
   modelName.value = _order.modelName?.toString()
