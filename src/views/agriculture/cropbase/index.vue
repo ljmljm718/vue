@@ -8,34 +8,55 @@
       :inline="true"
       label-width="68px"
     >
-<!--            <el-form-item label="编号" prop="cropCode">-->
-<!--              <el-input-->
-<!--                  v-model="queryParams.cropCode"-->
-<!--                  placeholder="请输入编号"-->
-<!--                  clearable-->
-<!--                  @keyup.enter="handleQuery"-->
-<!--                  class="!w-240px"-->
-<!--              />-->
-<!--            </el-form-item>-->
-      <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="queryParams.parkName" placeholder="请选择">
+      <!--            <el-form-item label="编号" prop="cropCode">-->
+      <!--              <el-input-->
+      <!--                  v-model="queryParams.cropCode"-->
+      <!--                  placeholder="请输入编号"-->
+      <!--                  clearable-->
+      <!--                  @keyup.enter="handleQuery"-->
+      <!--                  class="!w-240px"-->
+      <!--              />-->
+      <!--            </el-form-item>-->
+      <!--      <el-form-item label="基地名称" prop="parkName">-->
+      <!--        <el-input v-model="queryParams.parkName" placeholder="请选择">-->
+      <!--          <template #append>-->
+      <!--            <el-button @click="openParkPopup('0')">-->
+      <!--              <Icon icon="ep:search"/>-->
+      <!--              选择-->
+      <!--            </el-button>-->
+      <!--          </template>-->
+      <!--        </el-input>-->
+      <!--      </el-form-item>-->
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input v-model="queryParams.plotName" placeholder="请选择">
           <template #append>
-            <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search" />
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
               选择
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择">
-          <template #append>
-            <el-button @click="openPlotPopup(queryParams.belongPark)">
-              <Icon icon="ep:search" />
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-form-item label="品类" prop="cropType">
+        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
+                   class="!w-180px">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="种植时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-180px"
+        />
       </el-form-item>
       <el-form-item label="批次号" prop="batchCode">
         <el-input
@@ -43,16 +64,16 @@
           placeholder="请输入批次号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-180px"
         />
       </el-form-item>
-      <el-form-item label="采收状态" prop="recoveryNo">
-        <el-select v-model="queryParams.recoveryNo" placeholder="请选择采收状态" clearable   class="!w-240px">
-          <el-option label="全部" value="" />
-          <el-option label="已采收" value="true" />
-          <el-option label="未采收" value="false" />
-        </el-select>
-      </el-form-item>
+      <!--      <el-form-item label="采收状态" prop="recoveryNo">-->
+      <!--        <el-select v-model="queryParams.recoveryNo" placeholder="请选择采收状态" clearable   class="!w-240px">-->
+      <!--          <el-option label="全部" value="" />-->
+      <!--          <el-option label="已采收" value="true" />-->
+      <!--          <el-option label="未采收" value="false" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -260,9 +281,9 @@
     </template>
   </el-drawer>
   <!--  选择基地-->
-  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
   <!--  选择地块-->
-  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange" />
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 
 <script setup lang="ts">
@@ -393,9 +414,10 @@ const plotPopupRef = ref()
 const openType1 = ref('')
 const openPlotPopup = (id: string) => {
   openType1.value = id
-  if (!openType1.value) {
-    message.error('请选择基地')
-  } else plotPopupRef.value.open(id)
+  // if (!openType1.value) {
+  //   message.error('请选择基地')
+  // } else
+  plotPopupRef.value.open(id)
 }
 const handlePlotPopupChange = (order: ParkDetailVO) => {
   console.log('--->>查看选择的地块信息：', order[0])

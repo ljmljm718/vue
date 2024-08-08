@@ -61,7 +61,7 @@
         <el-input v-model="formData.feedNum" placeholder="请输入投喂数量"/>
       </el-form-item>
       <el-form-item label="单位" prop="feedOne">
-        <el-input v-model="formData.feedOne" placeholder="请输入投喂数量单位"/>
+        <el-input v-model="formData.feedOne" placeholder="请输入投喂数量单位，建议统一输入KG"/>
       </el-form-item>
       <el-form-item label="饲料种类" prop="feedType">
         <el-input v-model="formData.feedType" placeholder="请填写饲料种类"/>
