@@ -8,10 +8,10 @@
       v-loading="formLoading"
     >
       <el-form-item label="模型名称" prop="modelName">
-        <el-input v-model="formData.modelName" placeholder="请输入模型名称" />
+        <el-input v-model="formData.modelName" placeholder="请输入模型名称" :disabled="disabled"/>
       </el-form-item>
       <el-form-item label="模型类型" prop="modelType">
-        <el-select v-model="formData.modelType" placeholder="请选择模型类型">
+        <el-select v-model="formData.modelType" placeholder="请选择模型类型" :disabled="disabled">
           <el-option
               v-for="dict in getStrDictOptions(DICT_TYPE.GROWTH_MODEL_TYPE)"
               :key="dict.value"
@@ -26,6 +26,7 @@
           placeholder="请选择关联品种"
           clearable
           @change="handleVarietyChange"
+          :disabled="disabled"
         >
           <el-option
             v-for="dict in listVarietyManagement"
@@ -57,10 +58,10 @@
 <!--        <el-input v-model="formData.belongVariety" placeholder="请输入关联品种" />-->
 <!--      </el-form-item>-->
       <el-form-item label="模型图片" prop="modelImageId">
-        <UploadImg v-model="formData.modelImageId" />
+        <UploadImg v-model="formData.modelImageId" :disabled="disabled"/>
       </el-form-item>
       <el-form-item label="模型文件" prop="modelFileId">
-        <UploadFile v-model="formData.modelFileId" />
+        <UploadFile v-model="formData.modelFileId" :disabled="disabled"/>
       </el-form-item>
 <!--      <el-form-item label="启用状态（0正常1停用）" prop="enabledStatus">-->
 <!--        <el-radio-group v-model="formData.enabledStatus">-->
@@ -68,7 +69,7 @@
 <!--        </el-radio-group>-->
 <!--      </el-form-item>-->
       <el-form-item label="描述" prop="description">
-        <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
+        <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" :disabled="disabled"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -99,10 +100,11 @@ const handleVarietyChange = (e) => {
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const disabled = ref(false) // 表单是否可编辑
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const formType = ref('') // 表单的类型：create - 新增；update - 修改; detail - 详情
 const formData = ref({
   id: undefined,
   modelName: undefined,
@@ -133,6 +135,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await ModelManagementApi.getModelManagement(id)
+      if (formType.value === 'detail') disabled.value = true
     } finally {
       formLoading.value = false
     }
@@ -180,5 +183,6 @@ const resetForm = () => {
     description: undefined,
   }
   formRef.value?.resetFields()
+  disabled.value = false
 }
 </script>

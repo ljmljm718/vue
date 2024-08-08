@@ -120,6 +120,10 @@
             @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`)">
             监测指标
           </el-button>
+          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor" @click="openForm('detail', item.id)"
+                     v-hasPermi="['agriculture:model-management:update']">
+            详情
+          </el-button>
           <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor" @click="openForm('update', item.id)"
             v-hasPermi="['agriculture:model-management:update']">
             编辑
@@ -158,11 +162,15 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center" prop="description" width="240" />
-      <el-table-column label="操作" align="center" fixed="right" width="180">
+      <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button link type="primary"
             @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${scope.row.id}&belongVarietyId=${scope.row.belongVarietyId}`)">
             监测指标
+          </el-button>
+          <el-button link type="primary" @click="openForm('detail', scope.row.id)"
+                     v-hasPermi="['agriculture:model-management:update']">
+            详情
           </el-button>
           <el-button link type="primary" @click="openForm('update', scope.row.id)"
             v-hasPermi="['agriculture:model-management:update']">

@@ -471,15 +471,12 @@ const openModelSelectPopup = (id: string) => {
 }
 const modelName = ref()
 const handleModelSelectPopupChange = (order: ModelManagementVO[]) => {
-  console.log("order", order)
   // if (!Array.isArray(order)) return;
   if (order.length === 0) return;
   const _order = order;
-  console.log("_order", _order)
   if (!_order.id) return;
   queryParams.modelId = _order.id.toString()
   modelName.value = _order.modelName?.toString()
-  console.log("modelName.value", modelName.value)
 }
 
 const init = async () => {
