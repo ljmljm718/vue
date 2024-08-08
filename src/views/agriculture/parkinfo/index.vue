@@ -66,6 +66,10 @@
     <div class="flex justify-between items-center">
       <div>
         <el-button
+          @click="handleBack()"
+          v-if="showPlotList"
+        >返回</el-button>
+        <el-button
           class="!bg-[#009688] !text-white"
           plain
           @click="openForm()"
@@ -103,63 +107,62 @@
         </div>
       </div>
     </div>
-    <div v-if="showType === 'card'">
-      <div class="flex space-x-3 mt-2">
-        <div class="grow">
-          <div class="max-h-[500px] overflow-auto px-1 py-2 space-y-3" v-if="!showPlotList">
+    <div v-if="showType === 'card'" class="inner-frame-wrapper">
+      <div class="flex space-x-3 justify-between h-full" v-loading="loading">
+        <div class="w-[24rem] flex flex-col">
+          <div class="grow space-y-2 overflow-auto hidden-scroll-bar" v-if="!showPlotList">
             <div
               v-for="item in list"
               :key="item.id"
-              :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-2 ${activeItemId === item.id ? '!border-green-400 shadow-md' : ''}`"
+              :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-1 ${activeItemId === item.id ? '!border-green-400 shadow-md' : ''}`"
             >
-              <div class="flex space-x-3">
-                <div>{{ item.name }}</div>
-                <div class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center">{{ item.categoryName }}</div>
+              <div class="flex space-x-3 pl-.7rem">
+                <div class="font-bold">{{ item.name }}</div>
+                <div class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center rounded-1 shadow-sm">{{ item.categoryName }}</div>
               </div>
               <div class="max-w-[40rem] p-2" :style="`display: ${item.remark ? 'block' : 'none'};`">
                 {{ item.remark }}
               </div>
-              <div class="w-[98%] ml-[1%] bg-[#66666626] h-[1px] my-3"></div>
-              <div class="grid grid-container">
+              <div class="w-[100%] bg-[#66666626] h-[1px] my-3"></div>
+              <div class="grid grid-container text-[#666666] !pb-[1rem]">
                 <div class="space-x-2">
                   <span>海拔:</span>
-                  <span>{{ item.altitude }}</span>
-                </div>
-                <div class="space-x-2">
-                  <span>面积:</span>
-                  <span>{{ item.area ?? '0' }}亩</span>
-                </div>
-                <div class="space-x-2">
-                  <span>联系电话:</span>
-                  <span>{{ item.tel }}</span>
+                  <span>{{ item.altitude }}米</span>
                 </div>
                 <div class="space-x-2">
                   <span>经度:</span>
                   <span>{{ item.longitude }}</span>
                 </div>
                 <div class="space-x-2">
+                  <span>纬度:</span>
+                  <span>{{ item.latitude }}</span>
+                </div>
+                <div class="space-x-2">
+                  <span>面积:</span>
+                  <span>{{ item.area ?? '0' }}亩</span>
+                </div>
+                <div class="space-x-2">
                   <span>数量:</span>
                   <span>{{ item.quantity ?? '0' }}</span>
+                </div>
+                <div class="space-x-2">
+                  <span>联系人:</span>
+                  <span>{{ item.contact }}</span>
+                </div>
+                <div class="space-x-2">
+                  <span>联系电话:</span>
+                  <span>{{ item.tel }}</span>
                 </div>
                 <div class="space-x-2">
                   <span>通讯地址:</span>
                   <span>{{ item.address }}</span>
                 </div>
                 <div class="space-x-2">
-                  <span>纬度:</span>
-                  <span>{{ item.latitude }}</span>
-                </div>
-                <div class="space-x-2">
-                  <span>联系人:</span>
-                  <span>{{ item.contact }}</span>
-                </div>
-                
-                <div class="space-x-2">
                   <span>创建时间:</span>
                   <span>{{ dayjs(item.createTime).format('YYYY-MM-DD') }}</span>
                 </div>
               </div>
-              <div class="w-full flex flex-row-reverse">
+              <div class="w-full flex flex-row-reverse justify-center">
                 <div class="flex items-center" @click="handleStopPropagation">
                   <el-button
                     class="!bg-[#009688] text-white"
@@ -193,21 +196,17 @@
               </div>
             </div>
           </div>
-          <div v-else class="max-h-[520px] overflow-auto px-1 py-2 grid gap-3 grid-cols-2">
-            <div class="col-span-2">
-              <el-button @click="handleBack()">返回</el-button>
-            </div>
+          <div v-else class="grow space-y-2 overflow-auto hidden-scroll-bar">
             <div
               v-for="item in plotDataList"
               :key="item.id"
               @click="handlePlotClick(item)"
-              :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-2 ${activePlotId === item.id ? '!border-green-400 shadow-md' : ''}`"
+              :class="`relative border-solid border-[1px] border-slate-300 pt-2 p-3 px-4 rounded-1 ${activePlotId === item.id ? '!border-green-400 shadow-md' : ''}`"
             >
               <div class="flex space-x-3">
-                <div>{{ item.name }}</div>
-                <!-- <div class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center">{{ item.type }}</div> -->
+                <div class="font-bold">{{ item.name }}</div>
               </div>
-              <div class="flex space-x-2 mt-2">
+              <div class="flex space-x-2 mt-1 relative">
                 <el-image
                   class="h-100px w-100px"
                   lazy
@@ -217,9 +216,9 @@
                   fit="cover"
                 />
                 <div class="space-y-1 text-[.8rem] px-3 text-[#666666]">
-                  <div class="hidden">
+                  <div>
                     <span>基地名称:</span>
-                    <span class="pl-2">{{ item.parkName }}</span>
+                    <span class="pl-2">{{ getListLabelByID(activeItemId) }}</span>
                   </div>
                   <div>
                     <span>经度:</span>
@@ -238,23 +237,35 @@
                     <span class="pl-2">{{ item.area ?? '0' }}亩</span>
                   </div>
                 </div>
+                <div @click="handleStopPropagation" class="absolute z-999 right-0 bottom-0">
+                  <el-button
+                      class="!bg-[#009688] text-white"
+                      type="primary"
+                      @click="handleDraw(item)"
+                      v-hasPermi="['agriculture:park-info:update']"
+                    >
+                      绘制围栏
+                    </el-button>
+                </div>
               </div>
-            </div>
+            </div>  
           </div>
-          <Pagination
-            v-show="!showPlotList"
-            :total="total"
-            v-model:page="queryParams.pageNo"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getList"
-          />
+          <div class="h-[2.5rem]">
+            <Pagination
+              v-show="!showPlotList"
+              :total="total"
+              v-model:page="queryParams.pageNo"
+              v-model:limit="queryParams.pageSize"
+              @pagination="getList"
+            />
+          </div>
         </div>
-        <div class="w-[600px] h-[560px]">
+        <div class="h-full grow bg-green">
           <ParkMap ref="parkMapIns" />
         </div>
       </div>
     </div>
-    <div v-if="showType === 'list'" class="mt-3">
+    <div v-if="showType === 'list'" class="inner-frame-wrapper">
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- 子表的列表 -->
         <el-table-column type="expand">
@@ -424,10 +435,20 @@ const getList = async () => {
   try {
     const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
     list.value = list1
+    console.log("🚀 ~ getList ~ list1:", list1)
     total.value = total1
   } finally {
     loading.value = false
   }
+}
+
+const getListLabelByID = (id:string) => {
+  if (!Array.isArray(list.value)) return;
+  let res = ''
+  list.value.forEach(item => {
+    if (id === item.id) res = item.name
+  })
+  return res
 }
 
 /** 搜索按钮操作 */
@@ -632,8 +653,17 @@ handleQuery()
 }
 
 .grid-container {
-  grid-template-columns: 12rem 12rem 18rem;
+  grid-template-columns: 1fr;
   row-gap: .3rem;
-  padding: .3rem 1rem;
+  padding: .3rem .8rem;
+}
+
+.inner-frame-wrapper {
+  height: max(25rem, calc(100vh - 21rem));
+  padding-top: 1rem;
+}
+
+.hidden-scroll-bar::-webkit-scrollbar {
+  width: 0;
 }
 </style>

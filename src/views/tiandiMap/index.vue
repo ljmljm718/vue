@@ -76,11 +76,16 @@ const createPolygon = (_viewer = viewer, polylinePoints: Array<Array<any>>, opti
     },
     option
   )
+  
   const _entities = _viewer.entities.add({
     id: generateUUID(),
     polygon,
     polyline: {
-      positions: Cesium.Cartesian3.fromDegreesArray(hierarchyPositionArr),
+      positions: Cesium.Cartesian3.fromDegreesArray([
+        ...hierarchyPositionArr,
+        hierarchyPositionArr[0],
+        hierarchyPositionArr[1]
+      ]),
       width: 5,
       height: polygon.height,
       distanceDisplayCondition: polygon.distanceDisplayCondition,
@@ -256,8 +261,8 @@ const getDataList = async () => {
           name: item.parkName,
           label: {
             text: item.parkName,
-            font: '500 30px Helvetica',// 15pt monospace
-            scale: 0.6,
+            font: '500 90px Helvetica',// 15pt monospace
+            scale: 0.2,
             style: Cesium.LabelStyle.FILL,
             fillColor: Cesium.Color.WHITE,
             pixelOffset: new Cesium.Cartesian2(0, -50), //偏移量
@@ -281,7 +286,7 @@ const getDataList = async () => {
         
         flyTo(
           undefined,
-          [...coordinates, 1400]
+          [...coordinates, 1000]
         )
 
         const childItem = item.plotList;
@@ -304,23 +309,23 @@ const getDataList = async () => {
                 name: child.plotName,
                 label: {
                   text: child.plotName,
-                  font: '500 24px Helvetica',// 15pt monospace
-                  scale: 0.9,
+                  font: '100 130px Helvetica',// 15pt monospace
+                  scale: 0.1,
                   style: Cesium.LabelStyle.FILL,
                   fillColor: Cesium.Color.WHITE,
-                  pixelOffset: new Cesium.Cartesian2(0, -30), //偏移量
-                  showBackground: true,
+                  pixelOffset: new Cesium.Cartesian2(0, -25), //偏移量
+                  showBackground: false,
                   backgroundColor: new Cesium.Color(0.13, 0.29, 0.29, .6),
                   distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
                 },
                 position: Cesium.Cartesian3.fromDegrees(
                   coordinates1[0],
                   coordinates1[1],
-                  20
+                  30
                 ),
                 billboard: {
                   image: itemBG1,
-                  scale: .6,
+                  scale: .3,
                   horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
                   verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
                   distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
@@ -521,11 +526,16 @@ const initMap = async () => {
   const container = viewer.cesiumWidget.creditContainer as HTMLElement
   container.style.display = 'none'
 
+  // 解决浏览器缩放后场景变形模糊的问题 useBrowserRecommendedResolution如果为true，
+  // 则以浏览器建议的分辨率进行渲染，并忽略 window.devicePixelRatio（浏览器缩放比例）
+  viewer.useBrowserRecommendedResolution = true;
+  viewer.resolutionScale = window.devicePixelRatio;
+
   // 抗锯齿
-  // viewer.scene.fxaa = true;
-  viewer.scene.postProcessStages.fxaa.enabled = false
+  viewer.scene.fxaa = true;
+  viewer.scene.postProcessStages.fxaa.enabled = true
   // 水雾特效
-  viewer.scene.globe.showGroundAtmosphere = true
+  viewer.scene.globe.showGroundAtmosphere = false
   // 设置最大俯仰角，[-90,0]区间内，默认为-30，单位弧度
   // viewer.scene.screenSpaceCameraController.constrainedPitch = Cesium.Math.toRadians(-20);
   // viewer.scene.screenSpaceCameraController.autoResetHeadingPitch = false;
