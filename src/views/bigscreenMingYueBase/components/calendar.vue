@@ -1,7 +1,7 @@
 <script lang="tsx">
 export default defineComponent({
   name: 'BigscreenCalendar',
-  emits: ['select'],
+  emits: ['select', 'change'],
   props: {
     remind: {
       type: Array<any>,
@@ -72,6 +72,7 @@ export default defineComponent({
       _date.setTime(_date.getTime() - 1000 * 60 * 60 * 24 * 2)
       curMonth.value = _date.getMonth() + 1
       showedDate.value = _date;
+      emit('change', _date)
     }
     const setNextMonth = () => {
       const _date = new Date();
@@ -81,22 +82,28 @@ export default defineComponent({
       _date.setTime(_date.getTime() - 1000 * 60 * 60 * 24 * 2)
       curMonth.value = _date.getMonth() + 1
       showedDate.value = _date;
+      emit('change', _date)
     }
 
     const formatMonthDay = (val) => val > 9 ? val : ('0' + val)
     return () => (
       <div class="w-full">
         <div class="calendar-header">
-          <div class="calendar-header-btn">{curYear.value + '年'}</div>
+          <div class="calendar-header-btn select-none cursor-pointer">{curYear.value + '年'}</div>
           <div class="flex items-center space-x-2">
-            <div class="p-1 text-[#42d56e] font-bold cursor-pointer" onClick={() => setLastMonth()}>{'<'}</div>
-            <div class="calendar-header-btn">
+            <div class="p-1 text-[#42d56e] font-bold select-none cursor-pointer" onClick={() => setLastMonth()}>{'<'}</div>
+            <div class="calendar-header-btn select-none cursor-pointer">
               <span>{curMonth.value + '月'}</span>
             </div>
-            <div class="p-1 text-[#42d56e] font-bold cursor-pointer" onClick={() => setNextMonth()}>{'>'}</div>
+            <div class="p-1 text-[#42d56e] font-bold select-none cursor-pointer" onClick={() => setNextMonth()}>{'>'}</div>
           </div>
           
-          <div class="calendar-header-btn">{curDay.value}</div>
+          <div class="calendar-header-btn select-none cursor-pointer" onClick={() => {
+            const _date = new Date()
+            curMonth.value = _date.getMonth() + 1
+            showedDate.value = _date;
+            emit('change', _date)
+          }}>今天</div>
         </div>
         <div class="calendar-body p-2 grid grid-cols-7 gap-1">
           { dateArr.map(item => (<div class="text-center py-1 text-[#a2adae]" key={item}>{item}</div>)) }

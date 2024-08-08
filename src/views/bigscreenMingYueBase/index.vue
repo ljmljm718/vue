@@ -88,7 +88,6 @@ export default defineComponent({
     const farmPlanScheduleList = ref<any[]>([])
     const getFarmPlanSchedule = async (yearMonth, belongPlot) => {
       const res = await farmPlanSchedule({ yearMonth, belongPlot });
-      console.log("getFarmPlanSchedule", res);
       if (Array.isArray(res)) {
         farmPlanScheduleList.value = res
         remindArr.value = res.filter(item => (Array.isArray(item.planList) && item.planList.length > 0)).map(item => item.monthDate)
@@ -97,7 +96,6 @@ export default defineComponent({
 
     const getPlotData = async (parentId) => {
       const res = await getParkBaseInfo({ parentId })
-      console.log("getPlotData", res);
       if (Array.isArray(res)) {
         options.value = res.map(item => ({
           label: item.name,
@@ -105,7 +103,8 @@ export default defineComponent({
         }))
         if (res.length > 0) {
           selectedPlot.value = res[0].id
-          getFarmPlanSchedule('2024-7', res[0].id)
+          const _date = new Date()
+          getFarmPlanSchedule(`${_date.getFullYear()}-${_date.getMonth() + 1}`, res[0].id)
         }
       }
     }
@@ -115,7 +114,6 @@ export default defineComponent({
     const activeBreedCategoryId = ref<string>('')
     const getBreedCategoryData = async () => {
       const res = await getBreedCategory()
-      console.log("getBreedCategoryData", res);
       if (Array.isArray(res)) {
         breedCategoryList.value = res.filter(item => (item.category_name && item.number))
         if (Array.isArray(breedCategoryList.value) && breedCategoryList.value.length > 0) {
@@ -182,7 +180,6 @@ export default defineComponent({
         if (_date_ === ele.monthDate) {
           if (Array.isArray(ele.planList)) {
             bottomDataList.value = ele.planList
-            console.log('bottomDataList', bottomDataList.value);
           }
         }
       })
@@ -294,17 +291,18 @@ export default defineComponent({
       totalPlan: '0',
       finishPlan: '0',
       notStartPlan: '0',
+      onGoingPlan: '0',
       finishRate: '0%'
     })
     const planList = ref<any[]>([])
     const getPlanData = async () => {
       const res = await getPlan({})
-      console.log("getPlanData", res);
       if (res) {
         planInfo.totalPlan = res.totalPlan ?? '0'
         planInfo.finishPlan = res.finishPlan ?? '0'
         planInfo.notStartPlan = res.notStartPlan ?? '0'
         planInfo.finishRate = res.finishRate ?? '0%'
+        planInfo.onGoingPlan = res.onGoingPlan ?? '0'
       }
       if (Array.isArray(res.list)) {
         planList.value = res.list
@@ -317,6 +315,12 @@ export default defineComponent({
     window.addEventListener('click', () => {
       showOptions.value = false
     })
+
+    const handleCalendarChange = (item) => {
+      console.log("🚀 ~ handleCalendarChange ~ item:", item)
+      if (!selectedPlot.value) return
+      getFarmPlanSchedule(`${item.getFullYear()}-${item.getMonth() + 1}`, selectedPlot.value)
+    }
     return () => (
       <div class="w-[100%] aspect-[2] bg-[#0d1724]">
 
@@ -370,7 +374,8 @@ export default defineComponent({
                                   class="py-3 text-center w-full bg-[#0d1724]"
                                   onClick={() => {
                                     selectedPlot.value = item.value
-                                    getFarmPlanSchedule('2024-7', item.value)
+                                    const _date = new Date()
+                                    getFarmPlanSchedule(`${_date.getFullYear()}-${_date.getMonth() + 1}`, item.value)
                                   }}
                                 >{item.label}</div>
                               )) : null
@@ -385,6 +390,7 @@ export default defineComponent({
                         ref={e => calendarIns.value = e}
                         remind={remindArr.value}
                         onSelect={(item) => { handleCalendarClick(item) }}
+                        onChange={(item) => handleCalendarChange(item)}
                       />
                       <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
                         {
@@ -459,19 +465,31 @@ export default defineComponent({
                           </div>
                           <div>{planInfo.totalPlan}</div>
                         </div>
-                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span>已执行:</span>
+                        <div class="inner-rect box-border p-3 px-6 space-y-2">
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span>已执行:</span>
+                            </div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div>{planInfo.finishPlan}</div>
                           </div>
-                          <div>{planInfo.finishPlan}</div>
-                        </div>
-                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span>未执行:</span>
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span>进行中:</span>
+                            </div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div>{planInfo.onGoingPlan}</div>
                           </div>
-                          <div>{planInfo.notStartPlan}</div>
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span>未执行:</span>
+                            </div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div>{planInfo.notStartPlan}</div>
+                          </div>
                         </div>
                       </div>
                     </div>

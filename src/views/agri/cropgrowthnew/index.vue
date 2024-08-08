@@ -8,14 +8,24 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="品种名称" prop="cropName">
-          <el-input
-            v-model="queryParams.cropName"
-            placeholder="请输入品种名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
+        <!--        <el-form-item label="品种名称" prop="cropName">-->
+        <!--          <el-input-->
+        <!--            v-model="queryParams.cropName"-->
+        <!--            placeholder="请输入品种名称"-->
+        <!--            clearable-->
+        <!--            @keyup.enter="handleQuery"-->
+        <!--            class="!w-240px"-->
+        <!--          />-->
+        <!--        </el-form-item>-->
+        <el-form-item label="品种" prop="cropId">
+          <el-select v-model="queryParams.cropCode" clearable placeholder="请选择品种"
+                     class="!w-240px">
+            <el-option
+              v-for="item in listVarietyManagementVO"
+              :key="item.id"
+              :label="item.varietyName"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="品类" prop="cropId">
           <el-select v-model="queryParams.cropId" clearable placeholder="请选择品类"
@@ -27,16 +37,15 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-<!--        <el-form-item label="品种" prop="cropName">-->
-<!--          <el-select v-model="queryParams.cropName" clearable placeholder="请选择品种"-->
-<!--                     class="!w-240px">-->
-<!--            <el-option-->
-<!--              v-for="item in listVarietyManagementVO.list"-->
-<!--              :key="item.varietyName"-->
-<!--              :label="item.varietyName"-->
-<!--              :value="item.varietyName"/>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <el-form-item label="生长期" prop="growth">
+          <el-input
+            v-model="queryParams.growth"
+            placeholder="请输入生长期"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
       </el-form>
       <div class="w-[1px] bg-#25252545 h-[3rem] mx-2"></div>
       <div
@@ -416,6 +425,21 @@ const queryParams = reactive({
   cycle: undefined,
   farmAdvice: undefined,
 })
+const queryParams1 = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  varietyName: undefined,
+  varietyCode: undefined,
+  images: undefined,
+  categoryId: undefined,
+  categorySource: undefined,
+  categoryStigma: undefined,
+  areaDistribution: undefined,
+  briefIntroduction: undefined,
+  status: undefined,
+  remark2: undefined,
+  createTime: []
+})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const CategoryManagementQueryParams = reactive({})
@@ -467,10 +491,8 @@ const getList = async () => {
 
     // @ts-ignore
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-
-    // const pageRes = await VarietyManagementApi.getVarietyManagementPage(CategoryManagementQueryParams)
-    // if (Array.isArray(pageRes.list)) listVarietyManagementVO.value = pageRes
-    // console.log(listVarietyManagementVO.value)
+    const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
+    listVarietyManagementVO.value = data1.list
     list.value = data.list
     total.value = data.total
   } catch (err) {
