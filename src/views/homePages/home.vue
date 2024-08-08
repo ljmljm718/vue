@@ -57,12 +57,12 @@
               <div class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.4em] top-[20.5em] text-[1.4em]" @click="routerHandler('种植管理')">种植管理</div>
 
               <div class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.5em] top-[-6em] text-[1.4em]" @click="routerHandler('基地总览')">基地总览</div>
-              <div class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]" @click="routerHandler('农资管理')">农资管理</div>
-              <div class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]" @click="routerHandler('仓储管理')">仓储管理</div>
+              <div class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]" @click="routerHandler('投入品管理')">投入品管理</div>
+              <div class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]" @click="routerHandler('库存管理')">库存管理</div>
 
-              <div class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]" @click="routerHandler('生产管理')">生产管理</div>
-              <div class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]" @click="routerHandler('销售管理')">销售管理</div>
-              <div class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]" @click="routerHandler('营销管理')">营销管理</div>
+              <div class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]" @click="routerHandler('加工记录')">加工记录</div>
+              <div class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]" @click="routerHandler('产品流通')">产品流通</div>
+              <div class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]" @click="routerHandler('营销方案')">营销方案</div>
               <div class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.4em] top-[3.5em] text-[1.4em]" @click="routerHandler('特色产品')">特色产品</div>
             </div>
           </div>
@@ -128,13 +128,13 @@ const routerHandler = (item:string) => {
     "农事概览": "/farm_work/agriOverview",
     
     "基地总览": "/asset/baseOVerview",
-    "农资管理": "/asset/agriculturalResourcesManagement/duck-house-management",
-    "仓储管理": "/asset/inventory/stock/warehouse",
+    "投入品管理": "/asset/agriculturalResourcesManagement/duck-house-management",
+    "库存管理": "/asset/inventory/stock/warehouse",
     
     "特色产品": "/pcg/production/village-product",
-    "营销管理": "/pcg/marketingCenter/marketing-program",
-    "销售管理": "/pcg/sale/sales-management",
-    "生产管理": "/pcg/product/record",
+    "营销方案": "/pcg/marketingCenter/marketing-program",
+    "产品流通": "/pcg/sale/sales-management",
+    "加工记录": "/pcg/product/record",
 
     "智能感知": "/internetMonitor/deviceData/equipment-smart-count",
     "农业资源": "/asset/base/parkinfo",

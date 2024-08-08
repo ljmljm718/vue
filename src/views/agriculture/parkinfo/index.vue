@@ -88,7 +88,7 @@
           导出
         </el-button>
       </div>
-      <div class="flex rounded-md" @click="handleTypeChange()">
+      <div class="flex rounded-md cursor-pointer select-none" @click="handleTypeChange()">
         <div
           :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
           style="border-radius: 5px 0 0 5px"
