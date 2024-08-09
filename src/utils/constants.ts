@@ -11,6 +11,12 @@ export const CommonStatusEnum = {
   DISABLE: 1 // 禁用
 }
 
+// 全局状态枚举Boolean
+export const CommonStatusEnumBoolean = {
+  ENABLE: true, // 开启
+  DISABLE: false // 禁用
+}
+
 // 全局用户类型枚举
 export const UserTypeEnum = {
   MEMBER: 1, // 会员

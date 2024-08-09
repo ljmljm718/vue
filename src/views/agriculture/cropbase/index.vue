@@ -28,7 +28,7 @@
       <!--        </el-input>-->
       <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search"/>
@@ -46,6 +46,16 @@
             :label="item.categoryName"
             :value="item.id"/>
         </el-select>
+      </el-form-item>
+      <el-form-item label="品种" prop="cropName">
+        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
+          <template #append>
+            <el-button @click="openBreedFrom()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="种植时间" prop="createTime">
         <el-date-picker
@@ -162,6 +172,12 @@
                     preview-teleported
                     :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
           />
+        </template>
+      </el-table-column>
+      <el-table-column label="启用模型" align="center" key="isEnableModel">
+        <template #default="scope">
+          <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
+                     @change="handleStatusChange(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
@@ -284,6 +300,8 @@
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
 </template>
 
 <script setup lang="ts">
@@ -307,6 +325,8 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -333,6 +353,7 @@ const queryParams = reactive({
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
+  isEnableModel: undefined,
 })
 const formData = ref<FarmRecordVO[]>([])
 const queryParam = reactive({
@@ -434,6 +455,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongPlot = null
   handleQuery()
 }
 
@@ -484,6 +506,23 @@ function cancelClick() {
   drawer2.value = false
 }
 
+/** 修改品种模型绑定状态 */
+const handleStatusChange = async (row: CropBaseApi.CropBaseVO) => {
+  try {
+    // 修改状态的二次确认
+    const text = row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? '绑定' : '停绑'
+    await message.confirm('确认要' + text + '当前模型吗?')
+    // 发起修改状态
+    await CropBaseApi.updateModelEnableStatus(row.id, row.isEnableModel)
+    // 刷新列表
+    await getList()
+  } catch {
+    // 取消后，进行恢复按钮
+    row.isEnableModel =
+      row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? CommonStatusEnumBoolean.DISABLE : CommonStatusEnumBoolean.ENABLE
+  }
+}
+
 const damn = async (row) => {
   queryParam.batchCode = row.batchCode;
   const data = await FarmRecordApi.getFarmRecordPage(queryParam)
@@ -510,6 +549,18 @@ const getValByDict = (item) => {
   })
   return res
 }
+
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+
+const BreedFromSuccess = (order: any) => {
+  queryParams.breedId = String(order[0].id)
+  queryParams.cropName = String(order[0].varietyName)
+}
+
 onMounted(async () => {
   await getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1})
