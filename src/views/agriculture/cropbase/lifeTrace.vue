@@ -17,17 +17,19 @@
       <!--            class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="名称" prop="cropName">
-        <el-input
-          v-model="queryParams.cropName"
-          placeholder="请输入名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
-        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类" class="!w-240px">
+        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
+                   class="!w-180px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -35,7 +37,17 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <el-form-item label="品种" prop="cropName">
+        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
+          <template #append>
+            <el-button @click="openBreedFrom()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="种植时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -43,7 +55,16 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-180px"
+        />
+      </el-form-item>
+      <el-form-item label="批次号" prop="batchCode">
+        <el-input
+          v-model="queryParams.batchCode"
+          placeholder="请输入批次号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-180px"
         />
       </el-form-item>
       <el-form-item>
@@ -190,6 +211,12 @@
       </div>
     </template>
   </el-drawer>
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
 </template>
 
 <script setup lang="ts">
@@ -204,6 +231,9 @@ import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
 import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 
 /** 鲁渝协作生命周期溯源 列表 */
 defineOptions({name: 'AgriCropLifeTrace'})
@@ -284,6 +314,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongPlot = null
   handleQuery()
 }
 
@@ -331,6 +362,48 @@ const getValByDict = (item) => {
     if (dict.id === item) res = dict.defineName
   })
   return res
+}
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id
+  // if (!openType1.value) {
+  //   message.error('请选择基地')
+  // } else
+  plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+  console.log('--->>查看选择的地块信息：', order[0])
+  queryParams.belongPlot = String(order[0].id)
+  queryParams.plotName = String(order[0].name)
+}
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地')
+  } else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    queryParams.belongPark = String(order[0].id)
+    queryParams.parkName = String(order[0].name)
+  } else queryParams.parkName = String(order[0].name)
+}
+
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+
+const BreedFromSuccess = (order: any) => {
+  queryParams.breedId = String(order[0].id)
+  queryParams.cropName = String(order[0].varietyName)
 }
 onMounted(async () => {
   await getList()
