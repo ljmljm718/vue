@@ -47,7 +47,7 @@
           >
             <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
             <div>
-              <div class="text-[1.1rem]">{{ item.modelName }}</div>
+              <div class="text-[1.1rem]">{{ item.modelName }} </div>
               <div class="flex space-x-1">
                 <div class="text-[.9rem]">{{ item.growth }} :</div>
                 <div class="text-[#009688] text-[.9rem]">{{ item.cycle }}天</div>
@@ -60,7 +60,7 @@
       <div class="space-x-3 bg-white p-2 min-h-[4rem]">
         <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0">{{
           Array.isArray(res) && res.length > 0 && res[0]?.model
-        }}</div>
+        }}模型周期与栽培要点</div>
         <div class="flex space-x-4">
           <div id="chart" class="w-[15rem] h-[12rem]"></div>
           <div class="grow" style="width: calc(100% - 15.4rem)">
@@ -78,10 +78,10 @@
                 ></div>
               </div>
             </div>
-            <div class="flex mt-2 overflow-auto hidden-scrollbar">
-              <div class="flex">
+            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center ">
+              <div class="flex justify-center w-full">
                 <div
-                  :class="`px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer ${
+                  :class="`px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
                     child.id === topSelectedBtn ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'
                   } text-center py-2`"
                   v-for="(child, flag) in newItemButtonList"
@@ -140,9 +140,9 @@
         </div>
       </div>
       <div class="space-x-3 bg-white p-2 min-h-[4rem]">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center ">
           <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0"
-            >{{ Array.isArray(res) && res.length > 0 && res[0]?.model }}出苗期监测指标</div
+            >{{ Array.isArray(res) && res.length > 0 && res[0]?.model + res[0]?.curPeriod}}监测指标</div
           >
           <div class="flex bg-[#f5f5f5] rounded-2 overflow-hidden">
             <div
@@ -150,11 +150,10 @@
               :key="item.id"
               :class="[
                 'text-[12px] p-2 px-4 transition',
-                selectedBtn === item.id ? 'bg-[#009688] text-[#fff]' : ''
+                selectedBtn === item.id ? '!bg-[#009688] text-[#fff]' : ''
               ]"
-              @click="selectedBtn = item.id && getFilteredTableData(item.id)"
-              >{{ item.value }}</div
-            >
+              @click="selectedBtn = item.id; getFilteredTableData(item.id)"
+            >{{ item.value }}</div>
           </div>
         </div>
         <div class="mt-2">
@@ -169,7 +168,7 @@
                         class="bg-[#666666] text-[#fff] rounded-2 extra-triangle mb-2 px-2 absolute left-4 inline-block"
                         :style="`left: calc(${scope.row.position * 100}% - 3rem)`"
                       >
-                        {{ scope.row.assess }}-{{ scope.row.value }}
+                        {{ scope.row.assess }}:{{ scope.row.value }}{{ scope.row.unitVal }}
                       </div>
                     </div>
                     <div class="flex items-center space-x-2">
