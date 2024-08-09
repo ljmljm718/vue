@@ -164,6 +164,12 @@
           />
         </template>
       </el-table-column>
+      <el-table-column label="启用模型" align="center" key="isEnableModel">
+        <template #default="scope">
+          <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
+                     @change="handleStatusChange(scope.row)" />
+        </template>
+      </el-table-column>
       <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
         <template #default="scope">
           <el-tag type="success" v-if="scope.row.recoveryNo">已采收</el-tag>
@@ -307,6 +313,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -333,6 +340,7 @@ const queryParams = reactive({
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
+  isEnableModel: undefined,
 })
 const formData = ref<FarmRecordVO[]>([])
 const queryParam = reactive({
@@ -482,6 +490,23 @@ const handleExport = async () => {
 
 function cancelClick() {
   drawer2.value = false
+}
+
+/** 修改品种模型绑定状态 */
+const handleStatusChange = async (row: CropBaseApi.CropBaseVO) => {
+  try {
+    // 修改状态的二次确认
+    const text = row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? '绑定' : '停绑'
+    await message.confirm('确认要' + text + '当前模型吗?')
+    // 发起修改状态
+    await CropBaseApi.updateModelEnableStatus(row.id, row.isEnableModel)
+    // 刷新列表
+    await getList()
+  } catch {
+    // 取消后，进行恢复按钮
+    row.isEnableModel =
+      row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? CommonStatusEnumBoolean.DISABLE : CommonStatusEnumBoolean.ENABLE
+  }
 }
 
 const damn = async (row) => {
