@@ -340,7 +340,7 @@
             </div>
           </div>
           <div class="w-[1px] bg-[#66666640] h-[7rem] mt-3 mx-5"></div>
-          <div :id="`chart_${item.id}`" class="w-[9rem] h-[9rem]"></div>
+          <div :id="`chart_${item.id}`" class="w-[13rem] h-[12rem]"></div>
           <div class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
             <div>{{ item.growth }}</div>
             <div>{{ item.cycle + '天' }}</div>
@@ -547,6 +547,7 @@ const getLabelById = (arr: any[], id: string) => {
 
 const initCharts = () => {
   cardDataList.value.forEach(item => {
+    if (!Array.isArray(item.child1)) return;
     const instance = initChartStatic(
       `chart_${item.id}`,
       generatePieOptions({
@@ -554,7 +555,7 @@ const initCharts = () => {
           text: '幼苗期',
           subtext: '20天',
           left: 'center',
-          top: '33%',
+          top: '37%',
           textStyle: {
             color: "#252525",
             fontSize: 15,
@@ -573,16 +574,14 @@ const initCharts = () => {
             type: 'pie',
             radius: ['50%', '100%'],
             center: 'center',
-            data: [
-              { name: '幼苗期', value: 20 },
-              { name: '出苗期', value: 40 },
-              { name: '播种期', value: 40 },
-            ],
+            data: item.child1.map(ele => ({
+              name: ele.growth, value: ele.cycle
+            })),
             label: {
               position: 'inside',
               formatter: '{b}',
               rich: {
-                c: { color: '#c1c1c1', fontSize: 10 },
+                b: { color: '#c1c1c1', fontSize: 10 },
                 d: { color: '#c1c1c1', fontSize: 10 }
               }
             },
@@ -594,6 +593,13 @@ const initCharts = () => {
     )
     instance && instance.on("click", (params) => {
       console.log("🚀 ~ instance&&instance.on ~ params:", params)
+      item.growth = params.name
+      instance.setOption({
+        title: {
+          text: params.name,
+          subtext: params.value + '天'
+        }
+      })
     })
   })
 }
@@ -607,6 +613,7 @@ const getCardDataList = async () => {
       id: generateUUID(),
       activeBar: Array.isArray(item.child2) && item.child2.length > 0 ? item.child2[0].id : ''
     }))
+    console.log("🚀 ~ cardDataList.value=res.map ~ cardDataList.value:", cardDataList.value)
     nextTick(() => {
       initCharts()
     })
