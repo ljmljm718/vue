@@ -465,6 +465,7 @@ import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowths
 import { formatTime } from '@/utils/index'
 import { generateUUID } from '@/utils'
 import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
+import {dateFormatter3} from "@/utils/formatTime";
 
 /** 作物生长周期 列表 */
 defineOptions({ name: 'CropGrowthNew' })

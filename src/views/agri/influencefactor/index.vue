@@ -108,6 +108,7 @@
       </el-table-column>
       <el-table-column label="影响类别" align="center" prop="remark"/>
       <el-table-column label="影响结果" align="center" prop="influence"/>
+      <el-table-column label="影响信息" align="center" prop="influenceInfo"/>
       <el-table-column label="建议" align="center" prop="proposal"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
@@ -175,6 +176,7 @@ const queryParams = reactive({
   monitorType: undefined,
   proposal: undefined,
   remark: undefined,
+  influenceInfo: undefined,
   createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单

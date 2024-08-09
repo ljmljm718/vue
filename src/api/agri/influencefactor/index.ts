@@ -9,6 +9,7 @@ export interface InfluenceFactorVO {
   monitorType: string // 传感器监测类型
   proposal: string // 建议
   remark: string // 备注
+  influenceInfo: string // 影响信息
 }
 
 // 影响因子 API

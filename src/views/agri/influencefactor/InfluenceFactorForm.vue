@@ -36,6 +36,9 @@
       <el-form-item label="影响结果" prop="influence">
         <el-input v-model="formData.influence" type="textarea" placeholder="请输入影响结果"/>
       </el-form-item>
+      <el-form-item label="影响信息" prop="influenceInfo">
+        <el-input v-model="formData.influenceInfo" type="textarea" placeholder="请输入影响信息"/>
+      </el-form-item>
       <el-form-item label="建议" prop="proposal">
         <el-input v-model="formData.proposal" type="textarea" placeholder="请输入建议"/>
       </el-form-item>
@@ -68,6 +71,7 @@ const formData = ref({
   monitorType: undefined,
   proposal: undefined,
   remark: undefined,
+  influenceInfo: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -127,6 +131,7 @@ const resetForm = () => {
     monitorType: undefined,
     proposal: undefined,
     remark: undefined,
+    influenceInfo: undefined,
   }
   formRef.value?.resetFields()
 }
