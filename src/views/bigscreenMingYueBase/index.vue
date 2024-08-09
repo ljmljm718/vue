@@ -1,5 +1,6 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
+import * as echarts from 'echarts'
 // import headerBg from './assets/headerBg.png'
 // @ts-ignore
 import CesiumMap from '@/views/tiandiMap/index.vue'
@@ -244,11 +245,27 @@ export default defineComponent({
               data: yAxisData,
               type: 'line',
               smooth: false,
+              label: {
+                normal: {
+                  show: true,
+                  position: 'top',
+                  textStyle: {
+                    color: "#999"
+                  },
+                  formatter: (params) => {
+                    return `${params.name}\n${params.value}℃`
+                  }
+                }
+              },
               itemStyle: {
                 normal: {
-                  color: "rgba(0, 150, 136, 1)"
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 1, color: '#22564500' },
+                    { offset: 0, color: '#225645' }
+                  ])
                 },
               },
+              areaStyle: {normal: {}},
             }
           ],
           grid: {
@@ -281,8 +298,14 @@ export default defineComponent({
           )
         })
       }
-      if (Array.isArray(dayWeather)) {
-        hourWeather.value = dayWeather.slice(1,3)
+      if (Array.isArray(dayWeather) && dayWeather.length >= 2) {
+        hourWeather.value = dayWeather.slice(0, 2).map((item, index) => {
+          return {
+            ...item,
+            time: index === 0 ? '明天' : '后天',
+            range: `${item.tempMin}℃~${item.tempMax}℃`
+          }
+        })
       }
     }
     getWeatherData()
@@ -365,7 +388,10 @@ export default defineComponent({
                       <div class="h-full text-center cursor-pointer" onClick={(e) => {
                         e.stopPropagation()
                         showOptions.value = true
-                      }}>{getLabelByValue(selectedPlot.value)}</div>
+                      }}>
+                        {getLabelByValue(selectedPlot.value)}
+                        <el-icon class="ml-3 relative top-[.1rem]"><CaretBottom /></el-icon>
+                      </div>
                         {
                           showOptions.value ? <div class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem] overflow-auto">
                             {
@@ -424,24 +450,27 @@ export default defineComponent({
                     </div>
                     <div class="split-line w-full h-[2px]"></div>
                     <div class="w-full box-border p-3 py-4">
-                      <div class="flex justify-between items-center px-3">
+                      <div class="flex justify-between items-center px-5 pr-[2rem]">
                         <div class="flex justify-between items-center">
-                          <div class="text-[1.5rem]">{curWeather.value.temp ?? '--' }</div>
+                          <div class="text-[1.9rem] art-font">{curWeather.value.temp ?? '--' }</div>
                           <div class="pl-3 text-[13px] space-x-2">
                             <span>{curWeather.value.text ?? '--' }</span>
                             <span>{curWeather.value.windDir ?? '--' }</span>
                             <span>{curWeather.value.windScale ?? '--' }</span>
                           </div>
                         </div>
-                        <i class="qi-100-fill text-[2rem]"></i>
+                        <i class={`qi-${curWeather.value.icon ?? ''}-fill text-[2rem]`}></i>
                       </div>
                       <div id="weatherDom"></div>
                       <div class="flex justify-evenly space-x-2">
                         {
                           hourWeather.value.map(item => (
-                            <div class="item-bg w-50% p-1 px-4 flex items-center space-x-7">
-                              <i class={`qi-${item.iconDay}-fill text-[2rem]`}></i>
-                              <span>{item.fxDate}</span>
+                            <div class="item-bg w-50% p-1 px-4 pt-2 flex items-center space-x-7" style="border: 1px solid #ffffff30;">
+                              <i class={`qi-${item.iconDay}-fill text-[2rem] pl-3`}></i>
+                              <div>
+                                <div>{item.time}</div>
+                                <div class="text-[#DAF5FA]">{item.range}</div>
+                              </div>
                             </div>
                           ))
                         }
@@ -469,25 +498,25 @@ export default defineComponent({
                           <div class="flex w-full justify-between items-center box-border">
                             <div class="flex items-center">
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                              <span>已执行:</span>
+                              <span class="whitespace-nowrap">已执行:</span>
                             </div>
-                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
                             <div>{planInfo.finishPlan}</div>
                           </div>
                           <div class="flex w-full justify-between items-center box-border">
                             <div class="flex items-center">
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                              <span>进行中:</span>
+                              <span class="whitespace-nowrap">进行中:</span>
                             </div>
-                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
                             <div>{planInfo.onGoingPlan}</div>
                           </div>
                           <div class="flex w-full justify-between items-center box-border">
                             <div class="flex items-center">
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                              <span>未执行:</span>
+                              <span class="whitespace-nowrap">未执行:</span>
                             </div>
-                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E]">--------------------------------------------</div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
                             <div>{planInfo.notStartPlan}</div>
                           </div>
                         </div>
@@ -496,8 +525,8 @@ export default defineComponent({
                     <div class="py-3 box-border h-[17rem] hidden-scrollbar">
                       {
                         planList.value.map(item => (
-                          <div class="rb-item w-full h-[6rem] pl-[2rem] box-border pb-[1rem]">
-                            <div class="w-full h-full p-4 box-border">
+                          <div class="rb-item w-full h-[7rem] pl-[2rem] box-border pb-[1rem]">
+                            <div class="w-full h-full p-5 box-border">
                               <div class="flex justify-between items-center">
                                 <div class="flex space-x-2">
                                   <div class="w-[3px] h-[1rem] bg-[#11f47f]"></div>
