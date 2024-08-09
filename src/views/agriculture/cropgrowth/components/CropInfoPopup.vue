@@ -34,6 +34,7 @@
               class="!w-240px"
           />
         </el-form-item>
+        
         <el-form-item label="品种" prop="cropType">
           <el-select
               v-model="queryParams.cropType"
@@ -42,10 +43,10 @@
               class="!w-240px"
           >
             <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+                v-for="dict in listCategoryManagement"
+                :key="dict.id"
+                :label="dict.categoryName"
+                :value="dict.id"
             />
           </el-select>
         </el-form-item>
