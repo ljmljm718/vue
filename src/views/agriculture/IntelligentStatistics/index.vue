@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[#f5f5f5]">
-    <div class="bg-[#fff] flex h-40px items-center ">
+    <div class="bg-[#fff] flex h-40px items-center">
       <el-form :model="formData" label-width="80px" class="!h-25px" :inline="true">
         <el-form-item label="选择基地">
           <el-select class="!w-300px" v-model="formData.baseCode">
@@ -29,7 +29,7 @@
           <el-button @click="offSubmit">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>     
+    </div>
     <div class="grid grid-cols-3 mt-15px gap-15px w-100% h-300px">
       <el-card class="w-100% h-100%">
         <template #header>
@@ -107,7 +107,6 @@
             end-placeholder="结束时间"
           />
         </div>
-      
       </div>
       <div class="w-[100] h-280px relative">
         <div id="chartLine" class="w-100% h-100%"></div>
@@ -287,7 +286,7 @@ const initChartBar1 = async () => {
       },
       legend: {
         show: true,
-        textStyle:{
+        textStyle: {
           color: '#000'
         }
       },
@@ -351,20 +350,60 @@ const initChartBar1 = async () => {
 //产量一览图
 const initChartBar2 = async () => {
   let res = await selectHarvest({ parkId: baseCode.value, plotId: plotCode.value })
-  let yData=[]
-  let yData2=[]
-  let xData=[]
-  res.forEach(item=>{
-    xData.push(item.time)
-    if(item.variety=='黄河口大闸蟹') yData.push({name:item.variety,value:item.harvest})
-    else yData2.push({name:item.variety,value:item.harvest})
-  })
+  let yData1 = []
+  let yData2 = []
+  let yData3 = []
+  let yData4 = []
+  let yData5 = []
+  let xData = []
+  let seriesList = []
+  let seriesList2 = []
+  let nameList={ ...Array.from(new Set(res.map(item=>item.variety)))}
   console.log(res, '产量一览图')
+  // let a = [
+  //   { time: '2022', harvest: '1455.0', variety: '长江1号' },
+  //   { time: '2023', harvest: '1605.0', variety: '长江1号' },
+  //   { time: '2024', harvest: '1830.0', variety: '长江1号' },
+  //   { time: '2022', harvest: '910.0', variety: '光合1号' },
+  //   { time: '2023', harvest: '420.0', variety: '光合1号' },
+  //   { time: '2024', harvest: '362.0', variety: '光合1号' },
+  //   { time: '2024', harvest: '362.0', variety: '光合3号' },
+  //   { time: '2024', harvest: '362.0', variety: '光合4号' }
+  // ]
+  // let nameList = Array.from(new Set(a.map((item) => item.variety)))
+  console.log(nameList, 'nnnnnnnnnn')
+  res.forEach((item) => {
+    if (nameList[0] == item.variety) {
+      yData1.push({ name: item.variety, value: item.harvest })
+    } else if (nameList[1] == item.variety) {
+      yData2.push({ name: item.variety, value: item.harvest })
+     
+    } else if (nameList[2] == item.variety) {
+      yData3.push({ name: item.variety, value: item.harvest })
+      
+    } else if (nameList[3] == item.variety) {
+      yData4.push({ name: item.variety, value: item.harvest })
+    
+    } else if (nameList[4] == item.variety) {
+      yData5.push({ name: item.variety, value: item.harvest })
+    }
+  })
+  console.log(yData1, '产量一览图')
+  console.log(yData2, '产量一览图2')
+  // seriesList.forEach(item=>{
+  //   console.log(seriesList2.indexOf(item),'seriesList2.indexOf(item)seriesList2.indexOf(item)')
+  //   seriesList2
+  //   if(seriesList2.indexOf(item)==-1){
+  //     seriesList2.push(item) 
+  //   }
+  // })
+
+  console.log(seriesList2, 's123eriesListseriesListseriesList')
   initChartStatic(
     'chartBar2',
     generateBaseOptions({
       xAxis: {
-        data: [... new Set(xData)],
+        data: Array.from(new Set(res.map((item) => item.time))),
         axisLine: {
           show: true,
           lineStyle: {
@@ -376,7 +415,7 @@ const initChartBar2 = async () => {
         show: true,
         top: 'top',
         left: 'center',
-        textStyle:{
+        textStyle: {
           color: '#000'
         }
       },
@@ -423,21 +462,43 @@ const initChartBar2 = async () => {
         }
       },
       color: ['#5470c6', '#91cc75'],
-      series: [        
+      series: 
+      [
         {
-          name:yData2[0].name,
-          data: yData2.map(item=>item.value),
+          name:nameList[0],
+          data: yData1,
           type: 'bar',
           smooth: false,
           barWidth: 28
         },
-        { 
-          name:yData[0].name,
-          data:yData.map(item=>item.value), 
+        {
+          name:nameList[1],
+          data:yData2,
           type: 'bar',
           smooth: false,
           barWidth: 28
         },
+        // {
+        //   name:nameList[2],
+        //   data:yData3,
+        //   type: 'bar',
+        //   smooth: false,
+        //   barWidth: 28
+        // },
+        // {
+        //   name:nameList[3],
+        //   data:yData4,
+        //   type: 'bar',
+        //   smooth: false,
+        //   barWidth: 28
+        // },
+        // {
+        //   name:nameList[4],
+        //   data:yData5,
+        //   type: 'bar',
+        //   smooth: false,
+        //   barWidth: 28
+        // },
       ],
       grid: {
         left: '10%',
@@ -467,7 +528,7 @@ const initChartBar3 = async () => {
       },
       legend: {
         show: true,
-        textStyle:{
+        textStyle: {
           color: '#000'
         }
       },
@@ -527,14 +588,14 @@ const initChartBar3 = async () => {
 const yAxisData = ref([])
 const radio = ref('本月')
 const dateData = ref([])
-const initChartLine = async (val, num,type) => {
-  console.log(type,'typetypetype')
+const initChartLine = async (val, num, type) => {
+  console.log(type, 'typetypetype')
   let res = await getHarvestManagementNumList({
     parkId: baseCode.value,
     plotId: plotCode.value,
     startTime: val[0],
     endTime: val[1],
-    findType:type
+    findType: type
   })
   console.log(res, '收获趋势图')
   let yData = res.map((item) => item.sumNum)
@@ -542,11 +603,10 @@ const initChartLine = async (val, num,type) => {
   console.log(xData, 'xData')
   let yAxisData = []
   let xAxisData = []
-  if (radio.value == '本月' && xData.length!=0) {
-    
+  if (radio.value == '本月' && xData.length != 0) {
     if (num == 1) {
       let month = xData[0]
-    let _Month = month.split('-')
+      let _Month = month.split('-')
       let _Ydata = []
       let _X = []
       for (let i = 1; i <= 31; i++) {
@@ -558,13 +618,12 @@ const initChartLine = async (val, num,type) => {
         _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
       })
       yAxisData = _Ydata
-      console.log(num,'numnumnum')
-      console.log(yAxisData,'yAxisDatayAxisDatayAxisData')
-      console.log(xAxisData,'yAxisDatayAxisDatayAxisData12333333')
-    } 
-    else if (num == 2) {
+      console.log(num, 'numnumnum')
+      console.log(yAxisData, 'yAxisDatayAxisDatayAxisData')
+      console.log(xAxisData, 'yAxisDatayAxisDatayAxisData12333333')
+    } else if (num == 2) {
       let month = xData[0]
-    let _Month = month.split('-')
+      let _Month = month.split('-')
       let _Ydata = []
       let _X = []
       for (let i = 1; i <= 29; i++) {
@@ -579,7 +638,7 @@ const initChartLine = async (val, num,type) => {
       yAxisData = _Ydata
     } else if (num == 3) {
       let month = xData[0]
-    let _Month = month.split('-')
+      let _Month = month.split('-')
       let _Ydata = []
       let _X = []
       for (let i = 1; i <= 30; i++) {
@@ -592,199 +651,191 @@ const initChartLine = async (val, num,type) => {
       })
       console.log(_Ydata, '_Ydata_Ydata')
       yAxisData = _Ydata
-    } 
-    
+    }
+
     console.log(yAxisData, 'yAxisDatayAxisData')
   }
-  if(xData.length==0 && radio.value == '本月'){
+  if (xData.length == 0 && radio.value == '本月') {
     console.log('enyeumeishuju')
-      let _Ydata = []
-      let _X = []
-      let month = val[0]
-      let month2 = val[1]
-      if(month.split('-')[1]==month2.split('-')[1]){
-        const day=month.split('-')[2]
-        const day2=month2.split('-')[2]
-        console.log(day,'day')
-        console.log(day2,'day2')
-        for (let i = day; i <= day2; i++) {
-        xAxisData.push(`${month.split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-        _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-        _Ydata.push(0)
-        }
-        console.log(_X,'_X_X')
-        console.log(_Ydata,'_Ydata')
-       yAxisData = _Ydata
-
-      }else if(month.split('-')[1]!=month2.split('-')[1]){
-      
-        let month3=['01','03','05','07','08','10','12']
-        if( month3.includes(month.split('-')[1] )){
-            for(let i= month.split('-')[2] ; i<=31 ; i++){
-              xAxisData.push(`${month.split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=month2.split('-')[2] ; i++){
-              xAxisData.push(`${month2.split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-        }else if(val[0].split('-')[1] =='02' ){
-            for(let i= val[0].split('-')[2] ; i<=29 ; i++){
-              xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=val[1].split('-')[2] ; i++){
-              xAxisData.push(`${val[1].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-
-          }else{
-            for(let i= val[0].split('-')[2] ; i<=30 ; i++){
-              xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=val[1].split('-')[2] ; i++){
-              xAxisData.push(`${val[1].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-
-          }
-      }
-  }else if(num ==4){
     let _Ydata = []
-      let _X = []
-      if(val[0].split('-')[1]==val[1].split('-')[1]){
-        const day=val[0].split('-')[2]
-        const day2=val[1].split('-')[2]
-        console.log(day,'day')
-        console.log(day2,'day2')
-        for (let i = day; i <= day2; i++) {
-        xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-        _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
+    let _X = []
+    let month = val[0]
+    let month2 = val[1]
+    if (month.split('-')[1] == month2.split('-')[1]) {
+      const day = month.split('-')[2]
+      const day2 = month2.split('-')[2]
+      console.log(day, 'day')
+      console.log(day2, 'day2')
+      for (let i = day; i <= day2; i++) {
+        xAxisData.push(`${month.split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+        _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
         _Ydata.push(0)
-        }
-        
-        xData.forEach((itm, index) => {
-        _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-        })
-      yAxisData = _Ydata
-      }else if(val[0].split('-')[1]!=val[1].split('-')[1]){
-        let month3=['01','03','05','07','08','10','12']
-        if( month3.includes(val[0].split('-')[1] )){
-            for(let i= val[0].split('-')[2] ; i<=31 ; i++){
-              xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=val[1].split('-')[2] ; i++){
-              xAxisData.push(`${val[1].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-          }else if(val[0].split('-')[1] =='02' ){
-            for(let i= val[0].split('-')[2] ; i<=29 ; i++){
-              xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=val[1].split('-')[2] ; i++){
-              xAxisData.push(`${val[1].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-
-          }else{
-            for(let i= val[0].split('-')[2] ; i<=30 ; i++){
-              xAxisData.push(`${val[0].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-               _Ydata.push(0)
-            }
-            for(let i= 1 ; i<=val[1].split('-')[2] ; i++){
-              xAxisData.push(`${val[1].split('-')[1]}-${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _X.push(`${i.length==2?i : i >= 10 ? i : '0' + i}`)
-              _Ydata.push(0)
-            }
-            xData.forEach((itm, index) => {
-              _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
-              })
-            console.log(xAxisData,'xAxisData123month')
-            console.log(_X,'_x123')
-            console.log(_Ydata,'_Ydata123')
-            yAxisData = _Ydata
-
-          }
       }
-       
+      console.log(_X, '_X_X')
+      console.log(_Ydata, '_Ydata')
+      yAxisData = _Ydata
+    } else if (month.split('-')[1] != month2.split('-')[1]) {
+      let month3 = ['01', '03', '05', '07', '08', '10', '12']
+      if (month3.includes(month.split('-')[1])) {
+        for (let i = month.split('-')[2]; i <= 31; i++) {
+          xAxisData.push(`${month.split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= month2.split('-')[2]; i++) {
+          xAxisData.push(`${month2.split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      } else if (val[0].split('-')[1] == '02') {
+        for (let i = val[0].split('-')[2]; i <= 29; i++) {
+          xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= val[1].split('-')[2]; i++) {
+          xAxisData.push(`${val[1].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      } else {
+        for (let i = val[0].split('-')[2]; i <= 30; i++) {
+          xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= val[1].split('-')[2]; i++) {
+          xAxisData.push(`${val[1].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      }
+    }
+  } else if (num == 4) {
+    let _Ydata = []
+    let _X = []
+    if (val[0].split('-')[1] == val[1].split('-')[1]) {
+      const day = val[0].split('-')[2]
+      const day2 = val[1].split('-')[2]
+      console.log(day, 'day')
+      console.log(day2, 'day2')
+      for (let i = day; i <= day2; i++) {
+        xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+        _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+        _Ydata.push(0)
+      }
+
+      xData.forEach((itm, index) => {
+        _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+      })
+      yAxisData = _Ydata
+    } else if (val[0].split('-')[1] != val[1].split('-')[1]) {
+      let month3 = ['01', '03', '05', '07', '08', '10', '12']
+      if (month3.includes(val[0].split('-')[1])) {
+        for (let i = val[0].split('-')[2]; i <= 31; i++) {
+          xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= val[1].split('-')[2]; i++) {
+          xAxisData.push(`${val[1].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      } else if (val[0].split('-')[1] == '02') {
+        for (let i = val[0].split('-')[2]; i <= 29; i++) {
+          xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= val[1].split('-')[2]; i++) {
+          xAxisData.push(`${val[1].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      } else {
+        for (let i = val[0].split('-')[2]; i <= 30; i++) {
+          xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        for (let i = 1; i <= val[1].split('-')[2]; i++) {
+          xAxisData.push(`${val[1].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
+          _Ydata.push(0)
+        }
+        xData.forEach((itm, index) => {
+          _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
+        })
+        console.log(xAxisData, 'xAxisData123month')
+        console.log(_X, '_x123')
+        console.log(_Ydata, '_Ydata123')
+        yAxisData = _Ydata
+      }
+    }
   }
-  if(radio.value == '本年' && xData.length!==0){
+  if (radio.value == '本年' && xData.length !== 0) {
     console.log(123)
-    let _Y=[]
-    for(let i= 1 ; i<=12 ; i++){
-      xAxisData.push(`${xData[0].split('-')[0]}-${i>=10?i: '0' + i}`)
+    let _Y = []
+    for (let i = 1; i <= 12; i++) {
+      xAxisData.push(`${xData[0].split('-')[0]}-${i >= 10 ? i : '0' + i}`)
       _Y.push(0)
     }
-    let _Xdata=xAxisData
-    xData.forEach((item,index)=>{             
-       _Y.splice(xAxisData.indexOf(item), 1, yData[index])
+    let _Xdata = xAxisData
+    xData.forEach((item, index) => {
+      _Y.splice(xAxisData.indexOf(item), 1, yData[index])
     })
     xData
     yData
-    console.log(_Y,'33333333333')
-    yAxisData=_Y
+    console.log(_Y, '33333333333')
+    yAxisData = _Y
   }
-  if(radio.value == '本年' && xData.length===0){
-    let _Y=[]
-    for(let i= 1 ; i<=12 ; i++){
-      xAxisData.push(`${val[0].split('-')[0]}-${i>=10?i: '0' + i}`)
+  if (radio.value == '本年' && xData.length === 0) {
+    let _Y = []
+    for (let i = 1; i <= 12; i++) {
+      xAxisData.push(`${val[0].split('-')[0]}-${i >= 10 ? i : '0' + i}`)
       _Y.push(0)
     }
-   
-    console.log(_Y,'33333333333y')
-    console.log( xAxisData,'33333333333xdata')
-    yAxisData=_Y
-    console.log( yAxisData,'33333333333yAxisData')
 
+    console.log(_Y, '33333333333y')
+    console.log(xAxisData, '33333333333xdata')
+    yAxisData = _Y
+    console.log(yAxisData, '33333333333yAxisData')
   }
   initChartStatic(
     'chartLine',
@@ -800,7 +851,7 @@ const initChartLine = async (val, num,type) => {
       },
       legend: {
         show: true,
-        textStyle:{
+        textStyle: {
           color: '#000'
         }
       },
@@ -873,10 +924,10 @@ const handleRadioChange = (e) => {
   console.log(radio.value, 'eeeee')
   let data = new Date()
   let _ANu = 0
-  let type='month'
+  let type = 'month'
   let dataList = []
   if (e == '本月') {
-    type='month'
+    type = 'month'
     let monthList = ['01', '03', '05', '07', '08', '10', '12']
     let month = data.getMonth() + 1 > 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1)
     let years = data.getFullYear()
@@ -895,32 +946,30 @@ const handleRadioChange = (e) => {
     }
   } else {
     _ANu = 3
-    type='year'
+    type = 'year'
     let year = data.getFullYear()
     dataList.push(`${year}-01-01`)
     dataList.push(`${year}-12-31`)
   }
   //年月日
-  initChartLine(dataList, _ANu,type)
+  initChartLine(dataList, _ANu, type)
 }
 //时间选择
 const message = useMessage() // 消息弹窗
 const dataTime = (e) => {
-  radio.value='本月'
-  let month=e[0].split('-')[1]
-  let month2=e[1].split('-')[1]
-  let day=e[0].split('-')[2]
-  let day2=e[1].split('-')[2]
-  if(month2 - month ==1  || month2 - month ==0){
-    if(month == month2){
-     initChartLine(e,4,'month')
-    }else{
-      let _Day= (30- Number(day)) +  Number(day2)
-      console.log(_Day,'000009999999999')
-      _Day>=30?message.warning('选择的日期不能超过30天'):initChartLine(e,4,'month')
+  radio.value = '本月'
+  let month = e[0].split('-')[1]
+  let month2 = e[1].split('-')[1]
+  let day = e[0].split('-')[2]
+  let day2 = e[1].split('-')[2]
+  if (month2 - month == 1 || month2 - month == 0) {
+    if (month == month2) {
+      initChartLine(e, 4, 'month')
+    } else {
+      let _Day = 30 - Number(day) + Number(day2)
+      console.log(_Day, '000009999999999')
+      _Day >= 30 ? message.warning('选择的日期不能超过30天') : initChartLine(e, 4, 'month')
     }
-      
-    
   }
 }
 //重置

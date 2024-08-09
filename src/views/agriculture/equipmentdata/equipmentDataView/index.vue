@@ -96,11 +96,13 @@ const inputFoucs=()=>{
   <el-row :gutter="20" v-loading="loading">
     <el-col :span="isCollapse ? 0 : 4" class="relative">
       <el-menu default-active="2" class="el-menu-vertical-demo relative h-full" :collapse="isCollapse">
-        <ContentWrap>
-          <ContentWrap>
-            <el-input v-model="filterText" @focus="inputFoucs" ref='inputFous' placeholder="搜索基地"  clearable />
-          </ContentWrap>
-          <ContentWrap style="height: 62vh; overflow: auto">
+        <!-- <ContentWrap> -->
+          <!-- <ContentWrap> -->
+            <div class="w-100% h-80px flex justify-center items-center">
+              <el-input class="!w-80% mt-30px h-30px rounded" v-model="filterText" @focus="inputFoucs" ref='inputFous' placeholder="搜索基地"  clearable />
+            </div>
+          <!-- </ContentWrap> -->
+          <!-- <ContentWrap style="height: 62vh; overflow: auto"> -->
             <el-tree
               ref="treeRef"
               style="max-width: 600px"
@@ -114,8 +116,8 @@ const inputFoucs=()=>{
               :expand-on-click-node="false"
               @current-change="handleCurrentCategoryChange"
             />
-          </ContentWrap>
-        </ContentWrap>
+          <!-- </ContentWrap> -->
+        <!-- </ContentWrap> -->
         <div
         @click="isCollapse = true"
         class="  flex absolute bottom-2 left-50%  items-center justify-center w-145px h-35px rounded bg-[#e5f4f3] color-[#38aca1]"
