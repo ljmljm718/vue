@@ -86,6 +86,8 @@ export default defineComponent({
     }
 
     const formatMonthDay = (val) => val > 9 ? val : ('0' + val)
+
+    const activeDay = ref<string>('')
     return () => (
       <div class="w-full">
         <div class="calendar-header">
@@ -111,6 +113,7 @@ export default defineComponent({
             buildCalendar(showedDate.value).map((item:any) => (
               <div
                 class={[
+                  activeDay.value === `${item.year}-${item.month}-${item.date}` ? "active-day" : '',
                   "text-center py-2 cursor-pointer",
                   todayCheck(item.year, item.month, item.date)
                   ? "circle-bg"
@@ -119,7 +122,10 @@ export default defineComponent({
                   : item.date ? 'with-tag' : '',
                 ]}
                 key={item.date}
-                onClick={() => emit("select", item)}
+                onClick={() => {
+                  activeDay.value = `${item.year}-${item.month}-${item.date}`
+                  emit("select", item)
+                }}
               >{item.date}</div>
             ))
           }
@@ -162,10 +168,15 @@ export default defineComponent({
   background-position: center center;
 }
 
+.active-day {
+  background: #ffffff20;
+  border-radius: 999px;
+}
+
 .with-tag { position: relative; }
 .with-tag::after {
   content: "";
-  display: block;
+  display: none;
   position: absolute;
   width: 4px;
   height: 4px;
@@ -184,6 +195,7 @@ export default defineComponent({
   height: 4px;
   border-radius: 2px;
   background-color: #fc4870;
+  background-color: #3AB296;
   left: calc(50% - 2px);
   top: calc(88% - 2px);
 }
