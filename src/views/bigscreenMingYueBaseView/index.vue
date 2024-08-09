@@ -78,10 +78,6 @@ export default defineComponent({
       if (Array.isArray(res)) dataList.value = res.map(item => ({
         ...item, children: [
           {
-            title: '地块编号',
-            value: item.code || ''
-          },
-          {
             title: '地块面积',
             value: item.area + '亩' || ''
           }
@@ -103,7 +99,7 @@ export default defineComponent({
       return (
         <div class="space-y-2">
           <div class="flex items-center">
-            <img src={icon} class="w-1rem h-.6rem mr-.4rem" />
+            {/* <img src={icon} class="w-1rem h-.6rem mr-.4rem" /> */}
             <div style="font-size:12px">{title}</div>
           </div>
           <div class="pl-[1.2rem]" style="font-size:12px">{value}</div>
@@ -115,7 +111,7 @@ export default defineComponent({
       setTimeout(() => {
         getParkData()
       }, 2000)
-      
+
     })
     const showOptions = ref<boolean>(false)
 
@@ -146,7 +142,7 @@ export default defineComponent({
                 <div class="meng-ban z-0"></div>
               </div>
               <div
-                class="z-10 absolute   w-[27%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
+                class="z-10 absolute   w-[24%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
                 style={{
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
@@ -157,52 +153,78 @@ export default defineComponent({
                     dataList.value.map(item => (
                       item.name.includes('鱼塘') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                          <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
+
+
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
+                          </div>
                           <div class="split-bar w-full h-[3px]"></div>
                           <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.children) ? item.children.map(ele => (
-                                <div class="inner-rect p-2 px-3 space-y-2">
-                                  <TitleValue title={ele.title} value={ele.value} />
-                                </div>
-                              )) : null
-                            }
                           </div>
-
                           {
-                            Array.isArray(item.child) ? (
-                              item.child.length > 1 ?
-                                <div class="grid grid-cols-2 gap-3 p-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class="inner-rect p-2 px-3 space-y-3">
-                                        <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
-                                        <TitleValue title="开始时间" value={_ele.startTime} />
-                                        <TitleValue title="结束时间" value={_ele.endTime} />
-                                      </div>
-                                    ))
-                                  }
-                                </div>
-                                : <div class="grid grid-cols-1 gap-3 p-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class=" grid grid-cols-2 gap-3">
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="养殖物种" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                                {
+                                  item.child.map(_ele => (
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
                                         </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-3/5' >{_ele.amount}只</div>
                                         </div>
 
                                       </div>
-                                    ))
-                                  }
-
+                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                      </div>
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
                                 </div>
-                            ) : null
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+
+
                           }
                         </div> : null
                     ))
@@ -245,7 +267,7 @@ export default defineComponent({
                           letter-spacing: 0px;
                           border:none;"
                   onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}
-                  defaultValue = {baseList.value[0]?.id}
+                  defaultValue={baseList.value[0]?.id}
                 >
                   {
                     baseList.value.map((item) => (
@@ -258,7 +280,7 @@ export default defineComponent({
               </div>
 
               <div
-                class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
+                class="z-10 absolute right-[1rem]  w-[24%] h-[calc(100%)]  transition-all duration-1000 p-2"
                 style={{
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
@@ -268,38 +290,75 @@ export default defineComponent({
                   {
                     duckHouseList.value.map((item) => (
                       <div class="item-wrapper w-full min-h-[3rem]">
-                        <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                        <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
+
+
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
+                          </div>
                         <div class="split-bar w-full h-[3px]"></div>
                         <div class="grid grid-cols-2 gap-3 p-2">
                           {
-                            Array.isArray(item.child) ? (
+                            Array.isArray(item.child) && item.child.length > 0 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2">
                                 {
                                   item.child.map(_ele => (
-                                    <div class="gap-2 grid grid-cols-2">
-                                      <div class="inner-rect p-2 px-3">
-                                        <TitleValue title="养殖品种" value={_ele.cropName} />
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-3/5' >{_ele.amount}只</div>
+                                        </div>
+
                                       </div>
-                                      <div class="inner-rect p-2 px-3">
-                                        <TitleValue title="养殖数量" value={_ele.amount} />
-                                      </div>
-                                      <div class="inner-rect p-2 px-3">
-                                        <TitleValue title="开始养殖时间时间" value={_ele.startTime} />
-                                      </div>
-                                      <div class="inner-rect p-2 px-3">
-                                        <TitleValue title="预计收货时间" value={_ele.endTime} />
-                                      </div>
-                                      <div class="inner-rect p-2 px-3">
-                                        <TitleValue title="物候期" value={_ele.growth} />
-                                      </div>
-                                      <div class="inner-rect p-2 px-3 space-y-2">
-                                        <TitleValue title='面积' value={item.area + '亩'} />
+                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
                                     </div>
                                   ))
                                 }
                               </div>
-                            ) : null
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
+                                </div>
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
                           }
 
 
@@ -314,52 +373,75 @@ export default defineComponent({
                     dataList.value.map(item => (
                       item.name.includes('稻田') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                          <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.children) ? item.children.map(ele => (
-                                <div class="inner-rect p-2 px-3 space-y-2">
-                                  <TitleValue title={ele.title} value={ele.value} />
-                                </div>
-                              )) : null
-                            }
+                          <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
+
+
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
                           </div>
+                          <div class="split-bar w-full h-[3px]"></div>
+                          <div class="grid grid-cols-2 gap-3 p-2"></div>
                           {
-                            Array.isArray(item.child) ? (
-                              item.child.length > 1 ?
-                                <div class="grid grid-cols-2 gap-3 p-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class="inner-rect p-2 px-3 space-y-3">
-                                        <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
-                                        <TitleValue title="开始时间" value={_ele.startTime} />
-                                        <TitleValue title="结束时间" value={_ele.endTime} />
-                                      </div>
-                                    ))
-                                  }
-                                </div>
-                                : <div class="grid grid-cols-1 gap-3 p-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class=" grid grid-cols-2 gap-3">
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="种植作物" value={_ele.cropName + "(" + _ele.growth + ")"} />
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                                {
+                                  item.child.map(_ele => (
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
                                         </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="开始时间" value={_ele.startTime} />
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title="结束时间" value={_ele.endTime} />
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
 
                                       </div>
-                                    ))
-                                  }
-
+                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                      </div>
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
                                 </div>
-
-                            ) : null
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
                           }
                         </div> : null
                     ))
@@ -399,12 +481,24 @@ export default defineComponent({
 }
 
 .item-wrapper {
-  background-image: url(./assets/itemWrapper.png);
+  background-image: url(./assets/wrapper.png);
   background-size: 100% 100%;
 }
 
+.noVariety {
+  background-image: url(./assets/noVariety.png);
+  background-size: 40% 105%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.useState {
+  border-radius: 0px 6px 0px 12px;
+  background: linear-gradient(180deg, rgba(17, 244, 127, 0.5) 0%, rgba(17, 244, 127, 0.06) 50%)
+}
+
 .item-wrapper:hover {
-  background-image: url(./assets/itemWrapperHover.png);
+  background-image: url(./assets/wrapperHover.png);
   background-size: 100% 100%;
 }
 
@@ -412,9 +506,15 @@ export default defineComponent({
   width: 0;
 }
 
+.circleNoUse {
+  background: #C0DDDE;
+
+  box-shadow: 0px 0px 6px 0px #FFFFFF;
+}
+
 .split-bar {
-  background-image: url(./assets/splitBar.png);
-  background-size: 90% 100%;
+  background-image: url(./assets/splitBar2.png);
+  background-size: 95% 65%;
   background-repeat: no-repeat;
   background-position: center center;
 }
