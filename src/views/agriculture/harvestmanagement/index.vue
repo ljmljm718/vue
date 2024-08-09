@@ -17,6 +17,58 @@
           class="!w-240px"
         />
       </el-form-item> -->
+      <el-form-item label="所属基地" prop="belongPark">
+        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly class="!w-240px">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <el-form-item label="所属地块" prop="belongPlot">
+        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly class="!w-240px">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongParkId)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <el-form-item label="批次码" prop="batchCode">
+        <el-input
+          v-model="queryParams.batchCode"
+          placeholder="请输入批次码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="采收量" prop="harvestVolume">
+        <el-input
+          v-model="queryParams.harvestVolume "
+          placeholder="请输入采收量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="人工数量" prop="laborQuantity">
+        <el-input
+          v-model="queryParams.laborQuantity "
+          placeholder="请输入人工数量"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="品种名称" prop="varietyId">
         <el-select
           v-model="queryParams.varietyId"
@@ -56,35 +108,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="批次码" prop="batchCode">
-        <el-input
-          v-model="queryParams.batchCode"
-          placeholder="请输入批次码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
 
-      <el-form-item label="采收量" prop="harvestVolume">
-        <el-input
-          v-model="queryParams.harvestVolume "
-          placeholder="请输入采收量"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-
-      <el-form-item label="人工数量" prop="laborQuantity">
-        <el-input
-          v-model="queryParams.laborQuantity "
-          placeholder="请输入人工数量"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
 
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
@@ -94,7 +118,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
         />
       </el-form-item>
       <!--      <el-form-item label="基地" prop="belongPark">-->
@@ -197,13 +221,13 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
-      <el-table-column label="品种名称" align="center" prop="varietyName" width="140"
-                       v-if="show !==118"/>
-      <el-table-column label="品类名称" align="center" prop="variety" width="120"
-                       v-if="show !==118"/>
-
+      <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
+      <el-table-column label="基地" align="center" prop="belongPark" width="180"/>
+      <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
+      <el-table-column label="地块" align="center" prop="belongPlot" width="180"/>
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
-      <el-table-column label="批次码" align="center" prop="batchCode" width="180"
+      <el-table-column
+label="批次码" align="center" prop="batchCode" width="180"
                        v-if="show !==118"/>
       <el-table-column
         label="上传时间"
@@ -212,10 +236,12 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
-      <el-table-column label="基地" align="center" prop="belongPark" width="180"/>
-      <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
-      <el-table-column label="地块" align="center" prop="belongPlot" width="180"/>
+      <el-table-column
+label="品种名称" align="center" prop="varietyName" width="140"
+                       v-if="show !==118"/>
+      <el-table-column
+label="品类名称" align="center" prop="variety" width="120"
+                       v-if="show !==118"/>
       <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
       <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
       <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
@@ -304,6 +330,11 @@
     </template>
   </el-drawer>
 
+
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
 </template>
 
 <script setup lang="ts">
@@ -326,6 +357,10 @@ import {useUserStore} from "@/store/modules/user";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import CategoryManagement from "@/views/agriculture/categorymanagement/index.vue";
 import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {ParkDetailVO} from '@/api/agriculture/parkdetail'
+import {ParkInfoVO} from '@/api/agriculture/parkinfo'
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
@@ -434,6 +469,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongParkId=undefined
+  queryParams.belongPlotId=undefined
   handleQuery()
 }
 
@@ -479,4 +516,40 @@ const handleExport = async () => {
 onMounted(() => {
   getList()
 })
+
+onActivated(async () => {
+  await getList()
+})
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id;
+  if (openType.value === undefined || openType.value === "") {
+    message.error("请选择基地")
+  } else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    queryParams.belongParkId = String(order[0].code)
+    queryParams.belongPark = String(order[0].name)
+  } else queryParams.belongPlotId = String(order[0].id)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id;
+  if (!openType1.value) {
+    message.error("请选择基地")
+  } else plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+  console.log("--->>查看选择的地块信息：", order[0])
+  queryParams.belongParkId = String(order[0].parkId)
+  queryParams.belongPlotId = String(order[0].id)
+  queryParams.belongPlot = String(order[0].name)
+}
 </script>
