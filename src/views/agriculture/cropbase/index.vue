@@ -28,7 +28,7 @@
       <!--        </el-input>-->
       <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search"/>
@@ -46,6 +46,16 @@
             :label="item.categoryName"
             :value="item.id"/>
         </el-select>
+      </el-form-item>
+      <el-form-item label="品种" prop="cropName">
+        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
+          <template #append>
+            <el-button @click="openBreedFrom()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="种植时间" prop="createTime">
         <el-date-picker
@@ -290,6 +300,8 @@
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
 </template>
 
 <script setup lang="ts">
@@ -314,6 +326,7 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -442,6 +455,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongPlot = null
   handleQuery()
 }
 
@@ -535,6 +549,18 @@ const getValByDict = (item) => {
   })
   return res
 }
+
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+
+const BreedFromSuccess = (order: any) => {
+  queryParams.breedId = String(order[0].id)
+  queryParams.cropName = String(order[0].varietyName)
+}
+
 onMounted(async () => {
   await getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1})
