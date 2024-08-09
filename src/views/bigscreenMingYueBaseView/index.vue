@@ -157,7 +157,7 @@ export default defineComponent({
                             <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
                             <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
                               {
-                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                Array.isArray(item.child) && item.child.length > 1 ? (
                                   <div class='flex justify-center items-center'>
                                     <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
                                     <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
@@ -178,7 +178,7 @@ export default defineComponent({
                           <div class="grid grid-cols-2 gap-3 p-2">
                           </div>
                           {
-                            Array.isArray(item.child) && item.child.length > 0 ? (
+                            Array.isArray(item.child) && item.child.length > 1 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2">
                                 {
                                   item.child.map(_ele => (
@@ -487,7 +487,7 @@ export default defineComponent({
 
 .noVariety {
   background-image: url(./assets/noVariety.png);
-  background-size: 40% 105%;
+  background-size: 40% auto;
   background-repeat: no-repeat;
   background-position: center center;
 }
