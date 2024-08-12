@@ -11,6 +11,12 @@ import {
   generateBaseOptions,
   generatePieOptions,
 } from "../../utils/bigscreenTool/index";
+import {
+  ModelPlanByModelId,
+  modelInfo,
+  MonitorIndicatorWithDetail,
+  CropPlotByModelId
+} from './api'
 const {
   BigscreenAdapter,
   BigscreenContainer,
@@ -26,6 +32,12 @@ const {
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
+    //模型id
+    const modelId=ref('MXGL20240731000001') 
+    // const modelId=ref('MXGL20240806000002') 
+    // const modelId=ref('1818545859448627200') 
+    const beLongPlot=ref('1787680116943613955')
+    const bigscreenName=ref('连梗11号')
     const numVal=ref(1)
     const rightNum =ref(1)
     //模型周期tab
@@ -262,6 +274,66 @@ onMounted(()=>{
   const tabFn=(val)=>{
     rightNum.value=val
   }
+  const mainTopNum=ref(0)
+  const infoList=ref([])
+  //顶部生长期
+  const growTab=(val)=>{
+    mainTopNum.value=val
+  }
+  const numTab=(str)=>{
+    console.log(1)
+    if(str=='+'){
+      console.log(123)
+      console.log(infoList.value.length,'infoList.value.lengthinfoList.value.length')
+      if(mainTopNum.value==(infoList.value.length-1)){
+        console.log(infoList.value.length,'1234444')
+        mainTopNum.value=infoList.value.length-1
+      }else{
+        mainTopNum.value++
+      }
+      console.log(mainTopNum.value,'mainTopNum.valuemainTopNum.valuemainTopNum.value')
+    }else{
+      if(mainTopNum.value===0){
+        mainTopNum.value=0
+      }else{
+        mainTopNum.value--
+      }
+    }
+  }
+  //种植计划
+  const planByList=ref([])
+  const getModelPlanByModelId=async ()=>{
+    let res=await ModelPlanByModelId({modelId:modelId.value})
+    console.log(res,'种植计划')
+    planByList.value=res
+  }
+  getModelPlanByModelId()
+  //中间生长周期跟左下共用
+  const getModelInfo= async()=>{
+    let res=await modelInfo({modelId:modelId.value})
+    console.log(res,'中间生长周期 和左下公用')
+    infoList.value=res.splice(1)
+    infoList.value.forEach((item,index)=>{
+      if(item.growth==res[0].curPeriod){
+        mainTopNum.value=index
+      }
+    })
+    console.log(infoList.value,'dddddddd123')
+  }
+  getModelInfo()
+  //模型要素
+  const getMonitorIndicatorWithDetail=async ()=>{
+    let res=await MonitorIndicatorWithDetail({modelId:modelId.value})
+  }
+  getMonitorIndicatorWithDetail()
+  //地块信息
+  const  cropPlotList=ref([])
+  const getCropPlotByModelId=async ()=>{
+    let res= await CropPlotByModelId({modelId:modelId.value,beLongPlot:beLongPlot.value})
+    cropPlotList.value=res
+    console.log(res,'地块信息')
+  }
+  getCropPlotByModelId()
     //中间内容
     const MainContent=()=>{
       return (
@@ -293,32 +365,40 @@ onMounted(()=>{
             <div class="w-100% h-100%">
               <div class='box-title '>地块信息</div>
               <div class="box-item">
+
+              {cropPlotList.value.map(item=>{
+                return (
+                  <div >
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">基地名称：</div>
-                  <div class="color-[#fff]">稻花明月基地</div>
+                  <div class="color-[#fff]">{item.parkName}</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">地块名称：</div>
-                  <div class="color-[#fff]">东三地块连梗11号水稻种植地块</div>
+                  <div class="color-[#fff]">{item.plotName}</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">种植品种：</div>
-                  <div class="color-[#fff]">连梗11号</div>
+                  <div class="color-[#fff]">{item.varitetyName}</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">地块面积：</div>
-                  <div class="color-[#fff]">100亩</div>
+                  <div class="color-[#fff]">{item.plotArea}亩</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">预计产量：</div>
-                  <div class="color-[#fff]">100000Kg</div>
+                  <div class="color-[#fff]">{item.predictedOutput}</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">经营人：</div>
-                  <div class="color-[#fff]">张三</div>
+                  <div class="color-[#fff]">{item.farmerName}</div>
                 </div>
 
               </div>
+                )
+              })}
+            </div>
+              
             </div>
             {/* 模型周期 */}
             <div class="w-100% h-100%">
@@ -363,6 +443,22 @@ onMounted(()=>{
           </div>
           {/* 中间 */}
           <div class='middle-main-wrapper'>
+            <div class='absolute top-10px w-100% h-80px flex' style="overflow-x: auto; white-space: nowrap; " >
+                <div onClick={()=>numTab('-')} class={mainTopNum.value<=3?'main-top-left':'main-top-left2'} style='display:inlin-block; cursor:pointer;width: 20px;height:25px;margin-top:25px;'></div>
+                {
+                  infoList.value.map((item,index)=>{
+                    return (
+                      <div style="display: inline-block ;width: 15%;">
+                        <div onClick={()=>growTab(index)} class={ mainTopNum.value==index?'main-top-active':'main-top-actived'} style='display:inline-block; align-self: flex-end; width:90px;;text-align:center;'>{item.growth}</div>
+                        <div v-show={index==infoList.value.length} style="display: inline-block ;" class='main-top-arrow w-25px !-mb-25px h-20px leading-20px'></div>
+                      </div>
+                     
+                      
+                    )
+                  })
+                }
+               <div onClick={()=>numTab('+')} class={mainTopNum.value>=6?'main-top-right':'main-top-right2'} style='display:inlin-block; cursor:pointer; width: 20px;height:25px;margin-top:25px;'></div>
+            </div>
             <div class='middle-main-item color-[#fff]'>
               <div class="main-pie w-90px h-90px flex flex-col items-center justify-center left-30% top-25%">
                 <div class="text-14px">0.5ms/cm</div>  
@@ -412,79 +508,32 @@ onMounted(()=>{
           <div class="grid grid-rows-2 gap-20px " style="grid-template-rows: 49% calc(51% - 20px); grid-auto-columns: 100%;">
             <div>
               <div class="box-title">种植计划</div>
-              <div class="box-item flex flex-col">
-                <div class="flex justify-around ">
-                  <div class="flex flex-col items-center">
-                    <div class='w-20px h-20px right-warpper-bg' ></div>
-                    <div class="w-2px h-90px mt-[-5px] bg-[#435b63]"></div>
-                  </div>
-                  <div class="w-85% left3-meassage h-75px px-[20px] box-border py-10px">
-                    <div class="color-[#fff] flex justify-between items-center text-17px">
-                      <div>施肥</div>
-                      <div class="right-xian"></div>
-                      <div>水稻种植地块</div>
+              <div class="box-item flex flex-col !h-420px">
+                {
+                  planByList.value.map(item=>{
+                    return (
+                      <div class="flex justify-around">
+                      <div class="flex flex-col items-center">
+                        <div class='w-20px h-20px right-warpper-bg' ></div>
+                        <div class="w-2px h-90px mt-[-5px] bg-[#435b63]"></div>
+                      </div>
+                      <div class="w-85% left3-meassage h-75px px-[20px] box-border py-10px">
+                        <div class="color-[#fff] flex justify-between items-center text-17px">
+                          <div>{item.farmStage}</div>
+                          <div class="right-xian"></div>
+                          <div>{item.plotNAme}</div>
+                        </div>
+                        <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
+                          <div>{item.userName}</div>
+                          <div class="w-1px h-10px mx-10px bg-[#44656c]"></div>
+                          <div>{item.startTime}-{item.endTime}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
-                      <div>张三</div>
-                      <div class="w-1px h-10px mx-10px bg-[#44656c]"></div>
-                      <div>2024.7.1-2024.7.5</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-around my-15px">
-                  <div class="flex flex-col items-center">
-                    <div class='w-20px h-20px right-warpper-bg mt-[-25px]' ></div>
-                    <div class="w-2px h-90px mt-[-5px] bg-[#435b63]"></div>
-                  </div>
-                  <div class="w-85% left3-meassage   h-75px  px-[20px] box-border py-10px">
-                    <div class="color-[#fff] flex justify-between items-center text-17px">
-                      <div>浇水</div>
-                      <div class="right-xian"></div>
-                      <div>水稻种植地块</div>
-                    </div>
-                    <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
-                      <div>张三</div>
-                      <div class="w-1px h-10px mx-10px bg-[#44656c]"></div>
-                      <div>2024.7.1-2024.7.5</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-around">
-                  <div class="flex flex-col items-center">
-                    <div class='w-20px h-20px right-warpper-bg mt-[-25px]' ></div>
-                    <div class="w-2px h-90px mt-[-5px] bg-[#435b63]"></div>
-                  </div>
-                  <div class="w-85% left3-meassage  h-75px  px-[20px] box-border py-10px">
-                    <div class="color-[#fff] flex justify-between items-center text-17px">
-                      <div>施肥</div>
-                      <div class="right-xian"></div>
-                      <div>水稻种植地块</div>
-                    </div>
-                    <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
-                      <div>张三</div>
-                      <div class="w-1px h-10px mx-10px bg-[#44656c]"></div>
-                      <div>2024.7.1-2024.7.5</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-around mt-15px">
-                  <div class="flex flex-col items-center">
-                    <div class='w-20px h-20px right-warpper-bg mt-[-25px]' ></div>
-                    <div class="w-2px h-90px mt-[-5px] bg-[#435b63]"></div>
-                  </div>
-                  <div class="w-85% left3-meassage  h-75px  px-[20px] box-border py-10px">
-                    <div class="color-[#fff] flex justify-between items-center text-17px">
-                      <div>浇水</div>
-                      <div class="right-xian"></div>
-                      <div>水稻种植地块</div>
-                    </div>
-                    <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
-                      <div>张三</div>
-                      <div class="w-1px h-10px mx-10px bg-[#44656c]"></div>
-                      <div>2024.7.1-2024.7.5</div>
-                    </div>
-                  </div>
-                </div>
+                    )
+                  })
+                }
+                
               </div>
             </div>
             <div>
@@ -519,7 +568,7 @@ onMounted(()=>{
                                     <BigScreenTime />
                                 ),
                                 default: () => (
-                                    <div class="art-font tracking-wide color-[#caffec]">连梗11号模型概览</div>
+                                    <div class="art-font tracking-wide color-[#caffec]">{bigscreenName.value}模型概览</div>
                                 )
                             }}
                         ></BigscreenHeader>
@@ -572,8 +621,8 @@ onMounted(()=>{
 .left-plot{
   width: 100%;
   margin-bottom: 10px;
-  height: 30px;
-  line-height: 30px;
+  height: 28px;
+  line-height: 28px;
   background-size: 100% 100%;
   background-image: url(./assets/left-plot.png);
 }
@@ -617,14 +666,50 @@ onMounted(()=>{
 }
 .right-xian{
   width: 50%;
-  height: 2px;
+  height: 2px ;
   background-size: 100% 100%;
   background-image: url(./assets/right-xian.png)
 }
 .middle-main-wrapper{
-  position: relative;
+  position: relative ;
     width: 100%;
     height: 100%;
+    .main-top-active{
+      background-size: 100% 100%;
+      line-height: 65px;
+      cursor: pointer;
+      height: 80px;
+      color: #00f06d;
+      background-image: url(./assets/main-top-active.png);
+    }
+    .main-top-actived{
+      cursor: pointer;
+      line-height: 45px;
+      height:70px;
+      color: #97bcbc;
+      background-size: 100% 100%;
+      background-image: url(./assets/main-top-actived.png);
+    }
+    .main-top-left{
+      background-size: 100% 100%;
+      background-image: url(./assets/main-top-left1.png);
+    }
+    .main-top-left2{
+      background-size: 100% 100%;
+      background-image: url(./assets/main-top-left2.png);
+    }
+    .main-top-right2{
+      background-size: 100% 100%;
+      background-image: url(./assets/main-top-right2.png);
+    }
+    .main-top-right{
+      background-size: 100% 100%;
+      background-image: url(./assets/main-top-right1.png);
+    }
+    .main-top-arrow{
+      background-size: 100% 100%;
+      background-image: url(./assets/arrow.png);
+    }
     .middle-main-item{
       position: absolute;
       width: 1400px;
@@ -650,6 +735,7 @@ onMounted(()=>{
   color: #1bdbdc;
   background-image: url(./assets/main-pie.png);
   background-size: 100% 100%;
+  
 }
 @for $i from 1 through 2 {
   .left-icon-#{$i} {
