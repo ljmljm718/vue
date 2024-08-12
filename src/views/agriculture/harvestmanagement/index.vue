@@ -18,7 +18,8 @@
         />
       </el-form-item> -->
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly class="!w-240px">
+        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
+                  class="!w-240px">
           <template #append>
             <el-button @click="openParkPopup('0')">
               <Icon icon="ep:search"/>
@@ -29,7 +30,8 @@
       </el-form-item>
 
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly class="!w-240px">
+        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
+                  class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongParkId)">
               <Icon icon="ep:search"/>
@@ -49,64 +51,71 @@
         />
       </el-form-item>
 
-      <el-form-item label="采收量" prop="harvestVolume">
+      <!--      <el-form-item label="采收量" prop="harvestVolume">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.harvestVolume "-->
+      <!--          placeholder="请输入采收量"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+
+      <!--      <el-form-item label="人工数量" prop="laborQuantity">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.laborQuantity "-->
+      <!--          placeholder="请输入人工数量"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+
+      <el-form-item label="品种名称" prop="varietyName">
         <el-input
-          v-model="queryParams.harvestVolume "
-          placeholder="请输入采收量"
+          v-model="queryParams.varietyName"
+          placeholder="请输入品种"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
-
-      <el-form-item label="人工数量" prop="laborQuantity">
-        <el-input
-          v-model="queryParams.laborQuantity "
-          placeholder="请输入人工数量"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-
-      <el-form-item label="品种名称" prop="varietyId">
-        <el-select
-          v-model="queryParams.varietyId"
-          placeholder="请选择品种"
-          clearable
-          :disabled="boo"
-          @change="handleVarietyChange"
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in listVarietyManagement"
-            :key="dict.id"
-            :label="dict.varietyName"
-            :value="dict.id"
-          />
-        </el-select>
+        <!--        <el-select-->
+        <!--          v-model="queryParams.varietyId"-->
+        <!--          placeholder="请选择品种"-->
+        <!--          clearable-->
+        <!--          :disabled="boo"-->
+        <!--          @change="handleVarietyChange"-->
+        <!--          class="!w-240px"-->
+        <!--        >-->
+        <!--          <el-option-->
+        <!--            v-for="dict in listVarietyManagement"-->
+        <!--            :key="dict.id"-->
+        <!--            :label="dict.varietyName"-->
+        <!--            :value="dict.id"-->
+        <!--          />-->
+        <!--        </el-select>-->
       </el-form-item>
       <el-form-item label="品类名称" prop="variety">
-        <!-- <el-input
+        <el-input
           v-model="queryParams.variety"
           placeholder="请输入品种"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
-        /> -->
-        <el-select
-          v-model="queryParams.variety"
-          placeholder="请选择品类或者选择品种后自动填入"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in listCategoryManagement"
-            :key="dict.id"
-            :label="dict.categoryName"
-            :value="dict.id"
-          />
-        </el-select>
+        />
+        <!--        <el-select-->
+        <!--          v-model="queryParams.varietyCode"-->
+        <!--          placeholder="请选择品类或者选择品种后自动填入"-->
+        <!--          clearable-->
+        <!--          class="!w-240px"-->
+        <!--        >-->
+        <!--          <el-option-->
+        <!--            v-for="dict in listCategoryManagement"-->
+        <!--            :key="dict.id"-->
+        <!--            :label="dict.categoryName"-->
+        <!--            :value="dict.id"-->
+        <!--          />-->
+        <!--        </el-select>-->
       </el-form-item>
 
 
@@ -227,8 +236,8 @@
       <el-table-column label="地块" align="center" prop="belongPlot" width="180"/>
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
       <el-table-column
-label="批次码" align="center" prop="batchCode" width="180"
-                       v-if="show !==118"/>
+        label="批次码" align="center" prop="batchCode" width="180"
+        v-if="show !==118"/>
       <el-table-column
         label="上传时间"
         align="center"
@@ -237,11 +246,11 @@ label="批次码" align="center" prop="batchCode" width="180"
         width="180px"
       />
       <el-table-column
-label="品种名称" align="center" prop="varietyName" width="140"
-                       v-if="show !==118"/>
+        label="品种名称" align="center" prop="varietyName" width="140"
+        v-if="show !==118"/>
       <el-table-column
-label="品类名称" align="center" prop="variety" width="120"
-                       v-if="show !==118"/>
+        label="品类名称" align="center" prop="variety" width="120"
+        v-if="show !==118"/>
       <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
       <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
       <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
@@ -390,6 +399,7 @@ const queryParams = reactive({
   batchCode: undefined, // 批次码
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
+  varietyCode: undefined
 })
 const queryParam = reactive({
   pageNo: 1,
@@ -434,6 +444,7 @@ const openVillageProductForm = async (type: string, id: number) => {
 const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 const getTypeData = async () => {
+  //@ignore
   listVarietyManagement.value = await allDataCacheManager.getData({})
   listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({})
 }
@@ -447,13 +458,14 @@ const getList = async () => {
   try {
     const data = await HarvestManagementApi.getHarvestManagementPage(queryParams)
     list.value = data.list
-    list.value.forEach((item, index) => {
-      const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.varietyId))
-      if (_itemA) {
-        item.varietyName = _itemA.varietyName
-        item.variety = _itemA.categoryName
-      }
-    });
+    // list.value.forEach((item, index) => {
+    //   const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.varietyId))
+    //   if (_itemA) {
+    //     item.varietyName = _itemA.varietyName
+    //     item.variety = _itemA.categoryName
+    //     item.varietyCode = _itemA.categoryId
+    //   }
+    // });
     total.value = data.total
   } finally {
     loading.value = false
@@ -469,8 +481,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  queryParams.belongParkId=undefined
-  queryParams.belongPlotId=undefined
+  queryParams.belongParkId = undefined
+  queryParams.belongPlotId = undefined
   handleQuery()
 }
 
