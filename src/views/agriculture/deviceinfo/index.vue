@@ -448,6 +448,8 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
+  route.query.deviceType = null
+  queryParams.deviceType = null
   queryParams.belongPark = undefined
   queryParams.belongPlot = undefined
   emit('reset'); // 清空基地树的选中节点
