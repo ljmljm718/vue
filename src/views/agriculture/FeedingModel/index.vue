@@ -131,7 +131,7 @@
           <div
             class="flex items-center !px-[15px] h-38px rounded !border-2 !border-[#dcdfe6] !border-solid"
           >
-            <div> 基地名称： </div>
+            <div> 地块名称： </div>
             <select
               class="!w-200px !h-25px !border-none"
               name=""
@@ -154,11 +154,11 @@
           <div class="w-32%">
             <el-form>
               <el-form-item
-                label="基地名称："
+                label="生长周期："
                 class="!flex box-border !px-[10px] !w-100% !h-35px !items-center !border-2 !border-[#dcdfe6] !border-solid"
               >
                 <select
-                  class="!w-150px !h-100% !border-none"
+                  class="!w-174px !h-100% !border-none"
                   name=""
                   id=""
                   @change="cycleSelect"
@@ -173,19 +173,25 @@
                 label="鱼塘规模："
                 class="!flex box-border !h-35px !px-[10px] !w-100% !items-center !border-2 !border-[#dcdfe6] !border-solid"
               >
-                <el-input type="text" v-model="sycleCount" />
+                <el-input type="number" v-model="sycleCount" >
+                  <template #suffix> 只 </template>
+                </el-input>
               </el-form-item>
               <el-form-item
                 label="鱼塘面积："
                 class="!flex box-border !h-35px !px-[10px] !w-100% !items-center !border-2 !border-[#dcdfe6] !border-solid"
               >
-                <el-input type="text" v-model="sycleArea" />
+                <el-input type="number" v-model="sycleArea" >
+                  <template #suffix> 亩 </template>
+                </el-input>
               </el-form-item>
               <el-form-item
                 label="养殖规格："
                 class="!flex !px-[10px] !h-35px !w-100% box-border !items-center !border-2 !border-[#dcdfe6] !border-solid"
               >
-                <el-input type="text" v-model="sycleVal.weight" />
+                <el-input type="number" v-model="sycleVal.weight" >
+                  <template #suffix> 克/只 </template>
+                </el-input>
               </el-form-item>
             </el-form>
           </div>
@@ -220,7 +226,7 @@
           <div class="color-[#cbcbcb]">投喂量结果:</div>
           <div class="color-[#40b0a5] mt-7px">
             <div v-if="!feedVal">点击下方“投喂量计算”按钮获取投喂量结果</div>
-            <div v-else>{{ feedVal}}</div>
+            <div v-else>{{ feedVal }}</div>
           </div>
         </div>
         <div
@@ -391,7 +397,7 @@ const initChart = async () => {
             //网格区域
             show: false //是否显示
           }
-        },
+        }
       ],
       color: ['#009688', '#ffbc33'],
       series: [
@@ -493,7 +499,7 @@ getBaseList()
 //获取地块
 const dkList = ref([])
 const getPlotList = async (val) => {
-  let res = await plotList({ parkId: val })
+  let res = await plotList({ parkId: val,pageSize:20,pageNo:1 })
   plotCode.value = res.list[0].id
   dkList.value = res.list
   getInfoByBasePlot()
@@ -510,20 +516,32 @@ const select2 = (e) => {
   getInfoByBasePlot()
 }
 //获取周期数量初始值
+//获取周期数量初始值
+function shallowUniqueByKeys(arr, keys) {
+  const uniqueObjects = []
+  const seenObjects = new Set()
+  for (const obj of arr) {
+    const key = keys.map((k) => obj[k]).join('|') // 使用指定的key生成唯一字符串
+    if (!seenObjects.has(key)) {
+      seenObjects.add(key)
+      uniqueObjects.push(obj)
+    }
+  }
+  return uniqueObjects
+}
 const infoObj = ref({})
 const infoList = ref([])
 const sycleCount = ref('')
 const sycleArea = ref('')
 const getInfoByBasePlot = async () => {
   let res = await infoByBasePlot({ belongPark: baseCode.value, belongPlot: plotCode.value })
-  sycleCount.value = res.count + '只'
-  sycleArea.value = res.area + '亩'
+  console.log(res,'基地切换')
+  sycleCount.value=res.count
+  sycleArea.value=res.area
   let res2 = await feedingList()
   res2.unshift(res)
-  res2.forEach((item) => {
-    item.weight = item.weight ? item.weight + '克/只' : ''
-  })
-  infoList.value = res2
+  let keys=[ 'weight','growthPeriod']
+  infoList.value=shallowUniqueByKeys(res2,keys)
   sycleVal.value = res
 }
 const sycleVal = ref('')
@@ -534,22 +552,19 @@ const cycleSelect = (e) => {
 }
 //喂量计算
 const getbyGrowthPeriod = async () => {
-  let weight = sycleVal.value.weight.includes('克/只')?sycleVal.value.weight.substring(0, sycleVal.value.weight.length - 3):sycleVal.value.weight
-  let count = sycleCount.value.includes('只')?sycleCount.value.substring(0, sycleCount.value.length - 1):sycleCount.value
+  let weight = sycleVal.value.weight.includes('克/只')
+    ? sycleVal.value.weight.substring(0, sycleVal.value.weight.length - 3)
+    : sycleVal.value.weight
+  let count = sycleCount.value.includes('只')
+    ? sycleCount.value.substring(0, sycleCount.value.length - 1)
+    : sycleCount.value
   let res = await byGrowthPeriod({
     growthPeriod: sycleVal.value.growthPeriod,
     count: count,
     weight: weight
   })
-  let str =res.weight.substring(0,res.weight.length-1)
-  if(str<1){
-    console.log(Number(str).toFixed(4),123333333333333)
-    feedVal.value= Number(str).toFixed(4)+'克'
-  }else{
-    feedVal.value= str+'克'
-  }
+  feedVal.value = res.weight
   //res.weight.substring(0,res.weight.length-1).toFixed(4)+'克'
-
 }
 //获取不同的养殖规格以及投喂建议
 const getFeedingGet = async () => {

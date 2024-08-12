@@ -360,7 +360,7 @@
     append-to-body
     destroy-on-close
   >
-    <div class="w-full aspect-video">
+    <div class="w-full h-[60vh]">
       <TianDiMap ref="tiandiIns" />
     </div>
     <template #footer>

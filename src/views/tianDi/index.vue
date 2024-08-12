@@ -15,8 +15,8 @@
         <el-input type="button" value="设置" @click="setCenterAndZoom()" />
       </div> -->
     </div>
-    <div class="absolute z-36 left-[1rem] top-[1rem] bg-white p-2">
-      <Selector @change="handleSelectorChange" />
+    <div class="absolute z-36 left-[1rem] top-[1rem] bg-white p-2" @click="handleStopPropagation">
+      <Selector ref="mapSelector" @change="handleSelectorChange" />
     </div>
     <div class="absolute right-3 top-3 bg-white rounded-2 shadow-md z-20 p-1">
       <div v-if="curLayer === 'img'" class="flex items-center" @click="turn2vec()">
@@ -36,6 +36,12 @@ const tdtUrl = 'https://www.zhuangbeizz.cn/tiandi/'
 // 服务负载子域
 const subdomains = ['0', '1', '2', '3', '4', '5', '6', '7']
 const token = '7eb5c1eba47d10073b06a4bb8d5a1e3c'
+
+const handleStopPropagation = (e) => e.stopPropagation()
+const mapSelector = ref()
+window.addEventListener('click', () => {
+  mapSelector.value && mapSelector.value.hiddenOptions()
+})
 
 let map: any = null
 let markerTool: any = null
