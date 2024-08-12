@@ -78,15 +78,6 @@ const remainingRouter: AppRouteRecordRaw[] = [
         }
       },
       {
-        path: 'aaa',
-        name: 'aaa',
-        component: () => import('@/views/growth/index.vue'),
-        meta: {
-          hidden: true,
-          title: '模型监测'
-        }
-      },
-      {
         path: 'growthCycle',
         name: 'growthCycle',
         component: () => import('@/views/agriculture/categorymanagement/growthCycle.vue'),
