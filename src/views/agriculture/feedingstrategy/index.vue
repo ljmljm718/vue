@@ -79,7 +79,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item>
@@ -128,7 +128,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="100px">
         <template #default="scope">
           <el-button
             link

@@ -154,10 +154,10 @@ export default defineComponent({
                       item.name.includes('鱼塘') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
                           <div class=' w-full h-[45px] relative flex items-center'>
-                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
                               {
-                                Array.isArray(item.child) && item.child.length > 1 ? (
+                                Array.isArray(item.child) && item.child.length > 0 ? (
                                   <div class='flex justify-center items-center'>
                                     <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
                                     <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
@@ -178,15 +178,15 @@ export default defineComponent({
                           <div class="grid grid-cols-2 gap-3 p-2">
                           </div>
                           {
-                            Array.isArray(item.child) && item.child.length > 1 ? (
-                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
                                 {
                                   item.child.map(_ele => (
                                     <div>
                                       <div class="gap-2 grid grid-cols-2">
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>品种：</div>
-                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>面积：</div>
@@ -202,7 +202,7 @@ export default defineComponent({
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
@@ -286,13 +286,14 @@ export default defineComponent({
                 }}
               >
                 <div class="right-title w-full aspect-[6]"></div>
-                <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3rem) ">
+                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height calc(100% - 3rem) ">
+                 
                   {
                     duckHouseList.value.map((item) => (
-                      <div class="item-wrapper w-full min-h-[3rem]">
+                      <div class="item-wrapper w-full min-h-[1rem]">
                         <div class=' w-full h-[45px] relative flex items-center'>
-                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
                               {
                                 Array.isArray(item.child) && item.child.length > 0 ? (
                                   <div class='flex justify-center items-center'>
@@ -312,17 +313,17 @@ export default defineComponent({
                             </div>
                           </div>
                         <div class="split-bar w-full h-[3px]"></div>
-                        <div class="grid grid-cols-2 gap-3 p-2">
+                        <div class="grid grid-cols-2 gap-3 p-1"></div>
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
-                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
                                 {
                                   item.child.map(_ele => (
                                     <div>
                                       <div class="gap-2 grid grid-cols-2">
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>品种：</div>
-                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>面积：</div>
@@ -338,7 +339,7 @@ export default defineComponent({
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
@@ -362,7 +363,7 @@ export default defineComponent({
                           }
 
 
-                        </div>
+                        
                       </div>
                     ))
                   }
@@ -374,8 +375,8 @@ export default defineComponent({
                       item.name.includes('稻田') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
                           <div class=' w-full h-[45px] relative flex items-center'>
-                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto' >
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
                               {
                                 Array.isArray(item.child) && item.child.length > 0 ? (
                                   <div class='flex justify-center items-center'>
@@ -398,14 +399,14 @@ export default defineComponent({
                           <div class="grid grid-cols-2 gap-3 p-2"></div>
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
-                              <div class="grid grid-cols-1 gap-2 col-span-2">
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
                                 {
                                   item.child.map(_ele => (
                                     <div>
                                       <div class="gap-2 grid grid-cols-2">
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>品种：</div>
-                                          <div class='w-3/5' style='#11F47F'>{_ele.cropName}</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>面积：</div>
@@ -421,7 +422,7 @@ export default defineComponent({
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-5 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>

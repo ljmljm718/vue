@@ -52,4 +52,8 @@ export const ModelMonitorIndicatorApi = {
     return await request.download({ url: `/agriculture/model-management/getGrowthByVarietyId`, params })
   },
   
+  // 监测指标卡片
+  getCardData: async (params) => {
+    return await request.get({ url: `/agriculture/model-monitor-indicator/getCard`, params })
+  },
 }
