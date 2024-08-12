@@ -51,18 +51,18 @@
               <div class="lt-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.4em] top-[8em] text-[1.4em]" @click="routerHandler('智能预警')">智能预警</div>
               <div class="lt-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[11em] text-[1.4em]" @click="routerHandler('设备巡检')">设备巡检</div>
 
-              <div class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[19em] text-[1.4em]" @click="routerHandler('农事活动')">农事活动</div>
-              <div class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.5em] top-[19.5em] text-[1.4em]" @click="routerHandler('物侯管理')">物侯管理</div>
-              <div class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.6em] top-[20em] text-[1.4em]" @click="routerHandler('种植管理')">种植管理</div>
-              <div class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.4em] top-[20.5em] text-[1.4em]" @click="routerHandler('农事概览')">农事概览</div>
+              <div class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[19em] text-[1.4em]" @click="routerHandler('农事概览')">农事概览</div>
+              <div class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.5em] top-[19.5em] text-[1.4em]" @click="routerHandler('农事活动')">农事活动</div>
+              <div class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.6em] top-[20em] text-[1.4em]" @click="routerHandler('监测模型')">监测模型</div>
+              <div class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.4em] top-[20.5em] text-[1.4em]" @click="routerHandler('种植管理')">种植管理</div>
 
               <div class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.5em] top-[-6em] text-[1.4em]" @click="routerHandler('基地总览')">基地总览</div>
-              <div class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]" @click="routerHandler('农资管理')">农资管理</div>
-              <div class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]" @click="routerHandler('仓储管理')">仓储管理</div>
+              <div class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]" @click="routerHandler('投入品管理')">投入品管理</div>
+              <div class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]" @click="routerHandler('库存管理')">库存管理</div>
 
-              <div class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]" @click="routerHandler('生产管理')">生产管理</div>
-              <div class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]" @click="routerHandler('销售管理')">销售管理</div>
-              <div class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]" @click="routerHandler('营销管理')">营销管理</div>
+              <div class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]" @click="routerHandler('加工记录')">加工记录</div>
+              <div class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]" @click="routerHandler('产品流通')">产品流通</div>
+              <div class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]" @click="routerHandler('营销方案')">营销方案</div>
               <div class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.4em] top-[3.5em] text-[1.4em]" @click="routerHandler('特色产品')">特色产品</div>
             </div>
           </div>
@@ -77,6 +77,29 @@ import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import ScaleBox from "vue3-scale-box";
 
 const { wsCache } = useCache()
+const router = useRouter()
+
+const buildedRoutes = ref<string[]>([])
+const buildRoleRoutes = (route_arr:any[]):string[] => {
+  const res:string[] = []
+  if (!Array.isArray(route_arr)) return res;
+  route_arr.forEach(item => {
+    if (item.children && Array.isArray(item.children)) {
+      const childBuildedRoutes:string[] = buildRoleRoutes(item.children)
+      childBuildedRoutes.forEach(childRoute => {
+        res.push(item.path + '/' + childRoute)
+      })
+    } else {
+      res.push(item.path)
+    }
+  })
+  return res;
+}
+buildedRoutes.value = [
+  ...buildRoleRoutes(wsCache.get(CACHE_KEY.ROLE_ROUTERS)),
+  // @ts-ignore
+  ...buildRoleRoutes(router.options.routes)
+]
 
 const curIcon = ref(1)
 let timer:any = null
@@ -91,39 +114,42 @@ onUnmounted(() => {
 })
 
 const routerHandler = (item:string) => {
-  console.log('sssssssss', wsCache.get(CACHE_KEY.BIGSCREEN_PATH));
-  
   const routeMap = {
     "可视化驾驶舱": wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
 
     "GIS一张图": "/internetMonitor/gis",
     "设备巡检": "/internetMonitor/check/checkView",
     "智能预警": "/internetMonitor/warn/agri-warning-record",
-    "数字监测": "/internetMonitor/deviceData/info",
+    "数字监测": "/internetMonitor/deviceData/equipment-data-three",
 
     "农事活动": "/farm_work/farmManage/farm-record",
     "种植管理": "/farm_work/crop-base",
-    "物侯管理": "/farm_work/ropriate-environmental",
-    "农事概览": "/farm_work/farmManage/farm-define",
+    "监测模型": "/farm_work/crop-growth-new",
+    "农事概览": "/farm_work/agriOverview",
     
-    "基地总览": "/asset/base/parkinfo",
-    "农资管理": "/asset/agriculturalResourcesManagement/duck-house-management",
-    "仓储管理": "/asset/inventory/stock/warehouse",
+    "基地总览": "/asset/baseOVerview",
+    "投入品管理": "/asset/agriculturalResourcesManagement/duck-house-management",
+    "库存管理": "/asset/inventory/stock/warehouse",
     
     "特色产品": "/pcg/production/village-product",
-    "营销管理": "/pcg/marketingCenter/marketing-program",
-    "销售管理": "/pcg/sale/sales-management",
-    "生产管理": "/pcg/product/record",
+    "营销方案": "/pcg/marketingCenter/marketing-program",
+    "产品流通": "/pcg/sale/sales-management",
+    "加工记录": "/pcg/product/record",
 
     "智能感知": "/internetMonitor/deviceData/equipment-smart-count",
     "农业资源": "/asset/base/parkinfo",
-    "视频监控": "/internetMonitor/deviceData/monitoring-equipment-data",
+    "视频监控": "/internetMonitor/deviceData/info",
     "数字产销": "/pcg/production/village-product",
     "智慧农事": "/farm_work/crop-base"
   }
-  console.log("routeMap item", routeMap[item]);
-  if (routeMap[item]) window.open(routeMap[item])
-  else ElMessage.warning("暂无此菜单权限！")
+
+  if (routeMap[item]) {
+    if (buildedRoutes.value.indexOf(routeMap[item]) === -1) {
+      return ElMessage.warning("暂未开放该功能")
+    } else window.open(routeMap[item])
+  } else {
+    return ElMessage.warning("暂无此菜单权限！")
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -30,7 +30,7 @@ export const CategoryManagementApi = {
   },
 
   // 查询品类管理详情
-  getCategoryManagement: async (id: number) => {
+  getCategoryManagement: async (id) => {
     allDataCacheManager.clearCache()
     return await request.get({ url: `/agriculture/category-management/get?id=` + id })
   },

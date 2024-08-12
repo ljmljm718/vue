@@ -297,7 +297,7 @@ const openPurchaseOrderInEnableList = () => {
 
 const getDeviceInfoType= async()=>{
   if(formData.value.equipmentCode){
-    let order=await DeviceInfoApi.getDeviceInfo(formData.value.equipmentCode);
+    let order=await DeviceInfoApi.getDeviceInfo(formData.value.equipmentCode as any);
     let res =order.deviceMonitorType.split(',');
     selectList.value=res
   }else{
@@ -481,6 +481,7 @@ const getFrom = async () =>{
   if(route.query.id)  {
     const aa = await EquipmentDataApi.getEquipmentData(route.query.id as any);
     formData.value = aa.list[0];
+    getDeviceInfoType();
     loadData(route.query.id);
   }
 }

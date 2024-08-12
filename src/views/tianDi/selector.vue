@@ -67,4 +67,13 @@ const handleSearchResClick = (item) => {
     })
   }
 }
+
+const hiddenOptions = () => {
+  searchResList.value = []
+  posInputVal.value = ''
+}
+
+defineExpose({
+  hiddenOptions
+})
 </script>

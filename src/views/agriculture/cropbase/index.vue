@@ -8,27 +8,38 @@
       :inline="true"
       label-width="68px"
     >
-      <!--      <el-form-item label="编号" prop="cropCode">-->
-      <!--        <el-input-->
-      <!--            v-model="queryParams.cropCode"-->
-      <!--            placeholder="请输入编号"-->
-      <!--            clearable-->
-      <!--            @keyup.enter="handleQuery"-->
-      <!--            class="!w-240px"-->
-      <!--        />-->
+      <!--            <el-form-item label="编号" prop="cropCode">-->
+      <!--              <el-input-->
+      <!--                  v-model="queryParams.cropCode"-->
+      <!--                  placeholder="请输入编号"-->
+      <!--                  clearable-->
+      <!--                  @keyup.enter="handleQuery"-->
+      <!--                  class="!w-240px"-->
+      <!--              />-->
+      <!--            </el-form-item>-->
+      <!--      <el-form-item label="基地名称" prop="parkName">-->
+      <!--        <el-input v-model="queryParams.parkName" placeholder="请选择">-->
+      <!--          <template #append>-->
+      <!--            <el-button @click="openParkPopup('0')">-->
+      <!--              <Icon icon="ep:search"/>-->
+      <!--              选择-->
+      <!--            </el-button>-->
+      <!--          </template>-->
+      <!--        </el-input>-->
       <!--      </el-form-item>-->
-      <el-form-item label="种植品种" prop="cropName">
-        <el-input
-          v-model="queryParams.cropName"
-          placeholder="请输入种植品种"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
         <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
-                   class="!w-240px">
+                   class="!w-180px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -36,7 +47,17 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <el-form-item label="品种" prop="cropName">
+        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
+          <template #append>
+            <el-button @click="openBreedFrom()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="种植时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -44,9 +65,25 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-180px"
         />
       </el-form-item>
+      <el-form-item label="批次号" prop="batchCode">
+        <el-input
+          v-model="queryParams.batchCode"
+          placeholder="请输入批次号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-180px"
+        />
+      </el-form-item>
+      <!--      <el-form-item label="采收状态" prop="recoveryNo">-->
+      <!--        <el-select v-model="queryParams.recoveryNo" placeholder="请选择采收状态" clearable   class="!w-240px">-->
+      <!--          <el-option label="全部" value="" />-->
+      <!--          <el-option label="已采收" value="true" />-->
+      <!--          <el-option label="未采收" value="false" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -137,7 +174,13 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="采收状态" align="center" prop="recoveryNo">
+      <el-table-column label="启用模型" align="center" key="isEnableModel">
+        <template #default="scope">
+          <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
+                     @change="handleStatusChange(scope.row)" />
+        </template>
+      </el-table-column>
+      <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
         <template #default="scope">
           <el-tag type="success" v-if="scope.row.recoveryNo">已采收</el-tag>
           <el-tag v-if="!scope.row.recoveryNo">未采收</el-tag>
@@ -153,7 +196,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="220" fixed="right">
+      <el-table-column label="操作" align="center" width="250" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -216,7 +259,7 @@
   <HarvestManagementAdd ref="formRefA" @success="getList"/>
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
-      <h3>生命周期-溯源</h3>
+      <h3>种植管理-溯源</h3>
     </template>
     <template #default>
       <div class="relative">
@@ -236,7 +279,7 @@
         </div>
         <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
           <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
-          <p>品种：
+          <p>品类：
             <el-tag>{{ item.cropType }}</el-tag>
             <!--            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>-->
           </p>
@@ -253,6 +296,12 @@
       </div>
     </template>
   </el-drawer>
+  <!--  选择基地-->
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <!--  选择地块-->
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
 </template>
 
 <script setup lang="ts">
@@ -272,6 +321,12 @@ import {useUserStore} from "@/store/modules/user";
 import avatarImg from "@/assets/imgs/avatar.gif";
 import {CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 import {getUserProfile} from "@/api/system/user/profile";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
+import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -290,10 +345,15 @@ const queryParams = reactive({
   cropName: undefined,
   cropType: undefined,
   createTime: [],
+  batchCode: undefined,
+  recoveryNo: undefined,
   belongPark: undefined,
+  parkName: undefined,
+  plotName: undefined,
   belongPlot: undefined,
   deptId: undefined,
   userId: undefined,
+  isEnableModel: undefined,
 })
 const formData = ref<FarmRecordVO[]>([])
 const queryParam = reactive({
@@ -353,6 +413,39 @@ const getList = async () => {
   }
 }
 
+
+//基地的选择
+const parkPopupRef = ref()
+const openType = ref('')
+const openParkPopup = (id: string) => {
+  openType.value = id
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地')
+  } else parkPopupRef.value.open(id)
+}
+const handleParkPopupChange = (order: ParkInfoVO) => {
+  if (openType.value === '0') {
+    queryParams.belongPark = String(order[0].id)
+    queryParams.parkName = String(order[0].name)
+  } else queryParams.parkName = String(order[0].name)
+}
+
+//地块的选择
+const plotPopupRef = ref()
+const openType1 = ref('')
+const openPlotPopup = (id: string) => {
+  openType1.value = id
+  // if (!openType1.value) {
+  //   message.error('请选择基地')
+  // } else
+  plotPopupRef.value.open(id)
+}
+const handlePlotPopupChange = (order: ParkDetailVO) => {
+  console.log('--->>查看选择的地块信息：', order[0])
+  queryParams.belongPlot = String(order[0].id)
+  queryParams.plotName = String(order[0].name)
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
@@ -362,6 +455,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.belongPlot = null
   handleQuery()
 }
 
@@ -412,6 +506,23 @@ function cancelClick() {
   drawer2.value = false
 }
 
+/** 修改品种模型绑定状态 */
+const handleStatusChange = async (row: CropBaseApi.CropBaseVO) => {
+  try {
+    // 修改状态的二次确认
+    const text = row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? '绑定' : '停绑'
+    await message.confirm('确认要' + text + '当前模型吗?')
+    // 发起修改状态
+    await CropBaseApi.updateModelEnableStatus(row.id, row.isEnableModel)
+    // 刷新列表
+    await getList()
+  } catch {
+    // 取消后，进行恢复按钮
+    row.isEnableModel =
+      row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? CommonStatusEnumBoolean.DISABLE : CommonStatusEnumBoolean.ENABLE
+  }
+}
+
 const damn = async (row) => {
   queryParam.batchCode = row.batchCode;
   const data = await FarmRecordApi.getFarmRecordPage(queryParam)
@@ -438,6 +549,18 @@ const getValByDict = (item) => {
   })
   return res
 }
+
+//品种名称管理
+const BreedFromRef = ref()
+const openBreedFrom = () => {
+  BreedFromRef.value.open();
+}
+
+const BreedFromSuccess = (order: any) => {
+  queryParams.breedId = String(order[0].id)
+  queryParams.cropName = String(order[0].varietyName)
+}
+
 onMounted(async () => {
   await getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1})

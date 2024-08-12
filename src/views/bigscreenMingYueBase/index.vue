@@ -1,6 +1,7 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
-import headerBg from './assets/headerBg.png'
+import * as echarts from 'echarts'
+// import headerBg from './assets/headerBg.png'
 // @ts-ignore
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import dayjs from "dayjs";
@@ -19,6 +20,8 @@ import {
   generatePieOptions,
   generateBaseOptions
 } from '../../utils/bigscreenTool/index'
+import axios from 'axios';
+import { useUserStore } from "@/store/modules/user";
 
 const {
   BigscreenAdapter,
@@ -31,7 +34,26 @@ const {
 export default defineComponent({
   name: 'BigscreenMingYueBase',
   setup() {
+    const userStore = useUserStore()
     const showSidePanel = ref<boolean>(false)
+
+    // 获取经纬度对应的地名
+    const getPositionName = async(keyWord:string, lng:string, lat: string) => {
+      const res = await axios.get(`http://api.tianditu.gov.cn/search?postStr={"keyWord":"${keyWord}","level":"15","mapBound":"${lng},${lat},116.45119,39.93542","queryType":"7","count":"20","start":"0","queryTerminal":"10000"}&type=query&tk=您的密钥`)
+      console.log("🚀 ~ getPositionName ~ res:", res)
+    }
+
+    // 获取当前坐标点
+    const getLocation = () => {
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            resolve([position.coords.longitude, position.coords.latitude])
+          })
+        } else reject()
+      })
+    }
+
     setTimeout(() => {
       showSidePanel.value = true
     }, 100)
@@ -67,7 +89,6 @@ export default defineComponent({
     const farmPlanScheduleList = ref<any[]>([])
     const getFarmPlanSchedule = async (yearMonth, belongPlot) => {
       const res = await farmPlanSchedule({ yearMonth, belongPlot });
-      console.log("getFarmPlanSchedule", res);
       if (Array.isArray(res)) {
         farmPlanScheduleList.value = res
         remindArr.value = res.filter(item => (Array.isArray(item.planList) && item.planList.length > 0)).map(item => item.monthDate)
@@ -76,7 +97,6 @@ export default defineComponent({
 
     const getPlotData = async (parentId) => {
       const res = await getParkBaseInfo({ parentId })
-      console.log("getPlotData", res);
       if (Array.isArray(res)) {
         options.value = res.map(item => ({
           label: item.name,
@@ -84,7 +104,8 @@ export default defineComponent({
         }))
         if (res.length > 0) {
           selectedPlot.value = res[0].id
-          getFarmPlanSchedule('2024-7', res[0].id)
+          const _date = new Date()
+          getFarmPlanSchedule(`${_date.getFullYear()}-${_date.getMonth() + 1}`, res[0].id)
         }
       }
     }
@@ -94,7 +115,6 @@ export default defineComponent({
     const activeBreedCategoryId = ref<string>('')
     const getBreedCategoryData = async () => {
       const res = await getBreedCategory()
-      console.log("getBreedCategoryData", res);
       if (Array.isArray(res)) {
         breedCategoryList.value = res.filter(item => (item.category_name && item.number))
         if (Array.isArray(breedCategoryList.value) && breedCategoryList.value.length > 0) {
@@ -161,7 +181,6 @@ export default defineComponent({
         if (_date_ === ele.monthDate) {
           if (Array.isArray(ele.planList)) {
             bottomDataList.value = ele.planList
-            console.log('bottomDataList', bottomDataList.value);
           }
         }
       })
@@ -226,11 +245,27 @@ export default defineComponent({
               data: yAxisData,
               type: 'line',
               smooth: false,
+              label: {
+                normal: {
+                  show: true,
+                  position: 'top',
+                  textStyle: {
+                    color: "#999"
+                  },
+                  formatter: (params) => {
+                    return `${params.name}\n${params.value}℃`
+                  }
+                }
+              },
               itemStyle: {
                 normal: {
-                  color: "rgba(0, 150, 136, 1)"
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 1, color: '#22564500' },
+                    { offset: 0, color: '#225645' }
+                  ])
                 },
               },
+              areaStyle: {normal: {}},
             }
           ],
           grid: {
@@ -244,7 +279,7 @@ export default defineComponent({
     }
     const getWeatherData = async () => {
       const res = await getWeather({
-        location: '117.12,36.66',
+        location: '107.04821,29.46118',
         key: 'c8d24d8285274a3a89617fa7cb2f2eaa'
       })
 
@@ -263,8 +298,14 @@ export default defineComponent({
           )
         })
       }
-      if (Array.isArray(dayWeather)) {
-        hourWeather.value = dayWeather.slice(1,3)
+      if (Array.isArray(dayWeather) && dayWeather.length >= 2) {
+        hourWeather.value = dayWeather.slice(0, 2).map((item, index) => {
+          return {
+            ...item,
+            time: index === 0 ? '明天' : '后天',
+            range: `${item.tempMin}℃~${item.tempMax}℃`
+          }
+        })
       }
     }
     getWeatherData()
@@ -273,17 +314,18 @@ export default defineComponent({
       totalPlan: '0',
       finishPlan: '0',
       notStartPlan: '0',
+      onGoingPlan: '0',
       finishRate: '0%'
     })
     const planList = ref<any[]>([])
     const getPlanData = async () => {
       const res = await getPlan({})
-      console.log("getPlanData", res);
       if (res) {
         planInfo.totalPlan = res.totalPlan ?? '0'
         planInfo.finishPlan = res.finishPlan ?? '0'
         planInfo.notStartPlan = res.notStartPlan ?? '0'
         planInfo.finishRate = res.finishRate ?? '0%'
+        planInfo.onGoingPlan = res.onGoingPlan ?? '0'
       }
       if (Array.isArray(res.list)) {
         planList.value = res.list
@@ -296,6 +338,12 @@ export default defineComponent({
     window.addEventListener('click', () => {
       showOptions.value = false
     })
+
+    const handleCalendarChange = (item) => {
+      console.log("🚀 ~ handleCalendarChange ~ item:", item)
+      if (!selectedPlot.value) return
+      getFarmPlanSchedule(`${item.getFullYear()}-${item.getMonth() + 1}`, selectedPlot.value)
+    }
     return () => (
       <div class="w-[100%] aspect-[2] bg-[#0d1724]">
 
@@ -340,7 +388,10 @@ export default defineComponent({
                       <div class="h-full text-center cursor-pointer" onClick={(e) => {
                         e.stopPropagation()
                         showOptions.value = true
-                      }}>{getLabelByValue(selectedPlot.value)}</div>
+                      }}>
+                        {getLabelByValue(selectedPlot.value)}
+                        <el-icon class="ml-3 relative top-[.1rem]"><CaretBottom /></el-icon>
+                      </div>
                         {
                           showOptions.value ? <div class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem] overflow-auto">
                             {
@@ -349,7 +400,8 @@ export default defineComponent({
                                   class="py-3 text-center w-full bg-[#0d1724]"
                                   onClick={() => {
                                     selectedPlot.value = item.value
-                                    getFarmPlanSchedule('2024-7', item.value)
+                                    const _date = new Date()
+                                    getFarmPlanSchedule(`${_date.getFullYear()}-${_date.getMonth() + 1}`, item.value)
                                   }}
                                 >{item.label}</div>
                               )) : null
@@ -364,6 +416,7 @@ export default defineComponent({
                         ref={e => calendarIns.value = e}
                         remind={remindArr.value}
                         onSelect={(item) => { handleCalendarClick(item) }}
+                        onChange={(item) => handleCalendarChange(item)}
                       />
                       <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
                         {
@@ -393,28 +446,31 @@ export default defineComponent({
                   <div class="title-3 w-full aspect-[6]"></div>
                   <div class="item-bg">
                     <div class="flex justify-center py-4 items-center text-[#11eeaf]">
-                      重庆市-塘坝镇-天印村
+                      {userStore.user.nickname.replace('用户', '')}
                     </div>
                     <div class="split-line w-full h-[2px]"></div>
                     <div class="w-full box-border p-3 py-4">
-                      <div class="flex justify-between items-center px-3">
+                      <div class="flex justify-between items-center px-5 pr-[2rem]">
                         <div class="flex justify-between items-center">
-                          <div class="text-[1.5rem]">{curWeather.value.temp ?? '--' }</div>
+                          <div class="text-[1.9rem] art-font">{curWeather.value.temp ?? '--' }</div>
                           <div class="pl-3 text-[13px] space-x-2">
                             <span>{curWeather.value.text ?? '--' }</span>
                             <span>{curWeather.value.windDir ?? '--' }</span>
                             <span>{curWeather.value.windScale ?? '--' }</span>
                           </div>
                         </div>
-                        <i class="qi-100-fill text-[2rem]"></i>
+                        <i class={`qi-${curWeather.value.icon ?? ''}-fill text-[2rem]`}></i>
                       </div>
                       <div id="weatherDom"></div>
                       <div class="flex justify-evenly space-x-2">
                         {
                           hourWeather.value.map(item => (
-                            <div class="item-bg w-50% p-1 px-4 flex items-center space-x-7">
-                              <i class={`qi-${item.iconDay}-fill text-[2rem]`}></i>
-                              <span>{item.fxDate}</span>
+                            <div class="item-bg w-50% p-1 px-4 pt-2 flex items-center space-x-7" style="border: 1px solid #ffffff30;">
+                              <i class={`qi-${item.iconDay}-fill text-[2rem] pl-3`}></i>
+                              <div>
+                                <div>{item.time}</div>
+                                <div class="text-[#DAF5FA]">{item.range}</div>
+                              </div>
                             </div>
                           ))
                         }
@@ -438,27 +494,39 @@ export default defineComponent({
                           </div>
                           <div>{planInfo.totalPlan}</div>
                         </div>
-                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span>已执行:</span>
+                        <div class="inner-rect box-border p-3 px-6 space-y-2">
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span class="whitespace-nowrap">已执行:</span>
+                            </div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div>{planInfo.finishPlan}</div>
                           </div>
-                          <div>{planInfo.finishPlan}</div>
-                        </div>
-                        <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span>未执行:</span>
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span class="whitespace-nowrap">进行中:</span>
+                            </div>
+                            <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div>{planInfo.onGoingPlan}</div>
                           </div>
-                          <div>{planInfo.notStartPlan}</div>
+                          <div class="flex w-full justify-between items-center box-border">
+                            <div class="flex items-center">
+                              <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                              <span class="whitespace-nowrap">未执行:</span>
+                            </div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div>{planInfo.notStartPlan}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div class="py-3 box-border h-[17rem] hidden-scrollbar">
                       {
                         planList.value.map(item => (
-                          <div class="rb-item w-full h-[6rem] pl-[2rem] box-border pb-[1rem]">
-                            <div class="w-full h-full p-4 box-border">
+                          <div class="rb-item w-full h-[7rem] pl-[2rem] box-border pb-[1rem]">
+                            <div class="w-full h-full p-5 box-border">
                               <div class="flex justify-between items-center">
                                 <div class="flex space-x-2">
                                   <div class="w-[3px] h-[1rem] bg-[#11f47f]"></div>

@@ -11,7 +11,7 @@
       <el-form-item label="品类名称" prop="categoryName">
         <el-input
           v-model="queryParams.categoryName"
-          placeholder="请输入品类名称"
+          placeholder="请输入品类名称hahahahh"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -163,7 +163,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="150px" fixed="right">
+      <el-table-column label="操作" align="center" width="200px" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -181,7 +181,14 @@
           >
             详情
           </el-button>
-
+          <el-button
+            link
+            type="primary"
+            @click="goGrowthCycle(scope.row.id)"
+            v-hasPermi="['agriculture:category-management:update']"
+          >
+            生长周期
+          </el-button>
           <el-button
             link
             type="danger"
@@ -190,6 +197,9 @@
           >
             删除
           </el-button>
+          
+
+        
         </template>
       </el-table-column>
     </el-table>
@@ -211,6 +221,9 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { CategoryManagementApi, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
 import CategoryManagementForm from './CategoryManagementForm.vue'
+
+import router from "@/router"
+
 
 /** 品类管理 列表 */
 defineOptions({ name: 'CategoryManagement' })
@@ -255,7 +268,12 @@ const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
 }
+// 生长周期按钮操作
+const goGrowthCycle = ( id: number) =>{
 
+  // console.log('id',id)
+  router.push({ path:'/growthCycle', query: { cropId: id ,tag:'category'} })
+}
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()

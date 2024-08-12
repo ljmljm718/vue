@@ -4,14 +4,6 @@
     <EditFrame>
       <template #header>
         <div class="flex">
-           <!-- <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-          >
-            保存
-          </el-button> -->
           <el-button
             type="success"
             :icon="TopRight"
@@ -26,11 +18,21 @@
           >清空
           </el-button>
         </div>
-        <el-button
+        <div>
+          <el-button
               type="primary"
               plain
               @click="router.back()"
             >返回</el-button>
+            <el-button
+            type="primary"
+            :icon="FolderChecked"
+            plain
+            @click="localSave()"
+          >
+            暂存
+          </el-button>
+        </div>
       </template>
 
       <template #content>
@@ -121,17 +123,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import {EditFrame,addOrUpdateFormStorage} from '@/components/EditFrame/index'
+import {EditFrame,addOrUpdateFormStorage,getFormStorage} from '@/components/EditFrame/index'
 import { RepositoryInfoApi, RepositoryInfoVO } from '@/api/agriculture/repositoryinfo'
 import {Refresh,TopRight} from '@element-plus/icons-vue'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-// 本地保存表单
-const route = useRoute()
-const router = useRouter()
-// 下面是抽象出的基本配置
-const ROUTE_PATH = route.path
-const FORMPAGE_NAME = ''
-const ORIGIN_PATH = '/pcg/repository-info' // 关闭表单时跳转的路径
 const formRef = ref()
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
@@ -154,7 +149,13 @@ const { t } = useI18n() // 国际化
 
 const formRules = reactive({
 })
-
+// 本地保存表单
+const route = useRoute()
+const router = useRouter()
+// 下面是抽象出的基本配置
+const ROUTE_PATH = route.path
+const FORMPAGE_NAME = '产业模型服务'
+const ORIGIN_PATH = '/pcg/repository-info' // 关闭表单时跳转的路径
 const localSave = () => {
   addOrUpdateFormStorage(
     ROUTE_PATH,
@@ -164,30 +165,37 @@ const localSave = () => {
   )
   message.success('保存成功！')
 }
-
-if(route.query.id){
-    //替换成自己的
-    // MarketingProgramApi.getMarketingProgram(route.query.id).then(res=>{
-    // formData.value = res
-    // formData.value.marketingType ='productmanual'
-    // });
+//获取浏览器缓存
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  console.log("查看一下",_form)
+  if (_form) formData.value = _form.formContent
 }
+if (!formData.value.id) loadData()
 // 方式二 调用立即执行函数
 onMounted(async () => {
       await open(route.query.type,route.query.id);
 });
 const open = async (type: string, id?: number) => {
   formType.value = type
-  resetForm()
+  // resetForm()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await RepositoryInfoApi.getRepositoryInfo(id)
-      formData.value.attachmentFile=formData.value.attachmentFile.split(",");
+      const info=await RepositoryInfoApi.getRepositoryInfo(id)
+      if(info.id)
+    {
+      formData.value =info
+      if(formData.value.attachmentFile)
+      formData.value.attachmentFile=formData.value.attachmentFile.split(",")
+      loadData(info.id)
+    }
     } finally {
       formLoading.value = false
     }
+  }else{
+    loadData()
   }
 }
 const submitForm = async () => {
@@ -227,6 +235,22 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+
+//起步函数
+// const getFrom = async () =>{
+//   resetForm();
+//   if(route.query.id)  {
+//     formData.value = await RepositoryInfoApi.getRepositoryInfo(route.query.id)
+//     if(formData.value.attachmentFile)
+//     formData.value.attachmentFile=formData.value.attachmentFile.split(",");
+//     loadData(route.query.id);
+//   }
+// }
+
+// // 方式二 调用立即执行函数
+// onMounted(async () => {
+//     getFrom();
+// });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
 <style>

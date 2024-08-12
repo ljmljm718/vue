@@ -22,6 +22,7 @@ export interface CropBaseVO {
   recoveryNo: boolean// 是否采收
   number: string // 数量
   unit: string // 单位
+  isEnableModel: boolean // 是否启用模型
 }
 
 // 鲁渝协作品种管理 API
@@ -54,5 +55,14 @@ export const CropBaseApi = {
   // 导出鲁渝协作品种管理 Excel
   exportCropBase: async (params) => {
     return await request.download({ url: `/agriculture/crop-base/export-excel`, params })
+  },
+
+  // 修改品种模型绑定状态
+  updateModelEnableStatus: async (id: any, isEnableModel: any) => {
+    const data = {
+      id,
+      isEnableModel
+    }
+    return await request.put({ url: `/agriculture/crop-base/updateStatus`, data })
   },
 }

@@ -66,6 +66,7 @@ const getFormInfo = async () => {
     formData.value.deviceMonitorType=formData.value.deviceMonitorType.split(',');
     deviceType.value = formData.value.deviceType.split(',').map(Number)
   }
+  if (!formData.value.id) loadData()
 }
 // 页面 Loading
 const formLoading = ref<boolean>(false)

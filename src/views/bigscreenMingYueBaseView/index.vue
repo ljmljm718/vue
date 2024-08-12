@@ -7,9 +7,10 @@ import { Select } from '@element-plus/icons-vue/dist/types'
 import icon from './assets/icon.png'
 import { ChildProcess } from 'child_process'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
+
 import * as turf from '@turf/turf'
 
-const { BigscreenContainer, BigscreenMain } = BigscreenBuilder
+const { BigscreenContainer, BigscreenMain, BigscreenAdapter } = BigscreenBuilder
 
 export default defineComponent({
   name: 'BigscreenMingYueBaseView',
@@ -53,8 +54,16 @@ export default defineComponent({
       console.log('getBaseInfoApi res =>', res)
       if (Array.isArray(res)) {
         baseList.value = res
-        if (res[0].id) getPlotDataList(res[0].id)
-        if (res[0].id) getDuckHouse(res[0].id)
+        console.log("RES", res);
+        options.value = res.map(item => ({
+          ...item, label: item.name, value: item.id
+        }))
+        const _id = res[0].id
+        if (_id) {
+          selectedPlot.value = _id
+          getPlotDataList(_id)
+          getDuckHouse(_id)
+        }
       }
     }
     getBaseList()
@@ -68,10 +77,6 @@ export default defineComponent({
 
       if (Array.isArray(res)) dataList.value = res.map(item => ({
         ...item, children: [
-          {
-            title: '地块编号',
-            value: item.code || ''
-          },
           {
             title: '地块面积',
             value: item.area + '亩' || ''
@@ -94,7 +99,7 @@ export default defineComponent({
       return (
         <div class="space-y-2">
           <div class="flex items-center">
-            <img src={icon} class="w-1rem h-.6rem mr-.4rem" />
+            {/* <img src={icon} class="w-1rem h-.6rem mr-.4rem" /> */}
             <div style="font-size:12px">{title}</div>
           </div>
           <div class="pl-[1.2rem]" style="font-size:12px">{value}</div>
@@ -106,196 +111,353 @@ export default defineComponent({
       setTimeout(() => {
         getParkData()
       }, 2000)
+
     })
+    const showOptions = ref<boolean>(false)
+
+    window.addEventListener('click', () => {
+      showOptions.value = false
+    })
+
+    const selectedPlot = ref<string>('')
+    const options = ref<any[]>([])
+    const getLabelByValue = (val) => {
+      let res = '------'
+      if (Array.isArray(options.value)) {
+        options.value.forEach(item => {
+          if (item.value === val) res = item.label
+        })
+      }
+      return res
+    }
     // ----------------------------------
     return () => (
       <div class="w-full aspect-[1.8] bg-[#0d1724]">
-        <div>
-          <BigscreenContainer width="1400px" height="800px">
-            {/* <BigscreenHeader backgroundImage={headerBg} height="100px" /> */}
-            <BigscreenMain>
-              <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
-                <div class="absolute z-2 w-full h-full">
-                  <CesiumMap ref={e => cesiumIns.value = e} />
-                  <div class="meng-ban z-0"></div>
-                </div>
-                <div
-                  class="z-10 absolute   w-[27%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
-                  style={{
-                    left: showSidePanel.value ? '1rem' : '-40rem'
-                  }}
-                >
-                  <div class="left-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
-                    {
-                      dataList.value.map(item => (
-                        item.name.includes('鱼塘') ?
+        <BigscreenContainer width="100%" height="auto" extraClass="aspect-[1]">
+          {/* <BigscreenHeader backgroundImage={headerBg} height="100px" /> */}
+          <BigscreenMain>
+            <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
+              <div class="absolute z-2 w-full h-full">
+                <CesiumMap ref={e => cesiumIns.value = e} />
+                <div class="meng-ban z-0"></div>
+              </div>
+              <div
+                class="z-10 absolute   w-[24%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-1"
+                style={{
+                  left: showSidePanel.value ? '1rem' : '-40rem'
+                }}
+              >
+                <div class="left-title w-full aspect-[6]"></div>
+                <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
+                  {
+                    dataList.value.map(item => (
+                      item.name.includes('鱼塘') ?
                         <div class="item-wrapper w-full min-h-[1rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
+                          <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
+
+
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
+                          </div>
                           <div class="split-bar w-full h-[3px]"></div>
                           <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.children) ? item.children.map(ele => (
-                                <div class="inner-rect p-2 px-3 space-y-2">
-                                  <TitleValue title={ele.title} value={ele.value} />
-                                </div>
-                              )) : null
-                            }
-                          </div>
+                          
                           {
-                            Array.isArray(item.child) ? (
-                              <div class="grid grid-cols-2 gap-3 p-2">
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
                                 {
                                   item.child.map(_ele => (
-                                    <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="种植作物" value={_ele.cropName} />
-                                      <TitleValue title="种植开始时间" value={_ele.startTime} />
-                                      <TitleValue title="预计收获时间" value={_ele.endTime} />
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
+                                          <div class='w-3/5' >{_ele.amount}只</div>
+                                        </div>
+
+                                      </div>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                      </div>
                                     </div>
                                   ))
                                 }
                               </div>
-                            ) : null
-                          }
-                        </div>: null
-                      ))
-                    }
-                  </div>
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
+                                </div>
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
 
+
+                          }
+                        </div>
+                        </div> : null
+                    ))
+                  }
                 </div>
-                <div class="center-title">
-                  <select
-                    class="bg=[#ffffff00]"
-                    style="
+
+              </div>
+              <div class="center-title">
+                <div class="relative h-[1.4rem] w-[18rem]">
+                  <div class="h-full text-center cursor-pointer" onClick={(e) => {
+                    e.stopPropagation()
+                    showOptions.value = true
+                  }}>{getLabelByValue(selectedPlot.value)}</div>
+                  {
+                    showOptions.value ? <div class="absolute left-0 top-[1.8rem] z-1000 w-full max-h-[8rem] overflow-auto">
+                      {
+                        Array.isArray(options.value) ? options.value.map(item => (
+                          <div
+                            class="py-3 text-center w-full bg-[#0d1724]"
+                            onClick={() => {
+                              selectedPlot.value = item.value
+                              getPlotDataList(item.value)
+                              getDuckHouse(item.value)
+                            }}
+                          >{item.label}</div>
+                        )) : null
+                      }
+                    </div> : null
+                  }
+                </div>
+                <select
+                  class="bg=[#ffffff00] !hidden"
+                  style="
                           -webkit-text-fill-color: transparent;
                           background-clip: text;
                           text-fill-color: transparent;                  
                           font-family: AlibabaPuHuiTi;
                           font-size: 14px;
-                          font-weight: normal;
-                          line-height: normal;
                           text-align: center;
                           letter-spacing: 0px;
                           border:none;"
-                    onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }
-
-                    }
-                  >
-                    {
-                      baseList.value.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div class="z-10 absolute left-[60rem] top-[1rem] w-[22%] hidden">
-                  这里是下拉列表
-                  <select onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}>
-                    <option value="">请选择基地</option>
-                    {
-                      baseList.value.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div
-                  class="z-10 absolute right-[1rem]  w-[27%] h-[calc(100%)]  transition-all duration-1000 p-2"
-                  style={{
-                    right: showSidePanel.value ? '1rem' : '-40rem'
-                  }}
+                  onChange={(e) => { getPlotDataList(e.target.value); getDuckHouse(e.target.value); }}
+                  defaultValue={baseList.value[0]?.id}
                 >
-                  <div class="right-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto hidden-scrollbar space-y-3" style="height calc(100% - 3.3rem) ">
-                    {
-                      duckHouseList.value.map((item) => (
-                        <div class="item-wrapper w-full min-h-[3rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                          <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.child) ? (
-                                <div class="grid grid-cols-1 gap-2 col-span-2">
-                                  {
-                                    item.child.map(_ele => (
-                                      <div class="gap-2 grid grid-cols-2">
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="养殖品种" value={_ele.cropName} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="养殖数量" value={_ele.amount} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="开始养殖时间时间" value={_ele.startTime} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="预计收货时间" value={_ele.endTime} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3">
-                                          <TitleValue title="物候期" value={_ele.growth} />
-                                        </div>
-                                        <div class="inner-rect p-2 px-3 space-y-2">
-                                          <TitleValue title='面积' value={item.area + '亩'} />
-                                        </div>
-                                      </div>
-                                    ))
-                                  }
-                                </div>
-                              ) : null
-                            }
+                  {
+                    baseList.value.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+
+              <div
+                class="z-10 absolute right-[1rem]  w-[24%] h-[calc(100%)]  transition-all duration-1000 p-2 space-y-1"
+                
+                style={{
+                  right: showSidePanel.value ? '1rem' : '-40rem'
+                }}
+              >
+                <div class="right-title w-full aspect-[6]"></div>
+                <div style="height calc(100% - 6rem) " class="w-full overflow-auto space-y-3 hidden-scrollbar" >
+                 
+                  {
+                    duckHouseList.value.map((item) => (
+                      <div class="item-wrapper w-full min-h-[1rem]">
+                        <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
 
 
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
                           </div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                  <div class="left-title w-full h-[3.3rem]"></div>
-                  <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3.3rem)">
-                    {
-                      dataList.value.map(item => (
-                        item.name.includes('稻田') ?
-                        <div class="item-wrapper w-full min-h-[1rem]">
-                          <div class="w-full flex justify-center items-center text-[#11efa6] py-2 text-[14px]">{item.name}</div>
-                          <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
-                            {
-                              Array.isArray(item.children) ? item.children.map(ele => (
-                                <div class="inner-rect p-2 px-3 space-y-2">
-                                  <TitleValue title={ele.title} value={ele.value} />
-                                </div>
-                              )) : null
-                            }
-                          </div>
+                        <div class="split-bar w-full h-[3px]"></div>
+                        <div class="grid grid-cols-2 gap-3 p-2">
                           {
-                            Array.isArray(item.child) ? (
-                              <div class="grid grid-cols-2 gap-3 p-2">
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
                                 {
                                   item.child.map(_ele => (
-                                    <div class="inner-rect p-2 px-3 space-y-3">
-                                      <TitleValue title="种植作物" value={_ele.cropName} />
-                                      <TitleValue title="种植开始时间" value={_ele.startTime} />
-                                      <TitleValue title="预计收获时间" value={_ele.endTime} />
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
+                                          <div class='w-3/5' >{_ele.amount}只</div>
+                                        </div>
+
+                                      </div>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                      </div>
                                     </div>
                                   ))
                                 }
                               </div>
-                            ) : null
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
+                                </div>
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
                           }
-                        </div>:null
-                      ))
-                    }
-                  </div>
+                        </div>
+
+                        
+                      </div>
+                    ))
+                  }
+                </div>
+                <div class="left-title w-full aspect-[6]"></div>
+                <div style="height: calc(100% - 22rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
+                  {
+                    dataList.value.map(item => (
+                      item.name.includes('稻田') ?
+                        <div class="item-wrapper w-full min-h-[1rem]">
+                          <div class=' w-full h-[45px] relative flex items-center'>
+                            <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                            <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
+                              {
+                                Array.isArray(item.child) && item.child.length > 0 ? (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
+                                  </div>
+
+
+                                ) : (
+                                  <div class='flex justify-center items-center'>
+                                    <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
+                                    <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
+                                  </div>
+                                )
+
+                              }
+                            </div>
+                          </div>
+                          <div class="split-bar w-full h-[3px]"></div>
+                          <div class="grid grid-cols-2 gap-3 p-2">
+                          {
+                            Array.isArray(item.child) && item.child.length > 0 ? (
+                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
+                                {
+                                  item.child.map(_ele => (
+                                    <div>
+                                      <div class="gap-2 grid grid-cols-2">
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
+                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-3/5' >{_ele.growth}</div>
+                                        </div>
+                                        <div class='flex ml-4 mt-2'>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
+                                          <div class='w-3/5' >{item.area + '亩'}</div>
+                                        </div>
+
+                                      </div>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
+                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                      </div>
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            ) : (
+                              <div class='flex w-fll flex-col'>
+                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
+                                  <div style='color:#11EAC9'>面积：</div>
+                                  <div >{item.area + '亩'}</div>
+                                </div>
+                                <div class='flex justify-center items-center w-full  flex-col'>
+                                  <div class="noVariety w-full " >
+                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          }
+                        </div>
+                        </div> : null
+                    ))
+                  }
                 </div>
               </div>
-            </BigscreenMain>
-          </BigscreenContainer>
-        </div>
+            </div>
+          </BigscreenMain>
+        </BigscreenContainer>
+
       </div>
+
     )
   }
 })
@@ -323,12 +485,24 @@ export default defineComponent({
 }
 
 .item-wrapper {
-  background-image: url(./assets/itemWrapper.png);
+  background-image: url(./assets/wrapper.png);
   background-size: 100% 100%;
 }
 
+.noVariety {
+  background-image: url(./assets/noVariety.png);
+  background-size: 40% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.useState {
+  border-radius: 0px 6px 0px 12px;
+  background: linear-gradient(180deg, rgba(17, 244, 127, 0.5) 0%, rgba(17, 244, 127, 0.06) 50%)
+}
+
 .item-wrapper:hover {
-  background-image: url(./assets/itemWrapperHover.png);
+  background-image: url(./assets/wrapperHover.png);
   background-size: 100% 100%;
 }
 
@@ -336,9 +510,15 @@ export default defineComponent({
   width: 0;
 }
 
+.circleNoUse {
+  background: #C0DDDE;
+
+  box-shadow: 0px 0px 6px 0px #FFFFFF;
+}
+
 .split-bar {
-  background-image: url(./assets/splitBar.png);
-  background-size: 90% 100%;
+  background-image: url(./assets/splitBar2.png);
+  background-size: 95% 65%;
   background-repeat: no-repeat;
   background-position: center center;
 }

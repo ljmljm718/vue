@@ -347,8 +347,9 @@ defineOptions({name: 'DeviceInfo'})
  * 90 - 黔江县中元村
  * 100 - 塘坝镇天印村
  * 111 - 酉阳县板桥乡双桥村
+ * 120 - 万州区龙驹镇梧桐村
  */
-const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111])
+const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
@@ -447,6 +448,8 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
+  route.query.deviceType = null
+  queryParams.deviceType = null
   queryParams.belongPark = undefined
   queryParams.belongPlot = undefined
   emit('reset'); // 清空基地树的选中节点
@@ -478,6 +481,7 @@ const handleDelete = async () => {
     const id = deviceId.value.toString()
     await DeviceInfoApi.deleteDeviceInfo(id)
     message.success(t('common.delSuccess'))
+    deviceInfoTableRef.value.clearSelection(); //清除之前的选中状态
     // 刷新列表
     await getList()
   } catch {
@@ -526,8 +530,13 @@ onMounted(async () => {
   }
   let location = route.query
   if (location) {
+    queryParams.deviceCode = location.deviceCode
     queryParams.deviceKind = location.id
     queryParams.deviceStatus = location.val
+    if (queryParams.deviceCode) {
+      deviceId.value = location.deviceCode
+      setTimeout(() => { openSubDeviceForm() }, 1000)
+    }
   }
   await getList()
 })

@@ -78,6 +78,16 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item label="农事阶段" prop="farmDefineType">
+        <el-select v-model="queryParams.farmDefineType" clearable placeholder="请选择农事阶段" class="!w-240px">
+          <el-option
+              v-for="dict in farmDefineOptions"
+              :key="dict.id"
+              :label="dict.defineName"
+              :value="dict.id"
+            />
+        </el-select>
+      </el-form-item>
 <!--      <el-form-item label="作物id" prop="cropId">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.cropId"-->
@@ -393,6 +403,7 @@ const queryParams = reactive({
   parkName: undefined,
   belongPlot: undefined,
   plotName: undefined,
+  farmDefineType: undefined,
   cropId: undefined,
   cropName: undefined,
   cropType: undefined,

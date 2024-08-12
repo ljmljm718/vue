@@ -8,10 +8,11 @@ import RepositoryInfoForm from '../repositoryinfo/RepositoryInfoForm.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const typeListAll = ref([])
+const typeListAll = ref<any[]>([])
 const getTypeList = async () => {
   const resAll = await RepositoryTypeApi.getAllRepositoryType()
-  typeListAll.value = resAll
+  if (Array.isArray(resAll)) typeListAll.value = resAll
+  getRepositoryList()
 }
 getTypeList()
 
@@ -55,6 +56,9 @@ const resetQuery = () => {
   queryParams.repositoryStatus = ''
   checkboxGroup1.value = []
   checkboxGroup2.value = []
+
+  selectedLabel.value = ''
+  selectedType.value = ''
   getRepositoryList()
 }
 const total = ref(0)
@@ -75,10 +79,9 @@ const getRepositoryList = async () => {
   }))
   total.value = _total
 }
-getRepositoryList()
+
 
 const getRep = (item) => {
-  getTypeList()
   let resStr = ''
   typeListAll.value.forEach((itm) => {
     if (item.repositoryId == itm.id) {
@@ -181,10 +184,10 @@ const handleLabelClick = (item) => {
           placeholder="请输入标题搜索"
           prefix-icon="Search"
           v-model="queryParams.repositoryTitle"
-          @keyup.enter="getRepositoryList"
+          @keyup.enter="getRepositoryList()"
           style="width: 300px"
         />
-        <el-button @click="getRepositoryList" style="color: val" type="primary">搜索 </el-button>
+        <el-button @click="getRepositoryList()" style="color: val" type="primary">搜索 </el-button>
       </div>
     </el-card>
     <el-card class="mb-2">
@@ -218,7 +221,7 @@ const handleLabelClick = (item) => {
             </div>
           </div>
           <div>
-            <el-button @click="resetQuery" class="flex-end"> 重置 </el-button>
+            <el-button @click="resetQuery()" class="flex-end"> 重置 </el-button>
           </div>
         </div>
       </div>
@@ -334,7 +337,7 @@ const handleLabelClick = (item) => {
       /> -->
     </el-card>
     <!-- 表单弹窗：添加/修改 -->
-    <RepositoryInfoForm ref="repositoryRef" @success="getRepositoryList" />
+    <RepositoryInfoForm ref="repositoryRef" @success="getRepositoryList()" />
   </div>
 </template>
 <style lang="scss" scoped>

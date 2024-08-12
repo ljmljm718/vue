@@ -17,6 +17,7 @@ export interface CropGrowthNewVO {
   growSite: string // 生长地点
   cycle: string // 周期
   farmAdvice: string // 农事建议
+  growthType: string // 生长期类别
 }
 
 // 作物生长周期 API
@@ -24,6 +25,11 @@ export const CropGrowthNewApi = {
   // 查询作物生长周期分页
   getCropGrowthNewPage: async (params: any) => {
     return await request.get({ url: `/agri/crop-growth-new/page`, params })
+  },
+
+  // 生长周期卡片
+  getCropGrowthCardMap: async (params: any) => {
+    return await request.get({ url: `/agri/crop-growth-new/card-map`, params })
   },
 
   // 查询作物生长周期详情
@@ -54,5 +60,10 @@ export const CropGrowthNewApi = {
   // 保存电子围栏
   saveGeofencing: async (data) => {
     return await request.put({ url: `/agriculture/park-info/save-geofencing`, data })
+  },
+
+  // 查询作物生长周期不分页
+  getCropGrowthNewNoPage: async (params: any) => {
+    return await request.get({ url: `/agri/crop-growth-new/noPage`, params })
   },
 }

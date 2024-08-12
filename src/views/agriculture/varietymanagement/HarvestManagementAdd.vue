@@ -170,6 +170,7 @@ const formData = ref({
   batchCode: undefined, // 批次码
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
+  varietyCode: undefined, // 地块ID
 })
 const formRules = reactive({
   laborQuantity: [{required: true, message: '人工数量不能为空', trigger: 'blur'}],
@@ -212,13 +213,16 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 /** 打开弹窗 */
 const open = async (type: string, id?: any) => {
   dialogVisible.value = true
+  console.log("type", type)
   dialogTitle.value = t('action.' + type)
+  if (type === 'create') dialogTitle.value = t('新增' + id.cropName + '产量')
   formType.value = type
   resetForm()
   if (typeof id === 'object') {
     formData.value.varietyId = id.id
     formData.value.varietyName = id.cropName
     formData.value.variety = id.cropType
+    formData.value.varietyCode = id.cropId
     formData.value.batchCode = id.batchCode
     formData.value.belongPark = id.belongPark
     formData.value.parkName = id.parkName
@@ -280,6 +284,7 @@ const resetForm = () => {
     remark: undefined,
     parkName: undefined,
     parkDetailName: undefined,
+    varietyCode: undefined,
   }
   formRef.value?.resetFields()
 }

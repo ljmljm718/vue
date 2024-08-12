@@ -68,8 +68,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="品类" prop="cropType" >
-                  <el-input v-model="formData.cropType" placeholder="选择品种后自动写入" readonly disabled/>
+                <el-form-item label="品类" prop="cropTypeName" >
+                  <el-input v-model="cropTypeName" placeholder="选择品种后自动写入" readonly disabled/>
 <!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
 <!--                    <el-option-->
 <!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
@@ -289,13 +289,23 @@ const loadData = async (id = 'new_form') => {
 if (!formData.value.id) loadData()
 
 //起步函数
+const cropTypeName = ref()
 const getFrom = async () => {
   console.log(route.query.type  as any)
-  //获取所有品类的详情数据
-  listCategoryManagement.value = await allDataCacheManager.getData({})
   resetForm();
   if (route.query.id) {
+    // todo 
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
+    //获取所有品类的详情数据
+    console.log("-----=========")
+    listCategoryManagement.value = await allDataCacheManager.getData({})
+    console.log("-----=========++++")
+    listCategoryManagement.value.forEach(itm => {
+        
+        if (formData.value.cropType == itm.id){
+          cropTypeName.value = itm.categoryName
+        }
+    })
     await loadData(route.query.id);
   }
 }
@@ -340,12 +350,14 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----");
+  console.log(order,"---------=----");  
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
-  formData.value.cropType = String(order[0].categoryName)
-  // formData.value.cropType = String(order[0].categoryName)
+  formData.value.cropType = String(order[0].categoryId)
+  cropTypeName.value = String(order[0].categoryName)
+
 }
+
 
 
 //基地的选择

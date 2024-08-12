@@ -181,30 +181,40 @@ const getMenuDataList = async () => {
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
   
   // 添加 Marker 到地图上
-  const _center = turf.center(turf.points(allDeviceDataList.value.map(ele => {
+  const _center = turf.centroid(turf.points(allDeviceDataList.value.map(ele => {
     const _item = JSON.parse(JSON.stringify(ele))
     return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+  }).filter(item => {
+    const [a, b] = item;
+    if (isNaN(a) || isNaN(b) || !a || !b) return false;
+    return true;;
   })))
   
   const { geometry } = _center;
   const { coordinates } = geometry
   const [_lng, _lat] = coordinates
+  mapTangBgRef.value.setViewport(allDeviceDataList.value.map(item => {
+    return { lng: item.longitude, lat: item.latitude }
+  }))
   mapTangBgRef.value.setMapCenter(_lng, _lat)
-  mapTangBgRef.value.setMapZoom(15)
+  // mapTangBgRef.value.setMapZoom(17)
+  
+  
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {
       return
     }
+    const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
+    console.log("ImgSrc", `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`);
+    
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
       _item.deviceName,
-      '/tangba/' + _item.deviceStatus + (kindMap[_item.deviceKind] || 'Monitor') + '.png'
+      `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
     )
     marker.on('click', () => {
-      console.log("ITM", item);
-      
       handleSelect(item.id)
     })
   })
@@ -215,7 +225,6 @@ const showPanel = ref<boolean>(false)
 
 const getIconClass = (item) => {
   const { deviceStatus = 'offline', deviceKind = '' } = item
-  console.log(deviceKind, 'deviceKinddeviceKinddeviceKind')
   const kindMap = {
     '101': 'monitor',
     '79': 'monitor',

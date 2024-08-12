@@ -26,12 +26,17 @@ export default defineComponent({
     }, 100)
 
     // 中间部分选择基地
-    const selectedBase = ref<string>('枳壳树种植基地')
+    const selectorBases = ref<string>('枳壳树种植基地')
+    const selectedBase = ref<any>('')
     const parkDataList = ref<any[]>([])
     const getParkData = async () => {
       const res = await getParkList()
       if (Array.isArray(res)) {
         parkDataList.value = res
+        console.log('res', res);
+        
+        selectedBase.value = res.length > 0 ? res[0].name : ''
+        console.log('sssssssssss',selectedBase.value)
         if (res.length > 0) {
           getMainDataList(res[0].id)
 
@@ -81,16 +86,12 @@ export default defineComponent({
     }
 
     return () => (
-      <div class="w-[100vw] h-[100vh] bg-[#0d1724]">
-        <BigscreenAdapter>
-          <BigscreenContainer >
-            <BigscreenHeader
-              backgroundImage={headerBg}
-              height="100px"
-            />
+      <div class="w-[100%] bg-[#0d1724]">
+          <BigscreenContainer width="100%" extraClass="aspect-[2]">
             <BigscreenMain>
               <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
                 <div class="absolute z-2 w-full h-full">
+                  <CesiumMap />
                   {/* <CesiumMap /> */}
                   <div class="meng-ban z-0"></div>
                 </div>
@@ -190,12 +191,33 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="absolute z-10 w-[326px] h-[60px] top-8 center-title flex justify-center items-center text-[1.1rem]" style="left: calc(50% - 163px);">
-                  {selectedBase.value}
+                    <select
+                    
+                  class="bg=[#ffffff00]"
+                  style="
+                          -webkit-text-fill-color: transparent;
+                          background-clip: text;
+                          text-fill-color: transparent;                  
+                          font-family: AlibabaPuHuiTi;
+                          font-size: 14px;
+                          font-weight: normal;
+                          line-height: normal;
+                          text-align: center;
+                          letter-spacing: 0px;
+                          border:none;"
+                >
+                  {
+                      <option >
+                        {selectedBase.value}
+                      </option>
+
+                  }
+                </select>
                 </div>
               </div>
             </BigscreenMain>
           </BigscreenContainer>
-        </BigscreenAdapter>
+
       </div>
     )
   }

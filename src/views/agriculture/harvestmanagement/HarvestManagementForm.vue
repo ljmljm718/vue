@@ -162,6 +162,7 @@ const formData = ref({
   batchCode: undefined, // 批次码
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
+  varietyCode: undefined
 })
 const formRules = reactive({
   laborQuantity: [{required: true, message: '人工数量不能为空', trigger: 'blur'}],
@@ -272,6 +273,7 @@ const resetForm = () => {
     remark: undefined,
     parkName: undefined,
     parkDetailName: undefined,
+    varietyCode: undefined
   }
   formRef.value?.resetFields()
 }

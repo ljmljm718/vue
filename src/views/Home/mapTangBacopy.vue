@@ -262,13 +262,19 @@ const openInfoWindow = (info: string, location: Array<any>) => {
   if (_marker) _marker.openInfoWindow(infoWindow)
 }
 
+const setViewport = (arr) => {
+  if (!map) return
+  map.setViewport(arr)
+}
+
 defineExpose({
   addMarkerToMap,
   setMapCenter,
   setMapZoom,
   openInfoWindow,
   addSatellite,
-  removeSatellite
+  removeSatellite,
+  setViewport
 })
 
 onMounted(() => {

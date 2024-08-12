@@ -73,7 +73,17 @@ const remainingRouter: AppRouteRecordRaw[] = [
         name: 'DOPrediction',
         component: () => import('@/views/agriculture/DOPrediction/index.vue'),
         meta: {
-          hidden: true
+          hidden: true,
+          title: '溶解氧预警与调控模型'
+        }
+      },
+      {
+        path: 'growthCycle',
+        name: 'growthCycle',
+        component: () => import('@/views/agriculture/categorymanagement/growthCycle.vue'),
+        meta: {
+          hidden: true,
+          title: '生长周期'
         }
       },
     ]
@@ -382,6 +392,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     path: '/bigscreenMYBaseView',
     name: 'bigscreenMYBaseView',
     component: () => import('@/views/bigscreenMingYueBaseView/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
+    path: '/bigscreenModel',
+    name: 'bigscreenModel',
+    component: () => import('@/views/bigscreenModel/index.vue'),
     meta: {
       hidden: true
     }
