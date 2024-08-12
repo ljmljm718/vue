@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between" v-loading="loading">
     <div class="flex flex-shrink:0 w-[12rem]">
       <div class="flex flex-col space-y-3 p-2 w-[10rem] bg-white h-[100vh] overflow-y-auto">
         <div
@@ -199,12 +199,17 @@
         </div>
       </div>
     </div>
+    <div class="floating-refresh-button" @click="handleTriggerModelCalculate">
+      <el-icon :class="{ rotate: isRotating }" class="icon">
+        <RefreshRight/>
+      </el-icon>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { baidiParkInfo, getModelByParkId, getModelInfo, getMonitorIndicatorWithDetail } from './api'
-import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
-
+import {baidiParkInfo, getModelByParkId, getModelInfo, getMonitorIndicatorWithDetail} from './api'
+import {generatePieOptions, initChartStatic} from '@/utils/bigscreenTool/index'
+import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
 
 // 左侧基地列表
 const filteredLeftList = ref<any[]>([])
@@ -386,10 +391,45 @@ const getFilteredTableData = (selectedBtn) => {
   }
 }
 
+// 响应式状态，用于控制图标旋转
+const isRotating = ref(false);
+const message = useMessage() // 消息弹窗
+const loading = ref(false) // 加载动画
+
+// 点击处理函数
+const handleTriggerModelCalculate = () => {
+  // 先移除旋转状态
+  isRotating.value = false;
+
+  // 让浏览器完成 DOM 更新以确保类被移除
+  requestAnimationFrame(async () => {
+
+    // 重新触发旋转
+    isRotating.value = true;
+
+    loading.value = true
+
+    // 调用后台触发计算要素得分;
+    const res = await ModelManagementApi.triggerModelCalculate();
+    message.success(res)
+
+    // todo (zhangyu26, 2024-08-12 17:40:00) : 重新加载页面
+
+    await init();
+
+    // 动画结束后停止旋转
+    setTimeout(() => {
+      isRotating.value = false;
+    }, 1000); // 1秒后结束旋转（与CSS动画持续时间匹配）
+  });
+};
+
 const init = async () => {
+  loading.value = true
   await getleftList()
-  getmodelList('1787680115895037952')
-  getTableData('MXGL20240731000001', '1813742898268782592')
+  await getmodelList('1787680115895037952')
+  await getTableData('MXGL20240731000001', '1813742898268782592')
+  loading.value = false
 }
 onMounted(() => init())
 </script>
@@ -523,5 +563,44 @@ onMounted(() => init())
   border-radius: 5px;
   position: absolute;
   top: -4px;
+}
+
+.floating-refresh-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #009688;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.floating-refresh-button:hover {
+  background-color: #61c4b4; /* 鼠标悬停时的按钮颜色 */
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.rotate {
+  animation: rotate-animation 1s linear;
+}
+
+@keyframes rotate-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
