@@ -142,13 +142,13 @@ export default defineComponent({
                 <div class="meng-ban z-0"></div>
               </div>
               <div
-                class="z-10 absolute   w-[24%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-2"
+                class="z-10 absolute   w-[24%] h-[calc(100%)] transition-all duration-1000 p-2 space-y-1"
                 style={{
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
                 <div class="left-title w-full aspect-[6]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
+                <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     dataList.value.map(item => (
                       item.name.includes('鱼塘') ?
@@ -176,7 +176,7 @@ export default defineComponent({
                           </div>
                           <div class="split-bar w-full h-[3px]"></div>
                           <div class="grid grid-cols-2 gap-3 p-2">
-                          </div>
+                          
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
@@ -197,12 +197,12 @@ export default defineComponent({
                                           <div class='w-3/5' >{_ele.growth}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
                                           <div class='w-3/5' >{_ele.amount}只</div>
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
@@ -226,6 +226,7 @@ export default defineComponent({
 
 
                           }
+                        </div>
                         </div> : null
                     ))
                   }
@@ -280,13 +281,14 @@ export default defineComponent({
               </div>
 
               <div
-                class="z-10 absolute right-[1rem]  w-[24%] h-[calc(100%)]  transition-all duration-1000 p-2"
+                class="z-10 absolute right-[1rem]  w-[24%] h-[calc(100%)]  transition-all duration-1000 p-2 space-y-1"
+                
                 style={{
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
                 <div class="right-title w-full aspect-[6]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height calc(100% - 3rem) ">
+                <div style="height calc(100% - 6rem) " class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                  
                   {
                     duckHouseList.value.map((item) => (
@@ -313,7 +315,7 @@ export default defineComponent({
                             </div>
                           </div>
                         <div class="split-bar w-full h-[3px]"></div>
-                        <div class="grid grid-cols-2 gap-3 p-1"></div>
+                        <div class="grid grid-cols-2 gap-3 p-2">
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
@@ -334,12 +336,12 @@ export default defineComponent({
                                           <div class='w-3/5' >{_ele.growth}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
                                           <div class='w-3/5' >{_ele.amount}只</div>
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
@@ -361,7 +363,7 @@ export default defineComponent({
                               </div>
                             )
                           }
-
+                        </div>
 
                         
                       </div>
@@ -369,7 +371,7 @@ export default defineComponent({
                   }
                 </div>
                 <div class="left-title w-full aspect-[6]"></div>
-                <div class="w-full overflow-auto space-y-3 hidden-scrollbar" style="height: calc(100% - 3rem)">
+                <div style="height: calc(100% - 22rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     dataList.value.map(item => (
                       item.name.includes('稻田') ?
@@ -396,7 +398,7 @@ export default defineComponent({
                             </div>
                           </div>
                           <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2"></div>
+                          <div class="grid grid-cols-2 gap-3 p-2">
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
@@ -417,12 +419,12 @@ export default defineComponent({
                                           <div class='w-3/5' >{_ele.growth}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>规格：</div>
+                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
                                           <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
 
                                       </div>
-                                      <div class='flex ml-4 mt-4 mb-6 grid grid-cols-1 gap-2'>
+                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
                                         <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
                                         <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
@@ -444,6 +446,7 @@ export default defineComponent({
                               </div>
                             )
                           }
+                        </div>
                         </div> : null
                     ))
                   }
