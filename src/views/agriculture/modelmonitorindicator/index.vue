@@ -67,42 +67,50 @@
         <div v-if="showType === 'card'">
           <div class="grid gap-4 grid-custom-col w-full">
             <div
-              v-for="item in cardDataList"
-              :key="item.id"
-              class="p-3 border-[1px] border-slate-200 border-solid rounded-md shadow-md"
+              v-if="cardDataList.length === 0"
+              class="col-span-36"
             >
-              <div class="text-[.9rem] font-bold">{{ item.indicatorName }}</div>
+              <el-empty description="暂无数据" />
+            </div>
+            <template v-else>
               <div
-                class="w-full h-[13rem]"
-                :id="'chart_' + item.id"
-              ></div>
-              <div class="py-3 space-y-4">
+                v-for="item in cardDataList"
+                :key="item.id"
+                class="p-3 border-[1px] border-slate-200 border-solid rounded-md shadow-md"
+              >
+                <div class="text-[.9rem] font-bold">{{ item.indicatorName }}</div>
                 <div
-                  class="flex justify-center space-x-7 items-end"
-                  v-for="cardVo, index in item.modelIndicatorElementCardVOList"
-                  :key="cardVo"
-                >
-                  <div class="flex justify-center items-center space-x-2">
-                    <div class="w-[1rem] h-[1rem] rounded-[.2rem]" :style="`background-color: ${COLOR_LIST[index]};`"></div>
-                    <div class="w-[5rem] text-[.8rem]">{{ cardVo.elementName }}</div>
-                  </div>
-                  <div class="flex flex-col items-center space-y-1">
-                    <div class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar">{{ cardVo.text }}</div>
-                    <div class="flex space-x-[.5rem] items-center">
-                      <div class="w-[3rem] text-center">{{ cardVo.lowVal }}{{ cardVo.unit }}</div>
-                      <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
-                        <div
-                          v-for="rangeItem, idx in cardVo.modelIndicatorElementRangeDOList"
-                          :key="rangeItem.id"
-                          :class="`color-bar-${idx + 1} grow w-[${100 / (cardVo.modelIndicatorElementRangeDOList.length)}%] h-[.6rem]`"
-                        ></div>
+                  class="w-full h-[13rem]"
+                  :id="'chart_' + item.id"
+                ></div>
+                <div class="py-3 space-y-4">
+                  <div
+                    class="flex justify-center space-x-7 items-end"
+                    v-for="cardVo, index in item.modelIndicatorElementCardVOList"
+                    :key="cardVo"
+                  >
+                    <div class="flex justify-center items-center space-x-2">
+                      <div class="w-[1rem] h-[1rem] rounded-[.2rem]" :style="`background-color: ${COLOR_LIST[index]};`"></div>
+                      <div class="w-[5rem] text-[.8rem]">{{ cardVo.elementName }}</div>
+                    </div>
+                    <div class="flex flex-col items-center space-y-1">
+                      <div class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar">{{ cardVo.text }}</div>
+                      <div class="flex space-x-[.5rem] items-center">
+                        <div class="w-[3rem] text-center">{{ cardVo.lowVal }}{{ cardVo.unit }}</div>
+                        <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
+                          <div
+                            v-for="rangeItem, idx in cardVo.modelIndicatorElementRangeDOList"
+                            :key="rangeItem.id"
+                            :class="`color-bar-${idx + 1} grow w-[${100 / (cardVo.modelIndicatorElementRangeDOList.length)}%] h-[.6rem]`"
+                          ></div>
+                        </div>
+                        <div class="w-[3rem] text-center">{{ cardVo.hightVal }}{{ cardVo.unit }}</div>
                       </div>
-                      <div class="w-[3rem] text-center">{{ cardVo.hightVal }}{{ cardVo.unit }}</div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
         <div v-else>
