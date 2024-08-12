@@ -470,6 +470,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/growthMonitoringModelDataCenter',
+    name: 'growthMonitoringModelDataCenter',
+    component: () => import('@/views/growthMonitoringModelDataCenter/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
     path: '/bigscreenMYZH',
     name: 'bigscreenMYZH',
     component: () => import('@/views/bigscreenMingYue3/index.vue'),

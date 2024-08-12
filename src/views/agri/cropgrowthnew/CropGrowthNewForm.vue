@@ -242,7 +242,7 @@ const open1 = async (type: string, id, tag: string) => {
       formData.value.cropName = varietyData.value.varietyName
       console.log('varietyData.value.categoryId', varietyData.value.categoryId)
       console.log("NUM", Number(varietyData.value.categoryId));
-      
+
       categoryData.value = await CategoryManagementApi.getCategoryManagement(varietyData.value.categoryId)
       console.log('categoryData.value', categoryData.value)
       formData.value.cropType = categoryData.value.categoryName

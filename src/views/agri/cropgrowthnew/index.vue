@@ -19,7 +19,7 @@
         <!--        </el-form-item>-->
         <el-form-item
           label="品种"
-          prop="cropId"
+          prop="cropCode"
         >
           <el-select
             v-model="queryParams.cropCode"

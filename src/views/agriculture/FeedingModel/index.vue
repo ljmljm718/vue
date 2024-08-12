@@ -285,14 +285,14 @@ const getPeriodStrategyAll = async () => {
   console.log(res, '生长周期123')
   FeedingTopList.value = res
   growthPeriod.value = res[0].growthPeriod
-  getPeriodStrategy(res[2].growthPeriod)
+  getPeriodStrategy(res[0].growthPeriod)
 }
 getPeriodStrategyAll()
 //T投喂策略
 const periodObj = ref({})
 const getPeriodStrategy = async (val) => {
   let res = await PeriodStrategy({ growthPeriod: val })
-  console.log(res, 'T投喂策略')
+  console.log(res, 'T投喂策略123')
   periodObj.value = res
 }
 //生长周期切换
@@ -336,7 +336,7 @@ const initChart = async () => {
       yAxis: [
         {
           type: 'value',
-          name: '喂养量',
+          name: `喂养量/${res.feedUnitList[0]}`,
           nameTextStyle: {
             color: 'rgba(153, 153, 153, 1)',
             'font-family': 'AlibabaPuHuiTi',
@@ -368,7 +368,7 @@ const initChart = async () => {
         },
         {
           type: 'value',
-          name: '光照强度/Lux',
+          name: `光照强度/${res.illuminationUnitList[0]}`,
           nameTextStyle: {
             color: 'rgba(153, 153, 153, 1)',
             'font-family': 'AlibabaPuHuiTi',

@@ -60,4 +60,10 @@ export const ModelManagementApi = {
     }
     return await request.put({ url: `/agriculture/model-management/updateStatus`, data })
   },
+
+  triggerModelCalculate: async () => {
+    return await request.get({
+      url: '/agriculture/model-management/trigger-model-calculate'
+    })
+  }
 }
