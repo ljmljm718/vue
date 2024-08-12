@@ -1,94 +1,150 @@
 <template>
   <div class="flex flex-col ">
-  <el-form
-    v-show="getShow"
-    ref="formLogin"
-    :model="loginData.loginForm"
-    :rules="LoginRules"
-    class=" bg-[#ffffff] px-[2rem] rounded-3 py-[3.5rem]"
-    label-position="top"
-    label-width="120px"
-    size="large"
-  >
-  <!-- <LoginFormTitle style="margin-bottom:10px;"/> -->
-  <LoginFormTitle class="mt-2 mb-1 text-3xl"/>
-    <el-row style="margin-right: -10px; margin-left: -10px;">
-      <el-col :span="24" class="px-[1.5rem] mt-[1.5rem] mb-[0.5rem]"  >
-        <el-form-item class="form-item " style="border:none !important;" v-if="loginData.tenantEnable === 'true'" prop="tenantName">
-          <el-input
-            class="login-input is-empty h-18 !font-size-[1.7rem] "
-            style="border:none"
-            v-model="loginData.loginForm.tenantName"
-            :placeholder="t('login.tenantNamePlaceholder')"
-            :prefix-icon="iconHouse"
-            link
-          />
-        </el-form-item>
-      </el-col>
+    <el-form
+      v-show="getShow"
+      ref="formLogin"
+      :model="loginData.loginForm"
+      :rules="LoginRules"
+      class=" bg-[#ffffff] px-[2rem] rounded-3 py-[3rem]"
+      label-position="top"
+      label-width="120px"
+      size="small"
+    >
+      <!-- <LoginFormTitle style="margin-bottom:10px;"/> -->
+      <LoginFormTitle class="my-1 text-3xl" />
+      <el-row style="margin-right: -10px; margin-left: -10px;">
+        <el-col
+          :span="24"
+          class="px-[1.5rem] mt-[1.5rem] mb-[0.5rem]"
+        >
+          <el-form-item
+            class="form-item"
+            style="border:none !important;"
+            v-if="loginData.tenantEnable === 'true'"
+            prop="tenantName"
+          >
+            <el-input
+              class="login-input is-empty h-[3rem] !font-size-[1rem]"
+              style="border:none"
+              v-model="loginData.loginForm.tenantName"
+              :placeholder="t('login.tenantNamePlaceholder')"
+              link
+            >
+              <template #prefix>
+                <div class="px-2 pl-3 flex justify-center items-center">
+                  <iconHouse />
+                </div>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
 
-      <el-col :span="24" class="px-[1.5rem] mb-[0.5rem]">
-        <el-form-item prop="username" class="form-item">
-          <el-input
-            class="login-input h-18 !font-size-[1.7rem]"
-            v-model="loginData.loginForm.username"
-            :placeholder="t('login.usernamePlaceholder')"
-            :prefix-icon="iconAvatar"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="24" class="px-[1.5rem] mb-[0.5rem]">
-        <el-form-item prop="password" class="form-item">
-          <el-input
-            class="login-input h-18 !font-size-[1.7rem]"
-            v-model="loginData.loginForm.password"
-            :placeholder="t('login.passwordPlaceholder')"
-            :prefix-icon="iconLock"
-            show-password
-            type="password"
-            @keyup.enter="getCode()"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col class="px-[20px] mt-[-20px]"
-      >
-        <el-form-item>
-          <el-row justify="space-between" style="width: 100%; height:40px; margin-top:1rem">
-            <el-col class="!color-[#46696c]" :span="6">
-              <el-checkbox class="!color-[#46696c]"  v-model="loginData.loginForm.rememberMe">
-                <span class="text-1.1rem">
-                  {{ t('login.remember') }}
-                </span>
-              </el-checkbox>
-            </el-col>
-            <el-col :offset="6"  :span="12">
-              <el-link style="float: right;" class="!color-[#46696c]" type="primary">
-                <span class="text-1.1rem">
-                  {{ t('login.forgetPassword') }}
-                </span>
-              </el-link>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-col>
-      <el-col :span="24" class="px-[20px]">
-        <el-form-item>
-          <XButton
-            :loading="loginLoading"
-            :title="t('login.login')"
-            class="w-[100%] btn-bg mb-20px !color-[#fff]  !py-2rem !text-1.5rem"
-            @click="getCode()"
-          />
-        </el-form-item>
-      </el-col>
-      <Verify
-        ref="verify"
-        :captchaType="captchaType"
-        :imgSize="{ width: '400px', height: '200px' }"
-        mode="pop"
-        @success="handleLogin"
-      />
-      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
-        <!-- <el-form-item>
+        <el-col
+          :span="24"
+          class="px-[1.5rem] mb-[0.5rem]"
+        >
+          <el-form-item
+            prop="username"
+            class="form-item"
+          >
+            <el-input
+              class="login-input h-[3rem] !font-size-[1rem]"
+              v-model="loginData.loginForm.username"
+              :placeholder="t('login.usernamePlaceholder')"
+            >
+              <template #prefix>
+                <div class="px-2 pl-3 flex justify-center items-center">
+                  <iconAvatar />
+                </div>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="24"
+          class="px-[1.5rem] mb-[0.5rem]"
+        >
+          <el-form-item
+            prop="password"
+            class="form-item"
+          >
+            <el-input
+              class="login-input h-[3rem] !font-size-[1rem]"
+              v-model="loginData.loginForm.password"
+              :placeholder="t('login.passwordPlaceholder')"
+              show-password
+              type="password"
+              @keyup.enter="getCode()"
+            >
+              <template #prefix>
+                <div class="px-2 pl-3 flex justify-center items-center">
+                  <iconLock />
+                </div>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col class="px-[20px] mt-[-20px]">
+          <el-form-item>
+            <el-row
+              justify="space-between"
+              style="width: 100%; height:30px; margin-top:1rem"
+            >
+              <el-col
+                class="!color-[#46696c]"
+                :span="6"
+              >
+                <el-checkbox
+                  class="!color-[#46696c]"
+                  v-model="loginData.loginForm.rememberMe"
+                >
+                  <span class="text-1.1rem">
+                    {{ t('login.remember') }}
+                  </span>
+                </el-checkbox>
+              </el-col>
+              <el-col
+                :offset="6"
+                :span="12"
+              >
+                <el-link
+                  style="float: right;"
+                  class="!color-[#46696c]"
+                  type="primary"
+                >
+                  <span class="text-1.1rem">
+                    {{ t('login.forgetPassword') }}
+                  </span>
+                </el-link>
+              </el-col>
+            </el-row>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="24"
+          class="px-[20px]"
+        >
+          <el-form-item>
+            <XButton
+              :loading="loginLoading"
+              :title="t('login.login')"
+              class="w-[100%] btn-bg mb-20px !color-[#fff]  !py-1.5rem !text-1.3rem"
+              @click="getCode()"
+            />
+          </el-form-item>
+        </el-col>
+        <Verify
+          ref="verify"
+          :captchaType="captchaType"
+          :imgSize="{ width: '400px', height: '200px' }"
+          mode="pop"
+          @success="handleLogin"
+        />
+        <el-col
+          :span="24"
+          style="padding-right: 10px; padding-left: 10px"
+        >
+          <!-- <el-form-item>
           <el-row :gutter="5" justify="space-between" style="width: 100%">
             <el-col :span="8">
               <XButton
@@ -113,40 +169,40 @@
             </el-col>
           </el-row>
         </el-form-item> -->
-      </el-col>
-<!--      <el-divider content-position="center">{{ t('login.otherLogin') }}</el-divider>-->
-<!--      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">-->
-<!--        <el-form-item>-->
-<!--          <div class="w-[100%] flex justify-between">-->
-<!--            <Icon-->
-<!--              v-for="(item, key) in socialList"-->
-<!--              :key="key"-->
-<!--              :icon="item.icon"-->
-<!--              :size="30"-->
-<!--              class="anticon cursor-pointer"-->
-<!--              color="#999"-->
-<!--              @click="doSocialLogin(item.type)"-->
-<!--            />-->
-<!--          </div>-->
-<!--        </el-form-item>-->
-<!--      </el-col>-->
-<!--      <el-divider content-position="center">萌新必读</el-divider>-->
-<!--      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">-->
-<!--        <el-form-item>-->
-<!--          <div class="w-[100%] flex justify-between">-->
-<!--            <el-link href="https://doc.iocoder.cn/" target="_blank">📚开发指南</el-link>-->
-<!--            <el-link href="https://doc.iocoder.cn/video/" target="_blank">🔥视频教程</el-link>-->
-<!--            <el-link href="https://www.iocoder.cn/Interview/good-collection/" target="_blank">-->
-<!--              ⚡面试手册-->
-<!--            </el-link>-->
-<!--            <el-link href="http://static.yudao.iocoder.cn/mp/Aix9975.jpeg" target="_blank">-->
-<!--              🤝外包咨询-->
-<!--            </el-link>-->
-<!--          </div>-->
-<!--        </el-form-item>-->
-<!--      </el-col>-->
-    </el-row>
-  </el-form>
+        </el-col>
+        <!--      <el-divider content-position="center">{{ t('login.otherLogin') }}</el-divider>-->
+        <!--      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">-->
+        <!--        <el-form-item>-->
+        <!--          <div class="w-[100%] flex justify-between">-->
+        <!--            <Icon-->
+        <!--              v-for="(item, key) in socialList"-->
+        <!--              :key="key"-->
+        <!--              :icon="item.icon"-->
+        <!--              :size="30"-->
+        <!--              class="anticon cursor-pointer"-->
+        <!--              color="#999"-->
+        <!--              @click="doSocialLogin(item.type)"-->
+        <!--            />-->
+        <!--          </div>-->
+        <!--        </el-form-item>-->
+        <!--      </el-col>-->
+        <!--      <el-divider content-position="center">萌新必读</el-divider>-->
+        <!--      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">-->
+        <!--        <el-form-item>-->
+        <!--          <div class="w-[100%] flex justify-between">-->
+        <!--            <el-link href="https://doc.iocoder.cn/" target="_blank">📚开发指南</el-link>-->
+        <!--            <el-link href="https://doc.iocoder.cn/video/" target="_blank">🔥视频教程</el-link>-->
+        <!--            <el-link href="https://www.iocoder.cn/Interview/good-collection/" target="_blank">-->
+        <!--              ⚡面试手册-->
+        <!--            </el-link>-->
+        <!--            <el-link href="http://static.yudao.iocoder.cn/mp/Aix9975.jpeg" target="_blank">-->
+        <!--              🤝外包咨询-->
+        <!--            </el-link>-->
+        <!--          </div>-->
+        <!--        </el-form-item>-->
+        <!--      </el-col>-->
+      </el-row>
+    </el-form>
 
   </div>
 
@@ -167,9 +223,9 @@ defineOptions({ name: 'LoginForm' })
 
 const { t } = useI18n()
 const message = useMessage()
-const iconHouse = useIcon({ icon: 'ep:house' ,size:30})
-const iconAvatar = useIcon({ icon: 'ep:avatar' ,size:30})
-const iconLock = useIcon({ icon: 'ep:lock',size:30 })
+const iconHouse = useIcon({ icon: 'ep:house', size: 20 })
+const iconAvatar = useIcon({ icon: 'ep:avatar', size: 20 })
+const iconLock = useIcon({ icon: 'ep:lock', size: 20 })
 const formLogin = ref()
 const { validForm } = useFormValid(formLogin)
 const { setLoginState, getLoginState } = useLoginState()
@@ -346,7 +402,7 @@ onMounted(() => {
   }
 }
 :deep(.el-form-item__error) {
-  font-size : 1.3rem !important;
+  font-size: 1.3rem !important;
 }
 .login-code {
   float: right;
@@ -361,24 +417,22 @@ onMounted(() => {
     cursor: pointer;
   }
 }
-.el-input{
-  --el-input-text-color:#000 !important;
-  
+.el-input {
+  --el-input-text-color: #000 !important;
 }
-.btn-bg{
+.btn-bg {
   box-sizing: border-box;
-  background-color: #00AA52;
+  background-color: #00aa52;
   border: none !important;
   background-size: 100% 100% !important;
   // background-image: url(@/assets/imgs/btn-bg.png) !important;
 }
 
-::v-deep .el-input__wrapper{
-  background-color: transparent !important; 
+::v-deep .el-input__wrapper {
+  background-color: transparent !important;
   border-color: transparent !important;
   background-size: 100% 100% !important;
   background-image: url('../assets/formInput.png') !important;
-  
 }
 
 .form-item {
@@ -393,15 +447,15 @@ onMounted(() => {
 
 /* 针对el-input的自动填充样式 */
 ::v-deep .el-input__inner:-webkit-autofill {
-  -webkit-border-radius: 4px; 
-  border-radius: 4px; 
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
   color: pink !important;
-  -webkit-text-fill-color:#000000; 
-  transition: background-color 50000s ease-in-out 0s; 
+  -webkit-text-fill-color: #000000;
+  transition: background-color 50000s ease-in-out 0s;
 }
 
-
-::v-deep .el-checkbox__input.is-checked .el-checkbox__inner,.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+::v-deep .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
   background-color: #46696c !important;
   border: 1px solid #46696c !important;
 }
@@ -412,11 +466,10 @@ onMounted(() => {
   color: #46696c;
 }
 ::v-deep .el-checkbox__input.is-focus .el-checkbox__inner {
-  border-color: #46696c!important;
+  border-color: #46696c !important;
 }
 
-::v-deep .login-input .el-input__inner:hover{
+::v-deep .login-input .el-input__inner:hover {
   cursor: text !important;
 }
-
 </style>

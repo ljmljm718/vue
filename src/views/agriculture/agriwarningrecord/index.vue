@@ -489,6 +489,11 @@
               <el-table-column align="center" prop="deviceName" label="设备名称" />
               <el-table-column align="center" prop="noticeEvent" label="事件类型" />
               <el-table-column align="center" prop="remarks" label="消息内容" />
+              <el-table-column align="center" label="拍摄时间">
+                <template #default="scope">
+                  {{ timeFormat(scope.row.recordTime) }}
+                </template>
+              </el-table-column>
               <el-table-column label="抓拍图片" align="center" prop="captured">
                 <template #default="scope">
                   <el-image
@@ -503,8 +508,8 @@
               </el-table-column>
               <el-table-column align="center" label="操作" fixed="right" width="280px">
                 <template #default="scope">
-                  <el-button 
-                    type="primary" 
+                  <el-button
+                    type="primary"
                     v-show="scope.row.videoLink"
                     @click="openVideoMonitor(scope.row.videoLink)"
                   >
@@ -815,8 +820,8 @@ const queryParamsMonitor = reactive({
   createTime: []
 })
 const options = [{
-  value: '停留',
-  label: '停留'
+  value: '逗留',
+  label: '逗留'
 }, {
   value: '经过',
   label: '经过'
