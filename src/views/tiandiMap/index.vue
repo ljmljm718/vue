@@ -336,16 +336,16 @@ const getDataList = async () => {
                 const plantItem = child.plantList[0]
                 const buildArr = [
                   {
-                    title: '作物名称',
+                    title: '品种',
                     value: plantItem.cropName
-                  },
-                  {
-                    title: '地块面积',
-                    value: plantItem.area
                   },
                   {
                     title: '物候期',
                     value: plantItem.growth
+                  },
+                  {
+                    title: '面积',
+                    value: child.plotArea
                   },
                   {
                     title: '预计产量',
@@ -360,7 +360,7 @@ const getDataList = async () => {
                     value: plantItem.endTime
                   },
                 ]
-                const domTitle = child.plotName;
+                const domTitle = child.plotName, plotStatus = child.plotStatus;
                 const labelMapId = createdPolygonItem.id
                 labelMap.set(labelMapId, {
                   position: Cesium.Cartesian3.fromDegrees(
@@ -371,15 +371,20 @@ const getDataList = async () => {
                   html: `
                     <div class="w-[350px] relative bottom-[40px] min-h-[260px]">
                       <img src="${innerBg}" class="w-full h-full absolute left-0 top-0 z-0" />
-                      <div class="py-[1.6rem] pb-[.6rem] pt-[1rem] w-full text-center relative z-10 text-[1.2rem]">${domTitle}</div>
-                      <div class="grid grid-cols-2 gap-2 relative z-10 px-[1.3rem]">
+                      <div class="absolute right-0 top-[2px] px-4 py-2 flex justify-center items-center space-x-2 bg-gradient-to-b from-[#159f67] to-[#159f6700]">
+                        <div class="w-[8px] h-[8px] rounded-[4px] bg-[#1df79d]"></div>
+                        <div class="text-[.7rem] text-white">${plotStatus}</div>
+                      </div>
+                      <div class="py-[1.6rem] pb-[.6rem] pt-[1rem] w-full text-center relative z-10 text-[1.2rem] text-[#12e479]">${domTitle}</div>
+                      <div class="w-full h-[2px] bg-[#12e078]"></div>
+                      <div class="grid grid-cols-1 gap-2 relative z-10 px-[1.3rem] py-3 pb-7">
                         ${
                           buildArr.map(_i => {
                             return `
-                              <div class="p-3 py-1">
-                                <div class="text-white">
+                              <div class="p-3 py-1 flex items-center space-x-2">
+                                <div class="text-[#1c8f80] flex items-center">
                                   <img src=${titleBar} class="w-[.8rem] h-[.8rem]" />
-                                  <span class="pl-[.3rem]">${_i.title}</span>
+                                  <div class="pl-[.3rem] w-[7rem]">${_i.title}:</div>
                                 </div>
                                 <div class="text-[#f1f1f1] pl-[1.3rem]">${_i.value}</div>
                               </div>
