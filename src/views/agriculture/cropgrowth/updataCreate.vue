@@ -253,17 +253,13 @@ const route = useRoute()
 const router = useRouter()
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
-const FORMPAGE_NAME = ''
+const FORMPAGE_NAME = '生长日记'
 const ORIGIN_PATH = '/farm_work/crop-growth' // 关闭表单时跳转的路径
 
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 
-const loadData = async (id = 'new_form') => {
-  const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
-}
-if (!formData.value.id) loadData()
+
 
 const localSave = () => {
   addOrUpdateFormStorage(
@@ -274,6 +270,13 @@ const localSave = () => {
   )
   ElMessage.success('保存成功！')
 }
+
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
+
 //方式一:调用
 // if(route.query.id){
 //     替换成自己的
@@ -428,4 +431,23 @@ const getType = async () =>{
   listCategoryManagement.value = await allDataCacheManager.getData({})
 }
 getType()
+
+/**
+ * 获取上次暂存的数据
+ */
+const getFrom = async () => {
+  console.log(route.query.type  as any)
+  resetForm();
+  if (route.query.id) {
+    // todo
+    formData.value = await CropGrowthApi.getCropGrowth(route.query.id as any);
+    await loadData(route.query.id);
+  }
+
+}
+
+// 方式二 调用立即执行函数，为了获取上次暂存的数据
+onMounted(async () => {
+  await getFrom();
+});
 </script>
