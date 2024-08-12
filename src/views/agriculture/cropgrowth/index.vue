@@ -126,6 +126,14 @@
           <Icon icon="ep:download" class="mr-5px"/>
           导出
         </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleAddGrowth"
+        >
+          <Icon icon="ep:plus" class="mr-5px"/>
+          批量添加生长周期
+        </el-button>
       </el-form-item>
     </div>
   </ContentWrap>
@@ -225,6 +233,8 @@
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+  <!-- 批量添加生长周期 -->
+  <AddGrowthDialog ref="addGrowthDialogIns" />
 </template>
 
 <script setup lang="ts">
@@ -232,6 +242,8 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {CropGrowthApi, CropGrowthVO} from '@/api/agriculture/cropgrowth'
 import CropGrowthForm from './CropGrowthForm.vue'
+// @ts-ignore
+import AddGrowthDialog from './addGrowthDialog.vue'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
@@ -270,6 +282,12 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+
+const addGrowthDialogIns = ref()
+const handleAddGrowth = () => {
+  if (!addGrowthDialogIns.value) return;
+  addGrowthDialogIns.value.open()
+}
 
 /** 查询列表 */
 const getList = async () => {
