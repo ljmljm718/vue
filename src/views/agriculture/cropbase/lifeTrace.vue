@@ -196,9 +196,10 @@
         >
           <el-card>
             <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
-            <p>品种：
-              <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType" />
-           </p>
+            <p>品类：
+              <el-tag>{{ item.cropType }}</el-tag>
+              <!--            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>-->
+            </p>
             <p>作物名称：{{ item.cropName }}</p>
             <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
           </el-card>

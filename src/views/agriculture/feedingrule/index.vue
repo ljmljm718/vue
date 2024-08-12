@@ -26,7 +26,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="数量" prop="quantity">
+      <!-- <el-form-item label="数量" prop="quantity">
         <el-input
           v-model="queryParams.quantity"
           placeholder="请输入数量"
@@ -34,7 +34,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="基数" prop="baseNumber">
         <el-input
           v-model="queryParams.baseNumber"
@@ -90,7 +90,7 @@
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="生长期" align="center" prop="growthPeriod" />
       <el-table-column label="重量(克)" align="center" prop="weight" />
-      <el-table-column label="数量(只)" align="center" prop="quantity" />
+      <!-- <el-table-column label="数量(只)" align="center" prop="quantity" /> -->
       <el-table-column label="基数(%)" align="center" prop="baseNumber" />
       <el-table-column label="策略" align="center" prop="strategy" />
       <el-table-column
