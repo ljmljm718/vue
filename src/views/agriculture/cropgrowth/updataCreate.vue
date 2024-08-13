@@ -443,7 +443,7 @@ const getFrom = async () => {
     formData.value = await CropGrowthApi.getCropGrowth(route.query.id as any);
     await loadData(route.query.id);
   }
-
+  if (!formData.value.id) loadData()
 }
 
 // 方式二 调用立即执行函数，为了获取上次暂存的数据
