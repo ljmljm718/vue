@@ -149,6 +149,11 @@ export default defineComponent({
       console.log("plotList", plotList.value)
     }
 
+    const router = useRouter()
+    const handleRoute = () => {
+      router.push("/bigscreenModel")
+    }
+
     /**
      * 周期/物候期 相关
      * curPeriod           当前周期名称
@@ -575,9 +580,7 @@ export default defineComponent({
                             <div 
                               style={`background-image: url(${ item.modelImg }); background-size: 100% 100%;`}
                               class="w-full h-[100px] relative cursor-pointer"
-                              onClick={()=>{
-                                // 跳转
-                              }}
+                              onClick={()=>{ handleRoute() }}
                             >
                               <div 
                                 class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
