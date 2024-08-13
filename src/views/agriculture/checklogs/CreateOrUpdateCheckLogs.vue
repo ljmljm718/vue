@@ -180,6 +180,7 @@ import {
   EditFrame,
   addOrUpdateFormStorage,
   getFormStorage,
+  deleteFormStorage
 } from '@/components/EditFrame/index'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {getTenantId} from "@/utils/auth";
@@ -286,6 +287,7 @@ const submitForm = async () => {
       await CheckLogsApi.updateCheckLogs(data)
       message.success(t('common.updateSuccess'))
     }
+    deleteFormStorage(ROUTE_PATH, formData.value.id ? formData.value.id : 'new_form')
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
