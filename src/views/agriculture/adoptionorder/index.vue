@@ -49,7 +49,7 @@
           type="date"
           placeholder="选择预计收获日期（起）"
           clearable
-          class="!w-150px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item label="预计收获日期（止）" prop="expectEnd">
@@ -59,7 +59,7 @@
           type="date"
           placeholder="选择预计收获日期（止）"
           clearable
-          class="!w-150px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item>
