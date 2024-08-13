@@ -5,7 +5,9 @@
         <div
           v-for="(item, index) in filteredLeftList"
           :key="index"
-          class="flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md"
+          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md ${
+            activeId === item.id ? 'font-bold' : ''
+          }`"
           @click="getmodelList(item.id)"
         >
           <img :src="item.img" alt="" class="w-full" />
@@ -41,9 +43,12 @@
             v-for="(item, index) in modelList"
             :key="index"
             :class="`flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] ${
-              activeModelId === item.modelId ? 'shadow-md' : ''
+              activeModelId === item.modelId ? 'shadow-md font-bold ' : ''
             }`"
-            @click="selectModel(item.modelId)"
+            @click="
+              selectModel(item.modelId),
+              handleFilterModelClick(item)
+            "
           >
             <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
             <div>
@@ -55,12 +60,11 @@
             </div>
           </div>
         </div>
-        <!-- </div> -->
       </div>
       <div class="space-x-3 bg-white p-2 min-h-[4rem]">
-        <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0">{{
-          Array.isArray(res) && res.length > 0 && res[0]?.model
-        }}模型周期与栽培要点</div>
+        <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0"
+          >{{ Array.isArray(res) && res.length > 0 && res[0]?.model }}模型周期与栽培要点</div
+        >
         <div class="flex space-x-4">
           <div id="chart" class="w-[15rem] h-[12rem]"></div>
           <div class="grow" style="width: calc(100% - 15.4rem)">
@@ -69,16 +73,27 @@
                 v-for="(ele, idx) in filteredModelList"
                 :key="idx"
                 class="relative"
-                @click="handleFilterModelClick(ele)"
+                @click="
+                  handleFilterModelClick(ele),
+                  console.log('1')
+                "
               >
-                <div>{{ ele.growth }}</div>
-                <div>{{ ele.cycle }}天</div>
                 <div
-                  :class="[ele.growth === activeGrowth ? 'progress-bar-active' : 'progress-bar']"
+                  :class="`relative right-1rem ${
+                    ele.growthId === activeGrowthId ? 'progress-font-active' : ''
+                  }`"
+                >
+                  <div>{{ ele.growth }}</div>
+                  <div class="flex justify-center">{{ ele.cycle }}天</div>
+                </div>
+                <div
+                  :class="[
+                    ele.growthId === activeGrowthId ? 'progress-bar-active' : 'progress-bar'
+                  ]"
                 ></div>
               </div>
             </div>
-            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center ">
+            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center">
               <div class="flex justify-center w-full">
                 <div
                   :class="`px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
@@ -91,73 +106,45 @@
                 >
               </div>
             </div>
-            <div class="px-[1rem] pt-3">{{ selectedInfo }}</div>
-          </div>
-          <div class="flex flex-col w-full !hidden">
-            <!-- shang -->
-            <div class="flex flex-row justify-between">
-              <div class="text-[12px] mb-2" v-for="(item, index) in filteredModelList" :key="index">
-                <div class="flex flex-col space-y-1 pr-3">
-                  <div class="flex justify-center"> {{ item.growth }} </div>
-                  <div class="flex justify-center text-[#999999]"> 周期{{ item.cycle }}天 </div>
-                </div>
-              </div>
-            </div>
-            <!-- zhong -->
-            <div class="container w-full overflow-hidden relative my-2">
-              <div class="line-with-circles flex items-center justify-between relative w-full">
-                <div class="circle-container flex-1 relative">
-                  <div class="circle"></div>
-                </div>
-                <div class="circle-container flex-1 relative">
-                  <div class="circle"></div>
-                </div>
-                <div class="circle-container flex-1 relative">
-                  <div class="circle"></div>
-                </div>
-                <div class="circle-container flex-1 relative">
-                  <div class="circle"></div>
-                </div>
-                <div class="circle-container flex-1 relative">
-                  <div class="circle"></div>
-                </div>
-              </div>
-            </div>
-            <!-- xia -->
-            <div class="flex text-center mb-3">
-              <div v-for="item in newItemButtonList" :key="item.id" @click="handleItemClick(item)">
-                <div
-                  :class="[
-                    'text-[12px] p-2 px-4 transition w-27 bg-[#f5f5f5] ',
-                    topSelectedBtn === item.id ? '!bg-[#009688] text-[#fff]' : ''
-                  ]"
-                  >{{ item.itemName }}</div
-                >
-              </div>
-            </div>
-            <div>{{ selectedInfo }}</div>
+            <div class="px-[1rem] pt-3">{{ selectedInfo }} </div>
           </div>
         </div>
       </div>
       <div class="space-x-3 bg-white p-2 min-h-[4rem]">
-        <div class="flex justify-between items-center ">
+        <div class="flex justify-between items-center">
           <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0"
-            >{{ Array.isArray(res) && res.length > 0 && res[0]?.model + res[0]?.curPeriod}}监测指标</div
+            >{{
+              Array.isArray(res) && res.length > 0 && res[0]?.model + res[0]?.curPeriod
+            }}监测指标</div
           >
-          <div class="flex bg-[#f5f5f5] rounded-2 overflow-hidden">
+          <div
+            class="flex relative bg-[#f5f5f5] rounded-2 overflow-hidden"
+            :style="{ right: 'calc(50% - 6rem)' }"
+          >
             <div
               v-for="item in tableBtns"
               :key="item.id"
               :class="[
-                'text-[12px] p-2 px-4 transition',
+                'text-[12px] p-2 px-4 transition  ',
                 selectedBtn === item.id ? '!bg-[#009688] text-[#fff]' : ''
               ]"
-              @click="selectedBtn = item.id; getFilteredTableData(item.id)"
-            >{{ item.value }}</div>
+              @click=";(selectedBtn = item.id), getFilteredTableData(item.id)"
+              >{{ item.value }}</div
+            >
           </div>
         </div>
         <div class="mt-2">
-          <el-table :data="tableData" :stripe="true" :show-overflow-tooltip="true">
+          <el-table
+            :data="tableData"
+            :stripe="true"
+            v-loading="loading"
+            :show-overflow-tooltip="true"
+            :header-cell-style="{
+              backgroundColor: '#f5f7fa',
+              color: '#009688',
+              fontWeight: 'bold'
+            }"
+          >
             <el-table-column label="要素名称" align="center" prop="elementName" />
             <el-table-column label="监测指标范围" align="center">
               <template #default="scope">
@@ -166,25 +153,29 @@
                     <div class="w-full relative flex px-[2rem]">
                       <div
                         class="bg-[#666666] text-[#fff] rounded-2 extra-triangle mb-2 px-2 absolute left-4 inline-block"
-                        :style="`left: calc(${scope.row.position * 100}% - 3rem)`"
+                        :style="`left: calc(${scope.row.position * 100}% - 2rem)`"
                       >
-                        {{ scope.row.assess }}:{{ scope.row.value }}{{ scope.row.unitVal }}
+                        <template v-if="scope.row.hasData">
+                          {{ scope.row.assess }} ({{ scope.row.value }}{{ scope.row.unitVal }})
+                        </template>
+                        <template v-else> 暂无数据 </template>
                       </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                      <div class="w-[2rem]">
+                      <div class="w-[2.5rem] text-center">
                         <span>{{ scope.row.minVal }}</span>
                         <span>{{ scope.row.unitVal }}</span>
                       </div>
-                      <div class="flex rounded-[4px] overflow-hidden space-x-.5">
+                      <div class="flex rounded-[4px] overflow-hidden space-x-.5 w-[10rem]">
                         <div
                           v-for="(item, index) in scope.row.modelIndicatorElementRangeDOList"
                           :key="item.id"
+                          :class="`w-[${((1 * 10)/ scope.row.modelIndicatorElementRangeDOList.length).toFixed(0)}rem]`"
                         >
-                          <div :class="`h-[8px] w-[4rem] tool-bar-${index + 1}`"></div>
+                          <div :class="`h-[8px] w-full tool-bar-${index + 1}`"></div>
                         </div>
                       </div>
-                      <div class="w-[2rem]">
+                      <div class="w-[2.5rem] text-center">
                         <span>{{ scope.row.maxVal }}</span>
                         <span>{{ scope.row.unitVal }}</span>
                       </div>
@@ -193,8 +184,23 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="当前值" align="center" prop="value" />
-            <el-table-column label="健康评估" align="center" prop="assess" />
+            <el-table-column label="当前值" align="center" prop="value">
+              <template #default="scope">
+                <span v-if="scope.row.value !== null && scope.row.value !== undefined">
+                  {{ scope.row.value }}
+                </span>
+                <span v-else> 暂无数据 </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="健康评估" align="center" prop="assess">
+              <template #default="scope">
+                <span v-if="scope.row.assess !== null && scope.row.assess !== undefined">
+                  {{ scope.row.assess }}
+                </span>
+                <span v-else> 暂无数据 </span>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -207,8 +213,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import {baidiParkInfo, getModelByParkId, getModelInfo, getMonitorIndicatorWithDetail} from './api'
-import {generatePieOptions, initChartStatic} from '@/utils/bigscreenTool/index'
+import { baidiParkInfo, getModelByParkId, getModelInfo, getMonitorIndicatorWithDetail } from './api'
+import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
 import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
 
 // 左侧基地列表
@@ -217,6 +223,9 @@ const getleftList = async () => {
   const leftList = await baidiParkInfo()
   if (!Array.isArray(leftList)) return
   filteredLeftList.value = leftList.filter((item) => item.img != null)
+  if (filteredLeftList.value.length > 0) {
+    getmodelList(filteredLeftList.value[0].id)
+  }
 }
 
 const topCardList = ref<any[]>([
@@ -224,22 +233,29 @@ const topCardList = ref<any[]>([
   { title: '总值', value: '83' }
 ])
 
-
 // 模型列表
 const modelList = ref<any[]>([])
+const activeId = ref<string | null>(null)
 const getmodelList = async (parkId: string) => {
   const result = await getModelByParkId({ parkId })
-  if (!Array.isArray(result)) return;
+  if (!Array.isArray(result)) return
   modelList.value = result
-  if (result.length <= 0) return;
+  if (result.length <= 0) return
+  activeId.value = parkId
   selectModel(modelList.value[0].modelId)
 }
 
+const activeGrowthId = ref<string>('')
 const handleFilterModelClick = (item) => {
   activeGrowth.value = item.growth
+  selectedInfo.value = ''
+  activeGrowthId.value = item.growthId
   const { child2 } = item
   if (Array.isArray(child2)) {
     newItemButtonList.value = child2
+  }
+  if (Array.isArray(newItemButtonList.value) && newItemButtonList.value.length > 0) {
+    handleItemClick(newItemButtonList.value[0])
   }
 }
 
@@ -250,6 +266,8 @@ const activeGrowth = ref<string>('')
 const activeModelId = ref<string>('')
 const selectModel = async (modelId) => {
   activeModelId.value = modelId
+
+  //getTableData(activeModelId.value,growthId)
   res.value = await getModelInfo({ modelId })
   selectedModel.value = res.value
   filterModel(res.value)
@@ -259,14 +277,14 @@ const selectedInfo = ref<string>('')
 const newItemButtonList = ref<any[]>([])
 const handleItemClick = (item) => {
   topSelectedBtn.value = item.id
-  selectedInfo.value = item.itemContent
+  selectedInfo.value = item.itemContent || ''
 }
+
 const filterModel = (resItem) => {
   filteredModelList.value = resItem.filter((item, index) => index !== 0)
   nextTick(() => {
     if (Array.isArray(resItem) && resItem.length > 0) {
       const firstItemPeriod = resItem[0].curPeriod
-
       if (!firstItemPeriod) return
       initChart(filteredModelList.value, firstItemPeriod)
       const [firstModelItem] = filteredModelList.value
@@ -288,7 +306,7 @@ const topSelectedBtn = ref<string>('sfgy')
 const initChart = (series: any[], period: string) => {
   const _activePeriod = series.find((item) => item.growth === period)
   activeGrowth.value = _activePeriod.growth
-
+  activeGrowthId.value = _activePeriod.growthId
   const instance = initChartStatic(
     `chart`,
     generatePieOptions({
@@ -317,7 +335,8 @@ const initChart = (series: any[], period: string) => {
           center: 'center',
           data: series.map((item) => ({
             name: item.growth,
-            value: item.cycle
+            value: item.cycle,
+            growthId: item.growthId
           })),
           label: {
             position: 'inside',
@@ -336,6 +355,7 @@ const initChart = (series: any[], period: string) => {
   instance &&
     instance.on('click', (params) => {
       activeGrowth.value = params.name
+      activeGrowthId.value = params.data.growthId
       instance &&
         instance.setOption({
           title: {
@@ -350,24 +370,26 @@ const selectedBtn = ref<string>('qx')
 
 const tableData = ref<any[]>([])
 
-watch(activeGrowth, () => {
-  selectedInfo.value = ''
-})
-
 const monitorIndicatorList = ref<any[]>([])
 const tableBtns = ref<any[]>([])
 const getTableData = async (modelId, growthId) => {
+  loading.value = true
   monitorIndicatorList.value = await getMonitorIndicatorWithDetail({ modelId, growthId })
   tableBtns.value = monitorIndicatorList.value.map((item, index) => ({
     key: index,
     value: item.indicatorName,
     id: item.id
   }))
-  getFilteredTableData('JCZB20240731000001')
+  if (Array.isArray(tableBtns.value) && tableBtns.value.length > 0) {
+    selectedBtn.value = tableBtns.value[0].id
+  }
+  getFilteredTableData(selectedBtn.value)
+  loading.value = false
 }
 
 const getFilteredTableData = (selectedBtn) => {
   const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
+  if (!filtered_res?.modelIndicatorElementCardVOList) return
   if (Array.isArray(filtered_res.modelIndicatorElementCardVOList)) {
     tableData.value = filtered_res.modelIndicatorElementCardVOList.map((item) => {
       const rangeItem = item.modelIndicatorElementRangeDOList
@@ -377,16 +399,22 @@ const getFilteredTableData = (selectedBtn) => {
       const minVal = firstItem.lowLimit,
         maxVal = lastItem.highLimit,
         unitVal = lastItem.unit
-      let position = 0
-      rangeItem.forEach((element, index) => {
-        const _val = parseFloat(item.value),
-          lowVal = parseFloat(element.lowLimit),
-          hightVal = parseFloat(element.highLimit)
-        if (_val > lowVal && _val < hightVal) {
-          position = (index + index + 1) / (2 * rangeItem.length)
-        }
-      })
-      return { ...item, minVal, maxVal, unitVal, position }
+      let position = 0.55
+      let hasData = true
+      const _val = parseFloat(item.value)
+      if (isNaN(_val)) {
+        hasData = false
+      } else {
+        rangeItem.forEach((element, index) => {
+          const lowVal = parseFloat(element.lowLimit),
+            hightVal = parseFloat(element.highLimit)
+          if (_val > lowVal && _val < hightVal) {
+            position = (index + index + 1) / (2 * rangeItem.length)
+          }
+        })
+      }
+
+      return { ...item, minVal, maxVal, unitVal, position, hasData }
     })
   }
 }
@@ -424,6 +452,13 @@ const handleTriggerModelCalculate = () => {
   });
 };
 
+//监听：
+watch([activeModelId, activeGrowthId], ([newModelId, newGrowthId]) => {
+  if (newModelId || newGrowthId) {
+    getTableData(newModelId, newGrowthId)
+  }
+})
+
 const init = async () => {
   loading.value = true
   await getleftList()
@@ -444,6 +479,9 @@ onMounted(() => init())
 .tool-bar-3 {
   background: linear-gradient(to right, #9ba30a, #e58a01);
 }
+.tool-bar-4 {
+  background: linear-gradient(to right, #e58a01, #e54901);
+}
 
 .extra-triangle {
   position: relative;
@@ -460,81 +498,18 @@ onMounted(() => init())
   border-color: #666666 transparent transparent transparent;
 }
 
-.line-with-circles::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #d3d3d3;
-  z-index: 1;
-  transform: translateY(-50%);
-}
-
-.line-with-circles.green-line::before {
-  background-color: #009688;
-}
-
-.circle {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 6px;
-  height: 6px;
-  border: 2px solid #008b8b;
-  border-radius: 50%;
-  background-color: white;
-}
-
-// .circle::before {
-//   content: '';
-//   position: absolute;
-//   width: 4px;
-//   height: 4px;
-//   background-color: white;
-//   border-radius: 50%;
-//   z-index: 4;
-// }
-
-.circle.solid {
-  background-color: #009688;
-}
-.circle-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.hidden-scrollbar::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-}
-
-.circle-container:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  width: 100%;
-  height: 2px;
-  background-color: #d3d3d3;
-  z-index: 1;
-  transform: translateY(-50%);
-}
-
 .progress-bar-active {
   position: absolute;
   left: 0px;
   bottom: -15px;
-  width: 1400px;
+  width: 14000px;
   height: 2px;
   background-color: #b7b7b7;
 }
-
+.progress-font-active {
+  color: #009688;
+  font-weight: bold;
+}
 .progress-bar-active::after {
   content: '';
   width: 10px;
