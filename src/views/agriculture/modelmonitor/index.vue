@@ -276,6 +276,8 @@ const selectModel = async (modelId) => {
 const selectedInfo = ref<string>('')
 const newItemButtonList = ref<any[]>([])
 const handleItemClick = (item) => {
+  console.log("🚀 ~ handleItemClick ~ item:", item)
+  
   topSelectedBtn.value = item.id
   selectedInfo.value = item.itemContent || ''
 }
@@ -289,6 +291,8 @@ const filterModel = (resItem) => {
       initChart(filteredModelList.value, firstItemPeriod)
       const [firstModelItem] = filteredModelList.value
       if (firstModelItem) handleFilterModelClick(firstModelItem)
+      console.log("🚀 ~ nextTick ~ firstItemPeriod:", firstItemPeriod)
+      console.log("🚀 ~ nextTick ~ filteredModelList.value:", filteredModelList.value)
     }
   })
 
@@ -307,6 +311,7 @@ const initChart = (series: any[], period: string) => {
   const _activePeriod = series.find((item) => item.growth === period)
   activeGrowth.value = _activePeriod.growth
   activeGrowthId.value = _activePeriod.growthId
+  
   const instance = initChartStatic(
     `chart`,
     generatePieOptions({
@@ -389,6 +394,10 @@ const getTableData = async (modelId, growthId) => {
 
 const getFilteredTableData = (selectedBtn) => {
   const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
+  console.log("🚀 ~ getFilteredTableData ~ filtered_res:", filtered_res)
+  if(filtered_res===undefined){
+    tableData.value = []
+  }
   if (!filtered_res?.modelIndicatorElementCardVOList) return
   if (Array.isArray(filtered_res.modelIndicatorElementCardVOList)) {
     tableData.value = filtered_res.modelIndicatorElementCardVOList.map((item) => {
@@ -462,8 +471,8 @@ watch([activeModelId, activeGrowthId], ([newModelId, newGrowthId]) => {
 const init = async () => {
   loading.value = true
   await getleftList()
-  await getmodelList('1787680115895037952')
-  await getTableData('MXGL20240731000001', '1813742898268782592')
+  // await getmodelList('1787680115895037952')
+  // await getTableData('MXGL20240731000001', '1813742898268782592')
   loading.value = false
 }
 onMounted(() => init())
