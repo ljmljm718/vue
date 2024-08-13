@@ -232,14 +232,14 @@ const getleftList = async () => {
 }
 
 //评分列表
-const healthValueData = ref<any[]>([{ title: '总值', value: '83', weight: '', img: '' }])
+const healthValueData = ref<any[]>([])
 const getHealthValueData = async (modelId, batch) => {
   const healthDataList = await getModelMonitor({ modelId, batch })
   healthValueData.value = healthDataList.map((item, index) => ({
-    title: item.name,
-    value: item.score || item.healthLevel,
-    weight: item.weight ? `(${item.weight}%)` : '',
-    imgList: `icon-${index + 1}`
+    title: item.title,
+    value: item.value ,
+    weight: item.weight ? `(${item.weight})` : '',
+    imgList: `icon-${(index %5)+ 1}`
   }))
 }
 getHealthValueData('MXGL20240806000002', '202407221511110884')
