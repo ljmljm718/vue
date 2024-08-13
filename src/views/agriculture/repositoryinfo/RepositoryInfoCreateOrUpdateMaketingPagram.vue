@@ -168,7 +168,6 @@ const localSave = () => {
 //获取浏览器缓存
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
-  console.log("查看一下",_form)
   if (_form) formData.value = _form.formContent
 }
 if (!formData.value.id) loadData()
@@ -188,7 +187,7 @@ const open = async (type: string, id?: number) => {
     {
       formData.value =info
       if(formData.value.attachmentFile)
-      formData.value.attachmentFile=formData.value.attachmentFile.split(",")
+      formData.value.attachmentFile=formData.value.attachmentFile.split(",")[0]
       loadData(info.id)
     }
     } finally {

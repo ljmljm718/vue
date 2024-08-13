@@ -137,6 +137,7 @@ v-model='title'
               class="h-50px w-50px"
               lazy
               :src="row.attachmentImg"
+              :preview-src-list="[row.attachmentImg]"
               preview-teleported
               fit="cover"
             />
