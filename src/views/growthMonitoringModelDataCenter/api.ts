@@ -31,7 +31,7 @@ export const getNum = async (params) => {
  */
 export const getModel = async (params) => {
   return await request.get({
-    url: "/agriculture/model-management/getModelByParkId",
+    url: "/agriculture/model-management/getVarietyModelByParkId",
     params
   })
 }
@@ -68,18 +68,6 @@ export const getCycle = async (params) => {
 export const getIndicator = async (params) => {
   return await request.get({
     url: "/agriculture/model-monitor-indicator/getMonitorIndicatorWithDetail",
-    params
-  })
-}
-
-/**
- * 根据模型ID和地块ID查询地块信息
- * @param params {modelId, beLongPlot}
- * @returns "[{plotName, ...}, ...]"
- */
-export const getPlotInfo = async (params) => {
-  return await request.get({
-    url: "/agriculture/model-management/getCropPlotByModelId",
     params
   })
 }

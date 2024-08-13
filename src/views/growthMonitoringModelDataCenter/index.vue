@@ -20,7 +20,7 @@ import NumberShow from "./components/NumberShow.vue"
 import ModelIcon from "./components/ModelIcon.vue"
 
 /** 引入请求接口 */
-import { getBase, getModel, getNum, getPlot, getCycle, getIndicator, getPlotInfo } from "./api"
+import { getBase, getModel, getNum, getPlot, getCycle, getIndicator } from "./api"
 
 /** 引入图片 */
 import bg from "./assets/bg.png"
@@ -95,13 +95,12 @@ export default defineComponent({
     const getModelList = async () => {
       const params = {parkId: base.value.id}
       const res = await getModel(params)
+      // console.log("ModelList", res)
       modelList.value = res.map((item) => {
         return {
-          modelId: item.modelId,
-          modelName: item.modelName,
+          ...item,
           activated: false,
           key: item.modelId,
-          varietyName: item.varietyName
         }
       })
       modelList.value[0].activated = true
@@ -135,18 +134,13 @@ export default defineComponent({
     const getPlotList = async () => {
       const params = { parkId: base.value.id }
       const res = await getPlot(params)
-      plotList.value = []
-      res.forEach(async (item) => {
-        let plotParams = { modelId: item.modelId, beLongPlot: item.plotId}
-        let curPlotInfo = await getPlotInfo(plotParams)
-        let obj = {
+      plotList.value = res.map( (item) => {
+        return {
           ...item,
-          plotName: curPlotInfo[0].plotName,
           enable: true
         }
-        plotList.value.push(obj)
       })
-      console.log("plotList", plotList.value)
+      // console.log("plotList", plotList.value)
     }
 
     const router = useRouter()
@@ -187,7 +181,7 @@ export default defineComponent({
       if (curModelId) {
         const params = { modelId: curModelId }
         const res = await getCycle(params)
-        console.log("Cycle", res)
+        // console.log("Cycle", res)
 
         curPeriod.value = res[0].curPeriod
         curRealPeriod.value = res[0].curPeriod
@@ -401,9 +395,9 @@ export default defineComponent({
 
       if (curCropCode) {
         const params = { modelId: curModelId, growthId: curCropCode }
-        console.log("getIndicator params", params)
+        // console.log("getIndicator params", params)
         const res = await getIndicator(params)
-        console.log("Indicator", res)
+        // console.log("Indicator", res)
 
         if (res.length) {
           res.map((item) => {
@@ -462,8 +456,8 @@ export default defineComponent({
 
     const handleResize = () => {
       // 设置屏幕宽度和高度为CSS变量
-      document.documentElement.style.setProperty('--screen-width', `${ window.innerWidth }px`);
-      document.documentElement.style.setProperty('--screen-height', `${ window.innerHeight }px`);
+      document.documentElement.style.setProperty('--growth-monitoring-model-datacenter-screen-width', `${ window.innerWidth }px`);
+      document.documentElement.style.setProperty('--growth-monitoring-model-datacenter-screen-height', `${ window.innerHeight }px`);
     }
 
     /**
@@ -533,6 +527,7 @@ export default defineComponent({
                           <ModelIcon 
                             modelName={ item.modelName }
                             activated={ item.activated }
+                            modelImg={ item.modelImg }
                             key={ item.key }
                             onClick={ () => { changeModel(index) } }
                           >
@@ -1180,16 +1175,16 @@ export default defineComponent({
 
 <style lang="scss">
 // 使用CSS变量作为SCSS变量
-$screen-width: calc(var(--screen-width));
-$screen-height: calc(var(--screen-height));
+$growth-monitoring-model-datacenter-screen-width: calc(var(--growth-monitoring-model-datacenter-screen-width));
+$growth-monitoring-model-datacenter-screen-height: calc(var(--growth-monitoring-model-datacenter-screen-height));
 
 .growth-monitoring-model-datacenter-popper {
-  width: calc(#{$screen-width} * 0.11);
+  width: calc(#{$growth-monitoring-model-datacenter-screen-width} * 0.11);
 }
 
 .growth-monitoring-model-datacenter-popper .el-select-dropdown__item {
-  font-size: calc(#{$screen-height} * 0.012);
-  height: calc(#{$screen-height} * 0.02);
-  line-height: calc(#{$screen-height} * 0.02);
+  font-size: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.012);
+  height: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.02);
+  line-height: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.02);
 }
 </style>
