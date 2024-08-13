@@ -31,19 +31,19 @@ export const getNum = async (params) => {
  */
 export const getModel = async (params) => {
   return await request.get({
-    url: "/agriculture/model-management/getModelByParkId",
+    url: "/agriculture/model-management/getVarietyModelByParkId",
     params
   })
 }
 
 /**
  * 查询地块监控
- * @param params {baseId, plotId}
- * @returns "{data: [{monitoringEquipmentDataDO: {capturedImage, monitoringPlotName}}, ...]}"
+ * @param params {parkId}
+ * @returns "[{modelId, modelName, modelImg, varietyName, varietyId, growth, growthId, cycle, startTime, endTime, parkId, plotId}, ...]"
  */
 export const getPlot = async (params) => {
   return await request.get({
-    url: "/agriculture/device-info/getEquipmentPhotographAndVideo",
+    url: "/agriculture/model-management/getPlotMonitorByParkId",
     params
   })
 }

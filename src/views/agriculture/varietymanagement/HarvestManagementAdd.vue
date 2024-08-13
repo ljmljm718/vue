@@ -89,15 +89,15 @@
         <el-input v-model="formData.parkDetailName" placeholder="自动写入" readonly
                   :disabled="boo"/>
       </el-form-item>
-      <el-form-item label="上传时间" prop="upTime">
-        <el-date-picker
-          v-model="formData.upTime"
-          type="datetime"
-          value-format="x"
-          placeholder="选择上传时间"
-          style="width: 100%"
-        />
-      </el-form-item>
+<!--      <el-form-item label="上传时间" prop="upTime">-->
+<!--        <el-date-picker-->
+<!--          v-model="formData.upTime"-->
+<!--          type="datetime"-->
+<!--          value-format="x"-->
+<!--          placeholder="选择上传时间"-->
+<!--          style="width: 100%"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="采收量(/Kg)" prop="harvestVolume">
         <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>
       </el-form-item>

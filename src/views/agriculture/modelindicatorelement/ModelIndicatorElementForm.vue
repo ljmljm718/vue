@@ -22,7 +22,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="要素名称" prop="elementName">
-            <el-input v-model="formData.elementName" placeholder="请输入要素名称" />
+            <el-select v-model="formData.elementName" placeholder="请选择要素" clearable
+                       style="width: 100%">
+              <el-option v-for="item in deviceTypeList" :key="item" :label="item"
+                         :value="item" />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -68,7 +72,7 @@
   <IndicatorSelectPopup ref="indicatorSelectPopupRef" @success="handleIndicatorSelectPopupChange"/>
 
   <!--  选择设备-->
-  <DeviceInfo ref="deviceSelectRef" @success="handleDeviceSelectPopupChange"/>
+  <SelectDeviceInfoMultiple ref="deviceSelectRef" @success="handleDeviceSelectPopupChange" :device-monitor-type="formData.elementName"/>
 </template>
 <script setup lang="ts">
 import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agriculture/modelindicatorelement'
@@ -78,8 +82,8 @@ import {
   ModelMonitorIndicatorVO
 } from "@/api/agriculture/modelmonitorindicator";
 import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
-import DeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue"
-import {DeviceInfoVO} from "@/api/agriculture/deviceinfo";
+import SelectDeviceInfoMultiple from "@/views/agriculture/deviceinfo/components/SelectDeviceInfoMultiple.vue"
+import {DeviceInfoApi, DeviceInfoVO} from "@/api/agriculture/deviceinfo";
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -110,8 +114,15 @@ const formRef = ref() // 表单 Ref
 const subTabsName = ref('modelIndicatorElementRange')
 const modelIndicatorElementRangeFormRef = ref()
 
+const deviceTypeList = ref<List<String>>([]) // 设备检测类型列表的数据
+const getDeviceTypeData = async () => {
+  const res = await DeviceInfoApi.getDeviceMonitorType()
+  if (Array.isArray(res)) deviceTypeList.value = res
+}
+
 /** 打开弹窗 */
 const open = async (type: string, item: any) => {
+  await getDeviceTypeData()
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -203,7 +214,7 @@ const openDeviceSelectPopup = (id: string) => {
   deviceSelectRef.value.open(id)
 }
 const handleDeviceSelectPopupChange = (order: DeviceInfoVO) => {
-  formData.value.bindDevice = order[0].id?.toString()
-  deviceName.value = order[0].deviceName?.toString()
+  formData.value.bindDevice = order.map(item => item.id).join(',')
+  deviceName.value = order.map(item => item.deviceName).join(',')
 }
 </script>

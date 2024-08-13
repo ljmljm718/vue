@@ -29,7 +29,7 @@ const props = defineProps({
 
 </script>
 
-<style>
+<style scoped>
 .circle {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/circle.png);
   background-size: 100% 100%;

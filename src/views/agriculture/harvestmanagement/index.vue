@@ -241,7 +241,7 @@
       <el-table-column
         label="上传时间"
         align="center"
-        prop="upTime"
+        prop="createTime"
         :formatter="dateFormatter"
         width="180px"
       />

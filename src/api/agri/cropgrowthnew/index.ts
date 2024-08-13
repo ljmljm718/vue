@@ -66,4 +66,10 @@ export const CropGrowthNewApi = {
   getCropGrowthNewNoPage: async (params: any) => {
     return await request.get({ url: `/agri/crop-growth-new/noPage`, params })
   },
+
+  
+  // 后端接口3-批量给地块添加生长期接口
+  growthCreateList: async (data: any) => {
+    return await request.post({ url: `/agri/crop-growth/createList`, data })
+  },
 }

@@ -146,26 +146,26 @@
               align="center"
               prop="indicatorDescription"
             />
+<!--            <el-table-column-->
+<!--              label="指标范围"-->
+<!--              align="center"-->
+<!--              prop="indicatorRange"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              label="指标结果"-->
+<!--              align="center"-->
+<!--              prop="indicatorResult"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              label="健康分值"-->
+<!--              align="center"-->
+<!--              prop="healthScore"-->
+<!--            />-->
             <el-table-column
-              label="指标范围"
-              align="center"
-              prop="indicatorRange"
-            />
-            <el-table-column
-              label="指标结果"
-              align="center"
-              prop="indicatorResult"
-            />
-            <el-table-column
-              label="健康分值"
-              align="center"
-              prop="healthScore"
-            />
-            <el-table-column
-              label="权重"
+              label="权重(%)"
               align="center"
               prop="weight"
-              width="60"
+              width="70"
             />
             <el-table-column
               label="是否默认"
@@ -278,7 +278,7 @@ const getCardDataList = async (modelId, growthId) => {
     if (Array.isArray(modelIndicatorElementCardVOList)) {
       modelIndicatorElementCardVOList = modelIndicatorElementCardVOList.map(cardItem => {
         const { modelIndicatorElementRangeDOList:DoList } = cardItem;
-        
+
         let lowVal = Infinity, hightVal = -Infinity, unitVal = '', text = '';
         if (Array.isArray(DoList)) {
           DoList.forEach(doItem => {

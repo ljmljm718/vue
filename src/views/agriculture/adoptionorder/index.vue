@@ -2,13 +2,14 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
+      label-position="left"
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="150px"
+      label-width="130px"
     >
-      <el-form-item label="计划流水号" prop="serialNumber">
+      <!-- <el-form-item label="计划流水号" prop="serialNumber">
         <el-input
           v-model="queryParams.serialNumber"
           placeholder="请输入计划流水号"
@@ -16,22 +17,22 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
-      <el-form-item label="订单流水号" prop="orderNumber">
+      </el-form-item> -->
+      <el-form-item label="订单流水号" prop="orderNumber" label-width="100px" >
         <el-input
           v-model="queryParams.orderNumber"
           placeholder="请输入订单流水号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-150px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="状态" prop="status" label-width="50px">
         <el-select
           v-model="queryParams.status"
           placeholder="请选择状态"
           clearable
-          class="!w-240px"
+          class="!w-120px"
         >
         <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_STATUS)"
@@ -48,7 +49,7 @@
           type="date"
           placeholder="选择预计收获日期（起）"
           clearable
-          class="!w-240px"
+          class="!w-150px"
         />
       </el-form-item>
       <el-form-item label="预计收获日期（止）" prop="expectEnd">
@@ -58,7 +59,7 @@
           type="date"
           placeholder="选择预计收获日期（止）"
           clearable
-          class="!w-240px"
+          class="!w-150px"
         />
       </el-form-item>
       <el-form-item>

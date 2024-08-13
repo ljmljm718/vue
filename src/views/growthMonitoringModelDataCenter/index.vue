@@ -95,13 +95,12 @@ export default defineComponent({
     const getModelList = async () => {
       const params = {parkId: base.value.id}
       const res = await getModel(params)
+      // console.log("ModelList", res)
       modelList.value = res.map((item) => {
         return {
-          modelId: item.modelId,
-          modelName: item.modelName,
+          ...item,
           activated: false,
           key: item.modelId,
-          varietyName: item.varietyName
         }
       })
       modelList.value[0].activated = true
@@ -133,20 +132,20 @@ export default defineComponent({
     const plotList = ref<Array<any>>([])
 
     const getPlotList = async () => {
-      const params = { baseId: base.value.id }
+      const params = { parkId: base.value.id }
       const res = await getPlot(params)
-      let cur = 0
-      plotList.value = res.map((item) => {
-        let tmp = item.monitoringEquipmentDataDO
-        let obj = {
-          modelName: modelList.value[cur].modelName,
-          img: tmp.capturedImage,
-          plotName: tmp.monitoringPlotName,
+      plotList.value = res.map( (item) => {
+        return {
+          ...item,
           enable: true
         }
-        cur = (cur + 1) % modelList.value.length
-        return obj
       })
+      // console.log("plotList", plotList.value)
+    }
+
+    const router = useRouter()
+    const handleRoute = () => {
+      router.push("/bigscreenModel")
     }
 
     /**
@@ -182,16 +181,15 @@ export default defineComponent({
       if (curModelId) {
         const params = { modelId: curModelId }
         const res = await getCycle(params)
+        // console.log("Cycle", res)
 
         curPeriod.value = res[0].curPeriod
         curRealPeriod.value = res[0].curPeriod
 
         res.map((item, index) => {
           if (index) {
-            cycleMap.set(item.growth, {cycle: item.cycle, tips: item.child2})
-            if (item.child2.length) {
-              curCropCode = item.child2[0].cropCode
-            }
+            cycleMap.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2})
+            curCropCode = item.growthId
 
             if (curPeriod.value === item.growth) {
               cycleNameList.value.push({growth: item.growth, selected: true})
@@ -204,7 +202,7 @@ export default defineComponent({
         curTips.value = cycleMap.get(curPeriod.value).tips
         curCycle.value = cycleMap.get(curPeriod.value).cycle
 
-        // 初始化周期列表
+        // 初始化周期列表的位置
         offsetLeft.value = 0
         let tmp = curItem
         curItem = 2
@@ -246,11 +244,7 @@ export default defineComponent({
       curPeriod.value = cycleNameList.value[curItem].growth
       curTips.value = cycleMap.get(curPeriod.value).tips
       curCycle.value = cycleMap.get(curPeriod.value).cycle
-      if (curTips.value.length) {
-        curCropCode = curTips.value[0].cropCode
-      } else {
-        curCropCode = ""
-      }
+      curCropCode = cycleMap.get(curPeriod.value).growthId
 
       if (tmp != curItem)
         await getIndicatorList()
@@ -401,7 +395,9 @@ export default defineComponent({
 
       if (curCropCode) {
         const params = { modelId: curModelId, growthId: curCropCode }
+        // console.log("getIndicator params", params)
         const res = await getIndicator(params)
+        // console.log("Indicator", res)
 
         if (res.length) {
           res.map((item) => {
@@ -424,8 +420,12 @@ export default defineComponent({
           indicatorList.value[0].selected = true
           curFactor.value = factorMap.get(indicatorList.value[0].name)
           initOption()
-          let tmpIter = curFactor.value.values()
-          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+          if (curFactor.value.size) {
+            let tmpIter = curFactor.value.values()
+            curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+          } else {
+            curFactorData.value = []
+          }
         } else {
           curFactor.value = new Map()
           curFactorData.value = []
@@ -444,16 +444,20 @@ export default defineComponent({
 
       if (!(tmp === curIndicatorIndex)) {
         curFactor.value = factorMap.get(indicatorList.value[curIndicatorIndex].name)
-        let tmpIter = curFactor.value.values()
-        curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+        if (curFactor.value.size) {
+          let tmpIter = curFactor.value.values()
+          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+        } else {
+          curFactorData.value = []
+        }
         initOption()
       }
     }
 
     const handleResize = () => {
       // 设置屏幕宽度和高度为CSS变量
-      document.documentElement.style.setProperty('--screen-width', `${ window.innerWidth }px`);
-      document.documentElement.style.setProperty('--screen-height', `${ window.innerHeight }px`);
+      document.documentElement.style.setProperty('--growth-monitoring-model-datacenter-screen-width', `${ window.innerWidth }px`);
+      document.documentElement.style.setProperty('--growth-monitoring-model-datacenter-screen-height', `${ window.innerHeight }px`);
     }
 
     /**
@@ -523,6 +527,7 @@ export default defineComponent({
                           <ModelIcon 
                             modelName={ item.modelName }
                             activated={ item.activated }
+                            modelImg={ item.modelImg }
                             key={ item.key }
                             onClick={ () => { changeModel(index) } }
                           >
@@ -548,6 +553,7 @@ export default defineComponent({
                           value-key="id"
                           style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
                           popper-class="growth-monitoring-model-datacenter-popper"
+                          onChange={ () => { getPlotList() } }
                         >
                           {
                             baseList.value.map(item => (
@@ -567,11 +573,9 @@ export default defineComponent({
                         plotList.value.map((item) => (
                           <div class="w-full h-[130px] mb-[10px]">
                             <div 
-                              style={`background-image: url(${ item.img }); background-size: 100% 100%;`}
+                              style={`background-image: url(${ item.modelImg }); background-size: 100% 100%;`}
                               class="w-full h-[100px] relative cursor-pointer"
-                              onClick={()=>{
-                                // 跳转
-                              }}
+                              onClick={()=>{ handleRoute() }}
                             >
                               <div 
                                 class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
@@ -1171,16 +1175,16 @@ export default defineComponent({
 
 <style lang="scss">
 // 使用CSS变量作为SCSS变量
-$screen-width: calc(var(--screen-width));
-$screen-height: calc(var(--screen-height));
+$growth-monitoring-model-datacenter-screen-width: calc(var(--growth-monitoring-model-datacenter-screen-width));
+$growth-monitoring-model-datacenter-screen-height: calc(var(--growth-monitoring-model-datacenter-screen-height));
 
 .growth-monitoring-model-datacenter-popper {
-  width: calc(#{$screen-width} * 0.11);
+  width: calc(#{$growth-monitoring-model-datacenter-screen-width} * 0.11);
 }
 
 .growth-monitoring-model-datacenter-popper .el-select-dropdown__item {
-  font-size: calc(#{$screen-height} * 0.012);
-  height: calc(#{$screen-height} * 0.02);
-  line-height: calc(#{$screen-height} * 0.02);
+  font-size: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.012);
+  height: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.02);
+  line-height: calc(#{$growth-monitoring-model-datacenter-screen-height} * 0.02);
 }
 </style>
