@@ -11,7 +11,7 @@
       <el-form-item label="品类名称" prop="categoryName">
         <el-input
           v-model="queryParams.categoryName"
-          placeholder="请输入品类名称hahahahh"
+          placeholder="请输入品类名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
