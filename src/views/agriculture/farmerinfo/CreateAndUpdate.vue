@@ -31,11 +31,22 @@
           >清空
           </el-button>
         </div>
+        <div>
         <el-button
               type="primary"
               plain
               @click="router.back()"
             >返回</el-button>
+        <el-button
+          type="primary"
+          :icon="FolderChecked"
+          plain
+          @click="localSave()"
+          :disabled="isShow"
+        >
+          暂存
+        </el-button>
+        </div>
       </template>
        
 
@@ -226,6 +237,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await FarmerInfoApi.getFarmerInfo(id)
+      loadData(id);
     } finally {
       formLoading.value = false
     }
@@ -325,26 +337,41 @@ const route = useRoute()
 const router = useRouter()
 // 下面是抽象出的基本配置
 const ROUTE_PATH = route.path
-const FORMPAGE_NAME = ''
+const FORMPAGE_NAME = '农户管理'
 const ORIGIN_PATH = '/asset/base/farmer-info' // 关闭表单时跳转的路径
 //用来详情时不可更改
 if(route.query.type=='select')
 {
   isShow.value = true;
 }
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
+
 const localSave = () => {
   addOrUpdateFormStorage(
     ROUTE_PATH,
     FORMPAGE_NAME + (formData.value.id ? '编辑' : '新增'), // TODO: 前面的表单名称写成当前页面名称
-    formData.value.id ? formData.value.id : 'new_form',
+    formData.value.id ? String(formData.value.id) : 'new_form',
     formData.value
   )
   ElMessage.success('保存成功！')
 }
 
+// const getFrom = async () =>{
+//   resetForm();
+//   if(route.query.id && route.query.type !== 'create')  {
+//     formData.value = await FarmerInfoApi.getFarmerInfo (route.query.id as any);
+//     loadData(route.query.id);
+//   }
+// }
+
 // 方式二 调用立即执行函数
 onMounted(async () => {
       await open(route.query.type,route.query.id);
+    //  await  getFrom();
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>
