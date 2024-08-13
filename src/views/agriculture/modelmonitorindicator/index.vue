@@ -484,7 +484,7 @@ const openForm = (type: string, item?: any) => {
 
 /** 新增操作，自动添加模型与生长期 */
 const createOpenForm = (type: string) => {
-  // if (selectedKey.value){
+  if (selectedKey.value){
   const item = {
     growthPeriodId: selectedKey.value,
     growth: selectedName.value,
@@ -492,9 +492,9 @@ const createOpenForm = (type: string) => {
     modelName: modelName.value
   }
   formRef.value.createOpen(type, item)
-  // }else {
-  //  ElMessage.error("请选择生长期后再新增")
-  // }
+  }else {
+   ElMessage.error("请选择生长期后再新增！")
+  }
 }
 
 /** 删除按钮操作 */
