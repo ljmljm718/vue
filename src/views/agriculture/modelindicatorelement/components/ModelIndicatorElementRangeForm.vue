@@ -30,10 +30,10 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="健康比例" align="center" min-width="120">
+      <el-table-column label="健康值" align="center" min-width="120">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.healthRatio`" :rules="formRules.healthRatio" class="mb-0px!">
-            <el-input v-model="row.healthRatio" placeholder="请输入健康比例" />
+            <el-input v-model="row.healthRatio" placeholder="请输入健康值" />
           </el-form-item>
         </template>
       </el-table-column>
