@@ -16,20 +16,20 @@
       </div>
     </div>
     <div class="space-y-3 grow" style="width: calc(100% - 12.2rem)">
-      <div class="flex space-x-6 bg-white p-2 min-h-[4rem]">
+      <!-- 评分 -->
+      <div class="flex bg-white p-2 min-h-[4rem]  ">
         <div
-          v-for="(item, index) in topCardList"
+          v-for="(item, index) in healthValueData"
           :key="index"
-          class="flex space-x-3 justify-center items-center px-2"
+          class="flex space-x-3 justify-center items-center px-2 min-w-[8rem]"
         >
-          <img
-            src="https://echarts.apache.org/zh/images/logo.png?_v_=20240226"
-            alt=""
-            class="w-[2rem] h-[2rem] bg-black"
-          />
-          <div class="text-[.7rem]">
+          <div :class="[item.imgList, 'w-[2rem] h-[2rem]']"  style="background-size: 100% 100%"></div>
+          <div class=" flex flex-col space-y-1 text-[.7rem]">
             <div class="text-[.8rem]">{{ item.value }}</div>
-            <div>{{ item.title }}</div>
+            <div class="flex space-x-1 font-light">
+              <span>{{ item.title }}</span>
+              <span>{{ item.weight }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -45,10 +45,7 @@
             :class="`flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] ${
               activeModelId === item.modelId ? 'shadow-md font-bold ' : ''
             }`"
-            @click="
-              selectModel(item.modelId),
-              handleFilterModelClick(item)
-            "
+            @click="selectModel(item.modelId), handleFilterModelClick(item)"
           >
             <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
             <div>
@@ -73,10 +70,7 @@
                 v-for="(ele, idx) in filteredModelList"
                 :key="idx"
                 class="relative"
-                @click="
-                  handleFilterModelClick(ele),
-                  console.log('1')
-                "
+                @click="handleFilterModelClick(ele), console.log('1')"
               >
                 <div
                   :class="`relative right-1rem ${
@@ -119,7 +113,7 @@
           >
           <div
             class="flex relative bg-[#f5f5f5] rounded-2 overflow-hidden"
-            :style="{ right: 'calc(50% - 6rem)' }"
+            :style="{ right: 'calc(50% - 10rem)' }"
           >
             <div
               v-for="item in tableBtns"
@@ -170,7 +164,10 @@
                         <div
                           v-for="(item, index) in scope.row.modelIndicatorElementRangeDOList"
                           :key="item.id"
-                          :class="`w-[${((1 * 10)/ scope.row.modelIndicatorElementRangeDOList.length).toFixed(0)}rem]`"
+                          :class="`w-[${(
+                            (1 * 10) /
+                            scope.row.modelIndicatorElementRangeDOList.length
+                          ).toFixed(0)}rem]`"
                         >
                           <div :class="`h-[8px] w-full tool-bar-${index + 1}`"></div>
                         </div>
@@ -207,13 +204,19 @@
     </div>
     <div class="floating-refresh-button" @click="handleTriggerModelCalculate">
       <el-icon :class="{ rotate: isRotating }" class="icon">
-        <RefreshRight/>
+        <RefreshRight />
       </el-icon>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { baidiParkInfo, getModelByParkId, getModelInfo, getMonitorIndicatorWithDetail } from './api'
+import {
+  baidiParkInfo,
+  getModelByParkId,
+  getModelInfo,
+  getMonitorIndicatorWithDetail,
+  getModelMonitor
+} from './api'
 import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
 import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
 
@@ -228,11 +231,18 @@ const getleftList = async () => {
   }
 }
 
-const topCardList = ref<any[]>([
-  { title: '总值', value: '83' },
-  { title: '总值', value: '83' }
-])
-
+//评分列表
+const healthValueData = ref<any[]>([{ title: '总值', value: '83', weight: '', img: '' }])
+const getHealthValueData = async (modelId, batch) => {
+  const healthDataList = await getModelMonitor({ modelId, batch })
+  healthValueData.value = healthDataList.map((item, index) => ({
+    title: item.name,
+    value: item.score || item.healthLevel,
+    weight: item.weight ? `(${item.weight}%)` : '',
+    imgList: `icon-${index + 1}`
+  }))
+}
+getHealthValueData('MXGL20240806000002', '202407221511110884')
 // 模型列表
 const modelList = ref<any[]>([])
 const activeId = ref<string | null>(null)
@@ -276,8 +286,8 @@ const selectModel = async (modelId) => {
 const selectedInfo = ref<string>('')
 const newItemButtonList = ref<any[]>([])
 const handleItemClick = (item) => {
-  console.log("🚀 ~ handleItemClick ~ item:", item)
-  
+  console.log('🚀 ~ handleItemClick ~ item:', item)
+
   topSelectedBtn.value = item.id
   selectedInfo.value = item.itemContent || ''
 }
@@ -291,8 +301,8 @@ const filterModel = (resItem) => {
       initChart(filteredModelList.value, firstItemPeriod)
       const [firstModelItem] = filteredModelList.value
       if (firstModelItem) handleFilterModelClick(firstModelItem)
-      console.log("🚀 ~ nextTick ~ firstItemPeriod:", firstItemPeriod)
-      console.log("🚀 ~ nextTick ~ filteredModelList.value:", filteredModelList.value)
+      console.log('🚀 ~ nextTick ~ firstItemPeriod:', firstItemPeriod)
+      console.log('🚀 ~ nextTick ~ filteredModelList.value:', filteredModelList.value)
     }
   })
 
@@ -311,7 +321,7 @@ const initChart = (series: any[], period: string) => {
   const _activePeriod = series.find((item) => item.growth === period)
   activeGrowth.value = _activePeriod.growth
   activeGrowthId.value = _activePeriod.growthId
-  
+
   const instance = initChartStatic(
     `chart`,
     generatePieOptions({
@@ -394,8 +404,8 @@ const getTableData = async (modelId, growthId) => {
 
 const getFilteredTableData = (selectedBtn) => {
   const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
-  console.log("🚀 ~ getFilteredTableData ~ filtered_res:", filtered_res)
-  if(filtered_res===undefined){
+  console.log('🚀 ~ getFilteredTableData ~ filtered_res:', filtered_res)
+  if (filtered_res === undefined) {
     tableData.value = []
   }
   if (!filtered_res?.modelIndicatorElementCardVOList) return
@@ -429,37 +439,36 @@ const getFilteredTableData = (selectedBtn) => {
 }
 
 // 响应式状态，用于控制图标旋转
-const isRotating = ref(false);
+const isRotating = ref(false)
 const message = useMessage() // 消息弹窗
 const loading = ref(false) // 加载动画
 
 // 点击处理函数
 const handleTriggerModelCalculate = () => {
   // 先移除旋转状态
-  isRotating.value = false;
+  isRotating.value = false
 
   // 让浏览器完成 DOM 更新以确保类被移除
   requestAnimationFrame(async () => {
-
     // 重新触发旋转
-    isRotating.value = true;
+    isRotating.value = true
 
     loading.value = true
 
     // 调用后台触发计算要素得分;
-    const res = await ModelManagementApi.triggerModelCalculate();
+    const res = await ModelManagementApi.triggerModelCalculate()
     message.success(res)
 
     // todo (zhangyu26, 2024-08-12 17:40:00) : 重新加载页面
 
-    await init();
+    await init()
 
     // 动画结束后停止旋转
     setTimeout(() => {
-      isRotating.value = false;
-    }, 1000); // 1秒后结束旋转（与CSS动画持续时间匹配）
-  });
-};
+      isRotating.value = false
+    }, 1000) // 1秒后结束旋转（与CSS动画持续时间匹配）
+  })
+}
 
 //监听：
 watch([activeModelId, activeGrowthId], ([newModelId, newGrowthId]) => {
@@ -585,6 +594,12 @@ onMounted(() => init())
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@for $i from 1 through 5 {
+  .icon-#{$i} {
+    background-image: url(./assets/icon#{$i}.png);
   }
 }
 </style>
