@@ -101,16 +101,16 @@
       <el-table-column label="权重(%)" align="center" prop="weight" width="90"/>
       <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
       <el-table-column label="绑定设备" align="center" prop="deviceName" />
-      <el-table-column label="状态" align="center" prop="status" width="110">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.status"
-            :active-value="0"
-            :inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="状态" align="center" prop="status" width="110">-->
+<!--        <template #default="scope">-->
+<!--          <el-switch-->
+<!--            v-model="scope.row.status"-->
+<!--            :active-value="0"-->
+<!--            :inactive-value="1"-->
+<!--            @change="handleStatusChange(scope.row)"-->
+<!--          />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="实现类" align="center" prop="implementationClass" />
 <!--      <el-table-column-->
 <!--        label="创建时间"-->

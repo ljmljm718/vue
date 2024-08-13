@@ -32,8 +32,9 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="权重" prop="weight">
-            <el-input v-model="formData.weight" placeholder="请输入权重" />
+          <el-form-item label="权重(%)" prop="weight">
+            <el-input v-model="formData.weight" :placeholder="weightPlaceholder" :disabled="weightDisabled"
+                      type="number"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -105,8 +106,22 @@ const formData = ref({
   status: 1,
   implementationClass: undefined,
 })
+const maxNum = ref(100) // 权重可填写最大值
+
 const formRules = reactive({
   indicatorId: [{ required: true, message: '监测指标不能为空', trigger: 'blur' }],
+  weight: [
+    { required: true, message: '请分配权重', trigger: 'blur' },
+    {
+      type: 'number',
+      validator: (rule, value, callback) => {
+        if (value < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (value > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        return callback()
+      },
+      trigger: 'change'
+    },
+  ],
 })
 const formRef = ref() // 表单 Ref
 
@@ -133,7 +148,8 @@ const open = async (type: string, item: any) => {
     if (id) {
       formLoading.value = true
       try {
-        formData.value = await ModelIndicatorElementApi.getModelIndicatorElement(id)
+        const res = await ModelIndicatorElementApi.getModelIndicatorElement(id)
+        formData.value = { ...res, weight: res.weight }
         const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
         indicatorName.value = indicator.indicatorName
         deviceName.value = item.deviceName
@@ -193,6 +209,8 @@ const resetForm = () => {
   formRef.value?.resetFields()
   indicatorName.value = undefined
   deviceName.value = undefined
+  weightDisabled.value = true
+  weightPlaceholder.value = "请优先选择监测指标"
 }
 
 //监测指标名称
@@ -217,4 +235,26 @@ const handleDeviceSelectPopupChange = (order: DeviceInfoVO) => {
   formData.value.bindDevice = order.map(item => item.id).join(',')
   deviceName.value = order.map(item => item.deviceName).join(',')
 }
+
+// 权重禁用
+const weightDisabled = ref(true)
+
+// 监听 indicatorId 变化
+const weightPlaceholder = ref("请优先选择监测指标")
+watch(
+  () => formData.value.indicatorId,
+  async (val) => {
+    if (val) {
+      weightDisabled.value = false
+      const currentNum = await ModelIndicatorElementApi.getElementWeight(val)
+      maxNum.value = 100 - +currentNum
+      if (formData.value.id) {
+        maxNum.value = Number(formData.value.weight) + maxNum.value
+      }
+      weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
+      console.log("maxNum.value", maxNum.value)
+    }
+  },
+  { immediate: true }
+)
 </script>

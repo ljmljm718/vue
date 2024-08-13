@@ -43,7 +43,8 @@
 <!--        <el-input v-model="formData.healthScore" placeholder="请输入健康分值" />-->
 <!--      </el-form-item>-->
       <el-form-item label="权重" prop="weight">
-        <el-input v-model="formData.weight" placeholder="请输入权重" />
+        <el-input v-model="formData.weight" :placeholder="weightPlaceholder" :disabled="weightDisabled"
+                  type="number"/>
       </el-form-item>
       <el-form-item label="是否默认" prop="isDefault">
         <el-radio-group v-model="formData.isDefault">
@@ -79,6 +80,7 @@ import {CropGrowthNewVO} from "@/api/agri/cropgrowthnew";
 import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 import ModelSelectPopup from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
 import CropGrowthNewPopup from "@/views/agri/cropgrowthnew/components/CropGrowthNewPopup.vue";
+import {ModelIndicatorElementApi} from "@/api/agriculture/modelindicatorelement";
 
 /** 监测指标 表单 */
 defineOptions({ name: 'ModelMonitorIndicatorForm' })
@@ -86,6 +88,7 @@ defineOptions({ name: 'ModelMonitorIndicatorForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const maxNum = ref(100) // 权重可填写最大值
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -109,6 +112,18 @@ const formRules = reactive({
   // growthNewName: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
   growthPeriodId: [{ required: true, message: '生长周期不能为空', trigger: 'blur' }],
   isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
+  weight: [
+    { required: true, message: '请分配权重', trigger: 'blur' },
+    {
+      type: 'number',
+      validator: (rule, value, callback) => {
+        if (value < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (value > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        return callback()
+      },
+      trigger: 'change'
+    },
+  ],
 })
 const formRef = ref() // 表单 Ref
 
@@ -128,6 +143,10 @@ const open = async (type: string, item?: any) => {
         formData.value.isDefault = parseInt(formData.value.isDefault)
         modelName.value = _modelName;
         growthNewName.value = growth;
+        weightDisabled.value = false
+        const currentNum = await ModelIndicatorElementApi.getIndicatorWeight(formData.value.modelId, formData.value.growthPeriodId)
+        maxNum.value = Number(formData.value.weight) + 100 - +currentNum
+        weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
       } finally {
         formLoading.value = false
       }
@@ -150,6 +169,12 @@ const createOpen = async (type: string, item?: any) => {
     growthNewName.value = growth;
     formData.value.modelId=modelId;
     formData.value.growthPeriodId=growthPeriodId;
+    console.log("growthPeriodId", modelId, growthPeriodId)
+    weightDisabled.value = false
+    const currentNum = await ModelIndicatorElementApi.getIndicatorWeight(modelId, growthPeriodId)
+    maxNum.value = 100 - +currentNum
+    console.log("maxNum.value", currentNum, maxNum.value)
+    weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
   }
   formLoading.value = false
 
@@ -237,5 +262,13 @@ const resetForm = () => {
   formRef.value?.resetFields()
   modelName.value = undefined
   growthNewName.value = undefined
+  weightDisabled.value = true
+  weightPlaceholder.value = "请优先选择模型名称和生长周期"
 }
+
+// 权重禁用
+const weightDisabled = ref(true)
+
+// 监听 indicatorId 变化
+const weightPlaceholder = ref("请优先选择模型名称和生长周期")
 </script>

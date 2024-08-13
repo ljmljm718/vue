@@ -59,4 +59,20 @@ export const ModelIndicatorElementApi = {
   getModelIndicatorElementRangeListByIndicatorElementId: async (indicatorElementId) => {
     return await request.get({ url: `/agriculture/model-indicator-element/model-indicator-element-range/list-by-indicator-element-id?indicatorElementId=` + indicatorElementId })
   },
+
+  // 查询当前指标要素的权重
+  getElementWeight: async (indicatorId: any) => {
+    return await request.get({ url: `/agriculture/model-monitor-indicator/getElementWeight?indicatorId=` + indicatorId })
+  },
+
+  // 查询当前监测指标的权重
+  getIndicatorWeight: async (modelId: any, growthId: any) => {
+    return await request.get({
+      url: `/agriculture/model-monitor-indicator/getIndicatorWeight`,
+      params: {
+        modelId,
+        growthId
+      }
+    })
+  },
 }

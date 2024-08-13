@@ -288,7 +288,6 @@ const getList = async () => {
       queryParams.deviceMonitorType = props.deviceMonitorType
     }
   }
-  console.log("queryParams.deviceMonitorType", queryParams.deviceMonitorType)
   try {
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     list.value = data.list.map((item: any) => {
