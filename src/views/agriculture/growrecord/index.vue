@@ -145,13 +145,13 @@
         :formatter="dateFormatter"
         width="180px"
       />
-<!--      <el-table-column label="测量者" align="center" prop="measurer"/>-->
       <el-table-column label="测量类型" align="center" prop="measureType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_GROW_TYPE" :value="scope.row.measureType"/>
         </template>
       </el-table-column>
       <el-table-column label="测量值" align="center" prop="measureNum"/>
+      <el-table-column label="测量者" align="center" prop="measurer"/>
       <el-table-column label="变化量" align="center" prop="measureSpike"/>
       <el-table-column label="测量单位" align="center" prop="measureUnit"/>
       <el-table-column label="抓拍图片" align="center" prop="imgUrl" >

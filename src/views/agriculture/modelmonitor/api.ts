@@ -25,3 +25,10 @@ export const getMonitorIndicatorWithDetail = async (params)=>{
     params
   })
 }
+
+export const getModelMonitor = async(params)=>{
+  return await request.get({
+    url:'/agriculture/model-monitor-execution-growth/model-monitor',
+    params
+  })
+} 

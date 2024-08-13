@@ -6,6 +6,7 @@
     v-loading="formLoading"
     label-width="0px"
     :inline-message="true"
+    :disabled=true
   >
     <el-table :data="formData" class="-mt-10px">
 <!--      <el-table-column label="序号" type="index" width="100" />-->
