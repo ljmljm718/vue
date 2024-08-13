@@ -447,19 +447,14 @@ const loading = ref(false) // 加载动画
 const handleTriggerModelCalculate = () => {
   // 先移除旋转状态
   isRotating.value = false
-
-  // 让浏览器完成 DOM 更新以确保类被移除
-  requestAnimationFrame(async () => {
+  nextTick(async () => {
     // 重新触发旋转
     isRotating.value = true
 
     loading.value = true
-
     // 调用后台触发计算要素得分;
     const res = await ModelManagementApi.triggerModelCalculate()
     message.success(res)
-
-    // todo (zhangyu26, 2024-08-12 17:40:00) : 重新加载页面
 
     await init()
 
