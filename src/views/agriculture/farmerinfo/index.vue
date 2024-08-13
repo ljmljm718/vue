@@ -311,6 +311,10 @@ onMounted(() => {
   getList()
 })
 
+onActivated(async () => {
+  await getList()
+})
+
 //基地的选择
 const parkPopupRef = ref()
 const openType = ref('')

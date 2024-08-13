@@ -76,8 +76,12 @@
               <div
                 v-for="item in cardDataList"
                 :key="item.id"
-                class="p-3 border-[1px] border-slate-200 border-solid rounded-md shadow-md"
+                class="p-3 border-[1px] border-slate-200 border-solid rounded-md shadow-md relative"
               >
+                <div
+                  class="btn-icon absolute right-4 top-4 cursor-pointer"
+                  @click="router.push(`/growth_monitor/model-indicator-element?indicatorId=${item.id}`)"
+                ></div>
                 <div class="text-[.9rem] font-bold">{{ item.indicatorName }}</div>
                 <div
                   class="w-full h-[13rem]"
@@ -94,13 +98,17 @@
                       <div class="w-[5rem] text-[.8rem]">{{ cardVo.elementName }}</div>
                     </div>
                     <div class="flex flex-col items-center space-y-1">
-                      <div class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar">{{ cardVo.text }}</div>
+                      <div
+                        :style="{ left: `${cardVo.offset ?? 0}rem` }"
+                        class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar relative"
+                      >{{ cardVo.text }}</div>
                       <div class="flex space-x-[.5rem] items-center">
                         <div class="w-[3rem] text-center">{{ cardVo.lowVal }}{{ cardVo.unit }}</div>
                         <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
                           <div
                             v-for="rangeItem, idx in cardVo.modelIndicatorElementRangeDOList"
                             :key="rangeItem.id"
+                            @mouseenter="handleItemHover(cardVo, rangeItem, (6 * (idx * 2 + 1) / (cardVo.modelIndicatorElementRangeDOList.length)) - 6)"
                             :class="`color-bar-${idx + 1} grow w-[${100 / (cardVo.modelIndicatorElementRangeDOList.length)}%] h-[.6rem]`"
                           ></div>
                         </div>
@@ -146,26 +154,26 @@
               align="center"
               prop="indicatorDescription"
             />
+<!--            <el-table-column-->
+<!--              label="指标范围"-->
+<!--              align="center"-->
+<!--              prop="indicatorRange"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              label="指标结果"-->
+<!--              align="center"-->
+<!--              prop="indicatorResult"-->
+<!--            />-->
+<!--            <el-table-column-->
+<!--              label="健康分值"-->
+<!--              align="center"-->
+<!--              prop="healthScore"-->
+<!--            />-->
             <el-table-column
-              label="指标范围"
-              align="center"
-              prop="indicatorRange"
-            />
-            <el-table-column
-              label="指标结果"
-              align="center"
-              prop="indicatorResult"
-            />
-            <el-table-column
-              label="健康分值"
-              align="center"
-              prop="healthScore"
-            />
-            <el-table-column
-              label="权重"
+              label="权重(%)"
               align="center"
               prop="weight"
-              width="60"
+              width="70"
             />
             <el-table-column
               label="是否默认"
@@ -268,6 +276,11 @@ const handleLeftItemClick = (item) => {
   if (typeof modelId === 'string') getCardDataList(modelId, item.id)
 }
 
+const handleItemHover = (cardItem, rangeItem, offset) => {
+  cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${rangeItem.highLimit}${rangeItem.unit ?? ''}`
+  cardItem.offset = offset
+}
+
 const cardDataList = ref<any[]>([])
 const getCardDataList = async (modelId, growthId) => {
   const res = await ModelMonitorIndicatorApi.getCardData({ modelId, growthId })
@@ -278,7 +291,7 @@ const getCardDataList = async (modelId, growthId) => {
     if (Array.isArray(modelIndicatorElementCardVOList)) {
       modelIndicatorElementCardVOList = modelIndicatorElementCardVOList.map(cardItem => {
         const { modelIndicatorElementRangeDOList:DoList } = cardItem;
-        
+
         let lowVal = Infinity, hightVal = -Infinity, unitVal = '', text = '';
         if (Array.isArray(DoList)) {
           DoList.forEach(doItem => {
@@ -313,7 +326,6 @@ const COLOR_LIST = ['#59b756', '#73c0de', '#ee6666', '#fac858', '#009688']
 const checkModelParam = async () => {
   const { modelId, belongVarietyId } = route.query;
   if (typeof modelId === 'string') {
-    getCardDataList(modelId, '')
     const _item = await ModelManagementApi.getModelManagement(modelId)
     if (_item) handleModelSelectPopupChange(_item)
   }
@@ -358,7 +370,10 @@ const getGrowthDataList = async (varietyId: string) => {
   const { data } = await ModelMonitorIndicatorApi.getGrowthByVarietyId({ varietyId })
   console.log('左侧生长期列表', data)
 
-  if (Array.isArray(data)) leftDataList.value = data
+  if (Array.isArray(data)) {
+    leftDataList.value = data
+    if (data.length > 0) handleLeftItemClick(data[0])
+  }
 }
 
 watch(showType, (val: string) => {
@@ -484,7 +499,7 @@ const openForm = (type: string, item?: any) => {
 
 /** 新增操作，自动添加模型与生长期 */
 const createOpenForm = (type: string) => {
-  // if (selectedKey.value){
+  if (selectedKey.value){
   const item = {
     growthPeriodId: selectedKey.value,
     growth: selectedName.value,
@@ -492,9 +507,9 @@ const createOpenForm = (type: string) => {
     modelName: modelName.value
   }
   formRef.value.createOpen(type, item)
-  // }else {
-  //  ElMessage.error("请选择生长期后再新增")
-  // }
+  }else {
+   ElMessage.error("请选择生长期后再新增！")
+  }
 }
 
 /** 删除按钮操作 */
@@ -613,5 +628,12 @@ onMounted(() => {
       grid-template-columns: repeat(#{$i}, 1fr);
     }
   }
+}
+
+.btn-icon {
+  background-image: url(./btn.png);
+  background-size: 100% 100%;
+  width: 1rem;
+  height: 1rem;
 }
 </style>

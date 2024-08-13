@@ -339,19 +339,22 @@
               </div>
             </div>
           </div>
-          <div class="w-[1px] bg-[#66666640] h-[7rem] mt-3 mx-5"></div>
-          <div :id="`chart_${item.id}`" class="w-[13rem] h-[12rem]"></div>
+          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5"></div>
+          <div :id="`chart_${item.id}`" class="w-[15rem] h-[14rem]"></div>
           <div class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
             <div>{{ item.growth }}</div>
             <div>{{ item.cycle + '天' }}</div>
           </div>
-          <div class="w-[1px] bg-[#66666640] h-[7rem] mt-3 mx-5"></div>
+          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5"></div>
           <div class="right-content-wrapper">
             <div class="flex justify-between items-center mt-3 px-6 overflow-hidden pb-[25px]">
               <div
                 v-for="ele, idx in item.child1"
                 :key="idx"
-                class="relative"
+                class="relative cursor-pointer select-none"
+                @click="item.growth = ele.growth;updateInstanceOptions(`chart_${item.id}`, {
+                  title: { text: ele.growth, subtext: ele.cycle + '天' }
+                }, item.cropCode, item.cropId)"
               >
                 <div>{{ ele.growth }}</div>
                 <div>{{ ele.cycle }}天</div>
@@ -546,15 +549,41 @@ const getLabelById = (arr: any[], id: string) => {
   return ''
 }
 
+const instanceMap = new Map<string, any>()
+const updateInstanceOptions = async (id:string, option, cropCode = '', cropId = '') => {
+  console.log("🚀 ~ updateInstanceOptions ~ option:", option)
+  
+  if (!option || !id) return;
+  const instance = instanceMap.get(id);
+  if (instance) instance.setOption(option);
+  const res = await CropGrowthNewApi.getCropGrowthCardMap({
+    growth: option.title.text,
+    cropCode,
+    cropId
+  })
+  if (!Array.isArray(res)) return;
+  if (Array.isArray(res)) console.log("🚀 ~ updateInstanceOptions ~ res:", res)
+  const _resFiltedItem = res.find(ele => ele.cropCode === cropCode && ele.cropId === cropId);
+  let activeBar = ''
+  if (Array.isArray(_resFiltedItem.child2) && _resFiltedItem.child2.length > 0) {
+    activeBar = _resFiltedItem.child2[0].id
+  }
+  cardDataList.value = cardDataList.value.map(item => {
+    if (item.cropCode !== cropCode || item.cropId !== cropId) return item;
+    return { ..._resFiltedItem, activeBar }
+  })
+}
+  
 const initCharts = () => {
   cardDataList.value.forEach(item => {
+    console.log("🚀 ~ initCharts ~ item:", item)
     if (!Array.isArray(item.child1)) return;
     const instance = initChartStatic(
       `chart_${item.id}`,
       generatePieOptions({
         title: {
-          text: '幼苗期',
-          subtext: '20天',
+          text: item.growth,
+          subtext: item.cycle + '天',
           left: 'center',
           top: '37%',
           textStyle: {
@@ -573,7 +602,7 @@ const initCharts = () => {
           {
             name: '',
             type: 'pie',
-            radius: ['50%', '100%'],
+            radius: ['40%', '80%'],
             center: 'center',
             data: item.child1.map(ele => ({
               name: ele.growth, value: ele.cycle
@@ -586,21 +615,21 @@ const initCharts = () => {
                 d: { color: '#c1c1c1', fontSize: 10 }
               }
             },
-            emphasis: { disabled: true },
+            emphasis: { disabled: false },
             itemStyle: { borderWidth: 5, borderColor: '#ffffff' }
           }
         ]
       })
     )
+    console.log("🚀 ~ instance&&instance.on ~ instance:", instance)
+    const existIns = instanceMap.has(`chart_${item.id}`)
+    if (!existIns) instanceMap.set(`chart_${item.id}`, instance);
     instance && instance.on("click", (params) => {
       console.log("🚀 ~ instance&&instance.on ~ params:", params)
       item.growth = params.name
-      instance.setOption({
-        title: {
-          text: params.name,
-          subtext: params.value + '天'
-        }
-      })
+      updateInstanceOptions(`chart_${item.id}`, {
+        title: { text: params.name, subtext: params.value + '天' }
+      }, item.cropCode, item.cropId)
     })
   })
 }

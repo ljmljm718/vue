@@ -420,7 +420,7 @@ const goPage=(obj)=>{
     case '气象站':
     router.push('/internetMonitor/device/deviceView?deviceType=80,81')
       break;
-    case '生长监控':
+    case '生长记录仪':
     router.push('/internetMonitor/device/deviceView?deviceType=78,82')
       break;
     case '在线设备':

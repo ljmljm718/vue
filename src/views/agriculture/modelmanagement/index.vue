@@ -64,11 +64,11 @@
         </el-form-item>
       </el-form>
       <div class="flex">
-        <el-button @click="handleQuery" class="changeBtnColor"
+        <el-button @click="handleQuery"  class="!text-white !bg-[#009688]"
           style="margin-left: 5px; display: flex; justify-content: flex-end;">
           查询
         </el-button>
-        <el-button @click="resetQuery" class="changeBtnColor"
+        <el-button @click="resetQuery" 
           style="margin-left: 5px; display: flex; justify-content: flex-end;">
           重置
         </el-button>
@@ -86,7 +86,7 @@
         </el-button>
 
       </div>
-      <div class="flex">
+      <div class="flex rounded-md cursor-pointer select-none">
         <div :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']" style="border-radius: 5px 0px 0px 5px; "
           @click="showType = 'card'">
           <el-icon>
@@ -95,7 +95,7 @@
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
         <div :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
-          style="border-radius: 0px 5px 5px 0px;width:70px" @click="showType = 'list'">
+          style="border-radius: 0px 5px 5px 0px" @click="showType = 'list'">
           <el-icon>
             <List />
           </el-icon>
@@ -342,13 +342,12 @@ onMounted(() => {
 .tab-btn,
 .tab-btn-selected {
   display: flex;
-
+  align-items: center;
   justify-content: center;
   flex-direction: row;
-  width: 70px;
-  border: 1px solid #009688;
-  background-color: #e5f4f3;
-  color: #009688;
+  width: 5rem;
+  height: 1.5rem;
+
 }
 
 .tab-btn {
@@ -357,6 +356,15 @@ onMounted(() => {
   background-color: #FFFFFF;
 
 }
+
+
+
+.tab-btn-selected {
+  border: 1px solid #009688;
+  background-color: #e5f4f3;
+  color: #009688;
+}
+
 
 .changeBtnColor:hover,
 .changeBtnColor:focus {

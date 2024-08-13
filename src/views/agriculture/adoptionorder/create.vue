@@ -217,6 +217,7 @@ const activeName = ref<any>(['1','2','3','4'])
                 label-width="110px"
                 v-loading="formLoading"
                 class="grid xl:grid-cols-4 xl:grid-cols-3 xl:grid-cols-2 xl:grid-cols-1 xl:grid-cols-1 gap-2 p-4"
+                :disabled=true
               >
                 <el-form-item label="计划流水号" prop="serialNumber">
                   <el-input v-model="formData.serialNumber" placeholder="请输入计划流水号" />

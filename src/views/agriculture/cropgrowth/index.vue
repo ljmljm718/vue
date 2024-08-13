@@ -234,7 +234,7 @@
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
   <!-- 批量添加生长周期 -->
-  <AddGrowthDialog ref="addGrowthDialogIns" />
+  <AddGrowthDialog ref="addGrowthDialogIns" @update="handleUpdate" />
 </template>
 
 <script setup lang="ts">
@@ -288,6 +288,7 @@ const handleAddGrowth = () => {
   if (!addGrowthDialogIns.value) return;
   addGrowthDialogIns.value.open()
 }
+const handleUpdate = () => { resetQuery() }
 
 /** 查询列表 */
 const getList = async () => {

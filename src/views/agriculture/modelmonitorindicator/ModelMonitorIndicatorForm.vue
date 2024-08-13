@@ -8,9 +8,9 @@
       v-loading="formLoading"
     >
       <el-form-item label="模型名称" prop="modelId">
-        <el-input v-model="modelName" placeholder="请选择模型" >
+        <el-input v-model="modelName" disabled placeholder="请选择模型" >
           <template #append>
-            <el-button @click="openModelSelectPopup('0')">
+            <el-button disabled @click="openModelSelectPopup('0')">
               <Icon icon="ep:search"/>
               选择
             </el-button>
@@ -18,9 +18,9 @@
         </el-input>
       </el-form-item>
       <el-form-item label="生长周期" prop="growthPeriodId">
-        <el-input v-model="growthNewName" placeholder="请选择生长周期" >
+        <el-input v-model="growthNewName" disabled placeholder="请选择生长周期" >
           <template #append>
-            <el-button @click="openCropGrowthNewPopup('0')">
+            <el-button disabled @click="openCropGrowthNewPopup('0')">
               <Icon icon="ep:search"/>
               选择
             </el-button>
@@ -33,15 +33,15 @@
       <el-form-item label="指标描述" prop="indicatorDescription">
         <el-input v-model="formData.indicatorDescription" type="textarea" placeholder="请输入指标描述" />
       </el-form-item>
-      <el-form-item label="指标范围" prop="indicatorRange">
-        <el-input v-model="formData.indicatorRange" placeholder="请输入指标范围" />
-      </el-form-item>
-      <el-form-item label="指标结果" prop="indicatorResult">
-        <el-input v-model="formData.indicatorResult" placeholder="请输入指标结果" />
-      </el-form-item>
-      <el-form-item label="健康分值" prop="healthScore">
-        <el-input v-model="formData.healthScore" placeholder="请输入健康分值" />
-      </el-form-item>
+<!--      <el-form-item label="指标范围" prop="indicatorRange">-->
+<!--        <el-input v-model="formData.indicatorRange" placeholder="请输入指标范围" />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="指标结果" prop="indicatorResult">-->
+<!--        <el-input v-model="formData.indicatorResult" placeholder="请输入指标结果" />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="健康分值" prop="healthScore">-->
+<!--        <el-input v-model="formData.healthScore" placeholder="请输入健康分值" />-->
+<!--      </el-form-item>-->
       <el-form-item label="权重" prop="weight">
         <el-input v-model="formData.weight" placeholder="请输入权重" />
       </el-form-item>
