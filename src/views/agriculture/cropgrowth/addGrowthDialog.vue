@@ -2,7 +2,7 @@
 import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew/index'
 import { dateFormatter } from "@/utils/formatTime";
-import { debounce } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 import { allDataCacheManager } from "@/api/agriculture/categorymanagement";
 
 const dialogVisible = ref<boolean>(false)
@@ -18,10 +18,11 @@ defineExpose({ open })
 // 已选择的数据
 const selectedData = ref<any[]>([])
 // 已选择的地块
-const selectedPolt = ref<any[]>([])
+const selectedPlot = ref<any[]>([])
 const handleCancel = () => {
   selectedData.value = []
-  selectedPolt.value = []
+  selectedPlot.value = []
+  if (tableRef.value) tableRef.value.clearSelection();
 }
 
 // 左侧的树数据
@@ -48,18 +49,14 @@ const getLeftTreeData = async () => {
 getLeftTreeData()
 
 const handleCheckClick = debounce((item) => {
-  console.log("🚀 ~ handleCheckClick ~ item:", item)
   const { data } = item;
   const { id } = data;
-  console.log("🚀 ~ handleCheckClick ~ id:", id)
-  const isExistID = selectedPolt.value.find(ele => ele === id);
-  console.log("🚀 ~ handleCheckClick ~ isExistID:", isExistID)
+  const isExistID = selectedPlot.value.find(ele => ele === id);
   if (isExistID) {
-    selectedPolt.value = selectedPolt.value.filter(ele => ele !== id);
+    selectedPlot.value = selectedPlot.value.filter(ele => ele !== id);
   } else {
-    selectedPolt.value.push(id)
+    selectedPlot.value.push(id)
   }
-  console.log("🚀 ~ handleCheckClick ~ selectedPolt.value:", selectedPolt.value)
 }, 100)
 
 // 搜索表单
@@ -76,12 +73,13 @@ getListCategoryManagement()
 
 // 表格内容
 const tableData = ref<any[]>([])
+const tableRef = ref()
 const loading = ref<boolean>(false)
 const tableTotal = ref<number>(0)
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 20,
-  cropType: '',
+  cropId: '',
   cropName: '',
   growth: ''
 })
@@ -94,7 +92,6 @@ const getTableData = async () => {
   }
   tableData.value = list;
   tableTotal.value = total;
-  console.log("🚀 ~ getTableData ~ total:", total)
   loading.value = false
 }
 getTableData()
@@ -105,7 +102,7 @@ const handleQuery = () => {
 
 const resetQuery = () => {
   queryParams.cropName = ''
-  queryParams.cropType = ''
+  queryParams.cropId = ''
   queryParams.growth = ''
   handleQuery()
 }
@@ -114,6 +111,35 @@ const resetQuery = () => {
 const handleSelectionChange = (val: any) => {
   if (!Array.isArray(val)) return
   selectedData.value = val
+}
+
+const emits = defineEmits(["update"])
+
+// 确认添加
+const handleConfirm = async () => {
+  const _selectedPlot = toRaw(selectedPlot.value);
+  const cropGrowthNew = selectedData.value.map(item => toRaw(item)), basePlot:any[] = []
+  
+  const parkPlotList = cloneDeep(leftTreeData.value);
+  parkPlotList.forEach(parkItem => {
+    if (Array.isArray(parkItem.children)) {
+      parkItem.children.forEach(plotItem => {
+        if (_selectedPlot.indexOf(plotItem.id) !== -1) {
+          basePlot.push({ baseId: parkItem.id, plotId: plotItem.id })
+        }
+      })
+    }
+  })
+
+  const res = await CropGrowthNewApi.growthCreateList({
+    cropGrowthNew, basePlot
+  })
+  console.log("🚀 ~ handleConfirm ~ res:", res)
+  if (res == 1) {
+    ElMessage.success("新增成功！");
+    emits("update")
+    handleCancel()
+  } else ElMessage.error("新增失败，请联系管理员！");
 }
 </script>
 
@@ -131,12 +157,13 @@ const handleSelectionChange = (val: any) => {
             <span>已选择</span>
             <span :style="`color: ${selectedData.length > 0 ? '#009688' : '#da4e52'};padding: 0 .3rem;`">{{ selectedData.length }}</span>
             <span>条，新增到</span>
-            <span :style="`color: ${selectedPolt.length > 0 ? '#009688' : '#da4e52'};padding: 0 .3rem;`">{{ selectedPolt.length }}</span>
+            <span :style="`color: ${selectedPlot.length > 0 ? '#009688' : '#da4e52'};padding: 0 .3rem;`">{{ selectedPlot.length }}</span>
             <span>个地块</span>
           </div>
           <el-button
-            :class="`${(selectedData.length === 0 || selectedPolt.length === 0) ? '!bg-[#00968860]' : '!bg-[#009688]'} !text-white !px-5`"
-            :disabled="selectedData.length === 0 || selectedPolt.length === 0"
+            :class="`${(selectedData.length === 0 || selectedPlot.length === 0) ? '!bg-[#00968860]' : '!bg-[#009688]'} !text-white !px-5`"
+            :disabled="selectedData.length === 0 || selectedPlot.length === 0"
+            @click="handleConfirm"
           >
             确定
           </el-button>
@@ -148,7 +175,7 @@ const handleSelectionChange = (val: any) => {
     </ContentWrap>
     <div class="flex justify-between">
       <div
-        class="w-16rem bg-white px-2 py-4 box-border rounded-md overflow-auto max-h-[38rem]"
+        class="w-16rem bg-white px-2 py-4 box-border rounded-md overflow-auto max-h-[                 rem]"
         style="border: 1px solid #66666636;"
       >
         <el-tree
@@ -162,8 +189,8 @@ const handleSelectionChange = (val: any) => {
             <div class="w-full flex justify-between items-center">
               <span>{{ node.label }}</span>
               <div class="cell" @click="handleCheckClick(node)" v-show="!node.data.children">
-                <label :class="`el-checkbox el-checkbox--small ${selectedPolt.indexOf(node.data.id) !== -1 ? 'is-checked' : ''}`">
-                  <span :class="`el-checkbox__input ${selectedPolt.indexOf(node.data.id) !== -1 ? 'is-checked' : ''}`">
+                <label :class="`el-checkbox el-checkbox--small ${selectedPlot.indexOf(node.data.id) !== -1 ? 'is-checked' : ''}`">
+                  <span :class="`el-checkbox__input ${selectedPlot.indexOf(node.data.id) !== -1 ? 'is-checked' : ''}`">
                     <input class="el-checkbox__original" type="checkbox" />
                     <span class="el-checkbox__inner"></span>
                   </span>
@@ -185,10 +212,10 @@ const handleSelectionChange = (val: any) => {
             >
               <el-form-item
                 label="品类"
-                prop="cropType"
+                prop="cropId"
               >
                 <el-select
-                  v-model="queryParams.cropType"
+                  v-model="queryParams.cropId"
                   placeholder="请选择品类"
                   clearable
                   class="!w-200px"
@@ -226,6 +253,7 @@ const handleSelectionChange = (val: any) => {
         </ContentWrap>
         <ContentWrap class="!mb-0">
           <el-table
+            ref="tableRef"
             :data="tableData"
             size="small"
             border
@@ -281,13 +309,13 @@ const handleSelectionChange = (val: any) => {
         </ContentWrap>
       </div>
     </div>
-    <template #footer>
+    <!-- <template #footer>
       <el-button
         @click="submitForm"
         type="primary"
         :disabled="formLoading"
       >确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
-    </template>
+    </template> -->
   </Dialog>
 </template>
