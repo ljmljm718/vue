@@ -20,7 +20,7 @@ import NumberShow from "./components/NumberShow.vue"
 import ModelIcon from "./components/ModelIcon.vue"
 
 /** 引入请求接口 */
-import { getBase, getModel, getNum, getPlot, getCycle, getIndicator } from "./api"
+import { getBase, getModel, getNum, getPlot, getCycle, getIndicator, getPlotInfo } from "./api"
 
 /** 引入图片 */
 import bg from "./assets/bg.png"
@@ -133,20 +133,20 @@ export default defineComponent({
     const plotList = ref<Array<any>>([])
 
     const getPlotList = async () => {
-      const params = { baseId: base.value.id }
+      const params = { parkId: base.value.id }
       const res = await getPlot(params)
-      let cur = 0
-      plotList.value = res.map((item) => {
-        let tmp = item.monitoringEquipmentDataDO
+      plotList.value = []
+      res.forEach(async (item) => {
+        let plotParams = { modelId: item.modelId, beLongPlot: item.plotId}
+        let curPlotInfo = await getPlotInfo(plotParams)
         let obj = {
-          modelName: modelList.value[cur].modelName,
-          img: tmp.capturedImage,
-          plotName: tmp.monitoringPlotName,
+          ...item,
+          plotName: curPlotInfo[0].plotName,
           enable: true
         }
-        cur = (cur + 1) % modelList.value.length
-        return obj
+        plotList.value.push(obj)
       })
+      console.log("plotList", plotList.value)
     }
 
     /**
@@ -182,16 +182,15 @@ export default defineComponent({
       if (curModelId) {
         const params = { modelId: curModelId }
         const res = await getCycle(params)
+        console.log("Cycle", res)
 
         curPeriod.value = res[0].curPeriod
         curRealPeriod.value = res[0].curPeriod
 
         res.map((item, index) => {
           if (index) {
-            cycleMap.set(item.growth, {cycle: item.cycle, tips: item.child2})
-            if (item.child2.length) {
-              curCropCode = item.child2[0].cropCode
-            }
+            cycleMap.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2})
+            curCropCode = item.growthId
 
             if (curPeriod.value === item.growth) {
               cycleNameList.value.push({growth: item.growth, selected: true})
@@ -204,7 +203,7 @@ export default defineComponent({
         curTips.value = cycleMap.get(curPeriod.value).tips
         curCycle.value = cycleMap.get(curPeriod.value).cycle
 
-        // 初始化周期列表
+        // 初始化周期列表的位置
         offsetLeft.value = 0
         let tmp = curItem
         curItem = 2
@@ -246,11 +245,7 @@ export default defineComponent({
       curPeriod.value = cycleNameList.value[curItem].growth
       curTips.value = cycleMap.get(curPeriod.value).tips
       curCycle.value = cycleMap.get(curPeriod.value).cycle
-      if (curTips.value.length) {
-        curCropCode = curTips.value[0].cropCode
-      } else {
-        curCropCode = ""
-      }
+      curCropCode = cycleMap.get(curPeriod.value).growthId
 
       if (tmp != curItem)
         await getIndicatorList()
@@ -401,7 +396,9 @@ export default defineComponent({
 
       if (curCropCode) {
         const params = { modelId: curModelId, growthId: curCropCode }
+        console.log("getIndicator params", params)
         const res = await getIndicator(params)
+        console.log("Indicator", res)
 
         if (res.length) {
           res.map((item) => {
@@ -424,8 +421,12 @@ export default defineComponent({
           indicatorList.value[0].selected = true
           curFactor.value = factorMap.get(indicatorList.value[0].name)
           initOption()
-          let tmpIter = curFactor.value.values()
-          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+          if (curFactor.value.size) {
+            let tmpIter = curFactor.value.values()
+            curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+          } else {
+            curFactorData.value = []
+          }
         } else {
           curFactor.value = new Map()
           curFactorData.value = []
@@ -444,8 +445,12 @@ export default defineComponent({
 
       if (!(tmp === curIndicatorIndex)) {
         curFactor.value = factorMap.get(indicatorList.value[curIndicatorIndex].name)
-        let tmpIter = curFactor.value.values()
-        curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+        if (curFactor.value.size) {
+          let tmpIter = curFactor.value.values()
+          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+        } else {
+          curFactorData.value = []
+        }
         initOption()
       }
     }
@@ -548,6 +553,7 @@ export default defineComponent({
                           value-key="id"
                           style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
                           popper-class="growth-monitoring-model-datacenter-popper"
+                          onChange={ () => { getPlotList() } }
                         >
                           {
                             baseList.value.map(item => (
@@ -567,7 +573,7 @@ export default defineComponent({
                         plotList.value.map((item) => (
                           <div class="w-full h-[130px] mb-[10px]">
                             <div 
-                              style={`background-image: url(${ item.img }); background-size: 100% 100%;`}
+                              style={`background-image: url(${ item.modelImg }); background-size: 100% 100%;`}
                               class="w-full h-[100px] relative cursor-pointer"
                               onClick={()=>{
                                 // 跳转
