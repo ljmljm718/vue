@@ -4,7 +4,7 @@
     	<el-card>
       <div class="flex justify-between">
        <el-input
-v-model='queryParams.repositoryTitle'
+v-model='title'
        style="width: 16rem;"
        placeholder="请输入标题"
           @keyup.enter="handleQuery"
@@ -198,7 +198,7 @@ const total = ref(0) // 列表的总页数
 let queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  repositoryTitle: undefined,
+  repositoryTitle: '',
   repositoryType: '',
   repositoryLabel: '',
   selectFlag:'1',
@@ -229,8 +229,10 @@ const getList = async () => {
 }
 
 /** 搜索按钮操作 */
+let title=ref('')
 const handleQuery = () => {
   queryParams.pageNo = 1
+  queryParams.repositoryTitle=title.value;
   getList()
 }
 
@@ -238,10 +240,11 @@ const handleQuery = () => {
 const resetQuery = () => {
   type.value=[]
   label.value=[]
+  title.value=''
   queryParams = {
       pageNo: 1,
       pageSize: 10,
-      repositoryTitle: undefined,
+      repositoryTitle: '',
       repositoryType: '',
       repositoryLabel: '',
       selectFlag:'1',
