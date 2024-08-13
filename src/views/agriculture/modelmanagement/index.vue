@@ -64,11 +64,11 @@
         </el-form-item>
       </el-form>
       <div class="flex">
-        <el-button @click="handleQuery" class="changeBtnColor"
+        <el-button @click="handleQuery"  class="!text-white !bg-[#009688]"
           style="margin-left: 5px; display: flex; justify-content: flex-end;">
           查询
         </el-button>
-        <el-button @click="resetQuery" class="changeBtnColor"
+        <el-button @click="resetQuery" 
           style="margin-left: 5px; display: flex; justify-content: flex-end;">
           重置
         </el-button>
