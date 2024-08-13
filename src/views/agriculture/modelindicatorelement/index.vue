@@ -98,7 +98,7 @@
       <el-table-column label="要素编号" align="center" prop="id" />
 <!--      <el-table-column label="监测指标" align="center" prop="indicatorId" />-->
       <el-table-column label="要素名称" align="center" prop="elementName" width="110"/>
-      <el-table-column label="权重" align="center" prop="weight" width="90"/>
+      <el-table-column label="权重(%)" align="center" prop="weight" width="90"/>
       <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
       <el-table-column label="绑定设备" align="center" prop="deviceName" />
       <el-table-column label="状态" align="center" prop="status" width="110">
@@ -235,6 +235,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  //重置路径上的指标id
   queryParams.indicatorId = undefined
   handleQuery()
 }

@@ -9,13 +9,14 @@
       label-width="68px"
     >
       <el-form-item label="指标要素" prop="indicatorElementId">
-        <el-input
-          v-model="queryParams.indicatorElementId"
-          placeholder="请输入指标要素"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <el-input v-model="queryParams.indicatorElementId" placeholder="请选择指标要素" disabled>
+          <template #append>
+            <el-button @click="openModelIndicatorElementSelectPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--      <el-form-item label="下限" prop="lowLimit">-->
 <!--        <el-input-->
@@ -111,13 +112,13 @@
       <el-table-column label="指标要素" align="center" prop="indicatorElementId" width="240"/>
       <el-table-column label="指标范围" align="center" width="240">
         <template #default="scope">
-          {{ scope.row.lowLimit + '  ~  ' + scope.row.highLimit + '  ' + scope.row.unit}}
+          {{ scope.row.lowLimit + '  ~  ' + scope.row.highLimit + '  ' + ((!scope.row.unit) ? '' : scope.row.unit) }}
         </template>
       </el-table-column>
 <!--      <el-table-column label="下限" align="center" prop="lowLimit" />-->
 <!--      <el-table-column label="上限" align="center" prop="highLimit" />-->
 <!--      <el-table-column label="单位" align="center" prop="unit" />-->
-      <el-table-column label="健康比例" align="center" prop="healthRatio" />
+      <el-table-column label="健康值" align="center" prop="healthRatio" />
       <el-table-column label="健康等级" align="center" prop="healthLevel" />
       <el-table-column label="指标结果" align="center" prop="indicatorResult" width="240"/>
       <el-table-column label="排序" align="center" prop="sortBy" />
@@ -153,12 +154,17 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ModelIndicatorElementRangeForm ref="formRef" @success="getList" />
+
+  <!--  选择指标要素-->
+  <ModelIndicatorElementSelectPopup ref="modelIndicatorElementSelectPopupRef" @success="handleModelIndicatorElementSelectPopupChange"/>
 </template>
 
 <script setup lang="ts">
 import download from '@/utils/download'
 import { ModelIndicatorElementRangeApi, ModelIndicatorElementRangeVO } from '@/api/agriculture/modelindicatorelementrange'
 import ModelIndicatorElementRangeForm from './ModelIndicatorElementRangeForm.vue'
+import {ModelIndicatorElementVO} from "@/api/agriculture/modelindicatorelement";
+import ModelIndicatorElementSelectPopup from "@/views/agriculture/modelindicatorelement/components/ModelIndicatorElementSelectPopup.vue";
 
 /** 指标要素范围 列表 */
 defineOptions({ name: 'ModelIndicatorElementRange' })
@@ -247,6 +253,15 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+//指标要素的选择
+const modelIndicatorElementSelectPopupRef = ref()
+const openModelIndicatorElementSelectPopup = (id: string) => {
+  modelIndicatorElementSelectPopupRef.value.open(id)
+}
+const handleModelIndicatorElementSelectPopupChange = (order: ModelIndicatorElementVO) => {
+  queryParams.indicatorElementId = order[0].id?.toString()
 }
 
 /** 初始化 **/

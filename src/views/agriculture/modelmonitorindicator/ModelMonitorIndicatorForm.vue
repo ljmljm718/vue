@@ -33,15 +33,15 @@
       <el-form-item label="指标描述" prop="indicatorDescription">
         <el-input v-model="formData.indicatorDescription" type="textarea" placeholder="请输入指标描述" />
       </el-form-item>
-      <el-form-item label="指标范围" prop="indicatorRange">
-        <el-input v-model="formData.indicatorRange" placeholder="请输入指标范围" />
-      </el-form-item>
-      <el-form-item label="指标结果" prop="indicatorResult">
-        <el-input v-model="formData.indicatorResult" placeholder="请输入指标结果" />
-      </el-form-item>
-      <el-form-item label="健康分值" prop="healthScore">
-        <el-input v-model="formData.healthScore" placeholder="请输入健康分值" />
-      </el-form-item>
+<!--      <el-form-item label="指标范围" prop="indicatorRange">-->
+<!--        <el-input v-model="formData.indicatorRange" placeholder="请输入指标范围" />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="指标结果" prop="indicatorResult">-->
+<!--        <el-input v-model="formData.indicatorResult" placeholder="请输入指标结果" />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="健康分值" prop="healthScore">-->
+<!--        <el-input v-model="formData.healthScore" placeholder="请输入健康分值" />-->
+<!--      </el-form-item>-->
       <el-form-item label="权重" prop="weight">
         <el-input v-model="formData.weight" placeholder="请输入权重" />
       </el-form-item>

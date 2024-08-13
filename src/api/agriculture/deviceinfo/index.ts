@@ -79,4 +79,9 @@ export const DeviceInfoApi = {
     return await request.post({ url: `/agriculture/device-info/pageByIds`, data })
   },
 
+  // 查询设备检测类型
+  getDeviceMonitorType: async () => {
+    return await request.get({ url: `/agriculture/device-info/getType`})
+  },
+
 }
