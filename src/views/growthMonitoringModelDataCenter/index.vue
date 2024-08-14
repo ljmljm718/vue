@@ -169,7 +169,7 @@ export default defineComponent({
           batchCode:item.batchCode
         }
       })
-
+    }
     /**
      * 周期/物候期 相关
      * curPeriod           当前周期名称
