@@ -57,22 +57,22 @@
               </div>
             </div>
             <div
-              class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center"
+              class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
               >总设备数: {{ deviceTotal }}</div
             >
-            <div class="grid grid-cols-2 gap-2 grid-rows-2 h-40% mt-2">
-              <div class="bg-[#f2f2f2] p-3" v-for="(item, index) in typeList" :key="index">
+            <div class="grid grid-cols-2 gap-2 grid-rows-2 h-45% mt-2  ">
+              <div class="bg-[#f2f2f2] p-3 !rounded-md" v-for="(item, index) in typeList" :key="index">
                 <div class="flex justify-between mb-3 font-medium"
                   >{{ item.categoryName }}
                   <span class="color-[#009688]">{{ item.totalCount }}</span></div
                 >
                 <div
-                  class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333] rounded-md"
+                  class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333] "
                 >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded mb-1"
                     >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
                   >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded "
                     >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
                   >
                 </div>
@@ -715,7 +715,7 @@ const initChart2 = async () => {
 
 const defaultProps = {
   children: 'child',
-  label: 'name',
+  label: 'name'
 }
 onMounted(() => {
   initChart2()
