@@ -957,7 +957,7 @@ const handleRadioChange = (e) => {
 //时间选择
 const message = useMessage() // 消息弹窗
 const dataTime = (e) => {
-  radio.value = '本月'
+  radio.value = ''
   let month = e[0].split('-')[1]
   let month2 = e[1].split('-')[1]
   let day = e[0].split('-')[2]
