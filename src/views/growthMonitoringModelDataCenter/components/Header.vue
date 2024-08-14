@@ -6,8 +6,8 @@
   >
     <!-- 标题用图片 -->
     <div
-      class="bg-no-repeat bg-center bg-[length:100%_100%] relative"
-      :style="`background-image: url( ${ title } ); width: ${ titleWidth }px; height: ${ titleHeight }px;`"
+      class="bg-no-repeat bg-center bg-[length:100%_100%] relative header-text"
+      :style="` width: ${ titleWidth }px; height: ${ titleHeight }px;`"
     >
       <!-- 标题上下左右的装饰，用定位 -->
       <div class="title-left"></div>
@@ -115,5 +115,8 @@ onMounted(() => {
   background-size: 100% 100%;
   width: 1920px;
   height: 30.5px;
+}
+.header-text {
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/header/title.png);
 }
 </style>

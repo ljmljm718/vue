@@ -225,7 +225,7 @@ const queryChart = () => {
 const initDataShowChart = async (collectionType = '', monitoringType = '', date = '') => {
   let res = await EquipmentDataApi.getDataPresentation({ collectionType, monitoringType, date })
   console.log(res, '数据展示')
-  let data = res.map((item) => item.dateTime)
+  let data = res.map((item) => item.dateTime+"时")
   let xAxisData = []
   data.forEach((item) => {
     xAxisData.push(item.slice(11))

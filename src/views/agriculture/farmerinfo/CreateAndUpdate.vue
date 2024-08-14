@@ -254,7 +254,8 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as FarmerInfoVO
-    if (formType.value === 'create') {
+    //进行id是否为undefined避免在暂存菜单编辑提交时报错
+    if (formType.value === 'create' || formData.value.id === undefined) {
       await FarmerInfoApi.createFarmerInfo(data)
       message.success(t('common.createSuccess'))
     } else {
@@ -264,6 +265,11 @@ const submitForm = async () => {
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
+    //该表id字段为int类型，需要转化为String类型才能正常使用暂存功能
+    deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? String(formData.value.id) : 'new_form'
+    )
     router.push(ORIGIN_PATH)
   } finally {
     formLoading.value = false
@@ -349,7 +355,7 @@ const loadData = async (id = 'new_form') => {
   if (_form) formData.value = _form.formContent
 }
 if (!formData.value.id) loadData()
-
+//该表id字段为int类型，需要转化为String类型才能正常使用暂存功能
 const localSave = () => {
   addOrUpdateFormStorage(
     ROUTE_PATH,
@@ -360,18 +366,10 @@ const localSave = () => {
   ElMessage.success('保存成功！')
 }
 
-// const getFrom = async () =>{
-//   resetForm();
-//   if(route.query.id && route.query.type !== 'create')  {
-//     formData.value = await FarmerInfoApi.getFarmerInfo (route.query.id as any);
-//     loadData(route.query.id);
-//   }
-// }
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
       await open(route.query.type,route.query.id);
-    //  await  getFrom();
 });
 // 注意需要在submit最后一行,即faill前面加--router.push(ORIGIN_PATH),即跳转回原地址
 </script>

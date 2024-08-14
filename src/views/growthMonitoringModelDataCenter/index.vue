@@ -158,10 +158,18 @@ export default defineComponent({
     }
 
     const router = useRouter()
-    const handleRoute = () => {
-      router.push("/bigscreenModel")
+    const handleRoute = (item) => {
+      router.push({
+        path:"/bigscreenModel",
+        query:{
+          modelName: item.modelName,
+          growthId: item.growthId,
+          plotId:item.plotId,
+          modelId: item.modelId,
+          batchCode:item.batchCode
+        }
+      })
     }
-
     /**
      * 周期/物候期 相关
      * curPeriod           当前周期名称
@@ -589,7 +597,7 @@ export default defineComponent({
                             <div 
                               style={`background-image: url(${ item.modelImg }); background-size: 100% 100%;`}
                               class="w-full h-[100px] relative cursor-pointer"
-                              onClick={()=>{ handleRoute() }}
+                              onClick={()=>{ handleRoute(item) }}
                             >
                               <div 
                                 class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
@@ -739,11 +747,7 @@ export default defineComponent({
                 {/** 模型图片 */}
                 {
                   curVarietyName.value === "连梗11号" ? (
-                    <div
-                      class="center-model"
-                      style={ `background-image: url(/src/views/growthMonitoringModelDataCenter/assets/stage${ curItem + 1 }.png);` }
-                    >
-                    </div>
+                    <div class={`center-model model-${ curItem + 1 }`}></div>
                   ) : null
                 }
                 {/** 周期事项 */}
@@ -1182,6 +1186,13 @@ export default defineComponent({
 :deep(td .cell) {
   color: #fff;
 }
+
+@for $i from 1 through 9 {
+  .model-#{$i} {
+    background-image: url(/src/views/growthMonitoringModelDataCenter/assets/stage#{$i}.png);
+  }
+}
+
 </style>
 
 <style lang="scss">
