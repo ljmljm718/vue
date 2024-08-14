@@ -284,6 +284,10 @@ const getList = async () => {
     const data = await VillageProductApi.getVillageProductPage(queryParams)
     console.log(data.list, '数据')
     list.value = data.list
+    list.value.forEach(item => {
+      if (item.photo === '')
+        item.photo = 'https://www.zhuangbeizz.cn/minio/inspur/微信图片_202408141509051723619406676.png'
+    })
     total.value = data.total
   } finally {
     loading.value = false
@@ -301,8 +305,8 @@ onActivated(() => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  queryParams.parkId=undefined
-  queryParams.parkDetailId=undefined
+  queryParams.parkId = undefined
+  queryParams.parkDetailId = undefined
   handleQuery()
 }
 
