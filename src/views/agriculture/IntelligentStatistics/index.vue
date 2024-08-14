@@ -922,6 +922,7 @@ const onSubmit = () => {
 //年月切换
 const handleRadioChange = (e) => {
   console.log(radio.value, 'eeeee')
+  dateData.value=[]
   let data = new Date()
   let _ANu = 0
   let type = 'month'
