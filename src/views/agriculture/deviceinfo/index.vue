@@ -389,6 +389,7 @@ const deviceId = ref() // 选中的设备id
 const deviceName = ref() // 选中的设备名称
 const openExternalLink = (scope) => {
   const url = scope.row.url // 替换为你想要跳转的外部链接
+  console.log("url",url)
   window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
 }
 /** 查询列表 */
@@ -535,7 +536,9 @@ onMounted(async () => {
     queryParams.deviceStatus = location.val
     if (queryParams.deviceCode) {
       deviceId.value = location.deviceCode
-      setTimeout(() => { openSubDeviceForm() }, 1000)
+      setTimeout(() => {
+        openSubDeviceForm()
+      }, 1000)
     }
   }
   await getList()
