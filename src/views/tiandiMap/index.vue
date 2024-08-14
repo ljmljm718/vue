@@ -352,12 +352,8 @@ const getDataList = async () => {
                     value: plantItem.yield || '未知'
                   },
                   {
-                    title: '开始种植时间',
-                    value: plantItem.startTime
-                  },
-                  {
-                    title: '预计收获时间',
-                    value: plantItem.endTime
+                    title: '时间',
+                    value: `${plantItem.startTime}~${plantItem.endTime}`
                   },
                 ]
                 const domTitle = child.plotName, plotStatus = child.plotStatus;
@@ -381,12 +377,12 @@ const getDataList = async () => {
                         ${
                           buildArr.map(_i => {
                             return `
-                              <div class="p-3 py-1 flex items-center space-x-2">
+                              <div class="p-2 py-1 flex items-center space-x-1">
                                 <div class="text-[#1c8f80] flex items-center">
-                                  <img src=${titleBar} class="w-[.8rem] h-[.8rem]" />
-                                  <div class="pl-[.3rem] w-[7rem]">${_i.title}:</div>
+                                  <img src=${titleBar} class="w-[.8rem] h-[.8rem] hidden" />
+                                  <div class="pl-[.3rem] w-[4.7rem]">${_i.title}:</div>
                                 </div>
-                                <div class="text-[#f1f1f1] pl-[1.3rem]">${_i.value}</div>
+                                <div class="text-[#f1f1f1e0] pl-[.7rem]">${_i.value}</div>
                               </div>
                             `
                           }).join("")
