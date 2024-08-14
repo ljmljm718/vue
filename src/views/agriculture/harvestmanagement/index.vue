@@ -8,15 +8,6 @@
       :inline="true"
       label-width="68px"
     >
-      <!-- <el-form-item label="记录编号" prop="recordNum">
-        <el-input
-          v-model="queryParams.recordNum"
-          placeholder="请输入记录编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
       <el-form-item label="所属基地" prop="belongPark">
         <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
                   class="!w-240px">
@@ -28,7 +19,6 @@
           </template>
         </el-input>
       </el-form-item>
-
       <el-form-item label="所属地块" prop="belongPlot">
         <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
                   class="!w-240px">
@@ -40,7 +30,6 @@
           </template>
         </el-input>
       </el-form-item>
-
       <el-form-item label="批次码" prop="batchCode">
         <el-input
           v-model="queryParams.batchCode"
@@ -50,27 +39,6 @@
           class="!w-240px"
         />
       </el-form-item>
-
-      <!--      <el-form-item label="采收量" prop="harvestVolume">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.harvestVolume "-->
-      <!--          placeholder="请输入采收量"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-
-      <!--      <el-form-item label="人工数量" prop="laborQuantity">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.laborQuantity "-->
-      <!--          placeholder="请输入人工数量"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-
       <el-form-item label="品种名称" prop="varietyName">
         <el-input
           v-model="queryParams.varietyName"
@@ -117,8 +85,6 @@
         <!--          />-->
         <!--        </el-select>-->
       </el-form-item>
-
-
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
           v-model="queryParams.upTime"
@@ -130,62 +96,6 @@
           class="!w-220px"
         />
       </el-form-item>
-      <!--      <el-form-item label="基地" prop="belongPark">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.belongPark"-->
-      <!--          placeholder="请输入基地"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="地块" prop="belongPlot">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.belongPlot"-->
-      <!--          placeholder="请输入地块"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="采收量" prop="harvestVolume">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.harvestVolume"-->
-      <!--          placeholder="请输入采收量"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="人工数量" prop="laborQuantity">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.laborQuantity"-->
-      <!--          placeholder="请输入人工数量"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="备注" prop="remark">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.remark"-->
-      <!--          placeholder="请输入备注"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="创建时间" prop="createTime">-->
-      <!--        <el-date-picker-->
-      <!--          v-model="queryParams.createTime"-->
-      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-      <!--          type="daterange"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -198,13 +108,12 @@
 
       </el-form-item>
     </el-form>
-
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
         <el-button
-          type="info"
+          type="primary"
           plain
-          @click="openForm1()"
+          @click="openForm('create')"
           v-hasPermi="['agriculture:harvest-management:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
@@ -254,13 +163,6 @@
       <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
       <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
       <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
-      <!--      <el-table-column-->
-      <!--        label="创建时间"-->
-      <!--        align="center"-->
-      <!--        prop="createTime"-->
-      <!--        :formatter="dateFormatter"-->
-      <!--        width="180px"-->
-      <!--      />-->
       <el-table-column label="操作" align="center" fixed="right" min-width="200px">
         <template #default="scope">
           <el-button
