@@ -8,16 +8,16 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="指标要素" prop="indicatorElementId">
-        <el-input v-model="queryParams.indicatorElementId" placeholder="请选择指标要素" disabled>
-          <template #append>
-            <el-button @click="openModelIndicatorElementSelectPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
+<!--      <el-form-item label="指标要素" prop="indicatorElementId">-->
+<!--        <el-input v-model="queryParams.indicatorElementId" placeholder="请选择指标要素" disabled>-->
+<!--          <template #append>-->
+<!--            <el-button @click="openModelIndicatorElementSelectPopup('0')">-->
+<!--              <Icon icon="ep:search"/>-->
+<!--              选择-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-input>-->
+<!--      </el-form-item>-->
 <!--      <el-form-item label="下限" prop="lowLimit">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.lowLimit"-->
