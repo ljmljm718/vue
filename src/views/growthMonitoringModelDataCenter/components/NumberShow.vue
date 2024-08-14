@@ -3,7 +3,12 @@
     style="width: 300px; height: 85px;"
   >
     <div class="circle text-center">
-      <el-image class="mt-[5px] h-[60px] w-[60px]" :src="iconImg" />
+      <!-- <el-image class="mt-[5px] h-[60px] w-[60px]" :src="iconImg" /> -->
+      <div
+        class="absolute top-[5px] left-[5px] h-[60px] w-[60px]"
+        :style="`background-image: url(${ iconImg }); background-size: 100% 100%; background-repeat: no-repeat; background-position: center;`"
+      >
+      </div>
       <div class="circle-border"></div>
       <div class="border-decorator"></div>
       <div class="line-decorator"></div>
