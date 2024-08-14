@@ -8,25 +8,6 @@
       :inline="true"
       label-width="68px"
     >
-      <!--            <el-form-item label="编号" prop="cropCode">-->
-      <!--              <el-input-->
-      <!--                  v-model="queryParams.cropCode"-->
-      <!--                  placeholder="请输入编号"-->
-      <!--                  clearable-->
-      <!--                  @keyup.enter="handleQuery"-->
-      <!--                  class="!w-240px"-->
-      <!--              />-->
-      <!--            </el-form-item>-->
-      <!--      <el-form-item label="基地名称" prop="parkName">-->
-      <!--        <el-input v-model="queryParams.parkName" placeholder="请选择">-->
-      <!--          <template #append>-->
-      <!--            <el-button @click="openParkPopup('0')">-->
-      <!--              <Icon icon="ep:search"/>-->
-      <!--              选择-->
-      <!--            </el-button>-->
-      <!--          </template>-->
-      <!--        </el-input>-->
-      <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
         <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
           <template #append>
@@ -77,13 +58,6 @@
           class="!w-180px"
         />
       </el-form-item>
-      <!--      <el-form-item label="采收状态" prop="recoveryNo">-->
-      <!--        <el-select v-model="queryParams.recoveryNo" placeholder="请选择采收状态" clearable   class="!w-240px">-->
-      <!--          <el-option label="全部" value="" />-->
-      <!--          <el-option label="已采收" value="true" />-->
-      <!--          <el-option label="未采收" value="false" />-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -123,7 +97,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
       <el-table-column label="种植品种" align="center" prop="cropName" width="140"/>
       <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
@@ -142,9 +115,7 @@
           />
         </template>
       </el-table-column>
-      <!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
       <el-table-column label="所属基地" align="center" prop="parkName" width="160"/>
-      <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="所属地块" align="center" prop="plotName" width="160"/>
       <el-table-column label="数量" align="center" prop="number"/>
       <el-table-column label="单位" align="center" prop="unit"/>
@@ -164,7 +135,6 @@
         width="120px"
       />
       <el-table-column label="批次号" align="center" prop="batchCode" width="160px"/>
-      <!--      <el-table-column label="是否采收" align="center" prop="recoveryNo" />-->
       <el-table-column label="二维码" align="center" prop="batchQrImg">
         <template #default="scope">
           <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
@@ -177,7 +147,7 @@
       <el-table-column label="启用模型" align="center" key="isEnableModel">
         <template #default="scope">
           <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
-                     @change="handleStatusChange(scope.row)" />
+                     @change="handleStatusChange(scope.row)"/>
         </template>
       </el-table-column>
       <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
