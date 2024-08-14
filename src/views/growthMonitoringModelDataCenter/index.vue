@@ -20,7 +20,7 @@ import NumberShow from "./components/NumberShow.vue"
 import ModelIcon from "./components/ModelIcon.vue"
 
 /** 引入请求接口 */
-import { getBase, getModel, getNum, getPlot, getCycle, getIndicator } from "./api"
+import { getBase, getModel, getNum, getPlot, getCycle, getIndicator, updateModelEnableStatus } from "./api"
 
 /** 引入图片 */
 import bg from "./assets/bg.png"
@@ -32,6 +32,7 @@ export default defineComponent({
   setup() {
 
     const imgBase = "/src/views/growthMonitoringModelDataCenter/assets"
+    const message = useMessage() // 消息弹窗
 
     /** Header组件需要的属性(heardBg不应该传进去) */
     const headerHeight = 100
@@ -135,12 +136,25 @@ export default defineComponent({
       const params = { parkId: base.value.id }
       const res = await getPlot(params)
       plotList.value = res.map( (item) => {
-        return {
-          ...item,
-          enable: true
-        }
+        return item
       })
       // console.log("plotList", plotList.value)
+    }
+
+    /** 修改品种模型绑定状态 */
+    const handleStatusChange = async (row) => {
+      try {
+        // 修改状态的二次确认
+        const text = row.isEnableModel ? '停绑' : '绑定'
+        await message.confirm('确认要' + text + '当前模型吗?')
+        // 发起修改状态
+        await updateModelEnableStatus(row.cropBaseId, !row.isEnableModel)
+        // 刷新列表
+        await getPlotList()
+      } catch {
+        // 取消后，进行恢复按钮
+        // row.isEnableModel = row.isEnableModel ? true : false
+      }
     }
 
     const router = useRouter()
@@ -588,12 +602,12 @@ export default defineComponent({
                               <div>{ item.plotName }</div>
                               <div>
                               {
-                                item.enable ? (
+                                item.isEnableModel ? (
                                   <el-button
                                     style="color: #35DAD2; border: 1px solid #35DAD2; background-color: transparent;"
                                     round
                                     type="success"
-                                    class="cursor-auto"
+                                    onClick={ () => { handleStatusChange(item) } }
                                   >
                                     <el-icon><CircleCheck /></el-icon>
                                     <span>启用</span>
@@ -603,7 +617,7 @@ export default defineComponent({
                                     style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
                                     round
                                     type="danger"
-                                    onClick={ () => { item.enable = true } }
+                                    onClick={ () => { handleStatusChange(item) } }
                                   >
                                     <el-icon><CircleClose /></el-icon>
                                     <span>禁用</span>
@@ -964,9 +978,6 @@ export default defineComponent({
 }
 :deep(.el-select--small .el-select__wrapper) {
   font-size: 14px;
-}
-:deep(.el-button) {
-  cursor: default;
 }
 
 /** 生长周期列表 */

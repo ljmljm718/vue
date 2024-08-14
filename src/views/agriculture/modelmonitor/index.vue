@@ -5,7 +5,7 @@
         <div
           v-for="(item, index) in filteredLeftList"
           :key="index"
-          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md ${
+          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md cursor-pointer ${
             activeId === item.id ? 'font-bold' : ''
           }`"
           @click="getmodelList(item.id)"
@@ -17,16 +17,19 @@
     </div>
     <div class="space-y-3 grow" style="width: calc(100% - 12.2rem)">
       <!-- 评分 -->
-      <div class="flex bg-white p-2 min-h-[4rem]  ">
+      <div class="flex bg-white p-2 min-h-[4rem] space-x-[3rem] px-7">
         <div
           v-for="(item, index) in healthValueData"
           :key="index"
-          class="flex space-x-3 justify-center items-center px-2 min-w-[8rem]"
+          class="flex space-x-3 justify-center items-center px-2"
         >
-          <div :class="[item.imgList, 'w-[2rem] h-[2rem]']"  style="background-size: 100% 100%"></div>
-          <div class=" flex flex-col space-y-1 text-[.7rem]">
-            <div class="text-[.8rem]">{{ item.value }}</div>
-            <div class="flex space-x-1 font-light">
+          <div
+            :class="[item.imgList, 'w-[2.6rem] h-[2.6rem]']"
+            style="background-size: 100% 100%"
+          ></div>
+          <div class="flex flex-col space-y-1 text-[.7rem]">
+            <div class="text-[1.2rem] art-font">{{ item.value }}</div>
+            <div class="flex space-x-1">
               <span>{{ item.title }}</span>
               <span>{{ item.weight }}</span>
             </div>
@@ -35,17 +38,24 @@
       </div>
       <div class="bg-white p-2 min-h-[4rem] overflow-x-auto px-2">
         <div class="flex space-x-3">
-          <div class="bg-[#e5f4f3] p-3 flex flex-col justify-center items-center min-w-[5rem]">
+          <div
+            class="rounded-md bg-[#e5f4f3] p-3 flex flex-col justify-center items-center min-w-[5rem] "
+          >
             <div class="text-[#009688] text-[1rem] pb-1">{{ modelList.length }}</div>
             <div class="text-[13px]">模型总数</div>
           </div>
           <div
             v-for="(item, index) in modelList"
             :key="index"
-            :class="`flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] ${
-              activeModelId === item.modelId ? 'shadow-md font-bold ' : ''
+            :class="`cursor-pointer flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] cursor-pointer ${
+              activeModelId === item.modelId
+                ? 'shadow-md font-bold border-solid border-2 !border-[#009688]'
+                : ''
             }`"
-            @click="selectModel(item.modelId), handleFilterModelClick(item)"
+            @click="
+              selectModel(item.modelId), handleFilterModelClick(item),
+              getHealthValueData(item.modelId)
+            "
           >
             <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
             <div>
@@ -69,8 +79,8 @@
               <div
                 v-for="(ele, idx) in filteredModelList"
                 :key="idx"
-                class="relative"
-                @click="handleFilterModelClick(ele), console.log('1')"
+                class="relative cursor-pointer"
+                @click="handleFilterModelClick(ele)"
               >
                 <div
                   :class="`relative right-1rem ${
@@ -119,7 +129,7 @@
               v-for="item in tableBtns"
               :key="item.id"
               :class="[
-                'text-[12px] p-2 px-4 transition  ',
+                'text-[12px] p-2 px-4 transition  cursor-pointer',
                 selectedBtn === item.id ? '!bg-[#009688] text-[#fff]' : ''
               ]"
               @click=";(selectedBtn = item.id), getFilteredTableData(item.id)"
@@ -132,7 +142,7 @@
             :data="tableData"
             :stripe="true"
             v-loading="loading"
-            :show-overflow-tooltip="true"
+            :show-overflow-tooltip="false"
             :header-cell-style="{
               backgroundColor: '#f5f7fa',
               color: '#009688',
@@ -143,39 +153,37 @@
             <el-table-column label="监测指标范围" align="center">
               <template #default="scope">
                 <div class="py-3">
-                  <div class="flex flex-col items-center">
-                    <div class="w-full relative flex px-[2rem]">
-                      <div
-                        class="bg-[#666666] text-[#fff] rounded-2 extra-triangle mb-2 px-2 absolute left-4 inline-block"
-                        :style="`left: calc(${scope.row.position * 100}% - 2rem)`"
+                  <div class="flex flex-col items-center space-y-1">
+                    <div
+                      :style="{ left: `${scope.row.offset ?? 0}rem` }"
+                      class="bg-[#666666] text-white rounded-md px-5 py-1 extra-triangle relative top-[-2px]"
+                      >{{ scope.row.text }}</div
+                    >
+                    <div class="flex space-x-[.5rem] items-center">
+                      <div class="w-[3rem] text-center"
+                        >{{ scope.row.minVal }}{{ scope.row.unitVal }}</div
                       >
-                        <template v-if="scope.row.hasData">
-                          {{ scope.row.assess }} ({{ scope.row.value }}{{ scope.row.unitVal }})
-                        </template>
-                        <template v-else> 暂无数据 </template>
-                      </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                      <div class="w-[2.5rem] text-center">
-                        <span>{{ scope.row.minVal }}</span>
-                        <span>{{ scope.row.unitVal }}</span>
-                      </div>
-                      <div class="flex rounded-[4px] overflow-hidden space-x-.5 w-[10rem]">
+                      <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
                         <div
-                          v-for="(item, index) in scope.row.modelIndicatorElementRangeDOList"
-                          :key="item.id"
-                          :class="`w-[${(
-                            (1 * 10) /
-                            scope.row.modelIndicatorElementRangeDOList.length
-                          ).toFixed(0)}rem]`"
-                        >
-                          <div :class="`h-[8px] w-full tool-bar-${index + 1}`"></div>
-                        </div>
+                          v-for="(rangeItem, idx) in scope.row.modelIndicatorElementRangeDOList"
+                          :key="rangeItem.id"
+                          @mouseenter="
+                            handleItemHover(
+                              scope.row,
+                              rangeItem,
+                              (6 * (idx * 2 + 1)) /
+                                scope.row.modelIndicatorElementRangeDOList.length -
+                                6
+                            )
+                          "
+                          :class="`color-bar-${idx + 1} grow w-[${
+                            100 / scope.row.modelIndicatorElementRangeDOList.length
+                          }%] h-[.6rem]`"
+                        ></div>
                       </div>
-                      <div class="w-[2.5rem] text-center">
-                        <span>{{ scope.row.maxVal }}</span>
-                        <span>{{ scope.row.unitVal }}</span>
-                      </div>
+                      <div class="w-[3rem] text-center line-height-[1rem]"
+                        >{{ scope.row.maxVal }}{{ scope.row.unitVal }}</div
+                      >
                     </div>
                   </div>
                 </div>
@@ -220,6 +228,13 @@ import {
 import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
 import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
 
+const handleItemHover = (cardItem, rangeItem, offset) => {
+  cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${
+    rangeItem.highLimit
+  }${rangeItem.unit ?? ''}`
+  cardItem.offset = offset
+}
+
 // 左侧基地列表
 const filteredLeftList = ref<any[]>([])
 const getleftList = async () => {
@@ -233,16 +248,17 @@ const getleftList = async () => {
 
 //评分列表
 const healthValueData = ref<any[]>([])
-const getHealthValueData = async (modelId, batch) => {
+const getHealthValueData = async (modelId, batch = '202407221511110884') => {
   const healthDataList = await getModelMonitor({ modelId, batch })
   healthValueData.value = healthDataList.map((item, index) => ({
     title: item.title,
-    value: item.value ,
+    value: item.value,
     weight: item.weight ? `(${item.weight})` : '',
-    imgList: `icon-${(index %5)+ 1}`
+    imgList: `icon-${(index % 5) + 1}`
   }))
 }
-getHealthValueData('MXGL20240806000002', '202407221511110884')
+getHealthValueData('MXGL20240806000002')
+
 // 模型列表
 const modelList = ref<any[]>([])
 const activeId = ref<string | null>(null)
@@ -286,8 +302,6 @@ const selectModel = async (modelId) => {
 const selectedInfo = ref<string>('')
 const newItemButtonList = ref<any[]>([])
 const handleItemClick = (item) => {
-  console.log('🚀 ~ handleItemClick ~ item:', item)
-
   topSelectedBtn.value = item.id
   selectedInfo.value = item.itemContent || ''
 }
@@ -301,8 +315,6 @@ const filterModel = (resItem) => {
       initChart(filteredModelList.value, firstItemPeriod)
       const [firstModelItem] = filteredModelList.value
       if (firstModelItem) handleFilterModelClick(firstModelItem)
-      console.log('🚀 ~ nextTick ~ firstItemPeriod:', firstItemPeriod)
-      console.log('🚀 ~ nextTick ~ filteredModelList.value:', filteredModelList.value)
     }
   })
 
@@ -404,7 +416,6 @@ const getTableData = async (modelId, growthId) => {
 
 const getFilteredTableData = (selectedBtn) => {
   const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
-  console.log('🚀 ~ getFilteredTableData ~ filtered_res:', filtered_res)
   if (filtered_res === undefined) {
     tableData.value = []
   }
@@ -412,6 +423,7 @@ const getFilteredTableData = (selectedBtn) => {
   if (Array.isArray(filtered_res.modelIndicatorElementCardVOList)) {
     tableData.value = filtered_res.modelIndicatorElementCardVOList.map((item) => {
       const rangeItem = item.modelIndicatorElementRangeDOList
+
       if (!Array.isArray(rangeItem)) return item
       const firstItem = rangeItem[0],
         lastItem = rangeItem[rangeItem.length - 1]
@@ -432,8 +444,18 @@ const getFilteredTableData = (selectedBtn) => {
           }
         })
       }
-
-      return { ...item, minVal, maxVal, unitVal, position, hasData }
+      const normalItem = rangeItem.find(
+        (rItem) =>
+          rItem.indicatorResult.indexOf('正常') !== -1 ||
+          rItem.indicatorResult.indexOf('适宜') !== -1
+      )
+      let text = ``
+      if (normalItem) {
+        text = `${normalItem.indicatorResult} ${normalItem.lowLimit}${normalItem.unit ?? ''} ~ ${
+          normalItem.highLimit
+        }${normalItem.unit ?? ''}`
+      }
+      return { ...item, minVal, maxVal, unitVal, position, hasData, text }
     })
   }
 }
@@ -596,5 +618,21 @@ onMounted(() => init())
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
   }
+}
+
+.color-bar-1 {
+  background: linear-gradient(to right, #01d51d, #4cbd14);
+}
+
+.color-bar-2 {
+  background: linear-gradient(to right, #01d51d, #4cbd14);
+}
+
+.color-bar-3 {
+  background: linear-gradient(to right, #4cbd14, #9aa30a);
+}
+
+.color-bar-4 {
+  background: linear-gradient(to right, #9aa30a, #e78900);
 }
 </style>

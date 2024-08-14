@@ -71,3 +71,12 @@ export const getIndicator = async (params) => {
     params
   })
 }
+
+// 修改品种模型绑定状态
+export const updateModelEnableStatus = async (id: any, isEnableModel: any) => {
+  const data = {
+    id,
+    isEnableModel
+  }
+  return await request.put({ url: `/agriculture/crop-base/updateStatus`, data })
+}

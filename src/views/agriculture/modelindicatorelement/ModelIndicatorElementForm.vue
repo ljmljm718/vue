@@ -10,14 +10,14 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="监测指标" prop="indicatorId">
-            <el-input v-model="indicatorName" placeholder="请选择监测指标" >
-              <template #append>
-                <el-button @click="openIndicatorSelectPopup('0')">
-                  <Icon icon="ep:search"/>
-                  选择
-                </el-button>
-              </template>
-            </el-input>
+            <el-input v-model="indicatorName" disabled placeholder="请选择监测指标" />
+<!--              <template #append>-->
+<!--                <el-button @click="openIndicatorSelectPopup('0')">-->
+<!--                  <Icon icon="ep:search"/>-->
+<!--                  选择-->
+<!--                </el-button>-->
+<!--              </template>-->
+<!--            </el-input>-->
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -85,6 +85,7 @@ import {
 import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
 import SelectDeviceInfoMultiple from "@/views/agriculture/deviceinfo/components/SelectDeviceInfoMultiple.vue"
 import {DeviceInfoApi, DeviceInfoVO} from "@/api/agriculture/deviceinfo";
+import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -129,6 +130,7 @@ const formRef = ref() // 表单 Ref
 const subTabsName = ref('modelIndicatorElementRange')
 const modelIndicatorElementRangeFormRef = ref()
 
+const monitorIndicatorList = ref<ModelMonitorIndicatorVO[]>([])
 const deviceTypeList = ref<List<String>>([]) // 设备检测类型列表的数据
 const getDeviceTypeData = async () => {
   const res = await DeviceInfoApi.getDeviceMonitorType()
@@ -156,6 +158,11 @@ const open = async (type: string, item: any) => {
       } finally {
         formLoading.value = false
       }
+    } else {
+      const indicator = await ModelMonitorIndicatorApi.getModelMonitorIndicator(_indicatorId)
+      // 设置数据
+      indicatorName.value = indicator.indicatorName;
+      formData.value.indicatorId = _indicatorId;
     }
   }
 }
