@@ -53,21 +53,27 @@
 
       <el-form-item label="所属基地" prop="belongParkName">
         <el-input
-          v-model="queryParams.belongParkName"
-          placeholder="请输入擅长所属基地"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+          v-model="queryParams.belongParkName" placeholder="请选择所属基地" readonly
+                  class="!w-240px">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlotName">
         <el-input
-          v-model="queryParams.belongPlotName"
-          placeholder="请输入擅长所属地块"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+          v-model="queryParams.belongPlotName" placeholder="请选择所属地块" readonly
+                  class="!w-240px">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
 <!--
       <el-form-item label="所属基地" prop="belongPark">
@@ -327,6 +333,7 @@ const openParkPopup = (id: string) => {
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0'){
     queryParams.belongPark = String(order[0].code)
+    queryParams.belongParkName = String(order[0].name)
   }
   else queryParams.belongPlot = String(order[0].id)
 }
@@ -345,5 +352,6 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
   console.log("--->>查看选择的地块信息：",order[0])
   queryParams.belongPark = String(order[0].parkId)
   queryParams.belongPlot = String(order[0].id)
+  queryParams.belongPlotName = String(order[0].name)
 }
 </script>
