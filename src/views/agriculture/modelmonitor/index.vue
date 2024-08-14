@@ -5,7 +5,7 @@
         <div
           v-for="(item, index) in filteredLeftList"
           :key="index"
-          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md ${
+          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md cursor-pointer ${
             activeId === item.id ? 'font-bold' : ''
           }`"
           @click="getmodelList(item.id)"
@@ -39,7 +39,7 @@
       <div class="bg-white p-2 min-h-[4rem] overflow-x-auto px-2">
         <div class="flex space-x-3">
           <div
-            class="rounded-md bg-[#e5f4f3] p-3 flex flex-col justify-center items-center min-w-[5rem] cursor-pointer"
+            class="rounded-md bg-[#e5f4f3] p-3 flex flex-col justify-center items-center min-w-[5rem] "
           >
             <div class="text-[#009688] text-[1rem] pb-1">{{ modelList.length }}</div>
             <div class="text-[13px]">模型总数</div>
@@ -47,12 +47,15 @@
           <div
             v-for="(item, index) in modelList"
             :key="index"
-            :class="`cursor-pointer flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] ${
+            :class="`cursor-pointer flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] cursor-pointer ${
               activeModelId === item.modelId
                 ? 'shadow-md font-bold border-solid border-2 !border-[#009688]'
                 : ''
             }`"
-            @click="selectModel(item.modelId), handleFilterModelClick(item)"
+            @click="
+              selectModel(item.modelId), handleFilterModelClick(item),
+              getHealthValueData(item.modelId)
+            "
           >
             <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
             <div>
@@ -76,8 +79,8 @@
               <div
                 v-for="(ele, idx) in filteredModelList"
                 :key="idx"
-                class="relative"
-                @click="handleFilterModelClick(ele), console.log('1')"
+                class="relative cursor-pointer"
+                @click="handleFilterModelClick(ele)"
               >
                 <div
                   :class="`relative right-1rem ${
@@ -245,7 +248,7 @@ const getleftList = async () => {
 
 //评分列表
 const healthValueData = ref<any[]>([])
-const getHealthValueData = async (modelId, batch) => {
+const getHealthValueData = async (modelId, batch = '202407221511110884') => {
   const healthDataList = await getModelMonitor({ modelId, batch })
   healthValueData.value = healthDataList.map((item, index) => ({
     title: item.title,
@@ -254,7 +257,8 @@ const getHealthValueData = async (modelId, batch) => {
     imgList: `icon-${(index % 5) + 1}`
   }))
 }
-getHealthValueData('MXGL20240806000002', '202407221511110884')
+getHealthValueData('MXGL20240806000002')
+
 // 模型列表
 const modelList = ref<any[]>([])
 const activeId = ref<string | null>(null)
@@ -298,8 +302,6 @@ const selectModel = async (modelId) => {
 const selectedInfo = ref<string>('')
 const newItemButtonList = ref<any[]>([])
 const handleItemClick = (item) => {
-  console.log('🚀 ~ handleItemClick ~ item:', item)
-
   topSelectedBtn.value = item.id
   selectedInfo.value = item.itemContent || ''
 }
@@ -313,8 +315,6 @@ const filterModel = (resItem) => {
       initChart(filteredModelList.value, firstItemPeriod)
       const [firstModelItem] = filteredModelList.value
       if (firstModelItem) handleFilterModelClick(firstModelItem)
-      console.log('🚀 ~ nextTick ~ firstItemPeriod:', firstItemPeriod)
-      console.log('🚀 ~ nextTick ~ filteredModelList.value:', filteredModelList.value)
     }
   })
 
@@ -416,7 +416,6 @@ const getTableData = async (modelId, growthId) => {
 
 const getFilteredTableData = (selectedBtn) => {
   const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
-  console.log('🚀 ~ getFilteredTableData ~ filtered_res:', filtered_res)
   if (filtered_res === undefined) {
     tableData.value = []
   }
@@ -424,10 +423,7 @@ const getFilteredTableData = (selectedBtn) => {
   if (Array.isArray(filtered_res.modelIndicatorElementCardVOList)) {
     tableData.value = filtered_res.modelIndicatorElementCardVOList.map((item) => {
       const rangeItem = item.modelIndicatorElementRangeDOList
-      console.log(
-        '🚀 ~ tableData.value=filtered_res.modelIndicatorElementCardVOList.map ~ rangeItem:',
-        rangeItem
-      )
+
       if (!Array.isArray(rangeItem)) return item
       const firstItem = rangeItem[0],
         lastItem = rangeItem[rangeItem.length - 1]
@@ -459,11 +455,6 @@ const getFilteredTableData = (selectedBtn) => {
           normalItem.highLimit
         }${normalItem.unit ?? ''}`
       }
-      console.log(
-        '🚀 ~ tableData.value=filtered_res.modelIndicatorElementCardVOList.map ~ text:',
-        text
-      )
-
       return { ...item, minVal, maxVal, unitVal, position, hasData, text }
     })
   }
