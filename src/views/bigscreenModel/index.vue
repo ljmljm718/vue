@@ -391,7 +391,7 @@ export default defineComponent({
                 {monitorList.value.map((item, index) => {
                   return (
                     <div class="flex w-100% h-50% items-center justify-center">
-                      <div class="left-icon-1 mr-15px"></div>
+                      <div class={`left-icon-${index+1} mr-15px`}></div>
                       <div class="w-45% h-100% flex flex-col justify-center">
                         <div class="flex w-90% ml-[25px] mb-[-10px] items-center justify-between">
                           {' '}
