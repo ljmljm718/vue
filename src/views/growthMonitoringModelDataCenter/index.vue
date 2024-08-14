@@ -192,7 +192,7 @@ export default defineComponent({
     let curItem = 0
     const curTips = ref<Array<any>>([])
     const curCycle = ref(0)
-    const cycleMap = new Map()
+    const cycleMap = ref(new Map())
     let curCropCode = ""
     const curRealPeriod = ref("")
     const offsetLeft = ref(0);
@@ -210,7 +210,7 @@ export default defineComponent({
 
         res.map((item, index) => {
           if (index) {
-            cycleMap.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2})
+            cycleMap.value.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2, imgId: item.imgId})
             curCropCode = item.growthId
 
             if (curPeriod.value === item.growth) {
@@ -221,8 +221,8 @@ export default defineComponent({
             }
           }
         })
-        curTips.value = cycleMap.get(curPeriod.value).tips
-        curCycle.value = cycleMap.get(curPeriod.value).cycle
+        curTips.value = cycleMap.value.get(curPeriod.value).tips
+        curCycle.value = cycleMap.value.get(curPeriod.value).cycle
 
         // 初始化周期列表的位置
         offsetLeft.value = 0
@@ -264,9 +264,9 @@ export default defineComponent({
       curItem = index
       
       curPeriod.value = cycleNameList.value[curItem].growth
-      curTips.value = cycleMap.get(curPeriod.value).tips
-      curCycle.value = cycleMap.get(curPeriod.value).cycle
-      curCropCode = cycleMap.get(curPeriod.value).growthId
+      curTips.value = cycleMap.value.get(curPeriod.value).tips
+      curCycle.value = cycleMap.value.get(curPeriod.value).cycle
+      curCropCode = cycleMap.value.get(curPeriod.value).growthId
 
       if (tmp != curItem)
         await getIndicatorList()
@@ -745,9 +745,18 @@ export default defineComponent({
                   }
                 </div>
                 {/** 模型图片 */}
-                {
+                {/*
                   curVarietyName.value === "连梗11号" ? (
                     <div class={`center-model model-${ curItem + 1 }`}></div>
+                  ) : null
+                */}
+                {
+                  cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
+                    <div
+                      class="center-model"
+                      style={`background-image: url(${ cycleMap.value.get(curPeriod.value).imgId })`}
+                    >
+                    </div>
                   ) : null
                 }
                 {/** 周期事项 */}
@@ -830,6 +839,7 @@ export default defineComponent({
                   cardWidth={ 400 }
                   cardHeight={ 350 }
                 >
+                  <el-scrollbar>
                   {
                     indicatorList.value.length ? (
                       <div class="grid grid-cols-2 gap-2 justify-items-center">
@@ -856,6 +866,7 @@ export default defineComponent({
                       </div>
                     )
                   }
+                  </el-scrollbar>
                 </Card>
                 <Card 
                   height={ 532 }
@@ -907,7 +918,7 @@ export default defineComponent({
                                 }
                               }
                               </el-table-column>
-                              <el-table-column label="比例" prop="healthRatio" align="center" width="60px"/>
+                              <el-table-column label="健康值" prop="healthRatio" align="center" width="60px"/>
                               <el-table-column label="要素结果" prop="indicatorResult" align="center" />
                             </el-table>
                           </div>
