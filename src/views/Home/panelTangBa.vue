@@ -142,7 +142,7 @@
                 <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel"/>
               </template>
             </el-table-column>
-            <el-table-column label="报警信息" min-width="150" prop="warnInfo" />
+            <el-table-column label="报警信息" min-width="100" prop="warnInfo" />
             <el-table-column label="当前值" prop="currentValue" />
             <el-table-column label="阈值" prop="threshold" />
             <el-table-column label="处理状态" prop="warnStatus">
@@ -152,6 +152,7 @@
             </el-table-column>
             <el-table-column
               label="报警时间"
+              width="150px"
               prop="warnTime"
               :formatter="(row) => {
                 return formatTime(row.warnTime, 'yyyy-MM-dd HH:mm:ss')
@@ -270,8 +271,11 @@ defineOptions({ name: 'PanelTangBa' })
 console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }).join(''));
 //标签切换
 const tabsVal=ref('设备概要')
+const equipmentId=ref('')
+const deviceKinds=ref('')
 const handleClick=(val)=>{
     tabsVal.value=val
+    getRunTimeData(equipmentId.value,deviceKinds.value)
 }
 const generateXY = (arr:Array<any>) => {
   const x:Array<any> = [], y:Array<any> = []
@@ -595,7 +599,8 @@ const getDeviceInfoData = async (item) => {
   title.value = parkDetailName + '-' + deviceName
   let timeDate=res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
   time.value = '最新数据更新于:' + timeDate
-
+  deviceKinds.value = deviceKind
+  equipmentId.value=item.id
   setTimeout(() => { item.id && getRunTimeData(item.id, deviceKind) }, 300)
 
   console.log("deviceKind", deviceId);
