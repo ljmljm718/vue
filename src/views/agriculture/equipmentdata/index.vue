@@ -221,14 +221,14 @@
   <!-- 列表 -->
   <ContentWrap>
     <div class="mb-20px -mt-5px ml-10px">
-      <!-- <el-button
+      <el-button
         class="!bg-[#009688] !color-[#fff]"
         plain
         @click="openForm('create')"
         v-hasPermi="['yyang:equipment-data:create']"
       >
         <Icon icon="ep:plus" class="mr-5px" /> 新增
-      </el-button> -->
+      </el-button>
       <el-button
         plain
         @click="handleExport"

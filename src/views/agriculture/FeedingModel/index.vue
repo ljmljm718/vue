@@ -1,5 +1,5 @@
 <template>
-  <div class="box-border px-[15px] py-[15px]">
+  <div class="box-border px-[10px] py-[10px]">
     <div class="w-100% px-[25px] py-[15px] box-border bg-[#fff] rounded">
       <div class="text-14px">饲料投喂模型</div>
       <div :class="`grid grid-cols-7 ${FeedingTopList.length} mt-[15px] `">

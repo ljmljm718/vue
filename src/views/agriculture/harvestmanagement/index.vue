@@ -68,7 +68,7 @@ v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
       <el-form-item label="品类名称" prop="variety">
         <el-input
           v-model="queryParams.variety"
-          placeholder="请输入品种"
+          placeholder="请输入品类名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
