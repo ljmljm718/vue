@@ -28,7 +28,14 @@
         <el-input v-model="formData.min" placeholder="请输入健康等级下限分" />
       </el-form-item>
       <el-form-item label="模型名称" prop="modelName">
-        <el-input v-model="formData.modelName" placeholder="请输入模型名称" />
+        <el-input v-model="formData.modelName" placeholder="请选择模型" >
+          <template #append>
+            <el-button @click="openModelFrom()">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -38,11 +45,14 @@
   </Dialog>
 
   <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
+  <ModelFrom ref="ModelFromRef" @success="ModelFromSuccess"/>
 </template>
 <script setup lang="ts">
 import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
 //品种管理页面
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+//模型管理页面
+import ModelFrom from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
 
 /** 健康等级 表单 */
 defineOptions({ name: 'HealthLevelForm' })
@@ -96,6 +106,16 @@ const BreedFromSuccess = (order: any) => {
   formData.value.cropCode = String(order[0].id)
 }
 
+//模型名称管理
+const ModelFromRef = ref()
+const openModelFrom = () => {
+  ModelFromRef.value.open();
+}
+const ModelFromSuccess = (order: any) => {
+  console.log(order,"---------=----");
+  formData.value.modelName = String(order[0].modelName)
+  formData.value.modelId = String(order[0].id)
+}
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
