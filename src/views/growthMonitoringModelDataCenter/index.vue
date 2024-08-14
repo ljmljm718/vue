@@ -158,9 +158,17 @@ export default defineComponent({
     }
 
     const router = useRouter()
-    const handleRoute = () => {
-      router.push("/bigscreenModel")
-    }
+    const handleRoute = (item) => {
+      router.push({
+        path:"/bigscreenModel",
+        query:{
+          modelName: item.modelName,
+          growthId: item.growthId,
+          plotId:item.plotId,
+          modelId: item.modelId,
+          batchCode:item.batchCode
+        }
+      })
 
     /**
      * 周期/物候期 相关
