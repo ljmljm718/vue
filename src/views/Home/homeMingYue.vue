@@ -6,45 +6,45 @@
       :style="`grid-template-columns: repeat(${topList.length}, minmax(50px,auto));`"
     >
       <div
-        class="custom-card"
+        class="custom-card !p-0"
         style="cursor: pointer"
         v-for="(item, index) in topList"
         :key="index"
         @click="goPage(item)"
       >
-        <div class="flex items-center justify-between bg-[#ffa23e] text-[#ffffff] rounded-md">
-          
-          <div class="flex justify-between flex-col m-2 mb-3">
+        <div
+          class="flex items-center justify-between text-[#ffffff] rounded-md p-3 py-2 relative"
+          :style="{ backgroundColor: item.color }"
+        >
+          <div class="flex justify-between flex-col m-2 mb-3 space-y-2">
             <div style="font-size: 13px">{{ item.title }}</div>
-            <div >{{ item.value }}</div>
+            <div class="art-font text-[1.4rem]">{{ item.value }}</div>
           </div>
-          <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%"></div>
+          <div class="absolute right-3 bottom-3">
+            <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%"></div>
+          </div>
         </div>
       </div>
     </div>
     <div class="flex justify-between space-x-2 my-4">
       <div class="w-[16rem] custom-card">
         <el-tree
-          style="max-width: 100%; height: 100%;"
+          style="max-width: 100%; height: 100%"
           :data="data"
           :props="defaultProps"
           :default-expand-all="true"
           highlight-current
           node-key="id"
           @current-change="handleTreeChange"
-        >
-          <template #default="{ node }">
-            <div class="w-full">{{ node.label }}</div>
-          </template>
-        </el-tree>
+        />
       </div>
       <div class="w-full">
         <!-- 左侧 -->
         <div class="w-full grid gap-3" style="grid-template-columns: 1fr 2fr 1fr">
           <div class="custom-card">
-              <div class="flex font-600">
-                <div>巡检进度</div>
-              </div>
+            <div class="flex font-600">
+              <div>巡检进度</div>
+            </div>
             <div class="relative">
               <div class="items-center" id="chart1"></div>
               <div
@@ -57,22 +57,22 @@
               </div>
             </div>
             <div
-              class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center"
+              class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
               >总设备数: {{ deviceTotal }}</div
             >
-            <div class="grid grid-cols-2 gap-2 grid-rows-2 h-40% mt-2">
-              <div class="bg-[#f2f2f2] p-3" v-for="(item, index) in typeList" :key="index">
+            <div class="grid grid-cols-2 gap-2 grid-rows-2 h-45% mt-2  ">
+              <div class="bg-[#f2f2f2] p-3 !rounded-md" v-for="(item, index) in typeList" :key="index">
                 <div class="flex justify-between mb-3 font-medium"
                   >{{ item.categoryName }}
                   <span class="color-[#009688]">{{ item.totalCount }}</span></div
                 >
                 <div
-                  class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333] rounded-md"
+                  class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333] "
                 >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded mb-1"
                     >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
                   >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded "
                     >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
                   >
                 </div>
@@ -81,19 +81,18 @@
           </div>
           <!-- 中间 -->
           <div class="flex space-y-2 flex-col">
-            <el-card>
-              <template #header>
-                <div class="flex font-800">
-                  <div>预警信息</div>
-                </div>
-              </template>
+            <div class="custom-card">
+              <div class="flex font-800">
+                <div>预警信息</div>
+              </div>
+
               <div class="flex">
                 <div class="w-[10rem]">
                   <div style="padding: 5px">
-                    <div class="mt-0.5rem  bg-#fff1f0 flex flex-col items-center rounded-md">
+                    <div class="mt-0.5rem bg-#fff1f0 flex flex-col items-center rounded-md">
                       <div
                         @click="goPageWran(1)"
-                        class=" font-500 mt-10px text-[#FF3E23]"
+                        class="font-500 mt-10px text-[#FF3E23]"
                         style="font-size: 20px; cursor: pointer"
                         >{{ todayWarnNum }}
                       </div>
@@ -101,7 +100,7 @@
                         >今日报警</div
                       >
                     </div>
-                    <div class="mt-0.5rem  bg-#fff7ee flex flex-col items-center rounded-md">
+                    <div class="mt-0.5rem bg-#fff7ee flex flex-col items-center rounded-md">
                       <div
                         @click="goPageWran(2)"
                         class="flex font-500 mt-10px text-[#FF8400]"
@@ -118,13 +117,12 @@
                   <div id="chart2"></div>
                 </div>
               </div>
-            </el-card>
-            <el-card class="grow">
-              <template #header>
-                <div class="flex font-800">
-                  <div>设备预警</div>
-                </div>
-              </template>
+            </div>
+            <div class="custom-card grow">
+              <div class="flex font-800 mb-3">
+                <div>设备预警</div>
+              </div>
+
               <el-table
                 :data="pageWarnList"
                 :stripe="true"
@@ -145,15 +143,14 @@
                   </template>
                 </el-table-column>
               </el-table>
-            </el-card>
+            </div>
           </div>
           <!-- 右侧 -->
-          <el-card>
-            <template #header>
-              <div class="flex font-800">
-                <div>实时数据</div>
-              </div>
-            </template>
+          <div class="custom-card">
+            <div class="flex font-800 mb-3">
+              <div>实时数据</div>
+            </div>
+
             <el-scrollbar height="40rem">
               <div class="grid grid-cols-2 gap-2 pr-1">
                 <div
@@ -176,15 +173,14 @@
                 </div>
               </div>
             </el-scrollbar>
-          </el-card>
+          </div>
         </div>
         <!-- 底部 -->
-        <el-card class="my-3">
-          <template #header>
-            <div class="flex font-800">
-              <div>历史数据</div>
-            </div>
-          </template>
+        <div class="custom-card my-3">
+          <div class="flex font-800 mb-3">
+            <div>历史数据</div>
+          </div>
+
           <div class="flex py-1">
             <el-radio-group v-model="radio" @change="handleRadioChange">
               <el-radio-button
@@ -223,14 +219,13 @@
           <div class="w-[100] h-140px relative">
             <div id="chart3"></div>
           </div>
-        </el-card>
+        </div>
         <div class="w-full grid grid-cols-3 gap-3 my-2">
-          <el-card>
-            <template #header>
-              <div class="flex font-800">
-                <div>设备类型占比</div>
-              </div>
-            </template>
+          <div class="custom-card">
+            <div class="flex font-800 mb-3">
+              <div>设备类型占比</div>
+            </div>
+
             <el-radio-group
               v-model="deviceTypeRadio"
               class="my-2 !w-full"
@@ -242,13 +237,12 @@
               <el-radio-button label="控制设备" value="控制设备" />
             </el-radio-group>
             <div id="chartExtra1"></div>
-          </el-card>
-          <el-card class="col-span-2">
-            <template #header>
-              <div class="flex font-800">
-                <div>数据采集</div>
-              </div>
-            </template>
+          </div>
+          <div class="custom-card col-span-2">
+            <div class="flex font-800 mb-3">
+              <div>数据采集</div>
+            </div>
+
             <div class="flex space-x-2 items-center">
               <el-radio-group
                 v-model="dataCollectRadio"
@@ -271,7 +265,7 @@
               </div>
             </div>
             <div id="chartExtra2"></div>
-          </el-card>
+          </div>
         </div>
       </div>
     </div>
@@ -721,12 +715,7 @@ const initChart2 = async () => {
 
 const defaultProps = {
   children: 'child',
-  label: 'name',
-  class: (data, node) => {
-    console.log("🚀 ~ data:", data)
-    // if (Array.isArray(data.child)) return 'bg-yellow !hover:bg-green'
-    return '!bg-white !hover:bg-[#000000]'
-  }
+  label: 'name'
 }
 onMounted(() => {
   initChart2()
@@ -855,20 +844,30 @@ const getHomeDeviceCard = () => {
   getEquipmentCountSum().then((res) => {
     console.log(res, '顶部小卡片')
     const _iconMap = {
-      虫情: 'top-2',
-      土壤: 'top-3',
-      报警: 'top-9',
-      气象: 'top-5',
-      生长: 'top-7',
-      在线: 'top-8',
-      视频: 'top-4',
-      设备: 'top-6',
-      水质: 'top-1',
-      离线: 'top-10'
+      // 虫情: 'top-2',
+      // 土壤: 'top-3',
+      // 报警: 'top-9',
+      // 气象: 'top-5',
+      // 生长: 'top-7',
+      // 在线: 'top-8',
+      // 视频: 'top-4',
+      // 设备: 'top-6',
+      // 水质: 'top-1',
+      // 离线: 'top-10',
+      虫情: { icon: 'top-2', color: '#ffa647' },
+      土壤: { icon: 'top-3', color: 'red' },
+      报警: { icon: 'top-9', color: '#ff6f60' },
+      气象: { icon: 'top-5', color: '#528cf7' },
+      生长: { icon: 'top-7', color: '#10c6d4' },
+      在线: { icon: 'top-8', color: '#56c96b' },
+      视频: { icon: 'top-4', color: '#538ef7' },
+      设备总数: { icon: 'top-6', color: '#4d87f6' },
+      水质: { icon: 'top-1', color: '#8e6efd' },
+      离线设备: { icon: 'top-10', color: '#fe7062' }
     }
     const getIconFrame = (text: string) => {
       let flag = false,
-        res = ''
+        res = { icon: '', color: '' }
       Object.keys(_iconMap).forEach((item) => {
         if (text.indexOf(item) !== -1 && !flag) {
           flag = true
@@ -878,11 +877,15 @@ const getHomeDeviceCard = () => {
       return res
     }
 
-    topList.value = Object.keys(res).map((item) => ({
-      title: item,
-      value: res[item],
-      icon: getIconFrame(item)
-    }))
+    topList.value = Object.keys(res).map((item) => {
+      const { icon, color } = getIconFrame(item)
+      return {
+        title: item,
+        value: res[item],
+        icon: icon,
+        color: color
+      }
+    })
   })
 }
 getHomeDeviceCard()
@@ -946,28 +949,33 @@ const getIconClass = (text: string = '') => {
     虫: '9',
     类: '10',
     default: '1',
-    磷: '11',
+    // 磷: '11',
     氮: '12',
-    钾: '13',
-    深度: '14',
-    种植面积: '18',
-    农户: '17',
-    大棚: '15',
-    盆栽: '16',
-    施肥: '19',
-    虫害: '20',
-    浇水: '21',
-    除草: '22',
-    打药: '23',
-    采收: '24',
+    // 钾: '13',
+    // 深度: '14',
+    // 种植面积: '18',
+    // 农户: '17',
+    // 大棚: '15',
+    // 盆栽: '16',
+    // 施肥: '19',
+    // 虫害: '20',
+    // 浇水: '21',
+    // 除草: '22',
+    // 打药: '23',
+    // 采收: '24',
     风: '25',
-    电: '26',
-    盐: '27',
-    水位: '28',
-    氧: '29',
-    辐射: '30',
-    浑浊: '31',
-    氯: '32'
+    电导率: '26',
+    盐度: '27',
+    // 水位: '28',
+    // 氧: '29',
+    // 辐射: '30',
+    浊度: '31',
+    // 氯: '32',
+    溶解氧浓度: '33',
+    溶解氧饱和度: '34',
+    ORP: '35',
+    TDS: '36',
+    余氯浓度: '37'
   }
   const iconLabel = Object.keys(iconMap)
   let key = 'default'
@@ -1105,26 +1113,28 @@ select {
 }
 @for $i from 1 through 10 {
   .top-#{$i} {
-    background-image: url(./assets/s#{$i}.png);
+    background-image: url(./assets/b#{$i}.png);
   }
 }
 
+// .top-background {
+
+// }
 @for $i from 1 through 10 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
   }
 }
 
-@for $i from 1 through 32 {
+@for $i from 1 through 37 {
   .my-icon-#{$i} {
-    background-image: url(./assets//mingyue/icon#{$i}.png);
+    background-image: url(./assets//mingyue1/icon#{$i}.png);
     background-size: 100% auto;
   }
 }
-
 .custom-card {
   background-color: white;
-  border-radius: .2rem;
+  border-radius: 0.2rem;
   padding: 1rem;
   box-shadow: var(--el-box-shadow-light);
 }

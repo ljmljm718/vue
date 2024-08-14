@@ -124,7 +124,7 @@ const routerHandler = (item:string) => {
 
     "农事活动": "/farm_work/farmManage/farm-record",
     "种植管理": "/farm_work/crop-base",
-    "监测模型": "/farm_work/crop-growth-new",
+    "监测模型": "/growth_monitor/modelMonitor",
     "农事概览": "/farm_work/agriOverview",
     
     "基地总览": "/asset/baseOVerview",

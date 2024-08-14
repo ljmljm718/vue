@@ -28,3 +28,17 @@ export const CropPlotByModelId = async (params) =>{
     params
   })
 }
+//左上监测
+export const modelMonitor = async (params) =>{
+  return await request.get({
+    url:'/agriculture/model-monitor-execution-growth/model-monitor',
+    params
+  })
+}
+//中间下方折线图
+export const ModelOverviewStatistics = async (params) =>{
+  return await request.get({
+    url:'/agriculture/model-monitor-execution-day/getModelOverviewStatistics',
+    params
+  })
+}

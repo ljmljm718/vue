@@ -7,7 +7,7 @@ import preWarn from '@/views/bigscreen6/assets/preWarn.png'
 import sensor from '@/views/bigscreen6/assets/sensor.png'
 import monitor from '@/views/bigscreen6/assets/monitor.png'
 import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
-
+import ScaleBox from "vue3-scale-box";
 import {
   largeScreenGetWarning,
   largeScreenGetOneWarning,
@@ -637,330 +637,340 @@ const rightUnitMap = {
 }
 </script>
 <template>
-  <div class="bigscreen-main-wrapper">
-    <div class="header-main-wrapper header-bg">
-      <div class="header-left-part-wrapper">
-        <BigScreenTime/>
-      </div>
-      <div class="header-title-wrapper">酉阳鲁渝协作示范村数字化赋能</div>
-      <div class="header-right-part-wrapper"></div>
-    </div>
-    <div class="content-main-wrapper grid-container">
-      <div class="gird-item-wrapper">
-        <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')">
-            <div>环境监测</div>
-            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-              <select @change="handleEnvSelectorChange">
-                <option
-                  :value="item.id"
-                  v-for="item,index in envOptions"
-                  :key="index"
-                >{{ item.name }}
-                </option>
-              </select>
-            </div>
+  <div class="w-[100vw] h-[100vh] overflow-hidden bg-black">
+    <ScaleBox>
+      <div class="bigscreen-main-wrapper">
+        <div class="header-main-wrapper header-bg">
+          <div class="header-left-part-wrapper">
+            <BigScreenTime/>
           </div>
-          <div class="main-item-container">
-            <div class="card-grid-wrapper">
-              <div
-                :class="`card-grid-item ${leftTabSelected === item.monitoringType ? 'card-selected' : ''}`"
-                v-for="item,index in envVal"
-                :key="index"
-              >
-                <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType]}`"></div>
-                <div class="label-val-wrapper">
-                  <div class="value-wrapper">
-                    <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ leftUnitMap[item.monitoringType] }}</span>
-                  </div>
-                  <div class="label-wrapper">{{ leftLabelMap[item.monitoringType] }}</div>
-                </div>
-                <div v-show="leftUnitMap[item.monitoringType]" :class="btnIndex==index? 'check-btn2':'check-btn'" @click="getChart(item.monitoringType,index)">
-                  查看
-                </div>
-              </div>
-            </div>
-            <div class="sub-title-wrapper">
-              <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{
-                  envLabel
-                }}变化趋势
-              </div>
-              <div
-                style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
-            </div>
-            <div
-              class="chart-wrapper"
-              id="chart1"
-            ></div>
-          </div>
+          <div class="header-title-wrapper">酉阳鲁渝协作示范村数字化赋能</div>
+          <div class="header-right-part-wrapper"></div>
         </div>
-      </div>
-      <div
-        class="gird-item-wrapper"
-        style="grid-row: span 3;z-index: 10;"
-      >
-        <div class="grid-main-item center-container">
-          <div class="tool-tip-wrapper">
-            <div class="tool-tip-item">
-              <img
-                :src="preWarn"
-                alt=""
-              />
-              <span>预警信息</span>
-            </div>
-            <div class="tool-tip-item">
-              <img
-                :src="sensor"
-                alt=""
-              />
-              <span>传感器</span>
-            </div>
-            <div class="tool-tip-item">
-              <img
-                :src="monitor"
-                alt=""
-              />
-              <span>监控设备</span>
-            </div>
-          </div>
-          <div id="mainMap">
-            <div
-              class="tool-info"
-              style="left: calc(400px - 100px);bottom: 300px;"
-            >
-              <div class="info-rect">
-                <div class="text-info" v-for="(item, index) in sxtObj" :key="index">
-                  <div class="text-row">编号: {{item.deviceCode}}</div>
-                  <div class="text-row">位置: {{item.location}}</div>
-                  <div class="text-row">设备: {{item.deviceName}}</div>
-                  <div class="text-row">状态: <span
-                    :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                      item.deviceStatus === 'online' ? '在线' : '离线'
-                    }}</span></div>
+        <div class="content-main-wrapper grid-container">
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')">
+                <div>环境监测</div>
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                  <select @change="handleEnvSelectorChange">
+                    <option
+                      :value="item.id"
+                      v-for="item,index in envOptions"
+                      :key="index"
+                    >{{ item.name }}
+                    </option>
+                  </select>
                 </div>
               </div>
-              <img
-                :src="monitor"
-                alt=""
-              />
-            </div>
-
-            <div
-              class="tool-info"
-              style="left: calc(600px - 100px);bottom: 100px;"
-            >
-              <div class="info-rect">
-                <div class="text-info">
-                  <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
-                  <div class="text-row">位置: {{ sjList.parkName }}</div>
-                  <div class="text-row">设备: {{ sjList.deviceName }}</div>
-                  <div class="text-row">当前读数: {{ sjList.dataValue + " "+sjList.yyUnit }}</div>
-                </div>
-              </div>
-              <img
-                :src="sensor"
-                alt=""
-              />
-            </div>
-            <div
-              class="tool-info"
-              style="left: calc(900px - 100px);bottom: 200px;"
-            >
-              <div class="info-rect">
-                <div class="text-info">
-                  <div class="text-row">编号: {{ warnList.parkCode }}</div>
-                  <div class="text-row">设备: {{ warnList.deviceCode }}</div>
-                  <div class="text-row">
-                    预警信息:
-                    <span style="color: #ff0000;">{{ warnList.warnInfo }}</span>
+              <div class="main-item-container">
+                <div class="card-grid-wrapper">
+                  <div
+                    :class="`card-grid-item ${leftTabSelected === item.monitoringType ? 'card-selected' : ''}`"
+                    v-for="item,index in envVal"
+                    :key="index"
+                  >
+                    <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType]}`"></div>
+                    <div class="label-val-wrapper">
+                      <div class="value-wrapper">
+                        <span class="value">{{ item.dataValue }}</span>
+                        <span class="unit">{{ leftUnitMap[item.monitoringType] }}</span>
+                      </div>
+                      <div class="label-wrapper">{{ leftLabelMap[item.monitoringType] }}</div>
+                    </div>
+                    <div v-show="leftUnitMap[item.monitoringType]" :class="btnIndex==index? 'check-btn2':'check-btn'" @click="getChart(item.monitoringType,index)">
+                      查看
+                    </div>
                   </div>
                 </div>
-              </div>
-              <img
-                :src="preWarn"
-                alt=""
-              />
-            </div>
-          </div>
-          <div class="top-card-wrapper">
-            <div class="top-card-item">
-              <div class="label-card">设备总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView')">
-                {{ deviceBaseInfo.total }}
-              </div>
-            </div>
-            <div class="top-card-item">
-              <div class="label-card">在线总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=online')">
-                {{ deviceBaseInfo.online }}
-              </div>
-            </div>
-            <div class="top-card-item">
-              <div class="label-card">离线总数</div>
-              <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=offline')">
-                {{ deviceBaseInfo.offline }}
-              </div>
-            </div>
-          </div>
-          <div class="extra-card-wrappper">
-            <div
-              class="top-card-item"
-              v-for="item in deviceNumCount"
-              :key="item"
-            >
-              <div class="extra-icon t-icon-1"></div>
-              <div class="extra-text-wrapper">
-                <div class="extra-text-row extra-title-font">
-                  <div>{{ item.categoryName }}</div>
-                  <div>{{ item.total }}</div>
-                </div>
-                <div class="extra-text-row">
-                  <div>在线数量</div>
-                  <div style="color: #0fc87c;">{{ item.online }}</div>
-                </div>
-                <div class="extra-text-row">
-                  <div>离线数量</div>
-                  <div style="color: #c51416;">{{ item.offline }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gird-item-wrapper">
-        <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
-            <div>水质监测</div>
-            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-              <select @change="handleSelectorChange1">
-                <option
-                  :value="item.id"
-                  v-for="item,index in options1"
-                  :key="index"
-                >{{ item.name }}
-                </option>
-              </select>
-              <select @change="selecte2">
-                <option
-                  :value="item.id"
-                  v-for="item,index in options2"
-                  :key="index"
-                >{{ item.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="main-item-container">
-            <div class="card-grid-wrapper">
-              <div
-                :class="`card-grid-item ${rightTabSelected === item.monitoringType ? 'card-selected' : ''}`"
-                v-for="(item, index) in waterTypeList"
-                :key="index"
-              >
-                <div :class="`icon-wrapper r-icon-${index+1}`"></div>
-                <div class="label-val-wrapper">
-                  <div class="value-wrapper">
-                    <span class="value">{{ item.dataValue }}</span>
-                    <span class="unit">{{ item.yyUnit }}</span>
+                <div class="sub-title-wrapper">
+                  <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
+                  <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{
+                      envLabel
+                    }}变化趋势
                   </div>
-                  <div class="label-wrapper">{{ item.monitoringType }}</div>
+                  <div
+                    style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
                 </div>
                 <div
-                :class="btnIndex2==index? 'check-btn2':'check-btn'"
-                  @click="btnCli(item,index)"
-                >查看
-                </div>
-              </div>
-            </div>
-            <div class="sub-title-wrapper">
-              <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-              <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
-                {{ right2Val }}变化趋势
-              </div>
-              <div
-                style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
-            </div>
-            <div
-              class="chart-wrapper"
-              id="chart2"
-            ></div>
-          </div>
-        </div>
-      </div>
-      <div class="gird-item-wrapper">
-        <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=30,31')">
-            <div>监控设备</div>
-          </div>
-          <div
-            class="main-item-container monitor-device"
-            style="flex-direction: row;"
-          >
-            <div
-              class="monitor-item"
-              v-for="(item, index) in monitorEquipList"
-              :key="index"
-            >
-              <div class="video-wrapper">
-                <img
-                  :src="item.imgId"
-                  alt=""
-                  style="width: 100%;height: 100%;object-fit: contain;"
-                />
-                <div
-                  class="filter-img"
-                  :style="`background-image: url(${item.capturedImage});`"
+                  class="chart-wrapper"
+                  id="chart1"
                 ></div>
               </div>
-              <div class="text-wrapper">
-                <div class="text-row">名称:{{ item.deviceName }}</div>
-                <div class="text-row">位置:{{ item.location }}</div>
-                <div class="text-row">状态: <span
-                  :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                    item.deviceStatus === 'online' ? '在线' : '离线'
-                  }}</span></div>
+            </div>
+          </div>
+          <div
+            class="gird-item-wrapper"
+            style="grid-row: span 3;z-index: 10;"
+          >
+            <div class="grid-main-item center-container">
+              <div class="tool-tip-wrapper">
+                <div class="tool-tip-item">
+                  <img
+                    :src="preWarn"
+                    alt=""
+                  />
+                  <span>预警信息</span>
+                </div>
+                <div class="tool-tip-item">
+                  <img
+                    :src="sensor"
+                    alt=""
+                  />
+                  <span>传感器</span>
+                </div>
+                <div class="tool-tip-item">
+                  <img
+                    :src="monitor"
+                    alt=""
+                  />
+                  <span>监控设备</span>
+                </div>
+              </div>
+              <div id="mainMap">
+                <div
+                  class="tool-info"
+                  style="left: calc(400px - 100px);bottom: 300px;"
+                >
+                  <div class="info-rect">
+                    <div class="text-info" v-for="(item, index) in sxtObj" :key="index">
+                      <div class="text-row">编号: {{item.deviceCode}}</div>
+                      <div class="text-row">位置: {{item.location}}</div>
+                      <div class="text-row">设备: {{item.deviceName}}</div>
+                      <div class="text-row">状态: <span
+                        :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                          item.deviceStatus === 'online' ? '在线' : '离线'
+                        }}</span></div>
+                    </div>
+                  </div>
+                  <img
+                    :src="monitor"
+                    alt=""
+                  />
+                </div>
+
+                <div
+                  class="tool-info"
+                  style="left: calc(600px - 100px);bottom: 100px;"
+                >
+                  <div class="info-rect">
+                    <div class="text-info">
+                      <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
+                      <div class="text-row">位置: {{ sjList.parkName }}</div>
+                      <div class="text-row">设备: {{ sjList.deviceName }}</div>
+                      <div class="text-row">当前读数: {{ sjList.dataValue + " "+sjList.yyUnit }}</div>
+                    </div>
+                  </div>
+                  <img
+                    :src="sensor"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="tool-info"
+                  style="left: calc(900px - 100px);bottom: 200px;"
+                >
+                  <div class="info-rect">
+                    <div class="text-info">
+                      <div class="text-row">编号: {{ warnList.parkCode }}</div>
+                      <div class="text-row">设备: {{ warnList.deviceCode }}</div>
+                      <div class="text-row">
+                        预警信息:
+                        <span style="color: #ff0000;">{{ warnList.warnInfo }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <img
+                    :src="preWarn"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="top-card-wrapper">
+                <div class="top-card-item">
+                  <div class="label-card">设备总数</div>
+                  <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView')">
+                    {{ deviceBaseInfo.total }}
+                  </div>
+                </div>
+                <div class="top-card-item">
+                  <div class="label-card">在线总数</div>
+                  <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=online')">
+                    {{ deviceBaseInfo.online }}
+                  </div>
+                </div>
+                <div class="top-card-item">
+                  <div class="label-card">离线总数</div>
+                  <div class="value-card" @click="$router.push('/internetMonitor/device/deviceView?val=offline')">
+                    {{ deviceBaseInfo.offline }}
+                  </div>
+                </div>
+              </div>
+              <div class="extra-card-wrappper">
+                <div
+                  class="top-card-item"
+                  v-for="item in deviceNumCount"
+                  :key="item"
+                >
+                  <div class="extra-icon t-icon-1"></div>
+                  <div class="extra-text-wrapper">
+                    <div class="extra-text-row extra-title-font">
+                      <div>{{ item.categoryName }}</div>
+                      <div>{{ item.total }}</div>
+                    </div>
+                    <div class="extra-text-row">
+                      <div>在线数量</div>
+                      <div style="color: #0fc87c;">{{ item.online }}</div>
+                    </div>
+                    <div class="extra-text-row">
+                      <div>离线数量</div>
+                      <div style="color: #c51416;">{{ item.offline }}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="gird-item-wrapper">
-        <div class="grid-main-item">
-          <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/warn/agri-warning-record')">
-            <div>预警信息</div>
-          </div>
-          <div class="main-item-container pre-warn-table">
-            <div class="table-header">
-              <div
-                class="table-cell"
-                v-for="(item) in tableColumns"
-                :key="item.key"
-                :style="`width: ${item.width};`"
-              >{{ item.label }}
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
+                <div>水质监测</div>
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                  <select @change="handleSelectorChange1">
+                    <option
+                      :value="item.id"
+                      v-for="item,index in options1"
+                      :key="index"
+                    >{{ item.name }}
+                    </option>
+                  </select>
+                  <select @change="selecte2">
+                    <option
+                      :value="item.id"
+                      v-for="item,index in options2"
+                      :key="index"
+                    >{{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="main-item-container">
+                <div class="card-grid-wrapper h-[480px]">
+                  <div
+                    :class="`card-grid-item ${rightTabSelected === item.monitoringType ? 'card-selected' : ''}`"
+                    v-for="(item, index) in waterTypeList"
+                    :key="index"
+                  >
+                    <div :class="`icon-wrapper r-icon-${index+1}`"></div>
+                    <div class="label-val-wrapper">
+                      <div class="value-wrapper">
+                        <span class="value">{{ item.dataValue }}</span>
+                        <span class="unit">{{ item.yyUnit }}</span>
+                      </div>
+                      <div class="label-wrapper">{{ item.monitoringType }}</div>
+                    </div>
+                    <div
+                    :class="btnIndex2==index? 'check-btn2':'check-btn'"
+                      @click="btnCli(item,index)"
+                    >查看
+                    </div>
+                  </div>
+                  <div
+                    class="col-span-2 row-span-4"
+                    v-if="waterTypeList.length === 0"
+                  >
+                    <el-empty description="暂无数据" class="scale-70" />
+                  </div>
+                </div>
+                <div class="sub-title-wrapper">
+                  <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
+                  <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
+                    {{ right2Val }}变化趋势
+                  </div>
+                  <div
+                    style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+                </div>
+                <div
+                  class="chart-wrapper"
+                  id="chart2"
+                ></div>
               </div>
             </div>
-            <div class="table-container">
+          </div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/device/deviceView?deviceType=30,31')">
+                <div>监控设备</div>
+              </div>
               <div
-                class="row-wrapper"
-                v-for="(item, index) in tableData"
-                :key="index"
+                class="main-item-container monitor-device"
+                style="flex-direction: row;"
               >
                 <div
-                  class="table-cell"
-                  v-for="(column) in tableColumns"
-                  :key="column.key"
-                  :style="`width: ${column.width};`"
-                >{{ item[column.key] }}
+                  class="monitor-item"
+                  v-for="(item, index) in monitorEquipList"
+                  :key="index"
+                >
+                  <div class="video-wrapper">
+                    <img
+                      :src="item.imgId"
+                      alt=""
+                      style="width: 100%;height: 100%;object-fit: contain;"
+                    />
+                    <div
+                      class="filter-img"
+                      :style="`background-image: url(${item.capturedImage});`"
+                    ></div>
+                  </div>
+                  <div class="text-wrapper">
+                    <div class="text-row">名称:{{ item.deviceName }}</div>
+                    <div class="text-row">位置:{{ item.location }}</div>
+                    <div class="text-row">状态: <span
+                      :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
+                        item.deviceStatus === 'online' ? '在线' : '离线'
+                      }}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="gird-item-wrapper">
+            <div class="grid-main-item">
+              <div class="main-item-title title-bg" @click="$router.push('/internetMonitor/warn/agri-warning-record')">
+                <div>预警信息</div>
+              </div>
+              <div class="main-item-container pre-warn-table">
+                <div class="table-header">
+                  <div
+                    class="table-cell"
+                    v-for="(item) in tableColumns"
+                    :key="item.key"
+                    :style="`width: ${item.width};`"
+                  >{{ item.label }}
+                  </div>
+                </div>
+                <div class="table-container">
+                  <div
+                    class="row-wrapper"
+                    v-for="(item, index) in tableData"
+                    :key="index"
+                  >
+                    <div
+                      class="table-cell"
+                      v-for="(column) in tableColumns"
+                      :key="column.key"
+                      :style="`width: ${column.width};`"
+                    >{{ item[column.key] }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="footer-main-wrapper"></div>
       </div>
-    </div>
-    <div class="footer-main-wrapper"></div>
+    </ScaleBox>
   </div>
 </template>
 <style lang='scss' scoped>

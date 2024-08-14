@@ -1,6 +1,6 @@
 <template>
-  <div class='grid grid-cols-3 gap-20px bg-[#f5f5f5]'>
-    <div class="box-border w-100% px-[20px] py-[15px] bg-[#fff] rounded" v-for="item in list" :key="item.categoryName">
+  <div class='grid grid-cols-3 gap-20px bg-[#f5f5f5]' :class="{'dark-bg': themeIsDark}">
+    <div class="box-border w-100% px-[20px] py-[15px] bg-[#fff] rounded" v-for="item in list" :key="item.categoryName" :class="{'dark-card-bg': themeIsDark}">
       <div class="flex justify-between">
         <div style="font-weight:600">{{item.categoryName}}</div>
         <div class="color-[#4db5ab] text-sm" style="cursor: pointer;" @click="showDetail(item)">详情 
@@ -10,7 +10,7 @@
       <div class="flex justify-between items-center mt-15px">
         <img :src="item.imgId" class="w-48% h-180px"/>
         <div class="w-48%">
-          <div class="totalBg flex justify-around items-center w-100% h-40px ">
+          <div class="totalBg flex justify-around items-center w-100% h-40px" :class="{'no-bg': themeIsDark}">
             <div class='flex items-center'>
               <div class="w-3px h-15px bg-[#009688] mr-10px"></div>
               <div>总数</div>
@@ -18,7 +18,7 @@
             <div class="text-lg color-[#009688]" style="font-weight:600">{{item.total}}</div>
           </div>
           
-          <div class=" flex bg-[#f5f5f5] my-10px justify-around items-center w-100% h-40px ">
+          <div class=" flex bg-[#f5f5f5] my-10px justify-around items-center w-100% h-40px" :class="{'no-bg': themeIsDark}">
             <div class='flex items-center'>
               <div class="icon-1 mr-10px"></div>
               <div>在线</div>
@@ -26,7 +26,7 @@
             <div class=" color-[#0dc59e]" >{{item.online}}</div>
           </div>
 
-          <div class=" flex justify-around items-center bg-[#f5f5f5] w-100% h-40px ">
+          <div class=" flex justify-around items-center bg-[#f5f5f5] w-100% h-40px" :class="{'no-bg': themeIsDark}">
             <div class='flex items-center'>
               <div class="icon-2 mr-10px "></div>
               <div style="font-weight: 500;">离线</div>
@@ -34,7 +34,7 @@
             <div class=" color-[#fba83d]" >{{item.offline}}</div>
           </div>
 
-          <div class=" flex justify-around bg-[#f5f5f5] mt-10px items-center w-100% h-40px ">
+          <div class=" flex justify-around bg-[#f5f5f5] mt-10px items-center w-100% h-40px" :class="{'no-bg': themeIsDark}">
             <div class='flex items-center'>
               <div class="icon-3 mr-10px"></div>
               <div>故障</div>
@@ -84,7 +84,28 @@ const showDetail = async (item) => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+
+  // 获取当前是否是深色主题
+  themeIsDark.value = appStore.getIsDark
 })
+
+/** 
+ * fix 深色模式文字显示不清晰问题 
+ * 系统切换深色模式时切换容器和卡片的背景色
+ * 并且去掉各项数据的背景色和背景图片
+ */
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
+
+const appStore = useAppStore()
+const themeIsDark = ref(false)
+
+// 监听主题模式变化
+watch(() => appStore.isDark, (newVal, oldVal) => {
+  console.log("isDark", newVal, oldVal)
+  themeIsDark.value = newVal
+})
+
 </script>
 <style lang="scss" scoped>
 .totalBg{
@@ -112,4 +133,14 @@ onMounted(() => {
   height: 30px;
 }
 
+/** fix 深色模式文字显示不清晰问题 */
+.dark-bg {
+  background-color: #141414;
+}
+.dark-card-bg {
+  background-color: #343A46;
+}
+.no-bg {
+  background: none;
+}
 </style>

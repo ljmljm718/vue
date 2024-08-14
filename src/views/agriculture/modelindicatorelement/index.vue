@@ -243,6 +243,11 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, item: any) => {
+  if (type === 'create'){
+    item = {
+      indicatorId: queryParams.indicatorId
+    }
+  }
   formRef.value.open(type, item)
 }
 
