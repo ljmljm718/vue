@@ -55,7 +55,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属基地" prop="belongPark">
+      <!-- <el-form-item label="所属基地" prop="belongPark">
         <el-input
           v-model="queryParams.belongPark"
           placeholder="请输入所属基地"
@@ -72,11 +72,12 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
+      
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
+        <!-- <el-button
           type="primary"
           plain
           @click="openForm('create')"
@@ -92,7 +93,7 @@
           v-hasPermi="['agriculture:device-info:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+        </el-button> -->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -133,8 +134,10 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
-      <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
+      <!-- <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+      <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/> -->
+      <el-table-column label="基地名称" align="center" prop="parkName" width="200" />
+      <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200" />
       <el-table-column label="位置" align="center" prop="location" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
