@@ -89,7 +89,7 @@
                 ></div>
                 <div class="py-3 space-y-4">
                   <div
-                    class="flex justify-center space-x-7 items-end"
+                    class="flex justify-center space-x-2 items-end"
                     v-for="cardVo, index in item.modelIndicatorElementCardVOList"
                     :key="cardVo"
                   >
@@ -103,7 +103,7 @@
                         class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar relative"
                       >{{ cardVo.text }}</div>
                       <div class="flex space-x-[.5rem] items-center">
-                        <div class="w-[3rem] text-center">{{ cardVo.lowVal }}{{ cardVo.unit }}</div>
+                        <div class="w-[3.7rem] text-center">{{ cardVo.lowVal }}{{ cardVo.unit ?? '' }}</div>
                         <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
                           <div
                             v-for="rangeItem, idx in cardVo.modelIndicatorElementRangeDOList"
@@ -112,7 +112,7 @@
                             :class="`color-bar-${idx + 1} grow w-[${100 / (cardVo.modelIndicatorElementRangeDOList.length)}%] h-[.6rem]`"
                           ></div>
                         </div>
-                        <div class="w-[3rem] text-center">{{ cardVo.hightVal }}{{ cardVo.unit }}</div>
+                        <div class="w-[3.7rem] text-center">{{ cardVo.hightVal }}{{ cardVo.unit ?? '' }}</div>
                       </div>
                     </div>
                   </div>
@@ -299,8 +299,8 @@ const getCardDataList = async (modelId, growthId) => {
             if (+lowLimit < lowVal) lowVal = lowLimit
             if (+highLimit > hightVal) hightVal = highLimit
             if (!unitVal) unitVal = unit;
-            if (indicatorResult.indexOf('正常') !== -1 && !text) {
-              text = `${indicatorResult} ${lowLimit}${unit}~${highLimit}${unit}`
+            if ((indicatorResult.indexOf('正常') !== -1 || indicatorResult.indexOf('适宜') !== -1) && !text) {
+              text = `${indicatorResult} ${lowLimit}${unit ?? ''}~${highLimit}${unit ?? ''}`
             }
           })
         }
