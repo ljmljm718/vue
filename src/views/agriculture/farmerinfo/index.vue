@@ -261,6 +261,14 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
+  if(queryParams.belongParkName == null || queryParams.belongParkName == ''){
+    queryParams.belongPark= undefined
+    queryParams.belongParkName= undefined
+  }
+  if(queryParams.belongPlotName == null || queryParams.belongPlotName == ''){
+    queryParams.belongPlotName= undefined
+    queryParams.belongPlot= undefined
+  }
   queryParams.pageNo = 1
   getList()
 }
@@ -332,10 +340,10 @@ const openParkPopup = (id: string) => {
 }
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0'){
-    queryParams.belongPark = String(order[0].code)
+    queryParams.belongPark = String(order[0].id)
     queryParams.belongParkName = String(order[0].name)
   }
-  else queryParams.belongPlot = String(order[0].id)
+  else queryParams.belongParkName = String(order[0].name)
 }
 
 //地块的选择
@@ -350,7 +358,6 @@ const openPlotPopup = (id: string) => {
 const handlePlotPopupChange = (order: ParkDetailVO) => {
 
   console.log("--->>查看选择的地块信息：",order[0])
-  queryParams.belongPark = String(order[0].parkId)
   queryParams.belongPlot = String(order[0].id)
   queryParams.belongPlotName = String(order[0].name)
 }

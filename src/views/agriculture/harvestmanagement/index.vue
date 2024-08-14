@@ -9,7 +9,8 @@
       label-width="68px"
     >
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
+        <el-input
+v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
                   class="!w-240px">
           <template #append>
             <el-button @click="openParkPopup('0')">
@@ -20,7 +21,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
+        <el-input
+v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
                   class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongParkId)">
@@ -448,7 +450,7 @@ const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
     queryParams.belongParkId = String(order[0].code)
     queryParams.belongPark = String(order[0].name)
-  } else queryParams.belongPlotId = String(order[0].id)
+  } else queryParams.belongPark = String(order[0].name)
 }
 
 //地块的选择

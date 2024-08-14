@@ -63,6 +63,9 @@ const formData = ref({
   feedingFood: undefined,
 })
 const formRules = reactive({
+  growthPeriod: [{ required: true, message: '生长期不能为空', trigger: 'blur' }],
+  time: [{ required: true, message: '时间不能为空', trigger: 'blur' }],
+  cycle: [{ required: true, message: '周期不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
