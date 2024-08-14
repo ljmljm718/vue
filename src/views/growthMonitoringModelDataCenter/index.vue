@@ -740,8 +740,8 @@ export default defineComponent({
                 {
                   curVarietyName.value === "连梗11号" ? (
                     <div
-                      class="center-model"
-                      style={ `background-image: url(/src/views/growthMonitoringModelDataCenter/assets/stage${ curItem + 1 }.png);` }
+                      class={`center-model model-${ curItem + 1 }`}
+                      // style={ `background-image: url(/src/views/growthMonitoringModelDataCenter/assets/stage${ curItem + 1 }.png);` }
                     >
                     </div>
                   ) : null
@@ -1182,6 +1182,13 @@ export default defineComponent({
 :deep(td .cell) {
   color: #fff;
 }
+
+@for $i from 1 through 9 {
+  .model-#{$i} {
+    background-image: url(/src/views/growthMonitoringModelDataCenter/assets/stage#{$i}.png);
+  }
+}
+
 </style>
 
 <style lang="scss">

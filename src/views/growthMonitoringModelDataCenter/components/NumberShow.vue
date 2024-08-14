@@ -5,8 +5,7 @@
     <div class="circle text-center">
       <!-- <el-image class="mt-[5px] h-[60px] w-[60px]" :src="iconImg" /> -->
       <div
-        class="absolute top-[5px] left-[5px] h-[60px] w-[60px]"
-        :style="`background-image: url(${ iconImg }); background-size: 100% 100%; background-repeat: no-repeat; background-position: center;`"
+        class="absolute top-[5px] left-[5px] h-[60px] w-[60px] icon-img"
       >
       </div>
       <div class="circle-border"></div>
@@ -77,6 +76,12 @@ const props = defineProps({
   position: absolute;
   top: 49px;
   left: 271px;
+}
+.icon-img {
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/variety-num.png); 
+  background-size: 100% 100%; 
+  background-repeat: no-repeat; 
+  background-position: center;
 }
 
 </style>
