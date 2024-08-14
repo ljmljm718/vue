@@ -177,7 +177,7 @@
             <el-button
               link
               type="primary"
-              @click="openErrorFrom('update', scope.row.id)"
+              @click="openErrorFrom('updateDispose', scope.row.id)"
               v-hasPermi="['agriculture:check-logs:update']"
             >
               处理
