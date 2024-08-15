@@ -153,7 +153,7 @@
       <el-table-column label="模型图片" align="center" prop="modelImageId">
         <template #default="{ row }">
           <el-image class="h-50px w-50px" lazy :src="row.modelImageId" :preview-src-list="[row.modelImageId]"
-            preview-teleported fit="cover" />
+            preview-teleported fit="contain" />
         </template>
       </el-table-column>
       <el-table-column label="模型文件" align="center" prop="modelFileId" />
