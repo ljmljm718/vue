@@ -302,6 +302,8 @@
             <div class="text-[#666666]">
               <span>品类:</span>
               <span class="pl-2">{{ item.cropType }}</span>
+              <span v-show="item.cropName" class="pl-4">品种:</span>
+              <span v-show="item.cropName" class="pl-2">{{ item.cropName }}</span>
             </div>
             <div class="flex items-start mt-[1rem]">
               <img

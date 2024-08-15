@@ -15,7 +15,7 @@
           >
             保存
           </el-button> -->
-          <el-button
+          <!-- <el-button
             type="success"
             :icon="TopRight"
             plain
@@ -29,7 +29,7 @@
             @click="resetForm()"
             disabled
           >清空
-          </el-button>
+          </el-button> -->
         </div>
         <el-button
               type="primary"
