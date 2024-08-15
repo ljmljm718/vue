@@ -17,19 +17,13 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="巡检状态" prop="inspectionState">
-        <el-select
-          v-model="queryParams.inspectionState"
-          placeholder="请选择巡检状态"
-          clearable
-          class="!w-240px"
-        >
+      <el-form-item label="处理状态" prop="dealType">
+        <el-select v-model="queryParams.dealType" placeholder="请选择处理状态" class="!w-240px">
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="巡检结果" prop="inspectionResults">
@@ -258,6 +252,13 @@ const queryParams = reactive({
   content: undefined,
   createTime: [],
 })
+const options = [{
+  value: '0',
+  label: '未处理'
+}, {
+  value: '1',
+  label: '已处理'
+}]
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
