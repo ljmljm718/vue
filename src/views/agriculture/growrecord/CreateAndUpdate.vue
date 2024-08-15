@@ -193,7 +193,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import {EditFrame, addOrUpdateFormStorage} from '@/components/EditFrame/index'
+import {
+  EditFrame,
+  addOrUpdateFormStorage,
+  getFormStorage,
+  deleteFormStorage
+} from '@/components/EditFrame/index'
 import {Refresh, TopRight} from '@element-plus/icons-vue'
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {GrowRecordApi, GrowRecordVO} from '@/api/agriculture/growrecord'
@@ -269,6 +274,12 @@ const localSave = () => {
   )
   message.success('保存成功！')
 }
+//获取浏览器缓存
+const loadData = async (id = 'new_form') => {
+  const _form = await getFormStorage(ROUTE_PATH, id)
+  if (_form) formData.value = _form.formContent
+}
+if (!formData.value.id) loadData()
 if (route.query.type == 'select') {
   isShow.value = false;
 }
@@ -287,6 +298,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await GrowRecordApi.getGrowRecord(id)
+      if (formData.value.id) loadData(formData.value.id)
     } finally {
       formLoading.value = false
     }
@@ -308,6 +320,11 @@ const submitForm = async () => {
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
+    // 表单已提交，从本地删除此表单
+    await deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? formData.value.id : 'new_form'
+    )
     // 发送操作成功的事件
     emit('success')
     await router.push(ORIGIN_PATH);
