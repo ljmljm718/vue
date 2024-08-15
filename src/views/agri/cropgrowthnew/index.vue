@@ -115,7 +115,7 @@
           导出
         </el-button>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center cursor-pointer">
         <div
           :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
           style="border-radius: 5px 0 0 5px"
@@ -369,12 +369,14 @@
         </div>
       </div>
     </div>
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div v-show="showType === 'list'">
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
