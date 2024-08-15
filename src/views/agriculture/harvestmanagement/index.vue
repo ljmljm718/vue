@@ -9,9 +9,7 @@
       label-width="68px"
     >
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input
-v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
-                  class="!w-240px">
+        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly class="!w-240px">
           <template #append>
             <el-button @click="openParkPopup('0')">
               <Icon icon="ep:search"/>
@@ -21,9 +19,7 @@ v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
         </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input
-v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
-                  class="!w-240px">
+        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongParkId)">
               <Icon icon="ep:search"/>
