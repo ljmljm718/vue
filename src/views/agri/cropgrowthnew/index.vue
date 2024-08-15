@@ -115,7 +115,7 @@
           导出
         </el-button>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center cursor-pointer">
         <div
           :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
           style="border-radius: 5px 0 0 5px"
@@ -302,6 +302,8 @@
             <div class="text-[#666666]">
               <span>品类:</span>
               <span class="pl-2">{{ item.cropType }}</span>
+              <span v-show="item.cropName" class="pl-4">品种:</span>
+              <span v-show="item.cropName" class="pl-2">{{ item.cropName }}</span>
             </div>
             <div class="flex items-start mt-[1rem]">
               <img
@@ -369,12 +371,14 @@
         </div>
       </div>
     </div>
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div v-show="showType === 'list'">
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
