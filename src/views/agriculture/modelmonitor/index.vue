@@ -1,86 +1,402 @@
+<script setup lang="ts">
+import {
+  baidiParkInfo,
+  getModelByParkId,
+  getModelInfo,
+  getMonitorIndicatorWithDetail,
+  getModelMonitor,
+  parkDetailGetAll
+} from './api'
+import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
+import { ModelManagementApi } from '@/api/agriculture/modelmanagement'
+
+// 是否折叠
+const collapsed = ref<boolean>(false)
+// 左侧地块列表
+const plotListLoading = ref<boolean>(false)
+const selectedPlotId = ref<string>('')
+const plotList = ref<any[]>([])
+const getPlotList = async () => {
+  plotListLoading.value = true
+  plotList.value = []
+  const res = await parkDetailGetAll({}).catch(err => {
+    plotListLoading.value = false
+  })
+  if (Array.isArray(res)) {
+    plotList.value = res
+    if (res.length > 0) {
+      selectedPlotId.value = res[0].id
+      getModelList(res[0].id)
+    }
+  }
+  plotListLoading.value = false
+}
+getPlotList()
+// 点击地块触发
+const handlePlotClick = (item) => {
+  selectedPlotId.value = item.id
+  getModelList(item.id)
+}
+
+// 评分列表
+const healthValLoading = ref<boolean>(false)
+const healthValList = ref<any[]>([])
+const getHealthValList = async (modelId, batch) => {
+  healthValLoading.value = true;
+  healthValList.value = [];
+  const res = await getModelMonitor({ modelId, batch }).catch(err => {
+    healthValLoading.value = false;
+  })
+  if (Array.isArray(res)) {
+    healthValList.value = res.map((item, index) => ({ ...item, icon: `icon-${(index % 5) + 1}` }));
+  }
+  healthValLoading.value = false;
+}
+
+
+// 模型列表
+const modelListLoading = ref<boolean>(false)
+const selectedModelId = ref<string>('')
+const modelList = ref<any[]>([])
+const getModelList = async (plotId) => {
+  modelListLoading.value = true;
+  modelList.value = []
+  const res = await getModelByParkId({ plotId }).catch(err => {
+    modelListLoading.value = false;
+  })
+  if (Array.isArray(res)) {
+    modelList.value = res;
+    healthValList.value = []; // 清空健康评分
+    tableData.value = []; // 清空表格数据
+    cycleInfoList.value = []; // 清空模型周期列表
+    if (res.length > 0) {
+      selectedModelId.value = res[0].modelId;
+      // TODO: 获取健康评分 下面两个
+      getHealthValList(res[0].modelId, res[0].batchCode)
+      getTableData(res[0].modelId, res[0].growthId)
+      getCycleInfoList(res[0].modelId, res[0].growthId)
+    }
+  }
+  modelListLoading.value = false;
+}
+const handleModelClick = (item) => {
+  selectedModelId.value = item.modelId
+  getHealthValList(item.modelId, item.batchCode)
+  getTableData(item.modelId, item.modelId)
+}
+
+// 监测指标按钮
+const indexBtns = ref<any[]>([])
+const selectedBtn = ref<string>('') // 当前选中按钮
+
+// 点击指标按钮后触发
+const handleIndexBtnClick = (item) => {
+  selectedBtn.value = item.id
+  const _selectedOriginTableItem = originTableData.value.find(ele => ele.id === item.id);
+  tableData.value = formatTableData(_selectedOriginTableItem.modelIndicatorElementCardVOList)
+}
+
+// 格式化表格内容
+const formatTableData = (voList:any[]) => {
+  return voList.map(item => {
+    const rangeItem = item.modelIndicatorElementRangeDOList
+
+      if (!Array.isArray(rangeItem)) return item
+      const firstItem = rangeItem[0],
+        lastItem = rangeItem[rangeItem.length - 1]
+      const minVal = firstItem.lowLimit,
+        maxVal = lastItem.highLimit,
+        unitVal = lastItem.unit
+      let position = 0.55
+      let hasData = true
+      const _val = parseFloat(item.value)
+      if (isNaN(_val)) {
+        hasData = false
+      } else {
+        rangeItem.forEach((element, index) => {
+          const lowVal = parseFloat(element.lowLimit),
+            hightVal = parseFloat(element.highLimit)
+          if (_val > lowVal && _val < hightVal) {
+            position = (index + index + 1) / (2 * rangeItem.length)
+          }
+        })
+      }
+      const normalItem = rangeItem.find(
+        (rItem) =>
+          rItem.indicatorResult.indexOf('正常') !== -1 ||
+          rItem.indicatorResult.indexOf('适宜') !== -1
+      )
+      let text = ``
+      if (normalItem) {
+        text = `${normalItem.indicatorResult} ${normalItem.lowLimit}${normalItem.unit ?? ''} ~ ${
+          normalItem.highLimit
+        }${normalItem.unit ?? ''}`
+      }
+      return { ...item, minVal, maxVal, unitVal, position, hasData, text }
+  })
+}
+
+// 表格数据
+const tableLoading = ref<boolean>(false)
+const tableData = ref<any[]>([])
+const originTableData = ref<any[]>([])
+const getTableData = async (modelId, growthId) => {
+  tableLoading.value = true
+  tableData.value = []
+  const res = await getMonitorIndicatorWithDetail({ modelId, growthId }).catch(err => {
+    tableLoading.value = false
+  })
+  if (Array.isArray(res)) {
+    originTableData.value = res;
+    indexBtns.value = res.map(item => ({
+      id: item.id, label: item.indicatorName
+    }))
+    if (res.length > 0) {
+      selectedBtn.value = res[0].id
+      tableData.value = formatTableData(res[0].modelIndicatorElementCardVOList)
+    }
+  }
+  tableLoading.value = false
+}
+
+const handleItemHover = (cardItem, rangeItem, offset) => {
+  cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${
+    rangeItem.highLimit
+  }${rangeItem.unit ?? ''}`
+  cardItem.offset = offset
+}
+
+// 响应式状态，用于控制图标旋转
+const isRotating = ref(false)
+const message = useMessage() // 消息弹窗
+const btnLoading = ref(false) // 加载动画
+
+// 点击处理函数
+const handleTriggerModelCalculate = () => {
+  // 先移除旋转状态
+  isRotating.value = false
+  nextTick(async () => {
+    // 重新触发旋转
+    isRotating.value = true
+
+    btnLoading.value = true
+    // 调用后台触发计算要素得分;
+    const res = await ModelManagementApi.triggerModelCalculate()
+    message.success(res)
+
+    getPlotList()
+
+    // 动画结束后停止旋转
+    setTimeout(() => {
+      isRotating.value = false
+    }, 1000) // 1秒后结束旋转（与CSS动画持续时间匹配）
+  })
+}
+
+// 构造模型周期与栽培要点的chart数据
+const buildChartData = (data:any[], growth: string = '', cycle: string = '') => {
+  const series = data.map(item => ({
+    name: item.growth, value: item.cycle, growthId: item.growthId
+  }))
+  initChart(series, growth, cycle)
+}
+// 获取周期与栽培要点右侧信息
+const cycleInfoList = ref<any[]>([])
+const periodList = ref<any[]>([])
+const getCycleInfoList = async (modelId, growthId) => {
+  const res = await getModelInfo({ modelId })
+  if (Array.isArray(res)) {
+    cycleInfoList.value = res
+    const firstItem = res.shift()
+    const curPeriodItem = res.find(_item => _item.growth === firstItem.curPeriod)
+    periodList.value = res
+    buildChartData(res, curPeriodItem.growth, curPeriodItem.cycle)
+    if (periodList.value.length > 0) {
+      const curGrowthItem = periodList.value.find(_period => _period.growthId === growthId)
+      console.log("🚀 ~ getCycleInfoList ~ curGrowthItem:", curGrowthItem)
+      keyPointList.value = curGrowthItem.child2
+      activeGrowthId.value = curGrowthItem.growthId
+      if (keyPointList.value.length > 0) {
+        selectedKeyPoint.value = keyPointList.value[0].id
+      }
+    }
+  }
+}
+// 点击右侧时期触发
+const activeGrowthId = ref<string>('') // 当前活跃的时期
+const handlePeriodClick = (item) => {
+  console.log("🚀 ~ handlePeriodClick ~ item:", item)
+  activeGrowthId.value = item.growthId
+  keyPointList.value = item.child2
+  if (keyPointList.value.length > 0) {
+    selectedKeyPoint.value = keyPointList.value[0].id
+  }
+  instance.value && instance.value.setOption({
+    title: { text: item.growth, subtext: item.cycle + '天' }
+  })
+}
+
+watch([activeGrowthId, selectedModelId], (newData) => {
+  const [growthId, modelId] = newData;
+  getTableData(modelId, growthId)
+})
+
+// 栽培要点
+const keyPointList = ref<any[]>([])
+const selectedKeyPoint = ref<string>('')
+const selectedInfo = ref<string>('')
+const handleKeyPointItemClick = (item) => {
+  selectedKeyPoint.value = item.id
+}
+watch([selectedKeyPoint], (val) => {
+  const _item = keyPointList.value.find(item => item.id === val[0])
+  selectedInfo.value = _item.itemContent
+})
+
+// 饼图
+const instance = ref<any>(null)
+const initChart = (series: any[], growth: string = '', cycle: string = '') => {
+  instance.value = initChartStatic(
+    `chart`,
+    generatePieOptions({
+      title: {
+        text: growth,
+        subtext: cycle + '天',
+        left: 'center',
+        top: '37%',
+        textStyle: {
+          color: '#252525',
+          fontSize: 15
+        },
+        subtextStyle: {
+          color: '#252525',
+          fontSize: 15
+        }
+      },
+      legend: { show: false },
+      tooltip: { show: false },
+      color: ['#59b756', '#009688', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
+      series: [
+        {
+          name: '',
+          type: 'pie',
+          radius: ['40%', '86%'],
+          center: 'center',
+          data: series,
+          label: {
+            position: 'inside',
+            formatter: '{b}',
+            rich: {
+              c: { color: '#c1c1c1', fontSize: 10 },
+              d: { color: '#c1c1c1', fontSize: 10 }
+            }
+          },
+          emphasis: { disabled: false },
+          itemStyle: { borderWidth: 5, borderColor: '#ffffff' }
+        }
+      ]
+    })
+  )
+  instance.value && instance.value.on('click', (params) => {
+    console.log("🚀 ~ instance.value&&instance.value.on ~ params:", params)
+    const { data } = params;
+    const { growthId, name, value } = data;
+    instance.value.setOption({
+      title: { text: name, subtext: value + '天' }
+    })
+    const _activePeroid = periodList.value.find(_period => _period.growthId === growthId)
+    handlePeriodClick(_activePeroid)
+  })
+}
+// initChart([], '')
+</script>
 <template>
-  <div class="flex justify-between" v-loading="loading">
-    <div class="flex flex-shrink:0 w-[12rem]">
-      <div class="flex flex-col space-y-3 p-2 w-[10rem] bg-white h-[100vh] overflow-y-auto">
+  <div class="flex justify-between">
+    <el-card :style="{ width: collapsed ? '7rem' : '15rem'}">
+      <div
+        class="bg-[#009688] py-2 w-full rounded-md text-white text-center cursor-pointer"
+        @click="collapsed = !collapsed"
+      >{{ collapsed ? '展开' : '折叠' }}</div>
+      <div class="max-h-80vh space-y-3 py-3 overflow-auto mt-2" v-loading="plotListLoading" v-show="!collapsed">
         <div
-          v-for="(item, index) in filteredLeftList"
-          :key="index"
-          :class="`flex flex-col space-y-2 p-1 bg-[#f1f1f1] rounded-2 shadow-md cursor-pointer ${
-            activeId === item.id ? 'font-bold' : ''
-          }`"
-          @click="getmodelList(item.id)"
+          v-for="item in plotList"
+          class="shadow-md rounded-2 p-1 overflow-hidden bg-[#f5f5f5] transition-all"
+          :key="item.id"
+          :style="{
+            border: selectedPlotId === item.id ? '1px solid #009688' : '1px solid #00000000'
+          }"
+          @click="handlePlotClick(item)"
         >
-          <img :src="item.img" alt="" class="w-full" />
-          <div class="w-full bg-[#f1f1f1] text-center py-2">{{ item.name }}</div>
+          <div class="w-full h-[6rem] bg-gray">
+            <img :src="item.img" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="w-full py-1 text-center">{{item.name}}</div>
         </div>
       </div>
-    </div>
-    <div class="space-y-3 grow" style="width: calc(100% - 12.2rem)">
-      <!-- 评分 -->
-      <div class="flex bg-white p-2 min-h-[4rem] space-x-[3rem] px-7">
-        <div
-          v-for="(item, index) in healthValueData"
-          :key="index"
-          class="flex space-x-3 justify-center items-center px-2"
-        >
+    </el-card>
+    <div
+      class="space-y-2"
+      :style="{
+        width: `calc(100% - ${collapsed ? '7.5rem' : '15.5rem'})`
+      }"
+    >
+      <el-card>
+        <div class="flex space-x-[3rem] px-4 box-border min-h-[2.8rem]">
           <div
-            :class="[item.imgList, 'w-[2.6rem] h-[2.6rem]']"
-            style="background-size: 100% 100%"
-          ></div>
-          <div class="flex flex-col space-y-1 text-[.7rem]">
-            <div class="text-[1.2rem] art-font">{{ item.value }}</div>
-            <div class="flex space-x-1">
-              <span>{{ item.title }}</span>
-              <span>{{ item.weight }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="bg-white p-2 min-h-[4rem] overflow-x-auto px-2">
-        <div class="flex space-x-3">
-          <div
-            class="rounded-md bg-[#e5f4f3] p-3 flex flex-col justify-center items-center min-w-[5rem] "
+            v-for="item in healthValList"
+            :key="item.id"
+            class="flex space-x-4"
           >
-            <div class="text-[#009688] text-[1rem] pb-1">{{ modelList.length }}</div>
-            <div class="text-[13px]">模型总数</div>
-          </div>
-          <div
-            v-for="(item, index) in modelList"
-            :key="index"
-            :class="`cursor-pointer flex space-x-1 items-center justify-center border-solid border-2 border-[#E5E5E5] rounded-md p-2 !px-3 min-w-[12rem] cursor-pointer ${
-              activeModelId === item.modelId
-                ? 'shadow-md font-bold border-solid border-2 !border-[#009688]'
-                : ''
-            }`"
-            @click="
-              selectModel(item.modelId), handleFilterModelClick(item),
-              getHealthValueData(item.modelId)
-            "
-          >
-            <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
-            <div>
-              <div class="text-[1.1rem]">{{ item.modelName }} </div>
+            <div :class="[item.icon, 'w-[2.6rem] h-[2.6rem] bg-[length:100%_100%]']"></div>
+            <div class="flex flex-col space-y-1 text-[.7rem]">
+              <div class="text-[1.2rem] art-font">{{ item.value }}</div>
               <div class="flex space-x-1">
-                <div class="text-[.9rem]">{{ item.growth }} :</div>
-                <div class="text-[#009688] text-[.9rem]">{{ item.cycle }}天</div>
+                <span>{{ item.title }}</span>
+                <span>{{ item.weight }}</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="space-x-3 bg-white p-2 min-h-[4rem]">
-        <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0"
-          >{{ Array.isArray(res) && res.length > 0 && res[0]?.model }}模型周期与栽培要点</div
-        >
-        <div class="flex space-x-4">
+      </el-card>
+      <el-card>
+        <div class="flex space-x-3" v-loading="modelListLoading">
+          <div class="bg-[#e5f4f3] rounded-2 flex flex-col items-center justify-center space-y-1 p-3 px-5">
+            <div class="art-font text-[#009688]">{{ modelList.length }}</div>
+            <div class="text-[.8rem]">模型总数</div>
+          </div>
+          <div class="grow overflow-auto flex space-x-3">
+            <div
+              v-for="item in modelList"
+              :key="item.id"
+              class="flex items-center space-x-2 px-4 py-2 rounded-md shadow-md cursor-pointer"
+              :style="{
+                border: selectedModelId === item.modelId ? '1px solid #009688' : '1px solid #E5E5E5'
+              }"
+              @click="handleModelClick(item)"
+            >
+              <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
+              <div class="space-y-1">
+                <div class="text-[1.1rem]">{{ item.modelName }} </div>
+                <div class="flex space-x-1">
+                  <div class="text-[.9rem]">{{ item.growth }} :</div>
+                  <div class="text-[#009688] text-[.9rem]">{{ item.cycle }}天</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-card>
+      <el-card>
+        <div class="text-[1rem]">模型周期与栽培要点</div>
+        <div class="flex space-x-2 p-3 pb-0">
           <div id="chart" class="w-[15rem] h-[12rem]"></div>
-          <div class="grow" style="width: calc(100% - 15.4rem)">
+          <div class="grow w-[calc(100%_-_15.4rem)]">
             <div class="flex justify-between items-center mt-3 px-6 overflow-hidden pb-[25px]">
               <div
-                v-for="(ele, idx) in filteredModelList"
+                v-for="(ele, idx) in periodList"
                 :key="idx"
                 class="relative cursor-pointer"
-                @click="handleFilterModelClick(ele)"
+                @click="handlePeriodClick(ele)"
               >
                 <div
                   :class="`relative right-1rem ${
@@ -101,11 +417,11 @@
               <div class="flex justify-center w-full">
                 <div
                   :class="`px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
-                    child.id === topSelectedBtn ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'
+                    child.id === selectedKeyPoint ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'
                   } text-center py-2`"
-                  v-for="(child, flag) in newItemButtonList"
+                  v-for="(child, flag) in keyPointList"
                   :key="flag"
-                  @click="handleItemClick(child)"
+                  @click="handleKeyPointItemClick(child)"
                   >{{ child.itemName }}</div
                 >
               </div>
@@ -113,39 +429,30 @@
             <div class="px-[1rem] pt-3">{{ selectedInfo }} </div>
           </div>
         </div>
-      </div>
-      <div class="space-x-3 bg-white p-2 min-h-[4rem]">
-        <div class="flex justify-between items-center">
-          <div class="pl-2 font-bold py-1 pb-3" v-show="Array.isArray(res) && res.length > 0"
-            >{{
-              Array.isArray(res) && res.length > 0 && res[0]?.model + res[0]?.curPeriod
-            }}监测指标</div
-          >
-          <div
-            class="flex relative bg-[#f5f5f5] rounded-2 overflow-hidden"
-            :style="{ right: 'calc(50% - 10rem)' }"
-          >
+      </el-card>
+      <el-card>
+        <div class="text-[1rem]">监测指标</div>
+        <div class="w-full flex justify-center">
+          <div class="overflow-hidden rounded-2 flex">
             <div
-              v-for="item in tableBtns"
+              class="bg-[#f5f5f5] p-2 px-4 cursor-pointer hover:bg-[#f0f0f0] transition-all select-none"
+              v-for="item in indexBtns"
               :key="item.id"
-              :class="[
-                'text-[12px] p-2 px-4 transition  cursor-pointer',
-                selectedBtn === item.id ? '!bg-[#009688] text-[#fff]' : ''
-              ]"
-              @click=";(selectedBtn = item.id), getFilteredTableData(item.id)"
-              >{{ item.value }}</div
-            >
+              :style="{
+                backgroundColor: selectedBtn === item.id ? '#009688' : '#f5f5f5',
+                color: selectedBtn === item.id ? '#fff' : '#000',
+              }"
+              @click="handleIndexBtnClick(item)"
+            >{{ item.label }}</div>
           </div>
         </div>
-        <div class="mt-2">
+        <div class="p-2 pt-4">
           <el-table
             :data="tableData"
             :stripe="true"
-            v-loading="loading"
+            v-loading="tableLoading"
             :show-overflow-tooltip="false"
             :header-cell-style="{
-              backgroundColor: '#f5f7fa',
-              color: '#009688',
               fontWeight: 'bold'
             }"
           >
@@ -208,303 +515,63 @@
             </el-table-column>
           </el-table>
         </div>
-      </div>
+      </el-card>
     </div>
-    <div class="floating-refresh-button" @click="handleTriggerModelCalculate">
+    <div
+      class="fixed floating-refresh-button"
+      @click="handleTriggerModelCalculate"
+    >
       <el-icon :class="{ rotate: isRotating }" class="icon">
         <RefreshRight />
       </el-icon>
     </div>
   </div>
 </template>
-<script setup lang="ts">
-import {
-  baidiParkInfo,
-  getModelByParkId,
-  getModelInfo,
-  getMonitorIndicatorWithDetail,
-  getModelMonitor
-} from './api'
-import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
-import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
-
-const handleItemHover = (cardItem, rangeItem, offset) => {
-  cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${
-    rangeItem.highLimit
-  }${rangeItem.unit ?? ''}`
-  cardItem.offset = offset
-}
-
-// 左侧基地列表
-const filteredLeftList = ref<any[]>([])
-const getleftList = async () => {
-  const leftList = await baidiParkInfo()
-  if (!Array.isArray(leftList)) return
-  filteredLeftList.value = leftList.filter((item) => item.img != null)
-  if (filteredLeftList.value.length > 0) {
-    getmodelList(filteredLeftList.value[0].id)
-  }
-}
-
-//评分列表
-const healthValueData = ref<any[]>([])
-const getHealthValueData = async (modelId, batch = '202407221511110884') => {
-  const healthDataList = await getModelMonitor({ modelId, batch })
-  healthValueData.value = healthDataList.map((item, index) => ({
-    title: item.title,
-    value: item.value,
-    weight: item.weight ? `(${item.weight})` : '',
-    imgList: `icon-${(index % 5) + 1}`
-  }))
-}
-getHealthValueData('MXGL20240806000002')
-
-// 模型列表
-const modelList = ref<any[]>([])
-const activeId = ref<string | null>(null)
-const getmodelList = async (parkId: string) => {
-  const result = await getModelByParkId({ parkId })
-  if (!Array.isArray(result)) return
-  modelList.value = result
-  if (result.length <= 0) return
-  activeId.value = parkId
-  selectModel(modelList.value[0].modelId)
-}
-
-const activeGrowthId = ref<string>('')
-const handleFilterModelClick = (item) => {
-  activeGrowth.value = item.growth
-  selectedInfo.value = ''
-  activeGrowthId.value = item.growthId
-  const { child2 } = item
-  if (Array.isArray(child2)) {
-    newItemButtonList.value = child2
-  }
-  if (Array.isArray(newItemButtonList.value) && newItemButtonList.value.length > 0) {
-    handleItemClick(newItemButtonList.value[0])
-  }
-}
-
-const res = ref<any[]>([])
-const selectedModel = ref<any[]>([])
-const filteredModelList = ref<any[]>([])
-const activeGrowth = ref<string>('')
-const activeModelId = ref<string>('')
-const selectModel = async (modelId) => {
-  activeModelId.value = modelId
-
-  //getTableData(activeModelId.value,growthId)
-  res.value = await getModelInfo({ modelId })
-  selectedModel.value = res.value
-  filterModel(res.value)
-}
-
-const selectedInfo = ref<string>('')
-const newItemButtonList = ref<any[]>([])
-const handleItemClick = (item) => {
-  topSelectedBtn.value = item.id
-  selectedInfo.value = item.itemContent || ''
-}
-
-const filterModel = (resItem) => {
-  filteredModelList.value = resItem.filter((item, index) => index !== 0)
-  nextTick(() => {
-    if (Array.isArray(resItem) && resItem.length > 0) {
-      const firstItemPeriod = resItem[0].curPeriod
-      if (!firstItemPeriod) return
-      initChart(filteredModelList.value, firstItemPeriod)
-      const [firstModelItem] = filteredModelList.value
-      if (firstModelItem) handleFilterModelClick(firstModelItem)
-    }
-  })
-
-  const extractIteContent = (filteredModelList) => {
-    newItemButtonList.value = filteredModelList.value.flatMap((parent) =>
-      parent.child2.map(({ itemName, itemContent, id }) => ({ itemName, itemContent, id }))
-    )
-  }
-  extractIteContent(filteredModelList)
-}
-
-const topSelectedBtn = ref<string>('sfgy')
-
-// 饼图
-const initChart = (series: any[], period: string) => {
-  const _activePeriod = series.find((item) => item.growth === period)
-  activeGrowth.value = _activePeriod.growth
-  activeGrowthId.value = _activePeriod.growthId
-
-  const instance = initChartStatic(
-    `chart`,
-    generatePieOptions({
-      title: {
-        text: _activePeriod.growth ?? '',
-        subtext: _activePeriod.cycle ? _activePeriod.cycle + '天' : '',
-        left: 'center',
-        top: '37%',
-        textStyle: {
-          color: '#252525',
-          fontSize: 15
-        },
-        subtextStyle: {
-          color: '#252525',
-          fontSize: 15
-        }
-      },
-      legend: { show: false },
-      tooltip: { show: false },
-      color: ['#59b756', '#009688', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
-      series: [
-        {
-          name: '',
-          type: 'pie',
-          radius: ['50%', '100%'],
-          center: 'center',
-          data: series.map((item) => ({
-            name: item.growth,
-            value: item.cycle,
-            growthId: item.growthId
-          })),
-          label: {
-            position: 'inside',
-            formatter: '{b}',
-            rich: {
-              c: { color: '#c1c1c1', fontSize: 10 },
-              d: { color: '#c1c1c1', fontSize: 10 }
-            }
-          },
-          emphasis: { disabled: true },
-          itemStyle: { borderWidth: 5, borderColor: '#ffffff' }
-        }
-      ]
-    })
-  )
-  instance &&
-    instance.on('click', (params) => {
-      activeGrowth.value = params.name
-      activeGrowthId.value = params.data.growthId
-      instance &&
-        instance.setOption({
-          title: {
-            text: params.name,
-            subtext: params.value + '天'
-          }
-        })
-    })
-}
-
-const selectedBtn = ref<string>('qx')
-
-const tableData = ref<any[]>([])
-
-const monitorIndicatorList = ref<any[]>([])
-const tableBtns = ref<any[]>([])
-const getTableData = async (modelId, growthId) => {
-  loading.value = true
-  monitorIndicatorList.value = await getMonitorIndicatorWithDetail({ modelId, growthId })
-  tableBtns.value = monitorIndicatorList.value.map((item, index) => ({
-    key: index,
-    value: item.indicatorName,
-    id: item.id
-  }))
-  if (Array.isArray(tableBtns.value) && tableBtns.value.length > 0) {
-    selectedBtn.value = tableBtns.value[0].id
-  }
-  getFilteredTableData(selectedBtn.value)
-  loading.value = false
-}
-
-const getFilteredTableData = (selectedBtn) => {
-  const filtered_res = monitorIndicatorList.value.find(({ id }) => id === selectedBtn)
-  if (filtered_res === undefined) {
-    tableData.value = []
-  }
-  if (!filtered_res?.modelIndicatorElementCardVOList) return
-  if (Array.isArray(filtered_res.modelIndicatorElementCardVOList)) {
-    tableData.value = filtered_res.modelIndicatorElementCardVOList.map((item) => {
-      const rangeItem = item.modelIndicatorElementRangeDOList
-
-      if (!Array.isArray(rangeItem)) return item
-      const firstItem = rangeItem[0],
-        lastItem = rangeItem[rangeItem.length - 1]
-      const minVal = firstItem.lowLimit,
-        maxVal = lastItem.highLimit,
-        unitVal = lastItem.unit
-      let position = 0.55
-      let hasData = true
-      const _val = parseFloat(item.value)
-      if (isNaN(_val)) {
-        hasData = false
-      } else {
-        rangeItem.forEach((element, index) => {
-          const lowVal = parseFloat(element.lowLimit),
-            hightVal = parseFloat(element.highLimit)
-          if (_val > lowVal && _val < hightVal) {
-            position = (index + index + 1) / (2 * rangeItem.length)
-          }
-        })
-      }
-      const normalItem = rangeItem.find(
-        (rItem) =>
-          rItem.indicatorResult.indexOf('正常') !== -1 ||
-          rItem.indicatorResult.indexOf('适宜') !== -1
-      )
-      let text = ``
-      if (normalItem) {
-        text = `${normalItem.indicatorResult} ${normalItem.lowLimit}${normalItem.unit ?? ''} ~ ${
-          normalItem.highLimit
-        }${normalItem.unit ?? ''}`
-      }
-      return { ...item, minVal, maxVal, unitVal, position, hasData, text }
-    })
-  }
-}
-
-// 响应式状态，用于控制图标旋转
-const isRotating = ref(false)
-const message = useMessage() // 消息弹窗
-const loading = ref(false) // 加载动画
-
-// 点击处理函数
-const handleTriggerModelCalculate = () => {
-  // 先移除旋转状态
-  isRotating.value = false
-  nextTick(async () => {
-    // 重新触发旋转
-    isRotating.value = true
-
-    loading.value = true
-    // 调用后台触发计算要素得分;
-    const res = await ModelManagementApi.triggerModelCalculate()
-    message.success(res)
-
-    await init()
-
-    // 动画结束后停止旋转
-    setTimeout(() => {
-      isRotating.value = false
-    }, 1000) // 1秒后结束旋转（与CSS动画持续时间匹配）
-  })
-}
-
-//监听：
-watch([activeModelId, activeGrowthId], ([newModelId, newGrowthId]) => {
-  if (newModelId || newGrowthId) {
-    getTableData(newModelId, newGrowthId)
-  }
-})
-
-const init = async () => {
-  loading.value = true
-  await getleftList()
-  // await getmodelList('1787680115895037952')
-  // await getTableData('MXGL20240731000001', '1813742898268782592')
-  loading.value = false
-}
-onMounted(() => init())
-</script>
-
 <style lang="scss" scoped>
+.floating-refresh-button {
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #009688;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.floating-refresh-button:hover {
+  background-color: #61c4b4; /* 鼠标悬停时的按钮颜色 */
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.rotate {
+  animation: rotate-animation 1s linear;
+}
+
+@keyframes rotate-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@for $i from 1 through 5 {
+  .icon-#{$i} {
+    background-image: url(./assets/icon#{$i}.png);
+  }
+}
+
 .tool-bar-1 {
   background: linear-gradient(to right, #06d41d, #4abd14);
 }
@@ -516,6 +583,22 @@ onMounted(() => init())
 }
 .tool-bar-4 {
   background: linear-gradient(to right, #e58a01, #e54901);
+}
+
+.color-bar-1 {
+  background: linear-gradient(to right, #01d51d, #4cbd14);
+}
+
+.color-bar-2 {
+  background: linear-gradient(to right, #01d51d, #4cbd14);
+}
+
+.color-bar-3 {
+  background: linear-gradient(to right, #4cbd14, #9aa30a);
+}
+
+.color-bar-4 {
+  background: linear-gradient(to right, #9aa30a, #e78900);
 }
 
 .extra-triangle {
@@ -573,66 +656,5 @@ onMounted(() => init())
   border-radius: 5px;
   position: absolute;
   top: -4px;
-}
-
-.floating-refresh-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background-color: #009688;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  z-index: 1000;
-  transition: background-color 0.3s ease;
-}
-
-.floating-refresh-button:hover {
-  background-color: #61c4b4; /* 鼠标悬停时的按钮颜色 */
-}
-
-.icon {
-  font-size: 24px;
-}
-
-.rotate {
-  animation: rotate-animation 1s linear;
-}
-
-@keyframes rotate-animation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@for $i from 1 through 5 {
-  .icon-#{$i} {
-    background-image: url(./assets/icon#{$i}.png);
-  }
-}
-
-.color-bar-1 {
-  background: linear-gradient(to right, #01d51d, #4cbd14);
-}
-
-.color-bar-2 {
-  background: linear-gradient(to right, #01d51d, #4cbd14);
-}
-
-.color-bar-3 {
-  background: linear-gradient(to right, #4cbd14, #9aa30a);
-}
-
-.color-bar-4 {
-  background: linear-gradient(to right, #9aa30a, #e78900);
 }
 </style>
