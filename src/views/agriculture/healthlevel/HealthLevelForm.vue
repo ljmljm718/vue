@@ -19,7 +19,19 @@
         </el-input>
       </el-form-item>
       <el-form-item label="健康等级" prop="healthLevel">
-        <el-input v-model="formData.healthLevel" placeholder="请输入健康等级" />
+        <el-select
+          v-model="formData.healthLevel"
+          placeholder="请选择健康等级"
+          clearable
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.label"
+          />
+        </el-select>
+
       </el-form-item>
       <el-form-item label="健康等级上限分" prop="max">
         <el-input v-model="formData.max" placeholder="请输入健康等级上限分" />
@@ -37,6 +49,9 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item label="健康等级图标" prop="img">
+        <UploadImg v-model="formData.img" :disabled="disabled"/>
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -53,6 +68,7 @@ import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 //模型管理页面
 import ModelFrom from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
+import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 健康等级 表单 */
 defineOptions({ name: 'HealthLevelForm' })
@@ -60,6 +76,7 @@ defineOptions({ name: 'HealthLevelForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const disabled = ref(false) // 表单是否可编辑
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -72,6 +89,7 @@ const formData = ref({
   min: undefined,
   modelId: undefined,
   modelName: undefined,
+  img: undefined,
 })
 const formRules = reactive({
 })
@@ -88,6 +106,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await HealthLevelApi.getHealthLevel(id)
+      if (formType.value === 'detail') disabled.value = true
     } finally {
       formLoading.value = false
     }
@@ -150,7 +169,9 @@ const resetForm = () => {
     min: undefined,
     modelId: undefined,
     modelName: undefined,
+    img: undefined,
   }
   formRef.value?.resetFields()
+  disabled.value = false
 }
 </script>
