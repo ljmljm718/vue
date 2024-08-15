@@ -115,7 +115,7 @@
           导出
         </el-button>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center cursor-pointer">
         <div
           :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
           style="border-radius: 5px 0 0 5px"
@@ -301,21 +301,17 @@
           <div class="text-[15px]">
             <div class="text-[#666666]">
               <span>品类:</span>
-              <span>{{ item.cropType }}</span>
-              <span>|</span>
-              <span>品种:</span>
-              <span>{{ item.cropName }}</span>
+              <span class="pl-2">{{ item.cropType }}</span>
+              <span v-show="item.cropName" class="pl-4">品种:</span>
+              <span v-show="item.cropName" class="pl-2">{{ item.cropName }}</span>
             </div>
             <div class="flex items-start mt-[1rem]">
-              <el-image
-                class="h-130px w-130px"
-                lazy
+              <img
                 :src="item.imgId"
-                :preview-src-list="[item.imgId]"
-                preview-teleported
-                fit="cover"
+                class="h-130px w-130px object-contain shadow-md rounded-md !bg-[#f5f7f9] p-1"
+                style="border: 1px solid #25252525;"
               />
-              <div class="ml-2 text-[15px] w-[14rem]">
+              <div class="ml-3 text-[15px] w-[14rem]">
                 <div class="mb-1 font-bold">环境条件:</div>
                 <div class="line-clamp-2">
                   <el-tooltip
@@ -375,12 +371,14 @@
         </div>
       </div>
     </div>
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div v-show="showType === 'list'">
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->

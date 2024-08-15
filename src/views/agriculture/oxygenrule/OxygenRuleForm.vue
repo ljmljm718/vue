@@ -105,6 +105,15 @@ const formData = ref({
 })
 const formOxygenFactorAll =  ref([])
 const formRules = reactive({
+  oxygenId: [{ required: true, message: '因素不能为空', trigger: 'blur' }],
+  minNum: [{ required: true, message: '最小值不能为空', trigger: 'blur' }],
+  maxNum: [{ required: true, message: '最大值不能为空', trigger: 'blur' }],
+  targetNum: [{ required: true, message: '目标分值不能为空', trigger: 'blur' }],
+  scoreNum: [{ required: true, message: '评分值不能为空', trigger: 'blur' }],
+  suggestText: [{ required: true, message: '调整建议不能为空', trigger: 'blur' }],
+  suggestNum: [{ required: true, message: '建议功率不能为空', trigger: 'blur' }],
+  warnStatus: [{ required: true, message: '是否警告不能为空', trigger: 'blur' }],
+  warnContent: [{ required: true, message: '警告内容不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 

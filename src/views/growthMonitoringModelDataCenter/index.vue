@@ -332,7 +332,15 @@ export default defineComponent({
           centerPoint = ["50%", "50%"]
         }
         const option = {
-          color: ['#1DFFFF'],
+          color: [
+            '#1DFFFF',
+          ],
+          tooltip:{
+            valueFormatter: (params) => {
+              return `${ params }%`
+            },
+            borderWidth: 3,
+          },
           radar: {
             radius: r,  
             nameGap: 10,
@@ -362,6 +370,7 @@ export default defineComponent({
           series: [
             {
               type: 'radar',
+              name: indicatorList.value[curIndicatorIndex].name,
               data: [
                 {
                   value: percentages,
@@ -371,7 +380,10 @@ export default defineComponent({
                     show: true,
                     color: "#fff",
                     fontSize: 18,
-                    position: labelPos
+                    position: labelPos,
+                    formatter: (params) => {
+                      return `${ params.value }%`
+                    }
                   },
                   areaStyle: {
                     color: {
@@ -440,6 +452,7 @@ export default defineComponent({
           })
 
           indicatorList.value[0].selected = true
+          curIndicatorIndex = 0
           curFactor.value = factorMap.get(indicatorList.value[0].name)
           initOption()
           if (curFactor.value.size) {
@@ -459,6 +472,7 @@ export default defineComponent({
     }
 
     const handleIndicatorClick = async (index) => {
+      // console.log("handleIndicatorClick", index, curIndicatorIndex, indicatorList.value)
       indicatorList.value[curIndicatorIndex].selected = false
       indicatorList.value[index].selected = true
       let tmp = curIndicatorIndex
@@ -914,7 +928,7 @@ export default defineComponent({
                               <el-table-column label="范围" align="center" >
                               {
                                 ({ row }) => {
-                                  return `${ row.lowLimit }~${ row.highLimit }`
+                                  return `${ row.lowLimit }${ row.unit } ~ ${ row.highLimit }${ row.unit }`
                                 }
                               }
                               </el-table-column>
@@ -1213,6 +1227,7 @@ $growth-monitoring-model-datacenter-screen-height: calc(var(--growth-monitoring-
 
 .growth-monitoring-model-datacenter-popper {
   width: calc(#{$growth-monitoring-model-datacenter-screen-width} * 0.11);
+  min-width: 0 !important;
 }
 
 .growth-monitoring-model-datacenter-popper .el-select-dropdown__item {
