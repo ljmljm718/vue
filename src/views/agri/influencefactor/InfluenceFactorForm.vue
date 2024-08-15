@@ -10,7 +10,7 @@
       <el-form-item label="因子名称" prop="factorName">
         <el-input v-model="formData.factorName" placeholder="请输入因子名称"/>
       </el-form-item>
-      <el-form-item label="传感器监测类型" prop="monitorType">
+      <el-form-item label="监测类型" prop="monitorType">
         <el-select v-model="formData.monitorType" placeholder="请选择传感器监测类型" class="w-1/1">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.MONITOR_TYPE)"
@@ -73,7 +73,11 @@ const formData = ref({
   remark: undefined,
   influenceInfo: undefined,
 })
-const formRules = reactive({})
+const formRules = reactive({
+  factorName: [{required: true, message: '因子名称不能为空', trigger: 'blur'}],
+  monitorType: [{required: true, message: '传感器监测类型不能为空', trigger: 'blur'}],
+  factorType: [{required: true, message: '因子类别不能为空', trigger: 'blur'}],
+})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
