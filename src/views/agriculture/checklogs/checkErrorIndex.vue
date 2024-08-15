@@ -116,6 +116,11 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/>
+      <el-table-column label="处理状态" align="center" prop="dealType" width="120">
+        <template #default="scope">
+          {{ scope.row.dealType === "0" ? '未处理' : '已处理' }}
+        </template>
+      </el-table-column>
       <el-table-column label="处理人" align="center" prop="dealPerson"/>
       <el-table-column
         label="处理时间"
@@ -177,6 +182,7 @@
             <el-button
               link
               type="primary"
+              v-if= "scope.row.dealType === '0' "
               @click="openErrorFrom('updateDispose', scope.row.id)"
               v-hasPermi="['agriculture:check-logs:update']"
             >

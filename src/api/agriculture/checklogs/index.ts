@@ -18,6 +18,7 @@ export interface CheckLogsVO {
   dealPerson: string
   dealResult: string
   dealImage: string
+  dealType: string
 }
 
 export interface CheckLogsCountPageVO {

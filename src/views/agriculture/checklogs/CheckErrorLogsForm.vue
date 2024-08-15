@@ -14,6 +14,17 @@
       <el-form-item label="处理人" prop="dealPerson">
         <el-input v-model="formData.dealPerson" placeholder="请输入处理人"/>
       </el-form-item>
+
+      <el-form-item label="处理状态" prop="dealType">
+        <el-select v-model="formData.dealType" placeholder="请选择处理状态">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"/>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="处理时间" prop="dealTime">
         <el-date-picker
           v-model="formData.dealTime"
@@ -74,10 +85,18 @@ const formData = ref({
   dealResult: undefined,
   dealImage: undefined,
 })
+const options = [{
+  value: '0',
+  label: '未处理'
+}, {
+  value: '1',
+  label: '已处理'
+}]
 const formRules = reactive({
-  dealPerson: [{ required: true, message: '处理人不能为空', trigger: 'blur' }],
-  dealTime: [{ required: true, message: '处理时间不能为空', trigger: 'blur' }],
-  dealResult: [{ required: true, message: '处理结果不能为空', trigger: 'blur' }]
+  dealPerson: [{required: true, message: '处理人不能为空', trigger: 'blur'}],
+  dealTime: [{required: true, message: '处理时间不能为空', trigger: 'blur'}],
+  dealResult: [{required: true, message: '处理结果不能为空', trigger: 'blur'}],
+  dealType: [{required: true, message: '处理状态不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
 
