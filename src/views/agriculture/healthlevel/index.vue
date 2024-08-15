@@ -79,6 +79,12 @@
       <el-table-column label="健康等级上限分" align="center" prop="max" />
       <el-table-column label="健康等级下限分" align="center" prop="min" />
       <el-table-column label="模型名称" align="center" prop="modelName" />
+      <el-table-column label="健康等级图标" align="center" prop="modelImageId">
+        <template #default="{ row }">
+          <el-image class="h-50px w-50px" lazy :src="row.img" :preview-src-list="[row.img]"
+                    preview-teleported fit="cover" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="创建时间"
         align="center"
@@ -146,6 +152,7 @@ const queryParams = reactive({
   modelId: undefined,
   modelName: undefined,
   createTime: [],
+  img: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

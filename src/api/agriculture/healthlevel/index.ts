@@ -9,6 +9,7 @@ export interface HealthLevelVO {
   min: string // 健康等级下限分
   modelId: string // 模型ID
   modelName: string // 模型名称
+  img: string // 健康等级图标
 }
 
 // 健康等级 API
@@ -42,4 +43,4 @@ export const HealthLevelApi = {
   exportHealthLevel: async (params) => {
     return await request.download({ url: `/agriculture/health-level/export-excel`, params })
   },
-}
+}

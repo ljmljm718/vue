@@ -31,4 +31,12 @@ export const getModelMonitor = async(params)=>{
     url:'/agriculture/model-monitor-execution-growth/model-monitor',
     params
   })
+}
+
+// 获取所有地块的id，名称，图片
+export const parkDetailGetAll = async(params)=>{
+  return await request.get({
+    url:'/agriculture/park-detail/get-all',
+    params
+  })
 } 
