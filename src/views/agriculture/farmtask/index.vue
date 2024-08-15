@@ -107,20 +107,24 @@
 <!--        >-->
 <!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
 <!--        </el-button>-->
-        <el-button plain type="primary" @click="handleCreate()" v-hasPermi="['agriculture:farm-task:create']">
-          <Icon class="mr-5px" icon="ep:plus" />
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:farm-task:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
       </el-form-item>
+        <div style="margin-top: 1rem;margin-left: 2rem;height: 2rem">
+          <el-form-item>
+          <el-button plain type="primary" @click="handleCreate()" v-hasPermi="['agriculture:farm-task:create']">
+            <Icon class="mr-5px" icon="ep:plus" />
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:farm-task:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px" /> 导出
+          </el-button>
+          </el-form-item>
+        </div>
     </el-form>
   </ContentWrap>
 
