@@ -20,16 +20,18 @@
     </div>
     <div class="absolute right-3 top-3 bg-white rounded-2 shadow-md z-20 p-1">
       <div v-if="curLayer === 'img'" class="flex items-center" @click="turn2vec()">
-        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/vector.png" alt="" class="w-[4rem]" />
+        <img :src="vector" alt="" class="w-[4rem]" />
       </div>
       <div v-else class="flex items-center" @click="turn2img()">
-        <img src="http://api.tianditu.gov.cn/v4.0/image/map/maptype/satellite.png" alt="" class="w-[4rem]" />
+        <img :src="satellite" alt="" class="w-[4rem]" />
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import Selector from './selector.vue'
+import satellite from './satellite.jfif'
+import vector from './vector.png'
 
 // 服务域名
 const tdtUrl = 'https://www.zhuangbeizz.cn/tiandi/'
