@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {
-  baidiParkInfo,
   getModelByParkId,
   getModelInfo,
-  getMonitorIndicatorWithDetail,
   getModelMonitor,
+  getMonitorIndicatorWithDetail,
   parkDetailGetAll
 } from './api'
-import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
-import { ModelManagementApi } from '@/api/agriculture/modelmanagement'
+import {generatePieOptions, initChartStatic} from '@/utils/bigscreenTool/index'
+import {ModelManagementApi} from '@/api/agriculture/modelmanagement'
+// 引入图标
+import execute from '@/assets/svgs/execute.svg'
 
 // 是否折叠
 const collapsed = ref<boolean>(false)
@@ -580,9 +581,10 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
       </el-card>
     </div>
     <div class="fixed floating-refresh-button" @click="handleTriggerModelCalculate">
-      <el-icon :class="{ rotate: isRotating }" class="icon">
-        <RefreshRight />
-      </el-icon>
+      <!--      <el-icon :class="{ rotate: isRotating }" class="icon">-->
+      <!--        <RefreshRight />-->
+      <!--      </el-icon>-->
+      <img :src="execute" alt="执行同步数据"  class="w-6 h-6"/>
     </div>
   </div>
 </template>
@@ -601,7 +603,6 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   z-index: 1000;
-  transition: background-color 0.3s ease;
 }
 
 .floating-refresh-button:hover {
@@ -610,19 +611,6 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
 
 .icon {
   font-size: 24px;
-}
-
-.rotate {
-  animation: rotate-animation 1s linear;
-}
-
-@keyframes rotate-animation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @for $i from 1 through 5 {
