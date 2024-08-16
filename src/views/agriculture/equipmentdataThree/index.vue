@@ -444,6 +444,13 @@ const initChart = async (line = false) => {
             color: '#000'
           }
         },
+        axisLabel: {
+          formatter: (param) => {
+            const labelArr = param.split(" ")
+            if (labelArr.length > 1) return labelArr[1]
+            return param;
+          }
+        }
       },
       legend : {
         show: false
