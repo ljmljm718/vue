@@ -30,7 +30,7 @@ export default defineComponent({
     Header
   },
   setup() {
-
+    
     const imgBase = "/src/views/growthMonitoringModelDataCenter/assets"
     const message = useMessage() // 消息弹窗
 
@@ -329,7 +329,7 @@ export default defineComponent({
         if (indicatorData.length < 3) {
           r = "70%"
           labelPos = "right"
-          centerPoint = ["50%", "50%"]
+          centerPoint = ["50%", "45%"]
         }
         const option = {
           color: [
@@ -533,7 +533,7 @@ export default defineComponent({
                   cardWidth={ 400 }
                   cardHeight={ 230 }
                 >
-                  <div class="w-full h-full flex flex-wrap justify-center content-between">
+                  <div class="w-full h-[200px] flex flex-wrap justify-center content-between py-[15px]">
                     <NumberShow
                       iconImg={ varietyNumIcon }
                       numName="品种数"
@@ -557,7 +557,7 @@ export default defineComponent({
                   cardHeight={ 230 }
                 >
                   <el-scrollbar>
-                    <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer">
+                    <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer pt-[10px]">
                       {
                         modelList.value.map((item, index) => (
                           <ModelIcon 
@@ -893,7 +893,7 @@ export default defineComponent({
                     {
                       curFactor.value.size ? null : (
                         <div 
-                          class="z-999 absolute top-0 left-[-10px] w-[390px] h-[440px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
+                          class="z-999 absolute top-0 left-[-10px] w-[390px] h-[477px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
                           style="background: #0B212C;"
                         >
                           本指标暂无要素信息
@@ -902,7 +902,7 @@ export default defineComponent({
                     }   
                     <div class="w-full">
                       {/** ECharts图 */}
-                      <div id="chart" class="w-[370px] h-[254px] mt-[20px]"></div>
+                      <div id="chart" class="w-[370px] h-[254px]"></div>
                       {/** 要素信息表格 */}
                       {
                         curFactorData.value.length ? (
@@ -915,15 +915,17 @@ export default defineComponent({
                             </div>
                             <el-table 
                               data={ curFactorData.value }
-                              height="140"
+                              height="180"
                               style={ {width: "370px"} }
                               row-style={(data) => {
                                 let curBgColor = (Number(data.rowIndex) + 2) % 2 === 0 ? "#0F3940" : "transparent"
                                 return {
-                                  "background-color": curBgColor
+                                  "background-color": curBgColor,
+                                  "height": "45px",
+                                  "font-size": "16px"
                                 }
                               }}
-                              header-row-style={ {"background-color": "transparent"} }
+                              header-row-style={ {"background-color": "transparent", "height": "45px", "font-size": "16px"} }
                             >
                               <el-table-column label="范围" align="center" >
                               {
@@ -932,7 +934,7 @@ export default defineComponent({
                                 }
                               }
                               </el-table-column>
-                              <el-table-column label="健康值" prop="healthRatio" align="center" width="60px"/>
+                              <el-table-column label="健康值" prop="healthRatio" align="center" width="65px"/>
                               <el-table-column label="要素结果" prop="indicatorResult" align="center" />
                             </el-table>
                           </div>
