@@ -10,7 +10,7 @@ export const page = async () => {
 //地块列表
 export const parkPage = async (data:any) => {
   return await request.get({
-    url:'/agriculture/park-detail/page',
+    url:'/agriculture/park-detail/page?pageSize=' + 99,
     data
   })
 }
