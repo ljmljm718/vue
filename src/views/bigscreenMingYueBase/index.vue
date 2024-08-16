@@ -500,7 +500,7 @@ export default defineComponent({
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
                               <span class="whitespace-nowrap">已执行:</span>
                             </div>
-                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
                             <div>{planInfo.finishPlan}</div>
                           </div>
                           <div class="flex w-full justify-between items-center box-border">
@@ -508,7 +508,7 @@ export default defineComponent({
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
                               <span class="whitespace-nowrap">进行中:</span>
                             </div>
-                            <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
                             <div>{planInfo.onGoingPlan}</div>
                           </div>
                           <div class="flex w-full justify-between items-center box-border">
@@ -516,7 +516,7 @@ export default defineComponent({
                               <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
                               <span class="whitespace-nowrap">未执行:</span>
                             </div>
-                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap">--------------------------------------------</div>
+                            <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
                             <div>{planInfo.notStartPlan}</div>
                           </div>
                         </div>
