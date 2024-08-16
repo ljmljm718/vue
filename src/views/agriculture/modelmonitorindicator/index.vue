@@ -145,7 +145,7 @@
           </el-table>
         </div>
         <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize"
-        class='md-10 mt-5'
+        class='md-10 mt-10'
           @pagination="getList" />
 
         <div v-if="showElement">
