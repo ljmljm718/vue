@@ -416,7 +416,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
     >
       <el-card>
         <div
-          class="flex space-x-[3rem] px-4 box-border min-h-[2.8rem]"
+          class="flex space-x-[6rem] px-4 box-border min-h-[2.8rem]"
           v-loading="healthValLoading"
         >
           <div v-for="item in healthValList" :key="item.id" class="flex space-x-4">
@@ -462,7 +462,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         </div>
       </el-card>
       <el-card>
-        <div class="text-[1rem]">{{ listFirstItem.model }}模型周期与栽培要点</div>
+        <div class="text-[1.2rem]">{{ listFirstItem.model }}模型周期与栽培要点</div>
         <div class="flex space-x-2 p-3 pb-0" v-loading="keypointLoading">
           <div id="chart" class="w-[15rem] h-[12rem]"></div>
           <div class="grow w-[calc(100%_-_15.4rem)]">
@@ -506,7 +506,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         </div>
       </el-card>
       <el-card>
-        <div class="text-[1rem]"
+        <div class="text-[1.2rem]"
           >{{ listFirstItem.model }}{{ activeGrowth || defaultGrowth }}监测指标</div
         >
         <div class="w-full flex justify-center">
