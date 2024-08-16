@@ -51,6 +51,10 @@ const formData = ref({
   impactIndicator: undefined,
 })
 const formRules = reactive({
+  factorName: [{ required: true, message: '因素名称不能为空', trigger: 'blur' }],
+  factorCode: [{ required: true, message: '因素编码不能为空', trigger: 'blur' }],
+  nameDatabase: [{ required: true, message: '数据库名称不能为空', trigger: 'blur' }],
+  impactIndicator: [{ required: true, message: '影响指标不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 

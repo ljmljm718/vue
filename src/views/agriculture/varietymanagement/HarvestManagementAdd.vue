@@ -30,8 +30,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="品种名称" prop="varietyId">
-            <el-input v-model="formData.varietyId" placeholder="自动写入" readonly
+          <el-form-item label="品种名称" prop="varietyName">
+            <el-input v-model="formData.varietyName" placeholder="自动写入" readonly
                       :disabled="boo"/>
             <!--        <el-select-->
             <!--          v-model="formData.varietyId"-->
@@ -86,39 +86,9 @@
       <!-- 获取批次号 -->
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item label="所属基地" prop="belongPark">
-            <el-input v-model="formData.belongPark" placeholder="自动写入" readonly
-                      :disabled="boo"/>
-            <!--        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">-->
-            <!--          <template #append>-->
-            <!--            <el-button @click="openParkInfoPopup('0')" :disabled="boo">-->
-            <!--              <Icon icon="ep:search"/>-->
-            <!--              选择-->
-            <!--            </el-button>-->
-            <!--          </template>-->
-            <!--        </el-input>-->
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="基地名称" prop="parkName">
             <el-input v-model="formData.parkName" placeholder="自动写入" readonly
                       :disabled="boo"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item label="所属地块" prop="belongPlot">
-            <el-input v-model="formData.belongPlot" placeholder="自动写入" readonly
-                      :disabled="boo"/>
-            <!--        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled="boo">-->
-            <!--          <template #append>-->
-            <!--            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled="boo">-->
-            <!--              <Icon icon="ep:search"/>-->
-            <!--              选择-->
-            <!--            </el-button>-->
-            <!--          </template>-->
-            <!--        </el-input>-->
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -128,6 +98,37 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <!--      <el-row :gutter="24">-->
+      <!--        <el-col :span="12">-->
+      <!--          <el-form-item label="所属基地" prop="belongPark">-->
+      <!--            <el-input v-model="formData.belongPark" placeholder="自动写入" readonly-->
+      <!--                      :disabled="boo"/>-->
+      <!--            &lt;!&ndash;        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">&ndash;&gt;-->
+      <!--            &lt;!&ndash;          <template #append>&ndash;&gt;-->
+      <!--            &lt;!&ndash;            <el-button @click="openParkInfoPopup('0')" :disabled="boo">&ndash;&gt;-->
+      <!--            &lt;!&ndash;              <Icon icon="ep:search"/>&ndash;&gt;-->
+      <!--            &lt;!&ndash;              选择&ndash;&gt;-->
+      <!--            &lt;!&ndash;            </el-button>&ndash;&gt;-->
+      <!--            &lt;!&ndash;          </template>&ndash;&gt;-->
+      <!--            &lt;!&ndash;        </el-input>&ndash;&gt;-->
+      <!--          </el-form-item>-->
+      <!--        </el-col>-->
+      <!--        <el-col :span="12">-->
+      <!--          <el-form-item label="所属地块" prop="belongPlot">-->
+      <!--            <el-input v-model="formData.belongPlot" placeholder="自动写入" readonly-->
+      <!--                      :disabled="boo"/>-->
+      <!--            &lt;!&ndash;        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled="boo">&ndash;&gt;-->
+      <!--            &lt;!&ndash;          <template #append>&ndash;&gt;-->
+      <!--            &lt;!&ndash;            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled="boo">&ndash;&gt;-->
+      <!--            &lt;!&ndash;              <Icon icon="ep:search"/>&ndash;&gt;-->
+      <!--            &lt;!&ndash;              选择&ndash;&gt;-->
+      <!--            &lt;!&ndash;            </el-button>&ndash;&gt;-->
+      <!--            &lt;!&ndash;          </template>&ndash;&gt;-->
+      <!--            &lt;!&ndash;        </el-input>&ndash;&gt;-->
+      <!--          </el-form-item>-->
+      <!--        </el-col>-->
+
+      <!--      </el-row>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

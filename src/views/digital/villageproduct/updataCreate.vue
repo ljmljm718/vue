@@ -23,8 +23,8 @@
           </el-button>
         </div>
         <div class="flex" >
-          <el-button 
-          type="primary" 
+          <el-button
+          type="primary"
           plain
           @click="router.back"
           >
@@ -353,6 +353,8 @@ const submitForm = async () => {
       await VillageProductApi.updateVillageProduct(data)
       message.success(t('common.updateSuccess'))
     }
+    //提交表单后，数据存储到数据库，应该删除本地缓存，否则点开编辑页面，显示的是缓存数据而不是数据库数据
+    deleteFormStorage(ROUTE_PATH, formData.value.id ? formData.value.id : 'new_form')
     dialogVisible.value = false
     // 关闭当前页面
     useTagsViewStore().delView(router.currentRoute.value);

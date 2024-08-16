@@ -244,7 +244,7 @@ const formData = ref({
 
 })
 const formRules = reactive({
-  cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+  cropName: [{required: true, message: '种植作物不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 const isShow = ref<boolean>(false);

@@ -111,7 +111,13 @@ const formData = ref({
   feedTime: undefined
 })
 const formRules = reactive({
-  feedTime: [{required: true, message: '投喂时间不能为空', trigger: 'blur'}]
+  feedTime: [{required: true, message: '投喂时间不能为空', trigger: 'blur'}],
+  belongPark: [{required: true, message: '基地选择不能为空', trigger: 'blur'}],
+  belongPlot: [{required: true, message: '地块选择不能为空', trigger: 'blur'}],
+  crabNum: [{required: true, message: '螃蟹数量不能为空', trigger: 'blur'}],
+  feedNum: [{required: true, message: '投喂数量不能为空', trigger: 'blur'}],
+  feedOne: [{required: true, message: '投喂单位不能为空', trigger: 'blur'}],
+  feedType: [{required: true, message: '饲料种类不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
 

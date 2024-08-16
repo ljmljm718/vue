@@ -34,11 +34,11 @@
         <el-input v-model="formData.monitoringPlotName" placeholder="请输入监控地块名称" :disabled="true" />
       </el-form-item>
       <!-- 原:备用一 -->
-      <el-form-item label="录入方式" prop="reserveOne">  
-        <el-radio-group v-model="formData.reserveOne">  
-          <el-radio label="人工">人工</el-radio>  
-          <el-radio label="机器">机器</el-radio>  
-        </el-radio-group>  
+      <el-form-item label="录入方式" prop="reserveOne">
+        <el-radio-group v-model="formData.reserveOne">
+          <el-radio label="人工">人工</el-radio>
+          <el-radio label="机器">机器</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="设备ID" prop="deviceId" v-if="formData.reserveOne == '机器'">
         <!-- <el-input v-model="formData.deviceId" placeholder="请输入设备ID" :disabled="true" /> -->
@@ -83,9 +83,9 @@
       <el-form-item label="备注" prop="remarks">
         <el-input v-model="formData.remarks" placeholder="请输入备注" />
       </el-form-item>
-      
+
       <!--
-      
+
       <el-form-item label="备用三" prop="reserveThree">
         <el-input v-model="formData.reserveThree" placeholder="请输入备用三" />
       </el-form-item> -->
@@ -180,6 +180,7 @@ const formData = ref({
   reserveThree: undefined,
 })
 const formRules = reactive({
+  monitoringBaseId: [{ required: true, message: '基地不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 

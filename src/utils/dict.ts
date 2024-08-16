@@ -279,6 +279,7 @@ export enum DICT_TYPE {
   AGRI_REPOSITORYINFO_LABEL = 'agri_repositoryinfo_label',//产业模型服务标签
   AGRI_REPOSITORY_STATUS = 'agri_repository_status',
   AGRI_NOTICEEVENT_TYPE = 'agri_noticeevent_type', //通知事件类型
+  AGRI_HEALTH_LEVEL = 'agri_health_level',  //健康等级
 
   // =========== agri -   MQTT ==========
   AGRI_MQTT_SUBSCRIBE_STATUS = 'agri_mqtt_subscribe_status', //主题订阅状态

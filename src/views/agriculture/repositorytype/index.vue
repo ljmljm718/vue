@@ -18,14 +18,18 @@
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px" /> 重置
         </el-button>
-        <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:repository-type:create']">
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button type="success" plain @click="handleExport" :loading="exportLoading"
-          v-hasPermi="['agriculture:repository-type:export']">
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
       </el-form-item>
+      <div style="margin-top: 1rem;margin-left: 2rem;height: 2rem">
+          <el-form-item>
+            <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:repository-type:create']">
+              <Icon icon="ep:plus" class="mr-5px" /> 新增
+            </el-button>
+            <el-button type="success" plain @click="handleExport" :loading="exportLoading"
+                       v-hasPermi="['agriculture:repository-type:export']">
+              <Icon icon="ep:download" class="mr-5px" /> 导出
+            </el-button>
+          </el-form-item>
+        </div>
     </el-form>
   </ContentWrap>
 

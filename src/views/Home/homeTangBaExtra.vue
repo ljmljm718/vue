@@ -49,7 +49,7 @@
         </el-menu>
       </el-scrollbar>
     </div>
-    <div class="grow overflow-auto p-2">
+    <div class="grow overflow-auto p-2 relative bg-white" v-loading="runTimeDataLoading">
       <div class="bg-[#25252500] grid xl:grid-cols-2 2xl:grid-cols-3 gap-3 w-full" id="chartOutWrapper">
         <div id="chartWD" class="chart-ins"></div>
         <div id="chartSD" class="chart-ins"></div>
@@ -64,6 +64,9 @@
         <div id="chartRain" class="chart-ins"></div>
         <div id="chartWindDirec" class="chart-ins"></div>
         <div id="chartWindSpeed" class="chart-ins"></div>
+      </div>
+      <div class="absolute w-full h-full left-0 top-0 flex items-center justify-center" v-show="showEmpty">
+        <el-empty description="暂无数据" />
       </div>
     </div>
     
@@ -110,11 +113,9 @@ const generateXY = (arr:Array<any>) => {
 }
 
 const runTimeDataLoading = ref<boolean>(false)
-const runTimeDataList = ref<Array<any>>([])
+const runTimeDataList = ref<Array<any>>([]);
+const showEmpty = ref<boolean>(true)
 const getRunTimeData = async (equipmentId, deviceKind) => {
-  console.log("getRunTimeData", equipmentId);
-  console.log("getRunTimeData deviceKind", deviceKind);
-  
   if (!equipmentId) return
   runTimeDataLoading.value = true
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
@@ -128,29 +129,11 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
     if (Array.isArray(resp)) runTimeDataList.value = resp
   }
 
-  // const {
-  //   // temperature = [],
-  //   potassium = [],
-  //   ecValue = [],
-  //   // humidity = [],
-  //   // lightIntensity = [],
-  //   nitrogen = [],
-  //   pHValue = [],
-  //   phosphorus = [],
-  //   // atmosphericPressure = []
-  // } = res
-
-  // const temperature = res['温度'] || []
-  // const lightIntensity = res['光照'] || []
-  // const atmosphericPressure = res['大气压力'] || []
-  // const humidity = res['湿度'] || []
-  // const rain = res['雨量'] || []
-  // const windDirection = res['风向'] || []
-  // const windSpeed = res['风速'] || []
-
   const chartOutWrapper = document.getElementById("chartOutWrapper")
   if (!chartOutWrapper) return
   chartOutWrapper.innerHTML = ''
+  showEmpty.value = Object.keys(res).length === 0;
+  console.log("🚀 ~ getRunTimeData ~ res.keys():", Object.keys(res).length)
   for (let key in res) {
     const domName = pinyin(key, { toneType: "none", type: "array" }).join('')
     const newDom = document.createElement("div")
@@ -163,42 +146,6 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
       initChart(domName, x, y, unit, key, min, max)
     })
   }
-
-  // const { x:WDX, y:WDY, min:WDMin, max: WDMax } = generateXY(temperature)
-  // initChart('chartWD', WDX, WDY, '℃', '温度', WDMin, WDMax)
-
-  // const { x:SDX, y:SDY, min:SDMin, max:SDMax } = generateXY(humidity)
-  // initChart('chartSD', SDX, SDY, '%RH', '湿度', SDMin, SDMax)
-
-  // const { x:PHX, y:PHY, min:PHMin, max:PHMax } = generateXY(pHValue)
-  // initChart('chartPH', PHX, PHY, 'ph', 'PH值', PHMin, PHMax)
-
-  // const { x:ECX, y:ECY, min:ECMin, max:ECMax } = generateXY(ecValue)
-  // initChart('chartEC', ECX, ECY, 'mS/cm', 'EC值', ECMin, ECMax)
-
-  // const { x:LightX, y:LightY, min:LightMin, max:LightMax } = generateXY(lightIntensity)
-  // initChart('chartLight', LightX, LightY, 'Lux', '光照', LightMin, LightMax)
-
-  // const { x:NX, y:NY, min:NMin, max:NMax } = generateXY(nitrogen)
-  // initChart('chartN', NX, NY, 'mg/Kg', '氮', NMin, NMax)
-
-  // const { x:PX, y:PY, min:PMin, max:PMax } = generateXY(phosphorus)
-  // initChart('chartP', PX, PY, 'mg/Kg', '磷', PMin, PMax)
-
-  // const { x:KX, y:KY, min:KMin, max:KMax } = generateXY(potassium)
-  // initChart('chartK', KX, KY, 'mg/Kg', '钾', KMin, KMax)
-
-  // const { x:AtmosX, y:AtmosY, min:AtmosMin, max:AtmosMax } = generateXY(atmosphericPressure)
-  // initChart('chartAtmos', AtmosX, AtmosY, 'hpa', '大气压力', AtmosMin, AtmosMax)
-
-  // const { x:RainX, y:RainY, min:RainMin, max:RainMax } = generateXY(rain)
-  // initChart('chartRain', RainX, RainY, 'mm/min', '雨量', RainMin, RainMax)
-
-  // const { x:WindDirecX, y:WindDirecY, min:WindDirecMin, max:WindDirecMax } = generateXY(windDirection)
-  // initChart('chartWindDirec', WindDirecX, WindDirecY, '度°', '风向', WindDirecMin, WindDirecMax)
-
-  // const { x:WindSpeedX, y:WindSpeedY, min:WindSpeedMin, max:WindSpeedMax } = generateXY(windSpeed)
-  // initChart('chartWindSpeed', WindSpeedX, WindSpeedY, 'm/s', '风速', WindSpeedMin, WindSpeedMax)
 }
 
 const initChart = (
@@ -329,6 +276,7 @@ const handleSelect = async (item) => {
   })
   
   const res = await getDeviceInfo({ id: item })
+  console.log("🚀 ~ handleSelect ~ res:", res)
   const { deviceKind, id } = res
   
   setTimeout(() => { id && getRunTimeData(id, deviceKind) }, 300)

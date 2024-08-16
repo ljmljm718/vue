@@ -45,13 +45,20 @@
       <!--        />-->
       <!--      </el-form-item>-->
       <el-form-item label="因素" prop="oxygenId">
-        <el-input
-          v-model="queryParams.oxygenId"
-          placeholder="请输入因素"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <!--        <el-input-->
+        <!--          v-model="queryParams.oxygenId"-->
+        <!--          placeholder="请输入因素"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <el-select v-model="queryParams.oxygenId" placeholder="请选择因素" class="!w-240px">
+          <el-option
+            v-for="item in formOxygenFactorAll"
+            :key="item.id"
+            :label="item.factorName"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="是否警告" prop="warnStatus">
         <el-select
@@ -97,7 +104,7 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        
+
       </el-form-item>
     </el-form>
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
@@ -132,7 +139,8 @@
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="因素" align="center" prop="oxygenId">
         <template #default="scope">
-          <span v-for="item in formOxygenFactorAll" :key="item.id" v-show="scope.row.oxygenId === item.id">
+          <span v-for="item in formOxygenFactorAll" :key="item.id"
+                v-show="scope.row.oxygenId === item.id">
             {{ item.factorName }}
           </span>
         </template>

@@ -8,16 +8,17 @@
       :inline="true"
       label-width="68px"
     >
-      <!--      <el-form-item label="设备id" prop="deviceId">
-              <el-input
-                v-model="queryParams.deviceId"
-                placeholder="请输入设备id"
-                clearable
-                @keyup.enter="handleQuery"
-                class="!w-240px"
-              />
-            </el-form-item>-->
       <el-row>
+        <el-form-item label="设备" prop="deviceId">
+          <el-input v-model="queryParams.deviceName" placeholder="请选择设备">
+            <template #append>
+              <el-button @click="openSelectDeviceInfo()">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
         <el-form-item label="设备状态" prop="deviceStatus">
           <el-select
             v-model="queryParams.deviceStatus"
@@ -131,6 +132,8 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceHistoryStatusForm ref="formRef" @success="getList"/>
+  <!--  选择设备-->
+  <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess" />
 </template>
 
 <script setup lang="ts">
@@ -139,6 +142,7 @@ import download from '@/utils/download'
 import {DeviceHistoryStatusApi, DeviceHistoryStatusVO} from '@/api/agriculture/devicehistory'
 import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue'
 import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
+import SelectDeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
 
 /** 设备历史状态 列表 */
 defineOptions({name: 'DeviceHistoryStatus'})
@@ -154,6 +158,7 @@ const queryParams = reactive({
   pageSize: 10,
   deviceId: undefined,
   deviceStatus: undefined,
+  deviceName: undefined,
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
@@ -180,6 +185,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.deviceName = null
   handleQuery()
 }
 
@@ -217,7 +223,16 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-
+// 机器信息选择
+const SelectDeviceInfoRef = ref()
+const openSelectDeviceInfo = () => {
+  SelectDeviceInfoRef.value.open('jk') //监控
+}
+//点击确定后
+const SelectDeviceInfoSuccess = (item: any) => {
+  queryParams.deviceId = item[0].id
+  queryParams.deviceName = item[0].deviceName
+}
 /** 初始化 **/
 onMounted(() => {
   getList()
