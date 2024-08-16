@@ -586,16 +586,16 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
       <!--      <el-icon :class="{ rotate: isRotating }" class="icon">-->
       <!--        <RefreshRight />-->
       <!--      </el-icon>-->
-      <img :src="execute" alt="执行同步数据"  class="w-6 h-6"/>
+      <img :src="execute" alt="执行同步数据"  class="w-5 h-5"/>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
 .floating-refresh-button {
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
+  bottom: 40px;
+  right: 90px;
+  width: 40px;
+  height: 40px;
   background-color: #009688;
   color: white;
   border-radius: 50%;
