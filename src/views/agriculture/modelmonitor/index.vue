@@ -191,30 +191,20 @@ const handleItemHover = (cardItem, rangeItem, offset) => {
 }
 
 // 响应式状态，用于控制图标旋转
-const isRotating = ref(false)
 const message = useMessage() // 消息弹窗
-const btnLoading = ref(false) // 加载动画
+const loading = ref(false) // 加载动画
 
 // 点击处理函数
-const handleTriggerModelCalculate = () => {
-  // 先移除旋转状态
-  isRotating.value = false
-  nextTick(async () => {
-    // 重新触发旋转
-    isRotating.value = true
-
-    btnLoading.value = true
-    // 调用后台触发计算要素得分;
-    const res = await ModelManagementApi.triggerModelCalculate()
+const handleTriggerModelCalculate = async () => {
+  await message.confirm("此操作将重新统计截止至目前为止的模型得分数据并且刷新页面，耗时可能较长，是否确认执行？")
+  loading.value = true
+  // 调用后台触发计算要素得分;
+  const res = await ModelManagementApi.triggerModelCalculate()
+  if (res) {
     message.success(res)
-
-    getPlotList()
-
-    // 动画结束后停止旋转
-    setTimeout(() => {
-      isRotating.value = false
-    }, 1000) // 1秒后结束旋转（与CSS动画持续时间匹配）
-  })
+  }
+  await getPlotList()
+  loading.value = false
 }
 
 // 构造模型周期与栽培要点的chart数据
@@ -345,7 +335,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
 }
 </script>
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between" v-loading="loading">
     <el-card :style="{ width: collapsed ? '7rem' : '15rem' }">
       <div
         class="bg-[#009688] py-2 w-full rounded-md text-white text-center cursor-pointer"

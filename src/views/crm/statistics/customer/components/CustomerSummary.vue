@@ -31,7 +31,7 @@
       <el-table-column label="合同总金额" align="right" prop="contractPrice" min-width="200" />
       <el-table-column label="回款金额" align="right" prop="receivablePrice" min-width="200" />
       <el-table-column label="未回款金额" align="right" min-width="200">
-        <!-- TODO @dhb52：参考 util/index.ts 的 // ========== ERP 专属方法 ========== 部分，搞个两个方法，一个格式化百分比，一个计算百分比  -->
+        <!-- TODO @dhb52：参考 util/service.ts 的 // ========== ERP 专属方法 ========== 部分，搞个两个方法，一个格式化百分比，一个计算百分比  -->
         <template #default="scope">
           {{ round(scope.row.contractPrice - scope.row.receivablePrice, 2) }}
         </template>
