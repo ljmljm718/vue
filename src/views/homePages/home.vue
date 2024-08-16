@@ -4,11 +4,11 @@
       <div class="w-full h-full overflow-hidden home-bg relative">
         <!-- 标题 -->
         <div class="h-[8%]"> </div>
-        <div
-          class="absolute right-[4rem] top-[2rem] text-white bg-[#0e4f50] p-3 py-1 rounded-3 shadow-md cursor-pointer hover:bg-[#059d4e] transition-all"
+        <img
+          class="absolute right-[1rem] top-[3.5rem] w-[5rem] cursor-pointer transition-all"
           @click="loginOut"
-          >登出</div
-        >
+          :src="exitImg"
+        />
         <div class="h-[91%] flex justify-center items-center relative bottom-bg bg-transparent">
           <div class="relative top-[-10em] z-20 w-[32em] h-[32em]">
             <!-- 中心 -->
@@ -71,81 +71,64 @@
               <div
                 class="lt-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.1em] top-[2em] text-[1.4em]"
                 @click="routerHandler('GIS一张图')"
-                >GIS一张图</div
-              >
+              >GIS一张图</div>
               <div
                 class="lt-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.4em] top-[5em] text-[1.4em]"
                 @click="routerHandler('数字监测')"
-                >数字监测</div
-              >
+              >数字监测</div>
               <div
                 class="lt-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.4em] top-[8em] text-[1.4em]"
                 @click="routerHandler('智能预警')"
-                >智能预警</div
-              >
+              >智能预警</div>
               <div
                 class="lt-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[11em] text-[1.4em]"
                 @click="routerHandler('设备巡检')"
-                >设备巡检</div
-              >
-
+              >设备巡检</div>
               <div
                 class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[19em] text-[1.4em]"
                 @click="routerHandler('农事概览')"
-                >农事概览</div
-              >
+              >农事概览</div>
               <div
                 class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.5em] top-[19.5em] text-[1.4em]"
                 @click="routerHandler('农事活动')"
-                >农事活动</div
-              >
+              >农事活动</div>
               <div
                 class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.6em] top-[20em] text-[1.4em]"
                 @click="routerHandler('监测模型')"
-                >监测模型</div
-              >
+              >监测模型</div>
               <div
                 class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.4em] top-[20.5em] text-[1.4em]"
                 @click="routerHandler('种植管理')"
-                >种植管理</div
-              >
+              >种植管理</div>
 
               <div
                 class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.5em] top-[-6em] text-[1.4em]"
                 @click="routerHandler('基地总览')"
-                >基地总览</div
-              >
+              >基地总览</div>
               <div
                 class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]"
                 @click="routerHandler('投入品管理')"
-                >投入品管理</div
-              >
+              >投入品管理</div>
               <div
                 class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]"
                 @click="routerHandler('库存管理')"
-                >库存管理</div
-              >
-
+              >库存管理</div>
               <div
                 class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]"
                 @click="routerHandler('加工记录')"
-                >加工记录</div
-              >
+              >加工记录</div>
               <div
                 class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]"
                 @click="routerHandler('产品流通')"
-                >产品流通</div
-              >
+              >产品流通</div>
               <div
                 class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]"
                 @click="routerHandler('营销方案')"
-                >营销方案</div
-              >
+              >营销方案</div>
               <div
                 class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.4em] top-[3.5em] text-[1.4em]"
                 @click="routerHandler('特色产品')"
-                >特色产品</div
-              >
+              >特色产品</div>
             </div>
           </div>
         </div>
@@ -159,6 +142,7 @@ import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import ScaleBox from 'vue3-scale-box'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useUserStore } from '@/store/modules/user'
+import exitImg from './assets/exit.png'
 
 const { wsCache } = useCache()
 const router = useRouter()
