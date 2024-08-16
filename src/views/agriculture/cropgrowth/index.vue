@@ -155,7 +155,7 @@
           @click="handleAddGrowth"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
-          批量添加生长周期
+          批量添加
         </el-button>
       </el-form-item>
     </div>
