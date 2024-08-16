@@ -19,7 +19,7 @@
     </div>
     <!-- 内容 -->
     <div 
-      class="content relative left-[3px] p-[15px] box-border"
+      class="content relative left-[3px] px-[15px] box-border"
       :style="`width: ${ cardWidth }px; height: ${ cardHeight }px;`"
     >
       <slot>

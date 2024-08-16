@@ -41,7 +41,30 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="所属基地" prop="parkName">
+
+      <el-form-item label="选择基地">
+          <el-select  class="!w-240px" v-model="queryParams.belongPark">
+            <el-option
+              v-for="(item, index) in baseList"
+              :key="index"
+              :value="item.id"
+              :label="item.name"
+              placeholder="请选择"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择地块">
+          <el-select  class="!w-240px" v-model="queryParams.belongPlot">
+            <el-option
+              v-for="(item, index) in plotList"
+              :key="index"
+              :value="item.id"
+              :label="item.name"
+              placeholder="请选择"
+            />
+          </el-select>
+        </el-form-item>
+      <!-- <el-form-item label="所属基地" prop="parkName">
         <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
           <template #append>
             <el-button @click="openParkPopup('0')">
@@ -60,7 +83,7 @@
             </el-button>
           </template>
         </el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
           v-model="queryParams.startTime"
@@ -132,7 +155,7 @@
           @click="handleAddGrowth"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
-          批量添加生长周期
+          批量添加
         </el-button>
       </el-form-item>
     </div>
@@ -251,6 +274,9 @@ import {ParkDetailVO} from '@/api/agriculture/parkdetail'
 import {ParkInfoVO} from '@/api/agriculture/parkinfo'
 import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 
+import {page,parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
+
+
 /** 作物生长期管理 列表 */
 defineOptions({name: 'CropGrowth'})
 
@@ -289,6 +315,27 @@ const handleAddGrowth = () => {
   addGrowthDialogIns.value.open()
 }
 const handleUpdate = () => { resetQuery() }
+
+//获取基地
+const baseList = ref([])
+const getPage = async () => {
+  let res = await page()
+  console.log(res, 'res123x')
+  baseList.value = res.list
+  queryParams.belongPark = res.list[0].id
+  getParkPage({ parkId: res.list.id })
+}
+getPage()
+//获取地块
+const plotList = ref([])
+
+const getParkPage = async (parkId) => {
+  let res = await parkPage(parkId)
+  console.log(res.list[0].id, 'dikuia')
+  plotList.value = res.list
+  queryParams.belongPlot = res.list[0].id
+}
+
 
 /** 查询列表 */
 const getList = async () => {
