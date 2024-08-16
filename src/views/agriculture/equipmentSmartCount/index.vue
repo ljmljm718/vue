@@ -94,6 +94,7 @@ const dataColleChange = (val) => {
   if (val == '本年') val = 'year'
   else if (val == '本月') val = 'month'
   else if (val == '今日') val = 'day'
+  dataCollectDateRange.value=[]
   initDataCollectChart(val)
 }
 const initDataCollectChart = async (type, startDate = '', endDate = '') => {
@@ -199,6 +200,7 @@ const dataShowChange = async (val) => {
   options.value = res
   dataShowRadio.value = val
   console.log(res, '实时数据下拉')
+  seletValue.value = res[0]
   initDataShowChart(dataShowRadio.value, res[0], dataShowDate.value)
 }
 dataShowChange(dataShowRadio.value)
@@ -223,7 +225,9 @@ const queryChart = () => {
 }
 
 const initDataShowChart = async (collectionType = '', monitoringType = '', date = '') => {
+  console.log(monitoringType,'monitoringTypemonitoringType')
   let res = await EquipmentDataApi.getDataPresentation({ collectionType, monitoringType, date })
+
   console.log(res, '数据展示')
   let data = res.map((item) => item.dateTime+"时")
   let xAxisData = []
@@ -278,7 +282,7 @@ const initDataShowChart = async (collectionType = '', monitoringType = '', date 
       },
       series: [
         {
-          name: '数据展示',
+          name: res[0].monitoringType,
           data: res.map((item) => item.dataValue),
           type: 'line',
           smooth: true,
@@ -426,7 +430,6 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
   )
 }
 onMounted(async () => {
-  initDataShowChart()
   initDataCollectChart('year')
   initCollectConditionChart()
 })

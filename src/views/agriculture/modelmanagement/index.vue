@@ -107,7 +107,7 @@
       <div v-for="item, index in list" :key="index" class=" justify-between p-5 bg-[#f5f5f5]">
         <div class="flex justify-between">
           <div>
-            <div style="font-size: 18px; margin-bottom: 10px;">{{ item.modelName }}</div>
+            <div style="font-size: 18px; margin-bottom: 15px;">{{ item.modelName }}</div>
             <div style="font-size:14px;margin-bottom: 5px;">品类：{{ item.categoryName }}</div>
             <div style="font-size:14px;margin-bottom: 5px;">品种：{{ item.varietyName }}</div>
           </div>
@@ -117,20 +117,20 @@
               style="width:130px;height: 85px;object-fit: contain;" />
           </div>
         </div>
-        <div class="mt-15px flex items-">
-          <el-button style="font-size:12px; " class="changeBtnColor w-[70px]"
+        <div class="mt-15px flex items-center ">
+          <el-button style="font-size:12px; " type="primary" class=" w-[65px]"
             @click="router.push(`/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`)">
             监测指标
           </el-button>
-          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor w-[70px]" @click="openForm('detail', item.id)"
+          <el-button style="font-size:12px; margin-left: 7px;" class=" w-[65px]" @click="openForm('detail', item.id)"
                      v-hasPermi="['agriculture:model-management:update']">
             详情
           </el-button>
-          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor w-[70px]" @click="openForm('update', item.id)"
+          <el-button style="font-size:12px; margin-left: 7px;" class=" w-[65px]" @click="openForm('update', item.id)"
             v-hasPermi="['agriculture:model-management:update']">
             编辑
           </el-button>
-          <el-button style="font-size:12px; margin-left: 5px;" class="changeBtnColor w-[70px]" @click="handleDelete(item.id)"
+          <el-button style="font-size:12px; margin-left: 7px;" class=" w-[65px]" @click="handleDelete(item.id)"
             v-hasPermi="['agriculture:model-management:delete']">
             删除
           </el-button>
