@@ -78,14 +78,12 @@ const getModelList = async (plotId) => {
   })
   if (Array.isArray(res)) {
     modelList.value = res
-    console.log('🚀 ~ getModelList ~ res:', res)
     healthValList.value = [] // 清空健康评分
     tableData.value = [] // 清空表格数据
     cycleInfoList.value = [] // 清空模型周期列表
     if (res.length > 0) {
       selectedModelId.value = res[0].modelId
       defaultGrowth.value = res[0].growth
-      console.log('🚀 ~ getModelList ~ defaultGrowth.value:', defaultGrowth.value)
       // TODO: 获取健康评分 下面两个
       getHealthValList(res[0].modelId, res[0].batchCode)
       getTableData(res[0].modelId, res[0].growthId)
@@ -106,7 +104,8 @@ const handleModelClick = (item) => {
       title: { text: item.growth, subtext: item.cycle + '天' }
     })
   getHealthValList(item.modelId, item.batchCode)
-  getTableData(item.modelId, item.modelId)
+  getTableData(item.modelId, item.growthId)
+  getCycleInfoList(item.modelId, item.growthId)
 }
 
 // 监测指标按钮
@@ -164,11 +163,15 @@ const tableLoading = ref<boolean>(false)
 const tableData = ref<any[]>([])
 const originTableData = ref<any[]>([])
 const getTableData = async (modelId, growthId) => {
+  if (!modelId || !growthId) return
   tableLoading.value = true
   tableData.value = []
   const res = await getMonitorIndicatorWithDetail({ modelId, growthId }).catch((err) => {
     tableLoading.value = false
   })
+  // console.log('🚀 ~ getTableData ~ modelId:', modelId)
+  // console.log('🚀 ~ getTableData ~ growthId:', growthId)
+  // console.log('🚀 ~ getTableData ~ res:', res)
   if (Array.isArray(res)) {
     originTableData.value = res
     indexBtns.value = res.map((item) => ({
@@ -239,7 +242,6 @@ const getCycleInfoList = async (modelId, growthId) => {
   if (Array.isArray(res)) {
     cycleInfoList.value = res
     listFirstItem.value = res.shift()
-    console.log('🚀 ~ getCycleInfoList ~ firstItem:', listFirstItem.value)
     const curPeriodItem = res.find((_item) => _item.growth === listFirstItem.value.curPeriod)
     periodList.value = res
     buildChartData(res, curPeriodItem.growth, curPeriodItem.cycle)
@@ -249,6 +251,7 @@ const getCycleInfoList = async (modelId, growthId) => {
       activeGrowthId.value = curGrowthItem.growthId
       if (keyPointList.value.length > 0) {
         selectedKeyPoint.value = keyPointList.value[0].id
+        selectedInfo.value = keyPointList.value[0].itemContent
       }
     }
   }
@@ -264,6 +267,7 @@ const handlePeriodClick = (item) => {
   keyPointList.value = item.child2
   if (keyPointList.value.length > 0) {
     selectedKeyPoint.value = keyPointList.value[0].id
+    selectedInfo.value = keyPointList.value[0].itemContent
   }
   instance.value &&
     instance.value.setOption({
@@ -281,6 +285,7 @@ const keyPointList = ref<any[]>([])
 const selectedKeyPoint = ref<string>('')
 const selectedInfo = ref<string>('')
 const handleKeyPointItemClick = (item) => {
+  selectedInfo.value = item.itemContent
   selectedKeyPoint.value = item.id
 }
 watch([selectedKeyPoint], (val) => {
@@ -348,49 +353,59 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   <div class="flex justify-between">
     <el-card :style="{ width: collapsed ? '7rem' : '15rem' }">
       <div
-        class="bg-[#009688] py-2 w-full rounded-md text-white text-center cursor-pointer"
+        class="bg-[#009688] py-2 w-90% rounded-md text-white text-center cursor-pointer"
         @click="collapsed = !collapsed"
         >{{ collapsed ? '展开' : '折叠' }}</div
       >
       <div
-        class="max-h-80vh space-y-3 py-3 overflow-auto mt-2"
+        class=" space-y-3 py-3 mt-2 mr-3"
         v-loading="plotListLoading"
         v-show="!collapsed"
       >
-        <div
-          v-for="item in plotList"
-          class="shadow-md rounded-2 p-1 overflow-hidden bg-[#f5f5f5] transition-all cursor-pointer hover:bg-[#e5f4f3] hover:text-[#009688]"
-          :key="item.id"
-          :style="{
-            border: selectedPlotId === item.id ? '1px solid #009688' : '1px solid #00000000',
-            color: selectedPlotId === item.id ? '#009688' : '#333333'
-          }"
-          @click="handlePlotClick(item)"
-        >
-          <div class="w-full h-[6rem] bg-gray">
-            <img :src="item.img" alt="" class="w-full h-full object-cover" />
+        <el-scrollbar height="80vh">
+          <div class="mr-3">
+            <div
+              v-for="item in plotList"
+              class="shadow-md rounded-2 p-1 overflow-hidden bg-[#f5f5f5] transition-all cursor-pointer hover:bg-[#e5f4f3] hover:text-[#009688]"
+              :key="item.id"
+              :style="{
+                border: selectedPlotId === item.id ? '1px solid #009688' : '1px solid #00000000',
+                color: selectedPlotId === item.id ? '#009688' : '#333333'
+              }"
+              @click="handlePlotClick(item)"
+            >
+              <div class="w-full h-[6rem] bg-gray">
+                <img :src="item.img" alt="" class="w-full h-full object-cover" />
+              </div>
+              <div class="w-full py-1 text-center">{{ item.name }}</div>
+            </div>
           </div>
-          <div class="w-full py-1 text-center">{{ item.name }}</div>
-        </div>
+        </el-scrollbar>
       </div>
-      <!--  -->
+      <!-- 折叠 -->
       <div
-        class="max-h-80vh space-y-3 py-3 overflow-auto hidden-scrollbar mt-2"
+        class="max-h-80vh space-y-3 py-3 overflow-auto mt-2"
         v-loading="plotListLoading"
         v-show="collapsed"
       >
-        <div
-          v-for="item in plotList"
-          class="shadow-md rounded-2 overflow-hidden bg-[#f5f5f5] transition-all cursor-pointer hover:bg-[#e5f4f3] hover:text-[#009688]"
-          :key="item.id"
-          :style="{
-            border: selectedPlotId === item.id ? '1px solid #009688' : '1px solid #00000000',
-            color: selectedPlotId === item.id ? '#009688' : '#333333'
-          }"
-          @click="handlePlotClick(item)"
-        >
-          <div class="w-full h-[2rem]  text-center">{{ item.name }} </div>
-        </div>
+        <el-scrollbar height="80vh">
+          <div class="mr-3">
+            <div
+              v-for="item in plotList"
+              class="mb-2 shadow-md rounded-2 overflow-hidden bg-[#f5f5f5] transition-all cursor-pointer hover:bg-[#e5f4f3] hover:text-[#009688]"
+              :key="item.id"
+              :style="{
+                border: selectedPlotId === item.id ? '1px solid #009688' : '1px solid #00000000',
+                color: selectedPlotId === item.id ? '#009688' : '#333333'
+              }"
+              @click="handlePlotClick(item)"
+            >
+              <div class="w-full h-[2.5rem] flex justify-center items-center text-center"
+                >{{ item.name }}
+              </div>
+            </div>
+          </div>
+        </el-scrollbar>
       </div>
     </el-card>
     <div
@@ -619,19 +634,6 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   }
 }
 
-.tool-bar-1 {
-  background: linear-gradient(to right, #06d41d, #4abd14);
-}
-.tool-bar-2 {
-  background: linear-gradient(to right, #4abd14, #9ba30a);
-}
-.tool-bar-3 {
-  background: linear-gradient(to right, #9ba30a, #e58a01);
-}
-.tool-bar-4 {
-  background: linear-gradient(to right, #e58a01, #e54901);
-}
-
 .color-bar-1 {
   background: linear-gradient(to right, #01d51d, #4cbd14);
 }
@@ -703,5 +705,9 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   border-radius: 5px;
   position: absolute;
   top: -4px;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 0px;
 }
 </style>
