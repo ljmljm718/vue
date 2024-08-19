@@ -30,7 +30,7 @@
             <el-table-column label="图片" align="center" prop="imgId">
               <template #default="{ row }">
                 <el-image class="h-50px w-50px" :src="row.imgId" :preview-src-list="[row.imgId]" preview-teleported
-                  fit="cover" />
+                  fit="contain" />
               </template>
             </el-table-column>
             <el-table-column label="周期（/天）" align="center" prop="cycle" />
