@@ -16,7 +16,7 @@
             'flex p-3 space-x-2 transition',
             slectedItem == item.key ? 'bg-[#E5F4F3] selected-item' : ''
           ]" @click="selectGrowth(item.key)">
-            <img :src="item.img" class="w-[3rem] h-[3rem]" alt="" />
+            <img :src="item.img" class="w-[3rem] h-[3rem] object-contain" alt="" />
             <div>
               <div>{{ item.title }}</div>
               <div>{{ item.value }}</div>
