@@ -120,6 +120,7 @@ const getGrowthPeriod = () => {
     img: item.imgId
   }))
   console.log('growthPeriod.value=>', growthPeriod.value)
+  if (growthPeriod.value.length > 0) selectGrowth(growthPeriod.value[0].key)
 }
 //--- 查询品类生长周期列表-----
 const getCropGrowthList = async (id = route.query.cropId) => {
