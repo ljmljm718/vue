@@ -3,6 +3,7 @@ import { defineComponent, computed, ref } from 'vue'
 import { Message } from '@/layout/components//Message'
 import { Collapse } from '@/layout/components/Collapse'
 import { UserInfo } from '@/layout/components/UserInfo'
+import { Setting } from '@/layout/components/Setting'
 import { Screenfull } from '@/layout/components/Screenfull'
 import { Breadcrumb } from '@/layout/components/Breadcrumb'
 import { SizeDropdown } from '@/layout/components/SizeDropdown'
@@ -199,6 +200,7 @@ export default defineComponent({
                 color="var(--top-header-text-color)"
               ></Message>
             ) : undefined}
+            <Setting />
             <UserInfo />
           </div>
         </div>
