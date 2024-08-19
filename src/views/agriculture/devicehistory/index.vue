@@ -10,7 +10,7 @@
     >
       <el-row>
         <el-form-item label="设备" prop="deviceId">
-          <el-input v-model="queryParams.deviceName" placeholder="请选择设备">
+          <el-input v-model="queryParams.deviceName" placeholder="请选择设备" readonly>
             <template #append>
               <el-button @click="openSelectDeviceInfo()">
                 <Icon icon="ep:search" />
