@@ -224,7 +224,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="健康比例(%)" align="center">
+            <el-table-column label="健康值" align="center">
               <template #default="{ row }">
                 <div v-for="(item, index) in row.rangeItems" :key="index">
                   {{ item.healthRatio }}
@@ -260,6 +260,7 @@ import ModelSelectPopup from '@/views/agriculture/modelmanagement/ModelSelectPop
 import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
 import { cloneDeep } from 'lodash-es'
 import { treeEmits } from 'element-plus/es/components/tree-v2/src/virtual-tree'
+import {ModelIndicatorElementApi} from "@/api/agriculture/modelindicatorelement";
 
 /** 监测指标 列表 */
 defineOptions({ name: 'ModelMonitorIndicator' })
@@ -291,9 +292,7 @@ const cardDataList = ref<any[]>([])
 const getCardDataList = async (modelId, growthId) => {
   const res = await ModelMonitorIndicatorApi.getCardData({ modelId, growthId })
   if (!Array.isArray(res)) return
-  console.log('cardDataList.value', cardDataList.value)
   cardDataList.value = res.map((item) => {
-    console.log('item', item)
     const { modelIndicatorElementCardVOList: VoList } = item
     let modelIndicatorElementCardVOList = cloneDeep(VoList)
     if (Array.isArray(modelIndicatorElementCardVOList)) {
@@ -325,7 +324,6 @@ const getCardDataList = async (modelId, growthId) => {
         return cardItem
       })
     }
-    console.log('cardDataList.value', cardDataList.value)
 
     return { ...item, modelIndicatorElementCardVOList }
   })
@@ -378,7 +376,6 @@ const getTypeData = async () => {
   const { list: list1 } = await ModelManagementApi.getModelManagementNoPage({})
   if (Array.isArray(list1)) listModelManagement.value = list1
   const { list: growthNewList } = await CropGrowthNewApi.getCropGrowthNewNoPage({})
-  console.log('growthNewList', growthNewList)
   if (Array.isArray(growthNewList)) listCropGrowthNew.value = growthNewList
 }
 
@@ -447,21 +444,13 @@ const initCharts = () => {
   })
 }
 
-watch(showType, (val: string) => {
-  if (val === 'card') {
-    nextTick(() => {
-      initCharts()
-    })
-  }
-})
-
+// const createDisabled = ref(false) //新增按钮是否禁用
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     if (selectedKey.value) queryParams.growthPeriodId = selectedKey.value
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
-    console.log('data', data.list)
     list.value = data.list.map((item) => {
       const element = Array.isArray(listModelManagement.value)
         ? listModelManagement.value.find((ele) => ele.id === item.modelId)
@@ -475,7 +464,6 @@ const getList = async () => {
         growth: cropItem ? cropItem.growth : ''
       }
     })
-    console.log('list', list.value)
     total.value = data.total
     if (list.value.length > 0) {
       console.log('list.value[0]', list.value[0])

@@ -335,7 +335,7 @@ export default defineComponent({
             value: res1.duckCoopCount + '间',
             url: '/asset/base/parkdetail?type=DuckCoop'
           },
-          {label: '稻鸭', value: res1.riceDuckCount, url: '/asset/base/parkdetail?type=DuckCoop'},
+          {label: '稻鸭', value: res1.riceDuckCount + '只' , url: '/asset/base/parkdetail?type=DuckCoop'},
           {label: '示范基地', value: res2.parkSum + '亩', url: '/asset/base/parkinfo'},
           {label: '基地数量', value: res2.parkCount + '个', url: '/asset/base/parkinfo'},
           {label: '养殖农户', value: res2.farmerCount + '户', url: '/asset/base/farmer-info'},

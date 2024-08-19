@@ -163,7 +163,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="预计产量" prop="predictedOutput">
-                  <el-input v-model="formData.predictedOutput" placeholder="请输入预计产量" />
+                  <el-input v-model="formData.predictedOutput" placeholder="请输入预计产量与单位，如：500Kg" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -294,14 +294,14 @@ const getFrom = async () => {
   console.log(route.query.type  as any)
   resetForm();
   if (route.query.id) {
-    // todo 
+    // todo
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
     //获取所有品类的详情数据
     console.log("-----=========")
     listCategoryManagement.value = await allDataCacheManager.getData({})
     console.log("-----=========++++")
     listCategoryManagement.value.forEach(itm => {
-        
+
         if (formData.value.cropType == itm.id){
           cropTypeName.value = itm.categoryName
         }
@@ -350,7 +350,7 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----");  
+  console.log(order,"---------=----");
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
   formData.value.cropType = String(order[0].categoryId)

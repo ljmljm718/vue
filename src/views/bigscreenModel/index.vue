@@ -461,13 +461,13 @@ export default defineComponent({
                     <div class="flex w-100% h-50% items-center justify-center">
                       <div
                         class={`${
-                          item.title == '优秀'
+                          item.value == '优秀'
                             ? 'left-icon-2'
-                            : item.title == '良好'
+                            : item.value == '良好'
                               ? 'left-icon-3'
-                              : item.title == '一般'
+                              : item.value == '一般'
                                 ? 'left-icon-4'
-                                : item.title == '很差'
+                                : item.value == '很差'
                                   ? 'left-icon-5'
                                   : 'left-icon-1'
                         } mr-15px`}
@@ -485,13 +485,13 @@ export default defineComponent({
                         </div>
                         <div
                           class={` ${
-                            item.title == '优秀'
+                            item.value == '优秀'
                               ? 'left-xian-1'
-                              : item.title == '良好'
+                              : item.value == '良好'
                                 ? 'left-xian-2'
-                                : item.title == '一般'
+                                : item.value == '一般'
                                   ? 'left-xian-3'
-                                  : item.title == '很差'
+                                  : item.value == '很差'
                                     ? 'left-xian-4'
                                     : 'left-xian-2'
                           } w-100% h-20px`}

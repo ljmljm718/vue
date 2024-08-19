@@ -202,6 +202,7 @@ const clear = () => {
     :class="prefixCls"
     class="w-[36px] flex items-center justify-center cursor-pointer text-center"
     @click="drawer = true"
+    style="color: var(--top-header-text-color);"
   >
     <Icon icon="ep:setting" />
   </div>
