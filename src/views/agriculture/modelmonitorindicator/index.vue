@@ -25,7 +25,7 @@
         <div
           :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
           style="border-radius: 0 5px 5px 0"
-          @click="(showType = 'list'), (showElement = false)"
+          @click="(showType = 'list'), (showElement = true)"
         >
           <el-icon>
             <List />
@@ -47,7 +47,8 @@
           @click="handleLeftItemClick(item)"
         >
           <img :src="item.imgId" alt="" class="w-[2.2rem] h-[2.2rem] object-contain" />
-          <div>            <div>{{ item.growth }}</div>
+          <div>
+            <div>{{ item.growth }}</div>
             <div>{{ item.cycle }}天</div>
           </div>
         </div>
@@ -134,27 +135,14 @@
             @row-click="handleRowClick"
             highlight-current-row
             :header-cell-style="{ fontSize: '14px', backgroundColor: '#f8f8f8', color: '#333' }"
+            ref="tableRef"
+            :current-row="currentRow"
           >
             <el-table-column label="指标编号" align="center" prop="id" width="160" />
             <el-table-column label="模型名称" align="center" prop="modelName" />
             <el-table-column label="生长周期" align="center" prop="growth" />
             <el-table-column label="指标名称" align="center" prop="indicatorName" />
             <el-table-column label="指标说明" align="center" prop="indicatorDescription" />
-            <!--            <el-table-column-->
-            <!--              label="指标范围"-->
-            <!--              align="center"-->
-            <!--              prop="indicatorRange"-->
-            <!--            />-->
-            <!--            <el-table-column-->
-            <!--              label="指标结果"-->
-            <!--              align="center"-->
-            <!--              prop="indicatorResult"-->
-            <!--            />-->
-            <!--            <el-table-column-->
-            <!--              label="健康分值"-->
-            <!--              align="center"-->
-            <!--              prop="healthScore"-->
-            <!--            />-->
             <el-table-column label="权重(%)" align="center" prop="weight" width="70" />
             <el-table-column label="是否默认" align="center" prop="isDefault">
               <template #default="scope">
@@ -420,6 +408,8 @@ const initCharts = () => {
     const chartId = 'chart_' + item.id
     const seriesData = item.modelIndicatorElementCardVOList
     if (!Array.isArray(seriesData)) return
+    const _dom = document.getElementById(chartId)
+    if (!_dom) return
     initChartStatic(
       chartId,
       generatePieOptions({
@@ -487,6 +477,14 @@ const getList = async () => {
     })
     console.log('list', list.value)
     total.value = data.total
+    if (list.value.length > 0) {
+      console.log('list.value[0]', list.value[0])
+      tableRef.value.setCurrentRow(list.value[0])
+      currentRow.value = list.value[0]
+      setTimeout(() => {
+        handleRowClick(list.value[0])
+      }, 300)
+    }
   } finally {
     loading.value = false
     nextTick(() => {
@@ -507,11 +505,14 @@ window.addEventListener('resize', () => {
 })
 
 //--------出现下方的元素列表--------------
+const currentRow = ref()
+const tableRef = ref()
 const elementList = ref<any[]>([])
 const handleRowClick = (row) => {
   showElement.value = true
   cardDataList.value.forEach((item) => {
     if (item.indicatorName === row.indicatorName) {
+      console.log('if (item.indicatorName === row.indicatorName) ')
       const { modelIndicatorElementCardVOList: VoList } = item
       let ElementVOList = cloneDeep(VoList)
       elementList.value = ElementVOList.map((elementItem) => {
@@ -536,10 +537,20 @@ const handleRowClick = (row) => {
           rangeItems
         }
       })
+      console.log('elementList.value', elementList.value)
     }
   })
-  console.log('elementList.elementName', elementList.value)
 }
+// 默认选中第一行
+watch(showType, (val: string) => {
+  if (val === 'list') {
+    nextTick(() => {
+      tableRef.value.setCurrentRow(list.value[0])
+      currentRow.value = list.value[0]
+      handleRowClick(list.value[0])
+    })
+  }
+})
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
