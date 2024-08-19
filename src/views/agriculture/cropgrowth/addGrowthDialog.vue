@@ -13,13 +13,22 @@ defineExpose({ open })
 
 // input 框活动时触发
 const activeData = ref<any>(null)
-const handleFocus = (data) => {
+const activeParam = ref<string>('')
+const handleFocus = (data, param) => {
   activeData.value = data;
+  activeParam.value = param;
 }
 const handleBlur = (item) => {
   if (!activeData.value) return;
   // TODO: 批量添加生长期 可手动修改表格内容
-  console.log("🚀 ~ handleBlur ~ activeData.value:", activeData.value)
+  const timeDiff = activeData.value.endTime - activeData.value.startTime;
+  if (['startTime', 'endTime'].indexOf(activeParam.value) !== -1 && timeDiff > 0) {
+    tableData.value.forEach(ele => {
+      if (ele.id === activeData.value.id) {
+        ele.cycle = Math.floor(timeDiff / (24 * 60 * 60 * 1000))
+      }
+    })
+  }
   activeData.value = null;
 }
 
@@ -296,7 +305,7 @@ const handleConfirm = async () => {
                   value-format="x"
                   placeholder="选择开始时间"
                   class="!w-full"
-                  @focus="handleFocus(scope.row)"
+                  @focus="handleFocus(scope.row, 'startTime')"
                   @change="handleBlur"
                 />
               </template>
@@ -312,7 +321,7 @@ const handleConfirm = async () => {
                   value-format="x"
                   placeholder="选择结束时间"
                   class="!w-full"
-                  @focus="handleFocus(scope.row)"
+                  @focus="handleFocus(scope.row, 'endTime')"
                   @change="handleBlur"
                 />
               </template>
@@ -329,7 +338,7 @@ const handleConfirm = async () => {
                   type="textarea"
                   :rows="3"
                   class="!w-full"
-                  @focus="handleFocus(scope.row)"
+                  @focus="handleFocus(scope.row, '')"
                   @blur="handleBlur"
                 />
               </template>
