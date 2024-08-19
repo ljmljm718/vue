@@ -150,7 +150,7 @@
 
         <div v-if="showElement">
           <div class="mt-17 mb-2"></div>
-          <el-table v-loading="loading" :data="elementList"  :show-overflow-tooltip="true"
+          <el-table v-loading="loading" :data="elementList"  
           :header-cell-style="{ fontSize: '14px', backgroundColor: '#f8f8f8', color: '#333' }" >
             <el-table-column label="要素标号" type="index" align="center" width='90px' />
             <el-table-column label="要素名称"  align="center">
