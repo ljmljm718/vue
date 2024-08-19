@@ -16,7 +16,7 @@
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
     <div class="w-full flex mb-10px items-center">
-      <div @click="handleClick('设备概要')" style="cursor: pointer;" :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-l`">设备概要</div>
+      <div @click="handleClick('设备概要')" style="cursor: pointer;" :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-l`">设备监测</div>
       <div @click="handleClick('报警')" style="cursor: pointer;" :class="`${tabsVal=='报警'?'active':'actived'} text-center leading-30px w-[33%] h-30px`">报警</div>
       <div @click="handleClick('设备属性')" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
     </div>
