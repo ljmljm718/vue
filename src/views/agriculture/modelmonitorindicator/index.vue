@@ -46,9 +46,8 @@
           ]"
           @click="handleLeftItemClick(item)"
         >
-          <img :src="item.imgId" alt="" class="w-[2rem] h-[2rem]" />
-          <div>
-            <div>{{ item.growth }}</div>
+          <img :src="item.imgId" alt="" class="w-[2.2rem] h-[2.2rem] object-contain" />
+          <div>            <div>{{ item.growth }}</div>
             <div>{{ item.cycle }}天</div>
           </div>
         </div>
