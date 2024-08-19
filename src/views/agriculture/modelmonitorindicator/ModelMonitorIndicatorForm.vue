@@ -169,12 +169,11 @@ const createOpen = async (type: string, item?: any) => {
     growthNewName.value = growth;
     formData.value.modelId=modelId;
     formData.value.growthPeriodId=growthPeriodId;
-    console.log("growthPeriodId", modelId, growthPeriodId)
     weightDisabled.value = false
     const currentNum = await ModelIndicatorElementApi.getIndicatorWeight(modelId, growthPeriodId)
-    maxNum.value = 100 - +currentNum
-    console.log("maxNum.value", currentNum, maxNum.value)
-    weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
+    currentNum.data === null ? maxNum.value = 100 : maxNum.value = 100 - +currentNum
+    maxNum.value === 0 ? (weightPlaceholder.value = "已无权重可供分配，请调整其他要素权重", weightDisabled.value = true)
+      : weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
   }
   formLoading.value = false
 

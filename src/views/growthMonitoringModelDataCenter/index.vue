@@ -323,13 +323,9 @@ export default defineComponent({
           indicatorData.push({ name: "其他", max: 100})
           percentages.push(100 - totalPer)
         }
-        let r = "85%"
         let labelPos = "top"
-        let centerPoint = ["50%", "60%"]
         if (indicatorData.length < 3) {
-          r = "70%"
           labelPos = "right"
-          centerPoint = ["50%", "45%"]
         }
         const option = {
           color: [
@@ -342,9 +338,7 @@ export default defineComponent({
             borderWidth: 3,
           },
           radar: {
-            radius: r,  
             nameGap: 10,
-            center: centerPoint,
             triggerEvent: true,
             indicator: indicatorData,
             axisName: {
@@ -404,6 +398,10 @@ export default defineComponent({
             }
           ]
         }
+        if (indicatorData.length === 3) {
+          option.radar = { ...option.radar, ...{radius: "85%", center: ["50%", "60%"]}}
+        }
+        
         if (chartDom && chartInstance) {
           chartInstance.setOption(option, true, true)
         } else {
