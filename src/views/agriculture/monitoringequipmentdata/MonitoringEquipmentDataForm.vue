@@ -181,6 +181,10 @@ const formData = ref({
 })
 const formRules = reactive({
   monitoringBaseId: [{ required: true, message: '基地不能为空', trigger: 'blur' }],
+  monitoringPlotId: [{ required: true, message: '地块不能为空', trigger: 'blur' }],
+  reserveOne: [{ required: true, message: '录入方式不能为空', trigger: 'blur' }],
+  reserveTwo: [{ required: true, message: '图片拍摄时间不能为空', trigger: 'blur' }],
+  capturedImage: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
