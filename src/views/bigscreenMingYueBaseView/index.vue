@@ -175,7 +175,7 @@ export default defineComponent({
                             </div>
                           </div>
                           <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
+                          <div class="grid  gap-3 p-2">
                           
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
@@ -398,7 +398,7 @@ export default defineComponent({
                             </div>
                           </div>
                           <div class="split-bar w-full h-[3px]"></div>
-                          <div class="grid grid-cols-2 gap-3 p-2">
+                          <div class="grid  gap-3 p-2">
                           {
                             Array.isArray(item.child) && item.child.length > 0 ? (
                               <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
