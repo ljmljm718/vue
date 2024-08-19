@@ -73,7 +73,7 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      
+
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -278,10 +278,10 @@ const getList = async () => {
   try {
     console.log(queryParams,"---===")
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
-    if(data.total==0){
+    /*if(data.total==0){
       message.error("暂无设备,请添加")
       dialogVisible.value = false
-    }
+    }*/
     list.value = data.list.map((item: any) => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
@@ -306,6 +306,10 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
+  queryParams.deviceCode = null
+  queryParams.deviceName = null
+  queryParams.deviceType = null
+  queryParams.deviceStatus = null
   handleQuery()
 }
 
