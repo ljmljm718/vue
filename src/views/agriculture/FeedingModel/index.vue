@@ -156,42 +156,50 @@
                 
                 class="!flex box-border justify-between mb-18px !px-[10px] !w-100% !h-35px !items-center rounded bg-[#fff] !border-2 !border-[#40b0a6] !border-solid"
               >
-                <div class='w-100px'>生长期：</div>
-                <select
-                  class="!w-130px !h-100% !border-none"
-                  name=""
-                  id=""
-                  @change="cycleSelect"
-                  v-model="sycleVal"
-                >
-                  <option v-for="(item, index) in infoList" :key="index" :value="item">{{
-                    item.growthPeriod
-                  }}</option>
-                </select>
+                <div class='!w-150px'>生长期：</div>
+                <div class="!w-160px">
+                    <select
+                    class=" !w-100% !border-none"
+                    name=""
+                    id=""
+                    @change="cycleSelect"
+                    v-model="sycleVal"
+                  >
+                    <option v-for="(item, index) in infoList" :key="index" :value="item">{{
+                      item.growthPeriod
+                    }}</option>
+                  </select>
+                </div>
               </div>
               <div
                 class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-              <div class="!w-130px">鱼塘规模：</div>
-                <el-input type="number" v-model="sycleCount" >
+              <div class="!w-150px">鱼塘规模:</div>
+              <div class="!w-160px">
+                <el-input class='!w-100%' type="number" v-model="sycleCount" >
                   <template #suffix> 只 </template>
                 </el-input>
               </div>
+              </div>
               <div
                 class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-              <div class="w-130px">鱼塘面积：</div>
-                <el-input type="number" v-model="sycleArea" >
+              <div class="!w-150px">鱼塘面积:</div>
+              <div class="!w-160px">
+                <el-input class="!w-100%" type="number" v-model="sycleArea" >
                   <template #suffix> 亩 </template>
                 </el-input>
+              </div>
               </div>
               <div
                 class="!flex justify-between !px-[10px] mb-18px !h-35px !w-100% box-border bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-              <div class="w-130px">养殖规格：</div>
-                <el-input type="number" v-model="sycleVal.weight" >
+              <div class="!w-150px">养殖规格:</div>
+              <div class='!w-160px'>
+                <el-input class="!w-100%" type="number" v-model="sycleVal.weight" >
                   <template #suffix> 克/只 </template>
                 </el-input>
+              </div>
               </div>
           </div>
           <div class="w-32%">
@@ -519,6 +527,7 @@ const getPlotList = async (val) => {
 //基地切换
 const select = (e) => {
   baseCode.value = e.target.value
+  getPlotList(baseCode.value)
 }
 const feedVal = ref('')
 
