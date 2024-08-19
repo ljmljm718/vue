@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="md:col-span-3 mb-4">
+    <!-- <div class="md:col-span-3 mb-4">
       <el-card>
         <el-select
           v-model="selectedDeviceName"
@@ -22,60 +22,158 @@
           </div>
         </div>
       </el-card>
-    </div>
+    </div> -->
 
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-4 gap-4">
       <el-card>
-        <div class="flex mb-4">
-          <div class="font-bold">溶解氧当前值：</div>
-          <div class="font-bold text-#009688">
-            {{ CurrentDoInfo.dataValue }}
-            <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+        <div>
+          <div class="flex justify-between">
+            <!-- 左侧选择框 -->
+            <el-select
+              v-model="selectedParkName"
+              size="large"
+              style="width: 200px"
+              @change="filterLeftData"
+            >
+              <el-option
+                v-for="item in basicInfo"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+            <!-- 右侧选择框 -->
+            <el-select
+              v-model="selectedPlotName"
+              size="large"
+              style="width: 100px"
+              @change="filterRightData"
+            >
+              <el-option
+                v-for="item in plotInfo"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </div>
+
+          <div class="flex flex-col relative h-[200px]">
+            <img
+              src="./assets/deviceIcon.png"
+              class="w-[7rem] h-[7rem] mr-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[65%] object-contain"
+            />
+            <span
+              class="text-[#009688] absolute bottom-[9%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+              >{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceName) ?  deviceDetail[0].deviceName : '' }}</span
+            >
+            <img
+              src="./assets/subTitleBg.png"
+              class="w-90% h-10 absolute bottom-0 left-1/2 transform -translate-x-1/2"
+            />
+          </div>
+
+          <div class="p-4 mt-3 space-y-4">
+            <div 
+            class="flex items-center mb-2 "
+            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='online'">
+              <span>增氧机状态：</span>
+              <img src="./assets/Online.png" class="w-4 h-4 mx-2" />
+              <span class="text-[#00B53D]">在线</span>
+            </div>
+            <div 
+            class="flex items-center mb-2 "
+            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='offline'">
+              <span>增氧机状态：</span>
+              <img src="./assets/Offline.png" class="w-4 h-4 mx-2" />
+              <span class="text-[#999999]">离线</span>
+            </div>
+            <div 
+            class="flex items-center mb-2 "
+            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='fault'">
+              <span>增氧机状态：</span>
+              <img src="./assets/Error.png" class="w-4 h-4 mx-2" />
+              <span class="text-[#E31205]">故障</span>
+            </div>
+            <div class="mb-2">
+              <span>通信时间：</span>
+              <span>{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].updateTime) ?  deviceDetail[0].updateTime : '' }}</span>
+            </div>
+            <div>
+              <span>负责人：</span>
+              <span>{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].contact) ?  deviceDetail[0].contact : '' }}</span>
+            </div>
           </div>
         </div>
-        <div
-          class="flex items-center my-2 bg-[#fdeceb] text-[#E31205] text-lg p-2"
-          v-for="(warning, index) in warningMessage"
-          :key="index"
-        >
-          <img src="./assets/warnIcon.png" class="w-4 h-4 mr-2" />
-          <span>设备警告：</span>
-          <span>{{ warning }}</span>
-        </div>
       </el-card>
-      <el-card class="w-full">
-        <div class="font-bold mb-4">增氧机参数</div>
-        <div class="flex h-17 gap-3 mx-3">
-          <div
-            class="flex-1 bg-#E5F4F3 text-center border-0 border-t-3.5 border-t-#009688 border-solid p-2"
-          >
-            <span class="text-#666 block">当前功率</span>
-            <span class="text-#333 block">{{ currentPower }}</span></div
-          >
-          <div
-            class="flex-1 bg-#eef7ee text-center border-0 border-t-3.5 border-t-#59b756 border-solid p-2"
-          >
-            <span class="text-#666 block">建议功率</span>
-            <span class="text-#333 block">{{ suggestNumList[0] }}</span>
-          </div>
-        </div>
-        <div class="text-#009688 mx-3 my-2">调整建议：</div>
-        <span class="block mx-3">{{ suggestMessage }}</span>
-        <div class="flex justify-end mr-3">
-          <el-button
-            type="primary"
-            color="#009688"
-            @click="router.push('/internetMonitor/device/deviceView?deviceCode=' + currentId)"
-            >去调整</el-button
-          ></div
-        >
-      </el-card>
+
       <el-card>
-        <div class="font-bold mb-4">评分占比分析图</div>
+        <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
           <div id="radarChart" class="w-[100%] h-[270px]"></div>
           <!-- <div id="radarChart" clas s="w-[50%] h-[50%] mx-auto"></div> -->
         </div>
+      </el-card>
+
+      <el-card>
+        <div class="flex mb-4 justify-between">
+          <div class="font-bold">模型分析结果</div>
+          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+            溶解氧标准值： {{ standardDo.optimalTemperature }}
+            <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+          </div>
+        </div>
+        <div class="flex flex-col relative w-full h-[200px] items-center">
+          <img
+            src="./assets/currentScore.png"
+            class="w-[250px] h-[250px] object-contain absolute -translate-y-1/10"
+          />
+          <div class="flex flex-col absolute top-1/2 transform translate-x-1/12 -translate-y-1/2">
+            <span class="text-[1.6rem]">{{ CurrentDoInfo.dataValue }}</span>
+            <span class="text-[#999999] text-[1.2rem]">{{ CurrentDoInfo.yyUnit }}</span>
+          </div>
+          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%]"
+            >溶解氧当前值</span
+          >
+        </div>
+
+        <div
+          class="flex items-center my-4 bg-[#fdeceb] text-[#E31205] text-lg p-2 rounded-md"
+          v-for="(warning, index) in warningMessage"
+          :key="index"
+        >
+          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3" />
+          <span >设备警告：{{ warning }}</span>
+        </div>
+      </el-card>
+
+      <el-card class="w-full">
+        <div class="font-bold mb-4">增氧机建议参数</div>
+        <div class="flex flex-col h-17 gap-3">
+          <div class="flex justify-between bg-[#e5f4f3] text-center p-2 text-#333333 px-3">
+            <span>当前功率:</span>
+            <span>{{ currentPower }}</span></div
+          >
+          <div class="flex justify-between bg-[#f5f5f5] text-center p-2 text-#333333 px-3">
+            <span>建议功率:</span>
+            <span>{{ suggestNumList[0] }}</span>
+          </div>
+        </div>
+        <div class="border-2 border-solid border-[#f2f2f2] rounded-md mt-8 pb-3">
+          <div class="text-#009688 mx-3 my-2 text-[1.2rem]">调整建议：</div>
+          <span class="block mx-3">{{ suggestMessage }}</span>
+        </div>
+
+        <div class="flex mr-3 mt-5">
+          <el-button
+            type="primary"
+            color="#009688"
+            size="large"
+            class="buttonSize"
+            @click="router.push('/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].deviceCode)"
+            >去调整</el-button
+          ></div
+        >
       </el-card>
     </div>
 
@@ -101,7 +199,10 @@
 <script lang="ts" setup>
 import * as echarts from 'echarts'
 import {
-  getBasicInfo,
+  getParkInfoPage,
+  getParkDetailPage,
+  getDissolvedOxygenEquipmentList,
+  getRopriateEnvironmentalByDissolvedOxygen,
   getlineChartData,
   getCurrentPower,
   getOxygenRuleInfo,
@@ -111,69 +212,120 @@ import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/inde
 import dayjs from 'dayjs'
 const router = useRouter() // 路由
 
-const selectedDeviceName = ref('')
-const filteredData = ref<any[]>([])
-const collectionTime = ref('')
-const dataValue = ref('')
+const basicInfo = ref<any[]>([])
+const plotInfo = ref<any[]>([])
+const selectedParkName = ref('')
+const selectedPlotName = ref('')
+const deviceDetail = ref<any[]>([])
 const yyUnit = ref('')
 
-// 获取全部数据
-//基本信息
-const allData = ref<any[]>([])
-const getallData = async (deviceKind) => {
-  const res = await getBasicInfo({ deviceKind })
-  if (!Array.isArray(res)) return
-  allData.value = res
-  if (res.length > 0) {
-    yyUnit.value = res[0].yyUnit
-    collectionTime.value = dayjs(res[0].collectionTime).format('YYYY-MM-DD HH:mm:ss')
-  }
+//获取增氧机状态
+const getParkInfo = async () => {
+  const parkRes = await getParkInfoPage()
+  basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
+  // console.log('🚀 ~ getParkInfo ~ basicInfo.value:', basicInfo.value)
+  // console.log('🚀 ~ getParkInfo ~ basicInfo.value[0].id:', basicInfo.value[0].id)
 }
 
-const currentId = ref<string>('1777173933829857345')
-const filterData = () => {
-  const selectedItem = allData.value.find((item) => item.deviceName === selectedDeviceName.value)
+const getPlotInfo = async (parkId) => {
+  const plotRes = await getParkDetailPage({ parkId })
+  plotInfo.value = plotRes.list.map(({ id, parkId, name, contact }) => ({
+    id,
+    parkId,
+    name,
+    contact
+  }))
+  console.log('🚀 ~ getPlotInfo ~ plotInfo.value:', plotInfo.value)
+}
+
+// getPlotInfo(basicInfo.value[0].id)
+// getPlotInfo('1806514679305093120')
+
+// const getParkAndPlotInfo = async () => {
+
+//   // 获取Park信息
+//   const parkRes = await getParkInfoPage()
+//   basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
+//   console.log('🚀 ~ getParkAndPlotInfo ~ basicInfo.value:', basicInfo.value)
+//   if (!Array.isArray(basicInfo.value)) return
+//   if (basicInfo.value.length > 0) {
+//     const firstParkId = basicInfo.value[0].id
+//     // 根据第一个Park的ID获取Plot信息
+//     const plotRes = await getParkDetailPage({ parkId: firstParkId })
+//     console.log('🚀 ~ getParkAndPlotInfo ~ plotRes:', plotRes)
+//     plotInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
+//   }
+// }
+// getParkAndPlotInfo()
+
+//左侧选择框
+const filterLeftData = () => {
+  const selectedItem = basicInfo.value.find((item) => item.name === selectedParkName.value)
+  // console.log('🚀 ~ filterLeftData ~ selectedItem:', selectedItem)
   if (selectedItem) {
-    currentId.value = selectedItem.id
-    getCurrentPowerInfo(selectedItem.id, '当前功率')
-    getScoreInfo(selectedItem.id)
-    dataValue.value = selectedItem.dataValue
-    filteredData.value = [
-      { title: '增氧机状态', value: selectedItem.deviceStatus },
-      { title: '地块名称', value: selectedItem.plotName },
-      {
-        title: '通信时间',
-        value: collectionTime.value
-      },
-      { title: '负责人', value: selectedItem.contact }
-    ]
-  } else {
-    filteredData.value = []
-    yyUnit.value = ''
+    getPlotInfo(selectedItem.id)
   }
-  getDoInfo(currentId.value)
+}
+//右侧选择框
+const filterRightData = () => {
+  const selectedItem = plotInfo.value.find((item) => item.name === selectedPlotName.value)
+  // console.log("🚀 ~ filterRightData ~ selectedItem:", selectedItem)
+  if (selectedItem) {
+    getDeviceDetail(selectedItem.parkId, selectedItem.id)
+  }
 }
 
-const CurrentDoInfo = ref<any[]>([])
+//设备信息获取
+const getDeviceDetail = async (baseId, plotId) => {
+  const res = await getDissolvedOxygenEquipmentList({ baseId, plotId })
+  deviceDetail.value = res.map(
+    ({ deviceName, deviceStatus, updateTime, belongPlot, deviceCode }) => ({
+      deviceName,
+      deviceStatus,
+      updateTime: dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss'),
+      belongPlot,
+      deviceCode
+    })
+  )
+  
+  deviceDetail.value = deviceDetail.value.map((item) => {
+    const plotContactInfo = plotInfo.value.find((ele) => ele.id === item.belongPlot)
+    return {
+      ...item,
+      contact: plotContactInfo ? plotContactInfo.contact : null
+    }
+  })
+  getDoInfo(deviceDetail.value[0].deviceCode)
+  getCurrentPowerInfo(deviceDetail.value[0].deviceCode)
+  getScoreInfo(deviceDetail.value[0].deviceCode)
+  console.log("🚀 ~ getDeviceDetail ~ deviceDetail.value:", deviceDetail.value)
+}
+
+const CurrentDoInfo = ref<any>({})
 const getDoInfo = async (equipmentId) => {
   CurrentDoInfo.value = await getCurrentDO({ equipmentId })
 }
 
+const standardDo = ref<any>({})
+const getStandardDo = async () => {
+  standardDo.value = await getRopriateEnvironmentalByDissolvedOxygen()
+}
+
+//获取当前设备功率
 const currentPower = ref<any[]>([])
-const getCurrentPowerInfo = async (devicesId, subDevicesName) => {
+const getCurrentPowerInfo = async (devicesId, subDevicesName = '当前功率') => {
   const _res = await getCurrentPower({ devicesId, subDevicesName })
   currentPower.value = _res
 }
-getCurrentPowerInfo('1777173933829857345', '当前功率')
 
 const suggestNumList = ref<string[]>([])
 const warningList = ref<string[]>([])
 const suggestList = ref<string[]>([])
 const warningMessage = ref<string[]>([])
 const suggestMessage = ref<string>('')
-
 const getScoreInfo = async (equipId) => {
   const ScoreData = await getOxygenRuleInfo({ equipId })
+  console.log('🚀 ~ getScoreInfo ~ ScoreData :', ScoreData)
   const targetNum = ScoreData.targetNum.map(Number) || []
   const currentNum = ScoreData.currentNum.map(Number) || []
   // suggestNumList.value = ScoreData.suggestNumList.map((item) => Number(item.replace('%', ''))) || []
@@ -183,19 +335,26 @@ const getScoreInfo = async (equipId) => {
   warningList.value = ScoreData.warningList || []
   warningMessage.value = warningList.value
   suggestMessage.value = suggestList.value.join('; ')
-  drawRadarChart(targetNum, currentNum, factorName)
+  const currentData = ScoreData.nowData || []
+  drawRadarChart(targetNum, currentNum, factorName, currentData)
+  console.log('🚀 ~ getScoreInfo ~ targetNum:', targetNum)
+  console.log('🚀 ~ getScoreInfo ~ currentNum:', currentNum)
+  console.log('🚀 ~ getScoreInfo ~ factorName:', factorName)
+  console.log('🚀 ~ getScoreInfo ~ currentData:', currentData)
 }
 
 //画图一
 let chartIns: any = null
-const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
+const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], currentData = []) => {
   if (
     !Array.isArray(targetNum) ||
     !Array.isArray(currentNum) ||
     !Array.isArray(factorName) ||
+    !Array.isArray(currentData) ||
     targetNum.length === 0 ||
     currentNum.length === 0 ||
-    factorName.length === 0
+    factorName.length === 0 ||
+    currentData.length === 0
   ) {
     chartIns && chartIns.clear()
   }
@@ -243,6 +402,12 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = []) => {
           {
             value: currentNum,
             name: 'Current Values',
+            // label: {
+            //   show: true,
+            //   formatter: (params) => {
+            //     return currentData
+            //   }
+            // },
             itemStyle: {
               normal: {
                 color: 'rgba(198, 234, 230)',
@@ -279,12 +444,12 @@ const getLineChartInfo = async (date) => {
       name: seriesName,
       data: seriesData.map((item) => item.dataValue)
     })
+    // console.log("🚀 ~ getLineChartInfo ~ LineSeriesData:", LineSeriesData)
   }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
     Light = LineChartData['光照强度']
   const xValue = PH.map((item) => item.hour ?? '')
-
   initChartStatic(
     'lineChart',
     generateBaseOptions({
@@ -308,8 +473,8 @@ const getLineChartInfo = async (date) => {
           fontSize: 14
         }
       },
-      color: ['#ffa773', '#36e1d9','red','pink','yellow'],
-      yAxis: {
+      color: ['#ffa773', '#36e1d9', 'red', 'pink', 'yellow'],
+      yAxis: [{
         name: '',
         type: 'value',
         axisLine: {
@@ -334,6 +499,33 @@ const getLineChartInfo = async (date) => {
           show: false //是否显示
         }
       },
+      // 右侧y轴
+      {
+        name: '',
+        type: 'value',
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#a1a1aa80'
+          }
+        },
+        // minInterval:1,
+        splitLine: {
+          //网格线
+          show: true, //是否显示
+          lineStyle: {
+            //网格线样式
+            color: '#a1a1aa80', //网格线颜色
+            width: 1, //网格线的加粗程度
+            type: 'dashed' //网格线类型
+          }
+        },
+        splitArea: {
+          //网格区域
+          show: false //是否显示
+        }
+      }
+    ],
       series: LineSeriesData.map((item) => ({
         name: item.name,
         data: item.data,
@@ -348,7 +540,8 @@ const getLineChartInfo = async (date) => {
             color: '#eee',
             fontSize: 10
           }
-        }
+        },
+        yAxisIndex:item.name === '光照强度' ? 1 : 0
       })),
       // series: [
       //   {
@@ -438,20 +631,30 @@ const getLineChartInfo = async (date) => {
 }
 
 const SelectedDate = ref('2024-07-18')
-  const onFilterDate = () => {
-    const date = SelectedDate.value
-    getLineChartInfo(date)
-  }
+const onFilterDate = () => {
+  const date = SelectedDate.value
+  getLineChartInfo(date)
+}
 // 初始化
 const init = async () => {
-  await getallData(119)
-  if (allData.value.length > 0) {
-    selectedDeviceName.value = allData.value[3].deviceName
-    filterData()
-    onFilterDate()
+  await getParkInfo()
+  if (basicInfo.value.length > 0) {
+    selectedParkName.value = basicInfo.value[0].name
+    await getPlotInfo(basicInfo.value[0].id)
+    if (plotInfo.value.length > 0) {
+      selectedPlotName.value = plotInfo.value[0].name
+    }
+    await getDeviceDetail(basicInfo.value[0].id, plotInfo.value[0].id)
   }
-  await getScoreInfo('1777173933829857345')
+  await getStandardDo()
+  onFilterDate()
 }
 // 初始化
 onMounted(() => init())
 </script>
+<style lang="scss" scoped>
+.buttonSize {
+  width: 100%;
+  font-size: 16px;
+}
+</style>
