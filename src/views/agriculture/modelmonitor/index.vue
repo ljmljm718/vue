@@ -426,17 +426,17 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
             <div class="art-font text-[#009688]">{{ modelList.length }}</div>
             <div class="text-[.8rem]">模型总数</div>
           </div>
-          <div class="grow overflow-auto flex space-x-3">
+          <div class="grow overflow-auto flex space-x-3 ">
             <div
               v-for="item in modelList"
               :key="item.id"
-              class="flex items-center space-x-2 px-4 py-2 rounded-md shadow-md cursor-pointer"
+              class="flex items-center space-x-2 px-2 py-1 rounded-md shadow-md cursor-pointer"
               :style="{
                 border: selectedModelId === item.modelId ? '1px solid #009688' : '1px solid #E5E5E5'
               }"
               @click="handleModelClick(item)"
             >
-              <img :src="item.modelImg" alt="" class="w-[3rem] h-[3rem] mr-2 bg-black" />
+              <img :src="item.modelImg"  class="w-[3rem] h-[3rem]  bg-opacity-0 object-contain flex " />
               <div class="space-y-1">
                 <div class="text-[1.1rem]">{{ item.modelName }} </div>
                 <div class="flex space-x-1">
