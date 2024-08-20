@@ -186,7 +186,7 @@ import {CropBaseApi, CropBaseVO} from "@/api/agriculture/cropbase";
 import {CommonStatusEnumBoolean} from "@/utils/constants";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import CropBaseForm from "@/views/agriculture/cropbase/CropBaseForm.vue";
-import HarvestManagementAdd from "@/views/agriculture/varietymanagement/HarvestManagementAdd.vue";
+import HarvestManagementAdd from "@/views/agriculture/harvestmanagement/HarvestManagementAdd.vue";
 import {useUserStore} from "@/store/modules/user";
 import {ElTable} from "element-plus";
 

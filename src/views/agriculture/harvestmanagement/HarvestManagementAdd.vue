@@ -1,5 +1,21 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible" width="888px">
+    <div class="flex space-x-3 px-4 my-3">
+      <div class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-blue-100">
+        <div>种/养植数量：</div>
+        <div>{{ formData.sum + ' ' + formData.unit }}</div>
+      </div>
+      <div
+        class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-green-100">
+        <div>已采收数量：</div>
+        <div>{{ formData.harvested + ' ' + formData.unit }}</div>
+      </div>
+      <div
+        class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-yellow-100">
+        <div>未采收数量：</div>
+        <div>{{ formData.notHarvested + ' ' + formData.unit }}</div>
+      </div>
+    </div>
     <el-form
       ref="formRef"
       class="py-6 px-3"
@@ -12,12 +28,17 @@
       <!--        <el-input v-model="formData.recordNum" placeholder="请输入记录编号" />-->
       <!--      </el-form-item>-->
       <el-row :gutter="24">
-        <el-col :span="12">
+        <el-col :span="8">
+          <el-form-item label="采收数量" prop="harvestNum">
+            <el-input v-model="formData.harvestNum" placeholder="请输入采收数量(亩/只/条)"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="采收量(/Kg)" prop="harvestVolume">
             <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="人工数量(人)" prop="laborQuantity">
             <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量(人)"/>
           </el-form-item>
@@ -147,12 +168,13 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
-import {VarietyManagementVO, allDataCacheManager} from "@/api/agriculture/varietymanagement/index";
+import {VarietyManagementVO, allDataCacheManager} from "@/api/agriculture/varietymanagement";
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {CropBaseApi} from "@/api/agriculture/cropbase";
 import {formatTime} from "@/utils";
 import {DrawerProps} from "element-plus";
 import {FarmRecordVO} from "@/api/agriculture/farmrecord";
+import {getHarvestManagementNumList} from "@/views/agriculture/IntelligentStatistics/api";
 
 /** 采收管理 表单 */
 defineOptions({name: 'HarvestManagementAdd'})
@@ -193,6 +215,8 @@ const formData = ref({
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
   varietyCode: undefined, // 地块ID
+  harvestNum: undefined,
+  sum: undefined
 })
 const formRules = reactive({
   harvestVolume: [{required: true, message: '采收量不能为空', trigger: 'blur'}],
@@ -202,36 +226,36 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 //基地的选择
-const parkInfoPopupRef = ref()
-const openType = ref('')
-const openParkInfoPopup = (id: string) => {
-  openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    message.error("请选择基地")
-  } else parkInfoPopupRef.value.open(id)
-}
-const handleParkInfoPopupChange = (order: ParkInfoVO) => {
-  if (openType.value === '0') {
-    formData.value.belongPark = String(order[0].code)
-    formData.value.parkName = String(order[0].name)
-  } else formData.value.belongPlot = String(order[0].id)
-}
+// const parkInfoPopupRef = ref()
+// const openType = ref('')
+// const openParkInfoPopup = (id: string) => {
+//   openType.value = id;
+//   if (openType.value === undefined || openType.value === "") {
+//     message.error("请选择基地")
+//   } else parkInfoPopupRef.value.open(id)
+// }
+// const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+//   if (openType.value === '0') {
+//     formData.value.belongPark = String(order[0].code)
+//     formData.value.parkName = String(order[0].name)
+//   } else formData.value.belongPlot = String(order[0].id)
+// }
 
 //地块的选择
-const parkDetailPopupRef = ref()
-const openType1 = ref('')
-const openParkDetailPopup = (id: string) => {
-  openType1.value = id;
-  if (!openType1.value) {
-    message.error("请选择地块")
-  } else parkDetailPopupRef.value.open(id)
-}
-const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-  formData.value.belongPark = String(order[0].parkId)
-  formData.value.belongPlot = String(order[0].id)
-  formData.value.parkDetailName = String(order[0].name)
-
-}
+// const parkDetailPopupRef = ref()
+// const openType1 = ref('')
+// const openParkDetailPopup = (id: string) => {
+//   openType1.value = id;
+//   if (!openType1.value) {
+//     message.error("请选择地块")
+//   } else parkDetailPopupRef.value.open(id)
+// }
+// const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+//   formData.value.belongPark = String(order[0].parkId)
+//   formData.value.belongPlot = String(order[0].id)
+//   formData.value.parkDetailName = String(order[0].name)
+//
+// }
 
 
 /** 打开弹窗 */
@@ -252,6 +276,16 @@ const open = async (type: string, id?: any) => {
     formData.value.parkName = id.parkName
     formData.value.belongPlot = id.belongPlot
     formData.value.parkDetailName = id.plotName
+    formData.value.sum = id.number
+    formData.value.unit = id.unit
+    const res = await HarvestManagementApi.getHarvestManagementNum({
+      ...id, varietyId: id.id,
+    })
+    console.log("getHarvestManagementNum", res)
+    formData.value = {
+      ...formData.value,
+      ...res
+    }
     boo.value = true
   }
   // 修改时，设置数据
@@ -309,6 +343,8 @@ const resetForm = () => {
     parkName: undefined,
     parkDetailName: undefined,
     varietyCode: undefined,
+    harvestNum: undefined,
+    sum: undefined
   }
   formRef.value?.resetFields()
 }

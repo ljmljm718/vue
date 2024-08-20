@@ -158,6 +158,7 @@
       <el-table-column
         label="品类名称" align="center" prop="variety" width="120"
         v-if="show !==118"/>
+      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />
       <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
       <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
       <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
@@ -299,7 +300,8 @@ const queryParams = reactive({
   batchCode: undefined, // 批次码
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
-  varietyCode: undefined
+  varietyCode: undefined,
+  harvestNum: undefined
 })
 const queryParam = reactive({
   pageNo: 1,

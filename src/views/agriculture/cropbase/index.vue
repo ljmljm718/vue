@@ -28,15 +28,33 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="品种" prop="cropName">
-        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
-          <template #append>
-            <el-button @click="openBreedFrom()">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <!--      <el-form-item label="品种" prop="cropName">-->
+      <!--        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">-->
+      <!--          <template #append>-->
+      <!--            <el-button @click="openBreedFrom()">-->
+      <!--              <Icon icon="ep:search"/>-->
+      <!--              选择-->
+      <!--            </el-button>-->
+      <!--          </template>-->
+      <!--        </el-input>-->
+      <!--      </el-form-item>-->
+      <el-form-item
+        label="品种"
+        prop="breedId"
+      >
+        <el-select
+          v-model="queryParams.breedId"
+          clearable
+          placeholder="请选择品种"
+          class="!w-180px"
+        >
+          <el-option
+            v-for="item in listVarietyManagementVO"
+            :key="item.id"
+            :label="item.varietyName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="种植时间" prop="createTime">
         <el-date-picker
@@ -281,7 +299,7 @@ import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import download from '@/utils/download'
 import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
 import CropBaseForm from './CropBaseForm.vue'
-import HarvestManagementAdd from "@/views/agriculture/varietymanagement/HarvestManagementAdd.vue";
+import HarvestManagementAdd from "@/views/agriculture/harvestmanagement/HarvestManagementAdd.vue";
 import {DrawerProps} from "element-plus";
 import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
 import {formatTime} from '@/utils/index'
@@ -297,6 +315,7 @@ import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+import {VarietyManagementApi, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({name: 'AgriCropBase'})
@@ -350,12 +369,28 @@ const queryParam = reactive({
   recordState: undefined,
   createTime: [],
 })
+const queryParams1 = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  varietyName: undefined,
+  varietyCode: undefined,
+  images: undefined,
+  categoryId: undefined,
+  categorySource: undefined,
+  categoryStigma: undefined,
+  areaDistribution: undefined,
+  briefIntroduction: undefined,
+  status: undefined,
+  remark2: undefined,
+  createTime: []
+})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const show = ref()
 const userStore = useUserStore()
 const userName = computed(() => userStore.user.deptId ?? '0')
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const listVarietyManagementVO = ref<VarietyManagementVO[]>([]) // 品种列表的数据
 const deptId = ref(0)
 const judgeHomePage = async () => {
   const data = await getUserProfile()
@@ -369,6 +404,8 @@ const getList = async () => {
   listCategoryManagement.value = await allDataCacheManager.getData({})
   try {
     const data = await CropBaseApi.getCropBasePage(queryParams)
+    const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
+    listVarietyManagementVO.value = data1.list
     list.value = data.list
     //把品类数据的namep拼接到列表中
     list.value.forEach(item => {

@@ -9,12 +9,17 @@
       v-loading="formLoading"
     >
       <el-row :gutter="24">
-        <el-col :span="12">
+        <el-col :span="8">
+          <el-form-item label="采收数量" prop="harvestNum">
+            <el-input v-model="formData.harvestNum" placeholder="请输入采收数量(亩/只/条)" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="采收量(/Kg)" prop="harvestVolume">
             <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="人工数量(人)" prop="laborQuantity">
             <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量(人)"/>
           </el-form-item>
@@ -163,7 +168,8 @@ const formData = ref({
   batchCode: undefined, // 批次码
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
-  varietyCode: undefined
+  varietyCode: undefined,
+  harvestNum: undefined
 })
 const formRules = reactive({
   harvestVolume: [{required: true, message: '采收量不能为空', trigger: 'blur'}],
@@ -263,7 +269,8 @@ const resetForm = () => {
     remark: undefined,
     parkName: undefined,
     parkDetailName: undefined,
-    varietyCode: undefined
+    varietyCode: undefined,
+    harvestNum: undefined
   }
   formRef.value?.resetFields()
 }
