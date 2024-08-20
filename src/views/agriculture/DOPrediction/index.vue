@@ -235,6 +235,7 @@
               type="date"
               placeholder="请输入查询日期"
               size="large"
+              value-format="YYYY-MM-DD"
               @change="onFilterDate"
             />
           </div>
