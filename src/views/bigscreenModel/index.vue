@@ -553,7 +553,7 @@ export default defineComponent({
                             ? 'left-icon-4'
                             : item.value == '很差'
                             ? 'left-icon-5'
-                          : item.value==''?'left-icon-2':'left-icon-1'
+                          : item.value==''?'left-icon-3':'left-icon-1'
                         } mr-15px`}
                       ></div>
                       <div class="w-45% h-100% flex flex-col justify-center">
