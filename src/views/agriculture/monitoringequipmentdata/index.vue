@@ -120,11 +120,13 @@
       <div class="mt-[20px]">
         <!-- 卡片形式 -->
         <div
-          v-show="listType === 'card'"
+          v-if="list.length && currentItem && listType === 'card'"
           class="grid grid-cols-8 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] text-[#999999]"
+          :class="{'text-[#fff]': themeIsDark}"
+          v-loading="loading"
         >
           <!-- 预览区 -->
-          <div class="col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md bg-[#F5F5F5] shadow-md previewContainer">
+          <div class="col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md bg-[#F5F5F5] shadow-md previewContainer" :class="{'dark-card-bg shadow-[#666]': themeIsDark}">
             <div class="previewArea">
               <div class="relative">
                 <el-image
@@ -132,7 +134,7 @@
                   :src="currentItem.capturedImage"
                   :preview-src-list="[currentItem.capturedImage]"
                   preview-teleported
-                  fit="cover"
+                  fit="contain"
                   class="w-full h-[60vh]"
                 />
                 <div
@@ -157,22 +159,22 @@
               </div>
               <div class="grid grid-cols-3 gap-1 my-10px px-3">
                 <div>
-                  基地名称: <span class="text-[#666666]">{{ currentItem.monitoringBaseName }}</span>
+                  基地名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ currentItem.monitoringBaseName }}</span>
                 </div>
                 <div>
-                  地块名称: <span class="text-[#666666]">{{ currentItem.monitoringPlotName }}</span>
+                  地块名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ currentItem.monitoringPlotName }}</span>
                 </div>
                 <div>
-                  设备名称: <span class="text-[#666666]">{{ currentItem.deviceName }}</span>
+                  设备名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ currentItem.deviceName }}</span>
                 </div>
                 <div>
-                  录入方式: <span class="text-[#666666]">{{ currentItem.reserveOne }}</span>
+                  录入方式: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ currentItem.reserveOne }}</span>
                 </div>
                 <div>
-                  备注: <span class="text-[#666666]">{{ currentItem.remarks }}</span>
+                  备注: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ currentItem.remarks ?  currentItem.remarks : "无" }}</span>
                 </div>
                 <div>
-                  拍摄时间: <span class="text-[#666666]">{{ timeFormat(currentItem.reserveTwo) }}</span>
+                  拍摄时间: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ timeFormat(currentItem.reserveTwo) }}</span>
                 </div>
               </div>
             </div>
@@ -183,6 +185,7 @@
           >
             <div
               class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md h-[30vh]"
+              :class="{'dark-card-bg shadow-[#666]': themeIsDark}"
               v-for="item in list"
               :key="item.id"
               @click="changCurrentItem(item)"
@@ -191,21 +194,24 @@
                 lazy
                 :src="item.capturedImage"
                 preview-teleported
-                fit="cover"
+                fit="contain"
                 class="w-full h-[20vh]"
               />
               <div
                 class="grid grid-cols-1 2xl:row-span-1 2xl:gap-1 2xl:mt-[10px] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
               >
                 <div>
-                  设备名称: <span class="text-[#666666]">{{ item.deviceName }}</span>
+                  设备名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ item.deviceName }}</span>
                 </div>
                 <div>
-                  拍摄时间: <span class="text-[#666666]">{{ timeFormat(item.reserveTwo) }}</span>
+                  拍摄时间: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ timeFormat(item.reserveTwo) }}</span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div v-else-if="listType === 'card'" class="text-center tracking-widest">
+          暂无数据
         </div>
         <!-- 列表形式 -->
         <div v-show="listType === 'list'">
@@ -221,7 +227,7 @@
                   :src="scope.row.capturedImage"
                   :preview-src-list="[scope.row.capturedImage]"
                   preview-teleported
-                  fit="cover"
+                  fit="contain"
                 />
               </template>
             </el-table-column>
@@ -352,6 +358,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await MonitoringEquipmentDataApi.getMonitoringEquipmentDataPage(queryParams)
+    // console.log("data", data)
     list.value = data.list
     total.value = data.total
     if ("card" === listType.value) {
@@ -454,6 +461,9 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+
+  // 获取当前是否是深色主题
+  themeIsDark.value = appStore.getIsDark
 })
 
 //基地的选择
@@ -531,9 +541,24 @@ const scroll = ({ scrollTop }) => {
     dom?.setAttribute("style", "position: relative;width: auto;top: 0;")
   }
 }
+
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
+
+const appStore = useAppStore()
+const themeIsDark = ref(false)
+
+// 监听主题模式变化
+watch(() => appStore.isDark, (newVal, oldVal) => {
+  console.log("isDark", newVal, oldVal)
+  themeIsDark.value = newVal
+})
 </script>
 
 <style scoped lang="scss">
+.dark-card-bg {
+  background-color: #343A46;
+}
 /* 消除element部分组件的部分样式 */
 .el-tabs__nav-wrap::after {
   display: none;
