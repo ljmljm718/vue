@@ -691,9 +691,10 @@ export default defineComponent({
                       <div class="w-full flex">
                         {/** 最左箭头 */}
                         <div 
-                          class={0 < curItem ? "cycle-item left-arrow cursor-pointer" : "cycle-item left-arrow-disable"}
+                          class="cycle-item cursor-pointer p-[15px] box-border"
                           onClick={ () => {leftArrowClick()} }
                         >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
                         </div>
                         <div class="w-[837px] h-[100px] flex justify-center">
                           {
@@ -717,16 +718,21 @@ export default defineComponent({
                                   { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
                                 </div>
                                 {/** 周期之间的箭头 */}
-                                { i != arr.length - 1 ? ( <div class="cycle-item next-arrow"></div> ) : null }
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
+                                  </div>
+                                ) : null }
                               </div>
                             ))
                           }
                         </div>
                         {/** 最右箭头 */}
                         <div 
-                          class={cycleNameList.value.length - 1 > curItem ? "cycle-item right-arrow cursor-pointer" : "cycle-item right-arrow-disable"}
+                          class="cycle-item cursor-pointer p-[15px] box-border"
                           onClick={ () => {rightArrowClick()} }
                         >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
                         </div>
                       </div>
                     ) : (
@@ -737,9 +743,10 @@ export default defineComponent({
                       <div class="w-full flex">
                         {/** 最左箭头 */}
                         <div 
-                          class={0 < curItem ? "cycle-item left-arrow cursor-pointer" : "cycle-item left-arrow-disable"}
+                          class="cycle-item cursor-pointer p-[15px] box-border"
                           onClick={ () => {leftArrowClick()} }
                         >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
                         </div>
                         {/** 指向当前展示周期的指针 */}
                         <div class="cur-arrow cur-arrow-center"></div>
@@ -765,7 +772,11 @@ export default defineComponent({
                                   }
                                 </div>
                                 {/** 周期之间的箭头 */}
-                                { i != arr.length - 1 ? ( <div class="cycle-item next-arrow"></div> ) : null }
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
+                                  </div>
+                                ) : null }
                               </div>
                             ))
                           }
@@ -773,9 +784,10 @@ export default defineComponent({
                         </div>
                         {/** 最右箭头 */}
                         <div 
-                          class={cycleNameList.value.length - 1 > curItem ? "cycle-item right-arrow cursor-pointer" : "cycle-item right-arrow-disable"}
+                          class="cycle-item cursor-pointer p-[15px] box-border"
                           onClick={ () => {rightArrowClick()} }
                         >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
                         </div>
                       </div>
                     )
@@ -1030,7 +1042,9 @@ export default defineComponent({
 /** 生长周期列表 */
 .cur-arrow {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/cur-arrow.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 33px;
   height: 20px;
   position: absolute;
@@ -1051,19 +1065,23 @@ export default defineComponent({
 }
 .next-arrow {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/next-stage-arrow.png);
-  background-size: 22px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 26px;
+  height: 21px;
 }
 .normal-cycle {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/normal-cycle.png);
-  background-size: 93px;
+  background-size: contain;
 }
 .cur-cycle {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/cur-cycle.png);
-  background-size: 93px;
+  background-size: contain;
 }
 .chosen-cycle {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/chosen-cycle.png);
-  background-size: 93px;
+  background-size: contain;
   color: #00FF73;
 }
 .normal-cycle:hover {
@@ -1074,19 +1092,35 @@ export default defineComponent({
 }
 .left-arrow {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/left-arrow.png);
-  background-size: 22px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 63px;
+  height: 37px;
 }
 .left-arrow-disable {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/left-arrow-disable.png);
-  background-size: 22px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 63px;
+  height: 37px;
 }
 .right-arrow {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/right-arrow.png);
-  background-size: 22px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 63px;
+  height: 37px;
 }
 .right-arrow-disable {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/right-arrow-disable.png);
-  background-size: 22px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 63px;
+  height: 37px;
 }
 .center-model {
   width: 1032px;
