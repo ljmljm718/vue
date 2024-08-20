@@ -304,6 +304,12 @@ export default defineComponent({
     const getModelMonitor = async () => {
       let res = await modelMonitor({ modelId: modelId.value, batch: batch.value })
       monitorList.value = res.splice(0, 2)
+      monitorList.value.forEach(item=>{
+        let list=Object.keys(item)
+        if(list.length==0 ){
+          item.value=''
+        }
+      })
     }
     getModelMonitor()
     //中间下方折线图
@@ -547,7 +553,7 @@ export default defineComponent({
                             ? 'left-icon-4'
                             : item.value == '很差'
                             ? 'left-icon-5'
-                            : 'left-icon-1'
+                          : item.value==''?'left-icon-2':'left-icon-1'
                         } mr-15px`}
                       ></div>
                       <div class="w-45% h-100% flex flex-col justify-center">
