@@ -34,23 +34,65 @@
             </el-select>
           </div>
 
-          <div class="flex flex-col relative h-[200px]">
-            <img
-              src="./assets/deviceIcon.png"
-              class="w-[7rem] h-[7rem] mr-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[65%] object-contain"
-            />
-            <span
-              class="text-[#009688] absolute bottom-[9%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              >{{
-                deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
-                  ? deviceDetail[0].deviceName
-                  : ''
-              }}</span
-            >
-            <img
-              src="./assets/subTitleBg.png"
-              class="w-90% h-10 absolute bottom-0 left-1/2 transform -translate-x-1/2"
-            />
+          <div v-if="Array.isArray(deviceDetail) && deviceDetail.length === 1">
+            <div class="flex flex-col relative h-[200px]">
+              <img
+                src="./assets/deviceIcon.png"
+                class="w-[7rem] h-[7rem] mr-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[65%] object-contain"
+              />
+              <span
+                class="text-[#009688] absolute bottom-[9%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                >{{
+                  deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
+                    ? deviceDetail[0].deviceName
+                    : ''
+                }}</span
+              >
+              <img
+                src="./assets/subTitleBg.png"
+                class="w-90% h-10 absolute bottom-0 left-1/2 transform -translate-x-1/2"
+              />
+            </div>
+          </div>
+
+          <div v-else-if="Array.isArray(deviceDetail) && deviceDetail.length > 1">
+            <div class="flex flex-col relative h-[200px]">
+              <div id="device1"  @click="handleClick(0)">
+                <img
+                  :src="imgSrc1"
+                  class="device1-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-[65%] object-contain"
+                />
+                <span
+                :style="{ color: textColor1 }"
+                  class="device1-text  text-[#009688] absolute bottom-[9%] left-1/4 transform -translate-x-1/2 -translate-y-1/2"
+                  >{{
+                    deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
+                      ? deviceDetail[0].deviceName
+                      : ''
+                  }}</span
+                >
+              </div>
+              <div id="device2"  @click=" handleClick(1)">
+                <img
+                  :src="imgSrc2"
+                  class="device2-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-[65%] object-contain"
+                />
+                <span
+                :style="{ color: textColor2 }"
+                  class="device2-text text-[#009688] absolute bottom-[9%] right-1/4 transform translate-x-1/4 -translate-y-1/2"
+                  >{{
+                    deviceDetail && deviceDetail[1] && deviceDetail[1].deviceName
+                      ? deviceDetail[1].deviceName
+                      : ''
+                  }}</span
+                >
+              </div>
+
+              <img
+                src="./assets/subTitleBg.png"
+                class="w-90% h-10 absolute bottom-0 left-1/2 transform -translate-x-1/2"
+              />
+            </div>
           </div>
 
           <div class="p-4 mt-3 space-y-4">
@@ -204,6 +246,8 @@
 </template>
 <script lang="ts" setup>
 import * as echarts from 'echarts'
+import deviceIcon from './assets/deviceIcon.png'
+import deviceIcon1 from './assets/deviceIcon1.png'
 import {
   getParkInfoPage,
   getParkDetailPage,
@@ -239,7 +283,6 @@ const getPlotInfo = async (parkId) => {
     name,
     contact
   }))
-  console.log('🚀 ~ getPlotInfo ~ plotInfo.value:', plotInfo.value)
 }
 
 //左侧选择框
@@ -281,6 +324,30 @@ const getDeviceDetail = async (baseId, plotId) => {
   getCurrentPowerInfo(deviceDetail.value[0].deviceCode)
   getScoreInfo(deviceDetail.value[0].deviceCode)
 }
+
+//切换显示
+const imgSrc1 = ref(deviceIcon);
+const imgSrc2 = ref(deviceIcon1);
+const textColor1 = ref('#009688');
+const textColor2 = ref('#666666');
+
+const handleClick = (index) => {
+  const tempImgSrc = imgSrc1.value;
+  imgSrc1.value = imgSrc2.value;
+  imgSrc2.value = tempImgSrc;
+
+  // 交换文本颜色
+  const tempColor = textColor1.value;
+  textColor1.value = textColor2.value;
+  textColor2.value = tempColor;
+
+  // 调用函数
+  const selectedDeviceCode = deviceDetail.value[index].deviceCode;
+  getDoInfo(selectedDeviceCode);
+  getCurrentPowerInfo(selectedDeviceCode);
+  getScoreInfo(selectedDeviceCode);
+};
+
 
 const CurrentDoInfo = ref<any>({})
 const getDoInfo = async (equipmentId) => {
@@ -345,7 +412,7 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
         let combinedData = factorName
           .map((name, index) => {
             return `<span style="font-size: 14px;">
-                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #00AD8F; border-radius: 50%; margin-right: 5px;margin-bottom: 2px"></span>
+                    <span style="display: inline-block; width: 4px; height: 4px; background-color: #a3d7d1; border-radius: 50%; margin-right: 5px;margin-bottom: 5px"></span>
                     <strong>${name}</strong>\n:\n\n  ${currentNum[index]} 分 (${currentData[index]})
                 </span>`
           })
@@ -453,7 +520,6 @@ const getLineChartInfo = async (date) => {
     if (colorIndex >= colorList.length) {
       colorIndex = 0 // 当 colorIndex 超过 colorList 长度时重置为 0
     }
-    // console.log("🚀 ~ getLineChartInfo ~ LineSeriesData:", LineSeriesData)
   }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
