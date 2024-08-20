@@ -925,7 +925,7 @@ export default defineComponent({
                           <div class="text-[14px] border border-solid border-[#208282]">
                             <div 
                               class="text-center w-[363px] h-[30px] leading-[30px]"
-                              style="background: linear-gradient(270deg, rgba(53, 218, 210, 0) 0%, rgba(53, 218, 210, 0.2971) 50%, rgba(53, 218, 210, 0) 99%);"
+                              style="background: linear-gradient(270deg, rgba(53, 218, 210, 0) 0%, rgba(53, 218, 210, 0.2971) 50%, rgba(53, 218, 210, 0) 100%);"
                             >
                               要素描述
                             </div>
@@ -1050,7 +1050,7 @@ export default defineComponent({
   text-align: center;
 }
 .next-arrow {
-  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/next-arrow.png);
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/next-stage-arrow.png);
   background-size: 22px;
 }
 .normal-cycle {
