@@ -9,7 +9,8 @@
       label-width="68px"
     >
       <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly class="!w-240px">
+        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
+                  class="!w-240px">
           <template #append>
             <el-button @click="openParkPopup('0')">
               <Icon icon="ep:search"/>
@@ -19,7 +20,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly class="!w-240px">
+        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
+                  class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongParkId)">
               <Icon icon="ep:search"/>
@@ -158,10 +160,38 @@
       <el-table-column
         label="品类名称" align="center" prop="variety" width="120"
         v-if="show !==118"/>
-      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />
-      <el-table-column label="采收量(/Kg)" align="center" prop="harvestVolume" width="180"/>
-      <el-table-column label="人工数量(/人)" align="center" prop="laborQuantity" width="180"/>
-      <el-table-column label="库存(/Kg)" align="center" prop="remark" width="180"/>
+      <!--      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />-->
+      <el-table-column label="采收数量" align="center" prop="harvestNum" width="100">
+        <template #default="scope">
+          {{
+            scope.row.harvestNum
+              ? (
+                scope.row.variety === '水稻'
+                  ? scope.row.harvestNum + ' 亩'
+                  : scope.row.variety === '鸭'
+                    ? scope.row.harvestNum + ' 只'
+                    : scope.row.variety === '鱼'
+                      ? scope.row.harvestNum + ' 条'
+                      : ''
+              ) : '-'
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="采收量" align="center" prop="harvestVolume" width="180">
+        <template #default="scope">
+          {{ scope.row.harvestVolume != undefined ? scope.row.harvestVolume + ' Kg' : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="人工数量" align="center" prop="laborQuantity" width="180">
+        <template #default="scope">
+          {{ scope.row.laborQuantity != undefined ? scope.row.laborQuantity + ' 人' : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="库存" align="center" prop="remark" width="180">
+        <template #default="scope">
+          {{ scope.row.remark != undefined ? scope.row.remark + ' Kg' : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" min-width="200px">
         <template #default="scope">
           <el-button

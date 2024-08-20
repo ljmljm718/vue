@@ -1,5 +1,41 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible" width="888px">
+    <div class="flex space-x-3 px-4 my-3">
+      <div class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-blue-100">
+        <div>种/养植数量：</div>
+        <div>{{
+            formData.sum != undefined ? formData.sum : ''
+          }}{{
+            formData.unit !=
+            undefined ? formData.unit : ''
+          }}
+        </div>
+      </div>
+      <div
+        class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-green-100">
+        <div>已采收数量：</div>
+        <div>
+          {{
+            formData.harvested != undefined ? formData.harvested : ''
+          }}{{
+            formData.unit !=
+            undefined ? formData.unit : ''
+          }}
+        </div>
+      </div>
+      <div
+        class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-yellow-100">
+        <div>未采收数量：</div>
+        <div>
+          {{
+            formData.notHarvested != undefined ? formData.notHarvested : ''
+          }}{{
+            formData.unit !=
+            undefined ? formData.unit : ''
+          }}
+        </div>
+      </div>
+    </div>
     <el-form
       ref="formRef"
       class="py-6 px-3"
@@ -9,26 +45,28 @@
       v-loading="formLoading"
     >
       <el-row :gutter="24">
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item label="采收数量" prop="harvestNum">
-            <el-input v-model="formData.harvestNum" placeholder="请输入采收数量(亩/只/条)" />
+            <el-input v-model="formData.harvestNum" placeholder="请输入采收数量">
+              <template #append>{{  formData.unit !=
+              undefined ? formData.unit : '亩/只/条'}}</template>
+            </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="采收量(/Kg)" prop="harvestVolume">
-            <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="人工数量(人)" prop="laborQuantity">
-            <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量(人)"/>
+        <el-col :span="12">
+          <el-form-item label="采收量" prop="harvestVolume">
+            <el-input v-model="formData.harvestVolume" placeholder="请输入采收量">
+              <template #append>Kg</template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item label="库存(/Kg)" prop="remark">
-            <el-input v-model="formData.remark" placeholder="请输入库存(/Kg)"/>
+          <el-form-item label="人工数量" prop="laborQuantity">
+            <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量">
+              <template #append>人</template>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -70,47 +108,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!--      <el-form-item label="品种ID" prop="varietyId">-->
-      <!--        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled="boo"/>-->
-      <!--      </el-form-item>-->
-      <!-- 获取批次号 -->
-      <!--      <el-form-item label="所属基地" prop="belongPark">-->
-      <!--        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">-->
-      <!--          <template #append>-->
-      <!--            <el-button @click="openParkInfoPopup('0')" :disabled="boo">-->
-      <!--              <Icon icon="ep:search"/>-->
-      <!--              选择-->
-      <!--            </el-button>-->
-      <!--          </template>-->
-      <!--        </el-input>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="基地名称" prop="parkName">-->
-      <!--        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly-->
-      <!--                  :disabled="boo"/>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="所属地块" prop="belongPlot">-->
-      <!--        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled="boo">-->
-      <!--          <template #append>-->
-      <!--            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled="boo">-->
-      <!--              <Icon icon="ep:search"/>-->
-      <!--              选择-->
-      <!--            </el-button>-->
-      <!--          </template>-->
-      <!--        </el-input>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="地块名称" prop="parkDetailName">-->
-      <!--        <el-input v-model="formData.parkDetailName" placeholder="选择地块后自动写入" readonly-->
-      <!--                  :disabled="boo"/>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="采收量(/Kg)" prop="harvestVolume">-->
-      <!--        <el-input v-model="formData.harvestVolume" placeholder="请输入采收量(/Kg)"/>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="人工数量(人)" prop="laborQuantity">-->
-      <!--        <el-input v-model="formData.laborQuantity" placeholder="请输入人工数量(人)"/>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="库存(/Kg)" prop="remark">-->
-      <!--        <el-input v-model="formData.remark" placeholder="请输入库存(/Kg)"/>-->
-      <!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -169,12 +166,17 @@ const formData = ref({
   belongParkId: undefined, // 基地ID
   belongPlotId: undefined, // 地块ID
   varietyCode: undefined,
-  harvestNum: undefined
+  harvestNum: undefined,
+  sum: undefined,
+  unit: undefined,
+  harvested: undefined,
+  notHarvested: undefined,
+
 })
 const formRules = reactive({
   harvestVolume: [{required: true, message: '采收量不能为空', trigger: 'blur'}],
   laborQuantity: [{required: true, message: '人工数量不能为空', trigger: 'blur'}],
-  remark: [{required: true, message: '库存不能为空', trigger: 'blur'}],
+  harvestNum: [{required: true, message: '采收数量不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
@@ -187,7 +189,7 @@ const openParkInfoPopup = (id: string) => {
     message.error("请选择种植作物")
   } else parkInfoPopupRef.value.open(id)
 }
-const handleParkInfoPopupChange = (order: CropBaseVO) => {
+const handleParkInfoPopupChange = async (order: CropBaseVO) => {
   formData.value.variety = String(order[0].cropType)
   formData.value.varietyId = String(order[0].cropCode)
   formData.value.varietyName = String(order[0].cropName)
@@ -196,6 +198,19 @@ const handleParkInfoPopupChange = (order: CropBaseVO) => {
   formData.value.parkName = String(order[0].parkName)
   formData.value.belongPlot = String(order[0].belongPlot)
   formData.value.parkDetailName = String(order[0].plotName)
+  formData.value.sum = String(order[0].number)
+  formData.value.unit = String(order[0].unit)
+  const res = await HarvestManagementApi.getHarvestManagementNum({
+    varietyId: String(order[0].cropCode),
+    belongPlot: String(order[0].belongPlot),
+    batchCode: String(order[0].batchCode),
+    number: String(order[0].number)
+  })
+  console.log("formData.value", formData.value.unit)
+  formData.value = {
+    ...formData.value,
+    ...res
+  }
 }
 
 /** 打开弹窗 */
@@ -270,7 +285,11 @@ const resetForm = () => {
     parkName: undefined,
     parkDetailName: undefined,
     varietyCode: undefined,
-    harvestNum: undefined
+    harvestNum: undefined,
+    sum: undefined,
+    unit: undefined,
+    harvested: undefined,
+    notHarvested: undefined
   }
   formRef.value?.resetFields()
 }
