@@ -335,7 +335,8 @@
               </div>
             </div>
           </div>
-          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5"></div>
+          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5">
+          </div>
           <div :id="`chart_${item.id}`" class="w-[15rem] h-[14rem]"></div>
           <div class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
             <div>{{ item.growth }}</div>
@@ -550,7 +551,7 @@ const getLabelById = (arr: any[], id: string) => {
 const instanceMap = new Map<string, any>()
 const updateInstanceOptions = async (id:string, option, cropCode = '', cropId = '') => {
   console.log("🚀 ~ updateInstanceOptions ~ option:", option)
-  
+
   if (!option || !id) return;
   const instance = instanceMap.get(id);
   if (instance) instance.setOption(option);
@@ -567,11 +568,13 @@ const updateInstanceOptions = async (id:string, option, cropCode = '', cropId = 
     activeBar = _resFiltedItem.child2[0].id
   }
   cardDataList.value = cardDataList.value.map(item => {
-    if (item.cropCode !== cropCode || item.cropId !== cropId) return item;
-    return { ..._resFiltedItem, activeBar }
+    const _id_ = id.split("_")[1];
+    if (item.id !== _id_) return item;
+    console.log("item.id !== id", item.id !== id)
+    return { ..._resFiltedItem, activeBar, id: item.id }
   })
 }
-  
+
 const initCharts = () => {
   cardDataList.value.forEach(item => {
     console.log("🚀 ~ initCharts ~ item:", item)
