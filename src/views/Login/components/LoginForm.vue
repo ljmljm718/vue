@@ -306,6 +306,7 @@ const getTenantByWebsite = async () => {
 const loading = ref() // ElLoading.service 返回的实例
 // 登录
 const handleLogin = async (params) => {
+  localStorage.setItem("TENANT_NAME", loginData.loginForm.tenantName)
   loginLoading.value = true
   try {
     await getTenantId()
