@@ -247,7 +247,7 @@
             link
             type="primary"
             v-if="scope.row.deviceStatus=='online'&&scope.row.url!=null&&scope.row.url.indexOf('mp4')>0"
-            @click="openExternalLink(scope)">查看监控
+            @click="openExternalLink(scope.row)">查看监控
           </el-button>
           <el-button
             link
@@ -387,10 +387,13 @@ const deviceType = ref()
 const single = ref(true)  // 非单个禁用
 const deviceId = ref() // 选中的设备id
 const deviceName = ref() // 选中的设备名称
-const openExternalLink = (scope) => {
-  const url = scope.row.url // 替换为你想要跳转的外部链接
-  console.log("url",url)
-  window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
+const openExternalLink = (item) => {
+  console.log("🚀 ~ openExternalLink ~ item:", item)
+  const { url, dtu, channelId } = item;
+  router.push(`/checkVideo?dtu=${dtu}&channelId=${channelId}&url=${url}`);
+  // const url = scope.row.url // 替换为你想要跳转的外部链接
+  // console.log("url",url)
+  // window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
 }
 /** 查询列表 */
 const getList = async () => {

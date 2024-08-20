@@ -69,6 +69,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
         }
       },
       {
+        path: 'checkVideo',
+        component: () => import('@/views/checkVideo/index.vue'),
+        name: 'CheckVideo',
+        meta: {
+          title: '实时视频',
+          hidden: true,
+        }
+      },
+      {
         path: 'DOPrediction',
         name: 'DOPrediction',
         component: () => import('@/views/agriculture/DOPrediction/index.vue'),
