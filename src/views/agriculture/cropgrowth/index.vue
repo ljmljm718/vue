@@ -322,7 +322,7 @@ const getPage = async () => {
   let res = await page()
   console.log(res, 'res123x')
   baseList.value = res.list
-  queryParams.belongPark = res.list[0].id
+  // queryParams.belongPark = res.list[0].id
   getParkPage({ parkId: res.list.id })
 }
 getPage()
@@ -333,7 +333,7 @@ const getParkPage = async (parkId) => {
   let res = await parkPage(parkId)
   console.log(res.list[0].id, 'dikuia')
   plotList.value = res.list
-  queryParams.belongPlot = res.list[0].id
+  // queryParams.belongPlot = res.list[0].id
 }
 
 

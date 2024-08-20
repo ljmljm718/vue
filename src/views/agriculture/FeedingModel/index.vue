@@ -1,7 +1,7 @@
 <template>
   <div class="box-border px-[10px] py-[10px]">
     <div class="w-100% px-[25px] py-[15px] box-border bg-[#fff] rounded">
-      <div class="text-14px">饲料投喂模型</div>
+      <div class="text-18px color-[#009688]">饲料投喂模型</div>
       <div :class="`grid grid-cols-7 ${FeedingTopList.length} mt-[15px] `">
         <div
           v-for="(item, index) in FeedingTopList"
@@ -28,7 +28,7 @@
             >{{ index + 1 }}</div
           >
           <div>
-            <div class="mb-6px text-15px">{{ item.growthPeriod }}</div>
+            <div :class="`mb-6px text-15px color-[${growthPeriod == item.growthPeriod?'#fff':'#000'}]`">{{ item.growthPeriod }}</div>
             <div class="color-[#a5adac] text-13px">{{ item.time }},周期{{ item.cycle }}</div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               <div
                 class="w-5px h-5px mr-10px rounded-full border-3 border-[#1fa296] border-solid"
               ></div>
-              <div class="text-14px color-[#b2b2b2]"
+              <div class="text-14px color-[#009688]"
                 >投喂频率：<span class="color-[#000]">{{ periodObj.feedingFrequency }}</span></div
               >
             </div>
@@ -50,7 +50,7 @@
               <div
                 class="w-5px h-5px mr-10px rounded-full border-3 border-[#1fa296] border-solid"
               ></div>
-              <div class="text-14px color-[#b2b2b2]"
+              <div class="text-14px color-[#009688]"
                 >投喂时间：<span class="color-[#000]">{{ periodObj.feedingTime }}</span></div
               >
             </div>
@@ -59,7 +59,7 @@
               <div
                 class="w-5px h-5px mr-10px rounded-full border-3 border-[#1fa296] border-solid"
               ></div>
-              <div class="text-14px color-[#b2b2b2]"
+              <div class="text-14px color-[#009688]"
                 >注意事项：<span class="color-[#000]">{{ periodObj.precautions }}</span></div
               >
             </div>
@@ -68,7 +68,7 @@
               <div
                 class="w-5px h-5px mr-10px rounded-full border-3 border-[#1fa296] border-solid"
               ></div>
-              <div class="text-14px color-[#b2b2b2]"
+              <div class="text-14px color-[#009688]"
                 >投喂建议：<span class="color-[#000]">{{ periodObj.feedingAdvice }}</span></div
               >
             </div>
@@ -77,7 +77,7 @@
               <div
                 class="w-5px h-5px mr-10px rounded-full border-3 border-[#1fa296] border-solid"
               ></div>
-              <div class="text-14px color-[#b2b2b2]"
+              <div class="text-14px color-[#009688]"
                 >投喂饲料：<span class="color-[#000]">{{ periodObj.feedingFood }}</span></div
               >
             </div>
@@ -88,34 +88,34 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-between mt-15px h-700px">
+    <div class="flex justify-between mt-15px h-650px">
       <div class="w-49.5% h-100% box-border p-[20px] bg-[#fff]">
         <div>喂养量影响因子</div>
-        <div class="factor-bg w-300px h-230px mx-auto"></div>
+        <div class="factor-bg w-400px h-350px mx-auto mb-15px"></div>
         <div>
+          <div class='flex rounded-full item-center justify-evenly w-100% bg-[#f5f5f5]'> 
           <div
+          @click='getInfluence(index,item.influence)'
             v-for="(item, index) in FactorList"
             :key="index"
-            class="mt-10px bg-[#f5f5f5] flex items-center w-100% h-45px"
+            :class="` ${influenceIndex==index?'influenceActive':''}  flex items-center justify-center rounded-full w-14% h-45px`"
             style="overflow: hidden"
           >
-            <div
-              class="h-100% w-150px rounded-25px leading-40px text-center mr-5px bg-[#009688] color-[#fff]"
-              >{{ item.factorName }}</div
-            >
-            <div class="w-80% factor-meassage">{{ item.influence }}</div>
+            {{ item.factorName }}
           </div>
+        </div>
+        <div class="w-100% h-150px box-border px-[15px] py-[15px] mt-20px bg-[#f5f5f5] factor-meassage">{{ influence }}</div>
         </div>
       </div>
       <div class="w-49.5% h-100% box-border p-[20px] bg-[#fff]">
-        <div>喂养量计算</div>
+        <div>投喂量计算</div>
         <div class="w-100% flex my-15px items-center justify-evenly">
           <div
             class="flex items-center !px-[15px] h-38px rounded !border-2 !border-[#dcdfe6] !border-solid"
           >
-            <div> 基地名称： </div>
+            <div  class='w-100px'> 基地名称： </div>
             <select
-              class="!w-200px !h-25px !border-none"
+              class="!w-150px !h-25px !border-none"
               name=""
               id=""
               @change="select"
@@ -131,9 +131,9 @@
           <div
             class="flex items-center !px-[15px] h-38px rounded !border-2 !border-[#dcdfe6] !border-solid"
           >
-            <div> 地块名称： </div>
+            <div class='w-150px'> 地块名称： </div>
             <select
-              class="!w-200px !h-25px !border-none"
+              class="!w-100px !h-25px !border-none"
               name=""
               id=""
               @change="select2"
@@ -150,91 +150,103 @@
           <div class="w-33% h-100% text-center leading-40px">气象数据</div>
           <div class="w-33% h-100% text-center leading-40px">水质数据</div>
         </div>
-        <div class="flex mt-10px justify-between">
+        <div class="flex justify-between box-border px-15px py-15px bg-[#ebf7f7]">
           <div class="w-32%">
-            <el-form>
-              <el-form-item
-                label="生长周期："
-                class="!flex box-border !px-[10px] !w-100% !h-35px !items-center !border-2 !border-[#dcdfe6] !border-solid"
+              <div
+                
+                class="!flex box-border justify-between mb-18px !px-[10px] !w-100% !h-35px !items-center rounded bg-[#fff] !border-2 !border-[#40b0a6] !border-solid"
               >
-                <select
-                  class="!w-174px !h-100% !border-none"
-                  name=""
-                  id=""
-                  @change="cycleSelect"
-                  v-model="sycleVal"
-                >
-                  <option v-for="(item, index) in infoList" :key="index" :value="item">{{
-                    item.growthPeriod
-                  }}</option>
-                </select>
-              </el-form-item>
-              <el-form-item
-                label="鱼塘规模："
-                class="!flex box-border !h-35px !px-[10px] !w-100% !items-center !border-2 !border-[#dcdfe6] !border-solid"
+                <div class='!w-150px'>生长期：</div>
+                <div class="!w-160px">
+                    <select
+                    class=" !w-100% !border-none"
+                    name=""
+                    id=""
+                    @change="cycleSelect"
+                    v-model="sycleVal"
+                  >
+                    <option v-for="(item, index) in infoList" :key="index" :value="item">{{
+                      item.growthPeriod
+                    }}</option>
+                  </select>
+                </div>
+              </div>
+              <div
+                class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-                <el-input type="number" v-model="sycleCount" >
+              <div class="!w-150px">鱼塘规模:</div>
+              <div class="!w-160px">
+                <el-input class='!w-100%' type="number" v-model="sycleCount" >
                   <template #suffix> 只 </template>
                 </el-input>
-              </el-form-item>
-              <el-form-item
-                label="鱼塘面积："
-                class="!flex box-border !h-35px !px-[10px] !w-100% !items-center !border-2 !border-[#dcdfe6] !border-solid"
+              </div>
+              </div>
+              <div
+                class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-                <el-input type="number" v-model="sycleArea" >
+              <div class="!w-150px">鱼塘面积:</div>
+              <div class="!w-160px">
+                <el-input class="!w-100%" type="number" v-model="sycleArea" >
                   <template #suffix> 亩 </template>
                 </el-input>
-              </el-form-item>
-              <el-form-item
-                label="养殖规格："
-                class="!flex !px-[10px] !h-35px !w-100% box-border !items-center !border-2 !border-[#dcdfe6] !border-solid"
+              </div>
+              </div>
+              <div
+                class="!flex justify-between !px-[10px] mb-18px !h-35px !w-100% box-border bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-                <el-input type="number" v-model="sycleVal.weight" >
+              <div class="!w-150px">养殖规格:</div>
+              <div class='!w-160px'>
+                <el-input class="!w-100%" type="number" v-model="sycleVal.weight" >
                   <template #suffix> 克/只 </template>
                 </el-input>
-              </el-form-item>
-            </el-form>
+              </div>
+              </div>
           </div>
           <div class="w-32%">
             <div
               v-for="(item, index) in waterList.meteorological"
               :key="index"
-              class="!flex !px-[10px] !w-100% box-border flex justify-center items-center h-35px mb-18px rounded !items-center !border-2 !border-[#dcdfe6] !border-solid"
+              class="!flex bg-[#fff] !px-[10px] !w-100% box-border flex justify-between items-center h-35px mb-18px rounded !items-center "
             >
-              <div>{{ item?.monitoringType }}: {{ item?.dataValue }} {{ item?.dataUnit }}</div>
+              <div>{{ item?.monitoringType }}:</div> <div class='color-[#009688]'> {{ item?.dataValue }} {{ item?.dataUnit }}</div>
             </div>
           </div>
           <div class="w-32%">
             <div
               v-for="(item, index) in waterList.water"
               :key="index"
-              class="!flex !px-[10px] box-border !w-100% flex justify-center items-center h-35px mb-18px rounded !items-center !border-2 !border-[#dcdfe6] !border-solid"
+              class="!flex !px-[10px] box-border bg-[#fff] !w-100% flex justify-between items-center h-35px mb-18px rounded !items-center"
             >
-              <div>{{ item?.monitoringType }}: {{ item?.dataValue }} {{ item?.dataUnit }}</div>
+              <div>{{ item?.monitoringType }}:</div> <div class='color-[#009688]'> {{ item?.dataValue }} {{ item?.dataUnit }}</div>
             </div>
           </div>
         </div>
-        <div
-          class="border-1px border-solid border-[#dcdfe6] h-120px box-border px-[15px] py-[20px] rounded"
+        <div class='flex justify-between items-center my-15px'>
+          <div
+          class="border-1px w-65% flex items-center border-dashed bg-[#f6fbfa]  !h55px  border-[#7dc9c2] box-border px-[15px] py-[20px] rounded"
         >
-          <div class="color-[#cbcbcb]">投喂建议:</div>
-          <div class="mt-7px">{{ sycleVal.strategy }}</div>
-        </div>
-        <div
-          class="border-1px border-dashed bg-[#f6fbfa] mt-10px h-120px mb-20px border-[#7dc9c2] box-border px-[15px] py-[20px] rounded"
-        >
-          <div class="color-[#cbcbcb]">投喂量结果:</div>
-          <div class="color-[#40b0a5] mt-7px">
-            <div v-if="!feedVal">点击下方“投喂量计算”按钮获取投喂量结果</div>
+          <div class="color-[#000]">投喂量结果：</div>
+          <div class="color-[#40b0a5]">
+            <div v-if="!feedVal">点击右方“投喂量计算”按钮获取投喂量结果</div>
             <div v-else>{{ feedVal }}</div>
           </div>
         </div>
         <div
           style="cursor: pointer"
           @click="getbyGrowthPeriod()"
-          class="bg-[#009688] color-[#fff] rounded w-80px h-15px mx-auto px-10px py-10px text-center leading-15px"
+          class="bg-[#009688] color-[#fff] w-30% h-35px rounded  px-10px py-10px text-center leading-30px"
           >投喂量计算</div
         >
+        </div>
+        <div
+          class="border-1px border-solid border-[#dcdfe6] h-150px box-border px-[15px] py-[20px] rounded"
+        >
+          <div class="color-[#000]">投喂建议:</div>
+          <div class='feedingRecommendation h-100px'>
+            <div class="mt-7px">{{ sycleVal.strategy }}</div>
+          </div>
+        </div>
+       
       </div>
     </div>
     <div class="flex justify-between mt-15px">
@@ -244,12 +256,12 @@
       </div>
       <div class="w-49.5% bg-[#fff] box-border p-[15px]">
         <div>喂养日志</div>
-        <el-table :data="tableData" style="width: 100%; height: 280px">
-          <el-table-column prop="plotName" label="地块名称" />
-          <el-table-column prop="feedTime" label="投喂时间" />
-          <el-table-column prop="crabNum" label="蟹数量" />
-          <el-table-column prop="feedNum" label="投喂量" />
-          <el-table-column prop="feedType" label="饲料种类" />
+        <el-table :data="tableData" style="width: 100%;  height: 280px" :header-cell-style="{backgroundColor: '#f5f5f5',color:'#000' }">
+          <el-table-column prop="plotName" label="地块名称" align='center' />
+          <el-table-column prop="feedTime" label="投喂时间"  align='center' />
+          <el-table-column prop="crabNum" label="蟹数量"   align='center'/>
+          <el-table-column prop="feedNum" label="投喂量"  align='center' />
+          <el-table-column prop="feedType" label="饲料种类"  align='center' />
         </el-table>
       </div>
     </div>
@@ -301,11 +313,13 @@ const tabFeeding = (val) => {
   getPeriodStrategy(growthPeriod.value)
 }
 //喂养量影响因子
+const influence=ref('')
 const FactorList = ref([])
 const getFactorPage = async () => {
   let res = await factorPage()
   console.log(res, '喂养量因子')
   FactorList.value = res.list
+  influence.value=res.list[0].influence
 }
 getFactorPage()
 //喂养量趋势图
@@ -323,6 +337,12 @@ const initChart = async () => {
           lineStyle: {
             color: '#000'
           }
+        }
+      },
+      tooltip: {
+        backgroundColor:'#5c5c5c',
+        textStyle:{
+          color:'#fff'
         }
       },
       legend: {
@@ -507,6 +527,7 @@ const getPlotList = async (val) => {
 //基地切换
 const select = (e) => {
   baseCode.value = e.target.value
+  getPlotList(baseCode.value)
 }
 const feedVal = ref('')
 
@@ -573,19 +594,33 @@ const getFeedingGet = async () => {
   sycleArea.value.weight = res.weight
   sycleArea.value.strategy = res.strategy
 }
+const influenceIndex=ref(0)
+const getInfluence=(index,val)=>{
+  influence.value=val
+  influenceIndex.value=index
+}
 </script>
 <style lang='scss' scoped>
 .factor-bg {
   background-size: 100% 100%;
   background-image: url(./assets/factor.png);
 }
+.feedingRecommendation{
+  overflow-y:scroll;
+}
+.feedingRecommendation::-webkit-scrollbar{
+  width: 0;
+}
 .factor-meassage {
   overflow-y: scroll;
-  height: 100%;
 }
 select:focus {
   outline: none;
   border: none;
+}
+.influenceActive{
+  color:#fff;
+  background-color: #029083 ;
 }
 // 下拉框去除蓝色边框
 ::v-deep .el-select .el-input.is-focusable .el-input__inner:focus {

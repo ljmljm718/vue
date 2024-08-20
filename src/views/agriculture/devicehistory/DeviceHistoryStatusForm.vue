@@ -7,8 +7,18 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备id" prop="deviceId">
+      <!-- <el-form-item label="设备id" prop="deviceId">
         <el-input v-model="formData.deviceId" placeholder="请输入设备id" />
+      </el-form-item> -->
+      <el-form-item label="设备" prop="deviceName">
+          <el-input v-model="formData.deviceName" placeholder="请选择设备" readonly>
+            <template #append>
+              <el-button @click="openSelectDeviceInfo()">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
       </el-form-item>
       <el-form-item label="设备状态" prop="deviceStatus">
         <el-radio-group v-model="formData.deviceStatus">
@@ -27,10 +37,14 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择设备-->
+  <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess" />
 </template>
 <script setup lang="ts">
 import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import SelectDeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
 /** 设备历史状态 表单 */
 defineOptions({ name: 'DeviceHistoryStatusForm' })
 
@@ -44,10 +58,12 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceId: undefined,
-  deviceStatus: undefined
+  deviceStatus: undefined,
+  deviceName:undefined
 })
 const formRules = reactive({
-  deviceId: [{ required: true, message: '设备id不能为空', trigger: 'blur' }],
+  // deviceId: [{ required: true, message: '设备id不能为空', trigger: 'blur' }],
+  deviceName: [{ required: true, message: '设备名字不能为空', trigger: 'blur' }],
   deviceStatus: [{ required: true, message: '设备状态不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
@@ -94,12 +110,24 @@ const submitForm = async () => {
   }
 }
 
+// 机器信息选择
+const SelectDeviceInfoRef = ref()
+const openSelectDeviceInfo = () => {
+  SelectDeviceInfoRef.value.open('jk') //监控
+}
+//点击确定后
+const SelectDeviceInfoSuccess = (item: any) => {
+  formData.value.deviceId = item[0].id
+  formData.value.deviceName = item[0].deviceName
+}
+
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
     id: undefined,
     deviceId: undefined,
-    deviceStatus: undefined
+    deviceStatus: undefined,
+    deviceName:undefined
   }
   formRef.value?.resetFields()
 }

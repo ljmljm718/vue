@@ -69,7 +69,7 @@ export const useUserStore = defineStore('admin-user', {
         return new Promise(async (resolve, reject) => {
           const tenantId = getTenantId()
           const data = await getRouteByTenant({ id: tenantId })
-          const remoteBigscreenUrl = data.bigScreen
+          const remoteBigscreenUrl = data?.bigScreen ?? ''
           const localPathMap = {
             "wulong": "/bigscreen5",
             "youyang": "/bigscreen6",
@@ -82,7 +82,7 @@ export const useUserStore = defineStore('admin-user', {
             "tianyin": "/bigscreenTB",
             "shuangqiao": "/bigscreenShuangQiao"
           }
-          
+
           let resPath = ''
           if (Array.isArray(userInfo.roles)) userInfo.roles.forEach(item => {
             if (localPathMap[item]) resPath = localPathMap[item]

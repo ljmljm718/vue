@@ -24,6 +24,8 @@ import { getBase, getModel, getNum, getPlot, getCycle, getIndicator, updateModel
 
 /** 引入图片 */
 import bg from "./assets/bg.png"
+import bgFish from './assets/bg-fish.png'
+import bgDuck from './assets/bg-duck.png'
 
 export default defineComponent({
   components: {
@@ -92,6 +94,7 @@ export default defineComponent({
     const modelList = ref<Array<any>>([])
     let curModelId = ""
     const curVarietyName = ref("")
+    const bgImage = ref(bg)
 
     const getModelList = async () => {
       const params = {parkId: base.value.id}
@@ -105,6 +108,7 @@ export default defineComponent({
         }
       })
       modelList.value[0].activated = true
+      changeBackground(modelList.value[0])
       curModelId = modelList.value[0].modelId
       curVarietyName.value = modelList.value[0].varietyName
     }
@@ -115,12 +119,29 @@ export default defineComponent({
           element.activated = true
           curModelId = element.modelId
           curVarietyName.value = element.varietyName
+          changeBackground(element)
+          if (chartInstance) {
+            chartInstance.dispose()
+            chartInstance = null
+            chartDom = null
+          }
         } else {
           element.activated = false
         }
         element.key = `${ element.key }1`
       });
       await getCycleList()
+    }
+
+    const changeBackground = (item) => {
+      let str = item.varietyName
+      if (str.includes("鱼")) {
+        bgImage.value = bgFish
+      } else if (str.includes("鸭")) {
+        bgImage.value = bgDuck
+      } else {
+        bgImage.value = bg
+      }
     }
 
     /**
@@ -309,6 +330,8 @@ export default defineComponent({
     }
 
     const initOption = () => {
+      // console.log("curFactor", curFactor.value)
+      // console.log("curFactorData", curFactorData.value)
       if (curFactor.value.size) {
         let indicatorData = []
         let percentages = []
@@ -323,13 +346,9 @@ export default defineComponent({
           indicatorData.push({ name: "其他", max: 100})
           percentages.push(100 - totalPer)
         }
-        let r = "85%"
         let labelPos = "top"
-        let centerPoint = ["50%", "60%"]
         if (indicatorData.length < 3) {
-          r = "70%"
           labelPos = "right"
-          centerPoint = ["50%", "45%"]
         }
         const option = {
           color: [
@@ -342,9 +361,7 @@ export default defineComponent({
             borderWidth: 3,
           },
           radar: {
-            radius: r,  
             nameGap: 10,
-            center: centerPoint,
             triggerEvent: true,
             indicator: indicatorData,
             axisName: {
@@ -404,7 +421,12 @@ export default defineComponent({
             }
           ]
         }
+        if (indicatorData.length === 3) {
+          option.radar = { ...option.radar, ...{radius: "85%", center: ["50%", "60%"]}}
+        }
+        
         if (chartDom && chartInstance) {
+          // console.log("option", option)
           chartInstance.setOption(option, true, true)
         } else {
           let tmp = initChartStatic("chart", option)
@@ -419,6 +441,7 @@ export default defineComponent({
               curFactorData.value = []
             }
           })
+          chartInstance.setOption(option, true, true)
         }
       }
     }
@@ -513,7 +536,7 @@ export default defineComponent({
     return () => (
       <div class="bg-[#0B2131] w-full h-full select-none">
         <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={ bg } style="background-color: transparent;">
+          <BigscreenContainer backgroundImage={ bgImage.value } key={ bgImage.value } style="background-color: transparent;">
             {/** 头部 */}
             <Header 
               height={ headerHeight } 
@@ -609,8 +632,8 @@ export default defineComponent({
                         plotList.value.map((item) => (
                           <div class="w-full h-[130px] mb-[10px]">
                             <div 
-                              style={`background-image: url(${ item.modelImg }); background-size: 100% 100%;`}
-                              class="w-full h-[100px] relative cursor-pointer"
+                              style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
+                              class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
                               onClick={()=>{ handleRoute(item) }}
                             >
                               <div 
@@ -759,17 +782,10 @@ export default defineComponent({
                   }
                 </div>
                 {/** 模型图片 */}
-                {/*
-                  curVarietyName.value === "连梗11号" ? (
-                    <div class={`center-model model-${ curItem + 1 }`}></div>
-                  ) : null
-                */}
                 {
                   cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
-                    <div
-                      class="center-model"
-                      style={`background-image: url(${ cycleMap.value.get(curPeriod.value).imgId })`}
-                    >
+                    <div class="center-model text-center pt-[50px] box-border">
+                      <img src={ cycleMap.value.get(curPeriod.value).imgId } class="object-contain h-[390px]" />
                     </div>
                   ) : null
                 }
@@ -869,7 +885,7 @@ export default defineComponent({
                               >
                                 { item.name }
                               </div>
-                              <div class={ item.name === "气象指标" ? "weather" : (item.name === "土壤指标" ? "soil" : "phenology") }></div>
+                              <div class={ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology") }></div>
                             </div>
                           ))
                         }
@@ -893,7 +909,7 @@ export default defineComponent({
                     {
                       curFactor.value.size ? null : (
                         <div 
-                          class="z-999 absolute top-0 left-[-10px] w-[390px] h-[477px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
+                          class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
                           style="background: #0B212C;"
                         >
                           本指标暂无要素信息
@@ -1073,9 +1089,6 @@ export default defineComponent({
   background-size: 22px;
 }
 .center-model {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto;
   width: 1032px;
   height: 520px;
   margin-bottom: 10px;
@@ -1085,19 +1098,25 @@ export default defineComponent({
 /** 指标监测 */
 .weather {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/weather.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 132px;
   height: 86px;
 }
 .phenology {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/phenology.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 132px;
   height: 86px;
 }
 .soil {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/soil.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 132px;
   height: 86px;
 }

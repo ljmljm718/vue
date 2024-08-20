@@ -70,7 +70,7 @@
   </Dialog>
 
   <!--  选择检测指标-->
-  <IndicatorSelectPopup ref="indicatorSelectPopupRef" @success="handleIndicatorSelectPopupChange"/>
+<!--  <IndicatorSelectPopup ref="indicatorSelectPopupRef" @success="handleIndicatorSelectPopupChange"/>-->
 
   <!--  选择设备-->
   <SelectDeviceInfoMultiple ref="deviceSelectRef" @success="handleDeviceSelectPopupChange" :device-monitor-type="formData.elementName"/>
@@ -79,13 +79,12 @@
 import { ModelIndicatorElementApi, ModelIndicatorElementVO } from '@/api/agriculture/modelindicatorelement'
 import ModelIndicatorElementRangeForm from './components/ModelIndicatorElementRangeForm.vue'
 import {
-  ModelMonitorIndicatorApi,
-  ModelMonitorIndicatorVO
+  ModelMonitorIndicatorApi
 } from "@/api/agriculture/modelmonitorindicator";
-import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
+// import IndicatorSelectPopup from "@/views/agriculture/modelmonitorindicator/IndicatorSelectPopup.vue"
 import SelectDeviceInfoMultiple from "@/views/agriculture/deviceinfo/components/SelectDeviceInfoMultiple.vue"
 import {DeviceInfoApi, DeviceInfoVO} from "@/api/agriculture/deviceinfo";
-import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
+// import {ModelManagementVO} from "@/api/agriculture/modelmanagement";
 
 /** 指标要素 表单 */
 defineOptions({ name: 'ModelIndicatorElementForm' })
@@ -130,7 +129,7 @@ const formRef = ref() // 表单 Ref
 const subTabsName = ref('modelIndicatorElementRange')
 const modelIndicatorElementRangeFormRef = ref()
 
-const monitorIndicatorList = ref<ModelMonitorIndicatorVO[]>([])
+// const monitorIndicatorList = ref<ModelMonitorIndicatorVO[]>([])
 const deviceTypeList = ref<List<String>>([]) // 设备检测类型列表的数据
 const getDeviceTypeData = async () => {
   const res = await DeviceInfoApi.getDeviceMonitorType()
@@ -223,14 +222,14 @@ const resetForm = () => {
 //监测指标名称
 const indicatorName = ref()
 //监测指标的选择
-const indicatorSelectPopupRef = ref()
-const openIndicatorSelectPopup = (id: string) => {
-  indicatorSelectPopupRef.value.open(id)
-}
-const handleIndicatorSelectPopupChange = (order: ModelMonitorIndicatorVO) => {
-  formData.value.indicatorId = order[0].id?.toString()
-  indicatorName.value = order[0].indicatorName?.toString()
-}
+// const indicatorSelectPopupRef = ref()
+// const openIndicatorSelectPopup = (id: string) => {
+//   indicatorSelectPopupRef.value.open(id)
+// }
+// const handleIndicatorSelectPopupChange = (order: ModelMonitorIndicatorVO) => {
+//   formData.value.indicatorId = order[0].id?.toString()
+//   indicatorName.value = order[0].indicatorName?.toString()
+// }
 
 const deviceName = ref()
 //设备的选择
@@ -254,11 +253,12 @@ watch(
     if (val) {
       weightDisabled.value = false
       const currentNum = await ModelIndicatorElementApi.getElementWeight(val)
-      maxNum.value = 100 - +currentNum
+      currentNum.data === null ? maxNum.value = 100 : maxNum.value = 100 - +currentNum
       if (formData.value.id) {
         maxNum.value = Number(formData.value.weight) + maxNum.value
       }
-      weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
+      maxNum.value === 0 ? (weightPlaceholder.value = "已无权重可供分配，请调整其他要素权重", weightDisabled.value = true)
+        : weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
       console.log("maxNum.value", maxNum.value)
     }
   },

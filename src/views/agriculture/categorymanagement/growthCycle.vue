@@ -16,7 +16,7 @@
             'flex p-3 space-x-2 transition',
             slectedItem == item.key ? 'bg-[#E5F4F3] selected-item' : ''
           ]" @click="selectGrowth(item.key)">
-            <img :src="item.img" class="w-[3rem] h-[3rem]" alt="" />
+            <img :src="item.img" class="w-[3rem] h-[3rem] object-contain" alt="" />
             <div>
               <div>{{ item.title }}</div>
               <div>{{ item.value }}</div>
@@ -30,7 +30,7 @@
             <el-table-column label="图片" align="center" prop="imgId">
               <template #default="{ row }">
                 <el-image class="h-50px w-50px" :src="row.imgId" :preview-src-list="[row.imgId]" preview-teleported
-                  fit="cover" />
+                  fit="contain" />
               </template>
             </el-table-column>
             <el-table-column label="周期（/天）" align="center" prop="cycle" />
@@ -120,6 +120,7 @@ const getGrowthPeriod = () => {
     img: item.imgId
   }))
   console.log('growthPeriod.value=>', growthPeriod.value)
+  if (growthPeriod.value.length > 0) selectGrowth(growthPeriod.value[0].key)
 }
 //--- 查询品类生长周期列表-----
 const getCropGrowthList = async (id = route.query.cropId) => {

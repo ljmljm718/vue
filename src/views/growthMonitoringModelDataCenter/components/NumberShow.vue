@@ -32,14 +32,18 @@ const props = defineProps({
 <style scoped>
 .circle {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/circle.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 70px;
   height: 70px;
   position: relative;
 }
 .circle-border {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/circle-border.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 85px;
   height: 85px;
   position: absolute;
@@ -48,7 +52,9 @@ const props = defineProps({
 }
 .border-decorator {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/border-decorator.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 30px;
   height: 12px;
   position: absolute;
@@ -57,7 +63,9 @@ const props = defineProps({
 }
 .line {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/line.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 206px;
   height: 30px;
   position: absolute;
@@ -66,7 +74,9 @@ const props = defineProps({
 }
 .line-decorator {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/numshow/line-decorator.png);
-  background-size: 100% 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 22px;
   height: 2px;
   position: absolute;
@@ -75,13 +85,13 @@ const props = defineProps({
 }
 .icon-variety-img {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/variety-num.png); 
-  background-size: 100% 100%; 
+  background-size: contain; 
   background-repeat: no-repeat; 
   background-position: center;
 }
 .icon-model-img {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/model-num.png); 
-  background-size: 100% 100%; 
+  background-size: contain; 
   background-repeat: no-repeat; 
   background-position: center;
 }
