@@ -4,6 +4,7 @@ import request from '@/config/axios'
 export interface CropBaseVO {
   id: string // 主键
   cropCode: string // 编号
+  breedId:string
   cropName: string // 名称
   cropType: string // 品种
   imgId: string // 图片

@@ -13,7 +13,7 @@
             <div class="value-card"  @click="router.push('/bigscreenMYFX')">风险预警</div>
           </div>
         </div>
-        <BackOrHome/> 
+        <BackOrHome/>
       </div>
       <div class="linear-font-title header-title-wrapper">稻鱼鸭产业可视化数字驾驶舱</div>
       <div class="header-right-part-wrapper">
@@ -79,7 +79,7 @@
                       <div class='w-48% h-100% flex justify-evenly'>
                         <img :src="item.photo" class="w-65% h-150px" alt=""/>
                         <div class="w-33% h-70% flex justify-evenly" style="flex-direction:column">
-                          <div>产品名称：{{item.parkDetail}}</div> 
+                          <div>产品名称：{{item.parkDetail}}</div>
                           <div>产品批次：{{item.specifications}}</div>
                           <div>产品年份: {{item.years}}</div>
                         </div>
@@ -93,7 +93,7 @@
                         </div>
                       </div>
                     </div>
-                      
+
                     </el-carousel-item>
                   </el-carousel>
                 </div>
@@ -132,7 +132,7 @@
                   <div class="mt-10px w-full h-15px bg-[#c1c1c1]" style="border-radius: 10px;border: nono"><div class="w-33% h-full bg-[#4584c0]" style="border-radius: 10px;border: nono"></div></div>
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@
                 <div v-for="itm,inde in item.list" :key="inde" class="warper-item flex items-center justify-evenly mr-8px"><div>{{itm.monitoringType}}</div> <div >{{itm.dataValue}}<span style="font-size:13px;">{{itm.yyUnit}}</span> </div> </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
@@ -372,8 +372,8 @@ const initChart2= async ()=>{
               },
             },
           },
-          legend: { 
-            show: true, 
+          legend: {
+            show: true,
             orient:'horizontal',
             itemWidth: 15,
             itemHeight: 15,
@@ -402,7 +402,7 @@ const initChart2= async ()=>{
               //网格区域
               show: false, //是否显示
             },
-          },  
+          },
         ],
           series,
           grid: {
@@ -413,7 +413,7 @@ const initChart2= async ()=>{
           },
         })
       );
-    
+
 }
 onMounted(()=>{
   initChart1()
@@ -435,14 +435,14 @@ const getGetPondCountFrySum=()=>{
     console.log(res,'jichusheshi3')
     selectCountObj.value=res
   })
-} 
+}
 getGetPondCountFrySum()
 let countSum=ref([])
 const getGetEquipmentCountSum=()=>{
   getEquipmentCountSum().then(res=>{
     console.log(res,'中间顶部')
     countSum.value=Object.keys(res).map(item=>{
-      return { 
+      return {
         name:item,
         value:res[item]
       }
@@ -640,7 +640,7 @@ select{
           background-image: url(./assets/wareprBg.png);
         }
       }
-    
+
     }
     .box-item::-webkit-scrollbar{
       width: 0;
@@ -667,7 +667,7 @@ select{
         background-size: 100% 100%;
         background-image: url(./assets/main-topBg.png);
       }
-      
+
     }
     .middle-main-item{
       position: absolute;
