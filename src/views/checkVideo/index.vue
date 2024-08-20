@@ -2,7 +2,13 @@
 import axios from 'axios';
 import Dplayer from 'dplayer'
 import Hls from "hls.js";
+import { onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 
+const hls = new Hls();
+hls.on(Hls.Events.ERROR, (err) => {
+  ElMessage.error("设备已离线!")
+})
 const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string> => {
   if (leftTimes <= 0) {
     ElMessage.error("获取视频流失败，请联系管理员!");
@@ -57,7 +63,6 @@ const initPlayer = async () => {
       type: "customHls",
       customType: {
         customHls: (video) => {
-          const hls = new Hls();
           hls.loadSource(video.src);
           hls.attachMedia(video);
         },
@@ -67,6 +72,10 @@ const initPlayer = async () => {
 }
 
 onMounted(() => { initPlayer() })
+onBeforeUnmount(() => {
+  hls.destroy()
+})
+
 </script>
 <template>
   <div class="flex justify-center items-center">

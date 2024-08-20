@@ -243,7 +243,7 @@
         >
           <div class="color-[#000]">投喂建议:</div>
           <div class='feedingRecommendation h-100px'>
-            <div class="mt-7px">{{ sycleVal.strategy }}</div>
+            <div class="mt-7px color-[#666666]">{{ sycleVal.strategy }}</div>
           </div>
         </div>
        
