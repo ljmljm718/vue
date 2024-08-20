@@ -1,29 +1,5 @@
 <template>
   <div class="w-full">
-    <!-- <div class="md:col-span-3 mb-4">
-      <el-card>
-        <el-select
-          v-model="selectedDeviceName"
-          size="large"
-          style="width: 240px"
-          @change="filterData"
-        >
-          <el-option
-            v-for="item in allData"
-            :key="item.id"
-            :label="item.deviceName"
-            :value="item.deviceName"
-          />
-        </el-select>
-        <div v-if="filteredData.length" class="flex space-x-35 mt-4">
-          <div v-for="(data, index) in filteredData" :key="index">
-            <span> {{ data.title }} :</span>
-            <span class="pl-3">{{ data.value }}</span>
-          </div>
-        </div>
-      </el-card>
-    </div> -->
-
     <div class="grid grid-cols-4 gap-4">
       <el-card>
         <div>
@@ -32,7 +8,7 @@
             <el-select
               v-model="selectedParkName"
               size="large"
-              style="width: 200px"
+              style="width: 190px"
               @change="filterLeftData"
             >
               <el-option
@@ -46,7 +22,7 @@
             <el-select
               v-model="selectedPlotName"
               size="large"
-              style="width: 100px"
+              style="width: 120px"
               @change="filterRightData"
             >
               <el-option
@@ -65,7 +41,11 @@
             />
             <span
               class="text-[#009688] absolute bottom-[9%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              >{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceName) ?  deviceDetail[0].deviceName : '' }}</span
+              >{{
+                deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
+                  ? deviceDetail[0].deviceName
+                  : ''
+              }}</span
             >
             <img
               src="./assets/subTitleBg.png"
@@ -74,34 +54,57 @@
           </div>
 
           <div class="p-4 mt-3 space-y-4">
-            <div 
-            class="flex items-center mb-2 "
-            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='online'">
+            <div
+              class="flex items-center mb-2"
+              v-show="
+                (deviceDetail && deviceDetail[0] && deviceDetail[0].deviceStatus
+                  ? deviceDetail[0].deviceStatus
+                  : '') === 'online'
+              "
+            >
               <span>增氧机状态：</span>
               <img src="./assets/Online.png" class="w-4 h-4 mx-2" />
               <span class="text-[#00B53D]">在线</span>
             </div>
-            <div 
-            class="flex items-center mb-2 "
-            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='offline'">
+            <div
+              class="flex items-center mb-2"
+              v-show="
+                (deviceDetail && deviceDetail[0] && deviceDetail[0].deviceStatus
+                  ? deviceDetail[0].deviceStatus
+                  : '') === 'offline'
+              "
+            >
               <span>增氧机状态：</span>
               <img src="./assets/Offline.png" class="w-4 h-4 mx-2" />
               <span class="text-[#999999]">离线</span>
             </div>
-            <div 
-            class="flex items-center mb-2 "
-            v-show="((deviceDetail && deviceDetail[0] &&  deviceDetail[0].deviceStatus) ?  deviceDetail[0].deviceStatus : '') ==='fault'">
+            <div
+              class="flex items-center mb-2"
+              v-show="
+                (deviceDetail && deviceDetail[0] && deviceDetail[0].deviceStatus
+                  ? deviceDetail[0].deviceStatus
+                  : '') === 'fault'
+              "
+            >
               <span>增氧机状态：</span>
               <img src="./assets/Error.png" class="w-4 h-4 mx-2" />
               <span class="text-[#E31205]">故障</span>
             </div>
             <div class="mb-2">
               <span>通信时间：</span>
-              <span>{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].updateTime) ?  deviceDetail[0].updateTime : '' }}</span>
+              <span>{{
+                deviceDetail && deviceDetail[0] && deviceDetail[0].updateTime
+                  ? deviceDetail[0].updateTime
+                  : ''
+              }}</span>
             </div>
             <div>
               <span>负责人：</span>
-              <span>{{ (deviceDetail && deviceDetail[0] &&  deviceDetail[0].contact) ?  deviceDetail[0].contact : '' }}</span>
+              <span>{{
+                deviceDetail && deviceDetail[0] && deviceDetail[0].contact
+                  ? deviceDetail[0].contact
+                  : ''
+              }}</span>
             </div>
           </div>
         </div>
@@ -111,7 +114,6 @@
         <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
           <div id="radarChart" class="w-[100%] h-[270px]"></div>
-          <!-- <div id="radarChart" clas s="w-[50%] h-[50%] mx-auto"></div> -->
         </div>
       </el-card>
 
@@ -143,7 +145,7 @@
           :key="index"
         >
           <img src="./assets/warnIcon.png" class="w-5 h-5 m-3" />
-          <span >设备警告：{{ warning }}</span>
+          <span>设备警告：{{ warning }}</span>
         </div>
       </el-card>
 
@@ -170,7 +172,11 @@
             color="#009688"
             size="large"
             class="buttonSize"
-            @click="router.push('/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].deviceCode)"
+            @click="
+              router.push(
+                '/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].deviceCode
+              )
+            "
             >去调整</el-button
           ></div
         >
@@ -223,8 +229,6 @@ const yyUnit = ref('')
 const getParkInfo = async () => {
   const parkRes = await getParkInfoPage()
   basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
-  // console.log('🚀 ~ getParkInfo ~ basicInfo.value:', basicInfo.value)
-  // console.log('🚀 ~ getParkInfo ~ basicInfo.value[0].id:', basicInfo.value[0].id)
 }
 
 const getPlotInfo = async (parkId) => {
@@ -238,30 +242,9 @@ const getPlotInfo = async (parkId) => {
   console.log('🚀 ~ getPlotInfo ~ plotInfo.value:', plotInfo.value)
 }
 
-// getPlotInfo(basicInfo.value[0].id)
-// getPlotInfo('1806514679305093120')
-
-// const getParkAndPlotInfo = async () => {
-
-//   // 获取Park信息
-//   const parkRes = await getParkInfoPage()
-//   basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
-//   console.log('🚀 ~ getParkAndPlotInfo ~ basicInfo.value:', basicInfo.value)
-//   if (!Array.isArray(basicInfo.value)) return
-//   if (basicInfo.value.length > 0) {
-//     const firstParkId = basicInfo.value[0].id
-//     // 根据第一个Park的ID获取Plot信息
-//     const plotRes = await getParkDetailPage({ parkId: firstParkId })
-//     console.log('🚀 ~ getParkAndPlotInfo ~ plotRes:', plotRes)
-//     plotInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
-//   }
-// }
-// getParkAndPlotInfo()
-
 //左侧选择框
 const filterLeftData = () => {
   const selectedItem = basicInfo.value.find((item) => item.name === selectedParkName.value)
-  // console.log('🚀 ~ filterLeftData ~ selectedItem:', selectedItem)
   if (selectedItem) {
     getPlotInfo(selectedItem.id)
   }
@@ -269,7 +252,6 @@ const filterLeftData = () => {
 //右侧选择框
 const filterRightData = () => {
   const selectedItem = plotInfo.value.find((item) => item.name === selectedPlotName.value)
-  // console.log("🚀 ~ filterRightData ~ selectedItem:", selectedItem)
   if (selectedItem) {
     getDeviceDetail(selectedItem.parkId, selectedItem.id)
   }
@@ -287,7 +269,7 @@ const getDeviceDetail = async (baseId, plotId) => {
       deviceCode
     })
   )
-  
+
   deviceDetail.value = deviceDetail.value.map((item) => {
     const plotContactInfo = plotInfo.value.find((ele) => ele.id === item.belongPlot)
     return {
@@ -298,7 +280,6 @@ const getDeviceDetail = async (baseId, plotId) => {
   getDoInfo(deviceDetail.value[0].deviceCode)
   getCurrentPowerInfo(deviceDetail.value[0].deviceCode)
   getScoreInfo(deviceDetail.value[0].deviceCode)
-  console.log("🚀 ~ getDeviceDetail ~ deviceDetail.value:", deviceDetail.value)
 }
 
 const CurrentDoInfo = ref<any>({})
@@ -325,7 +306,6 @@ const warningMessage = ref<string[]>([])
 const suggestMessage = ref<string>('')
 const getScoreInfo = async (equipId) => {
   const ScoreData = await getOxygenRuleInfo({ equipId })
-  console.log('🚀 ~ getScoreInfo ~ ScoreData :', ScoreData)
   const targetNum = ScoreData.targetNum.map(Number) || []
   const currentNum = ScoreData.currentNum.map(Number) || []
   // suggestNumList.value = ScoreData.suggestNumList.map((item) => Number(item.replace('%', ''))) || []
@@ -337,10 +317,6 @@ const getScoreInfo = async (equipId) => {
   suggestMessage.value = suggestList.value.join('; ')
   const currentData = ScoreData.nowData || []
   drawRadarChart(targetNum, currentNum, factorName, currentData)
-  console.log('🚀 ~ getScoreInfo ~ targetNum:', targetNum)
-  console.log('🚀 ~ getScoreInfo ~ currentNum:', currentNum)
-  console.log('🚀 ~ getScoreInfo ~ factorName:', factorName)
-  console.log('🚀 ~ getScoreInfo ~ currentData:', currentData)
 }
 
 //画图一
@@ -362,7 +338,26 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
     title: {
       // text: '评估评分占比分析图'
     },
-    tooltip: {},
+
+    tooltip: {
+      formatter: function (params) {
+        // 获取当前数据和额外数据的组合
+        let combinedData = factorName
+          .map((name, index) => {
+            return `<span style="font-size: 14px;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #00AD8F; border-radius: 50%; margin-right: 5px;margin-bottom: 2px"></span>
+                    <strong>${name}</strong>\n:\n\n  ${currentNum[index]} 分 (${currentData[index]})
+                </span>`
+          })
+          .join('<br/>')
+        return `${params.seriesName}<br/>${combinedData}`
+      },
+      position: function (point) {
+        return [point[0] - 90, point[1] + 20]
+      },
+      extraCssText: 'box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);'
+    },
+
     radar: [
       {
         indicator: factorName.map((name, i) => ({ name, max: targetNum[i] || 100 })),
@@ -396,7 +391,7 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
     ],
     series: [
       {
-        name: 'Current Values',
+        name: '指标得分与数值',
         type: 'radar',
         data: [
           {
@@ -434,22 +429,37 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
 }
 
 // 实时数据 Chart
+const colorList = ['#FF8C69', '#64DDA0', '#FFBB78', '#FF6F61', '#6FC2FF', '#FFD700']
+const hexToRgba = (hex, alpha) => {
+  const rgb = hex
+    .replace('#', '')
+    .match(/.{2}/g)
+    .map((x) => parseInt(x, 16))
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
+}
 const getLineChartInfo = async (date) => {
   const LineChartData = await getlineChartData({ date })
   const LineSeriesData: any[] = []
+  let colorIndex = 0
   for (let key in LineChartData) {
     const seriesName = key
     const seriesData = LineChartData[key]
     LineSeriesData.push({
       name: seriesName,
-      data: seriesData.map((item) => item.dataValue)
+      data: seriesData.map((item) => item.dataValue),
+      color: colorList[colorIndex % colorList.length]
     })
+    colorIndex++
+    if (colorIndex >= colorList.length) {
+      colorIndex = 0 // 当 colorIndex 超过 colorList 长度时重置为 0
+    }
     // console.log("🚀 ~ getLineChartInfo ~ LineSeriesData:", LineSeriesData)
   }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
     Light = LineChartData['光照强度']
   const xValue = PH.map((item) => item.hour ?? '')
+
   initChartStatic(
     'lineChart',
     generateBaseOptions({
@@ -460,72 +470,101 @@ const getLineChartInfo = async (date) => {
           lineStyle: {
             color: '#a1a1aa80'
           }
-        }
+        },
+        boundaryGap: false
       },
       legend: {
         show: true,
         orient: 'horizontal',
         itemWidth: 15,
         itemHeight: 15,
-        left: '85%',
+        left: '80%',
         textStyle: {
           color: '#999999',
           fontSize: 14
         }
       },
-      color: ['#ffa773', '#36e1d9', 'red', 'pink', 'yellow'],
-      yAxis: [{
-        name: '',
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#a1a1aa80'
+      color: ['#FF8C69', '#64DDA0', '#FFBB78', '#FF6F61', '#6FC2FF', '#FFD700'],
+      yAxis: [
+        {
+          name: '',
+          type: 'value',
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: '#a1a1aa80'
+            }
+          },
+          // minInterval:1,
+          splitLine: {
+            //网格线
+            show: true, //是否显示
+            lineStyle: {
+              //网格线样式
+              color: '#a1a1aa80', //网格线颜色
+              width: 1, //网格线的加粗程度
+              type: 'dashed' //网格线类型
+            }
+          },
+          splitArea: {
+            //网格区域
+            show: false //是否显示
+          },
+          axisLabel: {
+            show: true, // 确保显示坐标轴标签
+            color: '#999999', // 设置标签文字的颜色
+            fontSize: 10,
+            formatter: function (value) {
+              if (value === 0) {
+                return ''
+              }
+              return value
+            }
           }
+          // min: 0,
+          // max: 150,
+          // axisTick: {
+          //   show: true // 确保显示坐标轴刻度
+          // }
         },
-        // minInterval:1,
-        splitLine: {
-          //网格线
-          show: true, //是否显示
-          lineStyle: {
-            //网格线样式
-            color: '#a1a1aa80', //网格线颜色
-            width: 1, //网格线的加粗程度
-            type: 'dashed' //网格线类型
+        // 右侧y轴
+        {
+          name: '',
+          type: 'value',
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: '#a1a1aa80'
+            }
+          },
+          // minInterval:1,
+          splitLine: {
+            //网格线
+            show: false, //是否显示
+            lineStyle: {
+              //网格线样式
+              color: '#a1a1aa80', //网格线颜色
+              width: 1, //网格线的加粗程度
+              type: 'dashed' //网格线类型
+            }
+          },
+          splitArea: {
+            //网格区域
+            show: false //是否显示
+          },
+          axisLabel: {
+            show: true, // 确保显示坐标轴标签
+            color: '#999999', // 设置标签文字的颜色
+            fontSize: 10,
+            formatter: function (value) {
+              if (value === 0) {
+                return ''
+              }
+              return value
+            }
           }
-        },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
         }
-      },
-      // 右侧y轴
-      {
-        name: '',
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#a1a1aa80'
-          }
-        },
-        // minInterval:1,
-        splitLine: {
-          //网格线
-          show: true, //是否显示
-          lineStyle: {
-            //网格线样式
-            color: '#a1a1aa80', //网格线颜色
-            width: 1, //网格线的加粗程度
-            type: 'dashed' //网格线类型
-          }
-        },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
-        }
-      }
-    ],
+      ],
       series: LineSeriesData.map((item) => ({
         name: item.name,
         data: item.data,
@@ -541,90 +580,34 @@ const getLineChartInfo = async (date) => {
             fontSize: 10
           }
         },
-        yAxisIndex:item.name === '光照强度' ? 1 : 0
+        yAxisIndex: item.name === '光照强度' ? 1 : 0,
+        areaStyle: {
+          // color: '#009688'
+          // color: 'rgba(154, 213, 207,0.2)'
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0,
+                color: item.color // 颜色的起点
+              },
+              {
+                offset: 1,
+                color: hexToRgba(item.color, 0)
+              }
+            ]
+          }
+        }
       })),
-      // series: [
-      //   {
-      //     name: 'PH',
-      //     data: PH.map((item) => item.dataValue),
-      //     barWidth: 30,
-      //     type: 'line',
-      //     smooth: true,
-      //     label: {
-      //       show: true, //开启显示
-      //       position: 'top', //在上方显示
-      //       textStyle: {
-      //         //数值样式
-      //         color: '#eee',
-      //         fontSize: 10
-      //       }
-      //     },
-      //     itemStyle: {
-      //       normal: {
-      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-      //           { offset: 1, color: '#1bcad600' },
-      //           { offset: 0, color: '#1bcad6' }
-      //         ])
-      //       }
-      //     },
-      //     areaStyle: { normal: {} }
-      //   },
-      //   {
-      //     name: '温度',
-      //     data: Temp.map((item) => item.dataValue),
-      //     barWidth: 30,
-      //     type: 'line',
-      //     smooth: true,
-      //     label: {
-      //       show: true, //开启显示
-      //       position: 'top', //在上方显示
-      //       textStyle: {
-      //         //数值样式
-      //         color: '#eee',
-      //         fontSize: 10
-      //       }
-      //     },
-      //     itemStyle: {
-      //       normal: {
-      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-      //           { offset: 1, color: '#d54b3f00' },
-      //           { offset: 0, color: '#d54b3f' }
-      //         ])
-      //       }
-      //     },
-      //     areaStyle: { normal: {} }
-      //   },
-      //   {
-      //     name: '光照强度',
-      //     data: Light.map((item) => item.dataValue),
-      //     barWidth: 30,
-      //     type: 'line',
-      //     smooth: true,
-      //     label: {
-      //       show: true, //开启显示
-      //       position: 'top', //在上方显示
-      //       textStyle: {
-      //         //数值样式
-      //         color: '#eee',
-      //         fontSize: 10
-      //       }
-      //     },
-      //     itemStyle: {
-      //       normal: {
-      //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-      //           { offset: 1, color: '#bfa26b00' },
-      //           { offset: 0, color: '#bfa26b' }
-      //         ])
-      //       }
-      //     },
-      //     areaStyle: { normal: {} }
-      //   }
-      // ],
       grid: {
-        left: '6%',
+        left: '4%',
         right: '4%',
-        top: '16%',
-        bottom: '15%'
+        top: '17%',
+        bottom: '10%'
       }
     })
   )
