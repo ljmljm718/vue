@@ -26,11 +26,16 @@
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue'
 import axios from 'axios'
+import { searchDoc } from './searchTool'
+import { ref, defineComponent } from 'vue'
+import { uniqBy } from 'lodash-es'
 
 defineComponent({ name: 'Selector' })
 const posInputVal = ref<string>('')
 const searchResList = ref<any[]>([])
 const handlePosSearch = () => {
+  const localSuggests = searchDoc(posInputVal.value);
+  const queryCount = localSuggests.length ? (10 - localSuggests.length) : 10;
   axios.get("https://api.tianditu.gov.cn/v2/search", {
     params: {
       type: 'query',
@@ -42,7 +47,7 @@ const handlePosSearch = () => {
         mapBound: '73.66, 3.86, 135.05, 53.55',
         queryType: '4',
         start: 0,
-        count: 10,
+        count: queryCount,
         queryTerminal: 10000
       }),
       tk: '3499364c33fd4aa4415dd8765d4c5b77'
@@ -51,9 +56,17 @@ const handlePosSearch = () => {
   }).then((res:any) => {
     const { data } = res;
     const { suggests } = data;
-    if (Array.isArray(suggests)) searchResList.value = suggests
+    if (Array.isArray(suggests)) {
+      if (Array.isArray(localSuggests)) {
+        searchResList.value = uniqBy([...localSuggests.map(item => ({ ...item.meta })), ...suggests], 'lonlat')
+      } else {
+        searchResList.value = suggests
+      }
+    }
   }).catch(err => {
     console.error("ERR", err);
+    if (!Array.isArray(localSuggests)) return;
+    searchResList.value = localSuggests.map(item => ({ ...item.meta }))
   })
 }
 
