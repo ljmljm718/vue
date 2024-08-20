@@ -54,6 +54,7 @@ export default defineComponent({
     const widht = ref()
     const height = ref()
     const createBubbles = () => {
+      bubbles.value=[]
       for (let i = 0; i < mainList.value.length; i++) {
         bubbles.value.push({
           id: i,
@@ -94,15 +95,19 @@ export default defineComponent({
             color: '#000'
           },
           formatter: (params) => {
-            console.log(params,'params123456')
+            console.log(params, 'params123456')
             //自定义绘制tooltip
             let str = '<div>模型要素</div>'
-            list.forEach(item=>{
-              str+=` <div>
-                <div class='flex justify-between color-[${item.assess.includes('正常')?'#000':'red'}]'> <div class='mr-10px'>${item.assess.includes('正常')? item.elementName : item.assess}</div> <div>${item.score}</div> </div>
+            list.forEach((item) => {
+              str += ` <div>
+                <div class='flex justify-between color-[${
+                  item.assess.includes('正常') ? '#000' : 'red'
+                }]'><div>${item.elementName} </div>  <div class=' ml-10px mr-10px'>${
+                item.assess
+              }</div> <div>${item.score}</div> </div>
                 </div> `
             })
-            return str  //解决未在拐点悬浮undefine问题
+            return str //解决未在拐点悬浮undefine问题
           }
         },
         radar: [
@@ -193,37 +198,29 @@ export default defineComponent({
       })
     }
 
+    // 右侧移动
+    const rightSetNum = ref(0)
+    const cycleListChange3 = (index) => {
+      if (infoList.value.length > 3) {
+        console.log(rightSetNum.value, 'valuevalue')
+        console.log(index, 'indexindex')
+        console.log((rightSetNum.value - index) * 75 * 2, '(setNum.value - index) * 85 * 2')
+        rightRelativeNum.value += (rightSetNum.value - index) * 75 * 2
+        console.log(rightRelativeNum.value, 'rightRelativeNum.value123')
+      }
+    }
     //模型要素切换
     const mainList = ref([])
     const tabFn = (obj, val) => {
+      cycleListChange3(val)
       rightNum.value = val
       drawRadarChart(obj)
       mainList.value = obj.modelIndicatorElementCardVOList
-      let dom = document.getElementById('mainDom')
-      widht.value = dom.offsetWidth - 100
-      height.value = dom.offsetHeight - 100
+      rightSetNum.value = val
+      createBubbles()
     }
     const mainTopNum = ref(0)
     const infoList = ref([])
-    //顶部生长期
-    const growTab = (val) => {
-      mainTopNum.value = val
-    }
-    const numTab = (str) => {
-      if (str == '+') {
-        if (mainTopNum.value == infoList.value.length - 1) {
-          mainTopNum.value = infoList.value.length - 1
-        } else {
-          mainTopNum.value++
-        }
-      } else {
-        if (mainTopNum.value === 0) {
-          mainTopNum.value = 0
-        } else {
-          mainTopNum.value--
-        }
-      }
-    }
     //种植计划
     const planByList = ref([])
     const getModelPlanByModelId = async () => {
@@ -232,6 +229,9 @@ export default defineComponent({
     }
     getModelPlanByModelId()
     //中间生长周期跟左下共用
+    const leftRelatice = ref(0)
+    const setNum = ref(0)
+    const leftSetNum = ref(0)
     const childList = ref([])
     const getModelInfo = async () => {
       let res = await modelInfo({ modelId: modelId.value })
@@ -245,34 +245,51 @@ export default defineComponent({
           childList.value = item.child2
         }
       })
+      let num = mainTopNum.value
+      let num2 = numVal.value
+      setNum.value = 2
+      leftSetNum.value = 2
+      cycleListChange(num)
+      cycleListChange2(num)
+      setNum.value = num
+      leftSetNum.value = num2
     }
     getModelInfo()
     //模型要素
     const DetailList = ref([])
     const DetailListChild = ref([])
-
+    const rightRelativeNum = ref(0)
     const getMonitorIndicatorWithDetail = async () => {
-      console.log(1234)
       let res = await MonitorIndicatorWithDetail({
         modelId: modelId.value,
         growthId: growthId.value
       })
       DetailList.value = res
+      console.log(res, 'resresMoxingyaisu')
       mainList.value = res[0].modelIndicatorElementCardVOList
       drawRadarChart(res[0])
-      // bigscreenName.value
 
+      // for (let i = 0; i < mainList.value.length; i++) {
+      //   bubbles.value.push({
+      //     id: i,
+      //     x: Math.random() * 300,
+      //     y: Math.random() * 300,
+      //     velocityX: (Math.random() - 0.5) * 10,
+      //     velocityY: (Math.random() - 0.5) * 10
+      //   })
+      // }
       if (growthId2.value) {
-        console.log(growthId2.value, 'growthId2.valuegrowthId2.value')
-        console.log(growthId.value, 'growthId.valuegrowthId.value')
         let dom = document.getElementById('mainDom')
         widht.value = dom.offsetWidth - 100
         height.value = dom.offsetHeight - 100
         createBubbles()
         animateBubbles()
       }
+      createBubbles()
+
     }
     getMonitorIndicatorWithDetail()
+
     //地块信息
     const cropPlotList = ref({})
     const getCropPlotByModelId = async () => {
@@ -280,11 +297,7 @@ export default defineComponent({
       cropPlotList.value = res[0]
     }
     getCropPlotByModelId()
-    //模型周期切换
-    const handleTab = (item, index) => {
-      numVal.value = index
-      childList.value = item.child2
-    }
+
     //模型监测
     const monitorList = ref([])
     const monitorListChild = ref([])
@@ -297,7 +310,6 @@ export default defineComponent({
     const footerList = ref([])
     const chartLineNum = ref(0)
     const getModelOverviewStatistics = async () => {
-      console.log(3333345)
       let res = await ModelOverviewStatistics({
         modelId: modelId.value,
         growthId: growthId.value,
@@ -421,25 +433,91 @@ export default defineComponent({
       router.go(-1)
     }
     // 处理周期列表移动
-    const offsetLeft = ref()
+    const left = ref(0)
     const cycleListChange = (index) => {
-      if (infoList.value.length > 5) {
-        offsetLeft.value += (mainTopNum.value - index) * 93 * 2
+      if (infoList.value.length > 6) {
+        left.value += (setNum.value - index) * 85 * 2
+      }
+    }
+    const mainRight = () => {
+      if (infoList.value.length - 1 > mainTopNum.value) {
+        handlerMain(infoList.value[mainTopNum.value + 1], mainTopNum.value + 1)
+      }
+    }
+    const mainLeft = () => {
+      if (mainTopNum.value > 0) {
+        console.log(infoList.value[mainTopNum.value - 1], 'mainLeftmainLeftmainLeft')
+        handlerMain(infoList.value[mainTopNum.value - 1], mainTopNum.value - 1)
       }
     }
     //中间顶部点击
     const handlerMain = (item, index) => {
-      console.log(item, 'MainImg.value123')
+      cycleListChange(index)
       growthId.value = item.growthId
       growthId2.value = false
       MainImg.value = item.imgId
       mainTopNum.value = index
+      console.log(mainTopNum.value, 'mainTopNum.valuemainTopNum.value')
+      setNum.value = index
       getMonitorIndicatorWithDetail()
       getModelOverviewStatistics()
-      cycleListChange(index)
-      mainTopNum.value = index
-    }
 
+    }
+    // 左侧移动
+    const cycleListChange2 = (index) => {
+      if (infoList.value.length > 4) {
+        console.log(leftSetNum.value, 'valuevalue')
+        console.log(index, 'indexindex')
+        console.log((leftSetNum.value - index) * 100 * 2, '(setNum.value - index) * 85 * 2')
+        leftRelatice.value += (leftSetNum.value - index) * 50 * 2
+        console.log(leftRelatice.value, 'leftRelatice.value123')
+      }
+    }
+    //模型周期切换
+    const handleTab = (item, index) => {
+      console.log(item.child2, 'itmeitem123')
+      cycleListChange2(index)
+      numVal.value = index
+      childList.value = item.child2
+      leftSetNum.value = index
+    }
+    //header头部时间问题
+    const curTime = ref({})
+    const getCurTime = () => {
+      const tmpTime = new Date()
+      let year = tmpTime.getFullYear()
+      let month = tmpTime.getMonth() + 1
+      let day = tmpTime.getDate() < 10 ? '0' + tmpTime.getDate() : tmpTime.getDate()
+      let hours = tmpTime.getHours() < 10 ? '0' + tmpTime.getHours() : tmpTime.getHours()
+      let minutes = tmpTime.getMinutes() < 10 ? '0' + tmpTime.getMinutes() : tmpTime.getMinutes()
+      let seconds = tmpTime.getSeconds() < 10 ? '0' + tmpTime.getSeconds() : tmpTime.getSeconds()
+      curTime.value = {
+        year,
+        month,
+        day,
+        hours,
+        minutes,
+        seconds
+      }
+    }
+    const timeDom = () => {
+      return (
+        <div class="absolute mt-[-25px]">
+          <div class="text-white text-[24px]">
+            {curTime.value.hours}:{curTime.value.minutes}:{curTime.value.seconds}
+          </div>
+          <div class="text-[14px] text-white opacity-50">
+            {curTime.value.year}年{curTime.value.month}月{curTime.value.day}日
+          </div>
+        </div>
+      )
+    }
+    onMounted(() => {
+      getCurTime()
+      setInterval(() => {
+        getCurTime()
+      }, 1000)
+    })
     //中间内容
     const MainContent = () => {
       return (
@@ -464,12 +542,12 @@ export default defineComponent({
                           item.value == '优秀'
                             ? 'left-icon-2'
                             : item.value == '良好'
-                              ? 'left-icon-3'
-                              : item.value == '一般'
-                                ? 'left-icon-4'
-                                : item.value == '很差'
-                                  ? 'left-icon-5'
-                                  : 'left-icon-1'
+                            ? 'left-icon-3'
+                            : item.value == '一般'
+                            ? 'left-icon-4'
+                            : item.value == '很差'
+                            ? 'left-icon-5'
+                            : 'left-icon-1'
                         } mr-15px`}
                       ></div>
                       <div class="w-45% h-100% flex flex-col justify-center">
@@ -479,7 +557,7 @@ export default defineComponent({
                           <div class="color-[#fff] text-xl">
                             {item.value}
                             <span v-if={index == 0} class="color-[#304650] ml-10px text-14px">
-                              分
+                              {index==0?'分':''}
                             </span>
                           </div>
                         </div>
@@ -488,12 +566,12 @@ export default defineComponent({
                             item.value == '优秀'
                               ? 'left-xian-1'
                               : item.value == '良好'
-                                ? 'left-xian-2'
-                                : item.value == '一般'
-                                  ? 'left-xian-3'
-                                  : item.value == '很差'
-                                    ? 'left-xian-4'
-                                    : 'left-xian-2'
+                              ? 'left-xian-2'
+                              : item.value == '一般'
+                              ? 'left-xian-3'
+                              : item.value == '很差'
+                              ? 'left-xian-4'
+                              : 'left-xian-2'
                           } w-100% h-20px`}
                         ></div>
                       </div>
@@ -506,7 +584,10 @@ export default defineComponent({
             <div>
               <div class="box-title ">地块信息</div>
               <div class="box-item ">
-                <div class="left-plot flex items-center">
+                {
+                  cropPlotList.value?(
+                    <div>
+                      <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
                     基地名称：
                   </div>
@@ -542,36 +623,62 @@ export default defineComponent({
                   </div>
                   <div class="color-[#fff]">{cropPlotList.value.farmerName}</div>
                 </div>
+                    </div>
+                  ):(
+                    <div class='dataNull w-150px mx-auto h-100px '></div>
+
+                  )
+                }
+                
               </div>
             </div>
             {/* 模型周期 */}
             <div style="overflow:hidden ;">
               <div class="box-title">模型周期</div>
               <div class="box-item2 pb-[15px] box-border h-400px" style="overflow:hidden ;">
-                <div style="overflow-x:auto; " class=" left-item1 ">
-                  <div class="flex w-full">
-                    {infoList.value.map((item, index) => {
-                      return (
-                        <div class="flex">
-                          <div
-                            class={numVal.value == index ? 'left-active ' : 'left-actived'}
-                            style="margin-bottom: 15px; cursor: pointer; "
-                            onClick={() => handleTab(item, index)}
-                          >
-                            {item.growth}
+                <div style="overflow:hidden; " class=" left-item1 ">
+                  {infoList.value.length < 4 ? (
+                    <div class="flex w-full relative">
+                      {infoList.value.map((item, index) => {
+                        return (
+                          <div class="flex">
+                            <div
+                              class={numVal.value == index ? 'left-active ' : 'left-actived'}
+                              style="margin-bottom: 15px; cursor: pointer; "
+                              onClick={() => handleTab(item, index)}
+                            >
+                              {item.growth}
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
-                  </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <div class="flex w-full relative" style={`left:${leftRelatice.value}px`}>
+                      {infoList.value.map((item, index) => {
+                        return (
+                          <div class="flex">
+                            <div
+                              class={numVal.value == index ? 'left-active ' : 'left-actived'}
+                              style="margin-bottom: 15px; cursor: pointer; "
+                              onClick={() => handleTab(item, index)}
+                            >
+                              {item.growth}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
-
                 <div class="w-100% mt-10p left-item2" style="height:200px;overflow-x:scroll; ">
                   <div class="flex items-center text-16px color-[#33d1ca]">
                     <div class="w-3px ml-10px h-10px bg-[#33d1ca] mr-15px"></div> 周期事项
                   </div>
                   <div class="mt-15px">
-                    {childList.value.map((item, index) => {
+                    {
+                      childList.value.length>0?
+                        childList.value.map((item, index) => {
                       return (
                         <div class="flex ml-10px h-110px">
                           <div class="color-[#33d1ca] text-xl">{index + 1}</div>
@@ -585,7 +692,12 @@ export default defineComponent({
                           </div>
                         </div>
                       )
-                    })}
+                    })
+                      :
+                        <div class='dataNull w-150px mx-auto h-100px '></div>
+                      
+                    }
+                    
                   </div>
                 </div>
               </div>
@@ -597,14 +709,19 @@ export default defineComponent({
             style="grid-template-rows: 10% calc(60% - 20px) 30%; grid-auto-columns: 100%;"
           >
             <div
-              class=" w-100% h-110px flex justify-between"
+              class=" w-100% h-110px flex justify-between items-center"
               style="overflow-x: auto;overflow:hidden; white-space: nowrap; "
             >
               <div
-                class={mainTopNum.value <= 3 ? 'main-top-left' : 'main-top-left2'}
+                onClick={() => mainLeft()}
+                class={
+                  mainTopNum.value == 0
+                    ? 'main-top-left cursor-pointer'
+                    : 'main-top-left2 cursor-pointer'
+                }
                 style="display:inlin-block;width: 20px;height:25px;margin-top:25px;"
               ></div>
-              <div class="flex w-70% flex justify-evenly ">
+              <div class="flex w-80% flex justify-evenly ">
                 {infoList.value.length < 6 ? (
                   <div class="w-full flex">
                     <div class="w-[837px] h-[100px] flex justify-center">
@@ -614,27 +731,29 @@ export default defineComponent({
                             onClick={() => handlerMain(e, i)}
                             class={
                               i === mainTopNum.value
-                                ? 'cycle-item main-top-active '
-                                : 'cycle-item main-top-actived'
+                                ? 'cycle-item main-top-active cursor-pointer'
+                                : 'cycle-item main-top-actived cursor-pointer'
                             }
                           >
                             <span>{e.growth}</span>
                           </div>
-                          {i != arr.length - 1 ? <div class="cycle-item next-arrow"></div> : null}
+                          {i != arr.length - 1 ? (
+                            <div class="cycle-item next-arrow mt-25px"></div>
+                          ) : null}
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div style="overflow-x:auto" class="main-top">
-                    <div class="w-full flex">
-                      {infoList.value.map((e, i, arr) => (
+                  <div style="overflow:hidden" class="main-top ">
+                    <div class="w-full flex relative " style={`left:${left.value}px`}>
+                      {infoList.value.map((e, i) => (
                         <div class="flex">
                           <div
                             class={
                               i === mainTopNum.value
-                                ? 'cycle-item main-top-active '
-                                : 'cycle-item main-top-actived'
+                                ? 'cycle-item main-top-active cursor-pointer'
+                                : 'cycle-item main-top-actived cursor-pointer'
                             }
                             onClick={() => {
                               handlerMain(e, i)
@@ -644,7 +763,7 @@ export default defineComponent({
                           </div>
                           {/** 周期之间的箭头 */}
                           {i != infoList.value.length - 1 ? (
-                            <div class="cycle-item next-arrow"></div>
+                            <div class="cycle-item next-arrow mt-25px"></div>
                           ) : null}
                         </div>
                       ))}
@@ -653,16 +772,22 @@ export default defineComponent({
                 )}
               </div>
               <div
-                class={mainTopNum.value >= 6 ? 'main-top-right' : 'main-top-right2'}
+                onClick={() => mainRight()}
+                class={
+                  mainTopNum.value == infoList.value.length - 1
+                    ? 'main-top-right cursor-pointer'
+                    : 'main-top-right2 cursor-pointer'
+                }
                 style="display:inlin-block; width: 20px;height:25px;margin-top:25px;"
               ></div>
             </div>
             <div class="   w-100% h-100% color-[#fff] relative">
               <img
                 src={MainImg.value}
-                class="absolute w-200px h-200px top-50% left-50%"
+                class="absolute w-350px h-350px top-50% left-50%"
                 style="transform: translate(-50%, -50%); object-fit:contain; background-size: 100% 100%;"
               />
+              
               <div class="w-100% h-100% " id="mainDom">
                 {bubbles.value.map((item, index) => {
                   return (
@@ -670,9 +795,9 @@ export default defineComponent({
                       style={` top: ${item.y}px; left: ${item.x}px `}
                       class={`main-pie  w-100px h-100px flex flex-col items-center justify-center`}
                     >
-                      <div class="text-14px">{mainList.value[index].value}</div>
-                      <div class="text-10px mt-5px">{mainList.value[index].elementName}</div>
-                      <div class="text-10px mt-5px">{mainList.value[index].assess}</div>
+                      <div class="text-14px">{mainList.value[index]?.value}</div>
+                      <div class="text-10px mt-5px">{mainList.value[index]?.elementName}</div>
+                      <div class="text-10px mt-5px">{mainList.value[index]?.assess}</div>
                     </div>
                   )
                 })}
@@ -703,7 +828,7 @@ export default defineComponent({
                   )
                 })
               ) : (
-                <div class="text-3xl color-[#35dad2]">暂无趋势折线图</div>
+                <div class='dataNull w-150px h-100px mt-20px'></div>
               )}
 
               <div
@@ -720,13 +845,13 @@ export default defineComponent({
           >
             <div>
               <div class="box-title">
-                {bigscreenName.value.includes('连粳11号模型一') ? '农事计划' : '农事计划'}{' '}
+                {bigscreenName.value.includes('连粳11号模型一') ? '农事计划' : '农事计划'}
               </div>
-              <div class="box-item flex flex-col !h-420px">
+              <div class=' box-item flex flex-col !h-420px'>
                 {planByList.value.length > 0 ? (
                   planByList.value.map((item) => {
                     return (
-                      <div class="flex justify-around mt-[-10px]">
+                        <div class="flex justify-around mt-[-10px]">
                         <div class="flex flex-col items-center">
                           <div class="w-20px h-20px right-warpper-bg"></div>
                           <div class="w-2px h-90px mt-[-10px] bg-[#435b63]"></div>
@@ -749,16 +874,17 @@ export default defineComponent({
                     )
                   })
                 ) : (
-                  <div class="text-3xl text-center mt-150px color-[#35dad2]">暂无种植计划</div>
+                  <div class='dataNull w-200px h-150px '></div>
                 )}
               </div>
             </div>
             <div>
               <div class="box-title">模型要素</div>
               <div class="box-item !h-400px">
-                <div class="flex justify-evenly">
-                  {DetailList.value.length > 0 ? (
-                    DetailList.value.map((item, index) => {
+                
+                {DetailList.value.length <= 3 ? (
+                  <div class="flex justify-evenly">
+                    {DetailList.value.map((item, index) => {
                       return (
                         <div
                           onClick={() => {
@@ -770,11 +896,23 @@ export default defineComponent({
                           {item.indicatorName}
                         </div>
                       )
-                    })
-                  ) : (
-                    <div class="text-3xl text-center mt-150px color-[#35dad2]">暂无模型要素</div>
-                  )}
-                </div>
+                    })}
+                  </div>
+                ) : (
+                  <div class="w-full flex relative" style={`left:${rightRelativeNum.value}px`}>
+                    {DetailList.value.map((item, index) => {
+                      ;<div
+                        onClick={() => {
+                          tabFn(item, index)
+                        }}
+                        style="cursor:pointer;"
+                        class={rightNum.value == index ? 'right-active' : 'right-actived'}
+                      >
+                        {item.indicatorName}
+                      </div>
+                    })}
+                  </div>
+                )}
                 <div id="radarChart" class="w-100%  mt-10px" style="height: 300px"></div>
               </div>
             </div>
@@ -799,7 +937,7 @@ export default defineComponent({
                     <div class="btn-icon w-10px h-15px mr-10px"></div> 返回
                   </div>
                 ),
-                right: () => <BigScreenTime />,
+                right: () => timeDom(),
                 default: () => (
                   <div class="art-font tracking-wide color-[#caffec]">
                     {bigscreenName.value}模型概览
@@ -835,6 +973,10 @@ export default defineComponent({
   font-size: 18px;
   background-image: url(./assets/box-title.png);
 }
+.dataNull{
+    background-size: 100% 100%;
+    background-image: url(./assets/null.png);
+  }
 .box-item {
   margin-top: 15px;
   z-index: 9999;
@@ -863,7 +1005,6 @@ export default defineComponent({
 .left-item1 {
   width: 100%;
   height: 80px;
-  overflow-x: scroll;
 }
 .left-item1::-webkit-scrollbar {
   width: 0;
@@ -890,6 +1031,10 @@ export default defineComponent({
 .mainDom {
   position: relative;
 }
+.next-arrow {
+  background-image: url(./assets/arrow.png);
+  background-size: 30px;
+}
 .left-actived {
   width: 100px;
   height: 35px;
@@ -905,7 +1050,7 @@ export default defineComponent({
 .cycle-item {
   background-position: center;
   background-repeat: no-repeat;
-  width: 93px;
+  width: 85px;
   height: 67px;
   object-fit: contain;
   font-size: 16px;
@@ -974,6 +1119,7 @@ export default defineComponent({
     background-size: 100% 100%;
     background-image: url(./assets/main-top-left2.png);
   }
+  
   .main-top-right2 {
     background-size: 100% 100%;
     background-image: url(./assets/main-top-right2.png);
