@@ -216,7 +216,7 @@
             class="buttonSize"
             @click="
               router.push(
-                '/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].deviceCode
+                '/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id
               )
             "
             >去调整</el-button
@@ -305,12 +305,12 @@ const filterRightData = () => {
 const getDeviceDetail = async (baseId, plotId) => {
   const res = await getDissolvedOxygenEquipmentList({ baseId, plotId })
   deviceDetail.value = res.map(
-    ({ deviceName, deviceStatus, updateTime, belongPlot, deviceCode }) => ({
+    ({ deviceName, deviceStatus, updateTime, belongPlot, id }) => ({
       deviceName,
       deviceStatus,
       updateTime: dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss'),
       belongPlot,
-      deviceCode
+      id
     })
   )
 
@@ -321,9 +321,9 @@ const getDeviceDetail = async (baseId, plotId) => {
       contact: plotContactInfo ? plotContactInfo.contact : null
     }
   })
-  getDoInfo(deviceDetail.value[0].deviceCode)
-  getCurrentPowerInfo(deviceDetail.value[0].deviceCode)
-  getScoreInfo(deviceDetail.value[0].deviceCode)
+  getDoInfo(deviceDetail.value[0].id)
+  getCurrentPowerInfo(deviceDetail.value[0].id)
+  getScoreInfo(deviceDetail.value[0].id)
 }
 
 //切换显示
@@ -343,10 +343,10 @@ const handleClick = (index) => {
   textColor2.value = tempColor
 
   // 调用函数
-  const selectedDeviceCode = deviceDetail.value[index].deviceCode
-  getDoInfo(selectedDeviceCode)
-  getCurrentPowerInfo(selectedDeviceCode)
-  getScoreInfo(selectedDeviceCode)
+  const selectedDeviceId = deviceDetail.value[index].id
+  getDoInfo(selectedDeviceId)
+  getCurrentPowerInfo(selectedDeviceId)
+  getScoreInfo(selectedDeviceId)
 }
 
 const CurrentDoInfo = ref<any>({})
