@@ -173,7 +173,7 @@
       </div>
       </div>
     <div v-if='!cardList' v-loading="loading" class="grid grid-cols-3 h-900px gap-15px grid-rows-3">
-     <div class="box-border pl-[25px] flex w-100% h-170px justify-between overflow-hidden items-center rounded-10px border-2px border-solid border-[#ededed]" v-for='item,index in list' :key='index'>
+     <div class="box-border pl-[25px] flex w-100% h-100% justify-between overflow-hidden items-center rounded-10px border-2px border-solid border-[#ededed]" v-for='item,index in list' :key='index'>
       <div >
         <div class="text-18px mb-15px color-[#000] flex items-center">{{item.deviceName}}
         <!-- <div :class="`flex items-center !bg-[${item.deviceStatus=='online'?'#e8f9e9': item.deviceStatus=='offline'?'#f4f4f4':'#faeceb'}]`">
