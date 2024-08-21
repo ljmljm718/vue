@@ -41,7 +41,7 @@
     <div
       @click="mapTileLayer"
       class="absolute top-20px left-[19rem] flex items-center bg-[#fff] rounded px-[12px] py-[5px]"
-      style="cursor: pointer;display:none;"
+      style="cursor: pointer; display: none"
     >
       <img
         v-if="mapTileLayerType"
@@ -56,7 +56,9 @@
         class="ml-10px color-[#014cc6] text-sm text-center w-[2rem]"
         >路网</div
       >
-      <div v-else style="font-weight: 600" class="color-[#014cc6] ml-10px text-center w-[2rem]">卫星</div>
+      <div v-else style="font-weight: 600" class="color-[#014cc6] ml-10px text-center w-[2rem]"
+        >卫星</div
+      >
     </div>
   </div>
 </template>
@@ -107,7 +109,16 @@ const handleSelect = async (item) => {
             } w-[8px] h-[8px] rounded-full"></div>
             <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
           </div>
+          <div class="flex pt-[1.2rem] justify-center">
+            <a 
+            href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+            class="w-[60%] text-center  bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
+            style=" text-decoration: none;">
+          查看监控
+            </a>
+          </div>
         </div>
+        
       </div>`
     mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
@@ -176,38 +187,44 @@ const getMenuDataList = async () => {
     '104': 'Soil',
     '107': 'Bug',
     '88': 'Bug'
-    
   }
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
-  
+
   // 添加 Marker 到地图上
-  const _center = turf.centroid(turf.points(allDeviceDataList.value.map(ele => {
-    const _item = JSON.parse(JSON.stringify(ele))
-    return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
-  }).filter(item => {
-    const [a, b] = item;
-    if (isNaN(a) || isNaN(b) || !a || !b) return false;
-    return true;;
-  })))
-  
-  const { geometry } = _center;
+  const _center = turf.centroid(
+    turf.points(
+      allDeviceDataList.value
+        .map((ele) => {
+          const _item = JSON.parse(JSON.stringify(ele))
+          return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+        })
+        .filter((item) => {
+          const [a, b] = item
+          if (isNaN(a) || isNaN(b) || !a || !b) return false
+          return true
+        })
+    )
+  )
+
+  const { geometry } = _center
   const { coordinates } = geometry
   const [_lng, _lat] = coordinates
-  mapTangBgRef.value.setViewport(allDeviceDataList.value.map(item => {
-    return { lng: item.longitude, lat: item.latitude }
-  }))
+  mapTangBgRef.value.setViewport(
+    allDeviceDataList.value.map((item) => {
+      return { lng: item.longitude, lat: item.latitude }
+    })
+  )
   mapTangBgRef.value.setMapCenter(_lng, _lat)
   // mapTangBgRef.value.setMapZoom(17)
-  
-  
+
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
     if (!_item.longitude || !_item.latitude) {
       return
     }
     const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
-    console.log("ImgSrc", `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`);
-    
+    console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
