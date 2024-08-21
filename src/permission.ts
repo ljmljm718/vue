@@ -57,7 +57,8 @@ const whiteList = [
   '/oauthLogin/gitee',
   '/QRCode',
   '/tiandi',
-  '/home'
+  '/home',
+  '/page'
 ]
 
 // 路由加载前
