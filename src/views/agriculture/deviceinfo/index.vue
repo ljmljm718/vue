@@ -184,6 +184,7 @@
         </template>
       </el-table-column>
       <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
+      <el-table-column label="通道号" align="center" prop="channelId"/>
       <el-table-column
         label="开关"
         align="center"
