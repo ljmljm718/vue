@@ -115,8 +115,8 @@ const formRules = reactive({
     {
       type: 'number',
       validator: (rule, value, callback) => {
-        if (value < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
-        if (value > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (parseInt(value) < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (parseInt(value) > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
         return callback()
       },
       trigger: 'change'
@@ -124,6 +124,7 @@ const formRules = reactive({
   ],
 })
 const formRef = ref() // 表单 Ref
+
 
 /** 子表的表单 */
 const subTabsName = ref('modelIndicatorElementRange')
@@ -164,6 +165,7 @@ const open = async (type: string, item: any) => {
       formData.value.indicatorId = _indicatorId;
     }
   }
+  formRef.value && formRef.value.clearValidate()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 

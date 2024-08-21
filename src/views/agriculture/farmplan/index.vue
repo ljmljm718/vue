@@ -253,7 +253,11 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" width="150" />
+      <el-table-column label="责任人" align="center" prop="personName" width="150" >
+        <template #default="scope">
+          <label>{{scope.row.personName=='null'?'':scope.row.personName}} </label>
+        </template>
+      </el-table-column>
       <el-table-column
         label="计划开始时间"
         align="center"

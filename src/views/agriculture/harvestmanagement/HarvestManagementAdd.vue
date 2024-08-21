@@ -237,6 +237,7 @@ const open = async (type: string, id?: any) => {
   formType.value = type
   resetForm()
   if (typeof id === 'object') {
+    console.log("id",id)
     formData.value.varietyId = id.breedId
     formData.value.varietyName = id.cropName
     formData.value.variety = id.cropType

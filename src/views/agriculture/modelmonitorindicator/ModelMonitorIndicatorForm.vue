@@ -117,8 +117,8 @@ const formRules = reactive({
     {
       type: 'number',
       validator: (rule, value, callback) => {
-        if (value < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
-        if (value > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (parseInt(value) < 1) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
+        if (parseInt(value) > maxNum.value) return callback(new Error(`请输入大于0小于${maxNum.value}的数字!`))
         return callback()
       },
       trigger: 'change'
@@ -146,6 +146,7 @@ const open = async (type: string, item?: any) => {
         weightDisabled.value = false
         const currentNum = await ModelIndicatorElementApi.getIndicatorWeight(formData.value.modelId, formData.value.growthPeriodId)
         maxNum.value = Number(formData.value.weight) + 100 - +currentNum
+        formRef.value.clearValidate()
         weightPlaceholder.value = "可分配权限范围为0~" + maxNum.value
       } finally {
         formLoading.value = false

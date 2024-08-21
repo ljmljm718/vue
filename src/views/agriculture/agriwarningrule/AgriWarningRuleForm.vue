@@ -30,14 +30,15 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="规则类型" prop="warnType">
-            <el-select v-model="formData.warnType" placeholder="请选择规则类型">
+            <el-input v-model="formData.warnType" placeholder="请输入规则类型" />
+<!--            <el-select v-model="formData.warnType" placeholder="请选择规则类型">
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
                 :key="dict.value"
                 :label="dict.label"
                 :value="dict.value"
               />
-            </el-select>
+            </el-select>-->
           </el-form-item>
         </el-col>
         <el-col :span="12">

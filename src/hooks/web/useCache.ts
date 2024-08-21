@@ -19,7 +19,7 @@ export const CACHE_KEY = {
   // 登录表单
   LoginForm: 'loginForm',
   TenantId: 'tenantId',
-  BIGSCREEN_PATH: "",
+  BIGSCREEN_PATH: "bigScreenPath",
 }
 
 export const useCache = (type: CacheType = 'localStorage') => {
