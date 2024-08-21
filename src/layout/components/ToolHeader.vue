@@ -16,6 +16,7 @@ import { getRouteByTenant } from '@/api/system/user'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import { getAllFormStorage, deleteFormById } from '@/components/EditFrame/index'
 import { formatTime } from '@/utils'
+import {resolvePath} from "@/config/contants/bigScreenPathResolver";
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -53,25 +54,27 @@ export default defineComponent({
     const tenantId = getTenantId()
     const bigscreenRoute = ref('/bigscreen')
     const { wsCache } = useCache()
-    const roles = wsCache.get(CACHE_KEY.USER).roles
-    const MatchRouteMap = async () => {
-      const data = await getRouteByTenant({ id: tenantId })
-      bigscreenRoute.value = data.bigScreen
-      console.log("Role", roles)
-      if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
-      if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
-      if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
-      if (roles.indexOf('wenfeng') !== -1) bigscreenRoute.value = '/bigscreenWF'
-      if (roles.indexOf('baibu') !== -1) bigscreenRoute.value = '/bigscreenBB'
-      if (roles.indexOf('baidi') !== -1) bigscreenRoute.value = '/bigscreen10'
-      if (roles.indexOf('fuling_dashun_mingyue') !== -1) bigscreenRoute.value = '/bigscreenMY'
-      if (roles.indexOf('qianjiang') !== -1) bigscreenRoute.value = '/bigscreenQJ'
-      if (roles.indexOf('tianyin') !== -1) bigscreenRoute.value = '/bigscreenTB'
-      if (roles.indexOf('shuangqiao') !== -1) bigscreenRoute.value = '/bigscreenShuangQiao'
-    }
-    setTimeout(() => {
-      MatchRouteMap()
-    }, 2000)
+    // let userInfo = wsCache.get(CACHE_KEY.USER)
+    bigscreenRoute.value = wsCache.get(CACHE_KEY.BIGSCREEN_PATH)
+    // const roles = wsCache.get(CACHE_KEY.USER).roles
+    // const MatchRouteMap = async () => {
+    //   const data = await getRouteByTenant({ id: tenantId })
+    //   bigscreenRoute.value = data.bigScreen
+    //   console.log("Role", roles)
+    //   if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
+    //   if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
+    //   if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
+    //   if (roles.indexOf('wenfeng') !== -1) bigscreenRoute.value = '/bigscreenWF'
+    //   if (roles.indexOf('baibu') !== -1) bigscreenRoute.value = '/bigscreenBB'
+    //   if (roles.indexOf('baidi') !== -1) bigscreenRoute.value = '/bigscreen10'
+    //   if (roles.indexOf('fuling_dashun_mingyue') !== -1) bigscreenRoute.value = '/bigscreenMY'
+    //   if (roles.indexOf('qianjiang') !== -1) bigscreenRoute.value = '/bigscreenQJ'
+    //   if (roles.indexOf('tianyin') !== -1) bigscreenRoute.value = '/bigscreenTB'
+    //   if (roles.indexOf('shuangqiao') !== -1) bigscreenRoute.value = '/bigscreenShuangQiao'
+    // }
+    // setTimeout(() => {
+    //   MatchRouteMap()
+    // }, 2000)
 
     const drawer = ref(false)
     const storageList = ref <Array<any>>([])

@@ -71,7 +71,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="规则编号" align="center" prop="id"/>
+      <el-table-column label="规则编号" width="200px" align="center" prop="id"/>
       <el-table-column label="规则名称" width="300px" align="center" prop="name"/>
       <el-table-column label="规则状态" align="center" prop="status">
         <template #default="scope">
@@ -341,6 +341,6 @@ const getDeviceId = async (str: any )=>{
 
 
   dialogVisible.value=true
-  
+
 }
 </script>

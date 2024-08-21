@@ -43,7 +43,7 @@ export default defineComponent({
     const bigscreenName = ref('')
     const batch = ref('')
     const MainImg = ref('')
-    console.log(route.query, ' route.query route.query route.query123')
+    console.log(route.query, 'route.query route.query route.query123')
     bigscreenName.value = route.query.modelName
     modelId.value = route.query.modelId
     beLongPlot.value = route.query.plotId
@@ -85,7 +85,6 @@ export default defineComponent({
     //雷达图
     const drawRadarChart = (obj) => {
       let list = obj.modelIndicatorElementCardVOList
-      console.log(list, 'listlistlist')
       initChartStatic('radarChart', {
         title: {
           // text: '评估评分占比分析图'
@@ -95,7 +94,6 @@ export default defineComponent({
             color: '#000'
           },
           formatter: (params) => {
-            console.log(params, 'params123456')
             //自定义绘制tooltip
             let str = '<div>模型要素</div>'
             list.forEach((item) => {
@@ -143,9 +141,6 @@ export default defineComponent({
                 color: 'rgba(241, 241, 241)'
               }
             },
-            formatter: (a, b) => {
-              return `<div>${a}123</div>`
-            }
           }
         ],
         series: [
@@ -202,11 +197,7 @@ export default defineComponent({
     const rightSetNum = ref(0)
     const cycleListChange3 = (index) => {
       if (infoList.value.length > 3) {
-        console.log(rightSetNum.value, 'valuevalue')
-        console.log(index, 'indexindex')
-        console.log((rightSetNum.value - index) * 75 * 2, '(setNum.value - index) * 85 * 2')
         rightRelativeNum.value += (rightSetNum.value - index) * 75 * 2
-        console.log(rightRelativeNum.value, 'rightRelativeNum.value123')
       }
     }
     //模型要素切换
@@ -221,10 +212,11 @@ export default defineComponent({
     }
     const mainTopNum = ref(0)
     const infoList = ref([])
-    //种植计划
+    //农事计划
     const planByList = ref([])
     const getModelPlanByModelId = async () => {
-      let res = await ModelPlanByModelId({ modelId: modelId.value })
+      let res = await ModelPlanByModelId({ modelId: modelId.value,plotId: beLongPlot.value })
+      console.log(res,'农事计划')
       planByList.value = res
     }
     getModelPlanByModelId()
@@ -236,7 +228,6 @@ export default defineComponent({
     const getModelInfo = async () => {
       let res = await modelInfo({ modelId: modelId.value })
       infoList.value = res.splice(1)
-      console.log(infoList.value, 'infoList.valueinfoList.value')
       infoList.value.forEach((item, index) => {
         if (item.growth == res[0].curPeriod) {
           mainTopNum.value = index
@@ -265,7 +256,6 @@ export default defineComponent({
         growthId: growthId.value
       })
       DetailList.value = res
-      console.log(res, 'resresMoxingyaisu')
       mainList.value = res[0].modelIndicatorElementCardVOList
       drawRadarChart(res[0])
 
@@ -294,6 +284,7 @@ export default defineComponent({
     const cropPlotList = ref({})
     const getCropPlotByModelId = async () => {
       let res = await CropPlotByModelId({ modelId: modelId.value, beLongPlot: beLongPlot.value })
+      console.log(res,'dikuaixinxi')
       cropPlotList.value = res[0]
     }
     getCropPlotByModelId()
@@ -452,7 +443,6 @@ export default defineComponent({
     }
     const mainLeft = () => {
       if (mainTopNum.value > 0) {
-        console.log(infoList.value[mainTopNum.value - 1], 'mainLeftmainLeftmainLeft')
         handlerMain(infoList.value[mainTopNum.value - 1], mainTopNum.value - 1)
       }
     }
@@ -463,7 +453,6 @@ export default defineComponent({
       growthId2.value = false
       MainImg.value = item.imgId
       mainTopNum.value = index
-      console.log(mainTopNum.value, 'mainTopNum.valuemainTopNum.value')
       setNum.value = index
       getMonitorIndicatorWithDetail()
       getModelOverviewStatistics()
@@ -472,16 +461,11 @@ export default defineComponent({
     // 左侧移动
     const cycleListChange2 = (index) => {
       if (infoList.value.length > 4) {
-        console.log(leftSetNum.value, 'valuevalue')
-        console.log(index, 'indexindex')
-        console.log((leftSetNum.value - index) * 100 * 2, '(setNum.value - index) * 85 * 2')
         leftRelatice.value += (leftSetNum.value - index) * 50 * 2
-        console.log(leftRelatice.value, 'leftRelatice.value123')
       }
     }
     //模型周期切换
     const handleTab = (item, index) => {
-      console.log(item.child2, 'itmeitem123')
       cycleListChange2(index)
       numVal.value = index
       childList.value = item.child2
@@ -609,7 +593,7 @@ export default defineComponent({
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
                     种植品种：
                   </div>
-                  <div class="color-[#fff]">{cropPlotList.value.varitetyName}</div>
+                  <div class="color-[#fff]">{cropPlotList.value.varietyName}</div>
                 </div>
                 <div class="left-plot flex items-center">
                   <div class=" color-[#6f8890]" style="text-indent:1.5rem;">

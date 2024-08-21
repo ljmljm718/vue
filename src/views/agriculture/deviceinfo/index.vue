@@ -172,7 +172,7 @@
             </el-table-column>-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
-      <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+      <el-table-column label="设备类型" align="center" prop="deviceType" width="200" :show-overflow-tooltip="false">
         <template #default="scope">
           <el-cascader
             style="width: 100%"
@@ -184,6 +184,7 @@
         </template>
       </el-table-column>
       <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
+      <el-table-column label="通道号" align="center" prop="channelId"/>
       <el-table-column
         label="开关"
         align="center"
@@ -387,10 +388,11 @@ const deviceType = ref()
 const single = ref(true)  // 非单个禁用
 const deviceId = ref() // 选中的设备id
 const deviceName = ref() // 选中的设备名称
+const router1 = useRouter()
 const openExternalLink = (item) => {
   console.log("🚀 ~ openExternalLink ~ item:", item)
   const { url, dtu, channelId } = item;
-  router.push(`/checkVideo?dtu=${dtu}&channelId=${channelId}&url=${url}`);
+  router1.push(`/checkVideo?dtu=${dtu}&channelId=${channelId}&url=${url}`);
   // const url = scope.row.url // 替换为你想要跳转的外部链接
   // console.log("url",url)
   // window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
