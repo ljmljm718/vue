@@ -117,6 +117,14 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="阙值" prop="thresholdValue">
+            <el-input v-model="formData.thresholdValue" placeholder="请输入阙值，例如:90" />
+          </el-form-item>
+        </el-col>
+
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -154,6 +162,7 @@ const formData = ref({
   effectiveStatus: status,
   ruleTitle: undefined,
   warnLevel: undefined,
+  thresholdValue: undefined,
 })
 const formRules = reactive({
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
@@ -161,6 +170,7 @@ const formRules = reactive({
   warnType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
   effectiveStatus: [{ required: true, message: '生效状态（0-未生效，1-生效）不能为空', trigger: 'blur' }],
   ruleTitle: [{ required: true, message: '规则标题不能为空', trigger: 'blur' }],
+  thresholdValue: [{ required: true, message: '阙值不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 

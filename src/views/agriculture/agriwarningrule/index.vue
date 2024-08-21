@@ -143,6 +143,11 @@
           <div> {{ scope.row["warnHighValue"] }}{{ scope.row["warnUnit"] }}</div>
         </template>
       </el-table-column>
+      <el-table-column label="阙值" align="center" width="120">
+        <template #default="scope">
+          <div> {{ scope.row["thresholdValue"] }}{{ scope.row["warnUnit"] }}</div>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="低位预警消息" align="center" prop="lowMsg" /> -->
       <el-table-column label="预警消息" align="center" prop="lowMsg"/>
       <!-- <el-table-column label="高位预警消息" align="center" prop="highMsg" /> -->
