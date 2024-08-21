@@ -35,6 +35,7 @@ const posInputVal = ref<string>('')
 const searchResList = ref<any[]>([])
 const handlePosSearch = () => {
   const localSuggests = searchDoc(posInputVal.value);
+  console.log("🚀 ~ handlePosSearch ~ localSuggests:", localSuggests)
   const queryCount = localSuggests.length ? (10 - localSuggests.length) : 10;
   axios.get("https://api.tianditu.gov.cn/v2/search", {
     params: {
@@ -55,6 +56,7 @@ const handlePosSearch = () => {
     headers: {}
   }).then((res:any) => {
     const { data } = res;
+    console.log("🚀 ~ handlePosSearch ~ data:", data)
     const { suggests } = data;
     if (Array.isArray(suggests)) {
       if (Array.isArray(localSuggests)) {
