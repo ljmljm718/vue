@@ -6,29 +6,29 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="queryParams.belongPark" placeholder="请选择所属基地" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-form-item label="选择基地">
+        <el-select class="!w-240px" v-model="queryParams.belongParkId">
+          <el-option
+            v-for="(item, index) in baseList"
+            :key="index"
+            :value="item.id"
+            :label="item.name"
+            placeholder="请选择"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="queryParams.belongPlot" placeholder="请选择所属地块" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openPlotPopup(queryParams.belongParkId)">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-form-item label="选择地块">
+        <el-select class="!w-240px" v-model="queryParams.belongPlotId">
+          <el-option
+            v-for="(item, index) in plotList"
+            :key="index"
+            :value="item.id"
+            :label="item.name"
+            placeholder="请选择"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="批次码" prop="batchCode">
         <el-input
@@ -39,51 +39,41 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="品种名称" prop="varietyName">
-        <el-input
-          v-model="queryParams.varietyName"
-          placeholder="请输入品种"
+      <el-form-item
+        label="品种"
+        prop="varietyId"
+      >
+        <el-select
+          v-model="queryParams.varietyId"
           clearable
-          @keyup.enter="handleQuery"
+          placeholder="请选择品种"
           class="!w-240px"
-        />
-        <!--        <el-select-->
-        <!--          v-model="queryParams.varietyId"-->
-        <!--          placeholder="请选择品种"-->
-        <!--          clearable-->
-        <!--          :disabled="boo"-->
-        <!--          @change="handleVarietyChange"-->
-        <!--          class="!w-240px"-->
-        <!--        >-->
-        <!--          <el-option-->
-        <!--            v-for="dict in listVarietyManagement"-->
-        <!--            :key="dict.id"-->
-        <!--            :label="dict.varietyName"-->
-        <!--            :value="dict.id"-->
-        <!--          />-->
-        <!--        </el-select>-->
+        >
+          <el-option
+            v-for="item in listVarietyManagement"
+            :key="item.id"
+            :label="item.varietyName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="品类名称" prop="variety">
-        <el-input
+      <el-form-item
+        label="品类"
+        prop="variety"
+      >
+        <el-select
           v-model="queryParams.variety"
-          placeholder="请输入品类名称"
           clearable
-          @keyup.enter="handleQuery"
+          placeholder="请选择品类"
           class="!w-240px"
-        />
-        <!--        <el-select-->
-        <!--          v-model="queryParams.varietyCode"-->
-        <!--          placeholder="请选择品类或者选择品种后自动填入"-->
-        <!--          clearable-->
-        <!--          class="!w-240px"-->
-        <!--        >-->
-        <!--          <el-option-->
-        <!--            v-for="dict in listCategoryManagement"-->
-        <!--            :key="dict.id"-->
-        <!--            :label="dict.categoryName"-->
-        <!--            :value="dict.id"-->
-        <!--          />-->
-        <!--        </el-select>-->
+        >
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.categoryName"
+            :label="item.categoryName"
+            :value="item.categoryName"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="上传时间" prop="upTime">
         <el-date-picker
@@ -295,12 +285,12 @@ import {
 import {getTenantId} from "@/utils/auth";
 import {useUserStore} from "@/store/modules/user";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
-import CategoryManagement from "@/views/agriculture/categorymanagement/index.vue";
 import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkDetailVO} from '@/api/agriculture/parkdetail'
 import {ParkInfoVO} from '@/api/agriculture/parkinfo'
+import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
 
 /** 采收管理 列表 */
 defineOptions({name: 'HarvestManagement'})
@@ -365,6 +355,23 @@ const damn = async (row) => {
   })
   formData.value = data.list
   drawer2.value = true
+}
+//获取基地
+const baseList = ref([])
+const getPage = async () => {
+  let res = await page()
+  baseList.value = res.list
+  // queryParams.belongPark = res.list[0].id
+  getParkPage({parkId: res.list.id})
+}
+getPage()
+//获取地块
+const plotList = ref([])
+
+const getParkPage = async (parkId) => {
+  let res = await parkPage(parkId)
+  plotList.value = res.list
+  // queryParams.belongPlot = res.list[0].id
 }
 
 // 采收管理
