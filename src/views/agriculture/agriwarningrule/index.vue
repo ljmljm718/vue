@@ -124,9 +124,9 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="规则标题" align="center" prop="ruleTitle"/>
       <el-table-column label="规则类型" align="center" prop="warnType" width="150">
-        <template #default="scope">
+<!--        <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
-        </template>
+        </template>-->
       </el-table-column>
       <el-table-column label="预警等级" align="center" prop="warnLevel" width="150">
         <template #default="scope">
@@ -141,6 +141,11 @@
       <el-table-column label="预警上限" align="center" width="120">
         <template #default="scope">
           <div> {{ scope.row["warnHighValue"] }}{{ scope.row["warnUnit"] }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="阙值" align="center" width="120">
+        <template #default="scope">
+          <div> {{ scope.row["thresholdValue"] }}{{ scope.row["warnUnit"] }}</div>
         </template>
       </el-table-column>
       <!-- <el-table-column label="低位预警消息" align="center" prop="lowMsg" /> -->
