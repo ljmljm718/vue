@@ -60,7 +60,7 @@ const clearCategory = () => {
 const resetTreeSelections = () => {
   clearCategory() // 清空选中的节点
 };
- let isCollapse=ref(false)
+ let isCollapse=ref(true)
 
 </script>
 
@@ -85,7 +85,7 @@ const resetTreeSelections = () => {
           />
           <div class="absolute right-25px top-50px" @click="isCollapse=true" style="cursor: pointer;"><el-icon><DArrowLeft /></el-icon></div>
         </ContentWrap>
-        <ContentWrap style="height: 62vh; overflow: auto;">
+        <ContentWrap style="height: 70vh; overflow: auto;">
           <el-tree
             ref="treeRef"
             style="max-width: 600px"
@@ -107,7 +107,7 @@ const resetTreeSelections = () => {
     </el-col>
 
     <el-col :span="isCollapse?24:20">
-      <ContentWrap style="height: 78vh; overflow: auto;">
+      <ContentWrap style=" overflow: auto;">
         <device-info
           :currCategory="currCategory"
           @clear-category="clearCategory"

@@ -69,9 +69,9 @@
                 />
               </el-form-item>-->
         <el-form-item>
-          <el-button @click="handleQuery">
+          <el-button @click="handleQuery"  class="!color-[#fff] !bg-[#009688]">
             <Icon icon="ep:search" class="mr-5px"/>
-            搜索
+            查询
           </el-button>
           <el-button @click="resetQuery">
             <Icon icon="ep:refresh" class="mr-5px"/>
@@ -79,11 +79,18 @@
           </el-button>
         </el-form-item>
       </el-row>
-      <el-row>
-        <el-form-item>
-          <el-button
+      
+    </el-form>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class='flex justify-between mb-15px'>
+      <div class='flex'>
+        <el-button
             type="primary"
             plain
+            class="!color-[#fff] mr-15px !bg-[#009688]"
             @click="openAddForm()"
             v-hasPermi="['agriculture:device-info:create']"
             v-if="!readonly"
@@ -91,9 +98,23 @@
             <Icon icon="ep:plus" class="mr-5px"/>
             新增
           </el-button>
-          <el-button
+          <div v-if='cardList'>
+            <el-button
+            type="success"
+            plain
+            class="!color-[#fff] mr-15px !bg-[#3ba272]"
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:device-info:export']"
+            v-if="!readonly"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+            <el-button
             plain
             type="success"
+            class="!color-[#fff] mr-15px !bg-[#fac858]"
             @click="openEditForm()"
             v-hasPermi="['agriculture:device-info:update']"
             :disabled="single"
@@ -104,6 +125,7 @@
           <el-button
             plain
             type="primary"
+            class="!color-[#fff] mr-15px !bg-[#73c0de]"
             @click="openFormDetail()"
             :disabled="single"
           >
@@ -114,27 +136,19 @@
             plain
             type="danger"
             @click="handleDelete()"
+            class="!color-[#fff] mr-15px !bg-[#ee6666]"
             v-hasPermi="['agriculture:device-info:delete']"
             :disabled="single"
           >
             <Icon icon="ep:delete" class="mr-5px"/>
             删除
           </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:device-info:export']"
-            v-if="!readonly"
-          >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
-          </el-button>
+          
           <el-button
             type="warning"
             plain
             @click="openSubDeviceForm()"
+            class="!color-[#fff] mr-15px !bg-[#59b756]"
             v-hasPermi="['agriculture:sub-device:create']"
             v-if="!readonly"
             :disabled="single"
@@ -142,14 +156,94 @@
             <Icon icon="ep:tools" class="mr-5px"/>
             调试配置
           </el-button>
-        </el-form-item>
-      </el-row>
-    </el-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
+          </div>
+        
+      </div>
+          <div class="flex">
+        <div @click="tabCard()" class="py-3px px-15px cursor-pointer rounded-l"
+             :style="`background-color: ${cardList?'':'#e5f4f3'}; border:1.5px solid ${cardList?'#e6e6e6':'#36a99e'}; color:${cardList?'':'#36a99e'}`">
+          <img :src="cardList?card2:card" class="w-10px h-10px" alt=""/>
+          卡片
+        </div>
+        <div @click="listCard()" class="py-3px cursor-pointer px-15px rounded-r"
+             :style="`border:1.5px solid ${cardList?'#36a99e':'#e6e6e6'};background-color: ${cardList?'#e5f4f3':''}; color:${cardList?'#36a99e':''}`">
+          <img :src="cardList?listImg:listImg2" class="w-10px h-10px" alt=""/>
+          列表
+        </div>
+      </div>
+      </div>
+    <div v-if='!cardList' v-loading="loading" class="grid grid-cols-3 gap-15px grid-rows-3">
+     <div class="box-border pl-[25px] flex w-100% h-170px justify-between overflow-hidden items-center rounded-10px border-2px border-solid border-[#ededed]" v-for='item,index in list' :key='index'>
+      <div >
+        <div class="text-18px mb-15px color-[#000] flex items-center">{{item.deviceName}} 
+        <!-- <div :class="`flex items-center !bg-[${item.deviceStatus=='online'?'#e8f9e9': item.deviceStatus=='offline'?'#f4f4f4':'#faeceb'}]`">
+        <div :class="`mr-10px icon-${ item.deviceStatus=='online'?'1': item.deviceStatus=='offline'?'2':'3'}`"></div>
+        {{ item.deviceStatus=='online'?'在线':item.deviceStatus=='offline'?'离线':'故障' }}</div>-->
+        <div class="bg-[#e8f9e9] text-[14px] flex items-center px-10px py-3px rounded-25px box-border color-[#27c05a]" v-show='item.deviceStatus=="online"'> <div class='icon-1 mr-5px'></div> 在线</div>
+        <div class="bg-[#f5f5f5] text-[14px] flex items-center px-10px py-3px rounded-25px box-border  color-[#9c9c9c]" v-show='item.deviceStatus=="offline"'> <div class='icon-2'></div> 离线</div>
+        <div class="bg-[#faeceb] text-[14px] flex items-center px-10px py-3px rounded-25px box-border color-[#e31205]" v-show='item.deviceStatus=="dault"'> <div class='icon-3'></div> 故障</div>
+       </div> 
+        <div class="text-14px color-[#707070]">经度：{{ item.longitude }}</div>
+        <div class="text-14px color-[#707070] my-3px">纬度：{{item.latitude}}</div>
+        <div class="text-14px color-[#707070]">通道号：</div>
+        <div class="mt-10px">
+          <el-button
+            v-show="item.deviceName.toString().includes('水质监测')||item.deviceName.toString().includes('气象站')"
+            plain
+            type="primary"
+            class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'
+            @click="$router.push({
+              path: '/internetMonitor/deviceData/equipment-data-three',
+              query: {
+                equipmentCode:item.id
+              }
+            })"
+          >
+            查看数据
+          </el-button>
+          <el-button
+            v-show="!item.deviceName.toString().includes('水质监测') && !item.deviceName.toString().includes('气象站')"
+            plain
+            type="primary"
+            class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'
+            @click="openExternalLink(item)"
+          >
+            查看监控
+          </el-button>
+          <el-button
+            plain
+            type="success"
+            class='!color-[#fff] !bg-[#fac858] !px-25px !py-13px'
+            @click="openEditForm(item.id)"
+            v-hasPermi="['agriculture:device-info:update']"
+          >
+            编辑
+          </el-button>
+         
+          <el-button
+            plain
+            type="danger"
+            class='!color-[#fff] !bg-[#ee6666] !px-25px !py-13px'
+            @click="handleDelete(item.id)"
+            v-hasPermi="['agriculture:device-info:delete']"
+          >
+            删除
+          </el-button> </div>
+      </div>
+      <div class="w-150px h-100%">
+        <el-image
+            class="h-100% w-100%"
+            lazy
+            :src="item.imgId"
+            :preview-src-list="[item.imgId]"
+            preview-teleported
+            fit="cover"
+          />
+      </div>
+    </div>
+    </div>
     <el-table
+    v-if="cardList"
       ref="deviceInfoTableRef"
       v-loading="loading"
       :data="list"
@@ -157,7 +251,7 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
-      height="calc(100vh - 470px)"
+      height='650px'
     >
       <el-table-column type="selection" width="55" :reserve-selection="true"/>
       <!-- 子设备的列表 -->
@@ -183,7 +277,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="设备监测类型" align="center" prop="deviceMonitorType" width="150"/>
+      <el-table-column label="设备监测类型123" align="center" prop="deviceMonitorType" width="150"/>
       <el-table-column
         label="开关"
         align="center"
@@ -333,7 +427,10 @@ import router from "@/router";
 import {useRoute, onBeforeRouteUpdate} from 'vue-router'
 import {EquipmentDataApi} from "@/api/agriculture/equipmentdata";
 import SubDeviceListForm from "@/views/agriculture/deviceinfo/components/SubDeviceListForm.vue";
-
+import card from '../../../assets/imgs/card-active.png'
+import card2 from '../../../assets/imgs/card-actived.png'
+import listImg from '../../../assets/imgs/list-active.png'
+import listImg2 from '../../../assets/imgs/list-actived.png'
 /** 设备信息 列表 */
 defineOptions({name: 'DeviceInfo'})
 
@@ -353,13 +450,13 @@ const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
-
+const cardList=ref(false) 
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceInfoVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 9,
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
@@ -396,6 +493,8 @@ const openExternalLink = (item) => {
   // window.open(url, '_blank'); // 使用'_blank'来确保在新窗口打开
 }
 /** 查询列表 */
+const enableSwitch = ref<boolean>(false)
+
 const getList = async () => {
   loading.value = true
   enableSwitch.value = false
@@ -409,7 +508,7 @@ const getList = async () => {
       item.deviceType = item.deviceType.split(',').map(Number)
       return item;
     })
-    console.log("list.value", list.value)
+    console.log("list.value123", list.value)
     total.value = data.total
     setTimeout(() => {
       handleSelectedDeviceIds()
@@ -459,7 +558,19 @@ const resetQuery = () => {
   emit('reset'); // 清空基地树的选中节点
   handleQuery()
 }
+//卡片切换
+const tabCard=()=>{
+  cardList.value=false
+  queryParams.pageSize=9
+  getList()
 
+}
+const listCard=()=>{
+  cardList.value=true
+  queryParams.pageSize=10 
+  getList()
+
+}
 
 const formRef = ref()
 /** 添加操作 */
@@ -467,8 +578,8 @@ const openAddForm = () => {
   router.push(`/internetMonitor/device/deviceView/create`)
 }
 /** 修改操作 */
-const openEditForm = () => {
-  const id = deviceId.value.toString()
+const openEditForm = (val) => {
+  const id = val?val: deviceId.value.toString()
   router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
 }
 
@@ -477,19 +588,23 @@ onActivated(() => {
 })
 
 /** 删除按钮操作 */
-const handleDelete = async () => {
+const handleDelete = async (val) => {
   try {
+    console.log(val,'valvalvalval')
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    const id = deviceId.value.toString()
+    const id = val?val:deviceId.value.toString()
+    console.log(id,'shanchuid shanchuid')
     await DeviceInfoApi.deleteDeviceInfo(id)
     message.success(t('common.delSuccess'))
     deviceInfoTableRef.value.clearSelection(); //清除之前的选中状态
     // 刷新列表
-    await getList()
+    await  getList()
   } catch {
   }
+  await  getList()
+
 }
 
 /** 查看操作 */
@@ -609,7 +724,6 @@ watch(() => props.currCategory,
   })
 
 /** 开关机 */
-const enableSwitch = ref<boolean>(false)
 const handleStatus = async (item: any) => {
   if (!enableSwitch.value) return
   let s = item.deviceStatus === 'online' ? '开机' : '关机'
@@ -650,3 +764,13 @@ const openSubDeviceForm = () => {
   subDeviceFormRef.value.open(deviceId.value.toString())
 }
 </script>
+<style lang="scss" scoped>
+@for $i from 1 through 3 {
+  .icon-#{$i} {
+    background-image: url(../../../assets/imgs/icon-#{$i}.png);
+    background-size:100% 100%;
+    width: 13px;
+    height: 13px;
+  }
+}
+</style>

@@ -255,6 +255,7 @@ export default defineComponent({
         modelId: modelId.value,
         growthId: growthId.value
       })
+      console.log(res,'moxyaosu ')
       DetailList.value = res
       mainList.value = res[0].modelIndicatorElementCardVOList
       drawRadarChart(res[0])
@@ -871,8 +872,10 @@ export default defineComponent({
             <div>
               <div class="box-title">模型要素</div>
               <div class="box-item !h-400px">
-                
-                {DetailList.value.length <= 3 ? (
+                {
+                  DetailList.value.length>0?'': <div class='dataNull mx-auto my-100px w-200px h-150px '></div>
+                }
+              
                   <div class="flex justify-evenly">
                     {DetailList.value.map((item, index) => {
                       return (
@@ -888,21 +891,6 @@ export default defineComponent({
                       )
                     })}
                   </div>
-                ) : (
-                  <div class="w-full flex relative" style={`left:${rightRelativeNum.value}px`}>
-                    {DetailList.value.map((item, index) => {
-                      ;<div
-                        onClick={() => {
-                          tabFn(item, index)
-                        }}
-                        style="cursor:pointer;"
-                        class={rightNum.value == index ? 'right-active' : 'right-actived'}
-                      >
-                        {item.indicatorName}
-                      </div>
-                    })}
-                  </div>
-                )}
                 <div id="radarChart" class="w-100%  mt-10px" style="height: 300px"></div>
               </div>
             </div>
