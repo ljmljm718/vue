@@ -259,7 +259,6 @@ import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew'
 import ModelSelectPopup from '@/views/agriculture/modelmanagement/ModelSelectPopup.vue'
 import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
 import { cloneDeep } from 'lodash-es'
-import { treeEmits } from 'element-plus/es/components/tree-v2/src/virtual-tree'
 import {ModelIndicatorElementApi} from "@/api/agriculture/modelindicatorelement";
 
 /** 监测指标 列表 */
