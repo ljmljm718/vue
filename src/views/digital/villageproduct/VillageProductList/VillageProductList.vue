@@ -1,6 +1,6 @@
 <template>
   <Dialog
-    title="设备列表"
+    title="产品列表"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -37,7 +37,7 @@
         <el-form-item label="产品码" prop="parkDetailId">
           <el-input
             v-model="queryParams.parkDetailId"
-            placeholder="请输入产品码（所属地块id）"
+            placeholder="请输入产品码"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"

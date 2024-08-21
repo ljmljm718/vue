@@ -79,7 +79,7 @@
           </el-button>
         </el-form-item>
       </el-row>
-      
+
     </el-form>
   </ContentWrap>
 
@@ -143,7 +143,7 @@
             <Icon icon="ep:delete" class="mr-5px"/>
             删除
           </el-button>
-          
+
           <el-button
             type="warning"
             plain
@@ -157,7 +157,7 @@
             调试配置
           </el-button>
           </div>
-        
+
       </div>
           <div class="flex">
         <div @click="tabCard()" class="py-3px px-15px cursor-pointer rounded-l"
@@ -172,20 +172,20 @@
         </div>
       </div>
       </div>
-    <div v-if='!cardList' v-loading="loading" class="grid grid-cols-3 gap-15px grid-rows-3">
+    <div v-if='!cardList' v-loading="loading" class="grid grid-cols-3 h-900px gap-15px grid-rows-3">
      <div class="box-border pl-[25px] flex w-100% h-170px justify-between overflow-hidden items-center rounded-10px border-2px border-solid border-[#ededed]" v-for='item,index in list' :key='index'>
       <div >
-        <div class="text-18px mb-15px color-[#000] flex items-center">{{item.deviceName}} 
+        <div class="text-18px mb-15px color-[#000] flex items-center">{{item.deviceName}}
         <!-- <div :class="`flex items-center !bg-[${item.deviceStatus=='online'?'#e8f9e9': item.deviceStatus=='offline'?'#f4f4f4':'#faeceb'}]`">
         <div :class="`mr-10px icon-${ item.deviceStatus=='online'?'1': item.deviceStatus=='offline'?'2':'3'}`"></div>
         {{ item.deviceStatus=='online'?'在线':item.deviceStatus=='offline'?'离线':'故障' }}</div>-->
-        <div class="bg-[#e8f9e9] text-[14px] flex items-center px-10px py-3px rounded-25px box-border color-[#27c05a]" v-show='item.deviceStatus=="online"'> <div class='icon-1 mr-5px'></div> 在线</div>
-        <div class="bg-[#f5f5f5] text-[14px] flex items-center px-10px py-3px rounded-25px box-border  color-[#9c9c9c]" v-show='item.deviceStatus=="offline"'> <div class='icon-2'></div> 离线</div>
-        <div class="bg-[#faeceb] text-[14px] flex items-center px-10px py-3px rounded-25px box-border color-[#e31205]" v-show='item.deviceStatus=="dault"'> <div class='icon-3'></div> 故障</div>
-       </div> 
+        <div class="bg-[#e8f9e9] text-[14px] flex items-center px-10px  ml-5px rounded-25px box-border color-[#27c05a]" v-show='item.deviceStatus=="online"'> <div class='icon-1 mr-5px'></div> 在线</div>
+        <div class="bg-[#f5f5f5] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border  color-[#9c9c9c]" v-show='item.deviceStatus=="offline"'> <div class='icon-2'></div> 离线</div>
+        <div class="bg-[#faeceb] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border color-[#e31205]" v-show='item.deviceStatus=="dault"'> <div class='icon-3'></div> 故障</div>
+       </div>
         <div class="text-14px color-[#707070]">经度：{{ item.longitude }}</div>
         <div class="text-14px color-[#707070] my-3px">纬度：{{item.latitude}}</div>
-        <div class="text-14px color-[#707070]">通道号：</div>
+        <div v-if="item.channelId" class="text-14px color-[#707070]">通道号：{{item.channelId}}</div>
         <div class="mt-10px">
           <el-button
             v-show="item.deviceName.toString().includes('水质监测')||item.deviceName.toString().includes('气象站')"
@@ -219,7 +219,7 @@
           >
             编辑
           </el-button>
-         
+
           <el-button
             plain
             type="danger"
@@ -251,7 +251,7 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
-      height='650px'
+      height='900px'
     >
       <el-table-column type="selection" width="55" :reserve-selection="true"/>
       <!-- 子设备的列表 -->
@@ -451,13 +451,13 @@ const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
-const cardList=ref(false) 
+const cardList=ref(false)
 const loading = ref(true) // 列表的加载中
 const list = ref<DeviceInfoVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 9,
+  pageSize: 12,
   deviceCode: undefined,
   deviceName: undefined,
   deviceType: undefined,
@@ -570,7 +570,7 @@ const tabCard=()=>{
 }
 const listCard=()=>{
   cardList.value=true
-  queryParams.pageSize=10 
+  queryParams.pageSize=10
   getList()
 
 }
