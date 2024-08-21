@@ -172,7 +172,7 @@
             </el-table-column>-->
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
-      <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+      <el-table-column label="设备类型" align="center" prop="deviceType" width="200" :show-overflow-tooltip="false">
         <template #default="scope">
           <el-cascader
             style="width: 100%"
