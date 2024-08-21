@@ -89,9 +89,6 @@ const handleSelect = async (item) => {
   }
   if (mapTangBgRef.value) {
     console.log('地图设备详情', res)
-    console.log('resid', res.channelId)
-    console.log('resdtu', res.dtu)
-    console.log('resname', res.deviceName)
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
     const infoString = `<div class="bg-[#e8f2fc] relative">
       <div class='relative'>
