@@ -89,7 +89,9 @@ const handleSelect = async (item) => {
   }
   if (mapTangBgRef.value) {
     console.log('地图设备详情', res)
-
+    console.log('resid', res.channelId)
+    console.log('resdtu', res.dtu)
+    console.log('resname', res.deviceName)
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
     const infoString = `<div class="bg-[#e8f2fc] relative">
       <div class='relative'>
@@ -109,16 +111,19 @@ const handleSelect = async (item) => {
             } w-[8px] h-[8px] rounded-full"></div>
             <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
           </div>
-          <div class="flex pt-[1.2rem] justify-center">
-            <a 
-            href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
-            class="w-[60%] text-center  bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
-            style=" text-decoration: none;">
-          查看监控
-            </a>
-          </div>
-        </div>
-        
+            ${res.channelId !== null && res.channelId !== '' && res.dtu !== null && res.dtu !== ''? 
+            `
+              <div class="flex pt-[1.2rem] justify-center">
+                <a 
+                href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
+                style="text-decoration: none;">
+              查看监控
+                </a>
+              </div>
+            `
+            : ''}
+        </div> 
       </div>`
     mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
     mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
