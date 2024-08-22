@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import mainBg from './assets/main-bg.png'
+import duckBg from './assets/duck-bg.png'
+import fishBg from './assets/fish-bg.png'
 import headerBg from './assets/headerBg.png'
 import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
@@ -865,7 +867,7 @@ export default defineComponent({
                     )
                   })
                 ) : (
-                  <div class='dataNull w-200px h-150px '></div>
+                  <div class='dataNull w-200px mx-auto mt-100px h-150px '></div>
                 )}
               </div>
             </div>
@@ -901,7 +903,7 @@ export default defineComponent({
     return () => (
       <div class="bg-[#0b212c] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={mainBg}>
+          <BigscreenContainer backgroundImage={bigscreenName.value.includes('稻田鱼')? fishBg:bigscreenName.value.includes('麻鸭')?duckBg :mainBg }>
             <BigscreenHeader
               backgroundImage={headerBg}
               class="!bg-[#0b212c]"
