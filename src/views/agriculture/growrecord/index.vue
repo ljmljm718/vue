@@ -8,48 +8,51 @@
       :inline="true"
       label-width="68px"
     >
-      <!--      <el-form-item label="品种code" prop="cropCode">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.cropCode"-->
-      <!--          placeholder="请输入品种code"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="品种" prop="cropType">-->
-      <!--        <el-select-->
-      <!--          v-model="queryParams.cropType"-->
-      <!--          placeholder="请选择品种"-->
-      <!--          clearable-->
-      <!--          class="!w-240px"-->
-      <!--        >-->
-      <!--          <el-option-->
-      <!--            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
-      <!--            :key="dict.value"-->
-      <!--            :label="dict.label"-->
-      <!--            :value="dict.value"-->
-      <!--          />-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="所属基地" prop="base">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.base"-->
-      <!--          placeholder="请输入所属基地"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="所属地块" prop="massif">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.massif"-->
-      <!--          placeholder="请输入所属地块"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+      <el-form-item label="种植作物" prop="cropName">
+        <el-input
+          v-model="queryParams.cropName"
+          placeholder="请输入种植作物"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="品类" prop="cropType">
+        <el-input
+          v-model="queryParams.cropType"
+          placeholder="请输入品类"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="设备名称" prop="facilityName">
+        <el-input
+          v-model="queryParams.facilityName"
+          placeholder="请输入设备名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="所属基地" prop="baseName">
+        <el-input
+          v-model="queryParams.baseName"
+          placeholder="请输入所属基地"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="所属地块" prop="massifName">
+        <el-input
+          v-model="queryParams.massifName"
+          placeholder="请输入所属地块"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="测量时间" prop="measureTime">
         <el-date-picker
           v-model="queryParams.measureTime"
@@ -58,7 +61,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item label="测量者" prop="measurer">
@@ -86,7 +89,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"   type="primary">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -126,11 +129,11 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="品种code" align="center" prop="cropCode"/>-->
+      <!--      <el-table-column label="品种code" align="center" prop="cropCode"/>-->
       <el-table-column label="种植作物" align="center" prop="cropName"/>
       <el-table-column label="品类" align="center" prop="cropType">
         <template #default="scope">
-          <el-tag >{{scope.row.cropType}} </el-tag>
+          <el-tag>{{ scope.row.cropType }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="设备名称" align="center" prop="facilityName"/>
@@ -154,7 +157,7 @@
       <el-table-column label="测量者" align="center" prop="measurer"/>
       <el-table-column label="变化量" align="center" prop="measureSpike"/>
       <el-table-column label="测量单位" align="center" prop="measureUnit"/>
-      <el-table-column label="抓拍图片" align="center" prop="imgUrl" >
+      <el-table-column label="抓拍图片" align="center" prop="imgUrl">
         <template #default="scope">
           <!-- <img src="scope.row.capturedImage" :value="scope.row.capturedImage" /> -->
           <el-image
@@ -165,13 +168,13 @@
           />
         </template>
       </el-table-column>
-<!--      <el-table-column-->
-<!--        label="创建时间"-->
-<!--        align="center"-->
-<!--        prop="createTime"-->
-<!--        :formatter="dateFormatter"-->
-<!--        width="180px"-->
-<!--      />-->
+      <!--      <el-table-column-->
+      <!--        label="创建时间"-->
+      <!--        align="center"-->
+      <!--        prop="createTime"-->
+      <!--        :formatter="dateFormatter"-->
+      <!--        width="180px"-->
+      <!--      />-->
       <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
       <!--      <el-table-column label="主键ID" align="center" prop="id"/>-->
       <el-table-column label="操作" align="center" width="150px" fixed="right">
@@ -265,8 +268,8 @@ const getList = async () => {
     const data = await GrowRecordApi.getGrowRecordPage(queryParams)
     list.value = data.list
     //把品类数据的namep拼接到列表中
-    list.value.forEach(item=>{
-      listCategoryManagement.value.forEach(itm=>{
+    list.value.forEach(item => {
+      listCategoryManagement.value.forEach(itm => {
         if (item.cropType == itm.id)
           item.cropType = itm.categoryName
       })
@@ -292,7 +295,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  router.push('/farm_work/grow-record/CreateOrUpdate?type='+type+'&id='+id)
+  router.push('/farm_work/grow-record/CreateOrUpdate?type=' + type + '&id=' + id)
 }
 
 /** 删除按钮操作 */
