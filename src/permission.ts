@@ -63,6 +63,11 @@ const whiteList = [
 
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
+  if (to.path === '/page') {
+    document.title = '工业安全生产数字化产品平台';
+    const favicon = document.querySelector('link[rel="icon"]') as any;
+    if (favicon) favicon.href = ''
+  }
   start()
   loadStart()
   if (getAccessToken()) {
@@ -105,7 +110,8 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
-  useTitle(to?.meta?.title as string)
+  if (to.path === '/page') document.title = '工业安全生产数字化产品平台';
+  else useTitle(to?.meta?.title as string)
   done() // 结束Progress
   loadDone()
 })
