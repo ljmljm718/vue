@@ -27,19 +27,13 @@
         />
       </el-form-item>
       <el-form-item label="规则类型" prop="warnType">
-        <el-select
+        <el-input
           v-model="queryParams.warnType"
-          placeholder="请选择规则类型"
+          placeholder="请输入规则类型"
           clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        />
       </el-form-item>
       <el-form-item label="预警等级" prop="warnLevel">
         <el-select
