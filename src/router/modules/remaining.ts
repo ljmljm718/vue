@@ -221,6 +221,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/inspurHome',
+    component: () => import('@/views/portal/home/index.vue'),
+    name: 'InspurHome',
+    meta: {
+      hidden: true,
+      noTagsView: true
+    }
+  },
+  {
     path: '/sso',
     component: () => import('@/views/Login/components/SSOLogin.vue'),
     name: 'SSOLogin',

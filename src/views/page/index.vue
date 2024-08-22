@@ -77,7 +77,7 @@
         <div class="container linear-bar aspect-27 mt-2"></div>
         <div
           class="container relative z-20 linear-bg py-[.8rem] text-[#f1f1f1c0] flex justify-center items-center text-[1.3rem] hover:text-[#fff] cursor-pointer"
-          @click="handleBtnClick({ url: 'http://117.73.12.97:9230' })"
+          @click="handleBtnClick({ url: 'http://117.73.12.97:9200' })"
         >工业安全生产与分析研判系统</div>
       </div>
     </div>
@@ -93,8 +93,8 @@
         </div>
         <div class="title-bar-white w-1.7rem h-1.7rem"></div>
       </div>
-      <div class="container flex justify-center mt-3rem space-x-4 px-3 box-border">
-        <div v-for="item in 5" :key="item" :class="`card-${item} grow min-w-[3rem] aspect-.75 shadow-md rounded-md hover:scale-102 transition`"></div>
+      <div class="container flex justify-center mt-3rem space-x-[2rem] px-[6rem] box-border">
+        <div v-for="item in 4" :key="item" :class="`card-${item + 1} grow min-w-[3rem] aspect-.75 shadow-md rounded-md hover:scale-102 transition`"></div>
       </div>
     </div>
     <div class="w-full h-4rem bg-white"></div>
@@ -160,14 +160,14 @@ const carouselItemList = ref<any[]>([
     ],
     background: 'para-bg3'
   },
-  {
-    id: '4',
-    title: '森林生态综合管理',
-    paragraph: [
-      '对企业生产环节的水、电、汽等能源数据进行采集、监控和管理。通过对能源消耗的统计、分析、监测、预测，达到深挖节能潜力，实时监测和推送能耗异常信息的精细化能源管控目标。'
-    ],
-    background: 'para-bg4'
-  },
+  // {
+  //   id: '4',
+  //   title: '森林生态综合管理',
+  //   paragraph: [
+  //     '对企业生产环节的水、电、汽等能源数据进行采集、监控和管理。通过对能源消耗的统计、分析、监测、预测，达到深挖节能潜力，实时监测和推送能耗异常信息的精细化能源管控目标。'
+  //   ],
+  //   background: 'para-bg4'
+  // },
 ])
 
 // 产品数字底座

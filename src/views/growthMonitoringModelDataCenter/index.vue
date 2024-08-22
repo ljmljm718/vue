@@ -232,10 +232,10 @@ export default defineComponent({
         res.map((item, index) => {
           if (index) {
             cycleMap.value.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2, imgId: item.imgId})
-            curCropCode = item.growthId
 
             if (curPeriod.value === item.growth) {
               cycleNameList.value.push({growth: item.growth, selected: true})
+              curCropCode = item.growthId
               curItem = index - 1
             } else {
               cycleNameList.value.push({growth: item.growth, selected: false})

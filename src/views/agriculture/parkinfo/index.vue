@@ -436,6 +436,9 @@ const getList = async () => {
     const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
     list.value = list1
     console.log('🚀 ~ getList ~ list1:', list1)
+    if (Array.isArray(list1) && list1.length > 0) {
+      handleParkClick(list1[0], false)
+    }
     total.value = total1
   } finally {
     loading.value = false
@@ -605,13 +608,13 @@ const handlePlotClick = (item) => {
   activePlotId.value = item.id
   handleDrawPark(item)
 }
-const handleParkClick = async (item) => {
+const handleParkClick = async (item, _showPlot = true) => {
   if (!item?.id) return
   const list = await ParkInfoApi.getParkDetailListByParkId(item.id)
   console.log('地块列表', list)
 
   if (Array.isArray(list)) plotDataList.value = list
-  showPlotList.value = true
+  showPlotList.value = _showPlot
   activeItemId.value = item.id
   handleDrawPark(item)
 }
@@ -623,7 +626,7 @@ const handleConfirm = async () => {
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),
-    infraType: '1'
+    infraType: showPlotList.value ? '2' : '1'
   })
 
   if (data) ElMessage.success('保存成功!')
@@ -648,7 +651,7 @@ const fetchCoordinatesFromLocalStorage = () => {
 
     const validPoints = localdata.value
       .flat()
-      .map((ele) => {
+      .map((ele:any) => {
         const lng = parseFloat(ele.lng)
         const lat = parseFloat(ele.lat)
         return [lng, lat]
@@ -669,10 +672,8 @@ const fetchCoordinatesFromLocalStorage = () => {
     console.log('No coordinates found in localStorage')
   }
 }
-fetchCoordinatesFromLocalStorage()
-onMounted(() => {
-  console.log('Map center point:', mapCenter.value)
-})
+//fetchCoordinatesFromLocalStorage()
+
 
 handleQuery()
 </script>
