@@ -1,38 +1,35 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import ArrowIcon from '@/components/arrow/index.vue'
-import axios from 'axios';
+import request from '@/config/axios'
 
-const fetchMenuList = () => {
-  axios({
-    method: 'get',
-    url: '/admin-api/portal/project-category/tree',
-    params: {
-      "parentId": 0,
-      "status": 1
-    }
-  }).then(({ data }) => {
-    console.log('RES', data.data);
-    if (Array.isArray(data.data)) topMenuList.value = data.data.map((item, index) => {
-      return {
-        ...item,
-        onClick: (item) => {
-          globalClick(index, item)
-        },
-        onMouseEnter: () => {
-          menuFlag.value = true
-          if (item.code === 'production_education_training') {
-            getFloatText('以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。', (text) => {
-              text1.value = text
-            })
-          }
-          setTimeout(() => {
-            if (menuFlag.value) handleMainContentScroll(index)
-          }, 300)
+const projectCategoryTree = async (params: any) => {
+  return await request.get({
+    url: `/portal/project-category/tree`, params
+  })
+}
+
+const fetchMenuList = async () => {
+  const data = await projectCategoryTree({ parentId: 0, status: 1 })
+  if (Array.isArray(data)) topMenuList.value = data.map((item, index) => {
+    return {
+      ...item,
+      onClick: (item) => {
+        globalClick(index, item)
+      },
+      onMouseEnter: () => {
+        menuFlag.value = true
+        if (item.code === 'production_education_training') {
+          getFloatText('以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。', (text) => {
+            text1.value = text
+          })
         }
+        setTimeout(() => {
+          if (menuFlag.value) handleMainContentScroll(index)
+        }, 300)
       }
-    })
-  }).catch(err => {})
+    }
+  })
 }
 
 const generating = ref(false)
@@ -74,18 +71,18 @@ const globalClick = (index = 0, item = []) => {
     showHiddenMenu.value = true
   }, 100)
 }
-const topMenuList = ref([])
+const topMenuList = ref<any[]>([])
 
 const curIndex = ref(0)
 const handleMainContentScroll = (index = 0) => {
   curIndex.value = index
-  const mainContainer = document.getElementById("mainContainer")
+  const mainContainer = document.getElementById("mainContainer") as any
   const currentWindowHeight = window.innerHeight;
   mainContainer.scrollTop = (currentWindowHeight - 64) * index
   // scrollAnimation(mainContainer.scrollTop, (currentWindowHeight - 64) * index)
 }
 
-const scrollTimer = ref(null)
+const scrollTimer = ref<any>(null)
 const handleContainerScroll = (e) => {
   clearTimeout(scrollTimer.value)
   const mainContainer = document.getElementById("mainContainer")
