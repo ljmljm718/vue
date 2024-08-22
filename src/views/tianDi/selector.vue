@@ -33,11 +33,39 @@ import { uniqBy } from 'lodash-es'
 defineComponent({ name: 'Selector' })
 const posInputVal = ref<string>('')
 const searchResList = ref<any[]>([])
+
+//密钥
+const tkArray = [
+  '3499364c33fd4aa4415dd8765d4c5b77',
+  '10d3a30c08edf2c4a8a8256f69971e4e',
+  'b46466202244272a7ace01d3b065e779',
+  '729b3945ad130e240045f81a9f9e9cc7',
+  '64a1e8cacb148e96b889f032696fcc20',
+  '75f0434f240669f4a2df6359275146d2'//网页上的tk
+];
+let currentTkIndex=0;
+const getNextTk = () => {
+  const tk= tkArray[currentTkIndex]
+  currentTkIndex = (currentTkIndex + 1)% tkArray.length
+  return tk;
+};
+
+
 const handlePosSearch = () => {
   const localSuggests = searchDoc(posInputVal.value);
   console.log("🚀 ~ handlePosSearch ~ localSuggests:", localSuggests)
-  const queryCount = localSuggests.length ? (10 - localSuggests.length) : 10;
-  axios.get("https://api.tianditu.gov.cn/v2/search", {
+
+  //重试次数
+  const maxRetries = tkArray.length*2;
+  const fetchData = (retryCount: number) => {
+    if (retryCount <= 0) {
+      console.error("No more retries left.");
+      return;
+    }
+
+    const currentTk = getNextTk();
+    const queryCount = localSuggests.length ? (10 - localSuggests.length) : 10;
+    axios.get("https://api.tianditu.gov.cn/v2/search", {
     params: {
       type: 'query',
       postStr: JSON.stringify({
@@ -51,7 +79,7 @@ const handlePosSearch = () => {
         count: queryCount,
         queryTerminal: 10000
       }),
-      tk: '3499364c33fd4aa4415dd8765d4c5b77'
+      tk: currentTk
     },
     headers: {}
   }).then((res:any) => {
@@ -66,12 +94,14 @@ const handlePosSearch = () => {
       }
     }
   }).catch(err => {
-    console.error("ERR", err);
+    console.error(`Failed with tk:${currentTk}  retrying....`, err);
+    fetchData(retryCount - 1)
     if (!Array.isArray(localSuggests)) return;
     searchResList.value = localSuggests.map(item => ({ ...item.meta }))
   })
 }
-
+fetchData(maxRetries)
+}
 const emit = defineEmits(['change'])
 const handleSearchResClick = (item) => {
   const position = item.lonlat.split(',')
