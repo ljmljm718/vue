@@ -564,7 +564,7 @@ const resetQuery = () => {
 //卡片切换
 const tabCard=()=>{
   cardList.value=false
-  queryParams.pageSize=9
+  queryParams.pageSize=12
   getList()
 
 }
