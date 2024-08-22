@@ -623,7 +623,7 @@ const handleConfirm = async () => {
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),
-    infraType: '1'
+    infraType: showPlotList.value ? '2' : '1'
   })
 
   if (data) ElMessage.success('保存成功!')
@@ -648,7 +648,7 @@ const fetchCoordinatesFromLocalStorage = () => {
 
     const validPoints = localdata.value
       .flat()
-      .map((ele) => {
+      .map((ele:any) => {
         const lng = parseFloat(ele.lng)
         const lat = parseFloat(ele.lat)
         return [lng, lat]

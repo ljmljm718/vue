@@ -7,7 +7,7 @@ import { ElMessage } from 'element-plus'
 
 const hls = new Hls();
 hls.on(Hls.Events.ERROR, (err) => {
-  ElMessage.error("设备已离线!")
+  ElMessage.warning(err);
 })
 const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string> => {
   if (leftTimes <= 0) {
