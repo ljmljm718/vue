@@ -69,7 +69,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="所属基地" prop="equName">
+                <el-form-item label="设备名称" prop="equName">
                   <el-input v-model="formData.equName" placeholder="选择设备后自动填入" disabled/>
                 </el-form-item>
               </el-col>
@@ -101,14 +101,14 @@
             </el-row>
             <el-row :gutter="3">
               <el-col :span="8">
-                <el-form-item label="所属基地" prop="base">
-                  <el-input v-model="formData.base" placeholder="选择设备后自动填入" disabled/>
+                <el-form-item label="所属基地" prop="base1">
+                  <el-input v-model="formData.base1" placeholder="选择设备后自动填入" disabled/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'"
-                              prop="massif">
-                  <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
+                              prop="massif1">
+                  <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -147,23 +147,18 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="巡检结果" prop="inspectionResults">
-                  <el-input type="textarea" v-model="formData.inspectionResults"
-                            placeholder="请输入巡检结果"/>
+                <el-form-item label="巡检内容" prop="content">
+                  <el-input type="textarea" v-model="formData.content"
+                            placeholder="请输入巡检内容"/>
                 </el-form-item>
               </el-col>
+
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="巡检影像" prop="inspectionImage">
                   <UploadImg v-model="formData.inspectionImage"/>
                   <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="巡检内容" prop="content">
-                  <el-input type="textarea" v-model="formData.content"
-                            placeholder="请输入巡检内容"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -262,10 +257,13 @@ const openPurchaseOrderInEnableList = () => {
   purchaseOrderInEnableListRef.value.open()
 }
 const handlePurchaseOrderChange = (order: ParkBaseVO) => {
+  console.log("order",order)
   formData.value.equNum = String(order[0].deviceCode)
   formData.value.equName = String(order[0].deviceName)
   formData.value.base = String(order[0].belongPark)
   formData.value.massif = String(order[0].belongPlot)
+  formData.value.base1 = String(order[0].parkName)
+  formData.value.massif1 = String(order[0].parkDetailName)
 }
 
 

@@ -45,7 +45,7 @@
             <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
             <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
             <!--      </el-form-item>-->
-            
+
 
             <el-row :gutter="3">
               <el-col :span="8">
