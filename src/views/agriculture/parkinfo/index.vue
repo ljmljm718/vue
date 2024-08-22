@@ -436,6 +436,9 @@ const getList = async () => {
     const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
     list.value = list1
     console.log('🚀 ~ getList ~ list1:', list1)
+    if (Array.isArray(list1) && list1.length > 0) {
+      handleParkClick(list1[0], false)
+    }
     total.value = total1
   } finally {
     loading.value = false
@@ -605,13 +608,13 @@ const handlePlotClick = (item) => {
   activePlotId.value = item.id
   handleDrawPark(item)
 }
-const handleParkClick = async (item) => {
+const handleParkClick = async (item, _showPlot = true) => {
   if (!item?.id) return
   const list = await ParkInfoApi.getParkDetailListByParkId(item.id)
   console.log('地块列表', list)
 
   if (Array.isArray(list)) plotDataList.value = list
-  showPlotList.value = true
+  showPlotList.value = _showPlot
   activeItemId.value = item.id
   handleDrawPark(item)
 }
@@ -669,10 +672,8 @@ const fetchCoordinatesFromLocalStorage = () => {
     console.log('No coordinates found in localStorage')
   }
 }
-fetchCoordinatesFromLocalStorage()
-onMounted(() => {
-  console.log('Map center point:', mapCenter.value)
-})
+//fetchCoordinatesFromLocalStorage()
+
 
 handleQuery()
 </script>
