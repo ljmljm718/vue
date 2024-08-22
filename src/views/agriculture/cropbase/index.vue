@@ -87,33 +87,28 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
+
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
         <el-button
           type="primary"
           plain
+          class="!h-2.4rem"
           @click="openForm('create')"
           v-hasPermi="['agriculture:crop-base:create']"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
           新增
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:crop-base:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="数字农业管理系统的种植管理模块是现代农业中重要的组成部分，它利用数字技术和数据分析来优化种植过程，提高作物生产效率和管理水平。"/>
+      </div>
     </div>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="种植品种" align="center" prop="cropName" width="140"/>
       <el-table-column label="品类" align="center" prop="cropType">
@@ -152,7 +147,11 @@
         :formatter="dateFormatter2"
         width="120px"
       />
-      <el-table-column label="批次号" align="center" prop="batchCode" width="160px"/>
+      <el-table-column align="center" prop="batchCode" width="160px">
+        <template #header>
+          <QuestionMaskTip lable-name="批次号" content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"/>
+        </template>
+      </el-table-column>
       <el-table-column label="二维码" align="center" prop="batchQrImg">
         <template #default="scope">
           <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
@@ -312,6 +311,7 @@ import {getUserProfile} from "@/api/system/user/profile";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
+import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CommonStatusEnum, CommonStatusEnumBoolean} from "@/utils/constants";
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
