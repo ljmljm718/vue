@@ -2,8 +2,10 @@
 import {defineComponent, ref, nextTick} from 'vue'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import headerBg from './assets/headerBg.png'
-import mainBg from './assets/bg.png'
+import headerBg from './assets/v2/headerBg.png'
+import mainBg from './assets/v2/bg.png'
+import plantBg from './assets/v2/plant-bg.png'
+import riskBg from './assets/v2/risk-bg.png'
 import {formatTime} from '@/utils'
 import * as echarts from 'echarts'
 import {
@@ -46,6 +48,7 @@ import {
   selectCount,
   getCountRiceDuckSum
 } from './api'
+import { bg } from 'element-plus/es/locale'
 
 const {
   BigscreenAdapter,
@@ -126,6 +129,35 @@ export default defineComponent({
         func()
       })
     }
+    // tab修改 v2
+    const bgImage = ref(mainBg)
+    const changeTab = (key: string) => {
+      if (activeTab.value === key)
+        return
+      
+      switch (key) {
+        case 'base':
+          activeTab.value = 'base'
+          bgImage.value = mainBg
+          break
+        case 'plant':
+          activeTab.value = 'plant'
+          bgImage.value = plantBg
+          nextTick(() => {
+            getGrowthLineChartData()
+            getHarvestChartData()
+          })
+          break
+        case 'risk':
+          activeTab.value = 'risk'
+          bgImage.value = riskBg
+          nextTick(() => {
+            initChartWarnLayout()
+            initBugCountChart()
+          })
+          break
+      }
+    }
 
     const activeBasePark = ref()
     const handleMenuActive = (key: string, keyPath: string[]) => {
@@ -199,18 +231,24 @@ export default defineComponent({
       activeBasePark.value = ''
       if (keyPath.length === 1) getMonitorDeviceList(keyPath[0], '')
     }
+
+    // 基地列表下拉菜单图标
+    const subMenuCloseIcon = <div style="color: #11F47F;"><el-icon><CaretRight /></el-icon></div>
+    const subMenuOpenIcon = <div style="color: #11F47F;"><el-icon><CaretBottom /></el-icon></div>
+
     // 基地导览页面部分
     const baseTabPage = () => {
       return (
-        <div class="w-full h-full box-border pb-1 px-5 py-3">
-          <div class="inner-border w-full h-full p-3 flex space-x-3 box-border">
-            <div class="inner-border w-[12rem] max-h-[55.8rem] overflow-auto hidden-scrollbar p-3">
+        <div class="w-full h-full box-border">
+          <div class="w-full h-full px-[20px] flex box-border">
+            {/** 左侧基地列表 */}
+            <div class="w-[180px] h-[950px] pt-[10px] base-list-bg overflow-auto hidden-scrollbar">
               <el-menu
-                active-text-color="#ffd04b"
-                background-color="#1b2a58"
-                class="el-menu-vertical-demo"
+                active-text-color="transparent"
+                background-color="transparent"
                 default-active={activeBasePark.value}
                 text-color="#fff"
+                class="w-[180px]"
                 onSelect={handleMenuActive}
                 onOpen={handleMenuChange}
                 onClose={handleMenuChange}
@@ -220,12 +258,15 @@ export default defineComponent({
                     if (item.child) return (
                       <el-sub-menu index={item.id} v-slots={{
                         title: () => (
-                          <span>{item.name}</span>
+                          <span class="text-wrap leading-[20px] text-center tracking-widest">{item.name}</span>
                         )
-                      }}>
+                      }}
+                      expand-close-icon={ subMenuCloseIcon }
+                      expand-open-icon={ subMenuOpenIcon }
+                      >
                         {
                           Array.isArray(item.child) ? item.child.map(ele => (
-                            <el-menu-item index={ele.id}>
+                            <el-menu-item index={ele.id} class="text-wrap leading-[20px] tracking-widest">
                               {ele.name}
                             </el-menu-item>
                           )) : null
@@ -233,7 +274,7 @@ export default defineComponent({
                       </el-sub-menu>
                     )
                     return (
-                      <el-menu-item index={item.id}>
+                      <el-menu-item index={item.id} class="text-wrap leading-[20px] tracking-widest">
                         {item.name}
                       </el-menu-item>
                     )
@@ -241,31 +282,32 @@ export default defineComponent({
                 }
               </el-menu>
             </div>
-            <div class="inner-border grow p-3 grid grid-cols-3 grid-rows-3 gap-3"
-                 v-loading={monitorDeviceLoading.value}>
+            {/** 中间监控视频列表 */}
+            <div class="w-[1310px] mx-[15px] p-[15px] grid grid-cols-3 grid-rows-3 gap-3 monitor-bg" v-loading={monitorDeviceLoading.value}>
               {
                 deviceVideoList.value.map((item: DeviceVideoListItemType) => (
-                  <div class="p-3 flex flex-col bg-gray-900 inner-border" onClick={() => {
-                    window.open("/internetMonitor/deviceData/monitoring-equipment-data")
-                  }}>
-                    <div class="art-font h-[1.4rem] tracking-wide">{item.deviceName}</div>
-                    <video class="w-full h-[13rem]" controls autoplay src={item.videoSrc} loop/>
-                    <div class="flex items-center justify-between pt-2">
-                      <div>{item.baseName}</div>
-                      <div style={
-                        item.online ? 'color: #48ad91;' : 'color: #db2153;'
-                      }>{item.online ? '在线' : '离线'}</div>
+                  <div class="video-bg" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
+                    <div class="art-font h-[37px] leading-[37px] text-[18px] text-center tracking-wide">{item.deviceName}</div>
+                    <div class="w-full h-[200px] py-[5px] flex justify-center">
+                      <video width="340px" controls autoplay src={item.videoSrc} loop/>
+                    </div>
+                    <div class="base-name">{ item.baseName }</div>
+                    <div class={`${ item.online ? 'text-[#09DB61]' : 'text-[#DEDEDE]' } device-status-bg absolute bottom-[24px] right-[24px] flex items-center justify-center`}>
+                      <div class={ item.online ? 'device-online' : 'device-offline' }></div>
+                      <div class="pl-[5px]">{ item.online ? '在线' : '离线' }</div>
                     </div>
                   </div>
                 ))
               }
             </div>
-            <div class="inner-border w-[18rem] p-3">
-              <div class="art-font" onClick={() => {
-                window.open("/internetMonitor/deviceData/monitoring-equipment-notice")
-              }}>通知事件
+            {/** 右侧通知事件 */}
+            <div class="w-[370px] h-[930px] p-[15px] notice-bg">
+              <div class="art-font notice-title flex items-center cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-notice") }}>
+                <div class="contain-img notice-icon"></div>
+                <div>通知事件</div>
               </div>
               <el-date-picker
+                class="mt-[15px]"
                 v-model={noticeDatePickerVal.value}
                 type="daterange"
                 range-separator="至"
@@ -274,29 +316,26 @@ export default defineComponent({
                 onChange={() => {
                   getMonitorNoticeList()
                 }}
-                style="width: 16.5rem;position: relative; top: .2rem;"
               />
-              <div class="h-[48.5rem]" v-loading={monitorNoticeLoading.value} onClick={() => {
+              <div class="mt-[10px] h-[790px] overflow-auto hidden-scrollbar cursor-pointer" v-loading={monitorNoticeLoading.value} onClick={() => {
                 window.open("/internetMonitor/deviceData/monitoring-equipment-notice")
               }}>
                 {
                   noticeList.value.map((item: NoticeItemType) => (
-                    <div
-                      class="flex items-center px-2 my-4 py-1 justify-between inner-border rounded-md">
-                      <div class="flex flex-col justify-between h-[4rem]">
-                        <div class="mt-1 line-clamp-2 h-[2rem]">
-                          <el-tooltip
-                            class="box-item"
-                            effect="dark"
-                            content={item.noticeEvent}
-                            placement="bottom"
-                          >
-                            {item.noticeEvent}
-                          </el-tooltip>
-                        </div>
-                        <div>{formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss')}</div>
+                    <div class="event-item flex justify-between">
+                      <div class="flex flex-col justify-center pl-[20px]">
+                        <el-tooltip
+                          effect="dark"
+                          content={item.noticeEvent}
+                          placement="bottom"
+                        >
+                          <div class="text-[18px]">{item.noticeEvent}</div>
+                        </el-tooltip>
+                        <div class="mt-[6.5px] opacity-60">{formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss')}</div>
                       </div>
-                      <img src={item.captured} class="w-[6rem] h-[4rem]"/>
+                      <div class="py-[2px] pr-[2px]">
+                        <img src={item.captured} class="h-[86px] object-contain rounded-md"/>
+                      </div>
                     </div>
                   ))
                 }
@@ -307,7 +346,6 @@ export default defineComponent({
                 v-model:limit={monitorQueryParams.value.pageSize}
                 onPagination={() => getMonitorNoticeList()}
                 layout="total, prev, pager, next"
-                style="position: relative;top: .6rem;"
               />
             </div>
           </div>
@@ -370,6 +408,10 @@ export default defineComponent({
               lineStyle: {
                 color: '#ffffff80'
               }
+            },
+            // x轴刻度标签字体白色
+            axisLabel: {
+              color: '#fff'
             }
           },
           legend: {
@@ -401,6 +443,10 @@ export default defineComponent({
             splitArea: {
               //网格区域
               show: false //是否显示
+            },
+            // y轴刻度标签字体白色
+            axisLabel: {
+              color: '#fff'
             }
           },
           series: [
@@ -498,6 +544,10 @@ export default defineComponent({
                 color: "#ffffff80",
               },
             },
+            // x轴刻度标签字体白色
+            axisLabel: {
+              color: '#fff'
+            }
           },
           legend: {
             show: true,
@@ -515,8 +565,9 @@ export default defineComponent({
                   color: "#ffffff80",
                 },
               },
+              // y轴刻度字体白色
               axisLabel: {
-                color: '#ffffff80'
+                color: '#ffffff'
               },
               splitLine: {
                 //网格线
@@ -531,7 +582,7 @@ export default defineComponent({
               splitArea: {
                 //网格区域
                 show: false, //是否显示
-              },
+              }
             },
           ],
           series,
@@ -691,6 +742,7 @@ export default defineComponent({
     getWaterList()
 
     // 中间顶部
+    // 添加背景类名和图标类名
     const plantCenterTopCardList = ref<Array<any>>([])
     const getPlantCenterTopCardList = async () => {
       const res = await getEquipmentCountSum()
@@ -699,286 +751,249 @@ export default defineComponent({
         {
           label: '设备总数',
           value: res['设备总数'],
-          param: ''
+          param: '',
+          bgClass: 'device-total-bg',
+          iconClass: 'device-total-icon',
         },
         {
           label: '在线设备',
           value: res['在线设备'],
-          param: 'online'
+          param: 'online',
+          bgClass: 'device-online-bg',
+          iconClass: 'device-online-icon',
         },
         {
           label: '离线设备',
           value: res['离线设备'],
-          param: 'offline'
+          param: 'offline',
+          bgClass: 'device-offline-bg',
+          iconClass: 'device-offline-icon',
         },
         {
           label: '故障设备',
           value: res['报警设备'],
-          param: 'fault'
+          param: 'fault',
+          bgClass: 'device-error-bg',
+          iconClass: 'device-error-icon',
         },
       ]
     }
     getPlantCenterTopCardList()
     const plantTabPage = () => {
       return (
-        <div class="w-full h-full box-border pb-1 px-5 py-3">
-          <div class="w-full h-full p-3 flex space-x-3 box-border">
-            <div class="w-[25%] flex flex-col space-y-3">
-              <BigscreenCard
-                class="h-[240px]"
-                v-slots={{
-                  title: () => (
-                    <div class="art-font text-lg">基础设施</div>
-                  ),
-                  default: () => (
-                    <div class="grid grid-cols-2 gap-2 p-3" v-loading={baseEquipmentLoading.value}>
-                      {
-                        baseEquipmentList.value.map(item => (
-                          <div class="flex justify-between p-2 inner-border" onClick={() => {
-                            if (item.url) window.open(item.url)
-                          }}>
-                            <div>{item.label}</div>
-                            <div class="art-font">{item.value}</div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  )
-                }}
-              />
-              <BigscreenCard
-                class="grow"
-                v-slots={{
-                  title: () => (
-                    <div class="art-font text-lg">生长分析</div>
-                  ),
-                  default: () => (
-                    <div id="growthChart" onClick={() => {
-                      window.open("/internetMonitor/deviceData/grow-record")
-                    }}></div>
-                  )
-                }}
-              />
-              <BigscreenCard
-                class="grow"
-                v-slots={{
-                  title: () => (
-                    <div class="art-font text-lg">产量分析</div>
-                  ),
-                  default: () => (
-                    <div id="harvestChart" class="mt-2" onClick={() => {
-                      window.open("/farm_work/harvest-management")
-                    }}></div>
-                  )
-                }}
-              />
-            </div>
-            <div class="grow flex flex-col space-y-3">
-              <div class="grow inner-border smart-plant-center relative">
-                <div class="absolute left-0 top-2 w-full flex justify-center space-x-2">
+        <div class="w-full h-full px-[20px] pt-[10px] box-border flex">
+          {/** 左 */}
+          <div class="w-[420px] h-full flex flex-col justify-between">
+            {/** 基础设施 */}
+            <div class="w-full h-[310px]">
+              {/** 标题 */}
+              <div class="plant-card-title">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">基础设施</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content">
+                <div class="px-[20px] py-[28px] grid grid-cols-2 gap-[10px] overflow-auto hidden-scrollbar" v-loading={baseEquipmentLoading.value}>
                   {
-                    plantCenterTopCardList.value.map(item => (
-                      <div
-                        class="inner-border px-4 py-2 flex flex-col items-center"
-                        style="background:#001b4290;"
-                        onClick={() => {
-                          window.open("/internetMonitor/device/deviceView?deviceStatus=" + item.param)
-                        }}>
+                    baseEquipmentList.value.map(item => (
+                      <div class="flex justify-between box-border px-[16px] py-[12px] base-device-item cursor-pointer" onClick={() => { if (item.url) window.open(item.url) }}>
                         <div>{item.label}</div>
-                        <div class="art-font">{item.value}</div>
+                        <div class="text-[#11F47F]">{item.value}</div>
                       </div>
                     ))
                   }
                 </div>
               </div>
-              <BigscreenCard
-                class="h-[300px]"
-                v-slots={{
-                  title: () => (
-                    <div class="art-font text-lg">打造特色产品</div>
-                  ),
-                  default: () => (
-                    <div
-                      class="grid grid-cols-2 gap-2 p-3"
-                      v-loading={villageProductPageLoading.value}
-                      onClick={() => {
-                        window.open("/pcg/production/village-product")
-                      }}
-                    >
-                      {
-                        showedProductPageList.value.map(item => (
-                          <div class="inner-border flex p-3">
-                            <img
-                              src={item.photo}
-                              class="w-[230px] h-[200px]"
-                            />
-                            <div class="w-35% pl-3 grow">
-                              <div class="flex justify-between p-2 inner-border">
-                                <span>农场名称:</span>
-                                <span>{item.park}</span>
-                              </div>
-                              <div class="flex justify-between p-2 inner-border">
-                                <span>农场详情:</span>
-                                <span>{item.parkDetail}</span>
-                              </div>
-                              <div class="flex justify-between p-2 inner-border">
-                                <span>产品名称:</span>
-                                <span>{item.product}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  )
-                }}
-              />
             </div>
-            <div class="w-[25%] flex flex-col space-y-3">
-              <BigscreenCard
-                class="h-[240px]"
-                v-slots={{
-                  title: () => (
-                    <div class="art-font text-lg">物联网设备</div>
-                  ),
-                  default: () => (
-                    <div class="p-4" v-loading={deviceInfoLoading.value} onClick={() => {
-                      window.open("/internetMonitor/device/overview")
-                    }}>
-                      <div class="flex justify-between inner-border p-1 px-2">
-                        <div class="art-font">物联网设备</div>
-                        <div class="text-sm">共<span
-                          class="art-font px-1">{deviceInfoTotal.value}</span>台
+            {/** 生长分析 */}
+            <div class="w-full h-[310px]">
+              {/** 标题 */}
+              <div class="plant-card-title">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">生长分析</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content">
+                <div id="growthChart" onClick={() => { window.open("/internetMonitor/deviceData/grow-record") }}></div>
+              </div>
+            </div>
+            {/** 产量分析 */}
+            <div class="w-full h-[310px]">
+              {/** 标题 */}
+              <div class="plant-card-title">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">产量分析</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content">
+                <div id="harvestChart" class="mt-2" onClick={() => { window.open("/farm_work/harvest-management") }}></div>
+              </div>
+            </div>
+          </div>
+          {/** 中 */}
+          <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between">
+            {/** 设备统计 */}
+            <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px]">
+              {
+                plantCenterTopCardList.value.map(item => (
+                  <div class={`device-bg ${ item.bgClass } flex justify-between items-center cursor-pointer`} onClick={() => { window.open("/internetMonitor/device/deviceView?deviceStatus=" + item.param) }}>
+                    <div class="flex items-center">
+                      <div class={`device-icon ${ item.iconClass }`}></div>
+                      <div class="ml-[10px]">{item.label}</div>
+                    </div>
+                    <div class="text-[24px]">{item.value}</div>
+                  </div>
+                ))
+              }
+            </div>
+            {/** 打造特色产品 */}
+            <div class="w-full h-[310px]">
+              {/** 标题 */}
+              <div class="plant-card-title-wide">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">打造特色产品</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content-wide box-border px-[17px] py-[21px]">
+                <div class="flex justify-between cursor-pointer" onClick={() => { window.open("/pcg/production/village-product") }} v-loading={baseEquipmentLoading.value}>
+                  {
+                    showedProductPageList.value.map(item => (
+                      <div class="flex justify-between product-item">
+                        <img src={item.photo} class="h-[170px] object-contain" />
+                        <div class="w-[150px] overflow-auto hidden-scrollbar">
+                          <div>
+                            <div class="text-[#B6BECE]">农场名称:</div>
+                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.park}</div>
+                          </div>
+                          <div class="mt-[17px]">
+                            <div class="text-[#B6BECE]">农场详情:</div>
+                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.parkDetail}</div>
+                          </div>
+                          <div class="mt-[17px]">
+                            <div class="text-[#B6BECE]">产品名称:</div>
+                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.product}</div>
+                          </div>
                         </div>
                       </div>
-                      <div class="grid grid-cols-2 gap-3 mt-3">
-                        {
-                          deviceInfoList.value.map(item => (
-                            <div class="inner-border p-2">
-                              <div class="flex justify-between">
-                                <div>{item.deviceKind}</div>
-                                <div>共计:<span class="art-font px-1">{item.total}</span>台</div>
-                              </div>
-                              <div
-                                class="h-[1.2rem] mt-2 relative flex justify-between items-center px-1"
-                                style="background-color: #343b45"
-                              >
-                                <div
-                                  class="absolute top-0 left-0 h-full"
-                                  style={`width: ${item.rate}%;background-color:#397f43;`}
-                                ></div>
-                                <div class="relative z-10"
-                                     style="font-size: 12px;">在线: {item.online}</div>
-                                <div class="relative z-10"
-                                     style="font-size: 12px;">离线: {item.offline}</div>
-                              </div>
-                            </div>
-                          ))
-                        }
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          {/** 右 */}
+          <div class="w-[420px] h-full flex flex-col justify-between">
+            {/** 物联网设备 */}
+            <div class="w-full h-[278px]">
+              {/** 标题 */}
+              <div class="plant-card-title">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">物联网设备</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content-small box-border px-[15px] py-[12px]">
+                <div class="cursor-pointer" onClick={() => { window.open("/internetMonitor/device/overview") }} v-loading={deviceInfoLoading.value}>
+                  <div class="flex justify-between box-border px-[20px] py-[6px] iot-total">
+                    <div>物联网设备</div>
+                    <div class="text-sm">共计: <span class="text-[18px]">{deviceInfoTotal.value}</span>台</div>
+                  </div>
+                  <div class="overflow-auto hidden-scrollbar">
+                    {
+                      deviceInfoList.value.map(item => (
+                        <div class="iot-item">
+                          <div class="flex justify-between">
+                            <div>{item.deviceKind}</div>
+                            <div>共计: {item.total}台</div>
+                          </div>
+                          <el-progress percentage={item.rate} class="mt-[9px]" stroke-width="10px" color="#01FFD9" show-text={ false } striped striped-flow duration="30"/>
+                          <div class="mt-[7px] flex justify-end items-center">
+                            <div class="pr-[3px]">在线: {item.online}</div>
+                            <div class="w-[1px] h-[10px] box-border border border-solid border-[#82868F]"></div>
+                            <div><span class="pl-[5px]">离线: {item.offline}</span></div>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/** 实时监测 */}
+            <div class="w-full h-[667px]">
+              {/** 标题 */}
+              <div class="plant-card-title">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">实时监测</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="plant-card-content-high box-border py-[10px] px-[14px] overflow-auto hidden-scrollbar">
+                {/** 气象监测 */}
+                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站") }}>
+                  气象监测
+                </div>
+                <div class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer" v-loading={weatherLoading.value} onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站") }}>
+                  {
+                    weatherList.value.map((item) => (
+                      <div class="real-time-item flex flex-col items-center">
+                        <div class={['iconv2-' + item.icon]}></div>
+                        <div>{item.label}</div>
+                        <div class="real-time-item-value">
+                          <span class="text-[16px]">{item.value}</span>
+                          <span class="">{item.unit || ''}</span>
+                        </div>
                       </div>
-                    </div>
-                  )
-                }}
-              />
-              <BigscreenCard
-                class="grow"
-                v-slots={{
-                  title: () => (
-                    <div class="flex justify-between w-full">
-                      <div class="art-font text-lg">实时监测</div>
-                      {
-                        // <BigscreenSelector
-                        //     v-model={runtimeBase.value}
-                        //     options={[
-                        //         { key: 'test', label: 'test' },
-                        //         { key: 'test1', label: 'test1' }
-                        //     ]}
-                        // />
-                      }
-                    </div>
-                  ),
-                  default: () => (
-                    <>
-                      <div class="art-font px-3 py-2 pt-3" onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站")
-                      }}>气象监测
+                    ))
+                  }
+                </div>
+                {/** 土壤墒情 */}
+                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] hidden cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测") }}>
+                  土壤墒情
+                </div>
+                <div class="mt-[6px] grid grid-cols-4 gap-[8px] hidden cursor-pointer" v-loading={soilLoading.value}  cursor-pointer={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测") }}>
+                  {
+                    soilList.value.map((item) => (
+                      <div class="real-time-item flex flex-col items-center">
+                        <div class={['iconv2-' + item.icon]}></div>
+                        <div>{item.label}</div>
+                        <div class="real-time-item-value">
+                          <span class="text-[16px]">{item.value}</span>
+                          <span class="">{item.unit || ''}</span>
+                        </div>
                       </div>
-                      <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]"
-                           v-loading={weatherLoading.value} onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站")
-                      }}>
-                        {
-                          weatherList.value.map((item) => (
-                            <div class="inner-border flex justify-between px-4 py-2 items-center">
-                              <div class="flex space-x-2 items-center">
-                                <div class={['icon-' + item.icon]}></div>
-                                <div>{item.label}</div>
-                              </div>
-
-                              <div class="flex space-x-2 items-end py-2">
-                                <div>
-                                  <span class="art-font">{item.value}</span>
-                                  <span class="pl-1">{item.unit || ''}</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        }
+                    ))
+                  }
+                </div>
+                {/** 水质监测 */}
+                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测") }}>
+                  水质监测
+                </div>
+                <div class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer" v-loading={waterLoading.value} onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测") }}>
+                  {
+                    waterList.value.map((item) => (
+                      <div class="real-time-item flex flex-col items-center">
+                        <div class={['iconv2-' + item.icon]}></div>
+                        <div>{item.label}</div>
+                        <div class="real-time-item-value">
+                          <span class="text-[16px]">{item.value}</span>
+                          <span class="">{item.unit || ''}</span>
+                        </div>
                       </div>
-                      <div class="art-font px-3 py-1 pt-2 hidden" onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
-                      }}>土壤墒情
-                      </div>
-                      <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px] hidden"
-                           v-loading={soilLoading.value} onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测")
-                      }}>
-                        {
-                          soilList.value.map((item) => (
-                            <div class="inner-border flex justify-between px-4 items-center">
-                              <div class="flex space-x-2">
-                                <div class={['icon-' + item.icon]}></div>
-                                <div>{item.label}</div>
-                              </div>
-                              <div class="flex space-x-2 items-end py-2">
-                                <div>
-                                  <span class="art-font">{item.value}</span>
-                                  <span class="pl-1">{item.unit || ''}</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        }
-                      </div>
-                      <div class="art-font px-3 py-2 pt-5" onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测")
-                      }}>水质监测
-                      </div>
-                      <div class="grid grid-cols-2 gap-2 px-3 min-h-[80px]"
-                           v-loading={waterLoading.value} onClick={() => {
-                        window.open(`/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测`)
-                      }}>
-                        {
-                          waterList.value.map((item) => (
-                            <div class="inner-border flex justify-between px-4 py-2 items-center">
-                              <div class="flex space-x-2 items-center">
-                                <div class={['icon-' + item.icon]}></div>
-                                <div>{item.label}</div>
-                              </div>
-                              <div class="flex space-x-2 items-end py-2">
-                                <div>
-                                  <span class="art-font">{item.value}</span>
-                                  <span class="pl-1">{item.unit || ''}</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    </>
-                  )
-                }}
-              />
+                    ))
+                  }
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1506,15 +1521,31 @@ export default defineComponent({
         </div>
       )
     }
+
+    // 路由
+    const router = useRouter()
+    // 返回上一页
+    const toLastPage = () => {
+      router.go(-1)
+    }
+    // 跳到指定页
+    const handleRoute = (path: string) => {
+      router.push(path)
+    }
+
     return () => (
       <div class="bg-[#12153a] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={mainBg}>
+          <BigscreenContainer backgroundImage={bgImage.value} key={bgImage.value}>
             <BigscreenHeader
+              style="background-color: #112029;"
               backgroundImage={headerBg}
               v-slots={{
                 left: () => (
-                  <div class="flex space-x-4 relative">
+                  <div class="h-[40px] mb-[20px] flex">
+                      <button onClick={() => { toLastPage() }} class="bg-transparent border-none contain-img last-icon cursor-pointer"></button>
+                      <button onClick={() => { handleRoute('/') }} class="bg-transparent border-none contain-img home-icon ml-[13px] cursor-pointer"></button>
+                    {/** 
                     <BigscreenTab
                       v-model={activeTab.value}
                       options={[
@@ -1523,8 +1554,9 @@ export default defineComponent({
                         {key: 'risk', label: '风险预警'}
                       ]}
                       onChange={handleTabChange}
-                    />
-                    {
+                    />*/}
+                    {/** 在请求监控设备列表或者监控通知事件的时候不允许点击其他Tab页 */}
+                    {/*
                       monitorDeviceLoading.value || monitorNoticeLoading.value ? (
                         <div
                           class="absolute left-0 top-0 w-230px h-30px"
@@ -1533,15 +1565,34 @@ export default defineComponent({
                           }}
                         ></div>
                       ) : null
-                    }
-                    <BackOrHome/>
+                    */}
                   </div>
                 ),
                 right: () => (
-                  <BigScreenTime/>
+                  <div class="mb-[20px] h-[40px]]">
+                    <BigScreenTime style="color: #fff; margin-bottom: 20px;" />
+                  </div>
                 ),
                 default: () => (
-                  <div class="art-font tracking-wide">稻鱼鸭产业可视化数字驾驶舱</div>
+                  <div>
+                    <div class="art-font text-[40px] tracking-[6px] relative cursor-default">
+                      稻鱼鸭产业可视化数字驾驶舱
+                      <div class={`${ activeTab.value === 'base' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-245px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('base') }}>基地导览</div>
+                      <div class={`${ activeTab.value === 'plant' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('plant') }}>智慧种植</div>
+                      <div class={`${ activeTab.value === 'risk' ? 'module-active-right' : 'module-normal-right'} absolute top-[-10px] right-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('risk') }}>风险预警</div>
+                    </div>
+                    {/** 在请求监控设备列表或者监控通知事件的时候不允许点击其他Tab页 */}
+                    {
+                      monitorDeviceLoading.value || monitorNoticeLoading.value ? (
+                        <div
+                          class="absolute left-[-490px] top-[-10px] w-[1920px] h-[40px]"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                          }}
+                        ></div>
+                      ) : null
+                    }
+                  </div>
                 )
               }}
             ></BigscreenHeader>
@@ -1609,5 +1660,334 @@ export default defineComponent({
 
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0;
+}
+
+/** 返回上一页 返回首页 */
+.contain-img {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.last-icon {
+  background-image: url(./assets/v2/last.png);
+  width: 32px;
+  height: 32px;
+}
+.home-icon {
+  background-image: url(./assets/v2/home.png);
+  width: 32px;
+  height: 32px;
+}
+
+/** 模块图标 */
+.module-normal-left {
+  background-image: url(./assets/v2/module-normal-left.png);
+  width: 168px;
+  height: 40px;
+}
+.module-active-left {
+  background-image: url(./assets/v2/module-active-left.png);
+  width: 168px;
+  height: 40px;
+}
+.module-normal-right {
+  background-image: url(./assets/v2/module-normal-right.png);
+  width: 168px;
+  height: 40px;
+}
+.module-active-right {
+  background-image: url(./assets/v2/module-active-right.png);
+  width: 168px;
+  height: 40px;
+}
+
+/** 基地导览部分 */
+/** 左侧基地列表 */
+.base-list-bg {
+  background-image: url(./assets/v2/base-list-bg.png);
+  background-size: 100% 100%;
+}
+// 调整下拉菜单箭头位置到左侧
+:deep(.el-sub-menu .el-sub-menu__icon-arrow) {
+  right: 140px;
+}
+// 调整下拉菜单的左右内距
+:deep(.el-menu:not(.el-menu--collapse) .el-sub-menu__title) {
+  padding-right: 20px;
+}
+:deep(.el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-sub-menu__title) {
+  padding-left: 40px;
+}
+// 调整菜单项的左内距
+:deep(.el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-menu-item) {
+  padding-left: 60px;
+}
+// 菜单项悬停和被选中的样式
+:deep(.el-menu-item:hover) {
+  background-image: url(./assets/v2/menuitem-active.png);
+  background-size: 100% 100%;
+  color: #5AFFAA;
+}
+:deep(.el-menu-item.is-active) {
+  background-image: url(./assets/v2/menuitem-active.png);
+  background-size: 100% 100%;
+  color: #5AFFAA;
+}
+
+/** 中间监控视频 */
+.monitor-bg {
+  background-image: url(./assets/v2/monitor-bg.png);
+  background-size: 100% 100%;
+}
+.video-bg {
+  background-image: url(./assets/v2/video-bg.png);
+  background-size: 100% 100%;
+  position: relative;
+}
+.base-name {
+  width: 100%;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  background: linear-gradient(180deg, #FFFFFF 18%, #5CFFAB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-size: 16px;
+}
+.device-status-bg {
+  background-image: url(./assets/v2/device-status-bg.png);
+  background-size: 100% 100%;
+  width: 60px;
+  height: 18px;
+}
+.device-online {
+  background: {
+    image: url(./assets/v2/device-status-online.png);
+    position: 3px;
+    repeat: no-repeat;
+    size: contain;
+  }
+  width: 17px;
+  height: 14px;
+}
+.device-offline {
+  background: {
+    image: url(./assets/v2/device-status-offline.png);
+    position: 3px;
+    repeat: no-repeat;
+    size: contain;
+  }
+  width: 17px;
+  height: 14px;
+}
+
+/** 右侧通知事件 */
+.notice-bg {
+  background-image: url(./assets/v2/notice-bg.png);
+  background-size: 100% 100%;
+}
+.notice-title {
+  background: linear-gradient(180deg, #FFFFFF 18%, #5CFFAB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-size: 24px;
+  height: 31px;
+  line-height: 31px;
+  width: fit-content;
+}
+.notice-icon {
+  background-image: url(./assets/v2/notice-icon.png);
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+.event-item {
+  background-image: url(./assets/v2/event-bg.png);
+  background-size: 100% 100%;
+  width: 370px;
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+/** 智慧种植部分 */
+// 卡片
+.plant-card-title {
+  background: {
+    image: url(./assets/v2/plant-card-title-bg.png);
+    size: 100% 100%;
+  }
+  width: 420px;
+  height: 40px;
+}
+.plant-card-title-wide {
+  background: {
+    image: url(./assets/v2/plant-card-title-bg-wide.png);
+    size: 100% 100%;
+  }
+  width: 1010px;
+  height: 40px;
+}
+.plant-card-content {
+  background: {
+    image: url(./assets/v2/plant-card-content-bg.png);
+    size: 100% 100%;
+  }
+  width: 420px;
+  height: 260px;
+  margin-top: 10px;
+}
+.plant-card-content-small {
+  background: {
+    image: url(./assets/v2/plant-card-content-bg-small.png);
+    size: 100% 100%;
+  }
+  width: 420px;
+  height: 228px;
+  margin-top: 10px;
+}
+.plant-card-content-high {
+  background: {
+    image: url(./assets/v2/plant-card-content-bg-high.png);
+    size: 100% 100%;
+  }
+  width: 420px;
+  height: 617px;
+  margin-top: 10px;
+}
+.plant-card-content-wide {
+  background: {
+    image: url(./assets/v2/plant-card-content-bg-wide.png);
+    size: 100% 100%;
+  }
+  width: 1010px;
+  height: 260px;
+  margin-top: 10px;
+}
+// 基础设施
+.base-device-item {
+  background: {
+    image: url(./assets/v2/base-device-item-bg.png);
+    size: 100% 100%;
+  }
+  width: 185px;
+  height: 45px;
+}
+// 设备统计
+.device-bg {
+  background-size: 100% 100%;
+  width: 215px;
+  height: 60px;
+  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 18px;
+}
+.device-total-bg {
+  background-image: url(./assets/v2/device-total-bg.png);
+}
+.device-online-bg {
+  background-image: url(./assets/v2/device-online-bg.png);
+}
+.device-offline-bg {
+  background-image: url(./assets/v2/device-offline-bg.png);
+}
+.device-error-bg {
+  background-image: url(./assets/v2/device-error-bg.png);
+}
+.device-icon {
+  background: {
+    size: contain;
+    position: center;
+    repeat: no-repeat;
+  }
+  width: 38px;
+  height: 38px;
+}
+.device-total-icon {
+  background-image: url(./assets/v2/device-total-icon.png);
+}
+.device-online-icon {
+  background-image: url(./assets/v2/device-online-icon.png);
+}
+.device-offline-icon {
+  background-image: url(./assets/v2/device-offline-icon.png);
+}
+.device-error-icon {
+  background-image: url(./assets/v2/device-error-icon.png);
+}
+// 打造特色产品
+.product-item {
+  background: {
+    image: url(./assets/v2/product-item-bg.png);
+    size: 100% 100%;
+  }
+  width: 482px;
+  height: 220px;
+  box-sizing: border-box;
+  padding: 24px 27px;
+}
+.product-item-detail-bg {
+  background: {
+    image: url(./assets/v2/product-item-detail-bg.png);
+    size: contain;
+    position: bottom;
+    repeat: no-repeat;
+  }
+}
+// 物联网设备
+.iot-total {
+  background: {
+    image: url(./assets/v2/IOT-total-bg.png);
+    size: 100% 100%;
+  }
+  width: 390px;
+  height: 34px;
+}
+.iot-item {
+  background: {
+    image: url(./assets/v2/IOT-item-bg.png);
+    size: 100% 100%;
+  }
+  width: 390px;
+  height: 80px;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  margin-top: 6px;
+}
+// 实时监测
+.real-time-item {
+  background: {
+    image: url(./assets/v2/real-time-item-bg.png);
+    size: 100% 100%;
+  }
+  width: 92px;
+  height: 80px;
+  box-sizing: border-box;
+  padding: {
+    top: 5px;
+    bottom: 5px;
+  }
+}
+@for $i from 1 through 13 {
+  .iconv2-#{$i} {
+    background: {
+      image: url(./assets/v2/icon#{$i}.png);
+      size: contain;
+      position: center;
+      repeat: no-repeat;
+    }
+    height: 32px;
+    width: 32px;
+  }
+}
+.real-time-item-value {
+  background: linear-gradient(180deg, #FFFFFF 50%, #8FFFC5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
 </style>
