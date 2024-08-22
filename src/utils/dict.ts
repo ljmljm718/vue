@@ -296,5 +296,4 @@ export enum DICT_TYPE {
   GROWTH_MODEL_TYPE = 'growth_model_type',//生长模型类型
   MONITOR_TYPE = 'monitor_type',//因子类别
   FACTOR_TYPE = 'factor_type',//传感器监测类型
-
 }

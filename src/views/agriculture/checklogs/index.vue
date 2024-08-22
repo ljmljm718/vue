@@ -8,15 +8,15 @@
       :inline="true"
       label-width="68px"
     >
-      <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.inspectionNum"-->
-      <!--          placeholder="请输入巡检编号"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+      <el-form-item label="设备名称" prop="equName">
+        <el-input
+          v-model="queryParams.equName"
+          placeholder="请输入设备名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="巡检状态" prop="inspectionState">
         <el-select
           v-model="queryParams.inspectionState"
@@ -32,14 +32,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="巡检结果" prop="inspectionResults">
-        <el-input
-          v-model="queryParams.inspectionResults"
-          placeholder="请输入巡检结果"
+      <el-form-item label="巡检结果" prop="resultState">
+        <el-select
+          v-model="queryParams.resultState"
+          placeholder="请选择巡检结果状态"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_RESULT_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="巡检人" prop="inspector">
         <el-input
@@ -114,7 +120,7 @@
           <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
         </template>
       </el-table-column>
-      <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>
+      <!--      <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>-->
 
 
       <el-table-column label="所属基地" align="center" prop="base"/>
