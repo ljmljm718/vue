@@ -463,6 +463,12 @@ const loginOut = async () => {
   position: absolute;
   left: 5.6rem;
   top: 24rem;
+  z-index: 99;
+  transition: all .3s ease;
+}
+
+.monitor-detect:hover {
+  transform: scale(1.1);
 }
 
 .rect-bg {
