@@ -108,36 +108,38 @@
 <!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
 <!--        </el-button>-->
       </el-form-item>
-        <div style="margin-top: 1rem;margin-left: 2rem;height: 2rem">
-          <el-form-item>
-          <el-button plain type="primary" @click="handleCreate()" v-hasPermi="['agriculture:farm-task:create']">
-            <Icon class="mr-5px" icon="ep:plus" />
-            新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:farm-task:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-          </el-form-item>
-        </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="!h-2.4rem"
+            plain
+            @click="handleCreate()"
+            v-hasPermi="['agriculture:farm-task:create']" >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+        </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="农事任务模块的核心功能在于为农事计划的具体实施制定明确的操作规范和验收标准。"/>
+      </div>
+    </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="计划名称" align="center" prop="planName"  width="200" >
+        <template  #header>
+          <QuestionMaskTip lable-name="计划名称" content="可以点击计划名称，来查看具体的农事计划。"/>
+        </template>
         <template  #default="scope">
           <label style="cursor:pointer;color: #0072c6"  @click="lookPlanDetail(scope.row.planCode)"> {{ scope.row.planName }}</label>
         </template>
       </el-table-column>
-      <!--      <el-table-column label="计划ID" align="center" prop="id" />-->
-<!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
       <el-table-column label="基地名称" align="center" prop="parkName" width="180" />
 <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
@@ -220,6 +222,7 @@ import FarmTaskForm from './FarmTaskForm.vue'
 import {DICT_TYPE} from "@/utils/dict";
 import Router from "@/router";
 import * as ProcessInstanceApi from '@/api/bpm/processInstance'
+import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
 
 /** 农事任务 列表 */
 defineOptions({ name: 'FarmTask' })
