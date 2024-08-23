@@ -54,4 +54,8 @@ export const AgriWarningRuleDeviceApi = {
   selectAgriDeviceByWarnRuleId: async (warnRuleId: string) => {
     return await request.get({ url: `/agriculture/agri-warning-rule-device/list?warnRuleId=` + warnRuleId })
   },
+  // 根据预警规则查询设备
+  selectDeviceListByWarnRuleId: async (warnRuleId: string) => {
+    return await request.get({ url: `/agriculture/agri-warning-rule-device/deviceList?warnRuleId=` + warnRuleId })
+  },
 }
