@@ -1,35 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 import ArrowIcon from '@/components/arrow/index.vue'
 import request from '@/config/axios'
 
 const projectCategoryTree = async (params: any) => {
   return await request.get({
-    url: `/portal/project-category/tree`, params
+    url: `/portal/project-category/tree`,
+    params
   })
 }
 
 const fetchMenuList = async () => {
   const data = await projectCategoryTree({ parentId: 0, status: 1 })
-  if (Array.isArray(data)) topMenuList.value = data.map((item, index) => {
-    return {
-      ...item,
-      onClick: (item) => {
-        globalClick(index, item)
-      },
-      onMouseEnter: () => {
-        menuFlag.value = true
-        if (item.code === 'production_education_training') {
-          getFloatText('以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。', (text) => {
-            text1.value = text
-          })
+  if (Array.isArray(data))
+    topMenuList.value = data.map((item, index) => {
+      return {
+        ...item,
+        onClick: (item) => {
+          globalClick(index, item)
+        },
+        onMouseEnter: () => {
+          menuFlag.value = true
+          if (item.code === 'production_education_training') {
+            getFloatText(
+              '以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。',
+              (text) => {
+                text1.value = text
+              }
+            )
+          }
+          setTimeout(() => {
+            if (menuFlag.value) handleMainContentScroll(index)
+          }, 300)
         }
-        setTimeout(() => {
-          if (menuFlag.value) handleMainContentScroll(index)
-        }, 300)
       }
-    }
-  })
+    })
 }
 
 const generating = ref(false)
@@ -40,21 +45,27 @@ const getFloatText = (text = '', callback) => {
   let index = 0
   const tempTextGenerator = () => {
     index++
-    setTimeout(() => {
-      if (index === textLength + 1) {
-        index = 0
-        generating.value = false
-      } else {
-        callback(text.slice(0, index))
-        tempTextGenerator()
-      }
-    }, parseInt(Math.random() * (60 - 30 + 1 ) + 30, 10)) // 
+    setTimeout(
+      () => {
+        if (index === textLength + 1) {
+          index = 0
+          generating.value = false
+        } else {
+          callback(text.slice(0, index))
+          tempTextGenerator()
+        }
+      },
+      parseInt(Math.random() * (60 - 30 + 1) + 30, 10)
+    ) //
   }
   tempTextGenerator()
 }
 
-const selectedMenu = ref(0), menuFlag = ref(false)
-const text1 = ref('以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。')
+const selectedMenu = ref(0),
+  menuFlag = ref(false)
+const text1 = ref(
+  '以培养产业需求的高素质技术技能人才和满足产业转型升级和技术创新为重点，联合行业组织、职业院校、普通高等学校、上下游企业等共同组建，促进产教布局高度匹配，服务高效对接，构建“产学研用”长效机制，推动产业需求全面融入人才培养全过程，秉持“开放、协同、共享、共赢”的运行理念，在更多领域、更深层次加强合作，为产业发展和职业教育发展做出贡献，支撑机器人和工业互联网人才培养和行业发展。'
+)
 
 const hiddenMenuItem = ref([])
 const hiddenSelectIndex = ref(0)
@@ -63,10 +74,12 @@ const globalClick = (index = 0, item = []) => {
   handleMainContentScroll(index)
   setTimeout(() => {
     if (Array.isArray(item)) {
-      console.log('ITEM', item);
+      console.log('ITEM', item)
       hiddenMenuItem.value = item
-    } else { hiddenMenuItem.value = [] }
-    console.log(hiddenMenuItem.value[0]);
+    } else {
+      hiddenMenuItem.value = []
+    }
+    console.log(hiddenMenuItem.value[0])
     hiddenSelectIndex.value = 0
     showHiddenMenu.value = true
   }, 100)
@@ -76,8 +89,8 @@ const topMenuList = ref<any[]>([])
 const curIndex = ref(0)
 const handleMainContentScroll = (index = 0) => {
   curIndex.value = index
-  const mainContainer = document.getElementById("mainContainer") as any
-  const currentWindowHeight = window.innerHeight;
+  const mainContainer = document.getElementById('mainContainer') as any
+  const currentWindowHeight = window.innerHeight
   mainContainer.scrollTop = (currentWindowHeight - 64) * index
   // scrollAnimation(mainContainer.scrollTop, (currentWindowHeight - 64) * index)
 }
@@ -85,26 +98,27 @@ const handleMainContentScroll = (index = 0) => {
 const scrollTimer = ref<any>(null)
 const handleContainerScroll = (e) => {
   clearTimeout(scrollTimer.value)
-  const mainContainer = document.getElementById("mainContainer")
-  const currentWindowHeight = window.innerHeight;
-  curIndex.value = Math.ceil(mainContainer.scrollTop / currentWindowHeight - .5)
+  const mainContainer = document.getElementById('mainContainer')
+  const currentWindowHeight = window.innerHeight
+  curIndex.value = Math.ceil(mainContainer.scrollTop / currentWindowHeight - 0.5)
   scrollTimer.value = setTimeout(() => {
     handleMainContentScroll(curIndex.value)
   }, 1000)
 }
 
 const scrollAnimation = (start, end) => {
-  const DEFALUT_STEP = Math.abs(start - end) > 2000 ? 50
-    : Math.abs(start - end) > 1000 ? 30
-    : 20
-  let step = DEFALUT_STEP, position = start;
+  const DEFALUT_STEP = Math.abs(start - end) > 2000 ? 50 : Math.abs(start - end) > 1000 ? 30 : 20
+  let step = DEFALUT_STEP,
+    position = start
   if (start > end) step = -DEFALUT_STEP
-  const _dom = document.getElementById("mainContainer")
+  const _dom = document.getElementById('mainContainer')
   if (_dom.scrollTop === end) return
   const animate = () => {
     if (Math.abs(position - end) <= Math.abs(step)) {
       position = end
-    } else { position += step }
+    } else {
+      position += step
+    }
     _dom.scrollTop = position
     if (step === DEFALUT_STEP && position < end) requestAnimationFrame(animate)
     if (step === -DEFALUT_STEP && position > end) requestAnimationFrame(animate)
@@ -112,10 +126,9 @@ const scrollAnimation = (start, end) => {
   requestAnimationFrame(animate)
 }
 
-
 const showHiddenMenu = ref(false)
 window.addEventListener('click', () => {
-  if(permitCloseMenu.value && showHiddenMenu.value) showHiddenMenu.value = false
+  if (permitCloseMenu.value && showHiddenMenu.value) showHiddenMenu.value = false
 })
 const permitCloseMenu = ref(true)
 
@@ -130,9 +143,7 @@ const openPage = (url) => {
     <div class="header-wrapper">
       <div class="header-logo">
         <img src="/images/logo.png" alt="" />
-        <div class="header-title">
-          装备智能制造产品云控中台
-        </div>
+        <div class="header-title"> 装备智能制造产品云控中台 </div>
       </div>
       <div class="top-menu-wrapper">
         <div
@@ -142,10 +153,10 @@ const openPage = (url) => {
           @click="item.onClick(item.children)"
           @mouseenter="item.onMouseEnter"
           @mouseleave="menuFlag = false"
-        >{{ item.label }}</div>
+          >{{ item.label }}
+        </div>
       </div>
-      <div class="input-wrapper">
-      </div>
+      <div class="input-wrapper"> </div>
       <div class="avatar-wrapper">
         <img src="/images/avatar.png" alt="" />
       </div>
@@ -182,21 +193,26 @@ const openPage = (url) => {
           :key="item.id"
           :class="`hidden-menu-left-item ${index === hiddenSelectIndex ? 'hidden-left-selected' : ''}`"
           @click="hiddenSelectIndex = index"
+          class="flex justify-between"
         >
           {{ item.label }}
+
+          <el-icon style="margin-top: 3px" color="#0069f3" v-if="index === hiddenSelectIndex">
+            <ArrowRight />
+          </el-icon>
         </div>
       </div>
       <div class="hidden-menu-item" v-if="hiddenMenuItem.length > 0">
-          <div
-            class="hidden-menu-item-item"
-            v-for="item in hiddenMenuItem[hiddenSelectIndex].projectBaseRespVOList"
-            :key="item.id"
-            @click="openPage(item.accessPath)"
-          >
-            <img :src="item.pic ? item.pic : '/images/Rect.png'" alt="" />
-            <div class="float-panel" v-if="item.description">{{ item.description }}</div>
-            <span>{{ item.name }}</span>
-          </div>
+        <div
+          class="hidden-menu-item-item"
+          v-for="item in hiddenMenuItem[hiddenSelectIndex].projectBaseRespVOList"
+          :key="item.id"
+          @click="openPage(item.accessPath)"
+        >
+          <img :src="item.pic ? item.pic : '/images/Rect.png'" alt="" />
+          <div class="float-panel" v-if="item.description">{{ item.description }}</div>
+          <span>{{ item.name }}</span>
+        </div>
       </div>
     </div>
   </main>
@@ -222,9 +238,9 @@ const openPage = (url) => {
       align-items: center;
       height: 100%;
       padding-left: 1rem;
-      padding-right: .6rem;
+      padding-right: 0.6rem;
       color: white;
-      background: linear-gradient(296deg, #0057E6 0%, #00ADF6 100%, #0CB7FF 100%);
+      background: linear-gradient(296deg, #0057e6 0%, #00adf6 100%, #0cb7ff 100%);
       img {
         width: 1.3rem;
         height: 1.3rem;
@@ -245,12 +261,28 @@ const openPage = (url) => {
         display: flex;
         align-items: center;
         user-select: none;
-        transition: all .1s ease;
+        transition: all 0.1s ease;
         cursor: pointer;
       }
+      .top-menu-item:hover {
+        border-top: 3px solid #0069f3;
+        position: relative;
+      }
+      .top-menu-item:hover::after {
+        content: '';
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        top: 3px;
+        left: calc(50% - 6px);
+        border: 6px solid transparent;
+        border-top: 6px solid #0069f3;
+      }
+
       .selected-menu-item {
         border-top: 3px solid #0069f3;
         position: relative;
+        color: #0069f3;
       }
 
       .selected-menu-item::after {
@@ -268,9 +300,9 @@ const openPage = (url) => {
       margin-left: 160px;
       input {
         border: 1px solid #14141464;
-        border-radius: .2rem;
+        border-radius: 0.2rem;
         height: 1.9rem;
-        padding: 0 .8rem;
+        padding: 0 0.8rem;
       }
     }
     .avatar-wrapper {
@@ -327,7 +359,7 @@ const openPage = (url) => {
     background: #ffffffdb;
     backdrop-filter: saturate(180%) blur(20px);
     box-shadow: 2px 2px 2px #25252513;
-    transition: all .4s ease;
+    transition: all 0.4s ease;
 
     .hidden-menu-left {
       max-width: 400px;
@@ -339,16 +371,17 @@ const openPage = (url) => {
       padding: 40px 60px;
       .hidden-menu-title {
         font-size: 1.3rem;
-        padding-bottom: .6rem;
+        padding-bottom: 0.6rem;
       }
       .hidden-menu-text {
         color: #25252589;
-        padding: .6rem 0;
+        padding: 0.6rem 0;
       }
       .hidden-menu-left-item {
         color: #181818;
-        padding: .8rem 0 .4rem 0;
+        padding: 0.8rem 0 0.4rem 0;
         cursor: pointer;
+        width: 115px;
       }
     }
     .hidden-menu-item {
@@ -359,11 +392,11 @@ const openPage = (url) => {
       scroll-snap-type: x;
       .hidden-menu-title {
         font-size: 1.1rem;
-        padding-bottom: .9rem;
+        padding-bottom: 0.9rem;
       }
       .hidden-menu-text {
         color: #25252589;
-        padding: .4rem 0;
+        padding: 0.4rem 0;
       }
       .hidden-menu-item-item {
         color: #25252589;
@@ -385,7 +418,7 @@ const openPage = (url) => {
           position: absolute;
           left: 2.4rem;
           top: 2rem;
-          padding: .4rem .6rem;
+          padding: 0.4rem 0.6rem;
           background-color: #ffffffd6;
         }
       }
@@ -395,11 +428,11 @@ const openPage = (url) => {
 
 .hidden-menu-item::-webkit-scrollbar {
   /*滚动条整体样式*/
-    width: 6px;  /*高宽分别对应横竖滚动条的尺寸*/
-    height: 10px;
+  width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 10px;
 }
 .hidden-menu-item::-webkit-scrollbar-thumb {
-/*滚动条里面深色条*/
+  /*滚动条里面深色条*/
   border-radius: 10px;
   box-shadow: inset 0 0 5px rgba(236, 236, 236, 0.1);
   background: #ccc;
@@ -442,7 +475,7 @@ const openPage = (url) => {
 
 .main-text {
   color: #ffffffde;
-  padding: .6rem 0;
+  padding: 0.6rem 0;
   line-height: 2.4rem;
   font-size: 1.2rem;
 }
