@@ -106,7 +106,7 @@
         </el-button>
       </div>
       <div class="grow">
-        <IntroduceAlert title="数字农业管理系统的种植管理模块是现代农业中重要的组成部分，它利用数字技术和数据分析来优化种植过程，提高作物生产效率和管理水平。"/>
+        <IntroduceAlert title="种植管理是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"/>
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
@@ -152,7 +152,7 @@
           <QuestionMaskTip lable-name="批次号" content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"/>
         </template>
       </el-table-column>
-      <el-table-column label="二维码" align="center" prop="batchQrImg">
+      <el-table-column align="center" prop="batchQrImg" width="100px">
         <template #default="scope">
           <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
                     style="object-fit: cover;width: 2rem;height: 2rem;"
@@ -160,11 +160,17 @@
                     :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
           />
         </template>
+        <template #header>
+          <QuestionMaskTip lable-name="二维码" content="扫描二维码获取当前作物的生长流程，对作物进行溯源管理。"/>
+        </template>
       </el-table-column>
-      <el-table-column label="启用模型" align="center" key="isEnableModel">
+      <el-table-column align="center" key="isEnableModel" width="120px">
         <template #default="scope">
           <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
                      @change="handleStatusChange(scope.row)"/>
+        </template>
+        <template #header>
+          <QuestionMaskTip lable-name="启用模型" content="是否启用该地块作物的模型配置，使其进入模型监测行列。"/>
         </template>
       </el-table-column>
       <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
