@@ -194,32 +194,30 @@
         <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agri:farm-plan:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agri:farm-plan:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-        </el-form-item>
-      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="!h-2.4rem"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agri:farm-plan:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+        </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="农事计划模块专门负责将作物的种植过程细分为若干个易于管理的计划。"/>
+      </div>
+    </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
       <el-table-column label="计划名称" align="center" prop="planName" width="180" />
@@ -241,8 +239,11 @@
       <el-table-column label="地块名称" align="center" prop="plotName" width="180"/>
 <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
-      <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
-      <el-table-column label="品类" align="center" prop="cropType" width="100" >
+      <el-table-column align="center" prop="batchCode" width="160px">
+        <template #header>
+          <QuestionMaskTip lable-name="批次号" content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"/>
+        </template>
+      </el-table-column>      <el-table-column label="品类" align="center" prop="cropType" width="100" >
         <template #default="scope">
           <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
@@ -333,6 +334,7 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
 
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
