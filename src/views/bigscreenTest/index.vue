@@ -50,6 +50,10 @@ import {
   getCountRiceDuckSum
 } from './api'
 import { bg } from 'element-plus/es/locale'
+import MapTangBa from '../Home/mapTangBacopy.vue'
+import * as turf from '@turf/turf'
+import { getDeviceCategoryTree, getDeviceInfo } from './api'
+import meassageTop from './assets/tangba/meassage-top.png'
 
 const {
   BigscreenAdapter,
@@ -163,6 +167,7 @@ export default defineComponent({
           nextTick(() => {
             getGrowthLineChartData()
             getHarvestChartData()
+            getMenuDataList()
           })
           break
         case 'risk':
@@ -824,6 +829,131 @@ export default defineComponent({
       ]
     }
     getPlantCenterTopCardList()
+
+    const mapTangBgRef = ref<any>()
+    const allDeviceDataList = ref<Array<any>>([])
+
+    const getAllLocationDevice = (arr: Array<any>): Array<any> => {
+      let resArr: Array<any> = []
+      arr.forEach((item) => {
+        if (item.children) {
+          resArr = [...resArr, ...getAllLocationDevice(item.children)]
+        } else resArr.push(item)
+      })
+      return resArr
+    }
+
+    const handleSelect = async (item) => {
+      const res = await getDeviceInfo({ id: item })
+      if (mapTangBgRef.value) {
+        console.log('地图设备详情', res)
+        // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
+        const infoString = `<div class="bg-[#e8f2fc] relative">
+          <div class='relative'>
+            <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
+            <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
+              res.parkName
+            }</div>
+            </div>
+          
+            <div class="p-2  text-[14px] meassage-bg">
+              <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${
+                res.deviceName
+              }</div>
+              <div class="p-1 px-2 flex space-x-2 items-center">
+                <div class="${
+                  res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'
+                } w-[8px] h-[8px] rounded-full"></div>
+                <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
+              </div>
+                ${res.channelId !== null && res.channelId !== '' && res.dtu !== null && res.dtu !== ''? 
+                `
+                  <div class="flex pt-[1.2rem] justify-center">
+                    <a 
+                    href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                    class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
+                    style="text-decoration: none;">
+                  查看监控
+                    </a>
+                  </div>
+                `
+                : ''}
+            </div> 
+          </div>`
+        mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+        mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
+      }
+    }
+
+    const getMenuDataList = async () => {
+      const res = await getDeviceCategoryTree({})
+      console.log('getMenuDataList14123', res)
+      console.log('模板引用', mapTangBgRef.value)
+
+      if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res)
+      console.log('allDeviceDataList', allDeviceDataList.value)
+      const kindMap = {
+        '101': 'Monitor',
+        '79': 'Monitor',
+        '82': 'Grow',
+        '102': 'Grow',
+        '103': 'Weather',
+        '159': 'Weather',
+        '81': 'Weather',
+        '86': 'Soil',
+        '104': 'Soil',
+        '107': 'Bug',
+        '88': 'Bug'
+      }
+
+      // 添加 Marker 到地图上
+      const _center = turf.centroid(
+        turf.points(
+          allDeviceDataList.value
+            .map((ele) => {
+              const _item = JSON.parse(JSON.stringify(ele))
+              return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+            })
+            .filter((item) => {
+              const [a, b] = item
+              if (isNaN(a) || isNaN(b) || !a || !b) return false
+              return true
+            })
+        )
+      )
+
+      const { geometry } = _center
+      const { coordinates } = geometry
+      const [_lng, _lat] = coordinates
+      mapTangBgRef.value.setViewport(
+        allDeviceDataList.value.map((item) => {
+          return { lng: item.longitude, lat: item.latitude }
+        })
+      )
+      mapTangBgRef.value.setMapCenter(_lng, _lat)
+      // mapTangBgRef.value.setMapZoom(17)
+
+      allDeviceDataList.value.forEach((item) => {
+        const _item = JSON.parse(JSON.stringify(item))
+        if (!_item.longitude || !_item.latitude) {
+          return
+        }
+        const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
+        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+
+        const marker = mapTangBgRef.value.addMarkerToMap(
+          _item.longitude,
+          _item.latitude,
+          _item.deviceName,
+          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+        )
+        marker.on('click', () => {
+          handleSelect(item.id)
+        })
+      })
+    }
+    // getMenuDataList()
+
     const plantTabPage = () => {
       return (
         <div class="w-full h-full px-[20px] pt-[10px] box-border flex">
@@ -882,9 +1012,12 @@ export default defineComponent({
             </div>
           </div>
           {/** 中 */}
-          <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between">
+          <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between relative">
+            {/** 地图 */}
+            <MapTangBa ref={mapTangBgRef} class="w-full h-[630px] z-0" />
+            {/* h(MapTangBa, {class: 'w-full h-[630px] z-0', ref: mapTangBgRef}) */}
             {/** 设备统计 */}
-            <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px]">
+            <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px] absolute top-0 left-0">
               {
                 plantCenterTopCardList.value.map(item => (
                   <div class={`device-bg ${ item.bgClass } flex justify-between items-center cursor-pointer`} onClick={() => { window.open("/internetMonitor/device/deviceView?deviceStatus=" + item.param) }}>
@@ -1617,7 +1750,6 @@ export default defineComponent({
     const handleRoute = (path: string) => {
       router.push(path)
     }
-
     return () => (
       <div class="bg-[#12153a] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
