@@ -26,7 +26,7 @@
         </div>
       </div>
       </div>
-      
+
     </div>
     <div class="w-100% flex justify-center center-bg">
       <div
@@ -196,7 +196,7 @@
                 @current-change="handleCurrentChange2"
               />
             </div>
-            
+
           </div>
           <div class="w-40% relative">
             <div class="rounded-t-xl bg-[#2ec66d] text-center py-[12px] color-[#fff]">帮扶产业</div>
@@ -240,7 +240,7 @@
 
       </div>
       </div>
-      
+
     </div>
     <div class="village-Bg w-full h-700px mt-20px flex justify-center">
       <div class="container">
@@ -370,7 +370,7 @@
         </div>
       </div>
       </div>
-      
+
     </div>
     <div class="py-[20px] bg-[#f7f7f7] w-100% flex justify-center">
       <div class='container'>
@@ -411,7 +411,7 @@
         </div>
       </div>
       </div>
-      
+
     </div>
     <div class="bg-[#fff] w-100% flex justify-center">
       <div class="container">
@@ -506,7 +506,7 @@
         </div>
       </div>
       </div>
-     
+
     </div>
     <div class="bg-[#345442] py-[20px] w-100% flex justify-center">
       <div class="container">
@@ -557,7 +557,7 @@
         >
       </div>
       </div>
-     
+
     </div>
   </div>
 </template>
@@ -740,7 +740,7 @@ const leftArr3 = reactive({
       width: '19%'
     },
     {
-      key: 'village',
+      key: 'park',
       label: '帮扶基地',
       width: '40%'
     },
@@ -1099,10 +1099,10 @@ const helpParams=reactive({
 })
 const getSelectHelpPage=async ()=>{
   const res=await selectHelpPage(helpParams)
-  console.log(res,'帮扶产业')
+  console.log(res,'帮扶产业1')
   total2.value=res.total
   if(Array.isArray(res.list)){
-    leftArr3.tableData1=res.list.map((item,index)=>{
+    leftArr3.tableData1 = res.list.map((item,index)=>{
       return {
         ...item,
         index:index+1
