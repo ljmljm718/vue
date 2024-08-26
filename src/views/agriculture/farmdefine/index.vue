@@ -61,10 +61,17 @@
         </el-button>
 
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+    </el-form>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
         <el-form-item>
           <el-button
             type="primary"
+            class="!h-2.4rem"
             plain
             @click="openForm('create')"
             v-hasPermi="['agri:farm-define:create']"
@@ -72,27 +79,12 @@
             <Icon icon="ep:plus" class="mr-5px"/>
             新增
           </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agri:farm-define:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
-          </el-button>
-          <el-button type="danger" plain @click="toggleExpandAll">
-            <Icon icon="ep:sort" class="mr-5px"/>
-            展开/折叠
-          </el-button>
         </el-form-item>
       </div>
-    </el-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
+      <div class="grow">
+        <IntroduceAlert title="农事定义模块是阐述每个生长阶段所需的具体农事活动，帮助农业生产者合理安排作业计划。"/>
+      </div>
+    </div>
     <el-table
       v-loading="loading"
       :data="list"

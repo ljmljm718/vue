@@ -128,11 +128,16 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
         <el-button
           type="primary"
           plain
+          class="!h-2.4rem"
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth:create']"
         >
@@ -140,29 +145,19 @@
           新增
         </el-button>
         <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agri:crop-growth:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-        <el-button
           type="warning"
           plain
+          class="!h-2.4rem"
           @click="handleAddGrowth"
         >
           <Icon icon="ep:plus" class="mr-5px"/>
           批量添加
         </el-button>
-      </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="生长日记是对不同基地地块下的不同作物的各个生长期进行解释说明，具体包括各生长期的起止时间，环境条件等等。"/>
+      </div>
     </div>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="编号" align="center" prop="cropCode" />-->
       <el-table-column label="名称" align="center" prop="cropName" min-width="130"/>

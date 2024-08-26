@@ -118,9 +118,9 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="规则标题" align="center" prop="ruleTitle"/>
       <el-table-column label="规则类型" align="center" prop="warnType" width="150">
-<!--        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
-        </template>-->
+        <!--        <template #default="scope">
+                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
+                </template>-->
       </el-table-column>
       <el-table-column label="预警等级" align="center" prop="warnLevel" width="150">
         <template #default="scope">
@@ -195,6 +195,62 @@
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
+    <el-drawer
+      title="绑定设备"
+      v-model="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+      :with-header="false"
+    >
+      <span>已绑定设备</span>
+      <ContentWrap>
+        <el-table v-if="listDevice.length > 0" v-loading="loadingDevice" :data="listDevice"
+                  :show-overflow-tooltip="true"
+                  :stripe="true">
+          <!--          <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>-->
+          <!--          <el-table-column label="设备编号" align="center" prop="id" width="150"/>-->
+          <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
+          <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+            <template #default="scope">
+              <el-cascader
+                style="width: 100%"
+                v-model="scope.row.deviceType"
+                :options="categoryOptions"
+                :props="categoryProps"
+                disabled
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="所属基地" align="center" prop="belongPark"/>
+          <el-table-column label="所属地块" align="center" prop="belongPlot"/>
+          <el-table-column label="状态" align="center" prop="deviceStatus">
+            <template #default="scope">
+              <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="图片" align="center" prop="imgId">
+            <template #default="{ row }">
+              <el-image
+                class="h-50px w-50px"
+                lazy
+                :src="row.imgId"
+                :preview-src-list="[row.imgId]"
+                preview-teleported
+                fit="cover"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="经度" align="center" prop="longitude"/>
+          <el-table-column label="纬度" align="center" prop="latitude"/>
+        </el-table>
+        <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>
+      </ContentWrap>
+      <el-row>
+        <el-button type="primary" plain style="width: 100%;height: 60px" @click="bindDeviceA()">
+           +增加/去除绑定设备
+        </el-button>
+      </el-row>
+    </el-drawer>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
@@ -202,11 +258,13 @@
 
   <!-- 绑定设备列表 -->
   <AgriWarnRuleBindDevice ref="warnRuleBindDeviceRef" :warnRuleId="warnRuleId"
-                          :deviceId="deviceId"/>
+                          :deviceId="deviceId" @bind="bindDevice(warnRuleId)"/>
+
+
 </template>
 
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
 import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {AgriWarningRuleApi, AgriWarningRuleVO} from '@/api/agriculture/agriwarningrule'
@@ -214,15 +272,19 @@ import AgriWarningRuleForm from './AgriWarningRuleForm.vue'
 import {AgriWarningRuleDeviceApi} from "@/api/agriculture/agriwarningruledevice";
 import AgriWarnRuleBindDevice
   from "@/views/agriculture/agriwarningrule/component/AgriWarnRuleBindDevice.vue";
+import {ElTable} from "element-plus";
+import {DeviceInfoVO} from "@/api/agriculture/deviceinfo";
+import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 
 /** 鲁渝协作预警规则 列表 */
 defineOptions({name: 'AgriWarningRule'})
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
-
 const loading = ref(true) // 列表的加载中
+const loadingDevice = ref(true) // 列表的加载中
 const list = ref<AgriWarningRuleVO[]>([]) // 列表的数据
+const listDevice = ref<DeviceInfoVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -243,6 +305,17 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+//绑定设备抽屉相关参数
+const drawer = ref(false)
+const direction = ref('rtl')
+let categoryOptions = ref([])// 设备分类选项
+/**
+ * 设备分类级联选择器
+ */
+const categoryProps = {
+  value: 'id',
+  label: 'categoryName'
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -302,24 +375,64 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
+
 /** 绑定设备操作 */
 const deviceId = ref([]) // 已绑定的设备id
-const warnRuleId = ref()
+const warnRuleId = ref('')
 const warnRuleBindDeviceRef = ref()
 const bindDevice = async (id: number) => {
+  console.log("2345678903456789")
+  loadingDevice.value = true
   try {
-    console.log("id", id)
-    const data = await AgriWarningRuleDeviceApi.selectAgriDeviceByWarnRuleId(String(id))
-    console.log("data", data)
-    deviceId.value = data.map(item => (item.deviceId))
+    drawer.value = true
+    const data = await AgriWarningRuleDeviceApi.selectDeviceListByWarnRuleId(String(id));
+    listDevice.value = data.map((item: any) => {
+      item.deviceType = item.deviceType.split(',').map(Number)
+      return item;
+    })
     warnRuleId.value = id
+    loadingDevice.value = false
+  } catch {
+    loadingDevice.value = false
+  }
+}
+const bindDeviceA = async () => {
+  try {
+    const data = await AgriWarningRuleDeviceApi.selectAgriDeviceByWarnRuleId(warnRuleId.value)
+    deviceId.value = data.map(item => (item.deviceId))
     warnRuleBindDeviceRef.value.open()
   } catch {
   }
 }
 
+/** 查询列表 */
+const getDeviceCategoryTree = async () => {
+  try {
+    categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  } finally {
+
+  }
+}
+
+/**
+ * 关闭绑定设备页面
+ */
+const handleClose = async () => {
+  try {
+    await message.confirm('确认关闭绑定设备页面?')
+    drawer.value = false
+    await getList()
+  } catch {
+  } finally {
+    if (drawer.value) {
+      drawer.value = true
+    }
+  }
+}
+
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  getList();
+  getDeviceCategoryTree();
 })
 </script>

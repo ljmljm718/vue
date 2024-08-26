@@ -98,33 +98,29 @@
 
       </el-form-item>
     </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:harvest-management:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:harvest-management:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="!h-2.4rem"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:harvest-management:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+        </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="采收管理模块的主要职责是集中展示作物的产量信息、库存状况以及相关的人工数据。"/>
+      </div>
+    </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border>
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->

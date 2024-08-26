@@ -61,6 +61,16 @@ export const getEquipmentCountSumOrderByType = async () => {
   })
 }
 
+// 中间上 塘坝 设备监测列表
+export const getDeviceCategoryTree = (params) => {
+  return request.get({ url: `/agriculture/big-screen/getDeviceCategoryTree`, params})
+}
+
+// 中间上 设备属性详情-根据设备id查询
+export const getDeviceInfo = (params) => {
+  return request.get({ url: `/agriculture/device-info/get`, params})
+}
+
 // 中间下-特色产品
 export const villageProductPage = async () => {
   return await request.get({

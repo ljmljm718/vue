@@ -38,13 +38,13 @@
             </div>
             <div class="left-line cursor-pointer">
               <div
-                class="agri-bg relative left-[-13em] top-[-4em]"
+                class="agri-bg relative left-[-13em] top-[-7em]"
                 @click="routerHandler('智慧农事')"
               ></div>
             </div>
             <div class="right-line cursor-pointer">
               <div
-                class="digital-bg relative right-[-13em] top-[-4em]"
+                class="digital-bg relative right-[-13em] top-[-7em]"
                 @click="routerHandler('数字产销')"
               ></div>
             </div>
@@ -60,75 +60,90 @@
                 @click="routerHandler('可视化驾驶舱')"
               ></div>
             </div>
+            <div class="monitor-detect" @click="routerHandler('模型监测')"></div>
             <!-- 两侧菜单 -->
             <div class="rect-bg text-[#fff] text-[1.2em] relative cursor-default">
+              <div class="absolute left-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border">
+                <div class="left-top-wrapper flex flex-col space-y-[.7rem]">
+                  <div
+                    class="lt-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] text-[1.4em] relative left-[1.2rem]"
+                    @click="routerHandler('GIS一张图')"
+                  >GIS一张图</div>
+                  <div
+                    class="lt-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-.2rem] text-[1.4em]"
+                    @click="routerHandler('设备概览')"
+                  >设备概览</div>
+                  <div
+                    class="lt-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-1.1em] text-[1.4em]"
+                    @click="routerHandler('数字监测')"
+                  >数字监测</div>
+                  <div
+                    class="lt-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-2.2rem] text-[1.4em]"
+                    @click="routerHandler('智能预警')"
+                  >智能预警</div>
+                </div>
+                <div class="left-bottom-wrapper flex flex-col space-y-[.7rem]">
+                  <div
+                    class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-2.2rem] text-[1.4em]"
+                    @click="routerHandler('农事概览')"
+                  >农事概览</div>
+                  <div
+                    class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-1.4rem] text-[1.4em]"
+                    @click="routerHandler('农事活动')"
+                  >农事活动</div>
+                  <div
+                    class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-.1rem] text-[1.4em]"
+                    @click="routerHandler('种植管理')"
+                  >种植管理</div>
+                  <div
+                    class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[1.5rem] text-[1.4em]"
+                    @click="routerHandler('种植溯源')"
+                  >种植溯源</div>
+                </div>
+              </div>
+              <div class="absolute right-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border">
+                <div class="right-top-wrapper flex flex-col space-y-[.7rem]">
+                  <div
+                    class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[.5em] text-[1.4em]"
+                    @click="routerHandler('基地总览')"
+                  >基地总览</div>
+                  <div
+                    class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[1.7em] text-[1.4em]"
+                    @click="routerHandler('投入品管理')"
+                  >投入品管理</div>
+                  <div
+                    class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[2.6em] text-[1.4em]"
+                    @click="routerHandler('库存管理')"
+                  >库存管理</div>
+                  <div
+                    class="rt-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[3.3em] text-[1.4em]"
+                    @click="routerHandler('采购管理')"
+                  >采购管理</div>
+                </div>
+                <div class="right-bottom-wrapper flex flex-col space-y-[.7rem]">
+                  <div
+                    class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[3.3em] text-[1.4em]"
+                    @click="routerHandler('加工记录')"
+                  >加工记录</div>
+                  <div
+                    class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[2.6em] text-[1.4em]"
+                    @click="routerHandler('产品流通')"
+                  >产品流通</div>
+                  <div
+                    class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[1.7em] text-[1.4em]"
+                    @click="routerHandler('营销方案')"
+                  >营销方案</div>
+                  <div
+                    class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[.5em] text-[1.4em]"
+                    @click="routerHandler('特色产品')"
+                  >特色产品</div>
+                </div>
+              </div>
               <!-- 左右圆弧上的翠绿色短弧和箭头 -->
               <div class="left-decorator"></div>
               <div class="left-arrow"></div>
               <div class="right-decorator"></div>
               <div class="right-arrow"></div>
-              <!-- 选项菜单 -->
-              <div
-                class="lt-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.1em] top-[2em] text-[1.4em]"
-                @click="routerHandler('GIS一张图')"
-              >GIS一张图</div>
-              <div
-                class="lt-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.4em] top-[5em] text-[1.4em]"
-                @click="routerHandler('数字监测')"
-              >数字监测</div>
-              <div
-                class="lt-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.4em] top-[8em] text-[1.4em]"
-                @click="routerHandler('智能预警')"
-              >智能预警</div>
-              <div
-                class="lt-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[11em] text-[1.4em]"
-                @click="routerHandler('设备巡检')"
-              >设备巡检</div>
-              <div
-                class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-13.1em] top-[19em] text-[1.4em]"
-                @click="routerHandler('农事概览')"
-              >农事概览</div>
-              <div
-                class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-12.5em] top-[19.5em] text-[1.4em]"
-                @click="routerHandler('农事活动')"
-              >农事活动</div>
-              <div
-                class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-11.6em] top-[20em] text-[1.4em]"
-                @click="routerHandler('监测模型')"
-              >监测模型</div>
-              <div
-                class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] absolute left-[-10.4em] top-[20.5em] text-[1.4em]"
-                @click="routerHandler('种植管理')"
-              >种植管理</div>
-
-              <div
-                class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.5em] top-[-6em] text-[1.4em]"
-                @click="routerHandler('基地总览')"
-              >基地总览</div>
-              <div
-                class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.7em] top-[-5.5em] text-[1.4em]"
-                @click="routerHandler('投入品管理')"
-              >投入品管理</div>
-              <div
-                class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.6em] top-[-5em] text-[1.4em]"
-                @click="routerHandler('库存管理')"
-              >库存管理</div>
-              <div
-                class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[67.1em] top-[2em] text-[1.4em]"
-                @click="routerHandler('加工记录')"
-              >加工记录</div>
-              <div
-                class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[66.5em] top-[2.5em] text-[1.4em]"
-                @click="routerHandler('产品流通')"
-              >产品流通</div>
-              <div
-                class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[65.6em] top-[3em] text-[1.4em]"
-                @click="routerHandler('营销方案')"
-              >营销方案</div>
-              <div
-                class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] absolute left-[64.4em] top-[3.5em] text-[1.4em]"
-                @click="routerHandler('特色产品')"
-              >特色产品</div>
             </div>
           </div>
         </div>
@@ -183,32 +198,36 @@ onUnmounted(() => {
 
 const routerHandler = (item: string) => {
   const routeMap = {
-    可视化驾驶舱: wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
+    '可视化驾驶舱': wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
 
-    GIS一张图: '/internetMonitor/gis',
-    设备巡检: '/internetMonitor/check/checkView',
-    智能预警: '/internetMonitor/warn/agri-warning-record',
-    数字监测: '/internetMonitor/deviceData/equipment-data-three',
+    'GIS一张图': '/internetMonitor/gis',
+    '设备巡检': '/internetMonitor/check/checkView',
+    '设备概览': '/internetMonitor/device/overview',
+    '智能预警': '/internetMonitor/warn/agri-warning-record',
+    '数字监测': '/internetMonitor/deviceData/equipment-data-three',
 
-    农事活动: '/farm_work/farmManage/farm-record',
-    种植管理: '/farm_work/crop-base',
-    监测模型: '/growth_monitor/modelMonitor',
-    农事概览: '/farm_work/agriOverview',
+    '农事活动': '/farm_work/farmManage/farm-record',
+    '种植管理': '/farm_work/crop-base',
+    '种植溯源': '/trace/lifeTrace',
+    '监测模型': '/growth_monitor/modelMonitor',
+    '农事概览': '/farm_work/agriOverview',
 
-    基地总览: '/asset/baseOVerview',
-    投入品管理: '/asset/agriculturalResourcesManagement/duck-house-management',
-    库存管理: '/asset/inventory/stock/warehouse',
+    '基地总览': '/asset/baseOVerview',
+    '投入品管理': '/asset/agriculturalResourcesManagement/duck-house-management',
+    '库存管理': '/asset/inventory/stock/warehouse',
+    '采购管理': '/farm_work/harvest-management',
 
-    特色产品: '/pcg/production/village-product',
-    营销方案: '/pcg/marketingCenter/marketing-program',
-    产品流通: '/pcg/sale/sales-management',
-    加工记录: '/pcg/product/record',
+    '特色产品': '/pcg/production/village-product',
+    '营销方案': '/pcg/marketingCenter/marketing-program',
+    '产品流通': '/pcg/sale/sales-management',
+    '加工记录': '/pcg/product/record',
 
-    智能感知: '/internetMonitor/deviceData/equipment-smart-count',
-    农业资源: '/asset/base/parkinfo',
-    视频监控: '/internetMonitor/deviceData/info',
-    数字产销: '/pcg/production/village-product',
-    智慧农事: '/farm_work/crop-base'
+    '智能感知': '/internetMonitor/deviceData/equipment-smart-count',
+    '农业资源': '/asset/base/parkinfo',
+    '视频监控': '/internetMonitor/deviceData/info',
+    '数字产销': '/pcg/production/village-product',
+    '智慧农事': '/farm_work/crop-base',
+    '模型监测': '/growth_monitor/modelMonitor'
   }
 
   if (routeMap[item]) {
@@ -374,16 +393,16 @@ const loginOut = async () => {
   background-image: url(./assets/homeV2/down-left-line.png);
   width: 6em;
   height: 11em;
-  left: 4em;
-  top: 8em;
+  left: 0em;
+  top: 6em;
 }
 
 .down-right-line {
   background-image: url(./assets/homeV2/down-right-line.png);
   width: 6em;
   height: 11em;
-  left: 22em;
-  top: -3em;
+  left: 25em;
+  top: -4em;
 }
 
 .left-line {
@@ -434,6 +453,22 @@ const loginOut = async () => {
     transform: scale(1.1);
     transition: all 0.3s ease;
   }
+}
+
+.monitor-detect {
+  background-image: url(./assets/homeV2/monitorDetect.png);
+  background-size: 100% 100%;
+  width: 12rem;
+  aspect-ratio: .73;
+  position: absolute;
+  left: 5.6rem;
+  top: 24rem;
+  z-index: 99;
+  transition: all .3s ease;
+}
+
+.monitor-detect:hover {
+  transform: scale(1.1);
 }
 
 .rect-bg {

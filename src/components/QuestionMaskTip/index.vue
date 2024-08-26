@@ -27,7 +27,7 @@ const prop = defineProps({
 })
 </script>
 
-<style lang="less">
+<style>
 .tooltip-width {
   max-width: 150px;
   margin-right: 2px;

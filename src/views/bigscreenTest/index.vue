@@ -14,6 +14,7 @@ import {
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 import {
+  ElScrollbar,
   ElTable,
   ElTableColumn
 } from 'element-plus'
@@ -49,6 +50,10 @@ import {
   getCountRiceDuckSum
 } from './api'
 import { bg } from 'element-plus/es/locale'
+import MapTangBa from '../Home/mapTangBacopy.vue'
+import * as turf from '@turf/turf'
+import { getDeviceCategoryTree, getDeviceInfo } from './api'
+import meassageTop from './assets/tangba/meassage-top.png'
 
 const {
   BigscreenAdapter,
@@ -104,12 +109,28 @@ export default defineComponent({
         "浇水": "21",
         "除草": "22",
         "打药": "23",
-        "采收": "24"
+        "采收": "24",
+        "风力": "25",
+        "风速": "26",
+        "亚硝酸盐氮": "27",
+        "氨氮量": "28",
+        "水位": "29",
+        "浑浊度": "30",
+        "氧": "31",
+        "盐": "32",
+        "喂养": "33",
       }
+      // 有完全匹配的项直接返回
+      if (iconMap[text])
+        return iconMap[text]
+
       const iconLabel = Object.keys(iconMap);
       let key = 'default'
       iconLabel.forEach(item => {
-        if (text.indexOf(item) !== -1) key = item
+        // 之前没匹配到的才需要更新key
+        if ('default' === key && (text.indexOf(item) !== -1 || item.indexOf(text) !== -1)) {
+          key = item
+        }
       })
       return iconMap[key]
     }
@@ -146,6 +167,7 @@ export default defineComponent({
           nextTick(() => {
             getGrowthLineChartData()
             getHarvestChartData()
+            getMenuDataList()
           })
           break
         case 'risk':
@@ -286,7 +308,7 @@ export default defineComponent({
             <div class="w-[1310px] mx-[15px] p-[15px] grid grid-cols-3 grid-rows-3 gap-3 monitor-bg" v-loading={monitorDeviceLoading.value}>
               {
                 deviceVideoList.value.map((item: DeviceVideoListItemType) => (
-                  <div class="video-bg" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
+                  <div class="video-bg cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
                     <div class="art-font h-[37px] leading-[37px] text-[18px] text-center tracking-wide">{item.deviceName}</div>
                     <div class="w-full h-[200px] py-[5px] flex justify-center">
                       <video width="340px" controls autoplay src={item.videoSrc} loop/>
@@ -310,7 +332,7 @@ export default defineComponent({
                 class="mt-[15px]"
                 v-model={noticeDatePickerVal.value}
                 type="daterange"
-                range-separator="至"
+                range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 onChange={() => {
@@ -416,19 +438,16 @@ export default defineComponent({
           },
           legend: {
             show: false,
-            orient: 'horizontal',
-            itemWidth: 15,
-            itemHeight: 15
           },
           color: ['#ffa773', '#36e1d9'],
           yAxis: {
-            name: measureUnit[0],
+            name: `单位/${measureUnit[0]}`,
+            nameTextStyle: {
+              color: '#fff'
+            },
             type: 'value',
             axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#ffffff80'
-              }
+              show: false,
             },
             splitLine: {
               //网格线
@@ -449,31 +468,42 @@ export default defineComponent({
               color: '#fff'
             }
           },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              lineStyle: {
+                width: 3,
+                color: '#11F47F',
+                type: 'solid'
+              }
+            },
+            extraCssText: 'background: linear-gradient(270deg, #3DFF9B 0%, rgba(10, 87, 47, 0) 100%);',
+            textStyle: {
+              color: '#fff'
+            },
+            borderWidth: 0
+          },
           series: [
             {
               name: '',
               data: yValue,
               barWidth: 30,
               type: 'line',
-              smooth: true,
+              symbol: 'none',
+              lineStyle: {
+                width: 3,
+                color: '#11F47F'
+              },
+              smooth: false,
               label: {
-                show: true, //开启显示
-                position: 'top', //在上方显示
-                textStyle: {
-                  //数值样式
-                  color: '#eee',
-                  fontSize: 10
-                }
+                show: false, 
               },
-              itemStyle: {
-                normal: {
-                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    {offset: 1, color: '#1bcad600'},
-                    {offset: 0, color: '#1bcad6'}
-                  ])
-                },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: 'rgba(1, 255, 124, 0.3)' },
+                  { offset: 1, color: 'rgba(1, 255, 124, 0)' }
+                ])
               },
-              areaStyle: {normal: {}},
             }
           ],
           grid: {
@@ -505,13 +535,14 @@ export default defineComponent({
         })
         return _res
       }
-      const series = types.map(item => {
+      const colorList = ['92, 230, 216', '1, 255, 124', '233, 216, 16']
+      const series = types.map((item, index) => {
         const nameMap = {
           "duck": '稻田鸭',
           "fish": '稻田鱼',
           "rice": "稻谷"
         }
-        console.log("weijialin", item)
+        // console.log("weijialin", item)
         return {
           name: item,
           data: xAxis.map(x => {
@@ -527,9 +558,19 @@ export default defineComponent({
             position: 'top', //在上方显示
             textStyle: {
               //数值样式
-              color: '#eee',
-              fontSize: 10
-            }
+              color: '#000',
+              fontSize: 12
+            },
+            backgroundColor: `rgba(${colorList[index]}, 1)`,
+            width: 38,
+            height: 13,
+            formatter: () => "",
+            distance: 7
+          },
+          itemStyle: {
+            color: `rgba(${colorList[index]}, 0.2)`,
+            borderColor: `rgba(${colorList[index]}, 1)`,
+            borderWidth: 3
           },
         }
       })
@@ -552,8 +593,17 @@ export default defineComponent({
           legend: {
             show: true,
             orient: 'horizontal',
-            itemWidth: 15,
-            itemHeight: 15,
+            itemWidth: 12,
+            itemHeight: 4,
+            textStyle: {
+              color: '#fff',
+              fontSize: 14
+            },
+            data: colorList.map((item, index) => {
+              return {name: types[index], itemStyle: {color: `rgba(${item}, 1)`, borderWidth: 0}}
+            }),
+            top: 10,
+            left: 240
           },
           color: ["#ed7d31", "#a9d18e", "#d9d9d9"],
           yAxis: [
@@ -779,6 +829,131 @@ export default defineComponent({
       ]
     }
     getPlantCenterTopCardList()
+
+    const mapTangBgRef = ref<any>()
+    const allDeviceDataList = ref<Array<any>>([])
+
+    const getAllLocationDevice = (arr: Array<any>): Array<any> => {
+      let resArr: Array<any> = []
+      arr.forEach((item) => {
+        if (item.children) {
+          resArr = [...resArr, ...getAllLocationDevice(item.children)]
+        } else resArr.push(item)
+      })
+      return resArr
+    }
+
+    const handleSelect = async (item) => {
+      const res = await getDeviceInfo({ id: item })
+      if (mapTangBgRef.value) {
+        console.log('地图设备详情', res)
+        // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
+        const infoString = `<div class="bg-[#e8f2fc] relative">
+          <div class='relative'>
+            <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
+            <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
+              res.parkName
+            }</div>
+            </div>
+          
+            <div class="p-2  text-[14px] meassage-bg">
+              <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${
+                res.deviceName
+              }</div>
+              <div class="p-1 px-2 flex space-x-2 items-center">
+                <div class="${
+                  res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'
+                } w-[8px] h-[8px] rounded-full"></div>
+                <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
+              </div>
+                ${res.channelId !== null && res.channelId !== '' && res.dtu !== null && res.dtu !== ''? 
+                `
+                  <div class="flex pt-[1.2rem] justify-center">
+                    <a 
+                    href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                    class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
+                    style="text-decoration: none;">
+                  查看监控
+                    </a>
+                  </div>
+                `
+                : ''}
+            </div> 
+          </div>`
+        mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+        mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
+      }
+    }
+
+    const getMenuDataList = async () => {
+      const res = await getDeviceCategoryTree({})
+      console.log('getMenuDataList14123', res)
+      console.log('模板引用', mapTangBgRef.value)
+
+      if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res)
+      console.log('allDeviceDataList', allDeviceDataList.value)
+      const kindMap = {
+        '101': 'Monitor',
+        '79': 'Monitor',
+        '82': 'Grow',
+        '102': 'Grow',
+        '103': 'Weather',
+        '159': 'Weather',
+        '81': 'Weather',
+        '86': 'Soil',
+        '104': 'Soil',
+        '107': 'Bug',
+        '88': 'Bug'
+      }
+
+      // 添加 Marker 到地图上
+      const _center = turf.centroid(
+        turf.points(
+          allDeviceDataList.value
+            .map((ele) => {
+              const _item = JSON.parse(JSON.stringify(ele))
+              return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+            })
+            .filter((item) => {
+              const [a, b] = item
+              if (isNaN(a) || isNaN(b) || !a || !b) return false
+              return true
+            })
+        )
+      )
+
+      const { geometry } = _center
+      const { coordinates } = geometry
+      const [_lng, _lat] = coordinates
+      mapTangBgRef.value.setViewport(
+        allDeviceDataList.value.map((item) => {
+          return { lng: item.longitude, lat: item.latitude }
+        })
+      )
+      mapTangBgRef.value.setMapCenter(_lng, _lat)
+      // mapTangBgRef.value.setMapZoom(17)
+
+      allDeviceDataList.value.forEach((item) => {
+        const _item = JSON.parse(JSON.stringify(item))
+        if (!_item.longitude || !_item.latitude) {
+          return
+        }
+        const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
+        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+
+        const marker = mapTangBgRef.value.addMarkerToMap(
+          _item.longitude,
+          _item.latitude,
+          _item.deviceName,
+          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+        )
+        marker.on('click', () => {
+          handleSelect(item.id)
+        })
+      })
+    }
+    // getMenuDataList()
+
     const plantTabPage = () => {
       return (
         <div class="w-full h-full px-[20px] pt-[10px] box-border flex">
@@ -818,7 +993,7 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div id="growthChart" onClick={() => { window.open("/internetMonitor/deviceData/grow-record") }}></div>
+                <div id="growthChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/grow-record") }}></div>
               </div>
             </div>
             {/** 产量分析 */}
@@ -832,14 +1007,17 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div id="harvestChart" class="mt-2" onClick={() => { window.open("/farm_work/harvest-management") }}></div>
+                <div id="harvestChart" class="mt-2 cursor-pointer" onClick={() => { window.open("/farm_work/harvest-management") }}></div>
               </div>
             </div>
           </div>
           {/** 中 */}
-          <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between">
+          <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between relative">
+            {/** 地图 */}
+            <MapTangBa ref={mapTangBgRef} class="w-full h-[630px] z-0" />
+            {/* h(MapTangBa, {class: 'w-full h-[630px] z-0', ref: mapTangBgRef}) */}
             {/** 设备统计 */}
-            <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px]">
+            <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px] absolute top-0 left-0">
               {
                 plantCenterTopCardList.value.map(item => (
                   <div class={`device-bg ${ item.bgClass } flex justify-between items-center cursor-pointer`} onClick={() => { window.open("/internetMonitor/device/deviceView?deviceStatus=" + item.param) }}>
@@ -915,7 +1093,7 @@ export default defineComponent({
                             <div>{item.deviceKind}</div>
                             <div>共计: {item.total}台</div>
                           </div>
-                          <el-progress percentage={item.rate} class="mt-[9px]" stroke-width="10px" color="#01FFD9" show-text={ false } striped striped-flow duration="30"/>
+                          <el-progress percentage={item.rate} class="mt-[9px]" stroke-width="10px" color="#01FF7C" show-text={ false } striped striped-flow duration="30"/>
                           <div class="mt-[7px] flex justify-end items-center">
                             <div class="pr-[3px]">在线: {item.online}</div>
                             <div class="w-[1px] h-[10px] box-border border border-solid border-[#82868F]"></div>
@@ -1026,6 +1204,8 @@ export default defineComponent({
     // 预警分布Echarts
     const initChartWarnLayout = async () => {
       const res = await fulingWarningDistr({})
+      console.log("预警分布ECharts数据", res)
+      const colorList = ['100, 170, 234', '255, 137, 53', '181, 181, 181', '255, 211, 0', '74, 125, 215', '246, 107, 191', '55, 216, 255', '113, 246, 249']
       if (!Array.isArray(res)) return
       initChartStatic(
         "preWarnLayoutChart",
@@ -1041,11 +1221,18 @@ export default defineComponent({
             {
               nam: "预警分布",
               type: "pie",
-              radius: ["30%", "50%"],
+              radius: ["40%", "50%"],
               center: ["50%", "47%"],
-              data: res.map(item => ({
+              padAngle: 5,
+              data: res.map((item, index) => ({
                 name: item.warnType,
-                value: item.warnRatio
+                value: item.warnRatio,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: `rgba(${colorList[index]}, 1)` },
+                    { offset: 1, color: `rgba(${colorList[index]}, 0.2)` }
+                  ])
+                }
               })),
               label: {
                 formatter: "{b}\n{c},{d}%",
@@ -1077,6 +1264,8 @@ export default defineComponent({
         xiList = []
       } = await getPestLevelChart({})
       console.log("虫害数量 总数", sumList);
+      const colorList = ['255, 98, 19', '9, 79, 58', '157, 110, 48', '53, 117, 124']
+      const types = ['总数', '金蝉子数量', '蛾对应数量', '蟋蟀数量']
       initChartStatic(
         'bugCountChart',
         generateBaseOptions({
@@ -1093,7 +1282,16 @@ export default defineComponent({
             show: true,
             orient: 'horizontal',
             itemWidth: 15,
-            itemHeight: 15
+            itemHeight: 5,
+            textStyle: {
+              color: '#fff',
+              fontSize: 14
+            },
+            data: colorList.map((item, index) => {
+              return {name: types[index], itemStyle: {color: `rgba(${item}, 1)`, borderWidth: 0}}
+            }),
+            top: 20,
+            left: 180
           },
           color: ['#ffa773', '#36e1d9'],
           yAxis: {
@@ -1126,7 +1324,7 @@ export default defineComponent({
               data: sumList,
               barWidth: 30,
               type: 'line',
-              smooth: true,
+              smooth: false,
               label: {
                 show: true, //开启显示
                 position: 'top', //在上方显示
@@ -1136,6 +1334,9 @@ export default defineComponent({
                   fontSize: 10
                 }
               },
+              itemStyle: {
+                color: '#FF6213'
+              }
             },
             {
               name: '金蝉子数量',
@@ -1151,6 +1352,12 @@ export default defineComponent({
                   fontSize: 10
                 }
               },
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#14F17F' },
+                  { offset: 1, color: 'rgba(9, 79, 58, 0.5)' }
+                ])
+              }
             },
             {
               name: '蛾对应数量',
@@ -1166,6 +1373,12 @@ export default defineComponent({
                   fontSize: 10
                 }
               },
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#FFD534' },
+                  { offset: 1, color: 'rgba(157, 110, 48, 0.5)' }
+                ])
+              }
             },
             {
               name: '蟋蟀数量',
@@ -1181,6 +1394,12 @@ export default defineComponent({
                   fontSize: 10
                 }
               },
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#66E1DF' },
+                  { offset: 1, color: 'rgba(53, 117, 124, 0.5)' }
+                ])
+              }
             },
           ],
           grid: {
@@ -1269,7 +1488,7 @@ export default defineComponent({
       farmTopLoading.value = false
       farmTopList.value = res.map(item => ({
         ...item,
-        icon: 'icon-' + getIconClass(item.defineName),
+        icon: 'icon-schedule-' + getIconClass(item.defineName),
         label: item.defineName
       }))
       if (farmTopList.value.length > 0) {
@@ -1288,233 +1507,232 @@ export default defineComponent({
       })
       return _url.join('&')
     }
+
+    // 预警信息表格行 样式
+    const warnInfoRow = (data: { row: any, rowIndex: number }) => {
+      let res = {"background-color": 'transparent', color: '#fff'}
+      if (data.rowIndex % 2) {
+        res['background'] = 'linear-gradient(90deg, rgba(255, 69, 69, 0.182) 0%, rgba(255, 69, 69, 0.05) 100%)'
+      }
+      return res
+    }
+    // 预警信息表格头 样式
+    const warnInfoTitle = (data: { row: any, column: any, rowIndex: number, columnIndex: number }) => {
+      let res = {
+        "background-color": "rgba(17, 234, 201, 0.1)",
+        color: "#11EAC9",
+        height: '35px',
+        'line-height': '35px'
+      }
+      if (!data.columnIndex) {
+        res['padding-left'] = '35px'
+      }
+      return res
+    }
+
+    // 报警信息处理情况表头 样式
+    const dealTitle = () => {
+      return {
+        "background-color": "rgba(17, 234, 201, 0.1)",
+        color: "#11EAC9",
+        border: 'none',
+        height: '35px',
+        'line-height': '35px'
+      }
+    }
+    // 报警信息处理情况内容 样式
+    const dealContent = () => {
+      return {
+        color: '#fff',
+        height: '35px',
+        'line-height': '35px',
+        'border-bottom': '1px dashed rgba(61, 255, 226, 0.15)',
+      }
+    }
+
     const riskTabPage = () => {
       return (
-        <div class="w-full h-full box-border pb-1 px-5 py-3">
-          <div class="inner-border w-full h-full p-3 flex flex-col space-y-3 box-border">
-            <div class="h-[50%] flex space-x-3">
-              <div class="inner-border w-[50%]">
-                <BigscreenCard
-                  class="h-full"
-                  v-slots={{
-                    title: () => (
-                      <div class="art-font text-lg">预警信息</div>
-                    ),
-                    default: () => (
-                      <div class="p-5 h-[380px]" v-loading={preWarnLoading.value} onClick={() => {
-                        window.open("/internetMonitor/warn/agri-warning-record")
-                      }}>
-                        <ElTable
-                          data={preWarnList.value}
-                          rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
-                          headerCellStyle={{color: '#fff', backgroundColor: '#064477'}}
-                          height="340px"
-                          style="background-color: transparent;"
-                        >
-                          <ElTableColumn
-                            label="预警信息"
-                            property="warnInfo"
-                          />
-                          <ElTableColumn
-                            label="预警地点"
-                            property="warnLocation"
-                          />
-                          <ElTableColumn
-                            label="预警时间"
-                            property="warnTime"
-                          />
-                          <ElTableColumn
-                            label="预警类型"
-                            property="warnType"
-                          />
-                          <ElTableColumn
-                            label="预警状态"
-                            property="warnStatus"
-                          />
-                        </ElTable>
-                      </div>
-                    )
-                  }}
-                />
+        <div class="flex w-full h-full box-border pt-[10px] px-[20px]">
+          {/** 左 */}
+          <div class="w-[1165px] h-full mr-[15px]">
+            {/** 预警信息 */}
+            <div>
+              {/** 标题 */}
+              <div class="risk-card-title-lg">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">预警信息</div>
+                </div>
               </div>
-              <div class="inner-border w-[50%]">
-                <BigscreenCard
-                  class="h-full"
-                  v-slots={{
-                    title: () => (
-                      <div class="art-font text-lg" onClick={() => {
-                        window.open("/internetMonitor/warn/agri-warning-record")
-                      }}>报警信息处理情况</div>
-                    ),
-                    default: () => (
-                      <div class="p-5 h-[380px] flex space-x-3">
-                        <div class="w-[140px]">
-                          {
-                            warnHandleInfo.value.map(item => (
-                              <div class="flex justify-between p-2 inner-border" onClick={() => {
-                                window.open(`/internetMonitor/warn/agri-warning-record?warnStatus=${item.warnStatus}`)
-                              }}>
-                                <span>{item.label}</span>
-                                <span>{item.value}</span>
-                              </div>
-                            ))
-                          }
-                        </div>
-                        <ElTable
-                          v-loading={warnInfoHandleLoading.value}
-                          data={warnInfoHandleList.value}
-                          rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
-                          headerCellStyle={{color: '#fff', backgroundColor: '#064477'}}
-                          headerRowStyle={{backgroundColor: '#064477'}}
-                          height="340px"
-                          style="background-color: transparent;"
-                        >
-                          <ElTableColumn
-                            label="预警信息"
-                            property="warnInfo"
-                          />
-                          <ElTableColumn
-                            label="预警时间"
-                            property="warnTime"
-                          />
-                          <ElTableColumn
-                            label="操作"
-                            property="operation"
-                            formatter={
-                              (e) => (
-                                <div class="flex space-x-2">
-                                  <el-button link type="primary" onClick={() => {
-                                    window.open(`/internetMonitor/warn/agri-warning-record?id=${e.id}&status=2`)
-                                  }}>忽略
-                                  </el-button>
-                                  <el-button link type="primary" onClick={() => {
-                                    window.open(`/internetMonitor/warn/agri-warning-record?id=${e.id}`)
-                                  }}>去处理
-                                  </el-button>
-                                </div>
-                              )
-                            }
-                          />
-                        </ElTable>
-                      </div>
-                    )
-                  }}
-                />
+              {/** 内容 */}
+              <div class="risk-card-content-lg">
+                <div class="w-full h-full box-border px-[15px] pt-[15px] pb-[10px] cursor-pointer" v-loading={preWarnLoading.value} onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}>
+                  <ElTable data={preWarnList.value} rowStyle={warnInfoRow} headerCellStyle={warnInfoTitle} headerRowStyle={{'background-color': 'transparent'}} height="392.5px" style="background-color: transparent">
+                    <ElTableColumn label="预警信息">
+                      {
+                        ({ row }) => (
+                          <div class="flex items-center">
+                            <div class="contain-img risk-warn-info-icon"></div>
+                            <div>{ row.warnInfo }</div>
+                          </div>
+                        )
+                      }
+                    </ElTableColumn>
+                    <ElTableColumn label="预警地点" property="warnLocation" />
+                    <ElTableColumn label="预警时间" property="warnTime" />
+                    <ElTableColumn label="预警类型" property="warnType" />
+                    <ElTableColumn label="预警状态">
+                      {
+                        ({row}) => (
+                          <span class={'未处理' === row.warnStatus ? 'text-[#11F47F]' : ''}>{row.warnStatus}</span>
+                        )
+                      }
+                    </ElTableColumn>
+                  </ElTable>
+                </div>
               </div>
             </div>
-            <div class="h-[50%] flex space-x-3">
-              <div class="inner-border w-[30%]">
-                <BigscreenCard
-                  class="h-full"
-                  v-slots={{
-                    title: () => (
-                      <div class="art-font text-lg">预警分布</div>
-                    ),
-                    default: () => (
-                      <div id="preWarnLayoutChart" onClick={() => {
-                        window.open("/internetMonitor/warn/agri-warning-record")
-                      }}></div>
-                    )
-                  }}
-                />
+            <div class="mt-[15px] flex">
+              {/** 预警分布 */}
+              <div>
+                {/** 标题 */}
+                <div class="risk-card-title-sm">
+                  <div class="flex items-center ml-[15px]">
+                    <div class="notice-icon contain-img"></div>
+                    <div class="art-font notice-title">预警分布</div>
+                  </div>
+                </div>
+                {/** 内容 */}
+                <div class="risk-card-content-sm relative">
+                  <div id="preWarnLayoutChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}></div>
+                  <div class="absolute top-[118.75px] left-[217.5px] distribution-label flex justify-center items-center">
+                    <span class="art-font text-[24px] distribution-text">预警分布</span>
+                  </div>
+                </div>
               </div>
-              <div class="inner-border w-[30%]">
-                <BigscreenCard
-                  class="h-full"
-                  v-slots={{
-                    title: () => (
-                      <div class="art-font text-lg">虫害数量</div>
-                    ),
-                    default: () => (
-                      <div id="bugCountChart" onClick={() => {
-                        window.open("/internetMonitor/deviceData/equipment-data?collectionType=虫情监测")
-                      }}></div>
-                    )
-                  }}
-                />
+              {/** 虫害数量 */}
+              <div class="ml-[15px]">
+                {/** 标题 */}
+                <div class="risk-card-title-sm">
+                  <div class="flex items-center ml-[15px]">
+                    <div class="notice-icon contain-img"></div>
+                    <div class="art-font notice-title">虫害数量</div>
+                  </div>
+                </div>
+                {/** 内容 */}
+                <div class="risk-card-content-sm">
+                  <div id="bugCountChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data?collectionType=虫情监测") }}></div>
+                </div>
               </div>
-              <div class="inner-border w-[40%]">
-                <BigscreenCard
-                  class="h-full "
-                  v-slots={{
-                    title: () => (
-                      <div class="art-font text-lg ml-5px" onClick={() => {
-                        window.open("/farm_work/farmManage/farm-plan")
-                      }}>农事指挥调度</div>
-                    ),
-                    default: () => (
-                      <div class="p-5">
-                        <div class="flex space-x-4 pb-3">
-                          {
-                            farmTopList.value.map(item => (
-                              <div
-                                class={`flex flex-col items-center ${item.id === selectedFarmTopId.value ? 'selected-farm-top' : ''}`}
-                                onClick={() => {
-                                  selectedFarmTopId.value = item.id
-                                  getCommandInfoList(selectedFarmTopId.value as any)
-                                }}
-                              >
-                                <div class={[item.icon]} style="width: 2rem;height: 2rem;"></div>
-                                <div>{item.label}</div>
-                              </div>
-                            ))
-                          }
+            </div>
+          </div>
+          {/** 右 */}
+          <div class="w-[700px] h-full">
+            {/** 报警信息处理情况 */}
+            <div>
+              {/** 标题 */}
+              <div class="risk-card-title-md">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title cursor-pointer" onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}>
+                    报警信息处理情况
+                  </div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="risk-card-content-md">
+                <div class="w-full h-full box-border py-[13px] px-[15px]">
+                  {/** 处理情况统计 */}
+                  <div class="flex justify-between w-full h-[60px]">
+                    {
+                      warnHandleInfo.value.map(item => (
+                        <div class="flex justify-between items-center cursor-pointer risk-deal-num" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?warnStatus=${item.warnStatus}`) }}>
+                          <div class="flex items-center">
+                            <div class={`contain-img risk-deal-icon-${item.warnStatus}`}></div>
+                            <div class="ml-[11px]">{item.label}</div>
+                          </div>
+                          <span class="notice-title">{item.value}</span>
                         </div>
-                        <ElTable
-                          v-loading={commandLoading.value}
-                          data={commandInfoList.value}
-                          rowStyle="color:#b9b9b9;background: #0c263c;height: 2.2rem;"
-                          headerCellStyle={{color: '#fff', backgroundColor: '#064477'}}
-                          headerRowStyle={{backgroundColor: '#064477'}}
-                          height="300px"
-                          style="background-color: transparent;"
-                        >
-                          <ElTableColumn
-                            label="基地"
-                            property="parkName"
-                          />
-                          <ElTableColumn
-                            label="地块"
-                            property="plotName"
-                          />
-                          <ElTableColumn
-                            label="上次执行时间"
-                            property="lastTime"
-                          />
-                          <ElTableColumn
-                            label="计划执行时间"
-                            property="startTime"
-                          />
-                          <ElTableColumn
-                            label="计划状态"
-                            property="planState"
-                            formatter={
-                              (e) => e.planState === '0' ? '未开始' : e.planState === '1' ? '进行中' : '已结束'
-                            }
-                          />
-                          <ElTableColumn
-                            label="操作"
-                            property="operation"
-                            formatter={
-                              (e) => (
-                                <div class="flex space-x-2">
-                                  {
-                                    e.planState === '2' ? null : (
-                                      <el-button link type="primary" onClick={() => {
-                                        window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&${generateUrlParams(e)}`)
-                                      }}>去处理</el-button>
-                                    )
-                                  }
-
-                                </div>
-                              )
-                            }
-                          />
-                        </ElTable>
+                      ))
+                    }
+                  </div>
+                  <ElTable data={warnInfoHandleList.value} class="mt-[10px] cursor-default" height="321.5px" headerCellStyle={dealTitle} headerRowStyle={{backgroundColor: 'transparent'}} cellStyle={dealContent} rowStyle={{'background-color': 'transparent'}} v-loading={warnInfoHandleLoading.value} style="background-color: transparent">
+                    <ElTableColumn label="预警信息" property="warnInfo"/>
+                    <ElTableColumn label="预警时间" property="warnTime"/>
+                    <ElTableColumn label="操作">
+                      {
+                        ({row}) => (
+                          <div>
+                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?id=${row.id}&status=2`)}}>
+                              忽略
+                            </button>
+                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#5CFFEF] border border-solid border-[#5CFFEF] cursor-pointer rounded ml-[5px]" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?id=${row.id}`)}}>
+                              去处理
+                            </button>
+                          </div>
+                        )
+                      }
+                    </ElTableColumn>
+                  </ElTable>
+                </div>
+              </div>
+            </div>
+            {/** 农事智慧调度 */}
+            <div class="mt-[15px]">
+              {/** 标题 */}
+              <div class="risk-card-title-md">
+                <div class="flex items-center ml-[15px]">
+                  <div class="notice-icon contain-img"></div>
+                  <div class="art-font notice-title">农事智慧调度</div>
+                </div>
+              </div>
+              {/** 内容 */}
+              <div class="risk-card-content-md">
+                <div class="w-full h-full p-[15px] box-border">
+                  {/** 第一行按钮 */}
+                  <div class="h-[26px] mb-[10px]">
+                    <ElScrollbar>
+                      <div class="flex w-fit">
+                        {
+                          farmTopList.value.map(item => (
+                            <div class={`${item.id === selectedFarmTopId.value ? 'risk-schedule-item-active text-[#11F47F] mr-[10px]' : 'risk-schedule-item-normal mr-[10px]'} cursor-pointer flex items-center`} onClick={() => {
+                                selectedFarmTopId.value = item.id
+                                getCommandInfoList(selectedFarmTopId.value as any)
+                              }}
+                            >
+                              <div class={`${item.icon} ml-[20px]`}></div>
+                              <div class="ml-[8px]">{item.label}</div>
+                            </div>
+                          ))
+                        }
                       </div>
-                    )
-                  }}
-                />
+                    </ElScrollbar>
+                  </div>
+                  {/** 表格 */}
+                  <ElTable data={commandInfoList.value} v-loading={commandLoading.value} headerCellStyle={dealTitle} headerRowStyle={{backgroundColor: 'transparent'}} cellStyle={dealContent} rowStyle={{'background-color': 'transparent'}} height="351.5px" class="cursor-default" style="background-color: transparent;">
+                    <ElTableColumn label="基地" property="parkName" width='200'/>
+                    <ElTableColumn label="地块" property="plotName" />
+                    <ElTableColumn label="上次执行时间" property="lastTime" />
+                    <ElTableColumn label="计划执行时间" property="startTime" />
+                    <ElTableColumn label="计划状态">
+                      {
+                        ({row}) => (
+                          row.planState === '0' ? <span class="text-[#FF4545]">未开始</span> : row.planState === '1' ? <span class="text-[#F8CD01]">未开始</span> : '已结束'
+                        )
+                      }
+                    </ElTableColumn>
+                    <ElTableColumn label="操作">
+                      {
+                        ({row}) => (
+                          row.planState === '2' ? null : 
+                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded" onClick={() => { window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&${generateUrlParams(row)}`) }}>
+                              去处理
+                            </button>
+                        )
+                      }
+                    </ElTableColumn>
+                  </ElTable>
+                </div>
               </div>
             </div>
           </div>
@@ -1532,7 +1750,6 @@ export default defineComponent({
     const handleRoute = (path: string) => {
       router.push(path)
     }
-
     return () => (
       <div class="bg-[#12153a] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
@@ -1812,6 +2029,15 @@ export default defineComponent({
   height: 90px;
   margin-bottom: 10px;
 }
+:deep(.el-input__wrapper) {
+  background-color: #0B2729;
+}
+:deep(.el-input__wrapper) {
+  box-shadow: none;
+}
+:deep(.el-date-editor.el-input__wrapper) {
+  box-shadow: none;
+}
 
 /** 智慧种植部分 */
 // 卡片
@@ -1971,7 +2197,7 @@ export default defineComponent({
     bottom: 5px;
   }
 }
-@for $i from 1 through 13 {
+@for $i from 1 through 32 {
   .iconv2-#{$i} {
     background: {
       image: url(./assets/v2/icon#{$i}.png);
@@ -1989,5 +2215,141 @@ export default defineComponent({
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+}
+
+/** 风险预警部分 */
+// 卡片的标题和内容
+.risk-card-title-lg {
+  background: {
+    image: url(./assets/v2/risk-card-title-lg.png);
+    size: 100% 100%;
+  }
+  width: 1165px;
+  height: 40px;
+}
+.risk-card-title-md {
+  background: {
+    image: url(./assets/v2/risk-card-title-md.png);
+    size: 100% 100%;
+  }
+  width: 700px;
+  height: 40px;
+}
+.risk-card-title-sm {
+  background: {
+    image: url(./assets/v2/risk-card-title-sm.png);
+    size: 100% 100%;
+  }
+  width: 575px;
+  height: 40px;
+}
+.risk-card-content-lg {
+  background: {
+    image: url(./assets/v2/risk-card-content-lg.png);
+    size: 100% 100%;
+  }
+  width: 1165px;
+  height: 417.5px;
+  margin-top: 10px;
+}
+.risk-card-content-md {
+  background: {
+    image: url(./assets/v2/risk-card-content-md.png);
+    size: 100% 100%;
+  }
+  width: 700px;
+  height: 417.5px;
+  margin-top: 10px;
+}
+.risk-card-content-sm {
+  background: {
+    image: url(./assets/v2/risk-card-content-sm.png);
+    size: 100% 100%;
+  }
+  width: 575px;
+  height: 417.5px;
+  margin-top: 10px;
+}
+// 预警信息
+.risk-warn-info-icon {
+  background-image: url(./assets/v2/risk-warn-info-icon.png);
+  width: 27px;
+  height: 27px;
+}
+// 去掉表格最下边框
+:deep(.el-table__inner-wrapper::before) {
+  display: none;
+}
+// 去掉表格内的下边框
+:deep(.el-table td.el-table__cell) {
+  border: none;
+}
+// 去掉表头下边框
+:deep(.el-table th.el-table__cell.is-leaf) {
+  border: none;
+}
+// 报警信息处理情况
+.risk-deal-num {
+  background: {
+    image: url(./assets/v2/risk-deal-num-bg.png);
+    size: 100% 100%;
+  }
+  width: 215px;
+  height: 60px;
+  box-sizing: border-box;
+  padding: {
+    left: 10px;
+    right: 20px;
+  }
+}
+@for $i from 0 through 2 {
+  .risk-deal-icon-#{$i} {
+    background-image: url(./assets/v2/risk-deal-icon-#{$i}.png);
+    width: 38px;
+    height: 38px;
+  }
+}
+// 预警分布
+.distribution-label {
+  background: {
+    image: url(./assets/v2/distribution-label-bg.png);
+    size: 100% 100%;
+  }
+  width: 140px;
+  height: 140px;
+}
+.distribution-text {
+  background: linear-gradient(180deg, #1DA6FF 0%, #97D6FF 60%, #FFFFFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+// 农事智慧调度 
+@for $i from 19 through 33 {
+  .icon-schedule-#{$i} {
+    background-image: url(./assets/v2/icon-schedule-#{$i}.png);
+    width: 12px;
+    height: 12px;
+  }
+}
+.risk-schedule-item-normal {
+  width: 100px;
+  height: 26px;
+  background: {
+    image: url(./assets/v2/risk-schedule-item-normal.png);
+    size: 100% 100%;
+  }
+}
+.risk-schedule-item-active {
+  width: 100px;
+  height: 26px;
+  background: {
+    image: url(./assets/v2/risk-schedule-item-active.png);
+    size: 100% 100%;
+  }
+}
+:deep(.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell) {
+  background-color: rgba(17, 244, 127, 0.15);
 }
 </style>
