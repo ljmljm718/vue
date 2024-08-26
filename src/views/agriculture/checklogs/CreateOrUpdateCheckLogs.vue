@@ -53,12 +53,24 @@
             <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
             <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
             <!--      </el-form-item>-->
-
+            <el-row :gutter="3">
+              <el-col :span="8">
+                <el-form-item label="所属基地" prop="base1">
+                  <el-input v-model="formData.base1" placeholder="选择设备后自动填入" disabled/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'"
+                              prop="massif1">
+                  <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row :gutter="3">
               <el-col :span="8">
                 <el-form-item label="设备编号" prop="equNum">
                   <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-                  <el-input v-model="formData.equNum" readonly>
+                  <el-input v-model="formData.equName" readonly>
                     <template #append>
                       <el-button @click="openPurchaseOrderInEnableList">
                         <Icon icon="ep:search"/>
@@ -69,8 +81,19 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="设备名称" prop="equName">
-                  <el-input v-model="formData.equName" placeholder="选择设备后自动填入" disabled/>
+                <!--                <el-form-item label="设备名称" prop="equName">-->
+                <!--                  <el-input v-model="formData.equName" placeholder="选择设备后自动填入" disabled/>-->
+                <!--                </el-form-item>-->
+                <el-form-item label="巡检人" prop="inspectorId">
+                  <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
+                  <el-input v-model="formData.inspector" readonly>
+                    <template #append>
+                      <el-button @click="openUserList">
+                        <Icon icon="ep:search"/>
+                        选择
+                      </el-button>
+                    </template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -99,41 +122,11 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row :gutter="3">
-              <el-col :span="8">
-                <el-form-item label="所属基地" prop="base1">
-                  <el-input v-model="formData.base1" placeholder="选择设备后自动填入" disabled/>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'"
-                              prop="massif1">
-                  <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="3">
-              <el-col :span="8">
-                <el-form-item label="巡检人编号" prop="inspectorId">
-                  <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
-                  <el-input v-model="formData.inspectorId" readonly>
-                    <template #append>
-                      <el-button @click="openUserList">
-                        <Icon icon="ep:search"/>
-                        选择
-                      </el-button>
-                    </template>
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="巡检人" prop="inspector">
-                  <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="3">
 
+            <el-row :gutter="3">
+<!--              <el-col :span="8">-->
+<!--                -->
+<!--              </el-col>-->
               <el-col :span="8">
                 <el-form-item label="巡检状态" prop="inspectionState">
                   <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
@@ -152,15 +145,15 @@
                             placeholder="请输入巡检内容"/>
                 </el-form-item>
               </el-col>
-
             </el-row>
-            <el-row>
+            <el-row :gutter="3">
               <el-col :span="8">
                 <el-form-item label="巡检影像" prop="inspectionImage">
                   <UploadImg v-model="formData.inspectionImage"/>
                   <!--        <ImageUpload v-model="formData.inspectionImage"/>-->
                 </el-form-item>
               </el-col>
+
             </el-row>
           </el-form>
           <!-- 截至 -->
@@ -257,7 +250,7 @@ const openPurchaseOrderInEnableList = () => {
   purchaseOrderInEnableListRef.value.open()
 }
 const handlePurchaseOrderChange = (order: ParkBaseVO) => {
-  console.log("order",order)
+  console.log("order", order)
   formData.value.equNum = String(order[0].deviceCode)
   formData.value.equName = String(order[0].deviceName)
   formData.value.base = String(order[0].belongPark)
