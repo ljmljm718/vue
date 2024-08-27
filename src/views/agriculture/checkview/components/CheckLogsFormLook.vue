@@ -10,8 +10,28 @@
       <!--      <el-form-item label="巡检编号" prop="inspectionNum">-->
       <!--        <el-input v-model="formData.inspectionNum" placeholder="请输入巡检编号"/>-->
       <!--      </el-form-item>-->
+      <!--      <el-form-item label="巡检结果" prop="inspectionResults">-->
+      <!--        <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果" readonly/>-->
+      <!--      </el-form-item>-->
+      <el-form-item label="设备编号" prop="equNum">
+        <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
+        <el-input v-model="formData.equName" readonly>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList" disabled>
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="所属基地" prop="base">
+        <el-input v-model="formData.base1" placeholder="请输入所属基地" disabled/>
+      </el-form-item>
+      <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
+        <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
+      </el-form-item>
       <el-form-item label="巡检状态" prop="inspectionState">
-        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态">
+        <el-select v-model="formData.inspectionState" placeholder="请选择巡检状态" disabled>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.CHECK_STATE)"
             :key="dict.value"
@@ -21,40 +41,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="巡检结果" prop="inspectionResults">
-        <el-input v-model="formData.inspectionResults" placeholder="请输入巡检结果" readonly/>
-      </el-form-item>
-      <el-form-item label="设备编号" prop="equNum">
-        <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.equNum" readonly>
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="所属基地" prop="base">
-        <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
-      </el-form-item>
-      <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
-        <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
-      </el-form-item>
-      <el-form-item label="巡检人id" prop="inspectorId">
+      <el-form-item label="巡检人" prop="inspectorId">
         <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人id"/>-->
-        <el-input v-model="formData.inspectorId" readonly>
+        <el-input v-model="formData.inspector" readonly>
           <template #append>
-            <el-button @click="openUserList">
+            <el-button @click="openUserList" disabled>
               <Icon icon="ep:search"/>
               选择
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="巡检人" prop="inspector">
-        <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>
-      </el-form-item>
+      <!--      <el-form-item label="巡检人" prop="inspector">-->
+      <!--        <el-input v-model="formData.inspector" placeholder="请输入巡检人" disabled/>-->
+      <!--      </el-form-item>-->
       <el-form-item label="巡检时间" prop="inspectionTime">
         <el-date-picker
           v-model="formData.inspectionTime"
