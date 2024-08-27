@@ -1205,7 +1205,7 @@ export default defineComponent({
     const initChartWarnLayout = async () => {
       const res = await fulingWarningDistr({})
       console.log("预警分布ECharts数据", res)
-      const colorList = ['100, 170, 234', '255, 137, 53', '181, 181, 181', '255, 211, 0', '74, 125, 215', '246, 107, 191', '55, 216, 255', '113, 246, 249']
+      const colorList = ['100, 170, 234', '255, 137, 53', '181, 181, 181', '255, 211, 0', '74, 125, 215', '246, 107, 191', '55, 216, 255', '113, 246, 249', '91, 155, 213', '237, 125, 49', '165, 165, 165', '255, 192, 0', '68, 114, 196', '255, 94, 94', '17, 234, 201', '17, 244, 127']
       if (!Array.isArray(res)) return
       initChartStatic(
         "preWarnLayoutChart",
