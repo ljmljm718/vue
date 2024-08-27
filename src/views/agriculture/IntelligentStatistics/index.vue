@@ -37,8 +37,9 @@
             <div>养殖品种</div>
           </div>
         </template>
-        <div class="w-[100] h-210px relative">
-          <div id="chartPie1" class="w-100% h-100%"></div>
+        <div :class="`w-[100%] h-210px relative ${distributionList.length==0?'chartNull':''}`" >
+          <div id="chartPie1"  class="w-100% h-100%"></div>
+          <div  v-if="distributionList.length==0" class="text-center mt-[-40px] color-[#999999] text-[14px]">暂无养殖品种，去“智慧农事”-“种植管理”中添加</div>
         </div>
       </el-card>
       <el-card class="w-100% h-100%">
@@ -47,8 +48,9 @@
             <div>农事计划</div>
           </div>
         </template>
-        <div class="w-[100] h-210px relative">
-          <div id="chartPie2" class="w-100% h-100%"></div>
+        <div :class="`w-[100%] h-210px relative ${DistriButionList.length==0?'chartNull':''}`">
+          <div id="chartPie2" class="w-100% h-100%" ></div>
+          <div v-if="DistriButionList.length==0" class="text-center mt-[-40px] color-[#999999] text-[14px]">暂无农事计划，去“智慧农事”-“种植管理”中添加</div>
         </div>
       </el-card>
       <el-card class="w-100% h-100%">
@@ -142,7 +144,6 @@ const plotCode = ref('')
 const baseList = ref([])
 const getPage = async () => {
   let res = await page()
-  console.log(res, 'res123x')
   baseList.value = res.list
   baseCode.value = res.list[0].id
   getParkPage({ parkId: res.list.id })
@@ -153,14 +154,15 @@ const plotList = ref([])
 
 const getParkPage = async (parkId) => {
   let res = await parkPage(parkId)
-  console.log(res.list[0].id, 'dikuia')
   plotList.value = res.list
   plotCode.value = res.list[0].id
 }
 //养殖品种
+const distributionList=ref([])
+const chartPieWidth=ref(0)
 const initChartPie1 = async () => {
   let res = await distribution({ parkId: baseCode.value, plotId: plotCode.value })
-  console.log(res, 'Yangzhi')
+  distributionList.value=res  
   let data = []
   res.forEach((item) => {
     data.push({
@@ -210,10 +212,12 @@ const initChartPie1 = async () => {
     })
   )
 }
+
 //农事计划
+const DistriButionList=ref([])
 const initChartPie2 = async () => {
   let res = await stateDistriBution({ parkId: baseCode.value, plotId: plotCode.value })
-  console.log(res, 'nongshijihua')
+  DistriButionList.value=res
   initChartStatic(
     'chartPie2',
     generatePieOptions({
@@ -261,10 +265,12 @@ const initChartPie2 = async () => {
     })
   )
 }
+
+
+
 //投入产出分析
 const initChartBar1 = async () => {
   let res = await getInOrOutAnalysis({ parkId: baseCode.value, plotId: plotCode.value })
-  console.log(res, '产线分析')
   let yData = Object.keys(res)
   let harvestList = []
   let inputList = []
@@ -359,19 +365,6 @@ const initChartBar2 = async () => {
   let seriesList = []
   let seriesList2 = []
   let nameList={ ...Array.from(new Set(res.map(item=>item.variety)))}
-  console.log(res, '产量一览图')
-  // let a = [
-  //   { time: '2022', harvest: '1455.0', variety: '长江1号' },
-  //   { time: '2023', harvest: '1605.0', variety: '长江1号' },
-  //   { time: '2024', harvest: '1830.0', variety: '长江1号' },
-  //   { time: '2022', harvest: '910.0', variety: '光合1号' },
-  //   { time: '2023', harvest: '420.0', variety: '光合1号' },
-  //   { time: '2024', harvest: '362.0', variety: '光合1号' },
-  //   { time: '2024', harvest: '362.0', variety: '光合3号' },
-  //   { time: '2024', harvest: '362.0', variety: '光合4号' }
-  // ]
-  // let nameList = Array.from(new Set(a.map((item) => item.variety)))
-  console.log(nameList, 'nnnnnnnnnn')
   res.forEach((item) => {
     if (nameList[0] == item.variety) {
       yData1.push({ name: item.variety, value: item.harvest })
@@ -388,17 +381,7 @@ const initChartBar2 = async () => {
       yData5.push({ name: item.variety, value: item.harvest })
     }
   })
-  console.log(yData1, '产量一览图')
-  console.log(yData2, '产量一览图2')
-  // seriesList.forEach(item=>{
-  //   console.log(seriesList2.indexOf(item),'seriesList2.indexOf(item)seriesList2.indexOf(item)')
-  //   seriesList2
-  //   if(seriesList2.indexOf(item)==-1){
-  //     seriesList2.push(item) 
-  //   }
-  // })
-
-  console.log(seriesList2, 's123eriesListseriesListseriesList')
+ 
   initChartStatic(
     'chartBar2',
     generateBaseOptions({
@@ -478,27 +461,6 @@ const initChartBar2 = async () => {
           smooth: false,
           barWidth: 28
         },
-        // {
-        //   name:nameList[2],
-        //   data:yData3,
-        //   type: 'bar',
-        //   smooth: false,
-        //   barWidth: 28
-        // },
-        // {
-        //   name:nameList[3],
-        //   data:yData4,
-        //   type: 'bar',
-        //   smooth: false,
-        //   barWidth: 28
-        // },
-        // {
-        //   name:nameList[4],
-        //   data:yData5,
-        //   type: 'bar',
-        //   smooth: false,
-        //   barWidth: 28
-        // },
       ],
       grid: {
         left: '10%',
@@ -512,8 +474,6 @@ const initChartBar2 = async () => {
 //农事活动
 const initChartBar3 = async () => {
   let res = await getFarmRecordMap({ parkId: baseCode.value, plotId: plotCode.value })
-  console.log(res.listXContent, '农事活动')
-  console.log(res.listYContent, '农事活动345')
   initChartStatic(
     'chartBar3',
     generateBaseOptions({
@@ -589,7 +549,6 @@ const yAxisData = ref([])
 const radio = ref('本月')
 const dateData = ref([])
 const initChartLine = async (val, num, type) => {
-  console.log(type, 'typetypetype')
   let res = await getHarvestManagementNumList({
     parkId: baseCode.value,
     plotId: plotCode.value,
@@ -597,10 +556,8 @@ const initChartLine = async (val, num, type) => {
     endTime: val[1],
     findType: type
   })
-  console.log(res, '收获趋势图')
   let yData = res.map((item) => item.sumNum)
   let xData = res.map((item) => item.dateContent)
-  console.log(xData, 'xData')
   let yAxisData = []
   let xAxisData = []
   if (radio.value == '本月' && xData.length != 0) {
@@ -618,9 +575,6 @@ const initChartLine = async (val, num, type) => {
         _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
       })
       yAxisData = _Ydata
-      console.log(num, 'numnumnum')
-      console.log(yAxisData, 'yAxisDatayAxisDatayAxisData')
-      console.log(xAxisData, 'yAxisDatayAxisDatayAxisData12333333')
     } else if (num == 2) {
       let month = xData[0]
       let _Month = month.split('-')
@@ -634,7 +588,6 @@ const initChartLine = async (val, num, type) => {
       xData.forEach((itm, index) => {
         _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
       })
-      console.log(_Ydata, '_Ydata_Ydata')
       yAxisData = _Ydata
     } else if (num == 3) {
       let month = xData[0]
@@ -649,14 +602,11 @@ const initChartLine = async (val, num, type) => {
       xData.forEach((itm, index) => {
         _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
       })
-      console.log(_Ydata, '_Ydata_Ydata')
       yAxisData = _Ydata
     }
 
-    console.log(yAxisData, 'yAxisDatayAxisData')
   }
   if (xData.length == 0 && radio.value == '本月') {
-    console.log('enyeumeishuju')
     let _Ydata = []
     let _X = []
     let month = val[0]
@@ -664,15 +614,11 @@ const initChartLine = async (val, num, type) => {
     if (month.split('-')[1] == month2.split('-')[1]) {
       const day = month.split('-')[2]
       const day2 = month2.split('-')[2]
-      console.log(day, 'day')
-      console.log(day2, 'day2')
       for (let i = day; i <= day2; i++) {
         xAxisData.push(`${month.split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
         _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
         _Ydata.push(0)
       }
-      console.log(_X, '_X_X')
-      console.log(_Ydata, '_Ydata')
       yAxisData = _Ydata
     } else if (month.split('-')[1] != month2.split('-')[1]) {
       let month3 = ['01', '03', '05', '07', '08', '10', '12']
@@ -690,9 +636,6 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       } else if (val[0].split('-')[1] == '02') {
         for (let i = val[0].split('-')[2]; i <= 29; i++) {
@@ -708,9 +651,6 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       } else {
         for (let i = val[0].split('-')[2]; i <= 30; i++) {
@@ -726,9 +666,6 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       }
     }
@@ -738,8 +675,6 @@ const initChartLine = async (val, num, type) => {
     if (val[0].split('-')[1] == val[1].split('-')[1]) {
       const day = val[0].split('-')[2]
       const day2 = val[1].split('-')[2]
-      console.log(day, 'day')
-      console.log(day2, 'day2')
       for (let i = day; i <= day2; i++) {
         xAxisData.push(`${val[0].split('-')[1]}-${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
         _X.push(`${i.length == 2 ? i : i >= 10 ? i : '0' + i}`)
@@ -766,9 +701,6 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       } else if (val[0].split('-')[1] == '02') {
         for (let i = val[0].split('-')[2]; i <= 29; i++) {
@@ -784,9 +716,6 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       } else {
         for (let i = val[0].split('-')[2]; i <= 30; i++) {
@@ -802,15 +731,11 @@ const initChartLine = async (val, num, type) => {
         xData.forEach((itm, index) => {
           _Ydata.splice(_X.indexOf(itm.split('-')[2]), 1, yData[index])
         })
-        console.log(xAxisData, 'xAxisData123month')
-        console.log(_X, '_x123')
-        console.log(_Ydata, '_Ydata123')
         yAxisData = _Ydata
       }
     }
   }
   if (radio.value == '本年' && xData.length !== 0) {
-    console.log(123)
     let _Y = []
     for (let i = 1; i <= 12; i++) {
       xAxisData.push(`${xData[0].split('-')[0]}-${i >= 10 ? i : '0' + i}`)
@@ -822,7 +747,6 @@ const initChartLine = async (val, num, type) => {
     })
     xData
     yData
-    console.log(_Y, '33333333333')
     yAxisData = _Y
   }
   if (radio.value == '本年' && xData.length === 0) {
@@ -831,11 +755,7 @@ const initChartLine = async (val, num, type) => {
       xAxisData.push(`${val[0].split('-')[0]}-${i >= 10 ? i : '0' + i}`)
       _Y.push(0)
     }
-
-    console.log(_Y, '33333333333y')
-    console.log(xAxisData, '33333333333xdata')
     yAxisData = _Y
-    console.log(yAxisData, '33333333333yAxisData')
   }
   initChartStatic(
     'chartLine',
@@ -910,8 +830,6 @@ const initChartLine = async (val, num, type) => {
 const onSubmit = () => {
   baseCode.value = formData.value.baseCode
   plotCode.value = formData.value.plotCode
-  console.log(baseCode.value, 'baseCode.value123')
-  console.log(plotCode.value, 'plotCode.valueplotCode.value')
   initChartPie1()
   initChartPie2()
   initChartBar1()
@@ -921,7 +839,6 @@ const onSubmit = () => {
 }
 //年月切换
 const handleRadioChange = (e) => {
-  console.log(radio.value, 'eeeee')
   dateData.value=[]
   let data = new Date()
   let _ANu = 0
@@ -968,7 +885,6 @@ const dataTime = (e) => {
       initChartLine(e, 4, 'month')
     } else {
       let _Day = 30 - Number(day) + Number(day2)
-      console.log(_Day, '000009999999999')
       _Day >= 30 ? message.warning('选择的日期不能超过30天') : initChartLine(e, 4, 'month')
     }
   }
@@ -977,8 +893,6 @@ const dataTime = (e) => {
 const offSubmit = () => {
   baseCode.value = ''
   plotCode.value = ''
-  console.log(baseCode.value, 'baseCode.value123')
-  console.log(plotCode.value, 'plotCode.valueplotCode.value')
   initChartPie1()
   initChartPie2()
   initChartBar1()
@@ -987,6 +901,7 @@ const offSubmit = () => {
   handleRadioChange(radio.value)
 }
 onMounted(() => {
+
   initChartPie1()
   initChartPie2()
   initChartBar1()
@@ -996,4 +911,11 @@ onMounted(() => {
 })
 </script>
 <style lang='scss' scoped>
-</style>  
+.chartNull {
+  background-size: 45% 80%;
+  background-position: center center;
+  background-repeat: no-repeat  ;
+  background-image: url(../../../assets/imgs/chartNull.png);
+
+}
+</style>

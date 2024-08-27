@@ -77,6 +77,18 @@ const getRepositoryList = async () => {
     label: item.repositoryLabel,
     repositoryId: getRep(item)
   }))
+  
+function timestampToDate(timestamp) {
+    var date = new Date(timestamp); 
+    var year = date.getFullYear(); 
+    var month = ("0" + (date.getMonth() + 1)).slice(-2); 
+    var day = ("0" + date.getDate()).slice(-2); 
+    return year + "." + month + '.' + day; 
+}
+  repositoryList.value.forEach(item=>{
+    console.log(item,'item12345')
+    item.createTime=timestampToDate(item.createTime)
+  })
   total.value = _total
 }
 
@@ -152,6 +164,7 @@ const handleCheckBoxChange2 = (item) => {
 
 const radioVal = ref('时间正序')
 const handleRadioChange = (item) => {
+  console.log(item,'itemitem')
   if (item === '时间正序') {
     queryParams.selectFlag = '1'
     getRepositoryList()
@@ -229,10 +242,15 @@ const handleLabelClick = (item) => {
     <el-card>
       <div style="display: flex; justify-content: space-between; align-items: center">
         <el-button type="primary" :icon="Plus" @click="openForm('create')">新增</el-button>
-        <el-radio-group v-model="radioVal" @change="handleRadioChange">
+        <!-- <el-radio-group v-model="radioVal" @change="handleRadioChange">
           <el-radio-button label="时间正序" value="时间正序" />
           <el-radio-button label="时间倒序" value="时间倒序" />
-        </el-radio-group>
+        </el-radio-group> -->
+        <div class="flex items-center">
+          <div class="time-icon w-10px mr-10px h-15px " :style="` transform:${ queryParams.selectFlag=='0'?'rotate(180deg)' :'rotate(0deg)'} `"></div>
+          <div @click="handleRadioChange('时间倒序')" class="cursor-pointer" v-if="queryParams.selectFlag=='1'">时间正序</div>
+          <div @click="handleRadioChange('时间正序')" class="cursor-pointer" v-if="queryParams.selectFlag=='0'">时间倒序</div>
+        </div>
       </div>
     </el-card>
     <el-card v-loading="loading">
@@ -245,7 +263,7 @@ const handleLabelClick = (item) => {
           @click="router.push(`/farm_work/knowledge/repositoryInfoDetail?id=${item.id}`)"
         >
           <div class="w-[16rem] aspect-video relative">
-            <div class="title"> {{ item.title }}</div>
+            <div class="title  flex justify-between"><div>{{ item.title }}</div> </div>
             <!-- <div class="absolute top-8 left-4 art-font" style="color: white">{{ item.title }}</div> -->
             <img
               :src="item.img ? item.img : getDefaultImg()"
@@ -256,6 +274,7 @@ const handleLabelClick = (item) => {
           <div style="width: calc(100% - 16rem)" class="px-4 pr-2 flex flex-col space-y-2 mt-4">
             <div class="flex justify-between">
               <!-- <span class="art-font">{{ item.title }}</span> -->
+              <div class="color-[#999999] text-15px w-100% flex justify-end">{{item.createTime}}</div>
               <div class="flex space-x-2" @click="(e) => e.stopPropagation()" style="display: none">
                 <el-button
                   type="primary"
@@ -416,5 +435,9 @@ const handleLabelClick = (item) => {
 .sub-btn-selected {
   background: #E5F4F3;
   color: #009688;
+}
+.time-icon{
+  background-size:100% 100%;
+  background-image: url(../../../assets/imgs/time-icon.png);
 }
 </style>
