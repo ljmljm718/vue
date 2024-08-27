@@ -135,7 +135,7 @@
                   :preview-src-list="[currentItem.capturedImage]"
                   preview-teleported
                   fit="contain"
-                  class="w-full h-[60vh]"
+                  class="w-full h-[50vh]"
                 />
                 <div
                   v-show="currentItem.videoLink"
@@ -184,7 +184,7 @@
             class="col-span-1 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3 rounded"
           >
             <div
-              class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md h-[30vh]"
+              class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md h-[30vh] grid grid-rows-5"
               :class="{'dark-card-bg shadow-[#666]': themeIsDark}"
               v-for="item in list"
               :key="item.id"
@@ -195,16 +195,16 @@
                 :src="item.capturedImage"
                 preview-teleported
                 fit="contain"
-                class="w-full h-[20vh]"
+                class="row-span-3 w-full h-full"
               />
               <div
-                class="grid grid-cols-1 2xl:row-span-1 2xl:gap-1 2xl:mt-[10px] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
+                class="row-span-2 2xl:gap-1 2xl:mt-[1em] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
               >
                 <div>
                   设备名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ item.deviceName }}</span>
                 </div>
                 <div>
-                  拍摄时间: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ timeFormat(item.reserveTwo) }}</span>
+                  拍摄时间: <span class="text-[#666666] mt-[0.5em]" :class="{'text-[#999]': themeIsDark}">{{ timeFormat(item.reserveTwo) }}</span>
                 </div>
               </div>
             </div>
