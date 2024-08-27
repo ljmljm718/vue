@@ -2124,6 +2124,24 @@ export default defineComponent({
 :deep(.el-date-editor.el-input__wrapper) {
   box-shadow: none;
 }
+:deep(.el-pagination.is-background .btn-prev:disabled) {
+  background: linear-gradient(180deg, rgba(17, 234, 201, 0.2) 0%, rgba(17, 244, 127, 0.2) 100%);
+}
+:deep(.el-pagination.is-background .btn-prev) {
+  background: linear-gradient(180deg, rgba(17, 234, 201, 0.2) 0%, rgba(17, 244, 127, 0.2) 100%);
+}
+:deep(.el-pagination.is-background .btn-next:disabled) {
+  background: linear-gradient(180deg, rgba(17, 234, 201, 0.2) 0%, rgba(17, 244, 127, 0.2) 100%);
+}
+:deep(.el-pagination.is-background .btn-next) {
+  background: linear-gradient(180deg, rgba(17, 234, 201, 0.2) 0%, rgba(17, 244, 127, 0.2) 100%);
+}
+:deep(.el-pagination.is-background .el-pager li.is-active) {
+  background: linear-gradient(180deg, #11EAC9 0%, #11F47F 100%);
+}
+:deep(.el-pagination.is-background .el-pager li) {
+  background-color: transparent;
+}
 
 /** 智慧种植部分 */
 // 卡片
