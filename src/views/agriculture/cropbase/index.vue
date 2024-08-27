@@ -19,7 +19,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
-        <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
+        <el-select
+v-model="queryParams.cropType" clearable placeholder="请选择品类"
                    class="!w-180px">
           <el-option
             v-for="item in listCategoryManagement"
@@ -154,7 +155,8 @@
       </el-table-column>
       <el-table-column align="center" prop="batchQrImg" width="100px">
         <template #default="scope">
-          <el-image :src="`data:image/png;base64,${scope.row.batchQrImg}`"
+          <el-image
+:src="`data:image/png;base64,${scope.row.batchQrImg}`"
                     style="object-fit: cover;width: 2rem;height: 2rem;"
                     preview-teleported
                     :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
@@ -166,7 +168,8 @@
       </el-table-column>
       <el-table-column align="center" key="isEnableModel" width="120px">
         <template #default="scope">
-          <el-switch v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
+          <el-switch
+v-model="scope.row.isEnableModel" :active-value="true" :inactive-value="false"
                      @change="handleStatusChange(scope.row)"/>
         </template>
         <template #header>
@@ -180,7 +183,8 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center" prop="cropDesc" width="240"/>
-      <el-table-column :label="deptId === 156 ? '数量' : '备注'" align="center" prop="remark"
+      <el-table-column
+:label="deptId === 156 ? '数量' : '备注'" align="center" prop="remark"
                        width="180"/>
       <el-table-column
         label="创建时间"
@@ -256,7 +260,8 @@
     </template>
     <template #default>
       <div class="relative">
-        <div v-if='formData.length>0'
+        <div
+v-if='formData.length>0'
              class="flex absolute top--30px left-50px flex-col items-center">
           <div class="flex items-center">
             <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
@@ -554,6 +559,14 @@ const damn = async (row) => {
     item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ""
   })
   formData.value = data.list
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+    //把品类数据的namep拼接到列表中
+  formData.value.forEach(item => {
+    listCategoryManagement.value.forEach(itm => {
+      if (item.cropType == itm.id)
+        item.cropType = itm.categoryName
+    })
+  })
   console.log("222222", formData.value)
   drawer2.value = true
 }
