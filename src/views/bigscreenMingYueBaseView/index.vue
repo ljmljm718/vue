@@ -1,16 +1,12 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
-import titleLeft from './assets/titleLeft.png'
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import { getParkListApi, getBaseInfoApi, getDuckHouseApi } from './apis'
-import { Select } from '@element-plus/icons-vue/dist/types'
-import icon from './assets/icon.png'
-import { ChildProcess } from 'child_process'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
 
 import * as turf from '@turf/turf'
 
-const { BigscreenContainer, BigscreenMain, BigscreenAdapter } = BigscreenBuilder
+const { BigscreenContainer, BigscreenMain } = BigscreenBuilder
 
 export default defineComponent({
   name: 'BigscreenMingYueBaseView',
@@ -86,7 +82,6 @@ export default defineComponent({
     }
     // ------------获取鸭舍信息---------
     const duckHouseList = ref<any[]>([])
-    const duckHouseChild = ref<any[]>([])
     const getDuckHouse = async (param) => {
 
       const res = await getDuckHouseApi({ parkId: param })
@@ -95,17 +90,17 @@ export default defineComponent({
     }
 
     //------------------------------------------
-    const TitleValue = ({ title = '', value = '' }) => {
-      return (
-        <div class="space-y-2">
-          <div class="flex items-center">
-            {/* <img src={icon} class="w-1rem h-.6rem mr-.4rem" /> */}
-            <div style="font-size:12px">{title}</div>
-          </div>
-          <div class="pl-[1.2rem]" style="font-size:12px">{value}</div>
-        </div>
-      )
-    }
+    // const TitleValue = ({ title = '', value = '' }) => {
+    //   return (
+    //     <div class="space-y-2">
+    //       <div class="flex items-center">
+    //         {/* <img src={icon} class="w-1rem h-.6rem mr-.4rem" /> */}
+    //         <div style="font-size:12px">{title}</div>
+    //       </div>
+    //       <div class="pl-[1.2rem]" style="font-size:12px">{value}</div>
+    //     </div>
+    //   )
+    // }
 
     onMounted(() => {
       setTimeout(() => {
