@@ -543,7 +543,7 @@ watch(
     </el-card>
     <div class="grid gap-3 2xl:grid-cols-12 xl:grid-cols-6">
       <!-- 气象站 -->
-      <el-card class="col-span-6" v-show="weather.length !== 0">
+      <el-card class="col-span-6">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 气象站 </div>
         <!-- </template> -->
         <div class="grid xl:grid-cols-3 2xl:grid-cols-3 gap-1 xl:gap-2 border-t-0">
@@ -559,11 +559,18 @@ watch(
               <i alt="" :class="`w-1.4rem h-1.4rem block ${getIconFrame(item.monitoringType)}`"></i>
             </div>
           </div>
+          <div
+            class="col-span-full h-[10rem] flex flex-col justify-center items-center space-y-2"
+            v-if="weather.length === 0"
+          >
+            <img src="/images/noData.png" class="aspect-1 w-8rem" />
+            <div class="text-[.9rem] text-[#999]">暂无气象站数据</div>
+          </div>
         </div>
       </el-card>
       <!-- 土壤 -->
       <!-- <el-card class="card2" v-show="soilList.length !== 0"> -->
-      <el-card class="col-span-6" v-if="soilList?.length > 0">
+      <el-card class="col-span-6">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px">土壤墒情</div>
         <!-- </template> -->
         <div class="grid xl:grid-cols-3 2xl:grid-cols-3 gap-1 xl:gap-2 border-t-0">
@@ -579,12 +586,19 @@ watch(
               <i alt="" :class="`w-1.4rem h-1.4rem block ${getIconFrame(item.monitoringType)}`"></i>
             </div>
           </div>
+          <div
+            class="col-span-full h-[10rem] flex flex-col justify-center items-center space-y-2"
+            v-if="soilList?.length === 0"
+          >
+            <img src="/images/noData.png" class="aspect-1 w-8rem" />
+            <div class="text-[.9rem] text-[#999]">暂无土壤墒情数据</div>
+          </div>
         </div>
       </el-card>
     </div>
     <!-- 水质监测 -->
     <div class="mt-3 grid gap-3 2xl:grid-cols-12 xl:grid-cols-6">
-      <el-card class="col-span-10" v-show="waterQuality.length !== 0">
+      <el-card class="col-span-10">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 水质监测 </div>
         <!-- </template> -->
         <div class="grid xl:grid-cols-3 2xl:grid-cols-5 gap-1 xl:gap-2 border-t-0">
@@ -600,10 +614,17 @@ watch(
               <i alt="" :class="`w-1.4rem h-1.4rem block ${getIconFrame(item.monitoringType)}`"></i>
             </div>
           </div>
+          <div
+            class="col-span-full h-[10rem] flex flex-col justify-center items-center space-y-2"
+            v-if="waterQuality.length === 0"
+          >
+            <img src="/images/noData.png" class="aspect-1 w-8rem" />
+            <div class="text-[.9rem] text-[#999]">暂无水质监测数据</div>
+          </div>
         </div>
       </el-card>
       <!-- 虫情监测 -->
-      <el-card class="col-span-2" v-show="infestation.length !== 0">
+      <el-card class="col-span-2">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 虫情监测 </div>
         <!-- </template> -->
         <div class="grid grid-cols-1 gap-1 xl:gap-2 border-t-0">
@@ -618,6 +639,13 @@ watch(
             <div class="circle flex justify-center items-center">
               <i alt="" :class="`w-1.4rem h-1.4rem block ${getIconFrame(item.monitoringType)}`"></i>
             </div>
+          </div>
+          <div
+            class="col-span-full h-[10rem] flex flex-col justify-center items-center space-y-2"
+            v-if="infestation.length === 0"
+          >
+            <img src="/images/noData.png" class="aspect-1 w-8rem" />
+            <div class="text-[.9rem] text-[#999]">暂无虫情监测数据</div>
           </div>
         </div>
       </el-card>

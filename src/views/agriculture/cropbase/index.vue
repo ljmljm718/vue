@@ -270,6 +270,17 @@
             </div>
           </div>
         </div>
+        <div v-else class="w-full h-[20rem] flex flex-col justify-center space-y-2 items-center">
+          <img src="/images/noData.png" class="aspect-1 w-8rem" />
+          <div class="py-3 text-[.9rem] text-[#999]">暂无溯源记录，去“智慧农事”-“农事活动”-“农事记录”中添加</div>
+          <div
+            class="flex space-x-1 items-center justify-center bg-[#009688] text-white p-1 px-3 rounded-2 cursor-pointer text-.8rem"
+            @click="router.push('/farm_work/farmManage/farm-record')"
+          >
+            <Icon icon="ep:plus" />
+            <span>去添加</span>
+          </div>
+        </div>
         <el-card class="w-400px ml-80px mt-50px" v-for="item, index in formData" :key="index">
           <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
           <p>品类：

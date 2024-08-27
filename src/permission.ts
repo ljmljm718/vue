@@ -59,7 +59,6 @@ const whiteList = [
   '/tiandi',
   '/home',
   '/page',
-  '/inspurHome'
 ]
 
 const favicon = document.querySelector('link[rel="icon"]') as any;
