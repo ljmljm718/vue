@@ -395,17 +395,20 @@ export default defineComponent({
                 <div class="contain-img notice-icon"></div>
                 <div>通知事件</div>
               </div>
-              <el-date-picker
-                class="mt-[15px]"
-                v-model={noticeDatePickerVal.value}
-                type="daterange"
-                range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                onChange={() => {
-                  getMonitorNoticeList()
-                }}
-              />
+              {/** 日期选择 */}
+              <div class='mt-[15px] flex justify-between'>
+                <el-date-picker
+                  v-model={noticeDatePickerVal.value}
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  size='default'
+                  onChange={ () => { getMonitorNoticeList() } }
+                />
+                <button class='w-[80px] ml-[10px] btn-date' onClick={ () => { getMonitorNoticeList() }}>查询</button>
+              </div>
+              {/** 通知事件列表 */}
               <div class="mt-[10px] h-[790px] overflow-auto hidden-scrollbar cursor-pointer" v-loading={monitorNoticeLoading.value} onClick={() => {
                 window.open("/internetMonitor/deviceData/monitoring-equipment-notice")
               }}>
@@ -2078,6 +2081,12 @@ export default defineComponent({
 }
 
 /** 右侧通知事件 */
+.btn-date {
+  background: linear-gradient(180deg, #11EAC9 0%, #11F47F 100%);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .notice-bg {
   background-image: url(./assets/v2/notice-bg.png);
   background-size: 100% 100%;
