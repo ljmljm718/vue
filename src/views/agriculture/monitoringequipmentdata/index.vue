@@ -536,7 +536,7 @@ const scroll = ({ scrollTop }) => {
   let dom = document.querySelector(".previewArea")
   let domContainer = document.querySelector(".previewContainer")
   if (scrollTop >= dom?.offsetTop) {
-    dom?.setAttribute("style", `position: fixed;width: ${ domContainer?.clientWidth }px;top: 105px;`)
+    dom?.setAttribute("style", `position: fixed;width: ${ domContainer?.clientWidth }px;top: 80px;`)
   } else {
     dom?.setAttribute("style", "position: relative;width: auto;top: 0;")
   }
