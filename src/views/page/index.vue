@@ -3,7 +3,7 @@
     <div class="fixed top-0 left-0 z-100 w-full bg-white transition-all flex justify-center shadow-sm h-[5rem]">
       <div class="container flex px-5 items-center">
         <div class="logo w-3rem h-3rem"></div>
-        <div class="ml-1rem text-2rem font-600">工业安全生产数字化产品平台</div>
+        <div class="ml-1rem text-2rem font-600 text-black">工业安全生产数字化产品平台</div>
       </div>
     </div>
     <div class="w-full" id="carouselContainer">
@@ -101,7 +101,7 @@
     <div class="footer-bg w-full flex justify-center py-3rem min-h-[16rem]">
       <div class="container mb-3rem">
         <div class="px-2 flex justify-between">
-          <div class="flex space-x-[5rem] text-white ml-4">
+          <div class="flex space-x-1rem xl:space-x-[3rem] text-white ml-00">
             <div v-for="item in footerMenus" :key="item.id" class="flex flex-col space-y-2 items-start">
               <div class="mb-3">{{ item.title }}</div>
               <div v-for="ele in item.children" :key="ele.id" class="text-.9rem text-[#ffffffc0] hover:text-[#fff] cursor-pointer">

@@ -8,6 +8,9 @@ import plantBg from './assets/v2/plant-bg.png'
 import riskBg from './assets/v2/risk-bg.png'
 import {formatTime} from '@/utils'
 import * as echarts from 'echarts'
+import Dplayer from 'dplayer';
+import Hls from "hls.js";
+import axios from 'axios';
 import {
   initChartStatic,
   generateBaseOptions,
@@ -70,7 +73,8 @@ interface DeviceVideoListItemType {
   deviceName: string,
   videoSrc: string,
   baseName: string,
-  online: boolean
+  online: boolean,
+  videoId: string
 }
 
 // 通知事件列表项
@@ -80,6 +84,62 @@ interface NoticeItemType {
   captured: string
 }
 
+const hls = new Hls();
+const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string> => {
+  if (leftTimes <= 0) {
+    ElMessage.error("获取视频流失败，请联系管理员!");
+  }
+  if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
+  const liveToken = localStorage.getItem("LIVE_TOKEN"), expireTime = localStorage.getItem("LIVE_EXPIRE_TIME") ?? '0';
+  console.log("🚀 ~ checkAuth ~ liveToken:", liveToken)
+  const isExpired = ((parseInt(expireTime) ?? 0) - new Date().valueOf()) < 0
+  if (liveToken && !isExpired) {
+    // 获取视频流
+    const { data: liveDataRes } = await axios.post(
+      "https://ezcloud.uniview.com/openapi/live/video/device/url/get",
+      { deviceSerial, channelNo },
+      { headers: { Authorization: liveToken } }
+    )
+    const { code, data: liveData } = liveDataRes;
+    if (code === 200) {
+      const { liveUrlList } = liveData
+      if (Array.isArray(liveUrlList) && liveUrlList.length > 0) {
+        return liveUrlList[0].url
+      } else return ''
+    } else return ''
+  }
+
+  const { data } = await axios.post("https://ezcloud.uniview.com/openapi/user/app/token/get", {
+    appId: "626194353357848583",
+    secretKey: "ca06cd14935e031bd7a394ee7eca154d"
+  })
+  if (data && data?.code === 200) {
+    const { accessToken, expireTime } = data.data;
+    if (accessToken) localStorage.setItem("LIVE_TOKEN", accessToken)
+    if (expireTime) localStorage.setItem("LIVE_EXPIRE_TIME", expireTime + '000')
+  }
+  return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
+}
+const initPlayer = async (containerId, dtu, channelId) => {
+  if (!containerId || !dtu || !channelId) return;
+  const resUrl = await checkAuth(dtu, channelId);
+  new Dplayer({
+    container: document.getElementById(containerId),
+    loop: false,
+    autoplay: true,
+    volume: 0,
+    video: {
+      url: resUrl,
+      type: "customHls",
+      customType: {
+        customHls: (video) => {
+          hls.loadSource(video.src);
+          hls.attachMedia(video);
+        },
+      },
+    }
+  })
+}
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
@@ -209,12 +269,19 @@ export default defineComponent({
       })
       console.log("获取监控设备列表", res);
       monitorDeviceLoading.value = false
-      deviceVideoList.value = res.map(item => ({
+      deviceVideoList.value = res.filter(ele => (ele.dtu && ele.channelId)).map(item => ({
+        ...item,
         deviceName: item.deviceName,
         videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
         baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
-        online: item.deviceStatus === 'online'
-      })).slice(0, 9)
+        online: item.deviceStatus === 'online',
+        videoId: `${item.dtu}_${item.channelId}`
+      })).slice(0, 9);
+      nextTick(() => {
+        deviceVideoList.value.forEach(item => {
+          initPlayer(item.videoId, item.dtu, item.channelId)
+        })
+      })
     }
     getMonitorDeviceList()
     const activeTab = ref('base')
@@ -311,7 +378,7 @@ export default defineComponent({
                   <div class="video-bg cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
                     <div class="art-font h-[37px] leading-[37px] text-[18px] text-center tracking-wide">{item.deviceName}</div>
                     <div class="w-full h-[200px] py-[5px] flex justify-center">
-                      <video width="340px" controls autoplay src={item.videoSrc} loop/>
+                      <div class="aspect-video w-340px" id={item.videoId}></div>
                     </div>
                     <div class="base-name">{ item.baseName }</div>
                     <div class={`${ item.online ? 'text-[#09DB61]' : 'text-[#DEDEDE]' } device-status-bg absolute bottom-[24px] right-[24px] flex items-center justify-center`}>
@@ -1656,7 +1723,17 @@ export default defineComponent({
                       ))
                     }
                   </div>
-                  <ElTable data={warnInfoHandleList.value} class="mt-[10px] cursor-default" height="321.5px" headerCellStyle={dealTitle} headerRowStyle={{backgroundColor: 'transparent'}} cellStyle={dealContent} rowStyle={{'background-color': 'transparent'}} v-loading={warnInfoHandleLoading.value} style="background-color: transparent">
+                  <ElTable
+                    data={warnInfoHandleList.value}
+                    class="mt-[10px] cursor-default"
+                    height="321.5px"
+                    headerCellStyle={dealTitle}
+                    headerRowStyle={{backgroundColor: 'transparent'}}
+                    cellStyle={dealContent}
+                    rowStyle={{'background-color': 'transparent'}}
+                    v-loading={warnInfoHandleLoading.value}
+                    style="background-color: transparent"
+                  >
                     <ElTableColumn label="预警信息" property="warnInfo"/>
                     <ElTableColumn label="预警时间" property="warnTime"/>
                     <ElTableColumn label="操作">
@@ -1751,7 +1828,7 @@ export default defineComponent({
       router.push(path)
     }
     return () => (
-      <div class="bg-[#12153a] w-[100vw] h-[100vh]">
+      <div class="bg-[#112029] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
           <BigscreenContainer backgroundImage={bgImage.value} key={bgImage.value}>
             <BigscreenHeader
