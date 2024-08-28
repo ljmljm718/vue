@@ -100,7 +100,7 @@
         :stripe="false"
         :show-overflow-tooltip="true"
         class="mid-area-table"
-        :header-cell-style="{'background-color': '#F5F5F5', 'padding-top': '15px', 'padding-bottom': '18px', border: 'none'}"
+        :header-cell-style="{'background-color': themeIsDark ? '#343A46' : '#F5F5F5', 'padding-top': '15px', 'padding-bottom': '18px', border: 'none'}"
         :row-style="{ height: '50px' }"
       >
         <el-table-column
@@ -441,7 +441,7 @@ const initChart = async (line = false) => {
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#000'
+            color: themeIsDark.value ? '#999' : '#000'
           }
         },
         axisLabel: {
@@ -467,11 +467,11 @@ const initChart = async (line = false) => {
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#000'
+              color: themeIsDark.value ? '#999' : '#000'
             }
           },
           axisLabel: {
-            color: '#000'
+            color: '#999'
           },
           splitLine: {
             //网格线
@@ -515,6 +515,9 @@ const initChart = async (line = false) => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+
+  // 获取当前是否是深色主题
+  themeIsDark.value = appStore.getIsDark
 })
 
 const timerId = ref()
@@ -532,6 +535,20 @@ const changeRefresh = async (value) => {
     },value*1000)
   }
 }
+
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
+
+const appStore = useAppStore()
+const themeIsDark = ref(false)
+
+// 监听主题模式变化
+watch(() => appStore.isDark, (newVal, oldVal) => {
+  console.log("isDark", newVal, oldVal)
+  themeIsDark.value = newVal
+  // 为了重新刷新Echarts
+  initChart()
+})
 </script>
 
 <style scoped lang="scss">
@@ -571,7 +588,6 @@ $percentage: 100%;
 }
 .top-area-item-name {
   font: 13px PingFangSC;
-  color: rgba(51, 51, 51, 1);
 }
 .top-area-item-num {
   margin-top: 7px;
@@ -626,18 +642,17 @@ $percentage: 100%;
   padding-top: 19px;
   border-top: 1px solid #E5E5E5;
 }
-::v-deep.el-table__row ::v-deep.el-table__cell {
+:deep(.el-table__row) :deep(.el-table__cell) {
   border-bottom: 1px dashed rgba(229, 229, 229, 1);
 }
 // ---------------- mid-area end ------------------
 
 // ---------------- bottom-area start ------------------
 .bottom-area-title {
-  color: rgba(51, 51, 51, 1);
   font: 18px "PingFangSC";
   font-weight: bold;
 }
-::v-deep.el-radio-button{
+:deep(.el-radio-button){
   border-radius: 4px 0px 0px 4px;
   width: 90px;
   height: 30px;
@@ -645,16 +660,17 @@ $percentage: 100%;
     width: 90px;
     line-height: 30px;
     vertical-align: middle;
-    background: #FFFFFF;
+    background-color: transparent;
     color:rgba(102, 102, 102, 1);
     font: 14px;
     text-align: center;
   }
-  .el-radio-button__original-radio:checked + .el-radio-button__inner {// 修改按钮激活样式
+  .el-radio-button__original-radio:checked+.el-radio-button__inner {// 修改按钮激活样式
       color: rgba(0, 150, 136, 1);
       border-color: rgba(0, 150, 136, 1);
   }
 }
+
 // ---------------- bottom-area end ------------------
 
 
