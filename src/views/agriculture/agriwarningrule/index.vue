@@ -242,12 +242,23 @@
           </el-table-column>
           <el-table-column label="经度" align="center" prop="longitude"/>
           <el-table-column label="纬度" align="center" prop="latitude"/>
+          <el-table-column label="操作" align="center" fixed="right" width="40">
+            <template #default="scope">
+              <el-button
+                link
+                type="danger"
+                @click="handleDeleteA(scope.row.id)"
+              >
+                移除
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>
       </ContentWrap>
       <el-row>
         <el-button type="primary" plain style="width: 100%;height: 60px" @click="bindDeviceA()">
-           +增加/去除绑定设备
+          +增加绑定设备
         </el-button>
       </el-row>
     </el-drawer>
@@ -360,6 +371,24 @@ const handleDelete = async (id: number) => {
   } catch {
   }
 }
+/** 移除按钮操作 */
+const handleDeleteA = async (id: number) => {
+  try {
+    // 移除的二次确认
+    await message.delConfirm()
+    console.log(id)
+    console.log(warnRuleId.value)
+    // 发起移除
+    await AgriWarningRuleDeviceApi.deleteAgriWarningRuleDeviceByIdAndDeviceId(warnRuleId.value,id)
+    const data = await AgriWarningRuleDeviceApi.selectDeviceListByWarnRuleId(String(warnRuleId.value));
+    listDevice.value = data.map((item: any) => {
+      item.deviceType = item.deviceType.split(',').map(Number)
+      return item;
+    })
+    message.success(t('common.delSuccess'))
+  } catch {
+  }
+}
 
 /** 导出按钮操作 */
 const handleExport = async () => {
@@ -381,7 +410,6 @@ const deviceId = ref([]) // 已绑定的设备id
 const warnRuleId = ref('')
 const warnRuleBindDeviceRef = ref()
 const bindDevice = async (id: number) => {
-  console.log("2345678903456789")
   loadingDevice.value = true
   try {
     drawer.value = true
