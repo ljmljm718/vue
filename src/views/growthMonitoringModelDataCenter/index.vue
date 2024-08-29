@@ -829,34 +829,14 @@ export default defineComponent({
                                     <div>{ item.remark1 ? `（${ item.remark1 }天）` : "" }</div>
                                   </div>
                                 </div>
-                                <div 
-                                  class="absolute top-[10px] left-[-11px]" 
-                                  style="background-image: url('/src/views/growthMonitoringModelDataCenter/assets/line-mark.png'); background-size: 100% 100%; width: 33px; height: 1px;"
-                                >
-                                </div>                              
+                                <div class="absolute top-[10px] left-[-11px] line-mark"></div>                              
                                 {
                                   !(index === curTips.value.length - 1) ? (
                                     <div>
-                                      <div 
-                                        class="absolute top-[30px] left-[-8px]" 
-                                        style="background-image: url('/src/views/growthMonitoringModelDataCenter/assets/line-small-mark.png'); background-size: 100% 100%; width: 9px; height: 1px;"
-                                      >
-                                      </div>
-                                      <div 
-                                        class="absolute top-[50px] left-[-8px]" 
-                                        style="background-image: url('/src/views/growthMonitoringModelDataCenter/assets/line-small-mark.png'); background-size: 100% 100%; width: 9px; height: 1px;"
-                                      >
-                                      </div>
-                                      <div 
-                                        class="absolute top-[70px] left-[-8px]" 
-                                        style="background-image: url('/src/views/growthMonitoringModelDataCenter/assets/line-small-mark.png'); background-size: 100% 100%; width: 9px; height: 1px;"
-                                      >
-                                      </div>
-                                      <div 
-                                        class="absolute top-[90px] left-[-8px]" 
-                                        style="background-image: url('/src/views/growthMonitoringModelDataCenter/assets/line-small-mark.png'); background-size: 100% 100%; width: 9px; height: 1px;"
-                                      >
-                                      </div>
+                                      <div class="absolute top-[30px] left-[-8px] line-small-mark"></div>
+                                      <div class="absolute top-[50px] left-[-8px] line-small-mark"></div>
+                                      <div class="absolute top-[70px] left-[-8px] line-small-mark"></div>
+                                      <div class="absolute top-[90px] left-[-8px] line-small-mark"></div>
                                     </div>
                                   ) : null
                                 }                              
@@ -1128,6 +1108,21 @@ export default defineComponent({
   margin-bottom: 10px;
 }
 /** 生长周期列表 end */
+
+/** 周期事项 */
+.line-mark {
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/line-mark.png);
+  background-size: 100% 100%;
+  width: 33px;
+  height: 1px;
+}
+.line-small-mark {
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/line-small-mark.png);
+  background-size: 100% 100%;
+  width: 9px;
+  height: 1px;
+}
+/** 周期事项 end */
 
 /** 指标监测 */
 .weather {

@@ -124,8 +124,8 @@
               <el-image
                 :src="item.coverImage"
                 preview-teleported
-                fit="cover"
-                class="w-full h-[31vh]"
+                fit="contain"
+                class="w-full h-[31vh] rounded-md"
               />
               <!-- 功能按钮 -->
               <div
@@ -208,7 +208,7 @@
                 :src="row.coverImage"
                 :preview-src-list="[row.coverImage]"
                 preview-teleported
-                fit="cover"
+                fit="contain"
               />
             </template>
           </el-table-column>
