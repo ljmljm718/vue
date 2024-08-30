@@ -270,14 +270,14 @@
               </el-table-column>
             </el-table>
           </div>
-          <Pagination
-            :total="total"
-            v-model:page="queryParams.pageNo"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getList()"
-          />
         </div>
       </el-scrollbar>
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList()"
+      />
     </ContentWrap>
   <!-- </el-scrollbar> -->
 

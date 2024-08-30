@@ -23,7 +23,6 @@ import {
 } from 'element-plus'
 // @ts-ignore
 import Pagination from '@/components/Pagination/index.vue'
-import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
   getParkTree,
   getEquipmentPhotographAndVideo,
@@ -52,7 +51,6 @@ import {
   selectCount,
   getCountRiceDuckSum
 } from './api'
-import { bg } from 'element-plus/es/locale'
 import MapTangBa from '../Home/mapTangBacopy.vue'
 import * as turf from '@turf/turf'
 import { getDeviceCategoryTree, getDeviceInfo } from './api'
@@ -64,8 +62,6 @@ const {
   BigscreenHeader,
   BigscreenFooter,
   BigscreenMain,
-  BigscreenCard,
-  BigscreenTab,
 } = BigscreenBuilder
 
 // 设备列表项
