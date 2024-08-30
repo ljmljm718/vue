@@ -80,7 +80,6 @@ interface NoticeItemType {
   captured: string
 }
 
-const hls = new Hls();
 const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string> => {
   if (leftTimes <= 0) {
     ElMessage.error("获取视频流失败，请联系管理员!");
@@ -119,6 +118,7 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string>
 const initPlayer = async (containerId, dtu, channelId) => {
   if (!containerId || !dtu || !channelId) return;
   const resUrl = await checkAuth(dtu, channelId);
+  const hls = new Hls();
   new Dplayer({
     container: document.getElementById(containerId),
     loop: false,
@@ -133,7 +133,8 @@ const initPlayer = async (containerId, dtu, channelId) => {
           hls.attachMedia(video);
         },
       },
-    }
+    },
+    mutex: false
   })
 }
 export default defineComponent({
@@ -275,7 +276,7 @@ export default defineComponent({
       })).slice(0, 9);
       nextTick(() => {
         deviceVideoList.value.forEach(item => {
-          initPlayer(item.videoId, item.dtu, item.channelId)
+          if (item.online) initPlayer(item.videoId, item.dtu, item.channelId);
         })
       })
     }
