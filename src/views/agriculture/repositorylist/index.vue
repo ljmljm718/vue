@@ -292,7 +292,7 @@ const handleLabelClick = (item) => {
                 />
               </div>
             </div>
-            <div class="line-clamp-3 flex" style="margin-bottom: 45px">
+            <div class="line-clamp-3 flex" style="margin-bottom: 25px">
               <!-- <span>简介:</span> -->
               <el-popover placement="bottom-start" title="" :width="800" trigger="hover">
                 <template #reference>
