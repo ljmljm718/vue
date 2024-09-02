@@ -564,7 +564,8 @@ const getLineChartInfo = async (date) => {
         orient: 'horizontal',
         itemWidth: 15,
         itemHeight: 15,
-        left: '80%',
+        // left: '80%',
+        padding:[0,40,0,0],
         textStyle: {
           color: '#999999',
           fontSize: 14
