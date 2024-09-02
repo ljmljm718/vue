@@ -438,7 +438,6 @@ const getIconFrame = (text: string) => {
   const _iconMap = {
     温度: 'icon-1',
     磷: 'icon-2',
-    亚硝酸: 'icon-15',
     氮: 'icon-3',
     钾: 'icon-4',
     PH: 'icon-5',
@@ -446,15 +445,13 @@ const getIconFrame = (text: string) => {
     EC: 'icon-7',
     虫害种类: 'icon-8',
     光: 'icon-27',
-    风速: 'icon-17',
     风向: 'icon-10',
-    风力: 'icon-17',
+    亚硝酸: 'icon-15',
+    风: 'icon-17',
     雨量: 'icon-12',
     水位: 'icon-13',
     盐度: 'icon-14',
-    
     浊: 'icon-16',
-    // 量: 'icon-11',
     辐射: 'icon-18',
     虫害数量: 'icon-19',
     ORP: 'icon-20',
@@ -464,7 +461,10 @@ const getIconFrame = (text: string) => {
     溶解氧饱和度: 'icon-24',
     溶氧: 'icon-24',
     电: 'icon-25',
-    大气压力:'icon-26'
+    大气压力:'icon-26',
+    二氧化碳:'icon-28',
+    PM:'icon-29'
+    
   }
   let res: string = 'icon-11'
   let flag: boolean = false
@@ -901,7 +901,7 @@ watch(
   border-radius: 50%; /* 使div变成圆形 */
 }
 
-@for $i from 1 through 27 {
+@for $i from 1 through 29 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
     background-size: 100% 100%;
