@@ -57,7 +57,7 @@
 
           <div v-else-if="Array.isArray(deviceDetail) && deviceDetail.length > 1">
             <div class="flex flex-col relative h-[200px]">
-              <div id="device1" @click="handleClick(0)" class="cursor-pointer">
+              <div id="device1" @click="handleClick(0)" class="cursor-pointer z-10">
                 <img
                   :src="imgSrc1"
                   class="device1-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-[65%] object-contain"
@@ -72,7 +72,7 @@
                   }}</span
                 >
               </div>
-              <div id="device2" @click="handleClick(1)" class="cursor-pointer">
+              <div id="device2" @click="handleClick(1)" class="cursor-pointer z-0">
                 <img
                   :src="imgSrc2"
                   class="device2-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-[65%] object-contain"
@@ -155,19 +155,26 @@
       <el-card>
         <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
-          <div id="radarChart" class="w-[100%] h-[270px]"></div>
+          <div id="radarChart" class="w-[100%] h-[270px] "></div>
         </div>
       </el-card>
 
       <el-card>
         <div class="flex mb-4 justify-between">
           <div class="font-bold">模型分析结果</div>
-          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+          <!-- <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
             溶解氧标准值： {{ standardDo.optimalTemperature }}
             <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+          </div> -->
+          <div class="text-#009688 bg-[#e5f4f3] 2xl:px-6 2xl:py-2 2xl:rounded-full xl:px-1 xl:rounded xl:py-1 xl:mt--2 xl:mr--1">
+            <span class="xl:block xl:text-sm xl:whitespace-nowrap xl:mr--1 2xl:inline">溶解氧标准值：</span>
+            <span class="xl:block xl:text-sm xl:text-center 2xl:inline"
+              >{{ standardDo.optimalTemperature }} 
+              <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+            </span>
           </div>
         </div>
-        <div class="flex flex-col relative w-full h-[200px] items-center">
+        <div class="flex flex-col relative w-full h-[200px] items-center  ">
           <img
             src="./assets/currentScore.png"
             class="w-[250px] h-[250px] object-contain absolute -translate-y-1/10"
@@ -176,7 +183,7 @@
             <span class="text-[1.6rem]">{{ CurrentDoInfo.dataValue }}</span>
             <span class="text-[#999999] text-[1.2rem]">{{ CurrentDoInfo.yyUnit }}</span>
           </div>
-          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%]"
+          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%] xl:whitespace-nowrap"
             >溶解氧当前值</span
           >
         </div>
@@ -186,8 +193,8 @@
           v-for="(warning, index) in warningMessage"
           :key="index"
         >
-          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3" />
-          <span>设备警告：{{ warning }}</span>
+          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 xl:w-4 h-4" />
+          <span class="text-3.5">设备警告：{{ warning }}</span>
         </div>
       </el-card>
 
@@ -215,9 +222,7 @@
             size="large"
             class="buttonSize"
             @click="
-              router.push(
-                '/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id
-              )
+              router.push('/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id)
             "
             >去调整</el-button
           ></div
@@ -341,6 +346,22 @@ const handleClick = (index) => {
   const tempColor = textColor1.value
   textColor1.value = textColor2.value
   textColor2.value = tempColor
+// 获取图片元素
+const imgElement1 = document.getElementById('device1');
+  const imgElement2 = document.getElementById('device2');
+
+  // 检查并切换z-index
+  if (imgElement1.classList.contains('z-10')) {
+    imgElement1.classList.remove('z-10');
+    imgElement1.classList.add('z-0');
+    imgElement2.classList.remove('z-0');
+    imgElement2.classList.add('z-10');
+  } else {
+    imgElement1.classList.remove('z-0');
+    imgElement1.classList.add('z-10');
+    imgElement2.classList.remove('z-10');
+    imgElement2.classList.add('z-0');
+  }
 
   // 调用函数
   const selectedDeviceId = deviceDetail.value[index].id
@@ -432,7 +453,6 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
           textStyle: {
             fontSize: 15,
             color: '#666666',
-            fontWeight: 'bold'
           }
         },
         splitArea: {
@@ -453,7 +473,8 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
           lineStyle: {
             color: 'rgba(241, 241, 241)'
           }
-        }
+        },
+        radius:'60%'
       }
     ],
     series: [
