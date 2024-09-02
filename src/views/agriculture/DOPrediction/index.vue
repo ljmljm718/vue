@@ -10,6 +10,7 @@
               size="large"
               style="width: 190px"
               @change="filterLeftData"
+              class="xl:ml--4 2xl:ml-0"
             >
               <el-option
                 v-for="item in basicInfo"
@@ -24,6 +25,7 @@
               size="large"
               style="width: 120px"
               @change="filterRightData"
+              class="xl:mr--4 2xl:mr-0"
             >
               <el-option
                 v-for="item in plotInfo"
@@ -727,4 +729,15 @@ onMounted(() => init())
   width: 100%;
   font-size: 16px;
 }
+
+@media screen and (max-width:1280px){ ::v-deep .el-select__wrapper{
+  font-size: 10px;
+  padding-left:5px;
+  margin-right: 5px;
+  margin-left:.1333rem;
+  padding-top:0px;
+  padding-bottom:0px;
+  height:2rem
+}}
+
 </style>
