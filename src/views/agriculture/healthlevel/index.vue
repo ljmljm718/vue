@@ -75,7 +75,11 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="品种名称" align="center" prop="cropName" />
-      <el-table-column label="健康等级" align="center" prop="healthLevel" />
+      <el-table-column label="健康等级" align="center" prop="healthLevel" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_HEALTH_LEVEL" :value="scope.row.healthLevel" />
+        </template>
+      </el-table-column>
       <el-table-column label="健康等级上限分" align="center" prop="max" />
       <el-table-column label="健康等级下限分" align="center" prop="min" />
       <el-table-column label="模型名称" align="center" prop="modelName" />
@@ -131,6 +135,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
 import HealthLevelForm from './HealthLevelForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 
 /** 健康等级 列表 */
 defineOptions({ name: 'HealthLevel' })

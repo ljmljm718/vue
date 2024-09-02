@@ -28,7 +28,7 @@
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.label"
+            :value="dict.value"
           />
         </el-select>
 
