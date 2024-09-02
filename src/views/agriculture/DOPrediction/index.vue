@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid 2xl:grid-cols-4 xl:grid-cols-2 gap-4">
       <el-card>
         <div>
           <div class="flex justify-between">
@@ -10,7 +10,7 @@
               size="large"
               style="width: 190px"
               @change="filterLeftData"
-              class="xl:ml--4 2xl:ml-0"
+             
             >
               <el-option
                 v-for="item in basicInfo"
@@ -25,7 +25,7 @@
               size="large"
               style="width: 120px"
               @change="filterRightData"
-              class="xl:mr--4 2xl:mr-0"
+             
             >
               <el-option
                 v-for="item in plotInfo"
@@ -154,7 +154,7 @@
         </div>
       </el-card>
 
-      <el-card>
+      <el-card >
         <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
           <div id="radarChart" class="w-[100%] h-[270px] "></div>
@@ -168,9 +168,9 @@
             溶解氧标准值： {{ standardDo.optimalTemperature }}
             <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
           </div> -->
-          <div class="text-#009688 bg-[#e5f4f3] 2xl:px-6 2xl:py-2 2xl:rounded-full xl:px-1 xl:rounded xl:py-1 xl:mt--2 xl:mr--1">
-            <span class="xl:block xl:text-sm xl:whitespace-nowrap xl:mr--1 2xl:inline">溶解氧标准值：</span>
-            <span class="xl:block xl:text-sm xl:text-center 2xl:inline"
+          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+            <span >溶解氧标准值：</span>
+            <span 
               >{{ standardDo.optimalTemperature }} 
               <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
             </span>
@@ -195,7 +195,7 @@
           v-for="(warning, index) in warningMessage"
           :key="index"
         >
-          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 xl:w-4 h-4" />
+          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 " />
           <span class="text-3.5">设备警告：{{ warning }}</span>
         </div>
       </el-card>
@@ -232,7 +232,7 @@
       </el-card>
     </div>
 
-    <div class="md:col-span-3 mt-4">
+    <div class="md:col-span-3 mt-4 ">
       <el-card>
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
@@ -247,7 +247,7 @@
             />
           </div>
         </div>
-        <div id="lineChart" class="w-full aspect-[6]"></div>
+        <div id="lineChart" class="w-full aspect-[5]"></div>
       </el-card>
     </div>
   </div>
@@ -424,6 +424,8 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
   ) {
     chartIns && chartIns.clear()
   }
+  console.log("DSDSAD", factorName);
+  
   chartIns = initChartStatic('radarChart', {
     title: {
       // text: '评估评分占比分析图'
@@ -455,6 +457,7 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
           textStyle: {
             fontSize: 15,
             color: '#666666',
+            fontWeight: 'bold'
           }
         },
         splitArea: {
@@ -730,14 +733,5 @@ onMounted(() => init())
   font-size: 16px;
 }
 
-@media screen and (max-width:1280px){ ::v-deep .el-select__wrapper{
-  font-size: 10px;
-  padding-left:5px;
-  margin-right: 5px;
-  margin-left:.1333rem;
-  padding-top:0px;
-  padding-bottom:0px;
-  height:2rem
-}}
 
 </style>
