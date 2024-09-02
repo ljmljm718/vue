@@ -438,6 +438,7 @@ const getIconFrame = (text: string) => {
   const _iconMap = {
     温度: 'icon-1',
     磷: 'icon-2',
+    亚硝酸: 'icon-15',
     氮: 'icon-3',
     钾: 'icon-4',
     PH: 'icon-5',
@@ -451,7 +452,7 @@ const getIconFrame = (text: string) => {
     雨量: 'icon-12',
     水位: 'icon-13',
     盐度: 'icon-14',
-    亚硝酸盐: 'icon-15',
+    
     浊: 'icon-16',
     // 量: 'icon-11',
     辐射: 'icon-18',
@@ -461,6 +462,7 @@ const getIconFrame = (text: string) => {
     余: 'icon-22',
     溶解氧浓度: 'icon-23',
     溶解氧饱和度: 'icon-24',
+    溶氧: 'icon-24',
     电: 'icon-25',
     大气压力:'icon-26'
   }
