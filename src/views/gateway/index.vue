@@ -1,39 +1,60 @@
-<script setup lang="ts">// Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from 'swiper/vue';
+<script setup lang="ts">
+// Import Swiper Vue.js components
+import { Swiper, SwiperSlide } from 'swiper/vue'
 // import required modules
-import { FreeMode, Pagination } from 'swiper/modules';
+import { FreeMode, Pagination } from 'swiper/modules'
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/free-mode';
-import 'swiper/css/pagination';
+import 'swiper/css'
+import 'swiper/css/free-mode'
+import 'swiper/css/pagination'
 
 const modules = [FreeMode, Pagination]
 
 // 示范村ref
 const buildRef = ref()
 const handleTurn = (val) => {
-  console.log("🚀 ~ handleTurn ~ buildRef.value:", buildRef.value)
+  console.log('🚀 ~ handleTurn ~ buildRef.value:', buildRef.value)
   if (!buildRef.value) return
-  if (val > 0) buildRef.value.slideNext();
-  else buildRef.value.slidePrev();
+  if (val > 0) buildRef.value.slideNext()
+  else buildRef.value.slidePrev()
 }
-  
 
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([
-  { id: '1', label: '示范村', value: '39', desc: '1基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶' },
-  { id: '2', label: '帮扶区县', value: '14' ,desc:'2于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶' },
-  { id: '3', label: '精准帮扶基地', value: '19',desc:'3自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'  },
-  { id: '4', label: '产业形态', value: '11',desc:'4主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'  },
+  {
+    id: '1',
+    label: '示范村',
+    value: '39',
+    desc: '1基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+  },
+  {
+    id: '2',
+    label: '帮扶区县',
+    value: '14',
+    desc: '2于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+  },
+  {
+    id: '3',
+    label: '精准帮扶基地',
+    value: '19',
+    desc: '3自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+  },
+  {
+    id: '4',
+    label: '产业形态',
+    value: '11',
+    desc: '4主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+  }
 ])
 
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
-  const dom = document.getElementById("homeContainer")
-  if (dom) dom.addEventListener('scroll', () => {
-    console.log("🚀 ~ checkScroll ~ dom.scrollTop:", dom.scrollTop)
-    showHeader.value = !(dom.scrollTop > 1000);
-  })
+  const dom = document.getElementById('homeContainer')
+  if (dom)
+    dom.addEventListener('scroll', () => {
+      console.log('🚀 ~ checkScroll ~ dom.scrollTop:', dom.scrollTop)
+      showHeader.value = !(dom.scrollTop > 1000)
+    })
 }
 onMounted(() => {
   checkScroll()
@@ -59,7 +80,7 @@ const footerData = ref<any[]>([
       {
         id: '1-4',
         label: '稻鱼鸭产业可视化数字驾驶舱'
-      },
+      }
     ]
   },
   {
@@ -81,7 +102,7 @@ const footerData = ref<any[]>([
       {
         id: '2-4',
         label: '开州区临江镇明月村柑橘园'
-      },
+      }
     ]
   },
   {
@@ -103,7 +124,7 @@ const footerData = ref<any[]>([
       {
         id: '3-4',
         label: '市级部门'
-      },
+      }
     ]
   },
   {
@@ -125,51 +146,61 @@ const footerData = ref<any[]>([
       {
         id: '4-4',
         label: '数字化赋能平台'
-      },
+      }
     ]
-  },
-]);
+  }
+])
 
 // 政府政策
 const govPolicyDataList = ref<any[]>([
   {
     id: '1',
     title: '中共重庆市委、重庆市人民政府印发 《重庆市建设深化集体…',
-    content: '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
+    content:
+      '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
     year: '2024',
     date: '06-30'
   },
   {
     id: '2',
     title: '关于学习运用“千村示范、万村整治”工程经验加快建设巴渝…',
-    content: '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
+    content:
+      '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
     year: '2024',
     date: '06-30'
   },
   {
     id: '3',
     title: '重庆市人民政府办公厅印发《关于推进生产供销信用“三位一…',
-    content: '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
+    content:
+      '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
     year: '2024',
     date: '06-30'
   },
   {
     id: '4',
     title: '开展国际农业合作 共享农业发展机遇：镜头里的共建“一带一路”',
-    content: '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
+    content:
+      '为深入贯彻习近平生态文明思想，认真落实中共中央办公厅、国务院办公厅印发的《深化集体林权制度改革方案》精神，加快建设深化集体林权制度改革先行区（以下简称先行区），结合我际…',
     year: '2024',
     date: '06-30'
-  },
+  }
 ])
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
-    <div :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${showHeader ? 'top-0' : 'top-[-100%]'}`">
+    <div
+      :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
+        showHeader ? 'top-0' : 'top-[-100%]'
+      }`"
+    >
       <div class="container flex items-center p-5 space-x-1rem">
         <div class="icon w-2.4rem h-2.4rem"></div>
         <div class="text-white">
           <div class="text-1.4rem">鲁渝协作乡村振兴示范村数字化赋能工程</div>
-          <div class="text-.8rem relative left-.3rem text-[#f1f1f1c0]">Lu Yu Collaborative Rural Revitalization Village Digital Empowerment Project</div>
+          <div class="text-.8rem relative left-.3rem text-[#f1f1f1c0]"
+            >Lu Yu Collaborative Rural Revitalization Village Digital Empowerment Project</div
+          >
         </div>
       </div>
     </div>
@@ -180,7 +211,9 @@ const govPolicyDataList = ref<any[]>([
           基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数据挖掘、边缘计算、GIS遥感监测、增强现实等多种技术手段融合，构建全流程的新型农业一体化管理平台
         </div>
         <div class="flex mt-10rem text-#318255">
-          <div class="rounded-full p-[2px] overflow-hidden w-6.6rem bg-white text-.9rem flex justify-between">
+          <div
+            class="rounded-full p-[2px] overflow-hidden w-6.6rem bg-white text-.9rem flex justify-between"
+          >
             <div class="px-2 py-1">系统介绍</div>
             <div class="aspect-1 h-full bg-#318255 rounded-full"></div>
           </div>
@@ -194,7 +227,9 @@ const govPolicyDataList = ref<any[]>([
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
-          <div class="text-1rem text-[#f1f1f1d0]">强化产业协作，实施“东产西移“，大力推动区域协同发展</div>
+          <div class="text-1rem text-[#f1f1f1d0]"
+            >强化产业协作，实施“东产西移“，大力推动区域协同发展</div
+          >
         </div>
       </div>
     </div>
@@ -208,19 +243,32 @@ const govPolicyDataList = ref<any[]>([
       <div class="container flex justify-center relative top-[-2rem] space-x-1">
         <div
           :class="`${
-            selectedCardId === item.id ? 'items-start w-26rem px-2rem vc'+ item.id : 'w-8rem items-center'
-          } h-20rem flex flex-col justify-center space-y-5 transition-all !duration-500 bg-[#00682Ec0] text-white`"
+            selectedCardId === item.id
+              ? 'items-start w-26rem px-2rem vc' + item.id
+              : 'w-8rem items-center'
+          } h-20rem flex flex-col justify-center space-y-5 transition-all duration-300 bg-[#00682Ec0] text-white`"
           v-for="item in cardDataList"
           :key="item.id"
-          @mouseenter="selectedCardId = item.id;console.log(item.desc)"
+          @mouseenter="
+            selectedCardId = item.id
+          "
         >
-          <div :class="selectedCardId === item.id ? 'text-6xl font-bold' : 'text-4xl'">{{ item.value }}</div>
-          <div :class="selectedCardId === item.id ? 'text-`2xl' : 'text-base'">{{ item.label }}</div>
-          <transition name="fade">
-        <div v-show="selectedCardId === item.id" class="mt-3 text-base">
-          {{ item.desc ?? '' }}
-        </div>
-      </transition>
+          <div :class="selectedCardId === item.id ? 'text-6xl font-bold' : 'text-4xl'">{{
+            item.value
+          }}</div>
+          <div :class="selectedCardId === item.id ? 'text-`2xl' : 'text-base'">{{
+            item.label
+          }}</div>
+
+          <transition name="expand">
+            <div v-show="selectedCardId === item.id" class="overflow-hidden">
+              <transition name="fade">
+                <div class="vcContent mt-3 text-sm ">
+                  {{ item.desc ?? '' }}
+                </div>
+              </transition>
+            </div>
+          </transition>
         </div>
       </div>
     </div>
@@ -241,7 +289,7 @@ const govPolicyDataList = ref<any[]>([
           :spaceBetween="30"
           :freeMode="true"
           :pagination="{
-            clickable: true,
+            clickable: true
           }"
           :modules="[FreeMode]"
           class="mySwiper w-full overflow-hidden"
@@ -285,7 +333,7 @@ const govPolicyDataList = ref<any[]>([
           :spaceBetween="30"
           :freeMode="true"
           :pagination="{
-            clickable: true,
+            clickable: true
           }"
           :modules="modules"
           class="mySwiper"
@@ -368,15 +416,19 @@ const govPolicyDataList = ref<any[]>([
         <div class="flex flex-col space-y-2">
           <div class="w-20rem h-14rem pic"></div>
           <div class="bg-white p-3 w-20rem box-border">
-            <div class="line-clamp-1">中共重庆史农村工作实施乡村振兴战略领导小组关于2024年东西…</div>
-            <div class="text-.7rem mt-1 pl-1 text-[#666] line-clamp-3">中共中央总书记、国家主席、中央军委主席习近平近日在重庆考察时强调，重庆要对标新时代新征程党的中心任务和党中央赋予的使命，充分发挥比较优势、后发优势，进一步全面深化改革开放，主动服务和融入新发…</div>
+            <div class="line-clamp-1"
+              >中共重庆史农村工作实施乡村振兴战略领导小组关于2024年东西…</div
+            >
+            <div class="text-.7rem mt-1 pl-1 text-[#666] line-clamp-3"
+              >中共中央总书记、国家主席、中央军委主席习近平近日在重庆考察时强调，重庆要对标新时代新征程党的中心任务和党中央赋予的使命，充分发挥比较优势、后发优势，进一步全面深化改革开放，主动服务和融入新发…</div
+            >
           </div>
         </div>
         <div class="flex flex-col space-y-2">
           <div
             v-for="item in govPolicyDataList"
             :key="item.id"
-            class="flex items-center bg-white h-4.7rem "
+            class="flex items-center bg-white h-4.7rem"
           >
             <div class="ml-6 font-bold">
               <div>{{ item.date }}</div>
@@ -408,7 +460,9 @@ const govPolicyDataList = ref<any[]>([
           <div class="icon w-2.4rem h-2.4rem"></div>
           <div class="text-white">
             <div class="text-1.4rem">鲁渝协作乡村振兴示范村数字化赋能工程</div>
-            <div class="text-.8rem relative left-.3rem text-[#f1f1f1c0]">Lu Yu Collaborative Rural Revitalization Village Digital Empowerment Project</div>
+            <div class="text-.8rem relative left-.3rem text-[#f1f1f1c0]"
+              >Lu Yu Collaborative Rural Revitalization Village Digital Empowerment Project</div
+            >
           </div>
         </div>
         <div class="flex flex-col items-end">
@@ -416,12 +470,11 @@ const govPolicyDataList = ref<any[]>([
           <div class="text-1.2rem font-bold">182-0647-2165</div>
         </div>
       </div>
-      <div class="container box-border flex justify-between items-start py-3rem text-white px-2rem pl-5.3rem">
+      <div
+        class="container box-border flex justify-between items-start py-3rem text-white px-2rem pl-5.3rem"
+      >
         <div class="flex space-x-3rem items-start">
-          <div
-            v-for="item in footerData"
-            :key="item.id"
-          >
+          <div v-for="item in footerData" :key="item.id">
             <div class="text-1.1rem mb-1.2rem">{{ item.label }}</div>
             <div
               v-for="ele in item.children"
@@ -439,8 +492,10 @@ const govPolicyDataList = ref<any[]>([
       </div>
       <div
         class="flex justify-center items-center w-full py-7 text-#f1f1f1"
-        style="border-top: 1px solid #f1f1f110;"
-      >Copyright © 2024 zhinengshengchan. | 鲁ICP备17022090号  |  ©2024 山东浪潮智能生产技术有限公司</div>
+        style="border-top: 1px solid #f1f1f110"
+        >Copyright © 2024 zhinengshengchan. | 鲁ICP备17022090号 | ©2024
+        山东浪潮智能生产技术有限公司</div
+      >
     </div>
   </div>
 </template>
@@ -491,7 +546,7 @@ const govPolicyDataList = ref<any[]>([
   }
 }
 @for $i from 1 through 4 {
-  .vc#{$i}{
+  .vc#{$i} {
     background-image: url(./assets/villageConstruction/vc#{$i}.png);
     background-size: 100% 100%;
   }
@@ -525,12 +580,32 @@ const govPolicyDataList = ref<any[]>([
   background-color: #318255;
   width: 2rem;
   border-radius: 999px;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
+
+.expand-enter-active {
+  transition: max-height 0.5s ease;
+  max-height: 30rem;
+}
+.expand-enter-from {
+  max-height: 0;
+}
+.expand-enter-to {
+  max-height: 10rem;
+}
+
 .fade-enter-active {
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.1s;
 }
-.fade-enter, .fade-leave-to  {
+.fade-enter-from {
   opacity: 0;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.vcContent {
+  min-height: 5rem;
+  line-height: 1.5; 
 }
 </style>
