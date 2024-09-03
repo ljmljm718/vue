@@ -186,6 +186,25 @@ const govPolicyDataList = ref<any[]>([
     date: '06-30'
   }
 ])
+
+// 帮扶产业数据
+const supportIndustries = ref<any[]>([
+  { id: '2', label: '柑橘', content: '开州区竹溪县灵泉村好耍竹溪园', img: 'product-2' },
+  { id: '3', label: '四鼻鲤鱼', content: '万州区长滩镇龙泉社区四鼻鲤鱼养殖中心', img: 'product-3' },
+  { id: '4', label: '翡翠梨', content: '武隆区芙蓉街道堰塘村田园综合体', img: 'product-4' },
+  { id: '5', label: '黄精', content: '石柱县中益乡华溪村中药材基地', img: 'product-5' },
+  { id: '6', label: '布福娜', content: '', img: 'product-6' },
+  { id: '7', label: '梨子', content: '', img: 'product-7' },
+  { id: '8', label: '西红柿', content: '', img: 'product-8' },
+  { id: '9', label: '脆李', content: '', img: 'product-9' },
+  { id: '10', label: '玉米', content: '', img: 'product-10' },
+  { id: '11', label: '葡萄', content: '', img: 'product-11' },
+  { id: '12', label: '草莓', content: '', img: 'product-12' },
+  { id: '13', label: '梨子', content: '', img: 'product-13' },
+  { id: '14', label: '奉节脐橙', content: '', img: 'product-14' },
+  { id: '15', label: '水产养殖', content: '', img: 'product-15' },
+  { id: '16', label: '枇杷', content: '', img: 'product-16' },
+])
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -205,7 +224,7 @@ const govPolicyDataList = ref<any[]>([
       </div>
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-1 text-white">
-      <div class="container px-3 box-border">
+      <div class="container px-3rem box-border">
         <div class="text-3rem">数字农业一体化管理平台</div>
         <div class="w-[43rem] text-.9rem mt-1.2rem">
           基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数据挖掘、边缘计算、GIS遥感监测、增强现实等多种技术手段融合，构建全流程的新型农业一体化管理平台
@@ -215,7 +234,7 @@ const govPolicyDataList = ref<any[]>([
             class="rounded-full p-[2px] overflow-hidden w-6.6rem bg-white text-.9rem flex justify-between"
           >
             <div class="px-2 py-1">系统介绍</div>
-            <div class="aspect-1 h-full bg-#318255 rounded-full"></div>
+            <div class="aspect-1 h-full bg-#318255 rounded-full arrow-icon"></div>
           </div>
         </div>
       </div>
@@ -318,14 +337,14 @@ const govPolicyDataList = ref<any[]>([
     </div>
 
     <!-- 示范村建设数据 -->
-    <div class="w-full flex flex-col items-center justify-center bg-[#fff] h-100vh">
+    <div class="w-full flex flex-col items-center justify-center bg-[#fff] py-4rem">
       <div class="container">
         <div class="flex flex-col items-center space-y-1">
           <div class="text-1.8rem">示范村建设数据</div>
           <div class="text-#666 text-.7rem">DEMONSTRATION VILLAGE CONSTRUCTION DATA</div>
         </div>
       </div>
-      <div class="w-full overflow-hidden pt-2rem">
+      <div class="w-full overflow-hidden pt-2rem container">
         <swiper
           :slidesPerView="3"
           :spaceBetween="30"
@@ -334,42 +353,67 @@ const govPolicyDataList = ref<any[]>([
             clickable: true
           }"
           :modules="modules"
-          class="mySwiper"
+          class="mySwiper build-data-wrapper"
         >
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
           <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
+            <div class="w-full h-20rem table-bg mb-2rem"></div>
           </swiper-slide>
         </swiper>
       </div>
     </div>
 
     <!-- 对口帮扶地域 这块真是想要我老命了 -->
-    <div class="w-full bg-[#eaeaec]"></div>
+    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex flex-col py-6rem box-border">
+      <div class="flex flex-col items-center space-y-1 mb-4">
+        <div class="text-1.8rem">对口帮扶地域</div>
+        <div class="text-#666 text-.7rem">TARGETED ASSISTANCE REGIONS</div>
+      </div>
+    </div>
 
     <!-- 帮扶产业 -->
-    <div class="w-full h-100vh bg-5 flex items-center justify-center">
-      <div class="flex flex-col items-center space-y-1">
+    <div class="w-full py-9rem bg-5 flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center space-y-1 mb-4">
         <div class="text-1.8rem">帮扶产业</div>
         <div class="text-#666 text-.7rem">TARGETED ASSISTANCE REGIONS</div>
       </div>
+      <div class="w-full overflow-hidden pt-2rem container">
+        <swiper
+          :slidesPerView="4"
+          :spaceBetween="30"
+          :freeMode="true"
+          :pagination="{
+            clickable: true,
+          }"
+          :modules="modules"
+          class="mySwiper build-data-wrapper"
+        >
+          <swiper-slide v-for="item in supportIndustries" :key="item.id">
+            <div class="w-full bg-white h-20rem overflow-hidden rounded-md mb-4rem flex flex-col items-center shadow-md">
+              <div :class="`w-full h-16rem ${item.img}`"></div>
+              <div class="py-1 font-bold">{{ item.label }}</div>
+              <div class="text-.9rem">{{ item.content }}</div>
+            </div>
+          </swiper-slide>
+        </swiper>
+      </div>  
     </div>
 
     <!-- 打造产业 -->
@@ -448,7 +492,7 @@ const govPolicyDataList = ref<any[]>([
         <div class="text-1.8rem">数字农业综合解决案例</div>
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
-      <div class="w-full py-1.4rem h-60vh ">
+      <div class="w-full py-1.4rem h-60vh overflow-hidden">
         <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperLeft1"
@@ -503,7 +547,7 @@ const govPolicyDataList = ref<any[]>([
 
     <!-- Footer -->
     <div class="w-full flex flex-col justify-center items-center bg-7 text-white">
-      <div class="container box-border flex justify-between items-center mt-7 px-2rem">
+      <div class="container box-border flex justify-between items-center mt-7 px-2rem box-border">
         <div class="flex items-center py-5 space-x-1rem">
           <div class="icon w-2.4rem h-2.4rem"></div>
           <div class="text-white">
@@ -573,7 +617,9 @@ const govPolicyDataList = ref<any[]>([
 
 .table-bg {
   background-image: url(./assets/new/tableBg.png);
-  background-size: cover;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 @for $i from 1 through 7 {
@@ -647,6 +693,32 @@ const govPolicyDataList = ref<any[]>([
     transition: transform 0.3s;
   }
 }
+
+@for $i from 1 through 16 {
+  .product-#{$i} {
+    background-image: url(./assets/new/product#{$i}.png);
+    background-size: cover;
+  }
+}
+
+.build-data-wrapper {
+  mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent 100%);
+}
+
+.arrow-icon {
+  background-image: url(./assets/new/arrow.png);
+  background-size: .8rem .6rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.bg-area {
+  background-image: url(./assets/new/bgArea.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: #f0f0f1;
+}
 </style>
 <style>
 .swiper {
@@ -657,7 +729,6 @@ const govPolicyDataList = ref<any[]>([
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #fff;
 
   /* Center slide text vertically */
   display: flex;
