@@ -21,10 +21,10 @@ const handleTurn = (val) => {
 
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([
-  { id: '1', label: '示范村', value: '39', desc: '基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶' },
-  { id: '2', label: '帮扶区县', value: '14' },
-  { id: '3', label: '精准帮扶基地', value: '19' },
-  { id: '4', label: '产业形态', value: '11' },
+  { id: '1', label: '示范村', value: '39', desc: '1基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶' },
+  { id: '2', label: '帮扶区县', value: '14' ,desc:'2于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶' },
+  { id: '3', label: '精准帮扶基地', value: '19',desc:'3自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'  },
+  { id: '4', label: '产业形态', value: '11',desc:'4主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'  },
 ])
 
 const showHeader = ref<boolean>(true)
@@ -205,20 +205,22 @@ const govPolicyDataList = ref<any[]>([
       </div>
     </div>
     <div class="w-full flex justify-center bg-3 h-[24rem]">
-      <div class="container flex justify-center relative top-[-1.6rem] space-x-3">
+      <div class="container flex justify-center relative top-[-2rem] space-x-1">
         <div
           :class="`${
-            selectedCardId === item.id ? 'items-start w-26rem px-2rem' : 'w-8rem items-center'
-          } h-17rem flex flex-col justify-center space-y-5 transition-all bg-[#00682Ec0] text-white`"
+            selectedCardId === item.id ? 'items-start w-26rem px-2rem vc'+ item.id : 'w-8rem items-center'
+          } h-20rem flex flex-col justify-center space-y-5 transition-all !duration-500 bg-[#00682Ec0] text-white`"
           v-for="item in cardDataList"
           :key="item.id"
-          @mouseenter="selectedCardId = item.id"
+          @mouseenter="selectedCardId = item.id;console.log(item.desc)"
         >
-          <div class="text-2.2rem">{{ item.value }}</div>
-          <div class="text-1rem">{{ item.label }}</div>
-          <div v-show="selectedCardId === item.id">
-            {{ item.desc ?? '' }}
-          </div>
+          <div :class="selectedCardId === item.id ? 'text-6xl font-bold' : 'text-4xl'">{{ item.value }}</div>
+          <div :class="selectedCardId === item.id ? 'text-`2xl' : 'text-base'">{{ item.label }}</div>
+          <transition name="fade">
+        <div v-show="selectedCardId === item.id" class="mt-3 text-base">
+          {{ item.desc ?? '' }}
+        </div>
+      </transition>
         </div>
       </div>
     </div>
@@ -488,6 +490,12 @@ const govPolicyDataList = ref<any[]>([
     background-size: 100% 100%;
   }
 }
+@for $i from 1 through 4 {
+  .vc#{$i}{
+    background-image: url(./assets/villageConstruction/vc#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
 </style>
 <style>
 .swiper {
@@ -518,5 +526,11 @@ const govPolicyDataList = ref<any[]>([
   width: 2rem;
   border-radius: 999px;
   transition: all .2s ease;
+}
+.fade-enter-active {
+  transition: opacity 0.5s ease-in-out;
+}
+.fade-enter, .fade-leave-to  {
+  opacity: 0;
 }
 </style>
