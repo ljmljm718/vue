@@ -62,7 +62,7 @@
             >
             <el-scrollbar height="20rem">
               <div
-                class="grid xl:grid-cols-2 2xl:grid-col-1 gap-2 xl:grid-rows-4 2xl:grid-rows-2 xl:h-[200px] 2xl:h-[300px] mt-2"
+                class="grid xl:grid-cols-1 2xl:grid-cols-2 gap-2 xl:grid-rows-4 2xl:grid-rows-2 xl:h-[600px] 2xl:h-[300px] mt-2"
               >
                 <div
                   class="bg-[#f2f2f2] p-3 !rounded-md"
@@ -203,7 +203,7 @@
                 @change="handleSelectedMonitorTypeChange"
                 v-model="selectedMonitorType"
                 clearable
-                class="flex xl:w-20px 2xl:!w-100px ml-1 2xl:mt-2"
+                class="flex xl:w-20px 2xl:!w-120px ml-1 2xl:mt-2"
               >
                 <el-option
                   v-for="(item, index) in monitorTypeList"
@@ -244,7 +244,7 @@
               class="my-2"
               @change="(val) => handleDeviceTypeRadioChange(val)"
             >
-              <div class="flex xl:w-[20rem] 2xl:w-full flex-wrap">
+              <div class="flex xl:w-[20rem] xl:h-[5rem] xl:ml--3.5 2xl:ml-0 2xl:w-full flex-wrap ">
                 <el-radio-button label="全部" value="全部" />
                 <el-radio-button label="视频监控" value="视频监控" />
                 <el-radio-button label="监测设备" value="监测设备" />
@@ -258,7 +258,7 @@
               <div>数据采集</div>
             </div>
 
-            <div class="flex space-x-2 items-center">
+            <div class="flex space-x-2 items-center xl:ml--4 2xl:ml-0">
               <el-radio-group
                 v-model="dataCollectRadio"
                 class="my-2"
@@ -387,7 +387,7 @@ const handleDeviceTypeRadioChange = async (param: string | number | boolean = '�
       series: [
         {
           type: 'pie',
-          radius: ['45%', '65%'],
+          radius: ['35%', '55%'],
           center: ['40%', '50%'],
           data: _data,
           label: {
