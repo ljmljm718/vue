@@ -406,8 +406,8 @@ const initChinaMap = async () => {
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
       <div class="container flex flex-row-reverse relative px-2rem box-border">
-        <div id="mapChart" class="h-60vh w-500vw"></div>
-        <div class="absolute left-2rem top-1rem text-white text-2.4rem space-y-3">
+        <div id="mapChart" class="h-100vh w-106vh"></div>
+        <div class="absolute left-2rem top-10rem text-white text-2.4rem space-y-3">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
