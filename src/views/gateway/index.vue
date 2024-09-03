@@ -1,6 +1,10 @@
 <script setup lang="ts">
 // Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from 'swiper/vue'
+import { distinct, selectMap } from './api'
+import * as echarts from 'echarts'
+import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
+import { jsonData } from './assets/chongqing'
+import meassageBg from './assets/meassageBg.png'
 // import required modules
 import { Autoplay, FreeMode, Pagination } from 'swiper/modules'
 // Import Swiper styles
@@ -58,6 +62,9 @@ const checkScroll = () => {
 }
 onMounted(() => {
   checkScroll()
+
+  // 加载地图
+  initChinaMap()
 })
 
 const footerData = ref<any[]>([
@@ -205,6 +212,163 @@ const supportIndustries = ref<any[]>([
   { id: '15', label: '水产养殖', content: '', img: 'product-15' },
   { id: '16', label: '枇杷', content: '', img: 'product-16' },
 ])
+
+/****************************** 第二页地图 start ******************************/
+
+const mapDataList = ref<Array<any>>([])
+const nameDataMap = {}
+
+const initChinaMap = async () => {
+  // 获取高亮地区列表并封装成ECharts用的形式
+  mapDataList.value = await distinct({ type: '1' })
+  let highlightList = mapDataList.value.map(item => ({
+    name: item.name, value: 2000, selected: false
+  }))
+  console.log("高亮地区: ", mapDataList.value)
+  console.log("高亮地区数据ECharts用: ", highlightList)
+
+  // 准备ECharts地图tooltip数据，并修改highlighList中的名称
+  const nameArr = jsonData.features.map((item) => item.properties.name)
+  nameArr.forEach((item) => {
+    selectMap({ county: item }).then((res) => {
+      nameDataMap[item] = res
+    })
+  })
+  const fixData = () => {
+    highlightList = highlightList.map(_item => {
+      const _parseData = JSON.parse(JSON.stringify(_item))
+      nameArr.forEach(_name => {
+        const text1 = _name.substring(0, 2)
+        const text2 = _parseData.name.substring(0, 2)
+        if (text1 === text2) _parseData.name = _name
+      })
+      return _parseData
+    })
+  }
+  fixData()
+  console.log("修改后的高亮地区数据: ", highlightList)
+
+  // 注册重庆市地图并渲染
+  echarts.registerMap('chongqing', jsonData as GeoJSONSourceInput)
+  const chartDom = document.getElementById('mapChart')
+  const myChart = echarts.init(chartDom)
+  myChart.setOption(
+    {
+      // tooltip: {
+      //   show: true,
+      //   trigger: 'item',
+      //   enterable: true, // 鼠标是否可进入提示框浮层中，默认为false，
+      //   showContent: true, // 是否显示提示框浮层
+      //   triggerOn: 'click', // 提示框触发的条件(mousemove|click|none)
+      //   padding: [0, 0], // 提示框浮层内边距，单位px
+      //   backgroundColor: 'none', // 提示框浮层的背景颜色,
+      //   borderWidth: 0, // 提示框边框
+      //   formatter: function (params) {
+      //     const mapData: any = nameDataMap[params.name]
+      //     // console.log('mapData', mapData)
+      //     if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
+      //     let str = ``
+      //     let div=`
+      //     ${
+      //       mapData[0].data ? mapData[0].data.map(item=>{
+      //         return `
+      //         <div class='mt--5px'>
+      //           <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
+      //           <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
+      //         </div>
+      //         `
+      //       }) : ''
+      //     }`
+      //     if (mapData.length == 0) {
+      //       str = ''
+      //     } else {
+      //       str = `<div class=" relative p-[20px]">
+      //             <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
+      //             <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
+      //             ${div}
+
+      //             </div>`
+      //     }
+      //     return str
+      //   },
+      //   rich: {
+      //     img: {
+      //       backgroundColor: {
+      //         image: './assets/meassageBg.png'
+      //       },
+      //       width: 100,
+      //       height: 100,
+      //       align: 'center'
+      //     }
+      //   }
+      // },
+      dataRange: { // 不显示面板 全选series.data并设置背景色
+        show: false,
+        splitList: [
+          { start: 2000, end: 2000, color: '#2A8941' }
+        ]
+      },
+      series: [
+        {
+          type: 'map',
+          map: 'chongqing',
+          zoom: 1.2,
+          roam: false,
+          aspectScale: 1.06,
+          data: highlightList,
+          itemStyle: {
+            borderColor: '#81EEAD',
+            borderWidth: 2,
+            areaColor: 'transparent',
+          },
+          label: {
+            show: true,
+            color: '#ffffff',
+            fontWeight: 'bold',
+            fontSize: '11',
+            formatter: (item) => {
+              const _name = item.name // .replace("区", "").replace("自治县", "").replace("县", "")
+              const labelMap = [
+                "九龙坡区",
+                "大渡口区",
+                "渝中区",
+                "璧山区"
+              ]
+
+              return labelMap.indexOf(_name) !== -1 ? _name.replace("区", "").replace("自治县", "").replace("县", "").split("").join('\n') : _name
+            }
+          },
+          emphasis: { // focus的样式
+            itemStyle: {
+              areaColor: '#2A8941',
+              shadowColor: 'rgba(72, 255, 150, 0.6)',
+              shadowBlur: 20,
+            },
+            label: {
+              color: '#fff'
+            }
+          },
+          select: { // click的样式
+            itemStyle: {
+              areaColor: '#2A8941',
+              shadowColor: 'rgba(72, 255, 150, 0.6)',
+              shadowBlur: 20,
+            },
+            label: {
+              color: '#fff'
+            }
+          },
+        }
+      ]
+    },
+    true
+  )
+
+  window.addEventListener('resize', () => {
+    myChart.resize()
+  })
+}
+/****************************** 第二页地图 end ******************************/
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -241,8 +405,8 @@ const supportIndustries = ref<any[]>([
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
       <div class="container flex flex-row-reverse relative px-2rem box-border">
-        <div id="mapChart" class="h-68vh w-68vh bg-[#25546b80]"></div>
-        <div class="absolute left-2rem top-0 text-white text-2.4rem space-y-3">
+        <div id="mapChart" class="h-100vh w-106vh"></div>
+        <div class="absolute left-2rem top-10rem text-white text-2.4rem space-y-3">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
