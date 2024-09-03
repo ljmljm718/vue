@@ -498,12 +498,11 @@ const supportIndustries = ref<any[]>([
             ref="swiperLeft1"
             :slidesPerView="5"
             :spaceBetween="5"
-            :freeMode="true"
             :loop="true"
             :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
             :speed="10000"
             :reverseDirection="true"
-            :modules="[FreeMode, Autoplay]"
+            :modules="[Autoplay]"
             class="swiper-container swiper-Left"
           >
             <swiper-slide v-for="n in 15" :key="`'slide-2-' + ${n}`" :class="`num-one-${n}`" />
@@ -514,7 +513,6 @@ const supportIndustries = ref<any[]>([
             ref="swiperRight"
             :slidesPerView="5"
             :spaceBetween="5"
-            :freeMode="true"
             :loop="true"
             :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
             :speed="10000"
@@ -531,7 +529,6 @@ const supportIndustries = ref<any[]>([
             ref="swiperLeft2"
             :slidesPerView="5"
             :spaceBetween="5"
-            :freeMode="true"
             :loop="true"
             :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
             :speed="10000"
@@ -748,5 +745,9 @@ const supportIndustries = ref<any[]>([
   width: 2rem;
   border-radius: 999px;
   transition: all 0.2s ease;
+}
+
+.swiper-wrapper{
+  transition-timing-function: linear !important;
 }
 </style>
