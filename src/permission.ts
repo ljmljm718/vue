@@ -67,7 +67,7 @@ interface TitleIcon {
   title: string
 }
 const pathTitleIcoMap = new Map<string, TitleIcon>([
-  ['/page', { href: '', title: '工业安全生产数字化产品平台' }],
+  ['/page', { href: '/logo.png', title: '工业安全生产数字化产品平台' }],
   ['/inspurHome', { href: '', title: '装备智能制造产品云控中台' }],
 ])
 // 路由加载前
