@@ -5,6 +5,7 @@ import * as echarts from 'echarts'
 import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 // import required modules
 import { Autoplay, FreeMode, Pagination } from 'swiper/modules'
 // Import Swiper styles
@@ -405,8 +406,8 @@ const initChinaMap = async () => {
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
       <div class="container flex flex-row-reverse relative px-2rem box-border">
-        <div id="mapChart" class="h-100vh w-106vh"></div>
-        <div class="absolute left-2rem top-10rem text-white text-2.4rem space-y-3">
+        <div id="mapChart" class="h-60vh w-500vw"></div>
+        <div class="absolute left-2rem top-1rem text-white text-2.4rem space-y-3">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
