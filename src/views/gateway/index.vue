@@ -448,8 +448,8 @@ const govPolicyDataList = ref<any[]>([
         <div class="text-1.8rem">数字农业综合解决案例</div>
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
-      <div class="w-full py-1.4rem h-79vh">
-        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+      <div class="w-full py-1.4rem h-60vh ">
+        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperLeft1"
             :slidesPerView="5"
@@ -465,7 +465,7 @@ const govPolicyDataList = ref<any[]>([
             <swiper-slide v-for="n in 15" :key="`'slide-2-' + ${n}`" :class="`num-one-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperRight"
             :slidesPerView="5"
@@ -482,7 +482,7 @@ const govPolicyDataList = ref<any[]>([
             <swiper-slide v-for="n in 16" :key="`'slide-2-' + ${n}`" :class="`num-two-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperLeft2"
             :slidesPerView="5"
@@ -629,27 +629,21 @@ const govPolicyDataList = ref<any[]>([
 @for $i from 1 through 15 {
   .num-one-#{$i} {
     background-image: url(./assets/num-one-#{$i}.png);
-    background-size: cover;
-    width: 5rem;
-    height: 150px;
+    background-size: 100%;
     transition: transform 0.3s;
   }
 }
 @for $i from 1 through 16 {
   .num-two-#{$i} {
     background-image: url(./assets/num-two-#{$i}.png);
-    background-size: cover;
-    width: 5rem;
-    height: 150px;
+    background-size: 100%;
     transition: transform 0.3s;
   }
 }
 @for $i from 1 through 15 {
   .num-three-#{$i} {
     background-image: url(./assets/num-three-#{$i}.png);
-    background-size: cover;
-    width: 5rem;
-    height: 150px;
+    background-size: 100%;
     transition: transform 0.3s;
   }
 }
