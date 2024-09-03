@@ -2,7 +2,7 @@
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue'
 // import required modules
-import { FreeMode, Pagination } from 'swiper/modules'
+import { Autoplay, FreeMode, Pagination } from 'swiper/modules'
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/free-mode'
@@ -249,9 +249,7 @@ const govPolicyDataList = ref<any[]>([
           } h-20rem flex flex-col justify-center space-y-5 transition-all duration-300 bg-[#00682Ec0] text-white`"
           v-for="item in cardDataList"
           :key="item.id"
-          @mouseenter="
-            selectedCardId = item.id
-          "
+          @mouseenter="selectedCardId = item.id"
         >
           <div :class="selectedCardId === item.id ? 'text-6xl font-bold' : 'text-4xl'">{{
             item.value
@@ -263,7 +261,7 @@ const govPolicyDataList = ref<any[]>([
           <transition name="expand">
             <div v-show="selectedCardId === item.id" class="overflow-hidden">
               <transition name="fade">
-                <div class="vcContent mt-3 text-sm ">
+                <div class="vcContent mt-3 text-sm">
                   {{ item.desc ?? '' }}
                 </div>
               </transition>
@@ -446,11 +444,61 @@ const govPolicyDataList = ref<any[]>([
 
     <!-- 数字农业综合解决案例 -->
     <div class="w-full flex flex-col justify-center items-center bg-#fff py-6">
-      <div class="flex flex-col space-y-1 items-center mt-3">
+      <div class="flex flex-col space-y-1 items-center mt-3 mb-[1rem]">
         <div class="text-1.8rem">数字农业综合解决案例</div>
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
-      <div class="w-full bg-red py-1.4rem">SS</div>
+      <div class="w-full py-1.4rem h-79vh">
+        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+          <swiper
+            ref="swiperLeft1"
+            :slidesPerView="5"
+            :spaceBetween="5"
+            :freeMode="true"
+            :loop="true"
+            :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
+            :speed="10000"
+            :reverseDirection="true"
+            :modules="[FreeMode, Autoplay]"
+            class="swiper-container swiper-Left"
+          >
+            <swiper-slide v-for="n in 15" :key="`'slide-2-' + ${n}`" :class="`num-one-${n}`" />
+          </swiper>
+        </div>
+        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+          <swiper
+            ref="swiperRight"
+            :slidesPerView="5"
+            :spaceBetween="5"
+            :freeMode="true"
+            :loop="true"
+            :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
+            :speed="10000"
+            :reverseDirection="true"
+            :modules="[Autoplay]"
+            class="swiper-container swiper-right"
+            dir="rtl"
+          >
+            <swiper-slide v-for="n in 16" :key="`'slide-2-' + ${n}`" :class="`num-two-${n}`" />
+          </swiper>
+        </div>
+        <div class="w-100vw h-25vh" style="position: relative; display: inline-flex">
+          <swiper
+            ref="swiperLeft2"
+            :slidesPerView="5"
+            :spaceBetween="5"
+            :freeMode="true"
+            :loop="true"
+            :autoplay="{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }"
+            :speed="10000"
+            :reverseDirection="true"
+            :modules="[Autoplay]"
+            class="swiper-container swiper-left"
+          >
+            <swiper-slide v-for="n in 15" :key="`'slide-3-' + ${n}`" :class="`num-three-${n}`" />
+          </swiper>
+        </div>
+      </div>
     </div>
 
     <!-- Footer -->
@@ -551,6 +599,60 @@ const govPolicyDataList = ref<any[]>([
     background-size: 100% 100%;
   }
 }
+// 乡村建设样式
+.expand-enter-active {
+  transition: max-height 0.5s ease;
+  max-height: 30rem;
+}
+.expand-enter-from {
+  max-height: 0;
+}
+.expand-enter-to {
+  max-height: 10rem;
+}
+
+.fade-enter-active {
+  transition: opacity 0.5s ease;
+  transition-delay: 0.1s;
+}
+.fade-enter-from {
+  opacity: 0;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.vcContent {
+  min-height: 5rem;
+  line-height: 1.5;
+}
+//解决案例图片
+@for $i from 1 through 15 {
+  .num-one-#{$i} {
+    background-image: url(./assets/num-one-#{$i}.png);
+    background-size: cover;
+    width: 5rem;
+    height: 150px;
+    transition: transform 0.3s;
+  }
+}
+@for $i from 1 through 16 {
+  .num-two-#{$i} {
+    background-image: url(./assets/num-two-#{$i}.png);
+    background-size: cover;
+    width: 5rem;
+    height: 150px;
+    transition: transform 0.3s;
+  }
+}
+@for $i from 1 through 15 {
+  .num-three-#{$i} {
+    background-image: url(./assets/num-three-#{$i}.png);
+    background-size: cover;
+    width: 5rem;
+    height: 150px;
+    transition: transform 0.3s;
+  }
+}
 </style>
 <style>
 .swiper {
@@ -581,31 +683,5 @@ const govPolicyDataList = ref<any[]>([
   width: 2rem;
   border-radius: 999px;
   transition: all 0.2s ease;
-}
-
-.expand-enter-active {
-  transition: max-height 0.5s ease;
-  max-height: 30rem;
-}
-.expand-enter-from {
-  max-height: 0;
-}
-.expand-enter-to {
-  max-height: 10rem;
-}
-
-.fade-enter-active {
-  transition: opacity 0.5s ease;
-  transition-delay: 0.1s;
-}
-.fade-enter-from {
-  opacity: 0;
-}
-.fade-enter-to {
-  opacity: 1;
-}
-.vcContent {
-  min-height: 5rem;
-  line-height: 1.5; 
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="grid 2xl:grid-cols-4 xl:grid-cols-2 gap-4">
+    <div class="grid 2xl:grid-cols-4 min-:grid-cols-2 gap-4">
       <el-card>
         <div>
           <div class="flex justify-between">
