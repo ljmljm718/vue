@@ -1,7 +1,16 @@
 <script setup lang="ts">
 // Import Swiper Vue.js components
-import { distinct, selectMap } from './api'
+import {
+  distinct,
+  selectMap,
+  page,
+  filePage,
+  selectHelp,
+  selectHelpPage,
+  selectCountysPage
+} from './api'
 import * as echarts from 'echarts'
+import dayjs from 'dayjs'
 import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
@@ -15,6 +24,17 @@ import 'swiper/css/pagination'
 
 const modules = [FreeMode, Pagination]
 
+const distincDataMap = new Map<string, any>()
+const getDistinctData = async (type:string) => {
+  const cacheItem = distincDataMap.get(type)
+  if (cacheItem) return Promise.resolve(cacheItem)
+  const res = await distinct({ type })
+  if (Array.isArray(res)) {
+    distincDataMap.set(type, res);
+    return Promise.resolve(res)
+  } else Promise.reject()
+}
+
 // 示范村ref
 const buildRef = ref()
 const handleTurn = (val) => {
@@ -25,39 +45,46 @@ const handleTurn = (val) => {
 }
 
 const selectedCardId = ref<string>('1')
-const cardDataList = ref<any[]>([
-  {
-    id: '1',
-    label: '示范村',
-    value: '39',
-    desc: '1基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '2',
-    label: '帮扶区县',
-    value: '14',
-    desc: '2于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '3',
-    label: '精准帮扶基地',
-    value: '19',
-    desc: '3自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '4',
-    label: '产业形态',
-    value: '11',
-    desc: '4主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  }
-])
+const cardDataList = ref<any[]>([])
+const getCardDataList = async () => {
+  const res1 = await getDistinctData('1')
+  const res2 = await getDistinctData('2')
+  const res3 = await getDistinctData('3')
+  const res4 = await getDistinctData('4')
+  cardDataList.value = [
+    {
+      id: '1',
+      label: '示范村',
+      value: res2.length,
+      desc: '1、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '2',
+      label: '帮扶区县',
+      value: res1.length,
+      desc: '2、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '3',
+      label: '精准帮扶基地',
+      value: res3.length,
+      desc: '3、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '4',
+      label: '产业形态',
+      value: res4.length,
+      desc: '4、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    }
+  ]
+}
+getCardDataList()
 
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
   const dom = document.getElementById('homeContainer')
   if (dom)
     dom.addEventListener('scroll', () => {
-      console.log('🚀 ~ checkScroll ~ dom.scrollTop:', dom.scrollTop)
       showHeader.value = !(dom.scrollTop > 1000)
     })
 }
@@ -194,6 +221,15 @@ const govPolicyDataList = ref<any[]>([
     date: '06-30'
   }
 ])
+const getGovPolicyDataList = async () => {
+  const { list = [] } = await filePage({ pageNo: 1, pageSize: 4 });
+  console.log("🚀 ~ getGovPolicyDataList ~ res:", list)
+  if (!Array.isArray(list)) return;
+  govPolicyDataList.value = list.map(item => ({
+    ...item, year: dayjs(item.upTime).year(), date: dayjs(item.upTime).format("MM-DD")
+  }))
+}
+getGovPolicyDataList()
 
 // 帮扶产业数据
 const supportIndustries = ref<any[]>([
@@ -213,26 +249,37 @@ const supportIndustries = ref<any[]>([
   { id: '15', label: '水产养殖', content: '', img: 'product-15' },
   { id: '16', label: '枇杷', content: '', img: 'product-16' },
 ])
+const getSupportIndustriesData = async () => {
+  const { list = [] } = await selectHelpPage({ pageNo: 1, pageSize: 20 });
+  console.log("🚀 ~ getSupportIndustriesData ~ res:", list)
+  if (!Array.isArray(list)) return;
+  supportIndustries.value = list.map((item, index) => ({
+    id: index, label: item.industry, content: item.park, img: item.industryImg
+  }))
+}
+getSupportIndustriesData()
 
 /****************************** 第二页地图 start ******************************/
 
 const mapDataList = ref<Array<any>>([])
-const nameDataMap = {}
+const nameDataMap = new Map()
+const mapTipShow = ref(false)
+const mapTipData = ref()
 
 const initChinaMap = async () => {
   // 获取高亮地区列表并封装成ECharts用的形式
-  mapDataList.value = await distinct({ type: '1' })
+  mapDataList.value = await getDistinctData('1')
   let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
-  console.log("高亮地区: ", mapDataList.value)
-  console.log("高亮地区数据ECharts用: ", highlightList)
+  // console.log("高亮地区: ", mapDataList.value)
+  // console.log("高亮地区数据ECharts用: ", highlightList)
 
   // 准备ECharts地图tooltip数据，并修改highlighList中的名称
   const nameArr = jsonData.features.map((item) => item.properties.name)
   nameArr.forEach((item) => {
     selectMap({ county: item }).then((res) => {
-      nameDataMap[item] = res
+      nameDataMap.set(item, res)
     })
   })
   const fixData = () => {
@@ -247,7 +294,9 @@ const initChinaMap = async () => {
     })
   }
   fixData()
-  console.log("修改后的高亮地区数据: ", highlightList)
+  // console.log("地区名称列表: ", nameArr)
+  // console.log("修改后的高亮地区数据: ", highlightList)
+  // console.log("全部地区数据: ", nameDataMap)
 
   // 注册重庆市地图并渲染
   echarts.registerMap('chongqing', jsonData as GeoJSONSourceInput)
@@ -255,55 +304,7 @@ const initChinaMap = async () => {
   const myChart = echarts.init(chartDom)
   myChart.setOption(
     {
-      // tooltip: {
-      //   show: true,
-      //   trigger: 'item',
-      //   enterable: true, // 鼠标是否可进入提示框浮层中，默认为false，
-      //   showContent: true, // 是否显示提示框浮层
-      //   triggerOn: 'click', // 提示框触发的条件(mousemove|click|none)
-      //   padding: [0, 0], // 提示框浮层内边距，单位px
-      //   backgroundColor: 'none', // 提示框浮层的背景颜色,
-      //   borderWidth: 0, // 提示框边框
-      //   formatter: function (params) {
-      //     const mapData: any = nameDataMap[params.name]
-      //     // console.log('mapData', mapData)
-      //     if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
-      //     let str = ``
-      //     let div=`
-      //     ${
-      //       mapData[0].data ? mapData[0].data.map(item=>{
-      //         return `
-      //         <div class='mt--5px'>
-      //           <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-      //           <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
-      //         </div>
-      //         `
-      //       }) : ''
-      //     }`
-      //     if (mapData.length == 0) {
-      //       str = ''
-      //     } else {
-      //       str = `<div class=" relative p-[20px]">
-      //             <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
-      //             <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
-      //             ${div}
-
-      //             </div>`
-      //     }
-      //     return str
-      //   },
-      //   rich: {
-      //     img: {
-      //       backgroundColor: {
-      //         image: './assets/meassageBg.png'
-      //       },
-      //       width: 100,
-      //       height: 100,
-      //       align: 'center'
-      //     }
-      //   }
-      // },
-      dataRange: { // 不显示面板 全选series.data并设置背景色
+      dataRange: { // 不显示面板 且 全选series.data并设置背景色
         show: false,
         splitList: [
           { start: 2000, end: 2000, color: '#2A8941' }
@@ -325,18 +326,21 @@ const initChinaMap = async () => {
           label: {
             show: true,
             color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: '11',
-            formatter: (item) => {
-              const _name = item.name // .replace("区", "").replace("自治县", "").replace("县", "")
+            fontSize: 16,
+            lineHeight: 20,
+            width: 80,
+            overflow: 'break',
+            formatter: (item) => { // labelMap里的在地图上不显示文字 '璧山区'垂直显示
+              const _name = item.name
               const labelMap = [
                 "九龙坡区",
                 "大渡口区",
                 "渝中区",
-                "璧山区"
+                "沙坪坝区",
+                "江北区",
+                "南岸区"
               ]
-
-              return labelMap.indexOf(_name) !== -1 ? _name.replace("区", "").replace("自治县", "").replace("县", "").split("").join('\n') : _name
+              return labelMap.indexOf(_name) !== -1 ? '' : '璧山区' === _name ? _name.split("").join('\n') : _name
             }
           },
           emphasis: { // focus的样式
@@ -360,16 +364,159 @@ const initChinaMap = async () => {
             }
           },
         }
-      ]
+      ],
+      /* 如果需要在地图中显示，则使用这种tooltip方式
+      tooltip: {
+        show: true,
+        trigger: 'item',
+        enterable: true, // 鼠标是否可进入提示框浮层中，默认为false，
+        showContent: true, // 是否显示提示框浮层
+        triggerOn: 'click', // 提示框触发的条件(mousemove|click|none)
+        padding: [0, 0], // 提示框浮层内边距，单位px
+        backgroundColor: 'none', // 提示框浮层的背景颜色,
+        borderWidth: 0, // 提示框边框,
+        position: [517, 117],
+        formatter: function (params) {
+          const mapData: any = nameDataMap[params.name]
+          // console.log('mapData', mapData)
+          if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
+          let str = ``
+          let div=`
+          ${
+            mapData[0].data ? mapData[0].data.map(item=>{
+              return `
+              <div class='mt--5px'>
+                <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
+                <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
+              </div>
+              `
+            }) : ''
+          }`
+          if (mapData.length == 0) {
+            str = ''
+          } else {
+            str = `<div class=" relative p-[20px]">
+                  <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
+                  <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
+                  ${div}
+
+                  </div>`
+          }
+          return str
+        },
+        rich: {
+          img: {
+            backgroundColor: {
+              image: './assets/meassageBg.png'
+            },
+            width: 100,
+            height: 100,
+            align: 'center'
+          }
+        }
+      },
+      */
     },
     true
   )
+
+  // 点击地图空白的处理 空白时没有params.target
+  myChart.getZr().on('click', (params) => {
+    if (!params.target) {
+      mapTipShow.value = false
+      mapTipData.value = null
+      myChart.dispatchAction({
+        type: 'unselect',
+        name: nameArr
+      })
+    }
+  })
+
+  // 检查mapTipData是否合法
+  const checkMapTipData = (obj) => {
+    if (!Object.keys(obj).length) return false
+    if (!obj.data || !Array.isArray(obj.data) || obj.data.length === 0) return false
+    obj.data.forEach((ele) => {
+      if (!ele.years || !ele.village || !ele.bigscreen) {
+        return false
+      }
+    })
+    return true
+  }
+
+  // 点在地图上的处理
+  myChart.on('click', (params) => {
+    // console.log('ECharts点击事件参数: ', params)
+    mapTipShow.value = false
+    mapTipData.value = null
+    let key = params.name
+    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) {
+      mapTipData.value = nameDataMap.get(key)[0]
+      mapTipShow.value = true
+    }
+    // console.log('点击地图后的mapTipData, mapTipShow: ', mapTipData.value, mapTipShow.value)
+  })
 
   window.addEventListener('resize', () => {
     myChart.resize()
   })
 }
 /****************************** 第二页地图 end ******************************/
+
+// 对口帮扶地域
+const helpAreaData = ref<any[]>([
+  { id: '1', from: '潍坊市', to: '开州区' },
+  { id: '2', from: '济宁市', to: '万州区' },
+  { id: '3', from: '济南市', to: '武隆区' },
+  { id: '4', from: '淄博市', to: '石柱县' },
+  { id: '5', from: '聊城市', to: '彭水县' },
+  { id: '6', from: '烟台市', to: '巫山县' },
+  { id: '7', from: '威海市', to: '云阳县' },
+  { id: '8', from: '滨州市', to: '奉节县' },
+  { id: '9', from: '泰安市', to: '巫溪县' },
+  { id: '10', from: '德州市', to: '秀山县' },
+  { id: '11', from: '东营市', to: '酉阳县' },
+  { id: '12', from: '日照市', to: '黔江区' },
+  { id: '13', from: '枣庄市', to: '丰都县' },
+  { id: '14', from: '临沂市', to: '城口区' },
+])
+const getHelpAreaData = async () => {
+  const res = await selectHelp({ type: '1' })
+  console.log("🚀 ~ getHelpAreaData ~ res:", res)
+  if (Array.isArray(res)) helpAreaData.value = res.map((item, index) => ({
+    id: index, from: item.city, to: item.county
+  }))
+}
+getHelpAreaData()
+
+//解决案例
+const swiperInstance=ref(null)
+
+const onSwiper = (swiper)=>{
+  swiperInstance.value = swiper
+}
+
+const handleSwiperMouseEnter=()=>{
+// if (swiperInstance) {
+//   console.log('Swiper 实例已创建');
+// } else {
+//   console.log('Swiper 实例尚未创建');
+// }
+
+// if (swiperInstance.value.autoplay) {
+//   console.log('Autoplay 已初始化');
+// } else {
+//   console.log('Autoplay 尚未初始化');
+// }
+  swiperInstance.value?.autoplay.stop();
+  // console.log("🚀 ~ handleSwiperMouseEnter ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
+  
+}
+  
+const handleSwiperMouseLeave=()=>{
+  swiperInstance.value?.autoplay.start();
+  // console.log("🚀 ~ handleSwiperMouseLeave ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
+}
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -406,12 +553,27 @@ const initChinaMap = async () => {
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
       <div class="container flex flex-row-reverse relative px-2rem box-border">
-        <div id="mapChart" class="h-100vh w-106vh"></div>
-        <div class="absolute left-2rem top-10rem text-white text-2.4rem space-y-3">
+        <!-- 地图 -->
+        <div id="mapChart" class="h-100vh w-106vh max-h-[920px] max-w-[975px]"></div>
+        <!-- 左侧弹框 -->
+        <div class="flex flex-col py-[35px] box-border map-tip text-[0.67rem] lg:text-[1.33rem]" v-if="mapTipShow">
+          <div class="text-[1rem] lg:text-[2rem] text-[#48FF96] text-center">{{ mapTipData.county }}</div>
+          <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white">
+            <div class="text-right">帮扶城市:</div>
+            <div>{{ !mapTipData.city ? '暂无' : mapTipData.city }}</div>
+          </div>
+          <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white overflow-auto hidden-scrollbar">
+            <template v-for="item in mapTipData.data" :key="`${mapTipData.county}-${item.village}`">
+              <div class="text-right">{{ item.years }}年示范村:</div>
+              <div>{{ item.village }}</div>
+            </template>
+          </div>
+        </div>
+        <div class="absolute left-2rem top-[14%] text-white space-y-3 text-[1rem] lg:text-[1.4rem] xl:text-2.4rem">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
-          <div class="text-1rem text-[#f1f1f1d0]"
+          <div class="text-[0.6rem] xl:text-1rem text-[#f1f1f1d0]"
             >强化产业协作，实施“东产西移“，大力推动区域协同发展</div
           >
         </div>
@@ -443,12 +605,10 @@ const initChinaMap = async () => {
           }}</div>
 
           <transition name="expand">
-            <div v-show="selectedCardId === item.id" class="overflow-hidden">
-              <transition name="fade">
-                <div class="vcContent mt-3 text-sm">
-                  {{ item.desc ?? '' }}
-                </div>
-              </transition>
+            <div v-show="selectedCardId === item.id" :class="`overflow-hidden ${selectedCardId === item.id ? 'linear-show' : ''}`">
+              <div class="vcContent mt-3 text-sm">
+                {{ item.desc ?? '' }}
+              </div>
             </div>
           </transition>
         </div>
@@ -545,12 +705,41 @@ const initChinaMap = async () => {
       </div>
     </div>
 
-    <!-- 对口帮扶地域 这块真是想要我老命了 -->
-    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex flex-col py-6rem box-border">
+    <!-- 对口帮扶地域 -->
+    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex items-center flex-col py-6rem box-border">
       <div class="flex flex-col items-center space-y-1 mb-4">
         <div class="text-1.8rem">对口帮扶地域</div>
         <div class="text-#666 text-.7rem">TARGETED ASSISTANCE REGIONS</div>
       </div>
+      <div class="flex space-x-2rem items-center justify-center mt-2rem">
+        <div
+          class="s-card w-2.9rem h-15rem flex flex-col items-center py-3 box-border justify-between text-white text-1.2rem"
+          v-for="item in helpAreaData"
+          :key="item.id"
+        >
+          <div style="writing-mode: vertical-lr;">{{ item.from }}</div>
+          <div style="writing-mode: vertical-lr;">{{ item.to }}</div>
+        </div>
+      </div>
+      <div class="container flex justify-between items-center px-3rem py-2rem box-border">
+        <div>
+          <div class="text-6rem font-bold text-#318255">{{ helpAreaData.length }}</div>
+          <div class="text-1.6rem">帮扶区县</div>
+        </div>
+        <div>
+          <div class="space-y-1rem text-1.2rem">
+            <div class="flex space-x-3 items-center">
+              <div class="rounded-full w-1rem h-1rem bg-#2f3331"></div>
+              <div>帮扶城市</div>
+            </div>
+            <div class="flex space-x-3 items-center">
+              <div class="rounded-full w-1rem h-1rem bg-#318255"></div>
+              <div>挂职区县</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </div>
 
     <!-- 帮扶产业 -->
@@ -572,7 +761,7 @@ const initChinaMap = async () => {
         >
           <swiper-slide v-for="item in supportIndustries" :key="item.id">
             <div class="w-full bg-white h-20rem overflow-hidden rounded-md mb-4rem flex flex-col items-center shadow-md">
-              <div :class="`w-full h-16rem ${item.img}`"></div>
+              <img :src="item.img" class="w-full !h-16rem object-fit" />
               <div class="py-1 font-bold">{{ item.label }}</div>
               <div class="text-.9rem">{{ item.content }}</div>
             </div>
@@ -619,7 +808,7 @@ const initChinaMap = async () => {
         <div class="text-1.8rem">政府政策</div>
         <div class="text-#666 text-.7rem">GOVERNMENT POLICY</div>
       </div>
-      <div class="container flex justify-center items-center space-x-2">
+      <div class="container flex justify-center items-start space-x-2">
         <div class="flex flex-col space-y-2">
           <div class="w-20rem h-14rem pic"></div>
           <div class="bg-white p-3 w-20rem box-border">
@@ -658,9 +847,15 @@ const initChinaMap = async () => {
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
       <div class="w-full py-1.4rem h-60vh overflow-hidden">
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div 
+          class="w-100vw h-1/3 cursor-pointer" 
+          style="position: relative; display: inline-flex"
+          @mouseenter="handleSwiperMouseEnter"
+          @mouseleave="handleSwiperMouseLeave"
+        >
           <swiper
             ref="swiperLeft1"
+            @swiper="onSwiper"
             :slidesPerView="5"
             :spaceBetween="5"
             :loop="true"
@@ -673,7 +868,7 @@ const initChinaMap = async () => {
             <swiper-slide v-for="n in 15" :key="`'slide-2-' + ${n}`" :class="`num-one-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3 cursor-pointer" style="position: relative; display: inline-flex ">
           <swiper
             ref="swiperRight"
             :slidesPerView="5"
@@ -689,7 +884,7 @@ const initChinaMap = async () => {
             <swiper-slide v-for="n in 16" :key="`'slide-2-' + ${n}`" :class="`num-two-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3 cursor-pointer" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperLeft2"
             :slidesPerView="5"
@@ -881,6 +1076,42 @@ const initChinaMap = async () => {
   background-position: center center;
   background-color: #f0f0f1;
 }
+
+.s-card {
+  background-image: url(./assets/new/scard.png);
+  background-size: 100% 100%;
+}
+
+@keyframes opacityIn {
+  0% { opacity: 0; }
+  30% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.linear-show {
+  animation: opacityIn .7s ease forwards;
+}
+/****************************** 第二页地图 start ******************************/
+.map-tip {
+  max-height: 39%;
+  width: calc((100% - 106vh) * 0.8);
+  background: {
+    image: url(./assets/map/map-tip.png);
+    size: 100% 100%;
+  }
+  position: absolute;
+  top: calc(61% - 4.8rem);
+  left: 2rem;
+}
+@media screen and (min-height: 920px) {
+  .map-tip {
+    width: calc((100% - 975px) * 0.8);
+  }
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 0;
+}
+/****************************** 第二页地图 end ******************************/
 </style>
 <style>
 .swiper {
