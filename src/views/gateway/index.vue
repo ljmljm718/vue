@@ -871,12 +871,12 @@ getSelectImg()
           style="border-bottom: 1px solid #f1f1f130;"
         >
           <div class="text-1.9rem text-#fff">打造产业</div>
-          <div class="text-#fff text-1rem">更多></div>
+          <div class="text-#fff text-1.2rem">更多></div>
         </div>
         <div class="flex">
           <div class="w-20rem p-2rem py-3.5rem box-border space-y-2rem" style="border-right: 1px solid #f1f1f130;">
             <div
-              :class="`text-1.8rem text-#fff rounded-md p-1rem text-center transition cursor-pointer ${selectedIndustry === item.id ? 'bg-#fff text-#318255' : ''}`"
+              :class="`text-1.6rem text-#fff rounded-md p-1rem text-center transition cursor-pointer ${selectedIndustry === item.id ? 'bg-#fff text-#318255' : ''}`"
               v-for="item in industriesTree"
               :key="item.id"
               @click="handleFirstItemClick(item)"
@@ -884,10 +884,10 @@ getSelectImg()
           </div>
           <div class="grow box-border p-2rem py-3rem pb-1rem">
             <div class="flex justify-between items-center">
-              <div class="text-white text-1.8rem">{{ selectedSecIndustry.label }} - {{ selectedSecItem.label }} ({{ selectedSecItem?.children?.length }})</div>
+              <div class="text-white text-1.7rem">{{ selectedSecIndustry.label }} - {{ selectedSecItem.label }} ({{ selectedSecItem?.children?.length }})</div>
               <div class="industry-btn w-3rem h-3rem cursor-pointer" @click="handleNextItem(1)"></div>
             </div>
-            <div class="flex justify-center items-center h-60vh">
+            <div class="flex justify-center items-center h-58vh">
               <div class="h-20rem aspect-1.68 tv-bg p-2.3rem box-border relative scale-130">
                 <img
                   :src="selectedThirItem?.bigscreenImg"
@@ -898,13 +898,15 @@ getSelectImg()
                   <div class="left-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(-1)"></div>
                   <div class="right-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(1)"></div>
                 </div>
-                <div class="w-full h-2rem top-[1.5rem] flex justify-center items-end relative text-center text-#fff">{{ selectedSecItem.label }}</div>
               </div>
             </div>
-            <div class="w-full h-[7rem] bottom-[-3rem]  flex justify-center ">
-              <div class="flex justify-center items-end semicircule-bg  w-20rem h-6.8rem ">
-                <div class="flex w-50% h-full" @click="handleNextItem(-1)"></div>
-                <div class="flex w-50% h-full" @click="handleNextItem(1)"></div>
+            <div class="w-full h-[10rem] bottom-[-2rem] flex justify-center">
+              <div class='flex flex-col justify-center items-center w-25rem'> 
+                  <div class="flex justify-center  h-20% text-center text-#fff text-1.2rem">{{ selectedSecItem.label }}</div>
+                  <div class="flex justify-center  h-80%  w-23rem  semicircule-bg">
+                      <div class="flex w-50% h-full" @click="handleNextItem(-1)"></div>
+                      <div class="flex w-50% h-full" @click="handleNextItem(1)"></div>
+                  </div>
               </div>
             </div>
           </div>
