@@ -388,6 +388,35 @@ const helpAreaData = ref<any[]>([
   { id: '13', from: '枣庄市', to: '丰都县' },
   { id: '14', from: '临沂市', to: '城口区' },
 ])
+
+//解决案例
+const swiperInstance=ref(null)
+
+const onSwiper = (swiper)=>{
+  swiperInstance.value = swiper
+}
+
+const handleSwiperMouseEnter=()=>{
+// if (swiperInstance) {
+//   console.log('Swiper 实例已创建');
+// } else {
+//   console.log('Swiper 实例尚未创建');
+// }
+
+// if (swiperInstance.value.autoplay) {
+//   console.log('Autoplay 已初始化');
+// } else {
+//   console.log('Autoplay 尚未初始化');
+// }
+  swiperInstance.value?.autoplay.stop();
+  // console.log("🚀 ~ handleSwiperMouseEnter ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
+  
+}
+  
+const handleSwiperMouseLeave=()=>{
+  swiperInstance.value?.autoplay.start();
+  // console.log("🚀 ~ handleSwiperMouseLeave ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
+}
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -461,12 +490,10 @@ const helpAreaData = ref<any[]>([
           }}</div>
 
           <transition name="expand">
-            <div v-show="selectedCardId === item.id" class="overflow-hidden">
-              <transition name="fade">
-                <div class="vcContent mt-3 text-sm">
-                  {{ item.desc ?? '' }}
-                </div>
-              </transition>
+            <div v-show="selectedCardId === item.id" :class="`overflow-hidden ${selectedCardId === item.id ? 'linear-show' : ''}`">
+              <div class="vcContent mt-3 text-sm">
+                {{ item.desc ?? '' }}
+              </div>
             </div>
           </transition>
         </div>
@@ -705,9 +732,15 @@ const helpAreaData = ref<any[]>([
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
       <div class="w-full py-1.4rem h-60vh overflow-hidden">
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div 
+          class="w-100vw h-1/3" 
+          style="position: relative; display: inline-flex"
+          @mouseenter="handleSwiperMouseEnter"
+          @mouseleave="handleSwiperMouseLeave"
+        >
           <swiper
             ref="swiperLeft1"
+            @swiper="onSwiper"
             :slidesPerView="5"
             :spaceBetween="5"
             :loop="true"
@@ -932,6 +965,15 @@ const helpAreaData = ref<any[]>([
 .s-card {
   background-image: url(./assets/new/scard.png);
   background-size: 100% 100%;
+}
+
+@keyframes opacityIn {
+  0% { opacity: 0; }
+  30% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.linear-show {
+  animation: opacityIn .7s ease forwards;
 }
 </style>
 <style>
