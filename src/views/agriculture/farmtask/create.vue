@@ -123,6 +123,53 @@
                   </el-col>
                 </el-row>
                 <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="作业方式" prop="jobType">
+                      <el-select v-model="formData.jobType" placeholder="请选择作业方式" style="width: 100%;">
+<!--                        <el-option label="机械作业" value="1" />-->
+<!--                        <el-option label="人工作业" value="2" />-->
+                        <el-option
+                          v-for="dict in getStrDictOptions(DICT_TYPE.JOB_TYPE)"
+                          :key="dict.value"
+                          :label="dict.label"
+                          :value="dict.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="消耗农资" prop="agriCapitalConsume">
+                        <el-select v-model="formData.agriCapitalConsume" placeholder="请选择消耗农资" style="width: 100%;">
+                          <el-option
+                            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CAPITAL_CONSUME)"
+                            :key="dict.value"
+                            :label="dict.label"
+                            :value="dict.value"
+                          />
+                        </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="农资数量" prop="agriCapitalAmount">
+                      <el-input-number controls-position="right" type="number"  placeholder="请输入内容" v-model="formData.agriCapitalAmount" style="width: 100%"/>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="农资单位" prop="agriCapitalUnit">
+                      <el-select v-model="formData.agriCapitalUnit" placeholder="请选择单位" style="width: 100%;">
+                        <el-option
+                          v-for="dict in getStrDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT)"
+                          :key="dict.value"
+                          :label="dict.label"
+                          :value="dict.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
                   <el-col :span="24">
                     <el-form-item label="完成要求" prop="completeRequirement">
                       <el-input type="textarea" v-model="formData.completeRequirement" placeholder="请输入完成要求" />
@@ -236,6 +283,10 @@ const formData = ref({
   acceptanceStandard: undefined,
   planCode:undefined,
   planName:undefined,
+  agriCapitalUnit:undefined,
+  agriCapitalAmount:undefined,
+  agriCapitalConsume:undefined,
+  jobType:undefined,
 })
 const formRules = reactive({
   parkName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],
