@@ -217,7 +217,9 @@ const supportIndustries = ref<any[]>([
 /****************************** 第二页地图 start ******************************/
 
 const mapDataList = ref<Array<any>>([])
-const nameDataMap = {}
+const nameDataMap = new Map()
+const mapTipShow = ref(false)
+const mapTipData = ref()
 
 const initChinaMap = async () => {
   // 获取高亮地区列表并封装成ECharts用的形式
@@ -225,14 +227,14 @@ const initChinaMap = async () => {
   let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
-  console.log("高亮地区: ", mapDataList.value)
-  console.log("高亮地区数据ECharts用: ", highlightList)
+  // console.log("高亮地区: ", mapDataList.value)
+  // console.log("高亮地区数据ECharts用: ", highlightList)
 
   // 准备ECharts地图tooltip数据，并修改highlighList中的名称
   const nameArr = jsonData.features.map((item) => item.properties.name)
   nameArr.forEach((item) => {
     selectMap({ county: item }).then((res) => {
-      nameDataMap[item] = res
+      nameDataMap.set(item, res)
     })
   })
   const fixData = () => {
@@ -247,7 +249,9 @@ const initChinaMap = async () => {
     })
   }
   fixData()
-  console.log("修改后的高亮地区数据: ", highlightList)
+  // console.log("地区名称列表: ", nameArr)
+  // console.log("修改后的高亮地区数据: ", highlightList)
+  // console.log("全部地区数据: ", nameDataMap)
 
   // 注册重庆市地图并渲染
   echarts.registerMap('chongqing', jsonData as GeoJSONSourceInput)
@@ -255,55 +259,7 @@ const initChinaMap = async () => {
   const myChart = echarts.init(chartDom)
   myChart.setOption(
     {
-      // tooltip: {
-      //   show: true,
-      //   trigger: 'item',
-      //   enterable: true, // 鼠标是否可进入提示框浮层中，默认为false，
-      //   showContent: true, // 是否显示提示框浮层
-      //   triggerOn: 'click', // 提示框触发的条件(mousemove|click|none)
-      //   padding: [0, 0], // 提示框浮层内边距，单位px
-      //   backgroundColor: 'none', // 提示框浮层的背景颜色,
-      //   borderWidth: 0, // 提示框边框
-      //   formatter: function (params) {
-      //     const mapData: any = nameDataMap[params.name]
-      //     // console.log('mapData', mapData)
-      //     if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
-      //     let str = ``
-      //     let div=`
-      //     ${
-      //       mapData[0].data ? mapData[0].data.map(item=>{
-      //         return `
-      //         <div class='mt--5px'>
-      //           <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
-      //           <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
-      //         </div>
-      //         `
-      //       }) : ''
-      //     }`
-      //     if (mapData.length == 0) {
-      //       str = ''
-      //     } else {
-      //       str = `<div class=" relative p-[20px]">
-      //             <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
-      //             <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
-      //             ${div}
-
-      //             </div>`
-      //     }
-      //     return str
-      //   },
-      //   rich: {
-      //     img: {
-      //       backgroundColor: {
-      //         image: './assets/meassageBg.png'
-      //       },
-      //       width: 100,
-      //       height: 100,
-      //       align: 'center'
-      //     }
-      //   }
-      // },
-      dataRange: { // 不显示面板 全选series.data并设置背景色
+      dataRange: { // 不显示面板 且 全选series.data并设置背景色
         show: false,
         splitList: [
           { start: 2000, end: 2000, color: '#2A8941' }
@@ -325,18 +281,21 @@ const initChinaMap = async () => {
           label: {
             show: true,
             color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: '11',
-            formatter: (item) => {
-              const _name = item.name // .replace("区", "").replace("自治县", "").replace("县", "")
+            fontSize: 16,
+            lineHeight: 20,
+            width: 80,
+            overflow: 'break',
+            formatter: (item) => { // labelMap里的在地图上不显示文字 '璧山区'垂直显示
+              const _name = item.name
               const labelMap = [
                 "九龙坡区",
                 "大渡口区",
                 "渝中区",
-                "璧山区"
+                "沙坪坝区",
+                "江北区",
+                "南岸区"
               ]
-
-              return labelMap.indexOf(_name) !== -1 ? _name.replace("区", "").replace("自治县", "").replace("县", "").split("").join('\n') : _name
+              return labelMap.indexOf(_name) !== -1 ? '' : '璧山区' === _name ? _name.split("").join('\n') : _name
             }
           },
           emphasis: { // focus的样式
@@ -360,10 +319,98 @@ const initChinaMap = async () => {
             }
           },
         }
-      ]
+      ],
+      /* 如果需要在地图中显示，则使用这种tooltip方式
+      tooltip: {
+        show: true,
+        trigger: 'item',
+        enterable: true, // 鼠标是否可进入提示框浮层中，默认为false，
+        showContent: true, // 是否显示提示框浮层
+        triggerOn: 'click', // 提示框触发的条件(mousemove|click|none)
+        padding: [0, 0], // 提示框浮层内边距，单位px
+        backgroundColor: 'none', // 提示框浮层的背景颜色,
+        borderWidth: 0, // 提示框边框,
+        position: [517, 117],
+        formatter: function (params) {
+          const mapData: any = nameDataMap[params.name]
+          // console.log('mapData', mapData)
+          if (!mapData[0].data || mapData[0].data.length === 0) return '<div></div>'
+          let str = ``
+          let div=`
+          ${
+            mapData[0].data ? mapData[0].data.map(item=>{
+              return `
+              <div class='mt--5px'>
+                <div class="color-[#fafafa] z-9999 my-8px text-sm">帮扶城市：${mapData[0]?.city}</div>
+                <div class="color-[#fafafa] text-sm">${item.years}年示范村：<a href="${item.bigscreen}" target="_blank" style="color: white;text-decoration: none;">${item.village}</a></div>
+              </div>
+              `
+            }) : ''
+          }`
+          if (mapData.length == 0) {
+            str = ''
+          } else {
+            str = `<div class=" relative p-[20px]">
+                  <img src="${meassageBg}" class="absolute z--1 left-0 top-0 w-100% bg-none h-100% "/>
+                  <div class="text-lg color-[#04c2c2] z-9999 " style="font-weight:700;">${mapData[0]?.county}</div>
+                  ${div}
+
+                  </div>`
+          }
+          return str
+        },
+        rich: {
+          img: {
+            backgroundColor: {
+              image: './assets/meassageBg.png'
+            },
+            width: 100,
+            height: 100,
+            align: 'center'
+          }
+        }
+      },
+      */
     },
     true
   )
+
+  // 点击地图空白的处理 空白时没有params.target
+  myChart.getZr().on('click', (params) => {
+    if (!params.target) {
+      mapTipShow.value = false
+      mapTipData.value = null
+      myChart.dispatchAction({
+        type: 'unselect',
+        name: nameArr
+      })
+    }
+  })
+
+  // 检查mapTipData是否合法
+  const checkMapTipData = (obj) => {
+    if (!Object.keys(obj).length) return false
+    if (!obj.data || !Array.isArray(obj.data) || obj.data.length === 0) return false
+    obj.data.forEach((ele) => {
+      if (!ele.years || !ele.village || !ele.bigscreen) {
+        return false
+      }
+    })
+    return true
+  }
+
+  // 点在地图上的处理
+  myChart.on('click', (params) => {
+    // console.log('ECharts点击事件参数: ', params)
+    mapTipShow.value = false
+    mapTipData.value = null
+    let key = params.name
+    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) {
+      mapTipData.value = nameDataMap.get(key)[0]
+      mapTipShow.value = true
+    }
+    // console.log('点击地图后的mapTipData, mapTipShow: ', mapTipData.value, mapTipShow.value)
+  })
 
   window.addEventListener('resize', () => {
     myChart.resize()
@@ -453,12 +500,27 @@ const handleSwiperMouseLeave=()=>{
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
       <div class="container flex flex-row-reverse relative px-2rem box-border">
-        <div id="mapChart" class="h-100vh w-106vh"></div>
-        <div class="absolute left-2rem top-10rem text-white text-2.4rem space-y-3">
+        <!-- 地图 -->
+        <div id="mapChart" class="h-100vh w-106vh max-h-[920px] max-w-[975px]"></div>
+        <!-- 左侧弹框 -->
+        <div class="flex flex-col py-[35px] box-border map-tip text-[0.67rem] lg:text-[1.33rem]" v-if="mapTipShow">
+          <div class="text-[1rem] lg:text-[2rem] text-[#48FF96] text-center">{{ mapTipData.county }}</div>
+          <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white">
+            <div class="text-right">帮扶城市:</div>
+            <div>{{ !mapTipData.city ? '暂无' : mapTipData.city }}</div>
+          </div>
+          <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white overflow-auto hidden-scrollbar">
+            <template v-for="item in mapTipData.data" :key="`${mapTipData.county}-${item.village}`">
+              <div class="text-right">{{ item.years }}年示范村:</div>
+              <div>{{ item.village }}</div>
+            </template>
+          </div>
+        </div>
+        <div class="absolute left-2rem top-[14%] text-white space-y-3 text-[1rem] lg:text-[1.4rem] xl:text-2.4rem">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
           <div>培育100个鲁渝协作品牌</div>
-          <div class="text-1rem text-[#f1f1f1d0]"
+          <div class="text-[0.6rem] xl:text-1rem text-[#f1f1f1d0]"
             >强化产业协作，实施“东产西移“，大力推动区域协同发展</div
           >
         </div>
@@ -975,6 +1037,28 @@ const handleSwiperMouseLeave=()=>{
 .linear-show {
   animation: opacityIn .7s ease forwards;
 }
+/****************************** 第二页地图 start ******************************/
+.map-tip {
+  max-height: 39%;
+  width: calc((100% - 106vh) * 0.8);
+  background: {
+    image: url(./assets/map/map-tip.png);
+    size: 100% 100%;
+  }
+  position: absolute;
+  top: calc(61% - 4.8rem);
+  left: 2rem;
+}
+@media screen and (min-height: 920px) {
+  .map-tip {
+    width: calc((100% - 975px) * 0.8);
+  }
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 0;
+}
+/****************************** 第二页地图 end ******************************/
 </style>
 <style>
 .swiper {
