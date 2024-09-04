@@ -733,7 +733,7 @@ const handleSwiperMouseLeave=()=>{
       </div>
       <div class="w-full py-1.4rem h-60vh overflow-hidden">
         <div 
-          class="w-100vw h-1/3" 
+          class="w-100vw h-1/3 cursor-pointer" 
           style="position: relative; display: inline-flex"
           @mouseenter="handleSwiperMouseEnter"
           @mouseleave="handleSwiperMouseLeave"
@@ -753,7 +753,7 @@ const handleSwiperMouseLeave=()=>{
             <swiper-slide v-for="n in 15" :key="`'slide-2-' + ${n}`" :class="`num-one-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3 cursor-pointer" style="position: relative; display: inline-flex ">
           <swiper
             ref="swiperRight"
             :slidesPerView="5"
@@ -769,7 +769,7 @@ const handleSwiperMouseLeave=()=>{
             <swiper-slide v-for="n in 16" :key="`'slide-2-' + ${n}`" :class="`num-two-${n}`" />
           </swiper>
         </div>
-        <div class="w-100vw h-1/3" style="position: relative; display: inline-flex">
+        <div class="w-100vw h-1/3 cursor-pointer" style="position: relative; display: inline-flex">
           <swiper
             ref="swiperLeft2"
             :slidesPerView="5"
