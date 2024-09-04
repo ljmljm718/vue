@@ -18,9 +18,11 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 // import required modules
 import { Autoplay, FreeMode, Pagination } from 'swiper/modules'
 // Import Swiper styles
-import 'swiper/css'
-import 'swiper/css/free-mode'
-import 'swiper/css/pagination'
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/pagination';
+import { selectImg } from './api'
+import { generateUUID } from '@/utils';
 
 const modules = [FreeMode, Pagination]
 
@@ -517,6 +519,97 @@ const handleSwiperMouseLeave=()=>{
   swiperInstance.value?.autoplay.start();
   // console.log("🚀 ~ handleSwiperMouseLeave ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
 }
+
+
+//打造产业
+const selectedIndustry = ref<string>('')
+const industriesTree = ref<any[]>([])
+const buildIndustriesTree = (data) => {
+  const resArr:any[] = []
+  Object.keys(data).forEach(firstItem => {
+    resArr.push({
+      id: generateUUID(),
+      label: firstItem,
+      children: Object.keys(data[firstItem]).map(secItem => {
+        return {
+          id: generateUUID(),
+          label: secItem,
+          children: data[firstItem][secItem]
+        }
+      })
+    })
+  })
+  return resArr
+}
+
+const selectedSecIndustry = ref<any>({})
+const selectedSecItem = ref<any>('')
+//点击左侧一级产业
+const handleFirstItemClick = (item) => {
+  selectedIndustry.value = item.id;
+  selectedSecIndustry.value = item;
+  if (Array.isArray(item.children) && item.children.length > 0) {
+    selectedSecItem.value = item.children[0]
+    if (Array.isArray(selectedSecItem.value.children) && selectedSecItem.value.children.length > 0) {
+      selectedThirItem.value = selectedSecItem.value.children[0]
+    }
+  }
+}
+
+const selectedThirItem = ref<any>()
+//点击右侧切换二级产业
+const handleNextItem = (val) => {
+  const firstItem = industriesTree.value.find(item => (item.id === selectedIndustry.value));
+  if (!firstItem) return;
+  const _children:any[] = firstItem.children;
+  const secItemIndex = _children.findIndex(item => (item.id === selectedSecItem.value.id))
+  if(val>0){
+      if (secItemIndex + 1 < _children.length) selectedSecItem.value = _children[secItemIndex + 1]
+      else selectedSecItem.value = _children[0]
+  }
+  else{
+    if(secItemIndex !== 0) selectedSecItem.value = _children[secItemIndex - 1]
+    else selectedSecItem.value = _children[_children.length-1]
+  }
+  if (Array.isArray(selectedSecItem.value.children) && selectedSecItem.value.children.length > 0) {
+    selectedThirItem.value = selectedSecItem.value.children[0]
+  }
+}
+
+// 大屏图片按钮
+const handleImgChange = (val) => {
+  if (!Array.isArray(selectedSecItem.value.children)) return;
+  if (!selectedThirItem.value?.bigscreenImg) return;
+  const selectedImgIndex = selectedSecItem.value.children.findIndex(item => (item.bigscreenImg === selectedThirItem.value.bigscreenImg))
+  if (selectedImgIndex === -1) return;
+  if (val > 0 && selectedImgIndex + 1 < selectedSecItem.value.children.length) {
+    
+    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex + 1];
+  }
+  if (val < 0 && selectedImgIndex !== 0) {
+    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex - 1];
+  }
+}
+
+const pageJump = () =>{
+  console.log("🚀 ~ pageJump ~ selectedThirItem:!!!", selectedThirItem.value)
+  if (!selectedThirItem.value?.bigscreen) return;
+  window.open(selectedThirItem.value.bigscreen, '_blank');
+}
+  
+
+//获得产业数据
+const getSelectImg = async () => {
+  const res = await selectImg().catch(() => {});
+  console.log("🚀 ~ getSelectImg ~ res:", res)
+  console.log("🚀 ~ getSelectImg ~ buildIndustriesTree(res):", buildIndustriesTree(res))
+  industriesTree.value = buildIndustriesTree(res)
+  if (industriesTree.value.length > 0) {
+    handleFirstItemClick(industriesTree.value[0])
+  }
+}
+  
+getSelectImg()
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -773,10 +866,51 @@ const handleSwiperMouseLeave=()=>{
     <!-- 打造产业 -->
     <div class="flex justify-center items-center h-100vh bg-6">
       <div class="container">
-        <div class="flex justify-between items-center space-y-1">
-          <div class="text-1.8rem">打造产业</div>
-          <div class="text-#666 text-.7rem">更多</div>
+        <div
+          class="flex justify-between items-center space-y-1 py-3rem pl-6rem pr-2rem"
+          style="border-bottom: 1px solid #f1f1f130;"
+        >
+          <div class="text-1.9rem text-#fff">打造产业</div>
+          <div class="text-#fff text-1rem">更多></div>
         </div>
+        <div class="flex">
+          <div class="w-20rem p-2rem py-3.5rem box-border space-y-2rem" style="border-right: 1px solid #f1f1f130;">
+            <div
+              :class="`text-1.8rem text-#fff rounded-md p-1rem text-center transition cursor-pointer ${selectedIndustry === item.id ? 'bg-#fff text-#318255' : ''}`"
+              v-for="item in industriesTree"
+              :key="item.id"
+              @click="handleFirstItemClick(item)"
+            > {{ item.label }}</div>
+          </div>
+          <div class="grow box-border p-2rem py-3rem pb-1rem">
+            <div class="flex justify-between items-center">
+              <div class="text-white text-1.8rem">{{ selectedSecIndustry.label }} - {{ selectedSecItem.label }} ({{ selectedSecItem?.children?.length }})</div>
+              <div class="industry-btn w-3rem h-3rem cursor-pointer" @click="handleNextItem(1)"></div>
+            </div>
+            <div class="flex justify-center items-center h-60vh">
+              <div class="h-20rem aspect-1.68 tv-bg p-2.3rem box-border relative scale-130">
+                <img
+                  :src="selectedThirItem?.bigscreenImg"
+                  class="w-full h-full object-contain rounded-2 box-border"
+                  @click = pageJump()
+                />
+                <div class="absolute w-full h-2rem left-0 bottom-[3rem] flex justify-center items-center space-x-2rem">
+                  <div class="left-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(-1)"></div>
+                  <div class="right-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(1)"></div>
+                </div>
+                <div class="w-full h-2rem top-[1.5rem] flex justify-center items-end relative text-center text-#fff">{{ selectedSecItem.label }}</div>
+              </div>
+            </div>
+            <div class="w-full h-[7rem] bottom-[-3rem]  flex justify-center ">
+              <div class="flex justify-center items-end semicircule-bg  w-20rem h-6.8rem ">
+                <div class="flex w-50% h-full" @click="handleNextItem(-1)"></div>
+                <div class="flex w-50% h-full" @click="handleNextItem(1)"></div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
       </div>
     </div>
 
@@ -957,6 +1091,11 @@ const handleSwiperMouseLeave=()=>{
   }
 }
 
+.industry-btn {
+  background-image: url(./assets/new/industryBtn.png);
+  background-size: 100% 100%;
+}
+
 .icon {
   background-image: url(./assets/new/logo.png);
   background-size: 100% 100%;
@@ -972,11 +1111,35 @@ const handleSwiperMouseLeave=()=>{
   background-size: cover;
 }
 
+.tv-bg {
+  background-image: url(./assets/new/tv.png);
+  background-size: 100% 100%;
+}
+
+.left-btn {
+  background-image: url(./assets/new/lbtn.png);
+  background-size: 100% 100%;
+}
+
+.right-btn {
+  background-image: url(./assets/new/rbtn.png);
+  background-size: 100% 100%;
+}
+
 .table-bg {
   background-image: url(./assets/new/tableBg.png);
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.semicircule-bg{
+  background-image: url(./assets/new/semicircule.png);
+  background-size: 100% 100%;
+}
+.semicircule-bg{
+  background-image: url(./assets/new/semicircule.png);
+  background-size: 100% 100%;
 }
 
 @for $i from 1 through 7 {

@@ -50,3 +50,9 @@ export const selectCountysPage = async (params) => {
   })
 }
 
+//打造产业
+export const selectImg = async ()=>{
+  return await request.get({
+    url: '/agri/user-table/select-img',
+  })
+}
