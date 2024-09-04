@@ -1,7 +1,16 @@
 <script setup lang="ts">
 // Import Swiper Vue.js components
-import { distinct, selectMap } from './api'
+import {
+  distinct,
+  selectMap,
+  page,
+  filePage,
+  selectHelp,
+  selectHelpPage,
+  selectCountysPage
+} from './api'
 import * as echarts from 'echarts'
+import dayjs from 'dayjs'
 import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
@@ -15,6 +24,17 @@ import 'swiper/css/pagination'
 
 const modules = [FreeMode, Pagination]
 
+const distincDataMap = new Map<string, any>()
+const getDistinctData = async (type:string) => {
+  const cacheItem = distincDataMap.get(type)
+  if (cacheItem) return Promise.resolve(cacheItem)
+  const res = await distinct({ type })
+  if (Array.isArray(res)) {
+    distincDataMap.set(type, res);
+    return Promise.resolve(res)
+  } else Promise.reject()
+}
+
 // 示范村ref
 const buildRef = ref()
 const handleTurn = (val) => {
@@ -25,39 +45,46 @@ const handleTurn = (val) => {
 }
 
 const selectedCardId = ref<string>('1')
-const cardDataList = ref<any[]>([
-  {
-    id: '1',
-    label: '示范村',
-    value: '39',
-    desc: '1基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '2',
-    label: '帮扶区县',
-    value: '14',
-    desc: '2于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '3',
-    label: '精准帮扶基地',
-    value: '19',
-    desc: '3自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  },
-  {
-    id: '4',
-    label: '产业形态',
-    value: '11',
-    desc: '4主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
-  }
-])
+const cardDataList = ref<any[]>([])
+const getCardDataList = async () => {
+  const res1 = await getDistinctData('1')
+  const res2 = await getDistinctData('2')
+  const res3 = await getDistinctData('3')
+  const res4 = await getDistinctData('4')
+  cardDataList.value = [
+    {
+      id: '1',
+      label: '示范村',
+      value: res2.length,
+      desc: '1、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '2',
+      label: '帮扶区县',
+      value: res1.length,
+      desc: '2、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '3',
+      label: '精准帮扶基地',
+      value: res3.length,
+      desc: '3、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    },
+    {
+      id: '4',
+      label: '产业形态',
+      value: res4.length,
+      desc: '4、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+    }
+  ]
+}
+getCardDataList()
 
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
   const dom = document.getElementById('homeContainer')
   if (dom)
     dom.addEventListener('scroll', () => {
-      console.log('🚀 ~ checkScroll ~ dom.scrollTop:', dom.scrollTop)
       showHeader.value = !(dom.scrollTop > 1000)
     })
 }
@@ -194,6 +221,15 @@ const govPolicyDataList = ref<any[]>([
     date: '06-30'
   }
 ])
+const getGovPolicyDataList = async () => {
+  const { list = [] } = await filePage({ pageNo: 1, pageSize: 4 });
+  console.log("🚀 ~ getGovPolicyDataList ~ res:", list)
+  if (!Array.isArray(list)) return;
+  govPolicyDataList.value = list.map(item => ({
+    ...item, year: dayjs(item.upTime).year(), date: dayjs(item.upTime).format("MM-DD")
+  }))
+}
+getGovPolicyDataList()
 
 // 帮扶产业数据
 const supportIndustries = ref<any[]>([
@@ -213,6 +249,15 @@ const supportIndustries = ref<any[]>([
   { id: '15', label: '水产养殖', content: '', img: 'product-15' },
   { id: '16', label: '枇杷', content: '', img: 'product-16' },
 ])
+const getSupportIndustriesData = async () => {
+  const { list = [] } = await selectHelpPage({ pageNo: 1, pageSize: 20 });
+  console.log("🚀 ~ getSupportIndustriesData ~ res:", list)
+  if (!Array.isArray(list)) return;
+  supportIndustries.value = list.map((item, index) => ({
+    id: index, label: item.industry, content: item.park, img: item.industryImg
+  }))
+}
+getSupportIndustriesData()
 
 /****************************** 第二页地图 start ******************************/
 
@@ -223,7 +268,7 @@ const mapTipData = ref()
 
 const initChinaMap = async () => {
   // 获取高亮地区列表并封装成ECharts用的形式
-  mapDataList.value = await distinct({ type: '1' })
+  mapDataList.value = await getDistinctData('1')
   let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
@@ -435,6 +480,14 @@ const helpAreaData = ref<any[]>([
   { id: '13', from: '枣庄市', to: '丰都县' },
   { id: '14', from: '临沂市', to: '城口区' },
 ])
+const getHelpAreaData = async () => {
+  const res = await selectHelp({ type: '1' })
+  console.log("🚀 ~ getHelpAreaData ~ res:", res)
+  if (Array.isArray(res)) helpAreaData.value = res.map((item, index) => ({
+    id: index, from: item.city, to: item.county
+  }))
+}
+getHelpAreaData()
 
 //解决案例
 const swiperInstance=ref(null)
@@ -708,7 +761,7 @@ const handleSwiperMouseLeave=()=>{
         >
           <swiper-slide v-for="item in supportIndustries" :key="item.id">
             <div class="w-full bg-white h-20rem overflow-hidden rounded-md mb-4rem flex flex-col items-center shadow-md">
-              <div :class="`w-full h-16rem ${item.img}`"></div>
+              <img :src="item.img" class="w-full !h-16rem object-fit" />
               <div class="py-1 font-bold">{{ item.label }}</div>
               <div class="text-.9rem">{{ item.content }}</div>
             </div>
@@ -755,7 +808,7 @@ const handleSwiperMouseLeave=()=>{
         <div class="text-1.8rem">政府政策</div>
         <div class="text-#666 text-.7rem">GOVERNMENT POLICY</div>
       </div>
-      <div class="container flex justify-center items-center space-x-2">
+      <div class="container flex justify-center items-start space-x-2">
         <div class="flex flex-col space-y-2">
           <div class="w-20rem h-14rem pic"></div>
           <div class="bg-white p-3 w-20rem box-border">
