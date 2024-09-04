@@ -370,6 +370,24 @@ const initChinaMap = async () => {
   })
 }
 /****************************** 第二页地图 end ******************************/
+
+// 对口帮扶地域
+const helpAreaData = ref<any[]>([
+  { id: '1', from: '潍坊市', to: '开州区' },
+  { id: '2', from: '济宁市', to: '万州区' },
+  { id: '3', from: '济南市', to: '武隆区' },
+  { id: '4', from: '淄博市', to: '石柱县' },
+  { id: '5', from: '聊城市', to: '彭水县' },
+  { id: '6', from: '烟台市', to: '巫山县' },
+  { id: '7', from: '威海市', to: '云阳县' },
+  { id: '8', from: '滨州市', to: '奉节县' },
+  { id: '9', from: '泰安市', to: '巫溪县' },
+  { id: '10', from: '德州市', to: '秀山县' },
+  { id: '11', from: '东营市', to: '酉阳县' },
+  { id: '12', from: '日照市', to: '黔江区' },
+  { id: '13', from: '枣庄市', to: '丰都县' },
+  { id: '14', from: '临沂市', to: '城口区' },
+])
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -545,12 +563,41 @@ const initChinaMap = async () => {
       </div>
     </div>
 
-    <!-- 对口帮扶地域 这块真是想要我老命了 -->
-    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex flex-col py-6rem box-border">
+    <!-- 对口帮扶地域 -->
+    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex items-center flex-col py-6rem box-border">
       <div class="flex flex-col items-center space-y-1 mb-4">
         <div class="text-1.8rem">对口帮扶地域</div>
         <div class="text-#666 text-.7rem">TARGETED ASSISTANCE REGIONS</div>
       </div>
+      <div class="flex space-x-2rem items-center justify-center mt-2rem">
+        <div
+          class="s-card w-2.9rem h-15rem flex flex-col items-center py-3 box-border justify-between text-white text-1.2rem"
+          v-for="item in helpAreaData"
+          :key="item.id"
+        >
+          <div style="writing-mode: vertical-lr;">{{ item.from }}</div>
+          <div style="writing-mode: vertical-lr;">{{ item.to }}</div>
+        </div>
+      </div>
+      <div class="container flex justify-between items-center px-3rem py-2rem box-border">
+        <div>
+          <div class="text-6rem font-bold text-#318255">{{ helpAreaData.length }}</div>
+          <div class="text-1.6rem">帮扶区县</div>
+        </div>
+        <div>
+          <div class="space-y-1rem text-1.2rem">
+            <div class="flex space-x-3 items-center">
+              <div class="rounded-full w-1rem h-1rem bg-#2f3331"></div>
+              <div>帮扶城市</div>
+            </div>
+            <div class="flex space-x-3 items-center">
+              <div class="rounded-full w-1rem h-1rem bg-#318255"></div>
+              <div>挂职区县</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </div>
 
     <!-- 帮扶产业 -->
@@ -880,6 +927,11 @@ const initChinaMap = async () => {
   background-repeat: no-repeat;
   background-position: center center;
   background-color: #f0f0f1;
+}
+
+.s-card {
+  background-image: url(./assets/new/scard.png);
+  background-size: 100% 100%;
 }
 </style>
 <style>
