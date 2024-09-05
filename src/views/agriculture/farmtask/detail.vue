@@ -22,11 +22,32 @@
       <el-descriptions-item label="验收标准">
         {{ detailData.acceptanceStandard }}
       </el-descriptions-item>
+      <el-descriptions-item label="作业方式">
+        <div v-for="dict in getStrDictOptions(DICT_TYPE.JOB_TYPE)" :key="dict.value" >
+          <el-tag v-if="dict.value==detailData.jobType">
+            {{dict.label}}
+          </el-tag>
+        </div>
+      </el-descriptions-item>
+      <el-descriptions-item label="消耗农资">
+        <div v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CAPITAL_CONSUME)" :key="dict.value" >
+          <el-tag v-if="dict.value==detailData.agriCapitalConsume">
+            {{dict.label}}
+          </el-tag>
+        </div>
+      </el-descriptions-item>
+      <el-descriptions-item label="农资数量">
+        <div v-for="dict in getStrDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT)" :key="dict.value" >
+          <lable v-if="dict.value==detailData.agriCapitalUnit">
+            {{ detailData.agriCapitalAmount }}{{dict.label}}
+          </lable>
+        </div>
+      </el-descriptions-item>
     </el-descriptions>
   </ContentWrap>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE } from '@/utils/dict'
+import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
 import { formatDate } from '@/utils/formatTime'
 import { propTypes } from '@/utils/propTypes'
 import * as LeaveApi from '@/api/bpm/leave'

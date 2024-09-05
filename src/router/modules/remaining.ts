@@ -212,6 +212,15 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/three',
+    component: () => import('@/views/three/index.vue'),
+    name: 'Three',
+    meta: {
+      hidden: true,
+      noTagsView: true
+    }
+  },
+  {
     path: '/page',
     component: () => import('@/views/page/index.vue'),
     name: 'Page',

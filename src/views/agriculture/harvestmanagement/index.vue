@@ -147,21 +147,21 @@
         label="品类名称" align="center" prop="variety" width="120"
         v-if="show !==118"/>
       <!--      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />-->
-      <el-table-column label="采收数量" align="center" prop="harvestNum" width="100">
-        <template #default="scope">
-          {{
-            scope.row.harvestNum
-              ? (
-                scope.row.variety === '水稻'
-                  ? scope.row.harvestNum + ' 亩'
-                  : scope.row.variety === '鸭'
-                    ? scope.row.harvestNum + ' 只'
-                    : scope.row.variety === '鱼'
-                      ? scope.row.harvestNum + ' 条'
-                      : ''
-              ) : '-'
-          }}
-        </template>
+      <el-table-column label="采收数量（亩/只/条）" align="center" prop="harvestNum" width="160">
+<!--        <template #default="scope">-->
+<!--          {{-->
+<!--            scope.row.harvestNum-->
+<!--              ? (-->
+<!--                scope.row.variety === '水稻'-->
+<!--                  ? scope.row.harvestNum + ' 亩'-->
+<!--                  : scope.row.variety === '鸭'-->
+<!--                    ? scope.row.harvestNum + ' 只'-->
+<!--                    : scope.row.variety === '鱼'-->
+<!--                      ? scope.row.harvestNum + ' 条'-->
+<!--                      : ''-->
+<!--              ) : '-'-->
+<!--          }}-->
+<!--        </template>-->
       </el-table-column>
       <el-table-column label="采收量" align="center" prop="harvestVolume" width="180">
         <template #default="scope">

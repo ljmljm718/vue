@@ -156,6 +156,15 @@
             <Icon icon="ep:tools" class="mr-5px"/>
             调试配置
           </el-button>
+          <el-button
+            plain
+            type="primary"
+            class="!color-[#fff] mr-15px !bg-[#73c0de]"
+            @click="refreshStatus()"
+          >
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            刷新
+          </el-button>
           </div>
 
       </div>
@@ -614,6 +623,12 @@ const handleDelete = async (val) => {
 const openFormDetail = () => {
   const id = deviceId.value.toString()
   if (id) router.push(`/internetMonitor/device/deviceView/detail?id=${id}`)
+}
+
+/** 设备状态刷新操作 */
+const refreshStatus = async () => {
+  const response = await DeviceInfoApi.refreshDeviceStatus()
+  await getList()
 }
 
 /** 导出按钮操作 */

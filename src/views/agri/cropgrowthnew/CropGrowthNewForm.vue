@@ -90,12 +90,6 @@
       <el-form-item label="图片" prop="imgId">
         <UploadImg v-model="formData.imgId" />
       </el-form-item>
-
-
-
-
-
-
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -143,6 +137,7 @@ const formData = ref({
   envCondition: undefined,
   growSite: undefined,
   cycle: undefined,
+  orders: undefined,
   farmAdvice: undefined,
 })
 const formRules = reactive({
@@ -298,6 +293,7 @@ const resetForm = () => {
     envCondition: undefined,
     growSite: undefined,
     cycle: undefined,
+    orders: undefined,
     farmAdvice: undefined,
   }
   formRef.value?.resetFields()

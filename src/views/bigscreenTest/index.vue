@@ -273,7 +273,7 @@ export default defineComponent({
         baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
         online: item.deviceStatus === 'online',
         videoId: `${item.dtu}_${item.channelId}`
-      })).slice(0, 9);
+      })).slice(0, 12);
       nextTick(() => {
         deviceVideoList.value.forEach(item => {
           if (item.online) initPlayer(item.videoId, item.dtu, item.channelId);
@@ -326,7 +326,7 @@ export default defineComponent({
     const baseTabPage = () => {
       return (
         <div class="w-full h-full box-border">
-          <div class="w-full h-full px-[20px] flex box-border">
+          <div class="w-full h-full px-[20px] flex box-border justify-between">
             {/** 左侧基地列表 */}
             <div class="w-[180px] h-[950px] pt-[10px] base-list-bg overflow-auto hidden-scrollbar">
               <el-menu
@@ -369,7 +369,7 @@ export default defineComponent({
               </el-menu>
             </div>
             {/** 中间监控视频列表 */}
-            <div class="w-[1310px] mx-[15px] p-[15px] grid grid-cols-3 grid-rows-3 gap-3 monitor-bg" v-loading={monitorDeviceLoading.value}>
+            <div class="w-[1680px] ml-[15px] p-[15px] grid grid-cols-4 grid-rows-3 gap-3 monitor-bg" v-loading={monitorDeviceLoading.value}>
               {
                 deviceVideoList.value.map((item: DeviceVideoListItemType) => (
                   <div class="video-bg cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
@@ -387,7 +387,7 @@ export default defineComponent({
               }
             </div>
             {/** 右侧通知事件 */}
-            <div class="w-[370px] h-[930px] p-[15px] notice-bg">
+            <div class="w-[370px] h-[930px] p-[15px] notice-bg !hidden">
               <div class="art-font notice-title flex items-center cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-notice") }}>
                 <div class="contain-img notice-icon"></div>
                 <div>通知事件</div>
