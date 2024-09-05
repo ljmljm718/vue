@@ -15,14 +15,15 @@ import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import {Autoplay, FreeMode, Pagination,Navigation } from 'swiper/modules';
 // import required modules
-import { FreeMode, Pagination } from 'swiper/modules';// Import Swiper styles
-import 'swiper/css';
+// Import Swiper stylesimport 'swiper/css';
 import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { selectImg } from './api'
-import { generateUUID } from '@/utils';import 'swiper/css/navigation';
-const modules = [FreeMode, Pagination,Navigation]
+import { generateUUID } from '@/utils';
+const modules = [Autoplay,FreeMode, Pagination,Navigation]
 
 const distincDataMap = new Map<string, any>()
 const getDistinctData = async (type:string) => {
