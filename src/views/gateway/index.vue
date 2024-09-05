@@ -1409,4 +1409,7 @@ getSelectImg()
   font-size: 15px;
   transform: rotate(180deg)
 }
+.swiper-wrapper{
+  transition-timing-function: linear !important;
+}
 </style>
