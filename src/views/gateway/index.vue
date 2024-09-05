@@ -15,15 +15,16 @@ import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import {Autoplay, FreeMode, Pagination,Navigation } from 'swiper/modules';
+import { Autoplay, FreeMode, Pagination, Navigation } from 'swiper/modules';
 // import required modules
-// Import Swiper stylesimport 'swiper/css';
+// Import Swiper styles
+import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { selectImg } from './api'
 import { generateUUID } from '@/utils';
-const modules = [Autoplay,FreeMode, Pagination,Navigation]
+const modules = [FreeMode, Pagination]
 
 const distincDataMap = new Map<string, any>()
 const getDistinctData = async (type:string) => {
@@ -791,71 +792,26 @@ getSelectImg()
           :modules="[FreeMode,Navigation]"
           class="mySwiper w-full overflow-hidden"
         >
-            <swiper-slide  class="!bg-[transparent] !w-20rem">
-              <div class="w-full relative village-1 h-23rem  mb-2rem color-[#fff]">
-                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                  <div>2022年</div>
-                  <div class='w-70% relative'>
-                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
-                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
-                  </div>
-                </div>
-                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
-                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
-                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
-                </div>
-                
-              </div>
-            </swiper-slide>
-            <swiper-slide  class="!bg-[transparent] !w-20rem">
-              <div class="w-full relative village-2 h-23rem mb-2rem color-[#fff]">
-                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                  <div>2023年</div>
-                  <div class='w-70% relative'>
-                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
-                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
-                  </div>
-                </div>
-                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
-                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
-                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+          <swiper-slide
+            class="!bg-[transparent] !w-20rem"
+            v-for="item in 4"
+            :key="item"
+          >
+            <div :class="`w-full relative village-${item} aspect-.75  mb-2rem color-[#fff]`">
+              <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                <div>2022年</div>
+                <div class='w-70% relative'>
+                  <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                  <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
                 </div>
               </div>
-            </swiper-slide>
-            <swiper-slide  class="!bg-[transparent] !w-20rem">
-              <div class="w-full relative village-3 h-23rem mb-2rem color-[#fff]">
-                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                  <div>2024年</div>
-                  <div class='w-70% relative'>
-                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
-                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
-                  </div>
-                </div>
-                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
-                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
-                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
-                </div>
+              <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+              <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                <div>区县10个 | 产业类型4种 | 产业形态8种</div>
               </div>
-            </swiper-slide>
-            <swiper-slide  class="!bg-[transparent] !w-20rem">
-              <div class="w-full relative village-4 h-23rem mb-2rem color-[#fff]">
-                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                  <div>2025年</div>
-                  <div class='w-70% relative'>
-                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
-                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
-                  </div>
-                </div>
-                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
-                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
-                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
-                </div>
-              </div>
-            </swiper-slide>
+            </div>
+          </swiper-slide>
         </swiper>
       </div>
     </div>
@@ -1430,7 +1386,9 @@ getSelectImg()
   width: 2rem;
   border-radius: 999px;
   transition: all 0.2s ease;
-}.swiper-button-next{
+}
+
+.swiper-button-next{
   position: absolute;
   right: -10px;
   color:#fff;
