@@ -1,13 +1,14 @@
 <script setup lang="ts">// Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
 // import required modules
-import { FreeMode, Pagination } from 'swiper/modules';
+import { FreeMode, Pagination,Navigation } from 'swiper/modules';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
-const modules = [FreeMode, Pagination]
+const modules = [FreeMode, Pagination,Navigation]
 
 // 示范村ref
 const buildRef = ref()
@@ -17,7 +18,7 @@ const handleTurn = (val) => {
   if (val > 0) buildRef.value.slideNext();
   else buildRef.value.slidePrev();
 }
-  
+ 
 
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([
@@ -226,45 +227,93 @@ const govPolicyDataList = ref<any[]>([
     <!-- 示范村建设部分 -->
     <div class="w-full flex justify-center items-center bg-4 h-100vh">
       <div class="container overflow-hidden px-3 box-border">
-        <div class="flex justify-between text-white py-3">
+        <div class="flex justify-between relative text-white py-3">
           <div class="text-1.2rem">示范村建设</div>
           <div class="flex space-x-2">
-            <div @click="handleTurn(1)">L</div>
-            <div @click="handleTurn(-1)">R</div>
+            <div @click="handleTurn(1)" class="swiper-button-next village-left cursor-pointer"></div>
+            <div @click="handleTurn(-1)" class="swiper-button-prev village-right cursor-pointer "></div>
           </div>
         </div>
         <swiper
           ref="buildRef"
-          :slidesPerView="3"
-          :spaceBetween="30"
+          :slidesPerView="4"
+          :spaceBetween="20"
           :freeMode="true"
+          :navigation="{
+            nextEl: '.swiper-button-next', 
+            prevEl: '.swiper-button-prev',
+          }"
           :pagination="{
             clickable: true,
           }"
-          :modules="[FreeMode]"
+          :modules="[FreeMode,Navigation]"
           class="mySwiper w-full overflow-hidden"
         >
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">1</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">2</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">3</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">4</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-1 h-23rem  mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2022年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+                
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-2 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2023年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-3 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2024年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-4 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2025年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
         </swiper>
       </div>
     </div>
@@ -450,6 +499,10 @@ const govPolicyDataList = ref<any[]>([
     scroll-snap-align: start;
   }
 }
+.village-yh{
+  background-size:100% 100%;
+  background-image: url(./assets/new/village-yh.png)
+}
 
 .icon {
   background-image: url(./assets/new/logo.png);
@@ -478,6 +531,13 @@ const govPolicyDataList = ref<any[]>([
   }
 }
 
+@for $i from 1 through 4 {
+  .village-#{$i} {
+    background-image: url(./assets/new/village-bg-#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
 @for $i from 1 through 3 {
   .card-#{$i} {
     background-image: url(./assets/new/card#{$i}.png);
@@ -494,7 +554,6 @@ const govPolicyDataList = ref<any[]>([
   width: 100%;
   height: 100%;
 }
-
 .swiper-slide {
   text-align: center;
   font-size: 18px;
@@ -505,7 +564,10 @@ const govPolicyDataList = ref<any[]>([
   justify-content: center;
   align-items: center;
 }
-
+.village-bg{
+  background-size: 100% 100%;
+  background-image: url(./assets/new/village-bg.png);
+}
 .swiper-slide img {
   display: block;
   width: 100%;
@@ -519,4 +581,26 @@ const govPolicyDataList = ref<any[]>([
   border-radius: 999px;
   transition: all .2s ease;
 }
+.swiper-button-next{
+  position: absolute;
+  right: -10px;
+  color:#fff;
+}
+.swiper-button-prev{
+  color:#fff;
+  position: absolute;
+  font-size: 4px !important;
+  left:1430px !important;
+  bottom: -20px
+}
+.swiper-button-next:after{
+  content: 'next';
+  font-size: 15px;
+}
+.swiper-button-prev:after{
+  content: 'next';
+  font-size: 15px;
+  transform: rotate(180deg)
+}
+
 </style>
