@@ -110,7 +110,7 @@
     <!-- 第二行列表数据 -->
     <div class="mt-[20px]">
       <!-- 卡片形式 -->
-      <div v-show="listType === 'card'" class="text-[12px] 2xl:text-[14px] text-[#999999]">
+      <div v-if="list.length && listType === 'card'" class="text-[12px] 2xl:text-[14px] text-[#999999]">
         <!-- 卡片列表区 -->
         <div class="grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-5 gap-3 rounded">
           <div
@@ -176,6 +176,9 @@
             </div>
           </div>
         </div>
+      </div>
+      <div v-else-if="listType === 'card'" class="text-center tracking-widest">
+        暂无数据
       </div>
       <!-- 列表形式 -->
       <div v-show="listType === 'list'">
