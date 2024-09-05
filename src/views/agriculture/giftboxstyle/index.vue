@@ -112,7 +112,7 @@
       <div class="mt-[20px]">
         <!-- 卡片形式 -->
         <div
-          v-show="listType === 'card'"
+          v-if="list.length && currentItem && listType === 'card'"
           class="grid grid-cols-8 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] text-[#999999]"
         >
           <!-- 预览区 -->
@@ -203,6 +203,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div v-else-if="listType === 'card'" class="text-center tracking-widest">
+          暂无数据
         </div>
         <!-- 列表形式 -->
         <div v-show="listType === 'list'">
