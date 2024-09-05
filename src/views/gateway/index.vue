@@ -15,16 +15,15 @@ import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import {Autoplay, FreeMode, Pagination,Navigation } from 'swiper/modules';
 // import required modules
-import { Autoplay, FreeMode, Pagination } from 'swiper/modules'
-// Import Swiper styles
-import 'swiper/css';
+// Import Swiper stylesimport 'swiper/css';
 import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { selectImg } from './api'
 import { generateUUID } from '@/utils';
-
-const modules = [FreeMode, Pagination]
+const modules = [Autoplay,FreeMode, Pagination,Navigation]
 
 const distincDataMap = new Map<string, any>()
 const getDistinctData = async (type:string) => {
@@ -45,7 +44,7 @@ const handleTurn = (val) => {
   if (val > 0) buildRef.value.slideNext()
   else buildRef.value.slidePrev()
 }
-
+  
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([])
 const getCardDataList = async () => {
@@ -446,15 +445,76 @@ const initChinaMap = async () => {
     return true
   }
 
+  // 设置从地图到提示框的三角形效果
+  const setMapToTip = (x, y) => {
+    const tipDom = document.getElementById('mapToTip')
+    const mapConDom = document.getElementById('mapContainer')
+    if (tipDom && mapConDom) {
+      const conWidth = mapConDom.offsetWidth
+      const conHeight = mapConDom.offsetHeight
+      const fullVH = window.innerHeight
+      let remainWidth
+      if (fullVH < 920) {
+        remainWidth = conWidth - 1.06 * fullVH
+      } else {
+        remainWidth = conWidth - 1.06 * 975
+      }
+      let pointOverTip = [0, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+      let pointUnderTip = [0, conHeight - 76.8 + 0.06 * conHeight]
+      let pointMap = [remainWidth + x - 32, y]
+      let height
+      let top
+      let pointOverTipInner
+      let pointUnderTipInner
+      let pointMapInner
+      if (pointMap[1] <= pointOverTip[1]) { // 地图上的点高于提示框上方的点
+        pointOverTip = [32 + 0.8 * remainWidth - 0.06 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.18 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointUnderTip[1] - pointMap[1]
+        top = pointMap[1]
+        pointOverTipInner = `0% ${pointOverTip[1] - pointMap[1]}px`
+        pointUnderTipInner = `${0.18 * conHeight}px 100%`
+        pointMapInner = `100% 0%`
+      } else if (pointMap[1] >= pointUnderTip[1]) { // 地图上的点低于提示框下方的点
+        pointOverTip = [32 + 0.8 * remainWidth - 0.18 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.06 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointMap[1] - pointOverTip[1]
+        top = pointOverTip[1]
+        pointOverTipInner = `${0.18 * conHeight}px 0%`
+        pointUnderTipInner = `${0.06 * conHeight}px 100%`
+        pointMapInner = `100% 100%`
+      } else { // 地图上的点位于提示框上下两点之间
+        pointOverTip = [32 + 0.8 * remainWidth - 0.06 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.06 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointUnderTip[1] - pointOverTip[1]
+        top = pointOverTip[1]
+        pointOverTipInner = `0% 0%`
+        pointUnderTipInner = `0% ${pointUnderTip[1] - pointOverTip[1]}px`
+        pointMapInner = `100% ${pointMap[1] - pointOverTip[1]}px`
+      }
+      let left = pointOverTip[0]
+      let width = pointMap[0] - pointOverTip[0]
+      tipDom.style.width = `${width}px`
+      tipDom.style.height = `${height}px`
+      tipDom.style.top = `${top}px`
+      tipDom.style.left = `${left}px`
+      tipDom.style.clipPath = `polygon(${pointOverTipInner}, ${pointUnderTipInner}, ${pointMapInner})`
+    }
+  }
+  
   // 点在地图上的处理
   myChart.on('click', (params) => {
     // console.log('ECharts点击事件参数: ', params)
     mapTipShow.value = false
     mapTipData.value = null
+    if (!params.event) return
+    const x = params.event.offsetX
+    const y = params.event.offsetY
     let key = params.name
-    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) {
+    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) { 
       mapTipData.value = nameDataMap.get(key)[0]
       mapTipShow.value = true
+      setMapToTip(x, y)
     }
     // console.log('点击地图后的mapTipData, mapTipShow: ', mapTipData.value, mapTipShow.value)
   })
@@ -642,7 +702,7 @@ getSelectImg()
       </div>
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
-      <div class="container flex flex-row-reverse relative px-2rem box-border">
+      <div class="container flex flex-row-reverse relative px-2rem box-border" id="mapContainer">
         <!-- 地图 -->
         <div id="mapChart" class="h-100vh w-106vh max-h-[920px] max-w-[975px]"></div>
         <!-- 左侧弹框 -->
@@ -655,10 +715,11 @@ getSelectImg()
           <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white overflow-auto hidden-scrollbar">
             <template v-for="item in mapTipData.data" :key="`${mapTipData.county}-${item.village}`">
               <div class="text-right">{{ item.years }}年示范村:</div>
-              <div>{{ item.village }}</div>
+              <div><a :href="item.bigscreen" target="_blank" style="color: white;text-decoration: none;">{{ item.village }}</a></div>
             </template>
           </div>
         </div>
+        <div id="mapToTip" v-show="mapTipShow"></div>
         <div class="absolute left-2rem top-[14%] text-white space-y-3 text-[1rem] lg:text-[1.4rem] xl:text-2.4rem">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
@@ -708,45 +769,93 @@ getSelectImg()
     <!-- 示范村建设部分 -->
     <div class="w-full flex justify-center items-center bg-4 h-100vh">
       <div class="container overflow-hidden px-3 box-border">
-        <div class="flex justify-between text-white py-3">
+        <div class="flex justify-between relative text-white py-3">
           <div class="text-1.2rem">示范村建设</div>
           <div class="flex space-x-2">
-            <div @click="handleTurn(1)">L</div>
-            <div @click="handleTurn(-1)">R</div>
+            <div @click="handleTurn(1)" class="swiper-button-next village-left cursor-pointer"></div>
+            <div @click="handleTurn(-1)" class="swiper-button-prev village-right cursor-pointer "></div>
           </div>
         </div>
         <swiper
           ref="buildRef"
-          :slidesPerView="3"
-          :spaceBetween="30"
+          :slidesPerView="4"
+          :spaceBetween="20"
           :freeMode="true"
+          :navigation="{
+            nextEl: '.swiper-button-next', 
+            prevEl: '.swiper-button-prev',
+          }"
           :pagination="{
             clickable: true
           }"
-          :modules="[FreeMode]"
+          :modules="[FreeMode,Navigation]"
           class="mySwiper w-full overflow-hidden"
         >
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">1</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">2</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">3</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem">4</div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-18rem table-bg bg-red mb-2rem"></div>
-          </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-1 h-23rem  mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2022年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+                
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-2 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2023年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-3 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2024年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
+            <swiper-slide  class="!bg-[transparent] !w-20rem">
+              <div class="w-full relative village-4 h-23rem mb-2rem color-[#fff]">
+                <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
+                  <div>2025年</div>
+                  <div class='w-70% relative'>
+                    <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
+                    <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
+                  </div>
+                </div>
+                <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
+                <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
+                  <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
+                  <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                </div>
+              </div>
+            </swiper-slide>
         </swiper>
       </div>
     </div>
@@ -1089,6 +1198,10 @@ getSelectImg()
     scroll-snap-align: start;
   }
 }
+.village-yh{
+  background-size:100% 100%;
+  background-image: url(./assets/new/village-yh.png)
+}
 
 .industry-btn {
   background-image: url(./assets/new/industryBtn.png);
@@ -1145,6 +1258,13 @@ getSelectImg()
   .bg-#{$i} {
     background-image: url(./assets/new/bg#{$i}.png);
     background-size: cover;
+  }
+}
+
+@for $i from 1 through 4 {
+  .village-#{$i} {
+    background-image: url(./assets/new/village-bg-#{$i}.png);
+    background-size: 100% 100%;
   }
 }
 
@@ -1273,6 +1393,11 @@ getSelectImg()
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0;
 }
+
+#mapToTip {
+  position: absolute;
+  background: linear-gradient(270deg, rgba(71, 253, 149, 0.3) 0%, rgba(125, 255, 199, 0) 100%);
+}
 /****************************** 第二页地图 end ******************************/
 </style>
 <style>
@@ -1280,7 +1405,6 @@ getSelectImg()
   width: 100%;
   height: 100%;
 }
-
 .swiper-slide {
   text-align: center;
   font-size: 18px;
@@ -1290,7 +1414,10 @@ getSelectImg()
   justify-content: center;
   align-items: center;
 }
-
+.village-bg{
+  background-size: 100% 100%;
+  background-image: url(./assets/new/village-bg.png);
+}
 .swiper-slide img {
   display: block;
   width: 100%;
@@ -1303,9 +1430,25 @@ getSelectImg()
   width: 2rem;
   border-radius: 999px;
   transition: all 0.2s ease;
+}.swiper-button-next{
+  position: absolute;
+  right: -10px;
+  color:#fff;
 }
-
-.swiper-wrapper{
-  transition-timing-function: linear !important;
+.swiper-button-prev{
+  color:#fff;
+  position: absolute;
+  font-size: 4px !important;
+  left:1430px !important;
+  bottom: -20px
+}
+.swiper-button-next:after{
+  content: 'next';
+  font-size: 15px;
+}
+.swiper-button-prev:after{
+  content: 'next';
+  font-size: 15px;
+  transform: rotate(180deg)
 }
 </style>
