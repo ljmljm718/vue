@@ -446,15 +446,76 @@ const initChinaMap = async () => {
     return true
   }
 
+  // 设置从地图到提示框的三角形效果
+  const setMapToTip = (x, y) => {
+    const tipDom = document.getElementById('mapToTip')
+    const mapConDom = document.getElementById('mapContainer')
+    if (tipDom && mapConDom) {
+      const conWidth = mapConDom.offsetWidth
+      const conHeight = mapConDom.offsetHeight
+      const fullVH = window.innerHeight
+      let remainWidth
+      if (fullVH < 920) {
+        remainWidth = conWidth - 1.06 * fullVH
+      } else {
+        remainWidth = conWidth - 1.06 * 975
+      }
+      let pointOverTip = [0, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+      let pointUnderTip = [0, conHeight - 76.8 + 0.06 * conHeight]
+      let pointMap = [remainWidth + x - 32, y]
+      let height
+      let top
+      let pointOverTipInner
+      let pointUnderTipInner
+      let pointMapInner
+      if (pointMap[1] <= pointOverTip[1]) { // 地图上的点高于提示框上方的点
+        pointOverTip = [32 + 0.8 * remainWidth - 0.06 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.18 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointUnderTip[1] - pointMap[1]
+        top = pointMap[1]
+        pointOverTipInner = `0% ${pointOverTip[1] - pointMap[1]}px`
+        pointUnderTipInner = `${0.18 * conHeight}px 100%`
+        pointMapInner = `100% 0%`
+      } else if (pointMap[1] >= pointUnderTip[1]) { // 地图上的点低于提示框下方的点
+        pointOverTip = [32 + 0.8 * remainWidth - 0.18 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.06 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointMap[1] - pointOverTip[1]
+        top = pointOverTip[1]
+        pointOverTipInner = `${0.18 * conHeight}px 0%`
+        pointUnderTipInner = `${0.06 * conHeight}px 100%`
+        pointMapInner = `100% 100%`
+      } else { // 地图上的点位于提示框上下两点之间
+        pointOverTip = [32 + 0.8 * remainWidth - 0.06 * conHeight, 0.61 * conHeight - 76.8 - 0.06 * conHeight]
+        pointUnderTip = [32 + 0.8 * remainWidth + 0.06 * conHeight, conHeight - 76.8 + 0.06 * conHeight]
+        height = pointUnderTip[1] - pointOverTip[1]
+        top = pointOverTip[1]
+        pointOverTipInner = `0% 0%`
+        pointUnderTipInner = `0% ${pointUnderTip[1] - pointOverTip[1]}px`
+        pointMapInner = `100% ${pointMap[1] - pointOverTip[1]}px`
+      }
+      let left = pointOverTip[0]
+      let width = pointMap[0] - pointOverTip[0]
+      tipDom.style.width = `${width}px`
+      tipDom.style.height = `${height}px`
+      tipDom.style.top = `${top}px`
+      tipDom.style.left = `${left}px`
+      tipDom.style.clipPath = `polygon(${pointOverTipInner}, ${pointUnderTipInner}, ${pointMapInner})`
+    }
+  }
+  
   // 点在地图上的处理
   myChart.on('click', (params) => {
     // console.log('ECharts点击事件参数: ', params)
     mapTipShow.value = false
     mapTipData.value = null
+    if (!params.event) return
+    const x = params.event.offsetX
+    const y = params.event.offsetY
     let key = params.name
-    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) {
+    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) { 
       mapTipData.value = nameDataMap.get(key)[0]
       mapTipShow.value = true
+      setMapToTip(x, y)
     }
     // console.log('点击地图后的mapTipData, mapTipShow: ', mapTipData.value, mapTipShow.value)
   })
@@ -645,7 +706,7 @@ getSelectImg()
       </div>
     </div>
     <div class="w-full flex justify-center items-center h-100vh bg-2">
-      <div class="container flex flex-row-reverse relative px-2rem box-border">
+      <div class="container flex flex-row-reverse relative px-2rem box-border" id="mapContainer">
         <!-- 地图 -->
         <div id="mapChart" class="h-100vh w-106vh max-h-[920px] max-w-[975px]"></div>
         <!-- 左侧弹框 -->
@@ -658,10 +719,11 @@ getSelectImg()
           <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white overflow-auto hidden-scrollbar">
             <template v-for="item in mapTipData.data" :key="`${mapTipData.county}-${item.village}`">
               <div class="text-right">{{ item.years }}年示范村:</div>
-              <div>{{ item.village }}</div>
+              <div><a :href="item.bigscreen" target="_blank" style="color: white;text-decoration: none;">{{ item.village }}</a></div>
             </template>
           </div>
         </div>
+        <div id="mapToTip" v-show="mapTipShow"></div>
         <div class="absolute left-2rem top-[14%] text-white space-y-3 text-[1rem] lg:text-[1.4rem] xl:text-2.4rem">
           <div>打造100个鲁渝协作乡村振兴示范镇</div>
           <div>打造100个鲁渝协作特色产业园区</div>
@@ -1275,6 +1337,11 @@ getSelectImg()
 
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0;
+}
+
+#mapToTip {
+  position: absolute;
+  background: linear-gradient(270deg, rgba(71, 253, 149, 0.3) 0%, rgba(125, 255, 199, 0) 100%);
 }
 /****************************** 第二页地图 end ******************************/
 </style>
