@@ -82,6 +82,52 @@ const getCardDataList = async () => {
 }
 getCardDataList()
 
+/****************************** 示范村数据 start ******************************/
+const yrList = ref([2022, 2023, 2024])
+const vlgData = ref<Array<any>>([{}, {}, {}])
+const options = ref<Array<any>>([[], [], []])
+const county = ref<Array<any>>(['全部', '全部', '全部'])
+
+const getVlgDataFirst = () => {
+  vlgData.value = [{}, {}, {}]
+  options.value = [[], [], []]
+  yrList.value.forEach(async (ele, idx) => {
+    let param = { pageNo: 1, pageSize: 100, county: '', years: ele }
+    let res = await page(param)
+    vlgData.value[idx] = res
+    let list : Array<any> = []
+    res.list.forEach((elmt) => {
+      list.push(elmt.county)
+    })
+    options.value[idx] = Array.from(new Set(list))
+    // console.log(`读取${ele}年示范村数据: `, res, Array.from(new Set(list)))
+  })
+}
+getVlgDataFirst()
+
+// 下拉框切换
+const selectChange = async (idx) => {
+  let res = await page({
+    pageNo: 1,
+    pageSize: 100,
+    county: county.value[idx] == '全部' ? '' : county.value[idx],
+    years: yrList.value[idx]
+  })
+  vlgData.value[idx] = res
+  // console.log("当前选择的地区数组: ", county.value)
+}
+
+// 点击表格中某一行的处理
+const toBigScreen = (row) => {
+  console.log('被点击了 ', row)
+  if (row.bigscreen) { 
+    window.open(row.bigscreen)
+  } else {
+    console.log(`示范村数据表格, 区县: ${row.county}, ID: ${row.id}, 没有对应的大屏地址`)
+  }
+}
+/****************************** 示范村数据 end ******************************/
+
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
   const dom = document.getElementById('homeContainer')
@@ -817,44 +863,66 @@ getSelectImg()
     </div>
 
     <!-- 示范村建设数据 -->
-    <div class="w-full flex flex-col items-center justify-center bg-[#fff] py-4rem">
+    <div class="w-full flex flex-col items-center justify-center bg-[#fff] h-100vh">
       <div class="container">
         <div class="flex flex-col items-center space-y-1">
           <div class="text-1.8rem">示范村建设数据</div>
           <div class="text-#666 text-.7rem">DEMONSTRATION VILLAGE CONSTRUCTION DATA</div>
         </div>
       </div>
-      <div class="w-full overflow-hidden pt-2rem container">
+      <div class="w-full overflow-hidden pt-2rem container h-[55%]">
         <swiper
-          :slidesPerView="3"
-          :spaceBetween="30"
-          :freeMode="true"
+          :slidesPerView="2"
+          :spaceBetween="0"
+          :centeredSlides="true"
           :pagination="{
             clickable: true
           }"
           :modules="modules"
-          class="mySwiper build-data-wrapper"
+          class="build-data-wrapper vlg-data-swiper text-white"
         >
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="w-full h-20rem table-bg mb-2rem"></div>
+          <swiper-slide
+            class="flex-col vlg-data-swiper-item"
+            v-for="(item, index) in vlgData"
+            :key="yrList[index]"
+          >
+            <div class="px-[5%] h-[10%] w-full box-border flex justify-between items-center">
+              <div>{{ yrList[index] }}年</div>
+              <div>
+                <el-select
+                  @change="selectChange(index)"
+                  v-model="county[index]"
+                  placeholder="请选择区县"
+                  style="width: 130px;"
+                  size="large"
+                >
+                  <el-option class="color-[#fff]" label="全部" value="全部" />
+                  <el-option
+                    class="color-[#fff]"
+                    v-for="ele in options[index]"
+                    :key="ele"
+                    :label="ele"
+                    :value="ele"
+                  />
+                </el-select>
+              </div>
+            </div>
+            <el-table
+              style="height: 65%; width: 100%; background-color: transparent;"
+              :border="true"
+              :data="item.list"
+              :row-style="{'background-color': 'transparent', color: '#fff', cursor: 'pointer'}"
+              :header-row-style="{'background-color': 'transparent', color: '#84EFAD'}"
+              :header-cell-style="{'background-color': 'transparent', height: '48px', border: 'none'}"
+              :cell-style="{borderBottom: 'none'}"
+              @row-click="toBigScreen"
+            >
+              <el-table-column label="序号" type="index" align="center"/>
+              <el-table-column label="区县" prop="county" align="center"/>
+              <el-table-column label="示范村" prop="village" align="center"/>
+              <el-table-column label="产业类型" prop="form" align="center"/>
+              <el-table-column label="产业形态" prop="industry" align="center"/>
+            </el-table>
           </swiper-slide>
         </swiper>
       </div>
@@ -1355,6 +1423,44 @@ getSelectImg()
   background: linear-gradient(270deg, rgba(71, 253, 149, 0.3) 0%, rgba(125, 255, 199, 0) 100%);
 }
 /****************************** 第二页地图 end ******************************/
+
+/****************************** 示范村建设数据 start ******************************/
+.vlg-data-swiper-item {
+  background: {
+    image: url(./assets/vlg-data/vlg-data-bg.png);
+    size: 100% 81%;
+    position: center;
+    repeat: no-repeat;
+  }
+}
+.vlg-data-swiper .swiper-slide {
+  transition: 300ms;
+  transform: scale(0.8)
+}
+.vlg-data-swiper .swiper-slide-active,
+.vlg-data-swiper .swiper-slide-duplicate-active {
+  transform: scale(1);
+}
+:deep(.vlg-data-swiper .el-table__inner-wrapper::before) {
+  display: none;
+}
+:deep(.vlg-data-swiper .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell),
+:deep(.vlg-data-swiper .el-select__wrapper) {
+  background-color: transparent;
+}
+:deep(.vlg-data-swiper .el-select__placeholder.is-transparent),
+:deep(.vlg-data-swiper .el-select__caret),
+:deep(.vlg-data-swiper .el-select__placeholder),
+:deep(.vlg-data-swiper .el-table__empty-text) {
+  color: #fff;
+}
+:deep(.vlg-data-swiper .el-select__wrapper) {
+  box-shadow: none;
+}
+:deep(.vlg-data-swiper .el-select__selected-item.el-select__placeholder) {
+  text-align: right;
+}
+/****************************** 示范村建设数据 end ******************************/
 </style>
 <style>
 .swiper {
