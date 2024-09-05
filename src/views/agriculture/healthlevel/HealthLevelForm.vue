@@ -32,11 +32,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="健康等级上限分" prop="max">
-        <el-input v-model="formData.max" placeholder="请输入健康等级上限分" />
-      </el-form-item>
       <el-form-item label="健康等级下限分" prop="min">
         <el-input v-model="formData.min" placeholder="请输入健康等级下限分" />
+      </el-form-item>
+      <el-form-item label="健康等级上限分" prop="max">
+        <el-input v-model="formData.max" placeholder="请输入健康等级上限分" />
       </el-form-item>
       <el-form-item label="模型名称" prop="modelName">
         <el-input v-model="formData.modelName" placeholder="请选择模型" >
