@@ -876,7 +876,7 @@ getSelectImg()
         <div class="flex">
           <div class="w-20rem p-2rem py-3.5rem box-border space-y-2rem" style="border-right: 1px solid #f1f1f130;">
             <div
-              :class="`text-1.6rem text-#fff rounded-md p-1rem text-center transition cursor-pointer ${selectedIndustry === item.id ? 'bg-#fff text-#318255' : ''}`"
+              :class="`text-1.6rem  rounded-md p-1rem text-center transition cursor-pointer ${selectedIndustry === item.id ? 'bg-#fff text-#318255' : ''} text-#fff`"
               v-for="item in industriesTree"
               :key="item.id"
               @click="handleFirstItemClick(item)"
