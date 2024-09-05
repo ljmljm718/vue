@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid 2xl:grid-cols-4 min-:grid-cols-2 gap-4">
       <el-card>
         <div>
           <div class="flex justify-between">
@@ -10,6 +10,7 @@
               size="large"
               style="width: 190px"
               @change="filterLeftData"
+             
             >
               <el-option
                 v-for="item in basicInfo"
@@ -24,6 +25,7 @@
               size="large"
               style="width: 120px"
               @change="filterRightData"
+             
             >
               <el-option
                 v-for="item in plotInfo"
@@ -57,7 +59,7 @@
 
           <div v-else-if="Array.isArray(deviceDetail) && deviceDetail.length > 1">
             <div class="flex flex-col relative h-[200px]">
-              <div id="device1" @click="handleClick(0)" class="cursor-pointer">
+              <div id="device1" @click="handleClick(0)" class="cursor-pointer z-10">
                 <img
                   :src="imgSrc1"
                   class="device1-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-[65%] object-contain"
@@ -72,7 +74,7 @@
                   }}</span
                 >
               </div>
-              <div id="device2" @click="handleClick(1)" class="cursor-pointer">
+              <div id="device2" @click="handleClick(1)" class="cursor-pointer z-0">
                 <img
                   :src="imgSrc2"
                   class="device2-img w-[6rem] h-[6rem] mr-2 absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-[65%] object-contain"
@@ -152,22 +154,29 @@
         </div>
       </el-card>
 
-      <el-card>
+      <el-card >
         <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
-          <div id="radarChart" class="w-[100%] h-[270px]"></div>
+          <div id="radarChart" class="w-[100%] h-[270px] "></div>
         </div>
       </el-card>
 
       <el-card>
         <div class="flex mb-4 justify-between">
           <div class="font-bold">模型分析结果</div>
-          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+          <!-- <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
             溶解氧标准值： {{ standardDo.optimalTemperature }}
             <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+          </div> -->
+          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+            <span >溶解氧标准值：</span>
+            <span 
+              >{{ standardDo.optimalTemperature }} 
+              <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
+            </span>
           </div>
         </div>
-        <div class="flex flex-col relative w-full h-[200px] items-center">
+        <div class="flex flex-col relative w-full h-[200px] items-center  ">
           <img
             src="./assets/currentScore.png"
             class="w-[250px] h-[250px] object-contain absolute -translate-y-1/10"
@@ -176,7 +185,7 @@
             <span class="text-[1.6rem]">{{ CurrentDoInfo.dataValue }}</span>
             <span class="text-[#999999] text-[1.2rem]">{{ CurrentDoInfo.yyUnit }}</span>
           </div>
-          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%]"
+          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%] xl:whitespace-nowrap"
             >溶解氧当前值</span
           >
         </div>
@@ -186,8 +195,8 @@
           v-for="(warning, index) in warningMessage"
           :key="index"
         >
-          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3" />
-          <span>设备警告：{{ warning }}</span>
+          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 " />
+          <span class="text-3.5">设备警告：{{ warning }}</span>
         </div>
       </el-card>
 
@@ -215,9 +224,7 @@
             size="large"
             class="buttonSize"
             @click="
-              router.push(
-                '/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id
-              )
+              router.push('/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id)
             "
             >去调整</el-button
           ></div
@@ -225,7 +232,7 @@
       </el-card>
     </div>
 
-    <div class="md:col-span-3 mt-4">
+    <div class="md:col-span-3 mt-4 ">
       <el-card>
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
@@ -240,7 +247,7 @@
             />
           </div>
         </div>
-        <div id="lineChart" class="w-full aspect-[6]"></div>
+        <div id="lineChart" class="w-full aspect-[5]"></div>
       </el-card>
     </div>
   </div>
@@ -341,6 +348,22 @@ const handleClick = (index) => {
   const tempColor = textColor1.value
   textColor1.value = textColor2.value
   textColor2.value = tempColor
+// 获取图片元素
+const imgElement1 = document.getElementById('device1');
+  const imgElement2 = document.getElementById('device2');
+
+  // 检查并切换z-index
+  if (imgElement1.classList.contains('z-10')) {
+    imgElement1.classList.remove('z-10');
+    imgElement1.classList.add('z-0');
+    imgElement2.classList.remove('z-0');
+    imgElement2.classList.add('z-10');
+  } else {
+    imgElement1.classList.remove('z-0');
+    imgElement1.classList.add('z-10');
+    imgElement2.classList.remove('z-10');
+    imgElement2.classList.add('z-0');
+  }
 
   // 调用函数
   const selectedDeviceId = deviceDetail.value[index].id
@@ -401,6 +424,8 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
   ) {
     chartIns && chartIns.clear()
   }
+  console.log("DSDSAD", factorName);
+  
   chartIns = initChartStatic('radarChart', {
     title: {
       // text: '评估评分占比分析图'
@@ -453,7 +478,8 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
           lineStyle: {
             color: 'rgba(241, 241, 241)'
           }
-        }
+        },
+        radius:'60%'
       }
     ],
     series: [
@@ -543,7 +569,8 @@ const getLineChartInfo = async (date) => {
         orient: 'horizontal',
         itemWidth: 15,
         itemHeight: 15,
-        left: '80%',
+        // left: '80%',
+        padding:[0,40,0,0],
         textStyle: {
           color: '#999999',
           fontSize: 14
@@ -705,4 +732,6 @@ onMounted(() => init())
   width: 100%;
   font-size: 16px;
 }
+
+
 </style>

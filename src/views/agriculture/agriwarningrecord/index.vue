@@ -113,25 +113,25 @@
           <!-- 卡片形式 -->
           <div
             v-show="listType === 'card'"
-            class="grid sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4"
+            class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            <div v-for="item in list" :key="item.id" class="card-item">
+            <div v-for="item in list" :key="item.id" :class="themeIsDark ? 'card-item-dark' : 'card-item'">
               <!-- 第一行 -->
-              <div class="h-[22px] flex">
-                <div class="font-['AlibabaPuHuiTi'] text-[18px]">{{ item.deviceName }}</div>
+              <div class="h-[37px] flex md:block xl:flex md:mb-[5px] 2xl:mb-0">
+                <div class="text-[18px] md:text-[12px] lg:text-[14px] 2xl:text-[18px]">{{ item.deviceName }}</div>
                 <dict-tag
-                  class="ml-20px"
+                  class="ml-20px md:ml-0 xl:ml-20px md:!text-[10px] md:!h-[16px] 2xl:!text-[12px] 2xl:!h-[20px]"
                   :type="DICT_TYPE.AGRI_WARN_LEVEL"
                   :value="item.warnLevel"
                 />
                 <dict-tag
-                  class="ml-10px"
+                  class="ml-10px md:!text-[10px] md:!h-[16px] 2xl:!text-[12px] 2xl:!h-[20px]"
                   :type="DICT_TYPE.AGRI_MONITOR_TYPE"
                   :value="item.warnType"
                 />
               </div>
               <!-- 第二行 -->
-              <div class="text-[14px] text-[#999999] mt-[15px]">
+              <div class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]">
                 当前值:
                 <span class="text-[#E31205] border-r border-r-solid border-[#E5E5E5] pr-[5px]">
                   {{ item.currentValue }}{{ item.warnUnit }}
@@ -145,7 +145,7 @@
                   {{ timeFormat(item.warnTime) }}
                 </span>
               </div>
-              <div class="warn-popover">
+              <div class="warn-popover text-[16px] md:text-[10px] lg:text-[12px] 2xl:text-[16px]">
                 <el-icon><WarnTriangleFilled /></el-icon>
                 {{ item.warnInfo }}!
                 <!-- 旋转10乘10的正方形区域45度 -->
@@ -169,7 +169,7 @@
               <!-- 第三行 -->
               <!-- grid布局，两行两列，已处理显示四个格子，未处理只显示第1个格子 -->
               <div
-                class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] font-['AlibabaPuHuiTi']"
+                class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] md:text-[10px] 2xl:text-[14px]"
                 v-show="'1' === item.warnStatus"
               >
                 <div class=""> 预警状态: <span class="text-[#009688]">已处理</span> </div>
@@ -178,7 +178,7 @@
                 <div> 处理时间: {{ timeFormat(item.dealTime) }} </div>
               </div>
               <div
-                class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] font-['AlibabaPuHuiTi']"
+                class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] md:text-[10px] 2xl:text-[14px]"
                 v-show="'0' === item.warnStatus"
               >
                 <div class=""> 预警状态: <span class="text-[#FF8500]">未处理</span> </div>
@@ -456,18 +456,18 @@
           <!-- 卡片形式 -->
           <div
             v-show="listTypeMonitor === 'card'"
-            class="grid grid-cols-8 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] text-[#999999]"
+            :class="`grid grid-cols-3 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] ${themeIsDark ? 'text-white' : 'text-[#999999]'}`"
           >
             <!-- 预览区 -->
-            <div class="col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md bg-[#F5F5F5] shadow-md">
+            <div :class="`col-span-2 lg:col-span-2 2xl:col-span-1 rounded-md ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} shadow-md`">
               <div class="relative">
                 <el-image
                   lazy
                   :src="currentItem.captured"
                   :preview-src-list="[currentItem.captured]"
                   preview-teleported
-                  fit="cover"
-                  class="w-full"
+                  fit="contain"
+                  class="w-full rounded"
                 />
                 <div
                   v-show="currentItem.videoLink"
@@ -489,58 +489,42 @@
                   <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-1 my-10px px-3">
-                <div
-                  >基地名称:
-                  <span class="text-[#666666]">{{ currentItem.monitoringBaseName }}</span></div
-                >
-                <div
-                  >地块名称:
-                  <span class="text-[#666666]">{{ currentItem.monitoringPlotName }}</span></div
-                >
-                <div
-                  >设备名称: <span class="text-[#666666]">{{ currentItem.deviceName }}</span></div
-                >
-                <div
-                  >事件类型: <span class="text-[#666666]">{{ currentItem.noticeEvent }}</span></div
-                >
-                <div
-                  >消息内容: <span class="text-[#666666]">{{ currentItem.remarks }}</span></div
-                >
-                <div
-                  >记录时间:
-                  <span class="text-[#666666]">{{ timeFormat(currentItem.recordTime) }}</span></div
-                >
+              <div class="grid grid-cols-2 xl:grid-cols-3 gap-1 my-10px px-3">
+                <div>基地名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringBaseName }}</span></div>
+                <div>地块名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringPlotName }}</span></div>
+                <div>设备名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.deviceName }}</span></div>
+                <div>事件类型: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.noticeEvent }}</span></div>
+                <div>消息内容: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.remarks }}</span></div>
+                <div>记录时间: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(currentItem.recordTime) }}</span></div>
               </div>
             </div>
             <!-- 卡片列表区 -->
             <div
-              class="col-span-1 grid grid-cols-1 grid-rows-6 lg:grid-cols-2 lg:grid-rows-3 2xl:grid-cols-3 2xl:grid-rows-2 gap-3 rounded"
+              class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded"
             >
               <div
-                class="bg-[#F5F5F5] cursor-pointer 2xl:grid 2xl:grid-rows-4 shadow-md rounded-md"
+                :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh]`"
                 v-for="item in listMonitor"
                 :key="item.id"
                 @click="changCurrentItem(item)"
               >
-                <el-image
-                  lazy
-                  :src="item.captured"
-                  preview-teleported
-                  fit="cover"
-                  class="w-full 2xl:row-span-3"
-                />
-                <div
-                  class="grid grid-cols-1 2xl:row-span-1 2xl:gap-1 2xl:mt-[10px] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
-                >
-                  <div
-                    >设备名称: <span class="text-[#666666]">{{ item.deviceName }}</span></div
-                  >
-                  <div
-                    >记录时间:
-                    <span class="text-[#666666]">{{ timeFormat(item.recordTime) }}</span></div
-                  >
+                <el-scrollbar>
+                <div class="text-center">
+                  <el-image
+                    lazy
+                    :src="item.captured"
+                    preview-teleported
+                    fit="contain"
+                    class="h-[17vh] rounded"
+                  />
                 </div>
+                <div
+                  class="mt-[5px] text-[6px] lg:text-[8px] xl:text-[12px] 2xl:text-[14px] px-[5px]"
+                >
+                  <div>设备名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ item.deviceName }}</span></div>
+                  <div class="mt-[5px]">记录时间: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(item.recordTime) }}</span></div>
+                </div>
+                </el-scrollbar>
               </div>
             </div>
           </div>
@@ -565,7 +549,7 @@
                     :src="scope.row.captured"
                     :preview-src-list="[scope.row.captured]"
                     preview-teleported
-                    fit="cover"
+                    fit="contain"
                   />
                 </template>
               </el-table-column>
@@ -669,6 +653,7 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+  console.log("列表数据", list.value)
 }
 
 // 查询
@@ -943,8 +928,8 @@ const currentItem = ref({
 /** 查询列表 */
 const getListMonitor = async () => {
   loading.value = true
-  // 卡片形式每页加载6项，列表形式每页加载10项
-  queryParamsMonitor.pageSize = listTypeMonitor.value === 'card' ? 6 : 10
+  // // 卡片形式每页加载6项，列表形式每页加载10项
+  // queryParamsMonitor.pageSize = listTypeMonitor.value === 'card' ? 6 : 10
   try {
     const data =
       await MonitoringEquipmentNoticeApi.getMonitoringEquipmentNoticePage(queryParamsMonitor)
@@ -1020,6 +1005,21 @@ const handleExportMonitor = async () => {
 
 onMounted(() => {
   getList()
+
+  // 获取当前是否是深色主题
+  themeIsDark.value = appStore.getIsDark
+})
+
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
+
+const appStore = useAppStore()
+const themeIsDark = ref(false)
+
+// 监听主题模式变化
+watch(() => appStore.isDark, (newVal, oldVal) => {
+  console.log("isDark", newVal, oldVal)
+  themeIsDark.value = newVal
 })
 </script>
 
@@ -1056,10 +1056,19 @@ onMounted(() => {
   box-shadow: 0px 2px 10px 0px rgba(153, 153, 153, 0.5);
   padding: 20px;
 }
+.card-item-dark {
+  width: 100%;
+  height: 260px;
+  border-radius: 4px;
+  opacity: 1;
+  background-color: #343A46;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 5px 0px rgba(153, 153, 153, 0.5);
+  padding: 20px;
+}
 /* 预警信息提示框样式 */
 .warn-popover {
   color: #e31205;
-  font: 16px 'AlibabaPuHuiTi';
   width: 95%;
   border: none;
   background-color: hsla(4, 96%, 45%, 0.08);

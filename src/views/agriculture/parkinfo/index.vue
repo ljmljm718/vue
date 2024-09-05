@@ -20,11 +20,7 @@
         </el-form-item>
 
         <el-form-item label="类型" prop="type">
-          <el-select
-            v-model="queryParams.type"
-            placeholder="请选择类型"
-            class="!w-240px"
-          >
+          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
             <el-option
               v-for="dict in parkCategoryOptions"
               :key="dict.value"
@@ -65,10 +61,7 @@
   <ContentWrap>
     <div class="flex justify-between items-center">
       <div>
-        <el-button
-          @click="handleBack()"
-          v-if="showPlotList"
-        >返回</el-button>
+        <el-button @click="handleBack()" v-if="showPlotList">返回</el-button>
         <el-button
           class="!bg-[#009688] !text-white"
           plain
@@ -114,11 +107,16 @@
             <div
               v-for="item in list"
               :key="item.id"
-              :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-1 ${activeItemId === item.id ? '!border-green-400 shadow-md' : ''}`"
+              :class="`border-solid border-[1px] border-slate-300 p-3 px-4 rounded-1 ${
+                activeItemId === item.id ? '!border-green-400 shadow-md' : ''
+              }`"
             >
               <div class="flex space-x-3 pl-.7rem">
                 <div class="font-bold">{{ item.name }}</div>
-                <div class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center rounded-1 shadow-sm">{{ item.categoryName }}</div>
+                <div
+                  class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center rounded-1 shadow-sm"
+                  >{{ item.categoryName }}</div
+                >
               </div>
               <div class="max-w-[40rem] p-2" :style="`display: ${item.remark ? 'block' : 'none'};`">
                 {{ item.remark }}
@@ -201,7 +199,9 @@
               v-for="item in plotDataList"
               :key="item.id"
               @click="handlePlotClick(item)"
-              :class="`relative border-solid border-[1px] border-slate-300 pt-2 p-3 px-4 rounded-1 ${activePlotId === item.id ? '!border-green-400 shadow-md' : ''}`"
+              :class="`relative border-solid border-[1px] border-slate-300 pt-2 p-3 px-4 rounded-1 ${
+                activePlotId === item.id ? '!border-green-400 shadow-md' : ''
+              }`"
             >
               <div class="flex space-x-3">
                 <div class="font-bold">{{ item.name }}</div>
@@ -239,16 +239,16 @@
                 </div>
                 <div @click="handleStopPropagation" class="absolute z-999 right-0 bottom-0">
                   <el-button
-                      class="!bg-[#009688] text-white"
-                      type="primary"
-                      @click="handleDraw(item)"
-                      v-hasPermi="['agriculture:park-info:update']"
-                    >
-                      绘制围栏
-                    </el-button>
+                    class="!bg-[#009688] text-white"
+                    type="primary"
+                    @click="handleDraw(item)"
+                    v-hasPermi="['agriculture:park-info:update']"
+                  >
+                    绘制围栏
+                  </el-button>
                 </div>
               </div>
-            </div>  
+            </div>
           </div>
           <div class="h-[2.5rem]">
             <Pagination
@@ -435,17 +435,20 @@ const getList = async () => {
   try {
     const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
     list.value = list1
-    console.log("🚀 ~ getList ~ list1:", list1)
+    console.log('🚀 ~ getList ~ list1:', list1)
+    if (Array.isArray(list1) && list1.length > 0) {
+      handleParkClick(list1[0], false)
+    }
     total.value = total1
   } finally {
     loading.value = false
   }
 }
 
-const getListLabelByID = (id:string) => {
-  if (!Array.isArray(list.value)) return;
+const getListLabelByID = (id: string) => {
+  if (!Array.isArray(list.value)) return
   let res = ''
-  list.value.forEach(item => {
+  list.value.forEach((item) => {
     if (id === item.id) res = item.name
   })
   return res
@@ -464,7 +467,9 @@ const resetQuery = () => {
   handleQuery()
 }
 
-onActivated(() => { handleQuery() })
+onActivated(() => {
+  handleQuery()
+})
 
 /** 查看操作 */
 const openFormDetail = (id?: number) => {
@@ -502,8 +507,8 @@ const handleExport = async () => {
     exportLoading.value = true
     const data = await ParkInfoApi.exportParkInfo(queryParams)
     download.excel(data, '基地基本信息.xls')
-  } catch(err) {
-    console.error("ERR", err);
+  } catch (err) {
+    console.error('ERR', err)
   } finally {
     exportLoading.value = false
   }
@@ -513,13 +518,11 @@ const handleExport = async () => {
 const selectedDrawId = ref('')
 const showDrawDialog = ref<boolean>(false)
 const tiandiIns = ref()
-const areaMatchZoom = (_pos:any[]) => {
-  const area = turf.area(turf.polygon([
-    [..._pos, _pos[0]]
-  ]));
-  if (area < 3000) return 17;
-  if (area > 3600000000) return 5;
-  return Math.floor(17 - (12 * area / 3600000000))
+const areaMatchZoom = (_pos: any[]) => {
+  const area = turf.area(turf.polygon([[..._pos, _pos[0]]]))
+  if (area < 3000) return 17
+  if (area > 3600000000) return 5
+  return Math.floor(17 - (12 * area) / 3600000000)
 }
 const handleDraw = (item) => {
   const { id, geofencing } = item
@@ -534,18 +537,22 @@ const handleDraw = (item) => {
     if (geofencing) {
       const _arr = JSON.parse(geofencing)
       if (Array.isArray(_arr) && _arr.length === 1) {
-        const _polyArr =  _arr[0].map(ele => {
+        const _polyArr = _arr[0].map((ele) => {
           // @ts-ignore
           return T.LngLat(ele.lng, ele.lat)
         })
-        
-        const _zoom = areaMatchZoom(_arr[0].map(_ele => ([_ele.lng, _ele.lat])))
-        
+
+        const _zoom = areaMatchZoom(_arr[0].map((_ele) => [_ele.lng, _ele.lat]))
+
         tiandiIns.value.createPolygon(_polyArr)
-        const _center = turf.center(turf.points(_arr[0].map(ele => {
-          return [ele.lng, ele.lat]
-        })))
-        const { geometry } = _center;
+        const _center = turf.center(
+          turf.points(
+            _arr[0].map((ele) => {
+              return [ele.lng, ele.lat]
+            })
+          )
+        )
+        const { geometry } = _center
         const { coordinates } = geometry
         tiandiIns.value.setCenterZoom(coordinates, _zoom)
       }
@@ -555,8 +562,8 @@ const handleDraw = (item) => {
 
 // 切换卡片或列表时触发
 const handleTypeChange = () => {
-  console.log("Change");
-  
+  console.log('Change')
+
   activeItemId.value = ''
   activePlotId.value = ''
   showPlotList.value = false
@@ -564,22 +571,26 @@ const handleTypeChange = () => {
 
 // 在右侧地图中绘制基地
 const handleDrawPark = (item) => {
-  const { geofencing } = item;
+  const { geofencing } = item
   if (!geofencing) return ElMessage.warning('当前基地或地块尚未绘制电子围栏！')
   const _arr = JSON.parse(geofencing)
   if (Array.isArray(_arr) && _arr.length === 1) {
-    const _polyArr =  _arr[0].map(ele => {
+    const _polyArr = _arr[0].map((ele) => {
       // @ts-ignore
       return T.LngLat(ele.lng, ele.lat)
     })
-    
-    const _zoom = areaMatchZoom(_arr[0].map(_ele => ([_ele.lng, _ele.lat])))
-    
+
+    const _zoom = areaMatchZoom(_arr[0].map((_ele) => [_ele.lng, _ele.lat]))
+
     parkMapIns.value.createPolygon(_polyArr)
-    const _center = turf.center(turf.points(_arr[0].map(ele => {
-      return [ele.lng, ele.lat]
-    })))
-    const { geometry } = _center;
+    const _center = turf.center(
+      turf.points(
+        _arr[0].map((ele) => {
+          return [ele.lng, ele.lat]
+        })
+      )
+    )
+    const { geometry } = _center
     const { coordinates } = geometry
     parkMapIns.value.setCenterZoom(coordinates, _zoom)
   }
@@ -593,17 +604,17 @@ const handleBack = () => {
 const activePlotId = ref<string>('')
 const plotDataList = ref<any[]>([])
 const handlePlotClick = (item) => {
-  if (!item.id) return;
+  if (!item.id) return
   activePlotId.value = item.id
   handleDrawPark(item)
 }
-const handleParkClick = async (item) => {
-  if (!item?.id) return;
+const handleParkClick = async (item, _showPlot = true) => {
+  if (!item?.id) return
   const list = await ParkInfoApi.getParkDetailListByParkId(item.id)
-  console.log("地块列表", list);
-  
+  console.log('地块列表', list)
+
   if (Array.isArray(list)) plotDataList.value = list
-  showPlotList.value = true;
+  showPlotList.value = _showPlot
   activeItemId.value = item.id
   handleDrawPark(item)
 }
@@ -615,11 +626,11 @@ const handleConfirm = async () => {
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),
-    infraType: "1"
+    infraType: showPlotList.value ? '2' : '1'
   })
 
   if (data) ElMessage.success('保存成功!')
-  else ElMessage.error("保存失败！")
+  else ElMessage.error('保存失败！')
   showDrawDialog.value = false
   selectedDrawId.value = ''
 }
@@ -629,11 +640,47 @@ const handleCancel = () => {
   showDrawDialog.value = false
 }
 
+// 从 localStorage 获取数据
+const localdata = ref([])
+const mapCenter = ref([0, 0])
+
+const fetchCoordinatesFromLocalStorage = () => {
+  const storedData = localStorage.getItem('polygonCoordinates')
+  if (storedData) {
+    localdata.value = JSON.parse(storedData)
+
+    const validPoints = localdata.value
+      .flat()
+      .map((ele:any) => {
+        const lng = parseFloat(ele.lng)
+        const lat = parseFloat(ele.lat)
+        return [lng, lat]
+      })
+      .filter((item) => {
+        const [lng, lat] = item
+        return !isNaN(lng) && !isNaN(lat)
+      })
+
+    if (validPoints.length > 0) {
+      const _center = turf.centroid(turf.points(validPoints))
+
+      mapCenter.value = _center.geometry.coordinates // [lng, lat]
+    } else {
+      console.log('No valid coordinates found.')
+    }
+  } else {
+    console.log('No coordinates found in localStorage')
+  }
+}
+//fetchCoordinatesFromLocalStorage()
+
+
 handleQuery()
 </script>
 
 <style lang="scss" scoped>
-.tab-btn, .tab-btn-selected {
+.tab-btn,
+.tab-btn-selected {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -654,8 +701,8 @@ handleQuery()
 
 .grid-container {
   grid-template-columns: 1fr;
-  row-gap: .3rem;
-  padding: .3rem .8rem;
+  row-gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
 }
 
 .inner-frame-wrapper {

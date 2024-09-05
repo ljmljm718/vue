@@ -22,7 +22,8 @@
     "lint:eslint": "eslint --fix --ext .js,.ts,.vue ./src",
     "lint:format": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
     "lint:style": "stylelint --fix \"./src/**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
-    "lint:lint-staged": "lint-staged -c "
+    "lint:lint-staged": "lint-staged -c ",
+    "git:sync": "git fetch & git stash & git rebase & git stash pop & git push"
   },
   "dependencies": {
     "@cesium-china/cesium-map": "^1.0.0",
@@ -70,6 +71,8 @@
     "qrcode": "^1.5.3",
     "qs": "^6.11.2",
     "steady-xml": "^0.1.0",
+    "swiper": "^11.1.12",
+    "three": "^0.168.0",
     "url": "^0.11.3",
     "video.js": "^7.21.5",
     "vite-plugin-cesium": "^1.2.22",

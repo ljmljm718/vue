@@ -90,10 +90,10 @@
     </div>
   </ContentWrap>
   <ContentWrap>
-    <div class="flex justify-between items-center">
-      <div class="space-x-1">
+    <div class="flex items-center">
+      <div class="space-x-1" style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem">
         <el-button
-          class="!text-white !bg-[#009688]"
+          class="!text-white !bg-[#009688] !h-2.4rem"
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth-new:create']"
         >
@@ -103,22 +103,14 @@
           />
           新增
         </el-button>
-        <el-button
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agri:crop-growth-new:export']"
-        >
-          <Icon
-            icon="ep:download"
-            class="mr-5px"
-          />
-          导出
-        </el-button>
+      </div>
+      <div class="grow" style="margin-bottom: 1rem;margin-top: 1rem;margin-right: 1.5rem;height: 2.4rem">
+        <IntroduceAlert title="生长周期可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
       </div>
       <div class="flex items-center cursor-pointer">
         <div
           :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
-          style="border-radius: 5px 0 0 5px"
+          style="border-radius: 5px 0 0 5px; height: 2.4rem"
           @click="showType = 'card'"
         >
           <el-icon>
@@ -128,7 +120,7 @@
         </div>
         <div
           :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
-          style="border-radius: 0 5px 5px 0"
+          style="border-radius: 0 5px 5px 0; height: 2.4rem"
           @click="showType = 'list'"
         >
           <el-icon>
@@ -188,40 +180,45 @@
           align="center"
           prop="startTime"
           :formatter="dateFormatter3"
-          width="180px"
+          width="100px"
         />
         <el-table-column
           label="结束时间"
           align="center"
           prop="endTime"
           :formatter="dateFormatter3"
-          width="180px"
+          width="100px"
         />
 
         <el-table-column
           label="环境条件"
           align="center"
           prop="envCondition"
+          width="220px"
         />
         <el-table-column
           label="生长地点"
           align="center"
           prop="growSite"
+          width="180px"
         />
         <el-table-column
           label="周期（/天）"
           align="center"
           prop="cycle"
+          width="120px"
         />
         <el-table-column
           label="特点"
           align="center"
           prop="feature"
+          width="220px"
         />
         <el-table-column
           label="农事建议"
           align="center"
           prop="farmAdvice"
+          width="200px"
         />
         <!--      <el-table-column-->
         <!--        label="创建时间"-->
@@ -233,7 +230,8 @@
         <el-table-column
           label="操作"
           align="center"
-          width="230px"
+          width="270px"
+          fixed="right"
         >
           <template #default="scope">
             <el-button
@@ -498,6 +496,7 @@ const queryParams = reactive({
   envCondition: undefined,
   growSite: undefined,
   cycle: undefined,
+  orders: undefined,
   farmAdvice: undefined
 })
 const queryParams1 = reactive({

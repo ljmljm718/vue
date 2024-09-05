@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="flex justify-between space-x-2 my-4">
-      <div class="w-[16rem] custom-card">
+      <div class="w-[12rem] custom-card">
         <el-tree
           style="max-width: 100%; height: 100%"
           :data="data"
@@ -60,24 +60,32 @@
               class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
               >总设备数: {{ deviceTotal }}</div
             >
-            <div class="grid grid-cols-2 gap-2 grid-rows-2 h-45% mt-2  ">
-              <div class="bg-[#f2f2f2] p-3 !rounded-md" v-for="(item, index) in typeList" :key="index">
-                <div class="flex justify-between mb-3 font-medium"
-                  >{{ item.categoryName }}
-                  <span class="color-[#009688]">{{ item.totalCount }}</span></div
-                >
+            <el-scrollbar height="20rem">
+              <div
+                class="grid xl:grid-cols-1 2xl:grid-cols-2 gap-2 xl:grid-rows-4 2xl:grid-rows-2 xl:h-[600px] 2xl:h-[300px] mt-2"
+              >
                 <div
-                  class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333] "
+                  class="bg-[#f2f2f2] p-3 !rounded-md"
+                  v-for="(item, index) in typeList"
+                  :key="index"
                 >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded mb-1"
-                    >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
+                  <div class="flex justify-between mb-3 font-medium"
+                    >{{ item.categoryName }}
+                    <span class="color-[#009688]">{{ item.totalCount }}</span></div
                   >
-                  <div class="flex bg-[#fff] justify-between p-2 w-90% rounded "
-                    >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
+                  <div
+                    class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333]"
                   >
+                    <div class="flex bg-[#fff] justify-between p-2 w-90% rounded mb-1"
+                      >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
+                    >
+                    <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                      >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
+                    >
+                  </div>
                 </div>
               </div>
-            </div>
+            </el-scrollbar>
           </div>
           <!-- 中间 -->
           <div class="flex space-y-2 flex-col">
@@ -147,12 +155,12 @@
           </div>
           <!-- 右侧 -->
           <div class="custom-card">
-            <div class="flex font-800 mb-3">
-              <div>实时数据</div>
+            <div class="flex font-800 mb-3 items-center">
+              <span>实时数据</span>
             </div>
 
-            <el-scrollbar height="40rem">
-              <div class="grid grid-cols-2 gap-2 pr-1">
+            <el-scrollbar height="500px">
+              <div class="grid xl: grid-cols-1 2xl:grid-cols-2 gap-2 pr-1">
                 <div
                   class="flex items-center justify-between rounded-sm p-2 px-3"
                   style="background-color: #ebf7f6; border: 1px solid #ffffff40"
@@ -181,45 +189,50 @@
             <div>历史数据</div>
           </div>
 
-          <div class="flex py-1">
-            <el-radio-group v-model="radio" @change="handleRadioChange">
-              <el-radio-button
-                :label="item.categoryName"
-                :value="item.categoryCode"
-                v-for="(item, index) in selectEquipmentType"
-                :key="index"
-              />
-            </el-radio-group>
-            <el-select
-              @change="handleSelectedMonitorTypeChange"
-              v-model="selectedMonitorType"
-              placeholder="请选择类型"
-              clearable
-              class="!w-240px mx-2"
-            >
-              <el-option
-                v-for="(item, index) in monitorTypeList"
-                :key="index"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-            <div style="margin: 0 0.4rem">
-              <el-date-picker
-                v-model="dateData"
-                @change="initChart3"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-              />
+          <div class="flex py-1 inline">
+            <div class="flex 2xl:w-80% 2xl:inline">
+              <el-radio-group v-model="radio" @change="handleRadioChange">
+                <el-radio-button
+                  :label="item.categoryName"
+                  :value="item.categoryCode"
+                  v-for="(item, index) in selectEquipmentType"
+                  :key="index"
+                />
+              </el-radio-group>
+              <el-select
+                @change="handleSelectedMonitorTypeChange"
+                v-model="selectedMonitorType"
+                clearable
+                class="flex xl:w-20px 2xl:!w-120px ml-1 2xl:mt-2"
+              >
+                <el-option
+                  v-for="(item, index) in monitorTypeList"
+                  :key="index"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
             </div>
-            <el-button type="primary" @click="initChart3">查询</el-button>
+            <div class="flex">
+              <div style="margin: 0 0.4rem">
+                <el-date-picker
+                  v-model="dateData"
+                  @change="initChart3"
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                />
+              </div>
+              <el-button type="primary" @click="initChart3">查询</el-button>
+            </div>
           </div>
+
           <div class="w-[100] h-140px relative">
             <div id="chart3"></div>
           </div>
         </div>
+
         <div class="w-full grid grid-cols-3 gap-3 my-2">
           <div class="custom-card">
             <div class="flex font-800 mb-3">
@@ -228,13 +241,15 @@
 
             <el-radio-group
               v-model="deviceTypeRadio"
-              class="my-2 !w-full"
+              class="my-2"
               @change="(val) => handleDeviceTypeRadioChange(val)"
             >
-              <el-radio-button label="全部" value="全部" />
-              <el-radio-button label="视频监控" value="视频监控" />
-              <el-radio-button label="监测设备" value="监测设备" />
-              <el-radio-button label="控制设备" value="控制设备" />
+              <div class="flex xl:w-[20rem] xl:h-[5rem] xl:ml--3.5 2xl:ml-0 2xl:w-full flex-wrap ">
+                <el-radio-button label="全部" value="全部" />
+                <el-radio-button label="视频监控" value="视频监控" />
+                <el-radio-button label="监测设备" value="监测设备" />
+                <el-radio-button label="控制设备" value="控制设备" />
+              </div>
             </el-radio-group>
             <div id="chartExtra1"></div>
           </div>
@@ -243,17 +258,19 @@
               <div>数据采集</div>
             </div>
 
-            <div class="flex space-x-2 items-center">
+            <div class="flex space-x-2 items-center xl:ml--4 2xl:ml-0">
               <el-radio-group
                 v-model="dataCollectRadio"
                 class="my-2"
                 @change="(val) => handleDataCollectChange(val, dataCollectPicker)"
               >
-                <el-radio-button label="今日" value="全部" />
-                <el-radio-button label="本月" value="本月" />
-                <el-radio-button label="本年" value="本年" />
+                <div class="xl:block 2xl:inline">
+                  <el-radio-button label="今日" value="全部" />
+                  <el-radio-button label="本月" value="本月" />
+                  <el-radio-button label="本年" value="本年" />
+                </div>
               </el-radio-group>
-              <div class="w-[6rem]">
+              <div class="xl:w-[5rem] 2xl:w-[6rem] xl:!mt-0">
                 <el-date-picker
                   v-model="dataCollectPicker"
                   type="daterange"
@@ -370,7 +387,7 @@ const handleDeviceTypeRadioChange = async (param: string | number | boolean = '�
       series: [
         {
           type: 'pie',
-          radius: ['45%', '65%'],
+          radius: ['35%', '55%'],
           center: ['40%', '50%'],
           data: _data,
           label: {
@@ -531,11 +548,14 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
           smooth: false
         }
       ],
-      grid: {
-        left: '5%',
-        right: '3%',
-        top: '17%',
-        bottom: '15%'
+      // grid: {
+      //   left: '10%',
+      //   right: '3%',
+      //   top: '17%',
+      //   bottom: '15%'
+      // }
+      grid:{
+        containLabel: true
       }
     })
   )
@@ -1138,4 +1158,20 @@ select {
   padding: 1rem;
   box-shadow: var(--el-box-shadow-light);
 }
+
+@media screen and (max-width: 1279px) {
+  ::v-deep .el-select {
+    width: 100px;
+  }
+}
+// @media screen and (max-width:1279px){
+//   ::v-deep .el-radio-group{
+//     padding-bottom:4px
+//   }
+// }
+// @media screen and (max-width:1280px){
+//   ::v-deep input.el-range-input {
+//     width:100px
+//   }
+// }
 </style>

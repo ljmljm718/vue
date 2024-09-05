@@ -123,7 +123,7 @@ const formData = ref({
   repositoryId: undefined,
   repositoryTitle: undefined,
   repositoryContent: undefined,
-  attachmentFile:  [],
+  attachmentFile:  undefined,
   attachmentImg:undefined,
   repositoryLabel: '',
   writer: undefined,
@@ -141,7 +141,7 @@ const queryParams = reactive({
   repositoryTitle: undefined,
   attachmentImg:undefined,
   repositoryContent: undefined,
-  attachmentFile:  [],
+  attachmentFile:  undefined,
   repositoryLabel: '',
   writer: undefined,
   browseNum: undefined,
@@ -186,7 +186,6 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    formData.value.attachmentFile=[]
     const data = formData.value as unknown as RepositoryInfoVO
     if (formType.value === 'create') {
       await RepositoryInfoApi.createRepositoryInfo(data)
@@ -211,7 +210,7 @@ const resetForm = () => {
     repositoryId: undefined,
     repositoryTitle: undefined,
     repositoryContent: undefined,
-    attachmentFile: [],
+    attachmentFile: undefined,
     repositoryLabel: '',
     writer: undefined,
     browseNum: undefined,

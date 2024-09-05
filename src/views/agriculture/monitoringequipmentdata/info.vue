@@ -8,6 +8,67 @@ import {
 } from './api'
 import cameraIcon from './assets/camera.png'
 import mask from './assets/mask.png'
+import Dplayer from 'dplayer'
+import Hls from "hls.js";
+import axios from 'axios';
+
+const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string> => {
+  if (leftTimes <= 0) {
+    ElMessage.error("获取视频流失败，请联系管理员!");
+  }
+  if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
+  const liveToken = localStorage.getItem("LIVE_TOKEN"), expireTime = localStorage.getItem("LIVE_EXPIRE_TIME") ?? '0';
+  console.log("🚀 ~ checkAuth ~ liveToken:", liveToken)
+  const isExpired = ((parseInt(expireTime) ?? 0) - new Date().valueOf()) < 0
+  if (liveToken && !isExpired) {
+    // 获取视频流
+    const { data: liveDataRes } = await axios.post(
+      "https://ezcloud.uniview.com/openapi/live/video/device/url/get",
+      { deviceSerial, channelNo },
+      { headers: { Authorization: liveToken } }
+    )
+    const { code, data: liveData } = liveDataRes;
+    if (code === 200) {
+      const { liveUrlList } = liveData
+      if (Array.isArray(liveUrlList) && liveUrlList.length > 0) {
+        return liveUrlList[0].url
+      } else return ''
+    } else return ''
+  }
+
+  const { data } = await axios.post("https://ezcloud.uniview.com/openapi/user/app/token/get", {
+    appId: "626194353357848583",
+    secretKey: "ca06cd14935e031bd7a394ee7eca154d"
+  })
+  if (data && data?.code === 200) {
+    const { accessToken, expireTime } = data.data;
+    if (accessToken) localStorage.setItem("LIVE_TOKEN", accessToken)
+    if (expireTime) localStorage.setItem("LIVE_EXPIRE_TIME", expireTime + '000')
+  }
+  return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
+}
+const initPlayer = async (containerId, dtu, channelId) => {
+  if (!containerId || !dtu || !channelId) return;
+  const resUrl = await checkAuth(dtu, channelId);
+  const hls = new Hls();
+  new Dplayer({
+    container: document.getElementById(containerId),
+    loop: false,
+    autoplay: true,
+    volume: 0,
+    video: {
+      url: resUrl,
+      type: "customHls",
+      customType: {
+        customHls: (video) => {
+          hls.loadSource(video.src);
+          hls.attachMedia(video);
+        },
+      },
+    },
+    mutex: false
+  })
+}
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -66,9 +127,15 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
   if (!Array.isArray) return;
   deviceVideoList.value = res.map(item => ({
     ...item,
+    domId: `VIDEO_${item.dtu ?? 0}_${item.channelId ?? 0}`,
     videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
     baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
   }))
+  nextTick(() => {
+    deviceVideoList.value.forEach(item => {
+      if (item.deviceStatus === 'online') initPlayer(item.domId, item.dtu, item.channelId);
+    })
+  })
 }
 getDeviceVideoList()
 
@@ -199,14 +266,15 @@ window.addEventListener('resize', (item) => { adaptScreen() })
                 </div>
               </div>
               <div class="relative w-full aspect-video pt-2 box-border">
-                <video
+                <div class="w-full h-full bg-black block" :id="item.domId"></div>
+                <!-- <video
                   class="w-full h-full bg-black block"
                   controls
                   autoplay
                   :src="item.videoSrc"
                   loop
                   v-if="item.deviceStatus === 'online'"
-                ></video>
+                ></video> -->
                 <div
                   class="absolute z-20 right-1rem top-1rem bg-black p-2 py-1 flex items-center text-white space-x-[.4rem] text-[.6rem] rounded-1"
                   style="border: 1px solid #f1f1f180;"

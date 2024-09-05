@@ -45,15 +45,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['agri:user-table:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新增
         </el-button>
         <el-button
           type="success"
@@ -62,7 +69,8 @@
           :loading="exportLoading"
           v-hasPermi="['agri:user-table:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px"/>
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -71,17 +79,17 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="年份" align="center" prop="years" />
-      <el-table-column label="区县" align="center" prop="county" />
-      <el-table-column label="示范村" align="center" prop="village" />
-      <el-table-column label="帮扶城市" align="center" prop="city" />
-      <el-table-column label="产业类别" align="center" prop="form" />
-      <el-table-column label="产业" align="center" prop="industry" />
-      <el-table-column label="大屏地址" align="center" prop="bigscreen" />
-      <el-table-column label="基地园区" align="center" prop="park" />
-      <el-table-column label="特色品牌" align="center" prop="product" />
-      <el-table-column label="是否帮扶地域" align="center" prop="yesno" />
+      <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column label="年份" align="center" prop="years"/>
+      <el-table-column label="区县" align="center" prop="county"/>
+      <el-table-column label="示范村" align="center" prop="village"/>
+      <el-table-column label="帮扶城市" align="center" prop="city"/>
+      <el-table-column label="产业类别" align="center" prop="form"/>
+      <el-table-column label="产业" align="center" prop="industry"/>
+      <el-table-column label="大屏地址" align="center" prop="bigscreen"/>
+      <el-table-column label="基地园区" align="center" prop="park"/>
+      <el-table-column label="特色品牌" align="center" prop="product"/>
+      <el-table-column label="是否帮扶地域" align="center" prop="yesno"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -89,6 +97,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="产业种类" align="center" prop="industryType"/>
+      <el-table-column label="产品图" align="center" prop="industryImg"/>
+      <el-table-column label="大屏预览图" align="center" prop="bigscreenImg"/>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -120,20 +131,20 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <UserTableForm ref="formRef" @success="getList" />
+  <UserTableForm ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { UserTableApi, UserTableVO } from '@/api/agri/usertable'
+import {UserTableApi, UserTableVO} from '@/api/agri/usertable'
 import UserTableForm from './UserTableForm.vue'
 
 /** 数农门户 列表 */
-defineOptions({ name: 'UserTable' })
+defineOptions({name: 'UserTable'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<UserTableVO[]>([]) // 列表的数据
@@ -152,6 +163,9 @@ const queryParams = reactive({
   product: undefined,
   yesno: undefined,
   createTime: [],
+  industryType: undefined,
+  industryImg: undefined,
+  bigscreenImg: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -196,7 +210,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

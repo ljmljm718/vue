@@ -26,6 +26,7 @@ import {FarmPlanApi, FarmPlanVO} from "@/api/agriculture/farmplan";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
 import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
 
 
 const route = useRoute()
@@ -302,7 +303,7 @@ const activeName = ref<any>(['1', '2'])
             :model="formData"
             :rules="formRules"
             :disabled="Updisabled"
-            label-width="100px"
+            label-width="105px"
             v-loading="formLoading"
             class="grid gap-3 p-4"
           >
@@ -313,8 +314,11 @@ const activeName = ref<any>(['1', '2'])
                                 title="作物信息" name="1">
                 <el-row :gutter="3">
                   <el-col :span="12">
-                    <el-form-item label="作物编码" prop="cropId">
-                      <el-input v-model="formData.cropId" disabled placeholder="请输入作物编码">
+                    <el-form-item   prop="cropId">
+                      <template #label>
+                        <QuestionMaskTip lable-name="作物编码" content="此处选择种植管理里面的相关作物信息"/>
+                      </template>
+                      <el-input v-model="formData.cropId" disabled placeholder="请选择作物编码">
                         <template #append>
                           <el-button style="color: black" @click="openCropInfoPopup()">
                             <Icon icon="ep:search"/>
@@ -326,14 +330,14 @@ const activeName = ref<any>(['1', '2'])
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="作物名称" prop="cropName">
-                      <el-input v-model="formData.cropName" disabled placeholder="请输入作物名称"/>
+                      <el-input v-model="formData.cropName" disabled placeholder="请选择作物名称"/>
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="所属基地" prop="belongPark">
-                      <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地">
+                      <el-input v-model="formData.belongPark" disabled placeholder="请选择所属基地">
                         <template #append>
                           <el-button style="color: black" @click="openParkInfoPopup('0')">
                             <Icon icon="ep:search"/>
@@ -345,14 +349,14 @@ const activeName = ref<any>(['1', '2'])
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="基地名称" prop="parkName">
-                      <el-input v-model="formData.parkName" disabled placeholder="请输入基地名称"/>
+                      <el-input v-model="formData.parkName" disabled placeholder="请选择基地名称"/>
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="所属地块" prop="belongPlot">
-                      <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块">
+                      <el-input v-model="formData.belongPlot" disabled placeholder="请选择所属地块">
                         <template #append>
                           <el-button style="color: black"
                                      @click="openParkDetailPopup(formData.belongPark)">
@@ -365,7 +369,7 @@ const activeName = ref<any>(['1', '2'])
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="地块名称" prop="plotName">
-                      <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称"/>
+                      <el-input v-model="formData.plotName" disabled placeholder="请选择地块名称"/>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -449,7 +453,10 @@ const activeName = ref<any>(['1', '2'])
                 </el-row>
                 <el-row :gutter="3">
                   <el-col :span="12">
-                    <el-form-item label="农事阶段" prop="farmDefineType">
+                    <el-form-item prop="farmDefineType">
+                      <template #label>
+                        <QuestionMaskTip lable-name="农事阶段" content="此处选择农事定义里面的相关活动信息"/>
+                      </template>
                       <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
                       <el-select v-model="formData.farmDefineType" placeholder="请选择农事阶段">
                         <el-option
@@ -507,4 +514,5 @@ const activeName = ref<any>(['1', '2'])
 .scroll-bar-template {
   height: calc(100vh - 200px);
   overflow: auto;
-}</style>
+}
+</style>

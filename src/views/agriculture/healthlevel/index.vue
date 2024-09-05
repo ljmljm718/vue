@@ -19,13 +19,19 @@
         />
       </el-form-item>
       <el-form-item label="健康等级" prop="healthLevel">
-        <el-input
+        <el-select
           v-model="queryParams.healthLevel"
-          placeholder="请输入健康等级"
+          placeholder="请选择健康等级"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="模型名称" prop="modelName">
         <el-input
@@ -36,38 +42,34 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:health-level:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:health-level:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
       </el-form-item>
+
+
+
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:health-level:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px" /> 新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:health-level:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px" /> 导出
+          </el-button>
+        </el-form-item>
+      </div>
     </el-form>
   </ContentWrap>
 
@@ -75,9 +77,16 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="品种名称" align="center" prop="cropName" />
-      <el-table-column label="健康等级" align="center" prop="healthLevel" />
-      <el-table-column label="健康等级上限分" align="center" prop="max" />
-      <el-table-column label="健康等级下限分" align="center" prop="min" />
+      <el-table-column label="健康等级" align="center" prop="healthLevel" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_HEALTH_LEVEL" :value="scope.row.healthLevel" />
+        </template>
+      </el-table-column>
+      <el-table-column label="分数范围" align="center" prop="monitorCode">
+        <template #default="scope">
+          {{ scope.row.min+ '~' + scope.row.max}}
+        </template>
+      </el-table-column>
       <el-table-column label="模型名称" align="center" prop="modelName" />
       <el-table-column label="健康等级图标" align="center" prop="modelImageId">
         <template #default="{ row }">
@@ -131,6 +140,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
 import HealthLevelForm from './HealthLevelForm.vue'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 健康等级 列表 */
 defineOptions({ name: 'HealthLevel' })

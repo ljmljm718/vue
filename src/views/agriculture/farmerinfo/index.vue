@@ -50,30 +50,27 @@
           class="!w-240px"
         />
       </el-form-item>
-
-      <el-form-item label="所属基地" prop="belongParkName">
-        <el-input
-          v-model="queryParams.belongParkName" placeholder="请选择所属基地" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-form-item label="选择基地">
+        <el-select class="!w-240px" v-model="queryParams.belongPark">
+          <el-option
+            v-for="(item, index) in baseList"
+            :key="index"
+            :value="item.id"
+            :label="item.name"
+            placeholder="请选择"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlotName">
-        <el-input
-          v-model="queryParams.belongPlotName" placeholder="请选择所属地块" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openPlotPopup(queryParams.belongPark)">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+      <el-form-item label="选择地块">
+        <el-select class="!w-240px" v-model="queryParams.belongPlot">
+          <el-option
+            v-for="(item, index) in plotList"
+            :key="index"
+            :value="item.id"
+            :label="item.name"
+            placeholder="请选择"
+          />
+        </el-select>
       </el-form-item>
 <!--
       <el-form-item label="所属基地" prop="belongPark">
@@ -222,6 +219,7 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import { ParkDetailVO } from '@/api/agriculture/parkdetail'
 import { ParkInfoVO } from '@/api/agriculture/parkinfo'
+import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
 
 /** 农户管理 列表 */
 defineOptions({ name: 'FarmerInfo' })
@@ -261,20 +259,14 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  if(queryParams.belongParkName == null || queryParams.belongParkName == ''){
-    queryParams.belongPark= undefined
-    queryParams.belongParkName= undefined
-  }
-  if(queryParams.belongPlotName == null || queryParams.belongPlotName == ''){
-    queryParams.belongPlotName= undefined
-    queryParams.belongPlot= undefined
-  }
   queryParams.pageNo = 1
   getList()
 }
 
 /** 重置按钮操作 */
 const resetQuery = () => {
+  queryParams.belongPark = undefined
+  queryParams.belongPlot = undefined
   queryFormRef.value.resetFields()
   handleQuery()
 }
@@ -328,37 +320,21 @@ onMounted(() => {
 onActivated(async () => {
   await getList()
 })
-
-//基地的选择
-const parkPopupRef = ref()
-const openType = ref('')
-const openParkPopup = (id: string) => {
-  openType.value = id;
-  if (openType.value === undefined || openType.value === ""){
-    message.error("请选择基地")
-  }else parkPopupRef.value.open(id)
+//获取基地
+const baseList = ref([])
+const getPage = async () => {
+  let res = await page()
+  baseList.value = res.list
+  // queryParams.belongPark = res.list[0].id
+  getParkPage({parkId: res.list.id})
 }
-const handleParkPopupChange = (order: ParkInfoVO) => {
-  if (openType.value === '0'){
-    queryParams.belongPark = String(order[0].id)
-    queryParams.belongParkName = String(order[0].name)
-  }
-  else queryParams.belongParkName = String(order[0].name)
-}
+getPage()
+//获取地块
+const plotList = ref([])
 
-//地块的选择
-const plotPopupRef = ref()
-const openType1 = ref('')
-const openPlotPopup = (id: string) => {
-  openType1.value = id;
-  if (!openType1.value){
-    message.error("请选择基地")
-  }else plotPopupRef.value.open(id)
-}
-const handlePlotPopupChange = (order: ParkDetailVO) => {
-
-  console.log("--->>查看选择的地块信息：",order[0])
-  queryParams.belongPlot = String(order[0].id)
-  queryParams.belongPlotName = String(order[0].name)
+const getParkPage = async (parkId) => {
+  let res = await parkPage(parkId)
+  plotList.value = res.list
+  // queryParams.belongPlot = res.list[0].id
 }
 </script>

@@ -18,6 +18,7 @@ export interface CropGrowthNewVO {
   cycle: string // 周期
   farmAdvice: string // 农事建议
   growthType: string // 生长期类别
+  order: string // 生长期类别
 }
 
 // 作物生长周期 API
@@ -67,7 +68,7 @@ export const CropGrowthNewApi = {
     return await request.get({ url: `/agri/crop-growth-new/noPage`, params })
   },
 
-  
+
   // 后端接口3-批量给地块添加生长期接口
   growthCreateList: async (data: any) => {
     return await request.post({ url: `/agri/crop-growth/createList`, data })

@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import mainBg from './assets/main-bg.png'
+import duckBg from './assets/duck-bg.png'
+import fishBg from './assets/fish-bg.png'
 import headerBg from './assets/headerBg.png'
 import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
 import {
@@ -192,7 +194,58 @@ export default defineComponent({
         ]
       })
     }
+    //为空调用的echart
+    const drawRadarChart2 = () => {
+      initChartStatic('radarChart', {
+        series: [
+          {
+            name: '模型要素',
+            type: 'radar',
+            data: [
+              {
+                value: [],
+                name: '模型要素',
+                label: {},
+                itemStyle: {
+                  normal: {
+                    color: 'rgba(198, 234, 230)',
+                    lineStyle: {
+                      color: 'rgba(0, 157, 143)'
+                    }
+                  }
+                }
+              }
+            ],
 
+            textStyle: {
+              color: '#000'
+            },
+            symbol: 'circle',
+            symbolSize: 6,
+            itemStyle: {
+              color: '',
+              borderColor: '',
+              borderWidth: 2
+            },
+            areaStyle: {
+              color: {
+                type: 'linear',
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: '#26eae7'
+                  },
+                  {
+                    offset: 1,
+                    color: '#26eae7'
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      })
+    }
     // 右侧移动
     const rightSetNum = ref(0)
     const cycleListChange3 = (index) => {
@@ -255,28 +308,24 @@ export default defineComponent({
         modelId: modelId.value,
         growthId: growthId.value
       })
+      console.log(res,'moxyaosu ')
       DetailList.value = res
-      mainList.value = res[0].modelIndicatorElementCardVOList
+      mainList.value = res.length>0? res[0].modelIndicatorElementCardVOList:[]
+      if(res.length>0){
       drawRadarChart(res[0])
-
-      // for (let i = 0; i < mainList.value.length; i++) {
-      //   bubbles.value.push({
-      //     id: i,
-      //     x: Math.random() * 300,
-      //     y: Math.random() * 300,
-      //     velocityX: (Math.random() - 0.5) * 10,
-      //     velocityY: (Math.random() - 0.5) * 10
-      //   })
-      // }
-      if (growthId2.value) {
+      }
+      if (growthId2.value || DetailList.value.length >0 ) {
         let dom = document.getElementById('mainDom')
         widht.value = dom.offsetWidth - 100
         height.value = dom.offsetHeight - 100
         createBubbles()
         animateBubbles()
       }
-      createBubbles()
-
+      if(DetailList.value.length==0  ){
+         mainList.value=[]
+         bubbles.value=[]
+         drawRadarChart2()
+        }
     }
     getMonitorIndicatorWithDetail()
 
@@ -864,15 +913,17 @@ export default defineComponent({
                     )
                   })
                 ) : (
-                  <div class='dataNull w-200px h-150px '></div>
+                  <div class='dataNull w-200px mx-auto mt-100px h-150px '></div>
                 )}
               </div>
             </div>
             <div>
               <div class="box-title">模型要素</div>
               <div class="box-item !h-400px">
-                
-                {DetailList.value.length <= 3 ? (
+                {
+                  DetailList.value.length>0?'': <div class='dataNull mx-auto my-100px w-200px h-150px '></div>
+                }
+              
                   <div class="flex justify-evenly">
                     {DetailList.value.map((item, index) => {
                       return (
@@ -888,22 +939,7 @@ export default defineComponent({
                       )
                     })}
                   </div>
-                ) : (
-                  <div class="w-full flex relative" style={`left:${rightRelativeNum.value}px`}>
-                    {DetailList.value.map((item, index) => {
-                      ;<div
-                        onClick={() => {
-                          tabFn(item, index)
-                        }}
-                        style="cursor:pointer;"
-                        class={rightNum.value == index ? 'right-active' : 'right-actived'}
-                      >
-                        {item.indicatorName}
-                      </div>
-                    })}
-                  </div>
-                )}
-                <div id="radarChart" class="w-100%  mt-10px" style="height: 300px"></div>
+                      <div id="radarChart" class="w-100%  mt-10px" style="height:300px"></div>
               </div>
             </div>
           </div>
@@ -913,7 +949,7 @@ export default defineComponent({
     return () => (
       <div class="bg-[#0b212c] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={mainBg}>
+          <BigscreenContainer backgroundImage={bigscreenName.value.includes('稻田鱼')? fishBg:bigscreenName.value.includes('麻鸭')?duckBg :mainBg }>
             <BigscreenHeader
               backgroundImage={headerBg}
               class="!bg-[#0b212c]"

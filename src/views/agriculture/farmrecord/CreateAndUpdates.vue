@@ -490,6 +490,8 @@ const open = async (type: string, id?: number) => {
       farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
       formData.value = await FarmRecordApi.getFarmRecord(id)
       formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
+
+      formData.value.personName = formData.value.personName ==null? '': formData.value.personName
     } finally {
       formLoading.value = false
     }
@@ -597,6 +599,7 @@ const getFrom = async () =>{
   if(route.query.id && route.query.type !== 'create')  {
     formData.value = await FarmRecordApi.getFarmRecord (route.query.id as any);
     formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
+    formData.value.personName = formData.value.personName =="null"? '': formData.value.personName
     loadData(route.query.id);
   }
   if (route.query && route.query.type === 'create') {

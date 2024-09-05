@@ -8,41 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-<!--      <el-form-item label="农事计划id" prop="planId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.planId"-->
-<!--          placeholder="请输入农事计划id"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="农事计划名称" prop="planName">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.planName"-->
-<!--          placeholder="请输入农事计划名称"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="所属基地" prop="belongPark">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.belongPark"-->
-<!--          placeholder="请输入所属基地"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="基地名称" prop="parkName">
-        <!-- <el-input
-          v-model="queryParams.parkName"
-          placeholder="请输入基地名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
         <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
           <template #append>
             <el-button @click="openParkPopup('0')">
@@ -52,23 +18,7 @@
           </template>
         </el-input>
       </el-form-item>
-<!--      <el-form-item label="所属地块" prop="belongPlot">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.belongPlot"-->
-<!--          placeholder="请输入所属地块"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <!-- <el-input
-          v-model="queryParams.plotName"
-          placeholder="请输入地块名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
         <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
@@ -88,15 +38,6 @@
             />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="作物id" prop="cropId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.cropId"-->
-<!--          placeholder="请输入作物id"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="作物名称" prop="cropName" v-if="show !==117">
         <el-input
           v-model="queryParams.cropName"
@@ -115,30 +56,6 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="计划状态" prop="planState">-->
-<!--        <el-select-->
-<!--          v-model="queryParams.planState"-->
-<!--          placeholder="请选择计划状态"-->
-<!--          clearable-->
-<!--          class="!w-240px"-->
-<!--        >-->
-<!--          <el-option-->
-<!--            v-for="dict in getStrDictOptions(DICT_TYPE.COMMON_STATUS)"-->
-<!--            :key="dict.value"-->
-<!--            :label="dict.label"-->
-<!--            :value="dict.value"-->
-<!--          />-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="责任人编号" prop="personId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.personId"-->
-<!--          placeholder="请输入责任人编号"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="责任人" prop="personName">
         <el-input
           v-model="queryParams.personName"
@@ -148,120 +65,36 @@
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="计划开始时间" prop="startTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.startTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="计划结束时间" prop="endTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.endTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="记录时间" prop="recordTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.recordTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="计划面积（亩）" prop="planArea">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.planArea"-->
-<!--          placeholder="请输入计划面积（亩）"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="土地面积（亩）" prop="recordArea">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.recordArea"-->
-<!--          placeholder="请输入土地面积（亩）"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="记录状态" prop="recordState">-->
-<!--        <el-select-->
-<!--          v-model="queryParams.recordState"-->
-<!--          placeholder="请选择记录状态"-->
-<!--          clearable-->
-<!--          class="!w-240px"-->
-<!--        >-->
-<!--          <el-option-->
-<!--            v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)"-->
-<!--            :key="dict.value"-->
-<!--            :label="dict.label"-->
-<!--            :value="dict.value"-->
-<!--          />-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="创建时间" prop="createTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.createTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agri:farm-record:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agri:farm-record:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-        </el-form-item>
-      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="flex items-center mb-3">
+      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="!h-2.4rem"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agri:farm-record:create']"      >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+        </el-form-item>
+      </div>
+      <div class="grow">
+        <IntroduceAlert title="农事记录模块的主要功能是对农事活动的各项任务进行详细记录。"/>
+      </div>
+    </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="计划ID" align="center" prop="id" />-->
-<!--      <el-table-column label="农事计划id" align="center" prop="planId" />-->
-<!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
       <el-table-column label="作物品种" align="center" prop="cropName" v-if="show !==117"/>
       <el-table-column label="基地名称" align="center" prop="parkName"/>
-<!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="125%" >
         <template #default="scope">
@@ -275,40 +108,17 @@
           </el-select>
         </template>
       </el-table-column>
-<!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
-<!--      <el-table-column label="记录状态" align="center" prop="recordState" width="90">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.FARM_RECORD_STATE" :value="scope.row.recordState" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="农事计划名称" align="center" prop="planName" width="200" />-->
       <el-table-column label="种植品类" align="center" prop="cropType" width="120">
         <template #default="scope">
           <el-tag >{{scope.row.cropType}} </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="批次码" align="center" prop="batchCode"  v-if="show !==117"/>
-<!--      <el-table-column label="计划状态" align="center" prop="planState" width="100">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" />
-<!--      <el-table-column-->
-<!--        label="计划开始时间"-->
-<!--        align="center"-->
-<!--        prop="startTime"-->
-<!--        :formatter="dateFormatter2"-->
-<!--        width="180px"-->
-<!--      />-->
-<!--      <el-table-column-->
-<!--        label="计划结束时间"-->
-<!--        align="center"-->
-<!--        prop="endTime"-->
-<!--        :formatter="dateFormatter2"-->
-<!--        width="180px"-->
-<!--      />-->
+      <el-table-column label="责任人" align="center" prop="personName" >
+        <template #default="scope">
+          <label>{{scope.row.personName=='null'?'':scope.row.personName}} </label>
+        </template>
+      </el-table-column>
       <el-table-column
         label="记录时间"
         align="center"
@@ -316,7 +126,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-<!--      <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="180" />-->
       <el-table-column label="土地面积（亩）" align="center" prop="recordArea"  v-if="show !==117"/>
 
       <el-table-column

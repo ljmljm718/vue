@@ -25,19 +25,18 @@
           clearable
         >
           <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.label"
+            :value="dict.value"
           />
         </el-select>
-
-      </el-form-item>
-      <el-form-item label="健康等级上限分" prop="max">
-        <el-input v-model="formData.max" placeholder="请输入健康等级上限分" />
       </el-form-item>
       <el-form-item label="健康等级下限分" prop="min">
         <el-input v-model="formData.min" placeholder="请输入健康等级下限分" />
+      </el-form-item>
+      <el-form-item label="健康等级上限分" prop="max">
+        <el-input v-model="formData.max" placeholder="请输入健康等级上限分" />
       </el-form-item>
       <el-form-item label="模型名称" prop="modelName">
         <el-input v-model="formData.modelName" placeholder="请选择模型" >
@@ -68,7 +67,7 @@ import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 //模型管理页面
 import ModelFrom from "@/views/agriculture/modelmanagement/ModelSelectPopup.vue";
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 /** 健康等级 表单 */
 defineOptions({ name: 'HealthLevelForm' })

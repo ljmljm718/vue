@@ -6,8 +6,16 @@ import { onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 
 const hls = new Hls();
-hls.on(Hls.Events.ERROR, (err) => {
-  ElMessage.error("设备已离线!")
+const route = useRoute()
+const checkOnce = ref<boolean>(true)
+hls.on(Hls.Events.ERROR, (err:any) => {
+  console.log("🚀 ~ hls.on ~ err:", err)
+  if (err === 'Success') return;
+  if (!checkOnce.value) return;
+  checkOnce.value = false;
+  const param = route.query;
+  const { dtu, channelId } = param;
+  startVideoPush(dtu, channelId)
 })
 const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string> => {
   if (leftTimes <= 0) {
@@ -15,6 +23,7 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string>
   }
   if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
   const liveToken = localStorage.getItem("LIVE_TOKEN"), expireTime = localStorage.getItem("LIVE_EXPIRE_TIME") ?? '0';
+  console.log("🚀 ~ checkAuth ~ liveToken:", liveToken)
   const isExpired = ((parseInt(expireTime) ?? 0) - new Date().valueOf()) < 0
   if (liveToken && !isExpired) {
     // 获取视频流
@@ -44,7 +53,7 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string>
   return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
 }
 
-const route = useRoute()
+
 const initPlayer = async () => {
   const param = route.query;
   const { dtu, channelId } = param;
@@ -52,6 +61,7 @@ const initPlayer = async () => {
     return ElMessage.error('通道号或序列号不存在!');
   }
   const resUrl = await checkAuth(dtu, channelId)
+  console.log("🚀 ~ initPlayer ~ resUrl:", resUrl)
   if (!resUrl) return ElMessage.error('获取视频流失败，请联系管理员!');
   new Dplayer({
     container: document.getElementById("playerContainer"),
@@ -76,6 +86,49 @@ onBeforeUnmount(() => {
   hls.destroy()
 })
 
+const liveVideoId = ref<string>('')
+const startOnce = ref<boolean>(true)
+// 开启推流 quality: 0-高清、1-标清、2-流畅
+const startVideoPush = async (deviceSerial, channelNo, protocol = 2, quality = 2) => {
+  const liveToken = localStorage.getItem("LIVE_TOKEN");
+  if (!liveToken) return ElMessage.warning('请等待初始化完成!');
+  // 获取播放地址
+  const { data: addData } = await axios.post(
+    "https://ezcloud.uniview.com/openapi/live/video/get",
+    { deviceSerial, channelNo, protocol, quality },
+    { headers: { Authorization: liveToken } }
+  )
+  const { code:addDataCode, data:addDataData = {}, message:addDataMessage } = addData;
+  const { status, url } = addDataData;
+  console.log("🚀 ~ startVideoPush status === 0 已开启 ~ status:", status)
+  if (addDataCode === 200 && status && status !== 0) {
+    // 开启播放功能
+    const { data:startData } = await axios.post(
+      "https://ezcloud.uniview.com/openapi/live/video/start",
+      { url }, { headers: { Authorization: liveToken } }
+    )
+    console.log("🚀 ~ startVideoPush ~ startData:", startData)
+    if (startData) {
+      const { code:succCode, data:succData } = startData;
+      if (succCode === 200) {
+        // 开启成功
+        console.log("🚀 ~ startVideoPush ~ 开启成功:")
+        const { liveId } = succData;
+        liveVideoId.value = liveId;
+        if (!startOnce.value) return;
+        startOnce.value = false
+        initPlayer()
+      }
+    }
+    const { code, message } = startData;
+    if (code !== 200) ElMessage.warning(message)
+  } else {
+    ElMessage.warning(addDataMessage)
+    if (!startOnce.value) return;
+    startOnce.value = false
+    initPlayer()
+  }
+}
 </script>
 <template>
   <div class="flex justify-center items-center">

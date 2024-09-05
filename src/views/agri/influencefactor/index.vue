@@ -26,9 +26,9 @@
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.FACTOR_TYPE)"
-            :key="dict.value"
+            :key="dict.label"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>

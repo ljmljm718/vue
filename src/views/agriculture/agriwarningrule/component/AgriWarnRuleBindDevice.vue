@@ -150,6 +150,7 @@ import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import { AgriWarningRuleDeviceApi } from "@/api/agriculture/agriwarningruledevice";
+import {createEmptyNewsItem, NewsItem} from "@/views/mp/draft/components";
 
 defineOptions({name: 'AgriWarnRuleBindDevice'})
 
@@ -283,15 +284,18 @@ watch(() => props.currCategory,
   })
 
 /** 确认绑定设备  */
+
+// v-model=newsList
+const emit = defineEmits(["bind"])
 const handleBindDevice = async () => {
   loading.value = true
   try {
-    const temp = reactive({warnRuleId: props.warnRuleId, deviceId: ids.value})
-    console.log("temp", temp)
+    const temp = {warnRuleId: props.warnRuleId, deviceId: ids.value}
     const data = temp as any
     await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data)
     message.success(t('common.createSuccess'))
     dialogVisible.value = false
+    emit("bind")
   } finally {
     loading.value = false
   }

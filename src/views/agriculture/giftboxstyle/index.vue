@@ -112,12 +112,12 @@
       <div class="mt-[20px]">
         <!-- 卡片形式 -->
         <div
-          v-show="listType === 'card'"
+          v-if="list.length && currentItem && listType === 'card'"
           class="grid grid-cols-8 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] text-[#999999]"
         >
           <!-- 预览区 -->
           <div
-            class="col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md bg-[#F5F5F5] shadow-md previewContainer"
+            :class="`col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md ${themeIsDark ? 'bg-[#343A46]': 'bg-[#F5F5F5]'} shadow-md previewContainer`"
           >
             <div class="previewArea">
               <div class="relative">
@@ -125,7 +125,7 @@
                   :src="currentItem.coverImage"
                   :preview-src-list="[currentItem.coverImage]"
                   preview-teleported
-                  fit="cover"
+                  fit="contain"
                   class="w-full h-[60vh]"
                 />
                 <div
@@ -169,7 +169,7 @@
               </div>
               <div class="grid grid-cols-1 gap-1 my-10px px-3">
                 <div>
-                  <span class="text-[#666666] text-[18px]">{{ currentItem.schemeName }}</span>
+                  <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`">{{ currentItem.schemeName }}</span>
                 </div>
                 <div>
                   <span class="text-[14px]">{{ currentItem.briefIntroduction }}</span>
@@ -180,7 +180,7 @@
           <!-- 卡片列表区 -->
           <div class="col-span-1 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3 rounded">
             <div
-              class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md h-[33vh] overflow-hidden"
+              :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh] overflow-hidden`"
               v-for="item in list"
               :key="item.id"
               @click="changCurrentItem(item)"
@@ -188,21 +188,24 @@
               <el-image
                 :src="item.coverImage"
                 preview-teleported
-                fit="cover"
-                class="w-full h-[20vh]"
+                fit="contain"
+                class="w-full h-[17vh] mt-[1vh]"
               />
               <div
                 class="grid grid-cols-1 2xl:gap-1 2xl:mt-[10px] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
               >
                 <div>
-                  <span class="text-[#666666] text-[6px] lg:text-[10px] xl:text-[12px] 2xl:text-[16px]">{{ item.schemeName }}</span>
+                  <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[6px] lg:text-[10px] xl:text-[12px] 2xl:text-[16px]`">{{ item.schemeName }}</span>
                 </div>
-                <div>
-                  <span>{{ item.briefIntroduction }}</span>
+                <div class="h-[5vh] truncate">
+                  {{ item.briefIntroduction }}
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div v-else-if="listType === 'card'" class="text-center tracking-widest">
+          暂无数据
         </div>
         <!-- 列表形式 -->
         <div v-show="listType === 'list'">
@@ -506,6 +509,21 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   getList()
+
+  // 获取当前是否是深色主题
+  themeIsDark.value = appStore.getIsDark
+})
+
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
+
+const appStore = useAppStore()
+const themeIsDark = ref(false)
+
+// 监听主题模式变化
+watch(() => appStore.isDark, (newVal, oldVal) => {
+  console.log("isDark", newVal, oldVal)
+  themeIsDark.value = newVal
 })
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS

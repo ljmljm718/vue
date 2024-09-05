@@ -39,6 +39,11 @@ export const AgriWarningRuleDeviceApi = {
   deleteAgriWarningRuleDevice: async (id: number) => {
     return await request.delete({ url: `/agriculture/agri-warning-rule-device/delete?id=` + id })
   },
+  // 删除预警规则-设备关联
+  deleteAgriWarningRuleDeviceByIdAndDeviceId: async (id: any,deviceId: any) => {
+    console.log("SS!!")
+    return await request.get({ url: `/agriculture/agri-warning-rule-device/deleteByIdAndDeviceId?id=${id}&deviceId=${deviceId}` })
+  },
 
   // 导出预警规则-设备关联 Excel
   exportAgriWarningRuleDevice: async (params) => {
@@ -53,5 +58,9 @@ export const AgriWarningRuleDeviceApi = {
   // 根据预警规则查询设备
   selectAgriDeviceByWarnRuleId: async (warnRuleId: string) => {
     return await request.get({ url: `/agriculture/agri-warning-rule-device/list?warnRuleId=` + warnRuleId })
+  },
+  // 根据预警规则查询设备
+  selectDeviceListByWarnRuleId: async (warnRuleId: string) => {
+    return await request.get({ url: `/agriculture/agri-warning-rule-device/deviceList?warnRuleId=` + warnRuleId })
   },
 }

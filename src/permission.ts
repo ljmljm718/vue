@@ -57,11 +57,29 @@ const whiteList = [
   '/oauthLogin/gitee',
   '/QRCode',
   '/tiandi',
-  '/home'
+  '/home',
+  '/page',
 ]
 
+const favicon = document.querySelector('link[rel="icon"]') as any;
+interface TitleIcon {
+  href: string
+  title: string
+}
+const pathTitleIcoMap = new Map<string, TitleIcon>([
+  ['/page', { href: '/logo.png', title: '工业安全生产数字化产品平台' }],
+  ['/inspurHome', { href: '', title: '装备智能制造产品云控中台' }],
+])
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
+  if (pathTitleIcoMap.has(to.path)) {
+    const titleIconObj = pathTitleIcoMap.get(to.path);
+    if (!titleIconObj) return;
+    document.title = titleIconObj.title;
+    if (favicon) favicon.href = titleIconObj.href
+  } else {
+    if (favicon && favicon.href !== '/favicon1.ico') favicon.href = '/favicon1.ico'
+  }
   start()
   loadStart()
   if (getAccessToken()) {
@@ -104,7 +122,11 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
-  useTitle(to?.meta?.title as string)
+  if (pathTitleIcoMap.has(to.path)) {
+    const titleIconObj = pathTitleIcoMap.get(to.path);
+    if (!titleIconObj) return;
+    document.title = titleIconObj.title;
+  } else useTitle(to?.meta?.title as string)
   done() // 结束Progress
   loadDone()
 })

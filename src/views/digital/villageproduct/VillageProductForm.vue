@@ -172,7 +172,7 @@ const open = async (type: string, id?: any) => {
     //基地名称
     formData.value.park = id.parkName
     //地块id
-    formData.value.parkDetailId = id.recordNum
+    formData.value.parkDetailId = id.belongPlot
     //地块名称
     formData.value.parkDetail = id.parkDetailName
     //产品名称

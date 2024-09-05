@@ -8,34 +8,43 @@
       v-loading="formLoading"
     >
       <el-form-item label="年份" prop="years">
-        <el-input v-model="formData.years" placeholder="请输入年份" />
+        <el-input v-model="formData.years" placeholder="请输入年份"/>
       </el-form-item>
       <el-form-item label="区县" prop="county">
-        <el-input v-model="formData.county" placeholder="请输入区县" />
+        <el-input v-model="formData.county" placeholder="请输入区县"/>
       </el-form-item>
       <el-form-item label="示范村" prop="village">
-        <el-input v-model="formData.village" placeholder="请输入示范村" />
+        <el-input v-model="formData.village" placeholder="请输入示范村"/>
       </el-form-item>
       <el-form-item label="帮扶城市" prop="city">
-        <el-input v-model="formData.city" placeholder="请输入帮扶城市" />
+        <el-input v-model="formData.city" placeholder="请输入帮扶城市"/>
       </el-form-item>
       <el-form-item label="产业类别" prop="form">
-        <el-input v-model="formData.form" placeholder="请输入产业类别" />
+        <el-input v-model="formData.form" placeholder="请输入产业类别"/>
       </el-form-item>
       <el-form-item label="产业" prop="industry">
-        <el-input v-model="formData.industry" placeholder="请输入产业" />
+        <el-input v-model="formData.industry" placeholder="请输入产业"/>
       </el-form-item>
       <el-form-item label="大屏地址" prop="bigscreen">
-        <el-input v-model="formData.bigscreen" placeholder="请输入大屏地址" />
+        <el-input v-model="formData.bigscreen" placeholder="请输入大屏地址"/>
       </el-form-item>
       <el-form-item label="基地园区" prop="park">
-        <el-input v-model="formData.park" placeholder="请输入基地园区" />
+        <el-input v-model="formData.park" placeholder="请输入基地园区"/>
       </el-form-item>
       <el-form-item label="特色品牌" prop="product">
-        <el-input v-model="formData.product" placeholder="请输入特色品牌" />
+        <el-input v-model="formData.product" placeholder="请输入特色品牌"/>
       </el-form-item>
       <el-form-item label="是否帮扶地域" prop="yesno">
-        <el-input v-model="formData.yesno" placeholder="请输入是否帮扶地域" />
+        <el-input v-model="formData.yesno" placeholder="请输入是否帮扶地域"/>
+      </el-form-item>
+      <el-form-item label="产业种类" prop="industryType">
+        <el-input v-model="formData.industryType" placeholder="请输入产业种类"/>
+      </el-form-item>
+      <el-form-item label="产品图" prop="industryImg">
+        <UploadImg v-model="formData.industryImg"/>
+      </el-form-item>
+      <el-form-item label="大屏预览图" prop="bigscreenImg">
+        <UploadImg v-model="formData.bigscreenImg"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -45,12 +54,12 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { UserTableApi, UserTableVO } from '@/api/agri/usertable'
+import {UserTableApi, UserTableVO} from '@/api/agri/usertable'
 
 /** 数农门户 表单 */
-defineOptions({ name: 'UserTableForm' })
+defineOptions({name: 'UserTableForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -69,9 +78,11 @@ const formData = ref({
   park: undefined,
   product: undefined,
   yesno: undefined,
+  industryType: undefined,
+  industryImg: undefined,
+  bigscreenImg: undefined
 })
-const formRules = reactive({
-})
+const formRules = reactive({})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
@@ -90,7 +101,7 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -130,6 +141,9 @@ const resetForm = () => {
     park: undefined,
     product: undefined,
     yesno: undefined,
+    industryType: undefined,
+    industryImg: undefined,
+    bigscreenImg: undefined
   }
   formRef.value?.resetFields()
 }
