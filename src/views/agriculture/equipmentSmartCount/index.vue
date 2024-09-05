@@ -17,16 +17,13 @@ import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
 const selectBase = ref([])
 const getBaseDataList = async () => {
   const selectBaseList = await ParkInfoApi.getParkInfoPage({})
-  console.log(selectBaseList.list, 'selectBaseList.list')
   selectBase.value = selectBaseList.list
-  console.log(selectBase, '-=---=')
 }
 getBaseDataList()
 const soilList = ref([])
 // 获取土壤墒情信息
 const getSoilInfoList = async (belongPark?: any, belongPlot?: any) => {
   const res = await EquipmentDataApi.environmentalDataHomePageC({ belongPark, belongPlot })
-  console.log('土壤墒情', res)
   soilList.value = res
 }
 getSoilInfoList()
@@ -34,22 +31,18 @@ getSoilInfoList()
 let infestation = ref([])
 const getEnvironmentalDataHomePageB = async (belongPark?: any, belongPlot?: any) => {
   infestation.value = await EquipmentDataApi.environmentalDataHomePageB({ belongPark, belongPlot })
-  console.log(infestation.value, '虫情信息')
 }
 getEnvironmentalDataHomePageB()
 //获取气象信息
 let weather = ref([])
 const getEnvironmentalDataHomePageA = async (belongPark?: any, belongPlot?: any) => {
   weather.value = await EquipmentDataApi.environmentalDataHomePageA({ belongPark, belongPlot })
-  console.log(weather.value, '气象信息')
-  soilList.value = weather.value
 }
 getEnvironmentalDataHomePageA()
 //获取水质信息
 const waterQuality = ref([])
 const getWaterQualityData = async (belongPark?: any, belongPlot?: any) => {
   waterQuality.value = await EquipmentDataApi.waterQualityData({ belongPark, belongPlot })
-  console.log(waterQuality.value, '水质信息')
 }
 getWaterQualityData()
 const queryParams = ref({
@@ -94,15 +87,31 @@ const dataColleChange = (val) => {
   if (val == '本年') val = 'year'
   else if (val == '本月') val = 'month'
   else if (val == '今日') val = 'day'
-  dataCollectDateRange.value=[]
+  dataCollectDateRange.value = []
   initDataCollectChart(val)
 }
+const el = document.documentElement
+const elcolor = ref<string>('')
+
+const updateColor = () => {
+  elcolor.value = getComputedStyle(el).getPropertyValue('--el-color-primary')
+}
+updateColor()
+
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'style') updateColor()
+  })
+})
+
+observer.observe(el, {
+  attributes: true,
+  attributeFilter: ['style']
+})
 const initDataCollectChart = async (type, startDate = '', endDate = '') => {
-  console.log(type, startDate, endDate, 'asdasdq123')
   let res = await EquipmentDataApi.QueryCurrentDateCount(
     type == 'appoint' ? { type, startDate, endDate } : { type }
   )
-  console.log(res, '数据采集量展示')
   initChartStatic(
     'dataCollectChart',
     generateBaseOptions({
@@ -124,7 +133,7 @@ const initDataCollectChart = async (type, startDate = '', endDate = '') => {
         itemWidth: 15,
         itemHeight: 15
       },
-      color: ['#009688', '#36e1d9'],
+      color: [elcolor.value, '#36e1d9'],
       yAxis: {
         name: '',
         type: 'value',
@@ -187,7 +196,6 @@ const selectEquipmentType = ref([])
 //获取气象站等数据
 const getTopList = async () => {
   const dataId = await DeviceCategoryApi.getDeviceCategoryList({ categoryName: '监测设备' })
-  // console.log(dataId,"dataId");
   selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({
     parentId: dataId[0].id
   })
@@ -199,7 +207,6 @@ const dataShowChange = async (val) => {
   let res = await EquipmentDataApi.QueryCollectionType({ monitoringType: val })
   options.value = res
   dataShowRadio.value = val
-  console.log(res, '实时数据下拉')
   seletValue.value = res[0]
   initDataShowChart(dataShowRadio.value, res[0], dataShowDate.value)
 }
@@ -212,7 +219,6 @@ const selectCli = (e) => {
 }
 //选择时间
 const dataShowDateChange = (val) => {
-  console.log(val, 'val')
   let data = new Date(val)
   let year = val.getFullYear()
   let month = data.getMonth() + 1
@@ -224,23 +230,36 @@ const queryChart = () => {
   initDataShowChart(dataShowRadio.value, seletValue.value, dataShowDate.value)
 }
 
-const initDataShowChart = async (collectionType = '', monitoringType = '', date = '') => {
-  console.log(monitoringType,'monitoringTypemonitoringType')
-  let res = await EquipmentDataApi.getDataPresentation({ collectionType, monitoringType, date })
+//十六进制转rgb
+const handleHexToRgb = (hex) => {
+  let str = hex.replace('#', '')
+  if (str.length % 3) {
+    return 'hex格式不正确！'
+  }
+  //获取截取的字符长度
+  let count = str.length / 3
+  //根据字符串的长度判断是否需要 进行幂次方
+  let power = 6 / str.length
+  let r = parseInt('0x' + str.substring(0 * count, 1 * count)) ** power
+  let g = parseInt('0x' + str.substring(1 * count, 2 * count)) ** power
+  let b = parseInt('0x' + str.substring(2 * count)) ** power
 
-  console.log(res, '数据展示')
-  let data = res.map((item) => item.dateTime+"时")
-  let xAxisData = []
+  return `${r}, ${g}, ${b}`
+}
+
+const initDataShowChart = async (collectionType = '', monitoringType = '', date = '') => {
+  let res = await EquipmentDataApi.getDataPresentation({ collectionType, monitoringType, date })
+  let data = res.map((item) => item.dateTime + '时')
+  const xAxisData = ref<string[]>([])
   data.forEach((item) => {
-    xAxisData.push(item.slice(11))
+    xAxisData.value.push(item.slice(11))
   })
-  console.log(xAxisData, 'data数据展示')
 
   initChartStatic(
     'dataShowChart',
     generateBaseOptions({
       xAxis: {
-        data: xAxisData,
+        data: xAxisData.value,
         axisLine: {
           show: true,
           lineStyle: {
@@ -254,8 +273,7 @@ const initDataShowChart = async (collectionType = '', monitoringType = '', date 
         itemWidth: 15,
         itemHeight: 15
       },
-      color: ['#009688', '#36e1d9'],
-      // color:'var(--el-color-primary)',
+      color: [elcolor.value, '#36e1d9'],
       yAxis: {
         name: '',
         type: 'value',
@@ -299,11 +317,11 @@ const initDataShowChart = async (collectionType = '', monitoringType = '', date 
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               {
                 offset: 0,
-                color: 'rgba(0, 150, 136, 0.3)' // 渐变起始颜色
+                color: 'rgba(' + handleHexToRgb(elcolor.value) + ',0.3)' // 渐变起始颜色
               },
               {
                 offset: 1,
-                color: 'rgba(0, 150, 136, 0)' // 渐变结束颜色
+                color: 'rgba(' + handleHexToRgb(elcolor.value) + ',0)' // 渐变结束颜色
               }
             ])
           }
@@ -351,7 +369,6 @@ const collectChange = () => {
 //数据采集量情况
 const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') => {
   const res = await EquipmentDataApi.getPieDataList({ dataStartTime, dataEndTime })
-  console.log('数据采集量情况', res)
   const data: Array<any> = []
   res.forEach((item) => {
     data.push({
@@ -407,7 +424,7 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
         }
       },
 
-      color: ['#009688', '#1AA2F3', '#FC9F12'],
+      color: ['#009688', '#1AA2F3', '#FC9F12', '#E31205'],
       series: [
         {
           name: '数据采集量情况',
@@ -461,10 +478,9 @@ const getIconFrame = (text: string) => {
     溶解氧饱和度: 'icon-24',
     溶氧: 'icon-24',
     电: 'icon-25',
-    大气压力:'icon-26',
-    二氧化碳:'icon-28',
-    PM:'icon-29'
-    
+    大气压力: 'icon-26',
+    二氧化碳: 'icon-28',
+    PM: 'icon-29'
   }
   let res: string = 'icon-11'
   let flag: boolean = false
@@ -570,11 +586,8 @@ watch(
           </div>
         </div>
       </el-card>
-      <!-- 土壤 -->
-      <!-- <el-card class="card2" v-show="soilList.length !== 0"> -->
       <el-card class="col-span-6">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px">土壤墒情</div>
-        <!-- </template> -->
         <div class="grid xl:grid-cols-3 2xl:grid-cols-3 gap-1 xl:gap-2 border-t-0">
           <div class="weather_div" v-for="(item, index) in soilList" :key="index">
             <div class="flex flex-col items-start justify-center">
@@ -744,7 +757,7 @@ watch(
     </div>
   </div>
 </template>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .choosetime {
   width: 100px;
 }
@@ -848,7 +861,17 @@ watch(
   border-radius: 4px;
   opacity: 1;
   margin-right: 5px;
-  background: linear-gradient(0deg, rgba(0, 150, 136, 0.08), rgba(0, 150, 136, 0.08)), #ffffff;
+  // background: linear-gradient(0deg, rgba(0, 150, 136, 0.08), rgba(0, 150, 136, 0.08)), #ffffff;
+}
+.weather_div::after {
+  position: absolute;
+  content: '';
+  left: -2px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--el-color-primary);
+  opacity: 0.1;
 }
 .monitoringType {
   /* position: relative; */
@@ -885,13 +908,15 @@ watch(
   font-family: PingFangSC;
   font-weight: 400;
   font-size: 18px;
+  color: var(--el-color-primary);
   /* 设置 dataValue 的字体大小为 20号 */
 }
 
 .unit {
   font-family: PingFangSC;
   font-weight: 400;
-  font-size: 12px; /* 设置 yyUnit 的字体大小为 14号 */
+  font-size: 12px;
+  color: var(--el-color-primary);
 }
 
 .circle {
