@@ -591,8 +591,7 @@ const handleImgChange = (val) => {
   }
 }
 
-const pageJump = () =>{
-  console.log("🚀 ~ pageJump ~ selectedThirItem:!!!", selectedThirItem.value)
+const handlePageJump = () =>{
   if (!selectedThirItem.value?.bigscreen) return;
   window.open(selectedThirItem.value.bigscreen, '_blank');
 }
@@ -601,8 +600,6 @@ const pageJump = () =>{
 //获得产业数据
 const getSelectImg = async () => {
   const res = await selectImg().catch(() => {});
-  console.log("🚀 ~ getSelectImg ~ res:", res)
-  console.log("🚀 ~ getSelectImg ~ buildIndustriesTree(res):", buildIndustriesTree(res))
   industriesTree.value = buildIndustriesTree(res)
   if (industriesTree.value.length > 0) {
     handleFirstItemClick(industriesTree.value[0])
@@ -892,7 +889,7 @@ getSelectImg()
                 <img
                   :src="selectedThirItem?.bigscreenImg"
                   class="w-full h-full object-contain rounded-2 box-border"
-                  @click = pageJump()
+                  @click = "handlePageJump()"
                 />
                 <div class="absolute w-full h-2rem left-0 bottom-[3rem] flex justify-center items-center space-x-2rem">
                   <div class="left-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(-1)"></div>
