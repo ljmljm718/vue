@@ -40,11 +40,33 @@ const getDistinctData = async (type:string) => {
 // 示范村ref
 const buildRef = ref()
 const handleTurn = (val) => {
-  console.log('🚀 ~ handleTurn ~ buildRef.value:', buildRef.value)
-  if (!buildRef.value) return
-  if (val > 0) buildRef.value.slideNext()
-  else buildRef.value.slidePrev()
+  return;
 }
+
+// 示范村建设
+const countryBuildData = ref<any[]>([])
+const getCountryBuildData = async () => {
+  const param = { pageNo: 1, pageSize: 50 }
+  const res2022 = await page({ ...param, years: '2022' })
+  const res2023 = await page({ ...param, years: '2023' })
+  const res2024 = await page({ ...param, years: '2024' })
+  const res2025 = await page({ ...param, years: '2025' })
+  const formatData = (item:any[]) => {
+    const villageNum = [...new Set([...item.map(ele => ele.village)])].length;
+    const areaNum = [...new Set([...item.map(ele => ele.county)])].length; // 区县
+    const formNum = [...new Set([...item.map(ele => ele.form)])].length; // 产业类型
+    const industryTypeNum = [...new Set([...item.map(ele => ele.industryType)])].length; // 产业形态
+    return { villageNum, areaNum, formNum, industryTypeNum }
+  }
+  
+  countryBuildData.value = [
+    { id: '1', year: '2022', ...formatData(res2022.list) },
+    { id: '2', year: '2023', ...formatData(res2023.list) },
+    { id: '3', year: '2024', ...formatData(res2024.list) },
+    { id: '4', year: '2025', ...formatData(res2025.list) }
+  ]
+}
+getCountryBuildData()
   
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([])
@@ -836,16 +858,16 @@ getSelectImg()
             clickable: true
           }"
           :modules="[FreeMode,Navigation]"
-          class="mySwiper w-full overflow-hidden"
+          class="mySwiper w-full overflow-hidden space-x-4rem"
         >
           <swiper-slide
             class="!bg-[transparent] !w-20rem"
-            v-for="item in 4"
-            :key="item"
+            v-for="item in countryBuildData"
+            :key="item.id"
           >
-            <div :class="`w-full relative village-${item} aspect-.75  mb-2rem color-[#fff]`">
+            <div :class="`w-full relative village-${item.id} aspect-.75  mb-2rem color-[#fff]`">
               <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                <div>2022年</div>
+                <div>{{ item.year }}年</div>
                 <div class='w-70% relative'>
                   <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
                   <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
@@ -853,8 +875,8 @@ getSelectImg()
               </div>
               <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
               <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>29</span>个</div>
-                <div>区县10个 | 产业类型4种 | 产业形态8种</div>
+                <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>{{ item.villageNum }}</span>个</div>
+                <div>区县{{ item.areaNum }}个 | 产业类型{{ item.formNum }}种 | 产业形态{{ item.industryTypeNum }}种</div>
               </div>
             </div>
           </swiper-slide>

@@ -66,4 +66,9 @@ export const CropBaseApi = {
     }
     return await request.put({ url: `/agriculture/crop-base/updateStatus`, data })
   },
+
+  // 根据批次码获得农事记录结果
+  getFarmRecordByBatchCode: async (params) => {
+    return await request.download({ url: `/agri/farm-record/get-farm-record-by-batchcode`, params })
+  }
 }
