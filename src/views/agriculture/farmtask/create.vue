@@ -126,8 +126,6 @@
                   <el-col :span="12">
                     <el-form-item label="作业方式" prop="jobType">
                       <el-select v-model="formData.jobType" placeholder="请选择作业方式" style="width: 100%;">
-<!--                        <el-option label="机械作业" value="1" />-->
-<!--                        <el-option label="人工作业" value="2" />-->
                         <el-option
                           v-for="dict in getStrDictOptions(DICT_TYPE.JOB_TYPE)"
                           :key="dict.value"
@@ -180,6 +178,13 @@
                   <el-col :span="24">
                     <el-form-item label="验收标准" prop="acceptanceStandard">
                       <el-input type="textarea" v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="图片" prop="taskImg" >
+                      <UploadImg v-model="formData.taskImg" />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -287,6 +292,7 @@ const formData = ref({
   agriCapitalAmount:undefined,
   agriCapitalConsume:undefined,
   jobType:undefined,
+  taskImg: undefined,
 })
 const formRules = reactive({
   parkName: [{ required: true, message: '基地名称不能为空', trigger: 'blur' }],

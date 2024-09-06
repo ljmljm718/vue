@@ -43,6 +43,9 @@
           </lable>
         </div>
       </el-descriptions-item>
+      <el-descriptions-item label="图片">
+        <el-image :src=" detailData.taskImg"/>
+      </el-descriptions-item>
     </el-descriptions>
   </ContentWrap>
 </template>
