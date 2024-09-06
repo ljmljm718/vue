@@ -11,6 +11,7 @@ import {
 } from './api'
 import * as echarts from 'echarts'
 import dayjs from 'dayjs'
+import noImg from './assets/new/noImg.png'
 import type { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 import { jsonData } from './assets/chongqing'
 import meassageBg from './assets/meassageBg.png'
@@ -663,7 +664,9 @@ const buildIndustriesTree = (data) => {
         return {
           id: generateUUID(),
           label: secItem,
-          children: data[firstItem][secItem]
+          children: data[firstItem][secItem].map(thirItem => ({
+            ...thirItem, bigscreenImg: thirItem.bigscreenImg ?? noImg
+          }))
         }
       })
     })
@@ -706,19 +709,25 @@ const handleNextItem = (val) => {
 }
 
 // 大屏图片按钮
+const offsetPer = ref<number>(100)
 const handleImgChange = (val) => {
   if (!Array.isArray(selectedSecItem.value.children)) return;
-  if (!selectedThirItem.value?.bigscreenImg) return;
-  const selectedImgIndex = selectedSecItem.value.children.findIndex(item => (item.bigscreenImg === selectedThirItem.value.bigscreenImg))
+  if (!selectedThirItem.value?.bigscreen) return;
+  
+  const selectedImgIndex = selectedSecItem.value.children.findIndex(item => (item.bigscreen === selectedThirItem.value.bigscreen))
+  offsetPer.value = 100 - ((selectedImgIndex + 1) * 100 / (selectedSecItem.value.children.length))
+  console.log("🚀 ~ handleImgChange ~ offsetPer.value:", offsetPer.value)
+  // if(!selectedThirItem.value?.bigscreenImg) selectedThirItem.value.bigscreenImg = './assets/new/noImg.png'
   if (selectedImgIndex === -1) return;
   if (val > 0 && selectedImgIndex + 1 < selectedSecItem.value.children.length) {
-    
     selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex + 1];
   }
   if (val < 0 && selectedImgIndex !== 0) {
     selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex - 1];
   }
+
 }
+
 
 const handlePageJump = () =>{
   if (!selectedThirItem.value?.bigscreen) return;
@@ -730,6 +739,8 @@ const handlePageJump = () =>{
 const getSelectImg = async () => {
   const res = await selectImg().catch(() => {});
   industriesTree.value = buildIndustriesTree(res)
+  console.log("🚀 ~ getSelectImg ~ industriesTree.value:", industriesTree.value)
+  
   if (industriesTree.value.length > 0) {
     handleFirstItemClick(industriesTree.value[0])
   }
@@ -1050,21 +1061,24 @@ getSelectImg()
                   <div class="left-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(-1)"></div>
                   <div class="right-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(1)"></div>
                 </div>
+                <div class="absolute w-87% h-0.15rem bg-white bottom-[2.25rem] overflow-hidden">
+                  <div
+                    class="w-100% h-full bg-#318255 absolute transtion"
+                    :style="`left: -${offsetPer}%;`"
+                  ></div>
+                </div>
               </div>
             </div>
             <div class="w-full h-[10rem] bottom-[-2rem] flex justify-center">
               <div class='flex flex-col justify-center items-center w-25rem'> 
                   <div class="flex justify-center  h-20% text-center text-#fff text-1.2rem">{{ selectedSecItem.label }}</div>
-                  <div class="flex justify-center  h-80%  w-23rem  semicircule-bg">
-                      <div class="flex w-50% h-full" @click="handleNextItem(-1)"></div>
-                      <div class="flex w-50% h-full" @click="handleNextItem(1)"></div>
+                  <div class="flex justify-center  h-80%  w-23rem  semicircule-bg2 overflow-hidden" @click="handleNextItem(-1)">
+                      <div class = 'dashCircle mt-11'></div>
                   </div>
               </div>
             </div>
           </div>
-          
         </div>
-
       </div>
     </div>
 
@@ -1291,9 +1305,9 @@ getSelectImg()
   background-repeat: no-repeat;
 }
 
-.semicircule-bg{
-  background-image: url(./assets/new/semicircule.png);
-  background-size: 100% 100%;
+.semicircule-bg2{
+  background-image: url(./assets/new/semicircle2.png);
+  background-size: 100% 330%;
 }
 .semicircule-bg{
   background-image: url(./assets/new/semicircule.png);
@@ -1540,4 +1554,34 @@ getSelectImg()
 .swiper-wrapper{
   transition-timing-function: linear !important;
 }
+@-webkit-keyframes rotate{
+    from{-webkit-transform: rotate(0deg)}
+    to{-webkit-transform: rotate(360deg)}
+}
+@-moz-keyframes rotate{
+    from{-moz-transform: rotate(0deg)}
+    to{-moz-transform: rotate(359deg)}
+}
+@-o-keyframes rotate{
+    from{-o-transform: rotate(0deg)}
+    to{-o-transform: rotate(359deg)}
+}
+@keyframes rotate{
+    from{transform: rotate(0deg)}
+    to{transform: rotate(359deg)}
+}
+.dashCircle{
+  width:18rem;
+  height: 18rem;
+  border-radius: 50%;
+  border: 1px dashed white;
+  -webkit-animation: rotate 50s linear infinite;
+  -moz-animation: rotate 50s linear infinite;
+  -o-animation: rotate 50s linear infinite;
+  animation: rotate 50s linear infinite;
+  overflow: hidden;
+
+}
+
+
 </style>
