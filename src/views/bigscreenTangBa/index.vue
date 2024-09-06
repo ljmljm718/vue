@@ -399,9 +399,9 @@ export default defineComponent({
                       {
                         parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
                           <div class="flex flex-col space-y-2 items-center w-[170px]">
-                            <img src={item.monitoringEquipmentDataDO.capturedImage} class="w-full aspect-video object-cover" />
+                            <img src={item?.monitoringEquipmentDataDO?.capturedImage} class="w-full aspect-video object-cover" />
                             <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
-                              <span>{item.monitoringEquipmentDataDO.monitoringPlotName}</span>
+                              <span>{item?.monitoringEquipmentDataDO?.monitoringPlotName ?? ''}</span>
                               <span class="mx-1">|</span>
                               <span
                                 class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
