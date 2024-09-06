@@ -112,19 +112,17 @@ const timelineData = ref<any[]>([])
 
 const getTimeLineData = async (batchCode:string) => {
   const colorIconMap = {
-    "除草": { color: "#fff", icon: "icon-1" },
-    "浇水": { color: "#fff", icon: "icon-1" },
-    "施肥": { color: "#fff", icon: "icon-1" },
-    "打药": { color: "#fff", icon: "icon-1" },
+    "浇水": { color: "#73c0de", icon: "icon-1" },
+    "除草": { color: "#fac858", icon: "icon-2" },
+    "施肥": { color: "#3ba272", icon: "icon-3" },
+    "打药": { color: "#ee6666", icon: "icon-4" },
   }
-  const { data } = await CropBaseApi.getFarmRecordByBatchCode({ batchCode: '202407221454456702' })
+  const { data } = await CropBaseApi.getFarmRecordByBatchCode({ batchCode })
   console.log("🚀 ~ getTimeLineData ~ res:", data)
   if (!Array.isArray(data)) return;
-  timelineData.value = [...data.map(item => ({
-    id: generateUUID(), ...item
-  })), ...data.map(item => ({
-    id: generateUUID(), ...item
-  }))]
+  timelineData.value = data.map(item => ({
+    id: generateUUID(), ...item, ...colorIconMap[item.farmDefineType]
+  }))
   console.log("🚀 ~ getTimeLineData ~ timelineData.value:", timelineData.value)
 }
 </script>
@@ -240,7 +238,9 @@ const getTimeLineData = async (batchCode:string) => {
           style="height: calc(100% - 2rem);"
         >
           <div class="w-4px bg-#e2e6e7 flex flex-col space-y-1rem items-center justify-center my-3rem">
-            <div class="w-3rem h-3rem rounded-full collect-icon overflow-hidden mb-2rem"></div>
+            <div class="w-3rem h-3rem rounded-full collect-icon mb-2rem relative">
+              <div class="absolute right-3.8rem h-3rem w-6rem flex flex-col items-end justify-center pr-.6rem">收获</div>
+            </div>
             <div
               :class="`relative ${
                 (index + 1) % 2 === 1 ? 'left-15rem'
@@ -253,10 +253,16 @@ const getTimeLineData = async (batchCode:string) => {
                 <div class="flex flex-row-reverse items-center relative right-[-8px]">
                   <div
                     class="w-12px h-12px rounded-full bg-#f1f1f1"
-                    style="border: 3px solid green;"
+                    :style="`border: 3px solid ${item.color ?? 'green'};`"
                   ></div>
-                  <div class="w-17rem h-2px bg-#c1c1c1"></div>
-                  <div class="w-2.6rem h-2.6rem rounded-full bg-#f7f7f7 shadow-md"></div>
+                  <div
+                    class="w-17rem h-2px bg-#c1c1c1"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
+                  <div
+                    :class="`w-2.6rem h-2.6rem rounded-full shadow-md ${item.icon ?? ''}`"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
                   <div class="space-y-1 pr-1rem text-right">
                     <div>{{ item.farmDefineType }}</div>
                     <div class="text-.6rem">{{ dayjs(item.recordTime).format("YYYY-MM-DD HH:mm:ss") }}</div>
@@ -267,10 +273,16 @@ const getTimeLineData = async (batchCode:string) => {
                 <div class="flex items-center relative left-[-8px]">
                   <div
                     class="w-12px h-12px rounded-full bg-#f1f1f1"
-                    style="border: 3px solid green;"
+                    :style="`border: 3px solid ${item.color ?? 'green'};`"
                   ></div>
-                  <div class="w-17rem h-2px bg-#c1c1c1"></div>
-                  <div class="w-2.6rem h-2.6rem rounded-full bg-#f7f7f7 shadow-md"></div>
+                  <div
+                    class="w-17rem h-2px bg-#c1c1c1"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
+                  <div
+                    :class="`w-2.6rem h-2.6rem rounded-full shadow-md ${item.icon ?? ''}`"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
                   <div class="space-y-1 pl-1rem">
                     <div>{{ item.farmDefineType }}</div>
                     <div class="text-.6rem">{{ dayjs(item.recordTime).format("YYYY-MM-DD HH:mm:ss") }}</div>
@@ -280,11 +292,17 @@ const getTimeLineData = async (batchCode:string) => {
               <template v-if="(index + 1) % 4 === 2">
                 <div class="flex flex-row-reverse items-center relative right-[-8px]">
                   <div
-                    class="w-12px h-12px rounded-full bg-#f7f7f7"
-                    style="border: 3px solid green;"
+                    class="w-12px h-12px rounded-full bg-#f1f1f1"
+                    :style="`border: 3px solid ${item.color ?? 'green'};`"
                   ></div>
-                  <div class="w-10rem h-2px bg-#c1c1c1"></div>
-                  <div class="w-2.6rem h-2.6rem rounded-full bg-#f7f7f7 shadow-md"></div>
+                  <div
+                    class="w-10rem h-2px bg-#c1c1c1"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
+                  <div
+                    :class="`w-2.6rem h-2.6rem rounded-full shadow-md ${item.icon ?? ''}`"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
                   <div class="space-y-1 pr-1rem text-right">
                     <div>{{ item.farmDefineType }}</div>
                     <div class="text-.6rem">{{ dayjs(item.recordTime).format("YYYY-MM-DD HH:mm:ss") }}</div>
@@ -294,11 +312,17 @@ const getTimeLineData = async (batchCode:string) => {
               <template v-if="(index + 1) % 4 === 3">
                 <div class="flex items-center relative left-[-8px]">
                   <div
-                    class="w-12px h-12px rounded-full bg-#f7f7f7"
-                    style="border: 3px solid green;"
+                    class="w-12px h-12px rounded-full bg-#f1f1f1"
+                    :style="`border: 3px solid ${item.color ?? 'green'};`"
                   ></div>
-                  <div class="w-10rem h-2px bg-#c1c1c1"></div>
-                  <div class="w-2.6rem h-2.6rem rounded-full bg-#f7f7f7 shadow-md"></div>
+                  <div
+                    class="w-10rem h-2px bg-#c1c1c1"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
+                  <div
+                    :class="`w-2.6rem h-2.6rem rounded-full shadow-md ${item.icon ?? ''}`"
+                    :style="`background-color: ${item.color ?? 'green'};`"
+                  ></div>
                   <div class="space-y-1 pl-1rem">
                     <div>{{ item.farmDefineType }}</div>
                     <div class="text-.6rem">{{ dayjs(item.recordTime).format("YYYY-MM-DD HH:mm:ss") }}</div>
@@ -306,7 +330,9 @@ const getTimeLineData = async (batchCode:string) => {
                 </div>
               </template>
             </div>
-            <div class="w-3rem h-3rem rounded-full sowing-icon !mt-3rem"></div>
+            <div class="w-3rem h-3rem rounded-full sowing-icon !mt-3rem relative">
+              <div class="absolute left-3.8rem h-3rem w-6rem flex flex-col items-start justify-center pl-.6rem">播种</div>
+            </div>
           </div>
         </div>
       </div>
@@ -327,5 +353,14 @@ const getTimeLineData = async (batchCode:string) => {
 .sowing-icon {
   background-image: url(./assets/sowing.png);
   background-size: 100% 100%;
+}
+
+@for $i from 1 through 4 {
+  .icon-#{$i} {
+    background-image: url(./assets/icon#{$i}.png);
+    background-size: 1.2rem 1.2rem;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
 }
 </style>

@@ -208,7 +208,7 @@ const routerHandler = (item: string) => {
 
     '农事活动': '/farm_work/farmManage/farm-record',
     '种植管理': '/farm_work/crop-base',
-    '种植溯源': '/trace/lifeTrace',
+    '种植溯源': '/trace/plant-trace',
     '监测模型': '/growth_monitor/modelMonitor',
     '农事概览': '/farm_work/agriOverview',
 
