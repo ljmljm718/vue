@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import * as THREE from 'three';
+import ScaleBox from "vue3-scale-box";
+import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls';
 
-onMounted(() => {
-  initThree()
-})
+onMounted(() => { initThree() })
 
-let camera, scene, renderer;
-let isUserInteracting = false,
-    onPointerDownMouseX = 0, onPointerDownMouseY = 0,
-    lon = 0, onPointerDownLon = 0,
-    lat = 0, onPointerDownLat = 0,
-    phi = 0, theta = 0;
+let camera, scene, renderer, clock = new THREE.Clock(), controller;
 const initThree = () => {
-  const container = document.getElementById( 'threeContainer' );
-  camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
+  const container = document.getElementById( 'threeContainer');
+  if (!container) return;
+  camera = new THREE.PerspectiveCamera( 75, 1920 / 1080, 1, 1100 );
+  controller = new FirstPersonControls(camera, container)
+  controller.lookSpeed = 0.02; // 鼠标移动查看的速度
+  controller.movementSpeed = 1; // 相机移动速度
+  controller.constrainVertical = true; // 垂直约束
+  controller.verticalMax = 2.5; //
+  controller.verticalMin = 1.0; //
   scene = new THREE.Scene();
   const geometry = new THREE.SphereGeometry( 500, 60, 40 );
   geometry.scale( - 1, 1, 1 );
@@ -24,32 +26,23 @@ const initThree = () => {
 	scene.add( mesh );
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize( 1920, 1080 );
   renderer.setAnimationLoop( animate );
   container.appendChild( renderer.domElement );
-
   container.style.touchAction = 'none';
 }
 
 const animate = () => {
-  if ( isUserInteracting === false ) {
-    lon += 0.1;
-  }
-
-  lat = Math.max( - 85, Math.min( 85, lat ) );
-  phi = THREE.MathUtils.degToRad( 90 - lat );
-  theta = THREE.MathUtils.degToRad( lon );
-
-  const x = 500 * Math.sin( phi ) * Math.cos( theta );
-  const y = 500 * Math.cos( phi );
-  const z = 500 * Math.sin( phi ) * Math.sin( theta );
-
-  camera.lookAt( x, y, z );
-
+  controller.update(clock.getDelta());
   renderer.render( scene, camera );
 }
 
 </script>
 <template>
-  <div id="threeContainer" class="w-100vw h-100vh overflow-hidden"></div>
+  <ScaleBox>
+    <div
+      id="threeContainer"
+      class="w-1920px h-1080px overflow-hidden"
+    ></div>
+  </ScaleBox>
 </template>
