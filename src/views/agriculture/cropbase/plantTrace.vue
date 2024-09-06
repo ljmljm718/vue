@@ -117,9 +117,13 @@ const getTimeLineData = async (batchCode:string) => {
     "施肥": { color: "#3ba272", icon: "icon-3" },
     "打药": { color: "#ee6666", icon: "icon-4" },
   }
-  const { data } = await CropBaseApi.getFarmRecordByBatchCode({ batchCode })
+  const data = await CropBaseApi.getFarmRecordByBatchCode({ batchCode })
   console.log("🚀 ~ getTimeLineData ~ res:", data)
   if (!Array.isArray(data)) return;
+  if (data.length > 0) {
+    const _item = data[0];
+    selectedCropTitle.value = `${_item.plotName} - ${_item.categoryName} - ${_item.cropName} - ${selectedBatchId.value}批次`
+  }
   timelineData.value = data.map(item => ({
     id: generateUUID(), ...item, ...colorIconMap[item.farmDefineType]
   }))
@@ -216,7 +220,7 @@ const getTimeLineData = async (batchCode:string) => {
         <div class="w-full h-2rem font-bold">批次号</div>
         <el-scrollbar
           class="w-full box-border pr-2"
-          style="border-right: 1px solid #d1d1d1;height: calc(100% - 2rem);"
+          style="border-right: 1px solid #d1d1d1;height: calc(100% - 4.5rem);"
         >
           <div
             v-for="item in cropDataList"
@@ -230,6 +234,15 @@ const getTimeLineData = async (batchCode:string) => {
             @click="handleCropItemClick(item)"
           >{{ item.batchCode }}</div>
         </el-scrollbar>
+        <div class="h-2.5rem flex justify-center items-center">
+          <Pagination
+            :total="cropDataTotal"
+            layout="prev, pager, next"
+            v-model:page="queryParams.pageNo"
+            v-model:limit="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </div>
       </div>
       <div class="box-border pl-1rem grow">
         <div class="px-3">{{ selectedCropTitle }}</div>
@@ -330,7 +343,7 @@ const getTimeLineData = async (batchCode:string) => {
                 </div>
               </template>
             </div>
-            <div class="w-3rem h-3rem rounded-full sowing-icon !mt-3rem relative">
+            <div class="w-3rem h-3rem rounded-full sowing-icon top-2.5rem relative">
               <div class="absolute left-3.8rem h-3rem w-6rem flex flex-col items-start justify-center pl-.6rem">播种</div>
             </div>
           </div>

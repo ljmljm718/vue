@@ -69,6 +69,11 @@ export const CropBaseApi = {
 
   // 根据批次码获得农事记录结果
   getFarmRecordByBatchCode: async (params) => {
-    return await request.download({ url: `/agri/farm-record/get-farm-record-by-batchcode`, params })
+    return await request.get({ url: `/agri/farm-record/get-farm-record-by-batchcode`, params })
+  },
+
+  // 获得种植管理批次码倒序分页
+  getBatchCodePage: async (params) => {
+    return await request.get({ url: `/agriculture/crop-base/batch-code-page`, params })
   }
 }
