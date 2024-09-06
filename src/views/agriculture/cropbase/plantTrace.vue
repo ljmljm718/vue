@@ -120,6 +120,10 @@ const getTimeLineData = async (batchCode:string) => {
   const data = await CropBaseApi.getFarmRecordByBatchCode({ batchCode })
   console.log("🚀 ~ getTimeLineData ~ res:", data)
   if (!Array.isArray(data)) return;
+  if (data.length > 0) {
+    const _item = data[0];
+    selectedCropTitle.value = `${_item.plotName} - ${_item.categoryName} - ${_item.cropName} - ${selectedBatchId.value}批次`
+  }
   timelineData.value = data.map(item => ({
     id: generateUUID(), ...item, ...colorIconMap[item.farmDefineType]
   }))
