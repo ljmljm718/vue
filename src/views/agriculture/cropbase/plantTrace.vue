@@ -142,9 +142,9 @@ const getTimeLineData = async (batchCode:string) => {
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="地块名称" prop="plotName">
+      <el-form-item label="地块名称" prop="belongPlot">
         <el-select
-          v-model="queryParams.plotName"
+          v-model="queryParams.belongPlot"
           clearable
           placeholder="请选择地块名称"
           class="!w-180px"
@@ -153,7 +153,7 @@ const getTimeLineData = async (batchCode:string) => {
             v-for="item in plotList"
             :key="item.id"
             :label="item.name"
-            :value="item.name"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
