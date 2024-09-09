@@ -500,7 +500,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/gateway',
     name: 'gateway',
-    component: () => import('@/views/gateway/index.vue'),
+    component: () => import('@/views/gateway/system.vue'),
     meta: {
       hidden: true
     }

@@ -25,6 +25,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { selectImg } from './api'
 import { generateUUID } from '@/utils';
+
+const router = useRouter()
+
 const modules = [FreeMode, Pagination]
 
 const distincDataMap = new Map<string, any>()
@@ -748,6 +751,8 @@ const getSelectImg = async () => {
 }
   
 getSelectImg()
+
+const btnAction = ref<boolean>(false)
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
@@ -772,12 +777,19 @@ getSelectImg()
         <div class="w-[43rem] text-.9rem mt-1.2rem">
           基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数据挖掘、边缘计算、GIS遥感监测、增强现实等多种技术手段融合，构建全流程的新型农业一体化管理平台
         </div>
-        <div class="flex mt-10rem text-#318255">
+        <div class="flex mt-10rem">
           <div
-            class="rounded-full p-[2px] overflow-hidden w-6.6rem bg-white text-.9rem flex justify-between"
+            class="flex !bg-white hover:text-#fff text-#318255 transition-all p-1px rounded-full cursor-pointer relative overflow-hidden"
+            @mouseenter="btnAction = true"
+            @mouseleave="btnAction = false"
+            @click="router.push('/gateway')"
           >
-            <div class="px-2 py-1">系统介绍</div>
-            <div class="aspect-1 h-full bg-#318255 rounded-full arrow-icon"></div>
+            <div class="text-1.4rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
+            <div class="aspect-1 h-3rem bg-#318255 rounded-full arrow-icon relative z-30"></div>
+            <div
+              class="h-3rem top-1px absolute bg-#318255 transition-all rounded-full !duration-300 z-0"
+              :style="`left: ${btnAction ? '1px' : '100%'};width:calc(100% - 2px);`"
+            ></div>
           </div>
         </div>
       </div>
@@ -1397,6 +1409,13 @@ getSelectImg()
 @for $i from 1 through 16 {
   .product-#{$i} {
     background-image: url(./assets/new/product#{$i}.png);
+    background-size: cover;
+  }
+}
+
+@for $i from 1 through 10 {
+  .poster-#{$i} {
+    background-image: url(./assets/new/poster#{$i}.png);
     background-size: cover;
   }
 }
