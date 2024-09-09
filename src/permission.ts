@@ -50,6 +50,12 @@ const parseURL = (
 const whiteList = [
   "/tiandiMap",
   '/login',
+  ...[
+    '/mingyue',
+    '/shuangqiao',
+    '/erdu',
+    '/tianyin'
+  ].map(item => `${item}/login`),
   '/social-login',
   '/auth-redirect',
   '/bind',
