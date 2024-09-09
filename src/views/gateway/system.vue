@@ -232,11 +232,97 @@ handleItemChange(typeDataList.value[0])
 
     <!-- 解决农业问题 -->
     <div class="w-full flex flex-col justify-center items-center py-4rem">
-      <div class="flex flex-col space-y-1 items-center mt-3 mb-[1rem]">
-        <div class="text-1.8rem">解决农业问题</div>
-        <div class="text-#fff text-.7rem">ADDRESSING AGRICULTURAL ISSUES</div>
+      <div class="flex flex-col space-y-1 items-center mt-3 mb-[5rem]">
+        <div class="text-[40px]">解决农业问题</div>
+        <div class=" text-[18px] text-#999999">ADDRESSING AGRICULTURAL ISSUES</div>
       </div>
-      <div class="container"></div>
+      <div class="container">
+        <div class="flex h-20rem mb-[4rem]">
+          <div class='w-45% flex flex-col p-[2rem] '>
+            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">01</span> 实时观测土地</div>
+            <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
+              <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
+                <div class=" w-5rem h-5rem mb-[1rem] watchSoil1-bg"></div>
+                <div>熵情早知道</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3">
+                <div class="watchSoil2-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>智能决策</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3">
+                <div class="watchSoil3-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>降低损失</div>
+              </div>
+
+            </div>
+          </div>
+          <div class='w-55%  solve-bg1'></div> 
+        </div>
+        <div class="flex h-20rem mb-[4rem]">
+          <div class='w-55%  solve-bg2'></div> 
+          <div class='w-45% flex flex-col p-[2rem] '>
+            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">02</span> 农业种植信息一键直报</div>
+            <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
+              <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
+                <div class="report1-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>专家咨询</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3 ">
+                <div class="report2-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>数据定制</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3 ">
+                <div class="report3-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>智慧种植</div>
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+        <div class="flex h-20rem mb-[4rem]">
+          <div class='w-45% flex flex-col p-[2rem] '>
+            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">03</span> 专业定制平台</div>
+            <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
+              <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
+                <div class="platform1-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>多终端</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3">
+                <div class="platform2-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>统一门户</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3">
+                <div class="platform3-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>多租户</div>
+              </div>
+            </div>
+          </div>
+          <div class='w-55%  solve-bg3'></div> 
+        </div>
+        <div class="flex h-20rem mb-[3rem]">
+          <div class='w-55%  solve-bg4'></div> 
+          <div class='w-45% flex flex-col p-[2rem] '>
+            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">04</span> 数字化管理</div>
+            <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
+              <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
+                <div class="manage1-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>全方位监测</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3 ">
+                <div class="manage2-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>实时物联</div>
+              </div>
+              <div class="flex flex-col justify-center items-center space-y-3 ">
+                <div class="manage3-bg w-5rem h-5rem mb-[1rem]"></div>
+                <div>数字化管理</div>
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+      </div>
     </div>
     
     <!-- Footer -->
@@ -305,4 +391,43 @@ handleItemChange(typeDataList.value[0])
   background-image: url(./assets/new/qrcode.png);
   background-size: contain;
 }
+@for $i from 1 through 4 {
+  .solve-bg#{$i} {
+    background-image: url(./assets/new/solve#{$i}.png);
+    background-size: 100% 130%;
+  }
+}
+@for $i from 1 through 3 {
+  .watchSoil#{$i}-bg{
+    background-image: url(./assets/new/watchSoil#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .report#{$i}-bg{
+    background-image: url(./assets/new/report#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .platform#{$i}-bg{
+    background-image: url(./assets/new/platform#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .manage#{$i}-bg{
+    background-image: url(./assets/new/manage#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+// @media (max-width:1722px) {
+//   .content{
+//     flex-direction: column;
+//   }
+  
+//   .left-content {
+//     width: 100%; 
+//   }
+//   .right-content{
+//     width: 100%;
+//     height: 65%;
+//      display: block;
+//   }
+// }
+
 </style>
