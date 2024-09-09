@@ -1,6 +1,7 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible">
-    <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" v-loading="formLoading">
+    <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px"
+             v-loading="formLoading">
       <!--      <el-form-item label="编号" prop="cropCode">-->
       <!--        <el-input v-model="formData.cropCode" placeholder="请输入编号" />-->
       <!--      </el-form-item>-->
@@ -10,7 +11,7 @@
             <el-input v-model="formData.cropName" readonly placeholder="请选择品种名称">
               <template #append>
                 <el-button @click="openCropInfoPopup()">
-                  <Icon icon="ep:search" />
+                  <Icon icon="ep:search"/>
                   选择
                 </el-button>
               </template>
@@ -19,7 +20,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="品种编号" prop="cropCode">
-            <el-input v-model="formData.cropCode" placeholder="选择品种自动输入品种编号" disabled />
+            <el-input v-model="formData.cropCode" placeholder="选择品种自动输入品种编号" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -29,7 +30,7 @@
             <el-input v-model="formData.cropType" readonly placeholder="请选择品类名称">
               <template #append>
                 <el-button @click="openCropCategoryInfoPopup()">
-                  <Icon icon="ep:search" />
+                  <Icon icon="ep:search"/>
                   选择
                 </el-button>
               </template>
@@ -38,57 +39,68 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="品类编号" prop="cropId">
-            <el-input v-model="formData.cropId" placeholder="选择品类自动输入品类编号" disabled />
+            <el-input v-model="formData.cropId" placeholder="选择品类自动输入品类编号" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="生长期" prop="growth">
-            <el-input v-model="formData.growth" placeholder="请输入生长期" />
+            <el-input v-model="formData.growth" placeholder="请输入生长期"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="周期（/天）" prop="cycle">
-            <el-input v-model="formData.cycle" placeholder="请输入周期" />
+            <el-input v-model="formData.cycle" placeholder="请输入周期"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="环境条件" prop="envCondition">
-            <el-input v-model="formData.envCondition" type="textarea" placeholder="请选择环境条件" />
+            <el-input v-model="formData.envCondition" type="textarea" placeholder="请选择环境条件"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="特点" prop="feature">
-            <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点" />
+            <el-input v-model="formData.feature" type="textarea" placeholder="请输入特点"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="开始时间" prop="startTime">
-            <el-date-picker v-model="formData.startTime" type="date" value-format="x" placeholder="选择开始时间"
-              @change="calculateDays" />
+            <el-date-picker v-model="formData.startTime" type="date" value-format="x"
+                            placeholder="选择开始时间"
+                            @change="calculateDays"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="结束时间" prop="endTime">
-            <el-date-picker v-model="formData.endTime" type="date" value-format="x" placeholder="选择结束时间"
-              @change="calculateDays" />
+            <el-date-picker v-model="formData.endTime" type="date" value-format="x"
+                            placeholder="选择结束时间"
+                            @change="calculateDays"/>
           </el-form-item>
 
         </el-col>
       </el-row>
-      <el-form-item label="生长地点" prop="growSite">
-        <el-input v-model="formData.growSite" placeholder="请输入生长地点" />
-      </el-form-item>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="生长地点" prop="growSite">
+            <el-input v-model="formData.growSite" placeholder="请输入生长地点"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="种植顺序" prop="orders">
+            <el-input v-model="formData.orders" placeholder="请输入种植顺序"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="农事建议" prop="farmAdvice">
-        <el-input v-model="formData.farmAdvice" placeholder="请输入农事建议" />
+        <el-input v-model="formData.farmAdvice" placeholder="请输入农事建议"/>
       </el-form-item>
       <el-form-item label="图片" prop="imgId">
-        <UploadImg v-model="formData.imgId" />
+        <UploadImg v-model="formData.imgId"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -97,25 +109,25 @@
     </template>
   </Dialog>
 
-  <SelectVarietyManagement ref="cropInfoPopupRef" @success="selectVarietyManagement" />
-  <SelectCategoryManagement ref="cropCategoryInfoPopupRef" @success="selectCategoryManagement" />
+  <SelectVarietyManagement ref="cropInfoPopupRef" @success="selectVarietyManagement"/>
+  <SelectCategoryManagement ref="cropCategoryInfoPopupRef" @success="selectCategoryManagement"/>
 
 </template>
 <script setup lang="ts">
-import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew'
+import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
 import SelectVarietyManagement
   from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 import SelectCategoryManagement
   from "@/views/agriculture/categorymanagement/SelectCategoryManagement.vue";
-import { VarietyManagementVO } from "@/api/agriculture/varietymanagement";
+import {VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import { CategoryManagementApi, CategoryManagementVO } from "@/api/agriculture/categorymanagement";
-import { VarietyManagementApi } from "@/api/agriculture/varietymanagement";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {VarietyManagementApi} from "@/api/agriculture/varietymanagement";
 
 /** 作物生长周期 表单 */
-defineOptions({ name: 'CropGrowthNewForm' })
+defineOptions({name: 'CropGrowthNewForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -141,7 +153,7 @@ const formData = ref({
   farmAdvice: undefined,
 })
 const formRules = reactive({
-  cropType: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  cropType: [{required: true, message: '名称不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 const categoryData = ref({   //品类信息
@@ -243,14 +255,14 @@ const open1 = async (type: string, id, tag: string) => {
       formData.value.cropType = categoryData.value.categoryName
     } catch (error) {
       console.error('Error fetching category data:', error);
-    }finally {
+    } finally {
       formLoading.value = false
     }
   }
 
 }
 
-defineExpose({ open, open1 }) // 提供 open 方法，用于打开弹窗
+defineExpose({open, open1}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -298,9 +310,6 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
-
-
-
 
 
 /** 计算日期之间的天数差 */

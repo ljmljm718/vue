@@ -67,7 +67,8 @@
         </el-form-item>
       </el-form>
       <div class="w-[1px] bg-#25252545 h-[3rem] mx-2"></div>
-      <div class="w-[100px] flex space-x-2 lg:w-[150px] lg:flex-row flex-col space-y-2 items-center">
+      <div
+        class="w-[100px] flex space-x-2 lg:w-[150px] lg:flex-row flex-col space-y-2 items-center">
         <div class="w-0 h-0 sm:hidden"></div>
         <el-button
           @click="handleQuery"
@@ -91,7 +92,8 @@
   </ContentWrap>
   <ContentWrap>
     <div class="flex items-center">
-      <div class="space-x-1" style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem">
+      <div class="space-x-1"
+           style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem">
         <el-button
           class="!text-white !bg-[#009688] !h-2.4rem"
           @click="openForm('create')"
@@ -104,8 +106,10 @@
           新增
         </el-button>
       </div>
-      <div class="grow" style="margin-bottom: 1rem;margin-top: 1rem;margin-right: 1.5rem;height: 2.4rem">
-        <IntroduceAlert title="生长周期可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
+      <div class="grow"
+           style="margin-bottom: 1rem;margin-top: 1rem;margin-right: 1.5rem;height: 2.4rem">
+        <IntroduceAlert
+          title="生长周期可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
       </div>
       <div class="flex items-center cursor-pointer">
         <div
@@ -114,7 +118,7 @@
           @click="showType = 'card'"
         >
           <el-icon>
-            <Menu />
+            <Menu/>
           </el-icon>
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
@@ -124,7 +128,7 @@
           @click="showType = 'list'"
         >
           <el-icon>
-            <List />
+            <List/>
           </el-icon>
           <div class="pl-1 text-[13px]">列表</div>
         </div>
@@ -218,6 +222,12 @@
           label="农事建议"
           align="center"
           prop="farmAdvice"
+          width="200px"
+        />
+        <el-table-column
+          label="种植顺序"
+          align="center"
+          prop="orders"
           width="200px"
         />
         <!--      <el-table-column-->
@@ -336,7 +346,8 @@
           <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5">
           </div>
           <div :id="`chart_${item.id}`" class="w-[15rem] h-[14rem]"></div>
-          <div class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
+          <div
+            class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
             <div>{{ item.growth }}</div>
             <div>{{ item.cycle + '天' }}</div>
           </div>
@@ -353,7 +364,8 @@
               >
                 <div>{{ ele.growth }}</div>
                 <div>{{ ele.cycle }}天</div>
-                <div :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
+                <div
+                  :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
               </div>
             </div>
             <div class="flex mt-2">
@@ -452,26 +464,26 @@
 
 <script setup lang="ts">
 import download from '@/utils/download'
-import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew'
+import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
 // @ts-ignore
 import CropGrowthNewForm from './CropGrowthNewForm.vue'
-import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
-import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
+import {allDataCacheManager, CategoryManagementVO} from '@/api/agriculture/categorymanagement'
+import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
 // @ts-ignore
 import CropGrowthSubForm from './CropGrowthSubForm.vue'
 //本次请求接口 生长周期子表接口
-import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub'
+import {CropGrowthSubApi, CropGrowthSubVO} from '@/api/agriculture/cropgrowthsub'
 // 时间格式化工具类
-import { formatTime } from '@/utils/index'
-import { generateUUID } from '@/utils'
-import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
+import {formatTime} from '@/utils/index'
+import {generateUUID} from '@/utils'
+import {initChartStatic, generatePieOptions} from '@/utils/bigscreenTool/index'
 import {dateFormatter3} from "@/utils/formatTime";
 
 /** 作物生长周期 列表 */
-defineOptions({ name: 'CropGrowthNew' })
+defineOptions({name: 'CropGrowthNew'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 
 const showType = ref('card')
 const loading = ref(true) // 列表的加载中
@@ -534,7 +546,7 @@ const thisGrowth = ref()
 const damn = async (row) => {
   thisCropType.value = row.cropName
   thisGrowth.value = row.growth
-  const datas = await CropGrowthSubApi.getCropGrowthSubPage({ cropCode: row.id })
+  const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode: row.id})
   formData.value = datas.list
   drawer2.value = true
 }
@@ -548,7 +560,7 @@ const getLabelById = (arr: any[], id: string) => {
 }
 
 const instanceMap = new Map<string, any>()
-const updateInstanceOptions = async (id:string, option, cropCode = '', cropId = '') => {
+const updateInstanceOptions = async (id: string, option, cropCode = '', cropId = '') => {
   console.log("🚀 ~ updateInstanceOptions ~ option:", option)
 
   if (!option || !id) return;
@@ -570,7 +582,7 @@ const updateInstanceOptions = async (id:string, option, cropCode = '', cropId = 
     const _id_ = id.split("_")[1];
     if (item.id !== _id_) return item;
     console.log("item.id !== id", item.id !== id)
-    return { ..._resFiltedItem, activeBar, id: item.id }
+    return {..._resFiltedItem, activeBar, id: item.id}
   })
 }
 
@@ -595,8 +607,8 @@ const initCharts = () => {
             fontSize: 15,
           }
         },
-        legend: { show: false },
-        tooltip: { show: false },
+        legend: {show: false},
+        tooltip: {show: false},
         color: ['#59b756', '#009688', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
         series: [
           {
@@ -611,12 +623,12 @@ const initCharts = () => {
               position: 'inside',
               formatter: '{b}',
               rich: {
-                b: { color: '#c1c1c1', fontSize: 10 },
-                d: { color: '#c1c1c1', fontSize: 10 }
+                b: {color: '#c1c1c1', fontSize: 10},
+                d: {color: '#c1c1c1', fontSize: 10}
               }
             },
-            emphasis: { disabled: false },
-            itemStyle: { borderWidth: 5, borderColor: '#ffffff' }
+            emphasis: {disabled: false},
+            itemStyle: {borderWidth: 5, borderColor: '#ffffff'}
           }
         ]
       })
@@ -628,7 +640,7 @@ const initCharts = () => {
       console.log("🚀 ~ instance&&instance.on ~ params:", params)
       item.growth = params.name
       updateInstanceOptions(`chart_${item.id}`, {
-        title: { text: params.name, subtext: params.value + '天' }
+        title: {text: params.name, subtext: params.value + '天'}
       }, item.cropCode, item.cropId)
     })
   })
@@ -697,7 +709,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 导出按钮操作 */

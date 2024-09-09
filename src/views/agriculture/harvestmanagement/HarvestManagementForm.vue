@@ -4,10 +4,10 @@
       <div class="flex grow justify-between items-center shadow-md rounded-md p-2 px-4 bg-blue-100">
         <div>种/养植数量：</div>
         <div>{{
-          formData.sum != undefined ? formData.sum : ''
+            formData.sum != undefined ? formData.sum : ''
           }}{{
-          formData.unit !=
-          undefined ? formData.unit : ''
+            formData.unit !=
+            undefined ? formData.unit : ''
           }}
         </div>
       </div>
@@ -16,10 +16,10 @@
         <div>已采收数量：</div>
         <div>
           {{
-          formData.harvested != undefined ? formData.harvested : ''
+            formData.harvested != undefined ? formData.harvested : ''
           }}{{
-          formData.unit !=
-          undefined ? formData.unit : ''
+            formData.unit !=
+            undefined ? formData.unit : ''
           }}
         </div>
       </div>
@@ -28,10 +28,10 @@
         <div>未采收数量：</div>
         <div>
           {{
-          formData.notHarvested != undefined ? formData.notHarvested : ''
+            formData.notHarvested != undefined ? formData.notHarvested : ''
           }}{{
-          formData.unit !=
-          undefined ? formData.unit : ''
+            formData.unit !=
+            undefined ? formData.unit : ''
           }}
         </div>
       </div>
@@ -48,8 +48,10 @@
         <el-col :span="12">
           <el-form-item label="采收数量" prop="harvestNum">
             <el-input v-model="formData.harvestNum" placeholder="请输入采收数量">
-              <template #append>{{ formData.unit !=
-                undefined ? formData.unit : '亩/只/条'}}
+              <template #append>{{
+                  formData.unit !=
+                  undefined ? formData.unit : '亩/只/条'
+                }}
               </template>
             </el-input>
           </el-form-item>
@@ -191,30 +193,41 @@ const openParkInfoPopup = (id: string) => {
   } else parkInfoPopupRef.value.open(id)
 }
 const handleParkInfoPopupChange = async (order: CropBaseVO) => {
-  console.log("order", order)
-  formData.value.variety = String(order[0].cropType)
-  formData.value.varietyId = String(order[0].breedId)
-  formData.value.varietyName = String(order[0].cropName)
-  // formData.value.varietyCode = String(order[0].cropCode)
-  formData.value.batchCode = String(order[0].batchCode)
-  formData.value.belongPark = String(order[0].belongPark)
-  formData.value.parkName = String(order[0].parkName)
-  formData.value.belongPlot = String(order[0].belongPlot)
-  formData.value.parkDetailName = String(order[0].plotName)
-  formData.value.sum = String(order[0].number)
-  formData.value.unit = String(order[0].unit)
-  const res = await HarvestManagementApi.getHarvestManagementNum({
-    varietyId: String(order[0].cropCode),
-    belongPlot: String(order[0].belongPlot),
-    batchCode: String(order[0].batchCode),
-    number: String(order[0].number)
-  })
-  console.log("formData.value", formData.value.unit)
-  formData.value = {
-    ...formData.value,
-    ...res
+  console.log("order", order);
+
+  const {
+    cropType, breedId, cropName, batchCode, belongPark,
+    parkName, belongPlot, plotName, number, unit, cropCode
+  } = order[0];
+
+  Object.assign(formData.value, {
+    variety: String(cropType),
+    varietyId: String(breedId),
+    varietyName: String(cropName),
+    batchCode: String(batchCode),
+    belongPark: String(belongPark),
+    parkName: String(parkName),
+    belongPlot: String(belongPlot),
+    parkDetailName: String(plotName),
+    sum: String(number),
+    unit: String(unit),
+  });
+
+  try {
+    const res = await HarvestManagementApi.getHarvestManagementNum({
+      varietyId: String(cropCode),
+      belongPlot: String(belongPlot),
+      batchCode: String(batchCode),
+      number: String(number)
+    });
+
+    formData.value = {...formData.value, ...res};
+  } catch (error) {
+    console.error("Error fetching harvest management data:", error);
   }
-}
+
+  console.log("formData.value", formData.value.unit);
+};
 
 /** 打开弹窗 */
 const open = async (type: string, id?: any) => {
