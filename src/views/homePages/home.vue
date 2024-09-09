@@ -227,7 +227,8 @@ const routerHandler = (item: string) => {
     '视频监控': '/internetMonitor/deviceData/info',
     '数字产销': '/pcg/production/village-product',
     '智慧农事': '/farm_work/crop-base',
-    '模型监测': '/growth_monitor/modelMonitor'
+    // '模型监测': '/growth_monitor/modelMonitor',
+    '模型监测': '/growthMonitoringModelDataCenter'
   }
 
   if (routeMap[item]) {
