@@ -1198,7 +1198,7 @@ select {
             border-right:  solid  #009688;
             height:2.2rem;
             background-color: #e5f4f3 !important;
-            z-index:-1;
+            z-index: -1;
             span{
                 color: #009688;
                 font-weight: 16px}}
@@ -1207,6 +1207,13 @@ select {
 }            
 
 ::v-deep .el-tree-node__content:hover{
-  background-color:#e5f4f3;
+  background-color:#e5f4f3 !important;
 }    
+::v-deep .el-tree-node:focus>.el-tree-node__content{
+  background-color: #e5f4f3 !important;
+}
+
+::v-deep .el-tree{
+  --el-tree-node-hover-bg-color:#e5f4f3 !important;
+}
 </style>
