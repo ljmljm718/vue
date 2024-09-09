@@ -97,25 +97,25 @@
               <div class="flex">
                 <div class="w-[10rem]">
                   <div style="padding: 5px">
-                    <div class="mt-0.5rem bg-#fff1f0 flex flex-col items-center rounded-md">
+                    <div class="mt-0.5rem mb-0.5rem bg-#fff1f0 flex flex-col items-center rounded-md ">
                       <div
                         @click="goPageWran(1)"
                         class="font-500 mt-10px text-[#FF3E23]"
                         style="font-size: 20px; cursor: pointer"
                         >{{ todayWarnNum }}
                       </div>
-                      <div style="color: #333333; cursor: pointer" @click="goPageWran(1)"
+                      <div  class="mb-10px" style="color: #333333; cursor: pointer" @click="goPageWran(1)"
                         >今日报警</div
                       >
                     </div>
-                    <div class="mt-0.5rem bg-#fff7ee flex flex-col items-center rounded-md">
+                    <div class="mt-0.5rem mb-0.5rem bg-#fff7ee flex flex-col items-center rounded-md">
                       <div
                         @click="goPageWran(2)"
                         class="flex font-500 mt-10px text-[#FF8400]"
                         style="font-size: 20px; cursor: pointer"
                         >{{ thirtyDayWarn }}
                       </div>
-                      <div style="color: #333333; cursor: pointer" @click="goPageWran(2)"
+                      <div class="mb-10px" style="color: #333333; cursor: pointer" @click="goPageWran(2)"
                         >近30天报警</div
                       >
                     </div>
@@ -1174,4 +1174,39 @@ select {
 //     width:100px
 //   }
 // }
+
+
+
+::v-deep .el-tree-node__expand-icon{
+  color:#009688;
+  font-size: 1.2rem;
+  left:0
+}
+
+::v-deep .el-tree-node__expand-icon{
+  padding-left:0;
+  padding-right:0;
+}
+
+::v-deep .el-tree-node__content {
+  height:2.2rem;
+  padding-right:5px
+} 
+
+::v-deep.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+            background: #ECF4FF !important;
+            border-right:  solid  #009688;
+            height:2.2rem;
+            background-color: #e5f4f3 !important;
+            z-index:-1;
+            span{
+                color: #009688;
+                font-weight: 16px}}
+::v-deep .el-tree-node__content{
+  color:#333333;
+}            
+
+::v-deep .el-tree-node__content:hover{
+  background-color:#e5f4f3;
+}    
 </style>
