@@ -201,6 +201,17 @@ const remainingRouter: AppRouteRecordRaw[] = [
       }
     ]
   },
+  ...[
+    '/mingyue',
+    '/shuangqiao',
+    '/erdu',
+    '/tianyin'
+  ].map(subItem => ({
+    path: subItem + '/login',
+    component: () => import('@/views/Login/Login.vue'),
+    name: subItem,
+    meta: { hidden: true }
+  })),
   {
     path: '/login',
     component: () => import('@/views/Login/Login.vue'),
@@ -500,7 +511,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/gateway',
     name: 'gateway',
-    component: () => import('@/views/gateway/index.vue'),
+    component: () => import('@/views/gateway/system.vue'),
     meta: {
       hidden: true
     }
