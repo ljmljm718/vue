@@ -92,7 +92,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="种植顺序" prop="orders">
-            <el-input v-model="formData.orders" placeholder="请输入种植顺序"/>
+            <el-input type="number" v-model="formData.orders" placeholder="请输入种植顺序"/>
           </el-form-item>
         </el-col>
       </el-row>
