@@ -1,6 +1,5 @@
 <!-- 种植溯源 -->
 <script setup lang="ts">
-import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
 import dayjs from 'dayjs'
 import {
   CropBaseApi,
@@ -14,7 +13,20 @@ import {
   VarietyManagementApi,
   VarietyManagementVO
 } from '@/api/agriculture/varietymanagement'
+
+import { ParkDetailApi } from '@/api/agriculture/parkdetail'
 import { generateUUID } from '@/utils'
+
+const plotList = ref<any[]>([]);
+const getPlotList = async () => {
+  const { list } = await ParkDetailApi.getParkDetailPage({
+    pageNo: 1,
+    pageSize: 50
+  })
+  if (!Array.isArray(list)) return;
+  plotList.value = list
+}
+getPlotList()
 
 const queryParams = reactive({
   pageNo: 1,
@@ -22,8 +34,7 @@ const queryParams = reactive({
   cropCode: undefined,
   breedId: undefined,
   cropName: undefined,
-  cropType: undefined,
-  createTime: [],
+  cropType: '1813034390826102781',
   batchCode: undefined,
   recoveryNo: undefined,
   belongPark: undefined,
@@ -34,16 +45,6 @@ const queryParams = reactive({
   userId: undefined,
   isEnableModel: undefined
 })
-
-//地块的选择
-const plotPopupRef = ref()
-const openPlotPopup = (id: string) => {
-  plotPopupRef.value.open(id)
-}
-const handlePlotPopupChange = (order: ParkDetailVO) => {
-  queryParams.belongPlot = String(order[0].id)
-  queryParams.plotName = String(order[0].name)
-}
 
 // 品类列表的数据
 const listCategoryManagement = ref<CategoryManagementVO[]>([])
@@ -86,6 +87,7 @@ const getList = async () => {
   cropDataLoading.value = true
   try {
     const { list, total } = await CropBaseApi.getCropBasePage(queryParams);
+    console.log("🚀 ~ getList ~ queryParams:", queryParams)
     console.log("🚀 ~ getList ~ list:", list)
     if (!Array.isArray(list)) return;
     cropDataList.value = list;
@@ -122,7 +124,8 @@ const getTimeLineData = async (batchCode:string) => {
   if (!Array.isArray(data)) return;
   if (data.length > 0) {
     const _item = data[0];
-    selectedCropTitle.value = `${_item.plotName} - ${_item.categoryName} - ${_item.cropName} - ${selectedBatchId.value}批次`
+    const selectedBatchItem = cropDataList.value.find(ele => ele.id === selectedBatchId.value)
+    selectedCropTitle.value = `${_item.plotName} - ${_item.categoryName} - ${_item.cropName} - ${selectedBatchItem?.batchCode ?? ''}批次`
   }
   timelineData.value = data.map(item => ({
     id: generateUUID(), ...item, ...colorIconMap[item.farmDefineType]
@@ -140,17 +143,19 @@ const getTimeLineData = async (batchCode:string) => {
       label-width="68px"
     >
       <el-form-item label="地块名称" prop="plotName">
-        <el-input
+        <el-select
           v-model="queryParams.plotName"
-          placeholder="请选择"
+          clearable
+          placeholder="请选择地块名称"
           class="!w-180px"
         >
-          <template #append>
-            <el-button
-              @click="openPlotPopup(queryParams.belongPark)"
-            ><Icon icon="ep:search"/>选择</el-button>
-          </template>
-        </el-input>
+          <el-option
+            v-for="item in plotList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
         <el-select
@@ -181,17 +186,6 @@ const getTimeLineData = async (batchCode:string) => {
             :value="item.id"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="种植时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-180px"
-        />
       </el-form-item>
       <el-form-item label="批次号" prop="batchCode">
         <el-input
@@ -250,7 +244,7 @@ const getTimeLineData = async (batchCode:string) => {
           class="w-full mt-.6rem overflow-auto flex flex-col items-center py-3rem box-border"
           style="height: calc(100% - 2rem);"
         >
-          <div class="w-4px bg-#e2e6e7 flex flex-col space-y-1rem items-center justify-center my-3rem">
+          <div class="w-4px bg-#e2e6e7 flex flex-col space-y-1rem items-center justify-center my-3rem" v-if="timelineData.length !== 0">
             <div class="w-3rem h-3rem rounded-full collect-icon mb-2rem relative">
               <div class="absolute right-3.8rem h-3rem w-6rem flex flex-col items-end justify-center pr-.6rem">收获</div>
             </div>
@@ -347,15 +341,16 @@ const getTimeLineData = async (batchCode:string) => {
               <div class="absolute left-3.8rem h-3rem w-6rem flex flex-col items-start justify-center pl-.6rem">播种</div>
             </div>
           </div>
+          <div v-else class="w-full h-[20rem] flex flex-col justify-center space-y-2 items-center">
+            <img src="/images/noData.png" class="aspect-1 w-8rem" />
+            <div
+              class="py-3 text-[.9rem] text-[#999]"
+            >暂无数据</div>
+          </div>
         </div>
       </div>
     </div>
   </ContentWrap>
-  <!--  选择地块-->
-  <ParkDetailPopup
-    ref="plotPopupRef"
-    @success="handlePlotPopupChange"
-  />
 </template>
 <style scoped lang="scss">
 .collect-icon {
