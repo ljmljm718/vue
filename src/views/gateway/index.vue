@@ -715,15 +715,16 @@ const handleImgChange = (val) => {
   if (!selectedThirItem.value?.bigscreen) return;
   
   const selectedImgIndex = selectedSecItem.value.children.findIndex(item => (item.bigscreen === selectedThirItem.value.bigscreen))
-  offsetPer.value = 100 - ((selectedImgIndex + 1) * 100 / (selectedSecItem.value.children.length))
-  console.log("🚀 ~ handleImgChange ~ offsetPer.value:", offsetPer.value)
+
   // if(!selectedThirItem.value?.bigscreenImg) selectedThirItem.value.bigscreenImg = './assets/new/noImg.png'
   if (selectedImgIndex === -1) return;
   if (val > 0 && selectedImgIndex + 1 < selectedSecItem.value.children.length) {
-    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex + 1];
+    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex + 1]
+    offsetPer.value = 100 - ((selectedImgIndex + 1) * 100 / (selectedSecItem.value.children.length-1))
   }
   if (val < 0 && selectedImgIndex !== 0) {
-    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex - 1];
+    selectedThirItem.value = selectedSecItem.value.children[selectedImgIndex - 1]
+    offsetPer.value = 100 - ((selectedImgIndex - 1) * 100 / (selectedSecItem.value.children.length-1))
   }
 
 }
@@ -1051,19 +1052,19 @@ getSelectImg()
               <div class="industry-btn w-3rem h-3rem cursor-pointer" @click="handleNextItem(1)"></div>
             </div>
             <div class="flex justify-center items-center h-58vh">
-              <div class="h-20rem aspect-1.68 tv-bg p-2.3rem box-border relative scale-130">
+              <div class="h-22rem aspect-1.68 tv-bg p-2.3rem box-border relative scale-130">
                 <img
                   :src="selectedThirItem?.bigscreenImg"
-                  class="w-full h-full object-contain rounded-2 box-border"
+                  class="w-full h-full object-contain rounded-2 box-border "
                   @click = "handlePageJump()"
                 />
                 <div class="absolute w-full h-2rem left-0 bottom-[3rem] flex justify-center items-center space-x-2rem">
                   <div class="left-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(-1)"></div>
                   <div class="right-btn w-2rem h-2rem cursor-pointer" @click="handleImgChange(1)"></div>
                 </div>
-                <div class="absolute w-87% h-0.15rem bg-white bottom-[2.25rem] overflow-hidden">
+                <div class="absolute w-87% h-0.15rem bg-white bottom-[2.5rem] overflow-hidden">
                   <div
-                    class="w-100% h-full bg-#318255 absolute transtion"
+                    class="w-100% h-full bg-#318255 absolute transition"
                     :style="`left: -${offsetPer}%;`"
                   ></div>
                 </div>
