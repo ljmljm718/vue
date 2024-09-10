@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import Dplayer from 'dplayer'
 import Hls from "hls.js";
-import specLeftBtn from './assets/spec/specLeftBtn.png' 
-import specLeftGreenBtn from './assets/spec/specLeftGreenBtn.png' 
-import specRightBtn from './assets/spec/specRightBtn.png' 
-import specRightGreenBtn from './assets/spec/specRightGreenBtn.png'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay, FreeMode, Pagination, Navigation } from 'swiper/modules';
 // import required modules
@@ -154,36 +150,11 @@ const handleItemChange = (item) => {
   activePoster.value = item.poster;
   systemFeature.value = dataItem.feature;
   //农业特色
-  handledDataList.value = dataItem.cards.map(card=>({
+  handledDataList.value = dataItem.cards.map(card => ({
     ...card,
-    parentId:dataItem.id || null
+    parentId: dataItem.id || null
   }))
-  currentIndex.value=0
-  console.log('handledlist',handledDataList.value)
 }
-
-
-const currentIndex = ref(0)
-const isVisible = (index) => {
-  return index >= currentIndex.value && index < currentIndex.value +3;
-}
-
-
-const prevCard = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  }
-}
-
-const nextCard = () => {
-  const cardCount = handledDataList.value?.cards?.length ?? 0;
-  if (currentIndex.value + 3 < cardCount) {
-    currentIndex.value++;
-  }
-}
-
-const leftBtnHovered = ref<boolean>(false)
-const rightBtnHovered = ref<boolean>(false)
 
 const typeDataList = ref<any[]>([
   {
@@ -788,6 +759,7 @@ v-for="ele in item.children" :key="ele.id"
   }
 }
 // 农业特色卡片图标end
+
 
 @keyframes slideIn {
   0% {
