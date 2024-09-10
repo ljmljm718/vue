@@ -7,7 +7,8 @@ import {
   filePage,
   selectHelp,
   selectHelpPage,
-  selectCountysPage
+  selectCountysPage,
+  selectImg
 } from './api'
 import * as echarts from 'echarts'
 import dayjs from 'dayjs'
@@ -23,7 +24,6 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { selectImg } from './api'
 import { generateUUID } from '@/utils';
 
 const router = useRouter()
@@ -784,7 +784,7 @@ const btnAction = ref<boolean>(false)
             @mouseleave="btnAction = false"
             @click="router.push('/gateway')"
           >
-            <div class="text-1.4rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
+            <div class="text-1rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
             <div class="aspect-1 h-3rem bg-#318255 rounded-full arrow-icon relative z-30"></div>
             <div
               class="h-3rem top-1px absolute bg-#318255 transition-all rounded-full !duration-300 z-0"
