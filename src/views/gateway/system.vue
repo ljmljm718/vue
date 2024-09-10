@@ -1,4 +1,29 @@
 <script setup lang="ts">
+import Dplayer from 'dplayer'
+import Hls from "hls.js";
+
+// 初始化 Video
+const initVideo = (containerId:string, url:string) => {
+  const hls = new Hls();
+  new Dplayer({
+    container: document.getElementById(containerId),
+    loop: false,
+    autoplay: true,
+    volume: 0,
+    video: {
+      url,
+      type: "customHls",
+      customType: {
+        customHls: (video) => {
+          hls.loadSource(video.src);
+          hls.attachMedia(video);
+        },
+      },
+    },
+    mutex: false
+  })
+}
+
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
   const dom = document.getElementById('gateWrapper')
@@ -179,7 +204,7 @@ handleItemChange(typeDataList.value[0])
           {{ mainDesc }}
         </div>
         <div class="w-full h-2rem mt-7rem flex justify-center items-start space-x-1rem">
-          <div>Left</div>
+          <div class="left-icon w-.6rem h-1rem relative top-.1rem"></div>
           <div class="flex">
             <div
               v-for="item in typeDataList"
@@ -205,7 +230,7 @@ handleItemChange(typeDataList.value[0])
               <div class="px-3rem">{{ item.title }}</div>
             </div>
           </div>
-          <div>Right</div>
+          <div class="right-icon w-.6rem h-1rem relative top-.1rem"></div>
         </div>
       </div>
     </div>
@@ -217,7 +242,7 @@ handleItemChange(typeDataList.value[0])
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
       </div>
       <div class="container flex justify-center mt-1rem">
-        <div class="bg-black aspect-video h-30rem"></div>
+        <div class="bg-black aspect-video h-30rem" id="videoDom"></div>
       </div>
     </div>
 
@@ -237,9 +262,12 @@ handleItemChange(typeDataList.value[0])
         <div class=" text-[18px] text-#999999">ADDRESSING AGRICULTURAL ISSUES</div>
       </div>
       <div class="container">
-        <div class="flex h-20rem mb-[4rem]">
+        <div class="flex justify-center items-center mb-[4rem]">
           <div class='w-45% flex flex-col p-[2rem] '>
-            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">01</span> 实时观测土地</div>
+            <div class="text-[24px] mb-[1rem] ml-[3rem]">
+              <span class="text-#318255 font-bold pr-3">01</span>
+              实时观测土地
+            </div>
             <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
               <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
                 <div class=" w-5rem h-5rem mb-[1rem] watchSoil1-bg"></div>
@@ -256,12 +284,15 @@ handleItemChange(typeDataList.value[0])
 
             </div>
           </div>
-          <div class='w-55%  solve-bg1'></div> 
+          <div class='w-50%  solve-bg1 h-20rem'></div> 
         </div>
-        <div class="flex h-20rem mb-[4rem]">
-          <div class='w-55%  solve-bg2'></div> 
+        <div class="flex justify-center items-center mb-[4rem]">
+          <div class='w-50%  solve-bg2 h-20rem'></div> 
           <div class='w-45% flex flex-col p-[2rem] '>
-            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">02</span> 农业种植信息一键直报</div>
+            <div class="text-[24px] mb-[1rem] ml-[3rem]">
+              <span class="text-#318255 font-bold pr-3">02</span>
+              农业种植信息一键直报
+            </div>
             <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
               <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
                 <div class="report1-bg w-5rem h-5rem mb-[1rem]"></div>
@@ -280,9 +311,12 @@ handleItemChange(typeDataList.value[0])
           </div>
           
         </div>
-        <div class="flex h-20rem mb-[4rem]">
+        <div class="flex justify-center items-center mb-[4rem]">
           <div class='w-45% flex flex-col p-[2rem] '>
-            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">03</span> 专业定制平台</div>
+            <div class="text-[24px] mb-[1rem] ml-[3rem]">
+              <span class="text-#318255 font-bold pr-3">03</span>
+              专业定制平台
+            </div>
             <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
               <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
                 <div class="platform1-bg w-5rem h-5rem mb-[1rem]"></div>
@@ -298,12 +332,15 @@ handleItemChange(typeDataList.value[0])
               </div>
             </div>
           </div>
-          <div class='w-55%  solve-bg3'></div> 
+          <div class='w-50%  solve-bg3 h-20rem'></div> 
         </div>
-        <div class="flex h-20rem mb-[3rem]">
-          <div class='w-55%  solve-bg4'></div> 
+        <div class="flex justify-center items-center mb-[3rem]">
+          <div class='w-50% solve-bg4 h-20rem'></div> 
           <div class='w-45% flex flex-col p-[2rem] '>
-            <div class="text-[24px] mb-[3rem] ml-[3rem]"><span class="text-#318255">04</span> 数字化管理</div>
+            <div class="text-[24px] mb-[1rem] ml-[3rem]">
+              <span class="text-#318255 font-bold pr-3">04</span>
+              数字化管理
+            </div>
             <div class="grid grid-cols-3 mt-[3rem]  space-y-3 text-[18px]">
               <div class="flex flex-col justify-center items-center space-y-3 mt-[12px]">
                 <div class="manage1-bg w-5rem h-5rem mb-[1rem]"></div>
@@ -380,6 +417,16 @@ handleItemChange(typeDataList.value[0])
   }
 }
 
+.left-icon {
+  background-image: url(./assets/new/left.png);
+  background-size: 100% 100%;
+}
+
+.right-icon {
+  background-image: url(./assets/new/right.png);
+  background-size: 100% 100%;
+}
+
 @for $i from 1 through 7 {
   .bg-#{$i} {
     background-image: url(./assets/new/bg#{$i}.png);
@@ -394,25 +441,33 @@ handleItemChange(typeDataList.value[0])
 @for $i from 1 through 4 {
   .solve-bg#{$i} {
     background-image: url(./assets/new/solve#{$i}.png);
-    background-size: 100% 130%;
+    background-size: cover;
   }
 }
 @for $i from 1 through 3 {
   .watchSoil#{$i}-bg{
     background-image: url(./assets/new/watchSoil#{$i}.png);
-    background-size: 100% 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
   .report#{$i}-bg{
     background-image: url(./assets/new/report#{$i}.png);
-    background-size: 100% 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
   .platform#{$i}-bg{
     background-image: url(./assets/new/platform#{$i}.png);
-    background-size: 100% 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
   .manage#{$i}-bg{
     background-image: url(./assets/new/manage#{$i}.png);
-    background-size: 100% 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 }
 // @media (max-width:1722px) {
