@@ -442,21 +442,7 @@ const getDeviceCategoryTree = async () => {
   }
 }
 
-/**
- * 关闭绑定设备页面
- */
-const handleClose = async () => {
-  try {
-    await message.confirm('确认关闭绑定设备页面?')
-    drawer.value = false
-    await getList()
-  } catch {
-  } finally {
-    if (drawer.value) {
-      drawer.value = true
-    }
-  }
-}
+
 
 /** 初始化 **/
 onMounted(() => {

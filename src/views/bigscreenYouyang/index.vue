@@ -638,7 +638,7 @@ const rightUnitMap = {
 </script>
 <template>
   <div class="w-[100vw] h-[100vh] overflow-hidden bg-black">
-    <ScaleBox>
+    <scale-box>
       <div class="bigscreen-main-wrapper">
         <div class="header-main-wrapper header-bg">
           <div class="header-left-part-wrapper">
@@ -970,7 +970,7 @@ const rightUnitMap = {
         </div>
         <div class="footer-main-wrapper"></div>
       </div>
-    </ScaleBox>
+    </scale-box>
   </div>
 </template>
 <style lang='scss' scoped>
