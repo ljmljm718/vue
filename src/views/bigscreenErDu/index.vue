@@ -2,6 +2,7 @@
 import ScaleBox from "vue3-scale-box";
 import CurrentTime from './components/currentTime.vue'
 import AgriComponent from './agriculture.vue'
+import VisualMonitor from './visualmonitor.vue'
 
 const acviveTab = ref<string>('agri')
 </script>
@@ -13,15 +14,19 @@ const acviveTab = ref<string>('agri')
         <div class="w-full h-100px header-bg flex items-end justify-between">
           <div class="h-86px flex items-center pl-50px">
             <div
-              class="active-btn-bg w-117px h-32px text-14px text-#01F892 flex items-center justify-center"
+              :class="`${
+                acviveTab === 'agri' ? 'active-btn-bg' : 'btn-bg'
+              } w-117px h-32px text-14px text-#01F892 flex items-center justify-center cursor-pointer hover:scale-105 transition`"
               @click="acviveTab = 'agri'"
             >智慧农业</div>
             <div
-              class="btn-bg w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center"
+              :class="`${
+                acviveTab === 'monitor' ? 'active-btn-bg' : 'btn-bg'
+              } w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition`"
               @click="acviveTab = 'monitor'"
             >可视化监控</div>
             <div
-              class="btn-bg w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center"
+              class="btn-bg w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition"
             >种植模型</div>
           </div>
           <div class="h-86px flex items-center pl-50px w-320px relative top-[-8px]">
@@ -29,7 +34,8 @@ const acviveTab = ref<string>('agri')
           </div>
         </div>
         <div class="w-full h-980px p-20px pt-10px box-border">
-          <agri-component />
+          <agri-component v-if="acviveTab === 'agri'" />
+          <visual-monitor v-if="acviveTab === 'monitor'" />
         </div>
       </div>
     </scale-box>
