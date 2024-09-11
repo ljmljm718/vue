@@ -212,6 +212,14 @@ export const warningRecordPage = () => {
   return request.get({ url: `/agriculture/agri-warning-record/page` })
 }
 
+//获取种植面积、作物产量、销售额
+export const  getAreaYieldSales =()=>{
+  return request.get({url: `/agriculture/crop-base/get-area-yield-sales`})
+}
+//获取设备总量、在线数、离线数
+export const  getErduEquipmentCount =()=>{
+  return request.get({url: `/agriculture/device-info/get-erdu-equipment-count`})
+}
 // 二渡 获取品种列表
 export const getVarietyListErdu = () => {
   return request.get({ url: '/agriculture/variety-management/variety-management-list' })

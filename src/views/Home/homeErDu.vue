@@ -5,9 +5,81 @@ import {
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 import {
+  getAreaYieldSales,
+  getErduEquipmentCount,
   getVarietyListErdu,
   getAdviceByCropCodeErdu,
 } from './apis'
+
+
+//顶部左上方列表数据汇总
+const topLeftDataList = ref<any[]>([
+  {
+    id: 1,
+    title: '种植面积',
+    value: null,
+    unit: '亩',
+    logo: '图'
+  },
+  {
+    id: 2,
+    title: '作物产量',
+    value: null,
+    unit: 'Kg',
+    logo: '图'
+  }, {
+    id: 3,
+    title: '销售额',
+    value: null,
+    unit: '万元',
+    logo: '图'
+  }, {
+    id: 4,
+    title: '设备总量',
+    value: null,
+    unit: '台',
+    logo: '图'
+  }, {
+    id: 5,
+    title: '设备在线<br/><br/>设备离线',
+    value: [null,null],
+    unit: '台',
+    logo: '图'
+  }, 
+  {
+    id: 6,
+    title: '视频监控',
+    value: null,
+    unit: '台',
+    logo: '图'
+  }
+])
+
+
+const getTopLeftDataList = async () => {
+  try {
+    const [topLeftDataListOne, topLeftDataListTwo] = await Promise.all([
+      getAreaYieldSales(), // 返回对象
+      getErduEquipmentCount() // 返回数组
+    ])
+    
+    topLeftDataList.value[0].value = topLeftDataListOne?.area || 0 
+    topLeftDataList.value[1].value = topLeftDataListOne?.yield || 0 
+    topLeftDataList.value[2].value = topLeftDataListOne?.salesVolume || 0
+
+    topLeftDataList.value[3].value = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.totality || 0 
+    topLeftDataList.value[4].value[0] = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.online || 0 
+    topLeftDataList.value[4].value[1] = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.offline || 0 
+    topLeftDataList.value[5].value = topLeftDataListTwo.find(item => item.typeName === "视频监控") || 0
+
+    console.log('合并后的数据:', topLeftDataList.value)
+
+  } catch (error) {
+    console.error('获取数据失败:', error)
+  }
+}
+
+getTopLeftDataList()
 
 // 种植作物数量 chart
 const initPlantCropNumChart = () => {
@@ -345,15 +417,19 @@ const showLessContent = (idx: number) => {
     <div class="flex items-stretch space-x-3">
       <div class="flex flex-col space-y-3 grow">
         <div class="grid xl:grid-cols-3 2xl:grid-cols-6 gap-3">
-          <el-card
-            v-for="item in 6"
-            :key="item"
-          >
-            <div class="flex items-center space-x-1rem justify-evenly">
-              <div class="w-2rem h-2rem bg-red"></div>
-              <div class="w-3rem">
-                <div>title</div>
-                <div>value</div>
+          <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard">
+            <div class="flex items-center space-x-1rem justify-center h-5rem ">
+              <div class="w-1rem h-1rem bg-red flex">{{ item.logo }}</div>
+              <div class="flex text-0.9rem" v-html="item.title"></div>
+              <div class="w-2rem flex ">
+                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col space-y-2 text-0.6rem whitespace-nowrap">
+                  <div>{{ item.value[0] !== null ? item.value[0] : 0 }} {{ item.unit }}</div>
+                  <div><br /></div> <!-- 手动换行 -->
+                  <div>{{ item.value[1] !== null ? item.value[1] : 0 }} {{ item.unit }}</div>
+                </div>
+                <div v-else>
+                  <div class="text-0.6rem whitespace-nowrap">{{ item.value !== null ? item.value : 0 }} {{ item.unit }}</div>
+                </div>
               </div>
             </div>
           </el-card>
@@ -453,3 +529,8 @@ const showLessContent = (idx: number) => {
     </div>
   </div>
 </template>
+<style lang="scss" scoped>
+:deep(.topLeftCard > .el-card__body) {
+  padding: 0 !important;
+}
+</style>
