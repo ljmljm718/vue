@@ -115,6 +115,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="有效日期" prop="produceDate">
+            <el-date-picker
+              v-model="formData.effectiveTime"
+              type="date"
+              value-format="x"
+              placeholder="选择有效日期"
+              class="!w-1/1"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
               <el-radio
@@ -125,6 +136,16 @@
                 {{ dict.label }}
               </el-radio>
             </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="登记证号" prop="registerNum">
+            <el-input  v-model="formData.registerNum" placeholder="请输入登记证号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="包装关系" prop="packagingRelationship">
+            <el-input  v-model="formData.packagingRelationship" placeholder="请输入包装关系" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -179,6 +200,9 @@ const formData = ref({
   minPrice: undefined,
   img: undefined,
   produceDate: undefined,
+  registerNum: undefined,
+  packagingRelationship: undefined,
+  effectiveTime: undefined,
 })
 const formRules = reactive({
   name: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
