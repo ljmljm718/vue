@@ -353,7 +353,7 @@ const getMission = async () => {
     finishNum: res.finishNum || 0,
     ratio: res.ratio || '0%'
   }
-  console.log('农事任务: ', res, missions.value)
+  // console.log('农事任务: ', res, missions.value)
   initAgriMissionChart([
     { name: "未完成数", value: missions.value.unfinishedNum },
     { name: "进行中", value: missions.value.underway },
@@ -362,7 +362,7 @@ const getMission = async () => {
 }
 getMission()
 const initAgriMissionChart = (list: Array<any>) => {
-  console.log("农事任务-ECharts数据: ", list)
+  // console.log("农事任务-ECharts数据: ", list)
   initChartStatic('agriMission', generatePieOptions({
     title: {
       text: `任务完成率\n  ${ missions.value.ratio }`,
@@ -551,24 +551,24 @@ const showLessContent = (idx: number) => {
           </div>
         </template>
         <div
-          class="w-full h-20rem overflow-auto space-y-.4rem p-2 box-border"
+          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem p-2 box-border"
           v-if="agriAdviceDataList.length > 0"
         >
           <el-scrollbar>
             <div
               v-for="(item, index) in agriAdviceDataList"
               :key="item.createTime"
-              class="flex box-border p-3 space-x-3 shadow-md"
+              class="lg:flex box-border p-3 space-x-3 shadow-md"
               @mouseenter="showFullContent(index)"
               @mouseleave="showLessContent(index)"
             >
               <div class="!w-5rem h-5rem">
                 <img :src="item.imgId" class="h-full object-contain"/>
               </div>
-              <div style="width: calc(100% - 5.5rem)">
+              <div class="w-full lg:w-[calc(100%_-_5.5rem)]">
                 <div>{{ item.growth }}</div>
                 <div :class="agriAdviceFeatureClassList[index]">{{ item.feature }}</div>
-                <div class="w-full flex justify-between items-center text-#666 text-.8rem pt-.1rem">
+                <div class="w-full xl:flex xl:justify-between xl:items-center text-#666 text-.8rem pt-.1rem">
                   <div>农事建议</div>
                   <div>{{ item.createTime.replace("T", " ") }}</div>
                 </div>
