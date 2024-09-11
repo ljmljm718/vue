@@ -1177,43 +1177,43 @@ select {
 
 
 
-::v-deep .el-tree-node__expand-icon{
-  color:#009688;
+:deep(.el-tree-node__expand-icon) {
+  color: #009688;
   font-size: 1.2rem;
-  left:0
+  left: 0;
 }
 
-::v-deep .el-tree-node__expand-icon{
-  padding-left:0;
-  padding-right:0;
+:deep(.el-tree-node__expand-icon) {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-::v-deep .el-tree-node__content {
-  height:2.2rem;
-  padding-right:5px
+:deep(.el-tree-node__content) {
+  height: 2.2rem;
+  padding-right: 5px
 } 
 
-::v-deep.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+:deep(.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content) {
             background: #ECF4FF !important;
             border-right:  solid  #009688;
-            height:2.2rem;
+            height: 2.2rem;
             background-color: #e5f4f3 !important;
             z-index: -1;
             span{
                 color: #009688;
                 font-weight: 16px}}
-::v-deep .el-tree-node__content{
-  color:#333333;
+:deep(.el-tree-node__content) {
+  color: #333333;
 }            
 
-::v-deep .el-tree-node__content:hover{
-  background-color:#e5f4f3 !important;
+:deep(.el-tree-node__content:hover) {
+  background-color: #e5f4f3 !important;
 }    
-::v-deep .el-tree-node:focus>.el-tree-node__content{
+:deep(.el-tree-node:focus>.el-tree-node__content) {
   background-color: #e5f4f3 !important;
 }
 
-::v-deep .el-tree{
-  --el-tree-node-hover-bg-color:#e5f4f3 !important;
+:deep(.el-tree) {
+  --el-tree-node-hover-bg-color: #e5f4f3 !important;
 }
 </style>
