@@ -49,6 +49,30 @@
       <el-form-item label="螃蟹数量" prop="crabNum">
         <el-input v-model="formData.crabNum" placeholder="请输入螃蟹数量"/>
       </el-form-item>
+      <el-form-item label="农事阶段" prop="farmingStage">
+        <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
+        <el-select v-model="formData.farmingStage" placeholder="请选择农事阶段">
+          <el-option
+            v-for="dict in farmDefineOptions"
+            :key="dict.id"
+            :label="dict.defineName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="投入品名称" prop="feedType">
+        <!--        <el-input v-model="formData.feedType" placeholder="请填写饲料种类"/>-->
+        <!--        <el-select v-model="formData.feedType" placeholder="请选择饲料种类">-->
+        <!--          <el-option label="请选择字典生成" value=""/>-->
+        <!--        </el-select>-->
+        <el-select v-model="formData.feedType" placeholder="请选择投入品名称">
+          <el-option
+            v-for="item in productInfoListALL"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="投喂时间" prop="feedTime">
         <el-date-picker
           v-model="formData.feedTime"
@@ -57,21 +81,18 @@
           placeholder="选择投喂时间"
         />
       </el-form-item>
+      <el-form-item label="操作人" prop="feedPerson">
+        <el-input v-model="formData.feedPerson" placeholder="请输入操作人"/>
+      </el-form-item>
       <el-form-item label="投喂数量" prop="feedNum">
         <el-input v-model="formData.feedNum" placeholder="请输入投喂数量"/>
       </el-form-item>
       <el-form-item label="单位" prop="feedOne">
         <el-input v-model="formData.feedOne" placeholder="请输入投喂数量单位，建议统一输入KG"/>
       </el-form-item>
-      <el-form-item label="饲料种类" prop="feedType">
-        <el-input v-model="formData.feedType" placeholder="请填写饲料种类"/>
-        <!--        <el-select v-model="formData.feedType" placeholder="请选择饲料种类">-->
-        <!--          <el-option label="请选择字典生成" value=""/>-->
-        <!--        </el-select>-->
+      <el-form-item label="投入品费用/元" prop="feedCost">
+        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用"/>
       </el-form-item>
-
-
-
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -87,6 +108,8 @@
 import {FeedInfoApi, FeedInfoVO} from '@/api/agriculture/feedinfo'
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import {ProductApi} from '@/api/erp/product/product'
+import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 投喂记录 表单 */
 defineOptions({name: 'FeedInfoForm'})
@@ -108,7 +131,10 @@ const formData = ref({
   feedType: undefined,
   feedNum: undefined,
   feedOne: undefined,
-  feedTime: undefined
+  feedTime: undefined,
+  feedPerson: undefined,
+  farmingStage: undefined,
+  feedCost: undefined
 })
 const formRules = reactive({
   feedTime: [{required: true, message: '投喂时间不能为空', trigger: 'blur'}],
@@ -117,16 +143,22 @@ const formRules = reactive({
   crabNum: [{required: true, message: '螃蟹数量不能为空', trigger: 'blur'}],
   feedNum: [{required: true, message: '投喂数量不能为空', trigger: 'blur'}],
   feedOne: [{required: true, message: '投喂单位不能为空', trigger: 'blur'}],
-  feedType: [{required: true, message: '饲料种类不能为空', trigger: 'blur'}]
+  feedType: [{required: true, message: '投入品名称不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
-
+let productInfoListALL = ref() //所有投入品列表
+let farmDefineOptions = ref([])// 设备分类选项
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
+
+  // 获取设备分类树
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
+  productInfoListALL.value = await ProductApi.selectAll()
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  console.log(productInfoListALL.value)
   // 修改时，设置数据
   if (id) {
     formLoading.value = true

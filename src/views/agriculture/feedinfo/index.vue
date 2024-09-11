@@ -148,7 +148,34 @@
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
       <el-table-column label="地块名称" align="center" prop="plotName"/>
       <el-table-column label="螃蟹数量" align="center" prop="crabNum"/>
-      <el-table-column label="饲料种类" align="center" prop="feedType"/>
+      <el-table-column label="农事阶段" align="center" prop="farmingStage" width="120" >
+        <template #default="scope">
+          <el-select v-model="scope.row.farmingStage" disabled>
+            <el-option
+              v-for="dict in farmDefineOptions"
+              :key="dict.id"
+              :label="dict.defineName"
+              :value="dict.id"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="投入品名称" align="center" prop="productName"/>
+      <el-table-column label="投入品分类名称" align="center" prop="categoryName"/>
+      <el-table-column
+        label="生产日期"
+        align="center"
+        prop="produceDate"
+        :formatter="dateFormatter2"
+        width="140"
+      />
+      <el-table-column
+        label="有效日期"
+        align="center"
+        prop="effectiveTime"
+        :formatter="dateFormatter2"
+        width="140"
+      />
       <el-table-column label="投喂数量" align="center" prop="feedNum"/>
       <el-table-column label="单位" align="center" prop="feedOne"/>
       <el-table-column
@@ -158,6 +185,8 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="投入品费用/元" align="center" prop="feedCost"/>
+      <el-table-column label="操作人" align="center" prop="feedPerson"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -200,10 +229,11 @@
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {FeedInfoApi, FeedInfoVO} from '@/api/agriculture/feedinfo'
 import FeedInfoForm from './FeedInfoForm.vue'
+import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 投喂记录 列表 */
 defineOptions({name: 'FeedInfo'})
@@ -230,7 +260,7 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+let farmDefineOptions = ref([])// 设备分类选项
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -291,7 +321,11 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
+onMounted(async ()  => {
+  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
+  await getList()
+})
+onActivated(async () => {
+  await getList()
 })
 </script>

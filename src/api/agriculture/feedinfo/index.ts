@@ -12,37 +12,44 @@ export interface FeedInfoVO {
   feedNum: string // 投喂数量
   feedOne: string // 备用字段
   feedTime: Date // 投喂时间
+  feedPerson: string
+  farmingStage: string
+  productName: string
+  produceDate: Date
+  categoryId: string
+  categoryName: string
+  effectiveTime: Date
 }
 
 // 投喂记录 API
 export const FeedInfoApi = {
   // 查询投喂记录分页
   getFeedInfoPage: async (params: any) => {
-    return await request.get({ url: `/agriculture/feed-info/page`, params })
+    return await request.get({url: `/agriculture/feed-info/page`, params})
   },
 
   // 查询投喂记录详情
   getFeedInfo: async (id: number) => {
-    return await request.get({ url: `/agriculture/feed-info/get?id=` + id })
+    return await request.get({url: `/agriculture/feed-info/get?id=` + id})
   },
 
   // 新增投喂记录
   createFeedInfo: async (data: FeedInfoVO) => {
-    return await request.post({ url: `/agriculture/feed-info/create`, data })
+    return await request.post({url: `/agriculture/feed-info/create`, data})
   },
 
   // 修改投喂记录
   updateFeedInfo: async (data: FeedInfoVO) => {
-    return await request.put({ url: `/agriculture/feed-info/update`, data })
+    return await request.put({url: `/agriculture/feed-info/update`, data})
   },
 
   // 删除投喂记录
   deleteFeedInfo: async (id: number) => {
-    return await request.delete({ url: `/agriculture/feed-info/delete?id=` + id })
+    return await request.delete({url: `/agriculture/feed-info/delete?id=` + id})
   },
 
   // 导出投喂记录 Excel
   exportFeedInfo: async (params) => {
-    return await request.download({ url: `/agriculture/feed-info/export-excel`, params })
+    return await request.download({url: `/agriculture/feed-info/export-excel`, params})
   }
 }

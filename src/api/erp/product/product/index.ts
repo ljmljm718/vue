@@ -70,6 +70,11 @@ export const ProductApi = {
   //提交认证与审核认证
   certifyProduct:async (id: number,certifyStatus:string) =>{
       return await request.get({ url: `/erp/product/certify?id=` + id +`&certifyStatus=`+certifyStatus})
-  }
+  },
+
+  // 查询所有产品
+  selectAll: async (id: number) => {
+    return await request.get({ url: `/erp/product/selectAll`})
+  },
 
 }
