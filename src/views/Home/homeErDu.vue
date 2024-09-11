@@ -4,6 +4,10 @@ import {
   generateBaseOptions,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
+import {
+  getVarietyListErdu,
+  getAdviceByCropCodeErdu,
+} from './apis'
 
 // 种植作物数量 chart
 const initPlantCropNumChart = () => {
@@ -266,6 +270,17 @@ const agriAdviceDataList = ref<any[]>([
 ])
 
 // 农事建议
+const getVarietyList = async () => {
+  const res = await getVarietyListErdu()
+  console.log("农事建议-品种列表: ", res)
+}
+getVarietyList()
+const getAdviceList = async () => {
+  let params = { cropCode: "1831222708971577344"}
+  const res = await getAdviceByCropCodeErdu(params)
+  console.log("农事建议-建议列表: ", res)
+}
+getAdviceList()
 const selectedAgriAdvice = ref<string>('')
 const agriAdviceOptions = ref<any[]>([])
 const handleAgriAdviceChange = (item) => {

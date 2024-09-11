@@ -211,3 +211,12 @@ export const getEquipmentDataByEquipmentCode = (params) => {
 export const warningRecordPage = () => {
   return request.get({ url: `/agriculture/agri-warning-record/page` })
 }
+
+// 二渡 获取品种列表
+export const getVarietyListErdu = () => {
+  return request.get({ url: '/agriculture/variety-management/variety-management-list' })
+}
+// 二渡 根据品种ID获取建议列表
+export const getAdviceByCropCodeErdu = (params) => {
+  return request.get({ url: '/agri/crop-growth-new/list-for-cropCode', params })
+}
