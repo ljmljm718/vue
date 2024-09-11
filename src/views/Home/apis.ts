@@ -232,3 +232,7 @@ export const getAdviceByCropCodeErdu = (params) => {
 export const getFiveYearValue = () => {
   return request.get({ url: '/agriculture/crop-base/getFiveYearValue'})
 }
+// 二渡 农事任务统计
+export const getMissionStatisticsErdu = () => {
+  return request.get({ url: '/agri/farm-plan/farmPlanStatistics' })
+}

@@ -10,6 +10,7 @@ import {
   getVarietyListErdu,
   getAdviceByCropCodeErdu,
   getFiveYearValue,
+  getMissionStatisticsErdu,
 } from './apis'
 
 
@@ -325,11 +326,52 @@ const initFeatureProductChart = () => {
 onMounted(() => { initFeatureProductChart() })
 
 // 农事任务
-const initAgriMissionChart = (list = [
-  { name: '1', value: '2' },
-  { name: '4', value: '88' },
-]) => {
+interface MissionStatistics {
+  unfinishedNum: number,
+  countAllNum: number,
+  underway: number,
+  finishNum: number,
+  ratio: string
+}
+let missions = ref<MissionStatistics>({
+  unfinishedNum: 0,
+  countAllNum: 0,
+  underway: 0,
+  finishNum: 0,
+  ratio: '0%'
+})
+const getMission = async () => {
+  let res = await getMissionStatisticsErdu()
+  if (!res) {
+    return
+  }
+  // 初始化missions
+  missions.value = {
+    unfinishedNum: res.unfinishedNum || 0,
+    countAllNum: res.countAllNum || 0,
+    underway: res.underway || 0,
+    finishNum: res.finishNum || 0,
+    ratio: res.ratio || '0%'
+  }
+  console.log('农事任务: ', res, missions.value)
+  initAgriMissionChart([
+    { name: "未完成数", value: missions.value.unfinishedNum },
+    { name: "进行中", value: missions.value.underway },
+    { name: "完成数", value: missions.value.finishNum },
+  ])
+}
+getMission()
+const initAgriMissionChart = (list: Array<any>) => {
+  console.log("农事任务-ECharts数据: ", list)
   initChartStatic('agriMission', generatePieOptions({
+    title: {
+      text: `任务完成率\n  ${ missions.value.ratio }`,
+      textStyle: {
+        fontSize: 14
+      },
+      left: '29.5%',
+      top: '41%'
+    },
     legend: {
       show: true,
       top: "center",
@@ -346,20 +388,27 @@ const initAgriMissionChart = (list = [
     series: [
       {
         type: "pie",
-        radius: "65%",
+        radius: ['40%', '65%'],
         center: ["40%", "50%"],
         data: list,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 1
+        },
         label: {
           formatter: "{c} - {d}%",
           shadowColor: 'transparent',
           borderColor: 'transparent',
           color: '#a1a1aa'
         },
+        emphasis: {
+          itemStyle: { borderWidth: 0 }
+        }
       },
     ],
   }))
 }
-onMounted(() => { initAgriMissionChart() })
 
 interface AdviceOption {
   id: string,
@@ -551,7 +600,7 @@ const showLessContent = (idx: number) => {
       >
         <div class="shadow-md flex justify-between items-center p-3">
           <div>总农事任务:</div>
-          <div></div>
+          <div>{{ missions.countAllNum }}</div>
         </div>
         <div id="agriMission" class="w-full h-14rem mt-3"></div>
       </el-card>
