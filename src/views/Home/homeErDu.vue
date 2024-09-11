@@ -9,6 +9,7 @@ import {
   getErduEquipmentCount,
   getVarietyListErdu,
   getAdviceByCropCodeErdu,
+  getFiveYearValue,
 } from './apis'
 
 
@@ -41,7 +42,7 @@ const topLeftDataList = ref<any[]>([
     logo: '图'
   }, {
     id: 5,
-    title: '设备在线<br/><br/>设备离线',
+    title: '设备在线<br/>设备离线',
     value: [null,null],
     unit: '台',
     logo: '图'
@@ -79,13 +80,26 @@ const getTopLeftDataList = async () => {
   }
 }
 
-getTopLeftDataList()
 
-// 种植作物数量 chart
-const initPlantCropNumChart = () => {
-  initChartStatic('plantCropNum', generateBaseOptions({
+// 种植作物规模 chart
+const initPlantCropNumChart = async() => {
+  const lineChartData:any[] = await getFiveYearValue()
+  let linexAisData: number[] = []
+  let lineyAisData: number[] = []
+  let yAxisUnit:string = '';
+  lineChartData.forEach(item => {
+    linexAisData.push(item.heng_year); 
+    lineyAisData.push(item.zong_summation); 
+    if (!yAxisUnit) { 
+        yAxisUnit = item.unit;
+    }
+});
+  initChartStatic(
+    'plantCropNum', 
+    generateBaseOptions({
     xAxis: {
-      data: [1,2,3,4],
+      type: 'category',
+      data: [2021,2022,2023,2024],
       axisLine: {
         show: true,
         lineStyle: {
@@ -94,12 +108,12 @@ const initPlantCropNumChart = () => {
       }
     },
     legend: {
-      show: false,
+      show: true,
       orient: 'horizontal',
       itemWidth: 15,
       itemHeight: 15,
     },
-    color: ['#ffa773', '#36e1d9'],
+    color: ['rgba(126, 193, 232,1)', '#36e1d9'],
     yAxis: {
       name: '',
       type: 'value',
@@ -126,10 +140,25 @@ const initPlantCropNumChart = () => {
     },
     series: [
       {
-        name: '',
-        data: [1,2,3,4],
-        type: 'bar',
+        name: '种植规模',
+        data: [20,40,60,80],
+        type: 'line',
         smooth: true,
+        areaStyle:{
+          color:{
+            type:'linear',
+            colorStops: [
+              {
+                offset: 0,
+                color: 'rgba(126, 193, 232,1)' 
+              },
+              {
+                offset: 1,
+                color: 'rgba(126, 193, 232,0.2)'
+              }
+            ]
+          }
+        },
         label: {
           show: true, //开启显示
           position: 'right', //在上方显示
@@ -149,7 +178,7 @@ const initPlantCropNumChart = () => {
     }
   }))
 }
-onMounted(() => { initPlantCropNumChart() })
+onMounted(() => { initPlantCropNumChart(), getTopLeftDataList() })
 
 // 种植品种一览图
 const initPlantTypeChart = (list = [
@@ -422,7 +451,7 @@ const showLessContent = (idx: number) => {
               <div class="w-1rem h-1rem bg-red flex">{{ item.logo }}</div>
               <div class="flex text-0.9rem" v-html="item.title"></div>
               <div class="w-2rem flex ">
-                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col space-y-2 text-0.6rem whitespace-nowrap">
+                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col  text-0.6rem whitespace-nowrap">
                   <div>{{ item.value[0] !== null ? item.value[0] : 0 }} {{ item.unit }}</div>
                   <div><br /></div> <!-- 手动换行 -->
                   <div>{{ item.value[1] !== null ? item.value[1] : 0 }} {{ item.unit }}</div>
@@ -437,7 +466,7 @@ const showLessContent = (idx: number) => {
         <div class="flex space-x-3 items-stretch">
           <el-card
             class="grow p-2"
-            header="种植作物数量"
+            header="种植作物规模"
           >
             <div id="plantCropNum" class="w-full h-16rem"></div>
           </el-card>

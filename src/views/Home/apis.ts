@@ -212,11 +212,11 @@ export const warningRecordPage = () => {
   return request.get({ url: `/agriculture/agri-warning-record/page` })
 }
 
-//获取种植面积、作物产量、销售额
+//二渡获取种植面积、作物产量、销售额
 export const  getAreaYieldSales =()=>{
   return request.get({url: `/agriculture/crop-base/get-area-yield-sales`})
 }
-//获取设备总量、在线数、离线数
+//二渡获取设备总量、在线数、离线数
 export const  getErduEquipmentCount =()=>{
   return request.get({url: `/agriculture/device-info/get-erdu-equipment-count`})
 }
@@ -227,4 +227,8 @@ export const getVarietyListErdu = () => {
 // 二渡 根据品种ID获取建议列表
 export const getAdviceByCropCodeErdu = (params) => {
   return request.get({ url: '/agri/crop-growth-new/list-for-cropCode', params })
+}
+//二渡 获取种植作物规模
+export const getFiveYearValue = () => {
+  return request.get({ url: '/agriculture/crop-base/getFiveYearValue'})
 }
