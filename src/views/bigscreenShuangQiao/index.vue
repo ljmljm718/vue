@@ -293,8 +293,7 @@ const getPark = (id) => {
 const getWaterDetectionType2 = (val) => {
   waterDetectionType(val).then(res => {
     console.log(res, '八项参数')
-    waterTypeList.value = res
-
+    waterTypeList.value = res;
   })
 }
 const selecte2 = (val) => {
@@ -315,7 +314,7 @@ const handleSelectorChange1 = (val) => {
 }
 const curBelongPlot = ref('')
 const handleSelectorChange2 = (val) => {
-  const parentId = val.target.value || 0
+  const parentId = val.target.value || 0;
   console.log('基地编号', curBelongPark.value);
   console.log('塘口编号', parentId)
   curBelongPlot.value = parentId;
@@ -660,24 +659,31 @@ const windowOpen = item => window.open(item)
           <div class="header-left-part-wrapper">
             <BigScreenTime/>
           </div>
-          <div class="header-title-wrapper">板桥乡双桥村鲁渝协作示范村数字化赋能</div>
+          <div class="header-title-wrapper">
+            板桥乡双桥村鲁渝协作示范村数字化赋能
+          </div>
           <div class="header-right-part-wrapper"></div>
         </div>
         <div class="content-main-wrapper grid-container">
           <div class="gird-item-wrapper">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg"
-                  @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')"
+              <div
+                class="main-item-title title-bg"
+                @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')"
               >
                 <div>环境监测</div>
-                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                  <select @change="handleEnvSelectorChange">
+                <div
+                  class="selector-wrapper"
+                  @click="(e) => e.stopPropagation()"
+                >
+                  <select
+                    @change="handleEnvSelectorChange"
+                  >
                     <option
                       :value="item.id"
                       v-for="item,index in envOptions"
                       :key="index"
-                    >{{ item.name }}
-                    </option>
+                    >{{ item.name }}</option>
                   </select>
                 </div>
               </div>
@@ -697,22 +703,20 @@ const windowOpen = item => window.open(item)
                         </div>
                         <div class="label-wrapper">{{ item.monitoringType }}</div>
                       </div>
-                      <div v-show="leftUnitMap[item.monitoringType]"
-                          :class="btnIndex==index? 'check-btn2':'check-btn'"
-                          @click="getChart(item.monitoringType,index)">
-                        查看
-                      </div>
+                      <div
+                        v-show="leftUnitMap[item.monitoringType]"
+                        :class="btnIndex==index? 'check-btn2':'check-btn'"
+                        @click="getChart(item.monitoringType,index)"
+                      >查看</div>
                     </div>
                   </div>
                 </div>
                 <div class="sub-title-wrapper">
                   <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-                  <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">{{
-                      envLabel
-                    }}变化趋势
-                  </div>
                   <div
-                    style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+                    style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;"
+                  >{{ envLabel }}变化趋势</div>
+                  <div style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
                 </div>
                 <div
                   class="h-[250px]"
@@ -728,24 +732,15 @@ const windowOpen = item => window.open(item)
             <div class="grid-main-item center-container">
               <div class="tool-tip-wrapper">
                 <div class="tool-tip-item">
-                  <img
-                    :src="preWarn"
-                    alt=""
-                  />
+                  <img :src="preWarn" alt="" />
                   <span>预警信息</span>
                 </div>
                 <div class="tool-tip-item">
-                  <img
-                    :src="sensor"
-                    alt=""
-                  />
+                  <img :src="sensor" alt="" />
                   <span>传感器</span>
                 </div>
                 <div class="tool-tip-item">
-                  <img
-                    :src="monitor"
-                    alt=""
-                  />
+                  <img :src="monitor" alt="" />
                   <span>监控设备</span>
                 </div>
               </div>
@@ -759,16 +754,15 @@ const windowOpen = item => window.open(item)
                       <div class="text-row">编号: {{ item.deviceCode }}</div>
                       <div class="text-row">位置: {{ item.location }}</div>
                       <div class="text-row">设备: {{ item.deviceName }}</div>
-                      <div class="text-row">状态: <span
-                        :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                          item.deviceStatus === 'online' ? '在线' : '离线'
-                        }}</span></div>
+                      <div class="text-row">
+                        状态:
+                        <span
+                          :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`"
+                        >{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</span>
+                      </div>
                     </div>
                   </div>
-                  <img
-                    :src="monitor"
-                    alt=""
-                  />
+                  <img :src="monitor" alt="" />
                 </div>
 
                 <div
@@ -783,10 +777,7 @@ const windowOpen = item => window.open(item)
                       <div class="text-row">当前读数: {{ sjList.dataValue + " " + sjList.yyUnit }}</div>
                     </div>
                   </div>
-                  <img
-                    :src="sensor"
-                    alt=""
-                  />
+                  <img :src="sensor" alt="" />
                 </div>
                 <div
                   class="tool-info"
@@ -802,32 +793,30 @@ const windowOpen = item => window.open(item)
                       </div>
                     </div>
                   </div>
-                  <img
-                    :src="preWarn"
-                    alt=""
-                  />
+                  <img :src="preWarn" alt="" />
                 </div>
               </div>
               <div class="top-card-wrapper">
                 <div class="top-card-item">
                   <div class="label-card">设备总数</div>
-                  <div class="value-card" @click="windowOpen('/internetMonitor/device/deviceView')">
-                    {{ deviceBaseInfo.total }}
-                  </div>
+                  <div
+                    class="value-card"
+                    @click="windowOpen('/internetMonitor/device/deviceView')"
+                  >{{ deviceBaseInfo.total }}</div>
                 </div>
                 <div class="top-card-item">
                   <div class="label-card">在线总数</div>
-                  <div class="value-card"
-                      @click="windowOpen('/internetMonitor/device/deviceView?val=online')">
-                    {{ deviceBaseInfo.online }}
-                  </div>
+                  <div
+                    class="value-card"
+                    @click="windowOpen('/internetMonitor/device/deviceView?val=online')"
+                  >{{ deviceBaseInfo.online }}</div>
                 </div>
                 <div class="top-card-item">
                   <div class="label-card">离线总数</div>
-                  <div class="value-card"
-                      @click="windowOpen('/internetMonitor/device/deviceView?val=offline')">
-                    {{ deviceBaseInfo.offline }}
-                  </div>
+                  <div
+                    class="value-card"
+                    @click="windowOpen('/internetMonitor/device/deviceView?val=offline')"
+                  >{{ deviceBaseInfo.offline }}</div>
                 </div>
               </div>
               <div class="extra-card-wrappper">
@@ -857,25 +846,28 @@ const windowOpen = item => window.open(item)
           </div>
           <div class="gird-item-wrapper">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg"
-                  @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')">
+              <div
+                class="main-item-title title-bg"
+                @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')"
+              >
                 <div>水质监测</div>
-                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                <div
+                  class="selector-wrapper"
+                  @click="(e) => e.stopPropagation()"
+                >
                   <select @change="handleSelectorChange1">
                     <option
                       :value="item.id"
                       v-for="item,index in options1"
                       :key="index"
-                    >{{ item.name }}
-                    </option>
+                    >{{ item.name }}</option>
                   </select>
                   <select @change="selecte2">
                     <option
                       :value="item.id"
                       v-for="item,index in options2"
                       :key="index"
-                    >{{ item.name }}
-                    </option>
+                    >{{ item.name }}</option>
                   </select>
                 </div>
               </div>
@@ -896,10 +888,9 @@ const windowOpen = item => window.open(item)
                         <div class="label-wrapper">{{ item.monitoringType }}</div>
                       </div>
                       <div
-                        :class="btnIndex2==index? 'check-btn2':'check-btn'"
+                        :class="btnIndex2==index ? 'check-btn2' : 'check-btn'"
                         @click="btnCli(item,index)"
-                      >查看
-                      </div>
+                      >查看</div>
                     </div>
                   </div>
                 </div>
@@ -908,8 +899,7 @@ const windowOpen = item => window.open(item)
                   <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
                     {{ right2Val }}变化趋势
                   </div>
-                  <div
-                    style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+                  <div style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
                 </div>
                 <div
                   class="h-[250px]"
@@ -920,8 +910,10 @@ const windowOpen = item => window.open(item)
           </div>
           <div class="gird-item-wrapper">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg"
-                  @click="windowOpen('/internetMonitor/device/deviceView?deviceType=108,109')">
+              <div
+                class="main-item-title title-bg"
+                @click="windowOpen('/internetMonitor/device/deviceView?deviceType=108,109')"
+              >
                 <div>监控设备</div>
               </div>
               <div
@@ -947,10 +939,14 @@ const windowOpen = item => window.open(item)
                   <div class="text-wrapper">
                     <div class="text-row">名称:{{ item.deviceName }}</div>
                     <div class="text-row">位置:{{ item.location }}</div>
-                    <div class="text-row">状态: <span
-                      :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`">{{
-                        item.deviceStatus === 'online' ? '在线' : '离线'
-                      }}</span></div>
+                    <div
+                      class="text-row"
+                    >
+                      状态:
+                      <span
+                        :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`"
+                      >{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -958,8 +954,10 @@ const windowOpen = item => window.open(item)
           </div>
           <div class="gird-item-wrapper">
             <div class="grid-main-item">
-              <div class="main-item-title title-bg"
-                  @click="windowOpen('/internetMonitor/warn/agri-warning-record')">
+              <div
+                class="main-item-title title-bg"
+                @click="windowOpen('/internetMonitor/warn/agri-warning-record')"
+              >
                 <div>预警信息</div>
               </div>
               <div class="main-item-container pre-warn-table">
@@ -969,8 +967,7 @@ const windowOpen = item => window.open(item)
                     v-for="(item) in tableColumns"
                     :key="item.key"
                     :style="`width: ${item.width};`"
-                  >{{ item.label }}
-                  </div>
+                  >{{ item.label }}</div>
                 </div>
                 <div class="table-container">
                   <div
@@ -983,8 +980,7 @@ const windowOpen = item => window.open(item)
                       v-for="(column) in tableColumns"
                       :key="column.key"
                       :style="`width: ${column.width};`"
-                    >{{ item[column.key] }}
-                    </div>
+                    >{{ item[column.key] }}</div>
                   </div>
                 </div>
               </div>
