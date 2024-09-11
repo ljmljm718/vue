@@ -10,7 +10,7 @@ import {
   growthPage,
   getCountPageByBaseId,
   parkInfoPage,
-  detailListByParkId
+  detailListByParkId, growthIndexCard
 } from './apis'
 import {formatTime} from '@/utils/index'
 import {DICT_TYPE} from '@/utils/dict'
@@ -71,6 +71,7 @@ const getListCategaryLabelById = (id:string) => {
   listCategoryManagement.value.forEach(item => {
     if (item.id === id) res = item.categoryName
   })
+  console.log('getListCategaryLabelById', res)
   return res
 }
 /**
@@ -78,7 +79,7 @@ const getListCategaryLabelById = (id:string) => {
  */
 getListCategaryData()
 const getGrowthPage = async (belongPark, belongPlot) => {
-  const {list = []} = await growthPage({
+  const {list = []} = await growthIndexCard({
     pageNo: 1,
     pageSize: 1,
     belongPark: curBelongPark.value,
@@ -377,7 +378,7 @@ onMounted(() => {
             <div
               class="text-center py-2 text-20px"
               style="font-weight: 600; background: linear-gradient(to right, #79cefe00, #79cefeA0, #79cefe00);"
-            >养殖物名称: 黄河口大闸蟹
+            >养殖物名称: {{ growthTypes?.[growthIndex]?.cropName }}
             </div>
             <div class="p-1 mt-3 " v-if="growthTypes.length !== 0">
 

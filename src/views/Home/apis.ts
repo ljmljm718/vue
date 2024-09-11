@@ -58,6 +58,10 @@ export const growthPage = (params) => {
   return request.get({ url: `/agri/crop-growth/page`, params })
 }
 
+export const growthIndexCard = (params) => {
+  return request.get({ url: `/agri/crop-growth/index-card`, params })
+}
+
 export const getCountPageByBaseId = (params) => {
   return request.get({ url: `/agriculture/check-logs/getCountPageByBaseId`, params })
 }
