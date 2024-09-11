@@ -189,7 +189,7 @@
         <div :class="`mr-10px icon-${ item.deviceStatus=='online'?'1': item.deviceStatus=='offline'?'2':'3'}`"></div>
         {{ item.deviceStatus=='online'?'在线':item.deviceStatus=='offline'?'离线':'故障' }}</div>-->
         <div class="bg-[#e8f9e9] text-[14px] flex items-center px-10px  ml-5px rounded-25px box-border color-[#27c05a]" v-show='item.deviceStatus=="online"'> <div class='icon-1 mr-5px'></div> 在线</div>
-        <div class="bg-[#f5f5f5] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border  color-[#9c9c9c]" v-show='item.deviceStatus=="offline"'> <div class='icon-2'></div> 离线</div>
+        <div class="bg-[#f5f5f5] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border color-[#9c9c9c]" v-show='item.deviceStatus=="offline"'> <div class='icon-2'></div> 离线</div>
         <div class="bg-[#faeceb] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border color-[#e31205]" v-show='item.deviceStatus=="dault"'> <div class='icon-3'></div> 故障</div>
        </div>
         <div class="text-14px color-[#707070]">经度：{{ item.longitude }}</div>
@@ -197,7 +197,7 @@
         <div v-if="item.channelId" class="text-14px color-[#707070]">通道号：{{item.channelId}}</div>
         <div class="mt-10px">
           <el-button
-            v-show="item.deviceName.toString().includes('水质监测')||item.deviceName.toString().includes('气象站')"
+          v-if="deviceTypeMain.includes(item.deviceType[0])"
             plain
             type="primary"
             class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'
@@ -211,7 +211,7 @@
             查看数据
           </el-button>
           <el-button
-            v-show="!item.deviceName.toString().includes('水质监测') && !item.deviceName.toString().includes('气象站')"
+          v-if="item.deviceStatus=='online'&&item.url!=null&&item.url.indexOf('mp4')>0"
             plain
             type="primary"
             class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'

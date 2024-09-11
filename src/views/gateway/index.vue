@@ -7,7 +7,8 @@ import {
   filePage,
   selectHelp,
   selectHelpPage,
-  selectCountysPage
+  selectCountysPage,
+  selectImg
 } from './api'
 import * as echarts from 'echarts'
 import dayjs from 'dayjs'
@@ -23,7 +24,6 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { selectImg } from './api'
 import { generateUUID } from '@/utils';
 
 const router = useRouter()
@@ -753,11 +753,20 @@ const getSelectImg = async () => {
 getSelectImg()
 
 const btnAction = ref<boolean>(false)
+
+const activePoster = ref<number>(1)
+const enablePosterScroll = () => {
+  setInterval(() => {
+    if (activePoster.value === 3) return activePoster.value = 1;
+    activePoster.value++
+  }, 5000)
+}
+onMounted(() => { enablePosterScroll() })
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
     <div
-      :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
+      :class="`fixed left-0 z-100 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
         showHeader ? 'top-0' : 'top-[-100%]'
       }`"
     >
@@ -771,8 +780,27 @@ const btnAction = ref<boolean>(false)
         </div>
       </div>
     </div>
-    <div class="w-full flex justify-center items-center h-100vh bg-1 text-white">
-      <div class="container px-3rem box-border">
+    <div :class="`w-full flex justify-center items-center h-100vh text-white`">
+      <div class="absolute left-0 top-0 w-full h-full z-0">
+        <swiper
+          :modules="[Autoplay]"
+          :loop="true"
+          :autoplay="{ delay: 6000, disableOnInteraction: false, pauseOnMouseEnter: true }"
+          :speed="500"
+        >
+          <swiper-slide>
+            <div class="poster-1 w-full h-full"></div>
+          </swiper-slide>
+          <swiper-slide>
+            <div class="poster-2 w-full h-full"></div>
+          </swiper-slide>
+          <swiper-slide>
+            <div class="poster-3 w-full h-full"></div>
+          </swiper-slide>
+        </swiper>
+      </div>
+      
+      <div class="container px-3rem box-border relative z-20">
         <div class="text-3rem">数字农业一体化管理平台</div>
         <div class="w-[43rem] text-.9rem mt-1.2rem">
           基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数据挖掘、边缘计算、GIS遥感监测、增强现实等多种技术手段融合，构建全流程的新型农业一体化管理平台
@@ -784,7 +812,7 @@ const btnAction = ref<boolean>(false)
             @mouseleave="btnAction = false"
             @click="router.push('/gateway')"
           >
-            <div class="text-1.4rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
+            <div class="text-1rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
             <div class="aspect-1 h-3rem bg-#318255 rounded-full arrow-icon relative z-30"></div>
             <div
               class="h-3rem top-1px absolute bg-#318255 transition-all rounded-full !duration-300 z-0"
@@ -885,24 +913,54 @@ const btnAction = ref<boolean>(false)
           class="mySwiper w-full overflow-hidden space-x-4rem"
         >
           <swiper-slide
-            class="!bg-[transparent] !w-20rem"
             v-for="item in countryBuildData"
             :key="item.id"
           >
-            <div :class="`w-full relative village-${item.id} aspect-.75  mb-2rem color-[#fff]`">
+            <div class="w-22rem aspect-0.72 default-village-bg village-card-item box-border overflow-hidden">
+              <div class="absolute z-0 left-0 top-0 w-full h-full overflow-hidden">
+                <div :class="`w-full h-full village-${item.id} village-animation-bg`"></div>
+              </div>
+              <div class="w-full text-left py-1.9rem text-#fff text-1.3rem font-bold village-item-title box-border relative z-10">{{ item.year }}年</div>
+              <div class="mt-30% w-full village-item-content box-border text-left relative z-10">
+                <div class="village-yh w-2rem h-2rem"></div>
+                <div class="text-white mt-2rem">
+                  <div class="text-1.4rem">
+                    <span>我们建设示范村</span>
+                    <span class="text-1.6rem px-.4rem">{{ item.villageNum }}</span>
+                    <span>个</span>
+                  </div>
+                  <div class="mt-1rem">
+                    <span>区县</span>
+                    <span class="font-bold text-1.2rem px-.4rem">{{ item.areaNum }}</span>
+                    <span>个</span>
+                    <span class="px-.4rem">|</span>
+                    <span>产业类型</span>
+                    <span class="font-bold text-1.2rem px-.4rem">{{ item.formNum }}</span>
+                    <span>种</span>
+                    <span class="px-.4rem">|</span>
+                    <span>产业形态</span>
+                    <span class="font-bold text-1.2rem px-.4rem">{{ item.industryTypeNum }}</span>
+                    <span>种</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div
+              :class="`w-full relative !hover:village-${item.id} default-village-bg transition aspect-.72  mb-2rem color-[#fff]`"
+            >
               <div class='flex justify-between absolute top-20px items-center left-15px w-93%'>
-                <div>{{ item.year }}年</div>
+                <div class="text-1.3rem font-bold">{{ item.year }}年</div>
                 <div class='w-70% relative'>
                   <div class="border-1.5px  border-dashed border-[#85b7cd]"></div>
                   <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
                 </div>
               </div>
-              <div class="village-yh absolute left-3 bottom-180px w-15px h-15px"></div>
-              <div class='absolute color-[#f2f2f2] left-3 w-85% text-13px bottom-100px' style='text-align:left'>
-                <div class='mb-5px'>我们建设示范村<span class='text-20px text-center inline-block w-30px'>{{ item.villageNum }}</span>个</div>
+              
+              <div class='absolute color-[#f2f2f2] left-2rem w-85% text-1rem bottom-100px' style='text-align:left'>
+                <div class='mb-5px'>我们建设示范村<span class='text-1.4rem text-center inline-block p-3 font-bold text-#fff'>{{ item.villageNum }}</span>个</div>
                 <div>区县{{ item.areaNum }}个 | 产业类型{{ item.formNum }}种 | 产业形态{{ item.industryTypeNum }}种</div>
               </div>
-            </div>
+            </div> -->
           </swiper-slide>
         </swiper>
       </div>
@@ -1264,6 +1322,12 @@ const btnAction = ref<boolean>(false)
   </div>
 </template>
 <style scoped lang="scss">
+@for $i from 1 through 10 {
+  .poster-#{$i} {
+    background-size: cover;
+    background-image: url(./assets/new/poster#{$i}.png);
+  }
+}
 #homeContainer {
   scroll-snap-type: y mandatory;
   overflow: auto;
@@ -1272,7 +1336,7 @@ const btnAction = ref<boolean>(false)
   }
 }
 .village-yh{
-  background-size:100% 100%;
+  background-size: contain;
   background-image: url(./assets/new/village-yh.png)
 }
 
@@ -1311,6 +1375,51 @@ const btnAction = ref<boolean>(false)
   background-size: 100% 100%;
 }
 
+@keyframes village-animation {
+  0% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes village-animation-reverse {
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.village-card-item:hover {
+  .village-item-title {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    transform: scale(1.1);
+    transition: all .4s ease;
+  }
+  .village-item-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    transition: all .4s ease;
+  }
+  .village-animation-bg {
+    animation: village-animation .4s linear forwards;
+  }
+}
+
+.village-card-item {
+  .village-animation-bg {
+    animation: village-animation-reverse .4s linear forwards;
+  }
+}
+
 .table-bg {
   background-image: url(./assets/new/tableBg.png);
   background-size: contain;
@@ -1337,8 +1446,13 @@ const btnAction = ref<boolean>(false)
 @for $i from 1 through 4 {
   .village-#{$i} {
     background-image: url(./assets/new/village-bg-#{$i}.png);
-    background-size: 100% 100%;
+    background-size: cover;
   }
+}
+
+.default-village-bg {
+  background-image: url(./assets/new/defaultBg.png);
+  background-size: 100% 100%;
 }
 
 @for $i from 1 through 3 {

@@ -153,7 +153,8 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="数量" prop="number">
-                  <el-input v-model="formData.number" placeholder="请输入数量" />
+                  <el-input v-model="formData.number" v-if="formData.unit=='亩'" :placeholder="`请输入数量，数量不能超过${area}亩`" />
+                  <el-input v-model="formData.number" v-else placeholder="请输入数量" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -350,9 +351,11 @@ const openBreedFrom = () => {
   BreedFromRef.value.open();
 }
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----");
+  console.log(order,"---------=----123");
   formData.value.breedId = String(order[0].id)
   formData.value.cropName = String(order[0].varietyName)
+  console.log(formData.value.cropName,'formData.value.cropName')
+  formData.value.unit=formData.value.cropName=='麻鸭'?'只':formData.value.cropName=='稻田鱼'?'条':order[0].categoryName.includes('蟹')?'只': '亩'
   formData.value.cropType = String(order[0].categoryId)
   cropTypeName.value = String(order[0].categoryName)
 
@@ -385,10 +388,13 @@ const openParkDetailPopup = (id: string) => {
     message.error("请选择地块")
   } else parkDetailPopupRef.value.open(id)
 }
+const area=ref(0)
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+  console.log(order,'orderorder')
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
+  area.value=String(order[0].area)
 }
 
 /** 提交表单 */
@@ -399,7 +405,17 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
+    
     const data = formData.value as unknown as CropBaseVO
+    if(formData.value.unit=='亩'){
+      console.log(formData.value.number,'formData.value.numberformData.value.number')
+      if(formData.value.number > area.value){
+        console.log(123)
+        message.warning('数量超过输入的最大面积')
+        return
+      }
+    }
+    
     if (!formData.value.id) {
       await CropBaseApi.createCropBase(data)
       message.success(t('common.createSuccess'))

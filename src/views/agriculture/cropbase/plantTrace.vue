@@ -238,7 +238,7 @@ const getTimeLineData = async (batchCode:string) => {
           />
         </div>
       </div>
-      <div class="box-border pl-1rem grow">
+      <div class="box-border pl-1rem grow bit-map">
         <div class="px-3">{{ selectedCropTitle }}</div>
         <div
           class="w-full mt-.6rem overflow-auto flex flex-col items-center py-3rem box-border"
@@ -370,5 +370,12 @@ const getTimeLineData = async (batchCode:string) => {
     background-position: center center;
     background-repeat: no-repeat;
   }
+}
+
+.bit-map {
+  background-image: url(./assets/bitMap.png);
+  background-size: 100% auto;
+  background-position: bottom center;
+  background-repeat: no-repeat;
 }
 </style>
