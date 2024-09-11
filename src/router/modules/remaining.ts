@@ -485,6 +485,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/bigscreenED',
+    name: 'bigscreenED',
+    component: () => import('@/views/bigscreenErDu/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
     path: '/home',
     name: 'HomePage',
     component: () => import('@/views/gateway/index.vue'),
