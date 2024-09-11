@@ -75,9 +75,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="上传时间" prop="upTime">
+      <el-form-item label="上传时间" prop="createTime">
         <el-date-picker
-          v-model="queryParams.upTime"
+          v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
