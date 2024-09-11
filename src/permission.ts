@@ -64,6 +64,7 @@ const whiteList = [
   '/QRCode',
   '/tiandi',
   '/home',
+  '/gateway',
   '/page',
 ]
 

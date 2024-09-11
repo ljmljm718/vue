@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Home1 v-if="deptId === 117"  />
+    <Home1 v-if="deptId === 117" />
     <Home v-else-if="deptId === 115" />
     <Index v-else-if="deptId === 114" />
     <HomeAiKou v-else-if="deptId === 118" />
@@ -11,6 +11,7 @@
     <homeQianJiang v-else-if="deptId === 153" />
     <HomeTangBa v-else-if="deptId === 154" />
     <homeShuangQiao v-else-if="deptId === 156" />
+    <HomeErdu v-else-if="deptId === 161" />
     <div v-else v-loading class="w-full h-[30rem]"></div>
   </div>
 </template>
@@ -27,6 +28,7 @@ import HomeMingYue from './homeMingYue.vue'
 import homeQianJiang from './homeQianJiang.vue'
 import HomeTangBa from './homeTangBa.vue'
 import homeShuangQiao from './homeShuangQiao.vue'
+import HomeErdu from './homeErDu.vue'
 import { ref } from 'vue'
 const deptId = ref(0)
 const judgeHomePage = async () => {

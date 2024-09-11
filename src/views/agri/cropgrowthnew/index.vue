@@ -180,12 +180,20 @@
           prop="growth"
         />
         <el-table-column
-          label="开始时间"
+          label='开始时间'
           align="center"
           prop="startTime"
           :formatter="dateFormatter3"
           width="100px"
-        />
+        >
+        <template #header>
+          <div class="flex items-center">
+            <div @click="sortChange(0)" class="cursor-pointer" v-if="timeNum==1">开始时间</div>
+            <div @click="sortChange(1)" class="cursor-pointer" v-else>开始时间</div>
+            <div class="time-icon w-10px ml-10px h-15px"  :style="` transform:${ timeNum=='1'?'rotate(180deg)' :'rotate(0deg)'} `"></div>
+          </div>
+        </template>
+        </el-table-column>
         <el-table-column
           label="结束时间"
           align="center"
@@ -193,7 +201,6 @@
           :formatter="dateFormatter3"
           width="100px"
         />
-
         <el-table-column
           label="环境条件"
           align="center"
@@ -225,11 +232,18 @@
           width="200px"
         />
         <el-table-column
-          label="种植顺序"
           align="center"
           prop="orders"
           width="200px"
-        />
+        >
+        <template #header>
+          <div class="flex items-center">
+            <div @click="plantChange(0)" class="cursor-pointer" v-if="plantNum==1">种植顺序</div>
+            <div @click="plantChange(1)" class="cursor-pointer" v-else>种植顺序</div>
+            <div class="time-icon w-10px ml-10px h-15px"  :style="`transform:${ plantNum=='1'?'rotate(180deg)' :'rotate(0deg)'} `"></div>
+          </div>
+        </template>
+        </el-table-column>
         <!--      <el-table-column-->
         <!--        label="创建时间"-->
         <!--        align="center"-->
@@ -387,7 +401,7 @@
         :total="total"
         v-model:page="queryParams.pageNo"
         v-model:limit="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList()"
       />
     </div>
   </ContentWrap>
@@ -395,11 +409,11 @@
   <!-- 表单弹窗：添加/修改 -->
   <CropGrowthNewForm
     ref="formRef"
-    @success="getList"
+    @success="getList()"
   />
   <CropGrowthSubForm
     ref="subformRef"
-    @success="getList"
+    @success="getList()"
   />
   <!-- start事项查看弹窗 -->
   <el-drawer
@@ -509,7 +523,9 @@ const queryParams = reactive({
   growSite: undefined,
   cycle: undefined,
   orders: undefined,
-  farmAdvice: undefined
+  farmAdvice: undefined,
+  startTimeSort:undefined,
+  ordersSort:undefined,
 })
 const queryParams1 = reactive({
   pageNo: 1,
@@ -693,6 +709,23 @@ const resetQuery = () => {
   handleQuery()
 }
 
+// 时间排序
+const timeNum=ref(0)
+const sortChange=async (val)=>{
+  timeNum.value=val  
+  queryParams.ordersSort=undefined
+  queryParams.startTimeSort=val
+  getList()
+  
+} 
+//种植排序
+const plantNum=ref(0)
+const plantChange=async (val)=>{
+  plantNum.value=val
+  queryParams.ordersSort=val
+  queryParams.startTimeSort=undefined
+  getList()
+}
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
@@ -834,5 +867,9 @@ onMounted(() => {
     display: block;
     width: 1100px;
   }
+}
+.time-icon{
+  background-size:100% 100%;
+  background-image: url(../../../assets/imgs/time-icon.png); 
 }
 </style>
