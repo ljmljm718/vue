@@ -21,39 +21,39 @@ const topLeftDataList = ref<any[]>([
     title: '种植面积',
     value: null,
     unit: '亩',
-    logo: '图'
+    logo: 'icon-zhongzhi'
   },
   {
     id: 2,
     title: '作物产量',
     value: null,
     unit: 'Kg',
-    logo: '图'
+    logo: 'icon-zuowuchanliang'
   }, {
     id: 3,
     title: '销售额',
     value: null,
     unit: '万元',
-    logo: '图'
+    logo: 'icon-icon-xiaoshoue'
   }, {
     id: 4,
     title: '设备总量',
     value: null,
     unit: '台',
-    logo: '图'
+    logo: 'icon-shebeizongliang'
   }, {
     id: 5,
     title: '设备在线<br/>设备离线',
     value: [null,null],
     unit: '台',
-    logo: '图'
+    logo: 'icon-zaixianshebei'
   }, 
   {
     id: 6,
     title: '视频监控',
     value: null,
     unit: '台',
-    logo: '图'
+    logo: 'icon-shipinjiankong'
   }
 ])
 
@@ -100,7 +100,7 @@ const initPlantCropNumChart = async() => {
     generateBaseOptions({
     xAxis: {
       type: 'category',
-      data: [2021,2022,2023,2024],
+      data: linexAisData,
       axisLine: {
         show: true,
         lineStyle: {
@@ -142,7 +142,7 @@ const initPlantCropNumChart = async() => {
     series: [
       {
         name: '种植规模',
-        data: [20,40,60,80],
+        data: lineyAisData,
         type: 'line',
         smooth: true,
         areaStyle:{
@@ -495,9 +495,11 @@ const showLessContent = (idx: number) => {
     <div class="flex items-stretch space-x-3">
       <div class="flex flex-col space-y-3 grow">
         <div class="grid xl:grid-cols-3 2xl:grid-cols-6 gap-3">
-          <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard">
-            <div class="flex items-center space-x-1rem justify-center h-5rem ">
-              <div class="w-1rem h-1rem bg-red flex">{{ item.logo }}</div>
+          <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard w-12.5rem">
+            <div class="flex items-center space-x-1rem ml-4 h-5rem ">
+              <div class="w-2rem h-2rem flex">
+                <span :class="`text-2rem iconfont text-#009688 ${item.logo}`"> </span>
+              </div>
               <div class="flex text-0.9rem" v-html="item.title"></div>
               <div class="w-2rem flex ">
                 <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col  text-0.6rem whitespace-nowrap">
