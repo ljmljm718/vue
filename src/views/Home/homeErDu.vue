@@ -260,31 +260,84 @@ const initAgriMissionChart = (list = [
 }
 onMounted(() => { initAgriMissionChart() })
 
+interface AdviceOption {
+  id: string,
+  name: string
+}
+interface AdviceData {
+  createTime: string,
+  feature: string,
+  growth: string,
+  imgId: string
+}
 // 农事建议列表
-const agriAdviceDataList = ref<any[]>([
-  { id: '1' },
-  { id: '2' },
-  { id: '3' },
-  { id: '4' },
-  { id: '5' },
-])
+const agriAdviceDataList = ref<Array<AdviceData>>([])
 
 // 农事建议
-const getVarietyList = async () => {
-  const res = await getVarietyListErdu()
-  console.log("农事建议-品种列表: ", res)
-}
-getVarietyList()
-const getAdviceList = async () => {
-  let params = { cropCode: "1831222708971577344"}
-  const res = await getAdviceByCropCodeErdu(params)
-  console.log("农事建议-建议列表: ", res)
-}
-getAdviceList()
 const selectedAgriAdvice = ref<string>('')
-const agriAdviceOptions = ref<any[]>([])
-const handleAgriAdviceChange = (item) => {
-  console.log("🚀 ~ item:", item);
+const agriAdviceOptions = ref<Array<AdviceOption>>([])
+
+// feature样式字符串
+const agriAdviceFeatureClassList = ref<Array<string>>([])
+
+// 切换品种
+const handleAgriAdviceChange = async (item: string) => {
+  // console.log("🚀 ~ item:", item)
+  // 在选项列表里找到item对应的项
+  const tmp = agriAdviceOptions.value.find(ele => item === ele.name)
+  // console.log("$$$$$$$$$$$$$", tmp)
+
+  // 用找到的item的ID作为品种ID请求数据
+  const params = { cropCode: tmp!.id }
+  let adviceList = await getAdviceByCropCodeErdu(params)
+  // console.log("农事建议-建议列表-切换选项1: ", adviceList)
+  if (!adviceList) {
+    adviceList = []
+  }
+  // console.log("农事建议-建议列表-切换选项2: ", adviceList)
+
+  // 设置选中的选项和建议列表
+  selectedAgriAdvice.value = tmp!.name
+  agriAdviceDataList.value = adviceList
+  agriAdviceFeatureClassList.value = adviceList.map((ele: AdviceData) => {
+    return 'h-2.5rem text-.9rem line-clamp-2 pl-.5rem my-.5rem'
+  })
+}
+
+// 初始化农事建议
+const getAgriAdvice = async () => {
+  // 获取品种列表
+  const varietyList = await getVarietyListErdu()
+  if (!varietyList || !varietyList.length) {
+    return
+  }
+  // console.log("农事建议-品种列表: ", varietyList)
+
+  // 设置下拉列表 第0项为当前选中
+  agriAdviceOptions.value = varietyList
+  selectedAgriAdvice.value = varietyList[0].name
+
+  // 根据当前选中的品种ID获取建议列表
+  const params = { cropCode: varietyList[0].id }
+  const adviceList = await getAdviceByCropCodeErdu(params)
+  if (!adviceList || !adviceList.length) {
+    return
+  }
+  // console.log("农事建议-建议列表: ", adviceList)
+
+  // 设置当前建议列表
+  agriAdviceDataList.value = adviceList
+  agriAdviceFeatureClassList.value = adviceList.map((ele: AdviceData) => {
+    return 'h-2.5rem text-.9rem line-clamp-2 pl-.5rem my-.5rem'
+  })
+}
+getAgriAdvice()
+
+const showFullContent = (idx: number) => {
+  agriAdviceFeatureClassList.value[idx] = 'text-.9rem pl-.5rem my-.5rem'
+}
+const showLessContent = (idx: number) => {
+  agriAdviceFeatureClassList.value[idx] = 'h-2.5rem text-.9rem line-clamp-2 pl-.5rem my-.5rem'
 }
 </script>
 <template>
@@ -331,12 +384,13 @@ const handleAgriAdviceChange = (item) => {
                 v-model="selectedAgriAdvice"
                 @change="handleAgriAdviceChange"
                 class="!w-8rem"
+                v-if="agriAdviceOptions.length > 0"
               >
                 <el-option
                   v-for="item in agriAdviceOptions"
                   :key="item.id"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="item.name"
                 />
               </el-select>
             </div>
@@ -346,21 +400,27 @@ const handleAgriAdviceChange = (item) => {
           class="w-full h-20rem overflow-auto space-y-.4rem p-2 box-border"
           v-if="agriAdviceDataList.length > 0"
         >
-          <div
-            v-for="item in agriAdviceDataList"
-            :key="item.id"
-            class="flex box-border p-3 space-x-3 shadow-md"
-          >
-            <div class="!w-5rem h-5rem bg-black"></div>
-            <div style="width: calc(100% - 5.5rem)">
-              <div>幼苗期</div>
-              <div class="h-2.5rem text-.9rem line-clamp-2 pl-.5rem">描述assdfsdfgsdfsdfsdfsdf描述assdfsdfgsdfsdfsdfsdf描述assdfsdfgsdfsdfsdfsdf描述assdfsdfgsdfsdfsdfsdf描述assdfsdfgsdfsdfsdfsdf描述assdfsdfgsdfsdfsdfsdf</div>
-              <div class="w-full flex justify-between items-center text-#666 text-.8rem pt-.1rem">
-                <div>农事建议</div>
-                <div>2024-05-05 12:12:12</div>
+          <el-scrollbar>
+            <div
+              v-for="(item, index) in agriAdviceDataList"
+              :key="item.createTime"
+              class="flex box-border p-3 space-x-3 shadow-md"
+              @mouseenter="showFullContent(index)"
+              @mouseleave="showLessContent(index)"
+            >
+              <div class="!w-5rem h-5rem">
+                <img :src="item.imgId" class="h-full object-contain"/>
+              </div>
+              <div style="width: calc(100% - 5.5rem)">
+                <div>{{ item.growth }}</div>
+                <div :class="agriAdviceFeatureClassList[index]">{{ item.feature }}</div>
+                <div class="w-full flex justify-between items-center text-#666 text-.8rem pt-.1rem">
+                  <div>农事建议</div>
+                  <div>{{ item.createTime.replace("T", " ") }}</div>
+                </div>
               </div>
             </div>
-          </div>
+          </el-scrollbar>
         </div>
         <div v-else class="w-full min-h-15rem flex flex-col justify-center space-y-2 items-center">
           <img src="/images/noData.png" class="aspect-1 w-8rem" />
