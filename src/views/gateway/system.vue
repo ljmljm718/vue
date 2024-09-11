@@ -429,8 +429,8 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
       <div class="container relative flex mt-3rem">
         <swiper
 :slidesPerView="3" :spaceBetween="20" :freeMode="true" :pagination="{
-            clickable: true,
-          }" :modules="[FreeMode, Pagination]" class="w-95%">
+          clickable: true,
+        }" :modules="[FreeMode, Pagination]" class="w-95%">
           <swiper-slide v-for="item in handledDataList" :key="item.subId">
             <div class="w-full h-14rem system-feature-wrapper mb-3rem">
               <div
@@ -697,7 +697,7 @@ v-for="ele in item.children" :key="ele.id"
     background-image: url(./assets/spec/bgImg/specRightCardBg#{$i}.png);
     background-size: contain;
     background-repeat: no-repeat;
-    z-index:20
+    z-index: 20;
   }
 }
 // 农业特色卡片图标start

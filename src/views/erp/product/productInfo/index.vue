@@ -118,6 +118,15 @@
         width="140"
       />
       <el-table-column label="保质期天数" align="center" prop="expiryDay" width="100" />
+      <el-table-column
+        label="有效日期"
+        align="center"
+        prop="effectiveTime"
+        :formatter="dateFormatter2"
+        width="140"
+      />
+      <el-table-column label="登记证号" align="center" prop="registerNum" width="100" />
+      <el-table-column label="包装关系" align="center" prop="packagingRelationship" width="100" />
       <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
       <el-table-column label="操作" align="center" width="110" fixed="right">
         <template #default="scope">

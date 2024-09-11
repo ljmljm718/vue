@@ -196,12 +196,13 @@ const handleParkInfoPopupChange = async (order: CropBaseVO) => {
   console.log("order", order);
 
   const {
-    cropType, breedId, cropName, batchCode, belongPark,
+    id, cropType, breedId, cropName, batchCode, belongPark,
     parkName, belongPlot, plotName, number, unit, cropCode
   } = order[0];
 
   Object.assign(formData.value, {
     variety: String(cropType),
+    formData: String(id),
     varietyId: String(breedId),
     varietyName: String(cropName),
     batchCode: String(batchCode),

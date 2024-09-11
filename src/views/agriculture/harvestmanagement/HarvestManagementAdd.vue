@@ -58,21 +58,6 @@
           <el-form-item label="品种名称" prop="varietyName">
             <el-input v-model="formData.varietyName" placeholder="自动写入" readonly
                       :disabled="boo"/>
-            <!--        <el-select-->
-            <!--          v-model="formData.varietyId"-->
-            <!--          placeholder="请选择品种"-->
-            <!--          clearable-->
-            <!--          :disabled="boo"-->
-            <!--          @change="handleVarietyChange"-->
-            <!--        >-->
-            <!--          <el-option-->
-            <!--            v-for="dict in listVarietyManagement"-->
-            <!--            :key="dict.id"-->
-            <!--            :label="dict.varietyName"-->
-            <!--            :value="dict.id"-->
-            <!--          />-->
-            <!--        </el-select>-->
-            <!--        <el-input v-model="formData.varietyName" placeholder="请输入品种名称" :disabled="boo"/>-->
           </el-form-item>
         </el-col>
       </el-row>
@@ -82,19 +67,6 @@
             <!-- <el-input v-model="formData.variety" placeholder="请输入品种"/> -->
             <el-input v-model="formData.variety" placeholder="自动写入" readonly
                       :disabled="boo"/>
-            <!--        <el-select-->
-            <!--          v-model="formData.variety"-->
-            <!--          placeholder="选择品种后自动填入"-->
-            <!--          clearable-->
-            <!--          :disabled = "true"-->
-            <!--        >-->
-            <!--          <el-option-->
-            <!--            v-for="dict in listVarietyManagement"-->
-            <!--            :key="dict.categoryId"-->
-            <!--            :label="dict.categoryName"-->
-            <!--            :value="dict.categoryId"-->
-            <!--          />-->
-            <!--        </el-select>-->
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -103,12 +75,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
-
-      <!--      <el-form-item label="品种ID" prop="varietyId">-->
-      <!--        <el-input v-model="formData.varietyId" placeholder="请输入品种ID" :disabled="boo"/>-->
-      <!--      </el-form-item>-->
-      <!-- 获取批次号 -->
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="基地名称" prop="parkName">
@@ -123,37 +89,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!--      <el-row :gutter="24">-->
-      <!--        <el-col :span="12">-->
-      <!--          <el-form-item label="所属基地" prop="belongPark">-->
-      <!--            <el-input v-model="formData.belongPark" placeholder="自动写入" readonly-->
-      <!--                      :disabled="boo"/>-->
-      <!--            &lt;!&ndash;        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" :disabled="boo">&ndash;&gt;-->
-      <!--            &lt;!&ndash;          <template #append>&ndash;&gt;-->
-      <!--            &lt;!&ndash;            <el-button @click="openParkInfoPopup('0')" :disabled="boo">&ndash;&gt;-->
-      <!--            &lt;!&ndash;              <Icon icon="ep:search"/>&ndash;&gt;-->
-      <!--            &lt;!&ndash;              选择&ndash;&gt;-->
-      <!--            &lt;!&ndash;            </el-button>&ndash;&gt;-->
-      <!--            &lt;!&ndash;          </template>&ndash;&gt;-->
-      <!--            &lt;!&ndash;        </el-input>&ndash;&gt;-->
-      <!--          </el-form-item>-->
-      <!--        </el-col>-->
-      <!--        <el-col :span="12">-->
-      <!--          <el-form-item label="所属地块" prop="belongPlot">-->
-      <!--            <el-input v-model="formData.belongPlot" placeholder="自动写入" readonly-->
-      <!--                      :disabled="boo"/>-->
-      <!--            &lt;!&ndash;        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" :disabled="boo">&ndash;&gt;-->
-      <!--            &lt;!&ndash;          <template #append>&ndash;&gt;-->
-      <!--            &lt;!&ndash;            <el-button @click="openParkDetailPopup(formData.belongPark)" :disabled="boo">&ndash;&gt;-->
-      <!--            &lt;!&ndash;              <Icon icon="ep:search"/>&ndash;&gt;-->
-      <!--            &lt;!&ndash;              选择&ndash;&gt;-->
-      <!--            &lt;!&ndash;            </el-button>&ndash;&gt;-->
-      <!--            &lt;!&ndash;          </template>&ndash;&gt;-->
-      <!--            &lt;!&ndash;        </el-input>&ndash;&gt;-->
-      <!--          </el-form-item>-->
-      <!--        </el-col>-->
-
-      <!--      </el-row>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -237,11 +172,11 @@ const open = async (type: string, id?: any) => {
   formType.value = type
   resetForm()
   if (typeof id === 'object') {
-    console.log("id",id)
+    console.log("id", id)
     formData.value.varietyId = id.breedId
     formData.value.varietyName = id.cropName
     formData.value.variety = id.cropType
-    // formData.value.varietyCode = id.cropType
+    formData.value.recordNum = id.id
     formData.value.batchCode = id.batchCode
     formData.value.belongPark = id.belongPark
     formData.value.parkName = id.parkName
