@@ -27,6 +27,7 @@ export const resolvePath = (userInfo: UserInfo): string => {
     ['tianyin', '/bigscreenTB'],
     ['tianyin_common', '/bigscreenTB'],
     ['shuangqiao', '/bigscreenShuangQiao'],
+    ['erdu', '/bigscreenED']
   ]);
 
   if (Array.isArray(userInfo.roles)) {

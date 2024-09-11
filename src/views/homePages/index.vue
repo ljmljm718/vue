@@ -122,23 +122,6 @@ onMounted(() => {
   // const bigscreenRoute = ref('/bigscreen')
   const {wsCache} = useCache()
   bigscreenRoute.value = wsCache.get(CACHE_KEY.BIGSCREEN_PATH)
-  // const roles = wsCache.get(CACHE_KEY.USER).roles
-  // const MatchRouteMap = async () => {
-  //   const data = await getRouteByTenant({id: tenantId})
-  //   bigscreenRoute.value = data.bigScreen
-  //   console.log(roles)
-  //   if (roles.indexOf('wulong') !== -1) bigscreenRoute.value = '/bigscreen5'
-  //   if (roles.indexOf('youyang') !== -1) bigscreenRoute.value = '/bigscreen6'
-  //   if (roles.indexOf('aikou') !== -1) bigscreenRoute.value = '/bigscreen9'
-  //   if (roles.indexOf('wenfeng') !== -1) bigscreenRoute.value = '/bigscreenWF'
-  //   if (roles.indexOf('baibu') !== -1) bigscreenRoute.value = '/bigscreenBB'
-  //   if (roles.indexOf('baidi') !== -1) bigscreenRoute.value = '/bigscreen10'
-  //   if (roles.indexOf('fuling_dashun_mingyue') !== -1) bigscreenRoute.value = '/bigscreenMY'
-  //   if (roles.indexOf('qianjiang') !== -1) bigscreenRoute.value = '/bigscreenQJ'
-  //   if (roles.indexOf('tianyin') !== -1) bigscreenRoute.value = '/bigscreenTB'
-  //   if (roles.indexOf('shuangqiao') !== -1) bigscreenRoute.value = '/bigscreenShuangQiao'
-  // }
-  // MatchRouteMap()
 })
 </script>
 <style lang="scss" scoped>
