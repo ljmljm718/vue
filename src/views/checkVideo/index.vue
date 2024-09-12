@@ -6,6 +6,9 @@ import { onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 
 const hls = new Hls();
+onActivated(() => { initPlayer() })
+onDeactivated(() => { hls.destroy() })
+
 const route = useRoute()
 const checkOnce = ref<boolean>(true)
 hls.on(Hls.Events.ERROR, (err:any) => {

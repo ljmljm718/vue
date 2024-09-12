@@ -54,6 +54,7 @@ import {
 import MapTangBa from '../Home/mapTangBacopy.vue'
 import * as turf from '@turf/turf'
 import { getDeviceCategoryTree, getDeviceInfo } from './api'
+import { isFunction } from '@/utils/is'
 import meassageTop from './assets/tangba/meassage-top.png'
 
 const {
@@ -115,11 +116,29 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string>
   }
   return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
 }
+
+let destroyFunc:Function[] = []
+const destroyHls = () => {
+  destroyFunc.forEach(item => {
+    if (isFunction(item)) item();
+  })
+  destroyFunc = []
+}
+
+onActivated(() => {
+  deviceVideoList.value.forEach(item => {
+    if (item.online) {
+      initPlayer(item.videoId, item.dtu, item.channelId);
+    }
+  })
+})
+onDeactivated(() => { destroyHls() })
+onUnmounted(() => { destroyHls() })
 const initPlayer = async (containerId, dtu, channelId) => {
   if (!containerId || !dtu || !channelId) return;
   const resUrl = await checkAuth(dtu, channelId);
   const hls = new Hls();
-  new Dplayer({
+  const _player = new Dplayer({
     container: document.getElementById(containerId),
     loop: false,
     autoplay: true,
@@ -135,6 +154,10 @@ const initPlayer = async (containerId, dtu, channelId) => {
       },
     },
     mutex: false
+  })
+  destroyFunc.push(() => {
+    _player.destroy();
+    hls.destroy();
   })
 }
 export default defineComponent({
