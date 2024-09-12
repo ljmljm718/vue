@@ -604,7 +604,7 @@ import { useRoute } from 'vue-router'
 import { getTenantId } from '@/utils/auth'
 import { CACHE_KEY } from '@/hooks/web/useCache'
 import { useUserStore } from '@/store/modules/user'
-import { da, vi } from 'node_modules/element-plus/es/locale'
+// import { da, vi } from 'node_modules/element-plus/es/locale'
 
 const activeName = ref('sensorTab')
 
