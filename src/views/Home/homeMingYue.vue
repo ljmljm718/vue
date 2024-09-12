@@ -1160,7 +1160,7 @@ select {
 }
 
 @media screen and (max-width: 1279px) {
-  ::v-deep .el-select {
+  :deep(.el-select) {
     width: 100px;
   }
 }

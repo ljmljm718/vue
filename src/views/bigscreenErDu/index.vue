@@ -5,6 +5,10 @@ import AgriComponent from './agriculture.vue'
 import VisualMonitor from './visualmonitor.vue'
 
 const acviveTab = ref<string>('agri')
+const openPage = (url:string) => {
+  if (!url) return;
+  window.open(url);
+}
 </script>
 <template>
   <div class="w-[100vw] h-[100vh] overflow-hidden bg-black">
@@ -27,6 +31,7 @@ const acviveTab = ref<string>('agri')
             >可视化监控</div>
             <div
               class="btn-bg w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition"
+              @click="openPage('')"
             >种植模型</div>
           </div>
           <div class="h-86px flex items-center pl-50px w-320px relative top-[-8px]">

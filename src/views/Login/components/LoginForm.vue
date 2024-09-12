@@ -429,7 +429,7 @@ onMounted(() => {
   // background-image: url(@/assets/imgs/btn-bg.png) !important;
 }
 
-::v-deep .el-input__wrapper {
+:deep(.el-input__wrapper) {
   background-color: transparent !important;
   border-color: transparent !important;
   background-size: 100% 100% !important;
@@ -447,7 +447,7 @@ onMounted(() => {
 }
 
 /* 针对el-input的自动填充样式 */
-::v-deep .el-input__inner:-webkit-autofill {
+:deep(.el-input__inner:-webkit-autofill) {
   -webkit-border-radius: 4px;
   border-radius: 4px;
   color: pink !important;
@@ -455,22 +455,22 @@ onMounted(() => {
   transition: background-color 50000s ease-in-out 0s;
 }
 
-::v-deep .el-checkbox__input.is-checked .el-checkbox__inner,
-.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+:deep(.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner) {
   background-color: #46696c !important;
   border: 1px solid #46696c !important;
 }
-::v-deep .el-checkbox__inner:hover {
+:deep(.el-checkbox__inner:hover) {
   border-color: #46696c;
 }
-::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
+:deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
   color: #46696c;
 }
-::v-deep .el-checkbox__input.is-focus .el-checkbox__inner {
+:deep(.el-checkbox__input.is-focus .el-checkbox__inner) {
   border-color: #46696c !important;
 }
 
-::v-deep .login-input .el-input__inner:hover {
+:deep(.login-input .el-input__inner:hover) {
   cursor: text !important;
 }
 </style>

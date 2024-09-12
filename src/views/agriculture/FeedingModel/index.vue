@@ -623,15 +623,15 @@ select:focus {
   background-color: #029083 ;
 }
 // 下拉框去除蓝色边框
-::v-deep .el-select .el-input.is-focusable .el-input__inner:focus {
+:deep(.el-select .el-input.is-focusable .el-input__inner:focus) {
   border-color: #dcdfe6 !important; /* 还原为默认的边框颜色 */
   box-shadow: none !important; /* 去掉蓝色边框 */
 }
-::v-deep .el-input .el-input__inner {
+:deep(.el-input .el-input__inner) {
   border: none !important;
   box-shadow: none !important;
 }
-::v-deep .el-input .el-input__wrapper {
+:deep(.el-input .el-input__wrapper) {
   background: none !important;
   box-shadow: none !important;
 }
