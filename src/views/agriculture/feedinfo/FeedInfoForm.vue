@@ -150,7 +150,6 @@ let productInfoListALL = ref() //所有投入品列表
 let farmDefineOptions = ref([])// 设备分类选项
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-
   // 获取设备分类树
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   productInfoListALL.value = await ProductApi.selectAll()
@@ -158,12 +157,16 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  console.log(productInfoListALL.value)
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await FeedInfoApi.getFeedInfo(id)
+      farmDefineOptions.value.forEach((item) =>{
+        if(item.id  == formData.value.farmingStage){
+          formData.value.farmingStage = item.defineName
+        }
+      })
     } finally {
       formLoading.value = false
     }

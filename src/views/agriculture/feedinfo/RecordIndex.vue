@@ -44,6 +44,17 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="农事阶段" prop="farmingStage">
+        <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
+        <el-select v-model="queryParams.farmingStage" placeholder="请选择农事阶段"  class="!w-240px">
+          <el-option
+            v-for="dict in farmDefineOptions"
+            :key="dict.id"
+            :label="dict.defineName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
       <!--      <el-form-item label="螃蟹数量" prop="crabNum">-->
       <!--        <el-input-->
       <!--          v-model="queryParams.crabNum"-->
@@ -116,15 +127,15 @@
     </el-form>
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:feed-info:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          @click="openForm('create')"-->
+<!--          v-hasPermi="['agriculture:feed-info:create']"-->
+<!--        >-->
+<!--          <Icon icon="ep:plus" class="mr-5px"/>-->
+<!--          新增-->
+<!--        </el-button>-->
         <el-button
           type="success"
           plain
@@ -256,7 +267,7 @@ const queryParams = reactive({
   feedNum: undefined,
   feedOne: undefined,
   feedTime: [],
-  farmingStage: "25",
+  farmingStage: undefined,
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
