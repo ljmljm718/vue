@@ -2,6 +2,10 @@
 import * as L from 'leaflet'
 import "leaflet/dist/leaflet.css"
 import adapter from '@/components/MapCustom/src/adapter'
+import { 
+  getQianjiangAgriResource,
+  getBreedCategory,
+} from './api'
 
 adapter()
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
