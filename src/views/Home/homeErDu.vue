@@ -496,19 +496,18 @@ const showLessContent = (idx: number) => {
       <div class="flex flex-col space-y-3 grow">
         <div class="grid xl:grid-cols-3 2xl:grid-cols-6 gap-3">
           <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard w-12.5rem">
-            <div class="flex items-center space-x-1rem ml-4 h-5rem ">
+            <div class="flex items-center  ml-4 h-5rem ">
               <div class="w-2rem h-2rem flex">
-                <span :class="`text-2rem iconfont text-#009688 ${item.logo}`"> </span>
+                <span :class="`!text-1.7rem text-#009688  iconfont ${item.logo}`"> </span>
               </div>
-              <div class="flex text-0.9rem" v-html="item.title"></div>
-              <div class="w-2rem flex ">
-                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col  text-0.6rem whitespace-nowrap">
-                  <div>{{ item.value[0] !== null ? item.value[0] : 0 }} {{ item.unit }}</div>
-                  <div><br /></div> <!-- 手动换行 -->
+              <div class="flex text-1rem mr-1rem ml-.2rem mb-.3rem line-height-1.4rem" v-html="item.title"></div>
+              <div class="w-2rem flex !text-0.8rem whitespace-nowrap">
+                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col mb-.3rem ">
+                  <div class="flex mb-.5rem">{{ item.value[0] !== null ? item.value[0] : 0 }} {{ item.unit }}</div>
                   <div>{{ item.value[1] !== null ? item.value[1] : 0 }} {{ item.unit }}</div>
                 </div>
                 <div v-else>
-                  <div class="text-0.6rem whitespace-nowrap">{{ item.value !== null ? item.value : 0 }} {{ item.unit }}</div>
+                  <div class="flex mb-.5rem" >{{ item.value !== null ? item.value : 0 }} {{ item.unit }}</div>
                 </div>
               </div>
             </div>
@@ -610,6 +609,7 @@ const showLessContent = (idx: number) => {
   </div>
 </template>
 <style lang="scss" scoped>
+@import url(./assets/iconfont/iconfont.css);
 :deep(.topLeftCard > .el-card__body) {
   padding: 0 !important;
 }
