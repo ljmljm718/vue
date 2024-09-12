@@ -9,6 +9,11 @@ export const getQianjiangAgriResource = () => {
   return request.get({ url: '/agriculture/big-screen/getQianjiangAgriResource' })
 }
 
+// 二渡 大屏智慧农事 种养品种
+export const getVarietyManagement = () => {
+  return request.get({ url: '/agriculture/variety-management/page' })
+}
+
 // 二渡 大屏智慧农事 品种分布
 export const getBreedCategory = () => {
   return request.get({ url: '/agri/farm-overview/get-breedCategory' })

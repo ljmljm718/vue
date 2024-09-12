@@ -5,6 +5,7 @@ import adapter from '@/components/MapCustom/src/adapter'
 import { 
   getQianjiangAgriResource,
   getBreedCategory,
+  getVarietyManagement,
 } from './api'
 
 adapter()
@@ -41,6 +42,7 @@ const initMap = () => {
     map.invalidateSize(true)
   })
 }
+//农业资源
 
 onMounted(() => { initMap() })
 </script>
