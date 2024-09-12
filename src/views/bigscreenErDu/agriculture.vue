@@ -5,6 +5,7 @@ import adapter from '@/components/MapCustom/src/adapter'
 import { 
   getQianjiangAgriResource,
   getBreedCategory,
+  getDeviceInfo,
   getVarietyManagement,
 } from './api'
 
@@ -56,6 +57,56 @@ const getResList = async () => {
 }
 
 onMounted(() => { initMap(),getResList() })
+
+/****************************** 设备信息 start ******************************/
+interface DeviceData {
+  categoryName: string,
+  imgId: string,
+  total: number,
+  online: number,
+  offline: number
+}
+const deviceList = ref<Array<DeviceData>>([])
+const getDeviceList = async () => {
+  let res = await getDeviceInfo()
+  // console.log("设备信息: ", res)
+
+  // 没数据直接返回
+  if (!res || !res.category || res.category.length === 0) {
+    return
+  }
+
+  deviceList.value = []
+  let indexMap = new Map<string, number>()
+  let cur = 0
+  const cate = res.category
+
+  // 假设传过来的数据一定有categoryName和imgId
+  // 遍历res.category计算显示在页面上的数据 每一类的结果汇总到deviceList
+  cate.forEach((ele: any) => {
+    ele.categoryName = ele.categoryName ? ele.categoryName : '未知设备'
+    if (!indexMap.has(ele.categoryName)) {
+      let tmpData = {
+        categoryName: ele.categoryName,
+        imgId: ele.imgId || "https://www.zhuangbeizz.cn/minio/inspur/ef6114eead1cacd3809addfb7e29332ae097fffdbf149f135a5f4b6417b1afbb.png",
+        total: Number(ele.total) || 0,
+        online: Number(ele.online) || 0,
+        offline: Number(ele.offline) || 0
+      }
+      deviceList.value.push(tmpData)
+      indexMap.set(tmpData.categoryName, cur)
+      cur++
+    } else {
+      let idx = indexMap.get(ele.categoryName)
+      deviceList.value[idx!].total += Number(ele.total)
+      deviceList.value[idx!].online += Number(ele.online)
+      deviceList.value[idx!].offline += Number(ele.offline)
+    }
+  })
+  // console.log("设备列表: ", deviceList.value)
+}
+getDeviceList()
+/****************************** 设备信息  end  ******************************/
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
@@ -88,27 +139,39 @@ onMounted(() => { initMap(),getResList() })
         </div>
       </div>
       <div class="w-460px h-45px device-title"></div>
-      <div class="grid grid-cols-2 gap-3 p-3 box-border">
-        <div class="device-bg w-100% p-5 pb-3 box-border" v-for="item in 2" :key="item">
-          <div class="flex space-x-3 items-start">
-            <div class="w-50px h-50px bg-red"></div>
-            <div class="text-white">
-              <div class="text-18px">气象站</div>
-              <div class="text-24px">14</div>
+      <div class="h-135px">
+        <el-scrollbar>
+          <div
+            class="grid grid-cols-2 gap-3 p-3 box-border"
+            v-if="deviceList.length"
+          >
+            <div class="device-bg w-100% p-5 pb-3 box-border" v-for="item in deviceList" :key="item.imgId">
+              <div class="flex space-x-3 items-start">
+                <div class="w-50px h-50px">
+                  <img :src="item.imgId" class="object-contain w-50px h-50px" />
+                </div>
+                <div class="text-white">
+                  <div class="text-18px">{{ item.categoryName }}</div>
+                  <div class="text-24px">{{ item.total }}</div>
+                </div>
+              </div>
+              <div class="flex justify-evenly text-#d1d1d1 mt-2 text-12px">
+                <div>
+                  <span>在线:</span>
+                  <span>{{ item.online }}</span>
+                </div>
+                <div>|</div>
+                <div>
+                  <span>离线:</span>
+                  <span>{{ item.offline }}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="flex justify-evenly text-#d1d1d1 mt-2 text-12px">
-            <div>
-              <span>在线:</span>
-              <span>8</span>
-            </div>
-            <div>|</div>
-            <div>
-              <span>离线:</span>
-              <span>6</span>
-            </div>
+          <div v-else class="w-full h-135px p-3 box-border flex justify-center items-center tracking-widest">
+            <div class="text-[#01F892]">暂无数据</div>
           </div>
-        </div>
+        </el-scrollbar>
       </div>
       <div class="w-460px h-45px type-title"></div>
       <div class="p-4 box-border">

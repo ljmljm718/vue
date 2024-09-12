@@ -18,3 +18,8 @@ export const getVarietyManagement = () => {
 export const getBreedCategory = () => {
   return request.get({ url: '/agri/farm-overview/get-breedCategory' })
 }
+
+// 二渡 大屏智慧农业 设备信息
+export const getDeviceInfo = () => {
+  return request.get({ url: '/agriculture/big-screen/deviceInfoCard' })
+}
