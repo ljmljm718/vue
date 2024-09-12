@@ -256,6 +256,7 @@ const queryParams = reactive({
   feedNum: undefined,
   feedOne: undefined,
   feedTime: [],
+  farmingStage: "25",
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
