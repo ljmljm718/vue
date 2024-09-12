@@ -43,25 +43,49 @@ const initMap = () => {
   })
 }
 //农业资源
+const ResList = ref<any[]>([])
+const getResList = async () => {
+  try {
+    ResList.value = await Promise.all([
+      getQianjiangAgriResource(),
+      getVarietyManagement()
+    ])
+  } catch (error) {
+    console.error('获取数据失败:', error)
+  }
+}
 
-onMounted(() => { initMap() })
+onMounted(() => { initMap(),getResList() })
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
     <div class="h-full w-460px">
       <div class="w-460px h-45px agri-title"></div>
       <div class="w-460px pt-15px pb-20px flex justify-evenly">
-        <div
-          class="agri-bg-1 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center"
-        >
+        <div class="agri-bg-1 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
           <div class="text-12px">种植地块</div>
           <div>
-            <span class="text-18px pr-5px font-bold">16</span>
+            <span class="text-18px pr-5px font-bold">{{
+              Array.isArray(ResList) && ResList.length > 0 ? ResList[0].shelterAmount : 0}}</span>
             <span class="text-12px">块</span>
           </div>
         </div>
-        <div class="agri-bg-2 w-139px h-52px"></div>
-        <div class="agri-bg-3 w-139px h-52px"></div>
+        <div class="agri-bg-2 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
+          <div class="text-12px">种植面积</div>
+          <div>
+            <span class="text-18px pr-5px font-bold">{{ Array.isArray(ResList) && ResList.length > 0 ? ResList[0].plantArea :
+              0}}</span>
+            <span class="text-12px">亩</span>
+          </div>
+        </div>
+        <div class="agri-bg-3 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
+          <div class="text-12px">种养品种</div>
+          <div>
+            <span class="text-18px pr-5px font-bold">{{ Array.isArray(ResList) && ResList.length > 0 ? ResList[1].total :
+              0}}</span>
+            <span class="text-12px">种</span>
+          </div>
+        </div>
       </div>
       <div class="w-460px h-45px device-title"></div>
       <div class="grid grid-cols-2 gap-3 p-3 box-border">
@@ -124,11 +148,8 @@ onMounted(() => { initMap() })
         </div>
         <el-scrollbar style="height: 310px" class="warn-table-wrapper">
           <div
-            class="w-447px h-35px flex text-#fff items-center warn-table-item transition"
-            v-for="item in 14"
-            :key="item"
-            style="border: 1px solid #043b24;"
-          >
+class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in 14"
+            :key="item" style="border: 1px solid #043b24;">
             <div class="w-110px text-center">土壤温度报警</div>
             <div class="w-237px text-center">2024.09.06 13:00:00</div>
             <div class="w-100px text-center">已处理</div>
@@ -136,14 +157,14 @@ onMounted(() => { initMap() })
         </el-scrollbar>
       </div>
     </div>
-    <div class="absolute w-940px left-460px top-20px flex justify-center space-x-70px z-20 backdrop-blur-sm py-2 bg-#00000090">
+    <div
+      class="absolute w-940px left-460px top-20px flex justify-center space-x-70px z-20 backdrop-blur-sm py-2 bg-#00000090">
       <div class="flex space-x-2 items-center text-white">
         <div class="w-70px h-58px top-icon-1"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -151,9 +172,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-2"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -161,9 +181,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-3"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -171,9 +190,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-4"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
