@@ -188,7 +188,12 @@ const getMenuDataList = async () => {
     '86': 'Soil',
     '104': 'Soil',
     '107': 'Bug',
-    '88': 'Bug'
+    '88': 'Bug',
+    '109':'monitor',
+    '110':'grow',
+    '112':'bug',
+    '113':'soil',
+    '119':'weather'
   }
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
 
@@ -255,7 +260,14 @@ const getIconClass = (item) => {
     '86': 'soil',
     '104': 'soil',
     '107': 'bug',
-    '88': 'bug'
+    '88': 'bug',
+    '109':'monitor',
+    '110':'grow',
+    '112':'bug',
+    '113':'soil',
+    '119':'weather'
+
+
   }
   return deviceStatus + '-' + (kindMap[deviceKind] || 'monitor')
 }

@@ -407,13 +407,15 @@ const submitForm = async () => {
   try {
     
     const data = formData.value as unknown as CropBaseVO
-    if(formData.value.unit=='亩'){
+    if(!route.query.type){
+      if(formData.value.unit=='亩'){
       console.log(formData.value.number,'formData.value.numberformData.value.number')
       if(formData.value.number > area.value){
         console.log(123)
         message.warning('数量超过输入的最大面积')
         return
       }
+    }
     }
     
     if (!formData.value.id) {
