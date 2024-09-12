@@ -109,7 +109,7 @@ onMounted(() => { initMap() })
           </div>
         </div>
       </el-scrollbar>
-      <div class="w-460px h-45px mission-title"></div>
+      <div class="w-460px h-45px warn-title"></div>
       <div class="text-12px">
         <div class="w-447px h-35px flex text-#01F892 items-center">
           <div class="w-110px text-center">预警信息</div>

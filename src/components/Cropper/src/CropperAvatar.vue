@@ -97,7 +97,7 @@ $prefix-cls: #{$namespace}--cropper-avatar;
     opacity: 0;
     transition: opacity 0.4s;
 
-    ::v-deep(svg) {
+    :deep(svg) {
       margin: auto;
     }
   }
