@@ -3,7 +3,14 @@ import * as L from 'leaflet'
 import "leaflet/dist/leaflet.css"
 import adapter from '@/components/MapCustom/src/adapter'
 import dayjs from 'dayjs'
-import {cropBase,warnRecordInfo} from './api'
+import { 
+  getQianjiangAgriResource,
+  getBreedCategory,
+  getDeviceInfo,
+  getVarietyManagement,
+  cropBase,
+  warnRecordInfo
+} from './api'
 
 adapter()
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -39,6 +46,20 @@ const initMap = () => {
     map.invalidateSize(true)
   })
 }
+//农业资源
+const ResList = ref<any[]>([])
+const getResList = async () => {
+  try {
+    ResList.value = await Promise.all([
+      getQianjiangAgriResource(),
+      getVarietyManagement()
+    ])
+  } catch (error) {
+    console.error('获取数据失败:', error)
+  }
+}
+
+onMounted(() => { initMap(),getResList() })
 //种养信息
 const pageNo = 1
 const pageSize = 100
@@ -64,47 +85,121 @@ const getWarnRecord = async () =>{
   console.log("🚀 ~ getWarnRecord ~ warnList.value:", warnList.value)
 }
 getWarnRecord()
-onMounted(() => { initMap() })
+
+/****************************** 设备信息 start ******************************/
+interface DeviceData {
+  categoryName: string,
+  imgId: string,
+  total: number,
+  online: number,
+  offline: number
+}
+const deviceList = ref<Array<DeviceData>>([])
+const getDeviceList = async () => {
+  let res = await getDeviceInfo()
+  // console.log("设备信息: ", res)
+
+  // 没数据直接返回
+  if (!res || !res.category || res.category.length === 0) {
+    return
+  }
+
+  deviceList.value = []
+  let indexMap = new Map<string, number>()
+  let cur = 0
+  const cate = res.category
+
+  // 假设传过来的数据一定有categoryName和imgId
+  // 遍历res.category计算显示在页面上的数据 每一类的结果汇总到deviceList
+  cate.forEach((ele: any) => {
+    ele.categoryName = ele.categoryName ? ele.categoryName : '未知设备'
+    if (!indexMap.has(ele.categoryName)) {
+      let tmpData = {
+        categoryName: ele.categoryName,
+        imgId: ele.imgId || "https://www.zhuangbeizz.cn/minio/inspur/ef6114eead1cacd3809addfb7e29332ae097fffdbf149f135a5f4b6417b1afbb.png",
+        total: Number(ele.total) || 0,
+        online: Number(ele.online) || 0,
+        offline: Number(ele.offline) || 0
+      }
+      deviceList.value.push(tmpData)
+      indexMap.set(tmpData.categoryName, cur)
+      cur++
+    } else {
+      let idx = indexMap.get(ele.categoryName)
+      deviceList.value[idx!].total += Number(ele.total)
+      deviceList.value[idx!].online += Number(ele.online)
+      deviceList.value[idx!].offline += Number(ele.offline)
+    }
+  })
+  // console.log("设备列表: ", deviceList.value)
+}
+getDeviceList()
+/****************************** 设备信息  end  ******************************/
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
     <div class="h-full w-460px">
       <div class="w-460px h-45px agri-title"></div>
       <div class="w-460px pt-15px pb-20px flex justify-evenly">
-        <div
-          class="agri-bg-1 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center"
-        >
+        <div class="agri-bg-1 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
           <div class="text-12px">种植地块</div>
           <div>
-            <span class="text-18px pr-5px font-bold">16</span>
+            <span class="text-18px pr-5px font-bold">{{
+              Array.isArray(ResList) && ResList.length > 0 ? ResList[0].shelterAmount : 0}}</span>
             <span class="text-12px">块</span>
           </div>
         </div>
-        <div class="agri-bg-2 w-139px h-52px"></div>
-        <div class="agri-bg-3 w-139px h-52px"></div>
-      </div>
-      <div class="w-460px h-45px device-title"></div>
-      <div class="grid grid-cols-2 gap-3 p-3 box-border">
-        <div class="device-bg w-100% p-5 pb-3 box-border" v-for="item in 2" :key="item">
-          <div class="flex space-x-3 items-start">
-            <div class="w-50px h-50px bg-red"></div>
-            <div class="text-white">
-              <div class="text-18px">气象站</div>
-              <div class="text-24px">14</div>
-            </div>
-          </div>
-          <div class="flex justify-evenly text-#d1d1d1 mt-2 text-12px">
-            <div>
-              <span>在线:</span>
-              <span>8</span>
-            </div>
-            <div>|</div>
-            <div>
-              <span>离线:</span>
-              <span>6</span>
-            </div>
+        <div class="agri-bg-2 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
+          <div class="text-12px">种植面积</div>
+          <div>
+            <span class="text-18px pr-5px font-bold">{{ Array.isArray(ResList) && ResList.length > 0 ? ResList[0].plantArea :
+              0}}</span>
+            <span class="text-12px">亩</span>
           </div>
         </div>
+        <div class="agri-bg-3 w-139px h-52px pl-65px box-border text-white flex flex-col justify-center">
+          <div class="text-12px">种养品种</div>
+          <div>
+            <span class="text-18px pr-5px font-bold">{{ Array.isArray(ResList) && ResList.length > 0 ? ResList[1].total :
+              0}}</span>
+            <span class="text-12px">种</span>
+          </div>
+        </div>
+      </div>
+      <div class="w-460px h-45px device-title"></div>
+      <div class="h-135px">
+        <el-scrollbar>
+          <div
+            class="grid grid-cols-2 gap-3 p-3 box-border"
+            v-if="deviceList.length"
+          >
+            <div class="device-bg w-100% p-5 pb-3 box-border" v-for="item in deviceList" :key="item.imgId">
+              <div class="flex space-x-3 items-start">
+                <div class="w-50px h-50px">
+                  <img :src="item.imgId" class="object-contain w-50px h-50px" />
+                </div>
+                <div class="text-white">
+                  <div class="text-18px">{{ item.categoryName }}</div>
+                  <div class="text-24px">{{ item.total }}</div>
+                </div>
+              </div>
+              <div class="flex justify-evenly text-#d1d1d1 mt-2 text-12px">
+                <div>
+                  <span>在线:</span>
+                  <span>{{ item.online }}</span>
+                </div>
+                <div>|</div>
+                <div>
+                  <span>离线:</span>
+                  <span>{{ item.offline }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else class="w-full h-135px p-3 box-border flex justify-center items-center tracking-widest">
+            <div class="text-[#01F892]">暂无数据</div>
+          </div>
+        </el-scrollbar>
       </div>
       <div class="w-460px h-45px type-title"></div>
       <div class="p-4 box-border">
@@ -153,11 +248,8 @@ onMounted(() => { initMap() })
         </div>
         <el-scrollbar style="height: 310px" class="warn-table-wrapper">
           <div
-            class="w-447px h-35px flex text-#fff items-center warn-table-item transition"
-            v-for="item in 14"
-            :key="item"
-            style="border: 1px solid #043b24;"
-          >
+class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in 14"
+            :key="item" style="border: 1px solid #043b24;">
             <div class="w-110px text-center">土壤温度报警</div>
             <div class="w-237px text-center">2024.09.06 13:00:00</div>
             <div class="w-100px text-center">已处理</div>
@@ -165,14 +257,14 @@ onMounted(() => { initMap() })
         </el-scrollbar>
       </div>
     </div>
-    <div class="absolute w-940px left-460px top-20px flex justify-center space-x-70px z-20 backdrop-blur-sm py-2 bg-#00000090">
+    <div
+      class="absolute w-940px left-460px top-20px flex justify-center space-x-70px z-20 backdrop-blur-sm py-2 bg-#00000090">
       <div class="flex space-x-2 items-center text-white">
         <div class="w-70px h-58px top-icon-1"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -180,9 +272,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-2"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -190,9 +281,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-3"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -200,9 +290,8 @@ onMounted(() => { initMap() })
         <div class="w-70px h-58px top-icon-4"></div>
         <div>
           <div
-            class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);"
-          >15</div>
+class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">15</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
