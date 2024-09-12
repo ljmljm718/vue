@@ -1,10 +1,31 @@
 {
-  "id": "",
-  "name": "",
+  "id": "4681579",
+  "name": "11",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "20734296",
+      "name": "lixianhecheng",
+      "font_class": "bianzubeifen15",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "4237403",
+      "name": "用工总量",
+      "font_class": "yonggongzongliang",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "25800258",
+      "name": "首页—设备总量",
+      "font_class": "a-shouyeshebeizongliang",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
     {
       "icon_id": "10498858",
       "name": "在线设备",
@@ -39,13 +60,6 @@
       "font_class": "zuowuchanliang",
       "unicode": "eaa0",
       "unicode_decimal": 60064
-    },
-    {
-      "icon_id": "40628215",
-      "name": "设备总量",
-      "font_class": "shebeizongliang",
-      "unicode": "ea68",
-      "unicode_decimal": 60008
     }
   ]
 }

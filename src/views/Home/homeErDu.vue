@@ -16,55 +16,71 @@ import {
 } from './apis'
 
 //顶部左上方列表数据汇总
-const topLeftDataList = ref<any[]>([
-  {
-    id: 1,
-    title: '种植面积',
-    value: null,
-    unit: '亩',
-    logo: 'icon-zhongzhi'
-  },
-  {
-    id: 2,
-    title: '作物产量',
-    value: null,
-    unit: 'Kg',
-    logo: 'icon-zuowuchanliang'
-  }, {
-    id: 3,
-    title: '销售额',
-    value: null,
-    unit: '万元',
-    logo: 'icon-icon-xiaoshoue'
-  }, {
-    id: 4,
-    title: '设备总量',
-    value: null,
-    unit: '台',
-    logo: 'icon-shebeizongliang'
-  }, {
-    id: 5,
-    title: '设备在线<br/>设备离线',
-    value: [null,null],
-    unit: '台',
-    logo: 'icon-zaixianshebei'
-  }, 
-  {
-    id: 6,
-    title: '视频监控',
-    value: null,
-    unit: '台',
-    logo: 'icon-shipinjiankong'
-  }
-])
+const topLeftDataList = ref<any[]>([])
 
 
 const getTopLeftDataList = async () => {
   try {
-    const [topLeftDataListOne, topLeftDataListTwo] = await Promise.all([
+    const [ topLeftDataListOne, topLeftDataListTwo ] = await Promise.all([
       getAreaYieldSales(), // 返回对象
       getErduEquipmentCount() // 返回数组
     ])
+    console.log("🚀 ~ getTopLeftDataList ~ topLeftDataListOne:", topLeftDataListOne)
+    console.log("🚀 ~ getTopLeftDataList ~ topLeftDataListTwo:", topLeftDataListTwo)
+
+    topLeftDataList.value = [
+      {
+        id: 1,
+        title: '种植面积',
+        value: topLeftDataListOne.area,
+        unit: '亩',
+        logo: 'icon-zhongzhi'
+      },
+      {
+        id: 2,
+        title: '作物产量',
+        value: topLeftDataListOne.yield,
+        unit: 'Kg',
+        logo: 'icon-zuowuchanliang'
+      }, {
+        id: 3,
+        title: '销售额',
+        value: topLeftDataListOne.salesVolume,
+        unit: '万元',
+        logo: 'icon-icon-xiaoshoue'
+      }, {
+        id: 4,
+        title: '设备总量',
+        value: topLeftDataListTwo?.[topLeftDataListTwo.length - 1]?.totality,
+        unit: '台',
+        logo: 'icon-yonggongzongliang'
+      }, {
+        id: 5,
+        children: [
+          {
+            id: '5-1',
+            title: '在线设备',
+            value: topLeftDataListTwo?.[topLeftDataListTwo.length - 1]?.online,
+            unit: '台'
+          },
+          {
+            id: '5-2',
+            title: '离线设备',
+            value: topLeftDataListTwo?.[topLeftDataListTwo.length - 1]?.offline,
+            unit: '台'
+          }
+        ],
+        logo: 'icon-bianzubeifen15'
+      }, 
+      {
+        id: 6,
+        title: '视频监控',
+        value: topLeftDataListTwo.find(item => item.typeName === "视频监控") || 0,
+        unit: '台',
+        logo: 'icon-shipinjiankong'
+      }
+    ]
+    return
     
     topLeftDataList.value[0].value = topLeftDataListOne?.area || 0 
     topLeftDataList.value[1].value = topLeftDataListOne?.yield || 0 
@@ -524,22 +540,30 @@ const showLessContent = (idx: number) => {
   <div class="space-y-3">
     <div class="flex items-stretch space-x-3">
       <div class="flex flex-col space-y-3 grow">
-        <div class="grid xl:grid-cols-3 2xl:grid-cols-6 gap-3">
-          <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard w-12.5rem">
-            <div class="flex items-center  ml-4 h-5rem ">
-              <div class="w-2rem h-2rem flex">
-                <span :class="`!text-1.7rem text-#009688  iconfont ${item.logo}`"> </span>
+        <div class="grid grid-cols-3 2xl:grid-cols-6 gap-3 grid-cols-3-custom">
+          <el-card v-for="item in topLeftDataList" :key="item.id" class="topLeftCard">
+            <div class="flex items-center justify-between px-1rem box-border h-5rem space-x-4">
+              <div class="w-3rem h-3rem flex items-center">
+                <span :class="`!text-2rem text-#009688  iconfont ${item.logo}`"> </span>
               </div>
-              <div class="flex text-1rem mr-1rem ml-.2rem mb-.3rem line-height-1.4rem" v-html="item.title"></div>
-              <div class="w-2rem flex !text-0.8rem whitespace-nowrap">
-                <div v-if="Array.isArray(item.value) && item.value.length > 1" class="flex flex-col mb-.3rem ">
-                  <div class="flex mb-.5rem">{{ item.value[0] !== null ? item.value[0] : 0 }} {{ item.unit }}</div>
-                  <div>{{ item.value[1] !== null ? item.value[1] : 0 }} {{ item.unit }}</div>
+              <template v-if="item.children">
+                <div class="flex items-end flex-col space-y-1 text-0.9rem whitespace-nowrap">
+                  <div v-for="ele in item.children" :key="ele.id" class="space-x-1">
+                    <span>{{ ele.title }}</span>
+                      <span>{{ ele.value }}</span>
+                      <span >{{ ele.unit }}</span>
+                  </div>
                 </div>
-                <div v-else>
-                  <div class="flex mb-.5rem" >{{ item.value !== null ? item.value : 0 }} {{ item.unit }}</div>
+              </template>
+              <template v-else>
+                <div class="flex items-end flex-col space-y-1 whitespace-nowrap">
+                  <div>{{ item.title }}</div>
+                  <div>
+                    <span>{{ item.value }}</span>
+                    <span class="pl-1">{{ item.unit }}</span>
+                  </div>
                 </div>
-              </div>
+              </template>
             </div>
           </el-card>
         </div>
@@ -643,4 +667,10 @@ const showLessContent = (idx: number) => {
 :deep(.topLeftCard > .el-card__body) {
   padding: 0 !important;
 }
+@media (max-width: 1600px) {
+  .grid-cols-3-custom {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
 </style>
