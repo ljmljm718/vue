@@ -211,6 +211,14 @@ export const getEquipmentDataByEquipmentCode = (params) => {
 export const warningRecordPage = () => {
   return request.get({ url: `/agriculture/agri-warning-record/page` })
 }
+//数字产销饼状图接口
+export const getProduceData = () => {
+  return request.get({ url: `/digital/village-product-circulation/city-list`})
+}
+//数字产销柱状图接口
+export const getProduceList = () => {
+  return request.get({ url: `/digital/village-product-circulation/product-list`})
+}
 
 //二渡获取种植面积、作物产量、销售额
 export const  getAreaYieldSales =()=>{

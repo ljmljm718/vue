@@ -11,8 +11,9 @@ import {
   getAdviceByCropCodeErdu,
   getFiveYearValue,
   getMissionStatisticsErdu,
+  getProduceData,
+  getProduceList
 } from './apis'
-
 
 //顶部左上方列表数据汇总
 const topLeftDataList = ref<any[]>([
@@ -98,7 +99,7 @@ const initPlantCropNumChart = async() => {
   initChartStatic(
     'plantCropNum', 
     generateBaseOptions({
-    xAxis: {
+      xAxis: {
       type: 'category',
       data: linexAisData,
       axisLine: {
@@ -179,7 +180,10 @@ const initPlantCropNumChart = async() => {
     }
   }))
 }
-onMounted(() => { initPlantCropNumChart(), getTopLeftDataList() })
+onMounted(() => {
+  initPlantCropNumChart();
+  getTopLeftDataList()
+})
 
 // 种植品种一览图
 const initPlantTypeChart = (list = [
@@ -218,11 +222,20 @@ const initPlantTypeChart = (list = [
 }
 onMounted(() => { initPlantTypeChart() })
 
-// 数字产销
-const initDigitalSaleChart = (list = [
-  { name: '1', value: '2' },
-  { name: '4', value: '88' },
-]) => {
+// ------------------数字产销--------------------
+//数字产销饼状图
+
+//数字产销中的特色产品柱状图,getProduceList
+const initDigitalSaleChart = async () => {
+  const res = await getProduceData().catch(()=>{})
+  const data:Array<any> = []
+  res.forEach((item) => {
+    data.push({
+      name: item.city,
+      value: item.value
+    })
+  })
+  console.log("🚀 ~ res.forEach ~ data:", data)
   initChartStatic('digitalSale', generatePieOptions({
     legend: {
       show: true,
@@ -234,21 +247,26 @@ const initDigitalSaleChart = (list = [
       itemHeight: 12,
       textStyle: {
         color: '#a1a1aa'
-      }
-    },
-    color: ["#48e5e5", "#9dadb0", "#3254dd", "#feba47", "#bee5fb", "#3cd495", "#ffedb7"],
+      },
+      
+    },//图例属性，
+    color: ["#fe4377","#ff9f7f", "#9fe6b8", "#32c5e9", "#feba47", "#bee5fb",  "#3cb2ef"],
+    tooltip: {
+            trigger: 'item',
+            formatter:"{b}:{c}({d}%)",
+        },//提示框，鼠标悬浮交互时的信息提示
     series: [
       {
         type: "pie",
         radius: "65%",
         center: ["50%", "50%"],
-        data: list,
+        data: data ,
         label: {
-          formatter: "{c} - {d}%",
+          formatter: "{b}",
           shadowColor: 'transparent',
           borderColor: 'transparent',
           color: '#a1a1aa'
-        },
+        },//饼图文字的显示
       },
     ],
   }))
@@ -256,10 +274,17 @@ const initDigitalSaleChart = (list = [
 onMounted(() => { initDigitalSaleChart() })
 
 // 数字产销 特色产品
-const initFeatureProductChart = () => {
+const initFeatureProductChart = async() => {
+  const data = await getProduceList().catch(()=>{})
+  console.log("🚀 ~ initFeatureProductChart ~ data:", data)
+  const productNames = data.map(item => item.product)
+  const values = data.map(item => item.value)
+
   initChartStatic('featureProduct', generateBaseOptions({
+    dimensions: ['product', 'value'],
     xAxis: {
-      data: [1,2,3,4],
+      type: 'category',
+      data: productNames,
       axisLine: {
         show: true,
         lineStyle: {
@@ -267,16 +292,21 @@ const initFeatureProductChart = () => {
         }
       }
     },
-    legend: {
-      show: false,
-      orient: 'horizontal',
-      itemWidth: 15,
-      itemHeight: 15,
+    title: {
+      text: '特色产品',
+      left: 'center',
+      y: 'top',
+      textStyle: {
+        color: '#5470c6',
+        fontSize: 14
+      },
     },
-    color: ['#ffa773', '#36e1d9'],
+
+
+    color: ['#5470c6', '#36e1d9'],
     yAxis: {
-      name: '',
       type: 'value',
+      name: '销售额（万元）',
       axisLine: {
         show: true,
         lineStyle: {
@@ -285,7 +315,7 @@ const initFeatureProductChart = () => {
       },
       splitLine: {
         //网格线
-        show: true, //是否显示
+        show: false, //是否显示
         lineStyle: {
           //网格线样式
           color: '#a1a1aa80', //网格线颜色
@@ -301,15 +331,15 @@ const initFeatureProductChart = () => {
     series: [
       {
         name: '',
-        data: [1,2,3,4],
+        data: values,
         type: 'bar',
         smooth: true,
         label: {
-          show: true, //开启显示
+          show: false, //开启显示
           position: 'right', //在上方显示
           textStyle: {
             //数值样式
-            color: '#a1a1aa',
+            color: '#5470c6',
             fontSize: 10
           }
         },
@@ -318,8 +348,8 @@ const initFeatureProductChart = () => {
     grid: {
       left: '8%',
       right: '6%',
-      top: '6%',
-      bottom: '12%'
+      top: '10%',
+      bottom: '10%'
     }
   }))
 }
@@ -591,7 +621,7 @@ const showLessContent = (idx: number) => {
         header="数字产销"
       >
         <div class="flex justify-between">
-          <div id="digitalSale" class="w-16rem h-18rem"></div>
+          <div id="digitalSale" class="w-20rem h-18rem"></div>
           <div id="featureProduct" style="width: calc(100% - 16.6rem)"></div>
         </div>
       </el-card>
