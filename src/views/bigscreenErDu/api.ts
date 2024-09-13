@@ -23,3 +23,16 @@ export const getBreedCategory = () => {
 export const getDeviceInfo = () => {
   return request.get({ url: '/agriculture/big-screen/deviceInfoCard' })
 }
+//二渡 大屏智慧农业 种养信息
+export const cropBase = async ( params) => {
+  return request.get({ 
+    url: '/agriculture/crop-base/page',
+    params
+  })
+}
+//二渡 大屏智慧农业 预警信息
+export const warnRecordInfo = async() =>{
+  return request.get({
+    url:'/agriculture/warning-record-big-screen/qianjiangWarnRecordInfo'
+  })
+}

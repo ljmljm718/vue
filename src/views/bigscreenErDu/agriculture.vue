@@ -2,11 +2,14 @@
 import * as L from 'leaflet'
 import "leaflet/dist/leaflet.css"
 import adapter from '@/components/MapCustom/src/adapter'
+import dayjs from 'dayjs'
 import { 
   getQianjiangAgriResource,
   getBreedCategory,
   getDeviceInfo,
   getVarietyManagement,
+  cropBase,
+  warnRecordInfo
 } from './api'
 
 adapter()
@@ -57,6 +60,31 @@ const getResList = async () => {
 }
 
 onMounted(() => { initMap(),getResList() })
+//种养信息
+const pageNo = 1
+const pageSize = 100
+const params = {
+  pageNo,
+  pageSize
+}
+
+const cropList = ref<any[]>([]);
+const getCropBase = async () =>{
+  const { list } = await cropBase(params)
+  if (!Array.isArray(list)) return;
+  cropList.value = list;
+}
+getCropBase()
+//预警信息
+const warnList = ref<any[]>([])
+const getWarnRecord = async () =>{
+  const data = await warnRecordInfo()
+  console.log("🚀 ~ getWarnRecord ~ data:", data)
+  if(!Array.isArray(data)) return
+  warnList.value = data
+  console.log("🚀 ~ getWarnRecord ~ warnList.value:", warnList.value)
+}
+getWarnRecord()
 
 /****************************** 设备信息 start ******************************/
 interface DeviceData {
@@ -179,23 +207,32 @@ getDeviceList()
       </div>
       <div class="w-460px h-45px mission-title"></div>
     </div>
-    <div class="h-full w-460px">
+    <!-- 种养信息 -->
+    <div class="h-full w-460px">  
       <div class="w-460px h-45px plant-title"></div>
       <el-scrollbar style="height: 510px;">
         <div class="p-3 box-border grid grid-cols-2 gap-3 text-white">
-          <div class="plant-bg w-full p-3 box-border" v-for="item in 4" :key="item">
-            <img src="/home.png" class="w-full h-130px object-cover" />
+          <div
+            class="plant-bg w-full p-3 box-border"
+            v-for="item in cropList"
+            :key="item.id"
+          >
+            <img :src=item.imgId class="w-full h-130px object-contain" />
             <div class="flex items-start space-x-2 mt-2">
               <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
               <div class="space-y-2 text-#d1d1d1 text-12px">
-                <div class="text-16px text-white">麻鸭</div>
+                <div class="text-16px text-white">{{item.cropName}}</div>
                 <div>
                   <span>所属地块:</span>
-                  <span>丰收鸭舍</span>
+                  <span>{{ item.plotName }}</span>
                 </div>
                 <div>
                   <span>起止时间:</span>
-                  <span>2024.04.01-2024.05.01</span>
+                  <div>
+                    {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
+                    -
+                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'无' }}
+                  </div>
                 </div>
               </div>
             </div>
