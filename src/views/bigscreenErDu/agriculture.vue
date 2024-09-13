@@ -59,18 +59,17 @@ const getResList = async () => {
   }
 }
 
-onMounted(() => { initMap(),getResList() })
+onMounted(() => {
+  initMap();
+  getResList();
+})
 //种养信息
-const pageNo = 1
-const pageSize = 100
-const params = {
-  pageNo,
-  pageSize
-}
-
 const cropList = ref<any[]>([]);
 const getCropBase = async () =>{
-  const { list } = await cropBase(params)
+  const { list } = await cropBase({
+    pageNo: 1,
+    pageSize: 100
+  })
   if (!Array.isArray(list)) return;
   cropList.value = list;
 }
@@ -242,17 +241,17 @@ getDeviceList()
       <div class="w-460px h-45px warn-title"></div>
       <div class="text-12px">
         <div class="w-447px h-35px flex text-#01F892 items-center">
-          <div class="w-110px text-center">预警信息</div>
-          <div class="w-237px text-center">时间</div>
-          <div class="w-100px text-center">处理状态</div>
+          <div class="w-180px text-center p-1">预警信息</div>
+          <div class="w-150px text-center p-1">时间</div>
+          <div class="w-100px text-center p-1">处理状态</div>
         </div>
         <el-scrollbar style="height: 310px" class="warn-table-wrapper">
           <div
-class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in 14"
-            :key="item" style="border: 1px solid #043b24;">
-            <div class="w-110px text-center">土壤温度报警</div>
-            <div class="w-237px text-center">2024.09.06 13:00:00</div>
-            <div class="w-100px text-center">已处理</div>
+            class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in warnList"
+            :key="item.id" style="border: 1px solid #043b24;">
+            <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
+            <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+            <div class="w-100px text-center p-1">{{item.warnStatus === 0 ? '未处理':'已处理' }}</div>
           </div>
         </el-scrollbar>
       </div>
