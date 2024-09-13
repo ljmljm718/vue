@@ -244,3 +244,8 @@ export const getFiveYearValue = () => {
 export const getMissionStatisticsErdu = () => {
   return request.get({ url: '/agri/farm-plan/farmPlanStatistics' })
 }
+
+// 二渡 种植品种
+export const getCropNameDistribution = () => {
+  return request.get({ url: '/agriculture/crop-base/get-crop-name-distribution' })
+}

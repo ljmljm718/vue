@@ -20,13 +20,12 @@ export default defineComponent({
     const getParkData = async () => {
       const { list } = await ParkInfoApi.getParkInfoPage({})
       if (Array.isArray(list) && list.length > 0) {
-        const _arr = list.map(item => (JSON.parse(item.geofencing)))
-        _arr.forEach(item => {
-          if (Array.isArray(item) && item.length > 0) {
-            // const polyArr = item[0].map(ele => ([ele.lng, ele.lat]))
-            // if (cesiumIns.value) cesiumIns.value.createPolygon(undefined, polyArr)
-          }
-        })
+        const _arr = list.map(item => {
+          const geofencing = JSON.parse(item.geofencing)
+          if (Array.isArray(geofencing)) return geofencing
+          const { corrdinates, option } = geofencing;
+          return corrdinates;
+        }))
 
         if (Array.isArray(_arr) && _arr.length > 0) {
           const features = turf.points([
