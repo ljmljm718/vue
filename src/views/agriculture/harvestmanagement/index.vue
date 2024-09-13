@@ -118,7 +118,8 @@
         </el-form-item>
       </div>
       <div class="grow">
-        <IntroduceAlert title="采收管理模块的主要职责是集中展示作物的产量信息、库存状况以及相关的人工数据。"/>
+        <IntroduceAlert
+          title="采收管理模块的主要职责是集中展示作物的产量信息、库存状况以及相关的人工数据。"/>
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border>
@@ -148,20 +149,20 @@
         v-if="show !==118"/>
       <!--      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />-->
       <el-table-column label="采收数量（亩/只/条）" align="center" prop="harvestNum" width="160">
-<!--        <template #default="scope">-->
-<!--          {{-->
-<!--            scope.row.harvestNum-->
-<!--              ? (-->
-<!--                scope.row.variety === '水稻'-->
-<!--                  ? scope.row.harvestNum + ' 亩'-->
-<!--                  : scope.row.variety === '鸭'-->
-<!--                    ? scope.row.harvestNum + ' 只'-->
-<!--                    : scope.row.variety === '鱼'-->
-<!--                      ? scope.row.harvestNum + ' 条'-->
-<!--                      : ''-->
-<!--              ) : '-'-->
-<!--          }}-->
-<!--        </template>-->
+        <!--        <template #default="scope">-->
+        <!--          {{-->
+        <!--            scope.row.harvestNum-->
+        <!--              ? (-->
+        <!--                scope.row.variety === '水稻'-->
+        <!--                  ? scope.row.harvestNum + ' 亩'-->
+        <!--                  : scope.row.variety === '鸭'-->
+        <!--                    ? scope.row.harvestNum + ' 只'-->
+        <!--                    : scope.row.variety === '鱼'-->
+        <!--                      ? scope.row.harvestNum + ' 条'-->
+        <!--                      : ''-->
+        <!--              ) : '-'-->
+        <!--          }}-->
+        <!--        </template>-->
       </el-table-column>
       <el-table-column label="采收量" align="center" prop="harvestVolume" width="180">
         <template #default="scope">
@@ -191,7 +192,7 @@
             link
             type="warning"
             @click="damn(scope.row)"
-            v-if="getTenantId() !== 158"
+            v-if="parseInt(scope.row.remark) < parseInt(scope.row.harvestVolume)"
           >
             加工记录
           </el-button>
@@ -233,21 +234,33 @@
       <h3>加工记录</h3>
     </template>
     <template #default>
-      <el-timeline style="max-width: 600px">
-        <el-timeline-item
-          v-for="item, index in formData"
-          :key="index"
-          :timestamp="formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') "
-          placement="top"
-        >
-          <el-card>
-            <h4>品种名称：{{ item.product }}</h4>
-            <p>批次码：{{ item.batchCode }}</p>
-            <p>消耗量：{{ item.remark + " " + "Kg" }}</p>
-            <p>加工时间：{{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
+      <!--      <el-timeline style="max-width: 600px">-->
+      <!--        <el-timeline-item-->
+      <!--          v-for="item, index in formData"-->
+      <!--          :key="index"-->
+      <!--          :timestamp="formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') "-->
+      <!--          placement="top"-->
+      <!--        >-->
+      <!--          <el-card>-->
+      <!--            <h4>品种名称：{{ item.product }}</h4>-->
+      <!--            <p>批次码：{{ item.batchCode }}</p>-->
+      <!--            <p>消耗量：{{ item.remark + " " + "Kg" }}</p>-->
+      <!--            <p>加工时间：{{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}</p>-->
+      <!--          </el-card>-->
+      <!--        </el-timeline-item>-->
+      <!--      </el-timeline>-->
+      <el-table v-loading="loading" :data="formData" :stripe="true" :show-overflow-tooltip="true">
+        <el-table-column label="品种名称" align="center" prop="product"/>
+        <el-table-column label="批次号" align="center" prop="batchCode"/>
+        <el-table-column
+          label="加工时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="消耗量(Kg)" align="center" prop="remark"/>
+      </el-table>
     </template>
     <template #footer>
       <div style="flex: auto">

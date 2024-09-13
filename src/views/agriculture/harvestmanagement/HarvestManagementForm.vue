@@ -230,11 +230,15 @@ const handleParkInfoPopupChange = async (order: CropBaseVO) => {
   console.log("formData.value", formData.value.unit);
 };
 
+console.log("HERE")
+
 /** 打开弹窗 */
 const open = async (type: string, id?: any) => {
+  console.log("OPEN")
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  console.log("OPEN")
   resetForm()
   if (typeof id === 'object') {
     formData.value.varietyId = id.id
@@ -247,15 +251,20 @@ const open = async (type: string, id?: any) => {
     formData.value.parkDetailName = id.plotName
     boo.value = true
   }
+  console.log("OPEN")
   // 修改时，设置数据
   if (typeof id === 'string' || typeof id === 'number') {
+    console.log("OPEN")
     formLoading.value = true
     try {
       formData.value = await HarvestManagementApi.getHarvestManagement(id)
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
+      console.log("batchCode", formData.value.batchCode)
+      if (formData.value.batchCode) parkInfoPopupRef.value.getItemByBatchCode(formData.value.batchCode)
     }
   }
+  console.log("FORMDATA", formData.value)
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
