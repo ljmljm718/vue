@@ -317,7 +317,7 @@ onMounted(async () => {
                   <div class="text-[12px]">
                     {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
                     -
-                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'无' }}
+                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'暂无数据' }}
                   </div>
                 </div>
               </div>
@@ -332,15 +332,21 @@ onMounted(async () => {
           <div class="w-150px text-center p-1">时间</div>
           <div class="w-100px text-center p-1">处理状态</div>
         </div>
-        <el-scrollbar style="height: 310px" class="warn-table-wrapper">
-          <div
-            class="w-447px flex text-#fff items-center warn-table-item transition" v-for="item in warnList"
+        <div v-if = "warnList.length>0">
+          <el-scrollbar style="height: 310px" class="warn-table-wrapper">
+          <div 
+            class="w-447px flex text-#fff items-center warn-table-item transition" 
+            v-for="item in warnList"
             :key="item.id" style="border: 1px solid #043b24;">
             <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
             <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
             <div class="w-100px text-center p-1">{{item.warnStatus === 0 ? '未处理':'已处理' }}</div>
           </div>
         </el-scrollbar>
+        </div>
+        <div v-else>
+          <div class="flex w-full h-75px justify-center items-center text-center text-[#01F892]">暂无预警信息的数据</div>
+        </div>
       </div>
     </div>
     <div
