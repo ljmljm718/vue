@@ -25,8 +25,6 @@ const getTopLeftDataList = async () => {
       getAreaYieldSales(), // 返回对象
       getErduEquipmentCount() // 返回数组
     ])
-    console.log("🚀 ~ getTopLeftDataList ~ topLeftDataListOne:", topLeftDataListOne)
-    console.log("🚀 ~ getTopLeftDataList ~ topLeftDataListTwo:", topLeftDataListTwo)
 
     topLeftDataList.value = [
       {
@@ -46,7 +44,7 @@ const getTopLeftDataList = async () => {
         id: 3,
         title: '销售额',
         value: topLeftDataListOne.salesVolume,
-        unit: '万元',
+        unit: '元',
         logo: 'icon-icon-xiaoshoue'
       }, {
         id: 4,
@@ -81,18 +79,6 @@ const getTopLeftDataList = async () => {
       }
     ]
     return
-    
-    topLeftDataList.value[0].value = topLeftDataListOne?.area || 0 
-    topLeftDataList.value[1].value = topLeftDataListOne?.yield || 0 
-    topLeftDataList.value[2].value = topLeftDataListOne?.salesVolume || 0
-
-    topLeftDataList.value[3].value = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.totality || 0 
-    topLeftDataList.value[4].value[0] = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.online || 0 
-    topLeftDataList.value[4].value[1] = topLeftDataListTwo[topLeftDataListTwo.length - 1]?.offline || 0 
-    topLeftDataList.value[5].value = topLeftDataListTwo.find(item => item.typeName === "视频监控") || 0
-
-    console.log('合并后的数据:', topLeftDataList.value)
-
   } catch (error) {
     console.error('获取数据失败:', error)
   }
@@ -100,101 +86,112 @@ const getTopLeftDataList = async () => {
 
 
 // 种植作物规模 chart
-const initPlantCropNumChart = async() => {
-  const lineChartData:any[] = await getFiveYearValue()
-  let linexAisData: number[] = []
-  let lineyAisData: number[] = []
-  let yAxisUnit:string = '';
-  lineChartData.forEach(item => {
-    linexAisData.push(item.heng_year); 
-    lineyAisData.push(item.zong_summation); 
-    if (!yAxisUnit) { 
-        yAxisUnit = item.unit;
+const initPlantCropNumChart = async () => {
+  const lineChartData: any[] = await getFiveYearValue()
+  const yearArr = [2021, 2022, 2023, 2024];
+  const formattedData = yearArr.map(item => {
+    const selectedItem = lineChartData.find(ele => ele.heng_year === item)
+    if (selectedItem) return selectedItem
+    return {
+      heng_year: item,
+      unit: '亩',
+      zong_summation: 0
     }
-});
+  })
+  const linexAisData: number[] = formattedData.map(item => item.heng_year)
+  const lineyAisData: number[] = formattedData.map(item => item.zong_summation)
+
   initChartStatic(
-    'plantCropNum', 
+    'plantCropNum',
     generateBaseOptions({
       xAxis: {
-      type: 'category',
-      data: linexAisData,
-      axisLine: {
-        show: true,
-        lineStyle: {
-          color: '#a1a1aa80'
-        }
-      }
-    },
-    legend: {
-      show: true,
-      orient: 'horizontal',
-      itemWidth: 15,
-      itemHeight: 15,
-    },
-    color: ['rgba(126, 193, 232,1)', '#36e1d9'],
-    yAxis: {
-      name: '',
-      type: 'value',
-      axisLine: {
-        show: true,
-        lineStyle: {
-          color: '#a1a1aa80'
+        type: 'category',
+        data: linexAisData,
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#a1a1aa80'
+          }
         }
       },
-      splitLine: {
-        //网格线
-        show: true, //是否显示
-        lineStyle: {
-          //网格线样式
-          color: '#a1a1aa80', //网格线颜色
-          width: 1, //网格线的加粗程度
-          type: 'dashed' //网格线类型
+      legend: {
+        show: true,
+        orient: 'horizontal',
+        itemWidth: 15,
+        itemHeight: 15,
+      },
+      color: ['rgba(126, 193, 232,1)', '#36e1d9'],
+      yAxis: {
+        name: '',
+        type: 'value',
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#a1a1aa80'
+          }
+        },
+        splitLine: {
+          //网格线
+          show: true, //是否显示
+          lineStyle: {
+            //网格线样式
+            color: '#a1a1aa80', //网格线颜色
+            width: 1, //网格线的加粗程度
+            type: 'dashed' //网格线类型
+          }
+        },
+        splitArea: {
+          //网格区域
+          show: false //是否显示
         }
       },
-      splitArea: {
-        //网格区域
-        show: false //是否显示
+      series: [
+        {
+          name: '种植规模',
+          data: lineyAisData,
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            color: {
+              type: 'linear',
+              colorStops: [
+                {
+                  offset: 0,
+                  color: 'rgba(126, 193, 232,1)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(126, 193, 232,0.2)'
+                }
+              ]
+            }
+          },
+          label: {
+            show: false, //开启显示
+            position: 'right', //在上方显示
+            textStyle: {
+              //数值样式
+              color: '#a1a1aa',
+              fontSize: 10
+            }
+          },
+        }
+      ],
+      tooltip: {
+        formatter: (item) => {
+          console.log("🚀 ~ initPlantCropNumChart ~ item:", item)
+          const _item = formattedData.find(ele => ele.heng_year.toString() === item[0].name);
+          if (!_item) return ''
+          return `${_item.heng_year}年<br />${item[0].marker}种植规模<span style="padding-left: 1rem;">${_item.zong_summation}${_item.unit}</span>`
+        }
+      },
+      grid: {
+        left: '30',
+        right: '26',
+        top: '16%',
+        bottom: '12%'
       }
-    },
-    series: [
-      {
-        name: '种植规模',
-        data: lineyAisData,
-        type: 'line',
-        smooth: true,
-        areaStyle:{
-          color:{
-            type:'linear',
-            colorStops: [
-              {
-                offset: 0,
-                color: 'rgba(126, 193, 232,1)' 
-              },
-              {
-                offset: 1,
-                color: 'rgba(126, 193, 232,0.2)'
-              }
-            ]
-          }
-        },
-        label: {
-          show: true, //开启显示
-          position: 'right', //在上方显示
-          textStyle: {
-            //数值样式
-            color: '#a1a1aa',
-            fontSize: 10
-          }
-        },
-      }
-    ],
-    grid: {
-      left: '8%',
-      right: '6%',
-      top: '6%',
-      bottom: '12%'
-    }
-  }))
+    }))
 }
 onMounted(() => {
   initPlantCropNumChart();
