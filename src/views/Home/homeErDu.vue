@@ -12,7 +12,8 @@ import {
   getFiveYearValue,
   getMissionStatisticsErdu,
   getProduceData,
-  getProduceList
+  getProduceList,
+  getCropNameDistribution
 } from './apis'
 
 //顶部左上方列表数据汇总
@@ -199,10 +200,14 @@ onMounted(() => {
 })
 
 // 种植品种一览图
-const initPlantTypeChart = (list = [
-  { name: '1', value: '2' },
-  { name: '4', value: '88' },
-]) => {
+const initPlantTypeChart = async () => {
+  const res = await getCropNameDistribution()
+  if (!res || !Array.isArray(res)) { return }
+  const seriesData = res.map(item => ({
+    name: item.cropName || '暂无数据',
+    value: item.number,
+    unit: item.unit || ''
+  }))
   initChartStatic('plantTypeChart', generatePieOptions({
     legend: {
       show: true,
@@ -222,15 +227,22 @@ const initPlantTypeChart = (list = [
         type: "pie",
         radius: "65%",
         center: ["50%", "50%"],
-        data: list,
+        data: seriesData,
         label: {
-          formatter: "{c} - {d}%",
+          formatter: "{b} - {d}%",
           shadowColor: 'transparent',
           borderColor: 'transparent',
           color: '#a1a1aa'
         },
       },
-    ],
+    ],tooltip: {
+        formatter: (item) => {
+          return `数据详情<br />${item.marker}${item.name}<span style="padding-left: 1rem;">${item.value}${item.data.unit}</span>`
+        },
+        position: function (point) {
+        return [point[0] - 90, point[1] + 20]
+      },
+      },
   }))
 }
 onMounted(() => { initPlantTypeChart() })
