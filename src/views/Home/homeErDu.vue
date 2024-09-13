@@ -241,11 +241,12 @@ onMounted(() => { initPlantTypeChart() })
 //数字产销中的特色产品柱状图,getProduceList
 const initDigitalSaleChart = async () => {
   const res = await getProduceData().catch(()=>{})
+  if(!Array.isArray(res)) return
   const data:Array<any> = []
   res.forEach((item) => {
     data.push({
-      name: item.city,
-      value: item.value
+      name: item?.city,
+      value: item?.value
     })
   })
   console.log("🚀 ~ res.forEach ~ data:", data)
@@ -289,9 +290,10 @@ onMounted(() => { initDigitalSaleChart() })
 // 数字产销 特色产品
 const initFeatureProductChart = async() => {
   const data = await getProduceList().catch(()=>{})
+  if(!Array.isArray(data)) return 
   console.log("🚀 ~ initFeatureProductChart ~ data:", data)
-  const productNames = data.map(item => item.product)
-  const values = data.map(item => item.value)
+  const productNames = data.map(item => item?.product)
+  const values = data.map(item => item?.value)
 
   initChartStatic('featureProduct', generateBaseOptions({
     dimensions: ['product', 'value'],
