@@ -322,7 +322,7 @@ const initFeatureProductChart = async() => {
     color: ['#5470c6', '#36e1d9'],
     yAxis: {
       type: 'value',
-      name: '销售额（万元）',
+      name: '销售额（元）',
       axisLine: {
         show: true,
         lineStyle: {
