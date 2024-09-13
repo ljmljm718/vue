@@ -92,7 +92,7 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="投喂时间" prop="feedTime">
+      <el-form-item label="操作时间" prop="feedTime">
         <el-date-picker
           v-model="queryParams.feedTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -187,10 +187,10 @@
         :formatter="dateFormatter2"
         width="140"
       />
-      <el-table-column label="投喂数量" align="center" prop="feedNum"/>
+      <el-table-column label="消耗量" align="center" prop="feedNum"/>
       <el-table-column label="单位" align="center" prop="feedOne"/>
       <el-table-column
-        label="投喂时间"
+        label="操作时间"
         align="center"
         prop="feedTime"
         :formatter="dateFormatter"
