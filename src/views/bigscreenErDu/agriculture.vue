@@ -220,14 +220,14 @@ getDeviceList()
             <div class="flex items-start space-x-2 mt-2">
               <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
               <div class="space-y-2 text-#d1d1d1 text-12px">
-                <div class="text-16px text-white">{{item.cropName}}</div>
-                <div>
+                <div class="text-[16px] text-white">{{item.cropName}}</div>
+                <div class="text-[12px]">
                   <span>所属地块:</span>
                   <span>{{ item.plotName }}</span>
                 </div>
-                <div>
+                <div class="text-[12px]">
                   <span>起止时间:</span>
-                  <div>
+                  <div class="text-[12px]">
                     {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
                     -
                     {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'无' }}
@@ -240,14 +240,14 @@ getDeviceList()
       </el-scrollbar>
       <div class="w-460px h-45px warn-title"></div>
       <div class="text-12px">
-        <div class="w-447px h-35px flex text-#01F892 items-center">
+        <div class="w-447px  flex text-#01F892 items-center">
           <div class="w-180px text-center p-1">预警信息</div>
           <div class="w-150px text-center p-1">时间</div>
           <div class="w-100px text-center p-1">处理状态</div>
         </div>
         <el-scrollbar style="height: 310px" class="warn-table-wrapper">
           <div
-            class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in warnList"
+            class="w-447px flex text-#fff items-center warn-table-item transition" v-for="item in warnList"
             :key="item.id" style="border: 1px solid #043b24;">
             <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
             <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
