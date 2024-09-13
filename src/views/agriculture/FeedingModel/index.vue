@@ -93,7 +93,7 @@
         <div>喂养量影响因子</div>
         <div class="factor-bg w-400px h-350px mx-auto mb-15px"></div>
         <div>
-          <div class='flex rounded-full item-center justify-evenly w-100% bg-[#f5f5f5]'> 
+          <div class='flex rounded-full item-center justify-evenly w-100% bg-[#f5f5f5]'>
           <div
           @click='getInfluence(index,item.influence)'
             v-for="(item, index) in FactorList"
@@ -153,7 +153,7 @@
         <div class="flex justify-between box-border px-15px py-15px bg-[#ebf7f7]">
           <div class="w-32%">
               <div
-                
+
                 class="!flex box-border justify-between mb-18px !px-[10px] !w-100% !h-35px !items-center rounded bg-[#fff] !border-2 !border-[#40b0a6] !border-solid"
               >
                 <div class='!w-150px'>生长期：</div>
@@ -246,7 +246,7 @@
             <div class="mt-7px color-[#666666]">{{ sycleVal.strategy }}</div>
           </div>
         </div>
-       
+
       </div>
     </div>
     <div class="flex justify-between mt-15px">
@@ -261,7 +261,7 @@
           <el-table-column prop="feedTime" label="投喂时间"  align='center' />
           <el-table-column prop="crabNum" label="蟹数量"   align='center'/>
           <el-table-column prop="feedNum" label="投喂量"  align='center' />
-          <el-table-column prop="feedType" label="饲料种类"  align='center' />
+          <el-table-column prop="productName" label="饲料名称"  align='center' />
         </el-table>
       </div>
     </div>
@@ -475,7 +475,7 @@ function timestampToDateTime(timestamp) {
     .padStart(2, '0')}`
 }
 const getFeedInfoPage = async () => {
-  let res = await FeedInfoPage({ pageNo: 1, pageSize: 10 })
+  let res = await FeedInfoPage({ pageNo: 1, pageSize: 10 ,farmingStage: 25})
   console.log(res, '喂养日志')
   tableData.value = res.list
   tableData.value.forEach((item) => {
