@@ -10,12 +10,22 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 adapter()
 defineOptions({ name: 'MapCustom' })
 const componentID = ref<string>(generateUUID())
+const message = useMessage() // 消息
+
+const props = defineProps({
+  // 使能绘制围栏
+  enableEdit: {
+    type: Boolean,
+    default: () => false
+  }
+})
 
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
 const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}'
 const CVA_TILE = '/tdCache/api/tdtmap/tile?T=cva_w&x={x}&y={y}&l={z}'
 
 let map: L.Map | null = null
+let activeLayer = null
 const initMap = () => {
   if (map) return;
   const vecLayer = L.tileLayer(VEC_TILE, { attribution: 'vec' })
@@ -54,7 +64,7 @@ const initMap = () => {
     map.invalidateSize(true)
   })
   //添加绘制图层
-  return;
+  if (!props.enableEdit) return;
   const drawnItems = new L.FeatureGroup()
   map.addLayer(drawnItems)
   //添加绘制控件
@@ -76,9 +86,23 @@ const initMap = () => {
   })
   //添加绘制控件
   map.addControl(drawControl)
+  map.on("draw:drawstart", async () => {
+    await message.confirm('绘制围栏需要先清除先前绘制的内容，是否继续？').then(() => {
+      if (activeLayer) {
+        map.removeLayer(activeLayer);
+        activeLayer = null;
+      }
+    }).catch(() => {
+      map.removeControl(drawControl)
+      map.addControl(drawControl)
+      if (activeLayer) activeLayer.addTo(map)
+    });
+  })
   map.on(L.Draw.Event.CREATED, (e) => {
     const type = e.layerType, layer = e.layer;
-    layer.addTo(map)
+    activeLayer = layer;
+    layer.setStyle({ ...layerStyle.value }).addTo(map)
+    showStyleController.value = true
   })
 }
 
@@ -90,13 +114,14 @@ onMounted(() => {
 const layerMap = new Map<string, any>()
 
 // 创建多边形
-const createPolygon = (latlngs: L.point[], option = {}) => {
+const createPolygon = (latlngs: L.point[], option = {}, enableEdit = true) => {
   const sha256 = CryptoJS.SHA256(latlngs.toString().replace(' ', '')).toString()
   const polygon = L.polygon(latlngs, option)
   if (!layerMap.has(sha256)) {
     polygon.addTo(map)
     layerMap.set(sha256, polygon)
   }
+  if (enableEdit) activeLayer = polygon
   map.fitBounds(latlngs, { padding: [5, 5] })
 }
 
@@ -105,10 +130,34 @@ const setCenterZoom = (latlng: L.point, zoom: number) => {
   map.setView(latlng, zoom)
 }
 
+const showStyleController = ref<boolean>(false)
+const layerStyle = ref({
+  color: '#3388ff',
+  fillColor: '#3388ff',
+  weight: 1
+})
+const handleStyleChange = () => {
+  activeLayer.setStyle({
+    ...layerStyle.value,
+  })
+}
+
+const getCurrentSaveCoordinates = () => {
+  const { editing } = activeLayer;
+  const { latlngs } = editing;
+  if (Array.isArray(latlngs) && latlngs.length > 0) {
+    const corrdinates = latlngs[0]
+    return { corrdinates, option: layerStyle.value }
+  } else {
+    return { corrdinates: [], option: {} }
+  }
+}
+
 defineExpose({
   initMap,
   createPolygon,
-  setCenterZoom
+  setCenterZoom,
+  getCurrentSaveCoordinates
 })
 </script>
 <template>
@@ -117,6 +166,39 @@ defineExpose({
       class="w-full h-full"
       :id="`mapIns_${componentID}`"
     ></div>
+    <div
+      class="absolute right-3 bottom-3 p-6 py-4 bg-white z-999 rounded-2 shadow-md"
+      v-show="showStyleController"
+    >
+      <div class="flex items-center">
+        <div class="flex items-center py-2">
+          <div class="w-5rem">边框颜色:</div>
+          <div class="w-3rem">
+            <el-color-picker v-model="layerStyle.color" @change="handleStyleChange()" />
+          </div>
+        </div>
+        <div class="flex items-center py-2">
+          <div class="w-5rem">填充颜色:</div>
+          <div class="w-3rem">
+            <el-color-picker v-model="layerStyle.fillColor" @change="handleStyleChange()" />
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center py-2">
+        <div class="w-5rem">边框宽度:</div>
+        <div>
+          <el-input-number
+            v-model="layerStyle.weight"
+            class="!w-10rem"
+            :min="1"
+            :max="10"
+            @change="handleStyleChange()"
+          />
+        </div>
+      </div>
+      
+    </div>
   </div>
 </template>
 <style lang="scss">

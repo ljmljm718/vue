@@ -56,7 +56,10 @@
       destroy-on-close
     >
       <div class="w-full h-[60vh]">
-        <TianDiMap ref="tiandiIns1" />
+        <map-custom
+          ref="tiandiIns1"
+          :enableEdit="true"
+        />
       </div>
       <template #footer>
         <el-button size="small" @click="handleCancel()">取 消</el-button>
@@ -68,7 +71,7 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo'
-import TianDiMap from '@/views/tianDi/index.vue'
+// TODO: 天地图调整leaflet
 import { ElMessage } from 'element-plus'
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
 import * as turf from '@turf/turf'
@@ -107,13 +110,12 @@ const handleDraw = (item) => {
         })
         
         tiandiIns1.value.createPolygon(_polyArr)
-        const _center = turf.center(turf.points(_arr[0].map(ele => {
-          return [ele.lng, ele.lat]
-        })))
-        const { geometry } = _center;
-        const { coordinates } = geometry
-        const _zoom = areaMatchZoom(_arr[0].map(_ele => ([_ele.lng, _ele.lat])))
-        tiandiIns1.value.setCenterZoom(coordinates, _zoom)
+      } else {
+        // TODO： 新版
+        const { corrdinates, option } = JSON.parse(geofencing);
+        if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+          tiandiIns1.value.createPolygon(corrdinates, option)
+        }
       }
     }
   })
@@ -122,8 +124,9 @@ const handleDraw = (item) => {
 // 确定保存围栏信息
 const handleConfirm = async () => {
   const geofencing = tiandiIns1.value.getCurrentSaveCoordinates()
-  if (!Array.isArray(geofencing)) return ElMessage.error('您还未选择区域!')
-  if (geofencing.length < 1) return ElMessage.error('您还未选择区域!')
+  const { corrdinates, option } = geofencing;
+  if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!')
+  if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!')
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),

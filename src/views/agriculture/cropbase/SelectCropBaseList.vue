@@ -316,7 +316,22 @@ const open = async (id: string) => {
   // 加载下属地块列表
   await resetQuery()
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+
+const getItemByBatchCode = async (batchCode:string) => {
+  queryParams.pageSize = 100;
+  await getList();
+  queryParams.pageSize = 10;
+  const selectedItem = list.value.find(item => item.batchCode === batchCode);
+  if (!selectedItem) return;
+  selectionList.value = [selectedItem as any];
+  submitForm()
+  await resetQuery()
+}
+
+defineExpose({
+  open,
+  getItemByBatchCode
+}) // 提供 open 方法，用于打开弹窗
 
 /** 加载列表  */
 const getList = async () => {

@@ -260,8 +260,8 @@
             />
           </div>
         </div>
-        <div class="h-full grow bg-green">
-          <ParkMap ref="parkMapIns" />
+        <div class="h-full grow bg-#f1f1f1">
+          <map-custom ref="parkMapIns" />
         </div>
       </div>
     </div>
@@ -361,7 +361,7 @@
     destroy-on-close
   >
     <div class="w-full h-[60vh]">
-      <TianDiMap ref="tiandiIns" />
+      <map-custom ref="tiandiIns" :enableEdit="true" />
     </div>
     <template #footer>
       <el-button size="small" @click="handleCancel()">取 消</el-button>
@@ -377,14 +377,11 @@ import download from '@/utils/download'
 import { ElMessage } from 'element-plus'
 import { dateFormatter } from '@/utils/formatTime'
 import dayjs from 'dayjs'
-// @ts-ignore
-import TianDiMap from '@/views/tianDi/index.vue'
+// TODO: 天地图调整leaflet
 // @ts-ignore
 import ParkDetailList from './components/ParkDetailList.vue'
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
 import * as turf from '@turf/turf'
-// @ts-ignore
-import ParkMap from './parkMap.vue'
 
 const showType = ref<string>('card')
 const parkMapIns = ref() // 地图实例
@@ -525,7 +522,7 @@ const areaMatchZoom = (_pos: any[]) => {
   return Math.floor(17 - (12 * area) / 3600000000)
 }
 const handleDraw = (item) => {
-  const { id, geofencing } = item
+  const { id, geofencing } = item;
   if (!id) {
     ElMessage.error('当前数据ID不存在')
     return
@@ -533,28 +530,19 @@ const handleDraw = (item) => {
   selectedDrawId.value = id
   showDrawDialog.value = true
   nextTick(() => {
-    tiandiIns.value.initMap()
     if (geofencing) {
       const _arr = JSON.parse(geofencing)
       if (Array.isArray(_arr) && _arr.length === 1) {
-        const _polyArr = _arr[0].map((ele) => {
-          // @ts-ignore
-          return T.LngLat(ele.lng, ele.lat)
-        })
-
-        const _zoom = areaMatchZoom(_arr[0].map((_ele) => [_ele.lng, _ele.lat]))
-
-        tiandiIns.value.createPolygon(_polyArr)
-        const _center = turf.center(
-          turf.points(
-            _arr[0].map((ele) => {
-              return [ele.lng, ele.lat]
-            })
-          )
-        )
-        const { geometry } = _center
-        const { coordinates } = geometry
-        tiandiIns.value.setCenterZoom(coordinates, _zoom)
+        const _polyArr = _arr[0].map((ele) => ([ele.lat, ele.lng]))
+        setTimeout(() => {
+          tiandiIns.value.createPolygon(_polyArr)
+        }, 500)
+      } else {
+        // TODO： 新版
+        const { corrdinates, option } = JSON.parse(geofencing);
+        if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+          tiandiIns.value.createPolygon(corrdinates, option)
+        }
       }
     }
   })
@@ -575,24 +563,14 @@ const handleDrawPark = (item) => {
   if (!geofencing) return ElMessage.warning('当前基地或地块尚未绘制电子围栏！')
   const _arr = JSON.parse(geofencing)
   if (Array.isArray(_arr) && _arr.length === 1) {
-    const _polyArr = _arr[0].map((ele) => {
-      // @ts-ignore
-      return T.LngLat(ele.lng, ele.lat)
-    })
-
-    const _zoom = areaMatchZoom(_arr[0].map((_ele) => [_ele.lng, _ele.lat]))
-
+    const _polyArr = _arr[0].map((ele) => ([ele.lat, ele.lng]))
     parkMapIns.value.createPolygon(_polyArr)
-    const _center = turf.center(
-      turf.points(
-        _arr[0].map((ele) => {
-          return [ele.lng, ele.lat]
-        })
-      )
-    )
-    const { geometry } = _center
-    const { coordinates } = geometry
-    parkMapIns.value.setCenterZoom(coordinates, _zoom)
+  } else {
+    // TODO： 新版
+    const { corrdinates, option } = JSON.parse(geofencing);
+    if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+      parkMapIns.value.createPolygon(corrdinates, option)
+    }
   }
 }
 
@@ -621,8 +599,9 @@ const handleParkClick = async (item, _showPlot = true) => {
 
 const handleConfirm = async () => {
   const geofencing = tiandiIns.value.getCurrentSaveCoordinates()
-  if (!Array.isArray(geofencing)) return ElMessage.error('您还未选择区域!')
-  if (geofencing.length < 1) return ElMessage.error('您还未选择区域!')
+  const { corrdinates, option } = geofencing;
+  if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!')
+  if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!')
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),
