@@ -19,7 +19,6 @@ import BigscreenCalendar from './components/calendar.vue'
 
 import {
   initChartStatic,
-  generateBaseOptions,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
 
@@ -70,10 +69,6 @@ const getResList = async () => {
   }
 }
 
-onMounted(() => {
-  initMap();
-  getResList();
-})
 //种养信息
 const cropList = ref<any[]>([]);
 const getCropBase = async () =>{
