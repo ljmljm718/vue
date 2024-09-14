@@ -8,9 +8,19 @@ import {
   getBreedCategory,
   getDeviceInfo,
   getVarietyManagement,
+  qjDeviceStatistics,
   cropBase,
-  warnRecordInfo
+  warnRecordInfo,
+  getAgriMissionPlan,
+  getAllBase,
+  getAllPlotByBaseID,
 } from './api'
+import BigscreenCalendar from './components/calendar.vue'
+
+import {
+  initChartStatic,
+  generatePieOptions
+} from '../../utils/bigscreenTool/index'
 
 adapter()
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -59,18 +69,13 @@ const getResList = async () => {
   }
 }
 
-onMounted(() => { initMap(),getResList() })
 //种养信息
-const pageNo = 1
-const pageSize = 100
-const params = {
-  pageNo,
-  pageSize
-}
-
 const cropList = ref<any[]>([]);
 const getCropBase = async () =>{
-  const { list } = await cropBase(params)
+  const { list } = await cropBase({
+    pageNo: 1,
+    pageSize: 100
+  })
   if (!Array.isArray(list)) return;
   cropList.value = list;
 }
@@ -135,6 +140,196 @@ const getDeviceList = async () => {
 }
 getDeviceList()
 /****************************** 设备信息  end  ******************************/
+
+// 中上设备信息
+const topDataInfo = ref<any>({
+  total: '',
+  online: '',
+  offline: '',
+  warningEquipmentDevice: ''
+})
+const getTopDataList = async()=>{
+  const res = await qjDeviceStatistics()
+  const {
+    total = '',
+    online = '',
+    offline = '',
+    warningEquipmentDevice = ''
+  } = res;
+  topDataInfo.value = { total, online, offline, warningEquipmentDevice }
+}
+getTopDataList()
+//品种分布
+const initChart = async () => {
+  const res = await getBreedCategory()
+  if (!res || !Array.isArray(res)) { return }
+  const seriesData = res.map(item => ({
+    name: item.category_name || '暂无数据',
+    value: item.number,
+    unit: item.unit
+  }))
+  initChartStatic(
+    'typePercentChart',
+    generatePieOptions({
+      legend: {
+        show: true,
+        top: '30%',
+        left: '60%',
+        bottom: '0',
+        orient: 'vertical',
+        itemWidth: 15,
+        itemHeight: 15,
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      color: ['#01faea', '#02fbbc','#ff994d'],
+      series: [
+        {
+          type: 'pie',
+          minAngle: 10,
+          startAngle:200,
+          radius: ['35%', '60%'],
+          center: ['30%', '50%'],
+          data: seriesData,
+          label: {
+            formatter: ({ name, percent }) => `${name} - (${parseInt(percent)}%)`,
+            color: '#fff',
+            position: ['50%', '50%']
+          },
+          emphasis: {
+            itemStyle: { borderWidth: 0 }
+          },
+        }
+      ],
+      tooltip: {
+        formatter: (item) => {
+          return `数据详情<br />${item.marker}${item.name}<span style="padding-left: 1rem;">${item.value} ${item.data.unit}</span>`
+        },
+        position: function (point) {
+          return [point[0] - 90, point[1] + 20]
+        },
+      },
+    })
+  )
+}
+
+onMounted(async () => {
+  await initMap();
+  await getResList();
+  await initChart(); 
+});
+
+
+/****************************** 农事任务 start ******************************/
+const calendarIns = ref()
+const missionList = ref<Array<any>>([])
+const remindArr = ref<Array<string>>([])
+const curBase = ref<any>({})
+const baseList = ref<Array<any>>([])
+const curPlot = ref<any>({})
+const plotList = ref<Array<any>>([])
+const showOptions = ref<boolean>(false)
+const showOptionsBase = ref<boolean>(false)
+const showingMission = ref<any>()
+
+window.addEventListener('click', () => {
+  showOptions.value = false
+  showOptionsBase.value = false
+})
+
+const showOpt = (e: any) => {
+  e.stopPropagation()
+  showOptions.value = true
+}
+
+const showOptBase = (e: any) => {
+  e.stopPropagation()
+  showOptionsBase.value = true
+}
+
+const changeOpt = (item: any) => {
+  curPlot.value = item
+  const _date = new Date()
+  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, item.code)
+}
+
+const changeOptBase = async (item: any) => {
+  curBase.value = item
+  // 根据基地ID获取地块列表
+  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id })
+  if (!pList || !Array.isArray(pList) || pList.length === 0) {
+    curPlot.value = {}
+    plotList.value = []
+    return
+  }
+  plotList.value = pList
+  curPlot.value = plotList.value[0]
+  // console.log("切换基地后 地块列表: ", pList)
+  const _date = new Date()
+  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, curPlot.value.code)
+}
+
+// 获取指定年月 指定地块 的农事任务列表
+const getMissionPlan = async (yearMonth: string, belongPlot: string) => {
+  const res = await getAgriMissionPlan({ yearMonth, belongPlot })
+  if (Array.isArray(res)) {
+    missionList.value = res
+    remindArr.value = res.filter(item => (Array.isArray(item.planList) && item.planList.length > 0)).map(item => item.monthDate)
+  }
+  // console.log("哪些日期有任务: ", remindArr.value)
+}
+
+// 初始化农事任务
+const initMission = async () => {
+  
+  // 获取基地列表 设置第0项为当前基地
+  let bList = await getAllBase()
+  if (!bList || !Array.isArray(bList) || bList.length === 0) {
+    return
+  }
+  baseList.value = bList
+  curBase.value = baseList.value[0]
+  // console.log("基地列表: ", bList)
+
+  // 根据基地ID获取地块列表 设置第0项为当前地块
+  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id })
+  if (!pList || !Array.isArray(pList) || pList.length === 0) {
+    return
+  }
+  plotList.value = pList
+  curPlot.value = plotList.value[0]
+  // console.log("地块列表: ", pList)
+
+  // 获取农事任务列表
+  let tmp = new Date()
+  let year = tmp.getFullYear()
+  let month = tmp.getMonth() + 1
+  getMissionPlan(`${ year }-${ month }`, curPlot.value.code)
+}
+initMission()
+
+// 显示当天的事项
+const handleCalendarClick = (item: any) => {
+  const formatMonthDay = (val) => val > 9 ? val : ('0' + val)
+  // console.log('处理日历点击事件: ', item)
+  showingMission.value = null
+  showingMission.value = missionList.value.find((ele) => {
+    const _date_ = item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)
+    return _date_ === ele.monthDate
+  })
+  // console.log("对应农事任务列表: ", showingMission.value)
+  showingMission.value.monthDate = showingMission.value.monthDate ? showingMission.value.monthDate : item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)
+}
+
+// 切换月份 重新获取农事任务列表
+const handleCalendarChange = (item: Date) => {
+  if (!curBase.value.id || !curPlot.value.code) {
+    return
+  }
+  getMissionPlan(`${item.getFullYear()}-${item.getMonth() + 1}`, curPlot.value.code)
+}
+/****************************** 农事任务  end  ******************************/
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
@@ -203,9 +398,87 @@ getDeviceList()
       </div>
       <div class="w-460px h-45px type-title"></div>
       <div class="p-4 box-border">
-        <div class="h-220px bg-red"></div>
+        <div class="h-220px">
+          <div class="items-start w-full h-full " id="typePercentChart"></div>
+        </div>
       </div>
+      <!-- 农事任务 -->
       <div class="w-460px h-45px mission-title"></div>
+      <div class="flex justify-between items-center text-[#11eeaf] cursor-pointer">
+        <div class="relative h-[1.4rem] w-[15rem]">
+          <div class="h-full text-center cursor-pointer" @click="showOptBase">
+            {{ curBase.name }}
+            <el-icon class="ml-3 relative top-[.1rem]"><CaretBottom /></el-icon>
+          </div>
+          <div
+            v-if="showOptionsBase && Array.isArray(baseList) && baseList.length > 0"
+            class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem]"
+          >
+            <el-scrollbar max-height="8rem">
+              <div
+                v-for="item in baseList"
+                :key="item.id"
+                class="py-3 text-center w-full bg-[#0d1724]"
+                @click="changeOptBase(item)"
+              >
+                {{ item.name }}
+              </div>
+            </el-scrollbar>
+          </div>
+        </div>
+        <div class="relative h-[1.4rem] w-[10rem]">
+          <div class="h-full text-center cursor-pointer" @click="showOpt">
+            {{ curPlot.name ? curPlot.name : '-----'}}
+            <el-icon class="ml-3 relative top-[.1rem]"><CaretBottom /></el-icon>
+          </div>
+          <div
+            v-if="showOptions && Array.isArray(plotList) && plotList.length > 0"
+            class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem]"
+          >
+            <el-scrollbar max-height="8rem">
+              <div
+                v-for="item in plotList"
+                :key="item.code"
+                class="py-3 text-center w-full bg-[#0d1724]"
+                @click="changeOpt(item)"
+              >
+                {{ item.name }}
+              </div>
+            </el-scrollbar>
+          </div>
+        </div>
+      </div>
+      <div class="mission-split"></div>
+      <div class="w-450px h-300px">
+        <div class="w-450px h-300px">
+          <BigscreenCalendar
+            :key="curPlot ? curPlot.code : ''"
+            ref="calendarIns"
+            :remind="remindArr"
+            @select="(item) => { handleCalendarClick(item) }"
+            @change="(item) => { handleCalendarChange(item) }"
+          >
+            <template #tip>
+              <div v-if="showingMission" class="pt-[10px] pb-[20px] px-[15px] w-full h-full box-border font-normal">
+                <div class="w-full text-white text-center">{{ showingMission.monthDate }}</div>
+                <div class="mt-[10px] w-full h-[90px] text-center text-[#01F892]">
+                  <el-scrollbar>
+                    <div
+                      v-for="item, index in showingMission.planList"
+                      :key="`item.planName${index}`"
+                      class="tracking-widest"
+                    >
+                      <div class="pb-[10px]">
+                        {{ item.planName }}
+                      </div>
+                    </div>
+                  </el-scrollbar>
+                </div>
+              </div>
+            </template>
+          </BigscreenCalendar>
+        </div>
+      </div>
     </div>
     <!-- 种养信息 -->
     <div class="h-full w-460px">  
@@ -221,17 +494,17 @@ getDeviceList()
             <div class="flex items-start space-x-2 mt-2">
               <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
               <div class="space-y-2 text-#d1d1d1 text-12px">
-                <div class="text-16px text-white">{{item.cropName}}</div>
-                <div>
+                <div class="text-[16px] text-white">{{item.cropName}}</div>
+                <div class="text-[12px]">
                   <span>所属地块:</span>
                   <span>{{ item.plotName }}</span>
                 </div>
-                <div>
+                <div class="text-[12px]">
                   <span>起止时间:</span>
-                  <div>
+                  <div class="text-[12px]">
                     {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
                     -
-                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'无' }}
+                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'暂无数据' }}
                   </div>
                 </div>
               </div>
@@ -241,20 +514,26 @@ getDeviceList()
       </el-scrollbar>
       <div class="w-460px h-45px warn-title"></div>
       <div class="text-12px">
-        <div class="w-447px h-35px flex text-#01F892 items-center">
-          <div class="w-110px text-center">预警信息</div>
-          <div class="w-237px text-center">时间</div>
-          <div class="w-100px text-center">处理状态</div>
+        <div class="w-447px  flex text-#01F892 items-center">
+          <div class="w-180px text-center p-1">预警信息</div>
+          <div class="w-150px text-center p-1">时间</div>
+          <div class="w-100px text-center p-1">处理状态</div>
         </div>
-        <el-scrollbar style="height: 310px" class="warn-table-wrapper">
-          <div
-class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in 14"
-            :key="item" style="border: 1px solid #043b24;">
-            <div class="w-110px text-center">土壤温度报警</div>
-            <div class="w-237px text-center">2024.09.06 13:00:00</div>
-            <div class="w-100px text-center">已处理</div>
+        <div v-if = "warnList.length>0">
+          <el-scrollbar style="height: 310px" class="warn-table-wrapper">
+          <div 
+            class="w-447px flex text-#fff items-center warn-table-item transition" 
+            v-for="item in warnList"
+            :key="item.id" style="border: 1px solid #043b24;">
+            <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
+            <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+            <div class="w-100px text-center p-1">{{item.warnStatus === 0 ? '未处理':'已处理' }}</div>
           </div>
         </el-scrollbar>
+        </div>
+        <div v-else>
+          <div class="flex w-full h-75px justify-center items-center text-center text-[#01F892]">暂无预警信息的数据</div>
+        </div>
       </div>
     </div>
     <div
@@ -264,7 +543,7 @@ class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">15</div>
+            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">{{ topDataInfo.total }}</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -273,8 +552,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">{{ topDataInfo.online }}</div>
+          <div class="text-16px">在线设备</div>
         </div>
       </div>
       <div class="flex space-x-2 items-center text-white">
@@ -282,8 +561,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">{{ topDataInfo.offline }}</div>
+          <div class="text-16px">离线数量</div>
         </div>
       </div>
       <div class="flex space-x-2 items-center text-white">
@@ -291,8 +570,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">{{ topDataInfo.warningEquipmentDevice }}</div>
+          <div class="text-16px">设备预警</div>
         </div>
       </div>
     </div>
@@ -409,4 +688,14 @@ class="text-32px font-bold text-linear-wrapper art-font"
   background-clip: text;
   color: transparent;
 }
+
+/****************************** 农事任务 start ******************************/
+.mission-split {
+  width: 460px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(1, 248, 146, 0) -1%, #01F892 50%, rgba(1, 248, 146, 0) 100%);
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+/****************************** 农事任务  end  ******************************/
 </style>
