@@ -164,12 +164,12 @@ const open = async (type: string, id?: number) => {
       formData.value = await FeedInfoApi.getFeedInfo(id)
       farmDefineOptions.value.forEach((item) =>{
         if(item.id  == formData.value.farmingStage){
-          formData.value.farmingStage = item.defineName
+          formData.value.farmingStage = item.id
         }
       })
       productInfoListALL.value.forEach((item) =>{
         if(item.id  == formData.value.feedType){
-          formData.value.feedType = item.name
+          formData.value.feedType = item.id
         }
       })
     } finally {
