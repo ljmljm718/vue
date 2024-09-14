@@ -184,15 +184,17 @@ const initChart = async () => {
           color: '#fff'
         }
       },
-      color: ['#01faea', '#02fbbc'],
+      color: ['#01faea', '#02fbbc','#ff994d'],
       series: [
         {
           type: 'pie',
+          minAngle: 10,
+          startAngle:200,
           radius: ['35%', '60%'],
           center: ['30%', '50%'],
           data: seriesData,
           label: {
-            formatter: ({ name, percent }) => `${name} - (${percent}%)`,
+            formatter: ({ name, percent }) => `${name} - (${parseInt(percent)}%)`,
             color: '#fff',
             position: ['50%', '50%']
           },
