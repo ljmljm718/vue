@@ -188,9 +188,10 @@
         >
         <template #header>
           <div class="flex items-center">
-            <div @click="sortChange(0)" class="cursor-pointer" v-if="timeNum==1">开始时间</div>
-            <div @click="sortChange(1)" class="cursor-pointer" v-else>开始时间</div>
-            <div class="time-icon w-10px ml-10px h-15px"  :style="` transform:${ timeNum=='1'?'rotate(180deg)' :'rotate(0deg)'} `"></div>
+            <div>开始时间</div>
+            <div  @click="sortChange(0)" class="time-icon2 w-10px ml-10px h-15px" v-if="timeNum==2"></div>
+            <div  @click="sortChange(1)" class="time-icon w-10px ml-10px h-15px" v-else-if="timeNum==0"></div>
+            <div  @click="sortChange(2)" class="time-icon w-10px ml-10px h-15px" v-else style="transform:rotate(180deg)"></div>
           </div>
         </template>
         </el-table-column>
@@ -238,9 +239,10 @@
         >
         <template #header>
           <div class="flex items-center">
-            <div @click="plantChange(0)" class="cursor-pointer" v-if="plantNum==1">种植顺序</div>
-            <div @click="plantChange(1)" class="cursor-pointer" v-else>种植顺序</div>
-            <div class="time-icon w-10px ml-10px h-15px"  :style="`transform:${ plantNum=='1'?'rotate(180deg)' :'rotate(0deg)'} `"></div>
+            <div>种植顺序</div>
+            <div  @click="plantChange(0)" class="time-icon2 w-10px ml-10px h-15px" v-if="plantNum==2"></div>
+            <div  @click="plantChange(1)" class="time-icon w-10px ml-10px h-15px" v-else-if="plantNum==0" ></div>
+            <div  @click="plantChange(2)" class="time-icon w-10px ml-10px h-15px" v-else style="transform:rotate(180deg)"></div>
           </div>
         </template>
         </el-table-column>
@@ -710,21 +712,35 @@ const resetQuery = () => {
 }
 
 // 时间排序
-const timeNum=ref(0)
+const timeNum=ref(2)
 const sortChange=async (val)=>{
   timeNum.value=val  
-  queryParams.ordersSort=undefined
-  queryParams.startTimeSort=val
-  getList()
   
-} 
-//种植排序
-const plantNum=ref(0)
-const plantChange=async (val)=>{
-  plantNum.value=val
-  queryParams.ordersSort=val
+  if(val==2){
+    queryParams.ordersSort=undefined
   queryParams.startTimeSort=undefined
   getList()
+  }else{
+    queryParams.ordersSort=undefined
+  queryParams.startTimeSort=val
+  getList()
+  }
+} 
+//种植排序
+const plantNum=ref(2)
+const plantChange=async (val)=>{
+  console.log(val,'zhongzhipaixu ')
+  plantNum.value=val
+  if(val==2){
+    queryParams.ordersSort=undefined
+  queryParams.startTimeSort=undefined
+  getList()
+  }else{
+    queryParams.ordersSort=val
+  queryParams.startTimeSort=undefined
+  getList()
+  }
+  
 }
 /** 添加/修改操作 */
 const formRef = ref()
@@ -869,7 +885,14 @@ onMounted(() => {
   }
 }
 .time-icon{
+  cursor: pointer;
   background-size:100% 100%;
   background-image: url(../../../assets/imgs/time-icon.png); 
+}
+.time-icon2{
+  cursor: pointer;
+
+  background-size:100% 100%;
+  background-image: url(../../../assets/imgs/time-icon2.png); 
 }
 </style>
