@@ -330,10 +330,10 @@
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
   <!-- 下一步弹框 -->
-  <Dialog title="执行农事计划" class='!color-[#000] !box-border' v-model="dialogVisible">
+  <Dialog title="执行农事计划" class='!text-20px !font-600 !color-[#000] !box-border' v-model="dialogVisible">
   <div class="flex justify-around">
     <div class='w-300px box-border mr-10px'>
-      <div class='text-18px ' style="font-weight: 600;">农事计划信息</div>
+      <div class='text-17px ' style="font-weight: 600;">农事计划信息</div>
       <div class="mt-20px border-1px px-10px py-10px box-border border-solid border-[#c1c1cc1] h-200px formParams !font-medium" >
         <div>计划名称：{{params.planName}}</div>
         <div class="my-10px">作物名称：{{params.cropName}}</div>
@@ -386,11 +386,11 @@
     </template>
   </Dialog>
   <!-- 选择投入品 -->
-  <Dialog title="选择投入品" v-model="dialogVisibleA" class="!w-1300px">
+  <Dialog title="选择投入品" class="!text-20px !font-600 !w-1300px" v-model="dialogVisibleA">
     <div >
      <el-form :model="formSearch" label-width="80px" inline size="normal">
      <el-form-item label="名称">
-     <el-input v-model="formSearch.feedName"/>
+     <el-input v-model="formSearch.feedName" placeholder="请输入名称"/>
      </el-form-item>
      <el-form-item label="分类">
      <!-- <el-input v-model="formSearch.feedName"></el-input> -->
@@ -567,7 +567,7 @@ const formData=ref({
   feedName:"",
   consumeNum:'',
   feedCost:'',
-  consumeUnit:'KG',
+  consumeUnit:'',
 })
 const formSearch=ref({
   feedName:'',
@@ -857,7 +857,9 @@ const submitTable=()=>{
       dialogVisible.value=true
       selectOption.value=selectionList.value[0]
       formData.value.feedType=selectionList.value[0].id
-      console.log(formData.value.feedType,'formData.value.feedTypeformData.value.feedType1234')
+      formData.value.consumeUnit=selectionList.value[0].unitName
+      console.log(selectionList.value[0],'formData.value.feedTypeformData.value.feedType1234')
+
       formData.value.feedName=selectionList.value[0].name
   }
       
