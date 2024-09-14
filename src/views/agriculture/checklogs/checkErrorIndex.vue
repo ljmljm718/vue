@@ -26,7 +26,7 @@
             :value="item.value"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="巡检结果" prop="inspectionResults">
+      <!-- <el-form-item label="巡检结果" prop="inspectionResults">
         <el-input
           v-model="queryParams.inspectionResults"
           placeholder="请输入巡检结果"
@@ -34,7 +34,7 @@
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="巡检人" prop="inspector">
         <el-input
           v-model="queryParams.inspector"
@@ -93,7 +93,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" prefix="right"
+    <el-table
+v-loading="loading" :data="list" :stripe="true" prefix="right"
               :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!-- <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/> -->
@@ -109,7 +110,7 @@
           <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
         </template>
       </el-table-column>
-      <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/>
+      <!-- <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/> -->
       <el-table-column label="处理状态" align="center" prop="dealType" width="120">
         <template #default="scope">
           {{ scope.row.dealType === "0" ? '未处理' : '已处理' }}
@@ -138,7 +139,8 @@
       </el-table-column>
 
       <el-table-column label="所属基地" align="center" prop="base" width="200"/>
-      <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
+      <el-table-column
+:label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
                        prop="massif" width="200"/>
       <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
       <el-table-column label="巡检人" align="center" prop="inspector"/>
