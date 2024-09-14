@@ -16,7 +16,6 @@ import {
   getAllPlotByBaseID,
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
-import { nextTick } from 'vue'
 
 import {
   initChartStatic,
