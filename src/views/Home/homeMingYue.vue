@@ -6,22 +6,24 @@
       :style="`grid-template-columns: repeat(${topList.length}, minmax(50px,auto));`"
     >
       <div
-        class="custom-card !p-0"
-        style="cursor: pointer"
+        class="custom-card !p-0 cursor-pointer"
         v-for="(item, index) in topList"
         :key="index"
         @click="goPage(item)"
       >
         <div
-          class="flex items-center justify-between text-[#ffffff] rounded-md p-3 py-2 relative"
+          class="flex items-center justify-between text-#333333 rounded-md p-3 py-2 relative"
           :style="{ backgroundColor: item.color }"
         >
           <div class="flex justify-between flex-col m-2 mb-3 space-y-2">
-            <div style="font-size: 13px">{{ item.title }}</div>
+            <div class="text-1rem">{{ item.title }}</div>
             <div class="art-font text-[1.4rem]">{{ item.value }}</div>
           </div>
           <div class="absolute right-3 bottom-3">
-            <div :class="`w-[2rem] h-[2rem] ${item.icon}`" style="background-size: 100% 100%"></div>
+            <div
+              :class="`w-[2.5rem] h-[2.5rem] ${item.icon}`"
+              style="background-size: 100% 100%"
+            ></div>
           </div>
         </div>
       </div>
@@ -40,7 +42,7 @@
       </div>
       <div class="w-full">
         <!-- 左侧 -->
-        <div class="w-full grid gap-3" style="grid-template-columns: 1fr 2fr 1fr">
+        <div class="w-full grid gap-2" style="grid-template-columns: 1fr 1.9fr 1.1fr">
           <div class="custom-card">
             <div class="flex font-600">
               <div>巡检进度</div>
@@ -57,7 +59,7 @@
               </div>
             </div>
             <div
-              class="font-500 w-100% h-2.5rem bg-[#ffA647] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
+              class="font-500 w-100% h-2.5rem bg-[#009688] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
               >总设备数: {{ deviceTotal }}</div
             >
             <el-scrollbar height="20rem">
@@ -65,21 +67,22 @@
                 class="grid xl:grid-cols-1 2xl:grid-cols-2 gap-2 xl:grid-rows-4 2xl:grid-rows-2 xl:h-[600px] 2xl:h-[300px] mt-2"
               >
                 <div
-                  class="bg-[#f2f2f2] p-3 !rounded-md"
+                  class="bg-[#ebf7f6] p-3 !rounded-md"
                   v-for="(item, index) in typeList"
                   :key="index"
                 >
-                  <div class="flex justify-between mb-3 font-medium"
+                  <div class="flex justify-between mb-3 font-medium text-[#009688]"
                     >{{ item.categoryName }}
-                    <span class="color-[#009688]">{{ item.totalCount }}</span></div
+                    <span class="color-[#009688] font-bold">{{ item.totalCount }}</span></div
                   >
                   <div
-                    class="flex flex-col space-y-2 items-center justify-between font-light color-[#333333]"
+                    class="flex flex-col items-center justify-between font-light color-[#333333]"
                   >
-                    <div class="flex bg-[#fff] justify-between p-2 w-90% rounded mb-1"
+                    <div
+                      class="flex bg-[#fff] justify-between p-2 py-3 w-90% rounded border border-dashed border-b-#E5E5E5 border-transparent"
                       >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
                     >
-                    <div class="flex bg-[#fff] justify-between p-2 w-90% rounded"
+                    <div class="flex bg-[#fff] justify-between p-2 py-3 w-90% rounded"
                       >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
                     >
                   </div>
@@ -95,30 +98,26 @@
               </div>
 
               <div class="flex">
-                <div class="w-[10rem]">
-                  <div style="padding: 5px">
-                    <div class="mt-0.5rem mb-0.5rem bg-#fff1f0 flex flex-col items-center rounded-md ">
-                      <div
-                        @click="goPageWran(1)"
-                        class="font-500 mt-10px text-[#FF3E23]"
-                        style="font-size: 20px; cursor: pointer"
-                        >{{ todayWarnNum }}
-                      </div>
-                      <div  class="mb-10px" style="color: #333333; cursor: pointer" @click="goPageWran(1)"
-                        >今日报警</div
-                      >
+                <div class="w-[10rem] p-0.2rem">
+                  <div class="mt-0.5rem mb-0.5rem bg-#fff1f0 flex flex-col items-center rounded-md">
+                    <div
+                      @click="goPageWran(1)"
+                      class="mt-10px text-[#FF3E23] font-extrabold cursor-pointer text-1.5rem"
+                      >{{ todayWarnNum }}
                     </div>
-                    <div class="mt-0.5rem mb-0.5rem bg-#fff7ee flex flex-col items-center rounded-md">
-                      <div
-                        @click="goPageWran(2)"
-                        class="flex font-500 mt-10px text-[#FF8400]"
-                        style="font-size: 20px; cursor: pointer"
-                        >{{ thirtyDayWarn }}
-                      </div>
-                      <div class="mb-10px" style="color: #333333; cursor: pointer" @click="goPageWran(2)"
-                        >近30天报警</div
-                      >
+                    <div class="mb-1rem text-#333333 cursor-pointer" @click="goPageWran(1)"
+                      >今日报警</div
+                    >
+                  </div>
+                  <div class="mt-0.5rem mb-0.5rem bg-#EBF7F6 flex flex-col items-center rounded-md">
+                    <div
+                      @click="goPageWran(2)"
+                      class="flex mt-10px text-[#009688] cursor-pointer font-extrabold text-1.5rem"
+                      >{{ thirtyDayWarn }}
                     </div>
+                    <div class="mb-1rem text-#333333 cursor-pointer" @click="goPageWran(2)"
+                      >近30天报警</div
+                    >
                   </div>
                 </div>
                 <div class="w-full">
@@ -133,13 +132,13 @@
 
               <el-table
                 :data="pageWarnList"
-                :stripe="true"
+                :stripe="false"
                 :show-overflow-tooltip="true"
                 height="18rem"
                 :header-cell-style="{
-                  backgroundColor: '#fff0ee',
-                  color: '#E53820',
-                  fontWeight: 'bold'
+                  backgroundColor: '#E5E5E5',
+                  color: '#333333',
+                  fontWeight: 'normal'
                 }"
               >
                 <el-table-column label="设备" align="center" prop="deviceName" />
@@ -160,7 +159,7 @@
             </div>
 
             <el-scrollbar height="500px">
-              <div class="grid xl: grid-cols-1 2xl:grid-cols-2 gap-2 pr-1">
+              <div class="grid xl: grid-cols-1 2xl:grid-cols-2 gap-2">
                 <div
                   class="flex items-center justify-between rounded-sm p-2 px-3"
                   style="background-color: #ebf7f6; border: 1px solid #ffffff40"
@@ -168,7 +167,7 @@
                   :key="index"
                 >
                   <div class="flex flex-col">
-                    <div class="text-sm mb-0.5">{{ item?.monitoringType }}</div>
+                    <div class="text-sm mb-0.5 whitespace-pre-wrap">{{ item?.monitoringType }}</div>
                     <div style="color: #009688" class="font-medium">
                       <span>{{ item?.dataValue }}</span>
                       <span style="color: #009688" class="font-normal text-xs">{{
@@ -244,7 +243,7 @@
               class="my-2"
               @change="(val) => handleDeviceTypeRadioChange(val)"
             >
-              <div class="flex xl:w-[20rem] xl:h-[5rem] xl:ml--3.5 2xl:ml-0 2xl:w-full flex-wrap ">
+              <div class="flex xl:w-[20rem] xl:h-[5rem] xl:ml--3.5 2xl:ml-0 2xl:w-full flex-wrap">
                 <el-radio-button label="全部" value="全部" />
                 <el-radio-button label="视频监控" value="视频监控" />
                 <el-radio-button label="监测设备" value="监测设备" />
@@ -554,7 +553,7 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
       //   top: '17%',
       //   bottom: '15%'
       // }
-      grid:{
+      grid: {
         containLabel: true
       }
     })
@@ -687,7 +686,7 @@ const initChart2 = async () => {
         itemWidth: 15,
         itemHeight: 15
       },
-      color: ['#FE6852'],
+      color: ['#009688'],
       yAxis: {
         type: 'value',
         axisLine: {
@@ -724,8 +723,8 @@ const initChart2 = async () => {
         }
       ],
       grid: {
-        left: '10%',
-        right: '3%',
+        left: '40',
+        right: '0',
         top: '17%',
         bottom: '15%'
       }
@@ -874,16 +873,16 @@ const getHomeDeviceCard = () => {
       // 设备: 'top-6',
       // 水质: 'top-1',
       // 离线: 'top-10',
-      虫情: { icon: 'top-2', color: '#ffa647' },
-      土壤: { icon: 'top-3', color: 'red' },
-      报警: { icon: 'top-9', color: '#ff6f60' },
-      气象: { icon: 'top-5', color: '#528cf7' },
-      生长: { icon: 'top-7', color: '#10c6d4' },
-      在线: { icon: 'top-8', color: '#56c96b' },
-      视频: { icon: 'top-4', color: '#538ef7' },
-      设备总数: { icon: 'top-6', color: '#4d87f6' },
-      水质: { icon: 'top-1', color: '#8e6efd' },
-      离线设备: { icon: 'top-10', color: '#fe7062' }
+      虫情: { icon: 'top-2', color: '#fff6f2' },
+      土壤: { icon: 'top-3', color: '#f9f5ff' },
+      报警: { icon: 'top-9', color: '#fffcf0' },
+      气象: { icon: 'top-5', color: '#f0faff' },
+      生长: { icon: 'top-7', color: '#f0fffd' },
+      在线: { icon: 'top-8', color: '#fffcf0' },
+      视频: { icon: 'top-4', color: '#f9f5ff' },
+      设备总数: { icon: 'top-6', color: '#f0fffd' },
+      水质: { icon: 'top-1', color: '#f0faff' },
+      离线设备: { icon: 'top-10', color: '#fff6f2' }
     }
     const getIconFrame = (text: string) => {
       let flag = false,
@@ -1133,7 +1132,7 @@ select {
 }
 @for $i from 1 through 10 {
   .top-#{$i} {
-    background-image: url(./assets/b#{$i}.png);
+    background-image: url(./assets/t#{$i}.png);
   }
 }
 
@@ -1175,8 +1174,6 @@ select {
 //   }
 // }
 
-
-
 :deep(.el-tree-node__expand-icon) {
   color: #009688;
   font-size: 1.2rem;
@@ -1190,26 +1187,28 @@ select {
 
 :deep(.el-tree-node__content) {
   height: 2.2rem;
-  padding-right: 5px
-} 
+  padding-right: 5px;
+}
 
 :deep(.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content) {
-            background: #ECF4FF !important;
-            border-right:  solid  #009688;
-            height: 2.2rem;
-            background-color: #e5f4f3 !important;
-            z-index: -1;
-            span{
-                color: #009688;
-                font-weight: 16px}}
+  background: #ecf4ff !important;
+  border-right: solid #009688;
+  height: 2.2rem;
+  background-color: #e5f4f3 !important;
+  z-index: -1;
+  span {
+    color: #009688;
+    font-weight: 16px;
+  }
+}
 :deep(.el-tree-node__content) {
   color: #333333;
-}            
+}
 
 :deep(.el-tree-node__content:hover) {
   background-color: #e5f4f3 !important;
-}    
-:deep(.el-tree-node:focus>.el-tree-node__content) {
+}
+:deep(.el-tree-node:focus > .el-tree-node__content) {
   background-color: #e5f4f3 !important;
 }
 
