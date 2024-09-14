@@ -73,22 +73,22 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="投喂时间" prop="feedTime">
+      <el-form-item label="操作时间" prop="feedTime">
         <el-date-picker
           v-model="formData.feedTime"
           type="datetime"
           value-format="x"
-          placeholder="选择投喂时间"
+          placeholder="选择操作时间"
         />
       </el-form-item>
       <el-form-item label="操作人" prop="feedPerson">
         <el-input v-model="formData.feedPerson" placeholder="请输入操作人"/>
       </el-form-item>
-      <el-form-item label="投喂数量" prop="feedNum">
-        <el-input v-model="formData.feedNum" placeholder="请输入投喂数量"/>
+      <el-form-item label="消耗量" prop="feedNum">
+        <el-input v-model="formData.feedNum" placeholder="请输入消耗量"/>
       </el-form-item>
       <el-form-item label="单位" prop="feedOne">
-        <el-input v-model="formData.feedOne" placeholder="请输入投喂数量单位，建议统一输入KG"/>
+        <el-input v-model="formData.feedOne" placeholder="请输入消耗量单位，建议统一输入KG"/>
       </el-form-item>
       <el-form-item label="投入品费用/元" prop="feedCost">
         <el-input v-model="formData.feedCost" placeholder="请输入投入品费用"/>
@@ -137,12 +137,12 @@ const formData = ref({
   feedCost: undefined
 })
 const formRules = reactive({
-  feedTime: [{required: true, message: '投喂时间不能为空', trigger: 'blur'}],
+  feedTime: [{required: true, message: '操作时间不能为空', trigger: 'blur'}],
   belongPark: [{required: true, message: '基地选择不能为空', trigger: 'blur'}],
   belongPlot: [{required: true, message: '地块选择不能为空', trigger: 'blur'}],
   crabNum: [{required: true, message: '螃蟹数量不能为空', trigger: 'blur'}],
-  feedNum: [{required: true, message: '投喂数量不能为空', trigger: 'blur'}],
-  feedOne: [{required: true, message: '投喂单位不能为空', trigger: 'blur'}],
+  feedNum: [{required: true, message: '消耗量不能为空', trigger: 'blur'}],
+  feedOne: [{required: true, message: '消耗单位不能为空', trigger: 'blur'}],
   feedType: [{required: true, message: '投入品名称不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
@@ -150,7 +150,6 @@ let productInfoListALL = ref() //所有投入品列表
 let farmDefineOptions = ref([])// 设备分类选项
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-
   // 获取设备分类树
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   productInfoListALL.value = await ProductApi.selectAll()
@@ -158,12 +157,21 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  console.log(productInfoListALL.value)
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
     try {
       formData.value = await FeedInfoApi.getFeedInfo(id)
+      farmDefineOptions.value.forEach((item) =>{
+        if(item.id  == formData.value.farmingStage){
+          formData.value.farmingStage = item.defineName
+        }
+      })
+      productInfoListALL.value.forEach((item) =>{
+        if(item.id  == formData.value.feedType){
+          formData.value.feedType = item.name
+        }
+      })
     } finally {
       formLoading.value = false
     }
