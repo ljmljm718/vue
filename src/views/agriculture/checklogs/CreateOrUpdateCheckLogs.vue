@@ -60,7 +60,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'"
+                <el-form-item
+:label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'"
                               prop="massif1">
                   <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
                 </el-form-item>
@@ -68,7 +69,7 @@
             </el-row>
             <el-row :gutter="3">
               <el-col :span="8">
-                <el-form-item label="设备编号" prop="equNum">
+                <el-form-item label="设备名称" prop="equNum">
                   <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
                   <el-input v-model="formData.equName" readonly>
                     <template #append>
@@ -141,7 +142,8 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="巡检内容" prop="content">
-                  <el-input type="textarea" v-model="formData.content"
+                  <el-input
+type="textarea" v-model="formData.content"
                             placeholder="请输入巡检内容"/>
                 </el-form-item>
               </el-col>

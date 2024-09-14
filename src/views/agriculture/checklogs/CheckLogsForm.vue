@@ -12,9 +12,9 @@
       <!--      </el-form-item>-->
       
 
-      <el-form-item label="设备编号" prop="equNum">
+      <el-form-item label="设备名称" prop="equName">
         <!--        <el-input v-model="formData.equNum" placeholder="请输入设备编号" />-->
-        <el-input v-model="formData.equNum" readonly>
+        <el-input v-model="formData.equName" readonly>
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
               <Icon icon="ep:search"/>
@@ -50,20 +50,20 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="3">
+      <!-- <el-row :gutter="3">
         <el-col :span="24">
           <el-form-item label="巡检结果" prop="inspectionResults">
             <el-input type="textarea" v-model="formData.inspectionResults" placeholder="请输入巡检结果"/>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
 
 
       <el-form-item label="所属基地" prop="base">
-        <el-input v-model="formData.base" placeholder="请输入所属基地" disabled/>
+        <el-input v-model="formData.base1" placeholder="请输入所属基地" disabled/>
       </el-form-item>
       <el-form-item :label="getTenantId() === 157 ? '所属鱼塘' : '地块名称'" prop="massif">
-        <el-input v-model="formData.massif" placeholder="请输入所属地块/地块" disabled/>
+        <el-input v-model="formData.massif1" placeholder="请输入所属地块/地块" disabled/>
       </el-form-item>
       <el-row :gutter="3">
         <el-col :span="12">
@@ -161,6 +161,8 @@ const formData = ref({
   dealPerson: undefined,
   dealResult: undefined,
   dealImage: undefined,
+  base1: undefined,
+  massif1: undefined,
 })
 const formRules = reactive({})
 const formRef = ref() // 表单 Ref
@@ -192,6 +194,8 @@ const handlePurchaseOrderChange = (order: ParkBaseVO) => {
   formData.value.equName = String(order[0].deviceName)
   formData.value.base = String(order[0].belongPark)
   formData.value.massif = String(order[0].belongPlot)
+  formData.value.base1 = String(order[0].parkName)
+  formData.value.massif1 = String(order[0].parkDetailName)
 }
 
 
