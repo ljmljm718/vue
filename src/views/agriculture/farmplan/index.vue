@@ -372,7 +372,7 @@
               <el-input v-model="formData.consumeUnit" style="width: 120px;"/>
             </el-form-item>
             <el-form-item label="投入品费用/元"  class="custom-label-width">
-              <el-input v-model="formData.feedCost" style="width: 110px;" disabled/>
+              <el-input v-model="formData.feedCost" placeholder='输入消耗量之后自动计算' style="width: 200px;" disabled/>
             </el-form-item>
             </el-form>
         </div>
@@ -785,7 +785,7 @@ const submitForm=async ()=>{
   delete formData.value.id;
   delete params.value.id;
   let res=await carryOutUpdate({
-  id:subExecuteId.value.id,
+  id:subExecuteId.value,
   planName:params.value.planName,
   parkName:params.value.parkName,
   plotName:params.value.plotName,
