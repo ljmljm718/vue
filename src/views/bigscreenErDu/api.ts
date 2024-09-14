@@ -40,3 +40,18 @@ export const warnRecordInfo = async() =>{
     url:'/agriculture/warning-record-big-screen/qianjiangWarnRecordInfo'
   })
 }
+
+// 二渡 大屏智慧农业 获取全部基地
+export const getAllBase = async() =>{
+  return request.get({ url:'/agriculture/park-info/getAll' })
+}
+
+// 二渡 大屏智慧农业 根据基地ID获取地块列表
+export const getAllPlotByBaseID = async(params) =>{
+  return request.get({ url:'/agri/land-display/park-list', params })
+}
+
+// 二渡 大屏智慧农业 获取农事任务
+export const getAgriMissionPlan = async(params) =>{
+  return request.get({ url:'/agri/farm-plan/farmPlanSchedule', params })
+}
