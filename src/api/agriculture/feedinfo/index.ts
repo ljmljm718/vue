@@ -18,6 +18,8 @@ export interface FeedInfoVO {
   produceDate: Date
   categoryId: string
   categoryName: string
+  consumeNum: string
+  consumeUnit: string
   effectiveTime: Date
 }
 

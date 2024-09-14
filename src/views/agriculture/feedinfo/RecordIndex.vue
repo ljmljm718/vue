@@ -158,7 +158,7 @@
       <el-table-column label="基地名称" align="center" prop="parkName"/>
       <!--      <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
       <el-table-column label="地块名称" align="center" prop="plotName"/>
-      <el-table-column label="螃蟹数量" align="center" prop="crabNum"/>
+<!--      <el-table-column label="螃蟹数量" align="center" prop="crabNum"/>-->
       <el-table-column label="农事阶段" align="center" prop="farmingStage" width="120" >
         <template #default="scope">
           <el-select v-model="scope.row.farmingStage" disabled>
@@ -172,7 +172,7 @@
         </template>
       </el-table-column>
       <el-table-column label="投入品名称" align="center" prop="productName"/>
-      <el-table-column label="投入品分类名称" align="center" prop="categoryName"/>
+      <el-table-column label="投入品分类名称" align="center" prop="categoryName" width="120" />
       <el-table-column
         label="生产日期"
         align="center"
@@ -187,8 +187,10 @@
         :formatter="dateFormatter2"
         width="140"
       />
-      <el-table-column label="消耗量" align="center" prop="feedNum"/>
-      <el-table-column label="单位" align="center" prop="feedOne"/>
+      <el-table-column label="消耗量" align="center" prop="consumeNum" width="60"/>
+      <el-table-column label="消耗量单位" align="center" prop="consumeUnit" width="120"/>
+      <el-table-column label="投喂量" align="center" prop="feedNum" width="60"/>
+      <el-table-column label="投喂量单位" align="center" prop="feedOne" width="120"/>
       <el-table-column
         label="操作时间"
         align="center"
@@ -196,7 +198,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="投入品费用/元" align="center" prop="feedCost"/>
+      <el-table-column label="投入品费用/元" align="center" prop="feedCost" width="120"/>
       <el-table-column label="操作人" align="center" prop="feedPerson"/>
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
@@ -236,14 +238,14 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <FeedInfoForm ref="formRef" @success="getList"/>
+  <FeedInfoFormRecord ref="formRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {FeedInfoApi, FeedInfoVO} from '@/api/agriculture/feedinfo'
-import FeedInfoForm from './FeedInfoForm.vue'
+import FeedInfoFormRecord from './FeedInfoFormRecord.vue'
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 
 /** 投喂记录 列表 */

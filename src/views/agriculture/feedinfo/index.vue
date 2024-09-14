@@ -176,8 +176,10 @@
         :formatter="dateFormatter2"
         width="140"
       />
-      <el-table-column label="消耗量" align="center" prop="feedNum"/>
-      <el-table-column label="单位" align="center" prop="feedOne"/>
+      <el-table-column label="消耗量" align="center" prop="consumeNum"/>
+      <el-table-column label="消耗量单位" align="center" prop="consumeUnit"/>
+      <el-table-column label="投喂量" align="center" prop="feedNum"/>
+      <el-table-column label="投喂量单位" align="center" prop="feedOne"/>
       <el-table-column
         label="操作时间"
         align="center"
