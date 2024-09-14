@@ -8,9 +8,16 @@ import {
   getBreedCategory,
   getDeviceInfo,
   getVarietyManagement,
+  qjDeviceStatistics,
   cropBase,
   warnRecordInfo
 } from './api'
+
+import {
+  initChartStatic,
+  generateBaseOptions,
+  generatePieOptions
+} from '../../utils/bigscreenTool/index'
 
 adapter()
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -59,18 +66,17 @@ const getResList = async () => {
   }
 }
 
-onMounted(() => { initMap(),getResList() })
+onMounted(() => {
+  initMap();
+  getResList();
+})
 //种养信息
-const pageNo = 1
-const pageSize = 100
-const params = {
-  pageNo,
-  pageSize
-}
-
 const cropList = ref<any[]>([]);
 const getCropBase = async () =>{
-  const { list } = await cropBase(params)
+  const { list } = await cropBase({
+    pageNo: 1,
+    pageSize: 100
+  })
   if (!Array.isArray(list)) return;
   cropList.value = list;
 }
@@ -135,6 +141,84 @@ const getDeviceList = async () => {
 }
 getDeviceList()
 /****************************** 设备信息  end  ******************************/
+
+// 中上设备信息
+const topDataInfo = ref<any>({
+  total: '',
+  online: '',
+  offline: '',
+  warningEquipmentDevice: ''
+})
+const getTopDataList = async()=>{
+  const res = await qjDeviceStatistics()
+  const {
+    total = '',
+    online = '',
+    offline = '',
+    warningEquipmentDevice = ''
+  } = res;
+  topDataInfo.value = { total, online, offline, warningEquipmentDevice }
+}
+getTopDataList()
+//品种分布
+const initChart = async () => {
+  const res = await getBreedCategory()
+  if (!res || !Array.isArray(res)) { return }
+  const seriesData = res.map(item => ({
+    name: item.category_name || '暂无数据',
+    value: item.number,
+    unit: item.unit
+  }))
+  initChartStatic(
+    'typePercentChart',
+    generatePieOptions({
+      legend: {
+        show: true,
+        top: '30%',
+        left: '60%',
+        bottom: '0',
+        orient: 'vertical',
+        itemWidth: 15,
+        itemHeight: 15,
+        textStyle: {
+          color: '#fff'
+        }
+      },
+      color: ['#01faea', '#02fbbc'],
+      series: [
+        {
+          type: 'pie',
+          radius: ['35%', '60%'],
+          center: ['30%', '50%'],
+          data: seriesData,
+          label: {
+            formatter: ({ name, percent }) => `${name} - (${percent}%)`,
+            color: '#fff',
+            position: ['50%', '50%']
+          },
+          emphasis: {
+            itemStyle: { borderWidth: 0 }
+          },
+        }
+      ],
+      tooltip: {
+        formatter: (item) => {
+          return `数据详情<br />${item.marker}${item.name}<span style="padding-left: 1rem;">${item.value} ${item.data.unit}</span>`
+        },
+        position: function (point) {
+          return [point[0] - 90, point[1] + 20]
+        },
+      },
+    })
+  )
+}
+
+onMounted(async () => {
+  await initMap();
+  await getResList();
+  await initChart(); 
+});
+
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
@@ -203,7 +287,9 @@ getDeviceList()
       </div>
       <div class="w-460px h-45px type-title"></div>
       <div class="p-4 box-border">
-        <div class="h-220px bg-red"></div>
+        <div class="h-220px">
+          <div class="items-start w-full h-full " id="typePercentChart"></div>
+        </div>
       </div>
       <div class="w-460px h-45px mission-title"></div>
     </div>
@@ -221,17 +307,17 @@ getDeviceList()
             <div class="flex items-start space-x-2 mt-2">
               <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
               <div class="space-y-2 text-#d1d1d1 text-12px">
-                <div class="text-16px text-white">{{item.cropName}}</div>
-                <div>
+                <div class="text-[16px] text-white">{{item.cropName}}</div>
+                <div class="text-[12px]">
                   <span>所属地块:</span>
                   <span>{{ item.plotName }}</span>
                 </div>
-                <div>
+                <div class="text-[12px]">
                   <span>起止时间:</span>
-                  <div>
+                  <div class="text-[12px]">
                     {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
                     -
-                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'无' }}
+                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'暂无数据' }}
                   </div>
                 </div>
               </div>
@@ -241,20 +327,26 @@ getDeviceList()
       </el-scrollbar>
       <div class="w-460px h-45px warn-title"></div>
       <div class="text-12px">
-        <div class="w-447px h-35px flex text-#01F892 items-center">
-          <div class="w-110px text-center">预警信息</div>
-          <div class="w-237px text-center">时间</div>
-          <div class="w-100px text-center">处理状态</div>
+        <div class="w-447px  flex text-#01F892 items-center">
+          <div class="w-180px text-center p-1">预警信息</div>
+          <div class="w-150px text-center p-1">时间</div>
+          <div class="w-100px text-center p-1">处理状态</div>
         </div>
-        <el-scrollbar style="height: 310px" class="warn-table-wrapper">
-          <div
-class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-for="item in 14"
-            :key="item" style="border: 1px solid #043b24;">
-            <div class="w-110px text-center">土壤温度报警</div>
-            <div class="w-237px text-center">2024.09.06 13:00:00</div>
-            <div class="w-100px text-center">已处理</div>
+        <div v-if = "warnList.length>0">
+          <el-scrollbar style="height: 310px" class="warn-table-wrapper">
+          <div 
+            class="w-447px flex text-#fff items-center warn-table-item transition" 
+            v-for="item in warnList"
+            :key="item.id" style="border: 1px solid #043b24;">
+            <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
+            <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+            <div class="w-100px text-center p-1">{{item.warnStatus === 0 ? '未处理':'已处理' }}</div>
           </div>
         </el-scrollbar>
+        </div>
+        <div v-else>
+          <div class="flex w-full h-75px justify-center items-center text-center text-[#01F892]">暂无预警信息的数据</div>
+        </div>
       </div>
     </div>
     <div
@@ -264,7 +356,7 @@ class="w-447px h-35px flex text-#fff items-center warn-table-item transition" v-
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">15</div>
+            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">{{ topDataInfo.total }}</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -273,8 +365,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">{{ topDataInfo.online }}</div>
+          <div class="text-16px">在线设备</div>
         </div>
       </div>
       <div class="flex space-x-2 items-center text-white">
@@ -282,8 +374,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">{{ topDataInfo.offline }}</div>
+          <div class="text-16px">离线数量</div>
         </div>
       </div>
       <div class="flex space-x-2 items-center text-white">
@@ -291,8 +383,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div>
           <div
 class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">15</div>
-          <div class="text-16px">设备总数</div>
+            style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">{{ topDataInfo.warningEquipmentDevice }}</div>
+          <div class="text-16px">设备预警</div>
         </div>
       </div>
     </div>
