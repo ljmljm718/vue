@@ -287,6 +287,15 @@
       <el-table-column label="操作" align="center" fixed="right" width="150">
         <template #default="scope">
           <el-button
+          v-if="scope.row.planState!='2'"
+            link
+            type="warning"
+            @click="subExecute(scope.row)"
+            v-hasPermi="['agri:farm-plan:update']"
+          >
+            执行
+          </el-button>
+          <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -320,6 +329,190 @@
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+  <!-- 下一步弹框 -->
+  <Dialog title="执行农事计划" class='  !color-[#000] !box-border' v-model="dialogVisible">
+  <div class="flex justify-around">
+    <div class='w-300px box-border'>
+      <div class='text-18px' style="font-weight: 600;">农事计划信息</div>
+      <div class="mt-10px h-200px formParams !font-medium" >
+        <div>计划名称：{{params.planName}}</div>
+        <div class="my-10px">作物名称：{{params.cropName}}</div>
+        <div>基地名称：{{params.parkName}}</div>
+        <div class="my-10px">地块名称：{{params.plotName}}</div>
+        <div>农事阶段：{{params.planName}}</div>
+        <div class="my-10px">品类：{{params.cropType}}</div>
+        <div>责任人：{{params.personName}}</div>
+        <div class="my-10px">计划开始时间：{{startTime}}</div>
+        <div>计划结束时间：{{endTime}}</div>
+      </div>
+    </div>
+    <div class='w-650px box-border'>
+      <div  class='text-18px mb-15px' style="font-weight: 600;">选择的投入品</div>
+      <div>
+        <!-- <div>{{ selectOption }}</div> -->
+            <div class='flex w-95% justify-between'>
+          <div>名称：{{ selectOption.name }}</div>
+          <div>分类：{{ selectOption.categoryName }}</div>
+          <div>采购价格：{{ selectOption.minPrice }}(元)</div>
+        </div>
+        <div class='flex my-15px w-230px justify-between'>
+          <div>单位：{{ selectOption.unitName }}</div>
+          <div>规格：{{ selectOption.standard }}</div>
+        </div>
+        <div class='flex  '>
+         
+        </div>
+        <div class='w-100% border-1px border-dashed border-[#c1c1c1]'></div>
+        <div class="w-100% mt-15px">
+          <el-form :model="formData" label-width="90px" inline size="normal">
+            <el-form-item label="本次消耗量">
+              <el-input v-model="formData.consumeNum" placeholder='请输入消耗量' style="width: 120px;" />
+            </el-form-item>
+            <el-form-item label="消耗量单位">
+              <el-input v-model="formData.consumeUnit" style="width: 120px;"/>
+            </el-form-item>
+            <el-form-item label="投入品费用/元"  class="custom-label-width">
+              <el-input v-model="formData.feedCost" style="width: 110px;" disabled/>
+            </el-form-item>
+            </el-form>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <template #footer>
+      <el-button @click="submitForm" type="primary" class="!bg-[#facd91] !border-none" :disabled="formLoading">确认执行</el-button>
+      <el-button @click="clearForm" class="!bg-[#cccccc]">取消执行</el-button>
+    </template>
+  </Dialog>
+  <!-- 选择投入品 -->
+  <Dialog title="选择投入品" v-model="dialogVisibleA" class="!w-1300px">
+    <div >
+     <el-form :model="formSearch" label-width="80px" inline size="normal">
+     <el-form-item label="名称">
+     <el-input v-model="formSearch.feedName"/>
+     </el-form-item>
+     <el-form-item label="分类">
+     <!-- <el-input v-model="formSearch.feedName"></el-input> -->
+     <el-select v-model="formSearch.feedType" class="!w-200px" clearable filterable @change="formSelect">
+     <el-option v-for="item in formSelectList"
+     :key="item"
+     :label="item"
+     :value="item"/>
+     </el-select>
+     
+     </el-form-item>
+     <el-form-item>
+      <el-button class="!bg-[#009688] !color-[#fff]" @click="handleQueryA">
+            <Icon icon="ep:search" class="mr-5px"/>
+            搜索
+          </el-button>
+          <el-button @click="resetQueryA">
+            <Icon icon="ep:refresh" class="mr-5px"/>
+            重置
+          </el-button>
+     </el-form-item>
+     <el-form-item>
+      <el-button class="!bg-[#ffff80] !color-[#000]" @click="skipCli">
+            <!-- <Icon icon="ep:search" class="mr-5px"/> -->
+            跳过选择投入品，直接执行农事计划
+          </el-button>
+     </el-form-item>
+     </el-form>
+     
+    </div>
+    <el-table v-loading="loading" :data="selectList" :stripe="true" ref="multipleTableRef"
+    @select="select" @row-click="selectClick" @selection-change="handleSelectionChange" :show-overflow-tooltip="true">
+      <el-table-column width="30" label="选择" type="selection"/>
+      <el-table-column label="条码" align="center" prop="barCode" width="160"/>
+      <el-table-column label="名称" align="center" prop="name" width="160"/>
+      <el-table-column label="分类" align="center" prop="categoryName" width="130" />
+      <el-table-column label="单位" align="center" prop="unitName" width="80" />
+      <el-table-column label="规格" align="center" prop="standard" width="100"/>
+      <el-table-column label="图片" align="center" prop="imgId" >
+        <template #default="{ row }">
+          <el-image
+            v-if="row.img != null && row.img != ''"
+            class="h-50px w-50px"
+            lazy
+            :src="row.img"
+            :preview-src-list="[row.img]"
+            preview-teleported
+            fit="cover"
+          />
+          <span v-else>暂无图片</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="采购价格"
+        align="center"
+        prop="purchasePrice"
+        width="120"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="销售价格"
+        align="center"
+        prop="salePrice"
+        width="120"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="最低价格"
+        align="center"
+        prop="minPrice"
+        width="120"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+<!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column
+        label="生产日期"
+        align="center"
+        prop="produceDate"
+        :formatter="dateFormatter2"
+        width="140"
+      />
+      <el-table-column label="保质期天数" align="center" prop="expiryDay" width="100" />
+      <el-table-column
+        label="有效日期"
+        align="center"
+        prop="effectiveTime"
+        :formatter="dateFormatter2"
+        width="140"
+      />
+      <el-table-column label="登记证号123" align="center" prop="registerNum" width="100" />
+      <el-table-column label="包装关系" align="center" prop="packagingRelationship" width="100" />
+      <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
+      <!-- <el-table-column label="操作" align="center" width="110" fixed="right">
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row.id)"
+            v-hasPermi="['erp:product:update']"
+          >
+            编辑
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleDelete(scope.row.id)"
+            v-hasPermi="['erp:product:delete']"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column> -->
+    </el-table>
+    <template #footer>
+      <el-button @click="submitTable" type="primary" :disabled="formLoading">下一步</el-button>
+      <el-button @click="clearFormA">取 消</el-button>
+    </template>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -335,13 +528,13 @@ import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categ
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkDetailVO} from "@/api/agriculture/parkdetail";
 import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
-
+import { page,carryOutUpdate,isFarmPlan} from './api'
+import {watch} from 'vue'
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-
 const loading = ref(true) // 列表的加载中
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -368,8 +561,18 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-let farmDefineOptions = ref([])// 设备分类选项
-
+const farmDefineOptions = ref([])// 设备分类选项
+const formData=ref({
+  feedType:"",
+  feedName:"",
+  consumeNum:'',
+  feedCost:'',
+  consumeUnit:'KG',
+})
+const formSearch=ref({
+  feedName:'',
+  feedType:''
+})
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 查询列表 */
@@ -479,7 +682,251 @@ const handleParkPopupChange = (order: ParkInfoVO) => {
     queryParams.parkName = String(order[0].name)
   } else queryParams.parkName = String(order[0].name)
 }
+//获取投入品
+const selectList=ref([])
+const selectList2=ref([])
+const formSelectList=ref([])
+const getPage=async ()=>{
+  let res= await page({pageNo:1,pageSize:10})
+  console.log(res,'投入品')
+  selectList.value=res.list
+  selectList2.value=res.list
+   formSelectList.value=Array.from(new Set(res.list.map(item=>item.categoryName)))
+}
+getPage()
+//监听消耗费用
+const selectOption=ref({})
+watch(()=>formData.value.consumeNum,(newVal)=>{
+  console.log(newVal,'newVal')
+  formData.value.feedCost=newVal*selectOption.value.minPrice
+})
+//选择消耗品
+const openCropInfoPopup=()=>{
+  dialogVisible.value=false
+  dialogVisibleA.value=true
+}
+//执行按钮
+const params=ref({})
+const dialogVisible=ref(false)
+const dialogVisibleA=ref(false)
+const endTime=ref()
+const startTime=ref()
+const feedType=ref(0) 
+const  subExecuteId=ref()
+const subExecute=async (obj)=>{
+  subExecuteId.value=obj.id
+  console.log(123456,obj)
+  startTime.value=new Date(obj.startTime).toLocaleString()
+  endTime.value=new Date(obj.endTime).toLocaleString()
+  params.value=obj
+  if(obj.planState==1){
+    let res=await isFarmPlan({id:obj.id,planState:obj.planState})
+    console.log(res,'res校验')
+    if(res==true) dialogVisibleA.value=true
+    else if(res.data==false){
+      console.log(123)
+      message.error('执行农事计划失败，请先去农事记录添加')
+       dialogVisibleA.value=false
+    }
+  }else{
+    dialogVisibleA.value=true
 
+  }
+  
+  
+}
+watch(()=>dialogVisible.value,(val)=>{
+  if(!val){
+    formData.value={
+      feedType:"",
+      feedName:"",
+      consumeNum:'',
+      feedCost:'',
+      consumeUnit:'KG',
+      feedTwo:'元',
+  }
+  }
+})
+watch(()=>dialogVisibleA.value,(val)=>{
+  console.log(val,'123val')
+  if(!val){
+   
+  selectionList.value=[]
+  }
+})
+//跳过
+const skipCli=async ()=>{
+  console.log(params.value,'params.valueparams.value')
+ let res=await carryOutUpdate({
+  id:params.value.id,
+  planName:params.value.planName,
+  parkName:params.value.parkName,
+  plotName:params.value.plotName,
+  cropName:params.value.cropName,
+  planState:params.value.planState,
+  startTime:params.value.startTime,
+  endTime:params.value.endTime,
+  isInput:false,
+  agriFarmRecordSaveReqVO:{
+    ...params.value,
+    recordTime:params.value.startTime,
+    recordArea:params.value.area,
+  }
+})
+ console.log(res,'tiaoguo')
+ if(res){
+    message.success('执行农事计划成功')
+    dialogVisibleA.value=false
+   await getList()
+ }
+}
+//确认
+const submitForm=async ()=>{
+  delete formData.value.id;
+  delete params.value.id;
+  let res=await carryOutUpdate({
+  id:subExecuteId.value.id,
+  planName:params.value.planName,
+  parkName:params.value.parkName,
+  plotName:params.value.plotName,
+  cropName:params.value.cropName,
+  planState:params.value.planState,
+  startTime:params.value.startTime,
+  endTime:params.value.endTime,
+  isInput:true,
+  agriFarmRecordSaveReqVO:{
+    ...params.value,
+    recordTime:params.value.startTime,
+    recordArea:params.value.area,
+  },
+  feedInfoSaveReqVO:{
+    ...params.value,
+    ...formData.value,
+    farmingStage:params.value.farmDefineType,
+    feedTime:new Date().getTime()
+
+  }
+})
+if(res){
+  message.success('执行农事计划成功')
+    dialogVisible.value=false
+    formData.value={
+      feedType:"",
+      feedName:'',
+  consumeNum:'',
+  feedCost:'',
+  consumeUnit:'KG',
+  feedTwo:'元',
+    }
+   await getList()
+}
+  console.log("🚀 ~ submitForm ~ res:", res)
+}
+//取消并且清除Form
+const clearForm=()=>{
+  dialogVisible.value = false
+  formData.value={
+      feedType:"",
+      consumeNum:'',
+      feedCost:'',
+      consumeUnit:'KG',
+      feedTwo:'元',
+  }
+}
+//取消并且清除Form
+const clearFormA=()=>{
+  dialogVisibleA.value = false
+  formData.value={
+      feedType:"",
+      consumeNum:'',
+      feedCost:'',
+      consumeUnit:'KG',
+      feedTwo:'元',
+  }
+  selectionList.value=[]
+}
+//投入品表格确定
+const submitTable=()=>{
+
+  if(selectionList.value.length ==0){
+      message.warning('请先选择投入品，再点击下一步')
+      dialogVisibleA.value=true
+      dialogVisible.value=false
+  }else{
+      dialogVisibleA.value=false
+      dialogVisible.value=true
+      selectOption.value=selectionList.value[0]
+      formData.value.feedType=selectionList.value[0].id
+      console.log(formData.value.feedType,'formData.value.feedTypeformData.value.feedType1234')
+      formData.value.feedName=selectionList.value[0].name
+  }
+      
+ 
+}
+/** 选中操作 */
+const selectionList = ref([])
+const handleSelectionChange = (rows) => {
+  selectionList.value = rows
+  console.log(selectionList.value,'selectionListselectionList123')
+}
+
+
+// 作物品种单选
+const multipleTableRef = ref()
+const select = (selection, row)=> {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if(selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true);
+}
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
+//重置
+const resetQueryA=()=>{
+  formSearch.value={
+    feedName:'',
+    feedType:''
+  }
+  getPage()
+  handleQueryA()
+}
+//搜索
+const handleQueryA=()=>{
+  selectList.value=selectList2.value.filter(item=>{
+    if(item.name.includes(formSearch.value.feedName)){
+      return item
+    }
+  })
+  console.log(selectList.value,'selectList.valueselectList.value123')
+}
+//投入品下拉框事件
+const formSelect=(e)=>{
+  selectList.value=selectList2.value.filter(item=>{
+    if(item.categoryName==e){
+      return item
+    }
+  })
+}
 //地块的选择
 const plotPopupRef = ref()
 const openType1 = ref('')
@@ -495,3 +942,17 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
   queryParams.plotName = String(order[0].name)
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .com-dialog .el-dialog__body{
+  padding: 0 !important
+}
+::v-deep .custom-label-width .el-form-item__label{
+  width: 110px !important;
+}
+.formParams{
+  overflow-y:scroll !important;
+}
+.formParams::-webkit-scrollbar{
+  width: 0;
+}
+</style>
