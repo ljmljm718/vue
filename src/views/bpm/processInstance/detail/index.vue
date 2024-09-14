@@ -100,7 +100,7 @@
       </el-col>
       <!-- 情况二：业务表单 -->
       <div v-if="processInstance?.processDefinition?.formType === 20">
-        <BusinessFormComponent :id="processInstance.businessKey" />
+        <BusinessFormComponent :id="processInstance.businessKey" @change="handleFormChange" />
       </div>
     </el-card>
 
@@ -192,6 +192,11 @@ watch(
   }
 )
 
+const childApplictionInfoForm = ref({})
+const handleFormChange = (val) => {
+  childApplictionInfoForm.value = val
+}
+
 /** 处理审批通过和不通过的操作 */
 const handleAudit = async (task, pass) => {
   // 1.1 获得对应表单
@@ -207,14 +212,17 @@ const handleAudit = async (task, pass) => {
   const data = {
     id: task.id,
     reason: auditForms.value[index].reason,
-    copyUserIds: auditForms.value[index].copyUserIds
+    copyUserIds: auditForms.value[index].copyUserIds,
+    variables: {},
+    variableLocals:{}
   }
   if (pass) {
     // 审批通过，并且有额外的 approveForm 表单，需要校验 + 拼接到 data 表单里提交
     const formCreateApi = approveFormFApis.value[index]
+    data.variables = childApplictionInfoForm.value
     if (formCreateApi) {
       await formCreateApi.validate()
-      data.variables = approveForms.value[index].value
+      data.variableLocals=approveForms.value[index].value
     }
     await TaskApi.approveTask(data)
     message.success('审批通过成功')
@@ -356,7 +364,7 @@ const loadRunningTask = (tasks) => {
     // 2.3 添加到处理任务
     runningTasks.value.push({ ...task })
     auditForms.value.push({
-      reason: '',
+      reason: '同意',
       copyUserIds: []
     })
 
@@ -370,6 +378,8 @@ const loadRunningTask = (tasks) => {
     }
   })
 }
+
+
 
 /** 初始化 */
 const userOptions = ref<UserApi.UserVO[]>([]) // 用户列表

@@ -1,53 +1,164 @@
 <template>
-  <ContentWrap>
-    <el-descriptions :column="1" border>
-      <el-descriptions-item label="计划名称">
-       <label style="cursor:pointer;color: #0072c6"    @click="lookPlanDetail(detailData.planCode)" > {{ detailData.planName }}</label>
-      </el-descriptions-item>
-      <el-descriptions-item label="基地名称">
-        {{ detailData.parkName }}
-      </el-descriptions-item>
-      <el-descriptions-item label="地块名称">
-        {{ detailData.plotName }}
-      </el-descriptions-item>
-      <el-descriptions-item label="开始时间">
-        {{ formatDate(detailData.startTime, 'YYYY-MM-DD') }}
-      </el-descriptions-item>
-      <el-descriptions-item label="结束时间">
-        {{ formatDate(detailData.endTime, 'YYYY-MM-DD') }}
-      </el-descriptions-item>
-      <el-descriptions-item label="完成要求">
-        {{ detailData.completeRequirement }}
-      </el-descriptions-item>
-      <el-descriptions-item label="验收标准">
-        {{ detailData.acceptanceStandard }}
-      </el-descriptions-item>
-      <el-descriptions-item label="作业方式">
-        <div v-for="dict in getStrDictOptions(DICT_TYPE.JOB_TYPE)" :key="dict.value" >
-          <el-tag v-if="dict.value==detailData.jobType">
-            {{dict.label}}
-          </el-tag>
-        </div>
-      </el-descriptions-item>
-      <el-descriptions-item label="消耗农资">
-        <div v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CAPITAL_CONSUME)" :key="dict.value" >
-          <el-tag v-if="dict.value==detailData.agriCapitalConsume">
-            {{dict.label}}
-          </el-tag>
-        </div>
-      </el-descriptions-item>
-      <el-descriptions-item label="农资数量">
-        <div v-for="dict in getStrDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT)" :key="dict.value" >
-          <lable v-if="dict.value==detailData.agriCapitalUnit">
-            {{ detailData.agriCapitalAmount }}{{dict.label}}
-          </lable>
-        </div>
-      </el-descriptions-item>
-      <el-descriptions-item label="图片">
-        <el-image :src=" detailData.taskImg"/>
-      </el-descriptions-item>
-    </el-descriptions>
-  </ContentWrap>
+  <div>
+    <EditFrame>
+      <template #content>
+        <el-scrollbar class="croll-bar-template">
+          <el-form
+            ref="formRef"
+            :model="formData"
+            :rules="formRules"
+            label-width="100px"
+            v-loading="formLoading"
+            class="grid gap-3 p-4"
+          >
+            <!-- TODO: 表单项写在这里 -->
+            <!-- TODO: 如果使用手风琴，参考下面的代码 下面的注意不用的话要删掉 -->
+            <el-collapse v-model="activeName" simple>
+              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4" title="投入品信息" name="0" >
+                <div class="grid sm:grid-cols-4 ">
+                  <el-form-item label="投入品" prop="jobType">
+                    <el-select v-model="formData.jobType" placeholder="请选择投入品" style="width: 100%;">
+                      <el-option
+                        v-for="item in productInfoListALL"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"/>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="投入品费用/元" prop="agriCapitalConsume">
+                    <el-input-number controls-position="right" type="number"  placeholder="请输入内容" v-model="formData.agriCapitalConsume" style="width: 100%"/>
+                  </el-form-item>
+                  <el-form-item label="农资数量" prop="agriCapitalAmount">
+                    <el-input-number controls-position="right" type="number"  placeholder="请输入内容" v-model="formData.agriCapitalAmount" style="width: 100%"/>
+                  </el-form-item>
+                  <el-form-item label="农资单位" prop="agriCapitalUnit">
+                    <el-select v-model="formData.agriCapitalUnit" placeholder="请选择单位" style="width: 100%;">
+                      <el-option
+                        v-for="dict in getStrDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT)"
+                        :key="dict.value"
+                        :label="dict.label"
+                        :value="dict.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4"
+                                title="任务信息" name="1" >
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="农事计划" prop="planCode">
+                      <el-input v-model="formData.planCode" disabled placeholder="请选择农事计划" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openPlannfoPopup()">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="农事计划名称" prop="planName" label-width="120">
+                      <el-input v-model="formData.planName" disabled placeholder="请选择农事计划" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="所属基地" prop="belongPark">
+                      <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openParkInfoPopup('0')">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="基地名称" prop="parkName">
+                      <el-input v-model="formData.parkName" disabled placeholder="请输入基地名称" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="所属地块" prop="belongPlot">
+                      <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" >
+                        <template #append>
+                          <el-button style="color: black"  @click="openParkDetailPopup(formData.belongPark)">
+                            <Icon icon="ep:search"/>
+                            选择
+                          </el-button>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="地块名称" prop="plotName">
+                      <el-input v-model="formData.plotName" disabled placeholder="请输入地块名称" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="3">
+                  <el-col :span="12">
+                    <el-form-item label="开始时间" prop="startTime">
+                      <el-date-picker
+                        v-model="formData.startTime"
+                        type="date"
+                        style="width: 100%;"
+                        value-format="x"
+                        placeholder="选择开始时间"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="结束时间" prop="endTime">
+                      <el-date-picker
+                        v-model="formData.endTime"
+                        type="date"
+                        style="width: 100%;"
+                        value-format="x"
+                        placeholder="选择结束时间"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="3">
+                  <el-col :span="24">
+                    <el-form-item label="完成要求" prop="completeRequirement">
+                      <el-input type="textarea" v-model="formData.completeRequirement" placeholder="请输入完成要求" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="验收标准" prop="acceptanceStandard">
+                      <el-input type="textarea" v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+<!--                <el-row>-->
+<!--                  <el-col :span="24">-->
+<!--                    <el-form-item label="图片" prop="taskImg" >-->
+<!--                      <UploadImg v-model="formData.taskImg" />-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
+              </el-collapse-item>
+            </el-collapse>
+          </el-form>
+        </el-scrollbar>
+      </template>
+    </EditFrame>
+  </div>
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+  <PlanInfoPopup ref="planInfoPopupRef" @success="handlePlanInfoPopupChange" />
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+
 </template>
 <script lang="ts" setup>
 import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
@@ -55,6 +166,12 @@ import { formatDate } from '@/utils/formatTime'
 import { propTypes } from '@/utils/propTypes'
 import * as LeaveApi from '@/api/bpm/leave'
 import { FarmTaskApi, FarmTaskVO } from '@/api/agriculture/farmtask'
+import {TopRight} from "@element-plus/icons-vue";
+import {EditFrame} from "@/components/EditFrame";
+import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
+import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
+import PlanInfoPopup from "@/views/agriculture/farmtask/PlanInfoPopup.vue";
+import {ProductApi} from "@/api/erp/product/product";
 
 
 defineOptions({ name: 'FarmTaskDetail' })
@@ -67,12 +184,47 @@ const props = defineProps({
 const detailLoading = ref(false) // 表单的加载中
 const detailData = ref<any>({}) // 详情数据
 const queryId = query.id as unknown as number // 从 URL 传递过来的 id 编号
+const activeName = ref(['0','1']) // 当前激活的面板
+let productInfoListALL = ref() //所有投入品列表
+const formData = ref({
+  id: undefined,
+  belongPark: undefined,
+  parkName: undefined,
+  belongPlot: undefined,
+  plotName: undefined,
+  processInstanceId: undefined,
+  status: undefined,
+  startTime: undefined,
+  endTime: undefined,
+  completeRequirement: undefined,
+  acceptanceStandard: undefined,
+  planCode:undefined,
+  planName:undefined,
+  agriCapitalUnit:undefined,
+  agriCapitalAmount:undefined,
+  agriCapitalConsume:undefined,
+  jobType:undefined,
+  taskImg: undefined,
+  agriCapitalUnit:undefined,
+  agriCapitalAmount:undefined,
+  agriCapitalConsume:undefined,
+  jobType:undefined,
+  taskImg: undefined,
+})
+
+const emit = defineEmits(['success', 'change']) // 定义 success 事件，用于操作成功后的回调
+
+watch(() => formData.value, () => {
+  emit('change', formData.value)
+}, {
+  deep: true
+})
 
 /** 获得数据 */
 const getInfo = async () => {
   detailLoading.value = true
   try {
-    detailData.value = await FarmTaskApi.getFarmTask(props.id || queryId)
+    formData.value = await FarmTaskApi.getFarmTask(props.id || queryId)
   } finally {
     detailLoading.value = false
   }
@@ -85,7 +237,8 @@ const lookPlanDetail = (planId:any) => {
   router.push('/farm_work/farmManage/createOrUpdate?type=view&id='+planId)
 }
 /** 初始化 **/
-onMounted(() => {
+onMounted( async () => {
   getInfo()
+  productInfoListALL.value = await ProductApi.selectAll()
 })
 </script>
