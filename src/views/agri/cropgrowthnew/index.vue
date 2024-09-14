@@ -707,6 +707,8 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
+  plantNum.value=2
+  timeNum.value=2
   queryFormRef.value.resetFields()
   handleQuery()
 }
@@ -715,7 +717,7 @@ const resetQuery = () => {
 const timeNum=ref(2)
 const sortChange=async (val)=>{
   timeNum.value=val  
-  
+  plantNum.value=2
   if(val==2){
     queryParams.ordersSort=undefined
   queryParams.startTimeSort=undefined
@@ -730,6 +732,7 @@ const sortChange=async (val)=>{
 const plantNum=ref(2)
 const plantChange=async (val)=>{
   console.log(val,'zhongzhipaixu ')
+  timeNum.value=2
   plantNum.value=val
   if(val==2){
     queryParams.ordersSort=undefined
