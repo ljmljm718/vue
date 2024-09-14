@@ -151,7 +151,7 @@ export default defineComponent({
                 }}
               >
                 {item.date}
-                <div class={`tip-bg cursor-default ${ item.selected && checkStatus.value.indexOf(item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)) !== -1 ? 'block' : 'hidden'}`}>
+                <div class={`tip-bg cursor-default z-1000 ${ item.selected && checkStatus.value.indexOf(item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)) !== -1 ? 'block' : 'hidden'}`}>
                   { slots.tip() }
                 </div>
               </div>

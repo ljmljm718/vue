@@ -329,6 +329,14 @@ const handleCalendarChange = (item: Date) => {
   }
   getMissionPlan(`${item.getFullYear()}-${item.getMonth() + 1}`, curPlot.value.code)
 }
+
+const missionAddPlanClass = (event: any) => {
+  event.currentTarget.className = "mb-10px leading-[30px] mission-plan"
+}
+
+const missionremovePlanClass = (event: any) => {
+  event.currentTarget.className = "mb-10px leading-[30px]"
+}
 /****************************** 农事任务  end  ******************************/
 </script>
 <template>
@@ -468,7 +476,11 @@ const handleCalendarChange = (item: Date) => {
                       :key="`item.planName${index}`"
                       class="tracking-widest"
                     >
-                      <div class="pb-[10px]">
+                      <div
+                        class="mb-10px leading-[30px]"
+                        @mouseenter="missionAddPlanClass"
+                        @mouseleave="missionremovePlanClass"
+                      >
                         {{ item.planName }}
                       </div>
                     </div>
@@ -696,6 +708,12 @@ class="text-32px font-bold text-linear-wrapper art-font"
   background: linear-gradient(90deg, rgba(1, 248, 146, 0) -1%, #01F892 50%, rgba(1, 248, 146, 0) 100%);
   margin-top: 5px;
   margin-bottom: 5px;
+}
+.mission-plan {
+  background: {
+    image: url(./assets/plan-bg.png);
+    size: 100% 100%;
+  }
 }
 /****************************** 农事任务  end  ******************************/
 </style>
