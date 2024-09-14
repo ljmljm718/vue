@@ -330,11 +330,11 @@
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
   <!-- 下一步弹框 -->
-  <Dialog title="执行农事计划" class='  !color-[#000] !box-border' v-model="dialogVisible">
+  <Dialog title="执行农事计划" class='!color-[#000] !box-border' v-model="dialogVisible">
   <div class="flex justify-around">
-    <div class='w-300px box-border'>
-      <div class='text-18px' style="font-weight: 600;">农事计划信息</div>
-      <div class="mt-10px h-200px formParams !font-medium" >
+    <div class='w-300px box-border mr-10px'>
+      <div class='text-18px ' style="font-weight: 600;">农事计划信息</div>
+      <div class="mt-20px border-1px px-10px py-10px box-border border-solid border-[#c1c1cc1] h-200px formParams !font-medium" >
         <div>计划名称：{{params.planName}}</div>
         <div class="my-10px">作物名称：{{params.cropName}}</div>
         <div>基地名称：{{params.parkName}}</div>
@@ -346,7 +346,7 @@
         <div>计划结束时间：{{endTime}}</div>
       </div>
     </div>
-    <div class='w-650px box-border'>
+    <div class='w-660px box-border'>
       <div  class='text-18px mb-15px' style="font-weight: 600;">选择的投入品</div>
       <div>
         <!-- <div>{{ selectOption }}</div> -->
