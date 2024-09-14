@@ -199,7 +199,7 @@
         width="180px"
       />
       <el-table-column label="投入品费用/元" align="center" prop="feedCost" width="120"/>
-      <el-table-column label="操作人" align="center" prop="feedPerson"/>
+      <el-table-column label="操作人" align="center" prop="feedPerson" />
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -207,7 +207,7 @@
       <!--        :formatter="dateFormatter"-->
       <!--        width="180px"-->
       <!--      />-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="120">
         <template #default="scope">
           <el-button
             link
