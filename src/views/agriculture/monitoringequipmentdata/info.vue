@@ -17,7 +17,7 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string>
   if (leftTimes <= 0) {
     ElMessage.error("获取视频流失败，请联系管理员!");
   }
-  if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
+  if (!deviceSerial || !channelNo || leftTimes <= 0) return deviceSerial;
   const liveToken = localStorage.getItem("LIVE_TOKEN"), expireTime = localStorage.getItem("LIVE_EXPIRE_TIME") ?? '0';
   console.log("🚀 ~ checkAuth ~ liveToken:", liveToken)
   const isExpired = ((parseInt(expireTime) ?? 0) - new Date().valueOf()) < 0
@@ -58,16 +58,18 @@ const destroyHls = () => {
 }
 
 onActivated(() => {
-  deviceVideoList.value.forEach(item => {
-    if (item.deviceStatus === 'online') {
+  deviceVideoList.value.forEach((item:any) => {
+    if (!item.dtu || !item.channelId) {
+      initPlayer(item.domId, item.url);
+    } else {
       initPlayer(item.domId, item.dtu, item.channelId);
     }
   })
 })
 onDeactivated(() => { destroyHls() })
 onUnmounted(() => { destroyHls() })
-const initPlayer = async (containerId, dtu, channelId) => {
-  if (!containerId || !dtu || !channelId) return;
+const initPlayer = async (containerId, dtu, channelId = '') => {
+  if (!containerId || !dtu) return;
   const resUrl = await checkAuth(dtu, channelId);
   const hls = new Hls();
   const _player = new Dplayer({
@@ -150,13 +152,17 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
   if (!Array.isArray) return;
   deviceVideoList.value = res.map(item => ({
     ...item,
-    domId: `VIDEO_${item.dtu ?? 0}_${item.channelId ?? 0}`,
+    domId: `VIDEO_${item.id ?? (item.dtu + item.channelId)}`,
     videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
     baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
   }))
   nextTick(() => {
-    deviceVideoList.value.forEach(item => {
-      if (item.deviceStatus === 'online') initPlayer(item.domId, item.dtu, item.channelId);
+    deviceVideoList.value.forEach((item:any) => {
+      if (!item.dtu || !item.channelId) {
+        initPlayer(item.domId, item.url);
+      } else {
+        initPlayer(item.domId, item.dtu, item.channelId);
+      }
     })
   })
 }
