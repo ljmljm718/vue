@@ -250,7 +250,7 @@
                 <el-radio-button label="控制设备" value="控制设备" />
               </div>
             </el-radio-group>
-            <div id="chartExtra1"></div>
+            <div id="chartExtra1" class="bg-redm"></div>
           </div>
           <div class="custom-card col-span-2">
             <div class="flex font-800 mb-3">
@@ -321,7 +321,6 @@ const queryList = async () => {
   selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({
     parentId: dataId[0].id
   })
-  console.log('查询采集类型列表', selectEquipmentType.value)
   if (selectEquipmentType.value.length > 0) {
     radio.value = selectEquipmentType.value[0].categoryName
     handleRadioChange(radio.value)
@@ -366,16 +365,16 @@ const handleDeviceTypeRadioChange = async (param: string | number | boolean = '�
         return ele.typeName === '控制设备'
       })
       .map((item) => ({ value: item.count, name: item.categoryName }))
-  console.log('param', param)
   initChartStatic(
     'chartExtra1',
     generatePieOptions({
       legend: {
         show: true,
-        top: 'center',
-        left: 'right',
-        bottom: '0',
-        orient: 'vertical',
+        left: 'center',
+        right: 'auto',
+        top: 'auto',
+        bottom: '20',
+        orient: 'horizontal',
         itemWidth: 12,
         itemHeight: 12,
         textStyle: {
@@ -387,33 +386,30 @@ const handleDeviceTypeRadioChange = async (param: string | number | boolean = '�
         {
           type: 'pie',
           radius: ['35%', '55%'],
-          center: ['40%', '50%'],
+          center: ['50%', '30%'],
           data: _data,
           label: {
-            formatter: '{c|{c}}台 , {per|{d}%}',
+            show: false,
+            formatter: '{b}-{d}%',
             color: '#888',
-            rich: {
-              c: {
-                color: '#888',
-                fontSize: 12,
-                lineHeight: 33
-              },
-              per: {
-                color: '#888',
-                fontSize: 12,
-                lineHeight: 33
-              }
-            }
           },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 40,
-              fontWeight: 'bold'
-            }
-          }
+          labelLine: {
+            show: false,
+            length:4,
+          },
+         emphasis: {
+            itemStyle: { borderWidth: 0 }
+          },
         }
-      ]
+      ],
+      tooltip: {
+        formatter: (item) =>{
+          return `数据详情<br/>${item.marker} <span style="padding-right: 0.5rem;">${item.name}:</span> <span>${item.value}台 ( ${item.percent}%)</span>`;
+        },
+        position: function (point) {
+        return [point[0] - 90, point[1] + 20]
+      },
+      },
     })
   )
 }
@@ -427,7 +423,6 @@ const goPageWran = (val) => {
 //顶部跳转
 let router = useRouter()
 const goPage = (obj) => {
-  console.log(obj, 'objasd')
   let title = obj.title
   switch (title) {
     case '虫情监测':
@@ -488,7 +483,6 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
       endDate: dataCollectPicker.value ? formatTime(picker[1], 'yyyy-MM-dd') : null
     })
   }
-  console.log('数据采集数据', res)
   const xAxis = res.map((item) => item.collectionDate),
     series = res.map((item) => item.totalValue)
   initChartStatic(
@@ -601,7 +595,6 @@ let selecteList = ref([
 ])
 let selecteList2 = ref([])
 const initChart1 = (arr = []) => {
-  console.log('arr', arr)
   const data = [
     { name: '已巡检', value: arr[0].yesCount },
     { name: '未巡检', value: arr[0].notCount }
@@ -746,7 +739,6 @@ const monitorTypeList = ref([])
 const selectedMonitorType = ref()
 
 const handleRadioChange = async (monitoringType) => {
-  console.log(monitoringType, 'monitoringTypemonitoringTypemonitoringType')
   const res = await DeviceCategoryApi.QueryCollectionType({ monitoringType })
   monitorTypeList.value = res
   if (monitorTypeList.value.length > 0) {
@@ -756,7 +748,6 @@ const handleRadioChange = async (monitoringType) => {
   }
 }
 const initChart3 = async () => {
-  console.log(dateData.value, 'length')
   const res = await DeviceCategoryApi.waterQualityDataLineChartA({
     // belongPark: belongPark.value,
     // belongPlot: belongPlot.value,
@@ -765,10 +756,8 @@ const initChart3 = async () => {
     startTime: dateData.value ? formatTime(dateData.value[0], 'yyyy-MM-dd HH:mm:ss') : null,
     endTime: dateData.value ? formatTime(dateData.value[1], 'yyyy-MM-dd HH:mm:ss') : null
   })
-  console.log('历史数据', res)
   const xAxis = res.map((item) => item.collectionTime)
   const series = res.map((item) => item.dataValue)
-
   initChartStatic(
     'chart3',
     generateBaseOptions({
@@ -845,6 +834,11 @@ const initChart3 = async () => {
           }
         }
       ],
+      tooltip: {
+        formatter: (item)=>{
+          return `数据详情<br/>${item[0].marker}${item[0].axisValue}<span style="padding-left: 1rem">${item[0].data}</span>`
+        }
+      },
       grid: {
         left: '5%',
         right: '3%',
@@ -861,7 +855,6 @@ const handleSelectedMonitorTypeChange = async (item) => {
 //获取顶部小卡片数据
 const getHomeDeviceCard = () => {
   getEquipmentCountSum().then((res) => {
-    console.log(res, '顶部小卡片')
     const _iconMap = {
       // 虫情: 'top-2',
       // 土壤: 'top-3',
@@ -912,7 +905,6 @@ getHomeDeviceCard()
 const getParkTree = () => {
   ParkTree().then((res) => {
     data.value = res
-    console.log(res, 'dd')
     belongPark.value = res[2].id
     belongPlot.value = res[2].child[1].id
     // getPageRealTimeData(res[1].id, res[1].child[1].id)
@@ -941,7 +933,6 @@ const getHomeCheckLog = (id = '') => {
     belongPlot: id,
     date: formatTime(new Date(), 'yyyy-MM-dd')
   }).then((res) => {
-    console.log('及接口2', res)
     const { notCount, yesCount } = res['巡检进度'][0]
 
     typeList.value = res['分组详情']
@@ -1017,13 +1008,11 @@ const getPageRealTimeData = async (belongPark = '', belongPlot = '') => {
       return true
     })
     .map((ele) => ({ ...ele, icon: 'my-icon-' + getIconClass(ele.monitoringType) }))
-  console.log(pageRealList.value, 'pageRealList.valuepageRealList.value')
 }
 getPageRealTimeData()
 //获取预警信息
 const getpageWarningInfo = (id = '', id2 = '') => {
   warningRecordInfoByCode({ parkCode: id, plotCode: id2 }).then((res) => {
-    console.log('预警信息', res)
     pageWarnList.value = res
   })
 }
@@ -1032,14 +1021,12 @@ getpageWarningInfo()
 let chartList = ref({})
 const getEnvironmentView = (id, id2) => {
   environmentView({ deviceType: deviceType.value, belongPark: id, belongPlot: id2 }).then((res) => {
-    console.log(res, '气象站历史数据')
     chartList.value = res
   })
 }
 //获取土壤墒情和虫情监测
 const getDataByParkAndPlotAndType = (id, id2) => {
   DataByParkAndPlotAndType({ deviceKind, belongPark: id, belongPlot: id2 }).then((res) => {
-    console.log(res, '土壤墒情和虫情监测')
     selecteList2.value = res
     setTimeout(() => {
       // initChart4(res[0].list)
@@ -1048,7 +1035,6 @@ const getDataByParkAndPlotAndType = (id, id2) => {
 }
 //下拉选择
 const selecteCli = (e) => {
-  console.log(e, '下拉选择')
   test.value = e
 }
 //下拉选择2
