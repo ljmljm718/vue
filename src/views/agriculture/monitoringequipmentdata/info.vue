@@ -61,9 +61,7 @@ onActivated(() => {
   deviceVideoList.value.forEach((item:any) => {
     if (!item.dtu || !item.channelId) {
       initPlayer(item.domId, item.url);
-      return;
-    }
-    if (item.deviceStatus === 'online') {
+    } else {
       initPlayer(item.domId, item.dtu, item.channelId);
     }
   })
@@ -159,8 +157,12 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
     baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
   }))
   nextTick(() => {
-    deviceVideoList.value.forEach(item => {
-      if (item.deviceStatus === 'online') initPlayer(item.domId, item.dtu, item.channelId);
+    deviceVideoList.value.forEach((item:any) => {
+      if (!item.dtu || !item.channelId) {
+        initPlayer(item.domId, item.url);
+      } else {
+        initPlayer(item.domId, item.dtu, item.channelId);
+      }
     })
   })
 }

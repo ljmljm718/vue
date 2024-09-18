@@ -354,7 +354,7 @@ export default defineComponent({
             <BigscreenMain>
               <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
                 <div class="flex flex-col justify-between w-[420px]">
-                  <div class="h-[382px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
+                  <div class="h-[300px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
                     <div class="grid grid-cols-2 grid-rows-4 h-full">
                       {
                         weatherDataList.value.map((item:any) => (
@@ -373,7 +373,7 @@ export default defineComponent({
                       }
                     </div>
                   </div>
-                  <div class="h-[295px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
+                  <div class="h-[340px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
                     <div class="grid grid-cols-2 grid-rows-4 h-full gap-2">
                       {
                         soilDataList.value.map((item:any) => (
@@ -390,7 +390,7 @@ export default defineComponent({
                       }
                     </div>
                   </div>
-                  <div class="h-[237px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
+                  <div class="h-[270px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
                     <div class="h-full flex space-x-1 justify-between items-center">
                       <div
                         class="left-btn w-[9px] h-[16px]" 
@@ -520,14 +520,14 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="flex flex-col justify-between w-[420px]">
-                  <div class="h-[308px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
+                  <div class="h-[250px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
                     <div class="flex h-full justify-evenly">
-                      <div class="agri-1 w-[185px] h-[212px] flex justify-center items-center">
+                      <div class="agri-1 w-[150px] h-[162px] flex justify-center items-center">
                         <div class="text-[26px] art-font linear-title relative top-[50px]">
                           {agriResInfo.value.shelterAmount}
                         </div>
                       </div>
-                      <div class="agri-2 w-[185px] h-[212px] flex justify-center items-center">
+                      <div class="agri-2 w-[150px] h-[162px] flex justify-center items-center">
                         <div class="text-[26px] art-font linear-title relative top-[50px]">
                           {agriResInfo.value.plantArea}亩
                         </div>
@@ -570,7 +570,7 @@ export default defineComponent({
                       }
                     </div>
                   </div>
-                  <div class="h-[237px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px] overflow-hidden">
+                  <div class="h-[295px] item-bg-7 box-border pt-[50px] pb-[20px] px-[10px] overflow-hidden">
                     <div class="h-[220px] overflow-auto hidden-scroll-bar">
                       <BigscreenTable
                         headerBackgroundColor="#012831"
