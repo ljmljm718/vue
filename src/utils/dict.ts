@@ -298,4 +298,8 @@ export enum DICT_TYPE {
   FACTOR_TYPE = 'factor_type',//传感器监测类型
   JOB_TYPE= 'job_type',//作业类型
   AGRI_CAPITAL_CONSUME='agri_capital_consume',//消耗农资
+
+  // =========== agri -   质量码溯源 ==========
+  AGRI_CODE_APPLY_STATUS = 'agri_code_apply_status',//码申请状态
+  AGRI_CODE_DATE_FORMAT = 'agri_code_date_format',//码日期
 }
