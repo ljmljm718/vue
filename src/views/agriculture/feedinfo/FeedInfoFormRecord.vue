@@ -98,6 +98,18 @@
       </el-row>
       <el-row>
         <el-col :span="12">
+          <el-form-item label="采购价格" prop="purchasePrice">
+            <el-input v-model="formData.purchasePrice" placeholder="请输入采购价格"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="投入品规格" prop="standard">
+            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="消耗量" prop="consumeNum">
             <el-input v-model="formData.consumeNum" placeholder="请输入消耗量"/>
           </el-form-item>
@@ -111,7 +123,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="投喂量" prop="feedNum">
-            <el-input v-model="formData.feedNum" placeholder="请输入投喂量"/>
+            <el-input v-model="formData.feedNum" placeholder="请输入投喂量（消耗量*规格）"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -121,7 +133,7 @@
         </el-col>
       </el-row>
       <el-form-item label="投入品费用/元" prop="feedCost">
-        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用"/>
+        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用(消耗量*采购价格)"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -166,6 +178,8 @@ const formData = ref({
   farmingStage: undefined,
   consumeNum: undefined,
   consumeUnit: undefined,
+  standard: undefined,
+  purchasePrice: undefined,
   feedCost: undefined
 })
 const formRules = reactive({
@@ -202,6 +216,12 @@ const open = async (type: string, id?: number) => {
       productInfoListALL.value.forEach((item) => {
         if (item.id == formData.value.feedType) {
           formData.value.feedType = item.id
+          formData.value.standard = item.standard
+          formData.value.purchasePrice = item.purchasePrice
+          console.log(formData.value)
+          if (!formData.value.consumeUnit){
+            formData.value.consumeUnit = item.unitName
+          }
         }
       })
     } finally {
