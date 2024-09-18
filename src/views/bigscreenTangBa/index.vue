@@ -507,15 +507,15 @@ export default defineComponent({
                   </div>
                   <div class="flex h-237px justify-between">
                     <div class="w-420px h-full item-bg-extra">
-                      <div class="h-full flex space-x-1 justify-between items-center">
+                      <div class="h-full flex space-x-1 justify-between items-center box-border px-14px">
                         <div
                           class="left-btn w-[9px] h-[16px]" 
                           onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
                         ></div>
                         {
                           parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
-                            <div class="flex flex-col space-y-2 items-center w-[170px]">
-                              <img src={item?.monitoringEquipmentDataDO?.capturedImage} class="w-full aspect-video object-cover" />
+                            <div class="flex flex-col space-y-2 items-center w-[160px] mt-24px">
+                              <img src={item?.monitoringEquipmentDataDO?.capturedImage} class="w-full aspect-1.5 bg-#00000080 object-cover" />
                               <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
                                 <span>{item?.monitoringEquipmentDataDO?.monitoringPlotName ?? ''}</span>
                                 <span class="mx-1">|</span>
