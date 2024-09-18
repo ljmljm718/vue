@@ -710,7 +710,23 @@ const initChart2 = async () => {
           type: 'line',
           symbol: 'none',
           areaStyle: {
-            color: 'rgba(254, 104, 82, 0.2)'
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: '#ceebe8' 
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(0, 150, 136, 0)' 
+                }
+              ]
+            }
           }
         }
       ],
