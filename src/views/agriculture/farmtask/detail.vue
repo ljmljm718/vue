@@ -7,14 +7,15 @@
             ref="formRef"
             :model="formData"
             :rules="formRules"
+
             label-width="100px"
             v-loading="formLoading"
             class="grid gap-3 p-4"
           >
             <!-- TODO: 表单项写在这里 -->
             <!-- TODO: 如果使用手风琴，参考下面的代码 下面的注意不用的话要删掉 -->
-            <el-collapse v-model="activeName" simple>
-              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4" title="投入品信息" name="0" >
+            <el-collapse v-model="activeName" simple >
+              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4"  title="投入品信息" name="0" v-show="formData.status==20?false:true">
                 <div class="grid sm:grid-cols-4 ">
                   <el-form-item label="投入品" prop="jobType">
                     <el-select v-model="formData.jobType" placeholder="请选择投入品" style="width: 100%;">
@@ -32,30 +33,16 @@
                     <el-input-number controls-position="right" type="number"  placeholder="请输入内容" v-model="formData.agriCapitalAmount" style="width: 100%"/>
                   </el-form-item>
                   <el-form-item label="农资单位" prop="agriCapitalUnit">
-                    <el-select v-model="formData.agriCapitalUnit" placeholder="请选择单位" style="width: 100%;">
-                      <el-option
-                        v-for="dict in getStrDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT)"
-                        :key="dict.value"
-                        :label="dict.label"
-                        :value="dict.value"
-                      />
-                    </el-select>
+                    <el-input type="text" v-model="formData.agriCapitalUnit" placeholder="请输入单位" style="width: 100%;"/>
                   </el-form-item>
                 </div>
               </el-collapse-item>
-              <el-collapse-item class="grid sm:grid-cols-1 gap-2 p-4"
+              <el-collapse-item  class="grid sm:grid-cols-1 gap-2 p-4"
                                 title="任务信息" name="1" >
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="农事计划" prop="planCode">
-                      <el-input v-model="formData.planCode" disabled placeholder="请选择农事计划" >
-                        <template #append>
-                          <el-button style="color: black"  @click="openPlannfoPopup()">
-                            <Icon icon="ep:search"/>
-                            选择
-                          </el-button>
-                        </template>
-                      </el-input>
+                      <el-input v-model="formData.planCode" disabled placeholder="请选择农事计划" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -67,14 +54,7 @@
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="所属基地" prop="belongPark">
-                      <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" >
-                        <template #append>
-                          <el-button style="color: black"  @click="openParkInfoPopup('0')">
-                            <Icon icon="ep:search"/>
-                            选择
-                          </el-button>
-                        </template>
-                      </el-input>
+                      <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -86,14 +66,7 @@
                 <el-row :gutter="3">
                   <el-col :span="12">
                     <el-form-item label="所属地块" prop="belongPlot">
-                      <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" >
-                        <template #append>
-                          <el-button style="color: black"  @click="openParkDetailPopup(formData.belongPark)">
-                            <Icon icon="ep:search"/>
-                            选择
-                          </el-button>
-                        </template>
-                      </el-input>
+                      <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -104,10 +77,11 @@
                 </el-row>
                 <el-row :gutter="3">
                   <el-col :span="12">
-                    <el-form-item label="开始时间" prop="startTime">
+                    <el-form-item label="开始时间"  prop="startTime">
                       <el-date-picker
                         v-model="formData.startTime"
                         type="date"
+                        disabled
                         style="width: 100%;"
                         value-format="x"
                         placeholder="选择开始时间"
@@ -119,6 +93,7 @@
                       <el-date-picker
                         v-model="formData.endTime"
                         type="date"
+                        disabled
                         style="width: 100%;"
                         value-format="x"
                         placeholder="选择结束时间"
@@ -130,14 +105,14 @@
                 <el-row :gutter="3">
                   <el-col :span="24">
                     <el-form-item label="完成要求" prop="completeRequirement">
-                      <el-input type="textarea" v-model="formData.completeRequirement" placeholder="请输入完成要求" />
+                      <el-input type="textarea" disabled v-model="formData.completeRequirement" placeholder="请输入完成要求" />
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="24">
                     <el-form-item label="验收标准" prop="acceptanceStandard">
-                      <el-input type="textarea" v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
+                      <el-input type="textarea" disabled v-model="formData.acceptanceStandard" placeholder="请输入验收标准" />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -155,9 +130,6 @@
       </template>
     </EditFrame>
   </div>
-  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
-  <PlanInfoPopup ref="planInfoPopupRef" @success="handlePlanInfoPopupChange" />
-  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 
 </template>
 <script lang="ts" setup>
@@ -182,6 +154,7 @@ const props = defineProps({
   id: propTypes.number.def(undefined)
 })
 const detailLoading = ref(false) // 表单的加载中
+const type = ref(true)
 const detailData = ref<any>({}) // 详情数据
 const queryId = query.id as unknown as number // 从 URL 传递过来的 id 编号
 const activeName = ref(['0','1']) // 当前激活的面板
