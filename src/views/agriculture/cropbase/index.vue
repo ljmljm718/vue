@@ -132,6 +132,7 @@
         </div>
       </div>
     </div>
+    <!-- 列表 -->
     <div class="w-full pt-5" v-show="showType === 'list'">
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <el-table-column label="种植品种" align="center" prop="cropName" width="140" />
@@ -275,6 +276,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 卡片 -->
     <div
       class="w-full space-y-2 pt-2 grid 2xl:grid-cols-3 xl:grid-cols-2 gap-3"
       v-show="showType === 'card'"
@@ -439,7 +441,7 @@ const list = ref<CropBaseVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 12,
   cropCode: undefined,
   breedId: undefined,
   cropName: undefined,
@@ -690,14 +692,7 @@ const BreedFromSuccess = (order: any) => {
 
 //卡片、列表按钮切换
 const showType = ref('card')
-const cardDataList = ref<any[]>([
-  { id: '1', cropName: 'fish1', plotName: '丰收鸭舌', cropType: '鸭' },
-  { id: '2', cropName: 'fish2', plotName: '丰收鸭舌', cropType: '鸭' },
-  { id: '3', cropName: 'fish3', plotName: '丰收鸭舌', cropType: '鸭' },
-  { id: '4', cropName: 'fish4', plotName: '丰收鸭舌', cropType: '鸭' },
-  { id: '5', cropName: 'fish5', plotName: '丰收鸭舌', cropType: '鸭' },
-  { id: '6', cropName: 'fish6', plotName: '丰收鸭舌', cropType: '鸭' }
-])
+const cardDataList = ref<any[]>([])
 
 onMounted(async () => {
   await getList()
