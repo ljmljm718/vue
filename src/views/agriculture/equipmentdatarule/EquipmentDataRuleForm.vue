@@ -25,6 +25,9 @@
       <el-form-item label="系数" prop="rule">
         <el-input v-model="formData.rule" placeholder="请输入规则" />
       </el-form-item>
+      <el-form-item label="字典" prop="dictionary">
+        <el-input v-model="formData.dictionary" placeholder="请输入字典" />
+      </el-form-item>
       <el-form-item label="单位" prop="ruleUnit">
         <el-input v-model="formData.ruleUnit" placeholder="请输入单位" />
       </el-form-item>
@@ -77,6 +80,7 @@ const formData = ref({
   deviceId: undefined,
   deviceName: undefined,
   remark:undefined,
+  dictionary: undefined
 })
 const formRules = reactive({
   dtuId: [{ required: true, message: '终端id不能为空', trigger: 'blur' }],
@@ -143,6 +147,7 @@ const resetForm = () => {
     deviceId: undefined,
     deviceName: undefined,
     remark:undefined,
+    dictionary: undefined
   }
   formRef.value?.resetFields()
 }

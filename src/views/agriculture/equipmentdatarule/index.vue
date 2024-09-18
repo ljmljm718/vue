@@ -91,6 +91,7 @@
       <el-table-column label="监测类型" align="center" prop="monitoringType"/>
       <el-table-column label="规则类型" align="center" prop="ruleType"/>
       <el-table-column label="系数" align="center" prop="rule"/>
+      <el-table-column label="字典" align="center" prop="dictionary"/>
       <el-table-column label="单位" align="center" prop="ruleUnit"/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
