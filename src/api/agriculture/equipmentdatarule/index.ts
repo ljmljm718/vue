@@ -12,6 +12,10 @@ export interface EquipmentDataRuleVO {
   ruleUnit: string // 单位
   deviceId: string // 设备编号
   remark: string // 备注
+  deviceName: string // 设备名称
+  dictionary: string // 字典
+  remark1: string // 备用1
+  remark2: string // 备用2
 }
 
 // 设备数据规则 API

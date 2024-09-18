@@ -31,7 +31,7 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
-<!--      <el-form-item label="设备" prop="deviceName">
+      <el-form-item label="设备" prop="deviceName">
         <el-input v-model="formData.deviceName" placeholder="请选择设备" disabled>
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
@@ -40,7 +40,7 @@
             </el-button>
           </template>
         </el-input>
-      </el-form-item>-->
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
