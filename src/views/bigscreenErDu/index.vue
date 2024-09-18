@@ -31,7 +31,7 @@ const openPage = (url:string) => {
             >可视化监控</div>
             <div
               class="btn-bg w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition"
-              @click="openPage('')"
+              @click="openPage('/growthMonitoringModelDataCenter')"
             >种植模型</div>
           </div>
           <div class="h-86px flex items-center pl-50px w-320px relative top-[-8px]">
