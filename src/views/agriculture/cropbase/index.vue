@@ -94,11 +94,11 @@
   <!-- 列表 -->
   <ContentWrap>
     <div class="flex items-center mb-3">
-      <div style="margin-bottom: 1rem; margin-left: 1.5rem; margin-right: 1.5rem; height: 2rem">
+      <div class="mx-[1.5rem]">
         <el-button
           type="primary"
           plain
-          class="!h-2.4rem"
+          class="!h-2rem !text-white !bg-[#009688]"
           @click="openForm('create')"
           v-hasPermi="['agriculture:crop-base:create']"
         >
@@ -111,148 +111,224 @@
           title="种植管理是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"
         />
       </div>
+      <div class="flex items-center cursor-pointer ml-[1.5rem]">
+        <div
+          :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
+          @click="showType = 'card'"
+        >
+          <el-icon>
+            <Menu />
+          </el-icon>
+          <div class="pl-1 text-[13px]">卡片</div>
+        </div>
+        <div
+          :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
+          @click="showType = 'list'"
+        >
+          <el-icon>
+            <List />
+          </el-icon>
+          <div class="pl-1 text-[13px]">列表</div>
+        </div>
+      </div>
     </div>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="种植品种" align="center" prop="cropName" width="140" />
-      <el-table-column label="品类" align="center" prop="cropType">
-        <template #default="scope">
-          <el-tag>{{ scope.row.cropType }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" align="center" prop="imgId">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.imgId"
-            :preview-src-list="[row.imgId]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="所属基地" align="center" prop="parkName" width="160" />
-      <el-table-column label="所属地块" align="center" prop="plotName" width="160" />
-      <el-table-column label="数量" align="center" prop="number" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="预计产量" align="center" prop="predictedOutput" />
-      <el-table-column
-        label="开始时间"
-        align="center"
-        prop="receiptStartTime"
-        :formatter="dateFormatter2"
-        width="120px"
-      />
-      <el-table-column
-        label="结束时间"
-        align="center"
-        prop="receiptEndTime"
-        :formatter="dateFormatter2"
-        width="120px"
-      />
-      <el-table-column align="center" prop="batchCode" width="160px">
-        <template #header>
-          <QuestionMaskTip
-            lable-name="批次号"
-            content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="batchQrImg" width="100px">
-        <template #default="scope">
-          <el-image
-            :src="`data:image/png;base64,${scope.row.batchQrImg}`"
-            style="object-fit: cover; width: 2rem; height: 2rem"
-            preview-teleported
-            :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
-          />
-        </template>
-        <template #header>
-          <QuestionMaskTip
-            lable-name="二维码"
-            content="扫描二维码获取当前作物的生长流程，对作物进行溯源管理。"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column align="center" key="isEnableModel" width="120px">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.isEnableModel"
-            :active-value="true"
-            :inactive-value="false"
-            @change="handleStatusChange(scope.row)"
-          />
-        </template>
-        <template #header>
-          <QuestionMaskTip
-            lable-name="启用模型"
-            content="是否启用该地块作物的模型配置，使其进入模型监测行列。"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
-        <template #default="scope">
-          <el-tag type="success" v-if="scope.row.recoveryNo">已采收</el-tag>
-          <el-tag v-if="!scope.row.recoveryNo">未采收</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" align="center" prop="cropDesc" width="240" />
-      <el-table-column
-        :label="deptId === 156 ? '数量' : '备注'"
-        align="center"
-        prop="remark"
-        width="180"
-      />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="操作" align="center" width="250" fixed="right">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['agriculture:crop-base:update']"
-            v-if="!scope.row.recoveryNo"
-          >
-            详情
-          </el-button>
-          <el-button link type="success" @click="damn(scope.row)" v-if="show !== 118">
-            溯源
-          </el-button>
-          <el-button
-            link
-            type="warning"
-            @click="openFormA('create', scope.row)"
-            v-hasPermi="['agriculture:harvest-management:create']"
-            v-if="!scope.row.recoveryNo"
-          >
-            采收
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:crop-base:update']"
-            v-if="!scope.row.recoveryNo"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:crop-base:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="w-full pt-5" v-show="showType === 'list'">
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+        <el-table-column label="种植品种" align="center" prop="cropName" width="140" />
+        <el-table-column label="品类" align="center" prop="cropType">
+          <template #default="scope">
+            <el-tag>{{ scope.row.cropType }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="图片" align="center" prop="imgId">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              lazy
+              :src="row.imgId"
+              :preview-src-list="[row.imgId]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="所属基地" align="center" prop="parkName" width="160" />
+        <el-table-column label="所属地块" align="center" prop="plotName" width="160" />
+        <el-table-column label="数量" align="center" prop="number" />
+        <el-table-column label="单位" align="center" prop="unit" />
+        <el-table-column label="预计产量" align="center" prop="predictedOutput" />
+        <el-table-column
+          label="开始时间"
+          align="center"
+          prop="receiptStartTime"
+          :formatter="dateFormatter2"
+          width="120px"
+        />
+        <el-table-column
+          label="结束时间"
+          align="center"
+          prop="receiptEndTime"
+          :formatter="dateFormatter2"
+          width="120px"
+        />
+        <el-table-column align="center" prop="batchCode" width="160px">
+          <template #header>
+            <QuestionMaskTip
+              lable-name="批次号"
+              content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="batchQrImg" width="100px">
+          <template #default="scope">
+            <el-image
+              :src="`data:image/png;base64,${scope.row.batchQrImg}`"
+              style="object-fit: cover; width: 2rem; height: 2rem"
+              preview-teleported
+              :preview-src-list="[`data:image/png;base64,${scope.row.batchQrImg}`]"
+            />
+          </template>
+          <template #header>
+            <QuestionMaskTip
+              lable-name="二维码"
+              content="扫描二维码获取当前作物的生长流程，对作物进行溯源管理。"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column align="center" key="isEnableModel" width="120px">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.isEnableModel"
+              :active-value="true"
+              :inactive-value="false"
+              @change="handleStatusChange(scope.row)"
+            />
+          </template>
+          <template #header>
+            <QuestionMaskTip
+              lable-name="启用模型"
+              content="是否启用该地块作物的模型配置，使其进入模型监测行列。"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="采收状态" align="center" prop="recoveryNo" width="120">
+          <template #default="scope">
+            <el-tag type="success" v-if="scope.row.recoveryNo">已采收</el-tag>
+            <el-tag v-if="!scope.row.recoveryNo">未采收</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" align="center" prop="cropDesc" width="240" />
+        <el-table-column
+          :label="deptId === 156 ? '数量' : '备注'"
+          align="center"
+          prop="remark"
+          width="180"
+        />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="操作" align="center" width="250" fixed="right">
+          <template #default="scope">
+            <el-button
+              link
+              type="primary"
+              @click="openForm('detail', scope.row.id)"
+              v-hasPermi="['agriculture:crop-base:update']"
+              v-if="!scope.row.recoveryNo"
+            >
+              详情
+            </el-button>
+            <el-button link type="success" @click="damn(scope.row)" v-if="show !== 118">
+              溯源
+            </el-button>
+            <el-button
+              link
+              type="warning"
+              @click="openFormA('create', scope.row)"
+              v-hasPermi="['agriculture:harvest-management:create']"
+              v-if="!scope.row.recoveryNo"
+            >
+              采收
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['agriculture:crop-base:update']"
+              v-if="!scope.row.recoveryNo"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['agriculture:crop-base:delete']"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div
+      class="w-full space-y-2 pt-2 grid 2xl:grid-cols-3 xl:grid-cols-2 gap-3"
+      v-show="showType === 'card'"
+    >
+      <div
+        v-for="(item, index) in cardDataList"
+        :key="index"
+        class="p-3 rounded-2 px-4 border-[#E5E5E5] border-1 border-solid flex relative"
+      >
+        <div class="flex w-1/3">
+          <img :src="item.imgId" class="h-100% w-100% object-contain shadow-md rounded-md p-1" />
+        </div>
+        <div class="flex flex-col space-y-1.5 w-2/3">
+          <div class="flex mt-1rem">
+            <div class="flex ml-1rem">{{ item.cropName }}</div>
+            <el-tag class="flex ml-0.5rem">{{ item.cropType }}</el-tag>
+            <img
+              :src="`data:image/png;base64,${item.batchQrImg}`"
+              class="flex w-3rem h-3rem absolute right-1rem top-1rem"
+            />
+          </div>
+          <div class="flex text-#666666 flex-col space-y-1 !mt-2rem">
+            <div class="flex ml-1rem">所属地块：{{ item.plotName }}</div>
+            <div class="flex ml-1rem"
+              >起止时间：{{
+                `${formatTime(item.receiptStartTime, 'yyyy.MM.dd')}-${formatTime(
+                  item.receiptEndTime,
+                  'yyyy.MM.dd'
+                )}`
+              }}</div
+            >
+          </div>
+          <div class="flex space-x-2 ml-1rem !mt-1rem">
+            <el-button
+              type="primary"
+              @click="openForm('detail', item.id)"
+              v-hasPermi="['agriculture:crop-base:update']"
+              v-if="!item.recoveryNo"
+            >
+              详情
+            </el-button>
+            <el-button type="success" @click="damn(item)" v-if="show !== 118"> 溯源 </el-button>
+            <el-button
+              type="warning"
+              @click="openFormA('create', item)"
+              v-hasPermi="['agriculture:harvest-management:create']"
+              v-if="!item.recoveryNo"
+            >
+              采收
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 分页 -->
     <Pagination
       :total="total"
@@ -442,6 +518,7 @@ const getList = async () => {
     const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
     listVarietyManagementVO.value = data1.list
     list.value = data.list
+    cardDataList.value = data.list
     //把品类数据的namep拼接到列表中
     list.value.forEach((item) => {
       listCategoryManagement.value.forEach((itm) => {
@@ -611,6 +688,17 @@ const BreedFromSuccess = (order: any) => {
   queryParams.cropName = String(order[0].varietyName)
 }
 
+//卡片、列表按钮切换
+const showType = ref('card')
+const cardDataList = ref<any[]>([
+  { id: '1', cropName: 'fish1', plotName: '丰收鸭舌', cropType: '鸭' },
+  { id: '2', cropName: 'fish2', plotName: '丰收鸭舌', cropType: '鸭' },
+  { id: '3', cropName: 'fish3', plotName: '丰收鸭舌', cropType: '鸭' },
+  { id: '4', cropName: 'fish4', plotName: '丰收鸭舌', cropType: '鸭' },
+  { id: '5', cropName: 'fish5', plotName: '丰收鸭舌', cropType: '鸭' },
+  { id: '6', cropName: 'fish6', plotName: '丰收鸭舌', cropType: '鸭' }
+])
+
 onMounted(async () => {
   await getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
@@ -629,5 +717,25 @@ onActivated(async () => {
   width: 2px;
   height: 15rem; /* 这里设置竖线的长度 */
   background-color: #089df7;
+}
+.tab-btn,
+.tab-btn-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  border-radius: 5px 0 0 5px;
+  height: 2rem;
+}
+
+.tab-btn {
+  border: 1px solid #e6e6e6;
+  color: #666666;
+}
+
+.tab-btn-selected {
+  border: 1px solid #009688;
+  background-color: #e5f4f3;
+  color: #009688;
 }
 </style>

@@ -74,7 +74,7 @@ const getTopLeftDataList = async () => {
       {
         id: 6,
         title: '视频监控',
-        value: topLeftDataListTwo.find(item => item.typeName === "视频监控") || 0,
+        value: topLeftDataListTwo.find(item => item.typeName === "视频监控")?.count || 0,
         unit: '台',
         logo: 'icon-shipinjiankong'
       }
@@ -180,7 +180,6 @@ const initPlantCropNumChart = async () => {
       ],
       tooltip: {
         formatter: (item) => {
-          console.log("🚀 ~ initPlantCropNumChart ~ item:", item)
           const _item = formattedData.find(ele => ele.heng_year.toString() === item[0].name);
           if (!_item) return ''
           return `${_item.heng_year}年<br />${item[0].marker}种植规模<span style="padding-left: 1rem;">${_item.zong_summation}${_item.unit}</span>`
@@ -617,14 +616,15 @@ const showLessContent = (idx: number) => {
           </div>
         </template>
         <div
-          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem p-2 box-border"
+          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem pl-2 box-border"
           v-if="agriAdviceDataList.length > 0"
         >
           <el-scrollbar>
             <div
               v-for="(item, index) in agriAdviceDataList"
               :key="item.createTime"
-              class="lg:flex box-border p-3 space-x-3 shadow-md"
+              class="lg:flex box-border p-3 space-x-3 shadow-sm mb-2 rounded-1 mr-2"
+              style="border: 1px solid #d1d1d1;"
               @mouseenter="showFullContent(index)"
               @mouseleave="showLessContent(index)"
             >
@@ -664,7 +664,10 @@ const showLessContent = (idx: number) => {
         class="w-26rem p-2"
         header="农事任务"
       >
-        <div class="shadow-md flex justify-between items-center p-3">
+        <div
+          class="shadow-sm flex rounded-2 justify-between items-center p-3"
+          style="border: 1px solid #e1e1e1;"
+        >
           <div>总农事任务:</div>
           <div>{{ missions.countAllNum }}</div>
         </div>
