@@ -25,7 +25,7 @@ export default defineComponent({
           if (Array.isArray(geofencing)) return geofencing
           const { corrdinates, option } = geofencing;
           return corrdinates;
-        }))
+        })
 
         if (Array.isArray(_arr) && _arr.length > 0) {
           const features = turf.points([
