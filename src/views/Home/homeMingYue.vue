@@ -189,7 +189,7 @@
           </div>
 
           <div class="flex py-1 inline">
-            <div class="flex 2xl:w-80% 2xl:inline">
+            <div class="flex 2xl:w-80% 2xl:inline hisData">
               <el-radio-group v-model="radio" @change="handleRadioChange">
                 <el-radio-button
                   :label="item.categoryName"
@@ -237,8 +237,7 @@
             <div class="flex font-800 mb-3">
               <div>设备类型占比</div>
             </div>
-
-            <el-radio-group
+              <el-radio-group
               v-model="deviceTypeRadio"
               class="my-2"
               @change="(val) => handleDeviceTypeRadioChange(val)"
@@ -1201,4 +1200,16 @@ select {
 :deep(.el-tree) {
   --el-tree-node-hover-bg-color: #e5f4f3 !important;
 }
+@media screen and (max-width:1280px) {
+  :deep(.hisData > .el-radio-group) {
+    width: 15rem !important;
+    margin-right: 1rem;
+  }
+}
+@media screen and (max-width:1280px) {
+  :deep(.hisData >.el-radio-group >.el-radio-button) {
+    width: 50% !important;
+  }
+}
+
 </style>
