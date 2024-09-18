@@ -37,7 +37,8 @@ export default defineComponent({
   setup() {
     const weatherDataList = ref<Array<any>>([])
     const soilDataList = ref<Array<any>>([])
-    const getWeatherAndSoilDataList = async (type: '气象站' | '土壤墒情') => {
+    const bugDataList = ref<any[]>([])
+    const getWeatherAndSoilDataList = async (type: '气象站' | '土壤墒情' | '虫情监测') => {
       const res = await qianjiangMonitor({
         type,
         belongPark: selectedBase.value,
@@ -58,6 +59,8 @@ export default defineComponent({
       }))
 
       if (type === '土壤墒情' && Array.isArray(res)) soilDataList.value = res
+
+      if (type === '虫情监测' && Array.isArray(res)) bugDataList.value = res;
     }
     
     const topDataList = ref<Array<any>>([])
@@ -134,6 +137,7 @@ export default defineComponent({
       parkDataIndex.value = 0
       getWeatherAndSoilDataList('气象站')
       getWeatherAndSoilDataList('土壤墒情')
+      getWeatherAndSoilDataList('虫情监测')
       getParkDataList()
     }
 
@@ -357,7 +361,7 @@ export default defineComponent({
                   <div class="h-[300px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
                     <div class="grid grid-cols-2 grid-rows-4 h-full">
                       {
-                        weatherDataList.value.map((item:any) => (
+                        weatherDataList.value.length > 0 ? weatherDataList.value.map((item:any) => (
                           <div class="flex justify-center items-center">
                             <div class={`w-[165px] h-[60px] relative ${item.icon}`}>
                               <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
@@ -369,14 +373,14 @@ export default defineComponent({
                               </div>
                             </div>
                           </div>
-                        ))
+                        )) : <div class="w-full col-span-2 h-250px flex justify-center items-center text-#1effff">暂无数据</div>
                       }
                     </div>
                   </div>
                   <div class="h-[340px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
                     <div class="grid grid-cols-2 grid-rows-4 h-full gap-2">
                       {
-                        soilDataList.value.map((item:any) => (
+                        soilDataList.value.length > 0 ? soilDataList.value.map((item:any) => (
                           <div class="flex justify-center items-center">
                             <div class="w-[190px] h-[40px] soil-bg flex items-center justify-between px-3">
                               <div>{item.monitoringType}</div>
@@ -386,34 +390,20 @@ export default defineComponent({
                               </div>
                             </div>
                           </div>
-                        ))
+                        )) : <div class="w-full col-span-2 row-span-4 flex justify-center items-center text-#1effff">暂无数据</div>
                       }
                     </div>
                   </div>
-                  <div class="h-[270px] item-bg-3 box-border px-3 pt-[56px] pb-[24px]">
-                    <div class="h-full flex space-x-1 justify-between items-center">
-                      <div
-                        class="left-btn w-[9px] h-[16px]" 
-                        onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
-                      ></div>
+                  <div class="h-[270px] item-bg-bug box-border px-3 pt-[56px] pb-[24px]">
+                    <div class="grid grid-cols-3 grid-rows-2 h-full gap-2">
                       {
-                        parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
-                          <div class="flex flex-col space-y-2 items-center w-[170px]">
-                            <img src={item?.monitoringEquipmentDataDO?.capturedImage} class="w-full aspect-video object-cover" />
-                            <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
-                              <span>{item?.monitoringEquipmentDataDO?.monitoringPlotName ?? ''}</span>
-                              <span class="mx-1">|</span>
-                              <span
-                                class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
-                              >{item.deviceStatus === 'online' ? "在线" : '离线'}</span>
-                            </div>
+                        bugDataList.value.length > 0 ? bugDataList.value.map((item:any) => (
+                          <div class="flex flex-col justify-center items-center bug-bg">
+                            <div class="text-22px text-#76ffff">{ item.dataValue } { item.unit ?? '' }</div>
+                            <div class="text-16px">{ item.monitoringType }</div>
                           </div>
-                        ))
+                        )) : <div class="w-full col-span-3 row-span-2 flex justify-center items-center text-#1effff">暂无数据</div>
                       }
-                      <div
-                        class="right-btn w-[9px] h-[16px]"
-                        onClick={() => { if (parkDataIndex.value < parkDataList.value.length - 1) parkDataIndex.value++ }}
-                      ></div>
                     </div>
                   </div>
                 </div>
@@ -515,9 +505,38 @@ export default defineComponent({
                     </div>
                     <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0"></div>
                   </div>
-                  <div class="h-[237px] item-bg-4 box-border px-3 pt-[52px] pb-[22px]">
-                    <div class="h-full" id="chart"></div>
+                  <div class="flex h-237px justify-between">
+                    <div class="w-420px h-full item-bg-extra">
+                      <div class="h-full flex space-x-1 justify-between items-center">
+                        <div
+                          class="left-btn w-[9px] h-[16px]" 
+                          onClick={() => { if (parkDataIndex.value > 0) parkDataIndex.value-- }}
+                        ></div>
+                        {
+                          parkDataList.value.slice(parkDataIndex.value, parkDataIndex.value + 2).map(item => (
+                            <div class="flex flex-col space-y-2 items-center w-[170px]">
+                              <img src={item?.monitoringEquipmentDataDO?.capturedImage} class="w-full aspect-video object-cover" />
+                              <div class="monitor-bg w-[160px] h-[30px] flex justify-center items-center text-[10px]">
+                                <span>{item?.monitoringEquipmentDataDO?.monitoringPlotName ?? ''}</span>
+                                <span class="mx-1">|</span>
+                                <span
+                                  class={item.deviceStatus === 'online' ? "text-[#2ede72]" : 'text-[#e33f32]'}
+                                >{item.deviceStatus === 'online' ? "在线" : '离线'}</span>
+                              </div>
+                            </div>
+                          ))
+                        }
+                        <div
+                          class="right-btn w-[9px] h-[16px]"
+                          onClick={() => { if (parkDataIndex.value < parkDataList.value.length - 1) parkDataIndex.value++ }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div class="w-575px h-full item-bg-4 box-border px-3 pt-[52px] pb-[22px]">
+                      <div class="h-full" id="chart"></div>
+                    </div>
                   </div>
+                  
                 </div>
                 <div class="flex flex-col justify-between w-[420px]">
                   <div class="h-[250px] item-bg-5 box-border px-3 pt-[59px] pb-[24px]">
@@ -614,6 +633,16 @@ export default defineComponent({
   }
 }
 
+.item-bg-extra {
+  background-image: url(./assets/itemBgExtra.png);
+  background-size: 100% 100%;
+}
+
+.item-bg-bug {
+  background-image: url(./assets/itemBgBug.png);
+  background-size: 100% 100%;
+}
+
 @for $i from 1 through 8 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
@@ -663,6 +692,11 @@ export default defineComponent({
 
 .monitor-bg {
   background-image: url(./assets/monitorBg.png);
+  background-size: 100% 100%;
+}
+
+.bug-bg {
+  background-image: url(./assets/bugBg.png);
   background-size: 100% 100%;
 }
 

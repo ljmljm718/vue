@@ -616,14 +616,15 @@ const showLessContent = (idx: number) => {
           </div>
         </template>
         <div
-          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem p-2 box-border"
+          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem pl-2 box-border"
           v-if="agriAdviceDataList.length > 0"
         >
           <el-scrollbar>
             <div
               v-for="(item, index) in agriAdviceDataList"
               :key="item.createTime"
-              class="lg:flex box-border p-3 space-x-3 shadow-md"
+              class="lg:flex box-border p-3 space-x-3 shadow-sm mb-2 rounded-1 mr-2"
+              style="border: 1px solid #d1d1d1;"
               @mouseenter="showFullContent(index)"
               @mouseleave="showLessContent(index)"
             >
@@ -663,7 +664,10 @@ const showLessContent = (idx: number) => {
         class="w-26rem p-2"
         header="农事任务"
       >
-        <div class="shadow-md flex justify-between items-center p-3">
+        <div
+          class="shadow-sm flex rounded-2 justify-between items-center p-3"
+          style="border: 1px solid #e1e1e1;"
+        >
           <div>总农事任务:</div>
           <div>{{ missions.countAllNum }}</div>
         </div>
