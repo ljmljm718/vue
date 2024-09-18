@@ -74,7 +74,7 @@ const getTopLeftDataList = async () => {
       {
         id: 6,
         title: '视频监控',
-        value: topLeftDataListTwo.find(item => item.typeName === "视频监控") || 0,
+        value: topLeftDataListTwo.find(item => item.typeName === "视频监控")?.count || 0,
         unit: '台',
         logo: 'icon-shipinjiankong'
       }
@@ -180,7 +180,6 @@ const initPlantCropNumChart = async () => {
       ],
       tooltip: {
         formatter: (item) => {
-          console.log("🚀 ~ initPlantCropNumChart ~ item:", item)
           const _item = formattedData.find(ele => ele.heng_year.toString() === item[0].name);
           if (!_item) return ''
           return `${_item.heng_year}年<br />${item[0].marker}种植规模<span style="padding-left: 1rem;">${_item.zong_summation}${_item.unit}</span>`
