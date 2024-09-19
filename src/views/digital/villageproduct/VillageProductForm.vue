@@ -151,7 +151,12 @@ const formData = ref({
   batchCode: undefined,
   recoveryNum: undefined,
 })
-const formRules = reactive({})
+const formRules = reactive({
+  years: [{ required: true, message: '请输入产品年份', trigger: 'blur' }],
+  inventory: [{ required: true, message: '请输入产品数量', trigger: 'blur' }],
+  specifications: [{ required: true, message: '请输入产品规格', trigger: 'blur' }],
+  remark: [{ required: true, message: '请输入消耗量', trigger: 'blur' }]
+})
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
