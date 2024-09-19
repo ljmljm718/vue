@@ -84,25 +84,25 @@ const getCardDataList = async () => {
       id: '1',
       label: '示范村',
       value: res2.length,
-      desc: '1、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+      desc: '基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
     },
     {
       id: '2',
       label: '帮扶区县',
       value: res1.length,
-      desc: '2、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+      desc: '基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
     },
     {
       id: '3',
       label: '精准帮扶基地',
       value: res3.length,
-      desc: '3、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+      desc: '基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
     },
     {
       id: '4',
       label: '产业形态',
       value: res4.length,
-      desc: '4、基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
+      desc: '基于自主可控的数字孪生技术、物联管控技术、人工智能、数据挖掘、边缘计算、GIS遥感监测等多种技术手段融合实现精准帮扶'
     }
   ]
 }
@@ -872,13 +872,13 @@ onMounted(() => { enablePosterScroll() })
           <div :class="selectedCardId === item.id ? 'text-6xl font-bold' : 'text-4xl'">{{
             item.value
           }}</div>
-          <div :class="selectedCardId === item.id ? 'text-`2xl' : 'text-base'">{{
+          <div :class="selectedCardId === item.id ? 'text-[1.5rem]' : 'text-base'">{{
             item.label
           }}</div>
 
           <transition name="expand">
             <div v-show="selectedCardId === item.id" :class="`overflow-hidden ${selectedCardId === item.id ? 'linear-show' : ''}`">
-              <div class="vcContent mt-3 text-sm">
+              <div class="vcContent mt-3 text-base">
                 {{ item.desc ?? '' }}
               </div>
             </div>
