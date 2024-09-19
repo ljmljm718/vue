@@ -60,7 +60,8 @@
             </div>
             <div
               class="font-500 w-100% h-2.5rem bg-[#009688] flex rounded-md text-[#ffffff] justify-center items-center mb-5"
-              >总设备数: {{ deviceTotal }}</div
+            >
+              总设备数: {{ deviceTotal }}</div
             >
             <el-scrollbar height="20rem">
               <div
@@ -73,14 +74,15 @@
                 >
                   <div class="flex justify-between mb-3 font-medium text-[#009688]"
                     >{{ item.categoryName }}
-                    <span class="color-[#009688] font-bold">{{ item.totalCount }}</span></div
-                  >
+                    <span class="color-[#009688] font-bold">{{ item.totalCount }}</span>
+                  </div>
                   <div
                     class="flex flex-col items-center justify-between font-light color-[#333333]"
                   >
                     <div
                       class="flex bg-[#fff] justify-between p-2 py-3 w-90% rounded border border-dashed border-b-#E5E5E5 border-transparent"
-                      >已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
+                    >
+                      已巡检 <span class="ml-10px">{{ item.yesCount }}</span></div
                     >
                     <div class="flex bg-[#fff] justify-between p-2 py-3 w-90% rounded"
                       >未巡检 <span class="ml-10px">{{ item.notCount }}</span></div
@@ -168,9 +170,9 @@
                 >
                   <div class="flex flex-col">
                     <div class="text-sm mb-0.5 whitespace-pre-wrap">{{ item?.monitoringType }}</div>
-                    <div style="color: #009688" class="font-medium">
+                    <div style="color: #009688" class="font-semibold">
                       <span>{{ item?.dataValue }}</span>
-                      <span style="color: #009688" class="font-normal text-xs">{{
+                      <span style="color: #009688" class="font-medium text-xs">{{
                         item?.yyUnit
                       }}</span>
                     </div>
@@ -237,7 +239,7 @@
             <div class="flex font-800 mb-3">
               <div>设备类型占比</div>
             </div>
-              <el-radio-group
+            <el-radio-group
               v-model="deviceTypeRadio"
               class="my-2"
               @change="(val) => handleDeviceTypeRadioChange(val)"
@@ -390,25 +392,25 @@ const handleDeviceTypeRadioChange = async (param: string | number | boolean = '�
           label: {
             show: false,
             formatter: '{b}-{d}%',
-            color: '#888',
+            color: '#888'
           },
           labelLine: {
             show: false,
-            length:4,
+            length: 4
           },
-         emphasis: {
+          emphasis: {
             itemStyle: { borderWidth: 0 }
-          },
+          }
         }
       ],
       tooltip: {
-        formatter: (item) =>{
-          return `数据详情<br/>${item.marker} <span style="padding-right: 0.5rem;">${item.name}:</span> <span>${item.value}台 ( ${item.percent}%)</span>`;
+        formatter: (item) => {
+          return `数据详情<br/>${item.marker} <span style="padding-right: 0.5rem;">${item.name}:</span> <span>${item.value}台 ( ${item.percent}%)</span>`
         },
         position: function (point) {
-        return [point[0] - 90, point[1] + 20]
-      },
-      },
+          return [point[0] - 90, point[1] + 20]
+        }
+      }
     })
   )
 }
@@ -474,10 +476,10 @@ const handleDataCollectChange = async (radio: any = '本年', picker: any = []) 
         picker.length !== 0 || picker == null
           ? 'appoint'
           : radio === '本年'
-          ? 'year'
-          : radio === '本月'
-          ? 'month'
-          : 'day',
+            ? 'year'
+            : radio === '本月'
+              ? 'month'
+              : 'day',
       startDate: dataCollectPicker.value ? formatTime(picker[0], 'yyyy-MM-dd') : null,
       endDate: dataCollectPicker.value ? formatTime(picker[1], 'yyyy-MM-dd') : null
     })
@@ -719,11 +721,11 @@ const initChart2 = async () => {
               colorStops: [
                 {
                   offset: 0,
-                  color: '#ceebe8' 
+                  color: '#ceebe8'
                 },
                 {
                   offset: 1,
-                  color: 'rgba(0, 150, 136, 0)' 
+                  color: 'rgba(0, 150, 136, 0)'
                 }
               ]
             }
@@ -850,7 +852,7 @@ const initChart3 = async () => {
         }
       ],
       tooltip: {
-        formatter: (item)=>{
+        formatter: (item) => {
           return `数据详情<br/>${item[0].marker}${item[0].axisValue}<span style="padding-left: 1rem">${item[0].data}</span>`
         }
       },
@@ -1058,7 +1060,7 @@ const selecteCli2 = (e) => {
   // initChart4(selecteList2.value[e].list)
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);
 
 .top-item {
@@ -1216,16 +1218,15 @@ select {
 :deep(.el-tree) {
   --el-tree-node-hover-bg-color: #e5f4f3 !important;
 }
-@media screen and (max-width:1280px) {
+@media screen and (max-width: 1280px) {
   :deep(.hisData > .el-radio-group) {
     width: 15rem !important;
     margin-right: 1rem;
   }
 }
-@media screen and (max-width:1280px) {
-  :deep(.hisData >.el-radio-group >.el-radio-button) {
+@media screen and (max-width: 1280px) {
+  :deep(.hisData > .el-radio-group > .el-radio-button) {
     width: 50% !important;
   }
 }
-
 </style>
