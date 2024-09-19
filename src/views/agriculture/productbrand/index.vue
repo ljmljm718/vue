@@ -20,7 +20,17 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
+
+       
+      </el-form-item>
+    </el-form>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div class="flex justify-between p-2.5">
+      <div> 
+         <el-button
           type="primary"
           plain
           @click="openForm('create')"
@@ -37,13 +47,25 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-      </el-form-item>
-    </el-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      </div>
+      <div class="w-37 flex  rounded-md cursor-pointer select-none"> 
+        <div 
+          :class= "[selectType === 'card' ? 'tab-btn-select' : 'tab-btn']"
+          @click="selectType = 'card'"
+          style="border-radius: 5px 0px 0px 5px; "> 
+          <el-icon> <Menu /></el-icon>
+          <div class="pl-1 text-[13px]">卡片</div>
+        </div>
+        <div 
+          :class="[selectType === 'list' ? 'tab-btn-select' : 'tab-btn']"
+          @click="selectType = 'list'"
+          style="border-radius: 0px 5px 5px 0px; "> 
+          <el-icon> <List /></el-icon>
+          <div class="pl-1 text-[13px]">列表</div>
+        </div>
+      </div>
+    </div>
+    <el-table v-if="selectType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" class="pt-4">
       <el-table-column label="品牌名" align="center" prop="productBrand" />
       <el-table-column label="品类" align="center" prop="belongCategory" />
       <el-table-column label="品种" align="center" prop="belongVariety" />
@@ -94,6 +116,46 @@
         </template>
       </el-table-column>
     </el-table>
+    <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols"> 
+      <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2"> 
+        <div class="flex justify-between h-[150px] p-2" > 
+          <div class="p-2 w-full">
+            <img 
+            :src = "item.brandLogo"
+            class=" w-full h-full object-contain"
+             />
+          </div>
+          <div class = "p-2 w-full">
+            <div class="text-18px p-1.5">{{ item.productBrand}}</div>
+            <div class="text-14px p-1.5"> {{ item.belongCategory }}</div>
+            <div class="pt-4"> 
+              <span class="text-14px p-1.5">{{item.usedStatus === 0 ?'已启用':'已禁用'}}</span>
+              <el-switch
+                v-model="item.usedStatus" 
+                :active-value="0" 
+                :inactive-value="1"
+                @change="handleStatusChange1(item)" /> <!--这个地方改一下-->
+            </div>
+            <div style="display: flex; margin-left: auto; justify-content: flex-end;" class="p-2 pb-3">
+              <el-button
+                type="primary"
+                @click="openForm('update', item.id)"
+                v-hasPermi="['agriculture:product-brand:update']"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                @click="handleDelete(item.id)"
+                v-hasPermi="['agriculture:product-brand:delete']"
+              >
+                删除
+              </el-button> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 分页 -->
     <Pagination
       :total="total"
@@ -113,13 +175,13 @@ import download from '@/utils/download'
 import { ProductBrandApi, ProductBrandVO } from '@/api/agriculture/productbrand'
 import ProductBrandForm from './ProductBrandForm.vue'
 import { CommonStatusEnum } from "@/utils/constants";
-
+import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
 /** 产品品牌 列表 */
 defineOptions({ name: 'ProductBrand' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-
+const selectType = ref('card') //列表卡片切换
 const loading = ref(true) // 列表的加载中
 const list = ref<ProductBrandVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -141,16 +203,23 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
 /** 查询列表 */
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
 const getList = async () => {
   loading.value = true
   try {
     const data = await ProductBrandApi.getProductBrandPage(queryParams)
-    list.value = data.list
+    list.value = data?.list
+    data.list.forEach(async (item,index)=>{
+      listVarietyManagement.value = await allDataCacheManager.getData({})
+      const item_ = listVarietyManagement.value.find(data =>(data.categoryId === item.belongCategoryId))
+      list.value[index].belongCategory = item_?.categoryName
+    })
     total.value = data.total
   } finally {
     loading.value = false
   }
 }
+
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -166,12 +235,12 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
+const openForm = (type: string, id?: any) => {
   formRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (id: number) => {
+const handleDelete = async (id: any) => {
   try {
     // 删除的二次确认
     await message.delConfirm()
@@ -214,9 +283,52 @@ const handleStatusChange = async (row: ProductBrandApi.ProductBrandVO) => {
       row.usedStatus === CommonStatusEnum.ENABLE ? CommonStatusEnum.DISABLE : CommonStatusEnum.ENABLE
   }
 }
-
+const handleStatusChange1 = async (item) => {
+  try {
+    // 修改状态的二次确认
+    const text = item.usedStatus === CommonStatusEnum.ENABLE ? '启用' : '禁用'
+    await message.confirm('确认要' + text + '当前产品品牌吗?')
+    // 发起修改状态
+    await ProductBrandApi.updateProductBrandStatus(item.id, item.usedStatus)
+    // 刷新列表
+    await getList()
+  } catch {
+    // 取消后，进行恢复按钮
+    item.usedStatus =
+    item.usedStatus === CommonStatusEnum.ENABLE ? CommonStatusEnum.DISABLE : CommonStatusEnum.ENABLE
+  }
+}
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style scoped lang="scss">
+.tab-btn-select,
+.tab-btn{
+  display : flex;
+  align-content: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 6rem;
+  height: 1.5rem;
+  align-items: center;
+}
+.tab-btn{
+  border: 1px solid #e6e6e6;
+  color: #666666;
+  background-color: #FFFFFF;
+}
+.tab-btn-select{
+  border: 1px solid var(--el-color-primary);
+  background-color: #e5f4f3;
+  color: var(--el-color-primary);
+}
+@for $i from 1 through 10 {
+  @media screen and (min-width: calc(400px + calc(#{$i} * 300px))) {
+    .changecols {
+      grid-template-columns: repeat(#{$i}, 1fr);
+    }
+  }
+}
+</style>

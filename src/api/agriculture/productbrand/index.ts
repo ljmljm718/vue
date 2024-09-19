@@ -22,7 +22,7 @@ export const ProductBrandApi = {
   },
 
   // 查询产品品牌详情
-  getProductBrand: async (id: number) => {
+  getProductBrand: async (id:any) => {
     return await request.get({ url: `/agriculture/product-brand/get?id=` + id })
   },
 
@@ -37,7 +37,7 @@ export const ProductBrandApi = {
   },
 
   // 删除产品品牌
-  deleteProductBrand: async (id: number) => {
+  deleteProductBrand: async (id: any) => {
     return await request.delete({ url: `/agriculture/product-brand/delete?id=` + id })
   },
 
