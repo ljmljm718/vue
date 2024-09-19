@@ -111,7 +111,7 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as CodeApplyVO
     if (formType.value === 'create') {
-      data.applyStatus = '0'
+      data.applyStatus = '1'
       await CodeApplyApi.createCodeApply(data)
       message.success(t('common.createSuccess'))
     } else {
