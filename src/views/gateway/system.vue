@@ -426,34 +426,50 @@ handleItemChange(typeDataList.value[0])
     </div>
 
     <!-- 系统特色 -->
-    <div class="relative w-full flex flex-col justify-center items-center  spec-bg h-100vh text-#000000">
+    <div
+      class="relative w-full flex flex-col justify-center items-center spec-bg h-100vh text-#000000"
+    >
       <div class="container px-3rem box-border">
-        <div class="text-2rem pb-2 ">系统特色</div>
+        <div class="text-2rem pb-2">系统特色</div>
         <div class="text-.7rem text-#999999">SYSTEM FEATURES</div>
-        <div class="text-1rem text-#333333 line-height-[1.8] w-36rem mt-1.2rem">{{ systemFeature }}</div>
+        <div class="text-1rem text-#333333 line-height-[1.8] w-36rem mt-1.2rem">
+          {{ systemFeature }}
+        </div>
       </div>
-      <div class="container relative flex mt-5rem">
+      <div class="container relative flex mt-5rem px-2rem box-border">
         <swiper
-:slidesPerView="3" :spaceBetween="20" :freeMode="true" :pagination="{
-          clickable: true,
-        }" :modules="[FreeMode, Pagination]" class="w-95%">
+          :slidesPerView="3"
+          :spaceBetween="20"
+          :freeMode="true"
+          :pagination="{ clickable: true }"
+          :modules="[FreeMode, Pagination]"
+          class="w-95%"
+        >
           <swiper-slide v-for="item in handledDataList" :key="item.subId">
-            <div class="w-full 2xl:h-15rem  xl:h-14rem system-feature-wrapper mb-3rem px-1">
+            <div class="w-full 2xl:h-15rem xl:h-14rem system-feature-wrapper mb-3rem px-1">
               <div
-                class="w-full h-full bg-white box-border p-2rem system-feature-simple relative flex flex-col items-center justify-center space-y-4">
-                <div class="absolute left-1.8rem top-1rem text-1.3rem text-#318255">{{ `0${item.subId}` }}</div>
+                class="w-full h-full bg-white box-border p-2rem system-feature-simple relative flex flex-col items-center justify-center space-y-4"
+              >
+                <div class="absolute left-1.8rem top-1rem text-1.3rem text-#318255">{{
+                  `0${item.subId}`
+                }}</div>
                 <div :class="`specBtn${item.parentId}-${item.subId} w-4rem h-4rem`"></div>
-                <div>{{ item.subTitle }}</div>
+                <div class="mb-3">{{ item.subTitle }}</div>
               </div>
               <div
-                class="w-full h-full bg-#2f8255 box-border system-feature-content p-3rem text-#fff flex flex-col items-center specRightCard pb-4rem">
+                class="w-full h-full bg-#2f8255 box-border system-feature-content px-3rem text-#fff flex flex-col items-center justify-center specRightCard"
+              >
                 <div class="text-center 2xl:text-1.3rem xl:text-1.2rem">{{ item.subTitle }}</div>
-                <div class="mt-1rem 2xl:h-8rem xl:h-5.3rem line-clamp-4 overflow-auto 2xl:leading-relaxed">{{ item.subInfo }}</div>
+                <div class="mt-1rem h-6rem line-clamp-4 overflow-auto leading-1.5rem text-left">{{
+                  item.subInfo
+                }}</div>
               </div>
             </div>
           </swiper-slide>
         </swiper>
-        <div :class="`w-20rem h-20rem absolute top-[-16rem] right-[4rem] z-20 specRightCard-${selectedDataId}`">
+        <div
+          :class="`w-20rem h-20rem absolute top-[-16rem] right-[4rem] z-20 specRightCard-${selectedDataId}`"
+        >
           <div :class="`w-90% h-90%  `"></div>
         </div>
       </div>
@@ -599,8 +615,9 @@ handleItemChange(typeDataList.value[0])
         </div>
       </div>
       <div class="flex justify-center items-center w-full py-7 text-#f1f1f1" style="border-top: 1px solid #f1f1f110">
-        Copyright © 2024 zhinengshengchan. | 鲁ICP备17022090号 | ©2024
-        山东浪潮智能生产技术有限公司</div>
+        <span>Copyright © 2024 zhinengshengchan. | 鲁ICP备17022090号 | ©2024</span>
+        <span>山东浪潮智能生产技术有限公司</span>
+      </div>
     </div>
   </div>
 </template>
@@ -781,22 +798,23 @@ handleItemChange(typeDataList.value[0])
   }
 }
 
-.system-feature-wrapper:hover {
-  .system-feature-simple {
-    display: none;
-  }
-  .system-feature-content {
-    display: block;
-    animation: slideIn .5s ease forwards;
-  }
-}
-
 .system-feature-wrapper {
   .system-feature-content {
     display: none;
     transition: all .4s ease;
   }
 }
+
+.system-feature-wrapper:hover {
+  .system-feature-simple {
+    display: none;
+  }
+  .system-feature-content {
+    display: flex;
+    animation: slideIn .5s ease forwards;
+  }
+}
+
 .specRightCard {
   background-image: url(./assets/spec/bgImg/specGreenCardBg.png);
   background-size: contain;
