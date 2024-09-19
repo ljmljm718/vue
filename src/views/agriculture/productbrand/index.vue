@@ -214,7 +214,7 @@ const getTypeData = async () => {
 }
 
 /** 查询列表 */
-const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
+
 const getList = async () => {
   loading.value = true
   try {
