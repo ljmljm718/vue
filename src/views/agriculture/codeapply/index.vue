@@ -17,43 +17,37 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="申请数量" prop="applyNumber">
-        <el-input
-          v-model="queryParams.applyNumber"
-          placeholder="请输入申请数量"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="申请描述" prop="applyDescribe">
-        <el-input
-          v-model="queryParams.applyDescribe"
-          placeholder="请输入申请描述"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="溯源模版" prop="sourceId">
-        <el-input
+        <el-select
           v-model="queryParams.sourceId"
-          placeholder="请输入溯源模版"
+          placeholder="请选择溯源模版"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="item in templateList"
+            :key="item.id"
+            :label="item.templateName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="码规则" prop="ruleId">
-        <el-input
+        <el-select
           v-model="queryParams.ruleId"
-          placeholder="请输入码规则"
+          placeholder="请选择码规则"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="item in ruleList"
+            :key="item.id"
+            :label="item.codeName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="状态（制单/待发码/已发码）" prop="applyStatus">
+      <el-form-item label="状态" prop="applyStatus">
         <el-select
           v-model="queryParams.applyStatus"
           placeholder="请选择状态（制单/待发码/已发码）"
@@ -67,15 +61,6 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
@@ -99,15 +84,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:code-apply:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleExport"-->
+<!--          :loading="exportLoading"-->
+<!--          v-hasPermi="['agriculture:code-apply:export']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
+<!--        </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -115,18 +100,16 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="申请名称" align="center" prop="applyName" />
       <el-table-column label="申请数量" align="center" prop="applyNumber" />
-      <el-table-column label="申请描述" align="center" prop="applyDescribe" />
-      <el-table-column label="溯源模版" align="center" prop="sourceId" />
-      <el-table-column label="码规则" align="center" prop="ruleId" />
-      <el-table-column label="状态（制单/待发码/已发码）" align="center" prop="applyStatus">
+      <el-table-column label="申请描述" align="center" prop="applyDescribe" width="350" :show-overflow-tooltip="true" />
+      <el-table-column label="溯源模版" align="center" prop="sourceName" />
+      <el-table-column label="码规则" align="center" prop="ruleName" />
+      <el-table-column label="状态" align="center" prop="applyStatus">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CODE_APPLY_STATUS" :value="scope.row.applyStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -174,6 +157,8 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { CodeApplyApi, CodeApplyVO } from '@/api/agriculture/codeapply'
 import CodeApplyForm from './CodeApplyForm.vue'
+import {TraceTemplateApi, TraceTemplateVO} from '@/api/agriculture/tracetemplate'
+import { CodeRuleApi, CodeRuleVO } from '@/api/agriculture/coderule'
 
 /** 码申请 列表 */
 defineOptions({ name: 'CodeApply' })
@@ -198,6 +183,8 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const templateList = ref<TraceTemplateVO[]>([]) // 溯源模版的数据
+const ruleList = ref<CodeRuleVO[]>([]) // 码规则的数据
 
 /** 查询列表 */
 const getList = async () => {
@@ -209,6 +196,18 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+
+/** 查询溯源模版列表 */
+const getTemplateList = async () => {
+  const data = await TraceTemplateApi.getTraceTemplateAll()
+  templateList.value = data
+}
+
+/** 查询码规则列表 */
+const getRuleList = async () => {
+  const data = await CodeRuleApi.getCodeRuleAll()
+  ruleList.value = data
 }
 
 /** 搜索按钮操作 */
@@ -259,6 +258,8 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
+  getTemplateList()
+  getRuleList()
   getList()
 })
 </script>
