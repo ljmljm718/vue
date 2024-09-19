@@ -367,7 +367,7 @@ handleItemChange(typeDataList.value[0])
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh system-info-wrapper" id="gateWrapper">
     <div
-:class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
+      :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border ${
         showHeader ? 'top-0' : 'top-[-100%]'
       }`">
       <div class="container flex items-center p-5 space-x-1rem">
@@ -389,14 +389,20 @@ handleItemChange(typeDataList.value[0])
           <div class="left-icon w-.6rem h-1rem relative top-.1rem"></div>
           <div class="flex">
             <div
-v-for="item in typeDataList" :key="item.id" :class="`flex flex-col items-center space-y-2rem cursor-pointer transition ${
+              v-for="item in typeDataList"
+              :key="item.id"
+              :class="`flex flex-col items-center space-y-2rem cursor-pointer transition ${
                 selectedDataId === item.id ? 'text-#fff' : 'text-#a1a1a1'
-              }`" @click="handleItemChange(item)">
+              }`"
+              @click="handleItemChange(item)"
+            >
               <div class="w-full relative mt-.6rem" style="border-top: 2px dashed #a1a1a1;">
                 <div
-class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :style="`left: calc(50% - .8rem);border: 2px solid ${
+                  class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2"
+                  :style="`left: calc(50% - .8rem);border: 2px solid ${
                     selectedDataId === item.id ? '#fff' : '#a1a1a1'
-                  };`">
+                  };`"
+                >
                   <div class="bg-white w-full h-full rounded-full"></div>
                 </div>
               </div>
@@ -409,7 +415,7 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
     </div>
 
     <!-- 视频展示 -->
-    <div class="w-full flex flex-col justify-center items-center bg-#318255  text-white py-6rem">
+    <div class="w-full flex flex-col justify-center items-center video-bg  text-white py-6rem">
       <div class="flex flex-col space-y-1 items-center mt-3 mb-[1rem]">
         <div class="text-1.8rem">视频展示</div>
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
@@ -581,10 +587,10 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
           <div v-for="item in footerData" :key="item.id">
             <div class="text-1.1rem mb-1.2rem">{{ item.label }}</div>
             <div
-v-for="ele in item.children" :key="ele.id"
-              class="mb-.6rem text-.9rem text-#e1e1e1 hover:text-white cursor-pointer transition">
-              {{ ele.label }}
-            </div>
+              v-for="ele in item.children"
+              :key="ele.id"
+              class="mb-.6rem text-.9rem text-#e1e1e1 hover:text-white cursor-pointer transition"
+            >{{ ele.label }}</div>
           </div>
         </div>
         <div class="w-8rem flex flex-col items-center">
@@ -605,6 +611,11 @@ v-for="ele in item.children" :key="ele.id"
   div {
     scroll-snap-align: start;
   }
+}
+
+.video-bg {
+  background-image: url(./assets/new/videoBg.png);
+  background-size: cover;
 }
 
 @for $i from 1 through 10 {

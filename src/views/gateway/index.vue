@@ -766,7 +766,7 @@ onMounted(() => { enablePosterScroll() })
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh" id="homeContainer">
     <div
-      :class="`fixed left-0 z-100 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
+      :class="`fixed left-0 z-100 w-full flex justify-center transition-all duration-1000 box-border ${
         showHeader ? 'top-0' : 'top-[-100%]'
       }`"
     >
@@ -806,18 +806,20 @@ onMounted(() => { enablePosterScroll() })
           基于自主可控的数字孪生技术、物联管控技术、云计算、人工智能、数据挖掘、边缘计算、GIS遥感监测、增强现实等多种技术手段融合，构建全流程的新型农业一体化管理平台
         </div>
         <div class="flex mt-10rem">
-          <div
-            class="flex !bg-white hover:text-#fff text-#318255 transition-all p-1px rounded-full cursor-pointer relative overflow-hidden"
-            @mouseenter="btnAction = true"
-            @mouseleave="btnAction = false"
-            @click="router.push('/gateway')"
-          >
-            <div class="text-1rem flex justify-center items-center px-1rem pl-1.2rem relative z-30">系统介绍</div>
-            <div class="aspect-1 h-3rem bg-#318255 rounded-full arrow-icon relative z-30"></div>
+          <div class="outer-line p-1">
             <div
-              class="h-3rem top-1px absolute bg-#318255 transition-all rounded-full !duration-300 z-0"
-              :style="`left: ${btnAction ? '1px' : '100%'};width:calc(100% - 2px);`"
-            ></div>
+              class="flex !bg-white hover:text-#fff text-#318255 transition-all p-1px rounded-full cursor-pointer relative overflow-hidden"
+              @mouseenter="btnAction = true"
+              @mouseleave="btnAction = false"
+              @click="router.push('/gateway')"
+            >
+              <div class="text-1rem flex justify-center items-center px-1rem pl-1.2rem relative z-30 tracking-widest">系统介绍</div>
+              <div class="aspect-1 h-3rem bg-#318255 rounded-full arrow-icon relative z-30"></div>
+              <div
+                class="h-3rem top-1px absolute bg-#318255 transition-all rounded-full !duration-300 z-0"
+                :style="`left: ${btnAction ? '1px' : '100%'};width:calc(100% - 2px);`"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -889,8 +891,8 @@ onMounted(() => { enablePosterScroll() })
 
     <!-- 示范村建设部分 -->
     <div class="w-full flex justify-center items-center bg-4 h-100vh">
-      <div class="container overflow-hidden px-3 box-border">
-        <div class="flex justify-between relative text-white py-3">
+      <div class="container overflow-hidden px-[3rem] box-border">
+        <div class="flex justify-between relative text-white py-5">
           <div class="text-1.2rem">示范村建设</div>
           <div class="flex space-x-2">
             <div @click="handleTurn(1)" class="swiper-button-next village-left cursor-pointer"></div>
@@ -916,7 +918,7 @@ onMounted(() => { enablePosterScroll() })
             v-for="item in countryBuildData"
             :key="item.id"
           >
-            <div class="w-22rem aspect-0.72 default-village-bg village-card-item box-border overflow-hidden">
+            <div class="w-21rem aspect-0.72 default-village-bg village-card-item box-border overflow-hidden">
               <div class="absolute z-0 left-0 top-0 w-full h-full overflow-hidden">
                 <div :class="`w-full h-full village-${item.id} village-animation-bg`"></div>
               </div>
@@ -1033,22 +1035,33 @@ onMounted(() => { enablePosterScroll() })
     </div>
 
     <!-- 对口帮扶地域 -->
-    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex items-center flex-col py-6rem box-border">
+    <div class="w-full bg-[#eaeaec] bg-area h-100vh flex items-center flex-col py-3rem box-border">
       <div class="flex flex-col items-center space-y-1 mb-4">
         <div class="text-1.8rem">对口帮扶地域</div>
         <div class="text-#666 text-.7rem">TARGETED ASSISTANCE REGIONS</div>
       </div>
       <div class="flex space-x-2rem items-center justify-center mt-2rem">
         <div
-          class="s-card w-2.9rem h-15rem flex flex-col items-center py-3 box-border justify-between text-white text-1.2rem"
+          class="s-card w-2.9rem h-15rem flex flex-col items-center box-border justify-between text-white text-1.2rem"
           v-for="item in helpAreaData"
           :key="item.id"
         >
-          <div style="writing-mode: vertical-lr;">{{ item.from }}</div>
-          <div style="writing-mode: vertical-lr;">{{ item.to }}</div>
+          <div class="w-50% h-4.8%"></div>
+          <div
+            class="w-50% h-36.5% flex items-center justify-center"
+            style="writing-mode: vertical-lr;"
+          >{{ item.from }}</div>
+          <div class="w-50% h-19.4%"></div>
+          <div
+            class="w-50% h-35.5% flex items-center justify-center"
+            style="writing-mode: vertical-lr;"
+          >{{ item.to }}</div>
+          <div class="w-50% h-4.8%"></div>
+          <!-- <div style="writing-mode: vertical-lr;">{{ item.from }}</div>
+          <div style="writing-mode: vertical-lr;">{{ item.to }}</div> -->
         </div>
       </div>
-      <div class="container flex justify-between items-center px-3rem py-2rem box-border">
+      <div class="container flex justify-between items-center px-3rem py-2rem pb-4rem box-border">
         <div>
           <div class="text-6rem font-bold text-#318255">{{ helpAreaData.length }}</div>
           <div class="text-1.6rem">帮扶区县</div>
@@ -1066,7 +1079,6 @@ onMounted(() => { enablePosterScroll() })
           </div>
         </div>
       </div>
-      
     </div>
 
     <!-- 帮扶产业 -->
@@ -1496,6 +1508,11 @@ onMounted(() => { enablePosterScroll() })
 .vcContent {
   min-height: 5rem;
   line-height: 1.5;
+}
+
+.outer-line {
+  background-image: url(./assets/new/outerLine.png);
+  background-size: 100% 100%;
 }
 //解决案例图片
 @for $i from 1 through 15 {
