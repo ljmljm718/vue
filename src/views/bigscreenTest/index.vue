@@ -125,15 +125,6 @@ const destroyHls = () => {
   destroyFunc = []
 }
 
-onActivated(() => {
-  deviceVideoList.value.forEach(item => {
-    if (item.online) {
-      initPlayer(item.videoId, item.dtu, item.channelId);
-    }
-  })
-})
-onDeactivated(() => { destroyHls() })
-onUnmounted(() => { destroyHls() })
 const initPlayer = async (containerId, dtu, channelId) => {
   if (!containerId || !dtu || !channelId) return;
   const resUrl = await checkAuth(dtu, channelId);
@@ -163,6 +154,16 @@ const initPlayer = async (containerId, dtu, channelId) => {
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
+    onActivated(() => {
+      deviceVideoList.value.forEach(item => {
+        if (item.online) {
+          initPlayer(item.videoId, item.dtu, item.channelId);
+        }
+      })
+    })
+    onDeactivated(() => { destroyHls() })
+    onUnmounted(() => { destroyHls() })
+    
     const getIconClass = (text: string) => {
       const iconMap = {
         '温度': '1',
