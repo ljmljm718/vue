@@ -302,4 +302,6 @@ export enum DICT_TYPE {
   // =========== agri -   质量码溯源 ==========
   AGRI_CODE_APPLY_STATUS = 'agri_code_apply_status',//码申请状态
   AGRI_CODE_DATE_FORMAT = 'agri_code_date_format',//码日期
+  AGRI_CODE_SERIAL = 'agri_code_serial',//码序列号
+
 }
