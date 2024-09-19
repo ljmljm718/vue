@@ -1110,7 +1110,7 @@ onMounted(() => { enablePosterScroll() })
     </div>
 
     <!-- 打造产业 -->
-    <div class="flex justify-center items-center h-100vh bg-6">
+    <div class="flex justify-center items-center bg-6">
       <div class="container">
         <div
           class="flex justify-between items-center space-y-1 py-3rem pl-6rem pr-2rem"
