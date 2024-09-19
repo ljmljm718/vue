@@ -976,9 +976,9 @@ onMounted(() => { enablePosterScroll() })
           <div class="text-#666 text-.7rem">DEMONSTRATION VILLAGE CONSTRUCTION DATA</div>
         </div>
       </div>
-      <div class="w-full overflow-hidden pt-2rem container h-[55%]">
+      <div class="w-full overflow-hidden container h-[85%]">
         <swiper
-          :slidesPerView="2"
+          :slidesPerView="1.5"
           :spaceBetween="0"
           :centeredSlides="true"
           :pagination="{
@@ -993,7 +993,7 @@ onMounted(() => { enablePosterScroll() })
             :key="yrList[index]"
           >
             <div class="px-[5%] h-[10%] w-full box-border flex justify-between items-center">
-              <div>{{ yrList[index] }}年</div>
+              <div class="text-[20px]">{{ yrList[index] }}年</div>
               <div>
                 <el-select
                   @change="selectChange(index)"
@@ -1019,8 +1019,8 @@ onMounted(() => { enablePosterScroll() })
               :data="item.list"
               :row-style="{'background-color': 'transparent', color: '#fff', cursor: 'pointer'}"
               :header-row-style="{'background-color': 'transparent', color: '#84EFAD'}"
-              :header-cell-style="{'background-color': 'transparent', height: '48px', border: 'none'}"
-              :cell-style="{borderBottom: 'none'}"
+              :header-cell-style="{'background-color': 'transparent', height: '60px', border: 'none', fontSize: '16px'}"
+              :cell-style="{borderBottom: 'none', fontSize: '16px', height: '40px'}"
               @row-click="toBigScreen"
             >
               <el-table-column label="序号" type="index" align="center"/>
@@ -1615,14 +1615,14 @@ onMounted(() => { enablePosterScroll() })
 .vlg-data-swiper-item {
   background: {
     image: url(./assets/vlg-data/vlg-data-bg.png);
-    size: 100% 81%;
+    size: 100% 78%;
     position: center;
     repeat: no-repeat;
   }
 }
 .vlg-data-swiper .swiper-slide {
   transition: 300ms;
-  transform: scale(0.8)
+  transform: scale(0.9)
 }
 .vlg-data-swiper .swiper-slide-active,
 .vlg-data-swiper .swiper-slide-duplicate-active {
