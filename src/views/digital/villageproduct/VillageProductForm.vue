@@ -92,10 +92,10 @@
         <el-input v-model="formData.years" placeholder="请输入产品年份"/>
       </el-form-item>
       <el-form-item label="产品数量(袋)" prop="inventory">
-        <el-input v-model="formData.inventory" placeholder="请输入库存"/>
+        <el-input v-model="formData.inventory" placeholder="请输入产品数量"/>
       </el-form-item>
       <el-form-item label="产品规格(Kg)" prop="specifications">
-        <el-input v-model="formData.specifications" placeholder="请输入规格"/>
+        <el-input v-model="formData.specifications" placeholder="请输入产品规格"/>
       </el-form-item>
       <!-- <el-form-item label="批次号" prop="batchCode">
         <el-input v-model="formData.batchCode" placeholder="请输入批次号" />

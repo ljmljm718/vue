@@ -251,6 +251,9 @@
       <!--      </el-timeline>-->
       <el-table v-loading="loading" :data="formData" :stripe="true" :show-overflow-tooltip="true">
         <el-table-column label="品种名称" align="center" prop="product"/>
+        <el-table-column label="产品数量（Kg）" align="center" prop="inventory"/>
+        <el-table-column label="产品规格（Kg）" align="center" prop="specifications"/>
+        <el-table-column label="消耗量(Kg)" align="center" prop="remark"/>
         <el-table-column label="批次号" align="center" prop="batchCode"/>
         <el-table-column
           label="加工时间"
@@ -259,7 +262,6 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="消耗量(Kg)" align="center" prop="remark"/>
       </el-table>
     </template>
     <template #footer>
