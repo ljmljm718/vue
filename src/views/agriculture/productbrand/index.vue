@@ -176,6 +176,8 @@ import { ProductBrandApi, ProductBrandVO } from '@/api/agriculture/productbrand'
 import ProductBrandForm from './ProductBrandForm.vue'
 import { CommonStatusEnum } from "@/utils/constants";
 import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
+import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+
 /** 产品品牌 列表 */
 defineOptions({ name: 'ProductBrand' })
 
@@ -202,17 +204,29 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
+const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品种列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const getTypeData = async () => {
+  const res = await allDataCacheManager.getData({})
+  if (Array.isArray(res)) listVarietyManagement.value = res
+  const res1 = await CategoryManagementApi.getAllCategoryManagement({})
+  if (Array.isArray(res1)) listCategoryManagement.value = res1
+}
+
 /** 查询列表 */
 const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
 const getList = async () => {
   loading.value = true
   try {
     const data = await ProductBrandApi.getProductBrandPage(queryParams)
-    list.value = data?.list
-    data.list.forEach(async (item,index)=>{
-      listVarietyManagement.value = await allDataCacheManager.getData({})
-      const item_ = listVarietyManagement.value.find(data =>(data.categoryId === item.belongCategoryId))
-      list.value[index].belongCategory = item_?.categoryName
+    list.value = data.list.map(item => {
+      const element = listVarietyManagement.value.find(ele => (ele.id === item.belongVarietyId))
+      if (!element) return item;
+      return {
+        ...item,
+        belongVariety: element.varietyName,
+        belongCategory: element.categoryName
+      }
     })
     total.value = data.total
   } finally {
@@ -283,6 +297,11 @@ const handleStatusChange = async (row: ProductBrandApi.ProductBrandVO) => {
       row.usedStatus === CommonStatusEnum.ENABLE ? CommonStatusEnum.DISABLE : CommonStatusEnum.ENABLE
   }
 }
+
+const init = async () => {
+  await getTypeData()
+  await getList()
+}
 const handleStatusChange1 = async (item) => {
   try {
     // 修改状态的二次确认
@@ -300,7 +319,7 @@ const handleStatusChange1 = async (item) => {
 }
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  init()
 })
 </script>
 <style scoped lang="scss">

@@ -52,7 +52,7 @@
         <el-col :span="12">
           <el-form-item label="农事阶段" prop="farmingStage">
             <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
-            <el-select v-model="formData.farmingStage" placeholder="请选择农事阶段">
+            <el-select v-model="formData.farmingStage" placeholder="请选择农事阶段" disabled>
               <el-option
                 v-for="dict in farmDefineOptions"
                 :key="dict.id"
@@ -68,7 +68,7 @@
             <!--        <el-select v-model="formData.feedType" placeholder="请选择饲料种类">-->
             <!--          <el-option label="请选择字典生成" value=""/>-->
             <!--        </el-select>-->
-            <el-select v-model="formData.feedType" placeholder="请选择投入品名称">
+            <el-select v-model="formData.feedType" placeholder="请选择投入品名称" disabled>
               <el-option
                 v-for="item in productInfoListALL"
                 :key="item.id"
@@ -99,12 +99,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="采购价格" prop="purchasePrice">
-            <el-input v-model="formData.purchasePrice" placeholder="请输入采购价格"/>
+            <el-input v-model="formData.purchasePrice" placeholder="请输入采购价格" disabled/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="投入品规格" prop="standard">
-            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格"/>
+            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -122,13 +122,13 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="投喂量" prop="feedNum">
-            <el-input v-model="formData.feedNum" placeholder="请输入投喂量（消耗量*规格）"/>
+          <el-form-item label="使用量" prop="feedNum">
+            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="投喂量单位" prop="feedOne">
-            <el-input v-model="formData.feedOne" placeholder="请输入投喂量单位，建议统一输入KG"/>
+          <el-form-item label="使用量单位" prop="feedOne">
+            <el-input v-model="formData.feedOne" placeholder="请输入使用量单位，建议统一输入KG"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -187,8 +187,8 @@ const formRules = reactive({
   belongPark: [{required: true, message: '基地选择不能为空', trigger: 'blur'}],
   belongPlot: [{required: true, message: '地块选择不能为空', trigger: 'blur'}],
   crabNum: [{required: true, message: '螃蟹数量不能为空', trigger: 'blur'}],
-  feedNum: [{required: true, message: '消耗量不能为空', trigger: 'blur'}],
-  feedOne: [{required: true, message: '消耗单位不能为空', trigger: 'blur'}],
+  // feedNum: [{required: true, message: '消耗量不能为空', trigger: 'blur'}],
+  // feedOne: [{required: true, message: '消耗单位不能为空', trigger: 'blur'}],
   feedType: [{required: true, message: '投入品名称不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref

@@ -46,15 +46,15 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          @click="openForm('create')"-->
-<!--          v-hasPermi="['digital:village-processing-records:create']"-->
-<!--        >-->
-<!--          <Icon icon="ep:plus" class="mr-5px"/>-->
-<!--          新增-->
-<!--        </el-button>-->
+        <!--        <el-button-->
+        <!--          type="primary"-->
+        <!--          plain-->
+        <!--          @click="openForm('create')"-->
+        <!--          v-hasPermi="['digital:village-processing-records:create']"-->
+        <!--        >-->
+        <!--          <Icon icon="ep:plus" class="mr-5px"/>-->
+        <!--          新增-->
+        <!--        </el-button>-->
       </el-form-item>
     </el-form>
     <div style="margin-top: 20px;margin-left: 8px;height: 30px">
@@ -76,10 +76,10 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column label="主键" align="center" prop="id"/>-->
-<!--      <el-table-column label="采收编号" align="center" prop="recoveryNum"/>-->
-<!--      <el-table-column label="加工时间" align="center" prop="machiningTime"/>-->
       <el-table-column label="品种名称" align="center" prop="product"/>
+      <el-table-column label="产品数量" align="center" prop="inventory"/>
+      <el-table-column label="产品规格" align="center" prop="specifications"/>
+      <el-table-column label="消耗量" align="center" prop="remark"/>
       <el-table-column label="批次号" align="center" prop="batchCode"/>
       <el-table-column
         label="加工时间"
@@ -88,27 +88,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="消耗量(Kg)" align="center" prop="remark"/>
-<!--      <el-table-column label="操作" align="center">-->
-<!--        <template #default="scope">-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="primary"-->
-<!--            @click="openForm('update', scope.row.id)"-->
-<!--            v-hasPermi="['digital:village-processing-records:update']"-->
-<!--          >-->
-<!--            编辑-->
-<!--          </el-button>-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleDelete(scope.row.id)"-->
-<!--            v-hasPermi="['digital:village-processing-records:delete']"-->
-<!--          >-->
-<!--            删除-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination

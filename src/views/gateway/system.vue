@@ -367,7 +367,7 @@ handleItemChange(typeDataList.value[0])
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh system-info-wrapper" id="gateWrapper">
     <div
-:class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border backdrop-blur-2xl ${
+      :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border ${
         showHeader ? 'top-0' : 'top-[-100%]'
       }`">
       <div class="container flex items-center p-5 space-x-1rem">
@@ -381,22 +381,28 @@ handleItemChange(typeDataList.value[0])
     </div>
     <div :class="`w-full flex justify-center items-center h-100vh ${activePoster} text-white`">
       <div class="container px-3rem box-border">
-        <div class="text-3rem">{{ mainTitle }}</div>
-        <div class="w-[43rem] text-.9rem mt-1.2rem h-5rem">
+        <div class="text-3rem font-bold">{{ mainTitle }}</div>
+        <div class="w-[43rem] text-1rem mt-1.2rem h-5rem leading-loose">
           {{ mainDesc }}
         </div>
         <div class="w-full h-2rem mt-7rem flex justify-center items-start space-x-1rem">
           <div class="left-icon w-.6rem h-1rem relative top-.1rem"></div>
           <div class="flex">
             <div
-v-for="item in typeDataList" :key="item.id" :class="`flex flex-col items-center space-y-2rem cursor-pointer transition ${
+              v-for="item in typeDataList"
+              :key="item.id"
+              :class="`flex flex-col items-center space-y-2rem cursor-pointer transition ${
                 selectedDataId === item.id ? 'text-#fff' : 'text-#a1a1a1'
-              }`" @click="handleItemChange(item)">
+              }`"
+              @click="handleItemChange(item)"
+            >
               <div class="w-full relative mt-.6rem" style="border-top: 2px dashed #a1a1a1;">
                 <div
-class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :style="`left: calc(50% - .8rem);border: 2px solid ${
+                  class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2"
+                  :style="`left: calc(50% - .8rem);border: 2px solid ${
                     selectedDataId === item.id ? '#fff' : '#a1a1a1'
-                  };`">
+                  };`"
+                >
                   <div class="bg-white w-full h-full rounded-full"></div>
                 </div>
               </div>
@@ -409,7 +415,7 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
     </div>
 
     <!-- 视频展示 -->
-    <div class="w-full flex flex-col justify-center items-center bg-#318255  text-white py-6rem">
+    <div class="w-full flex flex-col justify-center items-center video-bg  text-white py-6rem">
       <div class="flex flex-col space-y-1 items-center mt-3 mb-[1rem]">
         <div class="text-1.8rem">视频展示</div>
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
@@ -426,13 +432,13 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
         <div class="text-.7rem text-#999999">SYSTEM FEATURES</div>
         <div class="text-1rem text-#333333 line-height-[1.8] w-36rem mt-1.2rem">{{ systemFeature }}</div>
       </div>
-      <div class="container relative flex mt-3rem">
+      <div class="container relative flex mt-5rem">
         <swiper
 :slidesPerView="3" :spaceBetween="20" :freeMode="true" :pagination="{
           clickable: true,
         }" :modules="[FreeMode, Pagination]" class="w-95%">
           <swiper-slide v-for="item in handledDataList" :key="item.subId">
-            <div class="w-full h-14rem system-feature-wrapper mb-3rem">
+            <div class="w-full 2xl:h-15rem  xl:h-14rem system-feature-wrapper mb-3rem px-1">
               <div
                 class="w-full h-full bg-white box-border p-2rem system-feature-simple relative flex flex-col items-center justify-center space-y-4">
                 <div class="absolute left-1.8rem top-1rem text-1.3rem text-#318255">{{ `0${item.subId}` }}</div>
@@ -440,9 +446,9 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
                 <div>{{ item.subTitle }}</div>
               </div>
               <div
-                class="w-full h-full bg-#2f8255 box-border p-2rem system-feature-content p-3rem text-#fff flex flex-col items-center w-full specRightCard ">
-                <div class="text-center text-1.2rem">{{ item.subTitle }}</div>
-                <div class="mt-1rem h-5.3rem line-clamp-4 overflow-auto">{{ item.subInfo }}</div>
+                class="w-full h-full bg-#2f8255 box-border system-feature-content p-3rem text-#fff flex flex-col items-center specRightCard pb-4rem">
+                <div class="text-center 2xl:text-1.3rem xl:text-1.2rem">{{ item.subTitle }}</div>
+                <div class="mt-1rem 2xl:h-8rem xl:h-5.3rem line-clamp-4 overflow-auto 2xl:leading-relaxed">{{ item.subInfo }}</div>
               </div>
             </div>
           </swiper-slide>
@@ -581,10 +587,10 @@ class="w-1.6rem h-1.6rem absolute top-[-.8rem] rounded-full box-border p-2" :sty
           <div v-for="item in footerData" :key="item.id">
             <div class="text-1.1rem mb-1.2rem">{{ item.label }}</div>
             <div
-v-for="ele in item.children" :key="ele.id"
-              class="mb-.6rem text-.9rem text-#e1e1e1 hover:text-white cursor-pointer transition">
-              {{ ele.label }}
-            </div>
+              v-for="ele in item.children"
+              :key="ele.id"
+              class="mb-.6rem text-.9rem text-#e1e1e1 hover:text-white cursor-pointer transition"
+            >{{ ele.label }}</div>
           </div>
         </div>
         <div class="w-8rem flex flex-col items-center">
@@ -605,6 +611,11 @@ v-for="ele in item.children" :key="ele.id"
   div {
     scroll-snap-align: start;
   }
+}
+
+.video-bg {
+  background-image: url(./assets/new/videoBg.png);
+  background-size: cover;
 }
 
 @for $i from 1 through 10 {
