@@ -189,8 +189,9 @@
       />
       <el-table-column label="消耗量" align="center" prop="consumeNum" width="60"/>
       <el-table-column label="消耗量单位" align="center" prop="consumeUnit" width="120"/>
-      <el-table-column label="投喂量" align="center" prop="feedNum" width="60"/>
-      <el-table-column label="投喂量单位" align="center" prop="feedOne" width="120"/>
+      <el-table-column label="规格" align="center" prop="standard" width="120"/>
+      <!-- <el-table-column label="投喂量" align="center" prop="feedNum" width="60"/>
+      <el-table-column label="投喂量单位" align="center" prop="feedOne" width="120"/> -->
       <el-table-column
         label="操作时间"
         align="center"
@@ -270,7 +271,8 @@ const queryParams = reactive({
   feedOne: undefined,
   feedTime: [],
   farmingStage: undefined,
-  createTime: []
+  createTime: [],
+  standard: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
