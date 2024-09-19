@@ -19,6 +19,11 @@ export const CodeRuleApi = {
     return await request.get({ url: `/agriculture/code-rule/page`, params })
   },
 
+  // 查询码规则全部
+  getCodeRuleAll: async (params: any) => {
+    return await request.get({ url: `/agriculture/code-rule/all`, params })
+  },
+
   // 查询码规则详情
   getCodeRule: async (id: number) => {
     return await request.get({ url: `/agriculture/code-rule/get?id=` + id })

@@ -20,6 +20,16 @@ export const TraceTemplateApi = {
     return await request.get({ url: `/agriculture/trace-template/page`, params })
   },
 
+  // 查询溯源模板全部
+  getTraceTemplateAll: async (params: any) => {
+    return await request.get({ url: `/agriculture/trace-template/all`, params })
+  },
+
+  // 查询溯源模板全部
+  getTraceTemplateAll: async (params: any) => {
+    return await request.get({ url: `/agriculture/trace-template/all`, params })
+  },
+
   // 查询溯源模板详情
   getTraceTemplate: async (id: number) => {
     return await request.get({ url: `/agriculture/trace-template/get?id=` + id })
@@ -44,4 +54,4 @@ export const TraceTemplateApi = {
   exportTraceTemplate: async (params) => {
     return await request.download({ url: `/agriculture/trace-template/export-excel`, params })
   },
-}
+}

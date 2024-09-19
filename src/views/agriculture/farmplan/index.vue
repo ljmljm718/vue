@@ -26,15 +26,15 @@
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="所属基地" prop="belongPark">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.belongPark"-->
-<!--          placeholder="请输入所属基地"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="所属基地" prop="belongPark">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.belongPark"-->
+      <!--          placeholder="请输入所属基地"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="基地名称" prop="parkName">
         <!-- <el-input
           v-model="queryParams.parkName"
@@ -46,21 +46,21 @@
         <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
           <template #append>
             <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search"/>
+              <Icon icon="ep:search" />
               选择
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-<!--      <el-form-item label="所属地块" prop="belongPlot">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.belongPlot"-->
-<!--          placeholder="请输入所属地块"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="所属地块" prop="belongPlot">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.belongPlot"-->
+      <!--          placeholder="请输入所属地块"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
         <!-- <el-input
           v-model="queryParams.plotName"
@@ -72,21 +72,21 @@
         <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
-              <Icon icon="ep:search"/>
+              <Icon icon="ep:search" />
               选择
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-<!--      <el-form-item label="作物id" prop="cropId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.cropId"-->
-<!--          placeholder="请输入作物id"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="作物id" prop="cropId">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.cropId"-->
+      <!--          placeholder="请输入作物id"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="作物名称" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
@@ -96,16 +96,16 @@
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="品种" prop="cropType">-->
-<!--        <el-select-->
-<!--          v-model="queryParams.cropType"-->
-<!--          placeholder="请选择品种"-->
-<!--          clearable-->
-<!--          class="!w-240px"-->
-<!--        >-->
-<!--          <el-option label="请选择字典生成" value="" />-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="品种" prop="cropType">-->
+      <!--        <el-select-->
+      <!--          v-model="queryParams.cropType"-->
+      <!--          placeholder="请选择品种"-->
+      <!--          clearable-->
+      <!--          class="!w-240px"-->
+      <!--        >-->
+      <!--          <el-option label="请选择字典生成" value="" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item label="计划状态" prop="planState">
         <el-select
           v-model="queryParams.planState"
@@ -121,15 +121,15 @@
           />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="责任人编号" prop="personId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.personId"-->
-<!--          placeholder="请输入责任人编号"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="责任人编号" prop="personId">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.personId"-->
+      <!--          placeholder="请输入责任人编号"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="责任人" prop="personName">
         <el-input
           v-model="queryParams.personName"
@@ -139,59 +139,61 @@
           class="!w-240px"
         />
       </el-form-item>
-<!--      <el-form-item label="计划开始时间" prop="startTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.startTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="计划结束时间" prop="endTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.endTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="计划面积（亩）" prop="planArea">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.planArea"-->
-<!--          placeholder="请输入计划面积（亩）"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="土地面积（亩）" prop="area">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.area"-->
-<!--          placeholder="请输入土地面积（亩）"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="创建时间" prop="createTime">-->
-<!--        <el-date-picker-->
-<!--          v-model="queryParams.createTime"-->
-<!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--          type="daterange"-->
-<!--          start-placeholder="开始日期"-->
-<!--          end-placeholder="结束日期"-->
-<!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="计划开始时间" prop="startTime">-->
+      <!--        <el-date-picker-->
+      <!--          v-model="queryParams.startTime"-->
+      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
+      <!--          type="daterange"-->
+      <!--          start-placeholder="开始日期"-->
+      <!--          end-placeholder="结束日期"-->
+      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="计划结束时间" prop="endTime">-->
+      <!--        <el-date-picker-->
+      <!--          v-model="queryParams.endTime"-->
+      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
+      <!--          type="daterange"-->
+      <!--          start-placeholder="开始日期"-->
+      <!--          end-placeholder="结束日期"-->
+      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="计划面积（亩）" prop="planArea">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.planArea"-->
+      <!--          placeholder="请输入计划面积（亩）"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="土地面积（亩）" prop="area">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.area"-->
+      <!--          placeholder="请输入土地面积（亩）"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="创建时间" prop="createTime">-->
+      <!--        <el-date-picker-->
+      <!--          v-model="queryParams.createTime"-->
+      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
+      <!--          type="daterange"-->
+      <!--          start-placeholder="开始日期"-->
+      <!--          end-placeholder="结束日期"-->
+      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item>
-        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="handleQuery" type="primary"
+          ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
+        >
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
     </el-form>
@@ -200,7 +202,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <div class="flex items-center mb-3">
-      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+      <div style="margin-bottom: 1rem; margin-left: 1.5rem; margin-right: 1.5rem; height: 2rem">
         <el-form-item>
           <el-button
             type="primary"
@@ -209,21 +211,21 @@
             @click="openForm('create')"
             v-hasPermi="['agri:farm-plan:create']"
           >
-            <Icon icon="ep:plus" class="mr-5px"/>
+            <Icon icon="ep:plus" class="mr-5px" />
             新增
           </el-button>
         </el-form-item>
       </div>
       <div class="grow">
-        <IntroduceAlert title="农事计划模块专门负责将作物的种植过程细分为若干个易于管理的计划。"/>
+        <IntroduceAlert title="农事计划模块专门负责将作物的种植过程细分为若干个易于管理的计划。" />
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
       <el-table-column label="计划名称" align="center" prop="planName" width="180" />
-<!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
-      <el-table-column label="基地名称" align="center" prop="parkName" width="180"  />
-      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120" >
+      <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
+      <el-table-column label="基地名称" align="center" prop="parkName" width="180" />
+      <el-table-column label="农事阶段" align="center" prop="farmDefineType" width="120">
         <template #default="scope">
           <el-select v-model="scope.row.farmDefineType" disabled>
             <el-option
@@ -235,28 +237,32 @@
           </el-select>
         </template>
       </el-table-column>
-<!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
-      <el-table-column label="地块名称" align="center" prop="plotName" width="180"/>
-<!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
+      <!--      <el-table-column label="所属地块" align="center" prop="belongPlot" />-->
+      <el-table-column label="地块名称" align="center" prop="plotName" width="180" />
+      <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
       <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
       <el-table-column align="center" prop="batchCode" width="160px">
         <template #header>
-          <QuestionMaskTip lable-name="批次号" content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"/>
-        </template>
-      </el-table-column>      <el-table-column label="品类" align="center" prop="cropType" width="100" >
-        <template #default="scope">
-          <el-tag >{{scope.row.cropType}} </el-tag>
+          <QuestionMaskTip
+            lable-name="批次号"
+            content="批次号是分配给特定种植操作或作业的唯一标识符，每个批次号代表一组具有共同特征的作物或一轮种植活动，在产品追溯中起着重要作用。"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="计划状态" align="center" prop="planState" width="100" >
+      <el-table-column label="品类" align="center" prop="cropType" width="100">
+        <template #default="scope">
+          <el-tag>{{ scope.row.cropType }} </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="计划状态" align="center" prop="planState" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.FARM_PLAN_STATE" :value="scope.row.planState" />
         </template>
       </el-table-column>
-<!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
-      <el-table-column label="责任人" align="center" prop="personName" width="150" >
+      <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
+      <el-table-column label="责任人" align="center" prop="personName" width="150">
         <template #default="scope">
-          <label>{{scope.row.personName=='null'?'':scope.row.personName}} </label>
+          <label>{{ scope.row.personName == 'null' ? '' : scope.row.personName }} </label>
         </template>
       </el-table-column>
       <el-table-column
@@ -282,12 +288,12 @@
       />
       <el-table-column label="计划面积（亩）" align="center" prop="planArea" width="150" />
       <el-table-column label="计划描述" align="center" prop="planDesc" />
-<!--      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>-->
-<!--      <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />-->
+      <!--      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>-->
+      <!--      <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />-->
       <el-table-column label="操作" align="center" fixed="right" width="150">
         <template #default="scope">
           <el-button
-          v-if="scope.row.planState!='2'"
+            v-if="scope.row.planState != '2'"
             link
             type="warning"
             @click="subExecute(scope.row)"
@@ -326,168 +332,211 @@
   <!-- 表单弹窗：添加/修改 -->
   <FarmPlanForm ref="formRef" @success="getList" />
   <!--  选择基地-->
-  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
   <!--  选择地块-->
-  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange" />
   <!-- 下一步弹框 -->
-  <Dialog title="执行农事计划" class='!text-20px !font-600 !color-[#000] !box-border' v-model="dialogVisible">
-  <div class="flex justify-around">
-    <div class='w-300px box-border mr-10px'>
-      <div class='text-17px ' style="font-weight: 600;">农事计划信息</div>
-      <div class="mt-20px border-1px px-10px py-10px box-border border-solid border-[#c1c1cc1] h-200px formParams !font-medium" >
-        <div>计划名称：{{params.planName}}</div>
-        <div class="my-10px">作物名称：{{params.cropName}}</div>
-        <div>基地名称：{{params.parkName}}</div>
-        <div class="my-10px">地块名称：{{params.plotName}}</div>
-        <div>农事阶段：{{params.planName}}</div>
-        <div class="my-10px">品类：{{params.cropType}}</div>
-        <div>责任人：{{params.personName}}</div>
-        <div class="my-10px">计划开始时间：{{startTime}}</div>
-        <div>计划结束时间：{{endTime}}</div>
+  <Dialog
+    title="执行农事计划"
+    class="!text-20px !w-900px !font-600 !color-[#000] !box-border"
+    v-model="dialogVisible"
+  >
+    <div class="text-17px mb-10px" style="font-weight: 600">农事计划信息</div>
+    <el-table
+      class="!h-100px"
+      v-loading="loading"
+      :data="paramsA"
+      border
+      :stripe="true"
+      ref="multipleTableRef"
+      :show-overflow-tooltip="true"
+    >
+      <el-table-column label="计划名称" align="center" prop="planName" />
+      <el-table-column label="基地名称" align="center" prop="parkName" width="200px" />
+      <el-table-column label="地块名称" align="center" prop="plotName" />
+      <el-table-column label="农事阶段" align="center" prop="cropType" />
+      <el-table-column label="作物名称" align="center" prop="cropName" />
+      <el-table-column
+        label="开始时间"
+        align="center"
+        prop="startTime"
+        :formatter="dateFormatter2"
+        width="180px"
+      />
+    </el-table>
+    <div class="flex mt-15px box-border justify-around">
+      <div class="w-170px">
+        <div class="text-18px mb-15px color-[#000]" style="font-weight: 600">投入品信息</div>
+        <div class="text-16px mb-15px">产品名称</div>
+        <div class="text-14px mb-15px color-[#51b1dc]" style="font-weight: 600">{{
+          selectOption.name
+        }}</div>
       </div>
-    </div>
-    <div class='w-660px box-border'>
-      <div  class='text-18px mb-15px' style="font-weight: 600;">选择的投入品</div>
-      <div>
-        <!-- <div>{{ selectOption }}</div> -->
-            <div class='flex w-95% justify-between'>
-          <div>名称：{{ selectOption.name }}</div>
-          <div>分类：{{ selectOption.categoryName }}</div>
-          <div>采购价格：{{ selectOption.minPrice }}(元)</div>
-        </div>
-        <div class='flex my-15px w-230px justify-between'>
-          <div>单位：{{ selectOption.unitName }}</div>
-          <div>规格：{{ selectOption.standard }}</div>
-        </div>
-        <div class='flex  '>
-         
-        </div>
-        <div class='w-100% border-1px border-dashed border-[#c1c1c1]'></div>
-        <div class="w-100% mt-15px">
-          <el-form :model="formData" label-width="90px" inline size="normal">
-            <el-form-item label="本次消耗量">
-              <el-input v-model="formData.consumeNum" placeholder='请输入消耗量' style="width: 120px;" />
-            </el-form-item>
-            <el-form-item label="消耗量单位">
-              <el-input v-model="formData.consumeUnit" style="width: 120px;"/>
-            </el-form-item>
-            <el-form-item label="投入品费用/元"  class="custom-label-width">
-              <el-input v-model="formData.feedCost" placeholder='输入消耗量之后自动计算' style="width: 200px;" disabled/>
-            </el-form-item>
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header" style="font-weight: 600 !important">
+            {{ selectOption.name }}消耗情况
+          </div>
+        </template>
+        <div>
+          <div class="flex w-100% justify-evenly">
+            <div>分类：{{ selectOption.categoryName }}</div>
+            <div>采购价格：{{ selectOption.minPrice }}(元)</div>
+          </div>
+          <div class="flex my-15px w-100% justify-evenly">
+            <div>单位：{{ selectOption.unitName }}</div>
+            <div>规格：{{ selectOption.standard }}</div>
+          </div>
+          <div class="flex"> </div>
+          <div class="w-100% border-1px border-dashed border-[#c1c1c1]"></div>
+          <div class="w-100% mt-15px">
+            <el-form :model="formData" label-width="90px" inline size="normal">
+              <el-form-item label="本次消耗量">
+                <el-input
+                  v-model="formData.consumeNum"
+                  placeholder="请输入消耗量"
+                  style="width: 120px"
+                />
+              </el-form-item>
+              <el-form-item label="投入品费用/元" class="custom-label-width">
+                <el-input
+                  v-model="formData.feedCost"
+                  placeholder="自动计费用"
+                  style="width: 100px"
+                  disabled
+                />
+              </el-form-item>
             </el-form>
+          </div>
         </div>
-      </div>
+      </el-card>
     </div>
-  </div>
-    
+
     <template #footer>
-      <el-button @click="submitForm" type="primary" class="!bg-[#facd91] !border-none" :disabled="formLoading">确认执行</el-button>
+      <el-button
+        @click="preCli"
+        type="primary"
+        class="!bg-[#81d3f8] !color-[#000] !border-none"
+        :disabled="formLoading"
+        >上一步</el-button
+      >
+      <el-button
+        @click="submitForm"
+        type="primary"
+        class="!bg-[#facd91] !color-[#000] !border-none"
+        :disabled="formLoading"
+        >确认执行</el-button
+      >
       <el-button @click="clearForm" class="!bg-[#cccccc]">取消执行</el-button>
     </template>
   </Dialog>
   <!-- 选择投入品 -->
   <Dialog title="选择投入品" class="!text-20px !font-600 !w-1300px" v-model="dialogVisibleA">
-    <div >
-     <el-form :model="formSearch" label-width="80px" inline size="normal">
-     <el-form-item label="名称">
-     <el-input v-model="formSearch.feedName" placeholder="请输入名称"/>
-     </el-form-item>
-     <el-form-item label="分类">
-     <!-- <el-input v-model="formSearch.feedName"></el-input> -->
-     <el-select v-model="formSearch.feedType" class="!w-200px" clearable filterable @change="formSelect">
-     <el-option v-for="item in formSelectList"
-     :key="item"
-     :label="item"
-     :value="item"/>
-     </el-select>
-     
-     </el-form-item>
-     <el-form-item>
-      <el-button class="!bg-[#009688] !color-[#fff]" @click="handleQueryA">
-            <Icon icon="ep:search" class="mr-5px"/>
+    <div>
+      <el-form :model="formSearch" label-width="80px" inline size="normal">
+        <el-form-item label="名称">
+          <el-input v-model="formSearch.feedName" placeholder="请输入名称" />
+        </el-form-item>
+        <el-form-item label="分类">
+          <!-- <el-input v-model="formSearch.feedName"></el-input> -->
+          <el-select
+            v-model="formSearch.feedType"
+            class="!w-200px"
+            clearable
+            filterable
+            @change="formSelect"
+          >
+            <el-option v-for="item in formSelectList" :key="item" :label="item" :value="item" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="!bg-[#009688] !color-[#fff]" @click="handleQueryA">
+            <Icon icon="ep:search" class="mr-5px" />
             搜索
           </el-button>
           <el-button @click="resetQueryA">
-            <Icon icon="ep:refresh" class="mr-5px"/>
+            <Icon icon="ep:refresh" class="mr-5px" />
             重置
           </el-button>
-     </el-form-item>
-     <el-form-item>
-      <el-button class="!bg-[#ffff80] !color-[#000]" @click="skipCli">
-            <!-- <Icon icon="ep:search" class="mr-5px"/> -->
-            跳过选择投入品，直接执行农事计划
-          </el-button>
-     </el-form-item>
-     </el-form>
-     
+        </el-form-item>
+      </el-form>
     </div>
-    <el-table v-loading="loading" :data="selectList" :stripe="true" ref="multipleTableRef"
-    @select="select" @row-click="selectClick" @selection-change="handleSelectionChange" :show-overflow-tooltip="true">
-      <el-table-column width="30" label="选择" type="selection"/>
-      <el-table-column label="条码" align="center" prop="barCode" width="160"/>
-      <el-table-column label="名称" align="center" prop="name" width="160"/>
-      <el-table-column label="分类" align="center" prop="categoryName" width="130" />
-      <el-table-column label="单位" align="center" prop="unitName" width="80" />
-      <el-table-column label="规格" align="center" prop="standard" width="100"/>
-      <el-table-column label="图片" align="center" prop="imgId" >
-        <template #default="{ row }">
-          <el-image
-            v-if="row.img != null && row.img != ''"
-            class="h-50px w-50px"
-            lazy
-            :src="row.img"
-            :preview-src-list="[row.img]"
-            preview-teleported
-            fit="cover"
-          />
-          <span v-else>暂无图片</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="采购价格"
-        align="center"
-        prop="purchasePrice"
-        width="120"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-      <el-table-column
-        label="销售价格"
-        align="center"
-        prop="salePrice"
-        width="120"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-      <el-table-column
-        label="最低价格"
-        align="center"
-        prop="minPrice"
-        width="120"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-<!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-      <el-table-column
-        label="生产日期"
-        align="center"
-        prop="produceDate"
-        :formatter="dateFormatter2"
-        width="140"
-      />
-      <el-table-column label="保质期天数" align="center" prop="expiryDay" width="100" />
-      <el-table-column
-        label="有效日期"
-        align="center"
-        prop="effectiveTime"
-        :formatter="dateFormatter2"
-        width="140"
-      />
-      <el-table-column label="登记证号123" align="center" prop="registerNum" width="100" />
-      <el-table-column label="包装关系" align="center" prop="packagingRelationship" width="100" />
-      <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
-      <!-- <el-table-column label="操作" align="center" width="110" fixed="right">
+    <div class="relative">
+      <el-table
+        class="!h-500px"
+        v-loading="loading"
+        :data="selectList"
+        :stripe="true"
+        ref="multipleTableRef"
+        @row-click="selectClick"
+        @selection-change="handleSelectionChange"
+        :show-overflow-tooltip="true"
+      >
+        <el-table-column width="30" label="选择" type="selection" />
+        <el-table-column label="条码" align="center" prop="barCode" width="160" />
+        <el-table-column label="名称" align="center" prop="name" width="160" />
+        <el-table-column label="分类" align="center" prop="categoryName" width="130" />
+        <el-table-column label="单位" align="center" prop="unitName" width="80" />
+        <el-table-column label="规格" align="center" prop="standard" width="100" />
+        <el-table-column label="图片" align="center" prop="imgId">
+          <template #default="{ row }">
+            <el-image
+              v-if="row.img != null && row.img != ''"
+              class="h-50px w-50px"
+              lazy
+              :src="row.img"
+              :preview-src-list="[row.img]"
+              preview-teleported
+              fit="cover"
+            />
+            <span v-else>暂无图片</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="采购价格"
+          align="center"
+          prop="purchasePrice"
+          width="120"
+          :formatter="erpPriceTableColumnFormatter"
+        />
+        <el-table-column
+          label="销售价格"
+          align="center"
+          prop="salePrice"
+          width="120"
+          :formatter="erpPriceTableColumnFormatter"
+        />
+        <el-table-column
+          label="最低价格"
+          align="center"
+          prop="minPrice"
+          width="120"
+          :formatter="erpPriceTableColumnFormatter"
+        />
+        <!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
+        <!--        <template #default="scope">-->
+        <!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
+        <!--        </template>-->
+        <!--      </el-table-column>-->
+        <el-table-column
+          label="生产日期"
+          align="center"
+          prop="produceDate"
+          :formatter="dateFormatter2"
+          width="140"
+        />
+        <el-table-column label="保质期天数" align="center" prop="expiryDay" width="100" />
+        <el-table-column
+          label="有效日期"
+          align="center"
+          prop="effectiveTime"
+          :formatter="dateFormatter2"
+          width="140"
+        />
+        <el-table-column label="登记证号123" align="center" prop="registerNum" width="100" />
+        <el-table-column label="包装关系" align="center" prop="packagingRelationship" width="100" />
+        <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
+        <!-- <el-table-column label="操作" align="center" width="110" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -507,29 +556,54 @@
           </el-button>
         </template>
       </el-table-column> -->
-    </el-table>
+      </el-table>
+      <!-- 分页 -->
+      <Pagination
+        class="!absolute"
+        :total="totalA"
+        v-model:page="queryParamsA.pageNo"
+        v-model:limit="queryParamsA.pageSize"
+        @pagination="getPage()"
+      />
+    </div>
     <template #footer>
-      <el-button @click="submitTable" type="primary" :disabled="formLoading">下一步</el-button>
+      <el-button
+        class="!bg-[#80ffff] !border-none"
+        @click="skipCli"
+        type="primary"
+        :disabled="formLoading"
+        ><el-tooltip content="跳过选择投入品,直接执行" placement="top">
+          <div>跳过</div>
+        </el-tooltip>
+      </el-button>
+
+      <el-button
+        @click="submitTable"
+        class="!bg-[#f59a23] !border-none"
+        type="primary"
+        :disabled="formLoading"
+        >下一步</el-button
+      >
       <el-button @click="clearFormA">取 消</el-button>
     </template>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan'
 import FarmPlanForm from './FarmPlanForm.vue'
-import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
-import {FarmDefineApi} from "@/api/agriculture/farmdefine";
-import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
-import QuestionMaskTip from "@/components/QuestionMaskTip/index.vue";
-import { page,carryOutUpdate,isFarmPlan} from './api'
-import {watch} from 'vue'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { FarmDefineApi } from '@/api/agriculture/farmdefine'
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
+import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
+import { ParkInfoVO } from '@/api/agriculture/parkinfo'
+import { ParkDetailVO } from '@/api/agriculture/parkdetail'
+import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue'
+import { page, carryOutUpdate, isFarmPlan } from './api'
+import { watch } from 'vue'
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
 
@@ -557,21 +631,25 @@ const queryParams = reactive({
   endTime: [],
   planArea: undefined,
   area: undefined,
-  createTime: [],
+  createTime: []
+})
+const queryParamsA = reactive({
+  pageNo: 1,
+  pageSize: 10
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const farmDefineOptions = ref([])// 设备分类选项
-const formData=ref({
-  feedType:"",
-  feedName:"",
-  consumeNum:'',
-  feedCost:'',
-  consumeUnit:'',
+const farmDefineOptions = ref([]) // 设备分类选项
+const formData = ref({
+  feedType: '',
+  feedName: '',
+  consumeNum: '',
+  feedCost: '',
+  consumeUnit: ''
 })
-const formSearch=ref({
-  feedName:'',
-  feedType:''
+const formSearch = ref({
+  feedName: '',
+  feedType: ''
 })
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
@@ -584,11 +662,10 @@ const getList = async () => {
     //请求品类信息
     listCategoryManagement.value = await allDataCacheManager.getData({})
     //把品类数据的name拼接到列表中
-    data.list.forEach((item)=>{
-      item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
-      listCategoryManagement.value.forEach(itm => {
-        if (item.cropType == itm.id)
-          item.cropType = itm.categoryName
+    data.list.forEach((item) => {
+      item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ''
+      listCategoryManagement.value.forEach((itm) => {
+        if (item.cropType == itm.id) item.cropType = itm.categoryName
       })
     })
 
@@ -601,13 +678,13 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  if(queryParams.parkName == null || queryParams.parkName == ''){
-    queryParams.belongPark= undefined
-    queryParams.parkName= undefined
+  if (queryParams.parkName == null || queryParams.parkName == '') {
+    queryParams.belongPark = undefined
+    queryParams.parkName = undefined
   }
-  if(queryParams.plotName == null || queryParams.plotName == ''){
-    queryParams.plotName= undefined
-    queryParams.belongPlot= undefined
+  if (queryParams.plotName == null || queryParams.plotName == '') {
+    queryParams.plotName = undefined
+    queryParams.belongPlot = undefined
   }
   queryParams.pageNo = 1
   getList()
@@ -623,10 +700,10 @@ const resetQuery = () => {
 const formRef = ref()
 const router = useRouter()
 const openForm = (type: string, id?: number) => {
-  if(type=='create') {
+  if (type == 'create') {
     router.push('/farm_work/farmManage/createOrUpdate')
-  }else{
-    router.push('/farm_work/farmManage/createOrUpdate?type='+type+'&id='+id)
+  } else {
+    router.push('/farm_work/farmManage/createOrUpdate?type=' + type + '&id=' + id)
   }
 }
 
@@ -659,9 +736,9 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(async ()  => {
+onMounted(async () => {
   getList()
-  farmDefineOptions.value =  await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
 })
 onActivated(async () => {
   await getList()
@@ -671,9 +748,9 @@ onActivated(async () => {
 const parkPopupRef = ref()
 const openType = ref('')
 const openParkPopup = (id: string) => {
-  openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    message.error("请选择基地")
+  openType.value = id
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地')
   } else parkPopupRef.value.open(id)
 }
 const handleParkPopupChange = (order: ParkInfoVO) => {
@@ -683,248 +760,251 @@ const handleParkPopupChange = (order: ParkInfoVO) => {
   } else queryParams.parkName = String(order[0].name)
 }
 //获取投入品
-const selectList=ref([])
-const selectList2=ref([])
-const formSelectList=ref([])
-const getPage=async ()=>{
-  let res= await page({pageNo:1,pageSize:10})
-  console.log(res,'投入品')
-  selectList.value=res.list
-  selectList2.value=res.list
-   formSelectList.value=Array.from(new Set(res.list.map(item=>item.categoryName)))
+const selectList = ref([])
+const totalA = ref(0)
+const selectList2 = ref([])
+const formSelectList = ref([])
+const getPage = async () => {
+  let res = await page({ pageNo: queryParamsA.pageNo, pageSize: queryParamsA.pageSize })
+  console.log(res, '投入品')
+  totalA.value = res.total
+  selectList.value = res.list
+  selectList2.value = res.list
+  formSelectList.value = Array.from(new Set(res.list.map((item) => item.categoryName)))
 }
 getPage()
 //监听消耗费用
-const selectOption=ref({})
-watch(()=>formData.value.consumeNum,(newVal)=>{
-  console.log(newVal,'newVal')
-  formData.value.feedCost=newVal*selectOption.value.minPrice
-})
+const selectOption = ref<Object>({})
+watch(
+  () => formData.value.consumeNum,
+  (newVal) => {
+    console.log(newVal, 'newVal')
+    formData.value.feedCost = newVal * selectOption.value.minPrice
+  }
+)
 //选择消耗品
-const openCropInfoPopup=()=>{
-  dialogVisible.value=false
-  dialogVisibleA.value=true
+const openCropInfoPopup = () => {
+  dialogVisible.value = false
+  dialogVisibleA.value = true
 }
 //执行按钮
-const params=ref({})
-const dialogVisible=ref(false)
-const dialogVisibleA=ref(false)
-const endTime=ref()
-const startTime=ref()
-const feedType=ref(0) 
-const  subExecuteId=ref()
-const subExecute=async (obj)=>{
-  subExecuteId.value=obj.id
-  console.log(123456,obj)
-  startTime.value=new Date(obj.startTime).toLocaleString()
-  endTime.value=new Date(obj.endTime).toLocaleString()
-  params.value=obj
-  if(obj.planState==1){
-    let res=await isFarmPlan({id:obj.id,planState:obj.planState})
-    console.log(res,'res校验')
-    if(res==true) dialogVisibleA.value=true
-    else if(res.data==false){
+const paramsA = ref<Array<any>>([])
+const params = ref<Object>({})
+const dialogVisible = ref<Boolean>(false)
+const dialogVisibleA = ref<Boolean>(false)
+const endTime = ref()
+const startTime = ref()
+const feedType = ref(0)
+const subExecuteId = ref()
+const subExecute = async (obj) => {
+  subExecuteId.value = obj.id
+  console.log(123456, obj)
+  startTime.value = new Date(obj.startTime).toLocaleString()
+  endTime.value = new Date(obj.endTime).toLocaleString()
+  params.value = obj
+  paramsA.value.push(obj)
+  if (obj.planState == 1) {
+    let res = await isFarmPlan({ id: obj.id, planState: obj.planState })
+    console.log(res, 'res校验')
+    if (res == true) dialogVisibleA.value = true
+    else if (res.data == false) {
       console.log(123)
       message.error('执行农事计划失败，请先去农事记录添加')
-       dialogVisibleA.value=false
+      dialogVisibleA.value = false
     }
-  }else{
-    dialogVisibleA.value=true
-
+  } else {
+    dialogVisibleA.value = true
   }
-  
-  
 }
-watch(()=>dialogVisible.value,(val)=>{
-  if(!val){
-    formData.value={
-      feedType:"",
-      feedName:"",
-      consumeNum:'',
-      feedCost:'',
-      consumeUnit:'KG',
-      feedTwo:'元',
+watch(
+  () => dialogVisible.value,
+  (val) => {
+    if (!val) {
+      formData.value = {
+        feedType: '',
+        feedName: '',
+        consumeNum: '',
+        feedCost: '',
+        consumeUnit: 'KG',
+        feedTwo: '元'
+      }
+    }
   }
+)
+watch(
+  () => dialogVisibleA.value,
+  (val) => {
+    console.log(val, '123val')
+    if (!val) {
+      selectionList.value = []
+    }
   }
-})
-watch(()=>dialogVisibleA.value,(val)=>{
-  console.log(val,'123val')
-  if(!val){
-   
-  selectionList.value=[]
-  }
-})
+)
 //跳过
-const skipCli=async ()=>{
-  console.log(params.value,'params.valueparams.value')
- let res=await carryOutUpdate({
-  id:params.value.id,
-  planName:params.value.planName,
-  parkName:params.value.parkName,
-  plotName:params.value.plotName,
-  cropName:params.value.cropName,
-  planState:params.value.planState,
-  startTime:params.value.startTime,
-  endTime:params.value.endTime,
-  isInput:false,
-  agriFarmRecordSaveReqVO:{
-    ...params.value,
-    recordTime:params.value.startTime,
-    recordArea:params.value.area,
-  }
-})
- console.log(res,'tiaoguo')
- if(res){
+const skipCli = async () => {
+  console.log(params.value, 'params.valueparams.value')
+  let res = await carryOutUpdate({
+    id: params.value.id,
+    planName: params.value.planName,
+    parkName: params.value.parkName,
+    plotName: params.value.plotName,
+    cropName: params.value.cropName,
+    planState: params.value.planState,
+    startTime: params.value.startTime,
+    endTime: params.value.endTime,
+    isInput: false,
+    agriFarmRecordSaveReqVO: {
+      ...params.value,
+      recordTime: params.value.startTime,
+      recordArea: params.value.area
+    }
+  })
+  console.log(res, 'tiaoguo')
+  if (res) {
     message.success('执行农事计划成功')
-    dialogVisibleA.value=false
-   await getList()
- }
+    dialogVisibleA.value = false
+    await getList()
+  }
+}
+//上一步
+const preCli = () => {
+  dialogVisibleA.value = true
+  dialogVisible.value = false
+  selectionList.value = []
+  paramsA.value = []
+  multipleTableRef.value.clearSelection()
 }
 //确认
-const submitForm=async ()=>{
-  delete formData.value.id;
-  delete params.value.id;
-  let res=await carryOutUpdate({
-  id:subExecuteId.value,
-  planName:params.value.planName,
-  parkName:params.value.parkName,
-  plotName:params.value.plotName,
-  cropName:params.value.cropName,
-  planState:params.value.planState,
-  startTime:params.value.startTime,
-  endTime:params.value.endTime,
-  isInput:true,
-  agriFarmRecordSaveReqVO:{
-    ...params.value,
-    recordTime:params.value.startTime,
-    recordArea:params.value.area,
-  },
-  feedInfoSaveReqVO:{
-    ...params.value,
-    ...formData.value,
-    farmingStage:params.value.farmDefineType,
-    feedTime:new Date().getTime()
-
-  }
-})
-if(res){
-  message.success('执行农事计划成功')
-    dialogVisible.value=false
-    formData.value={
-      feedType:"",
-      feedName:'',
-  consumeNum:'',
-  feedCost:'',
-  consumeUnit:'KG',
-  feedTwo:'元',
+const submitForm = async () => {
+  delete formData.value.id
+  delete params.value.id
+  let res = await carryOutUpdate({
+    id: subExecuteId.value,
+    planName: params.value.planName,
+    parkName: params.value.parkName,
+    plotName: params.value.plotName,
+    cropName: params.value.cropName,
+    planState: params.value.planState,
+    startTime: params.value.startTime,
+    endTime: params.value.endTime,
+    isInput: true,
+    agriFarmRecordSaveReqVO: {
+      ...params.value,
+      recordTime: params.value.startTime,
+      recordArea: params.value.area
+    },
+    feedInfoSaveReqVO: {
+      ...params.value,
+      ...formData.value,
+      farmingStage: params.value.farmDefineType,
+      feedTime: new Date().getTime()
     }
-   await getList()
-}
-  console.log("🚀 ~ submitForm ~ res:", res)
+  })
+  if (res) {
+    message.success('执行农事计划成功')
+    dialogVisible.value = false
+    formData.value = {
+      feedType: '',
+      feedName: '',
+      consumeNum: '',
+      feedCost: '',
+      consumeUnit: 'KG',
+      feedTwo: '元'
+    }
+    await getList()
+    paramsA.value = []
+  }
+  console.log('🚀 ~ submitForm ~ res:', res)
 }
 //取消并且清除Form
-const clearForm=()=>{
+const clearForm = () => {
   dialogVisible.value = false
-  formData.value={
-      feedType:"",
-      consumeNum:'',
-      feedCost:'',
-      consumeUnit:'KG',
-      feedTwo:'元',
+  formData.value = {
+    feedType: '',
+    consumeNum: '',
+    feedCost: '',
+    consumeUnit: 'KG',
+    feedTwo: '元'
   }
+  paramsA.value = []
 }
 //取消并且清除Form
-const clearFormA=()=>{
+const clearFormA = () => {
   dialogVisibleA.value = false
-  formData.value={
-      feedType:"",
-      consumeNum:'',
-      feedCost:'',
-      consumeUnit:'KG',
-      feedTwo:'元',
+  formData.value = {
+    feedType: '',
+    consumeNum: '',
+    feedCost: '',
+    consumeUnit: 'KG',
+    feedTwo: '元'
   }
-  selectionList.value=[]
+  selectionList.value = []
 }
 //投入品表格确定
-const submitTable=()=>{
+const submitTable = () => {
+  console.log(selectionList.value, 'ddddd')
+  if (selectionList.value.length == 0) {
+    message.warning('请先选择投入品，再点击下一步')
+    dialogVisibleA.value = true
+    dialogVisible.value = false
+  } else {
+    dialogVisibleA.value = false
+    dialogVisible.value = true
+    selectOption.value = selectionList.value[0]
+    formData.value.feedType = selectionList.value[0].id
+    formData.value.consumeUnit = selectionList.value[0].unitName
 
-  if(selectionList.value.length ==0){
-      message.warning('请先选择投入品，再点击下一步')
-      dialogVisibleA.value=true
-      dialogVisible.value=false
-  }else{
-      dialogVisibleA.value=false
-      dialogVisible.value=true
-      selectOption.value=selectionList.value[0]
-      formData.value.feedType=selectionList.value[0].id
-      formData.value.consumeUnit=selectionList.value[0].unitName
-      console.log(selectionList.value[0],'formData.value.feedTypeformData.value.feedType1234')
-
-      formData.value.feedName=selectionList.value[0].name
+    formData.value.feedName = selectionList.value[0].name
   }
-      
- 
 }
 /** 选中操作 */
-const selectionList = ref([])
+const selectionList = ref<Array<any>>([])
 const handleSelectionChange = (rows) => {
+  console.log(rows, 'rows1234')
   selectionList.value = rows
-  console.log(selectionList.value,'selectionListselectionList123')
 }
 
-
-// 作物品种单选
 const multipleTableRef = ref()
-const select = (selection, row)=> {
-  // 清除 所有勾选项
-  multipleTableRef.value.clearSelection()
-  // 当表格数据都没有被勾选的时候 就返回
-  // 主要用于将当前勾选的表格状态清除
-  if(selection.length == 0) return
-  multipleTableRef.value.toggleRowSelection(row, true);
-}
-
 // 控制单选——table选择项发生变化时
 const selectClick = (row) => {
   const selectData = selectionList.value
-  multipleTableRef.value.clearSelection()
-  if (selectData.length == 1) {
-    selectData.forEach(item => {
+  if (selectData.length) {
+    selectData.forEach((item) => {
       // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
       if (item == row) {
-        multipleTableRef.value.toggleRowSelection(row, false);
+        multipleTableRef.value.toggleRowSelection(row, false)
       }
       // 不然就让当前的一行勾选
       else {
-        multipleTableRef.value.toggleRowSelection(row, true);
+        multipleTableRef.value.toggleRowSelection(row, true)
       }
     })
   } else {
-    multipleTableRef.value.toggleRowSelection(row, true);
+    multipleTableRef.value.toggleRowSelection(row, true)
   }
 }
 //重置
-const resetQueryA=()=>{
-  formSearch.value={
-    feedName:'',
-    feedType:''
+const resetQueryA = () => {
+  formSearch.value = {
+    feedName: '',
+    feedType: ''
   }
   getPage()
   handleQueryA()
 }
 //搜索
-const handleQueryA=()=>{
-  selectList.value=selectList2.value.filter(item=>{
-    if(item.name.includes(formSearch.value.feedName)){
+const handleQueryA = () => {
+  selectList.value = selectList2.value.filter((item: any) => {
+    if (item.name.includes(formSearch.value.feedName)) {
       return item
     }
   })
-  console.log(selectList.value,'selectList.valueselectList.value123')
+  console.log(selectList.value, 'selectList.valueselectList.value123')
 }
 //投入品下拉框事件
-const formSelect=(e)=>{
-  selectList.value=selectList2.value.filter(item=>{
-    if(item.categoryName==e){
+const formSelect = (e) => {
+  selectList.value = selectList2.value.filter((item: any) => {
+    if (item.categoryName == e) {
       return item
     }
   })
@@ -933,28 +1013,33 @@ const formSelect=(e)=>{
 const plotPopupRef = ref()
 const openType1 = ref('')
 const openPlotPopup = (id: string) => {
-  openType1.value = id;
+  openType1.value = id
   if (!openType1.value) {
-    message.error("请选择基地")
+    message.error('请选择基地')
   } else plotPopupRef.value.open(id)
 }
 const handlePlotPopupChange = (order: ParkDetailVO) => {
- // console.log("--->>查看选择的地块信息：", order[0])
+  // console.log("--->>查看选择的地块信息：", order[0])
   queryParams.belongPlot = String(order[0].id)
   queryParams.plotName = String(order[0].name)
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .com-dialog .el-dialog__body{
-  padding: 0 !important
+::v-deep .com-dialog .el-dialog__body {
+  padding: 0 !important;
 }
-::v-deep .custom-label-width .el-form-item__label{
+::v-deep .custom-label-width .el-form-item__label {
   width: 110px !important;
 }
-.formParams{
-  overflow-y:scroll !important;
+.formParams {
+  overflow-y: scroll !important;
 }
-.formParams::-webkit-scrollbar{
+.formParams::-webkit-scrollbar {
   width: 0;
+}
+::v-deep .el-dialog__header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 </style>
