@@ -381,8 +381,8 @@ handleItemChange(typeDataList.value[0])
     </div>
     <div :class="`w-full flex justify-center items-center h-100vh ${activePoster} text-white`">
       <div class="container px-3rem box-border">
-        <div class="text-3rem">{{ mainTitle }}</div>
-        <div class="w-[43rem] text-.9rem mt-1.2rem h-5rem">
+        <div class="text-3rem font-bold">{{ mainTitle }}</div>
+        <div class="w-[43rem] text-1rem mt-1.2rem h-5rem leading-loose">
           {{ mainDesc }}
         </div>
         <div class="w-full h-2rem mt-7rem flex justify-center items-start space-x-1rem">
