@@ -120,6 +120,9 @@ const initPlantCropNumChart = async () => {
         orient: 'horizontal',
         itemWidth: 15,
         itemHeight: 15,
+        textStyle: {
+          color: "#999"
+        }
       },
       color: ['rgba(126, 193, 232,1)', '#36e1d9'],
       yAxis: {
@@ -284,7 +287,7 @@ const initDigitalSaleChart = async () => {
       {
         type: "pie",
         radius: "65%",
-        center: ["50%", "50%"],
+        center: ["50%", "40%"],
         data: data ,
         label: {
           formatter: "{b}",
@@ -321,7 +324,7 @@ const initFeatureProductChart = async() => {
     title: {
       text: '特色产品',
       left: 'center',
-      y: 'top',
+      y: '16',
       textStyle: {
         color: '#5470c6',
         fontSize: 14
@@ -372,10 +375,10 @@ const initFeatureProductChart = async() => {
       }
     ],
     grid: {
-      left: '8%',
-      right: '6%',
-      top: '10%',
-      bottom: '10%'
+      left: '40',
+      right: '16',
+      top: '50',
+      bottom: '25'
     }
   }))
 }
@@ -616,7 +619,7 @@ const showLessContent = (idx: number) => {
           </div>
         </template>
         <div
-          class="w-full h-50rem xl:h-26rem 2xl:h-20rem overflow-auto space-y-.4rem pl-2 box-border"
+          class="w-full h-50rem xl:h-26rem 2xl:h-22rem overflow-auto space-y-.4rem pl-2 box-border"
           v-if="agriAdviceDataList.length > 0"
         >
           <el-scrollbar>
@@ -657,7 +660,7 @@ const showLessContent = (idx: number) => {
       >
         <div class="flex justify-between">
           <div id="digitalSale" class="w-20rem h-18rem"></div>
-          <div id="featureProduct" style="width: calc(100% - 16.6rem)"></div>
+          <div id="featureProduct" style="width: calc(100% - 22rem)"></div>
         </div>
       </el-card>
       <el-card
