@@ -460,13 +460,13 @@ handleItemChange(typeDataList.value[0])
     </div>
 
     <!-- 解决农业问题 -->
-    <div class="w-full flex flex-col justify-center items-center py-4rem">
+    <div class="w-full flex flex-col justify-center items-center py-4rem ">
       <div class="flex flex-col space-y-1 items-center mt-3 mb-[5rem]">
         <div class="text-[40px]">解决农业问题</div>
         <div class=" text-[18px] text-#999999">ADDRESSING AGRICULTURAL ISSUES</div>
       </div>
-      <div class="container">
-        <div class="flex justify-center items-center mb-[4rem]">
+      <div class="container ">
+        <div class="flex justify-center items-center mb-[4rem] pl-2rem pr-2rem">
           <div class='w-45% flex flex-col p-[2rem] '>
             <div class="text-[24px] mb-[1rem] ml-[3rem]">
               <span class="text-#318255 font-bold pr-3">01</span>
@@ -488,9 +488,9 @@ handleItemChange(typeDataList.value[0])
 
             </div>
           </div>
-          <div class='w-50%  solve-bg1 h-20rem'></div>
+          <div class='w-50%  solve-bg1 h-20rem '></div>
         </div>
-        <div class="flex justify-center items-center mb-[4rem]">
+        <div class="flex justify-center items-center mb-[4rem] pl-2rem pr-2rem">
           <div class='w-50%  solve-bg2 h-20rem'></div>
           <div class='w-45% flex flex-col p-[2rem] '>
             <div class="text-[24px] mb-[1rem] ml-[3rem]">
@@ -515,7 +515,7 @@ handleItemChange(typeDataList.value[0])
           </div>
 
         </div>
-        <div class="flex justify-center items-center mb-[4rem]">
+        <div class="flex justify-center items-center mb-[4rem] pl-2rem pr-2rem">
           <div class='w-45% flex flex-col p-[2rem] '>
             <div class="text-[24px] mb-[1rem] ml-[3rem]">
               <span class="text-#318255 font-bold pr-3">03</span>
@@ -538,7 +538,7 @@ handleItemChange(typeDataList.value[0])
           </div>
           <div class='w-50%  solve-bg3 h-20rem'></div>
         </div>
-        <div class="flex justify-center items-center mb-[3rem]">
+        <div class="flex justify-center items-center mb-[3rem] pl-2rem pr-2rem">
           <div class='w-50% solve-bg4 h-20rem'></div>
           <div class='w-45% flex flex-col p-[2rem] '>
             <div class="text-[24px] mb-[1rem] ml-[3rem]">
