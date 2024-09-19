@@ -16,9 +16,9 @@
       <el-icon class="mr-2" @click="handleClose"><Close /></el-icon>
     </div>
     <div class="w-full flex mb-10px items-center">
-      <div @click="handleClick('设备概要')" style="cursor: pointer;" :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-l`">设备监测</div>
-      <div @click="handleClick('报警')" style="cursor: pointer;" :class="`${tabsVal=='报警'?'active':'actived'} text-center leading-30px w-[33%] h-30px`">报警</div>
-      <div @click="handleClick('设备属性')" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
+      <div @click="handleClick('设备概要',true)" style="cursor: pointer;" :class="`${tabsVal=='设备概要'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-l`">设备监测</div>
+      <div @click="handleClick('报警',true)" style="cursor: pointer;" :class="`${tabsVal=='报警'?'active':'actived'} text-center leading-30px w-[33%] h-30px`">报警</div>
+      <div @click="handleClick('设备属性',true)" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
     </div>
     <div>
       <div   v-if="tabsVal==='设备概要'">
@@ -271,11 +271,14 @@ defineOptions({ name: 'PanelTangBa' })
 console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }).join(''));
 //标签切换
 const tabsVal=ref('设备概要')
-const equipmentId=ref('')
-const deviceKinds=ref('')
-const handleClick=(val)=>{
-    tabsVal.value=val
-    getRunTimeData(equipmentId.value,deviceKinds.value)
+const equipmentIdA = ref('')
+const deviceKinds = ref('')
+const handleClick = (val,type) => {
+    tabsVal.value = val
+    reset()
+    if(type){
+      getRunTimeData(equipmentIdA.value ,deviceKinds.value)
+    }
 }
 const generateXY = (arr:Array<any>) => {
   const x:Array<any> = [], y:Array<any> = []
@@ -298,6 +301,7 @@ const generateXY = (arr:Array<any>) => {
 const runTimeDataLoading = ref<boolean>(false)
 const runTimeDataList = ref<Array<any>>([])
 const getRunTimeData = async (equipmentId, deviceKind) => {
+  equipmentIdA.value = equipmentId
   if (!equipmentId) return
   runTimeDataLoading.value = true
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
@@ -597,14 +601,11 @@ const getDeviceInfoData = async (item) => {
   updateForm.value.deviceMonitorType = [deviceMonitorType]
   updateForm.value.createTime = createTime
   title.value = parkDetailName + '-' + deviceName
-  let timeDate=res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
+  let timeDate = res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
   time.value = '最新数据更新于:' + timeDate
   deviceKinds.value = deviceKind
-  equipmentId.value=item.id
-  setTimeout(() => { item.id && getRunTimeData(item.id, deviceKind) }, 300)
-
-  console.log("deviceKind", deviceId);
-
+  equipmentIdA.value = item.id
+    getRunTimeData(item.id ,deviceKind)
   if (deviceKind === '102') {
     // 生长监控
     getPageA(id)

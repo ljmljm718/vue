@@ -199,8 +199,8 @@
           <el-button
           v-if="deviceTypeMain.includes(item.deviceType[0])"
             plain
-            type="primary"
-            class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'
+            type="success"
+            class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px'
             @click="$router.push({
               path: '/internetMonitor/deviceData/equipment-data-three',
               query: {
@@ -213,16 +213,16 @@
           <el-button
           v-if="item.deviceStatus=='online'&&item.url!=null&&item.url.indexOf('mp4')>0"
             plain
-            type="primary"
-            class='!color-[#fff] !bg-[#59b756] !px-25px !py-13px'
+            type="success"
+            class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px'
             @click="openExternalLink(item)"
           >
             查看监控
           </el-button>
           <el-button
             plain
-            type="success"
-            class='!color-[#fff] !bg-[#fac858] !px-25px !py-13px'
+            type="warning"
+            class='!color-[#fff] !bg-[#fac858] !border-none !px-25px !py-13px'
             @click="openEditForm(item.id)"
             v-hasPermi="['agriculture:device-info:update']"
           >
