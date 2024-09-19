@@ -432,13 +432,13 @@ handleItemChange(typeDataList.value[0])
         <div class="text-.7rem text-#999999">SYSTEM FEATURES</div>
         <div class="text-1rem text-#333333 line-height-[1.8] w-36rem mt-1.2rem">{{ systemFeature }}</div>
       </div>
-      <div class="container relative flex mt-3rem">
+      <div class="container relative flex mt-5rem">
         <swiper
 :slidesPerView="3" :spaceBetween="20" :freeMode="true" :pagination="{
           clickable: true,
         }" :modules="[FreeMode, Pagination]" class="w-95%">
           <swiper-slide v-for="item in handledDataList" :key="item.subId">
-            <div class="w-full h-14rem system-feature-wrapper mb-3rem">
+            <div class="w-full 2xl:h-15rem  xl:h-14rem system-feature-wrapper mb-3rem px-1">
               <div
                 class="w-full h-full bg-white box-border p-2rem system-feature-simple relative flex flex-col items-center justify-center space-y-4">
                 <div class="absolute left-1.8rem top-1rem text-1.3rem text-#318255">{{ `0${item.subId}` }}</div>
@@ -446,9 +446,9 @@ handleItemChange(typeDataList.value[0])
                 <div>{{ item.subTitle }}</div>
               </div>
               <div
-                class="w-full h-full bg-#2f8255 box-border p-2rem system-feature-content p-3rem text-#fff flex flex-col items-center w-full specRightCard ">
-                <div class="text-center text-1.2rem">{{ item.subTitle }}</div>
-                <div class="mt-1rem h-5.3rem line-clamp-4 overflow-auto">{{ item.subInfo }}</div>
+                class="w-full h-full bg-#2f8255 box-border system-feature-content p-3rem text-#fff flex flex-col items-center specRightCard pb-4rem">
+                <div class="text-center 2xl:text-1.3rem xl:text-1.2rem">{{ item.subTitle }}</div>
+                <div class="mt-1rem 2xl:h-8rem xl:h-5.3rem line-clamp-4 overflow-auto 2xl:leading-relaxed">{{ item.subInfo }}</div>
               </div>
             </div>
           </swiper-slide>
