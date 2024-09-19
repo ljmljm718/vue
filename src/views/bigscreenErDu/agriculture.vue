@@ -71,7 +71,7 @@ const getResList = async () => {
 
 //种养信息
 const cropList = ref<any[]>([]);
-const getCropBase = async () =>{
+const getCropBase = async () => {
   const { list } = await cropBase({
     pageNo: 1,
     pageSize: 100
