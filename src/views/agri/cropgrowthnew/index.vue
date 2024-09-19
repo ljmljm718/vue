@@ -686,11 +686,8 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
-
     // @ts-ignore
-    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-    const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
-    listVarietyManagementVO.value = data1.list
+    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)    
     list.value = data.list
     total.value = data.total
   } catch (err) {
@@ -786,9 +783,14 @@ const openSubDeviceForm = (id, growth) => {
   subformRef.value.open('create', id, growth)
 }
 
+const initValue = async () => {
+  const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
+  listVarietyManagementVO.value = data1.list
+}
 /** 初始化 **/
 onMounted(() => {
   getList()
+  initValue()
 })
 </script>
 <style lang="scss" scoped>
