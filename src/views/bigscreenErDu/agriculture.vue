@@ -162,7 +162,7 @@ getTopDataList()
 //品种分布
 const initChart = async () => {
   const res = await getBreedCategory()
-  if (!res || !Array.isArray(res)) { return }
+  if (!Array.isArray(res)) return
   const seriesData = res.map(item => ({
     name: item.category_name || '暂无数据',
     value: item.number,
@@ -173,8 +173,8 @@ const initChart = async () => {
     generatePieOptions({
       legend: {
         show: true,
-        top: '30%',
-        left: '60%',
+        top: 'center',
+        right: '10',
         bottom: '0',
         orient: 'vertical',
         itemWidth: 15,
@@ -194,8 +194,13 @@ const initChart = async () => {
           data: seriesData,
           label: {
             formatter: ({ name, percent }) => `${name} - (${parseInt(percent)}%)`,
-            color: '#fff',
-            position: ['50%', '50%']
+            color: '#d1d1d1',
+          },
+          labelLine: {
+            show: true,
+            lineStyle: {
+              color:'#d1d1d1'
+            }
           },
           emphasis: {
             itemStyle: { borderWidth: 0 }
@@ -406,7 +411,7 @@ const missionremovePlanClass = (event: any) => {
       </div>
       <div class="w-460px h-45px type-title"></div>
       <div class="p-4 box-border">
-        <div class="h-220px">
+        <div class="h-190px">
           <div class="items-start w-full h-full " id="typePercentChart"></div>
         </div>
       </div>
@@ -457,8 +462,8 @@ const missionremovePlanClass = (event: any) => {
         </div>
       </div>
       <div class="mission-split"></div>
-      <div class="w-450px h-300px">
-        <div class="w-450px h-300px">
+      <div class="w-450px h-330px">
+        <div class="w-450px h-330px">
           <BigscreenCalendar
             :key="curPlot ? curPlot.code : ''"
             ref="calendarIns"
