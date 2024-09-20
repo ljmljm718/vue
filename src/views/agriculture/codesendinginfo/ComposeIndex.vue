@@ -234,7 +234,7 @@ const options = [{
   value: '2',
   label: '已赋码'
 }]
-const multipleSelection = []
+let multipleSelection = []
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -253,14 +253,13 @@ const handleSelectionChange = (val) => {
 }
 //选中
 const fuMa = () => {
+  console.log(multipleSelection.length)
   message.success("赋码逻辑未完善")
-  // console.log(multipleSelection.length)
   // if (multipleSelection.length == 0) {
   //   message.warning("请先选择列表行")
   // } else {
   //   message.success("赋码逻辑未完善")
   // }
-
 }
 
 /** 搜索按钮操作 */
