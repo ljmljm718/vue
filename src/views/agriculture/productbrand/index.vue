@@ -116,6 +116,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <div v-if="selectType === 'card' && list.length<1" class="flex w-full justify-center items-center text-[13px] pt-2"> 暂无数据</div>
     <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols"> 
       <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2"> 
         <div class="flex justify-between h-[150px] p-2" > 
