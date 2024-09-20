@@ -21,7 +21,7 @@
       <div @click="handleClick('设备属性',true)" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
     </div>
     <div>
-      <div   v-if="tabsVal==='设备概要'">
+      <div   v-show="tabsVal==='设备概要'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
           <div
@@ -122,7 +122,7 @@
           <div id="chartWindSpeed" class="chart-ins"></div>
         </el-scrollbar>
     </div>
-    <div   v-if="tabsVal==='报警'">
+    <div   v-show="tabsVal==='报警'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
             :data="warnDataList"
@@ -181,7 +181,7 @@
           </el-table>
         </el-scrollbar>
       </div>
-    <div   v-if="tabsVal==='设备属性'">
+    <div  v-show="tabsVal==='设备属性'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
           <div class="flex flex-col items-center mt-4">
@@ -273,9 +273,12 @@ console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }
 const tabsVal=ref('设备概要')
 const equipmentIdA = ref('')
 const deviceKinds = ref('')
+const typeCom=ref<Boolean>(false)
 const handleClick = (val,type) => {
     tabsVal.value = val
-    reset()
+    runTimeDataList.value=[]
+    console.log(runTimeDataList.value,'runTimeDataList1235')
+    typeCom.value=type
     if(type){
       getRunTimeData(equipmentIdA.value ,deviceKinds.value)
     }
@@ -307,10 +310,9 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
   console.log("getRunTimeData1234", res);
   runTimeDataLoading.value = false
-  runTimeDataList.value = []
 
   const activeApi = EquipmentDataApi.getEquipmentDataByEquipmentCode
-  if (activeApi) {
+  if (activeApi && typeCom.value) {
     const list = await activeApi(equipmentId)
     if (Array.isArray(list)) runTimeDataList.value = list
   }
@@ -575,6 +577,8 @@ const title = ref<string>(''), time = ref<string>(''), curDeviceKind = ref<strin
 const curDeviceStatus = ref<string>('')
 const getDeviceInfoData = async (item) => {
   let res=await getEquipmentDataByEquipmentCode({id:item.id})
+  runTimeDataList.value = res
+  console.log(res,'getEquipmentDataByEquipmentCode1234')
   reset()
   const {
     id = '',
