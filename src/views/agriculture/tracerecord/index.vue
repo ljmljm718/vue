@@ -17,19 +17,19 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="产品id" prop="productId">
+      <el-form-item label="品牌" prop="productBrand">
         <el-input
-          v-model="queryParams.productId"
-          placeholder="请输入产品id"
+          v-model="queryParams.productBrand"
+          placeholder="请输入品牌"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="生产商id" prop="producerId">
+      <el-form-item label="生产商" prop="companyName">
         <el-input
-          v-model="queryParams.producerId"
-          placeholder="请输入生产商id"
+          v-model="queryParams.companyName"
+          placeholder="请输入生产商"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"

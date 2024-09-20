@@ -43,4 +43,4 @@ export const TraceRecordApi = {
   exportTraceRecord: async (params) => {
     return await request.download({ url: `/agriculture/trace-record/export-excel`, params })
   },
-}
+}
