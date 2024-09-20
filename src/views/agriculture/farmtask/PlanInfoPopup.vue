@@ -1,7 +1,7 @@
 <!-- 基地列表 -->
 <template>
   <Dialog
-    title="选择基地"
+    title="选择农事计划"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -88,9 +88,9 @@
         <!--      <el-table-column label="作物id" align="center" prop="cropId" />-->
         <el-table-column label="作物名称" align="center" prop="cropName" width="180" />
         <el-table-column label="批次码" align="center" prop="batchCode" width="120" />
-        <el-table-column label="品种" align="center" prop="cropType" width="100" >
+        <el-table-column label="品类" align="center" prop="cropType" width="100">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="scope.row.cropType" />
+            <el-tag>{{ scope.row.cropType }} </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="计划状态" align="center" prop="planState" width="100" >
@@ -139,6 +139,7 @@ import {DICT_TYPE, getStrDictOptions} from "@/utils/dict"
 import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import {FarmPlanApi, FarmPlanVO} from "@/api/agriculture/farmplan";
+import {CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 defineOptions({name: 'ParkInfoPopup'})
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
@@ -202,15 +203,20 @@ const open = async (id: string) => {
   await resetQuery()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
 /** 加载列表  */
 const getList = async () => {
   loading.value = true
   try {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
-    console.log(data)
+    //请求品类信息
+    listCategoryManagement.value = await allDataCacheManager.getData({})
     data.list.forEach((item)=>{
       item.farmDefineType=item.farmDefineType?parseInt(item.farmDefineType):""
+      listCategoryManagement.value.forEach((itm) => {
+        if (item.cropType == itm.id) item.cropType = itm.categoryName
+      })
     })
     list.value = data.list
     total.value = data.total
