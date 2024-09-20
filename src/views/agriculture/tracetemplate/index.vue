@@ -18,17 +18,23 @@
         />
       </el-form-item>
       <el-form-item label="生产商" prop="mfrsId">
-        <el-input
+        <el-select
           v-model="queryParams.mfrsId"
-          placeholder="请输入生产商"
+          placeholder="请选择生产商"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="item in producerEntryList"
+            :key="item.id"
+            :label="item.companyName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="适用品牌" prop="brandId">
+      <el-form-item label="适用品牌" prop="brandName">
         <el-input
-          v-model="queryParams.brandId"
+          v-model="queryParams.brandName"
           placeholder="请输入适用品牌"
           clearable
           @keyup.enter="handleQuery"
@@ -71,9 +77,9 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="模板名称" align="center" prop="templateName"/>
-      <el-table-column label="生产商" align="center" prop="mfrsId"/>
+      <el-table-column label="生产商" align="center" prop="companyName"/>
       <el-table-column label="产地" align="center" prop="origin"/>
-      <el-table-column label="适用品牌" align="center" prop="brandId"/>
+      <el-table-column label="适用品牌" align="center" prop="brandName"/>
       <el-table-column label="头部宣传图" align="center" prop="headerImg">
         <template #default="{ row }">
           <el-image
@@ -133,6 +139,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {TraceTemplateApi, TraceTemplateVO} from '@/api/agriculture/tracetemplate'
 import TraceTemplateForm from './TraceTemplateForm.vue'
+import {ProducerEntryApi, ProducerEntryVO} from "@/api/agriculture/producerentry";
 
 /** 溯源模板 列表 */
 defineOptions({name: 'TraceTemplate'})
@@ -142,6 +149,7 @@ const {t} = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<TraceTemplateVO[]>([]) // 列表的数据
+const producerEntryList = ref<ProducerEntryVO[]>([]) // 生产商的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -154,10 +162,17 @@ const queryParams = reactive({
   productImg: undefined,
   remark: undefined,
   remark1: undefined,
+  brandName: undefined,
   createTime: [],
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+/** 查询生产商列表 */
+const getProducerEntryList = async () => {
+  const data = await ProducerEntryApi.getProducerEntryAll({approvalStatus: 1})
+  producerEntryList.value = data
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -220,6 +235,7 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
+  getProducerEntryList()
   getList()
 })
 </script>

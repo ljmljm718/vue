@@ -42,6 +42,11 @@ export const ProducerEntryApi = {
     return await request.delete({ url: `/agriculture/producer-entry/delete?id=` + id })
   },
 
+  // 查询生产商入库全部
+  getProducerEntryAll: async (params: any) => {
+    return await request.get({ url: `/agriculture/producer-entry/all`, params })
+  },
+
   // 导出生产商入库 Excel
   exportProducerEntry: async (params) => {
     return await request.download({ url: `/agriculture/producer-entry/export-excel`, params })
