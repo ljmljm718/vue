@@ -10,10 +10,11 @@ import {
   getVarietyManagement,
   qjDeviceStatistics,
   cropBase,
-  warnRecordInfo,
+  // warnRecordInfo,
   getAgriMissionPlan,
   getAllBase,
   getAllPlotByBaseID,
+  getProductBrand
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
 
@@ -80,14 +81,17 @@ const getCropBase = async () => {
   cropList.value = list;
 }
 getCropBase()
-//预警信息
-const warnList = ref<any[]>([])
+//品牌信息
+const brandList = ref<any[]>([])
 const getWarnRecord = async () =>{
-  const data = await warnRecordInfo()
-  console.log("🚀 ~ getWarnRecord ~ data:", data)
-  if(!Array.isArray(data)) return
-  warnList.value = data
-  console.log("🚀 ~ getWarnRecord ~ warnList.value:", warnList.value)
+  try{
+    const data = await getProductBrand()
+    brandList.value = data.list
+    console.log('长度：',brandList.value.length)
+  }catch (error){
+    console.log('获取数据失败：',error)
+  }
+  
 }
 getWarnRecord()
 
@@ -529,29 +533,29 @@ const missionremovePlanClass = (event: any) => {
           </div>
         </div>
       </el-scrollbar>
-      <div class="w-460px h-45px warn-title"></div>
-      <div class="text-12px">
-        <div class="w-447px  flex text-#01F892 items-center">
-          <div class="w-180px text-center p-1">预警信息</div>
-          <div class="w-150px text-center p-1">时间</div>
-          <div class="w-100px text-center p-1">处理状态</div>
-        </div>
-        <div v-if = "warnList.length>0">
-          <el-scrollbar style="height: 310px" class="warn-table-wrapper">
-          <div 
-            class="w-447px flex text-#fff items-center warn-table-item transition" 
-            v-for="item in warnList"
-            :key="item.id" style="border: 1px solid #043b24;">
-            <div class="w-180px text-center p-1">{{ item.warnInfo}}</div>
-            <div class="w-150px text-center p-1">{{ dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
-            <div class="w-100px text-center p-1">{{item.warnStatus === 0 ? '未处理':'已处理' }}</div>
+      <!----品牌介绍----->
+      <div class="w-460px h-45px brand-title"></div>
+      <el-scrollbar style="height: 380px;">
+        <div class="p-3 box-border grid grid-cols-1 gap-3 ">
+          <div  
+            class="plant-bg w-full  p-3 box-border flex justify-center "
+            v-for="item in brandList"
+            :key="item.id">
+              <div class="w-50% p-2 justify-center items-center">
+                <img :src=item.brandLogo class="w-full h-90% object-contain flex items-center" />
+              </div>
+              <div class=" p-2 w-50%">
+                <div class="flex items-start space-x-2 mt-2">
+                  <div class="w-5px h-20px bg-#01F892 mt-2 ml-1"></div>
+                  <div class="text-[20px] mt-1 text-white">{{ item.productBrand }}</div>
+                </div>
+                <div class="space-y-2 text-#d1d1d1 text-12px pt-3">
+                  <div class="p-2 moduletitle">{{ item.brandDetail }}</div>
+                </div>
+              </div>
           </div>
-        </el-scrollbar>
         </div>
-        <div v-else>
-          <div class="flex w-full h-75px justify-center items-center text-center text-[#01F892]">暂无预警信息的数据</div>
-        </div>
-      </div>
+      </el-scrollbar>
     </div>
     <div
       class="absolute w-940px left-460px top-20px flex justify-center space-x-70px z-20 backdrop-blur-sm py-2 bg-#00000090">
@@ -676,8 +680,8 @@ class="text-32px font-bold text-linear-wrapper art-font"
   background-size: 100% 100%;
 }
 
-.warn-title {
-  background-image: url(./assets/warnTitle.png);
+.brand-title {
+  background-image: url(./assets/brandTitle.png);
   background-size: 100% 100%;
 }
 
@@ -721,4 +725,15 @@ class="text-32px font-bold text-linear-wrapper art-font"
   }
 }
 /****************************** 农事任务  end  ******************************/
+.moduletitle{
+text-overflow: ellipsis;
+overflow: hidden;
+display: -webkit-box;
+-webkit-line-clamp: 8;//控制行数
+-webkit-box-orient: vertical;
+height: 119px;
+}
+.moduletitle:hover{
+height: 160px;
+}
 </style>

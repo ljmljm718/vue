@@ -55,3 +55,7 @@ export const getAllPlotByBaseID = async(params) =>{
 export const getAgriMissionPlan = async(params) =>{
   return request.get({ url:'/agri/farm-plan/farmPlanSchedule', params })
 }
+
+export const  getProductBrand = async() => {
+  return request.get({url:'/agriculture/product-brand/page'})
+}
