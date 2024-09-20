@@ -8,7 +8,7 @@
       v-loading="formLoading"
     >
       <el-form-item label="模板名称" prop="templateName">
-        <el-input v-model="formData.templateName" placeholder="请输入模板名称" />
+        <el-input v-model="formData.templateName" placeholder="请输入模板名称"/>
       </el-form-item>
       <el-form-item label="生产商" prop="mfrsId">
         <el-select
@@ -26,10 +26,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="产地" prop="origin">
-        <el-input v-model="formData.origin" placeholder="请输入产地" />
+        <el-input v-model="formData.origin" placeholder="请输入产地"/>
       </el-form-item>
       <el-form-item label="适用品牌" prop="brandName">
-        <el-input v-model="formData.brandName" disabled placeholder="请选择适用品牌" >
+        <el-input v-model="formData.brandName" disabled placeholder="请选择适用品牌">
           <template #append>
             <el-button @click="openProductBrandPopup()">
               <Icon icon="ep:search"/>
@@ -39,13 +39,14 @@
         </el-input>
       </el-form-item>
       <el-form-item label="品牌介绍" prop="brandDetail">
-        <el-input v-model="formData.brandDetail" type="textarea" placeholder="请输入品牌介绍" disabled/>
+        <el-input v-model="formData.brandDetail" type="textarea" placeholder="请输入品牌介绍"
+                  disabled/>
       </el-form-item>
       <el-form-item label="头部宣传图" prop="headerImg">
-        <UploadImg v-model="formData.headerImg" />
+        <UploadImg v-model="formData.headerImg"/>
       </el-form-item>
       <el-form-item label="产品展示图片" prop="productImgs">
-        <UploadImgs v-model="formData.productImgs" />
+        <UploadImgs v-model="formData.productImgs"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -60,15 +61,15 @@
   />
 </template>
 <script setup lang="ts">
-import { TraceTemplateApi, TraceTemplateVO } from '@/api/agriculture/tracetemplate'
+import {TraceTemplateApi, TraceTemplateVO} from '@/api/agriculture/tracetemplate'
 import SelectProductBrand from "@/views/agriculture/productbrand/SelectProductBrand.vue";
 import {ProducerEntryApi, ProducerEntryVO} from "@/api/agriculture/producerentry";
 import {ProductBrandVO} from "@/api/agriculture/productbrand";
 
 /** 溯源模板 表单 */
-defineOptions({ name: 'TraceTemplateForm' })
+defineOptions({name: 'TraceTemplateForm'})
 
-const { t } = useI18n() // 国际化
+const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const producerEntryList = ref<ProducerEntryVO[]>([]) // 生产商的数据
@@ -91,7 +92,7 @@ const formData = ref({
   brandDetail: undefined
 })
 const formRules = reactive({
-  templateName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
+  templateName: [{required: true, message: '模板名称不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
@@ -113,7 +114,7 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -122,7 +123,8 @@ const submitForm = async () => {
   await formRef.value.validate()
   // 提交请求
   formLoading.value = true
-  formData.value.productImg = formData.value.productImgs.join(",")
+  if (formData.value.productImgs)
+    formData.value.productImg = formData.value.productImgs.join(",")
   try {
     const data = formData.value as unknown as TraceTemplateVO
     if (formType.value === 'create') {
