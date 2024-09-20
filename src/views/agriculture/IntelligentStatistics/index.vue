@@ -891,6 +891,10 @@ const dataTime = (e) => {
 }
 //重置
 const offSubmit = () => {
+   formData.value = {
+  baseCode: '',
+  plotCode: ''
+}
   baseCode.value = ''
   plotCode.value = ''
   initChartPie1()

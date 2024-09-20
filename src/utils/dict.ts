@@ -304,4 +304,5 @@ export enum DICT_TYPE {
   AGRI_CODE_DATE_FORMAT = 'agri_code_date_format',//码日期
   AGRI_CODE_SERIAL = 'agri_code_serial',//码序列号
 
+  PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status',//生产商入库审批状态
 }

@@ -73,7 +73,7 @@ export const ProductApi = {
   },
 
   // 查询所有产品
-  selectAll: async (id: number) => {
+  selectAll: async () => {
     return await request.get({ url: `/erp/product/selectAll`})
   },
 

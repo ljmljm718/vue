@@ -38,13 +38,14 @@
         :key="index"
       >
         <div class="w-100% h-100% relative border-2px border-solid border-[#2c473d]">
-          <video
+          <div class="w-100% h-100%" :id="item.domId"></div>
+          <!-- <video
             :controls="true"
             :autoplay="true"
             muted
             :src="item.url"
             class="w-100% h-100%"
-          ></video>
+          ></video> -->
           <div
             class="absolute flex box-border px-[10px] justify-between items-center left-0 top-0 w-100% h-35px main-item-top"
           >
@@ -72,9 +73,57 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { qjDeviceStatistics, ParkTree, EquipmentPhotographAndVideo } from './monitorApi'
+import Dplayer from 'dplayer'
+import Hls from 'hls.js'
+import axios from 'axios'
+import { isFunction } from '@/utils/is'
 
+const checkAuth = async (deviceSerial, channelNo, leftTimes = 2): Promise<string> => {
+  if (leftTimes <= 0) {
+    ElMessage.error('获取视频流失败，请联系管理员!')
+  }
+  if (!deviceSerial || !channelNo || leftTimes <= 0) return deviceSerial
+  const liveToken = localStorage.getItem('LIVE_TOKEN'),
+    expireTime = localStorage.getItem('LIVE_EXPIRE_TIME') ?? '0'
+  console.log('🚀 ~ checkAuth ~ liveToken:', liveToken)
+  const isExpired = (parseInt(expireTime) ?? 0) - new Date().valueOf() < 0
+  if (liveToken && !isExpired) {
+    // 获取视频流
+    const { data: liveDataRes } = await axios.post(
+      'https://ezcloud.uniview.com/openapi/live/video/device/url/get',
+      { deviceSerial, channelNo },
+      { headers: { Authorization: liveToken } }
+    )
+    const { code, data: liveData } = liveDataRes
+    if (code === 200) {
+      const { liveUrlList } = liveData
+      if (Array.isArray(liveUrlList) && liveUrlList.length > 0) {
+        return liveUrlList[0].url
+      } else return ''
+    } else return ''
+  }
+
+  const { data } = await axios.post('https://ezcloud.uniview.com/openapi/user/app/token/get', {
+    appId: '626194353357848583',
+    secretKey: 'ca06cd14935e031bd7a394ee7eca154d'
+  })
+  if (data && data?.code === 200) {
+    const { accessToken, expireTime } = data.data
+    if (accessToken) localStorage.setItem('LIVE_TOKEN', accessToken)
+    if (expireTime) localStorage.setItem('LIVE_EXPIRE_TIME', expireTime + '000')
+  }
+  return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
+}
+
+let destroyFunc: Function[] = []
+const destroyHls = () => {
+  destroyFunc.forEach((item) => {
+    if (isFunction(item)) item()
+  })
+  destroyFunc = []
+}
 const categoryTree = ref<Array<any>>([])
-const handleCurrentCategoryChange = (currNodeData) => {
+const handleCurrentCategoryChange = (currNodeData:any) => {
   console.log('🚀 ~ handleCurrentCategoryChange ~ currNodeData:', currNodeData)
   getEquipmentPhotographAndVideo(currNodeData.parkId, currNodeData.id)
 }
@@ -101,14 +150,68 @@ const getParkTree = async () => {
 getParkTree()
 //获取视频
 const videoList = ref<Array<any>>([])
-const getEquipmentPhotographAndVideo = async (baseId:any, plotId:any) => {
-  let res = await EquipmentPhotographAndVideo({ baseId: baseId ,plotId: plotId })
+const getEquipmentPhotographAndVideo = async (baseId: any, plotId: any) => {
+  let res = await EquipmentPhotographAndVideo({ baseId: baseId, plotId: plotId })
   console.log('🚀 ~ getEquipmentPhotographAndVideo ~ res获取视频:', res)
-  videoList.value = res
- 
+  videoList.value = res.map((item: any) => ({
+    ...item,
+    domId: `VIDEO_${item.id ?? item.dtu + item.channelId}`,
+    videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
+    baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName
+  }))
+  nextTick(() => {
+    videoList.value.forEach((item: any) => {
+      if (!item.dtu || !item.channelId) {
+        initPlayer(item.domId, item.url)
+      } else {
+        initPlayer(item.domId, item.dtu, item.channelId)
+      }
+    })
+  })
 }
+onActivated(() => {
+  videoList.value.forEach((item: any) => {
+    if (!item.dtu || !item.channelId) {
+      initPlayer(item.domId, item.url)
+    } else {
+      initPlayer(item.domId, item.dtu, item.channelId)
+    }
+  })
+})
 
 onMounted(() => {})
+onDeactivated(() => {
+  destroyHls()
+})
+onUnmounted(() => {
+  destroyHls()
+})
+const initPlayer = async (containerId, dtu, channelId = '') => {
+  if (!containerId || !dtu) return
+  const resUrl = await checkAuth(dtu, channelId)
+  const hls = new Hls()
+  const _player = new Dplayer({
+    container: document.getElementById(containerId),
+    loop: false,
+    autoplay: true,
+    volume: 0,
+    video: {
+      url: resUrl,
+      type: 'customHls',
+      customType: {
+        customHls: (video) => {
+          hls.loadSource(video.src)
+          hls.attachMedia(video)
+        }
+      }
+    },
+    mutex: false
+  })
+  destroyFunc.push(() => {
+    _player.destroy()
+    hls.destroy()
+  })
+}
 </script>
 <style scoped lang="scss">
 @for $i from 1 through 3 {

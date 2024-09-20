@@ -144,6 +144,7 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import PlanInfoPopup from "@/views/agriculture/farmtask/PlanInfoPopup.vue";
 import {ProductApi} from "@/api/erp/product/product";
+import {toInteger} from "lodash-es";
 
 
 defineOptions({ name: 'FarmTaskDetail' })
@@ -198,6 +199,7 @@ const getInfo = async () => {
   detailLoading.value = true
   try {
     formData.value = await FarmTaskApi.getFarmTask(props.id || queryId)
+    formData.value.jobType=toInteger(formData.value.jobType)
   } finally {
     detailLoading.value = false
   }

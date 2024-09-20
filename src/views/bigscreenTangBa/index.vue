@@ -38,7 +38,7 @@ export default defineComponent({
     const weatherDataList = ref<Array<any>>([])
     const soilDataList = ref<Array<any>>([])
     const bugDataList = ref<any[]>([])
-    const getWeatherAndSoilDataList = async (type: '气象站' | '土壤墒情' | '虫情监测') => {
+    const getWeatherAndSoilDataList = async (type: '气象站' | '土壤墒情' | '杀虫设备') => {
       const res = await qianjiangMonitor({
         type,
         belongPark: selectedBase.value,
@@ -60,7 +60,7 @@ export default defineComponent({
 
       if (type === '土壤墒情' && Array.isArray(res)) soilDataList.value = res
 
-      if (type === '虫情监测' && Array.isArray(res)) bugDataList.value = res;
+      if (type === '杀虫设备' && Array.isArray(res)) bugDataList.value = res;
     }
     
     const topDataList = ref<Array<any>>([])
@@ -137,7 +137,7 @@ export default defineComponent({
       parkDataIndex.value = 0
       getWeatherAndSoilDataList('气象站')
       getWeatherAndSoilDataList('土壤墒情')
-      getWeatherAndSoilDataList('虫情监测')
+      getWeatherAndSoilDataList('杀虫设备')
       getParkDataList()
     }
 

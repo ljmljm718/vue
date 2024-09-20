@@ -18,7 +18,8 @@
         />
       </el-form-item>
       <el-form-item label="所属基地" prop="park">
-        <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly
+        <el-input
+v-model="queryParams.park" placeholder="请选择所属基地" readonly
                   class="!w-240px">
           <template #append>
             <el-button @click="openParkPopup('0')">
@@ -30,7 +31,8 @@
       </el-form-item>
 
       <el-form-item label="所属地块" prop="parkDetail">
-        <el-input v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly
+        <el-input
+v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly
                   class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.parkId)">
@@ -72,7 +74,7 @@
     <div class="flex items-center justify-between mb-15px">
       <div style="margin-top: 20px;margin-left: 30px;height: 30px">
         <el-form-item>
-          <el-button
+          <!-- <el-button
             class='!bg-[#009688] !color-[#fff]'
             plain
             @click="openForm('create')"
@@ -80,7 +82,7 @@
           >
             <Icon icon="ep:plus" class="mr-5px"/>
             新增
-          </el-button>
+          </el-button> -->
           <el-button
             plain
             @click="handleExport"
@@ -93,12 +95,14 @@
         </el-form-item>
       </div>
       <div class="flex">
-        <div @click="cardList=false" class="py-3px px-15px rounded-l"
+        <div
+@click="cardList=false" class="py-3px px-15px rounded-l"
              :style="`background-color: ${cardList?'':'#e5f4f3'}; border:1.5px solid ${cardList?'#e6e6e6':'#36a99e'}; color:${cardList?'':'#36a99e'}`">
           <img :src="cardList?card2:card" class="w-10px h-10px" alt=""/>
           卡片
         </div>
-        <div @click="cardList=true" class="py-3px px-15px rounded-r"
+        <div
+@click="cardList=true" class="py-3px px-15px rounded-r"
              :style="`border:1.5px solid ${cardList?'#36a99e':'#e6e6e6'};background-color: ${cardList?'#e5f4f3':''}; color:${cardList?'#36a99e':''}`">
           <img :src="cardList?listImg:listImg2" class="w-10px h-10px" alt=""/>
           列表
@@ -106,7 +110,8 @@
       </div>
     </div>
     <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
-      <div v-for="item,index in list" :key="index" class="rounded bg-[#f5f5f5]"
+      <div
+v-for="item,index in list" :key="index" class="rounded bg-[#f5f5f5]"
            style="overflow: hidden;">
         <img :src="item.photo" class="w-100% h-150px rounded" alt=""/>
         <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
@@ -123,7 +128,8 @@
 
       </div>
     </div>
-    <el-table v-if="cardList" v-loading="loading" :data="list" :stripe="true"
+    <el-table
+v-if="cardList" v-loading="loading" :data="list" :stripe="true"
               :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="产品名称" align="center" prop="product"/>

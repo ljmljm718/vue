@@ -223,7 +223,7 @@
         </div>
         <div class='flex justify-between items-center my-15px'>
           <div
-          class="border-1px w-65% flex items-center border-dashed bg-[#f6fbfa]  !h55px  border-[#7dc9c2] box-border px-[15px] py-[20px] rounded"
+          class="border-1px w-65% flex items-center border-dashed bg-[#f6fbfa]  !h-55px  border-[#7dc9c2] box-border px-[15px] py-[20px] rounded"
         >
           <div class="color-[#000]">投喂量结果：</div>
           <div class="color-[#40b0a5]">
@@ -234,7 +234,7 @@
         <div
           style="cursor: pointer"
           @click="getbyGrowthPeriod()"
-          class="bg-[#009688] color-[#fff] w-30% h-35px rounded  px-10px py-10px text-center leading-30px"
+          class="bg-[#009688] color-[#fff] w-30% h-35px flex justify-center items-center"
           >投喂量计算</div
         >
         </div>
