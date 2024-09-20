@@ -11,7 +11,7 @@
         <el-input v-model="formData.traceCode" placeholder="请输入溯源码" />
       </el-form-item>
       <el-form-item label="品牌" prop="productBrand">
-        <el-input v-model="formData.productBrand" placeholder="请选择品牌" >
+        <el-input v-model="formData.productBrand" placeholder="请选择品牌" disabled>
           <template #append>
             <el-button @click="openProductForm()">
               <Icon icon="ep:search"/>
@@ -20,9 +20,9 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item label="生产商" prop="companyName">
+      <el-form-item label="生产商" prop="producerId">
         <el-select
-          v-model="formData.companyName"
+          v-model="formData.producerId"
           placeholder="请选择生产商"
           clearable
           style="width: 100%"
