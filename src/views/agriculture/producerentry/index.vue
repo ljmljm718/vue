@@ -59,7 +59,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="公司名称" align="center" prop="companyName" />
+      <el-table-column label="公司名称" align="center" prop="companyName" width="200"/>
       <el-table-column label="法人" align="center" prop="legalPerson" />
       <el-table-column label="注册地址" align="center" prop="registeredAddress" />
       <el-table-column label="联系方式" align="center" prop="contactPhone" />
@@ -69,17 +69,17 @@
         label="成立时间"
         align="center"
         prop="establishDate"
-        :formatter="dateFormatter"
-        width="180px"
+        :formatter="dateFormatter2"
+        width="100px"
       />
       <el-table-column label="营业执照" align="center" prop="businessLicense" />
       <el-table-column label="食品生产许可证" align="center" prop="foodProduceLicense" />
-      <el-table-column label="审批状态" align="center" prop="approvalStatus">
+      <el-table-column label="审批状态" align="center" prop="approvalStatus" width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.PRODUCER_ENTRY_APPROVAL_STATUS" :value="scope.row.approvalStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="150">
         <template #default="scope">
           <el-button
             v-if="scope.row.approvalStatus==='0'"
@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ProducerEntryApi, ProducerEntryVO } from '@/api/agriculture/producerentry'
 import ProducerEntryForm from './ProducerEntryForm.vue'

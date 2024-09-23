@@ -21,7 +21,7 @@
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
 
-       
+
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -29,7 +29,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <div class="flex justify-between p-2.5">
-      <div> 
+      <div>
          <el-button
           type="primary"
           plain
@@ -48,18 +48,18 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
       </div>
-      <div class="w-37 flex  rounded-md cursor-pointer select-none"> 
-        <div 
+      <div class="w-37 flex  rounded-md cursor-pointer select-none">
+        <div
           :class= "[selectType === 'card' ? 'tab-btn-select' : 'tab-btn']"
           @click="selectType = 'card'"
-          style="border-radius: 5px 0px 0px 5px; "> 
+          style="border-radius: 5px 0px 0px 5px; ">
           <el-icon> <Menu /></el-icon>
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
-        <div 
+        <div
           :class="[selectType === 'list' ? 'tab-btn-select' : 'tab-btn']"
           @click="selectType = 'list'"
-          style="border-radius: 0px 5px 5px 0px; "> 
+          style="border-radius: 0px 5px 5px 0px; ">
           <el-icon> <List /></el-icon>
           <div class="pl-1 text-[13px]">列表</div>
         </div>
@@ -67,8 +67,8 @@
     </div>
     <el-table v-if="selectType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" class="pt-4">
       <el-table-column label="品牌名" align="center" prop="productBrand" />
-      <el-table-column label="品类" align="center" prop="belongCategory" />
-      <el-table-column label="品种" align="center" prop="belongVariety" />
+      <el-table-column label="品类" align="center" prop="belongCategory" width="120"/>
+      <el-table-column label="品种" align="center" prop="belongVariety" width="120"/>
       <el-table-column label="品牌logo" align="center" prop="brandLogo">
         <template #default="{ row }">
           <el-image
@@ -81,7 +81,7 @@
         </template>
       </el-table-column>
       <el-table-column label="品牌介绍" align="center" prop="brandDetail" />
-      <el-table-column label="使用状态" align="center" prop="usedStatus" >
+      <el-table-column label="使用状态" align="center" prop="usedStatus" width="120">
         <template #default="scope">
           <el-switch v-model="scope.row.usedStatus" :active-value="0" :inactive-value="1"
                      @change="handleStatusChange(scope.row)" />
@@ -95,7 +95,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button
             link
@@ -117,11 +117,11 @@
       </el-table-column>
     </el-table>
     <div v-if="selectType === 'card' && list.length<1" class="flex w-full justify-center items-center text-[13px] pt-2"> 暂无数据</div>
-    <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols"> 
-      <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2"> 
-        <div class="flex justify-between h-[150px] p-2" > 
+    <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols">
+      <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2">
+        <div class="flex justify-between h-[150px] p-2" >
           <div class="p-2 w-full">
-            <img 
+            <img
             :src = "item.brandLogo"
             class=" w-full h-full object-contain"
              />
@@ -129,11 +129,11 @@
           <div class = "p-2 w-full">
             <div class="text-18px p-1.5">{{ item.productBrand}}</div>
             <div class="text-14px p-1.5"> {{ item.belongCategory }}</div>
-            <div class="pt-4"> 
+            <div class="pt-4">
               <span class="text-14px p-1.5">{{item.usedStatus === 0 ?'已启用':'已禁用'}}</span>
               <el-switch
-                v-model="item.usedStatus" 
-                :active-value="0" 
+                v-model="item.usedStatus"
+                :active-value="0"
                 :inactive-value="1"
                 @change="handleStatusChange1(item)" /> <!--这个地方改一下-->
             </div>
@@ -151,7 +151,7 @@
                 v-hasPermi="['agriculture:product-brand:delete']"
               >
                 删除
-              </el-button> 
+              </el-button>
             </div>
           </div>
         </div>
