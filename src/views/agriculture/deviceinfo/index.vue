@@ -35,6 +35,15 @@
             :props="categoryProps"
           />
         </el-form-item>
+        <el-form-item label="监测类型" prop="deviceMonitorType">
+          <el-input
+            v-model="queryParams.deviceMonitorType"
+            placeholder="请输入监测类型"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="状态" prop="deviceStatus">
           <el-select
             v-model="queryParams.deviceStatus"
