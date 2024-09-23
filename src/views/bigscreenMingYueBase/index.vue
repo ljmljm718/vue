@@ -445,10 +445,10 @@ export default defineComponent({
                 >
                   <div class="title-3 w-full aspect-[6]"></div>
                   <div class="item-bg">
-                    <div class="flex justify-center py-4 items-center text-[#11eeaf]">
+                    <div class="flex justify-center py-4 items-center text-[#11eeaf] !hidden">
                       {userStore.user.nickname.replace('用户', '')}
                     </div>
-                    <div class="split-line w-full h-[2px]"></div>
+                    <div class="split-line w-full h-[2px] !hidden"></div>
                     <div class="w-full box-border p-3 py-4">
                       <div class="flex justify-between items-center px-5 pr-[2rem]">
                         <div class="flex justify-between items-center">
