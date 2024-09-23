@@ -141,7 +141,7 @@ export default defineComponent({
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="left-title w-full aspect-[6]"></div>
+                <div class="left-title w-full aspect-[6.8]"></div>
                 <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     dataList.value.map(item => (
@@ -228,13 +228,13 @@ export default defineComponent({
 
               </div>
               <div class="center-title">
-                <div class="relative h-[1.4rem] w-[18rem]">
-                  <div class="h-full text-center cursor-pointer" onClick={(e) => {
+                <div class="relative h-[1.7rem] w-[18rem] pl-[4px] ">
+                  <div class="h-full text-center cursor-pointer text-[22px]" onClick={(e) => {
                     e.stopPropagation()
                     showOptions.value = true
                   }}>{getLabelByValue(selectedPlot.value)}</div>
                   {
-                    showOptions.value ? <div class="absolute left-0 top-[1.8rem] z-1000 w-full max-h-[8rem] overflow-auto">
+                    showOptions.value ? <div class="absolute left-0 top-[2.65rem] z-1000 w-full max-h-[8rem] overflow-auto">
                       {
                         Array.isArray(options.value) ? options.value.map(item => (
                           <div
@@ -281,7 +281,7 @@ export default defineComponent({
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="right-title w-full aspect-[6]"></div>
+                <div class="right-title w-full aspect-[6.8]"></div>
                 <div style="height calc(100% - 6rem) " class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                  
                   {
@@ -364,7 +364,7 @@ export default defineComponent({
                     ))
                   }
                 </div>
-                <div class="left-title w-full aspect-[6]"></div>
+                <div class="left-title w-full aspect-[6.8]"></div>
                 <div style="height: calc(100% - 22rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     dataList.value.map(item => (
@@ -537,8 +537,8 @@ export default defineComponent({
   color: #fff;
   position: absolute;
   left: calc(50% - 163px);
-  width: 300px;
-  height: 40px;
+  width: 380px;
+  height: 60px;
   top: 1rem;
   z-index: 999;
 }
