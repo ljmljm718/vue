@@ -831,7 +831,7 @@ onMounted(() => { enablePosterScroll() })
         <!-- 左侧弹框 -->
         <div class="flex flex-col py-[35px] box-border map-tip text-[0.67rem] lg:text-[1.33rem]" v-if="mapTipShow">
           <div class="text-[1rem] lg:text-[2rem] text-[#48FF96] text-center">{{ mapTipData.county }}</div>
-          <div class="mt-[0.5em] grid grid-cols-2 gap-2 text-white">
+          <div :class="`mt-[0.5em] grid grid-cols-2 gap-2 text-white ${!mapTipData.city ? 'opacity-0' : 'opacity-100'}`">
             <div class="text-right">帮扶城市:</div>
             <div>{{ !mapTipData.city ? '暂无' : mapTipData.city }}</div>
           </div>
