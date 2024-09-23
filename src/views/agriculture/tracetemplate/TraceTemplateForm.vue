@@ -39,7 +39,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="品牌介绍" prop="brandDetail">
-        <el-input v-model="formData.brandDetail" type="textarea" placeholder="请输入品牌介绍"
+        <el-input v-model="formData.brandDetail" type="textarea" placeholder="请选择适用品牌"
                   disabled/>
       </el-form-item>
       <el-form-item label="头部宣传图" prop="headerImg">
@@ -93,6 +93,8 @@ const formData = ref({
 })
 const formRules = reactive({
   templateName: [{required: true, message: '模板名称不能为空', trigger: 'blur'}],
+  mfrsId: [{required: true, message: '生产商不能为空', trigger: 'change'}],
+  brandName: [{required: true, message: '适用品牌不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
 

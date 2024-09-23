@@ -117,14 +117,24 @@
           <Icon icon="ep:download" class="mr-5px"/>
           导出
         </el-button>
+        <el-button
+          plain
+          type="primary"
+          @click="fuMa()"
+          v-hasPermi="['agriculture:code-sending-info:update']"
+        >
+          赋码
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true"
+              @selection-change="handleSelectionChange" :show-overflow-tooltip="true">
       <!--      <el-table-column label="id" align="center" prop="id"/>-->
+      <el-table-column type="selection" width="55"/>
       <el-table-column label="源码" align="center" prop="codeContent" width="180px"/>
       <!--      <el-table-column label="模板ID" align="center" prop="templateId"/>-->
       <el-table-column label="产品名称" align="center" prop="productName"/>
@@ -158,14 +168,6 @@
       />
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <!--          <el-button-->
-          <!--            link-->
-          <!--            type="primary"-->
-          <!--            @click="openForm('update', scope.row.id)"-->
-          <!--            v-hasPermi="['agriculture:code-sending-info:update']"-->
-          <!--          >-->
-          <!--            编辑-->
-          <!--          </el-button>-->
           <el-button
             link
             type="danger"
@@ -232,7 +234,7 @@ const options = [{
   value: '2',
   label: '已赋码'
 }]
-
+let multipleSelection = []
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -243,6 +245,21 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
+}
+//选中
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val;
+  console.log(multipleSelection.value)
+}
+//选中
+const fuMa = () => {
+  console.log(multipleSelection.length)
+  message.success("赋码逻辑未完善")
+  // if (multipleSelection.length == 0) {
+  //   message.warning("请先选择列表行")
+  // } else {
+  //   message.success("赋码逻辑未完善")
+  // }
 }
 
 /** 搜索按钮操作 */

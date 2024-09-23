@@ -120,6 +120,15 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
+            v-if="scope.row.applyStatus == '1'"
+            type="success"
+            link
+            @click="openFormA('create',scope.row)"
+            v-hasPermi="['agriculture:code-sending-info:create']"
+          >
+            发码
+          </el-button>
+          <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -149,6 +158,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CodeApplyForm ref="formRef" @success="getList" />
+
+  <!-- 表单弹窗：添加/修改 -->
+  <CodeSendingInfoForm ref="formRefA" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -159,6 +171,7 @@ import { CodeApplyApi, CodeApplyVO } from '@/api/agriculture/codeapply'
 import CodeApplyForm from './CodeApplyForm.vue'
 import {TraceTemplateApi, TraceTemplateVO} from '@/api/agriculture/tracetemplate'
 import { CodeRuleApi, CodeRuleVO } from '@/api/agriculture/coderule'
+import CodeSendingInfoForm from "@/views/agriculture/codesendinginfo/CodeSendingInfoFormA.vue";
 
 /** 码申请 列表 */
 defineOptions({ name: 'CodeApply' })
@@ -226,6 +239,12 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+/** 发码操作 */
+const formRefA = ref()
+const openFormA = (type: string, CodeApplyVO?: CodeApplyVO) => {
+  formRefA.value.open(type, CodeApplyVO)
 }
 
 /** 删除按钮操作 */
