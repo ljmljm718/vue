@@ -253,7 +253,7 @@ export default defineComponent({
                     color: "#999"
                   },
                   formatter: (params) => {
-                    return `${params.name}\n${params.value}℃`
+                    return `${params.value}℃`
                   }
                 }
               },

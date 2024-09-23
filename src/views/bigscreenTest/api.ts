@@ -181,3 +181,26 @@ export const getCountRiceDuckSum = async () => {
     url: '/agri/duck-house-management/getCountRiceDuckSum'
   })
 }
+
+//二渡 大屏智慧农业 种养信息
+export const cropBase = async ( params) => {
+  return request.get({ 
+    url: '/agriculture/crop-base/page',
+    params
+  })
+}
+
+// 二渡 大屏智慧农业 根据基地ID获取地块列表
+export const getAllPlotByBaseID = async(params) =>{
+  return request.get({ url:'/agri/land-display/park-list', params })
+}
+
+// 二渡 大屏智慧农业 获取农事任务
+export const getAgriMissionPlan = async(params) =>{
+  return request.get({ url:'/agri/farm-plan/farmPlanSchedule', params })
+}
+
+// 二渡 大屏智慧农业 获取全部基地
+export const getAllBase = async() =>{
+  return request.get({ url:'/agriculture/park-info/getAll' })
+}

@@ -6,7 +6,7 @@ import headerBg from './assets/v2/headerBg.png'
 import mainBg from './assets/v2/bg.png'
 import plantBg from './assets/v2/plant-bg.png'
 import riskBg from './assets/v2/risk-bg.png'
-import {formatTime} from '@/utils'
+import { formatTime } from '@/utils'
 import * as echarts from 'echarts'
 import Dplayer from 'dplayer';
 import Hls from "hls.js";
@@ -56,6 +56,8 @@ import * as turf from '@turf/turf'
 import { getDeviceCategoryTree, getDeviceInfo } from './api'
 import { isFunction } from '@/utils/is'
 import meassageTop from './assets/tangba/meassage-top.png'
+import AgriComponent from './agri.vue'
+import PlanComponent from './plan.vue'
 
 const {
   BigscreenAdapter,
@@ -503,6 +505,7 @@ export default defineComponent({
 
     // 生长分析折线图
     const getGrowthLineChartData = async () => {
+      return;
       const {
         xValue = [],
         yValue = [],
@@ -608,6 +611,7 @@ export default defineComponent({
     }
     // 产量分析
     const getHarvestChartData = async () => {
+      return;
       const res = await selectHarvest()
       console.log("产量分析", res);
       let xAxis = res.map(item => (item.time))
@@ -1079,12 +1083,20 @@ export default defineComponent({
               <div class="plant-card-title">
                 <div class="flex items-center ml-[15px]">
                   <div class="notice-icon contain-img"></div>
-                  <div class="art-font notice-title">生长分析</div>
+                  <div class="art-font notice-title">农事日历</div>
                 </div>
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div id="growthChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/grow-record") }}></div>
+                <div
+                  id="growthChart"
+                  class="cursor-pointer"
+                  onClick={() => {
+                    // window.open("/internetMonitor/deviceData/grow-record")
+                  }}
+                >
+                  <AgriComponent />
+                </div>
               </div>
             </div>
             {/** 产量分析 */}
@@ -1093,19 +1105,25 @@ export default defineComponent({
               <div class="plant-card-title">
                 <div class="flex items-center ml-[15px]">
                   <div class="notice-icon contain-img"></div>
-                  <div class="art-font notice-title">产量分析</div>
+                  <div class="art-font notice-title">种养方案</div>
                 </div>
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div id="harvestChart" class="mt-2 cursor-pointer" onClick={() => { window.open("/farm_work/harvest-management") }}></div>
+                <div
+                  id="harvestChart"
+                  class="mt-2 cursor-pointer"
+                  onClick={() => { window.open("/farm_work/harvest-management") }}
+                >
+                  <PlanComponent />
+                </div>
               </div>
             </div>
           </div>
           {/** 中 */}
           <div class="w-[1010px] h-full mx-[15px] flex flex-col justify-between relative">
             {/** 地图 */}
-            <MapTangBa ref={mapTangBgRef} class="w-full h-[630px] z-0" />
+            <MapTangBa ref={mapTangBgRef} class="w-full h-[950px] z-0" />
             {/* h(MapTangBa, {class: 'w-full h-[630px] z-0', ref: mapTangBgRef}) */}
             {/** 设备统计 */}
             <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px] absolute top-0 left-0">
@@ -1122,7 +1140,7 @@ export default defineComponent({
               }
             </div>
             {/** 打造特色产品 */}
-            <div class="w-full h-[310px]">
+            <div class="w-full h-[310px] !hidden">
               {/** 标题 */}
               <div class="plant-card-title-wide">
                 <div class="flex items-center ml-[15px]">

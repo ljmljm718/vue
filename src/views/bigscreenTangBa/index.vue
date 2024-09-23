@@ -358,24 +358,26 @@ export default defineComponent({
             <BigscreenMain>
               <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
                 <div class="flex flex-col justify-between w-[420px]">
-                  <div class="h-[300px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
-                    <div class="grid grid-cols-2 grid-rows-4 h-full">
-                      {
-                        weatherDataList.value.length > 0 ? weatherDataList.value.map((item:any) => (
-                          <div class="flex justify-center items-center">
-                            <div class={`w-[165px] h-[60px] relative ${item.icon}`}>
-                              <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
-                                <span>{ item.dataValue }</span>
-                                <span class="pl-1">{ item.unit }</span>
-                              </div>
-                              <div class="absolute left-[60px] art-font text-[#fff] top-[30px] text-[14px]">
-                                <span>{ item.monitoringType }</span>
+                  <div class="h-[335px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
+                    <el-scrollbar style="height: 295px;">
+                      <div class="grid grid-cols-2 h-full gap-y-[10px] mt-[20px]">
+                        {
+                          weatherDataList.value.length > 0 ? weatherDataList.value.map((item:any) => (
+                            <div class="flex justify-center items-center">
+                              <div class={`w-[180px] h-[68px] relative ${item.icon}`}>
+                                <div class="absolute left-[60px] art-font linear-title top-[7px] text-[17px]">
+                                  <span>{ item.dataValue }</span>
+                                  <span class="pl-1">{ item.unit }</span>
+                                </div>
+                                <div class="absolute left-[60px] art-font text-[#fff] top-[30px] text-[14px]">
+                                  <span>{ item.monitoringType }</span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )) : <div class="w-full col-span-2 h-250px flex justify-center items-center text-#1effff">暂无数据</div>
-                      }
-                    </div>
+                          )) : <div class="w-full col-span-2 h-250px flex justify-center items-center text-#1effff">暂无数据</div>
+                        }
+                      </div>
+                    </el-scrollbar>
                   </div>
                   <div class="h-[340px] item-bg-2 box-border px-3 pt-[56px] pb-[24px]">
                     <div class="grid grid-cols-2 grid-rows-4 h-full gap-2">
@@ -394,7 +396,7 @@ export default defineComponent({
                       }
                     </div>
                   </div>
-                  <div class="h-[270px] item-bg-bug box-border px-3 pt-[56px] pb-[24px]">
+                  <div class="h-[237px] item-bg-bug box-border px-3 pt-[56px] pb-[24px]">
                     <div class="grid grid-cols-3 grid-rows-2 h-full gap-2">
                       {
                         bugDataList.value.length > 0 ? bugDataList.value.map((item:any) => (
