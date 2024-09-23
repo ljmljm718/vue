@@ -386,7 +386,6 @@
             <div>单位：{{ selectOption.unitName }}</div>
             <div>规格：{{ selectOption.standard }}</div>
           </div>
-          <div class="flex"> </div>
           <div class="w-100% border-1px border-dashed border-[#c1c1c1]"></div>
           <div class="w-100% mt-15px">
             <el-form :model="formData" label-width="90px" inline size="normal">
@@ -800,6 +799,7 @@ watch(
         consumeUnit: 'KG',
         feedTwo: '元'
       }
+      paramsA.value=[]
     }
   }
 )
@@ -808,6 +808,7 @@ watch(
   (val) => {
     if (!val) {
       selectionList.value = []
+
     }
   }
 )
@@ -843,12 +844,12 @@ const preCli = () => {
 }
 //确认
 const submitForm = async () => {
-  if(inputNum.value == 0 ){
-    NameList.value[0]={
-    ...NameList.value[0],
-    ...formData.value
-    }
-  }
+  // if(inputNum.value == 0 ){
+  //   NameList.value[0]={
+  //   ...NameList.value[0],
+  //   ...formData.value
+  //   }
+  // }
   delete formData.value.id
   delete params.value.id
   NameList.value= NameList.value.map((item:any) => ({
@@ -912,6 +913,11 @@ const clearFormA = () => {
     consumeUnit: 'KG',
     feedTwo: '元'
   }
+  formSearch.value={
+    feedName: '',
+  feedType: ''
+  }
+  selectList.value = selectList2.value
   selectionList.value = []
 }
 //投入品表格确定
@@ -988,21 +994,42 @@ const formSelect = (e) => {
 //投入品切换
 const inputNum = ref<Number>(0)
 const inputTab = (val:any,index:Number) => {
- 
-  NameList.value[index]={
-    ...NameList.value[index],
-    ...formData.value
+  inputNum.value=index
+  console.log(val,'valval123投入品切换')
+  // NameList.value[index]={
+  //   ...NameList.value[index],
+  //   ...formData.value
+  // }
+  if(NameList.value[index].consumeNum && NameList.value[index].feedCost){
+    formData.value.consumeNum = NameList.value[index].consumeNum
+    formData.value.feedCost = NameList.value[index].feedCost
+  }else{
+  formData.value = {
+      feedType: '',
+      feedName: '',
+      consumeNum: '',
+      feedCost: '',
+      consumeUnit: ''
+    }
   }
+    
 
   selectOption.value = val
-  formData.value = {
-    feedType: '',
-    feedName: '',
-    consumeNum: '',
-    feedCost: '',
-    consumeUnit: ''
-  }
+ 
 }
+
+watch(() => formData.value, (val)=>{
+  console.log(val,'val123formData')
+  NameList.value[inputNum.value] = {
+    ...NameList.value[inputNum.value],
+    ...val
+  }
+  console.log( NameList.value[inputNum.value],' NameList.value[index]123')
+
+},{
+  deep:true,immediate:true
+})
+
 //地块的选择
 const plotPopupRef = ref()
 const openType1 = ref('')
