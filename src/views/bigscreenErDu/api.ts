@@ -16,7 +16,7 @@ export const getVarietyManagement = () => {
 
 // 二渡 大屏智慧农事 品种分布
 export const getBreedCategory = () => {
-  return request.get({ url: '/agri/farm-overview/get-breedCategory' })
+  return request.get({ url: '/agriculture/crop-base/get-crop-name-distribution' })
 }
 // 二渡 大屏智慧农事 中上设备
 export const qjDeviceStatistics = () => {

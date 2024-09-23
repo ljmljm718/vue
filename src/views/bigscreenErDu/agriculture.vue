@@ -168,7 +168,7 @@ const initChart = async () => {
   const res = await getBreedCategory()
   if (!Array.isArray(res)) return
   const seriesData = res.map(item => ({
-    name: item.category_name || '暂无数据',
+    name: item.cropName || '暂无数据',
     value: item.number,
     unit: item.unit
   }))
@@ -734,6 +734,6 @@ display: -webkit-box;
 height: 119px;
 }
 .moduletitle:hover{
-height: 160px;
+height: 163px;
 }
 </style>
