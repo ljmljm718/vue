@@ -14,7 +14,8 @@ import {
   getAgriMissionPlan,
   getAllBase,
   getAllPlotByBaseID,
-  getProductBrand
+  getProductBrand,
+  getEquipmentMap
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
 
@@ -24,14 +25,14 @@ import {
 } from '../../utils/bigscreenTool/index'
 
 adapter()
-const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
+// const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
 const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}'
 const CVA_TILE = '/tdCache/api/tdtmap/tile?T=cva_w&x={x}&y={y}&l={z}'
 
 let map: L.Map | null = null
 const initMap = () => {
   if (map) return;
-  const vecLayer = L.tileLayer(VEC_TILE, { attribution: 'vec' })
+  // const vecLayer = L.tileLayer(VEC_TILE, { attribution: 'vec' })
   const imgLayer = L.tileLayer(IMG_TILE, { attribution: 'img' })
   const cvaLayer = L.tileLayer(CVA_TILE, { attribution: 'cva' })
   const img_cva_group = L.layerGroup([imgLayer, cvaLayer])
@@ -56,6 +57,9 @@ const initMap = () => {
   window.addEventListener('resize', () => {
     map.invalidateSize(true)
   })
+
+  // 获取地图数据
+  getEquipmentMapData()
 }
 //农业资源
 const ResList = ref<any[]>([])
@@ -347,6 +351,45 @@ const missionremovePlanClass = (event: any) => {
   event.currentTarget.className = "mb-10px leading-[30px]"
 }
 /****************************** 农事任务  end  ******************************/
+
+// 中间地图接口
+const getEquipmentMapData = async () => {
+  const res = await getEquipmentMap({});
+
+  const latlngs = []
+  const iconMap = {
+    "camrea": "icon1",
+    "meteorologicalStation": "icon2"
+  }
+  Object.keys(res).forEach((key:string) => {
+    const {
+      longitude,
+      latitude,
+      deviceName = '',
+      baseName = '',
+      plotName = '',
+      location = ''
+    } = res[key];
+    if (!longitude || !latitude) return;
+    latlngs.push([latitude, longitude])
+    const icon = L.icon({
+      iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`,//marker图片地址
+      iconSize: [42, 46],//marker宽高
+      iconAnchor: [21, -4]//marker中心点位置
+    })
+    L.marker(
+      [latitude, longitude],
+      { icon }
+    ).addTo(map).on("click", () => {
+      L.popup().setLatLng([latitude, longitude]).setContent(`
+        <div>${deviceName}</div>
+        <div class="mt-[.4rem]">${baseName}-${plotName}</div>
+        <div class="mt-[.4rem]">位置:${location}</div>
+      `).openOn(map)
+    });
+    map.fitBounds(latlngs, { padding: [5, 5] })
+  })
+}
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
@@ -504,7 +547,7 @@ const missionremovePlanClass = (event: any) => {
     <!-- 种养信息 -->
     <div class="h-full w-460px">  
       <div class="w-460px h-45px plant-title"></div>
-      <el-scrollbar style="height: 510px;">
+      <el-scrollbar style="height: 485px;margin-bottom: 15px;">
         <div class="p-3 box-border grid grid-cols-2 gap-3 text-white">
           <div
             class="plant-bg w-full p-3 box-border"
@@ -535,7 +578,7 @@ const missionremovePlanClass = (event: any) => {
       </el-scrollbar>
       <!----品牌介绍----->
       <div class="w-460px h-45px brand-title"></div>
-      <el-scrollbar style="height: 380px;">
+      <el-scrollbar style="height: 360px;">
         <div class="p-3 box-border grid grid-cols-1 gap-3 ">
           <div  
             class="plant-bg w-full  p-3 box-border flex justify-center "
@@ -563,8 +606,9 @@ const missionremovePlanClass = (event: any) => {
         <div class="w-70px h-58px top-icon-1"></div>
         <div>
           <div
-class="text-32px font-bold text-linear-wrapper art-font"
-            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);">{{ topDataInfo.total }}</div>
+            class="text-32px font-bold text-linear-wrapper art-font"
+            style="background-image: linear-gradient(to top, #08FFFF, #FFFFFF);"
+          >{{ topDataInfo.total }}</div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -572,7 +616,7 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div class="w-70px h-58px top-icon-2"></div>
         <div>
           <div
-class="text-32px font-bold text-linear-wrapper art-font"
+            class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #3cffae, #FFFFFF);">{{ topDataInfo.online }}</div>
           <div class="text-16px">在线设备</div>
         </div>
@@ -581,7 +625,7 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div class="w-70px h-58px top-icon-3"></div>
         <div>
           <div
-class="text-32px font-bold text-linear-wrapper art-font"
+            class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #ffbd39, #FFFFFF);">{{ topDataInfo.offline }}</div>
           <div class="text-16px">离线数量</div>
         </div>
@@ -590,7 +634,7 @@ class="text-32px font-bold text-linear-wrapper art-font"
         <div class="w-70px h-58px top-icon-4"></div>
         <div>
           <div
-class="text-32px font-bold text-linear-wrapper art-font"
+            class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #ff4242, #FFFFFF);">{{ topDataInfo.warningEquipmentDevice }}</div>
           <div class="text-16px">设备预警</div>
         </div>

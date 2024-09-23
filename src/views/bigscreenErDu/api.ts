@@ -59,3 +59,8 @@ export const getAgriMissionPlan = async(params) =>{
 export const  getProductBrand = async() => {
   return request.get({url:'/agriculture/product-brand/page'})
 }
+
+// 二渡村 大屏 智慧农业 中间地图 marker
+export const getEquipmentMap = async(params) =>{
+  return request.get({ url:'/agriculture/device-info/getEquipmentMap', params })
+}
