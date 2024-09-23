@@ -144,6 +144,16 @@
           <span v-else-if="scope.row.codeType === '2'">已赋码</span>
         </template>
       </el-table-column>
+      <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
+        <template #default="scope">
+          <el-image
+            :src="`data:image/png;base64,${scope.row.qrImg}`"
+            style="object-fit: cover; width: 2rem; height: 2rem"
+            preview-teleported
+            :preview-src-list="[`data:image/png;base64,${scope.row.qrImg}`]"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="批次号" align="center" prop="batchNum"/>
       <!--      <el-table-column label="备用字段" align="center" prop="prepareOne" />-->
       <!--      <el-table-column label="备用字段" align="center" prop="prepareTwo" />-->

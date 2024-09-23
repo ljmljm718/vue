@@ -40,6 +40,12 @@ export const CodeSendingInfoApi = {
     return await request.put({ url: `/agriculture/code-sending-info/update`, data })
   },
 
+
+  // 修改发码记录
+  updateCodeSendingInfoA: async (data: CodeSendingInfoVO) => {
+    return await request.put({ url: `/agriculture/code-sending-info/updateA`, data })
+  },
+
   // 删除发码记录
   deleteCodeSendingInfo: async (id: number) => {
     return await request.delete({ url: `/agriculture/code-sending-info/delete?id=` + id })

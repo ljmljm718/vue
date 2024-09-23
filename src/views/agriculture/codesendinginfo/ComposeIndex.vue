@@ -154,6 +154,16 @@
           <span v-else-if="scope.row.codeType === '2'">已赋码</span>
         </template>
       </el-table-column>
+      <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
+        <template #default="scope">
+          <el-image
+            :src="`data:image/png;base64,${scope.row.qrImg}`"
+            style="object-fit: cover; width: 2rem; height: 2rem"
+            preview-teleported
+            :preview-src-list="[`data:image/png;base64,${scope.row.qrImg}`]"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="批次号" align="center" prop="batchNum"/>
       <!--      <el-table-column label="备用字段" align="center" prop="prepareOne" />-->
       <!--      <el-table-column label="备用字段" align="center" prop="prepareTwo" />-->
@@ -190,6 +200,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CodeSendingInfoForm ref="formRef" @success="getList"/>
+  <SelectProduct ref="formRefA" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -197,6 +208,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {CodeSendingInfoApi, CodeSendingInfoVO} from '@/api/agriculture/codesendinginfo'
 import CodeSendingInfoForm from './CodeSendingInfoForm.vue'
+import SelectProduct from './selectProduct.vue'
 
 /** 发码记录 列表 */
 defineOptions({name: 'CodeSendingInfo'})
@@ -217,7 +229,7 @@ const queryParams = reactive({
   sourceArea: undefined,
   productCertification: undefined,
   productionTime: [],
-  codeType: undefined,
+  codeType: "1",
   batchNum: undefined,
   prepareOne: undefined,
   prepareTwo: undefined,
@@ -238,6 +250,7 @@ let multipleSelection = []
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  multipleSelection = []
   try {
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
     list.value = data.list
@@ -249,17 +262,20 @@ const getList = async () => {
 //选中
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
-  console.log(multipleSelection.value)
 }
 //选中
+/** 赋码操作 */
+const formRefA = ref()
 const fuMa = () => {
-  console.log(multipleSelection.length)
-  message.success("赋码逻辑未完善")
-  // if (multipleSelection.length == 0) {
-  //   message.warning("请先选择列表行")
-  // } else {
-  //   message.success("赋码逻辑未完善")
-  // }
+  if (multipleSelection.value == null) {
+    message.warning("请先选择列表行")
+  } else {
+    if (multipleSelection.value.length == 0) {
+      message.warning("请先选择列表行")
+    } else {
+      formRefA.value.open(multipleSelection.value)
+    }
+  }
 }
 
 /** 搜索按钮操作 */
@@ -279,6 +295,9 @@ const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
 }
+
+
+
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
