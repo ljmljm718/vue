@@ -212,7 +212,7 @@ const routerHandler = (item: string) => {
     '监测模型': '/growth_monitor/modelMonitor',
     '农事概览': '/farm_work/agriOverview',
 
-    '基地总览': '/asset/baseOVerview',
+    '基地总览': '/asset/tianyin',
     '投入品管理': '/asset/agriculturalResourcesManagement/duck-house-management',
     '库存管理': '/asset/inventory/stock/warehouse',
     '采购管理': '/farm_work/harvest-management',

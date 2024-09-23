@@ -16,7 +16,7 @@ export const getVarietyManagement = () => {
 
 // 二渡 大屏智慧农事 品种分布
 export const getBreedCategory = () => {
-  return request.get({ url: '/agri/farm-overview/get-breedCategory' })
+  return request.get({ url: '/agriculture/crop-base/get-crop-name-distribution' })
 }
 // 二渡 大屏智慧农事 中上设备
 export const qjDeviceStatistics = () => {
@@ -58,4 +58,9 @@ export const getAgriMissionPlan = async(params) =>{
 
 export const  getProductBrand = async() => {
   return request.get({url:'/agriculture/product-brand/page'})
+}
+
+// 二渡村 大屏 智慧农业 中间地图 marker
+export const getEquipmentMap = async(params) =>{
+  return request.get({ url:'/agriculture/device-info/getEquipmentMap', params })
 }
