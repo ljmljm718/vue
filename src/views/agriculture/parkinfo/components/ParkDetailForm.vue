@@ -6,8 +6,9 @@
     v-loading="formLoading"
     label-width="0px"
     :inline-message="true"
+    scroll-to-error
   >
-    <el-table :data="formData" class="-mt-10px">
+    <el-table :data="formData" class="-mt-10px" >
       <el-table-column label="序号" type="index" width="70" align="center"/>
 <!--       <el-table-column label="编号" min-width="150" align="center">-->
 <!--        <template #default="{ row, $index }">-->
@@ -155,7 +156,7 @@ const formRules = reactive({
     }
   ],
   area: [{ required: true, message: '面积不能为空', trigger: 'blur' }],
-  img: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
+  //img: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
