@@ -978,6 +978,7 @@ onMounted(() => { enablePosterScroll() })
       </div>
       <div class="w-full overflow-hidden container h-[85%]">
         <swiper
+          :initialSlide="1"
           :slidesPerView="1.5"
           :spaceBetween="0"
           :centeredSlides="true"
