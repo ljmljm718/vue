@@ -348,7 +348,6 @@
       :data="paramsA"
       border
       :stripe="true"
-      ref="multipleTableRef"
       :show-overflow-tooltip="true"
     >
       <el-table-column label="计划名称" align="center" prop="planName" />
@@ -368,11 +367,11 @@
       <div class="w-170px">
         <div class="text-18px mb-15px color-[#000]" style="font-weight: 600">投入品信息</div>
         <div class="text-16px mb-15px">产品名称</div>
-        <div class="text-14px mb-15px color-[#51b1dc]" style="font-weight: 600">{{
-          selectOption.name
-        }}</div>
+        <div class='nameList-wrapper w-100% h-200px'>
+          <div @click="inputTab(item,index)" :class="`mb-15px cursor-pointer ${selectOption.name == item.name ? ' color-[#2ca3d8]' : 'color-[#8ca860]'} `"   v-for='item,index in NameList' :key='index'>{{ item.name }}</div>
+        </div>
       </div>
-      <el-card class="box-card">
+      <el-card class="box-card !mt-20px">
         <template #header>
           <div class="card-header" style="font-weight: 600 !important">
             {{ selectOption.name }}消耗情况
@@ -513,11 +512,6 @@
           width="120"
           :formatter="erpPriceTableColumnFormatter"
         />
-        <!--      <el-table-column label="状态" align="center" prop="status" width="150">-->
-        <!--        <template #default="scope">-->
-        <!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
-        <!--        </template>-->
-        <!--      </el-table-column>-->
         <el-table-column
           label="生产日期"
           align="center"
@@ -536,26 +530,6 @@
         <el-table-column label="登记证号123" align="center" prop="registerNum" width="100" />
         <el-table-column label="包装关系" align="center" prop="packagingRelationship" width="100" />
         <el-table-column label="认证状态" align="center" prop="certifyStatus" width="100" />
-        <!-- <el-table-column label="操作" align="center" width="110" fixed="right">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:product:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['erp:product:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column> -->
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -604,6 +578,9 @@ import { ParkDetailVO } from '@/api/agriculture/parkdetail'
 import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue'
 import { page, carryOutUpdate, isFarmPlan } from './api'
 import { watch } from 'vue'
+interface AnyObject {
+  [key: string]: any;
+}
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
 
@@ -658,7 +635,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
-    console.log(data)
     //请求品类信息
     listCategoryManagement.value = await allDataCacheManager.getData({})
     //把品类数据的name拼接到列表中
@@ -766,7 +742,6 @@ const selectList2 = ref([])
 const formSelectList = ref([])
 const getPage = async () => {
   let res = await page({ pageNo: queryParamsA.pageNo, pageSize: queryParamsA.pageSize })
-  console.log(res, '投入品')
   totalA.value = res.total
   selectList.value = res.list
   selectList2.value = res.list
@@ -774,11 +749,10 @@ const getPage = async () => {
 }
 getPage()
 //监听消耗费用
-const selectOption = ref<Object>({})
+const selectOption = ref<AnyObject>({})
 watch(
   () => formData.value.consumeNum,
   (newVal) => {
-    console.log(newVal, 'newVal')
     formData.value.feedCost = newVal * selectOption.value.minPrice
   }
 )
@@ -798,17 +772,15 @@ const feedType = ref(0)
 const subExecuteId = ref()
 const subExecute = async (obj) => {
   subExecuteId.value = obj.id
-  console.log(123456, obj)
   startTime.value = new Date(obj.startTime).toLocaleString()
   endTime.value = new Date(obj.endTime).toLocaleString()
   params.value = obj
   paramsA.value.push(obj)
+  console.log(paramsA.value,'paramsA.valueparamsA.value')
   if (obj.planState == 1) {
     let res = await isFarmPlan({ id: obj.id, planState: obj.planState })
-    console.log(res, 'res校验')
     if (res == true) dialogVisibleA.value = true
     else if (res.data == false) {
-      console.log(123)
       message.error('执行农事计划失败，请先去农事记录添加')
       dialogVisibleA.value = false
     }
@@ -834,7 +806,6 @@ watch(
 watch(
   () => dialogVisibleA.value,
   (val) => {
-    console.log(val, '123val')
     if (!val) {
       selectionList.value = []
     }
@@ -842,7 +813,6 @@ watch(
 )
 //跳过
 const skipCli = async () => {
-  console.log(params.value, 'params.valueparams.value')
   let res = await carryOutUpdate({
     id: params.value.id,
     planName: params.value.planName,
@@ -859,7 +829,6 @@ const skipCli = async () => {
       recordArea: params.value.area
     }
   })
-  console.log(res, 'tiaoguo')
   if (res) {
     message.success('执行农事计划成功')
     dialogVisibleA.value = false
@@ -871,13 +840,24 @@ const preCli = () => {
   dialogVisibleA.value = true
   dialogVisible.value = false
   selectionList.value = []
-  paramsA.value = []
-  multipleTableRef.value.clearSelection()
 }
 //确认
 const submitForm = async () => {
+  if(inputNum.value == 0 ){
+    NameList.value[0]={
+    ...NameList.value[0],
+    ...formData.value
+    }
+  }
   delete formData.value.id
   delete params.value.id
+  NameList.value= NameList.value.map((item:any) => ({
+    ...item,
+    ...params.value,
+     farmPlanId: subExecuteId.value,
+    feedTime: new Date().getTime(),
+    farmingStage : params.value.farmDefineType
+  }))
   let res = await carryOutUpdate({
     id: subExecuteId.value,
     planName: params.value.planName,
@@ -893,12 +873,7 @@ const submitForm = async () => {
       recordTime: params.value.startTime,
       recordArea: params.value.area
     },
-    feedInfoSaveReqVO: {
-      ...params.value,
-      ...formData.value,
-      farmingStage: params.value.farmDefineType,
-      feedTime: new Date().getTime()
-    }
+    feedInfoSaveReqVO: NameList.value
   })
   if (res) {
     message.success('执行农事计划成功')
@@ -914,7 +889,6 @@ const submitForm = async () => {
     await getList()
     paramsA.value = []
   }
-  console.log('🚀 ~ submitForm ~ res:', res)
 }
 //取消并且清除Form
 const clearForm = () => {
@@ -941,8 +915,8 @@ const clearFormA = () => {
   selectionList.value = []
 }
 //投入品表格确定
+const NameList = ref<Array<any>>([])
 const submitTable = () => {
-  console.log(selectionList.value, 'ddddd')
   if (selectionList.value.length == 0) {
     message.warning('请先选择投入品，再点击下一步')
     dialogVisibleA.value = true
@@ -951,6 +925,7 @@ const submitTable = () => {
     dialogVisibleA.value = false
     dialogVisible.value = true
     selectOption.value = selectionList.value[0]
+    NameList.value = selectionList.value
     formData.value.feedType = selectionList.value[0].id
     formData.value.consumeUnit = selectionList.value[0].unitName
 
@@ -960,13 +935,12 @@ const submitTable = () => {
 /** 选中操作 */
 const selectionList = ref<Array<any>>([])
 const handleSelectionChange = (rows) => {
-  console.log(rows, 'rows1234')
   selectionList.value = rows
 }
 
 const multipleTableRef = ref()
 // 控制单选——table选择项发生变化时
-const selectClick = (row) => {
+const selectClick = ( row ) => {
   const selectData = selectionList.value
   if (selectData.length) {
     selectData.forEach((item) => {
@@ -999,15 +973,35 @@ const handleQueryA = () => {
       return item
     }
   })
-  console.log(selectList.value, 'selectList.valueselectList.value123')
 }
 //投入品下拉框事件
 const formSelect = (e) => {
-  selectList.value = selectList2.value.filter((item: any) => {
-    if (item.categoryName == e) {
-      return item
-    }
-  })
+  if(e == '') selectList.value = selectList2.value
+  else {
+    selectList.value = selectList2.value.filter((item: any) => {
+      if (item.categoryName == e) {
+        return item
+      }
+    })
+  }
+}
+//投入品切换
+const inputNum = ref<Number>(0)
+const inputTab = (val:any,index:Number) => {
+ 
+  NameList.value[index]={
+    ...NameList.value[index],
+    ...formData.value
+  }
+
+  selectOption.value = val
+  formData.value = {
+    feedType: '',
+    feedName: '',
+    consumeNum: '',
+    feedCost: '',
+    consumeUnit: ''
+  }
 }
 //地块的选择
 const plotPopupRef = ref()
@@ -1041,5 +1035,11 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+.nameList-wrapper{
+  overflow-y: scroll ;
+}
+.nameList-wrapper::-webkit-scrollbar{
+  width:0;
 }
 </style>
