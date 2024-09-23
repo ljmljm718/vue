@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
       <el-form-item label="计划编码" prop="planCode">
         <el-input
@@ -139,17 +139,17 @@
           class="!w-240px"
         />
       </el-form-item>
-      <!--      <el-form-item label="计划开始时间" prop="startTime">-->
-      <!--        <el-date-picker-->
-      <!--          v-model="queryParams.startTime"-->
-      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-      <!--          type="daterange"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+      <el-form-item label="计划开始时间" prop="startTime">
+        <el-date-picker
+          v-model="queryParams.startTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
+      </el-form-item>
       <!--      <el-form-item label="计划结束时间" prop="endTime">-->
       <!--        <el-date-picker-->
       <!--          v-model="queryParams.endTime"-->
