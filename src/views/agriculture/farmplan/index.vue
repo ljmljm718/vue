@@ -790,7 +790,7 @@ const subExecute = async (obj) => {
 watch(
   () => dialogVisible.value,
   (val) => {
-    if (!val) {
+    if (!val && dialogVisibleA.value) {
       formData.value = {
         feedType: '',
         feedName: '',
@@ -799,7 +799,8 @@ watch(
         consumeUnit: 'KG',
         feedTwo: '元'
       }
-      paramsA.value=[]
+    }else if( !val && !dialogVisibleA.value){
+      paramsA.value = []
     }
   }
 )
@@ -808,10 +809,21 @@ watch(
   (val) => {
     if (!val) {
       selectionList.value = []
-
+      selectList.value = selectList2.value
     }
   }
 )
+//Esc关闭
+window.addEventListener('keydown', (e) => {
+     if (e.keyCode === 27) {
+        paramsA.value = []
+        formSearch.value = {
+          feedName: '',
+          feedType: ''
+        }
+
+     }
+});
 //跳过
 const skipCli = async () => {
   let res = await carryOutUpdate({
