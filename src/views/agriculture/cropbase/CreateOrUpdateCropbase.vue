@@ -394,7 +394,7 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
-  area.value=String(order[0].area)
+  area.value=Number(order[0].area)
 }
 
 /** 提交表单 */
@@ -409,9 +409,8 @@ const submitForm = async () => {
     const data = formData.value as unknown as CropBaseVO
     if(!route.query.type){
       if(formData.value.unit=='亩'){
-      console.log(formData.value.number,'formData.value.numberformData.value.number')
-      if(formData.value.number > area.value){
-        console.log(123)
+      
+      if( Number(formData.value.number) > Number(area.value)){
         message.warning('数量超过输入的最大面积')
         return
       }
