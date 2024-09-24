@@ -465,7 +465,7 @@ defineOptions({name: 'DeviceInfo'})
  * 111 - 酉阳县板桥乡双桥村
  * 120 - 万州区龙驹镇梧桐村
  */
-const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120])
+const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120, 129,134])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
