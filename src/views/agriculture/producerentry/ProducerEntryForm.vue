@@ -10,33 +10,33 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="公司名称" prop="companyName">
-            <el-input v-model="formData.companyName" placeholder="请输入公司名称" />
+            <el-input v-model="formData.companyName" placeholder="请输入公司名称" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="法人" prop="legalPerson">
-            <el-input v-model="formData.legalPerson" placeholder="请输入法人" />
+            <el-input v-model="formData.legalPerson" placeholder="请输入法人" :disabled="disabled"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="联系方式" prop="contactPhone">
-            <el-input v-model="formData.contactPhone" placeholder="请输入联系方式" />
+            <el-input v-model="formData.contactPhone" placeholder="请输入联系方式" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="注册地址" prop="registeredAddress">
-            <el-input v-model="formData.registeredAddress" placeholder="请输入注册地址" />
+            <el-input v-model="formData.registeredAddress" placeholder="请输入注册地址" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="注册资金" prop="registeredCapital">
-            <el-input v-model="formData.registeredCapital" placeholder="请输入注册资金" />
+            <el-input v-model="formData.registeredCapital" placeholder="请输入注册资金" :disabled="disabled"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -47,6 +47,7 @@
                 type="date"
                 value-format="x"
                 placeholder="选择成立时间"
+                :disabled="disabled"
             />
           </el-form-item>
         </el-col>
@@ -54,21 +55,21 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="统一社会信用代码" prop="socialCreditCode">
-            <el-input v-model="formData.socialCreditCode" placeholder="请输入统一社会信用代码" />
+            <el-input v-model="formData.socialCreditCode" placeholder="请输入统一社会信用代码" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="营业执照" prop="businessLicense">
-            <el-input v-model="formData.businessLicense" placeholder="请输入营业执照" />
+            <el-input v-model="formData.businessLicense" placeholder="请输入营业执照" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="食品生产许可证" prop="foodProduceLicense">
-            <el-input v-model="formData.foodProduceLicense" placeholder="请输入食品生产许可证" />
+            <el-input v-model="formData.foodProduceLicense" placeholder="请输入食品生产许可证" :disabled="disabled"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,8 +90,8 @@
 <!--      </el-form-item>-->
     </el-form>
     <template #footer>
-      <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="submitForm" type="primary" v-if="!disabled">确 定</el-button>
+      <el-button @click="dialogVisible = false" v-if="!disabled">取 消</el-button>
     </template>
   </Dialog>
 </template>
@@ -104,6 +105,7 @@ defineOptions({ name: 'ProducerEntryForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const disabled = ref(false) // 表单是否可编辑
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -138,6 +140,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await ProducerEntryApi.getProducerEntry(id)
+      if (formType.value === 'detail') disabled.value = true
     } finally {
       formLoading.value = false
     }
@@ -185,5 +188,6 @@ const resetForm = () => {
     approvalStatus: undefined,
   }
   formRef.value?.resetFields()
+  disabled.value = false
 }
 </script>

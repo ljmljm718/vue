@@ -91,7 +91,7 @@ const formData = ref({
   belongVariety: undefined,
   brandLogo: undefined,
   brandDetail: undefined,
-  usedStatus: undefined,
+  usedStatus: 0,
   remark: undefined,
 })
 const formRules = reactive({
@@ -163,7 +163,7 @@ const resetForm = () => {
     belongVariety: undefined,
     brandLogo: undefined,
     brandDetail: undefined,
-    usedStatus: undefined,
+    usedStatus: 0,
     remark: undefined,
   }
   formRef.value?.resetFields()

@@ -91,6 +91,15 @@
             编辑
           </el-button>
           <el-button
+            v-if="scope.row.approvalStatus==='1'"
+            link
+            type="primary"
+            @click="openForm('detail', scope.row.id)"
+            v-hasPermi="['agriculture:producer-entry:update']"
+          >
+            查看详情
+          </el-button>
+          <el-button
             v-if="scope.row.approvalStatus==='0'"
             link
             type="warning"
@@ -100,6 +109,7 @@
             审批
           </el-button>
           <el-button
+            v-if="scope.row.approvalStatus==='0'"
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
