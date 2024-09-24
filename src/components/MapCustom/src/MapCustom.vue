@@ -3,9 +3,11 @@ import * as L from 'leaflet'
 import CryptoJS from 'crypto-js'
 import { generateUUID } from '@/utils'
 import adapter from './adapter'
+import { Search } from '@element-plus/icons-vue'
 import 'leaflet-draw'
 import "leaflet/dist/leaflet.css"
 import 'leaflet-draw/dist/leaflet.draw.css'
+import axios from 'axios'
 
 adapter()
 defineOptions({ name: 'MapCustom' })
@@ -75,9 +77,9 @@ const initMap = () => {
       //绘制多边形
       polygon: true,
       //绘制矩形
-      rectangle: true,
+      rectangle: false,
       //绘制圆
-      circle: true,
+      circle: false,
       //绘制标注
       marker: false,
       //绘制圆形标注
@@ -87,6 +89,7 @@ const initMap = () => {
   //添加绘制控件
   map.addControl(drawControl)
   map.on("draw:drawstart", async () => {
+    if (!activeLayer) return;
     await message.confirm('绘制围栏需要先清除先前绘制的内容，是否继续？').then(() => {
       if (activeLayer) {
         map.removeLayer(activeLayer);
@@ -159,6 +162,25 @@ defineExpose({
   setCenterZoom,
   getCurrentSaveCoordinates
 })
+
+const keyword = ref<string>('')
+const searchList = ref<any[]>([])
+const handleSearch = () => {
+  axios.get('/tdCache/api/tdtmap/search', {
+    params: { keyWord: keyword.value }
+  }).then(({ data }) => {
+    console.log("🚀 ~ handleSearch ~ data:", data)
+    if (Array.isArray(data)) searchList.value = data;
+  })
+}
+const handleSearchItemClick = (item) => {
+  const { lonlat } = item;
+  const lonlatArr = lonlat.split(',');
+  const [lng, lat] = lonlatArr;
+  const longitude = parseFloat(lng), latitude = parseFloat(lat)
+  L.marker([latitude, longitude]).addTo(map)
+  setCenterZoom([latitude, longitude], 17)
+}
 </script>
 <template>
   <div class="w-full h-full relative">
@@ -167,6 +189,38 @@ defineExpose({
       :id="`mapIns_${componentID}`"
     ></div>
     <div
+      class="absolute left-3 bottom-3 p-3 bg-white z-999 rounded-2 shadow-md"
+      v-show="props.enableEdit"
+    >
+      <el-scrollbar
+        class="mb-1 rounded-1 px-2 box-border transition"
+        style="height: 10rem;border: 1px solid #d1d1d1;"
+        v-show="keyword"
+      >
+        <div
+          v-for="item in searchList"
+          :key="item"
+          class="py-[.3rem]"
+          style="border-bottom: 1px solid #e1e1e1;"
+          @click="handleSearchItemClick(item)"
+        >
+          <div class="text-[.9rem]">{{ item.name }}</div>
+          <div class="text-[#999] text-[.8rem]">{{ item.address }}</div>
+        </div>
+      </el-scrollbar>
+      <el-input
+        v-model="keyword"
+        @keyup.enter="handleSearch()"
+      >
+        <template #append>
+          <el-button
+            :icon="Search"
+            @click="handleSearch()"
+          />
+        </template>
+      </el-input>
+    </div>
+    <div
       class="absolute right-3 bottom-3 p-6 py-4 bg-white z-999 rounded-2 shadow-md"
       v-show="showStyleController"
     >
@@ -174,13 +228,19 @@ defineExpose({
         <div class="flex items-center py-2">
           <div class="w-5rem">边框颜色:</div>
           <div class="w-3rem">
-            <el-color-picker v-model="layerStyle.color" @change="handleStyleChange()" />
+            <el-color-picker
+              v-model="layerStyle.color"
+              @change="handleStyleChange()"
+            />
           </div>
         </div>
         <div class="flex items-center py-2">
           <div class="w-5rem">填充颜色:</div>
           <div class="w-3rem">
-            <el-color-picker v-model="layerStyle.fillColor" @change="handleStyleChange()" />
+            <el-color-picker
+              v-model="layerStyle.fillColor"
+              @change="handleStyleChange()"
+            />
           </div>
         </div>
       </div>
@@ -197,7 +257,6 @@ defineExpose({
           />
         </div>
       </div>
-      
     </div>
   </div>
 </template>
