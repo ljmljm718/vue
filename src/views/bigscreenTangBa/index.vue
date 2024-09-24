@@ -60,7 +60,17 @@ export default defineComponent({
 
       if (type === '土壤墒情' && Array.isArray(res)) soilDataList.value = res
 
-      if (type === '杀虫设备' && Array.isArray(res)) bugDataList.value = res;
+      const bugIconMap = {
+        "降雨状态": "bug-icon-1",
+        "光照状态": "bug-icon-2",
+        "引虫灯状态": "bug-icon-3",
+        "风机状态": "bug-icon-4",
+        "电池百分比": "bug-icon-5",
+        "电池电压": "bug-icon-6",
+      }
+      if (type === '杀虫设备' && Array.isArray(res)) bugDataList.value = res.map(item => ({
+        ...item, icon: bugIconMap[item.monitoringType] || 'bug-icon-1'
+      }));
     }
     
     const topDataList = ref<Array<any>>([])
@@ -401,7 +411,10 @@ export default defineComponent({
                       {
                         bugDataList.value.length > 0 ? bugDataList.value.map((item:any) => (
                           <div class="flex flex-col justify-center items-center bug-bg">
-                            <div class="text-22px text-#76ffff">{ item.dataValue } { item.unit ?? '' }</div>
+                            <div class="flex justify-between items-center space-x-[1rem]">
+                              <div class={`${item.icon} w-1rem h-1rem`}></div>
+                              <div class="text-16px text-#76ffff">{ item.dataValue } { item.unit ?? '' }</div>
+                            </div>
                             <div class="text-16px">{ item.monitoringType }</div>
                           </div>
                         )) : <div class="w-full col-span-3 row-span-2 flex justify-center items-center text-#1effff">暂无数据</div>
@@ -649,6 +662,15 @@ export default defineComponent({
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
     background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 6 {
+  .bug-icon-#{$i} {
+    background-image: url(./assets/bugIcon#{$i}.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 }
 
