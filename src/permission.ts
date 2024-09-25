@@ -66,6 +66,7 @@ const whiteList = [
   '/home',
   '/gateway',
   '/page',
+  '/mobile-trace'
 ]
 
 const favicon = document.querySelector('link[rel="icon"]') as any;

@@ -300,6 +300,12 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/mobile-trace',
+    name: 'MobileTrace',
+    component: () => import('@/views/agriculture/tracetemplate/mobile.vue'),
+    meta: { hidden: true }
+  },
+  {
     path: '/bigscreen',
     name: 'bigscreen',
     component: () => import('@/views/bigscreen/index.vue'),
