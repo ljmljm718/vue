@@ -265,7 +265,7 @@ const open = async (id: string) => {
   // 加载下属地块列表
   await resetQuery()
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
 
 //结束
 
@@ -283,10 +283,9 @@ const props = defineProps({
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
+  console.log("GET LIST", props.deviceMonitorType)
   if (props.deviceMonitorType){
-    if (!queryParams.deviceMonitorType){
       queryParams.deviceMonitorType = props.deviceMonitorType
-    }
   }
   try {
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
@@ -300,6 +299,8 @@ const getList = async () => {
     loading.value = false
   }
 }
+
+defineExpose({ open, getList }) // 提供 open 方法，用于打开弹窗
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
