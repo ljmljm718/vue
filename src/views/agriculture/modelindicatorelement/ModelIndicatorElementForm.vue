@@ -22,10 +22,19 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="要素名称" prop="elementName">
-            <el-select v-model="formData.elementName" placeholder="请选择要素" clearable
-                       style="width: 100%">
-              <el-option v-for="item in deviceTypeList" :key="item" :label="item"
-                         :value="item" />
+            <el-select
+              v-model="formData.elementName"
+              placeholder="请选择要素"
+              clearable
+              style="width: 100%"
+              @change="handleElementNameChange()"
+            >
+              <el-option
+                v-for="item in deviceTypeList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -236,8 +245,15 @@ const indicatorName = ref()
 const deviceName = ref()
 //设备的选择
 const deviceSelectRef = ref()
+const handleElementNameChange = () => {
+  if (!deviceSelectRef.value) return;
+  nextTick(() => {
+    deviceSelectRef.value.getList()
+  })
+
+}
 const openDeviceSelectPopup = (id: string) => {
-  deviceSelectRef.value.open(id)
+  deviceSelectRef.value.open(id);
 }
 const handleDeviceSelectPopupChange = (order: DeviceInfoVO) => {
   formData.value.bindDevice = order.map(item => item.id).join(',')

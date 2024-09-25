@@ -129,6 +129,7 @@
             发码
           </el-button>
           <el-button
+            v-if="scope.row.applyStatus == '1'"
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -137,12 +138,20 @@
             编辑
           </el-button>
           <el-button
+            v-if="scope.row.applyStatus == '1'"
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
             v-hasPermi="['agriculture:code-apply:delete']"
           >
             删除
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="openForm('detail',scope.row.id)"
+          >
+            详情
           </el-button>
         </template>
       </el-table-column>
