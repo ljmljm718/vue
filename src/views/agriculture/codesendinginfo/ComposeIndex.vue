@@ -131,10 +131,10 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true"
-              @selection-change="handleSelectionChange" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :row-key="(row) => row.id" ref="multipleTable"
+              @selection-change="handleSelectionChange" :show-overflow-tooltip="true" size="default">
       <!--      <el-table-column label="id" align="center" prop="id"/>-->
-      <el-table-column type="selection" width="55"/>
+      <el-table-column type="selection" width="55" :reserve-selection="true"/>
       <el-table-column label="源码" align="center" prop="codeContent" width="180px"/>
       <!--      <el-table-column label="模板ID" align="center" prop="templateId"/>-->
       <el-table-column label="产品名称" align="center" prop="productName"/>
@@ -200,7 +200,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <CodeSendingInfoForm ref="formRef" @success="getList"/>
-  <SelectProduct ref="formRefA" @success="getList"/>
+  <SelectProduct ref="formRefA" @success="getListA"/>
 </template>
 
 <script setup lang="ts">
@@ -247,10 +247,23 @@ const options = [{
   label: '已赋码'
 }]
 let multipleSelection = []
+const multipleTable = ref();
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
-  multipleSelection = []
+  try {
+    const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
+    list.value = data.list
+    total.value = data.total
+  } finally {
+    loading.value = false
+  }
+}
+/** 查询列表 */
+const getListA = async () => {
+  // 清除选择
+  clearSelection();
+  loading.value = true
   try {
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
     list.value = data.list
@@ -286,18 +299,26 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
+  // 清除选择
+  clearSelection();
   queryFormRef.value.resetFields()
   handleQuery()
 }
+
+const clearSelection = () => {
+  if (multipleTable.value) {
+    // 清除选择
+    multipleTable.value.clearSelection();
+    // 更新 selectedRows
+    multipleSelection.value = [];
+  }
+};
 
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
 }
-
-
-
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
