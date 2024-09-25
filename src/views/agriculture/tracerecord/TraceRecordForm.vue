@@ -41,7 +41,7 @@
       <el-form-item label="溯源时间" prop="traceTime">
         <el-date-picker
           v-model="formData.traceTime"
-          type="date"
+          type="datetime"
           value-format="x"
           placeholder="选择溯源时间"
         />
