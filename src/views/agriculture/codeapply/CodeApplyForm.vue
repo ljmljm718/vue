@@ -8,16 +8,16 @@
       v-loading="formLoading"
     >
       <el-form-item label="申请名称" prop="applyName">
-        <el-input v-model="formData.applyName" placeholder="请输入申请名称" />
+        <el-input :disabled="disable" v-model="formData.applyName" placeholder="请输入申请名称" />
       </el-form-item>
       <el-form-item label="申请数量" prop="applyNumber">
-        <el-input v-model="formData.applyNumber" placeholder="请输入申请数量" />
+        <el-input :disabled="disable" v-model="formData.applyNumber" placeholder="请输入申请数量" />
       </el-form-item>
       <el-form-item label="申请描述" prop="applyDescribe">
-        <el-input type="textarea" v-model="formData.applyDescribe" placeholder="请输入申请描述" />
+        <el-input :disabled="disable" type="textarea" v-model="formData.applyDescribe" placeholder="请输入申请描述" />
       </el-form-item>
       <el-form-item label="溯源模版" prop="sourceId">
-        <el-select v-model="formData.sourceId" placeholder="请选择溯源模版">
+        <el-select :disabled="disable" v-model="formData.sourceId" placeholder="请选择溯源模版">
           <el-option
             v-for="item in templateList"
             :key="item.id"
@@ -27,7 +27,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="码规则" prop="ruleId">
-        <el-select v-model="formData.ruleId" placeholder="请选择码规则">
+        <el-select :disabled="disable" v-model="formData.ruleId" placeholder="请选择码规则">
           <el-option
             v-for="item in ruleList"
             :key="item.id"
@@ -38,7 +38,7 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
+      <el-button v-if="!disable" @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
@@ -80,12 +80,18 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 const templateList = ref<TraceTemplateVO[]>([]) // 溯源模版的数据
 const ruleList = ref<CodeRuleVO[]>([]) // 码规则的数据
+const disable = ref(false) // 表单是否可编辑
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  if (type === 'detail') {
+    disable.value = true
+  } else {
+    disable.value = false
+  }
   templateList.value = await TraceTemplateApi.getTraceTemplateAll()
   ruleList.value = await CodeRuleApi.getCodeRuleAll()
     resetForm()
