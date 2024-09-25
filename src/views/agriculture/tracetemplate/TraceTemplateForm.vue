@@ -1,54 +1,61 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible">
-    <el-form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      label-width="100px"
-      v-loading="formLoading"
-    >
-      <el-form-item label="模板名称" prop="templateName">
-        <el-input v-model="formData.templateName" placeholder="请输入模板名称"/>
-      </el-form-item>
-      <el-form-item label="生产商" prop="mfrsId">
-        <el-select
-          v-model="formData.mfrsId"
-          placeholder="请选择生产商"
-          clearable
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in producerEntryList"
-            :key="item.id"
-            :label="item.companyName"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="产地" prop="origin">
-        <el-input v-model="formData.origin" placeholder="请输入产地"/>
-      </el-form-item>
-      <el-form-item label="适用品牌" prop="brandName">
-        <el-input v-model="formData.brandName" disabled placeholder="请选择适用品牌">
-          <template #append>
-            <el-button @click="openProductBrandPopup()">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="品牌介绍" prop="brandDetail">
-        <el-input v-model="formData.brandDetail" type="textarea" placeholder="请选择适用品牌"
-                  disabled/>
-      </el-form-item>
-      <el-form-item label="头部宣传图" prop="headerImg">
-        <UploadImg v-model="formData.headerImg"/>
-      </el-form-item>
-      <el-form-item label="产品展示图片" prop="productImgs">
-        <UploadImgs v-model="formData.productImgs"/>
-      </el-form-item>
-    </el-form>
+    <div class="flex space-x-5 items-stretch">
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="100px"
+        v-loading="formLoading"
+        class="grow"
+      >
+        <el-form-item label="模板名称" prop="templateName">
+          <el-input v-model="formData.templateName" placeholder="请输入模板名称"/>
+        </el-form-item>
+        <el-form-item label="生产商" prop="mfrsId">
+          <el-select
+            v-model="formData.mfrsId"
+            placeholder="请选择生产商"
+            clearable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in producerEntryList"
+              :key="item.id"
+              :label="item.companyName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产地" prop="origin">
+          <el-input v-model="formData.origin" placeholder="请输入产地"/>
+        </el-form-item>
+        <el-form-item label="适用品牌" prop="brandName">
+          <el-input v-model="formData.brandName" disabled placeholder="请选择适用品牌">
+            <template #append>
+              <el-button @click="openProductBrandPopup()">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="品牌介绍" prop="brandDetail">
+          <el-input v-model="formData.brandDetail" type="textarea" placeholder="请选择适用品牌"
+                    disabled/>
+        </el-form-item>
+        <el-form-item label="头部宣传图" prop="headerImg">
+          <UploadImg v-model="formData.headerImg"/>
+        </el-form-item>
+        <el-form-item label="产品展示图片" prop="productImgs">
+          <UploadImgs v-model="formData.productImgs"/>
+        </el-form-item>
+      </el-form>
+      <div class="w-20rem max-h-[35rem]">
+        <MobilePage :data="formData" />
+      </div>
+    </div>
+    
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -65,6 +72,7 @@ import {TraceTemplateApi, TraceTemplateVO} from '@/api/agriculture/tracetemplate
 import SelectProductBrand from "@/views/agriculture/productbrand/SelectProductBrand.vue";
 import {ProducerEntryApi, ProducerEntryVO} from "@/api/agriculture/producerentry";
 import {ProductBrandVO} from "@/api/agriculture/productbrand";
+import MobilePage from './mobile.vue'
 
 /** 溯源模板 表单 */
 defineOptions({name: 'TraceTemplateForm'})
