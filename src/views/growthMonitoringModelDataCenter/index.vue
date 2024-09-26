@@ -31,8 +31,14 @@ export default defineComponent({
   components: {
     Header
   },
-  setup() {
-    
+  props: {
+    hiddenHeader: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props) {
+    const { hiddenHeader } = toRefs(props)
     const imgBase = "/src/views/growthMonitoringModelDataCenter/assets"
     const message = useMessage() // 消息弹窗
 
@@ -533,440 +539,455 @@ export default defineComponent({
       window.addEventListener("resize", handleResize)
     })
 
-    return () => (
-      <div class="bg-[#0B2131] w-full h-full select-none">
-        <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={ bgImage.value } key={ bgImage.value } style="background-color: transparent;">
-            {/** 头部 */}
-            <Header 
-              height={ headerHeight } 
-              bgImg={ headerBg }
-              title={ title }
-              titleHeight={ titleHeight }
-              titleWidth={ titleWidth }
+    const MainContainer = () => {
+      return (
+        <div class="w-[1880px] h-[947px] overflow-hidden bg-transparent px-[20px] pt-[13px] pb-[20px] flex relative text-[#fff]">
+          <div class="absolute left-0 top-[-100px] w-100% h-1080px z-0">
+            <img class="w-full h-full" src={bgImage.value} />
+          </div>
+          {/** 左 */}
+          <div class="w-[400px] h-full grid grid-cols-1 content-between">
+            <Card 
+              height={ 280 }
+              titleText="模型类型"
+              cardWidth={ 400 }
+              cardHeight={ 230 }
             >
-            </Header>
-            {/** 内容 */}
-            <div class="w-[1880px] h-[947px] bg-transparent px-[20px] pt-[13px] pb-[20px] flex">
-              {/** 左 */}
-              <div class="w-[400px] h-full grid grid-cols-1 content-between">
-                <Card 
-                  height={ 280 }
-                  titleText="模型类型"
-                  cardWidth={ 400 }
-                  cardHeight={ 230 }
+              <div class="w-full h-[200px] flex flex-wrap justify-center content-between py-[15px]">
+                <NumberShow
+                  iconImg={ varietyNumIcon }
+                  numName="品种数"
+                  numAmount={ nVariety.value }
+                  numUnit="种"
                 >
-                  <div class="w-full h-[200px] flex flex-wrap justify-center content-between py-[15px]">
-                    <NumberShow
-                      iconImg={ varietyNumIcon }
-                      numName="品种数"
-                      numAmount={ nVariety.value }
-                      numUnit="种"
-                    >
-                    </NumberShow>
-                    <NumberShow
-                      iconImg={ modelNumIcon }
-                      numName="模型数"
-                      numAmount={ nModel.value }
-                      numUnit="个"
-                    >
-                    </NumberShow>
-                  </div> 
-                </Card>
-                <Card 
-                  height={ 280 }
-                  titleText="品种模型"
-                  cardWidth={ 400 }
-                  cardHeight={ 230 }
+                </NumberShow>
+                <NumberShow
+                  iconImg={ modelNumIcon }
+                  numName="模型数"
+                  numAmount={ nModel.value }
+                  numUnit="个"
                 >
-                  <el-scrollbar>
-                    <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer pt-[10px]">
-                      {
-                        modelList.value.map((item, index) => (
-                          <ModelIcon 
-                            modelName={ item.modelName }
-                            activated={ item.activated }
-                            modelImg={ item.modelImg }
-                            key={ item.key }
-                            onClick={ () => { changeModel(index) } }
-                          >
-                          </ModelIcon>
-                        ))
-                      }
-                    </div>
-                  </el-scrollbar>
-                </Card>
-                <Card
-                  height={ 345 }
-                  titleText="地块监测"
-                  cardWidth={ 400 }
-                  cardHeight={ 292 }
-                  showSelect={ true }
-                  v-slots={{
-                    selector: () => {
-                      return (
-                        <el-select
-                          id="base-select"
-                          class="plot-selector"
-                          v-model={ base.value }
-                          value-key="id"
-                          style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
-                          popper-class="growth-monitoring-model-datacenter-popper"
-                          onChange={ () => { getPlotList() } }
-                        >
-                          {
-                            baseList.value.map(item => (
-                              <el-option key={ item.id } label={item.name} value={ item }>
-                              </el-option>
-                            ))
-                          }
-                        </el-select>
-                      )
-                    }
-                  }}
-                >
-                  <el-scrollbar>
-                    <div class="grid grid-cols-2 gap-3 justify-items-center">
-                      {/** 单个卡片 */}
-                      {
-                        plotList.value.map((item) => (
-                          <div class="w-full h-[130px] mb-[10px]">
-                            <div 
-                              style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
-                              class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
-                              onClick={()=>{ handleRoute(item) }}
-                            >
-                              <div 
-                                class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
-                                style="background-color: rgba(0, 0, 0, 0.659);"
-                              >
-                                { item.modelName }
-                              </div>
-                            </div>
-                            <div class="flex justify-between mt-[10px] px-[10px]">
-                              <div>{ item.plotName }</div>
-                              <div>
-                              {
-                                item.isEnableModel ? (
-                                  <el-button
-                                    style="color: #35DAD2; border: 1px solid #35DAD2; background-color: transparent;"
-                                    round
-                                    type="success"
-                                    onClick={ () => { handleStatusChange(item) } }
-                                  >
-                                    <el-icon><CircleCheck /></el-icon>
-                                    <span>启用</span>
-                                  </el-button>
-                                ) : (
-                                  <el-button
-                                    style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
-                                    round
-                                    type="danger"
-                                    onClick={ () => { handleStatusChange(item) } }
-                                  >
-                                    <el-icon><CircleClose /></el-icon>
-                                    <span>禁用</span>
-                                  </el-button>
-                                )
-                              }
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  </el-scrollbar>
-                </Card>
-              </div>
-              {/** 中 */}
-              <div class="grow h-full px-[20px] grid grid-cols-1 content-end relative">
-                {/** 周期列表 */}
-                <div class="w-[1032px] h-[120px] absolute top-[0px] mx-[20px] mt-[30px] flex justify-center flex-wrap content-center">
+                </NumberShow>
+              </div> 
+            </Card>
+            <Card 
+              height={ 280 }
+              titleText="品种模型"
+              cardWidth={ 400 }
+              cardHeight={ 230 }
+            >
+              <el-scrollbar>
+                <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer pt-[10px]">
                   {
-                    cycleNameList.value.length < 6 ? (
-                      /** 
-                       * 周期数不足5个 不展示最左和最右的箭头 整体剧中 
-                       * 指向当前展示周期的指针跟随选中的周期
-                       */
-                      <div class="w-full flex">
-                        {/** 最左箭头 */}
+                    modelList.value.map((item, index) => (
+                      <ModelIcon 
+                        modelName={ item.modelName }
+                        activated={ item.activated }
+                        modelImg={ item.modelImg }
+                        key={ item.key }
+                        onClick={ () => { changeModel(index) } }
+                      >
+                      </ModelIcon>
+                    ))
+                  }
+                </div>
+              </el-scrollbar>
+            </Card>
+            <Card
+              height={ 345 }
+              titleText="地块监测"
+              cardWidth={ 400 }
+              cardHeight={ 292 }
+              showSelect={ true }
+              v-slots={{
+                selector: () => {
+                  return (
+                    <el-select
+                      id="base-select"
+                      class="plot-selector"
+                      v-model={ base.value }
+                      value-key="id"
+                      style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
+                      popper-class="growth-monitoring-model-datacenter-popper"
+                      onChange={ () => { getPlotList() } }
+                    >
+                      {
+                        baseList.value.map(item => (
+                          <el-option key={ item.id } label={item.name} value={ item }>
+                          </el-option>
+                        ))
+                      }
+                    </el-select>
+                  )
+                }
+              }}
+            >
+              <el-scrollbar>
+                <div class="grid grid-cols-2 gap-3 justify-items-center">
+                  {/** 单个卡片 */}
+                  {
+                    plotList.value.map((item) => (
+                      <div class="w-full h-[130px] mb-[10px]">
                         <div 
-                          class="cycle-item cursor-pointer p-[15px] box-border"
-                          onClick={ () => {leftArrowClick()} }
+                          style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
+                          class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
+                          onClick={()=>{ handleRoute(item) }}
                         >
-                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                          <div 
+                            class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
+                            style="background-color: rgba(0, 0, 0, 0.659);"
+                          >
+                            { item.modelName }
+                          </div>
                         </div>
-                        <div class="w-[837px] h-[100px] flex justify-center">
+                        <div class="flex justify-between mt-[10px] px-[10px]">
+                          <div>{ item.plotName }</div>
+                          <div>
                           {
-                            cycleNameList.value.map((e, i, arr) => (
-                              <div class="flex">
-                                {/** 周期名称展示 */}
-                                <div 
-                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
-                                  onClick={ () => { handleClick(i) } }
-                                >
-                                  <span>{ e.growth }</span>
-                                  {/** 当前物候期提示文字 */}
-                                  {
-                                    e.growth === curRealPeriod.value ? (
-                                      <div class="absolute top-[71px]">
-                                        <span>{ "(当前物候期)" }</span>
-                                      </div>
-                                    ) : null
-                                  }
-                                  {/** 指向当前展示周期的指针 */}
-                                  { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
-                                </div>
-                                {/** 周期之间的箭头 */}
-                                { i != arr.length - 1 ? ( 
-                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
-                                    <div class="next-arrow"></div>
-                                  </div>
-                                ) : null }
-                              </div>
-                            ))
+                            item.isEnableModel ? (
+                              <el-button
+                                style="color: #35DAD2; border: 1px solid #35DAD2; background-color: transparent;"
+                                round
+                                type="success"
+                                onClick={ () => { handleStatusChange(item) } }
+                              >
+                                <el-icon><CircleCheck /></el-icon>
+                                <span>启用</span>
+                              </el-button>
+                            ) : (
+                              <el-button
+                                style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
+                                round
+                                type="danger"
+                                onClick={ () => { handleStatusChange(item) } }
+                              >
+                                <el-icon><CircleClose /></el-icon>
+                                <span>禁用</span>
+                              </el-button>
+                            )
                           }
-                        </div>
-                        {/** 最右箭头 */}
-                        <div 
-                          class="cycle-item cursor-pointer p-[15px] box-border"
-                          onClick={ () => {rightArrowClick()} }
-                        >
-                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                          </div>
                         </div>
                       </div>
-                    ) : (
-                      /**
-                       * 周期数超越5个 一行只呈现5个 展示最左和最右的箭头
-                       * 指向当前展示周期的指针始终在中间
-                       */
-                      <div class="w-full flex">
-                        {/** 最左箭头 */}
-                        <div 
-                          class="cycle-item cursor-pointer p-[15px] box-border"
-                          onClick={ () => {leftArrowClick()} }
-                        >
-                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
-                        </div>
-                        {/** 指向当前展示周期的指针 */}
-                        <div class="cur-arrow cur-arrow-center"></div>
-                        {/** 周期展示 */}
-                        <div class="w-[837px] h-[100px] overflow-hidden">
-                          <div class="flex relative" style={ `left: ${ offsetLeft.value }px;` }>
-                          {
-                            cycleNameList.value.map((e, i, arr) => (
-                              <div class="flex">
-                                {/** 周期名称展示 */}
-                                <div 
-                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
-                                  onClick={ () => { handleClick(i) } }
-                                >
-                                  <span>{ e.growth }</span>
-                                  {/** 当前物候期提示文字 */}
-                                  {
-                                    e.growth === curRealPeriod.value ? (
-                                      <div class="absolute top-[71px]">
-                                        <span>{ "(当前物候期)" }</span>
-                                      </div>
-                                    ) : null
-                                  }
-                                </div>
-                                {/** 周期之间的箭头 */}
-                                { i != arr.length - 1 ? ( 
-                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
-                                    <div class="next-arrow"></div>
+                    ))
+                  }
+                </div>
+              </el-scrollbar>
+            </Card>
+          </div>
+          {/** 中 */}
+          <div class="grow h-full px-[20px] grid grid-cols-1 content-end relative">
+            {/** 周期列表 */}
+            <div class="w-[1032px] h-[120px] absolute top-[0px] left-0 mx-[20px] mt-[30px] flex justify-center flex-wrap content-center">
+              {
+                cycleNameList.value.length < 6 ? (
+                  /** 
+                    * 周期数不足5个 不展示最左和最右的箭头 整体剧中 
+                    * 指向当前展示周期的指针跟随选中的周期
+                    */
+                  <div class="w-full flex">
+                    {/** 最左箭头 */}
+                    <div 
+                      class="cycle-item cursor-pointer p-[15px] box-border"
+                      onClick={ () => {leftArrowClick()} }
+                    >
+                      <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                    </div>
+                    <div class="w-[837px] h-[100px] flex justify-center">
+                      {
+                        cycleNameList.value.map((e, i, arr) => (
+                          <div class="flex">
+                            {/** 周期名称展示 */}
+                            <div 
+                              class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                              onClick={ () => { handleClick(i) } }
+                            >
+                              <span>{ e.growth }</span>
+                              {/** 当前物候期提示文字 */}
+                              {
+                                e.growth === curRealPeriod.value ? (
+                                  <div class="absolute top-[71px]">
+                                    <span>{ "(当前物候期)" }</span>
                                   </div>
-                                ) : null }
+                                ) : null
+                              }
+                              {/** 指向当前展示周期的指针 */}
+                              { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
+                            </div>
+                            {/** 周期之间的箭头 */}
+                            { i != arr.length - 1 ? ( 
+                              <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                <div class="next-arrow"></div>
                               </div>
-                            ))
-                          }
+                            ) : null }
                           </div>
-                        </div>
-                        {/** 最右箭头 */}
+                        ))
+                      }
+                    </div>
+                    {/** 最右箭头 */}
+                    <div 
+                      class="cycle-item cursor-pointer p-[15px] box-border"
+                      onClick={ () => {rightArrowClick()} }
+                    >
+                      <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                    </div>
+                  </div>
+                ) : (
+                  /**
+                    * 周期数超越5个 一行只呈现5个 展示最左和最右的箭头
+                    * 指向当前展示周期的指针始终在中间
+                    */
+                  <div class="w-full flex">
+                    {/** 最左箭头 */}
+                    <div 
+                      class="cycle-item cursor-pointer p-[15px] box-border"
+                      onClick={ () => {leftArrowClick()} }
+                    >
+                      <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                    </div>
+                    {/** 指向当前展示周期的指针 */}
+                    <div class="cur-arrow cur-arrow-center"></div>
+                    {/** 周期展示 */}
+                    <div class="w-[837px] h-[100px] overflow-hidden">
+                      <div class="flex relative" style={ `left: ${ offsetLeft.value }px;` }>
+                      {
+                        cycleNameList.value.map((e, i, arr) => (
+                          <div class="flex">
+                            {/** 周期名称展示 */}
+                            <div 
+                              class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                              onClick={ () => { handleClick(i) } }
+                            >
+                              <span>{ e.growth }</span>
+                              {/** 当前物候期提示文字 */}
+                              {
+                                e.growth === curRealPeriod.value ? (
+                                  <div class="absolute top-[71px]">
+                                    <span>{ "(当前物候期)" }</span>
+                                  </div>
+                                ) : null
+                              }
+                            </div>
+                            {/** 周期之间的箭头 */}
+                            { i != arr.length - 1 ? ( 
+                              <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                <div class="next-arrow"></div>
+                              </div>
+                            ) : null }
+                          </div>
+                        ))
+                      }
+                      </div>
+                    </div>
+                    {/** 最右箭头 */}
+                    <div 
+                      class="cycle-item cursor-pointer p-[15px] box-border"
+                      onClick={ () => {rightArrowClick()} }
+                    >
+                      <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                    </div>
+                  </div>
+                )
+              }
+            </div>
+            {/** 模型图片 */}
+            {
+              cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
+                <div class="center-model text-center pt-[50px] box-border">
+                  <img src={ cycleMap.value.get(curPeriod.value).imgId } class="object-contain h-[390px]" />
+                </div>
+              ) : null
+            }
+            {/** 周期事项 */}
+            <Card
+              height={ 280 }
+              titleText="周期事项"
+              cardWidth={ 1032 }
+              cardHeight={ 230 }
+              addText={ `${ curPeriod.value }（${ curCycle.value }天）` }
+            >
+              {
+                curTips.value.length ? (
+                  <el-scrollbar>
+                    <el-timeline class="ps-[110px] pt-[10px]">
+                      {
+                        curTips.value.map( (item, index) => (
+                          <el-timeline-item
+                            key={ index }
+                            placement="top"
+                            class="relative"
+                          >
+                            <el-card style="color: #CDDEE3; border: 1px solid #435B63; background: linear-gradient(180deg, rgba(101, 239, 235, 0) 0%, rgba(53, 218, 210, 0.12) 100%);">
+                              { item.itemContent }
+                            </el-card>
+                            <div class="absolute top-0 left-[-110px] w-[90px] h-[19px] text-[18px] leading-[19px] text-[#35DAD2] flex justify-end">
+                              <div class="text-center tracking-widest">
+                                { item.itemName }
+                                <div>{ item.remark1 ? `（${ item.remark1 }天）` : "" }</div>
+                              </div>
+                            </div>
+                            <div class="absolute top-[10px] left-[-11px] line-mark"></div>                              
+                            {
+                              !(index === curTips.value.length - 1) ? (
+                                <div>
+                                  <div class="absolute top-[30px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[50px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[70px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[90px] left-[-8px] line-small-mark"></div>
+                                </div>
+                              ) : null
+                            }                              
+                          </el-timeline-item>
+                        ))
+                      }
+                    </el-timeline>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-[230px] leading-[200px] text-center text-[#35DAD2] text-[40px] tracking-widest">
+                    本周期暂无注意事项
+                  </div>
+                )
+              }
+            </Card>
+          </div>
+          {/** 右 */}
+          <div class="w-[400px] h-full grid grid-cols-1 content-between">
+            <Card 
+              height={ 400 }
+              titleText="指标监测"
+              cardWidth={ 400 }
+              cardHeight={ 350 }
+            >
+              <el-scrollbar>
+              {
+                indicatorList.value.length ? (
+                  <div class="grid grid-cols-2 gap-2 justify-items-center">
+                    {
+                      indicatorList.value.map((item, index) => (
                         <div 
-                          class="cycle-item cursor-pointer p-[15px] box-border"
-                          onClick={ () => {rightArrowClick()} }
+                          class="cursor-pointer"
+                          onClick={ () => { handleIndicatorClick(index) } }
+                          style={ item.selected ? "box-shadow: 0px 2px 10px 0px #08795D;" : "" }
                         >
-                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                          <div 
+                            class={ item.selected ? "text-center text-[18px] text-[#35DAD2] index-title-active" : "text-center text-[18px] text-[#fff] index-title"}
+                          >
+                            { item.name }
+                          </div>
+                          <div class={ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology") }></div>
                         </div>
+                      ))
+                    }
+                  </div>
+                ) : (
+                  <div class="w-[370px] h-[320px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest">
+                    本周期暂无指标监测信息
+                  </div>
+                )
+              }
+              </el-scrollbar>
+            </Card>
+            <Card 
+              height={ 532 }
+              titleText="模型要素分析"
+              cardWidth={ 400 }
+              cardHeight={ 478 }
+            >
+              <div class="relative">
+                {/** 没有要素信息的提示 */}
+                {
+                  curFactor.value.size ? null : (
+                    <div 
+                      class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
+                      style="background: #0B212C;"
+                    >
+                      本指标暂无要素信息
+                    </div>
+                  )
+                }   
+                <div class="w-full">
+                  {/** ECharts图 */}
+                  <div id="chart" class="w-[370px] h-[254px]"></div>
+                  {/** 要素信息表格 */}
+                  {
+                    curFactorData.value.length ? (
+                      <div class="text-[14px] border border-solid border-[#208282]">
+                        <div 
+                          class="text-center w-[363px] h-[30px] leading-[30px]"
+                          style="background: linear-gradient(270deg, rgba(53, 218, 210, 0) 0%, rgba(53, 218, 210, 0.2971) 50%, rgba(53, 218, 210, 0) 100%);"
+                        >
+                          要素描述
+                        </div>
+                        <el-table 
+                          data={ curFactorData.value }
+                          height="180"
+                          style={ {width: "370px"} }
+                          row-style={(data) => {
+                            let curBgColor = (Number(data.rowIndex) + 2) % 2 === 0 ? "#0F3940" : "transparent"
+                            return {
+                              "background-color": curBgColor,
+                              "height": "45px",
+                              "font-size": "16px"
+                            }
+                          }}
+                          header-row-style={ {"background-color": "transparent", "height": "45px", "font-size": "16px"} }
+                        >
+                          <el-table-column label="范围" align="center" >
+                          {
+                            ({ row }) => {
+                              return `${ row.lowLimit }${ row.unit } ~ ${ row.highLimit }${ row.unit }`
+                            }
+                          }
+                          </el-table-column>
+                          <el-table-column label="健康值" prop="healthRatio" align="center" width="65px"/>
+                          <el-table-column label="要素结果" prop="indicatorResult" align="center" />
+                        </el-table>
+                      </div>
+                    ) : (
+                      <div class="w-[370px] h-[170px] leading-[170px] text-center text-[#35DAD2] tracking-widest" >
+                        本要素暂无描述信息
                       </div>
                     )
                   }
                 </div>
-                {/** 模型图片 */}
-                {
-                  cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
-                    <div class="center-model text-center pt-[50px] box-border">
-                      <img src={ cycleMap.value.get(curPeriod.value).imgId } class="object-contain h-[390px]" />
-                    </div>
-                  ) : null
-                }
-                {/** 周期事项 */}
-                <Card
-                  height={ 280 }
-                  titleText="周期事项"
-                  cardWidth={ 1032 }
-                  cardHeight={ 230 }
-                  addText={ `${ curPeriod.value }（${ curCycle.value }天）` }
-                >
-                  {
-                    curTips.value.length ? (
-                      <el-scrollbar>
-                        <el-timeline class="ps-[110px] pt-[10px]">
-                          {
-                            curTips.value.map( (item, index) => (
-                              <el-timeline-item
-                                key={ index }
-                                placement="top"
-                                class="relative"
-                              >
-                                <el-card style="color: #CDDEE3; border: 1px solid #435B63; background: linear-gradient(180deg, rgba(101, 239, 235, 0) 0%, rgba(53, 218, 210, 0.12) 100%);">
-                                  { item.itemContent }
-                                </el-card>
-                                <div class="absolute top-0 left-[-110px] w-[90px] h-[19px] text-[18px] leading-[19px] text-[#35DAD2] flex justify-end">
-                                  <div class="text-center tracking-widest">
-                                    { item.itemName }
-                                    <div>{ item.remark1 ? `（${ item.remark1 }天）` : "" }</div>
-                                  </div>
-                                </div>
-                                <div class="absolute top-[10px] left-[-11px] line-mark"></div>                              
-                                {
-                                  !(index === curTips.value.length - 1) ? (
-                                    <div>
-                                      <div class="absolute top-[30px] left-[-8px] line-small-mark"></div>
-                                      <div class="absolute top-[50px] left-[-8px] line-small-mark"></div>
-                                      <div class="absolute top-[70px] left-[-8px] line-small-mark"></div>
-                                      <div class="absolute top-[90px] left-[-8px] line-small-mark"></div>
-                                    </div>
-                                  ) : null
-                                }                              
-                              </el-timeline-item>
-                            ))
-                          }
-                        </el-timeline>
-                      </el-scrollbar>
-                    ) : (
-                      <div class="w-full h-[230px] leading-[200px] text-center text-[#35DAD2] text-[40px] tracking-widest">
-                        本周期暂无注意事项
-                      </div>
-                    )
-                  }
-                </Card>
               </div>
-              {/** 右 */}
-              <div class="w-[400px] h-full grid grid-cols-1 content-between">
-                <Card 
-                  height={ 400 }
-                  titleText="指标监测"
-                  cardWidth={ 400 }
-                  cardHeight={ 350 }
-                >
-                  <el-scrollbar>
-                  {
-                    indicatorList.value.length ? (
-                      <div class="grid grid-cols-2 gap-2 justify-items-center">
-                        {
-                          indicatorList.value.map((item, index) => (
-                            <div 
-                              class="cursor-pointer"
-                              onClick={ () => { handleIndicatorClick(index) } }
-                              style={ item.selected ? "box-shadow: 0px 2px 10px 0px #08795D;" : "" }
-                            >
-                              <div 
-                                class={ item.selected ? "text-center text-[18px] text-[#35DAD2] index-title-active" : "text-center text-[18px] text-[#fff] index-title"}
-                              >
-                                { item.name }
-                              </div>
-                              <div class={ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology") }></div>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    ) : (
-                      <div class="w-[370px] h-[320px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest">
-                        本周期暂无指标监测信息
-                      </div>
-                    )
-                  }
-                  </el-scrollbar>
-                </Card>
-                <Card 
-                  height={ 532 }
-                  titleText="模型要素分析"
-                  cardWidth={ 400 }
-                  cardHeight={ 478 }
-                >
-                  <div class="relative">
-                    {/** 没有要素信息的提示 */}
-                    {
-                      curFactor.value.size ? null : (
-                        <div 
-                          class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
-                          style="background: #0B212C;"
-                        >
-                          本指标暂无要素信息
-                        </div>
-                      )
-                    }   
-                    <div class="w-full">
-                      {/** ECharts图 */}
-                      <div id="chart" class="w-[370px] h-[254px]"></div>
-                      {/** 要素信息表格 */}
-                      {
-                        curFactorData.value.length ? (
-                          <div class="text-[14px] border border-solid border-[#208282]">
-                            <div 
-                              class="text-center w-[363px] h-[30px] leading-[30px]"
-                              style="background: linear-gradient(270deg, rgba(53, 218, 210, 0) 0%, rgba(53, 218, 210, 0.2971) 50%, rgba(53, 218, 210, 0) 100%);"
-                            >
-                              要素描述
-                            </div>
-                            <el-table 
-                              data={ curFactorData.value }
-                              height="180"
-                              style={ {width: "370px"} }
-                              row-style={(data) => {
-                                let curBgColor = (Number(data.rowIndex) + 2) % 2 === 0 ? "#0F3940" : "transparent"
-                                return {
-                                  "background-color": curBgColor,
-                                  "height": "45px",
-                                  "font-size": "16px"
-                                }
-                              }}
-                              header-row-style={ {"background-color": "transparent", "height": "45px", "font-size": "16px"} }
-                            >
-                              <el-table-column label="范围" align="center" >
-                              {
-                                ({ row }) => {
-                                  return `${ row.lowLimit }${ row.unit } ~ ${ row.highLimit }${ row.unit }`
-                                }
-                              }
-                              </el-table-column>
-                              <el-table-column label="健康值" prop="healthRatio" align="center" width="65px"/>
-                              <el-table-column label="要素结果" prop="indicatorResult" align="center" />
-                            </el-table>
-                          </div>
-                        ) : (
-                          <div class="w-[370px] h-[170px] leading-[170px] text-center text-[#35DAD2] tracking-widest" >
-                            本要素暂无描述信息
-                          </div>
-                        )
-                      }
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          </BigscreenContainer>
-        </BigscreenAdapter>
-      </div>
-    )
+            </Card>
+          </div>
+        </div>
+      )
+    }
+
+    return () => {
+      if (hiddenHeader.value) return <MainContainer />
+      return (
+        <div class="bg-[#0B2131] w-full h-full select-none">
+          <BigscreenAdapter>
+            <BigscreenContainer
+              backgroundImage={ bgImage.value }
+              key={ bgImage.value }
+              style="background-color: transparent;"
+            >
+              {/** 头部 */}
+              <Header
+                height={ headerHeight } 
+                bgImg={ headerBg }
+                title={ title }
+                titleHeight={ titleHeight }
+                titleWidth={ titleWidth }
+              >
+              </Header>
+              {/** 内容 */}
+              <MainContainer />
+            </BigscreenContainer>
+          </BigscreenAdapter>
+        </div>
+      )
+    }
   }
 })
 
 </script>
-
-<style lang="scss" scoped>
+<style lang="scss">
 .plot-selector {
 
   /** 去掉el-selector的背景和边框 */
@@ -993,7 +1014,8 @@ export default defineComponent({
     height: 4px;
   }
 }
-
+</style>
+<style lang="scss" scoped>
 :deep(.el-timeline-item__timestamp) {
   color: #35DAD2;
   font-size: 16px;
