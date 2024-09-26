@@ -294,7 +294,7 @@ const submitForm = async () => {
     });
     await CodeSendingInfoApi.updateCodeSendingInfoA(multipleSelectionA.value)
     dialogVisible.value = false
-    message.success("赋码成功")
+    message.success("系统正在执行赋码。。。时间可能较长，稍后请刷新数据")
     emit('success')
   } else {
     message.warning("赋码数量为【" + multipleSelectionA.value.length + "】与产品数量不符,请重新选择产品")

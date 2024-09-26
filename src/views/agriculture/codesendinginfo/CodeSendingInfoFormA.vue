@@ -230,7 +230,7 @@ const submitForm = async () => {
       await CodeSendingInfoApi.createCodeSendingInfo(data)
       const dataCodeApply = CodeApply.value as unknown as CodeApplyVO
       await CodeApplyApi.updateCodeApply(dataCodeApply)
-      message.success(t('common.createSuccess'))
+      message.success("系统正在执行发码。。。过程时间可能较长，稍后请刷新数据")
     } else {
       await CodeSendingInfoApi.updateCodeSendingInfo(data)
       message.success(t('common.updateSuccess'))
