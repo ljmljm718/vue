@@ -47,28 +47,32 @@ const selectItem = (index) => {
 
 const statisticList = ref([
   {
-    id: 1,
-    name: '溯源品牌',
-    num: 3,
-    color: '#F2FCF2'
+    id : 1,
+    name : '溯源品牌',
+    num : 0,
+    color : '#F2FCF2',
+    address : '/trace/product_brand/product-brand'
   },
   {
     id: 2,
     name: '溯源产品',
-    num: 3,
-    color: '#F5FCFF'
+    num: 0 ,
+    color: '#F5FCFF',
+    address : ''
   },
   {
     id: 3,
     name: '溯源模板',
-    num: 5,
-    color: '#FEFBF4'
+    num: 0,
+    color: '#FEFBF4',
+    address : '/trace/traceability/trace-template'
   },
   {
     id: 4,
     name: '溯源次数',
-    num: 6,
-    color: '#FFF7F7'
+    num: 0,
+    color: '#FFF7F7',
+    address : '/trace/traceability/trace-record'
   }
 ])
 
@@ -140,6 +144,7 @@ const getTraceStatistics = async () => {
       ]
     })
   )
+  console.log('recordList.value.length',recordList.value.length)
 }
 getTraceStatistics()
 
@@ -156,8 +161,10 @@ const getRecordStatistics = async (time) => {
     }
     return 0
   })
+  
 }
 getRecordStatistics('today')
+
 </script>
 <template>
   <div class="flex">
@@ -172,8 +179,9 @@ getRecordStatistics('today')
             <div
               v-for="item in statisticList"
               :key="item.id"
-              class="flex p-2 m-1 w-[220px]"
+              class="flex p-2 m-1 w-[220px] cursor-pointer"
               :style="{ backgroundColor: item.color }"
+              @click="item.address !== ''? $router.push(item.address) : null"
             >
               <div :class="`w-[50px] h-[60px] icon-${item.id} p-1`"> </div>
               <div class="flex flex-col">
@@ -203,26 +211,28 @@ getRecordStatistics('today')
           </div>
         </div>
         <div class="p-2 mt-2">
-          <div class="flex flex-row" v-for="(item, index) in recordList" :key="index">
-            <div class="w-[110px] h-[110px] justify-center items-center p-2">
-              <img :src="item.brandLogo" class="w-full h-90% object-contain flex items-center" />
-            </div>
-            <div class="flex flex-col p-2 w-full pl-2 ml-2 mt-2">
-              <div class="flex justify-between pb-4 items-center">
-                <div class="text-[16px]">{{ item.productBrand }}</div>
-                <div class="text-[16px]"
-                  >扫码次数：<span class="text-[24px] font-bold">{{ item.count }}</span></div
-                >
-              </div>
-              <div
-                ><el-progress
-                  :text-inside="false"
-                  :stroke-width="5"
-                  :show-text="false"
-                  :percentage="item.count"
-              /></div>
-            </div>
+          <div v-if="recordList.length === 0">
+            <div>暂无扫码数据</div>
           </div>
+          <div v-else>
+            <div class="flex flex-row" v-for="(item, index) in recordList" :key="index">
+              <div class="w-[110px] h-[110px] justify-center items-center p-2">
+                <img :src="item.brandLogo" class="w-full h-90% object-contain flex items-center" />
+              </div>
+              <div class="flex flex-col p-2 w-full pl-2 ml-2 mt-2">
+                <div class="flex justify-between pb-4 items-center">
+                  <div class="text-[16px]">{{ item.productBrand }}</div>
+                  <div class="text-[16px]"
+                    >扫码次数：<span class="text-[24px] font-bold">{{ item.count }}</span></div
+                  >
+                </div>
+                <div>
+                  <el-progress :text-inside="false" :stroke-width="5" :show-text="false" :percentage="item.count"/>
+                </div>
+              </div>
+          </div>
+        </div>
+
         </div>
       </ContentWrap>
     </div>
@@ -232,7 +242,7 @@ getRecordStatistics('today')
           <div class="w-5px h-20px bg-#009688 mt-1.5 ml-1"></div>
           <div class="text-[18px] mt-1 font-bold">溯源码</div>
         </div>
-        <div class="flex justify-between h-[90px] p-3 bg-#F0FAF9">
+        <div class="flex justify-between h-[90px] p-3 bg-#F0FAF9 cursor-pointer" @click="$router.push('/trace/code/apply')">
           <div class="code w-50% h-90%"> </div>
           <div class="text-[18px] w-full h-full flex justify-center items-center text-center">
             总计：<span class="text-[30px] font-bold"> {{ totalCodes }}</span>
@@ -258,10 +268,11 @@ getRecordStatistics('today')
         </div>
 
         <div
-          class="flex justify-between p-3 mt-1 h-[30px] items-center"
+          class="flex justify-between p-3 mt-1 h-[30px] items-center cursor-pointer"
           style="background: rgba(250, 200, 88, 0.1); border-radius: 4px"
+          @click="$router.push({path:'/trace/code/ComposeIndex', query: { codeType: '1' } })"
         >
-          <div class="flex flex-row">
+          <div class="flex flex-row ">
             <div class="w-[8px] items-center p-3">
               <div class="h-[0.1px] w-[0.1px] bg-#FAC858 rounded-full p-1.5">
                 </div>
@@ -274,8 +285,9 @@ getRecordStatistics('today')
           >
         </div>
         <div
-          class="flex justify-between p-3 mt-3 h-[30px] items-center"
+          class="flex justify-between p-3 mt-3 h-[30px] items-center cursor-pointer"
           style="background: rgba(89, 183, 86, 0.1); border-radius: 4px"
+          @click="$router.push({path:'/trace/code/ComposeIndex', query: { codeType: '2' } })"
         >
           <div class="flex flex-row">
             <div class="w-[8px] items-center p-3"

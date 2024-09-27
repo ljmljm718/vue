@@ -211,6 +211,7 @@ import download from '@/utils/download'
 import {CodeSendingInfoApi, CodeSendingInfoVO} from '@/api/agriculture/codesendinginfo'
 import CodeSendingInfoForm from './CodeSendingInfoForm.vue'
 import SelectProduct from './selectProduct.vue'
+import { useRoute } from 'vue-router';
 
 /** 发码记录 列表 */
 defineOptions({name: 'CodeSendingInfo'})
@@ -254,6 +255,9 @@ const multipleTable = ref();
 const getList = async () => {
   loading.value = true
   try {
+    const route = useRoute()
+    if(route.query.codeType && route.query.codeType === '2')
+      queryParams.codeType = '2'
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
     list.value = data.list
     total.value = data.total
