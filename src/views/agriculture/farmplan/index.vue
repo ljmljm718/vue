@@ -87,6 +87,7 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
+      
       <el-form-item label="作物名称" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
@@ -201,12 +202,12 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <div class="flex items-center mb-3">
+    <div class="flex items-center justify-between mb-3">
       <div style="margin-bottom: 1rem; margin-left: 1.5rem; margin-right: 1.5rem; height: 2rem">
         <el-form-item>
           <el-button
             type="primary"
-            class="!h-2.4rem"
+            class="!h-2.4rem !bg-[#009688] !color-[#fff]"
             plain
             @click="openForm('create')"
             v-hasPermi="['agri:farm-plan:create']"
@@ -216,11 +217,83 @@
           </el-button>
         </el-form-item>
       </div>
-      <div class="grow">
+      <div v-if='cardList == "list" ' class="grow ">
         <IntroduceAlert title="农事计划模块专门负责将作物的种植过程细分为若干个易于管理的计划。" />
       </div>
+        <div class="flex ml-1.5rem mt-[-10px]">
+        <div @click="cardList ='card'" class="py-5px px-15px cursor-pointer rounded-l"
+             :style="`background-color: ${cardList  == 'card' ? '#e5f4f3':''}; border:1.5px solid ${cardList  == 'card'?'#36a99e':'#e6e6e6'}; color:${cardList  == 'card' ? '#36a99e' : ''}`">
+          <img :src="cardList == 'card'?card:card2" class="w-10px h-10px" alt=""/>
+          卡片
+        </div>
+        <div @click="cardList='list'" class="py-5px cursor-pointer px-15px rounded-r"
+             :style="`border:1.5px solid ${cardList == 'list'?'#36a99e':'#e6e6e6'};background-color: ${cardList == 'list'?'#e5f4f3':''}; color:${cardList == 'list'?'#36a99e':''}`">
+          <img :src="cardList == 'list'?listImg:listImg2" class="w-10px h-10px" alt=""/>
+          列表
+        </div>
+      </div>
     </div>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <div v-if="cardList == 'card'" class='flex justify-between'>
+      <div class='w-10%'>
+        <div class='ml-20px'>
+          <div>农事计划</div>
+          <div class="mt-20px">
+            <el-date-picker
+            class="!w-130px"
+            v-model="monthVal"
+            @change='dataChange'
+            type="month"
+            placeholder="请选择月份"
+          />
+          </div>
+          <div class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
+          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
+          <div class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
+          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
+          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
+          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
+          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
+        </div>
+      </div>
+      <div class="w-89% " >
+        <div class='grid grid-cols-7 '>
+          <div class="w-100% flex items-center justify-center h-60px border-1px border-[#e6e6e6] border-solid bg-[#f5f5f5]" v-for="item,index in ['一','二','三','四','五','六','日']" :key="index" style="font-weight:600">周{{ item }}</div>
+        </div>
+        <div class="grid grid-cols-7">
+          <div v-for="item,index in dataList2" :key="index" :class="`flex flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
+            <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item}}</div>
+            <div class="w-88%">
+              <div class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> 地块 <div> > </div> </div>
+              <div class="bg-[#f7fbfb] color-[#999999] w-100% h-100px mb-15px flex justify-around flex-wrap">
+                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
+                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
+                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
+              </div>
+            </div>
+          </div>
+          <div v-for="item,index in dataList" :key="index" :class="`flex flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
+            <div class='text-30px my-18px' style="font-weight:600">{{item.data}}</div>
+            <div class="w-88%">
+              <div class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg)"> > </div> {{item.plotName?item.plotName:'暂无地块'}} <div> > </div> </div>
+              <div class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-around flex-wrap">
+                <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+                <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
+                <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
+                <div v-show='item.name == "种植"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
+                <div v-show='item.name == "打药"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
+                <div v-show='item.name == "采收"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
+                <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
+                <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
+                <div v-show='!item.name' class='flex items-center color-[#acacac]' style="font-weight:600">当前暂无农事计划</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <el-table v-if="cardList == 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
       <el-table-column label="计划名称" align="center" prop="planName" width="180" />
       <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
@@ -322,6 +395,7 @@
     </el-table>
     <!-- 分页 -->
     <Pagination
+    v-if="cardList == 'list'"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
@@ -576,6 +650,10 @@ import { ParkInfoVO } from '@/api/agriculture/parkinfo'
 import { ParkDetailVO } from '@/api/agriculture/parkdetail'
 import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue'
 import { page, carryOutUpdate, isFarmPlan } from './api'
+import card from '../../../assets/imgs/card-active.png'
+import card2 from '../../../assets/imgs/card-actived.png'
+import listImg from '../../../assets/imgs/list-active.png'
+import listImg2 from '../../../assets/imgs/list-actived.png'
 import { watch } from 'vue'
 interface AnyObject {
   [key: string]: any;
@@ -583,9 +661,12 @@ interface AnyObject {
 /** 农事计划 列表 */
 defineOptions({ name: 'FarmPlan' })
 
+const cardList=ref('card') //列表和网格
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const loading = ref(true) // 列表的加载中
+const day = ref(new Date().getDate())
+
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
@@ -636,6 +717,8 @@ const getList = async () => {
     const data = await FarmPlanApi.getFarmPlanPage(queryParams)
     //请求品类信息
     listCategoryManagement.value = await allDataCacheManager.getData({})
+    console.log(data.list,'列表')
+    console.log(listCategoryManagement.value,'品种')
     //把品类数据的name拼接到列表中
     data.list.forEach((item) => {
       item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ''
@@ -646,9 +729,35 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
+    let month= new Date().getMonth()+1
+    // let month= 6
+      list.value.forEach((itm:any) => {
+        let time=new Date(itm.startTime).toLocaleDateString().split('/')
+        if(month == Number(time[1])){
+          dataList.value.forEach((item:any) => {
+            if(item.data == Number(time[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+
+            }
+          })
+        }
+      })
+      console.log(dataList.value,'dataList.value getList')
   } finally {
     loading.value = false
   }
+}
+
+//替换方法
+const fn = (id) =>{
+  let name = ''
+  farmDefineOptions.value.forEach((item:any)=>{
+    if(id == item.id){
+      name = item.defineName
+    }
+  })
+  return name
 }
 
 /** 搜索按钮操作 */
@@ -1031,12 +1140,10 @@ const inputTab = (val:any,index:Number) => {
 }
 
 watch(() => formData.value, (val)=>{
-  console.log(val,'val123formData')
   NameList.value[inputNum.value] = {
     ...NameList.value[inputNum.value],
     ...val
   }
-  console.log( NameList.value[inputNum.value],' NameList.value[index]123')
 
 },{
   deep:true,immediate:true
@@ -1056,10 +1163,70 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
   queryParams.belongPlot = String(order[0].id)
   queryParams.plotName = String(order[0].name)
 }
+
+/******************************* 卡片 *******************************/
+
+const monthVal = ref('2024年9月')
+const dataList = ref<Array<any>>([])
+const dataList2 = ref<Array<any>>([])
+const firstDayOfMonth = ref( new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+const lastDayOfMonth = ref( new Date(new Date().getFullYear(), new Date().getMonth()+1, 0))
+const lastDayOfMonth2 = ref( new Date(new Date().getFullYear(), new Date().getMonth(), 0))
+const dayOfWeek = ref(firstDayOfMonth.value.getDay())
+const data = ref(lastDayOfMonth.value.getDate())
+const month =ref()
+const data2 = ref(lastDayOfMonth2.value.getDate())
+
+const getData = () => {
+  const num= dayOfWeek.value == 0?6: dayOfWeek.value == 6?5:dayOfWeek.value == 5?4:dayOfWeek.value == 4?3:dayOfWeek.value == 3?2:dayOfWeek.value == 2?1:''
+  for( let i = 1 ; i <= data.value ; i++ ) {
+    dataList.value.push({
+      data:i,
+      name:''
+    })
+  } 
+  for(let i=0 ; i< num ; i++) {
+      dataList2.value.unshift(data2.value-i)
+  }
+}
+getData()
+
+const dataChange = (e) =>{
+  if(e.getMonth()+1 == new Date().getMonth()+1){
+    day.value = new Date().getDate()
+  }else day.value = 0
+
+  month.value=e.getMonth()+1
+  firstDayOfMonth.value = new Date(e.getFullYear(), e.getMonth(), 1);
+  lastDayOfMonth.value = new Date(e.getFullYear(), e.getMonth()+1, 0);
+  lastDayOfMonth2.value = new Date(e.getFullYear(), e.getMonth(), 0);
+  dayOfWeek.value=firstDayOfMonth.value.getDay()
+  data.value = lastDayOfMonth.value.getDate()
+  data2.value = lastDayOfMonth2.value.getDate()
+  dataList.value=[]
+  dataList2.value=[]
+  getData()
+  list.value.forEach((itm:any) => {
+      let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      if( e.getMonth()+1 == Number(time[1])){
+          dataList.value.forEach((item:any) => {
+            if(item.data == Number(time[2])){
+              item.name=fn(itm.farmDefineType) 
+              item.plotName=itm.plotName
+            }
+        })
+      }
+  })
+  console.log(dataList.value,'123datalist dataChange')
+}
 </script>
 <style lang="scss" scoped>
 ::v-deep .com-dialog .el-dialog__body {
   padding: 0 !important;
+}
+.wrapper-item{
+  background-size: 100% 100%;
+  background-image: url(../../../assets/imgs/wrapper-item-top.png);
 }
 ::v-deep .custom-label-width .el-form-item__label {
   width: 110px !important;
