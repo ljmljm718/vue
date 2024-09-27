@@ -79,7 +79,7 @@ export default defineComponent({
     const nModel = ref()
 
     const getNums = async () => {
-      const params = {parkId: base.value.id}
+      const params = {parkId: ""}
       const res = await getNum(params)
       nVariety.value = res["品种数"]
       nModel.value = res["模型数"]
@@ -103,7 +103,7 @@ export default defineComponent({
     const bgImage = ref(bg)
 
     const getModelList = async () => {
-      const params = {parkId: base.value.id}
+      const params = {parkId: ""}
       const res = await getModel(params)
       // console.log("ModelList", res)
       modelList.value = res.map((item) => {
