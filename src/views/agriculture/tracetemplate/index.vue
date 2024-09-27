@@ -114,7 +114,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
+        <!-- <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
           <template #default="scope">
             <el-image
               :src="scope.row.img"
@@ -123,7 +123,7 @@
               :preview-src-list="[scope.row.img]"
             />
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!--      <el-table-column label="备注" align="center" prop="remark" />
               <el-table-column label="备注1" align="center" prop="remark1" />-->
         <el-table-column
@@ -204,7 +204,7 @@ import download from '@/utils/download'
 import { TraceTemplateApi, TraceTemplateVO } from '@/api/agriculture/tracetemplate'
 import TraceTemplateForm from './TraceTemplateForm.vue'
 import { ProducerEntryApi, ProducerEntryVO } from "@/api/agriculture/producerentry";
-import QRCode from 'qrcode'
+// import QRCode from 'qrcode'
 
 /** 溯源模板 列表 */
 defineOptions({name: 'TraceTemplate'})
@@ -247,13 +247,13 @@ const getList = async () => {
     const data = await TraceTemplateApi.getTraceTemplatePage(queryParams)
     console.log("🚀 ~ getList ~ data:", data.list)
     list.value = data.list
-    nextTick(() => {
-      list.value.forEach(async item => {
-        QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
-          item.img = url
-        })
-      })
-    })
+    // nextTick(() => {
+    //   list.value.forEach(async item => {
+    //     QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
+    //       item.img = url
+    //     })
+    //   })
+    // })
     total.value = data.total
   } finally {
     loading.value = false

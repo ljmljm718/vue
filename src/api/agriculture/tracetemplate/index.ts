@@ -54,4 +54,9 @@ export const TraceTemplateApi = {
   exportTraceTemplate: async (params) => {
     return await request.download({ url: `/agriculture/trace-template/export-excel`, params })
   },
+
+  // 发码扫码溯源
+  getCodeSendingInfoAndCreatTraceRecord: async (params) => {
+    return await request.get({ url: '/agriculture/code-sending-info/getCodeSendingInfoAndCreatTraceRecord', params })
+  }
 }

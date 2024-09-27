@@ -147,10 +147,10 @@
       <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
         <template #default="scope">
           <el-image
-            :src="`data:image/png;base64,${scope.row.qrImg}`"
+            :src="scope.row.img"
             style="object-fit: cover; width: 2rem; height: 2rem"
             preview-teleported
-            :preview-src-list="[`data:image/png;base64,${scope.row.qrImg}`]"
+            :preview-src-list="[scope.row.img]"
           />
         </template>
       </el-table-column>
@@ -205,6 +205,7 @@ import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {CodeSendingInfoApi, CodeSendingInfoVO} from '@/api/agriculture/codesendinginfo'
 import CodeSendingInfoForm from './CodeSendingInfoForm.vue'
+import QRCode from 'qrcode'
 
 /** 发码记录 列表 */
 defineOptions({name: 'CodeSendingInfo'})
@@ -249,6 +250,13 @@ const getList = async () => {
   try {
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
     list.value = data.list
+    nextTick(() => {
+      list.value.forEach(async item => {
+        QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
+          item.img = url
+        })
+      })
+    })
     total.value = data.total
   } finally {
     loading.value = false
