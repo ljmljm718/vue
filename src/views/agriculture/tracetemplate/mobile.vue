@@ -19,7 +19,6 @@ const getLabelById = (id: string) => {
   if (!selectedItem) return null;
   return selectedItem.companyName
 }
-getProducerEntryList()
 
 const props = defineProps({
   data: {
@@ -32,7 +31,10 @@ const route = useRoute()
 const routeData = ref<any>({})
 const getDataById = async () => {
   const { id } = route.query;
-  if (!id) return {}
+  if (!id) {
+    getProducerEntryList()
+    return {}
+  }
   const data = await TraceTemplateApi.getCodeSendingInfoAndCreatTraceRecord({ id })
   console.log("🚀 ~ getDataById ~ data:", data)
   if (data) routeData.value = data

@@ -52,6 +52,6 @@ export const TraceTemplateApi = {
 
   // 发码扫码溯源
   getCodeSendingInfoAndCreatTraceRecord: async (params) => {
-    return await request.get({ url: '/agriculture/code-sending-info/getCodeSendingInfoAndCreatTraceRecord', params })
+    return await request.get({ url: '/wechat/v1/agriculture/code-sending-info/getCodeSendingInfoAndCreatTraceRecord', params })
   }
 }
