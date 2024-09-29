@@ -1014,33 +1014,6 @@ export default defineComponent({
     height: 4px;
   }
 }
-</style>
-<style lang="scss" scoped>
-:deep(.el-timeline-item__timestamp) {
-  color: #35DAD2;
-  font-size: 16px;
-}
-
-:deep(.el-timeline-item__tail) {
-  border-color: #435B63;
-}
-
-:deep(.el-timeline-item__node) {
-  background-color: transparent;
-  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/point.png);
-  background-size: 100% 100%;
-  width: 30px;
-  height: 30px;
-  left: -10px;
-  top: -7px;
-}
-:deep(.el-timeline-item__timestamp) {
-  display: none;
-}
-:deep(.el-select--small .el-select__wrapper) {
-  font-size: 14px;
-}
-
 /** 生长周期列表 */
 .cur-arrow {
   background-image: url(/src/views/growthMonitoringModelDataCenter/assets/cur-arrow.png);
@@ -1225,6 +1198,34 @@ export default defineComponent({
   top: 413px;
   left: 764px;
 }
+</style>
+<style lang="scss" scoped>
+:deep(.el-timeline-item__timestamp) {
+  color: #35DAD2;
+  font-size: 16px;
+}
+
+:deep(.el-timeline-item__tail) {
+  border-color: #435B63;
+}
+
+:deep(.el-timeline-item__node) {
+  background-color: transparent;
+  background-image: url(/src/views/growthMonitoringModelDataCenter/assets/point.png);
+  background-size: 100% 100%;
+  width: 30px;
+  height: 30px;
+  left: -10px;
+  top: -7px;
+}
+:deep(.el-timeline-item__timestamp) {
+  display: none;
+}
+:deep(.el-select--small .el-select__wrapper) {
+  font-size: 14px;
+}
+
+
 
 /** echarts图切换 */
 :deep(.el-tabs__nav) {
