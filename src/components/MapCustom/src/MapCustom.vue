@@ -4,10 +4,11 @@ import CryptoJS from 'crypto-js'
 import { generateUUID } from '@/utils'
 import adapter from './adapter'
 import { Search } from '@element-plus/icons-vue'
+import axios from 'axios'
+import { searchDoc } from './searchTool'
 import 'leaflet-draw'
 import "leaflet/dist/leaflet.css"
 import 'leaflet-draw/dist/leaflet.draw.css'
-import axios from 'axios'
 
 adapter()
 defineOptions({ name: 'MapCustom' })
@@ -166,11 +167,13 @@ defineExpose({
 const keyword = ref<string>('')
 const searchList = ref<any[]>([])
 const handleSearch = () => {
+  const localSuggests = searchDoc(keyword.value);
+  console.log("🚀 ~ handleSearch ~ localSuggests:", localSuggests)
   axios.get('/tdCache/api/tdtmap/search', {
     params: { keyWord: keyword.value }
   }).then(({ data }) => {
     console.log("🚀 ~ handleSearch ~ data:", data)
-    if (Array.isArray(data)) searchList.value = data;
+    if (Array.isArray(data)) searchList.value = [...localSuggests.map(item => item.meta), ...data];
   })
 }
 const handleSearchItemClick = (item) => {
@@ -178,7 +181,13 @@ const handleSearchItemClick = (item) => {
   const lonlatArr = lonlat.split(',');
   const [lng, lat] = lonlatArr;
   const longitude = parseFloat(lng), latitude = parseFloat(lat)
-  L.marker([latitude, longitude]).addTo(map)
+  L.marker([latitude, longitude], {
+    icon: L.icon({
+      iconUrl: '/location.png',
+      iconSize: [58, 38],
+      iconAnchor: [29, 38]
+    })
+  }).addTo(map)
   setCenterZoom([latitude, longitude], 17)
 }
 </script>
