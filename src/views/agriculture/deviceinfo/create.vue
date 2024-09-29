@@ -10,14 +10,14 @@ import {
   TopRight,
   Refresh
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { useTagsViewStore } from "@/store/modules/tagsView";
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
+import {ElMessage} from 'element-plus'
+import {useTagsViewStore} from "@/store/modules/tagsView";
+import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
+import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
 import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
 import {retainFirstTwoLayers} from "@/utils/tree";
-import { ParkDetailVO } from '@/api/agriculture/parkdetail'
-import {  ParkInfoVO } from '@/api/agriculture/parkinfo'
+import {ParkDetailVO} from '@/api/agriculture/parkdetail'
+import {ParkInfoVO} from '@/api/agriculture/parkinfo'
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import MapPosSelector from '@/components/MapPosSelector/index.vue'
@@ -30,8 +30,8 @@ const FORMPAGE_NAME = '设备信息'
 const ORIGIN_PATH = '/internetMonitor/device/deviceView' // 关闭表单时跳转的路径
 
 // name使用创建菜单时填写的组件名
-defineOptions({ name: 'DeviceInfoForm' })
-const options=ref([
+defineOptions({name: 'DeviceInfoForm'})
+const options = ref([
   {
     value: '温度',
     label: '温度'
@@ -60,10 +60,10 @@ const getFormInfo = async () => {
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree);
   resetForm()
-  if (route.query.id){
+  if (route.query.id) {
     formData.value = await DeviceInfoApi.getDeviceInfo(route.query.id as any)
     loadData(route.query.id);
-    formData.value.deviceMonitorType=formData.value.deviceMonitorType.split(',');
+    formData.value.deviceMonitorType = formData.value.deviceMonitorType.split(',');
     deviceType.value = formData.value.deviceType.split(',').map(Number)
   }
   if (!formData.value.id) loadData()
@@ -101,18 +101,17 @@ const formData = ref({
 
 // 表单校验规则
 const formRules = reactive({
-  deviceName: [{ required: true, message: '设备点位不能为空', trigger: 'blur' }],
-  deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
-  deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
-  deviceStatus: [{ required: true, message: '状态不能为空', trigger: 'change' }],
-  imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
+  deviceName: [{required: true, message: '设备点位不能为空', trigger: 'blur'}],
+  deviceType: [{required: true, message: '设备类型不能为空', trigger: 'change'}],
+  deviceMonitorType: [{required: true, message: '设备监测类型不能为空', trigger: 'change'}],
+  deviceStatus: [{required: true, message: '状态不能为空', trigger: 'change'}],
+  imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}]
 })
 
 // 提交表单
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
-
   // 提交请求
   formLoading.value = true
   try {
@@ -138,6 +137,21 @@ const submitForm = async () => {
     formLoading.value = false
   }
 }
+
+const ifBeingByNameButton = async () => {
+  // 提交请求
+  formLoading.value = true
+  try {
+    const data = formData.value as unknown as DeviceInfoVO
+    const being = await DeviceInfoApi.ifBeingByName(data)
+    formLoading.value = false
+    ElMessage.warning(being)
+  } catch (err) {
+    ElMessage.error('校验失败, 请联系管理员')
+  } finally {
+    formLoading.value = false
+  }
+}
 /**
  * 设备分类级联选择器
  */
@@ -157,16 +171,15 @@ const parkInfoPopupRef = ref()
 const openType = ref('')
 const openParkInfoPopup = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined || openType.value === ""){
+  if (openType.value === undefined || openType.value === "") {
     ElMessage.error("请选择基地")
-  }else parkInfoPopupRef.value.open(id)
+  } else parkInfoPopupRef.value.open(id)
 }
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
-  if (openType.value === '0'){
+  if (openType.value === '0') {
     formData.value.belongPark = String(order[0].code)
     formData.value.parkName = String(order[0].name)
-  }
-  else formData.value.belongPlot = String(order[0].id)
+  } else formData.value.belongPlot = String(order[0].id)
 }
 
 //地块的选择
@@ -174,13 +187,13 @@ const parkDetailPopupRef = ref()
 const openType1 = ref('')
 const openParkDetailPopup = (id: string) => {
   openType1.value = id;
-  if (!openType1.value){
+  if (!openType1.value) {
     ElMessage.error("请选择基地")
-  }else parkDetailPopupRef.value.open(id)
+  } else parkDetailPopupRef.value.open(id)
 }
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
 
-  console.log("--->>查看选择的地块信息：",order[0])
+  console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.parkDetailName = String(order[0].name)
@@ -260,7 +273,8 @@ const handleSelectorChange = (val) => {
             :icon="TopRight"
             plain
             @click="submitForm"
-          >提交</el-button>
+          >提交
+          </el-button>
           <el-button
             type="danger"
             :icon="Refresh"
@@ -274,7 +288,8 @@ const handleSelectorChange = (val) => {
             type="primary"
             plain
             @click="router.back()"
-          >返回</el-button>
+          >返回
+          </el-button>
           <el-button
             type="primary"
             :icon="FolderChecked"
@@ -297,10 +312,18 @@ const handleSelectorChange = (val) => {
             class="grid 2xl:grid-cols-3 gap-2 p-4"
           >
             <el-form-item label="设备编号" prop="deviceCode">
-              <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
+              <el-input v-model="formData.deviceCode" placeholder="请输入设备编号"/>
             </el-form-item>
             <el-form-item label="设备点位" prop="deviceName">
-              <el-input v-model="formData.deviceName" placeholder="请输入设备点位" />
+              <el-input
+                v-model="formData.deviceName"
+                placeholder="请输入设备点位"
+              >
+                <template #append>
+                  <el-button @click="ifBeingByNameButton">存在验证</el-button>
+                </template>
+              </el-input>
+
             </el-form-item>
             <el-form-item label="设备类型" prop="deviceType">
               <el-cascader
@@ -324,7 +347,7 @@ const handleSelectorChange = (val) => {
                   v-for="item in options"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value" />
+                  :value="item.value"/>
               </el-select>
             </el-form-item>
             <el-form-item label="所属基地" prop="belongPark">
@@ -338,7 +361,7 @@ const handleSelectorChange = (val) => {
               </el-input>
             </el-form-item>
             <el-form-item label="所属地块" prop="belongPlot">
-              <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly >
+              <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly>
                 <template #append>
                   <el-button @click="openParkDetailPopup(formData.belongPark)">
                     <Icon icon="ep:search"/>
@@ -379,22 +402,22 @@ const handleSelectorChange = (val) => {
               </el-input>
             </el-form-item>
             <el-form-item label="位置" prop="location">
-              <el-input v-model="formData.location" placeholder="请输入位置" />
+              <el-input v-model="formData.location" placeholder="请输入位置"/>
             </el-form-item>
             <el-form-item label="NVR序列号" prop="dtu">
-              <el-input v-model="formData.dtu" placeholder="请输入NVR序列号" />
+              <el-input v-model="formData.dtu" placeholder="请输入NVR序列号"/>
             </el-form-item>
             <el-form-item label="通道号" prop="channelId">
-              <el-input v-model="formData.channelId" placeholder="请输入通道号" />
+              <el-input v-model="formData.channelId" placeholder="请输入通道号"/>
             </el-form-item>
             <el-form-item label="图片" prop="imgId">
-              <UploadImg v-model="formData.imgId" />
+              <UploadImg v-model="formData.imgId"/>
             </el-form-item>
             <el-form-item label="访问地址" prop="url">
-              <el-input v-model="formData.url" placeholder="请输入访问地址" />
+              <el-input v-model="formData.url" placeholder="请输入访问地址"/>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
+              <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
             </el-form-item>
           </el-form>
         </el-scrollbar>

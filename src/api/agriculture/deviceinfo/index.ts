@@ -54,6 +54,11 @@ export const DeviceInfoApi = {
     return await request.put({ url: `/agriculture/device-info/update`, data })
   },
 
+  // 校验设备名称
+  ifBeingByName: async (data: DeviceInfoVO) => {
+    return await request.put({ url: `/agriculture/device-info/ifBeingByName`, data })
+  },
+
   // 删除设备信息
   deleteDeviceInfo: async (id: number) => {
     return await request.delete({ url: `/agriculture/device-info/delete?id=` + id })
