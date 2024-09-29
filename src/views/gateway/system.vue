@@ -32,6 +32,10 @@ const initVideo = (containerId:string, url:string) => {
   })
 }
 
+onMounted(() => {
+  initVideo('videoDom', 'https://zhuangbeizz.cn/public/video1.m3u8')
+})
+
 
 const showHeader = ref<boolean>(true)
 const checkScroll = () => {
@@ -421,7 +425,10 @@ handleItemChange(typeDataList.value[0])
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
       </div>
       <div class="container flex justify-center mt-1rem">
-        <div class="bg-black aspect-video h-30rem" id="videoDom"></div>
+        <div
+          class="bg-black aspect-video h-30rem"
+          id="videoDom"
+        ></div>
       </div>
     </div>
 
