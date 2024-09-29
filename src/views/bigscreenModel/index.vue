@@ -289,6 +289,7 @@ export default defineComponent({
           childList.value = item.child2
         }
       })
+      if(childList.value.length==0) childList.value =  infoList.value[numVal.value].child2
       let num = mainTopNum.value
       let num2 = numVal.value
       setNum.value = 2
@@ -725,10 +726,18 @@ export default defineComponent({
                             <div class="left3-pie w-40px h-35px mr-[-13px]"></div>
                             <div class="w-2px !h-500px mt-[-9px] mr-[-10px] bg-[#435b63]"></div>
                           </div>
-                          <div class=" w-75% px-20px h-68% py-10px left3-meassage">
+                          <div class=" w-75% px-20px h-68% box-border py-10px left3-meassage  h-90px">
                             <div class="color-[#33d1ca] text-lg ml-5px">{item.itemName}</div>
-                            <div class="color-[#9db1b7] text-sm">{item.itemContent}</div>
-                          </div>
+                            <el-tooltip
+                              effect="dark"
+                              content={item.itemContent}
+                              placement="top-start"
+                              popper-class="tooltip-width"
+                              teleported={false}
+                            >
+                              <div class="color-[#9db1b7] left3-text text-sm">{item.itemContent}</div>
+                            </el-tooltip>
+                            </div>
                         </div>
                       )
                     })
@@ -986,6 +995,21 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang='scss' scoped>
+
+::v-deep(.el-popper),
+::v-deep(.el-popper[data-popper-placement^="top"] .el-popper__arrow::before) {
+  background-color: #303133 !important;
+  color: #fff !important;
+  font-size:15px
+}
+::v-deep(.el-popper) {
+  width: 31.875rem !important;
+}
+
+</style>
+
 <style lang="scss" scoped>
 .box-title {
   color: #caffec;
@@ -1104,6 +1128,13 @@ export default defineComponent({
   background-size: 100% 100%;
   background-image: url(./assets/meassage-bg.png);
 }
+.left3-text{
+ display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .right-xian {
   width: 50%;
   height: 2px;
@@ -1145,7 +1176,6 @@ export default defineComponent({
     background-size: 100% 100%;
     background-image: url(./assets/main-top-left2.png);
   }
-  
   .main-top-right2 {
     background-size: 100% 100%;
     background-image: url(./assets/main-top-right2.png);
