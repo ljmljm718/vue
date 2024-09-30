@@ -81,7 +81,7 @@ const productList = computed(() => {
 })
 </script>
 <template>
-  <div class="w-full h-full overflow-auto">
+  <div class="w-full h-full overflow-auto text-[#000]">
     <!-- <div class="header-bg w-full max-h-[8rem]">
     </div> -->
     <img
