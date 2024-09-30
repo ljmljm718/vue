@@ -33,8 +33,23 @@ const initVideo = (containerId:string, url:string) => {
 }
 
 onMounted(() => {
-  initVideo('videoDom', 'https://zhuangbeizz.cn/public/video1.m3u8')
+  initVideo('videoDom', '/public/video1/output.m3u8')
 })
+
+const currentIndex = ref<number>(1)
+const handleVideoChange = (flag:number) => {
+  if (currentIndex.value === 1 && flag < 0) return
+  if (currentIndex.value === 6 && flag > 0) return
+  currentIndex.value = flag + currentIndex.value
+  if (currentIndex.value <= 0) {
+    currentIndex.value = 1
+  }
+  if (currentIndex.value > 6) {
+    currentIndex.value = 6
+  }
+  const url = `/public/video${currentIndex.value}/output.m3u8`
+  initVideo('videoDom', url)
+}
 
 
 const showHeader = ref<boolean>(true)
@@ -424,11 +439,17 @@ handleItemChange(typeDataList.value[0])
         <div class="text-1.8rem">视频展示</div>
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
       </div>
-      <div class="container flex justify-center mt-1rem">
+      <div class="container flex justify-center mt-1rem relative">
         <div
           class="bg-black aspect-video h-30rem"
           id="videoDom"
         ></div>
+        <div class="absolute left-[1rem] top-[14rem]" @click="handleVideoChange(-1)">
+          <img src="/left.png" class="w-2rem" />
+        </div>
+        <div class="absolute right-[1rem] top-[14rem]" @click="handleVideoChange(1)">
+          <img src="/right.png" class="w-2rem" />
+        </div>
       </div>
     </div>
 

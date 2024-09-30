@@ -36,6 +36,12 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^/tdCache`), '/tdCache'),
         },
+        ['/public']: {
+          target: "https://zhuangbeizz.cn/",
+          ws: false,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(new RegExp(`^/public`), '/public'),
+        }
       },
     },
     // 项目使用的vite插件。 单独提取到build/vite/plugin中管理

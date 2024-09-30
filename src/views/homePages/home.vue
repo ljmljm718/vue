@@ -197,6 +197,13 @@ onUnmounted(() => {
 })
 
 const routerHandler = (item: string) => {
+  const userInfo = wsCache.get(CACHE_KEY.USER)
+  let isErDuUser = false
+  if (Array.isArray(userInfo.roles)) {
+    userInfo.roles.forEach(item => {
+      if (item === "erdu") isErDuUser = true
+    });
+  }
   const routeMap = {
     '可视化驾驶舱': wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
 
@@ -208,7 +215,7 @@ const routerHandler = (item: string) => {
 
     '农事活动': '/farm_work/farmManage/farm-record',
     '种植管理': '/farm_work/crop-base',
-    '种植溯源': '/trace/plant-trace',
+    '种植溯源': isErDuUser ? '/trace/trace-visual' : '/trace/plant-trace',
     '监测模型': '/growth_monitor/modelMonitor',
     '农事概览': '/farm_work/agriOverview',
 
