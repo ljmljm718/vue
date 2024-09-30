@@ -270,7 +270,7 @@ getRecordStatistics('today')
         <div
           class="flex justify-between p-3 mt-1 h-[30px] items-center cursor-pointer"
           style="background: rgba(250, 200, 88, 0.1); border-radius: 4px"
-          @click="$router.push({path:'/trace/code/ComposeIndex', query: { codeType: '1' } })"
+          @click="$router.push({path:'/trace/code/ComposeIndex' })"
         >
           <div class="flex flex-row ">
             <div class="w-[8px] items-center p-3">
@@ -287,7 +287,7 @@ getRecordStatistics('today')
         <div
           class="flex justify-between p-3 mt-3 h-[30px] items-center cursor-pointer"
           style="background: rgba(89, 183, 86, 0.1); border-radius: 4px"
-          @click="$router.push({path:'/trace/code/ComposeIndex', query: { codeType: '2' } })"
+          @click="$router.push({path:'/trace/code/code-sending-info'})"
         >
           <div class="flex flex-row">
             <div class="w-[8px] items-center p-3"
