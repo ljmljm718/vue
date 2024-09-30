@@ -64,29 +64,29 @@
           style="width: 220px"
         />
       </el-form-item>
-      <el-form-item label="是否赋码" prop="codeType">
-        <el-select
-          v-model="queryParams.codeType"
-          placeholder="请选择是否赋码"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchNum">
-        <el-input
-          v-model="queryParams.batchNum"
-          placeholder="请输入批次号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="是否赋码" prop="codeType">-->
+      <!--        <el-select-->
+      <!--          v-model="queryParams.codeType"-->
+      <!--          placeholder="请选择是否赋码"-->
+      <!--          clearable-->
+      <!--          class="!w-240px"-->
+      <!--        >-->
+      <!--          <el-option-->
+      <!--            v-for="item in options"-->
+      <!--            :key="item.value"-->
+      <!--            :label="item.label"-->
+      <!--            :value="item.value"/>-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="批次号" prop="batchNum">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.batchNum"-->
+      <!--          placeholder="请输入批次号"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--          class="!w-240px"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -211,7 +211,7 @@ import download from '@/utils/download'
 import {CodeSendingInfoApi, CodeSendingInfoVO} from '@/api/agriculture/codesendinginfo'
 import CodeSendingInfoForm from './CodeSendingInfoForm.vue'
 import SelectProduct from './selectProduct.vue'
-import { useRoute } from 'vue-router';
+import {useRoute} from 'vue-router';
 
 /** 发码记录 列表 */
 defineOptions({name: 'CodeSendingInfo'})
@@ -255,9 +255,6 @@ const multipleTable = ref();
 const getList = async () => {
   loading.value = true
   try {
-    const route = useRoute()
-    if(route.query.codeType && route.query.codeType === '2')
-      queryParams.codeType = '2'
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
     list.value = data.list
     total.value = data.total
