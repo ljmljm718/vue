@@ -138,6 +138,13 @@
             <el-button
               link
               type="primary"
+              @click="openForm('detail', scope.row.id)"
+            >
+              详情
+            </el-button>
+            <el-button
+              link
+              type="primary"
               @click="openForm('update', scope.row.id)"
               v-hasPermi="['agriculture:trace-template:update']"
             >
@@ -184,7 +191,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 分页 -->
     <Pagination
       :total="total"

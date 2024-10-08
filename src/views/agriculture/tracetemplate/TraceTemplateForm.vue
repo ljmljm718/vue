@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1000px">
     <div class="flex space-x-5 items-stretch">
       <el-form
         ref="formRef"
@@ -10,7 +10,7 @@
         class="grow"
       >
         <el-form-item label="模板名称" prop="templateName">
-          <el-input v-model="formData.templateName" placeholder="请输入模板名称"/>
+          <el-input v-model="formData.templateName" placeholder="请输入模板名称" :disabled="disabled"/>
         </el-form-item>
         <el-form-item label="生产商" prop="mfrsId">
           <el-select
@@ -18,6 +18,7 @@
             placeholder="请选择生产商"
             clearable
             style="width: 100%"
+            :disabled="disabled"
           >
             <el-option
               v-for="item in producerEntryList"
@@ -28,12 +29,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="产地" prop="origin">
-          <el-input v-model="formData.origin" placeholder="请输入产地"/>
+          <el-input v-model="formData.origin" placeholder="请输入产地" :disabled="disabled"/>
         </el-form-item>
         <el-form-item label="适用品牌" prop="brandName">
           <el-input v-model="formData.brandName" disabled placeholder="请选择适用品牌">
             <template #append>
-              <el-button @click="openProductBrandPopup()">
+              <el-button @click="openProductBrandPopup()" :disabled="disabled">
                 <Icon icon="ep:search"/>
                 选择
               </el-button>
@@ -45,20 +46,20 @@
                     disabled/>
         </el-form-item>
         <el-form-item label="头部宣传图" prop="headerImg">
-          <UploadImg v-model="formData.headerImg"/>
+          <UploadImg v-model="formData.headerImg" :disabled="disabled"/>
         </el-form-item>
         <el-form-item label="产品展示图片" prop="productImgs">
-          <UploadImgs v-model="formData.productImgs"/>
+          <UploadImgs v-model="formData.productImgs" :limit="10" :disabled="disabled" aria-readonly="true"/>
         </el-form-item>
       </el-form>
       <div class="w-20rem max-h-[35rem]">
         <MobilePage :data="formData" />
       </div>
     </div>
-    
+
     <template #footer>
-      <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="submitForm" type="primary" :disabled="formLoading" v-if="!disabled">确 定</el-button>
+      <el-button @click="dialogVisible = false" v-if="!disabled">取 消</el-button>
     </template>
   </Dialog>
 
@@ -80,6 +81,7 @@ defineOptions({name: 'TraceTemplateForm'})
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const disabled = ref(false) // 表单是否可编辑
 const producerEntryList = ref<ProducerEntryVO[]>([]) // 生产商的数据
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
@@ -118,7 +120,9 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await TraceTemplateApi.getTraceTemplate(id)
+      if (formData.value.productImg)
       formData.value.productImgs = formData.value.productImg.split(",")
+      if (formType.value === 'detail') disabled.value = true
     } finally {
       formLoading.value = false
     }
@@ -185,5 +189,6 @@ const resetForm = () => {
     brandDetail: undefined
   }
   formRef.value?.resetFields()
+  disabled.value = false
 }
 </script>
