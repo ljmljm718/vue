@@ -103,7 +103,7 @@
             v-if="scope.row.approvalStatus==='0'"
             link
             type="warning"
-            @click="updateApprovalStatus(scope.row)"
+            @click="openForm('approval', scope.row.id)"
             v-hasPermi="['agriculture:producer-entry:update']"
           >
             审批
@@ -130,7 +130,7 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <ProducerEntryForm ref="formRef" @success="getList" />
+  <ProducerEntryForm ref="formRef" @success="getList" @refresh="resetQuery()" />
 </template>
 
 <script setup lang="ts">
@@ -139,6 +139,8 @@ import download from '@/utils/download'
 import { ProducerEntryApi, ProducerEntryVO } from '@/api/agriculture/producerentry'
 import ProducerEntryForm from './ProducerEntryForm.vue'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
+import activiti
+  from "@/components/bpmnProcessDesigner/package/designer/plugins/extension-moddle/activiti";
 
 /** 生产商入库 列表 */
 defineOptions({ name: 'ProducerEntry' })
@@ -198,20 +200,21 @@ const openForm = (type: string, id?: number) => {
 }
 
 //修改审批状态
-const updateApprovalStatus = async (row: ProducerEntryApi.ProducerEntryVO) => {
-  try {
-    // 修改状态的二次确认
-    await message.confirm('确认通过当前入库审批吗？')
-    const data = row as unknown as ProducerEntryVO
-    data.approvalStatus = '1'
-    console.log("data", data)
-    // 发起修改状态
-    await ProducerEntryApi.updateProducerEntry(data)
-    // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+// const updateApprovalStatus = async (row: ProducerEntryApi.ProducerEntryVO) => {
+//   try {
+//     openForm("approval", row.id)
+//     // 修改状态的二次确认
+//     await message.confirm('确认通过当前入库审批吗？')
+//     const data = row as unknown as ProducerEntryVO
+//     data.approvalStatus = '1'
+//     console.log("data", data)
+//     // 发起修改状态
+//     await ProducerEntryApi.updateProducerEntry(data)
+//     // 刷新列表
+//     await getList()
+//   } catch {
+//   }
+// }
 
 
 /** 删除按钮操作 */
@@ -241,6 +244,10 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
+
+onActivated(() => {
+  getList()
+})
 
 /** 初始化 **/
 onMounted(() => {

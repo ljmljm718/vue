@@ -92,6 +92,7 @@
     <template #footer>
       <el-button @click="submitForm" type="primary" v-if="!disabled">确 定</el-button>
       <el-button @click="dialogVisible = false" v-if="!disabled">取 消</el-button>
+      <el-button @click="approvalForm" type="primary" v-if="approvalShow">审 批</el-button>
     </template>
   </Dialog>
 </template>
@@ -105,6 +106,7 @@ defineOptions({ name: 'ProducerEntryForm' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
+const approvalShow = ref(false) // 审批按钮是否展示
 const disabled = ref(false) // 表单是否可编辑
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
@@ -141,6 +143,11 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await ProducerEntryApi.getProducerEntry(id)
       if (formType.value === 'detail') disabled.value = true
+      if (formType.value === 'approval') {
+        disabled.value = true
+        approvalShow.value = true
+        dialogTitle.value = '审批'
+      }
     } finally {
       formLoading.value = false
     }
@@ -149,7 +156,7 @@ const open = async (type: string, id?: number) => {
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success', 'refresh']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
@@ -172,6 +179,21 @@ const submitForm = async () => {
   }
 }
 
+//修改审批状态
+const approvalForm = async () => {
+  try {
+    // 修改状态的二次确认
+    await message.confirm('确认通过当前入库审批吗？')
+    const data = formData.value as unknown as ProducerEntryVO
+    data.approvalStatus = '1'
+    // 发起修改状态
+    await ProducerEntryApi.updateProducerEntry(data)
+    dialogVisible.value = false
+    emit('refresh')
+  } catch {
+  }
+}
+
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
@@ -189,5 +211,6 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
   disabled.value = false
+  approvalShow.value = false
 }
 </script>

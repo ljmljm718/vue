@@ -96,6 +96,9 @@ const formData = ref({
 })
 const formRules = reactive({
   productBrand: [{ required: true, message: '品牌名不能为空', trigger: 'blur' }],
+  belongVarietyId: [{ required: true, message: '品种不能为空', trigger: 'blur' }],
+  // belongCategoryId: [{ required: true, message: '品类不能为空', trigger: 'blur' }],
+  brandLogo: [{ required: true, message: '品牌logo不能为空', trigger: 'blur' }],
   usedStatus: [{ required: true, message: '启用状态不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
