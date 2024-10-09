@@ -133,6 +133,13 @@ const formData = ref({
   reserveThree: undefined,
 })
 const formRules = reactive({
+  schemeName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+  marketingCreator: [{required: true, message: '设计人/创作人不能为空', trigger: 'change'}],
+  briefIntroduction: [{required: true, message: '简介不能为空', trigger: 'blur'}],
+  marketingUploadTime: [{required: true, message: '时间不能为空', trigger: 'blur'}],
+  marketingCategory: [{required: true, message: '分类不能为空', trigger: 'blur'}],
+  marketingTags: [{required: true, message: '标签不能为空', trigger: 'blur'}],
+  coverImage: [{required: true, message: '图片不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
