@@ -91,6 +91,11 @@ const formData = ref({
   img: undefined,
 })
 const formRules = reactive({
+  cropName: [{ required: true, message: '品种名称不能为空', trigger: 'blur' }],
+  healthLevel: [{ required: true, message: '健康等级不能为空', trigger: 'blur' }],
+  min: [{ required: true, message: '下限不能为空', trigger: 'blur' }],
+  max: [{ required: true, message: '上限不能为空', trigger: 'blur' }],
+  modelName: [{ required: true, message: '模型名称不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
