@@ -634,21 +634,26 @@ export default defineComponent({
 
     // 封装函数来生成单独的tab元素
     const renderTab = (tab, index) => {
+      const isActiveStyle = isActive(index)
+        ? { color: '#08FFFF' }
+        : { color: '#fff' };
       return (
         <div
           key={index}
-          class={['flex', 'items-center',  'space-x-1.5rem', 'cursor-pointer',
+          class={['flex', 'items-center', 'space-x-2rem', 'cursor-pointer', 'font-semibold',
             isActive(index)
-              ? `bottomTabIcon${index + 1}Active`
+              ? `bottomTabIcon${index + 1}Active `
               : `bottomTabIcon${index + 1}`,
           ]}
+          style={isActiveStyle}
           onClick={() => setActive(index)}
         >
-          <div class="w-0.5 h-0.5 mb-1"></div> 
-          <span>{tab.name}</span>
+          <div class="w-[24px] h-[24px]"></div> 
+          <div class="ml-2 grow">{tab.name}</div>
         </div>
       );
     };
+    
     const indusTabPage = () => {
       return(
         <div class="w-full h-full box-border flex relative">
@@ -662,26 +667,26 @@ export default defineComponent({
                 style="border-bottom: 1px solid #08FFFF"
               >
                 <div class="titleIcon"></div>
-                <div class="text-[1.5rem] art-font">视频</div>
+                <div class="text-[1.5rem] art-font">本村产业情况</div>
               </div>
               {/* 内容 */}
               <div class="mt-[1rem] flex items-center justify-evenly">
-                <div class="flex flex-col justify-center">
+                <div class="flex flex-col justify-center items-center">
                   <div class="text-[1.3rem] text-[#08FFFF] art-font">4000+</div>
                   <div class="text-[1rem] text-[#fff]">种植面积/亩</div>
                   <div class="IndusSituationImg flex"></div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <div class="text-[1.3rem] text-[#08FFFF] art-font">4000+</div>
                   <div class="text-[1rem] text-[#fff]">年产值/万元</div>
                   <div class="IndusSituationImg flex "></div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <div class="text-[1.3rem] text-[#08FFFF] art-font">8000+</div>
                   <div class="text-[1rem] text-[#fff]">带动就业/人</div>
                   <div class="IndusSituationImg flex "></div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <div class="text-[1.3rem] text-[#08FFFF] art-font">300+</div>
                   <div class="text-[1rem] text-[#fff]">农民增收/万元</div>
                   <div class="IndusSituationImg flex "></div>
@@ -700,7 +705,7 @@ export default defineComponent({
                 <div class="text-[1.5rem] art-font">药用价值及功效</div>
               </div>
               {/* 内容 */}
-              <div class="flex gap-[0.5rem] justify-between">
+              <div class="flex gap-[0.5rem] justify-between ">
                 <div class="flex flex-col mr-10rem">
                   <div class="flex">图1</div>
                   <div class="flex">虚线</div>
@@ -709,8 +714,8 @@ export default defineComponent({
                   <div class="flex">虚线</div>
                   <div class="flex">图2</div>
                 </div>
-                <el-scrollbar height="380px">
-                <div class="flex flex-col h-full  mt-1.3rem">
+                <el-scrollbar height="380px" class="flex ">
+                <div class="flex flex-col h-full ">
                   <div class="yellowTitleBg titleBg art-font text-[#021512] text-[1.2rem] flex">传统功效</div>
                   <div class="flex flex-col mb-[0.8rem]">
                     <div class="text-[#EFFC6D] text-[1rem] font-semibold mb-.3rem">理气宽中:</div>
@@ -751,23 +756,29 @@ export default defineComponent({
             </div>
           </div>
           {/* 中间 */}
-          <div class="grow h-full flex flex-col  mt-[1.2rem]">
-            <div class="flex top-[0.5rem] relative w-full justify-between items-center">
-              <div class="absolute left-8 top-4 flex leftButtonBg titleBg text-[#fff] text-[1.7rem]">传统功效</div>
-              <div class="absolute right-8 top-4 flex rightButtonBg titleBg text-[#fff] text-[1.7rem]">现代研究功效</div>
+          <div class="grow h-full flex flex-col items-center">
+            <div class="w-[800px] mt-30px flex justify-between">
+              <div class="leftButtonBg box-border flex items-center pl-50px w-280px h-50px text-[#fff] text-[23px]">传统功效</div>
+              <div class="rightButtonBg box-border flex flex-row-reverse items-center pr-50px w-280px h-50px text-[#fff] text-[23px]">现代研究功效</div>
             </div>
-              {/* 中间的图 */}
-              <div class="w-full h-38rem flex mt-10rem bg-blue items-center ">
-                <div class="flex w-20rem bg-red flex-col  h-full  relative">
-                  <div class="absolute left-0 middleImgLeft1 z-2">1</div>
-                </div>
-                <div class="w-full h-33rem flex mt-2rem middleTree ">2</div>
-                <div class="flex w-20rem bg-yellow flex-col  h-full z-2 right-0 relative">3</div>
-              </div>
-            
+            <div class="middleTree w-650px h-680px mt-70px relative">
+              <div class="left-card left-120px top-90px">理气宽中</div>
+              <div class="left-card left-20px top-170px">行滞销胀</div>
+              <div class="left-card left-[-20px] bottom-300px">化痰除痞</div>
+              <div class="left-card left-60px bottom-160px">升提脏器</div>
+              <div class="right-card right-120px top-90px">心血管调节</div>
+              <div class="right-card right-20px top-170px">升血压 抗休克</div>
+              <div class="right-card right-[-20px] bottom-300px">利尿消肿</div>
+              <div class="right-card right-60px bottom-160px">镇静、保肝利胆...</div>
+
+              <div class="absolute middle-img-left-1 w-100px h-90px left-[-30px] top-30px"></div>
+              <div class="absolute middle-img-right-1 w-100px h-90px right-[-30px] top-30px"></div>
+              <div class="absolute middle-img-left-2 w-100px h-90px left-[-30px] bottom-70px"></div>
+              <div class="absolute middle-img-right-2 w-100px h-90px right-[-30px] bottom-70px"></div>
+            </div>
           </div>
           {/* 右侧 */}
-          <div class="w-[450px] h-full flex flex-col mengban mt-[1.2rem] mb-[1.2rem] px-[1rem] ml-[1rem]">
+          <div class="w-[450px] h-full flex flex-col mengban mt-[1.2rem] mb-[2rem] px-[1rem] ml-[1rem]">
             {/* 上半部分 */}
             <div class="w-full h-25rem flex flex-col">
               {/* 标题 */}
@@ -813,37 +824,36 @@ export default defineComponent({
                   </el-scrollbar>
                 </div>
               </div>
-          </div>
-          {/* Fotter tab按钮 */}
-          <div class="flex gap-5rem bottomBg absolute bottom-0 inset-x-0 h-3rem items-center justify-center">        
-            {bottomTabs.value.map((tab, index) => renderTab(tab, index))}
-          </div>
-
+          </div>       
         </div>
       )
     }
     //顶部Tab按钮切换
 const activeTab = ref('base')
 const bgImage = ref(mainBg)
-   const changeTab = (key: string) => {
-      if (activeTab.value === key)
-        return
-      switch (key) {
-        case 'base':
-          activeTab.value = 'base'
-          bgImage.value = mainBg
-          break
-        case 'indus':
-          activeTab.value = 'indus'
-          bgImage.value = indusBg
-          // nextTick(() => {
-          //   getGrowthLineChartData()
-          //   getHarvestChartData()
-          //   getMenuDataList()
-          // })
-          break
-      }
-    }
+const changeTab = (key: string) => {
+  if (activeTab.value === key)
+    return
+  switch (key) {
+    case 'base':
+      activeTab.value = 'base'
+      bgImage.value = mainBg
+      break
+    case 'indus':
+      activeTab.value = 'indus'
+      bgImage.value = indusBg
+      // nextTick(() => {
+      //   getGrowthLineChartData()
+      //   getHarvestChartData()
+      //   getMenuDataList()
+      // })
+      break
+  }
+}
+
+//底部按钮切换
+const activeSubTab = ref('zhiqiao')
+
 
 
     return () => (
@@ -870,11 +880,24 @@ const bgImage = ref(mainBg)
                   default: () => {
                     if (activeTab.value === 'base') return baseTabPage()
                     if (activeTab.value === 'indus') return <SmartIndustry />
+                    {/* if (activeTab.value === 'indus') return <SmartIndustry /> */}
                   }
                 }}
             >
             </BigscreenMain>
-            <BigscreenFooter height="30px" />
+            <BigscreenFooter
+              height="30px"
+              v-slots={{
+                default: () => (
+                activeTab.value === 'indus' ? (
+                  <div class="flex gap-3rem bottomBg absolute bottom-0 inset-x-0 h-3rem text-center justify-center">
+                    {bottomTabs.value.map((tab, index) => renderTab(tab, index))}
+                  </div>
+                ) :null
+
+                )
+              }}
+            />
           </BigscreenContainer>
         </BigscreenAdapter>
       </div>
@@ -1005,6 +1028,7 @@ const bgImage = ref(mainBg)
 .titleIcon {
   background-image: url(./assets/titleIcon.png);
   background-size: contain;
+  background-repeat: no-repeat;
   width: 2rem;
   height: 2rem;
   margin-right: 1rem;
@@ -1044,6 +1068,7 @@ const bgImage = ref(mainBg)
   width: 8rem;
 }
 
+
 // 智慧产业中间部分样式、图片
 .rightButtonBg {
   background-image: url(./assets/rightButtonBg.png);
@@ -1071,17 +1096,57 @@ const bgImage = ref(mainBg)
   }
 }
 
+.left-card, .right-card {
+  padding: 8px 18px;
+  position: absolute;
+  background-color: #363937;
+}
+
+.left-card {
+  border: 1px solid #EFFC6D;
+  color: #EFFC6D;
+  border-radius: 1000px 1000px 0 1000px;
+}
+
+.right-card {
+  border: 1px solid #08FFFF;
+  color: #08FFFF;
+  border-radius: 1000px 1000px 1000px 0;
+}
+.middle-img-left-1 {
+  background-image: url(./assets/zhiqiao/middleImgLeft1.png);
+  background-size: 100% 100%;
+}
+
+.middle-img-left-2 {
+  background-image: url(./assets/zhiqiao/middleImgLeft2.png);
+  background-size: 100% 100%;
+}
+
+.middle-img-right-1 {
+  background-image: url(./assets/zhiqiao/middleImgRight1.png);
+  background-size: 100% 100%;
+}
+
+.middle-img-right-2 {
+  background-image: url(./assets/zhiqiao/middleImgRight2.png);
+  background-size: 100% 100%;
+}
 //底部
 @for $i from 1 through 4 {
   .bottomTabIcon#{$i} {
     background-image: url(./assets/bottomTabIcon#{$i}.png);
     background-size: contain;
     background-repeat: no-repeat;
+    width: 24px;   
+    height: 24px;
   }
   .bottomTabIcon#{$i}Active {
     background-image: url(./assets/bottomTabIcon#{$i}Active.png);
     background-size: contain;
     background-repeat: no-repeat;
+    width: 24px;   
+    height: 24px;
   }
 }
 
