@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, onMounted } from 'vue'
 import mainBg from './assets/bg.png'
+import indusBg from './assets/indusBg.png'
 import headerBg from './assets/headerBg.png'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
@@ -338,35 +339,11 @@ export default defineComponent({
       centerMapData.value = res
     }
     getCenterMapData()
-    return () => (
-      <div class="bg-[#001922] w-[100vw] h-[100vh]">
-        <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={mainBg}>
-            <BigscreenHeader
-              backgroundImage={headerBg}
-              height="80px"
-              v-slots={{
-                left: () => (
-                  <div class="flex space-x-2 relative top-[-10px]">
-                    <BigscreenSelector
-                      width={'10rem'}
-                      options={baseOptions.value}
-                      v-model={selectedBase.value}
-                      onChange={(key) => getBasePlotOptions(key)}
-                    />
-                    <BigscreenSelector
-                      width={'12rem'}
-                      options={plotOptions.value}
-                      v-model={selectedPlot.value}
-                      onChange={() => refreshAllData()}
-                    />
-                  </div>
-                ),
-                right: () => (<BigScreenTime class="relative top-[-9px]" />)
-              }}
-            />
-            <BigscreenMain>
-              <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
+
+    //可视化监控页
+    const baseTabPage = () => {
+      return (
+      <div class="flex space-x-4 w-full h-full px-5 box-border pt-[20px]">
                 <div class="flex flex-col justify-between w-[420px]">
                   <div class="h-[335px] item-bg-1 pt-[40px] pb-[18px] px-3 box-border">
                     <el-scrollbar style="height: 295px;">
@@ -631,6 +608,218 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
+      )
+    }
+
+    //智慧产业页面
+
+    //底部tab
+    const bottomTabs = ref([
+      { name: '枳壳' },
+      { name: '柠檬' },
+      { name: '紫苏' },
+      { name: '大米' },
+    ]);
+
+    const activeIndex = ref(0);
+
+    const setActive = (index) => {
+      activeIndex.value = index;
+    };
+
+    const isActive = (index) => {
+      return activeIndex.value === index;
+    };
+
+    // 封装函数来生成单独的tab元素
+    const renderTab = (tab, index) => {
+      return (
+        <div
+          key={index}
+          class={['flex', 'items-center',  'space-x-1.5rem', 'cursor-pointer',
+            isActive(index)
+              ? `bottomTabIcon${index + 1}Active`
+              : `bottomTabIcon${index + 1}`,
+          ]}
+          onClick={() => setActive(index)}
+        >
+          <div class="w-0.5 h-0.5 mb-1"></div> 
+          <span>{tab.name}</span>
+        </div>
+      );
+    };
+    const indusTabPage = () => {
+      return(
+        <div class="w-full h-full box-border flex relative">
+          {/* 左侧 */}
+          <div class="w-[450px] h-full flex flex-col justify-between mengban mt-[1.2rem] mb-[2rem] px-[1rem] ml-[1rem]">            
+            {/* 上半部分 */}
+            <div class="w-full h-[30rem] flex flex-col">
+              {/* 标题 */}
+              <div 
+                class="flex mx-[1rem] mt-[1rem] items-center pb-[0.8rem]"
+                style="border-bottom: 1px solid #08FFFF"
+              >
+                <div class="titleIcon"></div>
+                <div class="text-[1.5rem] art-font">本村产业情况</div>
+              </div>
+              {/* 内容 */}
+              <div class="mt-[1rem] flex items-center justify-evenly">
+                <div class="flex flex-col justify-center">
+                  <div class="text-[1.3rem] text-[#08FFFF] art-font">4000+</div>
+                  <div class="text-[1rem] text-[#fff]">种植面积/亩</div>
+                  <div class="IndusSituationImg flex"></div>
+                </div>
+                <div class="flex flex-col">
+                  <div class="text-[1.3rem] text-[#08FFFF] art-font">4000+</div>
+                  <div class="text-[1rem] text-[#fff]">年产值/万元</div>
+                  <div class="IndusSituationImg flex "></div>
+                </div>
+                <div class="flex flex-col">
+                  <div class="text-[1.3rem] text-[#08FFFF] art-font">8000+</div>
+                  <div class="text-[1rem] text-[#fff]">带动就业/人</div>
+                  <div class="IndusSituationImg flex "></div>
+                </div>
+                <div class="flex flex-col">
+                  <div class="text-[1.3rem] text-[#08FFFF] art-font">300+</div>
+                  <div class="text-[1rem] text-[#fff]">农民增收/万元</div>
+                  <div class="IndusSituationImg flex "></div>
+                </div>
+              </div>
+              <div class="flex line-height-loose text-[#fff] tracking-wider">天印村积壳基地位于天印村1、2、3社，由重庆市印天湖现代农业发展有限公司和重庆市古传现代农业有限公司流转当地土地经营，于2018年建立，种植面积约4000余亩、10万余株，是西南地区最大标准化枳壳产业园，由村集体经济组织统一规划管理。产品主要是通过初加工烘烤后销往四川、安徽等中药材市场，年产值可达4000余万元，可带动周边群众就近8000余人次务工就业，为当地农民增收300余万元，具有良好的社会、经济效益。</div>
+            </div>
+            {/* 下半部分 */}
+            <div class="w-full h-[calc(100%-30rem)] flex flex-col">
+              {/* 标题 */}
+              <div
+                class="flex mx-[1rem] mt-[1rem] items-center pb-[0.8rem] "
+                style="border-bottom: 1px solid #08FFFF"
+              >
+                <div class="titleIcon"></div>
+                <div class="text-[1.5rem] art-font">药用价值及功效</div>
+              </div>
+              {/* 内容 */}
+              <div class="flex gap-[0.5rem] justify-between">
+                <div class="flex flex-col mr-10rem">
+                  <div class="flex">图1</div>
+                  <div class="flex">虚线</div>
+                  <div class="flex">黄色圆点</div>
+                  <div class="flex">蓝色圆点</div>
+                  <div class="flex">虚线</div>
+                  <div class="flex">图2</div>
+                </div>
+                <el-scrollbar height="380px">
+                <div class="flex flex-col h-full  mt-1.3rem">
+                  <div class="yellowTitleBg titleBg art-font text-[#021512] text-[1.2rem] flex">传统功效</div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#EFFC6D] text-[1rem] font-semibold mb-.3rem">理气宽中:</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">枳壳味辛、苦，归脾经和胃经，辛能行散，苦能降泄，具有行气开胸、宽中的作用。 枳壳味辛、苦，归脾经和胃经，辛能行散，苦能降泄，具有行气开胸、宽中的作用。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#EFFC6D] text-[1rem] font-semibold mb-.3rem">行滞消胀:</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">枳壳能够促进胃肠蠕动，帮助消化。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#EFFC6D] text-[1rem] font-semibold mb-.3rem">化痰除痞:</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">枳壳可用于治疗痰饮内停所致的咳嗽、咳痰、胸闷、痞满等症状。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#EFFC6D] text-[1rem] font-semibold mb-.3rem">升提脏器:</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">常与黄芪、升麻、柴胡等补气升阳药同用，治疗脏器下垂的病症。</div>
+                  </div>
+                  <div class="blueTitleBg titleBg art-font text-[#021512] text-[1.2rem] flex">现代研究功效</div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#08FFFF] text-[1rem] font-semibold mb-.3rem">心血管调节作用：</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">低浓度的枳壳煎剂可使心血管收缩增强，高浓度的枳壳煎剂可使心血管收缩减弱。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#08FFFF] text-[1rem] font-semibold mb-.3rem">升血压、抗休克作用：</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">枳壳具有升血压和抗休克的功效，对于低血压、休克等情况可能有一定的辅助治疗作用。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#08FFFF] text-[1rem] font-semibold mb-.3rem">利尿作用：</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">可促进尿液排出，对于水肿等疾病有一定的辅助治疗效果。</div>
+                  </div>
+                  <div class="flex flex-col mb-[0.8rem]">
+                    <div class="text-[#08FFFF] text-[1rem] font-semibold mb-.3rem">其他作用：</div>
+                    <div class="text-[#fff] line-height-relaxed tracking-wider">枳壳还具有镇静、保肝利胆、抗病原微生物、抑制过敏反应等作用。</div>
+                  </div>
+                </div>
+              </el-scrollbar>
+              </div>
+            </div>
+          </div>
+          {/* 中间 */}
+          <div class="w-[900px] h-full flex flex-col  mt-[1.2rem]">
+            <div class="flex top-[0.5rem] relative w-full justify-between items-center">
+              <div class="absolute left-8 top-4 flex leftButtonBg titleBg text-[#fff] text-[1.7rem]">传统功效</div>
+              <div class="absolute right-8 top-4 flex rightButtonBg titleBg text-[#fff] text-[1.7rem]">现代研究功效</div>
+            </div>
+            <div class="w-full h-33rem flex mt-12rem middleTree">
+
+            </div>
+          </div>
+          {/* 右侧 */}
+          <div class="w-[450px] h-full flex flex-col bg-purple mt-[1.2rem]">3</div>
+          {/* Fotter tab按钮 */}
+          <div class="flex gap-5rem bottomBg absolute bottom-0 inset-x-0 h-3rem items-center justify-center">        
+            {bottomTabs.value.map((tab, index) => renderTab(tab, index))}
+          </div>
+
+        </div>
+      )
+    }
+    //顶部Tab按钮切换
+const activeTab = ref('base')
+const bgImage = ref(mainBg)
+   const changeTab = (key: string) => {
+      if (activeTab.value === key)
+        return
+      switch (key) {
+        case 'base':
+          activeTab.value = 'base'
+          bgImage.value = mainBg
+          break
+        case 'indus':
+          activeTab.value = 'indus'
+          bgImage.value = indusBg
+          // nextTick(() => {
+          //   getGrowthLineChartData()
+          //   getHarvestChartData()
+          //   getMenuDataList()
+          // })
+          break
+      }
+    }
+
+
+    return () => (
+      <div class="bg-[#001922] w-[100vw] h-[100vh]">
+        <BigscreenAdapter>
+          <BigscreenContainer backgroundImage={bgImage.value} key={bgImage.value}>
+            <BigscreenHeader
+              backgroundImage={headerBg}
+              height="80px"
+              v-slots={{
+                right: () => (<BigScreenTime class="relative top-[-9px]" />),
+                left: () => (
+                  <div>
+                    <div class="art-font text-[40px] tracking-[6px] relative cursor-default">
+                      <div class={`${ activeTab.value === 'base' ? 'topTabButtonActive text-[#08FFFF]' : 'topTabButton'} absolute top-[-28px]  left-[-20px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('base') }}>可视化驾驶舱</div>
+                      <div class={`${ activeTab.value === 'indus' ? 'topTabButtonActive text-[#08FFFF]' : 'topTabButton'} absolute top-[-28px] left-[120px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('indus') }}>智慧产业</div>
+                    </div>
+                  </div>
+                )
+              }}
+            />
+            <BigscreenMain 
+              v-slots={{
+                  default: () => {
+                    if (activeTab.value === 'base') return baseTabPage()
+                    if (activeTab.value === 'indus') return indusTabPage()
+                  }
+                }}
+            >
             </BigscreenMain>
             <BigscreenFooter height="30px" />
           </BigscreenContainer>
@@ -743,5 +932,95 @@ export default defineComponent({
 .dialog-bg {
   background-image: url(./assets/dialog.png);
   background-size: 100% 100%;
+}
+.contain-img {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.topTabButton {
+  background-image: url(./assets/topTabButton.png);
+  width: 168px;
+  height: 40px;
+}
+.topTabButtonActive {
+  background-image: url(./assets/topTabButtonActive.png);
+  width: 168px;
+  height: 40px;
+
+}
+.titleIcon {
+  background-image: url(./assets/titleIcon.png);
+  background-size: contain;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 1rem;
+}
+.bottomBg {
+  background-image: url(./assets/bottomBg.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.IndusSituationImg {
+  background-image: url(./assets/IndusSituationImg.png);
+  background-size: contain;
+  width: 7rem;
+  aspect-ratio: 1;
+}
+.mengban {
+  background-image: url(./assets/mengban.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.titleBg {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 3rem;
+  align-items: center; 
+  justify-content: center;
+  aspect-ratio: 1;
+}
+.yellowTitleBg {
+  background-image: url(./assets/zhiqiao/yellowTitleBg.png);
+  width: 6rem;
+}
+.blueTitleBg {
+  background-image: url(./assets/zhiqiao/blueTitleBg.png);
+  width: 8rem;
+}
+
+// 智慧产业中间部分样式、图片
+.rightButtonBg {
+  background-image: url(./assets/rightButtonBg.png);
+  width: 17rem;
+  background-size: cover !important;
+
+}
+.leftButtonBg {
+  background-image: url(./assets/leftButtonBg.png);
+  background-size: cover !important;
+  width: 17rem;
+}
+.middleTree {
+  background-image: url(./assets/zhiqiao/tree.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+//底部
+@for $i from 1 through 4 {
+  .bottomTabIcon#{$i} {
+    background-image: url(./assets/bottomTabIcon#{$i}.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .bottomTabIcon#{$i}Active {
+    background-image: url(./assets/bottomTabIcon#{$i}Active.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
 }
 </style>
