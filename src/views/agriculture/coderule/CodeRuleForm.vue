@@ -23,8 +23,8 @@
       <el-form-item label="码前缀" prop="codeBefore">
         <el-input v-model="formData.codeBefore" placeholder="请输入码前缀" />
       </el-form-item>
-      <el-form-item label="日期" prop="codeDate">
-        <el-select v-model="formData.codeDate" placeholder="请选择日期">
+      <el-form-item label="日期格式" prop="codeDate">
+        <el-select v-model="formData.codeDate" placeholder="请选择日期格式">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CODE_DATE_FORMAT)"
             :key="dict.value"

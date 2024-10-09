@@ -97,7 +97,7 @@
       <el-table-column label="源码名称" align="center" prop="codeName" />
       <el-table-column label="品类" align="center" prop="categoryName" />
       <el-table-column label="码前缀" align="center" prop="codeBefore" />
-      <el-table-column label="日期" align="center" prop="codeDate">
+      <el-table-column label="日期格式" align="center" prop="codeDate">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_CODE_DATE_FORMAT" :value="scope.row.codeDate" />
         </template>

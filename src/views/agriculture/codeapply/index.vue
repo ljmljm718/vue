@@ -50,7 +50,7 @@
       <el-form-item label="状态" prop="applyStatus">
         <el-select
           v-model="queryParams.applyStatus"
-          placeholder="请选择状态（制单/待发码/已发码）"
+          placeholder="请选择状态"
           clearable
           class="!w-240px"
         >
