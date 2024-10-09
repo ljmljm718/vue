@@ -342,7 +342,7 @@ const handleSelectorChange = (val) => {
                 filterable
                 allow-create
                 default-first-option
-                placeholder="请选择或输入设备检测类型">
+                placeholder="请“选择”或“输入”设备检测类型">
                 <el-option
                   v-for="item in options"
                   :key="item.value"

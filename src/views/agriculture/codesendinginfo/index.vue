@@ -166,26 +166,26 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <!--          <el-button-->
-          <!--            link-->
-          <!--            type="primary"-->
-          <!--            @click="openForm('update', scope.row.id)"-->
-          <!--            v-hasPermi="['agriculture:code-sending-info:update']"-->
-          <!--          >-->
-          <!--            编辑-->
-          <!--          </el-button>-->
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:code-sending-info:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
+      <!--      <el-table-column label="操作" align="center">-->
+      <!--        <template #default="scope">-->
+      <!--          &lt;!&ndash;          <el-button&ndash;&gt;-->
+      <!--          &lt;!&ndash;            link&ndash;&gt;-->
+      <!--          &lt;!&ndash;            type="primary"&ndash;&gt;-->
+      <!--          &lt;!&ndash;            @click="openForm('update', scope.row.id)"&ndash;&gt;-->
+      <!--          &lt;!&ndash;            v-hasPermi="['agriculture:code-sending-info:update']"&ndash;&gt;-->
+      <!--          &lt;!&ndash;          >&ndash;&gt;-->
+      <!--          &lt;!&ndash;            编辑&ndash;&gt;-->
+      <!--          &lt;!&ndash;          </el-button>&ndash;&gt;-->
+      <!--          <el-button-->
+      <!--            link-->
+      <!--            type="danger"-->
+      <!--            @click="handleDelete(scope.row.id)"-->
+      <!--            v-hasPermi="['agriculture:code-sending-info:delete']"-->
+      <!--          >-->
+      <!--            删除-->
+      <!--          </el-button>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -253,7 +253,9 @@ const getList = async () => {
     nextTick(() => {
       list.value.forEach(async item => {
         QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
-          item.img = url
+          if (item.qrImg) {
+            item.img = url
+          }
         })
       })
     })
