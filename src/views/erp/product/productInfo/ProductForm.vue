@@ -209,7 +209,14 @@ const formRules = reactive({
   barCode: [{ required: true, message: '产品条码不能为空', trigger: 'blur' }],
   categoryId: [{ required: true, message: '产品分类编号不能为空', trigger: 'blur' }],
   unitId: [{ required: true, message: '单位编号不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '产品状态不能为空', trigger: 'blur' }]
+  status: [{ required: true, message: '产品状态不能为空', trigger: 'blur' }],
+  effectiveTime: [{ required: true, message: '有效日期不能为空', trigger: 'blur' }],
+  produceDate: [{ required: true, message: '生产日期不能为空', trigger: 'blur' }],
+  purchasePrice: [{ required: true, message: '采购价格不能为空', trigger: 'blur' }],
+  salePrice: [{ required: true, message: '销售价格不能为空', trigger: 'blur' }],
+  minPrice: [{ required: true, message: '最低价格不能为空', trigger: 'blur' }],
+  standard: [{ required: true, message: '规格不能为空', trigger: 'blur' }],
+  expiryDay: [{ required: true, message: '保质期天数不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
