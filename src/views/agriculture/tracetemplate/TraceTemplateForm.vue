@@ -103,8 +103,11 @@ const formData = ref({
 })
 const formRules = reactive({
   templateName: [{required: true, message: '模板名称不能为空', trigger: 'blur'}],
+  origin: [{required: true, message: '产地不能为空', trigger: 'blur'}],
   mfrsId: [{required: true, message: '生产商不能为空', trigger: 'change'}],
   brandName: [{required: true, message: '适用品牌不能为空', trigger: 'change'}],
+  headerImg: [{required: true, message: '头部宣传图不能为空', trigger: 'change'}],
+  productImgs: [{required: true, message: '产品展示图片不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
 
