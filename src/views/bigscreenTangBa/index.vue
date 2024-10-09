@@ -5,6 +5,7 @@ import indusBg from './assets/indusBg.png'
 import headerBg from './assets/headerBg.png'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
+import SmartIndustry from './smartIndustry.vue'
 import {
   initChartStatic,
   generateBaseOptions
@@ -868,7 +869,7 @@ const bgImage = ref(mainBg)
               v-slots={{
                   default: () => {
                     if (activeTab.value === 'base') return baseTabPage()
-                    if (activeTab.value === 'indus') return indusTabPage()
+                    if (activeTab.value === 'indus') return <SmartIndustry />
                   }
                 }}
             >
