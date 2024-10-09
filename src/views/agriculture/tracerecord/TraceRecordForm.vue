@@ -84,6 +84,11 @@ const formData = ref({
   traceTime: undefined,
 })
 const formRules = reactive({
+  traceCode: [{required: true, message: '溯源码不能为空', trigger: 'blur'}],
+  productBrand: [{required: true, message: '品牌不能为空', trigger: 'change'}],
+  producerId: [{required: true, message: '生产商不能为空', trigger: 'change'}],
+  batchCode: [{required: true, message: '批次号不能为空', trigger: 'change'}],
+  traceTime: [{required: true, message: '溯源时间不能为空', trigger: 'change'}],
 })
 const formRef = ref() // 表单 Ref
 
