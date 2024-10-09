@@ -230,7 +230,7 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
+onActivated(() => {
   getProducerEntryList()
   getList()
 })
