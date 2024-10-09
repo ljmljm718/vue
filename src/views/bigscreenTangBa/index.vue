@@ -661,7 +661,7 @@ export default defineComponent({
                 style="border-bottom: 1px solid #08FFFF"
               >
                 <div class="titleIcon"></div>
-                <div class="text-[1.5rem] art-font">本村产业情况</div>
+                <div class="text-[1.5rem] art-font">视频</div>
               </div>
               {/* 内容 */}
               <div class="mt-[1rem] flex items-center justify-evenly">
@@ -750,17 +750,69 @@ export default defineComponent({
             </div>
           </div>
           {/* 中间 */}
-          <div class="w-[900px] h-full flex flex-col  mt-[1.2rem]">
+          <div class="grow h-full flex flex-col  mt-[1.2rem]">
             <div class="flex top-[0.5rem] relative w-full justify-between items-center">
               <div class="absolute left-8 top-4 flex leftButtonBg titleBg text-[#fff] text-[1.7rem]">传统功效</div>
               <div class="absolute right-8 top-4 flex rightButtonBg titleBg text-[#fff] text-[1.7rem]">现代研究功效</div>
             </div>
-            <div class="w-full h-33rem flex mt-12rem middleTree">
-
-            </div>
+              {/* 中间的图 */}
+              <div class="w-full h-38rem flex mt-10rem bg-blue items-center ">
+                <div class="flex w-20rem bg-red flex-col  h-full  relative">
+                  <div class="absolute left-0 middleImgLeft1 z-2">1</div>
+                </div>
+                <div class="w-full h-33rem flex mt-2rem middleTree ">2</div>
+                <div class="flex w-20rem bg-yellow flex-col  h-full z-2 right-0 relative">3</div>
+              </div>
+            
           </div>
           {/* 右侧 */}
-          <div class="w-[450px] h-full flex flex-col bg-purple mt-[1.2rem]">3</div>
+          <div class="w-[450px] h-full flex flex-col mengban mt-[1.2rem] mb-[1.2rem] px-[1rem] ml-[1rem]">
+            {/* 上半部分 */}
+            <div class="w-full h-25rem flex flex-col">
+              {/* 标题 */}
+              <div
+                class="flex mx-[1rem] mt-[1rem] items-center pb-[0.8rem]"
+                style="border-bottom: 1px solid #08FFFF"
+              >
+                <div class="titleIcon"></div>
+                <div class="text-[1.5rem] art-font">视频</div>
+              </div>
+              {/* 内容 */}
+              <div class="mt-[1rem] flex items-center justify-evenly"></div>
+              <div class="flex w-full h-full bg-blue"></div>
+            </div>
+            {/* 下半部分 */}
+            <div class="w-full h-[calc(100%-30rem)] flex flex-col">
+              {/* 标题 */}
+              <div
+                class="flex mx-[1rem] mt-[1rem] items-center pb-[0.8rem] "
+                style="border-bottom: 1px solid #08FFFF"
+              >
+                <div class="titleIcon"></div>
+                <div class="text-[1.5rem] art-font">市场需求</div>
+              </div>
+              {/* 内容 */}
+                <div class="flex flex-col gap-[1rem] grow mt-[1rem]">
+                  <div class="flex space-x-2 w-full justify-evenly">
+                    <div class="flex flex-col  justify-center items-center space-y-0.5rem ">
+                      <div class="flex needImg1 w-6rem h-6rem "></div>
+                      <div class="bg-#08FFFF text-[#011414] rounded-full w-5rem text-center font-semibold text-[1rem] py-0.18rem px-0.5rem">枳壳</div>
+                    </div>
+                    <div class="flex flex-col  justify-center items-center space-y-0.5rem ">
+                      <div class="flex needImg2 w-6rem h-6rem "></div>
+                      <div class="bg-#08FFFF text-[#011414] rounded-full w-5rem text-center font-semibold text-[1rem] py-0.18rem px-0.5rem">陈皮</div>
+                    </div>
+                    <div class="flex flex-col  justify-center items-center space-y-0.5rem ">
+                      <div class="flex needImg3 w-6rem h-6rem "></div>
+                      <div class="bg-#08FFFF text-[#011414] rounded-full w-5rem text-center font-semibold text-[1rem] py-0.18rem px-0.5rem">陈皮条</div>
+                    </div>
+                  </div>
+                  <el-scrollbar style="height: 300px;" >
+                  <div class="line-height-relaxed text-[#fff] tracking-wider ">  枳壳的市场需求规模受到多种因素的影响，近年来呈现出一定的变化趋势。 从整体市场需求来看，过去有数据显示国内外市场枳壳总需求曾达30000吨以上。中国市场是全球枳壳市场的主要消费国，占据了约70%的市场份额。国内部分地区的相关信息也能从侧面反映枳壳的市场需求，例如江苏扬子江药业年用量在500吨左右，重庆太极集团涪陵制药年用量为500吨左右（主要用于急支糖浆）。 就目前的市场情况而言，有报道称枳壳市场年需求量在5000吨左右。不过，由于枳壳前几年存在大面积扩种的情况，导致产量增加，目前市场处于供大于求的状态，行情较为低迷。近期各中药材市场上枳壳货源走销不快，商家关注力度一般。 总体来说， 枳壳的市场需求规模受到多种因素的影响，近年来呈现出一定的变化趋势。 从整体市场需求来看，过去有数据显示国内外市场枳壳总需求曾达30000吨以上。中国市场是全球枳壳市场的主要消费国，占据了约70%的市场份额。国内部分地区的相关信息也能从侧面反映枳壳的市场需求，例如江苏扬子江药业年用量在500吨左右，重庆太极集团涪陵制药年用量为500吨左右（主要用于急支糖浆）。 就目前的市场情况而言，有报道称枳壳市场年需求量在5000吨左右。不过，由于枳壳前几年存在大面积扩种的情况，导致产量增加，目前市场处于供大于求的状态，行情较为低迷。近期各中药材市场上枳壳货源走销不快，商家关注力度一般。 总体来说，</div>
+                  </el-scrollbar>
+                </div>
+              </div>
+          </div>
           {/* Fotter tab按钮 */}
           <div class="flex gap-5rem bottomBg absolute bottom-0 inset-x-0 h-3rem items-center justify-center">        
             {bottomTabs.value.map((tab, index) => renderTab(tab, index))}
@@ -1010,6 +1062,14 @@ const bgImage = ref(mainBg)
   background-position: center;
 }
 
+@for $i from 1 to 2 {
+  .middleImgLeft#{$i} {
+    background-image: url(./assets/zhiqiao/middleImgLeft#{$i}.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
 //底部
 @for $i from 1 through 4 {
   .bottomTabIcon#{$i} {
@@ -1019,6 +1079,15 @@ const bgImage = ref(mainBg)
   }
   .bottomTabIcon#{$i}Active {
     background-image: url(./assets/bottomTabIcon#{$i}Active.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
+//智慧产业右侧
+@for $i from 1 through 3 {
+  .needImg#{$i} {
+    background-image: url(./assets/zhiqiao/needImg#{$i}.png);
     background-size: contain;
     background-repeat: no-repeat;
   }
