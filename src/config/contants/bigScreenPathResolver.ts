@@ -10,7 +10,8 @@ export const resolvePath = (userInfo: UserInfo): string => {
     ['石柱县王场镇鲁渝协作乡村振兴示范村数字化赋能', '/bigscreen3'],
     ['巫山县福田镇鲁渝协作乡村振兴示范村数字化赋能', '/bigscreen2'],
     ['开州区鲁渝协作乡村振兴示范村数字化赋能', '/bigscreen'],
-    ['浪潮', '/bigscreen']
+    ['浪潮', '/bigscreen'],
+    ['太原乡村振兴数字化赋能 ', '/bigscreenTY']
   ]);
 
   let resPath = tenantName ? tenantNamePathMap.get(tenantName) ?? '' : '';
@@ -27,7 +28,8 @@ export const resolvePath = (userInfo: UserInfo): string => {
     ['tianyin', '/bigscreenTB'],
     ['tianyin_common', '/bigscreenTB'],
     ['shuangqiao', '/bigscreenShuangQiao'],
-    ['erdu', '/bigscreenED']
+    ['erdu', '/bigscreenED'],
+    ['taiyuan', '/bigscreenTY']
   ]);
 
   if (Array.isArray(userInfo.roles)) {
