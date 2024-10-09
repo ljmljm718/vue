@@ -77,6 +77,8 @@ const formData = ref({
   remark2: undefined
 })
 const formRules = reactive({
+  categoryName: [{ required: true, message: '品类名称不能为空', trigger: 'blur' }],
+  categoryCode: [{ required: true, message: '品类编码不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
