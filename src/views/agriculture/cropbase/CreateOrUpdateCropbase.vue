@@ -153,7 +153,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="数量" prop="number">
-                  <el-input v-model="formData.number" v-if="formData.unit=='亩'" :placeholder="`请输入数量，数量不能超过${area}亩`" />
+                  <el-input
+                   v-model="formData.number"
+                   v-if="formData.unit=='亩'" 
+                   :placeholder="`请输入数量，数量不能超过${area}亩`"
+                    style="width:100%;"
+                    />
                   <el-input v-model="formData.number" v-else placeholder="请输入数量" />
                 </el-form-item>
               </el-col>
@@ -231,7 +236,8 @@ import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup
 import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 //品种管理页面
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
-
+//
+import {ParkDetailApi} from "@/api/agriculture/parkdetail/index";    
 /** 鲁渝协作品种管理 表单 */
 defineOptions({name: 'CreateOrUpdateCropbase'})
 // 本地保存表单
@@ -292,21 +298,22 @@ if (!formData.value.id) loadData()
 //起步函数
 const cropTypeName = ref()
 const getFrom = async () => {
-  console.log(route.query.type  as any)
+  // console.log(route.query.type  as any)
   resetForm();
   if (route.query.id) {
     // todo
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
     //获取所有品类的详情数据
-    console.log("-----=========")
     listCategoryManagement.value = await allDataCacheManager.getData({})
-    console.log("-----=========++++")
     listCategoryManagement.value.forEach(itm => {
-
         if (formData.value.cropType == itm.id){
           cropTypeName.value = itm.categoryName
         }
     })
+    // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+    const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+    area.value = parkDetailData.area
+    // 截至
     await loadData(route.query.id);
   }
 }
@@ -407,14 +414,13 @@ const submitForm = async () => {
   try {
     
     const data = formData.value as unknown as CropBaseVO
-    if(!route.query.type){
-      if(formData.value.unit=='亩'){
-      
+    
+    if(formData.value.unit=='亩'){  
       if( Number(formData.value.number) > Number(area.value)){
         message.warning('数量超过输入的最大面积')
         return
       }
-    }
+    
     }
     
     if (!formData.value.id) {
