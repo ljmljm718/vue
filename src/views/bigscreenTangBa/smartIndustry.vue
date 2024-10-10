@@ -92,7 +92,7 @@ getMarkNeedList(activeTab.value)
 const markNeedTextMap = new Map([
   ['1', '枳壳的市场需求规模受到多种因素的影响，近年来呈现出一定的变化趋势。 从整体市场需求来看，过去有数据显示国内外市场枳壳总需求曾达30000吨以上。中国市场是全球枳壳市场的主要消费国，占据了约70%的市场份额。国内部分地区的相关信息也能从侧面反映枳壳的市场需求，例如江苏扬子江药业年用量在500吨左右，重庆太极集团涪陵制药年用量为500吨左右（主要用于急支糖浆）。 就目前的市场情况而言，有报道称枳壳市场年需求量在5000吨左右。不过，由于枳壳前几年存在大面积扩种的情况，导致产量增加，目前市场处于供大于求的状态，行情较为低迷。近期各中药材市场上枳壳货源走销不快，商家关注力度一般。 总体来说，'],
   ['2', '中国柠檬市场需求规模呈现不断增长的态势。2022 年全国柠檬产量在 269.75 万吨左右，进口为 1.44 万吨，出口为 4.17 万吨，国内市场需求为 267.02 万吨。 随着人们对健康饮食的关注度不断提高以及柠檬在食品、饮料、美容、医药等多个领域的应用不断拓展，柠檬市场需求持续扩大。从产业结构来看，鲜食（含餐饮、烹饪、食品初加工等）销售额占比接近 75%，柠檬深加工产品（果汁制造、提取物等）销售额约为 25%。并且，未来我国柠檬深加工行业产业预计将会保持增长。 智研咨询曾预测，到 2024 年中国柠檬行业市场规模将增长到 118.3 亿元左右。但这只是一个预测数据，实际的市场需求规模会受到多种因素的影响，如种植面积、产量、市场价格、消费者需求变化、进出口政策等。'],
-  ['3', ''],
+  ['3', `<div>紫苏市场需求规模呈现出不断增长的态势。以下是具体分析：</div><div class="mt-2 text-#08FFFF text-18px">1. 药用领域：</div><div>- 传统中药需求：紫苏是中成药市场上销量较多的常用品种，这方面的需求较为稳定且持续。 - 新药研发推动需求：一些企业和科研机构正在利用紫苏开发新的药品和保健品，这也进一步增加了对紫苏的需求。</div><div class="mt-2 text-#08FFFF text-18px">2. 食用领域：</div><div>- 国内市场：紫苏叶常被用作香料、调料，用于烹饪中增添风味，尤其是在一些地方菜系中应用广泛。 - 国外市场：紫苏在亚洲地区的日本、韩国等国家也备受欢迎，是当地料理中常用的食材。近年来，在国际市场上的需求也在不断增长。</div><div class="mt-2 text-#08FFFF text-18px">3.工业领域</div><div>- 提取加工：紫苏可以提取紫苏油、紫苏胡萝卜素等，这些提取物在食品、化妆品、保健品等行业具有广泛的应用。 - 饲料添加剂：紫苏的一些成分具有抗菌、抗氧化等作用，可以作为饲料添加剂用于畜牧业，提高动物的免疫力和生产性能。</div>`],
   ['4', '大米市场需求持续增长。大米作为世界上近一半人口的主食，其需求量巨大且持续增长。随着居民生活水平的提高和消费观念的转变，大米消费需求逐渐多样化，对品质、口感、包装等方面的要求也越来越高。此外，随着一些国家转向大米作为主要粮食来源，以及面粉和玉米饲料需求的减少，碎米等替代品的需求也大幅增加，这种需求结构的变化使得大米市场的供需关系更加紧张。全球大米市场的持续动荡，供应紧张与价格飙升成为了不可忽视的现象。这一系列变化背后，不仅关乎农业生产、国际贸易，还与全球气候、经济政策等紧密相连。全球大米供应的相对有限性是价格上涨的根本原因。主要大米出口国如印度、泰国等，由于国内政策调整、极端天气影响等因素，纷纷限制了大米的出口量，进一步加剧了全球大米市场的紧张局势']
 ])
 const markNeedText = ref<string>('')
@@ -326,6 +326,20 @@ const getMedicalData = (tab:string) => {
 }
 getMedicalData(activeTab.value)
 
+const videoMap = new Map([
+  ['1', 'video-1'],
+  ['2', 'video-2'],
+  ['3', 'video-3'],
+  ['4', 'video-4'],
+])
+const activeVideo = ref<string>('')
+const getActiveVideo = (tab:string) => {
+  const item = videoMap.get(tab)
+  if (item) activeVideo.value = item
+  else activeVideo.value = ''
+}
+getActiveVideo(activeTab.value)
+
 const handleBottomTabClick = (item) => {
   activeTab.value = item.id;
   getSituationList(activeTab.value)
@@ -333,6 +347,7 @@ const handleBottomTabClick = (item) => {
   getMarkNeedList(activeTab.value)
   getMarkNeedText(activeTab.value)
   getMedicalData(activeTab.value)
+  getActiveVideo(activeTab.value)
 }
 </script>
 <template>
@@ -354,8 +369,8 @@ const handleBottomTabClick = (item) => {
           <div class="IndusSituationImg w-80px h-60px"></div>
         </div>
       </div>
-      <div class="w-full h-240px">
-        <el-scrollbar height="240px">
+      <div class="w-full h-210px">
+        <el-scrollbar height="210px">
           <div class="p-4 px-6 leading-6">{{ situationText }}</div>
         </el-scrollbar>
       </div>
@@ -363,8 +378,8 @@ const handleBottomTabClick = (item) => {
         <div class="titleIcon w-16px h-16px mx-2"></div>
         <div class="text-[16px] art-font">药用价值及功效</div>
       </div>
-      <div class="w-full h-490px">
-        <el-scrollbar height="490px">
+      <div class="w-full h-520px">
+        <el-scrollbar height="520px">
           <div class="p-4 py-7 space-y-4">
             <div
               v-for="item in medicalData"
@@ -404,7 +419,7 @@ const handleBottomTabClick = (item) => {
         <div class="text-[16px] art-font">视频</div>
       </div>
       <div class="p-4 box-border">
-        <div id="player" class="w-full h-250px bg-black"></div>
+        <div id="player" :class="`w-full h-250px ${activeVideo}`"></div>
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-16px h-16px mx-2"></div>
@@ -422,9 +437,10 @@ const handleBottomTabClick = (item) => {
       </div>
       <div class="w-full h-390px">
         <el-scrollbar height="390px">
-          <div class="p-4 px-6 leading-6">
-            {{ markNeedText }}
-          </div>
+          <div
+            class="p-4 px-6 leading-6"
+            v-html="markNeedText"
+          ></div>
         </el-scrollbar>
       </div>
     </div>
@@ -443,6 +459,7 @@ const handleBottomTabClick = (item) => {
           </template>
           <template v-if="activeTab === '3'">
             <div class="leftButtonBg box-border flex items-center pl-50px w-280px h-50px text-[#fff] text-[23px]">紫苏叶</div>
+            <div class="bottomButtonBg box-border flex items-center pl-50px w-280px h-50px text-[#fff] text-[23px]">紫苏梗</div>
             <div class="rightButtonBg box-border flex flex-row-reverse items-center pr-50px w-280px h-50px text-[#fff] text-[23px]">紫苏子</div>
           </template>
         </div>
@@ -488,18 +505,70 @@ const handleBottomTabClick = (item) => {
           class="middleTree3 w-650px h-650px mt-70px relative"
           v-if="activeTab === '3'"
         >
-          <div class="left-card left-120px top-90px">解鱼蟹毒</div>
-          <div class="left-card left-0px top-170px">解表散寒</div>
-          <div class="left-card left-[10px] bottom-300px">行气和胃</div>
+          <div class="left-card left-120px top-290px">解鱼蟹毒</div>
+          <div class="left-card left-100px top-350px">解表散寒</div>
+          <div class="left-card left-130px top-420px">行气和胃</div>
 
-          <div class="right-card right-150px top-30px">降气化痰</div>
-          <div class="right-card right-100px top-80px">止咳平喘</div>
-          <div class="right-card right-10px top-150px">润肠通便</div>
+          <div class="right-card right-150px top-180px">降气化痰</div>
+          <div class="right-card right-150px top-230px">止咳平喘</div>
+          <div class="right-card right-120px top-300px">润肠通便</div>
+
+          <div class="bottom-card right-310px bottom-120px">理气宽中</div>
+          <div
+            class="bottom-card right-210px bottom-80px"
+            style="border-radius: 1000px 1000px 1000px 0;"
+          >安胎</div>
+          <div class="bottom-card right-300px bottom-50px">止痛</div>
+
+          <div class="absolute middle-icon-5 w-100px h-90px left-[-10px] bottom-130px"></div>
+          <div class="absolute middle-icon-6 w-100px h-90px right-[-10px] top-150px"></div>
+          <div class="absolute middle-icon-7 w-90px h-81px right-[90px] bottom-160px"></div>
         </div>
         <div
           class="middleTree4 w-650px h-650px mt-70px relative"
           v-if="activeTab === '4'"
-        ></div>
+        >
+          <div class="absolute right-[-90px] top-80px">
+            <div class="text-#effc6d text-18px">1.原粮验收</div>
+            <div>对收购的稻谷进行检验，确保稻谷符合加工要求。</div>
+          </div>
+          <div class="absolute right-[-80px] top-200px">
+            <div class="text-#08ffff text-18px">2.清理</div>
+            <div class="w-[200px]">先利用圆筒初清，再通过去石机去除稻谷中的杂质，最后使用磁选机吸附稻谷中的金属杂质。</div>
+          </div>
+          <div class="absolute right-[-80px] top-350px">
+            <div class="text-#08ffff text-18px">3.砻谷</div>
+            <div class="w-[200px]">使用砻谷机将稻谷的谷壳脱下，使稻谷变成糙米。</div>
+          </div>
+          <div class="absolute right-[-40px] bottom-100px">
+            <div class="text-#08ffff text-18px">4.谷糙分离</div>
+            <div class="w-[200px]">利用谷糙分离机将谷糙混合物中的谷粒和糙米分离开来。</div>
+          </div>
+          <div class="absolute right-[210px] bottom-[-60px] flex flex-col items-center">
+            <div class="text-#08ffff text-18px">5.糙米调质</div>
+            <div class="w-[200px]">根据糙米的情况调整其水分和温度，使其达到适宜的碾米条件。</div>
+          </div>
+          <div class="absolute left-[-40px] bottom-80px flex flex-col items-end">
+            <div class="text-#08ffff text-18px">6.碾米</div>
+            <div class="w-[200px]">根据糙米的情将糙米放入碾米机中除去糙米的皮层和胚芽。况调整其水分和温度，使其达到适宜的碾米条件。</div>
+          </div>
+          <div class="absolute left-[-80px] top-350px flex flex-col items-end">
+            <div class="text-#08ffff text-18px">7.白米分级</div>
+            <div class="w-[200px]">使用白米分级筛对白米进行分级。</div>
+          </div>
+          <div class="absolute left-[-80px] top-220px flex flex-col items-end">
+            <div class="text-#08ffff text-18px">8.色选</div>
+            <div class="w-[200px]">利用色选机对大米进行光学检测，剔除有缺陷的米粒。</div>
+          </div>
+          <div class="absolute left-[-70px] top-80px flex flex-col items-end">
+            <div class="text-#08ffff text-18px">9.抛光</div>
+            <div class="w-[200px]">将白米放入抛光机中，通过摩擦使米粒表面光滑。</div>
+          </div>
+          <div class="absolute left-[340px] top-[-30px]">
+            <div class="text-#08ffff text-18px">10.包装</div>
+            <div class="w-[200px]">对经过上述工序处理后的成品大米进行包装。</div>
+          </div>
+        </div>
       </div>
       <div class="h-45px bottomBg w-full mt-15px flex justify-center">
         <div class="w-400px h-full flex justify-evenly items-center">
@@ -575,6 +644,11 @@ const handleBottomTabClick = (item) => {
   background-size: 100% 100%;
 }
 
+.bottomButtonBg {
+  background-image: url(./assets/centerButtonBg.png);
+  background-size: 100% 100%;
+}
+
 .middleTree {
   background-image: url(./assets/zhiqiao/tree.png);
   background-size: contain;
@@ -608,7 +682,7 @@ const handleBottomTabClick = (item) => {
   background-size: 100% 100%;
 }
 
-.left-card, .right-card {
+.left-card, .right-card, .bottom-card {
   padding: 8px 18px;
   position: absolute;
   background-color: #363937;
@@ -624,6 +698,12 @@ const handleBottomTabClick = (item) => {
   border: 1px solid #08FFFF;
   color: #08FFFF;
   border-radius: 1000px 1000px 1000px 0;
+}
+
+.bottom-card {
+  border: 1px solid #d980ff;
+  color: #d980ff;
+  border-radius: 1000px 1000px 0 1000px;
 }
 
 .middle-img-left-1 {
@@ -666,9 +746,16 @@ const handleBottomTabClick = (item) => {
   }
 }
   
-@for $i from 1 through 4 {
+@for $i from 1 through 7 {
   .middle-icon-#{$i} {
     background-image: url(./assets/middleIcon#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 4 {
+  .video-#{$i} {
+    background-image: url(./assets/video#{$i}.png);
     background-size: 100% 100%;
   }
 }
