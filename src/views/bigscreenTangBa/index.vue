@@ -885,19 +885,7 @@ const activeSubTab = ref('zhiqiao')
                 }}
             >
             </BigscreenMain>
-            <BigscreenFooter
-              height="30px"
-              v-slots={{
-                default: () => (
-                activeTab.value === 'indus' ? (
-                  <div class="flex gap-3rem bottomBg absolute bottom-0 inset-x-0 h-3rem text-center justify-center">
-                    {bottomTabs.value.map((tab, index) => renderTab(tab, index))}
-                  </div>
-                ) :null
-
-                )
-              }}
-            />
+            <BigscreenFooter height="30px" />
           </BigscreenContainer>
         </BigscreenAdapter>
       </div>
