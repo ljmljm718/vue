@@ -262,14 +262,23 @@
         </div>
         <div class="grid grid-cols-7">
           <div v-for="item,index in dataList2" :key="index" :class="`flex flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
-            <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item}}</div>
+            <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item.data}}</div>
             <div class="w-88%">
-              <div class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> 地块 <div> > </div> </div>
+              <div class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName?item.plotName:'暂无地块'}} <div> > </div> </div>
               <div class="bg-[#f7fbfb] color-[#999999] w-100% h-100px mb-15px flex justify-around flex-wrap">
-                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
-                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
-                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
-                <div class='flex w-50% justify-center items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
+                <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+                <div v-show='item.name == "水质调控"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 水质调控</div>
+                <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
+                <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
+                <div v-show='item.name == "种植"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
+                <div v-show='item.name == "播种"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 播种</div>
+                <div v-show='item.name == "打药"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
+                <div v-show='item.name == "采收"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
+                <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
+                <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
+                <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
+                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div>
+                <div v-show='!item.name' class='flex items-center color-[#acacac]' style="font-weight:600">当前暂无农事计划</div>
               </div>
             </div>
           </div>
@@ -279,13 +288,17 @@
               <div class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg)"> > </div> {{item.plotName?item.plotName:'暂无地块'}} <div> > </div> </div>
               <div class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-around flex-wrap">
                 <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+                <div v-show='item.name == "水质调控"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 水质调控</div>
                 <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
                 <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
                 <div v-show='item.name == "种植"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
+                <div v-show='item.name == "播种"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 播种</div>
                 <div v-show='item.name == "打药"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
                 <div v-show='item.name == "采收"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
                 <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
+                <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
                 <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
+                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div>
                 <div v-show='!item.name' class='flex items-center color-[#acacac]' style="font-weight:600">当前暂无农事计划</div>
               </div>
             </div>
@@ -726,24 +739,31 @@ const getList = async () => {
         if (item.cropType == itm.id) item.cropType = itm.categoryName
       })
     })
-
     list.value = data.list
     total.value = data.total
     let month= new Date().getMonth()+1
-    // let month= 6
-      list.value.forEach((itm:any) => {
-        let time=new Date(itm.startTime).toLocaleDateString().split('/')
-        if(month == Number(time[1])){
-          dataList.value.forEach((item:any) => {
-            if(item.data == Number(time[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-
-            }
-          })
-        }
-      })
-      console.log(dataList.value,'dataList.value getList')
+    list.value.forEach((itm:any) => {
+      let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      if(month == Number(time[1])){
+        dataList.value.forEach((item:any) => {
+          if(item.data == Number(time[2])){
+            item.name = fn(itm.farmDefineType)
+            item.plotName = itm.plotName
+          }
+        })
+      }
+    })
+    list.value.forEach((itm:any) => {
+      let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      if(month == Number(time[1])){
+        dataList2.value.forEach((item:any) => {
+          if(item.data == Number(time[2])){
+            item.name = fn(itm.farmDefineType)
+            item.plotName = itm.plotName
+          }
+        })
+      }
+    })
   } finally {
     loading.value = false
   }
@@ -884,7 +904,6 @@ const subExecute = async (obj) => {
   endTime.value = new Date(obj.endTime).toLocaleString()
   params.value = obj
   paramsA.value.push(obj)
-  console.log(paramsA.value,'paramsA.valueparamsA.value')
   if (obj.planState == 1) {
     let res = await isFarmPlan({ id: obj.id, planState: obj.planState })
     if (res == true) dialogVisibleA.value = true
@@ -1116,7 +1135,6 @@ const formSelect = (e) => {
 const inputNum = ref<Number>(0)
 const inputTab = (val:any,index:Number) => {
   inputNum.value=index
-  console.log(val,'valval123投入品切换')
   // NameList.value[index]={
   //   ...NameList.value[index],
   //   ...formData.value
@@ -1159,7 +1177,6 @@ const openPlotPopup = (id: string) => {
   } else plotPopupRef.value.open(id)
 }
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  // console.log("--->>查看选择的地块信息：", order[0])
   queryParams.belongPlot = String(order[0].id)
   queryParams.plotName = String(order[0].name)
 }
@@ -1186,7 +1203,10 @@ const getData = () => {
     })
   } 
   for(let i=0 ; i< num ; i++) {
-      dataList2.value.unshift(data2.value-i)
+      dataList2.value.unshift({
+        data:data2.value-i,
+        name:''
+      })
   }
 }
 getData()
@@ -1217,7 +1237,19 @@ const dataChange = (e) =>{
         })
       }
   })
-  console.log(dataList.value,'123datalist dataChange')
+  list.value.forEach((itm:any) => {
+      let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      if( e.getMonth()+1 == Number(time[1])){
+          dataList2.value.forEach((item:any) => {
+            if(item.data == Number(time[2])){
+              item.name=fn(itm.farmDefineType) 
+              item.plotName=itm.plotName
+            }
+        })
+      }
+  })
+  console.log(dataList2.value,'dataList2.value1234')
+  console.log(dataList.value,'dataList.value999987')
 }
 </script>
 <style lang="scss" scoped>
