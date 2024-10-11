@@ -9,7 +9,7 @@
     <HomeBaidi v-else-if="deptId === 119" />
     <HomeMingYue v-else-if="deptId === 152" />
     <homeQianJiang v-else-if="deptId === 153" />
-    <HomeTangBa v-else-if="deptId === 154" />
+    <HomeTangBa v-else-if="deptId === 154 || deptId === 163" />
     <homeShuangQiao v-else-if="deptId === 156" />
     <HomeErdu v-else-if="deptId === 161" />
     <div v-else v-loading class="w-full h-[30rem]"></div>
