@@ -879,13 +879,15 @@ const activeSubTab = ref('zhiqiao')
               v-slots={{
                   default: () => {
                     if (activeTab.value === 'base') return baseTabPage()
+                    {/* if (activeTab.value === 'indus') return indusTabPage() */}
                     if (activeTab.value === 'indus') return <SmartIndustry />
-                    {/* if (activeTab.value === 'indus') return <SmartIndustry /> */}
                   }
                 }}
             >
             </BigscreenMain>
-            <BigscreenFooter height="30px" />
+            <BigscreenFooter
+              height="30px"
+            />
           </BigscreenContainer>
         </BigscreenAdapter>
       </div>

@@ -355,8 +355,8 @@ const handleBottomTabClick = (item) => {
     <!-- 左侧 -->
     <div class="absolute left-[16px] top-[16px] w-[500px] h-[930px] mengban z-10">
       <div class="flex items-center p-1 h-32px bottom-border">
-        <div class="titleIcon w-16px h-16px mx-2"></div>
-        <div class="text-[16px] art-font">本村产业情况</div>
+        <div class="titleIcon w-22px h-22px mx-2"></div>
+        <div class="text-[20px] art-font">本村产业情况</div>
       </div>
       <div class="flex justify-evenly items-center h-110px">
         <div
@@ -375,8 +375,8 @@ const handleBottomTabClick = (item) => {
         </el-scrollbar>
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
-        <div class="titleIcon w-16px h-16px mx-2"></div>
-        <div class="text-[16px] art-font">药用价值及功效</div>
+        <div class="titleIcon w-22px h-22px mx-2"></div>
+        <div class="text-[20px] art-font">药用价值及功效</div>
       </div>
       <div class="w-full h-520px">
         <el-scrollbar height="520px">
@@ -415,21 +415,21 @@ const handleBottomTabClick = (item) => {
     <!-- 右侧 -->
     <div class="absolute right-[16px] top-[16px] w-[500px] h-[930px] mengban z-10">
       <div class="flex items-center p-1 h-32px bottom-border">
-        <div class="titleIcon w-16px h-16px mx-2"></div>
-        <div class="text-[16px] art-font">视频</div>
+        <div class="titleIcon w-22px h-22px mx-2"></div>
+        <div class="text-[20px] art-font">视频</div>
       </div>
       <div class="p-4 box-border">
         <div id="player" :class="`w-full h-250px ${activeVideo}`"></div>
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
-        <div class="titleIcon w-16px h-16px mx-2"></div>
-        <div class="text-[16px] art-font">市场需求</div>
+        <div class="titleIcon w-22px h-22px mx-2"></div>
+        <div class="text-[20px] art-font">市场需求</div>
       </div>
       <div class="flex justify-evenly items-center h-170px box-border pt-10px">
         <div
           v-for="item in markNeedList"
           :key="item.id"
-          class="flex flex-col items-center space-y-2"
+          class="flex flex-col items-center space-y-4"
         >
           <div :class="[item.img, 'w-100px h-100px']"></div>
           <div class="bg-#08FFFF text-[#011414] flex justify-center items-center w-80px h-26px rounded-full">{{ item.label }}</div>
@@ -617,6 +617,17 @@ const handleBottomTabClick = (item) => {
   background-position: center;
 }
 
+// 功效图片
+.valueImg1 {
+  background-image: url(./assets/zhiqiao/valueImg1.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+} 
+.valueImg2 {
+  background-image: url(./assets/zhiqiao/valueImg2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 //底部
 @for $i from 1 through 4 {
   .tab-icon-#{$i} {
