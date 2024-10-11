@@ -131,7 +131,7 @@ export default defineComponent({
                                         </div>
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>规模：</div>
-                                          <div class='w-3/5' >{_ele.amount}只</div>
+                                          <div class='w-3/5' >{_ele.amount} {_ele.unit}</div>
                                         </div>
 
                                       </div>
