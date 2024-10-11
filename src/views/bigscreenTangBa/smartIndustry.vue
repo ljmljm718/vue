@@ -134,7 +134,7 @@ const medicalDataMap = new Map([
       id: '2',
       icon: 'med-icon-2',
       color: '#08ffff',
-      title: '现在研究功效',
+      title: '现代研究功效',
       children: [
         {
           title: '心血管调节作用：',
@@ -389,7 +389,7 @@ const handleBottomTabClick = (item) => {
               <div :class="`rounded-full w-100px h-100px ${item.icon}`"></div>
               <div class="w-350px ml-5">
                 <div
-                  class="text-black text-18px font-bold side-btn-title w-140px text-center py-1 mb-2"
+                  class="text-black text-19px font-bold side-btn-title w-140px text-center py-1 mb-2"
                   :style="`background-color: ${item.color};`"
                 >
                   {{ item.title }}
@@ -529,43 +529,43 @@ const handleBottomTabClick = (item) => {
           v-if="activeTab === '4'"
         >
           <div class="absolute right-[-90px] top-80px">
-            <div class="text-#effc6d text-18px">1.原粮验收</div>
+            <div class="text-#effc6d text-18px font-semibold">1.原粮验收</div>
             <div>对收购的稻谷进行检验，确保稻谷符合加工要求。</div>
           </div>
           <div class="absolute right-[-80px] top-200px">
-            <div class="text-#08ffff text-18px">2.清理</div>
+            <div class="text-#08ffff text-18px font-semibold">2.清理</div>
             <div class="w-[200px]">先利用圆筒初清，再通过去石机去除稻谷中的杂质，最后使用磁选机吸附稻谷中的金属杂质。</div>
           </div>
           <div class="absolute right-[-80px] top-350px">
-            <div class="text-#08ffff text-18px">3.砻谷</div>
+            <div class="text-#08ffff text-18px font-semibold">3.砻谷</div>
             <div class="w-[200px]">使用砻谷机将稻谷的谷壳脱下，使稻谷变成糙米。</div>
           </div>
           <div class="absolute right-[-40px] bottom-100px">
-            <div class="text-#08ffff text-18px">4.谷糙分离</div>
+            <div class="text-#08ffff text-18px font-semibold">4.谷糙分离</div>
             <div class="w-[200px]">利用谷糙分离机将谷糙混合物中的谷粒和糙米分离开来。</div>
           </div>
           <div class="absolute right-[210px] bottom-[-60px] flex flex-col items-center">
-            <div class="text-#08ffff text-18px">5.糙米调质</div>
+            <div class="text-#08ffff text-18px font-semibold">5.糙米调质</div>
             <div class="w-[200px]">根据糙米的情况调整其水分和温度，使其达到适宜的碾米条件。</div>
           </div>
           <div class="absolute left-[-40px] bottom-80px flex flex-col items-end">
-            <div class="text-#08ffff text-18px">6.碾米</div>
+            <div class="text-#08ffff text-18px font-semibold">6.碾米</div>
             <div class="w-[200px]">根据糙米的情将糙米放入碾米机中除去糙米的皮层和胚芽。况调整其水分和温度，使其达到适宜的碾米条件。</div>
           </div>
           <div class="absolute left-[-80px] top-350px flex flex-col items-end">
-            <div class="text-#08ffff text-18px">7.白米分级</div>
+            <div class="text-#08ffff text-18px font-semibold">7.白米分级</div>
             <div class="w-[200px]">使用白米分级筛对白米进行分级。</div>
           </div>
           <div class="absolute left-[-80px] top-220px flex flex-col items-end">
-            <div class="text-#08ffff text-18px">8.色选</div>
+            <div class="text-#08ffff text-18px font-semibold">8.色选</div>
             <div class="w-[200px]">利用色选机对大米进行光学检测，剔除有缺陷的米粒。</div>
           </div>
           <div class="absolute left-[-70px] top-80px flex flex-col items-end">
-            <div class="text-#08ffff text-18px">9.抛光</div>
+            <div class="text-#08ffff text-18px font-semibold">9.抛光</div>
             <div class="w-[200px]">将白米放入抛光机中，通过摩擦使米粒表面光滑。</div>
           </div>
           <div class="absolute left-[340px] top-[-30px]">
-            <div class="text-#08ffff text-18px">10.包装</div>
+            <div class="text-#08ffff text-18px font-semibold">10.包装</div>
             <div class="w-[200px]">对经过上述工序处理后的成品大米进行包装。</div>
           </div>
         </div>
