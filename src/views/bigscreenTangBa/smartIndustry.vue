@@ -2,7 +2,7 @@
 import Dplayer from 'dplayer'
 import Hls from "hls.js";
 
-const activeTab = ref<string>('4')
+const activeTab = ref<string>('1')
 const bottomTabs = [
   { id: '1', name: '枳壳', icon: 'tab-icon-1' },
   { id: '2', name: '柠檬', icon: 'tab-icon-2' },
@@ -371,7 +371,7 @@ const handleBottomTabClick = (item) => {
       </div>
       <div class="w-full h-210px">
         <el-scrollbar height="210px">
-          <div class="p-4 px-6 leading-6">{{ situationText }}</div>
+          <div class="p-4 px-6 leading-6 text-[16px]">{{ situationText }}</div>
         </el-scrollbar>
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
@@ -386,7 +386,7 @@ const handleBottomTabClick = (item) => {
               :key="item.id"
               class="flex items-start justify-center"
             >
-              <div :class="`rounded-full w-70px h-70px ${item.icon}`"></div>
+              <div :class="`rounded-full w-100px h-100px ${item.icon}`"></div>
               <div class="w-350px ml-5">
                 <div
                   class="text-black text-18px font-bold side-btn-title w-140px text-center py-1 mb-2"
@@ -432,7 +432,7 @@ const handleBottomTabClick = (item) => {
           class="flex flex-col items-center space-y-4"
         >
           <div :class="[item.img, 'w-100px h-100px']"></div>
-          <div class="bg-#08FFFF text-[#011414] flex justify-center items-center w-80px h-26px rounded-full">{{ item.label }}</div>
+          <div class="bg-#08FFFF text-[#011414] flex justify-center items-center w-80px h-26px rounded-full font-semibold">{{ item.label }}</div>
         </div>
       </div>
       <div class="w-full h-390px">

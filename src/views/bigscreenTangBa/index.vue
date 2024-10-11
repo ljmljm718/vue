@@ -3,6 +3,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import mainBg from './assets/bg.png'
 import indusBg from './assets/indusBg.png'
 import headerBg from './assets/headerBg.png'
+import headerBg1 from './assets/headerBg1.png'
 import BigscreenBuilder from '@/components/BigscreenBuilder'
 import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
 import SmartIndustry from './smartIndustry.vue'
@@ -851,17 +852,13 @@ const changeTab = (key: string) => {
   }
 }
 
-//底部按钮切换
-const activeSubTab = ref('zhiqiao')
-
-
-
     return () => (
       <div class="bg-[#001922] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
           <BigscreenContainer backgroundImage={bgImage.value} key={bgImage.value}>
             <BigscreenHeader
-              backgroundImage={headerBg}
+            
+              backgroundImage={activeTab.value === 'base' ? headerBg : headerBg1}
               height="80px"
               v-slots={{
                 right: () => (<BigScreenTime class="relative top-[-9px]" />),
