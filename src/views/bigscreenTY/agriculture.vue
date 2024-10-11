@@ -15,7 +15,8 @@ import {
   getAllBase,
   getAllPlotByBaseID,
   getProductBrand,
-  getEquipmentMap
+  getEquipmentMap,
+  qianjiangMonitor
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
 
@@ -83,6 +84,7 @@ const getCropBase = async () => {
   })
   if (!Array.isArray(list)) return;
   cropList.value = list;
+  console.log(cropList.value,'cropListcropList1234')
 }
 getCropBase()
 //品牌信息
@@ -170,6 +172,7 @@ getTopDataList()
 //品种分布
 const initChart = async () => {
   const res = await getBreedCategory()
+  console.log(res,'res123品种分布')
   if (!Array.isArray(res)) return
   const seriesData = res.map(item => ({
     name: item.cropName || '暂无数据',
@@ -390,6 +393,51 @@ const getEquipmentMapData = async () => {
     map.fitBounds(latlngs, { padding: [5, 5] })
   })
 }
+/****************************  气象检测 土壤墒情 ****************************/
+
+const soilList = ref<Array<any>>([])
+const montiorList = ref<Array<any>>([])
+const getQianjiangMonitor = async() => {
+  const soil={
+    '光照':'1',
+    '氮':'2',
+    '钾':'3',
+    '磷':'4',
+    'PH值':'5',
+    '湿度':'6',
+    'EC值':'7',
+    '温度':'8',
+  }
+  const montior={
+    '空气温度':'1',
+    '空气湿度':'2',
+    '降雨量':'3',
+    '雨量':'3',
+    '光照强度':'4',
+    '光照':'4',
+    '风力':'5',
+    '风速':'5',
+    '风向':'6',
+  }
+  let res = await qianjiangMonitor({type:'气象站'})
+  let res2 = await qianjiangMonitor({type:'土壤墒情'})
+  console.log(res,'气象监测')
+  console.log(res2,' 土壤墒情')
+  soilList.value=res2
+  montiorList.value=res
+
+  soilList.value = soilList.value.map((item)=>({
+    ...item,
+    icon:soil[item.monitoringType]
+  }))
+  montiorList.value = montiorList.value.map((item)=>({
+    ...item,
+    icon:montior[item.monitoringType]
+  }))
+  console.log( montiorList.value,' montiorList.value montiorList.value1234')
+}
+getQianjiangMonitor()
+
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative">
@@ -544,41 +592,43 @@ const getEquipmentMapData = async () => {
         </div>
       </div>
     </div>
-    <!-- 种养信息 -->
+    <!-- 气象监测 -->
     <div class="h-full w-460px">  
-      <div class="w-460px h-45px plant-title"></div>
-      <el-scrollbar style="height: 485px;margin-bottom: 15px;">
-        <div class="p-3 box-border grid grid-cols-2 gap-3 text-white">
-          <div
-            class="plant-bg w-full p-3 box-border"
-            v-for="item in cropList"
-            :key="item.id"
-          >
-            <img :src=item.imgId class="w-full h-130px object-contain" />
-            <div class="flex items-start space-x-2 mt-2">
-              <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
-              <div class="space-y-2 text-#d1d1d1 text-12px">
-                <div class="text-[16px] text-white">{{item.cropName}}</div>
-                <div class="text-[12px]">
-                  <span>所属地块:</span>
-                  <span>{{ item.plotName }}</span>
-                </div>
-                <div class="text-[12px]">
-                  <span>起止时间:</span>
-                  <div class="text-[12px]">
-                    {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
-                    -
-                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'暂无数据' }}
-                  </div>
-                </div>
+      <!----气象监测----->
+      <div class="w-460px h-45px meteor-title"></div>
+      <el-scrollbar style="height: 200px;">
+        <div class="p-3 box-border color-[#fff] grid grid-cols-3 gap-1 ">
+          <div  
+            class=" w-100%  p-3 box-border flex justify-between "
+            v-for="item in montiorList"
+            :key="item.id">
+              <div :class="`meteor-icon-${item.icon} w-50px h-50px`"></div>
+              <div class="!w-60%">
+                <div  class="flex justify-center">{{ item.monitoringType }}</div>
+                <div class="flex text-1rem mt-10px justify-end">{{item.dataValue}} <div class="text-13px mt-[2px] color-[#929593]">{{ item.unit }}</div></div>
               </div>
-            </div>
+          </div>
+        </div>
+      </el-scrollbar>
+      <!----土壤墒情----->
+      <div class="w-460px h-45px soil-title"></div>
+      <el-scrollbar style="height: 300px;">
+        <div class="p-3 box-border grid color-[#fff] grid-cols-3 gap-3 ">
+          <div  
+            class="w-100% p-3 box-border flex justify-between items-center"
+            v-for="item in soilList"
+            :key="item.id">
+              <div :class="`soil-icon-${item.icon} w-55px h-55px`"></div>
+              <div>
+                <div class="flex justify-center">{{ item.monitoringType }}</div>
+                <div class="flex text-1.5rem justify-end mt-10px">{{item.dataValue}} <div class="text-15px mt-[10px] color-[#929593]">{{ item.unit }}</div></div>
+              </div>
           </div>
         </div>
       </el-scrollbar>
       <!----品牌介绍----->
       <div class="w-460px h-45px brand-title"></div>
-      <el-scrollbar style="height: 360px;">
+      <el-scrollbar style="height: 280px;">
         <div class="p-3 box-border grid grid-cols-1 gap-3 ">
           <div  
             class="plant-bg w-full  p-3 box-border flex justify-center "
@@ -640,7 +690,7 @@ const getEquipmentMapData = async () => {
         </div>
       </div>
     </div>
-    <div class="absolute w-940px left-460px bottom-20px flex justify-center text-white z-20 ">
+    <div class="absolute w-940px left-460px bottom-300px flex justify-center text-white z-20 ">
       <div class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3">
         <div class="flex space-x-2 items-center">
           <div class="w-26px h-30px icon-1"></div>
@@ -664,7 +714,39 @@ const getEquipmentMapData = async () => {
         </div>
       </div>
     </div>
-    <div class="absolute w-940px left-460px h-full z-0" id="bigMapContainer"></div>
+    <div class="absolute w-940px left-460px h-70% z-0" id="bigMapContainer"></div>
+    <div class='absolute w-940px h-28% bottom-0 left-460px'>
+      <div class="w-940px h-45px plant-title"></div>
+      <el-scrollbar style="height: calc(100% - 45px);margin-bottom: 15px;">
+        <div class="p-3 box-border grid grid-cols-2 gap-3 text-white">
+          <div
+            class="plant-bg w-full p-3 box-border"
+            v-for="item in cropList"
+            :key="item.id"
+          >
+            <img :src=item.imgId class="w-full h-130px object-contain" />
+            <div class="flex items-start space-x-2 mt-2">
+              <div class="w-5px h-14px bg-#01F892 mt-1 ml-1"></div>
+              <div class="space-y-2 text-#d1d1d1 text-12px">
+                <div class="text-[16px] text-white">{{item.cropName}}</div>
+                <div class="text-[12px]">
+                  <span>所属地块:</span>
+                  <span>{{ item.plotName }}</span>
+                </div>
+                <div class="text-[12px]">
+                  <span>起止时间:</span>
+                  <div class="text-[12px]">
+                    {{ dayjs(item.receiptStartTime).format('YYYY-MM-DD') }}
+                    -
+                    {{ item.receiptEndTime? dayjs(item.receiptEndTime).format('YYYY-MM-DD'):'暂无数据' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-scrollbar>
+    </div>
   </div>
 </template>
 <style scoped lang="scss">
@@ -685,6 +767,20 @@ const getEquipmentMapData = async () => {
 @for $i from 1 through 3 {
   .agri-bg-#{$i} {
     background-image: url(./assets/agriBg#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 6 {
+  .meteor-icon-#{$i} {
+    background-image: url(./assets/meteor-icon-#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 8 {
+  .soil-icon-#{$i} {
+    background-image: url(./assets/soil-icon-#{$i}.png);
     background-size: 100% 100%;
   }
 }
@@ -725,7 +821,17 @@ const getEquipmentMapData = async () => {
 }
 
 .brand-title {
-  background-image: url(./assets/brandTitle.png);
+  background-image: url(./assets/warnTitle.png);
+  background-size: 100% 100%;
+}
+
+.meteor-title {
+  background-image: url(./assets/meteorTitle.png);
+  background-size: 100% 100%;
+}
+
+.soil-title {
+  background-image: url(./assets/soilTitle.png);
   background-size: 100% 100%;
 }
 
