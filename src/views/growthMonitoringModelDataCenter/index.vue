@@ -248,6 +248,7 @@ export default defineComponent({
             }
           }
         })
+        if (cycleNameList.value.length > 0) handleClick(0)
         curTips.value = cycleMap.value.get(curPeriod.value).tips
         curCycle.value = cycleMap.value.get(curPeriod.value).cycle
 
