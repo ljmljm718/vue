@@ -2,6 +2,28 @@
 import Dplayer from 'dplayer'
 import Hls from "hls.js";
 
+// 初始化 Video
+const initVideo = (containerId:string, url:string) => {
+  const hls = new Hls();
+  new Dplayer({
+    container: document.getElementById(containerId),
+    loop: false,
+    autoplay: true,
+    volume: 0,
+    video: {
+      url,
+      type: "customHls",
+      customType: {
+        customHls: (video) => {
+          hls.loadSource(video.src);
+          hls.attachMedia(video);
+        },
+      },
+    },
+    mutex: false
+  })
+}
+
 const activeTab = ref<string>('1')
 const bottomTabs = [
   { id: '1', name: '枳壳', icon: 'tab-icon-1' },
@@ -340,6 +362,19 @@ const getActiveVideo = (tab:string) => {
 }
 getActiveVideo(activeTab.value)
 
+const videoActiveMap = new Map([
+  ['1', '/public/zhiqiao/zhiqiao.m3u8'],
+  ['2', '/public/ningmeng/ningmeng.m3u8'],
+  ['3', '/public/zhiqiao/zhiqiao.m3u8'],
+  ['4', '/public/ningmeng/ningmeng.m3u8']
+])
+const enableActiveVideo = (tab:string) => {
+  const item = videoActiveMap.get(tab)
+  if (item) initVideo('player', item)
+  else initVideo('player', '/public/zhiqiao/zhiqiao.m3u8')
+}
+onMounted(() => { enableActiveVideo(activeTab.value) })
+
 const handleBottomTabClick = (item) => {
   activeTab.value = item.id;
   getSituationList(activeTab.value)
@@ -348,6 +383,7 @@ const handleBottomTabClick = (item) => {
   getMarkNeedText(activeTab.value)
   getMedicalData(activeTab.value)
   getActiveVideo(activeTab.value)
+  enableActiveVideo(activeTab.value)
 }
 </script>
 <template>
@@ -419,7 +455,11 @@ const handleBottomTabClick = (item) => {
         <div class="text-[20px] art-font">视频</div>
       </div>
       <div class="p-4 box-border">
-        <div id="player" :class="`w-full h-250px ${activeVideo}`"></div>
+        <div
+          id="player"
+          style="height: 250px;"
+          class="w-full"
+        ></div>
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-22px h-22px mx-2"></div>
