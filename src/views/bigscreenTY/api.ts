@@ -70,4 +70,10 @@ export const getEquipmentMap = async(params) =>{
   return request.get({ url:'/agriculture/device-info/getEquipmentMap', params })
 }
 
+// 预警信息
+export const qianjiangWarnRecordInfo = async(params) =>{
+  return request.get({ url:'/agriculture/warning-record-big-screen/qianjiangWarnRecordInfo', params })
+}
+
+
 

@@ -16,7 +16,8 @@ import {
   getAllPlotByBaseID,
   getProductBrand,
   getEquipmentMap,
-  qianjiangMonitor
+  qianjiangMonitor,
+  qianjiangWarnRecordInfo
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
 
@@ -24,6 +25,11 @@ import {
   initChartStatic,
   generatePieOptions
 } from '../../utils/bigscreenTool/index'
+import BigscreenBuilder from '@/components/BigscreenBuilder'
+
+const {
+  BigscreenTable
+} = BigscreenBuilder
 
 adapter()
 // const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -428,19 +434,26 @@ const getQianjiangMonitor = async() => {
 
   soilList.value = soilList.value.map((item)=>({
     ...item,
-    icon:soil[item.monitoringType]
+    icon: soil[item.monitoringType] ?? '1'
   }))
   montiorList.value = montiorList.value.map((item)=>({
     ...item,
-    icon:montior[item.monitoringType]
+    icon:montior[item.monitoringType] ?? '1'
   }))
   console.log( montiorList.value,' montiorList.value montiorList.value1234')
 }
 getQianjiangMonitor()
 
+const warnRecordList = ref<any[]>([])
+const getQianjiangWarnRecordInfo = async () => {
+  const res = await qianjiangWarnRecordInfo({});
+  console.log("🚀 ~ getQianjiangWarnRecordInfo ~ res:", res)
+  if (Array.isArray(res)) warnRecordList.value = res.map(item => ({ ...item, warnStatus: item.warnStatus === '0' ? '未处理' : '已处理' }));
+}
+getQianjiangWarnRecordInfo()
 </script>
 <template>
-  <div class="w-full h-full flex justify-between relative">
+  <div class="w-full h-full flex justify-between relative text-white">
     <div class="h-full w-460px">
       <div class="w-460px h-45px agri-title"></div>
       <div class="w-460px pt-15px pb-20px flex justify-evenly">
@@ -629,25 +642,26 @@ getQianjiangMonitor()
       <!----品牌介绍----->
       <div class="w-460px h-45px brand-title"></div>
       <el-scrollbar style="height: 280px;">
-        <div class="p-3 box-border grid grid-cols-1 gap-3 ">
-          <div  
-            class="plant-bg w-full  p-3 box-border flex justify-center "
-            v-for="item in brandList"
-            :key="item.id">
-              <div class="w-50% p-2 justify-center items-center">
-                <img :src=item.brandLogo class="w-full h-90% object-contain flex items-center" />
-              </div>
-              <div class=" p-2 w-50%">
-                <div class="flex items-start space-x-2 mt-2">
-                  <div class="w-5px h-20px bg-#01F892 mt-2 ml-1"></div>
-                  <div class="text-[20px] mt-1 text-white">{{ item.productBrand }}</div>
-                </div>
-                <div class="space-y-2 text-#d1d1d1 text-12px pt-3">
-                  <div class="p-2 moduletitle">{{ item.brandDetail }}</div>
-                </div>
-              </div>
-          </div>
-        </div>
+        <BigscreenTable
+          headerBackgroundColor="#012831"
+          :columns="[
+            {
+              key: 'warnInfo',
+              label: '预警信息',
+              width: '12rem'
+            },
+            {
+              key: 'warnTime',
+              label: '报警时间',
+              width: '7rem'
+            },
+            {
+              key: 'warnStatus',
+              label: '状态',
+            },
+          ]"
+          :dataList="warnRecordList"
+        />
       </el-scrollbar>
     </div>
     <div
@@ -718,7 +732,7 @@ getQianjiangMonitor()
     <div class='absolute w-940px h-28% bottom-0 left-460px'>
       <div class="w-940px h-45px plant-title"></div>
       <el-scrollbar style="height: calc(100% - 45px);margin-bottom: 15px;">
-        <div class="p-3 box-border grid grid-cols-2 gap-3 text-white">
+        <div class="p-3 box-border grid grid-cols-3 gap-3 text-white">
           <div
             class="plant-bg w-full p-3 box-border"
             v-for="item in cropList"
