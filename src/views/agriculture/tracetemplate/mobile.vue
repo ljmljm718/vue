@@ -53,11 +53,12 @@ const resourceInfoList = computed(() => {
       return { ...item, icon: `icon-${index === -1 ? 7 : index + 1}` }
     });
   } else {
-    return [
-      { recordTime: new Date().valueOf(), defineName: '浇水', icon: 'icon-7' },
-      { recordTime: new Date().valueOf(), defineName: '除草', icon: 'icon-5' },
-      { recordTime: new Date().valueOf(), defineName: '打药', icon: 'icon-8' },
-    ]
+    // return [
+    //   { recordTime: new Date().valueOf(), defineName: '浇水', icon: 'icon-7' },
+    //   { recordTime: new Date().valueOf(), defineName: '除草', icon: 'icon-5' },
+    //   { recordTime: new Date().valueOf(), defineName: '打药', icon: 'icon-8' },
+    // ]
+    return []
   }
 })
 
@@ -133,7 +134,7 @@ const productList = computed(() => {
         <div class="flower-icon absolute right-[-2rem] top-[-.4rem] w-3rem h-3rem"></div>
       </div>
       <div class="w-2.3rem h-4px bg-[#009688] mt-[.2rem] rounded-full"></div>
-      <div class="w-90% flex flex-col space-y-3 mt-1.6rem">
+      <div v-if="resourceInfoList.length > 0" class="w-90% flex flex-col space-y-3 mt-1.6rem">
         <div
           v-for="item, index in resourceInfoList"
           :key="item.id"
@@ -155,6 +156,7 @@ const productList = computed(() => {
           </div>
         </div>
       </div>
+      <div v-else class="w-90% h-[10rem] mt-1.6rem no-data text-center tracking-widest">暂无数据</div>
     </div>
     <div class="py-[1.6rem] flex flex-col items-center">
       <div class="relative font-bold text-[1.1rem]">
@@ -213,6 +215,15 @@ const productList = computed(() => {
   .icon-#{$i} {
     background-image: url(./assets/icons/icon#{$i}.png);
     background-size: 100% 100%;
+  }
+}
+
+.no-data {
+  background: {
+    image: url(@/assets/imgs/chartNull.png);
+    size: contain;
+    position: center;
+    repeat: no-repeat;
   }
 }
 </style>
