@@ -352,12 +352,6 @@ export default defineComponent({
       { id: '2', title: '总人口', value: '4326', unit: '人' },
       { id: '3', title: '耕地面积', value: '7000', unit: '亩' },
     ])
-
-    // 产业介绍图片滚动列表
-    const indIntroPicList = ref<any[]>([
-
-    ])
-
     //可视化监控页
     const baseTabPage = () => {
       return (
