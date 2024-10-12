@@ -392,7 +392,7 @@ const handleBottomTabClick = (item) => {
     <div class="absolute left-[16px] top-[16px] w-[500px] h-[930px] mengban z-10">
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-22px h-22px mx-2"></div>
-        <div class="text-[20px] art-font">本村产业情况</div>
+        <div class="text-[20px] font-extrabold tracking-wide">本村产业情况</div>
       </div>
       <div class="flex justify-evenly items-center h-110px">
         <div
@@ -400,7 +400,7 @@ const handleBottomTabClick = (item) => {
           :key="item.id"
           class="flex flex-col items-center relative top-10px"
         >
-          <div class="relative top-10px text-[18px] text-[#08FFFF] art-font">{{ item.value }}</div>
+          <div class="relative top-10px text-[18px] text-[#08FFFF] font-bold tracking-wide">{{ item.value }}</div>
           <div class="relative top-10px text-[14px] text-[#fff]">{{ item.title }}</div>
           <div class="IndusSituationImg w-80px h-60px"></div>
         </div>
@@ -412,7 +412,7 @@ const handleBottomTabClick = (item) => {
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-22px h-22px mx-2"></div>
-        <div class="text-[20px] art-font">药用价值及功效</div>
+        <div class="text-[20px] font-extrabold tracking-wide">药用价值及功效</div>
       </div>
       <div class="w-full h-520px">
         <el-scrollbar height="520px">
@@ -452,7 +452,7 @@ const handleBottomTabClick = (item) => {
     <div class="absolute right-[16px] top-[16px] w-[500px] h-[930px] mengban z-10">
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-22px h-22px mx-2"></div>
-        <div class="text-[20px] art-font">视频</div>
+        <div class="text-[20px] font-extrabold tracking-wide">视频</div>
       </div>
       <div class="p-4 box-border">
         <div
@@ -463,7 +463,7 @@ const handleBottomTabClick = (item) => {
       </div>
       <div class="flex items-center p-1 h-32px bottom-border">
         <div class="titleIcon w-22px h-22px mx-2"></div>
-        <div class="text-[20px] art-font">市场需求</div>
+        <div class="text-[20px] font-extrabold tracking-wide">市场需求</div>
       </div>
       <div class="flex justify-evenly items-center h-170px box-border pt-10px">
         <div

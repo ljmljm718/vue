@@ -24,6 +24,10 @@ import {
   getLineChar
 } from './apis'
 import { formatTime } from '@/utils'
+import { Swiper, SwiperSlide } from "swiper/vue"
+import { Autoplay } from "swiper/modules"
+import 'swiper/css'
+import 'swiper/css/autoplay'
 
 const {
   BigscreenAdapter,
@@ -348,6 +352,12 @@ export default defineComponent({
       { id: '2', title: '总人口', value: '4326', unit: '人' },
       { id: '3', title: '耕地面积', value: '7000', unit: '亩' },
     ])
+
+    // 产业介绍图片滚动列表
+    const indIntroPicList = ref<any[]>([
+
+    ])
+
     //可视化监控页
     const baseTabPage = () => {
       return (
@@ -535,7 +545,26 @@ export default defineComponent({
               <div class="w-1000px h-full center-card-bg box-border">
                 <div class="art-font text-white text-20px h-50px pl-9 flex items-center">产业介绍</div>
                 <div class="box-border px-4 py-1 flex justify-between">
-                  <div class="w-300px h-160px picture-bg"></div>
+                  <div class="w-300px h-160px overflow-hidden">
+                    <Swiper
+                      width={ 300 }
+                      height={ 160 }
+                      direction="vertical"
+                      autoplay={{
+                        delay: 2000,
+                        pauseOnMouseEnter: true
+                      }}
+                      modules={[ Autoplay ]}
+                    >
+                      {
+                        [1, 2, 3, 4, 5].map(item => (
+                          <SwiperSlide>
+                            <div class={ "w-full h-full picture-bg-" + item }></div>
+                          </SwiperSlide>
+                        ))
+                      }
+                    </Swiper>
+                  </div>
                   <div class="w-650px h-160px">
                     <el-scrollbar height="160px">
                       天印村主要产业有以生猪、生态鱼为主的养殖业，有以特色经果、中药材规模化种植为主的种植业，有餐饮、种养业等小微企业24家，专业合作社3个；已建成4万平方米154户的农民新村，全村实现了社社通天然气，社社通硬化公路，80%以上的居民通硬化道路。人均可支配收入达到了18300元。全村经济社会发展形势良好，人民生活水平正阔步迈向小康。 村为适应社会经济发展需要，深化农村改革，发展壮大农村集体经济，2019年成立了潼南区塘坝镇天印村经济联合社（以下简称联合社）。联合社经营有土地面积500亩，其中流转租用土地320亩，农民土地入股180亩（涉及33户，142人）。主要经营有商品生态鱼220亩，观赏鱼10亩，中药材80亩，花卉苗木40亩，经果种植150亩。生产经营正常。联合社除销售本社的农产品外，还可销售周边乃至全区的农产品，实现年销售各种农产品400万公斤，销售总收入1000万元，利润120万元。租用土地128户320亩，增加农民收入16万元，新增常年固定性岗位32个（其中接纳当地贫困户7户），每个岗位年收入1.80万元；新增季节性岗位4500个工作日，每个工作日收入80元。 天印村在环境整治方面，坚持“生态优先、绿色发展”理念，向上级争取资金800万，组织群众自筹资金300万，大力实施“六改六治”，建宜居美丽乡村。六改：改厕、改厨、改水、改电、改气、改路；六治：治理乱搭乱建、治理房前屋后、治理畜禽散养、治理垃圾污水、治理危旧房屋、治理公共空间。另外，天印村聘请公益性岗位12名，组建常态化保洁队伍。每月开展一次环境卫生评比，并将评比结果进行公开公示，在环境整治工作上，已取得突破性进展。 天印村在建设法治村方面，组织建立治安巡逻队，定期在村居各社进行巡逻。使居民的安全感逐步增强，有力维护了本村的治安稳定，巡逻队在巡逻中一旦发现有乱张贴、乱堆放现象及时清理解决，杜绝脏乱差现象的蔓延。通过治安巡逻，加强防范力度，挤压了犯罪空间，对犯罪分子起到了较大的震慑作用，此项活动在本村安全防范，保护村民财产安全，维护本村稳定等方面起到了非常积极的作用，保障了广大人民群众的生命财产安全，共建和谐生活。 另外，天印村何家坪所修复的乡情馆，它源于100多年前修建的碉楼院子，总的建筑面积1200㎡，历时8个月修复。里面陈列的农耕用品是当地村民自发捐赠的，共100余件。农耕用具、生产工具（木匠、石匠、编制机等）、家庭生活用品、书房等等，可供村民及游客观赏。 天印村今年被评为重庆十大最美乡村和特色乡村之一，总之，天印村以打造宜居宜业宜游的休闲美丽乡村为目标而不懈努力！
@@ -955,6 +984,14 @@ const changeTab = (key: string) => {
 .picture-bg {
   background-image: url(./assets/picture.png);
   background-size: cover;
+}
+
+// 产业介绍轮播图片样式
+@for $i from 1 through 5 {
+  .picture-bg-#{$i} {
+    background-image: url(./assets/picture#{$i}.png);
+    background-size: cover;
+  }
 }
 
 .center-card-bg {
