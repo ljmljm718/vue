@@ -16,6 +16,16 @@ export const getEquipmentMap = async (params) => {
   })
 }
 
+// 中间上 塘坝 设备监测列表
+export const getDeviceCategoryTree = (params) => {
+  return request.get({ url: `/agriculture/big-screen/getDeviceCategoryTree`, params})
+}
+
+// 中间上 设备属性详情-根据设备id查询
+export const getDeviceInfo = (params) => {
+  return request.get({ url: `/agriculture/device-info/get`, params})
+}
+
 
 // 左一：气象监测
 export const qianjiangMonitor = async (params) => {

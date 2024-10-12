@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, nextTick } from 'vue'
 import mainBg from './assets/bg.png'
 import indusBg from './assets/indusBg.png'
 import headerBg from './assets/headerBg.png'
@@ -28,6 +28,15 @@ import { Swiper, SwiperSlide } from "swiper/vue"
 import { Autoplay } from "swiper/modules"
 import 'swiper/css'
 import 'swiper/css/autoplay'
+import MapTangBa from '../Home/mapTangBacopy.vue'
+import * as turf from '@turf/turf'
+import { getDeviceCategoryTree, getDeviceInfo } from './apis'
+import meassageTop from './assets/tangba/meassage-top.png'
+import IconVideo from "./assets/tangba/onlineMonitor.png"
+import IconWeather from "./assets/tangba/onlineWeather.png"
+import IconSoil from "./assets/tangba/onlineSoil.png"
+import IconBug from "./assets/tangba/onlineBug.png"
+import IconGrow from "./assets/tangba/onlineGrow.png"
 
 const {
   BigscreenAdapter,
@@ -352,6 +361,155 @@ export default defineComponent({
       { id: '2', title: '总人口', value: '4326', unit: '人' },
       { id: '3', title: '耕地面积', value: '7000', unit: '亩' },
     ])
+
+    // 中间地图
+    const mapTangBgRef = ref<any>()
+    const allDeviceDataList = ref<Array<any>>([])
+
+    const getAllLocationDevice = (arr: Array<any>): Array<any> => {
+      let resArr: Array<any> = []
+      arr.forEach((item) => {
+        if (item.children) {
+          resArr = [...resArr, ...getAllLocationDevice(item.children)]
+        } else resArr.push(item)
+      })
+      return resArr
+    }
+
+    const handleSelect = async (item) => {
+      const res = await getDeviceInfo({ id: item })
+      if (mapTangBgRef.value) {
+        console.log('地图设备详情', res)
+        // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
+        const infoString = `<div class="bg-[#e8f2fc] relative">
+          <div class='relative'>
+            <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
+            <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
+              res.parkName
+            }</div>
+            </div>
+          
+            <div class="p-2  text-[14px] meassage-bg">
+              <div class="p-1 px-2 color-[#000] flex items-center "> <div class="bg-[#0160ff] mr-5px w-[8px] h-[8px] rounded-full"></div> ${
+                res.deviceName
+              }</div>
+              <div class="p-1 px-2 flex space-x-2 items-center">
+                <div class="${
+                  res.deviceStatus === 'online' ? 'bg-[#35dc71]' : 'bg-[#e84133]'
+                } w-[8px] h-[8px] rounded-full"></div>
+                <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
+              </div>
+                ${res.channelId !== null && res.channelId !== '' && res.dtu !== null && res.dtu !== ''? 
+                `
+                  <div class="flex pt-[1.2rem] justify-center">
+                    <a 
+                    href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                    class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
+                    style="text-decoration: none;">
+                  查看监控
+                    </a>
+                  </div>
+                `
+                : ''}
+            </div> 
+          </div>`
+        mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
+        mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
+      }
+    }
+
+    const getMenuDataList = async () => {
+      const res = await getDeviceCategoryTree({})
+      console.log('getMenuDataList14123', res)
+      console.log('模板引用', mapTangBgRef.value)
+
+      if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res)
+      console.log('allDeviceDataList', allDeviceDataList.value)
+      const kindMap = {
+        '101': 'Monitor',
+        '79': 'Monitor',
+        '82': 'Grow',
+        '102': 'Grow',
+        '103': 'Weather',
+        '159': 'Weather',
+        '81': 'Weather',
+        '86': 'Soil',
+        '104': 'Soil',
+        '107': 'Bug',
+        '88': 'Bug'
+      }
+
+      // 添加 Marker 到地图上
+      const _center = turf.centroid(
+        turf.points(
+          allDeviceDataList.value
+            .map((ele) => {
+              const _item = JSON.parse(JSON.stringify(ele))
+              return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+            })
+            .filter((item) => {
+              const [a, b] = item
+              if (isNaN(a) || isNaN(b) || !a || !b) return false
+              return true
+            })
+        )
+      )
+
+      const { geometry } = _center
+      const { coordinates } = geometry
+      const [_lng, _lat] = coordinates
+      mapTangBgRef.value.setViewport(
+        allDeviceDataList.value.map((item) => {
+          return { lng: item.longitude, lat: item.latitude }
+        })
+      )
+      mapTangBgRef.value.setMapCenter(_lng, _lat)
+      // mapTangBgRef.value.setMapZoom(17)
+
+      allDeviceDataList.value.forEach((item) => {
+        const _item = JSON.parse(JSON.stringify(item))
+        if (!_item.longitude || !_item.latitude) {
+          return
+        }
+        const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
+        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+
+        const marker = mapTangBgRef.value.addMarkerToMap(
+          _item.longitude,
+          _item.latitude,
+          _item.deviceName,
+          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+        )
+        marker.on('click', () => {
+          handleSelect(item.id)
+        })
+      })
+    }
+    getMenuDataList()
+
+    // 地图图例列表
+    const mapLegends = ref<any[]>([{
+      id: 'legend001',
+      name: '摄像',
+      icon: IconVideo
+    }, {
+      id: 'legend002',
+      name: '气象',
+      icon: IconWeather
+    }, {
+      id: 'legend003',
+      name: '土壤',
+      icon: IconSoil
+    }, {
+      id: 'legend004',
+      name: '杀虫',
+      icon: IconBug
+    },  {
+      id: 'legend005',
+      name: '生长记录',
+      icon: IconGrow
+    },])
+
     //可视化监控页
     const baseTabPage = () => {
       return (
@@ -413,7 +571,9 @@ export default defineComponent({
           </div>
           <div class="flex flex-col space-y-4 grow">
             <div class="grow relative">
-              <div class="w-full h-full relative">
+              {/** 地图 */}
+              <MapTangBa ref={ mapTangBgRef } class="w-full mt-[90px] h-[calc(100%_-_90px)]" />
+              <div class="w-full h-full relative !hidden">
                 <div class="camera-icon absolute left-[740px] top-[280px]" onClick={() => { activeMapIns.value = 'camera' }}>
                   {
                     activeMapIns.value === 'camera' ? (
@@ -507,7 +667,17 @@ export default defineComponent({
                   ))
                 }
               </div>
-              <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0"></div>
+              <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0 !hidden"></div>
+              <div class="absolute right-[5px] bottom-[5px] bg-[rgba(4,50,63,0.8)] pl-[10px] py-[10px] rounded-md flex">
+                {
+                  mapLegends.value.map(item => (
+                    <div class="mr-[10px] flex flex-col items-center" key={ item.id }>
+                      <img src={ item.icon } class="object-contain w-[40px] h-[30px]" />
+                      <div class="mt-[10px]"><span>{ item.name }</span></div>
+                    </div>
+                  ))
+                }
+              </div>
             </div>
             <div class="flex h-237px justify-center">
               <div class="w-420px h-full item-bg-extra !hidden">
@@ -902,17 +1072,15 @@ const changeTab = (key: string) => {
   switch (key) {
     case 'base':
       activeTab.value = 'base'
-      nextTick(() => { initChart() })
+      nextTick(() => {
+        initChart()
+        getMenuDataList()
+      })
       bgImage.value = mainBg
       break
     case 'indus':
       activeTab.value = 'indus'
       bgImage.value = indusBg
-      // nextTick(() => {
-      //   getGrowthLineChartData()
-      //   getHarvestChartData()
-      //   getMenuDataList()
-      // })
       break
   }
 }
