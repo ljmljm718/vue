@@ -448,7 +448,11 @@ const warnRecordList = ref<any[]>([])
 const getQianjiangWarnRecordInfo = async () => {
   const res = await qianjiangWarnRecordInfo({});
   console.log("🚀 ~ getQianjiangWarnRecordInfo ~ res:", res)
-  if (Array.isArray(res)) warnRecordList.value = res.map(item => ({ ...item, warnStatus: item.warnStatus === '0' ? '未处理' : '已处理' }));
+  if (Array.isArray(res)) warnRecordList.value = res.map(item => ({
+    ...item,
+    warnStatus: item.warnStatus === '0' ? '未处理' : '已处理',
+    warnTime: dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss")
+  }));
 }
 getQianjiangWarnRecordInfo()
 </script>
@@ -648,7 +652,7 @@ getQianjiangWarnRecordInfo()
             {
               key: 'warnInfo',
               label: '预警信息',
-              width: '12rem'
+              width: '14rem'
             },
             {
               key: 'warnTime',
