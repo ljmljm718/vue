@@ -23,6 +23,7 @@ export interface FarmRecordVO {
   recordState: string // 记录状态
   farmDefineType:string
   batchCode:string
+  recordImg: string // 记录图片
 }
 
 // 农事记录 API

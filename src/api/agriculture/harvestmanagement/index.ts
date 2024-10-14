@@ -20,6 +20,7 @@ export interface HarvestManagementVO {
   belongPlotId: string, // 地块ID
   varietyCode: string // 品类编号
   harvestNum: string // 采收数量
+  harvestImg: string // 采收图片
 }
 
 // 采收管理 API
