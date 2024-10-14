@@ -7,91 +7,115 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <!--      <el-form-item label="所属基地" prop="belongPark">-->
-      <!--        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
-          <template #append>
-            <el-button @click="openParkInfoPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-        <!--                <el-input v-model="formData.belongPark" placeholder="请输入所属园区" />-->
-      </el-form-item>
-      <!--      <el-form-item label="基地名称" prop="parkName">-->
-      <!--        <el-input v-model="formData.parkName" placeholder="请输入基地名称" />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly disabled/>
-      </el-form-item>
-      <!--      <el-form-item label="所属地块" prop="belongPlot">-->
-      <!--        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块"/>-->
-      <!--      </el-form-item>-->
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
-          <template #append>
-            <el-button @click="openParkDetailPopup(formData.belongPark)">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly disabled/>
-      </el-form-item>
-      <!--      <el-form-item label="地块名称" prop="plotName">-->
-      <!--        <el-input v-model="formData.plotName" placeholder="请输入地块名称"/>-->
-      <!--      </el-form-item>-->
-      <el-form-item label="螃蟹数量" prop="crabNum">
-        <el-input v-model="formData.crabNum" placeholder="请输入螃蟹数量"/>
-      </el-form-item>
-      <el-form-item label="农事阶段" prop="farmingStage">
-        <!--            <el-input v-model="formData.farmDefineType" placeholder="请输入农事阶段" />-->
-        <el-select v-model="formData.farmingStage" placeholder="请选择农事阶段">
-          <el-option
-            v-for="dict in farmDefineOptions"
-            :key="dict.id"
-            :label="dict.defineName"
-            :value="dict.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="投入品名称" prop="feedType">
-        <!--        <el-input v-model="formData.feedType" placeholder="请填写饲料种类"/>-->
-        <!--        <el-select v-model="formData.feedType" placeholder="请选择饲料种类">-->
-        <!--          <el-option label="请选择字典生成" value=""/>-->
-        <!--        </el-select>-->
-        <el-select v-model="formData.feedType" placeholder="请选择投入品名称">
-          <el-option
-            v-for="item in productInfoListALL"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="操作时间" prop="feedTime">
-        <el-date-picker
-          v-model="formData.feedTime"
-          type="datetime"
-          value-format="x"
-          placeholder="选择操作时间"
-        />
-      </el-form-item>
-      <el-form-item label="操作人" prop="feedPerson">
-        <el-input v-model="formData.feedPerson" placeholder="请输入操作人"/>
-      </el-form-item>
-      <el-form-item label="消耗量" prop="feedNum">
-        <el-input v-model="formData.feedNum" placeholder="请输入消耗量"/>
-      </el-form-item>
-      <el-form-item label="单位" prop="feedOne">
-        <el-input v-model="formData.feedOne" placeholder="请输入消耗量单位，建议统一输入KG"/>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="所属基地" prop="belongPark">
+            <el-input v-model="formData.parkName" placeholder="请输入所属基地">
+              <template #append>
+                <el-button @click="openParkInfoPopup('0')">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="所属地块" prop="belongPlot">
+            <el-input v-model="formData.plotName" placeholder="请输入所属地块">
+              <template #append>
+                <el-button @click="openParkDetailPopup(formData.belongPark)">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="农事阶段" prop="farmingStage">
+            <el-select v-model="formData.farmingStage" placeholder="请选择农事阶段">
+              <el-option
+                v-for="dict in farmDefineOptions"
+                :key="dict.id"
+                :label="dict.defineName"
+                :value="dict.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="投入品名称" prop="feedType">
+            <el-select v-model="formData.feedType" placeholder="请选择投入品名称"
+                       @change="feedTypeSelect">
+              <el-option
+                v-for="item in productInfoListALL"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="采购价格" prop="purchasePrice">
+            <el-input v-model="formData.purchasePrice" placeholder="选择投入品后自动填入采购价格"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="投入品规格" prop="standard">
+            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="操作时间" prop="feedTime">
+            <el-date-picker
+              v-model="formData.feedTime"
+              type="datetime"
+              value-format="x"
+              placeholder="选择操作时间"
+              style="width: 100%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="操作人" prop="feedPerson">
+            <el-input v-model="formData.feedPerson" placeholder="请输入操作人"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="消耗量" prop="consumeNum">
+            <el-input v-model="formData.consumeNum" placeholder="请输入消耗量"
+                      @change="consumeNumInput"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="消耗量单位" prop="consumeUnit">
+            <el-input v-model="formData.consumeUnit" placeholder="请输入消耗量单位"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="投喂量" prop="feedNum">
+            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="投喂量单位" prop="feedOne">
+            <el-input v-model="formData.feedOne" placeholder="请输入使用量单位，建议统一输入KG"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="投入品费用/元" prop="feedCost">
-        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用"/>
+        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用(消耗量*采购价格)"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -134,15 +158,22 @@ const formData = ref({
   feedTime: undefined,
   feedPerson: undefined,
   farmingStage: undefined,
-  feedCost: undefined
+  consumeNum: undefined,
+  consumeUnit: undefined,
+  standard: undefined,
+  purchasePrice: undefined,
+  feedCost: ''
 })
 const formRules = reactive({
   feedTime: [{required: true, message: '操作时间不能为空', trigger: 'blur'}],
   belongPark: [{required: true, message: '基地选择不能为空', trigger: 'blur'}],
   belongPlot: [{required: true, message: '地块选择不能为空', trigger: 'blur'}],
   crabNum: [{required: true, message: '螃蟹数量不能为空', trigger: 'blur'}],
-  feedNum: [{required: true, message: '消耗量不能为空', trigger: 'blur'}],
-  feedOne: [{required: true, message: '消耗单位不能为空', trigger: 'blur'}],
+  farmingStage: [{required: true, message: '农事阶段不能为空', trigger: 'blur'}],
+  feedNum: [{required: true, message: '投喂量不能为空', trigger: 'blur'}],
+  feedOne: [{required: true, message: '投喂量单位不能为空', trigger: 'blur'}],
+  consumeNum: [{required: true, message: '消耗量不能为空', trigger: 'blur'}],
+  consumeUnit: [{required: true, message: '消耗量单位不能为空', trigger: 'blur'}],
   feedType: [{required: true, message: '投入品名称不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
@@ -162,14 +193,19 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await FeedInfoApi.getFeedInfo(id)
-      farmDefineOptions.value.forEach((item) =>{
-        if(item.id  == formData.value.farmingStage){
+      farmDefineOptions.value.forEach((item) => {
+        if (item.id == formData.value.farmingStage) {
           formData.value.farmingStage = item.id
         }
       })
-      productInfoListALL.value.forEach((item) =>{
-        if(item.id  == formData.value.feedType){
+      productInfoListALL.value.forEach((item) => {
+        if (item.id == formData.value.feedType) {
           formData.value.feedType = item.id
+          formData.value.standard = item.standard
+          formData.value.purchasePrice = item.purchasePrice
+          if (!formData.value.consumeUnit) {
+            formData.value.consumeUnit = item.unitName
+          }
         }
       })
     } finally {
@@ -215,7 +251,14 @@ const resetForm = () => {
     feedType: undefined,
     feedNum: undefined,
     feedOne: undefined,
-    feedTime: undefined
+    feedTime: undefined,
+    feedPerson: undefined,
+    farmingStage: undefined,
+    consumeNum: undefined,
+    consumeUnit: undefined,
+    standard: undefined,
+    purchasePrice: undefined,
+    feedCost: ''
   }
   formRef.value?.resetFields()
 }
@@ -249,5 +292,21 @@ const handleParkDetailPopupChange = (order: ParkDetailVO) => {
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
+}
+const feedTypeSelect = (feedType) => {
+  productInfoListALL.value.forEach((item) => {
+    if (item.id == formData.value.feedType) {
+      formData.value.feedType = item.id
+      formData.value.standard = item.standard
+      formData.value.purchasePrice = item.purchasePrice
+      if (!formData.value.consumeUnit) {
+        formData.value.consumeUnit = item.unitName
+      }
+    }
+  })
+}
+
+const consumeNumInput = (consumeNum) => {
+  // formData.value.feedCost =  consumeNum *  formData.value.standard
 }
 </script>
