@@ -32,11 +32,6 @@ import MapTangBa from '../Home/mapTangBacopy.vue'
 import * as turf from '@turf/turf'
 import { getDeviceCategoryTree, getDeviceInfo } from './apis'
 import meassageTop from './assets/tangba/meassage-top.png'
-import IconVideo from "./assets/tangba/onlineMonitor.png"
-import IconWeather from "./assets/tangba/onlineWeather.png"
-import IconSoil from "./assets/tangba/onlineSoil.png"
-import IconBug from "./assets/tangba/onlineBug.png"
-import IconGrow from "./assets/tangba/onlineGrow.png"
 
 const {
   BigscreenAdapter,
@@ -439,6 +434,8 @@ export default defineComponent({
         '88': 'Bug'
       }
 
+      // 保存返回数据中所有设备类型的名称字符串 kindMap的值
+      const kindSet = new Set()
       // 添加 Marker 到地图上
       const _center = turf.centroid(
         turf.points(
@@ -472,18 +469,25 @@ export default defineComponent({
           return
         }
         const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
-        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}v2.png`)
+        kindSet.add(kindMap[_item.deviceKind])
 
         const marker = mapTangBgRef.value.addMarkerToMap(
           _item.longitude,
           _item.latitude,
           _item.deviceName,
-          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}v2.png`
         )
         marker.on('click', () => {
           handleSelect(item.id)
         })
       })
+
+      // 根据返回数据调整地图图例
+      let tmp = mapLegends.value.filter(item => {
+        return kindSet.has(item.icon)
+      })
+      mapLegends.value = tmp
     }
     getMenuDataList()
 
@@ -491,24 +495,28 @@ export default defineComponent({
     const mapLegends = ref<any[]>([{
       id: 'legend001',
       name: '摄像',
-      icon: IconVideo
+      icon: "Monitor"
     }, {
       id: 'legend002',
       name: '气象',
-      icon: IconWeather
+      icon: "Weather"
     }, {
       id: 'legend003',
       name: '土壤',
-      icon: IconSoil
+      icon: "Soil"
     }, {
       id: 'legend004',
       name: '杀虫',
-      icon: IconBug
-    },  {
+      icon: "Bug"
+    }, {
       id: 'legend005',
       name: '生长记录',
-      icon: IconGrow
-    },])
+      icon: "Grow"
+    }, {
+      id: 'legend006',
+      name: '水质',
+      icon: "Water"
+    }])
 
     //可视化监控页
     const baseTabPage = () => {
@@ -572,7 +580,7 @@ export default defineComponent({
           <div class="flex flex-col space-y-4 grow">
             <div class="grow relative">
               {/** 地图 */}
-              <MapTangBa ref={ mapTangBgRef } class="w-full mt-[90px] h-[calc(100%_-_90px)]" />
+              <MapTangBa ref={ mapTangBgRef } class="w-full mt-[90px]" style="height: 607px" />
               <div class="w-full h-full relative !hidden">
                 <div class="camera-icon absolute left-[740px] top-[280px]" onClick={() => { activeMapIns.value = 'camera' }}>
                   {
@@ -668,15 +676,23 @@ export default defineComponent({
                 }
               </div>
               <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0 !hidden"></div>
-              <div class="absolute right-[5px] bottom-[5px] bg-[rgba(4,50,63,0.8)] pl-[10px] py-[10px] rounded-md flex">
-                {
-                  mapLegends.value.map(item => (
-                    <div class="mr-[10px] flex flex-col items-center" key={ item.id }>
-                      <img src={ item.icon } class="object-contain w-[40px] h-[30px]" />
-                      <div class="mt-[10px]"><span>{ item.name }</span></div>
-                    </div>
-                  ))
-                }
+              <div class="absolute right-[5px] bottom-[5px] bg-[rgba(4,50,63,0.8)] rounded-md">
+                <ul class="my-[10px] ml-[10px] p-0 flex">
+                  <li class="mr-[10px] flex flex-col items-center gap-2">
+                    <div class="h-[19px]"></div>
+                    <div class="h-[30px] text-center leading-[30px]">在线</div>
+                    <div class="h-[30px] text-center leading-[30px]">离线</div>
+                  </li>
+                  {
+                    mapLegends.value.map(item => (
+                      <li class="mr-[10px] flex flex-col items-center gap-2" key={ item.id }>
+                        <div class=""><span>{ item.name }</span></div>
+                        <img src={ `/tangba/online${ item.icon || 'Monitor'}v2.png` } class="object-contain w-[40px] h-[30px]" />
+                        <img src={ `/tangba/offline${ item.icon || 'Monitor'}v2.png` } class="object-contain w-[40px] h-[30px]" />
+                      </li>
+                    ))
+                  }
+                </ul>
               </div>
             </div>
             <div class="flex h-237px justify-center">
