@@ -1,80 +1,58 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="98px"
-    >
-      <el-form-item label="产品名称" prop="product">
-        <el-input
-          v-model="queryParams.product"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-200px"
-        />
-      </el-form-item>
-      <el-form-item label="所属基地" prop="park">
-        <el-input
-v-model="queryParams.park" placeholder="请选择所属基地" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
+<ContentWrap>
+  <!-- 搜索工作栏 -->
+  <el-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="98px">
+    <el-form-item label="产品名称" prop="product">
+      <el-input v-model="queryParams.product" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-200px" />
+    </el-form-item>
+    <el-form-item label="所属基地" prop="park">
+      <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly class="!w-240px">
+        <template #append>
+          <el-button @click="openParkPopup('0')">
+            <Icon icon="ep:search" />
+            选择
+          </el-button>
+        </template>
+      </el-input>
+    </el-form-item>
 
-      <el-form-item label="所属地块" prop="parkDetail">
-        <el-input
-v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openPlotPopup(queryParams.parkId)">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="产品年份" prop="years">
-        <el-input
-          v-model="queryParams.years"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-200px"
-        />
-      </el-form-item>
-      <el-form-item label="" size="normal">
-        <div class="w-2px h-40px bg-[#e6e6e6]"></div>
-      </el-form-item>
+    <el-form-item label="所属地块" prop="parkDetail">
+      <el-input v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly class="!w-240px">
+        <template #append>
+          <el-button @click="openPlotPopup(queryParams.parkId)">
+            <Icon icon="ep:search" />
+            选择
+          </el-button>
+        </template>
+      </el-input>
+    </el-form-item>
+    <el-form-item label="产品年份" prop="years">
+      <el-input v-model="queryParams.years" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-200px" />
+    </el-form-item>
+    <el-form-item label="" size="normal">
+      <div class="w-2px h-40px bg-[#e6e6e6]"></div>
+    </el-form-item>
 
+    <el-form-item>
+      <el-button @click="handleQuery" class='!bg-[#009688] !color-[#fff]'>
+        <Icon icon="ep:search" class="mr-5px" />
+        搜索
+      </el-button>
+      <el-button @click="resetQuery">
+        <Icon icon="ep:refresh" class="mr-5px" />
+        重置
+      </el-button>
+    </el-form-item>
+  </el-form>
+
+</ContentWrap>
+
+<!-- 列表 -->
+<ContentWrap>
+  <div class="flex items-center justify-between mb-15px">
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
-        <el-button @click="handleQuery" class='!bg-[#009688] !color-[#fff]'>
-          <Icon icon="ep:search" class="mr-5px"/>
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
-    <div class="flex items-center justify-between mb-15px">
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-        <el-form-item>
-          <!-- <el-button
+        <!-- <el-button
             class='!bg-[#009688] !color-[#fff]'
             plain
             @click="openForm('create')"
@@ -83,151 +61,125 @@ v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly
             <Icon icon="ep:plus" class="mr-5px"/>
             新增
           </el-button> -->
-          <el-button
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['digital:village-product:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
-          </el-button>
-        </el-form-item>
-      </div>
-      <div class="flex">
-        <div
-@click="cardList=false" class="py-3px px-15px rounded-l"
-             :style="`background-color: ${cardList?'':'#e5f4f3'}; border:1.5px solid ${cardList?'#e6e6e6':'#36a99e'}; color:${cardList?'':'#36a99e'}`">
-          <img :src="cardList?card2:card" class="w-10px h-10px" alt=""/>
-          卡片
-        </div>
-        <div
-@click="cardList=true" class="py-3px px-15px rounded-r"
-             :style="`border:1.5px solid ${cardList?'#36a99e':'#e6e6e6'};background-color: ${cardList?'#e5f4f3':''}; color:${cardList?'#36a99e':''}`">
-          <img :src="cardList?listImg:listImg2" class="w-10px h-10px" alt=""/>
-          列表
-        </div>
-      </div>
+        <el-button plain @click="handleExport" :loading="exportLoading" v-hasPermi="['digital:village-product:export']">
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+      </el-form-item>
     </div>
-    <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
+    <div class="flex">
       <div
-v-for="item,index in list" :key="index" class="rounded bg-[#f5f5f5]"
-           style="overflow: hidden;">
-        <img :src="item.photo" class="w-100% h-150px rounded" alt=""/>
-        <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
-          <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}
-            {{ item.specifications }}Kg
-          </div>
-          <div class="text-15px mt-10px mb-10px color-[#878787] " style="word-break:break-all">
-            {{ item.park }}-{{ item.parkDetail }}-{{ item.batchCode }}
-          </div>
-          <div class="flex justify-end">
-            <div class="color-[#898989] text-sm">数量：{{ item.inventory }}</div>
-          </div>
-        </div>
-
+        @click="cardList = false"
+        class="py-3px px-15px rounded-l"
+        :style="`background-color: ${cardList ? '' : '#e5f4f3'}; border:1.5px solid ${cardList ? '#e6e6e6' : '#36a99e'}; color:${cardList ? '' : '#36a99e'}`"
+      >
+        <img :src="cardList ? card2 : card" class="w-10px h-10px" alt="" />
+        卡片
+      </div>
+      <div
+        @click="cardList = true"
+        class="py-3px px-15px rounded-r"
+        :style="`border:1.5px solid ${cardList ? '#36a99e' : '#e6e6e6'};background-color: ${cardList ? '#e5f4f3' : ''}; color:${cardList ? '#36a99e' : ''}`"
+      >
+        <img :src="cardList ? listImg : listImg2" class="w-10px h-10px" alt="" />
+        列表
       </div>
     </div>
-    <el-table
-v-if="cardList" v-loading="loading" :data="list" :stripe="true"
-              :show-overflow-tooltip="true">
-      <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="产品名称" align="center" prop="product"/>
-      <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
-      <el-table-column label="所属基地" align="center" prop="park"/>
-      <!--      <el-table-column label="所属地块id" align="center" prop="parkDetailId"/>-->
-      <el-table-column label="所属地块" align="center" prop="parkDetail"/>
-      <el-table-column label="图片" align="center" prop="photo">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.photo"
-            :preview-src-list="[row.photo]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="产品年份" align="center" prop="years"/>
-      <el-table-column label="产品数量(袋)" align="center" prop="inventory"/>
-      <el-table-column label="产品规格(Kg)" align="center" prop="specifications"/>
-      <el-table-column label="批次号" align="center" prop="batchCode"/>
-      <!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
-      <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
-      <!--      <el-table-column-->
-      <!--        label="创建时间"-->
-      <!--        align="center"-->
-      <!--        prop="createTime"-->
-      <!--        :formatter="dateFormatter"-->
-      <!--        width="180px"-->
-      <!--      />-->
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('show', scope.row.id)"
-          >
-            详情
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['digital:village-product:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['digital:village-product:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
-  </ContentWrap>
+  </div>
+  <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
+    <div v-for="item, index in list" :key="index" class="rounded bg-[#f5f5f5]" style="overflow: hidden;">
+      <img v-if="item.photo" :src="item.photo" class="w-100% h-150px rounded" alt="" />
+      <div v-else class="flex justify-center items-center w-100% h-150px bg-#00000010">暂无数据</div>
+      <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
+        <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}
+          {{ item.specifications }}Kg
+        </div>
+        <div class="text-15px mt-10px mb-10px color-[#878787] " style="word-break:break-all">
+          {{ item.park }}-{{ item.parkDetail }}-{{ item.batchCode }}
+        </div>
+        <div class="flex justify-end">
+          <div class="color-[#898989] text-sm">数量：{{ item.inventory }}</div>
+        </div>
+      </div>
 
-  <!-- 表单弹窗：添加/修改 -->
-  <VillageProductForm ref="formRef" @success="getList"/>
+    </div>
+  </div>
+  <el-table v-if="cardList" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <!--      <el-table-column label="主键" align="center" prop="id" />-->
+    <el-table-column label="产品名称" align="center" prop="product" />
+    <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
+    <el-table-column label="所属基地" align="center" prop="park" />
+    <!--      <el-table-column label="所属地块id" align="center" prop="parkDetailId"/>-->
+    <el-table-column label="所属地块" align="center" prop="parkDetail" />
+    <el-table-column label="图片" align="center" prop="photo">
+      <template #default="{ row }">
+        <el-image class="h-50px w-50px" lazy :src="row.photo" :preview-src-list="[row.photo]" preview-teleported
+          fit="cover" />
+      </template>
+    </el-table-column>
+    <el-table-column label="产品年份" align="center" prop="years" />
+    <el-table-column label="产品数量(袋)" align="center" prop="inventory" />
+    <el-table-column label="产品规格(Kg)" align="center" prop="specifications" />
+    <el-table-column label="批次号" align="center" prop="batchCode" />
+    <!--      <el-table-column label="采收编号" align="center" prop="recoveryNum" />-->
+    <!--      <el-table-column label="备注" align="center" prop="remark"/>-->
+    <!--      <el-table-column-->
+    <!--        label="创建时间"-->
+    <!--        align="center"-->
+    <!--        prop="createTime"-->
+    <!--        :formatter="dateFormatter"-->
+    <!--        width="180px"-->
+    <!--      />-->
+    <el-table-column label="操作" align="center">
+      <template #default="scope">
+        <el-button link type="primary" @click="openForm('show', scope.row.id)">
+          详情
+        </el-button>
+        <el-button link type="primary" @click="openForm('update', scope.row.id)"
+          v-hasPermi="['digital:village-product:update']">
+          编辑
+        </el-button>
+        <el-button link type="danger" @click="handleDelete(scope.row.id)"
+          v-hasPermi="['digital:village-product:delete']">
+          删除
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+  <!-- 分页 -->
+  <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize"
+    @pagination="getList" />
+</ContentWrap>
 
-  <!--  选择基地-->
-  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
-  <!--  选择地块-->
-  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+<!-- 表单弹窗：添加/修改 -->
+<VillageProductForm ref="formRef" @success="getList" />
+
+<!--  选择基地-->
+<ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
+<!--  选择地块-->
+<ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange" />
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {VillageProductApi, VillageProductVO} from '@/api/digital/villageproduct'
+import { VillageProductApi, VillageProductVO } from '@/api/digital/villageproduct'
 import VillageProductForm from './VillageProductForm.vue'
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 import card from '../../../assets/imgs/card-active.png'
 import card2 from '../../../assets/imgs/card-actived.png'
 import listImg from '../../../assets/imgs/list-active.png'
 import listImg2 from '../../../assets/imgs/list-actived.png'
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import { ParkInfoVO } from "@/api/agriculture/parkinfo";
+import { ParkDetailVO } from "@/api/agriculture/parkdetail";
 
 /** 特色产品 列表 */
-defineOptions({name: 'VillageProduct'})
+defineOptions({ name: 'VillageProduct' })
 const router = useRouter() // 路由
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 const cardList = ref(false)
 const loading = ref(true) // 列表的加载中
 const list = ref<VillageProductVO[]>([]) // 列表的数据
@@ -320,7 +272,7 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  router.push({path: '/pcg/production/villageproduct', query: {id: id, type: type}})
+  router.push({ path: '/pcg/production/villageproduct', query: { id: id, type: type } })
 }
 
 /** 删除按钮操作 */

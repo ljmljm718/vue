@@ -68,9 +68,7 @@
                           :disabled="show"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="所属基地id" prop="parkId">
                 <el-input v-model="formData.parkId" placeholder="请输入所属基地id" :disabled="true">
                   <template #append>
@@ -81,17 +79,31 @@
                   </template>
                 </el-input>
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="所属基地" prop="park">
-                <el-input v-model="formData.park" placeholder="选择基地后自动写入" readonly
-                          :disabled="true"/>
+                <el-input
+                  v-model="formData.park"
+                  placeholder="选择基地后自动写入"
+                  readonly
+                  :disabled="true"
+                >
+                  <template #append>
+                    <el-button @click="openParkInfoPopup('0')">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="所属地块id" prop="parkDetailId">
-                <el-input v-model="formData.parkDetailId" placeholder="请输入所属地块id"
-                          :disabled="true">
+                <el-input
+                  v-model="formData.parkDetailId"
+                  placeholder="请输入所属地块id"
+                  :disabled="true"
+                >
                   <template #append>
                     <el-button @click="openParkDetailPopup(formData.belongPark)">
                       <Icon icon="ep:search"/>
@@ -100,13 +112,22 @@
                   </template>
                 </el-input>
               </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="24">
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="所属地块" prop="parkDetail">
-                <el-input v-model="formData.parkDetail" placeholder="选择地块后自动写入" readonly
-                          :disabled="true"/>
+                <el-input
+                  v-model="formData.parkDetail"
+                  placeholder="选择地块后自动写入"
+                  readonly
+                  :disabled="true"
+                >
+                  <template #append>
+                    <el-button @click="openParkDetailPopup(formData.belongPark)">
+                      <Icon icon="ep:search"/>
+                      选择
+                    </el-button>
+                  </template>
+                </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -119,8 +140,6 @@
                 <el-input v-model="formData.inventory" placeholder="请输入库存" :disabled="show"/>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="24">
             <el-col :span="8">
               <el-form-item label="产品规格(Kg)" prop="specifications">
                 <el-input v-model="formData.specifications" placeholder="请输入规格"
@@ -272,6 +291,7 @@ const openParkInfoPopup = (id: string) => {
   } else parkInfoPopupRef.value.open(id)
 }
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
+  console.log("🚀 ~ handleParkInfoPopupChange ~ order:", order)
   if (openType.value === '0') {
     formData.value.belongPark = (order[0].code).toString()
     formData.value.parkId = (order[0].code).toString()
@@ -290,7 +310,6 @@ const openParkDetailPopup = (id: string) => {
   } else parkDetailPopupRef.value.open(id)
 }
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-
   console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = (order[0].parkId).toString()
   formData.value.parkDetailId = (order[0].id).toString()
