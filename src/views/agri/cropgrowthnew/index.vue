@@ -427,32 +427,9 @@
       <h3>{{ thisGrowth }}注意事项</h3>
     </template>
     <template #default>
-      <div class="relative">
-        <div
-          v-if='formData.length>0'
-          class="flex absolute top--30px left-50px flex-col items-center"
-        >
-          <div class="flex items-center">
-            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
-            <div class="ml-185px">
-              <!-- {{ formatTime(formData[0].createTime, 'yyyy-MM-dd HH:mm:ss') }} -->
-            </div>
-          </div>
-          <div
-            v-if='formData.length>1'
-            class="w-2px h-190px bg-[#089df7] ml--185px"
-          ></div>
-          <div
-            class="flex items-center"
-            v-if='formData.length>1'
-          >
-            <div class="w-15px h-15px rounded-full bg-[#089df7]"></div>
-            <div class="ml-185px">
-            </div>
-          </div>
-        </div>
+      <div class="relative space-y-3 py-4 box-border">
         <el-card
-          class="w-400px ml-80px mt-50px"
+          class="w-full"
           v-for="item, index in formData"
           :key="index"
         >
@@ -466,11 +443,6 @@
           <p>事项名称: {{ item.itemName }}</p>
           <p>事项内容：{{ item.itemContent }}</p>
         </el-card>
-      </div>
-    </template>
-    <template #footer>
-      <div style="flex: auto">
-        <el-button @click="cancelClick">cancel</el-button>
       </div>
     </template>
   </el-drawer>

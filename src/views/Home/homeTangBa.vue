@@ -16,7 +16,11 @@
                 <div>{{ item.name }}</div>
               </div>
             </template>
-            <el-sub-menu :index="subMenu.id" v-for="subMenu in item.children" :key="subMenu.id">
+            <el-sub-menu
+              :index="subMenu.id"
+              v-for="subMenu in item.children"
+              :key="subMenu.id"
+            >
               <template #title>
                 <span>{{ subMenu.name }}</span>
               </template>

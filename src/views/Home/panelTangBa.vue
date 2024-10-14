@@ -21,7 +21,7 @@
       <div @click="handleClick('设备属性',true)" style="cursor: pointer;" :class="`${tabsVal=='设备属性'?'active':'actived'} text-center leading-30px w-[33%] h-30px rounded-r`">设备属性</div>
     </div>
     <div>
-      <div   v-show="tabsVal==='设备概要'">
+      <div v-show="tabsVal === '设备概要'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper" v-show="!runTimeDataLoading && runTimeDataList.length > 0">实时数据</div>
           <div
@@ -68,8 +68,8 @@
               </div>
             </div>
           </div>
-          <div class="w-full box-border p-5" v-show="curDeviceKind === '101'">
-            <video :src="curVideoLink" controls muted loop class="w-full aspect-video"></video>
+          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101' || curVideoLink">
+            <video :src="curVideoLink" autoplay controls muted loop class="w-full aspect-video"></video>
           </div>
           <div v-show="curDeviceKind === '102'" class="py-3 pb-[42px]">
             <el-table
@@ -105,7 +105,7 @@
             />
           </div>
           
-          <div class="tab-title-wrapper mt-2" v-show="curDeviceKind !== '101'">统计数据</div>
+          <div class="tab-title-wrapper mt-2" v-show="chartNum !== 0">统计数据</div>
           <div id="chartOutWrapper" class="space-y-2"></div>
           <div id="chartWD" class="chart-ins"></div>
           <div id="chartSD" class="chart-ins"></div>
@@ -303,6 +303,7 @@ const generateXY = (arr:Array<any>) => {
 
 const runTimeDataLoading = ref<boolean>(false)
 const runTimeDataList = ref<Array<any>>([])
+const chartNum = ref<number>(0)
 const getRunTimeData = async (equipmentId, deviceKind) => {
   equipmentIdA.value = equipmentId
   if (!equipmentId) return
@@ -340,11 +341,13 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const chartOutWrapper = document.getElementById("chartOutWrapper")
   if (!chartOutWrapper) return
   chartOutWrapper.innerHTML = ''
+  chartNum.value = 0
   for (let key in res) {
     const domName = pinyin(key, { toneType: "none", type: "array" }).join('')
     const newDom = document.createElement("div")
     newDom.id = domName
     newDom.className = 'tangba-chart-wrapper'
+    chartNum.value++
     chartOutWrapper.append(newDom)
     nextTick(() => {
       const unit = res[key][0].units || ''
@@ -582,6 +585,7 @@ const getDeviceInfoData = async (item) => {
   reset()
   const {
     id = '',
+    url = '',
     deviceName = '',
     deviceCode = '',
     longitude = '',
@@ -594,6 +598,7 @@ const getDeviceInfoData = async (item) => {
     deviceKind = '',
     deviceId = '',
   } = item || {}
+  curVideoLink.value = url;
   curDeviceKind.value = deviceKind
   curDeviceStatus.value = deviceStatus
   updateForm.value.id = id
@@ -650,6 +655,7 @@ const reset = () => {
   const chartOutWrapper = document.getElementById("chartOutWrapper")
   if (!chartOutWrapper) return
   chartOutWrapper.innerHTML = ''
+  chartNum.value = 0
   const chartInstances = document.querySelectorAll('.chart-ins')
   chartInstances.forEach((item: HTMLElement) => {
     item.style.height = '0px'

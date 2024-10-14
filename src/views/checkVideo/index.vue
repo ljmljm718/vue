@@ -59,8 +59,22 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string>
 
 const initPlayer = async () => {
   const param = route.query;
-  const { dtu, channelId } = param;
+  const { dtu, channelId, url } = param;
   if (!dtu || !channelId || dtu === 'null' || channelId === 'null') {
+    if (url) return new Dplayer({
+      container: document.getElementById("playerContainer"),
+      loop: false, autoplay: true, volume: 0,
+      video: {
+        url,
+        type: "customHls",
+        customType: {
+          customHls: (video) => {
+            hls.loadSource(video.src);
+            hls.attachMedia(video);
+          },
+        },
+      }
+    })
     return ElMessage.error('通道号或序列号不存在!');
   }
   const resUrl = await checkAuth(dtu, channelId)

@@ -541,8 +541,12 @@ const handleDraw = (item) => {
         // TODO： 新版
         const { corrdinates, option } = JSON.parse(geofencing);
         if (Array.isArray(corrdinates) && corrdinates.length > 0) {
-          tiandiIns.value.createPolygon(corrdinates, option)
+          setTimeout(() => {
+            tiandiIns.value.createPolygon(corrdinates[0].map(location => ([location.lat, location.lng])), option)
+          }, 500)
+          
         }
+          
       }
     }
   })
@@ -550,11 +554,14 @@ const handleDraw = (item) => {
 
 // 切换卡片或列表时触发
 const handleTypeChange = () => {
-  console.log('Change')
-
-  activeItemId.value = ''
   activePlotId.value = ''
-  showPlotList.value = false
+  showPlotList.value = false;
+
+  if (showType.value === 'card') {
+    const item = list.value.find(ele => ele.id === activeItemId.value);
+    if (!item) return;
+    handleParkClick(item, false)
+  }
 }
 
 // 在右侧地图中绘制基地
