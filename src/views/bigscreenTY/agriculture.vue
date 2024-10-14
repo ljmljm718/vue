@@ -403,8 +403,7 @@ const getEquipmentMapData = async () => {
 
 const soilList = ref<Array<any>>([])
 const montiorList = ref<Array<any>>([])
-const getQianjiangMonitor = async() => {
-  const soil={
+const soil = ref({
     '光照':'1',
     '氮':'2',
     '钾':'3',
@@ -413,8 +412,8 @@ const getQianjiangMonitor = async() => {
     '湿度':'6',
     'EC值':'7',
     '温度':'8',
-  }
-  const montior={
+})
+const montior = ref({
     '空气温度':'1',
     '空气湿度':'2',
     '降雨量':'3',
@@ -424,7 +423,9 @@ const getQianjiangMonitor = async() => {
     '风力':'5',
     '风速':'5',
     '风向':'6',
-  }
+})
+const getQianjiangMonitor = async() => {
+
   let res = await qianjiangMonitor({type:'气象站'})
   let res2 = await qianjiangMonitor({type:'土壤墒情'})
   console.log(res,'气象监测')
@@ -434,17 +435,20 @@ const getQianjiangMonitor = async() => {
 
   soilList.value = soilList.value.map((item)=>({
     ...item,
-    icon: soil[item.monitoringType] ?? '1'
+    icon: soil.value[item.monitoringType] ?? '1'
   }))
   montiorList.value = montiorList.value.map((item)=>({
     ...item,
-    icon:montior[item.monitoringType] ?? '1'
+    icon:montior.value[item.monitoringType] ?? '1'
   }))
   console.log( montiorList.value,' montiorList.value montiorList.value1234')
 }
 getQianjiangMonitor()
 
 const warnRecordList = ref<any[]>([])
+const tableHeaderColor = ref({
+  color:'#078b52'
+})
 const getQianjiangWarnRecordInfo = async () => {
   const res = await qianjiangWarnRecordInfo({});
   console.log("🚀 ~ getQianjiangWarnRecordInfo ~ res:", res)
@@ -622,7 +626,7 @@ getQianjiangWarnRecordInfo()
               <div :class="`meteor-icon-${item.icon} w-50px h-50px`"></div>
               <div class="!w-60%">
                 <div  class="flex justify-center">{{ item.monitoringType }}</div>
-                <div class="flex text-1rem mt-10px justify-end">{{item.dataValue}} <div class="text-13px mt-[2px] color-[#929593]">{{ item.unit }}</div></div>
+                <div class="flex text-1rem mt-10px justify-center">{{item.dataValue}} <div class="text-13px mt-[2px] color-[#929593]">{{ item.unit }}</div></div>
               </div>
           </div>
         </div>
@@ -635,10 +639,10 @@ getQianjiangWarnRecordInfo()
             class="w-100% p-3 box-border flex justify-between items-center"
             v-for="item in soilList"
             :key="item.id">
-              <div :class="`soil-icon-${item.icon} w-55px h-55px`"></div>
-              <div>
+              <div :class="`soil-icon-${item.icon} w-50px h-50px`"></div>
+              <div class="!w-60%">
                 <div class="flex justify-center">{{ item.monitoringType }}</div>
-                <div class="flex text-1.5rem justify-end mt-10px">{{item.dataValue}} <div class="text-15px mt-[10px] color-[#929593]">{{ item.unit }}</div></div>
+                <div class="flex text-1rem justify-center mt-10px">{{item.dataValue}} <div class="text-13px mt-[10px] color-[#929593]">{{ item.unit }}</div></div>
               </div>
           </div>
         </div>
@@ -646,7 +650,7 @@ getQianjiangWarnRecordInfo()
       <!----品牌介绍----->
       <div class="w-460px h-45px brand-title"></div>
       <el-scrollbar style="height: 280px;">
-        <BigscreenTable
+        <!-- <BigscreenTable
           headerBackgroundColor="#012831"
           :columns="[
             {
@@ -665,7 +669,18 @@ getQianjiangWarnRecordInfo()
             },
           ]"
           :dataList="warnRecordList"
-        />
+        /> -->
+        <el-table :data="warnRecordList" :row-class-name="tableRowClassName" :header-cell-style="tableHeaderColor" style="width: 460px">
+          <el-table-column prop="warnInfo" label="预警信息" width="260" align='center'/>
+          <el-table-column prop="warnTime" label="时间" width="100" align='center'/>
+          <el-table-column  label="处理状态" width="100" align='center'>
+            <template #default="scope">
+              <div
+                :class="scope.row.warnStatus === '未处理'? 'text-[#ff893e]' : 'text-[#ffffff]'"
+              >{{ scope.row.warnStatus }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-scrollbar>
     </div>
     <div
@@ -904,4 +919,36 @@ height: 119px;
 .moduletitle:hover{
 height: 163px;
 }
+
+//表格改变颜色
+// 去掉el-table的所有背景颜色以及所有hover的颜色
+::v-deep .el-table {
+    --el-table-row-hover-bg-color: #04623b !important;
+    --el-table-bg-color: none !important;
+    --el-table-text-color: #fff !important;
+    
+}
+.el-table {
+    --el-table-border-color: none !important;
+    --el-table-border: none !important;
+    --el-table-text-color: white;
+    --el-table-header-text-color: white;
+    --el-table-row-hover-bg-color: transparent;
+    --el-table-current-row-bg-color: transparent;
+    --el-table-header-bg-color: transparent;
+    --el-table-bg-color: transparent;
+    --el-table-tr-bg-color: transparent;
+    --el-table-expanded-cell-bg-color: transparent;
+    @media (prefers-color-scheme: light) {
+    --el-table-text-color: #213547;
+    --el-table-header-text-color: #213547;
+  }
+}
+.el-table .warning-row {
+  --el-table-tr-bg-color: #02482c !important;
+}
+::v-deep .el-table .el-table__body {
+  background-color: transparent !important; 
+}
+
 </style>

@@ -125,7 +125,8 @@ const destroyHls = () => {
 const categoryTree = ref<Array<any>>([])
 const handleCurrentCategoryChange = (currNodeData:any) => {
   console.log('🚀 ~ handleCurrentCategoryChange ~ currNodeData:', currNodeData)
-  getEquipmentPhotographAndVideo(currNodeData.parkId, currNodeData.id)
+  if(!currNodeData.parkId)getEquipmentPhotographAndVideo( currNodeData.id,'')
+  else getEquipmentPhotographAndVideo(currNodeData.parkId, currNodeData.id)
 }
 //在线离线
 const deviceObj = ref<Object>({})
