@@ -10,7 +10,7 @@
     >
       <el-form-item label="类别" prop="reservedOne">
         <el-select
-          v-model="queryParams.hazardRating"
+          v-model="queryParams.reservedOne"
           placeholder="请选择知识库类别"
           clearable
           class="!w-240px"
@@ -31,34 +31,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <!--      <el-form-item label="图片" prop="imgId">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.imgId"-->
-      <!--          placeholder="请输入图片"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="品种ID" prop="breedId">-->
-      <!--        <el-select-->
-      <!--          v-model="queryParams.breedId"-->
-      <!--          placeholder="请选择品种ID"-->
-      <!--          clearable-->
-      <!--          class="!w-240px"-->
-      <!--        >-->
-      <!--          <el-option label="请选择字典生成" value=""/>-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="品种名称" prop="cropName">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.cropName"-->
-      <!--          placeholder="请输入品种名称"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
       <el-form-item label="作物品类" prop="cropType">
         <el-select
           v-model="queryParams.cropType"
@@ -73,24 +45,7 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <!--      <el-form-item label="备注" prop="remark">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.remark"-->
-      <!--          placeholder="请输入备注"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="易发月份" prop="proneMonth">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.proneMonth"-->
-      <!--          placeholder="请输入易发月份"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+
       <el-form-item label="危害等级" prop="hazardRating">
         <el-select
           v-model="queryParams.hazardRating"
@@ -105,45 +60,6 @@
             :value="item.value"/>
         </el-select>
       </el-form-item>
-
-      <!--      <el-form-item label="预留2" prop="reservedTwo">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.reservedTwo"-->
-      <!--          placeholder="请输入预留2"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="预留3" prop="reservedThree">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.reservedThree"-->
-      <!--          placeholder="请输入预留3"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="预留4" prop="reservedFour">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.reservedFour"-->
-      <!--          placeholder="请输入预留4"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="创建时间" prop="createTime">-->
-      <!--        <el-date-picker-->
-      <!--          v-model="queryParams.createTime"-->
-      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-      <!--          type="daterange"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -153,6 +69,10 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+    </el-form>
+    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-form-item>
         <el-button
           type="primary"
           plain
@@ -162,17 +82,8 @@
           <Icon icon="ep:plus" class="mr-5px"/>
           新增
         </el-button>
-        <!--        <el-button-->
-        <!--          type="success"-->
-        <!--          plain-->
-        <!--          @click="handleExport"-->
-        <!--          :loading="exportLoading"-->
-        <!--          v-hasPermi="['agriculture:disease-repository:export']"-->
-        <!--        >-->
-        <!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
-        <!--        </el-button>-->
       </el-form-item>
-    </el-form>
+    </div>
   </ContentWrap>
 
   <!-- 列表 -->
