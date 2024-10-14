@@ -274,6 +274,13 @@
     <!--          </el-form-item>-->
     <!--        </el-col>-->
           </el-row>
+          <el-row :gutter="3">
+            <el-col :span="12">
+              <el-form-item label="记录图片" prop="recordImg">
+                <UploadImg v-model="formData.recordImg" />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
         <!-- 截至 -->
         </el-scrollbar>
@@ -351,12 +358,13 @@ const formData = ref<any>({
   area:undefined,
   farmDefineType:undefined,
   batchCode:undefined,
+  recordImg: undefined,
 
 })
 const formRules = reactive({
   recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }],
   recordState: [{ required: true, message: '记录状态不能为空', trigger: 'blur' }],
-
+  recordImg: [{ required: true, message: '记录图片不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 let farmDefineOptions = ref([])// 设备分类选项

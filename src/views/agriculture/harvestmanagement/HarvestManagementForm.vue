@@ -111,6 +111,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="采收图片" prop="harvestImg">
+            <UploadImg v-model="formData.harvestImg" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -174,12 +181,13 @@ const formData = ref({
   unit: undefined,
   harvested: undefined,
   notHarvested: undefined,
-
+  harvestImg: undefined,
 })
 const formRules = reactive({
   harvestVolume: [{required: true, message: '采收量不能为空', trigger: 'blur'}],
   laborQuantity: [{required: true, message: '人工数量不能为空', trigger: 'blur'}],
   harvestNum: [{required: true, message: '采收数量不能为空', trigger: 'blur'}],
+  harvestImg: [{required: true, message: '采收图片不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 
