@@ -146,12 +146,12 @@ const getParkTree = async () => {
   let res = await ParkTree()
   console.log('🚀 ~ getParkTree ~ res基地树:', res)
   categoryTree.value = res
-  getEquipmentPhotographAndVideo(res[0].id, res[0].child[0].id)
+  getEquipmentPhotographAndVideo()
 }
 getParkTree()
 //获取视频
 const videoList = ref<Array<any>>([])
-const getEquipmentPhotographAndVideo = async (baseId: any, plotId: any) => {
+const getEquipmentPhotographAndVideo = async (baseId = '', plotId = '') => {
   let res = await EquipmentPhotographAndVideo({ baseId: baseId, plotId: plotId })
   console.log('🚀 ~ getEquipmentPhotographAndVideo ~ res获取视频:', res)
   videoList.value = res.map((item: any) => ({

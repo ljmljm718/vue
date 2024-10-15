@@ -132,7 +132,7 @@
             stripe
             v-show="curDeviceKind !== '101'"
           >
-            <el-table-column label="报警类型" prop="warnType">
+            <el-table-column label="报警类型" prop="warnType" width="150">
               <template #default="scope">
                 <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
               </template>
@@ -234,7 +234,7 @@
             <div class="flex space-x-2 pl-3 pt-3">
               <el-button type="primary" @click="editEnabled = true" :disabled="editEnabled">修改</el-button>
               <el-button type="primary" :disabled="!editEnabled" @click="handleSave()">保存</el-button>
-              <el-button :disabled="!editEnabled" @click="editEnabled = false">取消</el-button>
+              <el-button :disabled="!editEnabled" @click="clearChange()">取消</el-button>
             </div>
           </div>
         </el-scrollbar>
@@ -578,6 +578,8 @@ const getGrowChartData = async (facilityId) => {
 }
 const title = ref<string>(''), time = ref<string>(''), curDeviceKind = ref<string>('')
 const curDeviceStatus = ref<string>('')
+const clearObj = ref({})
+const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
   let res=await getEquipmentDataByEquipmentCode({id:item.id})
   runTimeDataList.value = res
@@ -598,6 +600,7 @@ const getDeviceInfoData = async (item) => {
     deviceKind = '',
     deviceId = '',
   } = item || {}
+  clearObj.value = item
   curVideoLink.value = url;
   curDeviceKind.value = deviceKind
   curDeviceStatus.value = deviceStatus
@@ -692,6 +695,19 @@ const getCurrentHeight = () => {
 }
 onMounted(() => { getCurrentHeight() })
 window.addEventListener('resize', () => getCurrentHeight())
+const clearChange = () => {
+  
+  editEnabled.value = false
+
+  console.log(clearObj.value,'clear123')
+  
+  console.log(updateForm.value,'updateForm123')
+
+  updateForm.value = clearObj.value 
+
+  
+}
+
 
 </script>
 <style lang="scss" scoped>

@@ -670,7 +670,7 @@ getQianjiangWarnRecordInfo()
           ]"
           :dataList="warnRecordList"
         /> -->
-        <el-table :data="warnRecordList" :row-class-name="tableRowClassName" :header-cell-style="tableHeaderColor" style="width: 460px">
+        <el-table :data="warnRecordList" :header-cell-style="tableHeaderColor" style="width: 460px">
           <el-table-column prop="warnInfo" label="预警信息" width="260" align='center'/>
           <el-table-column prop="warnTime" label="时间" width="100" align='center'/>
           <el-table-column  label="处理状态" width="100" align='center'>
@@ -943,9 +943,6 @@ height: 163px;
     --el-table-text-color: #213547;
     --el-table-header-text-color: #213547;
   }
-}
-.el-table .warning-row {
-  --el-table-tr-bg-color: #02482c !important;
 }
 ::v-deep .el-table .el-table__body {
   background-color: transparent !important; 
