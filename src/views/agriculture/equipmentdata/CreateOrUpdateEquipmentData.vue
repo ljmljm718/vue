@@ -296,6 +296,8 @@ const openPurchaseOrderInEnableList = () => {
 }
 
 const getDeviceInfoType= async()=>{
+  console.log("=======",formData.value.equipmentCode);
+  
   if(formData.value.equipmentCode){
     let order=await DeviceInfoApi.getDeviceInfo(formData.value.equipmentCode as any);
     let res =order.deviceMonitorType.split(',');
@@ -409,7 +411,6 @@ const submitForm = async () => {
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
-    id: undefined,
     equipmentCode: undefined,
     collectionType: undefined,
     monitoringType: undefined,
@@ -472,6 +473,7 @@ const localSave = () => {
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
   if (_form) formData.value = _form.formContent
+  getDeviceInfoType();
 }
 if (!formData.value.id) loadData()
 
@@ -481,9 +483,9 @@ const getFrom = async () =>{
   if(route.query.id)  {
     const aa = await EquipmentDataApi.getEquipmentData(route.query.id as any);
     formData.value = aa.list[0];
-    getDeviceInfoType();
     loadData(route.query.id);
   }
+  getDeviceInfoType();
 }
 
 let boo = ref(false)

@@ -71,23 +71,6 @@
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:device-info:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:device-info:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
@@ -186,7 +169,7 @@
         <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
         确 定
       </el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="clear()" >取 消</el-button>
       </template>
   </Dialog>
 
@@ -244,6 +227,19 @@ const fangfa = (select: any, row: any) => {
   }
 }
 
+
+window.addEventListener('keydown', (e) => {
+     if (e.keyCode === 27) {
+        resetQuery()
+        dialogVisible.value = false
+     }
+})
+
+const clear = async()=>{
+  dialogVisible.value = false
+  resetQuery()
+}
+
 /** 选中操作 */
 const dialogVisible = ref(false) // 弹窗的是否展示
 const selectionList = ref<DeviceInfoVO[]>([])
@@ -266,10 +262,13 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (id: string) => {
   dialogVisible.value = true
+  Object.keys(queryParams).forEach(key => {
+    queryParams[key] = undefined;
+  });
+  await resetQuery()
   // console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
-  await resetQuery()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -318,10 +317,14 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
+  Object.keys(queryParams).forEach(key => {
+    queryParams[key] = undefined;
+  });
   deviceType.value = null
   handleQuery()
 }
+
+
 
 /** 添加/修改操作 */
 const formRef = ref()
