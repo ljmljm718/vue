@@ -51,16 +51,15 @@ const handleVideoChange = (flag:number) => {
   initVideo('videoDom', url)
 }
 
-
-const showHeader = ref<boolean>(true)
-const checkScroll = () => {
-  const dom = document.getElementById('gateWrapper')
-  if (!dom) return;
-  dom.addEventListener('scroll', () => {
-    showHeader.value = !(dom.scrollTop > 1000)
-  })
-}
-onMounted(() => { checkScroll() })
+// const showHeader = ref<boolean>(true)
+// const checkScroll = () => {
+//   const dom = document.getElementById('gateWrapper')
+//   if (!dom) return;
+//   dom.addEventListener('scroll', () => {
+//     showHeader.value = !(dom.scrollTop > 1000)
+//   })
+// }
+// onMounted(() => { checkScroll() })
 
 const footerData = ref<any[]>([
   {
@@ -393,14 +392,72 @@ const typeDataList = ref<any[]>([
 ])
 handleItemChange(typeDataList.value[0])
 
+/*
+  顶部banner
+  第一屏的样式和原来保持一致
+  第二屏 保留图标 每个tab字体是白色
+  第三屏往后 背景白色 图标 每个tab字体是黑色
+*/
+const videoRef = ref<any>(null);
+const firstRef = ref<any>(null);
+const bannerStyle = ref<number>(1);
+
+// 根据滚动高度切换顶部banner样式
+const changeBannerStyle = () => {
+  const wrapDom = document.getElementById("gateWrapper");
+  if (!wrapDom || !firstRef.value || !videoRef.value) return;
+  const firstHeight = firstRef.value.scrollHeight;
+  const videoHeight = videoRef.value.scrollHeight;
+
+  wrapDom.addEventListener('scroll', () => {
+    if (wrapDom.scrollTop < firstHeight) {
+      bannerStyle.value = 1;
+    } else if (wrapDom.scrollTop >= ( firstHeight + videoHeight )) {
+      bannerStyle.value = 3;
+    } else {
+      bannerStyle.value = 2;
+    }
+  })
+};
+
+// 顶部Banner切换事件
+const handleItemChangeBanner = (item) => {
+  handleItemChange(item);
+  const wrapDom = document.getElementById("gateWrapper");
+  if (!wrapDom) return;
+  wrapDom.scrollTop = 0;
+};
+
+onMounted(() => { changeBannerStyle() });
+
+// 系统亮点数组
+const curHighlight = ref<number>(0);
+const highlights = ref<any[]>([{
+  title: "标准化种植",
+  content: "制定标准化种植规范，包括种植环境、种植技术、施肥方式、农药使用等方面。根据作物种植周期，按标准进行农事操作。"
+}, {
+  title: "标准化管理",
+  content: "跟踪农产品生产记录，统一管理包括作物品种、种植信息、农药使用、采摘情况等信息，提高农业生产效率，降低生产成本。"
+}, {
+  title: "全过程追溯",
+  content: "建立溯源档案，溯源档案覆盖生产、加工、质检等主要环节，包含品牌、产品认证、农事记录、环境数据、生长期图片、实时视频等。"
+}, {
+  title: "智能控制",
+  content: "实时监测基地数据，并设定阈值区间，数值超出阈值区间，如气温过高，水阀自动开启，气温降低到正常阈值，则自动关闭，精准控制种植环境指标。"
+}, {
+  title: "数据支撑",
+  content: "农产品溯源系统将采集的涉农数据进行数据分析和共享，为推动农业产业的向数字化和智能化转型提供数据支撑，提高农业生产和管理效率，促进农业可持续发展。"
+}, {
+  title: "提升品牌形象",
+  content: "根据特色农产品的产品亮点等优势，可提供专属品牌包装、二维码设计等服务，助力打造特色农产品品牌，提升品牌形象。"
+}]);
 </script>
 <template>
   <div class="w-full box-border relative overflow-y-auto h-100vh system-info-wrapper" id="gateWrapper">
-    <div
-      :class="`fixed left-0 w-full flex justify-center transition-all duration-1000 box-border ${
-        showHeader ? 'top-0' : 'top-[-100%]'
-      }`">
-      <div class="container flex items-center p-5 space-x-1rem">
+    <!-- 顶部 banner -->
+    <div class="fixed left-0 w-full flex justify-center transition-all duration-1000 box-border top-0 z-999">
+      <!-- 第一屏的banner -->
+      <div v-show="bannerStyle === 1" class="container flex items-center p-5 space-x-1rem">
         <div class="icon w-2.4rem h-2.4rem"></div>
         <div class="text-white">
           <div class="text-1.4rem">鲁渝协作乡村振兴示范村数字化赋能工程</div>
@@ -408,8 +465,50 @@ handleItemChange(typeDataList.value[0])
             Digital Empowerment Project</div>
         </div>
       </div>
+      <!-- 不是第一屏的banner -->
+      <div
+        v-show="bannerStyle !== 1"
+        :class="`w-full flex items-center justify-around px-40 transition-all duration-300 ${ bannerStyle === 3 && 'bg-white banner-shadow' }`"
+      >
+        <div class="icon w-2.4rem h-2.4rem"></div>
+        <div v-for="item in typeDataList" :key="item.id" class="banner-btns h-[60px] leading-[60px] relative">
+          <!-- 四个按钮同时只显示一个 -->
+          <button
+            v-show="selectedDataId === item.id && bannerStyle === 2"
+            @click="handleItemChangeBanner(item)"
+            class="text-white opacity-100 text-[1.125rem]"
+          >
+            {{ item.title }}
+          </button>
+          <button
+            v-show="selectedDataId !== item.id && bannerStyle === 2"
+            @click="handleItemChangeBanner(item)"
+            class="text-white opacity-70 text-[1.125rem]"
+          >
+            {{ item.title }}
+          </button>
+          <button
+            v-show="selectedDataId === item.id && bannerStyle === 3"
+            @click="handleItemChangeBanner(item)"
+            class="text-[#2F8255] text-[1.125rem]"
+          >
+            {{ item.title }}
+          </button>
+          <button
+            v-show="selectedDataId !== item.id && bannerStyle === 3"
+            @click="handleItemChangeBanner(item)"
+            class="text-[1.125rem]"
+          >
+            {{ item.title }}
+          </button>
+          <!-- 激活时的短线 -->
+          <div v-show="selectedDataId === item.id" :class="`absolute bottom-0 w-full h-[2px] ${ bannerStyle === 2 ? 'bg-white' : 'bg-[#2F8255]' }`"></div>
+        </div>
+      </div>
     </div>
-    <div :class="`w-full flex justify-center items-center h-100vh ${activePoster} text-white`">
+
+    <!-- 第一屏 -->
+    <div ref="firstRef" :class="`w-full flex justify-center items-center h-100vh ${activePoster} text-white`">
       <div class="container px-3rem box-border">
         <div class="text-3rem font-bold">{{ mainTitle }}</div>
         <div class="w-[43rem] text-1rem mt-1.2rem h-5rem leading-loose">
@@ -445,7 +544,7 @@ handleItemChange(typeDataList.value[0])
     </div>
 
     <!-- 视频展示 -->
-    <div class="w-full flex flex-col justify-center items-center video-bg  text-white py-6rem">
+    <div ref="videoRef" class="w-full flex flex-col justify-center items-center video-bg  text-white py-6rem">
       <div class="flex flex-col space-y-1 items-center mt-3 mb-[1rem]">
         <div class="text-1.8rem">视频展示</div>
         <div class="text-#fff text-.7rem">VIDEO DISPLAY</div>
@@ -617,6 +716,36 @@ handleItemChange(typeDataList.value[0])
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <!-- 系统亮点 -->
+    <div class="w-full flex flex-col items-center py-4rem">
+      <div class="flex flex-col space-y-1 items-center mt-3 mb-[3rem]">
+        <div class="text-[40px]"><span>系统亮点</span></div>
+        <div class="text-[18px] text-[#999]"><span>SYSTEM HIGHLIGHTS</span></div>
+      </div>
+      <div class="container">
+        <div
+          class="w-full h-[90px] mb-[2.25rem] flex justify-between highlights"
+          style="border-bottom: 1px solid #E6E6E6;"
+        >
+          <div v-for="item, index in highlights" :key="item.title" class="h-full relative">
+            <button 
+              @click="curHighlight = index"
+              :class="`text-[1.125rem] leading-[90px] ${curHighlight === index && 'text-[#2F8255]'}`"
+            >
+              <span>{{ item.title }}</span>
+            </button>
+            <div v-show="curHighlight === index" class="absolute bottom-0 w-full h-[2px] bg-[#2F8255]"></div>
+          </div>
+        </div>
+        <div :class="`sys-highlight-${ curHighlight + 1 } flex`">
+          <div class="mt-[5rem] ml-[3.75rem] w-[40%]">
+            <div><span class="text-[1.5rem] leading-[3rem]">{{ highlights[curHighlight].title }}:</span></div>
+            <div><span class="leading-[2rem]">{{ highlights[curHighlight].content }}</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -858,5 +987,29 @@ handleItemChange(typeDataList.value[0])
   background-image: url(./assets/spec/bgImg/specGreenCardBg.png);
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+// 默认button背景透明 无边框 鼠标悬停指针
+.banner-btns button,
+.highlights button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.banner-shadow {
+  box-shadow: 0px 0px 20px 0px rgba(204,204,204,0.5);
+}
+
+// 系统亮点
+@for $i from 1 through 6 {
+  .sys-highlight-#{$i} {
+    background: {
+      image: url(./assets/sys-highlight-#{$i}.png);
+      size: 100% 100%;
+    }
+    height: 22.5rem;
+    width: 100%;
+  }
 }
 </style>
