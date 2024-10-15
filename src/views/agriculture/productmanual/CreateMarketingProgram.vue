@@ -36,8 +36,8 @@
       v-loading="formLoading"
       class="grid 2xl:grid-cols-2 gap-3 p-4"
     >
-      <el-form-item label="方案名称" prop="schemeName">
-        <el-input v-model="formData.schemeName" placeholder="请输入方案名称" />
+      <el-form-item label="手册名称" prop="schemeName">
+        <el-input v-model="formData.schemeName" placeholder="请输入手册名称" />
       </el-form-item>
       <el-form-item label="简介" prop="briefIntroduction">
         <el-input v-model="formData.briefIntroduction" type="textarea" placeholder="请输入简介" />

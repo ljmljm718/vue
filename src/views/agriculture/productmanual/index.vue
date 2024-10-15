@@ -12,10 +12,10 @@
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"
       >
-        <el-form-item label="方案名称" prop="schemeName">
+        <el-form-item label="手册名称" prop="schemeName">
           <el-input
             v-model="queryParams.schemeName"
-            placeholder="请输入"
+            placeholder="请输入手册名称"
             clearable
             @keyup.enter="handleQuery"
           />
