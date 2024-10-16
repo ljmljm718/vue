@@ -961,7 +961,6 @@ const skipCli = async () => {
       ...params.value,
       recordTime: params.value.startTime,
       recordArea: params.value.area,
-      cropType:params.value.id
     }
   })
   if (res) {
