@@ -40,7 +40,7 @@
         <!-- </div> -->
         <!-- </Transition> -->
         <div class="cont">
-          <div class="w-[36rem] ml-[54vw]">
+          <div class="w-[34rem] ml-[56vw]">
             <LoginForm />
           </div>
         </div>
@@ -108,23 +108,24 @@ $prefix-cls: #{$namespace}-login;
 
 .login {
   position: relative;
-  background-image: url('./assets/bgwithmengban.png');
+  background-image: url('./assets/bgwithmengban2.png');
   background-size: 100% 100%;
   .logo {
     position: absolute;
-    top: 1.5%;
+    top: 5%;
     z-index: 999;
-    left: 2vw;
-    width: 40vw;
-    aspect-ratio: 8.6;
+    left: 5vw;
+    // height: 40px;
+    width: 35vw;
+    aspect-ratio: 13;
     background-size: 100% 100%;
     object-fit: container;
-    background-image: url('./assets/leftTitle.png');
+    background-image: url('./assets/leftTitle2.png');
   }
 }
 
-.left-img {
-  background-size: 100% 100%;
-  background-image: url('./assets/leftContent.png');
-}
+// .left-img {
+//   background-size: 100% 100%;
+//   background-image: url('./assets/leftContent.png');
+// }
 </style>
