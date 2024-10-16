@@ -75,19 +75,35 @@ function startTime(time) {
   DataCollectShows[1] = `${year2}-${month2}-${day2}`
 }
 const queryCollectionShows = () => {
+  console.log('DataCollectShows[0]', DataCollectShows[0])
+  console.log('DataCollectShows[1]', DataCollectShows[1])
+  if(DataCollectShows[1] ===  undefined || DataCollectShows[0] ===  undefined){
+    alert('请选择开始时间和结束时间')
+    return
+  }
+  
   initDataCollectChart('appoint', DataCollectShows[0], DataCollectShows[1])
 }
 // 数据采集量展示
 const dataCollectRadio = ref('本年')
 const dataCollectDateRange = ref([])
 const CollectDate = (e) => {
+  if( e == null){
+    dataCollectDateRange.value = []
+    DataCollectShows[0] = undefined
+    DataCollectShows[1] = undefined
+    return
+  }
   startTime(dataCollectDateRange.value)
 }
-const dataColleChange = (val) => {
+const dataColleChange = async (val) => {
   if (val == '本年') val = 'year'
   else if (val == '本月') val = 'month'
   else if (val == '今日') val = 'day'
   dataCollectDateRange.value = []
+  DataCollectShows[0] = undefined
+  DataCollectShows[1] = undefined
+  await nextTick();
   initDataCollectChart(val)
 }
 const el = document.documentElement
@@ -112,80 +128,98 @@ const initDataCollectChart = async (type, startDate = '', endDate = '') => {
   let res = await EquipmentDataApi.QueryCurrentDateCount(
     type == 'appoint' ? { type, startDate, endDate } : { type }
   )
-  initChartStatic(
-    'dataCollectChart',
-    generateBaseOptions({
-      xAxis: {
-        data:
-          type == 'appoint'
-            ? res.map((item) => item.collectionDate)
-            : res.map((item) => item.collectionDate).reverse(),
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#a1a1aa80'
-          }
-        }
-      },
-      legend: {
-        show: false,
-        orient: 'horizontal',
-        itemWidth: 15,
-        itemHeight: 15
-      },
-      color: [elcolor.value, '#36e1d9'],
-      yAxis: {
-        name: '',
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: '#a1a1aa80'
-          }
-        },
-        splitLine: {
-          //网格线
-          show: true, //是否显示
-          lineStyle: {
-            //网格线样式
-            color: '#a1a1aa80', //网格线颜色
-            width: 1, //网格线的加粗程度
-            type: 'dashed' //网格线类型
-          }
-        },
-        splitArea: {
-          //网格区域
-          show: false //是否显示
-        }
-      },
-      series: [
-        {
-          name: '数据采集量展示',
-          data:
-            type == 'appoint'
-              ? res.map((item) => item.totalValue)
-              : res.map((item) => item.totalValue).reverse(),
-          type: 'line',
-          smooth: true,
-          label: {
-            show: true, //开启显示
-            position: 'right', //在上方显示
-            textStyle: {
-              //数值样式
-              color: '#a1a1aa',
-              fontSize: 10
+  console.log('🚀 ~ initDataCollectChart ~ res:', res)
+  const chartElement = document.getElementById('dataCollectChart')
+  if (!chartElement) {
+    console.error('Chart element not found!');
+    return;
+  }
+  const chartInstance = echarts.getInstanceByDom(chartElement)  // 检查该 DOM 元素上是否已经存在 ECharts 实例
+  if(chartInstance){
+    chartInstance.dispose()  // 销毁已有的图表实例，防止重复初始化
+  }
+  if (chartElement) {
+    if (res.length < 1) {
+      chartElement.innerHTML = '<p style=" color:#a1a1aa;">暂无查询数据</p>'
+    } else {
+       // 清空提示文本，确保重新渲染图表
+      chartElement.innerHTML = '';
+      initChartStatic(
+        'dataCollectChart',
+        generateBaseOptions({
+          xAxis: {
+            data:
+              type == 'appoint'
+                ? res.map((item) => item.collectionDate)
+                : res.map((item) => item.collectionDate).reverse(),
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: '#a1a1aa80'
+              }
             }
+          },
+          legend: {
+            show: false,
+            orient: 'horizontal',
+            itemWidth: 15,
+            itemHeight: 15
+          },
+          color: [elcolor.value, '#36e1d9'],
+          yAxis: {
+            name: '',
+            type: 'value',
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: '#a1a1aa80'
+              }
+            },
+            splitLine: {
+              //网格线
+              show: true, //是否显示
+              lineStyle: {
+                //网格线样式
+                color: '#a1a1aa80', //网格线颜色
+                width: 1, //网格线的加粗程度
+                type: 'dashed' //网格线类型
+              }
+            },
+            splitArea: {
+              //网格区域
+              show: false //是否显示
+            }
+          },
+          series: [
+            {
+              name: '数据采集量展示',
+              data:
+                type == 'appoint'
+                  ? res.map((item) => item.totalValue)
+                  : res.map((item) => item.totalValue).reverse(),
+              type: 'line',
+              smooth: true,
+              label: {
+                show: true, //开启显示
+                position: 'right', //在上方显示
+                textStyle: {
+                  //数值样式
+                  color: '#a1a1aa',
+                  fontSize: 10
+                }
+              }
+            }
+          ],
+          grid: {
+            left: '0%',
+            right: '4%',
+            top: '8%',
+            bottom: '12%'
           }
-        }
-      ],
-      grid: {
-        left: '0%',
-        right: '4%',
-        top: '8%',
-        bottom: '12%'
-      }
-    })
-  )
+        })
+      )
+    }
+  }
 }
 // 数据展示
 const dataShowRadio = ref('气象站')
@@ -367,6 +401,7 @@ const collectChange = () => {
   getTime(collectConditionDateRange.value)
 }
 //数据采集量情况
+
 const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') => {
   const res = await EquipmentDataApi.getPieDataList({ dataStartTime, dataEndTime })
   const data: Array<any> = []
@@ -409,7 +444,7 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
 
       graphic: {
         type: 'text',
-        left: '30%',
+        left: '32.5%',
         //left: '37%',
         top: 'center',
         style: {
