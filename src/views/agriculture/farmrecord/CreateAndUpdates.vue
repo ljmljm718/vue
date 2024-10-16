@@ -49,6 +49,7 @@
           :rules="formRules"
           label-width="100px"
           v-loading="formLoading"
+          :disabled="route.query.type as any =='select'"
         >
     <!--      <el-row :gutter="3">-->
     <!--        <el-col :span="12">-->
@@ -258,7 +259,7 @@
     <!--      <el-row :gutter="3">-->
             <el-col :span="12" v-if="show !==117">
               <el-form-item label="土地面积（亩）" prop="recordArea" label-width="120">
-                <el-input v-model="formData.recordArea" placeholder="请输入土地面积（亩）" />
+                <el-input v-model="formData.recordArea" :placeholder="`请输入面积（亩）,面积不能超过${area}亩`"  />
               </el-form-item>
             </el-col>
     <!--        <el-col :span="12">-->
@@ -309,7 +310,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {ParkDetailApi, ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import SelectFarmPlan from "@/views/agriculture/farmrecord/SelectFarmPlan.vue";
 import {FarmPlanVO} from "@/api/agriculture/farmplan";
@@ -321,6 +322,7 @@ import { createA, updatestate } from '@/api/bigscreenMingYue'
 import {UserVO} from "@/api/login/types";
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {ElMessage} from "element-plus";
 
 /** 农事记录 表单 */
 defineOptions({ name: 'FarmRecordForm' })
@@ -369,6 +371,7 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 let farmDefineOptions = ref([])// 设备分类选项
 
+const area = ref()
 const show = ref()
 const userStore = useUserStore()
 //获取部门ID
@@ -380,7 +383,7 @@ const selectFarmPlanRef = ref()
 const openFarmPlanPopup = () => {
   selectFarmPlanRef.value.open()
 }
-const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
+const handleSelectFarmPlanChange =async (order: FarmPlanVO) => {
   console.log("--->>查看选择的地块信息：", order[0])
 
   formData.value.planId = String(order[0].id)
@@ -402,6 +405,9 @@ const handleSelectFarmPlanChange = (order: FarmPlanVO) => {
   formData.value.area = String(order[0].area)
   formData.value.farmDefineType=order[0].farmDefineType?parseInt(order[0].farmDefineType):""
   formData.value.batchCode=String(order[0].batchCode)
+  // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
 }
 
 //基地的选择
@@ -429,12 +435,14 @@ const openParkDetailPopup = (id: string) => {
     message.error("请先选择基地！")
   } else parkDetailPopupRef.value.open(id)
 }
-const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+const handleParkDetailPopupChange = async (order: ParkDetailVO) => {
 
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
-
+  // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
 }
 
 
@@ -443,7 +451,7 @@ const cropInfoPopupRef = ref()
 const openCropInfoPopup = () => {
   cropInfoPopupRef.value.open()
 }
-const handleCropInfoPopupChange = (order: CropBaseVO) => {
+const handleCropInfoPopupChange =async (order: CropBaseVO) => {
 
   console.log("--->>查看选择的作物信息：",order[0])
   formData.value.cropId = String(order[0].id)
@@ -454,7 +462,9 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
   formData.value.batchCode=String(order[0].batchCode)
-
+  // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
 }
 
 
@@ -517,6 +527,10 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as FarmRecordVO
+    if( Number(formData.value.recordArea) > Number(area.value)){
+      ElMessage.warning('数量超过输入的最大面积')
+      return
+    }
     if (!formData.value.id) {
       await FarmRecordApi.createFarmRecord(data)
       message.success(t('common.createSuccess'))
