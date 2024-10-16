@@ -305,4 +305,5 @@ export enum DICT_TYPE {
   AGRI_CODE_SERIAL = 'agri_code_serial',//码序列号
 
   PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status',//生产商入库审批状态
+  AGRI_RECOGNITION_TYPE = 'agri_recognition_type', // 太原 识别类型
 }
