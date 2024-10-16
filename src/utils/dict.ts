@@ -305,4 +305,8 @@ export enum DICT_TYPE {
   AGRI_CODE_SERIAL = 'agri_code_serial',//码序列号
 
   PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status',//生产商入库审批状态
+
+    // =========== agri -  病虫害监测 ==========
+    AGRI_IDENTIFY_STATUS = 'agri_identify_status',//识别状态
+    AGRI_DEVICE_STATUS = 'agri_device_status',//设备状态
 }
