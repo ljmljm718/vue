@@ -19,7 +19,7 @@ import SelectSysUser from "@/views/agriculture/farmplan/SelectSysUser.vue";
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
 import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
+import {ParkDetailApi, ParkDetailVO} from "@/api/agriculture/parkdetail";
 import {CropBaseVO} from "@/api/agriculture/cropbase";
 import {UserVO} from "@/api/login/types";
 import {FarmPlanApi, FarmPlanVO} from "@/api/agriculture/farmplan";
@@ -102,13 +102,15 @@ const openParkDetailPopup = (id: string) => {
     ElMessage.error("请先选择基地！")
   } else parkDetailPopupRef.value.open(id)
 }
-const handleParkDetailPopupChange = (order: ParkDetailVO) => {
+const handleParkDetailPopupChange = async ( order: ParkDetailVO) => {
 
   console.log("--->>查看选择的地块信息：", order[0])
   formData.value.belongPark = String(order[0].parkId)
   formData.value.belongPlot = String(order[0].id)
   formData.value.plotName = String(order[0].name)
-
+// 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
 }
 
 
@@ -117,7 +119,7 @@ const cropInfoPopupRef = ref()
 const openCropInfoPopup = () => {
   cropInfoPopupRef.value.open()
 }
-const handleCropInfoPopupChange = (order: CropBaseVO) => {
+const handleCropInfoPopupChange = async (order: CropBaseVO) => {
 
   console.log("--->>查看选择的作物信息：", order[0])
   formData.value.cropId = String(order[0].id)
@@ -128,7 +130,9 @@ const handleCropInfoPopupChange = (order: CropBaseVO) => {
   formData.value.parkName = String(order[0].parkName)
   formData.value.plotName = String(order[0].plotName)
   formData.value.batchCode = String(order[0].batchCode)
-
+  // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
 }
 
 
@@ -157,6 +161,10 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as FarmPlanVO
+    if( Number(formData.value.planArea) > Number(area.value)){
+      ElMessage.warning('数量超过输入的最大面积')
+      return
+    }
     if (!formData.value.id) {
       // TODO: 没有id，说明是新增，下面调用新增接口
       // await API_INSERT({ ...formData.value })
@@ -227,6 +235,7 @@ const loadData = async (id = 'new_form') => {
   if (_form) formData.value = _form.formContent
 }
 
+const area = ref<number>(0);
 const getFormInfo = async () => {
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({parentId: 0, status: 1});
   resetForm()
@@ -234,6 +243,11 @@ const getFormInfo = async () => {
   //请求品类信息
   listCategoryManagement.value = await allDataCacheManager.getData({})
   formData.value.farmDefineType = formData.value.farmDefineType ? parseInt(formData.value.farmDefineType) : "";
+  // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+  const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+  area.value = parkDetailData.area
+  // 截至
+  await loadData(route.query.id);
 }
 const getTreeOptions = async () => {
   //请求品类信息
@@ -470,7 +484,7 @@ const activeName = ref<any>(['1', '2'])
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="计划面积(亩)" prop="planArea" label-width="120">
-                      <el-input v-model="formData.planArea" placeholder="请输入计划面积（亩）"/>
+                      <el-input v-model="formData.planArea" :placeholder="`请输入面积（亩）,面积不能超过${area}亩`"/>
                     </el-form-item>
                   </el-col>
                 </el-row>

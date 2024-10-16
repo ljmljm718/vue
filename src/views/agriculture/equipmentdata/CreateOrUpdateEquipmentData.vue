@@ -282,6 +282,16 @@ const formData = ref({
   parkDname: undefined,
 })
 const formRules = reactive({
+  equipmentCode: [{ required: true, message: '设备编号不能为空', trigger: 'blur' }],
+  collectionType: [{ required: true, message: '采集类型不能为空', trigger: 'blur' }],
+  monitoringType: [{ required: true, message: '监测类型不能为空', trigger: 'blur' }],
+  dataValue: [{ required: true, message: '数据值不能为空', trigger: 'blur' }],
+  yyUnit: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
+  collectionTime: [{ required: true, message: '采集时间不能为空', trigger: 'blur' }],
+  baseCode: [{ required: true, message: '基地编码不能为空', trigger: 'blur' }],
+  plotCode: [{ required: true, message: '地块编码不能为空', trigger: 'blur' }],
+  channelId: [{ required: true, message: '通道编码不能为空', trigger: 'blur' }],
+  yyRemarks: [{ required: true, message: '设备编号不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 

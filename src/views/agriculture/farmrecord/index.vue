@@ -359,7 +359,7 @@ const openType1 = ref('')
 const openPlotPopup = (id: string) => {
   openType1.value = id;
   if (!openType1.value) {
-    message.error("请选择基地")
+    message.error("请误手动输入基地名称，请选择基地！")
   } else plotPopupRef.value.open(id)
 }
 const handlePlotPopupChange = (order: ParkDetailVO) => {
