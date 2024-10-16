@@ -31,7 +31,10 @@ export const useTagsViewStore = defineStore('tagsView', {
     },
     // 新增tag
     addVisitedView(view: RouteLocationNormalizedLoaded) {
-      if (this.visitedViews.some((v) => v.path === view.path)) return
+      if (this.visitedViews.some((v) => v.path === view.path)) {
+        // 已经有了这个Tag的话，替换
+        return this.updateVisitedView(view);
+      }
       if (view.meta?.noTagsView) return
       this.visitedViews.push(
         Object.assign({}, view, {
