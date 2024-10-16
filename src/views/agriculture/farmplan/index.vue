@@ -955,19 +955,13 @@ window.addEventListener('keydown', (e) => {
 //跳过
 const skipCli = async () => {
   let res = await carryOutUpdate({
-    id: params.value.id,
-    planName: params.value.planName,
-    parkName: params.value.parkName,
-    plotName: params.value.plotName,
-    cropName: params.value.cropName,
-    planState: params.value.planState,
-    startTime: params.value.startTime,
-    endTime: params.value.endTime,
+    ...params.value,
     isInput: false,
     agriFarmRecordSaveReqVO: {
       ...params.value,
       recordTime: params.value.startTime,
-      recordArea: params.value.area
+      recordArea: params.value.area,
+      cropType:params.value.id
     }
   })
   if (res) {
