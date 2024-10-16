@@ -109,7 +109,7 @@
               >
                 <el-link
                   style="float: right;"
-                  class="!color-[#46696c]"
+                  class="!color-[#2bb86f]"
                   type="primary"
                 >
                   <span class="text-1.1rem">

@@ -204,8 +204,8 @@ const moveToTarget = (currentTag: RouteLocationNormalizedLoaded) => {
 }
 
 // 是否是当前tag
-const isActive = (route: RouteLocationNormalizedLoaded): boolean => {
-  return route.path === unref(currentRoute).path
+const isActive = (_route: RouteLocationNormalizedLoaded): boolean => {
+  return _route.path === unref(currentRoute).path
 }
 
 // 所有右键菜单组件的元素
@@ -257,6 +257,13 @@ watch(
     moveToCurrentTag()
   }
 )
+
+const route = useRoute()
+const handleTabClick = (routeItem, navigate:Function) => {
+  // 如果路由（不包括参数）不变化，不进行路由跳转
+  if (route.path === routeItem.path) return;
+  if (typeof navigate === 'function') navigate()
+}
 </script>
 
 <template>
@@ -353,7 +360,7 @@ watch(
             <div>
               <router-link :ref="tagLinksRefs.set" :to="{ ...item }" custom v-slot="{ navigate }">
                 <div
-                  @click="navigate"
+                  @click="handleTabClick(item, navigate)"
                   class="h-full flex items-center justify-center whitespace-nowrap pl-15px"
                 >
                   <Icon

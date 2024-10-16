@@ -231,32 +231,14 @@ const activeName = ref<any>('1')
   <div>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button
-            type="primary"
-            :icon="FolderChecked"
-            plain
-            @click="localSave()"
-            disabled
-          >
-            保存
-          </el-button>
-          <el-button
-            type="success"
-            :icon="TopRight"
-            plain
-            @click="submitForm"
-            disabled
-          >提交</el-button>
-          <el-button
-            type="danger"
-            :icon="Refresh"
-            plain
-            @click="resetForm()"
-            disabled
-          >清空
-          </el-button>
-        </div>
+          <div>
+            <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回
+            </el-button>
+          </div>
       </template>
       <template #content>
         <el-scrollbar class="croll-bar-template">
