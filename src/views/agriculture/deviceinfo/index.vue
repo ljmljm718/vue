@@ -572,11 +572,13 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
-  route.query.deviceType = null
+  //route.query.deviceType = null
   queryParams.deviceType = null
   queryParams.belongPark = undefined
   queryParams.belongPlot = undefined
   emit('reset'); // 清空基地树的选中节点
+  const currentPath = router.currentRoute.value.path;
+  router.replace({ path: currentPath, query: {} });
   handleQuery()
 }
 //卡片切换
