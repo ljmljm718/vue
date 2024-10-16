@@ -678,17 +678,11 @@ export default defineComponent({
               <div class="tool-tip-bg w-[410px] h-[100px] absolute right-0 bottom-0 !hidden"></div>
               <div class="absolute right-[5px] bottom-[5px] bg-[rgba(4,50,63,0.8)] rounded-md">
                 <ul class="my-[10px] ml-[10px] p-0 flex">
-                  <li class="mr-[10px] flex flex-col items-center gap-2">
-                    <div class="h-[19px]"></div>
-                    <div class="h-[30px] text-center leading-[30px]">在线</div>
-                    <div class="h-[30px] text-center leading-[30px]">离线</div>
-                  </li>
                   {
                     mapLegends.value.map(item => (
                       <li class="mr-[10px] flex flex-col items-center gap-2" key={ item.id }>
                         <div class=""><span>{ item.name }</span></div>
                         <img src={ `/tangba/online${ item.icon || 'Monitor'}v2.png` } class="object-contain w-[40px] h-[30px]" />
-                        <img src={ `/tangba/offline${ item.icon || 'Monitor'}v2.png` } class="object-contain w-[40px] h-[30px]" />
                       </li>
                     ))
                   }
