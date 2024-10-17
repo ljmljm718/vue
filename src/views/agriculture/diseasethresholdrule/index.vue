@@ -49,13 +49,21 @@
       <!--        />-->
       <!--      </el-form-item>-->
       <el-form-item label="虫害种类" prop="diseaseType">
-        <el-input
-          v-model="queryParams.diseaseType"
-          placeholder="请输入病虫害种类"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+<!--        <el-input-->
+<!--          v-model="queryParams.diseaseType"-->
+<!--          placeholder="请输入病虫害种类"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+        <el-select v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类" class="!w-240px">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.label"
+            :label="dict.label"
+            :value="dict.label"
+          />
+        </el-select>
       </el-form-item>
       <!--      <el-form-item label="病害虫Id" prop="diseaseId">-->
       <!--        <el-input-->
@@ -258,6 +266,7 @@ import {
 } from '@/api/agriculture/diseasethresholdrule'
 import DiseaseThresholdRuleForm from './DiseaseThresholdRuleForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 病虫害预警阈值设置 列表 */
 defineOptions({name: 'DiseaseThresholdRule'})

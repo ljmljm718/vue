@@ -310,4 +310,5 @@ export enum DICT_TYPE {
     // =========== agri -  病虫害监测 ==========
     AGRI_IDENTIFY_STATUS = 'agri_identify_status',//识别状态
     AGRI_DEVICE_STATUS = 'agri_device_status',//设备状态
+    AGRI_DISEASE_NAME = 'agri_disease_name',//设备状态
 }
