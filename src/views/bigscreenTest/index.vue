@@ -1088,15 +1088,7 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div
-                  id="growthChart"
-                  class="cursor-pointer"
-                  onClick={() => {
-                    // window.open("/internetMonitor/deviceData/grow-record")
-                  }}
-                >
-                  <AgriComponent />
-                </div>
+                <AgriComponent />
               </div>
             </div>
             {/** 产量分析 */}

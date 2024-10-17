@@ -8,24 +8,7 @@
       :inline="true"
       label-width="80px"
     >
-      <!--      <el-form-item label="监测类型" prop="warnType">-->
-      <!--        <el-select-->
-      <!--          v-model="queryParams.warnType"-->
-      <!--          placeholder="请选择监测类型"-->
-      <!--          clearable-->
-      <!--          class="!w-240px"-->
-      <!--        >-->
-      <!--          <el-option label="请选择字典生成" value=""/>-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
       <el-form-item label="农作物" prop="breedId">
-        <!--        <el-input-->
-        <!--          v-model="queryParams.breedId"-->
-        <!--          placeholder="请输入品种ID"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
         <el-select
           v-model="queryParams.breedId"
           placeholder="请选择农作物"
@@ -49,14 +32,15 @@
       <!--        />-->
       <!--      </el-form-item>-->
       <el-form-item label="虫害种类" prop="diseaseType">
-<!--        <el-input-->
-<!--          v-model="queryParams.diseaseType"-->
-<!--          placeholder="请输入病虫害种类"-->
-<!--          clearable-->
-<!--          @keyup.enter="handleQuery"-->
-<!--          class="!w-240px"-->
-<!--        />-->
-        <el-select v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类" class="!w-240px">
+        <!--        <el-input-->
+        <!--          v-model="queryParams.diseaseType"-->
+        <!--          placeholder="请输入病虫害种类"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <el-select v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类"
+                   class="!w-240px">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
             :key="dict.label"
@@ -173,26 +157,31 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:disease-threshold-rule:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:disease-threshold-rule:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
+
       </el-form-item>
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:disease-threshold-rule:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:disease-threshold-rule:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </div>
     </el-form>
   </ContentWrap>
 
@@ -211,7 +200,6 @@
       <!--      <el-table-column label="品种名称" align="center" prop="cropName"/>-->
       <!--      <el-table-column label="病虫害Id" align="center" prop="diseaseId"/>-->
       <!--      <el-table-column label="监测类型" align="center" prop="warnType"/>-->
-      <!--      <el-table-column label="预留2" align="center" prop="reservedTwo"/>-->
       <!--      <el-table-column label="预留3" align="center" prop="reservedThree"/>-->
       <!--      <el-table-column label="预留4" align="center" prop="reservedFour"/>-->
       <!--      <el-table-column label="预留5" align="center" prop="reservedFive"/>-->
