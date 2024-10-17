@@ -83,7 +83,7 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="蟹塘图片" width="120" align="center">
+      <el-table-column label="图片" width="120" align="center">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.img`" :rules="formRules.img" class="mb-0px!">
             <UploadImg v-model="row.img" :height="'100px'" :width="'100px'"/>

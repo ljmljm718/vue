@@ -107,35 +107,35 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="处理时间" prop="dealTime">
-            <el-date-picker
-              v-model="formData.dealTime"
-              type="datetime"
-              value-format="x"
-              placeholder="选择处理时间"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="处理人" prop="dealPerson">
-            <el-input v-model="formData.dealPerson" placeholder="请输入处理人"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <!--            <el-col :span="12">-->
-        <!--                <el-form-item label="处理人编号" prop="dealPersonId">-->
-        <!--                    <el-input v-model="formData.dealPersonId" placeholder="请输入处理人编号" />-->
-        <!--                </el-form-item>-->
-        <!--            </el-col>-->
-        <el-col :span="24">
-          <el-form-item label="处理信息" prop="dealInfo">
-            <el-input type="textarea" v-model="formData.dealInfo" placeholder="请输入处理信息"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      <el-row :gutter="3">-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="处理时间" prop="dealTime">-->
+<!--            <el-date-picker-->
+<!--              v-model="formData.dealTime"-->
+<!--              type="datetime"-->
+<!--              value-format="x"-->
+<!--              placeholder="选择处理时间"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="处理人" prop="dealPerson">-->
+<!--            <el-input v-model="formData.dealPerson" placeholder="请输入处理人"/>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--      <el-row :gutter="3">-->
+<!--        &lt;!&ndash;            <el-col :span="12">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <el-form-item label="处理人编号" prop="dealPersonId">&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <el-input v-model="formData.dealPersonId" placeholder="请输入处理人编号" />&ndash;&gt;-->
+<!--        &lt;!&ndash;                </el-form-item>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </el-col>&ndash;&gt;-->
+<!--        <el-col :span="24">-->
+<!--          <el-form-item label="处理信息" prop="dealInfo">-->
+<!--            <el-input type="textarea" v-model="formData.dealInfo" placeholder="请输入处理信息"/>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
       <el-row :gutter="3">
         <!--            <el-col :span="12">-->
         <!--                <el-form-item label="设备类型" prop="deviceType">-->
