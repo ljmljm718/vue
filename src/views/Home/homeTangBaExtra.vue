@@ -10,7 +10,7 @@
         height="calc(100% - 3.3rem)"
       >
         <el-menu
-          class="el-menu-vertical-demo min-w-[230px]"
+          class="el-menu-vertical-demo min-w-[270px]"
           @select="handleSelect"
         >
           <el-sub-menu

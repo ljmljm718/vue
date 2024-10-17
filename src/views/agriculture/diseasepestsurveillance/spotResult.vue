@@ -12,7 +12,9 @@ const queryParams = reactive({
   pageSize: 10
 });
 const activeMainTableId = ref<string>('')
-const getList = async (mainTableId:string = activeMainTableId.value) => {
+const getList = async (
+  mainTableId:string = activeMainTableId.value
+) => {
   activeMainTableId.value = mainTableId;
   loading.value = true;
   const { list, total } = await CategoryManagementApi.identificationResultPage({
@@ -32,10 +34,11 @@ const getList = async (mainTableId:string = activeMainTableId.value) => {
 // 关闭侧栏
 const handleClose = () => {
   loading.value = false;
-  tableData.value = [];
   showResult.value = false;
+  tableData.value = [];
   queryParams.pageNo = 1;
   queryParams.pageSize = 10;
+  tableTotal.value = 0;
 }
 
 const handleOpen = (mainTableId:string) => {
@@ -46,15 +49,29 @@ defineExpose({ handleOpen })
 </script>
 <template>
   <div
-    class="absolute top-0 right-0 p-3 z-20 bg-white shadow-md h-full transition-all  duration-700 box-border"
+    class="
+      absolute top-0 right-0
+      p-3 z-20 bg-white
+      shadow-xl h-full
+      transition-all 
+      duration-700 box-border
+    "
     :style="`right: ${showResult ? '0' : '-100%'};`"
   >
-    <div class="flex justify-between items-center pb-3 pt-1 px-1 h-2rem box-border">
+    <div
+      class="
+        flex justify-between items-center
+        pb-3 pt-1 px-1 h-2rem box-border
+      "
+    >
       <div class="font-bold">孢子捕捉仪 识别结果</div>
       <el-icon @click="handleClose()"><Close /></el-icon>
     </div>
     <div
-      style="border: 1px solid #e1e1e1;height: calc(100% - 2rem);"
+      style="
+        border: 1px solid #e1e1e1;
+        height: calc(100% - 2rem);
+      "
       class="overflow-auto p-2 box-border rounded-2"
     >
       <el-table
@@ -100,5 +117,3 @@ defineExpose({ handleOpen })
     </div>
   </div>
 </template>
-<style scoped lang="scss">
-</style>
