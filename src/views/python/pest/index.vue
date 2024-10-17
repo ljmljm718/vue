@@ -27,7 +27,7 @@ const submitForm = async () => {
         <UploadImg v-model="formData.img"/>
       </el-form-item>
     </el-form>
-    <el-button @click="submitForm" type="primary">上传</el-button>
+    <el-button @click="submitForm" type="primary">点击识别</el-button>
 
     <h1>⬇️识别结果⬇️</h1>
     <h1>害虫名：【{{res?.name}}】</h1>
