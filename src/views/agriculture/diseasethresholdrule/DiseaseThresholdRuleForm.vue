@@ -120,7 +120,16 @@ const formData = ref({
   reservedFive: undefined,
   remark: undefined
 })
-const formRules = reactive({})
+const formRules = reactive({
+  breedId: [{ required: true, message: '农作物不能为空', trigger: 'blur' }],
+  diseaseType: [{ required: true, message: '病虫害种类不能为空', trigger: 'change' }],
+  monitorPeriod: [{ required: true, message: '监测周期不能为空', trigger: 'change' }],
+  warnLowValue: [{ required: true, message: '阈值下限不能为空', trigger: 'change' }],
+  warnHighValue: [{ required: true, message: '阈值上限不能为空', trigger: 'change' }],
+  warnUnit: [{ required: true, message: '阈值单位不能为空', trigger: 'change' }],
+  reservedOne: [{ required: true, message: '病虫害等级不能为空', trigger: 'change' }],
+  lowMsg: [{ required: true, message: '预警信息不能为空', trigger: 'change' }]
+})
 const formRef = ref() // 表单 Ref
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 
