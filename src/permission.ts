@@ -54,7 +54,8 @@ const whiteList = [
     '/mingyue',
     '/shuangqiao',
     '/erdu',
-    '/tianyin'
+    '/tianyin',
+    '/taiyuan'
   ].map(item => `${item}/login`),
   '/social-login',
   '/auth-redirect',

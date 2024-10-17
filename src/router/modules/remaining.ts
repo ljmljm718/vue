@@ -205,7 +205,8 @@ const remainingRouter: AppRouteRecordRaw[] = [
     '/mingyue',
     '/shuangqiao',
     '/erdu',
-    '/tianyin'
+    '/tianyin',
+    '/taiyuan'
   ].map(subItem => ({
     path: subItem + '/login',
     component: () => import('@/views/Login/Login.vue'),
