@@ -1291,14 +1291,5 @@ const dataChange = (e) =>{
 .nameList-wrapper::-webkit-scrollbar{
   width:0;
 }
-.wrapper{
-  width: 200px;
-  height: 200px;
-  background-size: 100% 100%;
-  background-image: url();
-  background-repeat: no-repeat;
-  background-position: center center ;
-  border: 1px solid red;
-  
-}
+
 </style>
