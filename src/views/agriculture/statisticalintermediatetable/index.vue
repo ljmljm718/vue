@@ -111,7 +111,13 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!-- <el-table-column label="id" align="center" prop="id" /> -->
+      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="设备ID" align="center" prop="deviceId" />
+      <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_EARLY_WARNING_STATE" :value="scope.row.earlyWarningState" />
+        </template>
+      </el-table-column>
       <el-table-column label="地块ID" align="center" prop="landBlockId" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="作物" align="center" prop="crop" />
@@ -168,6 +174,7 @@
 </template>
 
 <script setup lang="ts">
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { StatisticalIntermediateTableApi, StatisticalIntermediateTableVO } from '@/api/agriculture/statisticalintermediatetable'
@@ -193,7 +200,9 @@ const queryParams = reactive({
   quantity: undefined,
   unit: undefined,
   plotName:undefined,
-  createTime: []
+  createTime: [],
+  deviceId: undefined,
+  earlyWarningState: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -225,6 +234,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
+  console.log("=======",id);
   formRef.value.open(type, id)
 }
 
