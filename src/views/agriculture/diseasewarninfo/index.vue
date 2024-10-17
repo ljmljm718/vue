@@ -255,6 +255,7 @@
       <el-table-column label="地块名称" align="center" prop="plotName"/>
       <el-table-column label="预警信息" align="center" prop="lowMsg"/>
       <el-table-column label="监测类型" align="center" prop="warnType"/>
+      <el-table-column label="病害虫种类" align="center" prop="diseaseType"/>
       <el-table-column label="病虫害等级" align="center" prop="reservedFour"/>
       <el-table-column
         label="预警时间"
@@ -264,7 +265,7 @@
         width="180px"
       />
       <!--      <el-table-column label="品种名称" align="center" prop="cropName"/>-->
-      <!--      <el-table-column label="病害虫种类" align="center" prop="diseaseType"/>-->
+
       <!--      <el-table-column label="病害虫Id" align="center" prop="diseaseId"/>-->
       <el-table-column label="阈值下限" align="center" prop="warnLowValue"/>
       <el-table-column label="阈值上限" align="center" prop="warnHighValue"/>
