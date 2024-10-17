@@ -68,8 +68,19 @@ const prefixCls = getPrefixCls('login')
 
 const route = useRoute()
 const isTaiyuan = route.path.indexOf('taiyuan') !== -1
-</script>
 
+onMounted(() => {
+  const routePath = route.path;
+  const matchedArr = routePath.match(/\/[A-Za-z]+\//g);
+  if (matchedArr.length > 0) {
+    const matchedItem = matchedArr[0];
+    const formattedName = matchedItem.replaceAll('/', '')
+    localStorage.setItem("CURRENT_PROJECT_NAME", formattedName)
+  } else {
+    localStorage.setItem("CURRENT_PROJECT_NAME", '')
+  }
+})
+</script>
 <style lang="scss" scoped>
 $prefix-cls: #{$namespace}-login;
 

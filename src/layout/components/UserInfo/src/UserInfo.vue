@@ -43,7 +43,12 @@ const loginOut = async () => {
     })
     await userStore.loginOut()
     tagsViewStore.delAllViews()
-    replace('/login?redirect=/index')
+    const currentProName = localStorage.getItem("CURRENT_PROJECT_NAME")
+    if (currentProName) {
+      replace(`/${currentProName}/login`)
+    } else {
+      replace('/login')
+    }
   } catch {}
 }
 const toProfile = async () => {
