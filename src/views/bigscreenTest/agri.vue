@@ -123,7 +123,8 @@ const missionremovePlanClass = (event: any) => {
 }
 </script>
 <template>
-  <div class="w-full h-full overflow-hidden">
+  <div class="w-full h-full">
+    <!-- 选择基地和地块 -->
     <div class="flex justify-between items-center text-[#11eeaf] cursor-pointer py-[3px]">
       <div class="relative h-[1.4rem] w-[15rem]">
         <div class="h-full text-center cursor-pointer" @click="showOptBase">
@@ -168,7 +169,8 @@ const missionremovePlanClass = (event: any) => {
         </div>
       </div>
     </div>
-    <div class="w-420px h-330px">
+    <!-- 日历 -->
+    <div style="height: calc(100% - 2rem)">
       <div class="w-420px h-330px">
         <BigscreenCalendar
           :key="curPlot ? curPlot.code : ''"
@@ -185,6 +187,7 @@ const missionremovePlanClass = (event: any) => {
             }
           "
         >
+          <!-- 提示框内容 -->
           <template #tip>
             <div
               v-if="showingMission"
