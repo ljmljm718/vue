@@ -131,7 +131,6 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="设备" align="center" prop="device" />
       <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
       <el-table-column label="监测类型" align="center" prop="monitorType" />
@@ -160,20 +159,17 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
           <dict-tag :type="DICT_TYPE.AGRI_IDENTIFY_STATUS" :value="scope.row.identifyStatus" />
         </template>
       </el-table-column>
-      <!-- <el-table-column label="设备状态" align="center" prop="deviceStatus" >
+
+      <el-table-column label="操作" align="center" prop="identifyStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_DEVICE_STATUS" :value="scope.row.deviceStatus" />
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      /> -->
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
+          <el-button
+            v-show="scope.row.identifyStatus == '1'"
+            link
+            type="primary"
+            @click=" openRecognizeForm('create', scope.row.id)"
+          >
+            识别
+          </el-button>
           <el-button
             link
             type="primary"
@@ -204,6 +200,9 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
 
   <!-- 表单弹窗：添加/修改 -->
   <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
+
+  <!-- 识别表单 -->
+  <RecognizeForm ref="recognizeFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -211,6 +210,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance'
 import DiseasePestSurveillanceForm from './DiseasePestSurveillanceForm.vue'
+import RecognizeForm from './RecognizeForm.vue'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import {
   CategoryManagementApi,
@@ -253,6 +253,7 @@ const getList = async () => {
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     const data = await DiseasePestSurveillanceApi.getDiseasePestSurveillancePage(queryParams)
     list.value = data.list
+    console.log("🚀 ~ getList ~ list.value:", list.value)
     total.value = data.total
   } finally {
     loading.value = false
@@ -275,6 +276,12 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+// 识别操作
+const recognizeFormRef = ref()
+const openRecognizeForm = (type: string, id?: string) => {
+  recognizeFormRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */

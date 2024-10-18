@@ -1,4 +1,5 @@
 import request from '@/config/axios'
+import RecognizeForm from '@/views/agriculture/diseasepestsurveillance/RecognizeForm.vue'
 
 // 病虫害监测 VO
 export interface DiseasePestSurveillanceVO {
@@ -44,4 +45,8 @@ export const DiseasePestSurveillanceApi = {
   exportDiseasePestSurveillance: async (params) => {
     return await request.download({ url: `/agriculture/disease-pest-surveillance/export-excel`, params })
   },
-}
+  //新增病虫害识别
+  createDiseasePestSurveillanceRecognize: async (data) => {
+    return await request.post({ url :`/agriculture/identification-result/batch-create` ,data})
+  }
+}
