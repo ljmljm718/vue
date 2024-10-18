@@ -87,7 +87,21 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      
+      <el-form-item label="农事阶段" prop="farmDefineType">
+        <el-select
+          v-model="queryParams.farmDefineType"
+          placeholder="请选择农事阶段"
+          clearable
+          class="!w-150px"
+        >
+          <el-option
+            v-for="dict in farmDefineOptions"
+            :key="dict.id"
+            :label="dict.defineName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="作物名称" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
@@ -1138,16 +1152,16 @@ const inputTab = (val:any,index:Number) => {
   }else{
   formData.value = {
       feedType: '',
-      feedName: '', 
+      feedName: '',
       consumeNum: '',
       feedCost: '',
       consumeUnit: ''
     }
   }
-    
+
 
   selectOption.value = val
- 
+
 }
 
 watch(() => formData.value, (val)=>{
@@ -1194,7 +1208,7 @@ const getData = () => {
       data:i,
       name:''
     })
-  } 
+  }
   for(let i=0 ; i< num ; i++) {
       dataList2.value.unshift({
         data:data2.value-i,
@@ -1224,7 +1238,7 @@ const dataChange = (e) =>{
       if( e.getMonth()+1 == Number(time[1])){
           dataList.value.forEach((item:any) => {
             if(item.data == Number(time[2])){
-              item.name=fn(itm.farmDefineType) 
+              item.name=fn(itm.farmDefineType)
               item.plotName=itm.plotName
             }
         })
@@ -1235,7 +1249,7 @@ const dataChange = (e) =>{
       if( e.getMonth()+1 == Number(time[1])){
           dataList2.value.forEach((item:any) => {
             if(item.data == Number(time[2])){
-              item.name=fn(itm.farmDefineType) 
+              item.name=fn(itm.farmDefineType)
               item.plotName=itm.plotName
             }
         })
@@ -1281,6 +1295,6 @@ const dataChange = (e) =>{
   background-repeat: no-repeat;
   background-position: center center ;
   border: 1px solid red;
-  
+
 }
 </style>
