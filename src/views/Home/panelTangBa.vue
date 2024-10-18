@@ -309,7 +309,7 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   if (!equipmentId) return
   runTimeDataLoading.value = true
   const res = await getEquipmentDataById({ equipmentId }).catch(() => { runTimeDataLoading.value = false })
-  console.log("getRunTimeData1234", res);
+  console.log("🚀 ~ getRunTimeData ~ res:", res);
   runTimeDataLoading.value = false
 
   const activeApi = EquipmentDataApi.getEquipmentDataByEquipmentCode
@@ -341,8 +341,9 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const chartOutWrapper = document.getElementById("chartOutWrapper")
   if (!chartOutWrapper) return
   chartOutWrapper.innerHTML = ''
-  chartNum.value = 0
-  for (let key in res) {
+  chartNum.value = 0;
+  const chartDataResource = { ...res.normal, ...res.abnormal }
+  for (let key in chartDataResource) {
     const domName = pinyin(key, { toneType: "none", type: "array" }).join('')
     const newDom = document.createElement("div")
     newDom.id = domName
@@ -350,8 +351,8 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
     chartNum.value++
     chartOutWrapper.append(newDom)
     nextTick(() => {
-      const unit = res[key][0].units || ''
-      const { x, y, min, max } = generateXY(res[key])
+      const unit = chartDataResource[key][0].units || ''
+      const { x, y, min, max } = generateXY(chartDataResource[key])
       initChart(domName, x, y, unit, key, min, max)
     })
   }
