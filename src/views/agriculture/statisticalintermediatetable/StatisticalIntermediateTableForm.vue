@@ -11,8 +11,7 @@
         <el-input v-model="formData.landBlockId" placeholder="请输入地块ID" />
       </el-form-item>
       <el-form-item label="作物" prop="crop">
-        
-        <el-select v-model="formData.breedId" placeholder="请选择农作物">
+        <el-select v-model="formData.crop" placeholder="请选择农作物">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
