@@ -5,6 +5,7 @@
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
+    @close="resetQuery()"
     width="1300"
   >
     <ContentWrap>
