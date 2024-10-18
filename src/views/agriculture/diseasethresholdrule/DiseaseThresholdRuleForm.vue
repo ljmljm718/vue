@@ -26,7 +26,15 @@
       <!--        <el-input v-model="formData.cropName" placeholder="请输入品种名称"/>-->
       <!--      </el-form-item>-->
       <el-form-item label="病虫害种类" prop="diseaseType">
-        <el-input v-model="formData.diseaseType" placeholder="请输入病虫害种类"/>
+        <!--        <el-input v-model="formData.diseaseType" placeholder="请输入病虫害种类"/>-->
+        <el-select v-model="formData.diseaseType" clearable placeholder="请选择病虫害种类">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.label"
+            :label="dict.label"
+            :value="dict.label"
+          />
+        </el-select>
         <!--        <el-select v-model="formData.diseaseType" placeholder="请选择病害虫种类">-->
         <!--          <el-option label="请选择字典生成" value="" />-->
         <!--        </el-select>-->
@@ -81,6 +89,7 @@ import {
   DiseaseThresholdRuleVO
 } from '@/api/agriculture/diseasethresholdrule'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 病虫害预警阈值设置 表单 */
 defineOptions({name: 'DiseaseThresholdRuleForm'})
@@ -111,7 +120,16 @@ const formData = ref({
   reservedFive: undefined,
   remark: undefined
 })
-const formRules = reactive({})
+const formRules = reactive({
+  breedId: [{ required: true, message: '农作物不能为空', trigger: 'blur' }],
+  diseaseType: [{ required: true, message: '病虫害种类不能为空', trigger: 'change' }],
+  monitorPeriod: [{ required: true, message: '监测周期不能为空', trigger: 'change' }],
+  warnLowValue: [{ required: true, message: '阈值下限不能为空', trigger: 'change' }],
+  warnHighValue: [{ required: true, message: '阈值上限不能为空', trigger: 'change' }],
+  warnUnit: [{ required: true, message: '阈值单位不能为空', trigger: 'change' }],
+  reservedOne: [{ required: true, message: '病虫害等级不能为空', trigger: 'change' }],
+  lowMsg: [{ required: true, message: '预警信息不能为空', trigger: 'change' }]
+})
 const formRef = ref() // 表单 Ref
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 

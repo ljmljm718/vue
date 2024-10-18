@@ -121,14 +121,14 @@ export default defineComponent({
             emit('change', _date)
           }}>今天</div>
         </div>
-        <div class="calendar-body p-2 grid grid-cols-7 gap-1">
+        <div class="calendar-body p-2 grid grid-cols-7">
           { dateArr.map(item => (<div class="text-center py-1 text-[#a2adae]" key={item}>{item}</div>)) }
           {
             dayList.value.map((item:any, index: number) => (
               <div
                 class={[
                   activeDay.value === `${item.year}-${item.month}-${item.date}` ? "active-day" : '',
-                  "text-center py-2 cursor-pointer text-white font-bold day-item relative",
+                  "text-center py-1 cursor-pointer text-white font-bold day-item relative",
                   "" !== item && todayCheck(item.year, item.month, item.date)
                   ? "circle-bg"
                   : checkStatus.value.indexOf(item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)) !== -1
@@ -151,7 +151,7 @@ export default defineComponent({
                 }}
               >
                 {item.date}
-                <div class={`tip-bg cursor-default z-1000 ${ item.selected && checkStatus.value.indexOf(item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)) !== -1 ? 'block' : 'hidden'}`}>
+                <div class={`tip-bg cursor-default ${ item.selected && checkStatus.value.indexOf(item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)) !== -1 ? 'block' : 'hidden'}`}>
                   { slots.tip() }
                 </div>
               </div>
@@ -225,9 +225,10 @@ export default defineComponent({
   }
   position: absolute;
   left: 50%;
-  top: -10px;
+  top: calc(50% - 1em);
   width: 150px;
   height: 160px;
+  z-index: 99999;
   transform: translate(-50%, -100%);
 }
 </style>

@@ -8,7 +8,7 @@
     >
       <div style="font-weight: 600" class="pb-2 pl-1">设备监测列表</div>
       <el-scrollbar class="overflow-auto pr-2" height="calc(100% - 2rem)">
-        <el-menu class="el-menu-vertical-demo min-w-[230px]" @select="handleSelect">
+        <el-menu class="el-menu-vertical-demo min-w-[270px]" @select="handleSelect">
           <el-sub-menu :index="item.id" v-for="item in menuDataList" :key="item.id">
             <template #title>
               <div class="flex space-x-2 items-center">

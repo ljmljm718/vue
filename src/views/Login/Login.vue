@@ -1,7 +1,6 @@
 <template>
   <div
-    :class="prefixCls"
-    class="relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px login"
+    :class="`${prefixCls} relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px basic-login ${isTaiyuan ? 'taiyuan-login' : ''}`"
   >
     <div class="logo"></div>
     <div class="absolute left-[13vw] left-img w-[42vw] top-[25vh] aspect-[1.56]">
@@ -66,8 +65,22 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const { getPrefixCls } = useDesign()
 const prefixCls = getPrefixCls('login')
-</script>
 
+const route = useRoute()
+const isTaiyuan = route.path.indexOf('taiyuan') !== -1
+
+onMounted(() => {
+  const routePath = route.path;
+  const matchedArr = routePath.match(/\/[A-Za-z]+\//g);
+  if (matchedArr.length > 0) {
+    const matchedItem = matchedArr[0];
+    const formattedName = matchedItem.replaceAll('/', '')
+    localStorage.setItem("CURRENT_PROJECT_NAME", formattedName)
+  } else {
+    localStorage.setItem("CURRENT_PROJECT_NAME", '')
+  }
+})
+</script>
 <style lang="scss" scoped>
 $prefix-cls: #{$namespace}-login;
 
@@ -106,26 +119,42 @@ $prefix-cls: #{$namespace}-login;
   }
 }
 
-.login {
+.basic-login {
   position: relative;
-  background-image: url('./assets/bgwithmengban2.png');
+  background-image: url('./assets/bgwithmengban.png');
   background-size: 100% 100%;
   .logo {
     position: absolute;
-    top: 5%;
+    top: 1.5%;
     z-index: 999;
-    left: 5vw;
+    left: 2vw;
     // height: 40px;
-    width: 35vw;
-    aspect-ratio: 13;
+    width: 40vw;
+    aspect-ratio: 8.6;
     background-size: 100% 100%;
     object-fit: container;
-    background-image: url('./assets/leftTitle2.png');
+    background-image: url('./assets/leftTitle.png');
+  }
+
+  .left-img {
+    background-size: 100% 100%;
+    background-image: url('./assets/leftContent.png');
   }
 }
 
-// .left-img {
-//   background-size: 100% 100%;
-//   background-image: url('./assets/leftContent.png');
-// }
+
+
+.taiyuan-login {
+  background-image: url('./assets/bgwithmengban2.png') !important;
+  .logo {
+    top: 5% !important;
+    left: 5vw !important;
+    width: 35vw !important;
+    aspect-ratio: 13 !important;
+    background-image: url('./assets/leftTitle2.png') !important;
+  }
+  .left-img {
+    background-image: none !important;
+  }
+}
 </style>

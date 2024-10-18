@@ -968,6 +968,16 @@ window.addEventListener('keydown', (e) => {
 });
 //跳过
 const skipCli = async () => {
+
+  //跳过之前处理params中croType字段
+  const data = await FarmPlanApi.getFarmPlanPage(queryParams)
+  data.list.forEach((item:any) => {
+    console.log(item,'itemtiaoguo')
+    if(item.id == params.value.id){
+      params.value.cropType = item.cropType
+    }
+  })
+
   let res = await carryOutUpdate({
     ...params.value,
     isInput: false,
@@ -997,6 +1007,14 @@ const submitForm = async () => {
   //   ...formData.value
   //   }
   // }
+   //提交之前处理params中croType字段
+   const data = await FarmPlanApi.getFarmPlanPage(queryParams)
+  data.list.forEach((item:any) => {
+    console.log(item,'itemtiaoguo')
+    if(item.id == params.value.id){
+      params.value.cropType = item.cropType
+    }
+  })
   delete formData.value.id
   delete params.value.id
   NameList.value= NameList.value.map((item:any) => ({

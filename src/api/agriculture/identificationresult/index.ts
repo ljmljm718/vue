@@ -5,7 +5,7 @@ export interface IdentificationResultVO {
   id: string // id
   mainTableId: string // 主表ID
   name: string // 名称
-  quantity: string // 数量
+  quantity: number // 数量
   density: string // 密度
   recognitionTime: Date // 识别时间
   recognitionType: string // 识别类型

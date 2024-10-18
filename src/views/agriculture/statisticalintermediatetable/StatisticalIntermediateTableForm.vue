@@ -33,6 +33,19 @@
       <el-form-item label="单位" prop="unit">
         <el-input v-model="formData.unit" placeholder="请输入单位" />
       </el-form-item>
+      <el-form-item label="设备ID" prop="deviceId">
+        <el-input v-model="formData.deviceId" placeholder="请输入设备ID" />
+      </el-form-item>
+      <el-form-item label="预警状态" prop="earlyWarningState">
+        <el-select v-model="formData.earlyWarningState" placeholder="请选择预警状态">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_EARLY_WARNING_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -41,6 +54,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { StatisticalIntermediateTableApi, StatisticalIntermediateTableVO } from '@/api/agriculture/statisticalintermediatetable'
 
 /** 统计中间 表单 */
@@ -61,7 +75,9 @@ const formData = ref({
   category: undefined,
   name: undefined,
   quantity: undefined,
-  unit: undefined
+  unit: undefined,
+  deviceId: undefined,
+  earlyWarningState: undefined
 })
 const formRules = reactive({
 })
@@ -119,7 +135,9 @@ const resetForm = () => {
     category: undefined,
     name: undefined,
     quantity: undefined,
-    unit: undefined
+    unit: undefined,
+    deviceId: undefined,
+    earlyWarningState: undefined
   }
   formRef.value?.resetFields()
 }

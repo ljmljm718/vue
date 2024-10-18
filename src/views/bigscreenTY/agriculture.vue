@@ -178,7 +178,7 @@ getTopDataList()
 //品种分布
 const initChart = async () => {
   const res = await getBreedCategory()
-  console.log(res,'res123品种分布')
+  console.log("🚀 ~ initChart ~ res:", res)
   if (!Array.isArray(res)) return
   const seriesData = res.map(item => ({
     name: item.cropName || '暂无数据',

@@ -92,6 +92,7 @@
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="学名" align="center" prop="scientificName" width="100px"/>
       <el-table-column label="知识库类别" align="center" prop="reservedOne" width="100px"/>
+      <el-table-column label="诱发病虫" align="center" prop="reservedTwo"/>
       <el-table-column label="图片" align="center" prop="imgId" width="100px">
         <template #default="{ row }">
           <el-image
@@ -122,7 +123,7 @@
       <!--      <el-table-column label="症状表现" align="center" prop="manifestedIllness"/>-->
       <!--      <el-table-column label="治理方法" align="center" prop="treatmentMethod"/>-->
 
-      <!--      <el-table-column label="预留2" align="center" prop="reservedTwo"/>-->
+
       <!--      <el-table-column label="预留3" align="center" prop="reservedThree"/>-->
       <!--      <el-table-column label="预留4" align="center" prop="reservedFour"/>-->
       <el-table-column
@@ -189,6 +190,17 @@
       :rules="formRules"
       label-width="100px"
     >
+      <el-form-item label="诱发病虫" prop="reservedTwo">
+<!--        <el-input v-model="formData.reservedTwo" placeholder="请输入诱发病虫"/>-->
+        <el-select v-model="formData.reservedTwo" clearable placeholder="请选择诱发病虫">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.label"
+            :label="dict.label"
+            :value="dict.label"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="形态特征" prop="description">
         <el-input v-model="formData.description" type="textarea" placeholder="请输入形态特征"
                   maxlength="500" show-word-limit :rows="4"/>
@@ -210,9 +222,7 @@
         <el-input v-model="formData.treatmentMethod" type="textarea" placeholder="请输入治理方法"
                   maxlength="500" show-word-limit :rows="6"/>
       </el-form-item>
-      <!--      <el-form-item label="预留2" prop="reservedTwo">-->
-      <!--        <el-input v-model="formData.reservedTwo" placeholder="请输入预留2"/>-->
-      <!--      </el-form-item>-->
+
       <!--      <el-form-item label="预留3" prop="reservedThree">-->
       <!--        <el-input v-model="formData.reservedThree" placeholder="请输入预留3"/>-->
       <!--      </el-form-item>-->
@@ -236,6 +246,7 @@ import {DiseaseRepositoryApi, DiseaseRepositoryVO} from '@/api/agriculture/disea
 import DiseaseRepositoryForm from './DiseaseRepositoryForm.vue'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 import {checkPermi} from "@/utils/permission";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 病虫害知识库 列表 */
 defineOptions({name: 'DiseaseRepository'})

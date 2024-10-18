@@ -55,7 +55,12 @@ export const CategoryManagementApi = {
   // 导出品类管理 Excel
   exportCategoryManagement: async (params) => {
     return await request.download({ url: `/agriculture/category-management/export-excel`, params })
-  }
+  },
+
+  // 病虫害监测侧边栏列表
+  identificationResultPage: async (params) => {
+    return await request.get({ url: `/agriculture/identification-result/page`, params })
+  },
 }
 
 allDataCacheManager.setFunc(CategoryManagementApi.getAllCategoryManagement)

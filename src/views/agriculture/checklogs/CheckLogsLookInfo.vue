@@ -28,6 +28,12 @@
           <!--            @click="resetForm()"-->
           <!--          >清空-->
           <!--          </el-button>-->
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回
+          </el-button>
         </div>
       </template>
 
