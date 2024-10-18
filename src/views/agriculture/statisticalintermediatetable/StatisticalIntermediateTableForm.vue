@@ -11,8 +11,16 @@
         <el-input v-model="formData.landBlockId" placeholder="请输入地块ID" />
       </el-form-item>
       <el-form-item label="作物" prop="crop">
-        <el-input v-model="formData.crop" placeholder="请输入作物" />
+        
+        <el-select v-model="formData.breedId" placeholder="请选择农作物">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
+      
       <el-form-item label="日期" prop="date">
         <el-date-picker
           v-model="formData.date"
@@ -25,7 +33,14 @@
         <el-input v-model="formData.category" placeholder="请输入类别" />
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入名称" />
+        <el-select v-model="formData.name" placeholder="请选择名称">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="数量" prop="quantity">
         <el-input v-model="formData.quantity" placeholder="请输入数量" />
@@ -34,8 +49,16 @@
         <el-input v-model="formData.unit" placeholder="请输入单位" />
       </el-form-item>
       <el-form-item label="设备ID" prop="deviceId">
-        <el-input v-model="formData.deviceId" placeholder="请输入设备ID" />
-      </el-form-item>
+        <!-- <el-input v-model="formData.deviceId" placeholder="请输入设备ID" /> -->
+        <el-input v-model="formData.deviceId" placeholder="请选择设备" disabled>
+              <template #append>
+                <el-button @click="openPurchaseOrderInEnableList">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
       <el-form-item label="预警状态" prop="earlyWarningState">
         <el-select v-model="formData.earlyWarningState" placeholder="请选择预警状态">
           <el-option
@@ -51,11 +74,14 @@
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
+    <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
   </Dialog>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import { StatisticalIntermediateTableApi, StatisticalIntermediateTableVO } from '@/api/agriculture/statisticalintermediatetable'
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 
 /** 统计中间 表单 */
 defineOptions({ name: 'StatisticalIntermediateTableForm' })
@@ -83,6 +109,23 @@ const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
 
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const getType = async () => {
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+}
+getType()
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+}
+
+const handlePurchaseOrderChange = async (order: any) => {
+  // 将订单设置到入库单
+  //赋值id
+  formData.value.deviceId = order[0].id
+  //基地
+}
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true

@@ -11,7 +11,14 @@
         <el-input v-model="formData.mainTableId" placeholder="请输入主表ID" />
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入名称" />
+        <el-select v-model="formData.recognitionType" placeholder="请选择名称">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="数量" prop="quantity">
         <el-input-number v-model="formData.quantity" placeholder="请输入数量" style="width: 100%;" />
