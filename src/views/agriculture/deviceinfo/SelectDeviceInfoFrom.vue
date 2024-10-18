@@ -309,6 +309,7 @@ const getList = async () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
+  queryParams.pageSize = 10
   if (deviceType.value != null && deviceType.value != undefined) {
     queryParams.deviceType = deviceType.value.join(',')
   }

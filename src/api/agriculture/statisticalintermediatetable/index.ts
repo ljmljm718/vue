@@ -10,6 +10,8 @@ export interface StatisticalIntermediateTableVO {
   name: string // 名称
   quantity: string // 数量
   unit: string // 单位
+  deviceId: string //设备ID
+  earlyWarningState: string //预警状态
 }
 
 // 统计中间 API

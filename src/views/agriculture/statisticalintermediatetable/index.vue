@@ -18,14 +18,20 @@
         />
       </el-form-item>
       <el-form-item label="作物" prop="crop">
-        <el-input
+        <el-select
           v-model="queryParams.crop"
-          placeholder="请输入作物"
+          placeholder="请选择农作物"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
+      
       <el-form-item label="日期" prop="date">
         <el-date-picker
           v-model="queryParams.date"
@@ -47,14 +53,21 @@
         />
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-input
+       <el-select
           v-model="queryParams.name"
-          placeholder="请输入名称"
+          placeholder="请选择名称"
           clearable
-          @keyup.enter="handleQuery"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
+
       <el-form-item label="数量" prop="quantity">
         <el-input
           v-model="queryParams.quantity"
@@ -73,7 +86,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <!-- <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -83,7 +96,7 @@
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -112,6 +125,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
+      <el-table-column label="设备ID" align="center" prop="deviceId" />
       <el-table-column label="地块ID" align="center" prop="landBlockId" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="作物" align="center" prop="crop" />
@@ -126,13 +140,18 @@
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
       <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column
+      <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_EARLY_WARNING_STATE" :value="scope.row.earlyWarningState" />
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
+      /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -168,11 +187,12 @@
 </template>
 
 <script setup lang="ts">
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { StatisticalIntermediateTableApi, StatisticalIntermediateTableVO } from '@/api/agriculture/statisticalintermediatetable'
 import StatisticalIntermediateTableForm from './StatisticalIntermediateTableForm.vue'
-
+import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
 /** 统计中间 列表 */
 defineOptions({ name: 'StatisticalIntermediateTable' })
 
@@ -193,10 +213,18 @@ const queryParams = reactive({
   quantity: undefined,
   unit: undefined,
   plotName:undefined,
-  createTime: []
+  createTime: [],
+  deviceId: undefined,
+  earlyWarningState: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+
+const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const getType = async () => {
+  listCategoryManagement.value = await allDataCacheManager.getData({})
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -204,6 +232,13 @@ const getList = async () => {
   try {
     const data = await StatisticalIntermediateTableApi.getStatisticalIntermediateTablePage(queryParams)
     list.value = data.list
+    //把品类数据的namep拼接到列表中
+    list.value.forEach(item => {
+      listCategoryManagement.value.forEach(itm => {
+        if (item.crop == itm.id)
+          item.crop = itm.categoryName
+      })
+    })
     total.value = data.total
   } finally {
     loading.value = false
@@ -225,6 +260,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
+  console.log("=======",id);
   formRef.value.open(type, id)
 }
 
@@ -258,6 +294,7 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
+  getType()
   getList()
 })
 </script>

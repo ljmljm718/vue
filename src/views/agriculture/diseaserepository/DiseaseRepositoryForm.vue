@@ -61,6 +61,17 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-form-item label="诱发病虫" prop="reservedTwo">
+<!--                <el-input v-model="formData.reservedTwo" placeholder="请输入诱发病虫"/>-->
+        <el-select v-model="formData.reservedTwo" clearable placeholder="请选择诱发病虫">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+            :key="dict.label"
+            :label="dict.label"
+            :value="dict.label"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="简介" prop="intro">
         <el-input v-model="formData.intro" type="textarea" placeholder="请输入形态特征"
                   maxlength="500" show-word-limit :rows="4"/>
@@ -97,9 +108,7 @@
         <el-input v-model="formData.treatmentMethod" type="textarea" placeholder="请输入治理方法"
                   maxlength="500" show-word-limit :rows="4"/>
       </el-form-item>
-      <!--      <el-form-item label="预留2" prop="reservedTwo">-->
-      <!--        <el-input v-model="formData.reservedTwo" placeholder="请输入预留2"/>-->
-      <!--      </el-form-item>-->
+
       <!--      <el-form-item label="预留3" prop="reservedThree">-->
       <!--        <el-input v-model="formData.reservedThree" placeholder="请输入预留3"/>-->
       <!--      </el-form-item>-->
@@ -116,6 +125,7 @@
 <script setup lang="ts">
 import {DiseaseRepositoryApi, DiseaseRepositoryVO} from '@/api/agriculture/diseaserepository'
 import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 /** 病虫害知识库 表单 */
 defineOptions({name: 'DiseaseRepositoryForm'})
@@ -173,6 +183,7 @@ const formRules = reactive({
   cropType: [{required: true, message: '作物种类不能为空', trigger: 'blur'}],
   imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}],
   hazardRating: [{required: true, message: '危害等级不能为空', trigger: 'blur'}],
+  reservedTwo: [{required: true, message: '诱发病虫不能为空', trigger: 'blur'}],
   intro: [{required: true, message: '简介不能为空', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref

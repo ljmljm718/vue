@@ -1,14 +1,7 @@
 <script lang="tsx">
 /** 生长监测模型数据中心大屏页面 */ 
-
-import { defineComponent, ref, onMounted } from "vue"
-
 /** 引入大屏组件 */
 import BigscreenBuilder from "@/components/BigscreenBuilder"
-const {
-  BigscreenAdapter,
-  BigscreenContainer,
-} = BigscreenBuilder
 
 /** echarts相关 */
 import * as echarts from 'echarts'
@@ -27,10 +20,13 @@ import bg from "./assets/bg.png"
 import bgFish from './assets/bg-fish.png'
 import bgDuck from './assets/bg-duck.png'
 
+const {
+  BigscreenAdapter,
+  BigscreenContainer,
+} = BigscreenBuilder
+
 export default defineComponent({
-  components: {
-    Header
-  },
+  components: { Header },
   props: {
     hiddenHeader: {
       type: Boolean,

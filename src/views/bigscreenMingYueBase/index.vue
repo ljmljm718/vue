@@ -366,259 +366,262 @@ export default defineComponent({
       getFarmPlanSchedule(`${item.getFullYear()}-${item.getMonth() + 1}`, selectedPlot.value)
     }
     return () => (
-      <div class="w-[100%] aspect-[2] bg-[#0d1724]">
-        <BigscreenContainer width="100%" height="auto" extraClass="aspect-[1]">
-          <BigscreenMain>
-            <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
-              <div class="absolute z-2 w-full h-full">
-                <CesiumMap ref={e => cesiumIns.value = e} />
-                {/*<CesiumMap ref={e => cesiumIns.value = e} /> */}
-                <div class="meng-ban z-0"></div>
-              </div>
-              <div
-                class="z-10 absolute left-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)] transition-all duration-100"
-                style={{
-                  left: showSidePanel.value ? '1rem' : '-40rem'
-                }}
-              >
-                <div class="title-1 w-full aspect-[6]"></div>
-                <div class="item-bg w-full p-4 box-border">
-                  <div class="flex justify-between space-x-2">
-                    {breedCategoryList.value.map((item) => (
-                      <div
-                        class="grow cursor-pointer"
-                        onClick={() => {
-                          activeBreedCategoryId.value = item.id
-                          nextTick(() => {
-                            initChart(item.id)
-                          })
-                        }}
-                      >
-                        <TitleValue
-                          active={activeBreedCategoryId.value === item.id}
-                          title={item.category_name}
-                          value={item.number + (item.unit ?? '')}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div id="chartPlant"></div>
-                </div>
-                <div class="title-2 w-full aspect-[6]"></div>
-                <div class="item-bg">
-                  <div class="flex justify-center py-4 items-center text-[#11eeaf]">
-                    <div class="relative h-[1.4rem] w-[13rem]">
-                      <div
-                        class="h-full text-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          showBaseOptions.value = true
-                        }}
-                      >
-                        { getBaseByValue(selectedBase.value) }
-                        <el-icon class="ml-3 relative top-[.1rem]">
-                          <CaretBottom />
-                        </el-icon>
-                      </div>
-                      {
-                        showBaseOptions.value ? (
-                          <div>
-                            {
-                              Array.isArray(baseOptions.value) ? baseOptions.value.map(item => (
-                                <div
-                                  class="py-3 text-center w-full bg-[#0d1724]"
-                                  onClick={() => {
-                                    selectedBase.value = item.value
-                                    getPlotData(item.value)
-                                  }}
-                                >
-                                  {item.label}
-                                </div>
-                              )) : null
-                            }
-                          </div>
-                        ) : null
-                      }
-                    </div>
-                    <div class="relative h-[1.4rem] w-[8rem]">
-                      <div
-                        class="h-full text-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          showOptions.value = true
-                        }}
-                      >
-                        {getLabelByValue(selectedPlot.value)}
-                        <el-icon class="ml-3 relative top-[.1rem]">
-                          <CaretBottom />
-                        </el-icon>
-                      </div>
-                      {showOptions.value ? (
-                        <div class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem] overflow-auto">
-                          {Array.isArray(options.value)
-                            ? options.value.map((item) => (
-                                <div
-                                  class="py-3 text-center w-full bg-[#0d1724]"
-                                  onClick={() => {
-                                    selectedPlot.value = item.value
-                                    const _date = new Date()
-                                    getFarmPlanSchedule(
-                                      `${_date.getFullYear()}-${_date.getMonth() + 1}`,
-                                      item.value
-                                    )
-                                  }}
-                                >
-                                  {item.label}
-                                </div>
-                              ))
-                            : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div class="split-line w-full h-[2px]"></div>
-                  <div class="w-full box-border p-3 py-4">
-                    <BigscreenCalendar
-                      ref={(e) => (calendarIns.value = e)}
-                      remind={remindArr.value}
-                      onSelect={(item) => {
-                        handleCalendarClick(item)
-                      }}
-                      onChange={(item) => handleCalendarChange(item)}
+      <div
+        class="bg-[#0d1724] w-full h-full relative overflow-hidden text-white"
+        style="height: calc(100vh - 125px);"
+      >
+        <div class="absolute z-2 w-full h-full">
+          <CesiumMap ref={e => cesiumIns.value = e} />
+          <div class="meng-ban z-0"></div>
+        </div>
+        <div
+          class="z-10 absolute left-[1rem] top-[1rem] w-[24rem] h-[calc(100%_-_2rem)] transition-all duration-100"
+          style={{
+            left: showSidePanel.value ? '1rem' : '-40rem'
+          }}
+        >
+          <el-scrollbar class="w-full h-full">
+            <div class="title-1 w-full aspect-[6]"></div>
+            <div class="item-bg w-full p-4 box-border">
+              <div class="flex justify-between space-x-2">
+                {breedCategoryList.value.map((item) => (
+                  <div
+                    class="grow cursor-pointer"
+                    onClick={() => {
+                      activeBreedCategoryId.value = item.id
+                      nextTick(() => {
+                        initChart(item.id)
+                      })
+                    }}
+                  >
+                    <TitleValue
+                      active={activeBreedCategoryId.value === item.id}
+                      title={item.category_name}
+                      value={item.number + (item.unit ?? '')}
                     />
-                    <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
-                      {bottomDataList.value.map((item) => (
-                        <>
-                          <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                              <div class="w-[.3rem] h-[1rem] bg-[#11f47f]"></div>
-                              <div>{item.planName}</div>
-                            </div>
-                            <div>{item.planState}</div>
-                          </div>
-                          <div class="line-clamp-4 mt-1 mb-2 leading-6 px-3 text-[#DAF5FA]">
-                            {item.planDesc ?? '暂无详细介绍'}
-                          </div>
-                        </>
-                      ))}
-                    </div>
                   </div>
+                ))}
+              </div>
+              <div id="chartPlant"></div>
+            </div>
+            <div class="title-2 w-full aspect-[6]"></div>
+            <div class="item-bg">
+              <div class="flex justify-center py-4 items-center text-[#11eeaf]">
+                <div class="relative h-[1.4rem] w-[13rem]">
+                  <div
+                    class="h-full text-center cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      showBaseOptions.value = true
+                    }}
+                  >
+                    { getBaseByValue(selectedBase.value) }
+                    <el-icon class="ml-3 relative top-[.1rem]">
+                      <CaretBottom />
+                    </el-icon>
+                  </div>
+                  {
+                    showBaseOptions.value ? (
+                      <div>
+                        {
+                          Array.isArray(baseOptions.value) ? baseOptions.value.map(item => (
+                            <div
+                              class="py-3 text-center w-full bg-[#0d1724]"
+                              onClick={() => {
+                                selectedBase.value = item.value
+                                getPlotData(item.value)
+                              }}
+                            >
+                              {item.label}
+                            </div>
+                          )) : null
+                        }
+                      </div>
+                    ) : null
+                  }
+                </div>
+                <div class="relative h-[1.4rem] w-[8rem]">
+                  <div
+                    class="h-full text-center cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      showOptions.value = true
+                    }}
+                  >
+                    {getLabelByValue(selectedPlot.value)}
+                    <el-icon class="ml-3 relative top-[.1rem]">
+                      <CaretBottom />
+                    </el-icon>
+                  </div>
+                  {showOptions.value ? (
+                    <div class="absolute left-0 top-[1.4rem] z-1000 w-full max-h-[8rem] overflow-auto">
+                      {Array.isArray(options.value)
+                        ? options.value.map((item) => (
+                            <div
+                              class="py-3 text-center w-full bg-[#0d1724]"
+                              onClick={() => {
+                                selectedPlot.value = item.value
+                                const _date = new Date()
+                                getFarmPlanSchedule(
+                                  `${_date.getFullYear()}-${_date.getMonth() + 1}`,
+                                  item.value
+                                )
+                              }}
+                            >
+                              {item.label}
+                            </div>
+                          ))
+                        : null}
+                    </div>
+                  ) : null}
                 </div>
               </div>
-              <div
-                class="z-10 absolute right-[1rem] top-[1rem] w-[22%] h-[calc(100%_-_2rem)] transition-all duration-100"
-                style={{
-                  right: showSidePanel.value ? '1rem' : '-40rem'
-                }}
-              >
-                <div class="title-3 w-full aspect-[6]"></div>
-                <div class="item-bg">
-                  <div class="flex justify-center py-4 items-center text-[#11eeaf] !hidden">
-                    {userStore.user.nickname.replace('用户', '')}
-                  </div>
-                  <div class="split-line w-full h-[2px] !hidden"></div>
-                  <div class="w-full box-border p-3 py-4">
-                    <div class="flex justify-between items-center px-5 pr-[2rem]">
+              <div class="split-line w-full h-[2px]"></div>
+              <div class="w-full box-border p-3 py-4">
+                <BigscreenCalendar
+                  ref={(e) => (calendarIns.value = e)}
+                  remind={remindArr.value}
+                  onSelect={(item) => {
+                    handleCalendarClick(item)
+                  }}
+                  onChange={(item) => handleCalendarChange(item)}
+                />
+                <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
+                  {bottomDataList.value.map((item) => (
+                    <>
                       <div class="flex justify-between items-center">
-                        <div class="text-[1.9rem] art-font">{curWeather.value.temp ?? '--'}</div>
-                        <div class="pl-3 text-[13px] space-x-2">
-                          <span>{curWeather.value.text ?? '--'}</span>
-                          <span>{curWeather.value.windDir ?? '--'}</span>
-                          <span>{curWeather.value.windScale ?? '--'}</span>
+                        <div class="flex items-center space-x-2">
+                          <div class="w-[.3rem] h-[1rem] bg-[#11f47f]"></div>
+                          <div>{item.planName}</div>
                         </div>
+                        <div>{item.planState}</div>
                       </div>
-                      <i class={`qi-${curWeather.value.icon ?? ''}-fill text-[2rem]`}></i>
-                    </div>
-                    <div id="weatherDom"></div>
-                    <div class="flex justify-evenly space-x-2">
-                      {hourWeather.value.map((item) => (
-                        <div
-                          class="item-bg w-50% p-1 px-4 pt-2 flex items-center space-x-7"
-                          style="border: 1px solid #ffffff30;"
-                        >
-                          <i class={`qi-${item.iconDay}-fill text-[2rem] pl-3`}></i>
-                          <div>
-                            <div>{item.time}</div>
-                            <div class="text-[#DAF5FA]">{item.range}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div class="title-4 w-full aspect-[6]"></div>
-                <div class="item-bg p-2 box-border">
-                  <div class="w-full space-x-2 flex">
-                    <div class="mission-bg flex justify-center items-center flex-col w-[8rem] text-[.8rem]">
-                      <div>
-                        <span class="text-[1.3rem] pr-1">{planInfo.finishRate}</span>
+                      <div class="line-clamp-4 mt-1 mb-2 leading-6 px-3 text-[#DAF5FA]">
+                        {item.planDesc ?? '暂无详细介绍'}
                       </div>
-                      <div>任务完成率</div>
-                    </div>
-                    <div class="flex flex-col space-y-2 grow">
-                      <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
-                        <div class="flex items-center">
-                          <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                          <span>总农事任务:</span>
-                        </div>
-                        <div>{planInfo.totalPlan}</div>
-                      </div>
-                      <div class="inner-rect box-border p-3 px-6 space-y-2">
-                        <div class="flex w-full justify-between items-center box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span class="whitespace-nowrap">已执行:</span>
-                          </div>
-                          <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
-                          <div>{planInfo.finishPlan}</div>
-                        </div>
-                        <div class="flex w-full justify-between items-center box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span class="whitespace-nowrap">进行中:</span>
-                          </div>
-                          <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
-                          <div>{planInfo.onGoingPlan}</div>
-                        </div>
-                        <div class="flex w-full justify-between items-center box-border">
-                          <div class="flex items-center">
-                            <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
-                            <span class="whitespace-nowrap">未执行:</span>
-                          </div>
-                          <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
-                          <div>{planInfo.notStartPlan}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="py-3 box-border h-[17rem] hidden-scrollbar">
-                    {planList.value.map((item) => (
-                      <div class="rb-item w-full h-[7rem] pl-[2rem] box-border pb-[1rem]">
-                        <div class="w-full h-full p-5 box-border">
-                          <div class="flex justify-between items-center">
-                            <div class="flex space-x-2">
-                              <div class="w-[3px] h-[1rem] bg-[#11f47f]"></div>
-                              <div>{item.planName}</div>
-                            </div>
-                            <div>{item.planState === '0' ? '未开始' : ''}</div>
-                          </div>
-                          <div class="flex space-x-2 mt-3 text-[#DAF5FA] pl-2">
-                            <span>{item.plotName}</span>
-                            <span>|</span>
-                            <span>
-                              {dayjs(item.startTime).format('YYYY-MM-DD')}-
-                              {dayjs(item.endTime).format('YYYY-MM-DD')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                    </>
+                  ))}
                 </div>
               </div>
             </div>
-          </BigscreenMain>
-        </BigscreenContainer>
+          </el-scrollbar>
+        </div>
+        <div
+          class="z-10 absolute right-[1rem] top-[1rem] w-[24rem] h-[calc(100%_-_2rem)] transition-all duration-100"
+          style={{
+            right: showSidePanel.value ? '1rem' : '-40rem'
+          }}
+        >
+          <el-scrollbar class="w-full h-full">
+            <div class="title-3 w-full aspect-[6]"></div>
+            <div class="item-bg">
+              <div class="flex justify-center py-4 items-center text-[#11eeaf] !hidden">
+                {userStore.user.nickname.replace('用户', '')}
+              </div>
+              <div class="split-line w-full h-[2px] !hidden"></div>
+              <div class="w-full box-border p-3 py-4">
+                <div class="flex justify-between items-center px-5 pr-[2rem]">
+                  <div class="flex justify-between items-center">
+                    <div class="text-[1.9rem] art-font">{curWeather.value.temp ?? '--'}</div>
+                    <div class="pl-3 text-[13px] space-x-2">
+                      <span>{curWeather.value.text ?? '--'}</span>
+                      <span>{curWeather.value.windDir ?? '--'}</span>
+                      <span>{curWeather.value.windScale ?? '--'}</span>
+                    </div>
+                  </div>
+                  <i class={`qi-${curWeather.value.icon ?? ''}-fill text-[2rem]`}></i>
+                </div>
+                <div id="weatherDom"></div>
+                <div class="flex justify-evenly space-x-2">
+                  {hourWeather.value.map((item) => (
+                    <div
+                      class="item-bg w-50% p-1 px-4 pt-2 flex items-center space-x-7"
+                      style="border: 1px solid #ffffff30;"
+                    >
+                      <i class={`qi-${item.iconDay}-fill text-[2rem] pl-3`}></i>
+                      <div>
+                        <div>{item.time}</div>
+                        <div class="text-[#DAF5FA]">{item.range}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div class="title-4 w-full aspect-[6]"></div>
+            <div class="item-bg p-2 box-border">
+              <div class="w-full space-x-2 flex">
+                <div class="mission-bg flex justify-center items-center flex-col w-[8rem] text-[.8rem]">
+                  <div>
+                    <span class="text-[1.3rem] pr-1">{planInfo.finishRate}</span>
+                  </div>
+                  <div>任务完成率</div>
+                </div>
+                <div class="flex flex-col space-y-2 grow">
+                  <div class="flex w-full justify-between items-center inner-rect p-3 box-border">
+                    <div class="flex items-center">
+                      <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                      <span>总农事任务:</span>
+                    </div>
+                    <div>{planInfo.totalPlan}</div>
+                  </div>
+                  <div class="inner-rect box-border p-3 px-6 space-y-2">
+                    <div class="flex w-full justify-between items-center box-border">
+                      <div class="flex items-center">
+                        <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                        <span class="whitespace-nowrap">已执行:</span>
+                      </div>
+                      <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
+                      <div>{planInfo.finishPlan}</div>
+                    </div>
+                    <div class="flex w-full justify-between items-center box-border">
+                      <div class="flex items-center">
+                        <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                        <span class="whitespace-nowrap">进行中:</span>
+                      </div>
+                      <div class="grow overflow-hidden mx-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
+                      <div>{planInfo.onGoingPlan}</div>
+                    </div>
+                    <div class="flex w-full justify-between items-center box-border">
+                      <div class="flex items-center">
+                        <img src={titleBar} class="w-.6rem h-.6rem mr-2" />
+                        <span class="whitespace-nowrap">未执行:</span>
+                      </div>
+                      <div class="grow overflow-hidden px-2 flex justify-center text-[#577D7E] whitespace-nowrap"></div>
+                      <div>{planInfo.notStartPlan}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <el-scrollbar height="17rem">
+                <div class="py-3 box-border">
+                  {planList.value.map((item) => (
+                    <div class="rb-item w-full h-[7rem] pl-[2rem] box-border pb-[1rem]">
+                      <div class="w-full h-full p-5 box-border">
+                        <div class="flex justify-between items-center">
+                          <div class="flex space-x-2">
+                            <div class="w-[3px] h-[1rem] bg-[#11f47f]"></div>
+                            <div>{item.planName}</div>
+                          </div>
+                          <div>{item.planState === '0' ? '未开始' : ''}</div>
+                        </div>
+                        <div class="flex space-x-2 mt-3 text-[#DAF5FA] pl-2">
+                          <span>{item.plotName}</span>
+                          <span>|</span>
+                          <span>
+                            {dayjs(item.startTime).format('YYYY-MM-DD')}-
+                            {dayjs(item.endTime).format('YYYY-MM-DD')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </el-scrollbar>
+            </div>
+          </el-scrollbar>
+        </div>
       </div>
     )
   }
