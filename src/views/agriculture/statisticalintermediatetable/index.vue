@@ -126,11 +126,6 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="设备ID" align="center" prop="deviceId" />
-      <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_EARLY_WARNING_STATE" :value="scope.row.earlyWarningState" />
-        </template>
-      </el-table-column>
       <el-table-column label="地块ID" align="center" prop="landBlockId" />
       <el-table-column label="地块名称" align="center" prop="plotName" />
       <el-table-column label="作物" align="center" prop="crop" />
@@ -145,13 +140,18 @@
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
       <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column
+      <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_EARLY_WARNING_STATE" :value="scope.row.earlyWarningState" />
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         prop="createTime"
         :formatter="dateFormatter"
         width="180px"
-      />
+      /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
