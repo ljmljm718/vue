@@ -133,7 +133,7 @@ const baseFormRef = ref()
         <el-table-column label="名称" align="center" prop="name">
           <template #default="scope" >
             <el-form-item :prop="'demoList.' + scope.$index + '.name'" v-if="scope.row.isEditing">
-              <el-input v-model="scope.row.name" placeholder="请输入" clearable />
+              <el-input v-model="scope.row.name" placeholder="请输入名称" clearable />
             </el-form-item>
           </template>
         </el-table-column>
@@ -143,7 +143,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.quantity'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.quantity" placeholder="请输入" clearable />
+              <el-input v-model="scope.row.quantity" placeholder="请输入数量" clearable  oninput="value=value.replace(/[^\d.]/g,'')"/>
             </el-form-item>
           </template>
         </el-table-column>
@@ -153,7 +153,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.density'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.density" placeholder="请输入" clearable />
+              <el-input v-model="scope.row.density" placeholder="请输入密度" clearable />
             </el-form-item>
           </template>
         </el-table-column>
@@ -167,7 +167,7 @@ const baseFormRef = ref()
                 v-model="scope.row.recognitionTime"
                 value-format="YYYY-MM-DD "
                 type="date"
-                placeholder="请选择"
+                placeholder="请选择时间"
                 class="!w-240px"
               />
             </el-form-item>
@@ -190,7 +190,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.recognitionType'"
               v-if="scope.row.isEditing"
             >
-              <el-select v-model="scope.row.recognitionType" placeholder="请选择">
+              <el-select v-model="scope.row.recognitionType" placeholder="请选择类型">
                 <el-option label="自动识别" value="自动识别" />
                 <el-option label="手动标注" value="手动标注" />
               </el-select>
@@ -203,7 +203,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.recorder'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.recorder" placeholder="请输入" clearable />
+              <el-input v-model="scope.row.recorder" placeholder="请输入记录人" clearable />
             </el-form-item>
           </template>
         </el-table-column>
