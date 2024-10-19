@@ -318,11 +318,6 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
                 <span class="text-[1.5rem]">{{ countDetail.dataSumByName }}</span>
               </div>
             </div>
-            <!-- 开始识别 & 手动标注 -->
-            <div class="my-[1rem]">
-              <el-button color="#009688">开始识别</el-button>
-              <el-button color="#59B9DE"><span class="text-white">手动标注</span></el-button>
-            </div>
             <!-- 识别记录 -->
             <SpotResTable :activeMainTableId="list[curItem].id" :key="curItem" />
           </div>
@@ -398,6 +393,12 @@ const getList = async () => {
     list.value = data.list
     console.log("🚀 ~ getList ~ list.value:", list.value)
     total.value = data.total
+
+    // 设置当前展示的项为第一项 并查询病虫害数量 
+    curItem.value = 0;
+    if (list.value.length > 0) {
+      getCountDetail(list.value[curItem.value].id);
+    }
   } finally {
     loading.value = false
   }
@@ -519,6 +520,7 @@ const imgListRef = ref<any>();  // 图片列表的模板引用
 const handleClickNextImg = () => {
   if (curItem.value === list.value.length - 1) return;
   curItem.value = curItem.value + 1;
+  getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
 }
@@ -527,6 +529,7 @@ const handleClickNextImg = () => {
 const handleClickLastImg = () => {
   if (curItem.value === 0) return;
   curItem.value = curItem.value - 1;
+  getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
 }
@@ -535,6 +538,7 @@ const handleClickLastImg = () => {
 const handleClickImg = (index) => {
   if (curItem.value === index) return;
   curItem.value = index;
+  getCountDetail(list.value[curItem.value].id);
   imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - index) + 'px';
 }
 
@@ -552,12 +556,11 @@ const countDetail = ref<any>({
 });
 
 // 获取病虫害数量
-const getCountDetail = async () => {
-  const res = await DiseasePestSurveillanceApi.countDetails({});
+const getCountDetail = async (id) => {
+  const res = await DiseasePestSurveillanceApi.countDetails({ id });
   countDetail.value.dataSumByName = res.dataSumByName;
   countDetail.value.dataSumById = res.dataSumById;
 }
-getCountDetail();
 </script>
 
 <style lang="scss" scoped>

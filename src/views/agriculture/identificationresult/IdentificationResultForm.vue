@@ -98,7 +98,7 @@ const open = async (type: string, id?: number) => {
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({ open, formData }) // 提供 open 方法，用于打开弹窗 & 手动标注识别结果时需要设置mainTableId
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调

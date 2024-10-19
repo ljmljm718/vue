@@ -44,6 +44,9 @@ getList();
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+  if (type === "create") {
+    formRef.value.formData.mainTableId = activeMainTableId.value;
+  }
 }
 
 /** 删除按钮操作 */
@@ -58,9 +61,21 @@ const handleDelete = async (id: number) => {
     await getList()
   } catch {}
 }
+
+// 点击开始识别
+const handleClickIdentify = () => {
+  message.alert("敬请期待!");
+}
 </script>
 <template>
-  <div class="grid">
+  <div>
+    <!-- 开始识别 & 手动标注 -->
+    <div class="my-[1rem]">
+      <el-button color="#009688" @click="handleClickIdentify">开始识别</el-button>
+      <el-button color="#59B9DE" @click="openForm('create')" v-hasPermi="['agriculture:identification-result:create']">
+        <span class="text-white">手动标注</span>
+      </el-button>
+    </div>
     <el-table
       v-loading="loading"
       :data="tableData"
