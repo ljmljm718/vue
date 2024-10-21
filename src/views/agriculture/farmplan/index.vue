@@ -303,25 +303,31 @@
                 <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div> -->
                 
               </div>
+               <!-- <div v-show='item.child.length!=0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
+                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ itm.name }}</div>
+              </div> -->
               <div v-show='!item.name' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
                   <img :src='dataImg' class='w-40px h-30px'/>
                   <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
               </div>
             </div>
           </div>
-          <div v-for="item,index in dataList" :key="index" :class="`flex flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
+          <div v-for="item,index in dataList" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
             <div class='text-30px my-18px' style="font-weight:600">{{item.data}}</div>
-            <div class="w-88%" v-for="itm,inde in item.child" :key="inde" v-show="ItemVal == inde">
-              <div v-show="itm.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(inde,item.child,'-')"> > </div> {{itm.plotName}} <div class='cursor-pointer' @click="tabItem(inde,item.child,'+')"> > </div> </div>
-              <div v-show="!itm.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
-              <div v-show='item.child.length!=0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
-                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ itm.name }}</div>
+             <div class="w-88% h-130px" v-for="itm,inde in item.child" :key="inde" v-show="ItemVal == inde  || ItemVal3 == inde">
+              <div v-show="item.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(inde,item.child,'-',index)"> > </div> {{ item.plotName }} <div class='cursor-pointer' @click="tabItem(inde,item.child,'+',index)"> > </div> </div>
+                    <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
+                    <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
+                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ item.name }}</div>
+                    </div>
               </div>
-              <div v-show='item.child.length == 0 ' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
-                  <img :src='dataImg' class='w-40px h-30px'/>
-                  <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
+              <div class="w-88% h-130px" v-if="item.child.length == 0">
+                <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
+                <div v-show='item.child.length == 0 ' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
+                    <img :src='dataImg' class='w-40px h-30px'/>
+                    <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1283,6 +1289,7 @@ const getData = () => {
 getData()
 
 const dataChange = (e) =>{
+
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0
@@ -1307,7 +1314,7 @@ const dataChange = (e) =>{
             if(item.data <= Number(time2[2])){
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
+              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
             }
           }
         })
@@ -1322,19 +1329,20 @@ const dataChange = (e) =>{
             if(item.data <= Number(time2[2])){
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
+              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
             }
           }
         })
       }
   })
   console.log(dataList.value,'dataList.valuedataList.value12349')
+  console.log(dataList2.value,'dataList.valuedataList.value  99999')
 }
 // 左侧活动点击
 const silderVal = ref('')
 const silderTab = (val:any) => {
-  silderVal.value=val
 
+  silderVal.value=val
   dataList.value = []
   dataList2.value = []
   dataListA.value.forEach( (item:any) => {
@@ -1348,26 +1356,57 @@ const silderTab = (val:any) => {
 
 //******************************地块切换***********************
 const ItemVal = ref<Number>(0)
-const tabItem = (index:number,listLength:[],str) => {
-  let lengNum = listLength.length
+const ItemVal2 = ref<Number>(-1)
+const ItemVal3 = ref<Number>(-1)
+const tabItem = (index:number,list:any[],str,indexA) => {
+  let lengNum = list.length
+  if( lengNum == 1) return true
   if(str == '+'){
-    console.log(lengNum,'lengtNum12345')
     if(index >= lengNum-1 ){
-      console.log(123)
-      ItemVal.value = 0
-      console.log(ItemVal.value,'1234')
-    }
+        ItemVal.value = 0
+        dataList.value[indexA].plotName = list[ItemVal.value].plotName
+        dataList.value[indexA].name = list[ItemVal.value].name
+      }
+      
+      dataList.value[indexA].plotName = list[ItemVal.value].plotName 
+      dataList.value[indexA].name = list[ItemVal.value].name 
       ItemVal.value++
+      console.log(ItemVal.value,'ItemVal.value');
+      dataList.value.forEach( (item:any) => {
+          if(item.child.length == 1){
+              ItemVal2.value = 0
+          }
+          else if(item.child.length <= ItemVal.value  ){
+            ItemVal3.value = ItemVal.value 
+          }
+      })
+
+     
+
   }else{
-    console.log(lengNum,'lengtNum12345')
+
     if(index == 0 ){
-      console.log(123)
-      ItemVal.value = lengNum-1
-      console.log(ItemVal.value,'1234')
-    }
+        ItemVal.value = lengNum-1
+        dataList.value[indexA].plotName = list[ItemVal.value].plotName
+        dataList.value[indexA].name = list[ItemVal.value].name
+      }
+
+      dataList.value[indexA].plotName = list[ItemVal.value].plotName
+      dataList.value[indexA].name = list[ItemVal.value].name
       ItemVal.value--
-  }
- 
+
+      dataList.value.forEach( (item:any) => {
+          if(item.child.length == 1){
+              ItemVal2.value = 0
+          }
+          else if(item.child.length <= ItemVal.value  ){
+            ItemVal3.value = ItemVal.value 
+          }
+      })
+      
+  
+    }
+
   
   
 }
