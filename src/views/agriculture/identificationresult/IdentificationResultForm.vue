@@ -31,7 +31,7 @@
       <el-form-item label="数量" prop="quantity">
         <el-input-number v-model="formData.quantity" placeholder="请输入数量" style="width: 100%;" />
       </el-form-item>
-      <el-form-item label="密度" prop="density">
+      <el-form-item label="密度(个/m³)" prop="density">
         <el-input v-model="formData.density" placeholder="请输入密度" />
       </el-form-item>
       <el-form-item label="识别时间" prop="recognitionTime">

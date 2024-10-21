@@ -37,7 +37,7 @@
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>

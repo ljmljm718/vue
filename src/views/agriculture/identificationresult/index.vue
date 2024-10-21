@@ -128,7 +128,7 @@
       <el-table-column label="主表ID" align="center" prop="mainTableId" />
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="密度" align="center" prop="density" />
+      <el-table-column label="密度(个/m³)" align="center" prop="density" />
       <el-table-column
         label="识别时间"
         align="center"
