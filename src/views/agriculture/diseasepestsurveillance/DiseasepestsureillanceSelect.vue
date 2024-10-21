@@ -1,4 +1,5 @@
 <template>
+  <Dialog title="设备列表"  v-model="dialogVisible"  :appendToBody="true" :scroll="true" width="1400">
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -8,17 +9,14 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备" prop="deviceName">
+      <el-form-item label="设备" prop="device">
         <el-input
-v-model="queryParams.deviceName" placeholder="请选择设备" disabled
-                  class="!w-240px">
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
+          v-model="queryParams.device"
+          placeholder="请输入设备"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item label="监测物种" prop="monitorSpecies">
         <el-select
@@ -107,48 +105,23 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:disease-pest-surveillance:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:disease-pest-surveillance:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-        </el-form-item>
-      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <!-- 标题 -->
-    <div class="flex justify-between mb-[2rem]">
-      <span class="text-[1.125rem]">病虫害监测</span>
-      <el-radio-group size="small" v-model="listType" @change="handleCardChange">
-        <el-radio-button label="card" value="card">
-          <el-icon><Menu /></el-icon>
-          <span>卡片</span>
-        </el-radio-button>
-        <el-radio-button label="list" value="list">
-          <el-icon><List /></el-icon>
-          <span>列表</span>
-        </el-radio-button>
-      </el-radio-group>
-    </div>
-    <!-- 列表 -->
-    <el-table v-show="listType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        ref="suibian"
+        :show-overflow-tooltip="true"
+        @select="fangfa"
+        scrollbar-always-on='false'
+        @selection-change="handleSelectionChange" >
+      <el-table-column fixed  width="30" label="选择" type="selection" />
+    <!-- <el-table v-show="listType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"> -->
       <el-table-column label="设备" align="center" prop="device" />
       <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
       <el-table-column label="监测类型" align="center" prop="monitorType" />
@@ -176,157 +149,7 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
           <dict-tag :type="DICT_TYPE.AGRI_IDENTIFY_STATUS" :value="scope.row.identifyStatus" />
         </template>
       </el-table-column>
-
-      <el-table-column label="操作" align="center" prop="identifyStatus">
-        <template #default="scope">
-          <el-button
-            v-show="scope.row.identifyStatus == '1'"
-            link
-            type="primary"
-            @click=" openRecognizeForm('create', scope.row.id)"
-          >
-            识别
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:disease-pest-surveillance:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:disease-pest-surveillance:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 卡片 -->
-    <div v-show="listType === 'card'">
-      <!-- 无数据 -->
-      <div v-if="list.length === 0" class="w-full flex justify-center items-center">
-        <div class="no-data">暂无数据</div>
-      </div>
-      <!-- 有数据 -->
-      <div v-else>
-        <div class="grid grid-cols-5" ref="cardContainer">
-          <!-- 左侧展示图片(列表) -->
-          <div class="col-span-2 p-[1rem] relative" style="border: 1px solid #E6E6E6">
-            <!-- 主图片展示 -->
-            <div
-              v-show="list[curItem].monitorPicture"
-              class="w-full flex justify-center items-center"
-              ref="mainImgContainer"
-            >
-              <!-- 当图片高度大于容器高度时 显示滚动条 -->
-              <el-scrollbar class="w-full h-full" v-show="showScroll()">
-                <img
-                  ref="mainImg"
-                  :src="list[curItem].monitorPicture"
-                  class="w-full object-contain rounded-lg"
-                />
-              </el-scrollbar>
-              <!-- 否则不显示滚动条 -->
-              <img
-                v-show="!showScroll()"
-                :src="list[curItem].monitorPicture"
-                class="w-full object-contain rounded-lg"
-              />
-            </div>
-            <!-- 主图片地址缺失时显示样式 -->
-            <div
-              v-show="!list[curItem].monitorPicture"
-              class="w-full flex justify-center items-center"
-              :style="{ height: mainImgHeight + 'px' }"
-            >
-              <div class="no-data">暂无图片</div>
-            </div>
-            <!-- 图片列表 -->
-            <div class="mt-[1rem] w-full relative" :style="{ height: imgSideLength + 4 + 'px' }">
-              <div class="absolute top-0 overflow-hidden h-full" style="width: calc(100% + 1rem)">
-                <div ref="imgListRef" class="flex w-full relative transition-all mt-[2px]">
-                  <div
-                    v-for="item, index in list" :key="item.id"
-                    class="mr-[1rem] flex-none relative cursor-pointer"
-                    :style="{ width: imgSideLength + 'px', height: imgSideLength + 'px' }"
-                    @click="handleClickImg(index)"
-                  >
-                    <img :src="item.monitorPicture" alt="图片展示" class="object-cover w-full h-full rounded-lg"/>
-                  </div>
-                </div>
-                <!-- 左右箭头 -->
-                <div
-                  class="last-icon cursor-pointer"
-                  :style="{
-                    width: 0.2 * imgSideLength + 'px',
-                    height: 0.2 * imgSideLength + 'px',
-                    left: imgSideLength / 2 + 'px',
-                    top: imgSideLength / 2 + 'px'
-                  }"
-                  @click="handleClickLastImg"
-                >
-                </div>
-                <div
-                  class="next-icon cursor-pointer"
-                  :style="{
-                    width: 0.2 * imgSideLength + 'px',
-                    height: 0.2 * imgSideLength + 'px',
-                    right: (imgSideLength / 2 - 16) + 'px',
-                    top: imgSideLength / 2 + 'px'
-                  }"
-                  @click="handleClickNextImg"
-                >
-                </div>
-                <!-- 当前展示项边框 -->
-                <div
-                  class="absolute rounded-lg"
-                  :style="{
-                    width: imgSideLength + 'px',
-                    height: imgSideLength + 'px',
-                    left: imgSideLength + 14 + 'px',
-                    top: 0,
-                    border: '2px solid #009688'
-                  }"
-                >
-                </div>
-              </div>
-            </div>
-            <!-- 边框四个角 -->
-            <div class="corner-left-top"></div>
-            <div class="corner-left-bottom"></div>
-            <div class="corner-right-top"></div>
-            <div class="corner-right-bottom"></div>
-          </div>
-          <!-- 右侧识别记录 -->
-          <div class="col-span-3 h-[20rem] ml-[2rem]">
-            <!-- 识别虫害数量 & 虫害分类 -->
-            <div class="lg:grid lg:grid-cols-2 lg:gap-2">
-              <div class="h-[4rem] leading-[4rem] bg-[#F1F8FB] flex justify-between px-[2rem]">
-                <div>
-                  <img :src="PestAmountIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">识别虫害数量</span>
-                </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumById }}</span>
-              </div>
-              <div class="h-[4rem] leading-[4rem] bg-[#FEF9EE] flex justify-between px-[2rem] mt-[.5rem] lg:mt-0">
-                <div>
-                  <img :src="PestCategoryIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">虫害分类</span>
-                </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumByName }}</span>
-              </div>
-            </div>
-            <!-- 识别记录 -->
-            <SpotResTable :activeMainTableId="list[curItem].id" :key="curItem" />
-          </div>
-        </div>
-      </div>
-    </div>
+    </el-table> 
     <!-- 分页 -->
     <Pagination
       :total="total"
@@ -334,11 +157,18 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
+  
   </ContentWrap>
-
+    <template #footer >
+   
+    <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+        确 定
+    </el-button>
+    <el-button @click="clear()" >取 消</el-button>
+  </template>
+  </Dialog>
   <!-- 表单弹窗：添加/修改 -->
   <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
-  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
 
   <!-- 识别表单 -->
   <RecognizeForm ref="recognizeFormRef" @success="getList" />
@@ -360,9 +190,6 @@ import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
 import PestAmountIcon from "./assets/pest-amount-icon.png";
 import PestCategoryIcon from "./assets/pest-category-icon.png";
 import SpotResTable from "./spotResTable.vue";
-import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
-import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
-import { throttle } from "./utils";
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' })
@@ -378,7 +205,6 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   device: undefined,
-  deviceName: undefined,
   monitorSpecies: undefined,
   monitorType: undefined,
   monitorTime: [],
@@ -391,16 +217,70 @@ const queryParams = reactive({
 const CategoryManagementQueryParams = reactive({})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const purchaseOrderInEnableListRef = ref()
-const openPurchaseOrderInEnableList = () => {
-  purchaseOrderInEnableListRef.value.open()
+const show = ref(false)
+const selectedItem = ref({})
+
+//开始
+
+let suibian = ref(null)
+const fangfa = (select: any, row: any) => {
+  if (select.length > 1) {
+    let del_row = select.shift()
+    suibian.value.toggleRowSelection(del_row, false)
+  }
 }
-const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
-  //赋值
-  queryParams.device = order[0].id
-  queryParams.deviceName = order[0].deviceName
+
+
+window.addEventListener('keydown', (e) => {
+     if (e.keyCode === 27) {
+        resetQuery()
+        dialogVisible.value = false
+     }
+})
+
+const clear = async()=>{
+  dialogVisible.value = false
+  resetQuery()
 }
+
+
+/** 选中操作 */
+const dialogVisible = ref(false) // 弹窗的是否展示
+const selectionList = ref<DiseasePestSurveillanceVO[]>([])
+const handleSelectionChange = (rows: DiseasePestSurveillanceVO[]) => {
+  selectionList.value = rows
+}
+
+/** 提交选择 */
+const emits = defineEmits<{
+  (e: 'success', value: DiseasePestSurveillanceVO[]): void
+}>()
+const submitForm = () => {
+  try {
+    emits('success', selectionList.value)
+  } finally {
+    // 关闭弹窗
+    dialogVisible.value = false
+  }
+}
+/** 打开弹窗 */
+const open = async (id: string) => {
+  dialogVisible.value = true
+  Object.keys(queryParams).forEach(key => {
+    queryParams[key] = undefined;
+  });
+  await resetQuery()
+  // console.log("id:" + id)
+  await nextTick() // 等待，避免 queryFormRef 为空
+  // 加载下属地块列表
+}
+defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+//结束
+
+
 /** 查询列表 */
+
 const getList = async () => {
   loading.value = true
   try {
@@ -429,8 +309,6 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  queryParams.deviceName = undefined
-  queryParams.device = undefined
   handleQuery()
 }
 
@@ -502,11 +380,6 @@ const curItem = ref<number>(0);  // 当前list被查看的项
 const handleCardChange = async () => {
   queryParams.pageNo = 1;
   await getList();
-  // 切换回卡片时需要设置图片列表移动到第一项 此时curItem已经设置为0
-  if ("card" === listType.value) {
-    getCountDetail(list.value[0].id);
-    imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
-  }
 }
 
 const mainImg = ref<any>();  // 大图的模板引用
@@ -540,22 +413,22 @@ const showScroll = () => {
 const imgListRef = ref<any>();  // 图片列表的模板引用
 
 // 图片列表左移 当前查看的不是最后一个时 左移一个单位 + 1rem
-const handleClickNextImg = throttle(() => {
+const handleClickNextImg = () => {
   if (curItem.value === list.value.length - 1) return;
   curItem.value = curItem.value + 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
-}, 500)
+}
 
 // 图片列表右移 当前查看的不是第一个时 右移一个单位 + 1rem
-const handleClickLastImg = throttle(() => {
+const handleClickLastImg = () => {
   if (curItem.value === 0) return;
   curItem.value = curItem.value - 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
-}, 500)
+}
 
 // 点击图片切换到当前显示位置
 const handleClickImg = (index) => {
