@@ -140,6 +140,7 @@ import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
 import {FarmPlanApi, FarmPlanVO} from "@/api/agriculture/farmplan";
 import {CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+import {allDataCacheManager} from "@/api/agriculture/varietymanagement";
 
 defineOptions({name: 'ParkInfoPopup'})
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
