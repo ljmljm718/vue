@@ -8,8 +8,16 @@
       v-loading="formLoading"
     >
       <el-form-item label="主表ID" prop="mainTableId">
-        <el-input v-model="formData.mainTableId" placeholder="请输入主表ID" />
-      </el-form-item>
+        <!-- <el-input v-model="formData.mainTableId" placeholder="请输入主表ID" /> -->
+        <el-input v-model="formData.mainTableId" placeholder="请选择设备" disabled>
+              <template #append>
+                <el-button @click="DiseasepestsureillanceSelectList">
+                  <Icon icon="ep:search"/>
+                  选择
+                </el-button>
+              </template>
+            </el-input>
+        </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-select v-model="formData.name" placeholder="请选择名称">
           <el-option
@@ -53,10 +61,12 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <DiseasepestsureillanceSelect ref="DiseasepestsureillanceSelectRef" @success="DiseasepestsureillanceSelectChange"/>
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { IdentificationResultApi, IdentificationResultVO } from '@/api/agriculture/identificationresult'
+import DiseasepestsureillanceSelect from '@/views/agriculture/diseasepestsurveillance/DiseasepestsureillanceSelect.vue'
 
 /** 识别结果 表单 */
 defineOptions({ name: 'IdentificationResultForm' })
@@ -81,6 +91,22 @@ const formData = ref({
 const formRules = reactive({
 })
 const formRef = ref() // 表单 Ref
+
+
+const DiseasepestsureillanceSelectRef = ref()
+const DiseasepestsureillanceSelectList = () => {
+  DiseasepestsureillanceSelectRef.value.open()
+}
+
+const DiseasepestsureillanceSelectChange = async (order: any) => {
+  console.log("======",order);
+  console.log("======",order[0].id);
+  
+  // 将订单设置到入库单
+  //赋值id
+  formData.value.mainTableId = order[0].id
+  //基地
+}
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
