@@ -133,8 +133,22 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!-- <el-table-column label="主键" align="center" prop="id" /> -->
+    <!-- 标题 -->
+    <div class="flex justify-between mb-[2rem]">
+      <span class="text-[1.125rem]">病虫害监测</span>
+      <el-radio-group size="small" v-model="listType" @change="handleCardChange">
+        <el-radio-button label="card" value="card">
+          <el-icon><Menu /></el-icon>
+          <span>卡片</span>
+        </el-radio-button>
+        <el-radio-button label="list" value="list">
+          <el-icon><List /></el-icon>
+          <span>列表</span>
+        </el-radio-button>
+      </el-radio-group>
+    </div>
+    <!-- 列表 -->
+    <el-table v-show="listType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="设备" align="center" prop="device" />
       <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
       <el-table-column label="监测类型" align="center" prop="monitorType" />
@@ -149,7 +163,6 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
-            lazy
             :src="row.monitorPicture"
             :preview-src-list="[row.monitorPicture]"
             preview-teleported
@@ -163,20 +176,17 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
           <dict-tag :type="DICT_TYPE.AGRI_IDENTIFY_STATUS" :value="scope.row.identifyStatus" />
         </template>
       </el-table-column>
-      <!-- <el-table-column label="设备状态" align="center" prop="deviceStatus" >
+
+      <el-table-column label="操作" align="center" prop="identifyStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_DEVICE_STATUS" :value="scope.row.deviceStatus" />
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      /> -->
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
+          <el-button
+            v-show="scope.row.identifyStatus == '1'"
+            link
+            type="primary"
+            @click=" openRecognizeForm('create', scope.row.id)"
+          >
+            识别
+          </el-button>
           <el-button
             link
             type="primary"
@@ -196,6 +206,127 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
         </template>
       </el-table-column>
     </el-table>
+    <!-- 卡片 -->
+    <div v-show="listType === 'card'">
+      <!-- 无数据 -->
+      <div v-if="list.length === 0" class="w-full flex justify-center items-center">
+        <div class="no-data">暂无数据</div>
+      </div>
+      <!-- 有数据 -->
+      <div v-else>
+        <div class="grid grid-cols-5" ref="cardContainer">
+          <!-- 左侧展示图片(列表) -->
+          <div class="col-span-2 p-[1rem] relative" style="border: 1px solid #E6E6E6">
+            <!-- 主图片展示 -->
+            <div
+              v-show="list[curItem].monitorPicture"
+              class="w-full flex justify-center items-center"
+              ref="mainImgContainer"
+            >
+              <!-- 当图片高度大于容器高度时 显示滚动条 -->
+              <el-scrollbar class="w-full h-full" v-show="showScroll()">
+                <img
+                  ref="mainImg"
+                  :src="list[curItem].monitorPicture"
+                  class="w-full object-contain rounded-lg"
+                />
+              </el-scrollbar>
+              <!-- 否则不显示滚动条 -->
+              <img
+                v-show="!showScroll()"
+                :src="list[curItem].monitorPicture"
+                class="w-full object-contain rounded-lg"
+              />
+            </div>
+            <!-- 主图片地址缺失时显示样式 -->
+            <div
+              v-show="!list[curItem].monitorPicture"
+              class="w-full flex justify-center items-center"
+              :style="{ height: mainImgHeight + 'px' }"
+            >
+              <div class="no-data">暂无图片</div>
+            </div>
+            <!-- 图片列表 -->
+            <div class="mt-[1rem] w-full relative" :style="{ height: imgSideLength + 4 + 'px' }">
+              <div class="absolute top-0 overflow-hidden h-full" style="width: calc(100% + 1rem)">
+                <div ref="imgListRef" class="flex w-full relative transition-all mt-[2px]">
+                  <div
+                    v-for="item, index in list" :key="item.id"
+                    class="mr-[1rem] flex-none relative cursor-pointer"
+                    :style="{ width: imgSideLength + 'px', height: imgSideLength + 'px' }"
+                    @click="handleClickImg(index)"
+                  >
+                    <img :src="item.monitorPicture" alt="图片展示" class="object-cover w-full h-full rounded-lg"/>
+                  </div>
+                </div>
+                <!-- 左右箭头 -->
+                <div
+                  class="last-icon cursor-pointer"
+                  :style="{
+                    width: 0.2 * imgSideLength + 'px',
+                    height: 0.2 * imgSideLength + 'px',
+                    left: imgSideLength / 2 + 'px',
+                    top: imgSideLength / 2 + 'px'
+                  }"
+                  @click="handleClickLastImg"
+                >
+                </div>
+                <div
+                  class="next-icon cursor-pointer"
+                  :style="{
+                    width: 0.2 * imgSideLength + 'px',
+                    height: 0.2 * imgSideLength + 'px',
+                    right: (imgSideLength / 2 - 16) + 'px',
+                    top: imgSideLength / 2 + 'px'
+                  }"
+                  @click="handleClickNextImg"
+                >
+                </div>
+                <!-- 当前展示项边框 -->
+                <div
+                  class="absolute rounded-lg"
+                  :style="{
+                    width: imgSideLength + 'px',
+                    height: imgSideLength + 'px',
+                    left: imgSideLength + 14 + 'px',
+                    top: 0,
+                    border: '2px solid #009688'
+                  }"
+                >
+                </div>
+              </div>
+            </div>
+            <!-- 边框四个角 -->
+            <div class="corner-left-top"></div>
+            <div class="corner-left-bottom"></div>
+            <div class="corner-right-top"></div>
+            <div class="corner-right-bottom"></div>
+          </div>
+          <!-- 右侧识别记录 -->
+          <div class="col-span-3 h-[20rem] ml-[2rem]">
+            <!-- 识别虫害数量 & 虫害分类 -->
+            <div class="lg:grid lg:grid-cols-2 lg:gap-2">
+              <div class="h-[4rem] leading-[4rem] bg-[#F1F8FB] flex justify-between px-[2rem]">
+                <div>
+                  <img :src="PestAmountIcon" class="align-middle objcet-contain h-[2.5rem]" />
+                  <span class="pl-[1rem]">识别虫害数量</span>
+                </div>
+                <span class="text-[1.5rem]">{{ countDetail.dataSumById }}</span>
+              </div>
+              <div class="h-[4rem] leading-[4rem] bg-[#FEF9EE] flex justify-between px-[2rem] mt-[.5rem] lg:mt-0">
+                <div>
+                  <img :src="PestCategoryIcon" class="align-middle objcet-contain h-[2.5rem]" />
+                  <span class="pl-[1rem]">虫害分类</span>
+                </div>
+                <span class="text-[1.5rem]">{{ countDetail.dataSumByName }}</span>
+              </div>
+            </div>
+            <!-- 识别记录 -->
+            <SpotResTable :activeMainTableId="list[curItem].id" :key="curItem" />
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 分页 -->
     <Pagination
       :total="total"
@@ -208,6 +339,9 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
   <!-- 表单弹窗：添加/修改 -->
   <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
   <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
+
+  <!-- 识别表单 -->
+  <RecognizeForm ref="recognizeFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -215,6 +349,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance'
 import DiseasePestSurveillanceForm from './DiseasePestSurveillanceForm.vue'
+import RecognizeForm from './RecognizeForm.vue'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import {
   CategoryManagementApi,
@@ -222,6 +357,9 @@ import {
   allDataCacheManager
 } from "@/api/agriculture/categorymanagement";
 import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
+import PestAmountIcon from "./assets/pest-amount-icon.png";
+import PestCategoryIcon from "./assets/pest-category-icon.png";
+import SpotResTable from "./spotResTable.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 
@@ -268,7 +406,14 @@ const getList = async () => {
     listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     const data = await DiseasePestSurveillanceApi.getDiseasePestSurveillancePage(queryParams)
     list.value = data.list
+    console.log("🚀 ~ getList ~ list.value:", list.value)
     total.value = data.total
+
+    // 设置当前展示的项为第一项 并查询病虫害数量 
+    curItem.value = 0;
+    if (list.value.length > 0) {
+      getCountDetail(list.value[curItem.value].id);
+    }
   } finally {
     loading.value = false
   }
@@ -292,6 +437,12 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+// 识别操作
+const recognizeFormRef = ref()
+const openRecognizeForm = (type: string, id?: string) => {
+  recognizeFormRef.value.open(type, id)
 }
 
 /** 删除按钮操作 */
@@ -342,4 +493,159 @@ const getParkPage = async (parkId) => {
   let res = await parkPage(parkId)
   plotList.value = res.list
 }
+
+const listType = ref<string>("card");  // 卡片 card 列表 list
+const curItem = ref<number>(0);  // 当前list被查看的项
+
+// 切换卡片或列表时 重新查询第一页内容
+const handleCardChange = async () => {
+  queryParams.pageNo = 1;
+  await getList();
+}
+
+const mainImg = ref<any>();  // 大图的模板引用
+const mainImgHeight = ref<any>();  // 大图高度
+const mainImgContainer = ref<any>();  // 大图容器的模板引用
+const cardContainer = ref<any>();  // 卡片容器的模板引用
+const imgSideLength = ref<any>();  // 图片列表每个项的边长
+
+// 设置图片容器的高度就是宽度的3/4 以及小图片的边长
+const setImgContainerWidthAndImgStyle = () => {
+  if (!cardContainer.value) return;
+  const containerWidth = Number(window.getComputedStyle(cardContainer.value).width.slice(0, -2)) * 0.4 - 32;
+  const imgContainerHeight = containerWidth * (3 / 4);
+  mainImgHeight.value = imgContainerHeight;
+  if (!mainImgContainer.value) return;
+  mainImgContainer.value.style.height = imgContainerHeight + "px";
+  imgSideLength.value = (containerWidth - 3 * 16) / 4;
+}
+
+window.addEventListener("resize", setImgContainerWidthAndImgStyle);
+watchEffect(setImgContainerWidthAndImgStyle);
+
+// 当图片高度大于容器高度时 显示滚动条
+const showScroll = () => {
+  if (!mainImg.value || !mainImgContainer.value) return;
+  const imgHeight = Number(window.getComputedStyle(mainImg.value).height.slice(0, -2));
+  const imgContainerHeight = Number(window.getComputedStyle(mainImgContainer.value).height.slice(0, -2));
+  return imgHeight > imgContainerHeight;
+}
+
+const imgListRef = ref<any>();  // 图片列表的模板引用
+
+// 图片列表左移 当前查看的不是最后一个时 左移一个单位 + 1rem
+const handleClickNextImg = () => {
+  if (curItem.value === list.value.length - 1) return;
+  curItem.value = curItem.value + 1;
+  getCountDetail(list.value[curItem.value].id);
+  const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
+  imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
+}
+
+// 图片列表右移 当前查看的不是第一个时 右移一个单位 + 1rem
+const handleClickLastImg = () => {
+  if (curItem.value === 0) return;
+  curItem.value = curItem.value - 1;
+  getCountDetail(list.value[curItem.value].id);
+  const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
+  imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
+}
+
+// 点击图片切换到当前显示位置
+const handleClickImg = (index) => {
+  if (curItem.value === index) return;
+  curItem.value = index;
+  getCountDetail(list.value[curItem.value].id);
+  imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - index) + 'px';
+}
+
+// 初次显示列表时 右移一位 表示右二是当前查看的项
+// 因为刚加载页面时可能没有cardContainer.value 因此不能用onMounted
+watchEffect(() => {
+  if (!cardContainer.value) return;
+  imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+});
+
+// 病虫害数量
+const countDetail = ref<any>({
+  dataSumByName: 0,  // 分类数量
+  dataSumById: 0  // 总数量
+});
+
+// 获取病虫害数量
+const getCountDetail = async (id) => {
+  const res = await DiseasePestSurveillanceApi.countDetails({ id });
+  countDetail.value.dataSumByName = res.dataSumByName;
+  countDetail.value.dataSumById = res.dataSumById;
+}
 </script>
+
+<style lang="scss" scoped>
+// 无数据
+.no-data {
+  background: {
+    image: url(@/assets/imgs/chartNull.png);
+    size: contain;
+    position: center;
+    repeat: no-repeat;
+  }
+  height: 10rem;
+  width: 10rem;
+  text-align: center;
+  letter-spacing: 0.1rem;
+}
+
+// 图片边框四个角
+.corner-left-top,
+.corner-left-bottom,
+.corner-right-top,
+.corner-right-bottom {
+  position: absolute;
+  background-size: 100%, 100%;
+  width: 24px;
+  height: 24px;
+}
+
+.corner-left-top {
+  background-image: url(./assets/border-left-top.png);
+  left: 0;
+  top: 0;
+}
+
+.corner-left-bottom {
+  background-image: url(./assets/border-left-bottom.png);
+  left: 0;
+  bottom: 0;
+}
+
+.corner-right-top {
+  background-image: url(./assets/border-right-top.png);
+  right: 0;
+  top: 0;
+}
+
+.corner-right-bottom {
+  background-image: url(./assets/border-right-bottom.png);
+  bottom: 0;
+  right: 0;
+}
+
+.last-icon,
+.next-icon {
+  background: {
+    position: center;
+    repeat: no-repeat;
+    size: contain;
+  }
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.last-icon {
+  background-image: url(./assets/last-icon.png);
+}
+
+.next-icon {
+  background-image: url(./assets/next-icon.png);
+}
+</style>

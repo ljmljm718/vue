@@ -1,93 +1,94 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="88px"
-    >
-      <el-form-item label="计划编码" prop="planCode">
-        <el-input
-          v-model="queryParams.planCode"
-          placeholder="请输入计划编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="计划名称" prop="planName">
-        <el-input
-          v-model="queryParams.planName"
-          placeholder="请输入计划名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <!--      <el-form-item label="所属基地" prop="belongPark">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.belongPark"-->
-      <!--          placeholder="请输入所属基地"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="基地名称" prop="parkName">
-        <!-- <el-input
-          v-model="queryParams.parkName"
-          placeholder="请输入基地名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
-        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
-          <template #append>
-            <el-button @click="openParkPopup('0')">
-              <Icon icon="ep:search" />
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <!--      <el-form-item label="所属地块" prop="belongPlot">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.belongPlot"-->
-      <!--          placeholder="请输入所属地块"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="地块名称" prop="plotName">
-        <!-- <el-input
-          v-model="queryParams.plotName"
-          placeholder="请输入地块名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
-        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
-          <template #append>
-            <el-button @click="openPlotPopup(queryParams.belongPark)">
-              <Icon icon="ep:search" />
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <!--      <el-form-item label="作物id" prop="cropId">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.cropId"-->
-      <!--          placeholder="请输入作物id"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="农事阶段" prop="farmDefineType">
+  <ContentWrap  >
+    <div class="flex justify-between">
+      <!-- 搜索工作栏 -->
+      <el-form
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="88px"
+      >
+        <el-form-item label="计划编码" prop="planCode">
+          <el-input
+            v-model="queryParams.planCode"
+            placeholder="请输入计划编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="计划名称" prop="planName">
+          <el-input
+            v-model="queryParams.planName"
+            placeholder="请输入计划名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <!--      <el-form-item label="所属基地" prop="belongPark">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.belongPark"-->
+        <!--          placeholder="请输入所属基地"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="基地名称" prop="parkName">
+          <!-- <el-input
+            v-model="queryParams.parkName"
+            placeholder="请输入基地名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          /> -->
+          <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
+            <template #append>
+              <el-button @click="openParkPopup('0')">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <!--      <el-form-item label="所属地块" prop="belongPlot">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.belongPlot"-->
+        <!--          placeholder="请输入所属地块"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="地块名称" prop="plotName" v-if="formType">
+          <!-- <el-input
+            v-model="queryParams.plotName"
+            placeholder="请输入地块名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          /> -->
+          <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
+            <template #append>
+              <el-button @click="openPlotPopup(queryParams.belongPark)">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <!--      <el-form-item label="作物id" prop="cropId">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.cropId"-->
+        <!--          placeholder="请输入作物id"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="农事阶段" prop="farmDefineType">
         <el-select
           v-model="queryParams.farmDefineType"
           placeholder="请选择农事阶段"
@@ -102,69 +103,69 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="作物名称" prop="cropName">
-        <el-input
-          v-model="queryParams.cropName"
-          placeholder="请输入作物名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <!--      <el-form-item label="品种" prop="cropType">-->
-      <!--        <el-select-->
-      <!--          v-model="queryParams.cropType"-->
-      <!--          placeholder="请选择品种"-->
-      <!--          clearable-->
-      <!--          class="!w-240px"-->
-      <!--        >-->
-      <!--          <el-option label="请选择字典生成" value="" />-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
-      <el-form-item label="计划状态" prop="planState">
-        <el-select
-          v-model="queryParams.planState"
-          placeholder="请选择计划状态"
-          clearable
-          class="!w-150px"
-        >
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+        <el-form-item label="作物名称" prop="cropName" v-if="formType">
+          <el-input
+            v-model="queryParams.cropName"
+            placeholder="请输入作物名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
           />
-        </el-select>
-      </el-form-item>
-      <!--      <el-form-item label="责任人编号" prop="personId">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.personId"-->
-      <!--          placeholder="请输入责任人编号"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <el-form-item label="责任人" prop="personName">
-        <el-input
-          v-model="queryParams.personName"
-          placeholder="请输入责任人"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="计划开始时间" prop="startTime">
-        <el-date-picker
-          v-model="queryParams.startTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
+        </el-form-item>
+        <!--      <el-form-item label="品种" prop="cropType">-->
+        <!--        <el-select-->
+        <!--          v-model="queryParams.cropType"-->
+        <!--          placeholder="请选择品种"-->
+        <!--          clearable-->
+        <!--          class="!w-240px"-->
+        <!--        >-->
+        <!--          <el-option label="请选择字典生成" value="" />-->
+        <!--        </el-select>-->
+        <!--      </el-form-item>-->
+        <el-form-item label="计划状态" prop="planState" v-if="formType">
+          <el-select
+            v-model="queryParams.planState"
+            placeholder="请选择计划状态"
+            clearable
+            class="!w-150px"
+          >
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!--      <el-form-item label="责任人编号" prop="personId">-->
+        <!--        <el-input-->
+        <!--          v-model="queryParams.personId"-->
+        <!--          placeholder="请输入责任人编号"-->
+        <!--          clearable-->
+        <!--          @keyup.enter="handleQuery"-->
+        <!--          class="!w-240px"-->
+        <!--        />-->
+        <!--      </el-form-item>-->
+        <el-form-item label="责任人" prop="personName" v-if="formType">
+          <el-input
+            v-model="queryParams.personName"
+            placeholder="请输入责任人"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="计划开始时间" prop="startTime" v-if="formType">
+          <el-date-picker
+            v-model="queryParams.startTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
+          />
+        </el-form-item>
       <!--      <el-form-item label="计划结束时间" prop="endTime">-->
       <!--        <el-date-picker-->
       <!--          v-model="queryParams.endTime"-->
@@ -205,13 +206,27 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item>
-        <el-button @click="handleQuery" type="primary"
+        <el-form-item v-if="formType">
+          <el-button @click="handleQuery" type="primary"
+            ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
+          >
+          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px ">收起 <div class="ml-10px" style='transform:rotate(270deg) '> > </div> </div>
+        </el-form-item>
+      </el-form>
+      <div v-if="!formType" class="flex ">
+        <div>
+          <el-button @click="handleQuery" type="primary"
           ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
         >
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-      </el-form-item>
-    </el-form>
+        </div>
+        
+        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <div class="ml-10px" style='transform:rotate(90deg)'> > </div> </div>
+      </div>
+    </div>
+    
+
   </ContentWrap>
 
   <!-- 列表 -->
@@ -260,14 +275,7 @@
             placeholder="请选择月份"
           />
           </div>
-          <div class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
-          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
-          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
-          <div class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
-          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
-          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
-          <div class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
-          <div class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
+          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> {{ item.defineName }} </div>
         </div>
       </div>
       <div class="w-89% " >
@@ -278,9 +286,10 @@
           <div v-for="item,index in dataList2" :key="index" :class="`flex flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
             <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item.data}}</div>
             <div class="w-88%">
-              <div class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName?item.plotName:'暂无地块'}} <div> > </div> </div>
-              <div class="bg-[#f7fbfb] color-[#999999] w-100% h-100px mb-15px flex justify-around flex-wrap">
-                <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
+              <div v-show="item.plotName" class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName}} <div> > </div> </div>
+              <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
+              <div  v-show='item.name' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid grid-cols-2 wrapper-item-footer">
+                <!-- <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
                 <div v-show='item.name == "水质调控"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 水质调控</div>
                 <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
                 <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
@@ -291,29 +300,26 @@
                 <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
                 <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
                 <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
-                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div>
-                <div v-show='!item.name' class='flex items-center color-[#acacac]' style="font-weight:600">当前暂无农事计划</div>
+                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div> -->
+                
+              </div>
+              <div v-show='!item.name' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
+                  <img :src='dataImg' class='w-40px h-30px'/>
+                  <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
               </div>
             </div>
           </div>
-          <div v-for="item,index in dataList" :key="index" :class="`flex flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
+          <div v-for="item,index in dataList" :key="index" :class="`flex flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
             <div class='text-30px my-18px' style="font-weight:600">{{item.data}}</div>
-            <div class="w-88%">
-              <div class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg)"> > </div> {{item.plotName?item.plotName:'暂无地块'}} <div> > </div> </div>
-              <div class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-around flex-wrap">
-                <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
-                <div v-show='item.name == "水质调控"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 水质调控</div>
-                <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
-                <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
-                <div v-show='item.name == "种植"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
-                <div v-show='item.name == "播种"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 播种</div>
-                <div v-show='item.name == "打药"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
-                <div v-show='item.name == "采收"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
-                <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
-                <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
-                <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
-                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div>
-                <div v-show='!item.name' class='flex items-center color-[#acacac]' style="font-weight:600">当前暂无农事计划</div>
+            <div class="w-88%" v-for="itm,inde in item.child" :key="inde" v-show="ItemVal == inde">
+              <div v-show="itm.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(inde,item.child,'-')"> > </div> {{itm.plotName}} <div class='cursor-pointer' @click="tabItem(inde,item.child,'+')"> > </div> </div>
+              <div v-show="!itm.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
+              <div v-show='item.child.length!=0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
+                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ itm.name }}</div>
+              </div>
+              <div v-show='item.child.length == 0 ' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
+                  <img :src='dataImg' class='w-40px h-30px'/>
+                  <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
               </div>
             </div>
           </div>
@@ -426,12 +432,12 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="getList()"
     />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <FarmPlanForm ref="formRef" @success="getList" />
+  <FarmPlanForm ref="formRef" @success="getList()" />
   <!--  选择基地-->
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
   <!--  选择地块-->
@@ -681,6 +687,8 @@ import card from '../../../assets/imgs/card-active.png'
 import card2 from '../../../assets/imgs/card-actived.png'
 import listImg from '../../../assets/imgs/list-active.png'
 import listImg2 from '../../../assets/imgs/list-actived.png'
+import dataImg from '../../../assets/imgs/noData.png'
+
 import { watch } from 'vue'
 interface AnyObject {
   [key: string]: any;
@@ -693,6 +701,13 @@ const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const loading = ref(true) // 列表的加载中
 const day = ref(new Date().getDate())
+const formType = ref(false)
+const farmDefineObj = ref({
+  '蟹苗投放':'#73c0de',
+  '饲料投喂':'#3ba272',
+  '水质调控':'#0d9b8e',
+  '病虫防害':'#ee6666'
+})
 
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -736,7 +751,10 @@ const formSearch = ref({
   feedType: ''
 })
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-
+const dataListA = ref<any[]>([])
+const resSetList = ref<any[]>([])
+const preList = ref<any[]>([])
+const monthA= ref(new Date().getMonth()+1)
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -755,34 +773,47 @@ const getList = async () => {
     })
     list.value = data.list
     total.value = data.total
-    let month= new Date().getMonth()+1
+  
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
-      if(month == Number(time[1])){
+      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
+      if(monthA.value == Number(time[1])){
+
         dataList.value.forEach((item:any) => {
-          if(item.data == Number(time[2])){
-            item.name = fn(itm.farmDefineType)
-            item.plotName = itm.plotName
+          if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
+            }
           }
         })
       }
     })
+    console.log(dataList.value,'dataList.valuedataList.value1234')
+
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
       if(month == Number(time[1])){
         dataList2.value.forEach((item:any) => {
-          if(item.data == Number(time[2])){
-            item.name = fn(itm.farmDefineType)
-            item.plotName = itm.plotName
+          if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
+            }
           }
         })
       }
     })
+
+    dataListA.value=[...dataList.value , ...dataList2.value]
   } finally {
     loading.value = false
   }
 }
-
+getList()
 //替换方法
 const fn = (id) =>{
   let name = ''
@@ -793,6 +824,7 @@ const fn = (id) =>{
   })
   return name
 }
+
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -855,8 +887,9 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(async () => {
-  getList()
+  // getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
+ 
 })
 onActivated(async () => {
   await getList()
@@ -1130,11 +1163,16 @@ const selectClick = ( row ) => {
 }
 //重置
 const resetQueryA = () => {
+  console.log(resSetList.value,'resSetList.value')
+  console.log(preList.value,'preList.value')
+  dataList.value = resSetList.value
+  dataList2.value = preList.value
   formSearch.value = {
     feedName: '',
     feedType: ''
   }
   getPage()
+  getList()
   handleQueryA()
 }
 //搜索
@@ -1170,16 +1208,16 @@ const inputTab = (val:any,index:Number) => {
   }else{
   formData.value = {
       feedType: '',
-      feedName: '',
+      feedName: '', 
       consumeNum: '',
       feedCost: '',
       consumeUnit: ''
     }
   }
-
+    
 
   selectOption.value = val
-
+ 
 }
 
 watch(() => formData.value, (val)=>{
@@ -1208,7 +1246,14 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
 
 /******************************* 卡片 *******************************/
 
-const monthVal = ref('2024年9月')
+const monthVal = ref('')
+const getFn = () => {
+  let data= new Date() 
+  let yeare = data.getFullYear()
+  let month = data.getMonth()+1
+  monthVal.value = `${ yeare}-${month}`
+}
+getFn()
 const dataList = ref<Array<any>>([])
 const dataList2 = ref<Array<any>>([])
 const firstDayOfMonth = ref( new Date(new Date().getFullYear(), new Date().getMonth(), 1))
@@ -1224,9 +1269,10 @@ const getData = () => {
   for( let i = 1 ; i <= data.value ; i++ ) {
     dataList.value.push({
       data:i,
-      name:''
+      name:'',
+      child:[]
     })
-  }
+  } 
   for(let i=0 ; i< num ; i++) {
       dataList2.value.unshift({
         data:data2.value-i,
@@ -1240,7 +1286,7 @@ const dataChange = (e) =>{
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0
-
+  // monthA.value=e.getMonth()+1
   month.value=e.getMonth()+1
   firstDayOfMonth.value = new Date(e.getFullYear(), e.getMonth(), 1);
   lastDayOfMonth.value = new Date(e.getFullYear(), e.getMonth()+1, 0);
@@ -1251,30 +1297,79 @@ const dataChange = (e) =>{
   dataList.value=[]
   dataList2.value=[]
   getData()
+  // getList()
   list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
       if( e.getMonth()+1 == Number(time[1])){
           dataList.value.forEach((item:any) => {
-            if(item.data == Number(time[2])){
-              item.name=fn(itm.farmDefineType)
-              item.plotName=itm.plotName
+            if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
             }
+          }
         })
       }
   })
   list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
+      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
       if( e.getMonth()+1 == Number(time[1])){
           dataList2.value.forEach((item:any) => {
-            if(item.data == Number(time[2])){
-              item.name=fn(itm.farmDefineType)
-              item.plotName=itm.plotName
+            if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
             }
+          }
         })
       }
   })
-  console.log(dataList2.value,'dataList2.value1234')
-  console.log(dataList.value,'dataList.value999987')
+  console.log(dataList.value,'dataList.valuedataList.value12349')
+}
+// 左侧活动点击
+const silderVal = ref('')
+const silderTab = (val:any) => {
+  silderVal.value=val
+
+  dataList.value = []
+  dataList2.value = []
+  dataListA.value.forEach( (item:any) => {
+    if(item.name == val){
+      dataList.value.push(item)
+      
+    }
+  })
+  console.log(dataList.value,'sousuo')
+}
+
+//******************************地块切换***********************
+const ItemVal = ref<Number>(0)
+const tabItem = (index:number,listLength:[],str) => {
+  let lengNum = listLength.length
+  if(str == '+'){
+    console.log(lengNum,'lengtNum12345')
+    if(index >= lengNum-1 ){
+      console.log(123)
+      ItemVal.value = 0
+      console.log(ItemVal.value,'1234')
+    }
+      ItemVal.value++
+  }else{
+    console.log(lengNum,'lengtNum12345')
+    if(index == 0 ){
+      console.log(123)
+      ItemVal.value = lengNum-1
+      console.log(ItemVal.value,'1234')
+    }
+      ItemVal.value--
+  }
+ 
+  
+  
 }
 </script>
 <style lang="scss" scoped>
@@ -1287,6 +1382,12 @@ const dataChange = (e) =>{
 }
 ::v-deep .custom-label-width .el-form-item__label {
   width: 110px !important;
+}
+.wrapper-item-footer{
+  overflow-y: scroll;
+}
+.wrapper-item-footer::-webkit-scrollbar{
+  width: 0;
 }
 .formParams {
   overflow-y: scroll !important;
@@ -1305,14 +1406,5 @@ const dataChange = (e) =>{
 .nameList-wrapper::-webkit-scrollbar{
   width:0;
 }
-.wrapper{
-  width: 200px;
-  height: 200px;
-  background-size: 100% 100%;
-  background-image: url();
-  background-repeat: no-repeat;
-  background-position: center center ;
-  border: 1px solid red;
 
-}
 </style>
