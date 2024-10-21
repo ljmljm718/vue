@@ -78,7 +78,7 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>

@@ -53,10 +53,10 @@
       <el-form-item label="识别状态" prop="identifyStatus">
         <el-select v-model="formData.identifyStatus" clearable placeholder="请选择识别状态">
           <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance';
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { DICT_TYPE, getIntDictOptions,getStrDictOptions } from '@/utils/dict';
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
 import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts';
