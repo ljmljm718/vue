@@ -107,34 +107,13 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:disease-pest-surveillance:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:disease-pest-surveillance:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-        </el-form-item>
-      </div>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <!-- 标题 -->
-    <div class="flex justify-between mb-[2rem]">
+    <div class="flex justify-between mb-[1rem]">
       <span class="text-[1.125rem]">病虫害监测</span>
       <el-radio-group size="small" v-model="listType" @change="handleCardChange">
         <el-radio-button label="card" value="card">
@@ -146,6 +125,27 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
           <span>列表</span>
         </el-radio-button>
       </el-radio-group>
+    </div>
+    <div>
+      <el-form-item>
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:disease-pest-surveillance:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" /> 新增
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:disease-pest-surveillance:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 导出
+        </el-button>
+      </el-form-item>
     </div>
     <!-- 列表 -->
     <el-table v-show="listType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
@@ -569,7 +569,10 @@ const handleClickImg = (index) => {
 // 因为刚加载页面时可能没有cardContainer.value 因此不能用onMounted
 watchEffect(() => {
   if (!cardContainer.value) return;
-  imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+  imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
+});
+window.addEventListener("resize", () => {
+  imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - curItem.value) + 'px';
 });
 
 // 病虫害数量
