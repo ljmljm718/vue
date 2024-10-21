@@ -111,7 +111,10 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
   </ContentWrap>
 
   <!-- 列表 -->
-  <ContentWrap>
+  <ContentWrap class="relative">
+    <!-- 识别结果 -->
+    <SpotResult ref="spotInstance" />
+
     <!-- 标题 -->
     <div class="flex justify-between mb-[1rem]">
       <span class="text-[1.125rem]">病虫害监测</span>
@@ -148,7 +151,13 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
       </el-form-item>
     </div>
     <!-- 列表 -->
-    <el-table v-show="listType === 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table 
+      v-show="listType === 'list'"
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+    >
       <el-table-column label="设备" align="center" prop="device" />
       <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
       <el-table-column label="监测类型" align="center" prop="monitorType" />
@@ -186,6 +195,13 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
             @click=" openRecognizeForm('create', scope.row.id)"
           >
             识别
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="handleOpenSpotRes(scope.row.id)"
+          >
+            识别结果
           </el-button>
           <el-button
             link
@@ -363,9 +379,15 @@ import SpotResTable from "./spotResTable.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import { throttle } from "./utils";
+import SpotResult from './spotResult.vue'
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' })
+
+const spotInstance = ref();
+const handleOpenSpotRes = (id:string) => {
+  spotInstance.value.handleOpen(id)
+}
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
