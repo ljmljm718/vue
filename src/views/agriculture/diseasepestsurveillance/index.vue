@@ -8,14 +8,17 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备" prop="device">
+      <el-form-item label="设备" prop="deviceName">
         <el-input
-          v-model="queryParams.device"
-          placeholder="请输入设备"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+v-model="queryParams.deviceName" placeholder="请选择设备" disabled
+                  class="!w-240px">
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="监测物种" prop="monitorSpecies">
         <el-select
@@ -75,7 +78,7 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>
@@ -204,6 +207,7 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
 
   <!-- 表单弹窗：添加/修改 -->
   <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
+  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
 </template>
 
 <script setup lang="ts">
@@ -218,6 +222,8 @@ import {
   allDataCacheManager
 } from "@/api/agriculture/categorymanagement";
 import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
+import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' })
@@ -233,6 +239,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   device: undefined,
+  deviceName: undefined,
   monitorSpecies: undefined,
   monitorType: undefined,
   monitorTime: [],
@@ -245,7 +252,15 @@ const queryParams = reactive({
 const CategoryManagementQueryParams = reactive({})
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+}
+const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
+  //赋值
+  queryParams.device = order[0].id
+  queryParams.deviceName = order[0].deviceName
+}
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -268,6 +283,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  queryParams.deviceName = undefined
+  queryParams.device = undefined
   handleQuery()
 }
 

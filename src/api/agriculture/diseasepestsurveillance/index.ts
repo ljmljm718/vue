@@ -44,4 +44,4 @@ export const DiseasePestSurveillanceApi = {
   exportDiseasePestSurveillance: async (params) => {
     return await request.download({ url: `/agriculture/disease-pest-surveillance/export-excel`, params })
   },
-}
+}

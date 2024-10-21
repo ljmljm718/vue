@@ -7,8 +7,16 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备" prop="device">
-        <el-input v-model="formData.device" placeholder="请输入设备" />
+      <el-form-item label="设备" prop="deviceName">
+        <!-- <el-input v-model="formData.device" placeholder="请输入设备" /> -->
+        <el-input v-model="formData.deviceName" placeholder="请选择设备" disabled>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="监测物种" prop="monitorSpecies">
         <el-select v-model="formData.monitorSpecies" clearable placeholder="请选择监测物种">
@@ -20,7 +28,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="监测类型" prop="monitorType">
-        <el-input v-model="formData.monitorType" placeholder="请输入监测类型" />
+        <el-select v-model="formData.monitorType" placeholder="请选择监测类型">
+          <el-option
+            v-for="item in optionsType"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="监测时间" prop="monitorTime">
         <el-date-picker
@@ -33,16 +47,8 @@
       <el-form-item label="监测抓图" prop="monitorPicture">
         <UploadImg v-model="formData.monitorPicture" />
       </el-form-item>
-      <el-form-item label="地块" prop="belongPark">
-        <el-select class="!w-240px" v-model="formData.belongPark">
-          <el-option
-            v-for="(item, index) in plotList"
-            :key="index"
-            :value="item.id"
-            :label="item.name"
-            placeholder="请选择"
-          />
-        </el-select>
+      <el-form-item label="地块" prop="parkName">
+        <el-input v-model="formData.parkName" placeholder="选择设备后自动填入地块名称" disabled/>
       </el-form-item>
       <el-form-item label="识别状态" prop="identifyStatus">
         <el-select v-model="formData.identifyStatus" clearable placeholder="请选择识别状态">
@@ -50,17 +56,7 @@
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="设备状态" prop="deviceStatus">
-        <el-select v-model="formData.deviceStatus" clearable placeholder="请选择设备状态">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DEVICE_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>
@@ -70,12 +66,15 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange"/>
 </template>
 <script setup lang="ts">
-import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance';
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
-import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
+import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts';
 /** 病虫害监测 表单 */
 defineOptions({ name: 'DiseasePestSurveillanceForm' })
 
@@ -89,17 +88,29 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   device: undefined,
+  deviceName: undefined,
   monitorSpecies: undefined,
   monitorType: undefined,
   monitorTime: undefined,
   monitorPicture: undefined,
   belongPark: undefined,
+  parkName: undefined,
   identifyStatus: undefined,
   deviceStatus: undefined,
 })
 const formRules = reactive({
+  deviceName: [{ required: true, message: '设备不能为空', trigger: 'change' }],
+  monitorPicture: [{ required: true, message: '监测抓图不能为空', trigger: 'change' }]
 })
 const formRef = ref() // 表单 Ref
+//监测类型
+const optionsType = ref([{
+  value: '病害',
+  label: '病害'
+}, {
+  value: '虫害',
+  label: '虫害'
+}])
 const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -119,6 +130,21 @@ const open = async (type: string, id?: number) => {
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+const purchaseOrderInEnableListRef = ref()
+const openPurchaseOrderInEnableList = () => {
+  purchaseOrderInEnableListRef.value.open()
+}
+const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
+  //赋值id
+  formData.value.device = order[0].id
+  //地块id
+  formData.value.belongPark = order[0].belongPlot;
+  //地块名称
+  formData.value.parkName = order[0].parkDetailName
+  //设备名称
+  formData.value.deviceName = order[0].deviceName
+}
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -149,30 +175,16 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     device: undefined,
+    deviceName: undefined,
     monitorSpecies: undefined,
     monitorType: undefined,
     monitorTime: undefined,
     monitorPicture: undefined,
     belongPark: undefined,
+    parkName: undefined,
     identifyStatus: undefined,
     deviceStatus: undefined,
   }
   formRef.value?.resetFields()
-}
-//获取基地
-const baseList = ref([])
-const getPage = async () => {
-  let res = await page()
-  baseList.value = res.list
-  // queryParams.belongPark = res.list[0].id
-  getParkPage({parkId: res.list.id})
-}
-getPage()
-//获取地块
-const plotList = ref([])
-
-const getParkPage = async (parkId) => {
-  let res = await parkPage(parkId)
-  plotList.value = res.list
 }
 </script>
