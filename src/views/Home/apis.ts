@@ -249,3 +249,9 @@ export const getMissionStatisticsErdu = () => {
 export const getCropNameDistribution = () => {
   return request.get({ url: '/agriculture/crop-base/get-crop-name-distribution' })
 }
+
+
+// 太塬村
+export const getNumberByLandBlockId = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/get-number-by-landBlockId', params })
+}

@@ -31,7 +31,7 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="虫害种类" prop="diseaseType">
+      <el-form-item label="病虫害种类" prop="diseaseType">
         <!--        <el-input-->
         <!--          v-model="queryParams.diseaseType"-->
         <!--          placeholder="请输入病虫害种类"-->
@@ -39,7 +39,8 @@
         <!--          @keyup.enter="handleQuery"-->
         <!--          class="!w-240px"-->
         <!--        />-->
-        <el-select v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类"
+        <el-select
+v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类"
                    class="!w-240px">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
@@ -190,7 +191,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="农作物" align="center" prop="breedId"/>
-      <el-table-column label="虫害种类" align="center" prop="diseaseType"/>
+      <el-table-column label="病虫害种类" align="center" prop="diseaseType"/>
       <el-table-column label="监测周期" align="center" prop="monitorPeriod"/>
       <el-table-column label="阈值下限" align="center" prop="warnLowValue"/>
       <el-table-column label="阈值上限" align="center" prop="warnHighValue"/>

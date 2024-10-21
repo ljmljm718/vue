@@ -508,6 +508,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/bigscreenTM',
+    name: 'bigscreenTM',
+    component: () => import('@/views/bigscreenTongMing/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
     path: '/home',
     name: 'HomePage',
     component: () => import('@/views/gateway/index.vue'),
