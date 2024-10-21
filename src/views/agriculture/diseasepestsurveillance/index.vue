@@ -362,6 +362,7 @@ import PestCategoryIcon from "./assets/pest-category-icon.png";
 import SpotResTable from "./spotResTable.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
+import { throttle } from "./utils";
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' })
@@ -501,6 +502,11 @@ const curItem = ref<number>(0);  // 当前list被查看的项
 const handleCardChange = async () => {
   queryParams.pageNo = 1;
   await getList();
+  // 切换回卡片时需要设置图片列表移动到第一项 此时curItem已经设置为0
+  if ("card" === listType.value) {
+    getCountDetail(list.value[0].id);
+    imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
+  }
 }
 
 const mainImg = ref<any>();  // 大图的模板引用
@@ -534,22 +540,22 @@ const showScroll = () => {
 const imgListRef = ref<any>();  // 图片列表的模板引用
 
 // 图片列表左移 当前查看的不是最后一个时 左移一个单位 + 1rem
-const handleClickNextImg = () => {
+const handleClickNextImg = throttle(() => {
   if (curItem.value === list.value.length - 1) return;
   curItem.value = curItem.value + 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
-}
+}, 500)
 
 // 图片列表右移 当前查看的不是第一个时 右移一个单位 + 1rem
-const handleClickLastImg = () => {
+const handleClickLastImg = throttle(() => {
   if (curItem.value === 0) return;
   curItem.value = curItem.value - 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
-}
+}, 500)
 
 // 点击图片切换到当前显示位置
 const handleClickImg = (index) => {
