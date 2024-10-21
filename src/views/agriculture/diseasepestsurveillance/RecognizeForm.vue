@@ -6,9 +6,9 @@ const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+// const dialogTitle = ref('') // 弹窗的标题
+// const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+// const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const loading = ref(false) // 列表的加载中
 const mainTableId = ref('')
 const baseForm = reactive({
@@ -37,11 +37,11 @@ const open = (type: string, id: string) => {
     // 确保状态更新
     dialogVisible.value = true // 然后设置为 true
     mainTableId.value = id
-    dialogTitle.value = t('action.' + type)
-    formType.value = type
+    // dialogTitle.value = t('action.' + type)
+    // formType.value = type
   })
 
-  console.log('🚀 ~ open ~ mainTableId.value:', mainTableId.value)
+  // console.log('🚀 ~ open ~ mainTableId.value:', mainTableId.value)
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -90,12 +90,13 @@ const handleSubmit = async () => {
       recognitionType: typeMapping[recognitionType] || recognitionType // 保留原样，如果没有匹配到任何预定义值
     }
   })
-  console.log('🚀 ~ handleSubmit ~ data:', data)
+  // console.log('🚀 ~ handleSubmit ~ data:', data)
   const hasEmpty = data.some(item => Object.values(item).some(value => value === ''));
   if (hasEmpty) {
     alert('请填写完整信息');
     return; // 如果有空字符串，则显示警告并中断函数
   }
+  console.log("🚀 ~ handleSubmit ~ data:", data)
   try {
     await DiseasePestSurveillanceApi.createDiseasePestSurveillanceRecognize(data)
     message.success(t('common.updateSuccess'))
@@ -103,6 +104,7 @@ const handleSubmit = async () => {
     emit('success')
   } finally {
   }
+    
 }
 const closeDialog = () => {
   dialogVisible.value = false
@@ -165,8 +167,8 @@ const baseFormRef = ref()
             >
               <el-date-picker
                 v-model="scope.row.recognitionTime"
-                value-format="YYYY-MM-DD "
-                type="date"
+                value-format="YYYY-MM-DD hh:mm:ss"
+                type="datetime"
                 placeholder="请选择时间"
                 class="!w-240px"
               />
