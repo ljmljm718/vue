@@ -213,15 +213,18 @@
           <div class="text-14px color-[#707070] my-3px">纬度：{{ item.latitude }}</div>
           <div v-if="item.channelId" class="text-14px color-[#707070]">通道号：{{ item.channelId }}</div>
           <div class="mt-10px">
-            <el-button v-if="deviceTypeMain.includes(item.deviceType[0])" plain type="success"
-              class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px' @click="$router.push({
-      path: '/internetMonitor/deviceData/equipment-data-three',
-      query: {
-        equipmentCode: item.id
-      }
-    })">
-              查看数据
-            </el-button>
+            <el-button
+              v-if="deviceTypeMain.includes(item.deviceType[0])"
+              plain type="success"
+              class="
+                !color-[#fff] !border-none
+                !bg-[#59b756] !px-25px !py-13px
+              "
+              @click="$router.push({
+                path: '/internetMonitor/deviceData/equipment-data-three',
+                query: { equipmentCode: item.id }
+              })"
+            >查看数据</el-button>
             <el-button v-if="item.deviceStatus == 'online' && item.url != null && item.url.indexOf('mp4') > 0" plain type="success"
               class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px' @click="openExternalLink(item)">
               查看监控
@@ -323,8 +326,8 @@
     <!-- 分页 -->
     <Pagination
       :total="total"
-      :page="queryParams.pageNo"
-      :limit="queryParams.pageSize"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
       @pagination="getList()"
     />
   </ContentWrap>

@@ -56,5 +56,9 @@ export const DiseaseWarnInfoApi = {
   // 导出病虫害预警记录 Excel
   exportDiseaseWarnInfo: async (params) => {
     return await request.download({ url: `/agriculture/disease-warn-info/export-excel`, params })
+  },
+  //查询当天预警信息
+  getWarnInfo: async (params) => {
+    return await request.get({ url: `/agriculture/disease-warn-info/pageA`, params })
   }
 }
