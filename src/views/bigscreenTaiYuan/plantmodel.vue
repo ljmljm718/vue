@@ -2,5 +2,7 @@
 import GrowthMonitorDataCenter from '@/views/growthMonitoringModelDataCenter/index.vue'
 </script>
 <template>
-  <GrowthMonitorDataCenter :hiddenHeader="true" />
+  <div class="absolute left-0 top-[100px]" style="filter: hue-rotate(-35deg);">
+    <GrowthMonitorDataCenter :hiddenHeader="true" />
+  </div>
 </template>

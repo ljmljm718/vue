@@ -16,7 +16,7 @@ const openPage = (url:string) => {
     <!-- 默认分辨率 1920 1080 -->
     <scale-box>
       <div class="w-full h-full">
-        <div class="w-full h-100px header-bg flex items-end justify-between">
+        <div class="w-full h-100px header-bg flex items-center justify-between">
           <div class="h-86px flex items-center pl-50px">
             <div
               :class="`${
@@ -37,6 +37,7 @@ const openPage = (url:string) => {
               @click="acviveTab = 'model'"
             >种植模型</div>
           </div>
+          <div class="text-36px art-font text-white tracking-wider">太原示范村大屏驾驶舱</div>
           <div class="h-86px flex items-center pl-50px w-320px relative top-[-8px]">
             <current-time />
           </div>
