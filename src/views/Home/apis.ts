@@ -251,7 +251,12 @@ export const getCropNameDistribution = () => {
 }
 
 
-// 太塬村
+// ---------------------- 太塬村 ---------------------------
 export const getNumberByLandBlockId = (params) => {
   return request.get({ url: '/agriculture/statistical-intermediate-table/get-number-by-landBlockId', params })
+}
+
+// 预警信息接口-查询当天预警
+export const diseaseWarnInfo = (params) => {
+  return request.get({ url: '/agriculture/disease-warn-info/pageA', params })
 }

@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { getNumberByLandBlockId } from './apis'
+import {
+  getNumberByLandBlockId,
+  diseaseWarnInfo,
+  deviceInfoPage
+} from './apis'
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
+import dayjs from 'dayjs'
 
 const defaultProps = { children: 'child', label: 'name' }
 /** 搜索节点过滤 */
@@ -50,8 +55,18 @@ getTopDataList('1838062866524188672')
 const snapShotDevice = ref<string>('');
 const snapShotTime = ref<string>('');
 const snapShotDeviceOptions = ref<any[]>([])
-const getSnapShotDeviceOptions = async () => {
-
+const getSnapShotDeviceOptions = async (belongPlot:string) => {
+  const { list } = await deviceInfoPage({
+    // TODO: 线上环境deviceType 133,138, 本地131,134
+    pageNo: 1, pageSize: 30,
+    deviceType: '131,134', belongPlot
+  }).catch(() => {})
+  console.log("🚀 ~ getSnapShotDeviceOptions ~ list:", list)
+  if (!Array.isArray(list)) return;
+  snapShotDeviceOptions.value = list.map(item => ({
+    label: item.deviceName,
+    value: item.id
+  }));
 }
 getSnapShotDeviceOptions()
 
@@ -61,14 +76,17 @@ const getSnapPictureList = async () => {}
 getSnapPictureList()
 
 // 预警信息列表
-const preWarnList = ref<any[]>([])
+const preWarnList = ref<any[]>([]), preWarnLoading = ref<boolean>(false)
 const getPreWarnList = async () => {
-  preWarnList.value = [
-    { id: '1', title: 'A0001虫情测报仪监测到楿飞型数量(72)超过预警线', time: '2024.10.12 12:11:12' },
-    { id: '2', title: 'A0001虫情测报仪监测到楿飞型数量(72)超过预警线', time: '2024.10.12 12:11:12' },
-    { id: '3', title: 'A0001虫情测报仪监测到楿飞型数量(72)超过预警线', time: '2024.10.12 12:11:12' },
-    { id: '4', title: 'A0001虫情测报仪监测到楿飞型数量(72)超过预警线', time: '2024.10.12 12:11:12' },
-  ]
+  preWarnLoading.value = true;
+  const { list } = await diseaseWarnInfo({ pageNo: 1, pageSize: 10 }).catch(() => {
+    preWarnLoading.value = false;
+  })
+  preWarnLoading.value = false;
+  console.log("🚀 ~ getPreWarnList ~ res:", list)
+
+  if (!Array.isArray(list)) return;
+  preWarnList.value = list;
 }
 getPreWarnList()
 
@@ -314,7 +332,10 @@ const 获取病害排行列表 = async () => {}
           <el-scrollbar height="calc(100vh - 440px)">
             <div class="title-frame">今日抓拍</div>
             <div class="flex justify-between space-x-2 py-2">
-              <el-select v-model="snapShotDevice">
+              <el-select
+                v-model="snapShotDevice"
+                placeholder="请选择设备"
+              >
                 <el-option
                   v-for="item in snapShotDeviceOptions"
                   :key="item.value"
@@ -347,7 +368,7 @@ const 获取病害排行列表 = async () => {}
         <el-card class="h-250px">
           <div class="title-frame mb-2">预警信息</div>
           <el-scrollbar height="190px">
-            <div class="p-3 box-border">
+            <div class="p-3 box-border" v-loading="preWarnLoading">
               <div
                 class="py-1rem"
                 style="border-top: 1px solid #99999980;"
@@ -356,11 +377,11 @@ const 获取病害排行列表 = async () => {}
               >
                 <div
                   class="line-clamp-1 mb-2 cursor-pointer font-bold text-[.9rem]"
-                  :title="item.title"
-                >{{ item.title }}</div>
+                  :title="item.lowMsg"
+                >{{ item.lowMsg }}</div>
                 <div class="flex space-x-3 items-center text-[.7rem]">
-                  <div class="rounded-1 bg-#fdefef px-2 py-1">严重虫情</div>
-                  <div class="text-[.8rem]">{{ item.time }}</div>
+                  <div class="rounded-1 bg-#fdefef px-2 py-1">{{ item.reservedFour }}</div>
+                  <div class="text-[.8rem]">{{ dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
               </div>
             </div>
