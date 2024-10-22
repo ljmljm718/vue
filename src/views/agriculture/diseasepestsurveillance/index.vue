@@ -327,14 +327,14 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
                   <img :src="PestAmountIcon" class="align-middle objcet-contain h-[2.5rem]" />
                   <span class="pl-[1rem]">识别虫害数量</span>
                 </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumById }}</span>
+                <span class="text-[1.5rem]">{{ countDetail.dataSumByQuantity }}</span>
               </div>
               <div class="h-[4rem] leading-[4rem] bg-[#FEF9EE] flex justify-between px-[2rem] mt-[.5rem] lg:mt-0">
                 <div>
                   <img :src="PestCategoryIcon" class="align-middle objcet-contain h-[2.5rem]" />
                   <span class="pl-[1rem]">虫害分类</span>
                 </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumByName }}</span>
+                <span class="text-[1.5rem]">{{ countDetail.dataSumByType }}</span>
               </div>
             </div>
             <!-- 识别记录 -->
@@ -599,15 +599,15 @@ window.addEventListener("resize", () => {
 
 // 病虫害数量
 const countDetail = ref<any>({
-  dataSumByName: 0,  // 分类数量
-  dataSumById: 0  // 总数量
+  dataSumByType: 0,  // 分类数量
+  dataSumByQuantity: 0  // 总数量
 });
 
 // 获取病虫害数量
 const getCountDetail = async (id) => {
   const res = await DiseasePestSurveillanceApi.countDetails({ id });
-  countDetail.value.dataSumByName = res.dataSumByName;
-  countDetail.value.dataSumById = res.dataSumById;
+  countDetail.value.dataSumByType = res.dataSumByType;
+  countDetail.value.dataSumByQuantity = res.dataSumByQuantity;
 }
 </script>
 
