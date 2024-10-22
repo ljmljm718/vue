@@ -502,7 +502,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
   {
     path: '/bigscreenTY',
     name: 'bigscreenTY',
-    component: () => import('@/views/bigscreenTY/index.vue'),
+    component: () => import('@/views/bigscreenTaiYuan/index.vue'),
     meta: {
       hidden: true
     }
