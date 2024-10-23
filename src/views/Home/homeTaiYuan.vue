@@ -560,7 +560,10 @@ const getCountDay = async (id) =>{
         <el-card class="h-250px">
           <div class="title-frame mb-2">预警信息</div>
           <el-scrollbar height="190px">
-            <div class="p-3 box-border"  v-loading="preWarnLoading>
+            <div
+              class="p-3 box-border"
+              v-loading="preWarnLoading"
+            >
               <div
                 class="py-1rem"
                 style="border-top: 1px solid #99999980;"
