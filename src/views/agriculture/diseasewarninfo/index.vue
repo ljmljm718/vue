@@ -529,9 +529,9 @@ const formatTimestamp = (timestamp) => {
 }
 //根据预警等级切换tag颜色
 const getTagType = (warnType: string) => {
-  if (warnType.includes('一级') || warnType.includes('1级')) {
+  if (warnType.includes('一级') || warnType.includes('1级') || warnType.includes('严重')) {
     return 'danger'; // 红色
-  } else if (warnType.includes('二级') || warnType.includes('2级')) {
+  } else if (warnType.includes('二级') || warnType.includes('2级')|| warnType.includes('轻微')) {
     return 'warning'; // 橙色
   } else if (warnType.includes('三级') || warnType.includes('3级')) {
     return 'success'; // 绿色
