@@ -88,7 +88,7 @@ const getSnapShotDeviceOptions = async (id) => {
   let res = {}
   if (process.env.NODE_ENV == "development") {
     //开发环境
-    res = await devicePageList({pageNo:1,pageSize:30,deviceType:'131,134',belongPlot:id})
+    res = await devicePageList({pageNo:1,pageSize:30,deviceType:'133,138',belongPlot:id})
 
   } else if (process.env.NODE_ENV == "production") {
     //生产环境
@@ -99,8 +99,8 @@ const getSnapShotDeviceOptions = async (id) => {
   snapShotImg.value = res.list[0].imgId
   snapShotDeviceOptions.value = res.list
   snapPictureList.value = res.list
-  getSnapPage(res.list[0].deviceName)
-  getSnapType(res.list[0].id)
+  getSnapPage(res.list[0].id)
+  //getSnapType(res.list[0].id)
 }
 //今日抓拍
 const selectChange = (current) => {
@@ -109,9 +109,10 @@ const selectChange = (current) => {
     if(current == item.id) {
       snapShotDevice.value = item.deviceName
       console.log(snapShotDevice.value,'itemitem')
+      console.log("-->>获取：",item)
 
-      getSnapPage(item.deviceName)
-      getSnapType(item.id)
+      getSnapPage(item.id)
+      //getSnapType(item.id)
     }
   })
 }
@@ -137,6 +138,7 @@ const getSnapPage = async (name) =>{
   console.log(res,'设备信息')
   snapDevice.value = res.list[0]
   snapImgTotal.value = res.total
+  getSnapType(res.list[0].id)
 }
 
 // 抓拍图片列表
