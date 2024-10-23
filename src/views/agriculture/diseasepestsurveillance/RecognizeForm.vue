@@ -11,10 +11,31 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 // const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const loading = ref(false) // 列表的加载中
 const mainTableId = ref('')
+interface DemoItem {
+  mainTableId: string
+  name: string
+  quantity: string
+  density: string
+  recognitionTime: number
+  recognitionType: string
+  recorder: string
+  isEditing: boolean
+}
 const baseForm = reactive({
-  demoList: [
+  demoList: [] as DemoItem[]
+})
+const isSubmitting = ref(false) // 用于控制提交按钮状态
+
+/** 打开弹窗 */
+const open = (type: string, id: string) => {
+  if (!baseForm.demoList) {
+    console.error('demoList is not initialized.')
+    return // 如果 demoList 未初始化，终止执行
+  }
+  // 初始化 baseForm
+  baseForm.demoList = [
     {
-      mainTableId: mainTableId.value,
+      mainTableId: id, // 动态设置 mainTableId
       name: '',
       quantity: '',
       density: '',
@@ -24,24 +45,12 @@ const baseForm = reactive({
       isEditing: true
     }
   ]
-})
-
-/** 打开弹窗 */
-const open = (type: string, id: string) => {
-  if (!baseForm.demoList) {
-    console.error('demoList is not initialized.')
-    return // 如果 demoList 未初始化，终止执行
-  }
   dialogVisible.value = false // 先设置为 false
   nextTick(() => {
     // 确保状态更新
     dialogVisible.value = true // 然后设置为 true
     mainTableId.value = id
-    // dialogTitle.value = t('action.' + type)
-    // formType.value = type
   })
-
-  // console.log('🚀 ~ open ~ mainTableId.value:', mainTableId.value)
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -72,6 +81,11 @@ const saveInfo = (index) => {
 /** 提交识别信息 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const handleSubmit = async () => {
+  if (isSubmitting.value) {
+    return // 如果正在提交，直接返回，防止重复提交
+  }
+
+  isSubmitting.value = true // 设置为正在提交状态
   baseForm.demoList.forEach((line) => {
     if (!line.mainTableId) {
       line.mainTableId = mainTableId.value // 如果发现 mainTableId 为空，则尝试再次赋值
@@ -91,22 +105,33 @@ const handleSubmit = async () => {
     }
   })
   // console.log('🚀 ~ handleSubmit ~ data:', data)
-  const hasEmpty = data.some(item => Object.values(item).some(value => value === ''));
+  const hasEmpty = data.some((item) => Object.values(item).some((value) => value === ''))
   if (hasEmpty) {
-    alert('请填写完整信息');
-    return; // 如果有空字符串，则显示警告并中断函数
+    alert('请填写完整信息并点击保存')
+    isSubmitting.value = false
+    return // 如果有空字符串，则显示警告并中断函数
   }
-  console.log("🚀 ~ handleSubmit ~ data:", data)
+  const hasUnsavedRow = baseForm.demoList.some((item) => item.isEditing)
+  if (hasUnsavedRow) {
+    alert('请保存所有正在编辑的信息后再提交')
+    isSubmitting.value = false
+    return // 如果有未保存的行，则提示并中断提交
+  }
+  console.log('🚀 ~ handleSubmit ~ data:', data)
   try {
     await DiseasePestSurveillanceApi.createDiseasePestSurveillanceRecognize(data)
-    message.success(t('common.updateSuccess'))
     dialogVisible.value = false
+    message.success(t('common.updateSuccess'))
     emit('success')
+  } catch (error) {
+    ElMessage.error('提交失败，请重试') // 提交失败时的提示框
   } finally {
+    isSubmitting.value = false // 无论成功还是失败，最后都要重置状态
   }
-    
 }
+//****关闭弹窗****
 const closeDialog = () => {
+  baseForm.demoList = [] // 清空 demoList 或重置为初始状态
   dialogVisible.value = false
 }
 
@@ -133,7 +158,7 @@ const baseFormRef = ref()
         header-cell-class-name="table_header"
       >
         <el-table-column label="名称" align="center" prop="name">
-          <template #default="scope" >
+          <template #default="scope">
             <el-form-item :prop="'demoList.' + scope.$index + '.name'" v-if="scope.row.isEditing">
               <el-input v-model="scope.row.name" placeholder="请输入名称" clearable />
             </el-form-item>
@@ -145,7 +170,12 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.quantity'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.quantity" placeholder="请输入数量" clearable  oninput="value=value.replace(/[^\d.]/g,'')"/>
+              <el-input
+                v-model="scope.row.quantity"
+                placeholder="请输入数量"
+                clearable
+                oninput="value=value.replace(/[^\d.]/g,'')"
+              />
             </el-form-item>
           </template>
         </el-table-column>
@@ -211,20 +241,19 @@ const baseFormRef = ref()
         </el-table-column>
         <el-table-column label="操作" align="center" prop="identifyStatus">
           <template #default="scope">
-            <el-form-item >
-              <div style="width: 100%; text-align: center;">
-              <el-button link type="primary" @click="saveInfo(scope.$index)">
-                {{ scope.row.isEditing ? '保存' : '编辑' }}
-                
-              </el-button>
-            </div>
+            <el-form-item>
+              <div style="width: 100%; text-align: center">
+                <el-button link type="primary" @click="saveInfo(scope.$index)">
+                  {{ scope.row.isEditing ? '保存' : '编辑' }}
+                </el-button>
+              </div>
             </el-form-item>
           </template>
         </el-table-column>
       </el-table>
     </el-form>
     <div class="flex w-full h-15 flex justify-center items-center">
-      <el-button type="primary" @click="handleSubmit">确定 </el-button>
+      <el-button type="primary" @click="handleSubmit" :disabled="isSubmitting">确定 </el-button>
       <el-button type="primary" @click="closeDialog">取消 </el-button>
     </div>
   </Dialog>
@@ -233,9 +262,9 @@ const baseFormRef = ref()
 .el-select {
   padding: 1px 7px;
 }
-::v-deep .table_header{
+::v-deep .table_header {
   background-color: #f5f5f5 !important;
-  color:#333;
+  color: #333;
   font-weight: 800;
   text-align: center;
   padding: 4px;

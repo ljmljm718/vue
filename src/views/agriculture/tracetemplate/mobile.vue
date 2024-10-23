@@ -109,6 +109,10 @@ const productList = computed(() => {
             <div class="w-4.5rem">原产地:</div>
             <div class="value-right">{{ dataInfo?.origin ?? dataInfo?.sourceArea }}</div>
           </div>
+          <div class="flex items-start justify-between">
+            <div class="w-4.5rem">生产时间:</div>
+            <div class="value-right">{{ dataInfo?.productionTime ? dayjs(dataInfo.productionTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</div>
+          </div>
         </div>
         <div
           class="title-bg w-7rem h-2rem absolute text-center text-white"

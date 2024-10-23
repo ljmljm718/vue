@@ -215,6 +215,8 @@ const resetForm = () => {
     finishArea: undefined,
     batchCode: undefined,
     planDesc: undefined,
+    modeOperation:undefined,
+    remark:undefined,
   }
   formRef.value?.resetFields()
 }
@@ -504,6 +506,16 @@ const activeName = ref<any>(['1', '2'])
                   <el-col :span="12">
                     <el-form-item label="计划描述" prop="planDesc">
                       <el-input v-model="formData.planDesc" placeholder="请输入计划描述" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="作业方式" prop="modeOperation">
+                      <el-input v-model="formData.modeOperation" placeholder="请输入作业方式" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="备注" prop="remark">
+                      <el-input v-model="formData.remark" placeholder="请输入备注" />
                     </el-form-item>
                   </el-col>
                 </el-row>

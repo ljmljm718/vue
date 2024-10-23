@@ -5,6 +5,7 @@
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
+    @close="resetQuery()"
     width="1300"
   >
     <ContentWrap>
@@ -63,8 +64,16 @@
     </ContentWrap>
 
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true" ref="multipleTableRef"
-                @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :show-overflow-tooltip="true"
+        :stripe="true"
+        ref="multipleTableRef"
+        @select="select"
+        @row-click="selectClick"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="所属基地" align="center" prop="parkId" />
         <el-table-column label="编号" align="center" prop="code" width="200"/>
@@ -87,9 +96,11 @@
       />
     </ContentWrap>
     <template #footer>
-      <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
-        确 定
-      </el-button>
+      <el-button
+        :disabled="!selectionList.length"
+        type="primary" 
+        @click="submitForm"
+      >确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>

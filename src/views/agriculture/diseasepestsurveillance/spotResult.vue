@@ -2,6 +2,15 @@
 import {dateFormatter} from '@/utils/formatTime'
 import { DICT_TYPE } from '@/utils/dict'
 import { CategoryManagementApi } from "@/api/agriculture/categorymanagement";
+import { propTypes } from '@/utils/propTypes'
+
+const props = defineProps({
+  title: propTypes.string.def('')
+});
+
+const dialogTitle = computed(() => {
+  return props.title ?? ''
+})
 
 const showResult = ref<boolean>(false)
 const loading = ref<boolean>(false);
@@ -64,7 +73,7 @@ defineExpose({ handleOpen })
         pb-3 pt-1 px-1 h-2rem box-border
       "
     >
-      <div class="font-bold">孢子捕捉仪 识别结果</div>
+      <div class="font-bold">{{ dialogTitle }} 识别结果</div>
       <el-icon @click="handleClose()"><Close /></el-icon>
     </div>
     <div

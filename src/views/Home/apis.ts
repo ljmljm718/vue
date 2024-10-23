@@ -260,3 +260,37 @@ export const getNumberByLandBlockId = (params) => {
 export const diseaseWarnInfo = (params) => {
   return request.get({ url: '/agriculture/disease-warn-info/pageA', params })
 }
+// 太塬村  病害害排行 按日查询
+export const getSortNumberByDay = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/get-sort-number-by-day', params })
+}
+// 太塬村 病虫害排行 按照 周月查询
+export const getNameQuantityByDateAndPlotId = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/get-name-quantity-by-date-and-plot-id', params })
+}
+// 太塬村 病虫害排行 按照 自定义查询
+export const getSortNumberByCustomize = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/get-sort-number-by-customize', params })
+}
+
+// 太塬村 病虫害 趋势 按日查询 
+export const countDay = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/count-day', params })
+}
+// 太塬村 病虫害 趋势 按月查询
+export const countMonth = (params) => {
+  return request.get({ url: '/agriculture/statistical-intermediate-table/count-month', params })
+}
+
+// 太塬村 今日抓拍 设备列表
+export const devicePageList = (params) => {
+  return request.get({ url: '/agriculture/device-info/page', params })
+}
+// 太塬村 今日抓拍 设备信息
+export const snapPage = (params) => {
+  return request.get({ url: '/agriculture/disease-pest-surveillance/page', params })
+}
+// 太塬村 今日抓拍 抓拍信息
+export const snapType = (params) => {
+  return request.get({ url: '/agriculture/identification-result/pest/number/type', params })
+}

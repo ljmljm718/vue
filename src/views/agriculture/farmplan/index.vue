@@ -275,7 +275,7 @@
             placeholder="请选择月份"
           />
           </div>
-          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> {{ item.defineName }} </div>
+          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[item.defineName]}] rounded-50%`'></div> {{ item.defineName }} </div>
         </div>
       </div>
       <div class="w-89% " >
@@ -314,11 +314,11 @@
           </div>
           <div v-for="item,index in dataList" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
             <div class='text-30px my-18px' style="font-weight:600">{{item.data}}</div>
-             <div class="w-88% h-130px" v-for="itm,inde in item.child" :key="inde" v-show="ItemVal == inde  || ItemVal3 == inde">
-              <div v-show="item.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(inde,item.child,'-',index)"> > </div> {{ item.plotName }} <div class='cursor-pointer' @click="tabItem(inde,item.child,'+',index)"> > </div> </div>
+             <div class="w-88% h-130px"  v-if="item.child.length != 0">
+              <div v-show="item.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(item.child,'-',index)"> > </div> {{ item.plotName }} <div class='cursor-pointer' @click="tabItem(item.child,'+',index)"> > </div> </div>
                     <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
                     <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
-                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ item.name }}</div>
+                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[item.name]}] rounded-50%`'></div> {{ item.name }}</div>
                     </div>
               </div>
               <div class="w-88% h-130px" v-if="item.child.length == 0">
@@ -377,6 +377,15 @@
           <label>{{ scope.row.personName == 'null' ? '' : scope.row.personName }} </label>
         </template>
       </el-table-column>
+
+      <el-table-column label="任务发布者" align="center" prop="taskPublisher" width="180" >
+        <template #default="scope">
+          <label>{{ scope.row.taskPublisher == '0' ? "农户" : scope.row.taskPublisher == '1'? "认养用户" : "" }} </label>
+        </template>
+      </el-table-column>
+      <el-table-column label="认养用户" align="center" prop="modeOperation" width="180" />
+      <el-table-column label="备注" align="center" prop="remark" width="180" />
+
       <el-table-column
         label="计划开始时间"
         align="center"
@@ -708,12 +717,9 @@ const { t } = useI18n() // 国际化
 const loading = ref(true) // 列表的加载中
 const day = ref(new Date().getDate())
 const formType = ref(false)
-const farmDefineObj = ref({
-  '蟹苗投放':'#73c0de',
-  '饲料投喂':'#3ba272',
-  '水质调控':'#0d9b8e',
-  '病虫防害':'#ee6666'
-})
+const farmDefineOptions = ref([]) // 设备分类选项
+
+const farmDefineObj = ref({})
 
 const list = ref<FarmPlanVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -736,7 +742,10 @@ const queryParams = reactive({
   endTime: [],
   planArea: undefined,
   area: undefined,
-  createTime: []
+  createTime: [],
+  taskPublisher:undefined,
+  modeOperation:undefined,
+  remark:undefined
 })
 const queryParamsA = reactive({
   pageNo: 1,
@@ -744,7 +753,6 @@ const queryParamsA = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-const farmDefineOptions = ref([]) // 设备分类选项
 const formData = ref({
   feedType: '',
   feedName: '',
@@ -895,7 +903,21 @@ const handleExport = async () => {
 onMounted(async () => {
   // getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
- 
+  const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+   // 生成并设置随机颜色
+  let list = []
+  for (let i = 0; i < farmDefineOptions.value.length; i++) {
+    list.push( generateRandomColor());
+
+  }
+  list.forEach((item,index) =>{
+    farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
+  })
+  console.log(farmDefineObj.value,'list farmDefineObj.value')
+    //   循环遍历不同背景色
+   
+
+
 })
 onActivated(async () => {
   await getList()
@@ -1289,7 +1311,7 @@ const getData = () => {
 getData()
 
 const dataChange = (e) =>{
-
+  silderVal.value = ''
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0
@@ -1341,28 +1363,27 @@ const dataChange = (e) =>{
 // 左侧活动点击
 const silderVal = ref('')
 const silderTab = (val:any) => {
-
-  silderVal.value=val
+  dataListA.value=[ ...dataList.value,...dataList2.value ]
   dataList.value = []
   dataList2.value = []
+
+  silderVal.value=val
   dataListA.value.forEach( (item:any) => {
     if(item.name == val){
       dataList.value.push(item)
-      
     }
   })
-  console.log(dataList.value,'sousuo')
 }
 
 //******************************地块切换***********************
 const ItemVal = ref<Number>(0)
 const ItemVal2 = ref<Number>(-1)
 const ItemVal3 = ref<Number>(-1)
-const tabItem = (index:number,list:any[],str,indexA) => {
+const tabItem = (list:any[],str,indexA) => {
   let lengNum = list.length
   if( lengNum == 1) return true
   if(str == '+'){
-    if(index >= lengNum-1 ){
+    if(ItemVal.value >= lengNum-1 ){
         ItemVal.value = 0
         dataList.value[indexA].plotName = list[ItemVal.value].plotName
         dataList.value[indexA].name = list[ItemVal.value].name
@@ -1371,21 +1392,12 @@ const tabItem = (index:number,list:any[],str,indexA) => {
       dataList.value[indexA].plotName = list[ItemVal.value].plotName 
       dataList.value[indexA].name = list[ItemVal.value].name 
       ItemVal.value++
-      console.log(ItemVal.value,'ItemVal.value');
-      dataList.value.forEach( (item:any) => {
-          if(item.child.length == 1){
-              ItemVal2.value = 0
-          }
-          else if(item.child.length <= ItemVal.value  ){
-            ItemVal3.value = ItemVal.value 
-          }
-      })
 
-     
+      console.log(ItemVal.value,'ItemVal.value');
 
   }else{
 
-    if(index == 0 ){
+    if(ItemVal.value == 0 ){
         ItemVal.value = lengNum-1
         dataList.value[indexA].plotName = list[ItemVal.value].plotName
         dataList.value[indexA].name = list[ItemVal.value].name
@@ -1395,15 +1407,7 @@ const tabItem = (index:number,list:any[],str,indexA) => {
       dataList.value[indexA].name = list[ItemVal.value].name
       ItemVal.value--
 
-      dataList.value.forEach( (item:any) => {
-          if(item.child.length == 1){
-              ItemVal2.value = 0
-          }
-          else if(item.child.length <= ItemVal.value  ){
-            ItemVal3.value = ItemVal.value 
-          }
-      })
-      
+     
   
     }
 

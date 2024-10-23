@@ -168,7 +168,9 @@ const getTopDataList = async()=>{
 }
 getTopDataList()
 //品种分布
+let chartIns = null;
 const initChart = async () => {
+  if (chartIns) chartIns.dispose();
   const res = await getBreedCategory()
   if (!Array.isArray(res)) return
   const seriesData = res.map(item => ({
@@ -176,7 +178,7 @@ const initChart = async () => {
     value: item.number,
     unit: item.unit
   }))
-  initChartStatic(
+  chartIns = initChartStatic(
     'typePercentChart',
     generatePieOptions({
       legend: {
@@ -232,6 +234,13 @@ onMounted(async () => {
   await getResList();
   await initChart(); 
 });
+
+const handleActive = () => {
+  nextTick(() => {
+    initChart()
+  })
+}
+defineExpose({ handleActive })
 
 
 /****************************** 农事任务 start ******************************/

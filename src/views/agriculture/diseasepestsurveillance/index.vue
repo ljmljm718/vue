@@ -10,8 +10,11 @@
     >
       <el-form-item label="设备" prop="deviceName">
         <el-input
-v-model="queryParams.deviceName" placeholder="请选择设备" disabled
-                  class="!w-240px">
+          v-model="queryParams.deviceName"
+          placeholder="请选择设备"
+          disabled
+          class="!w-240px"
+        >
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
               <Icon icon="ep:search"/>
@@ -22,13 +25,17 @@ v-model="queryParams.deviceName" placeholder="请选择设备" disabled
       </el-form-item>
       <el-form-item label="监测物种" prop="monitorSpecies">
         <el-select
-v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物种"
-                   class="!w-240px">
+          v-model="queryParams.monitorSpecies"
+          clearable
+          placeholder="请选择监测物种"
+          class="!w-240px"
+        >
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
             :label="item.categoryName"
-            :value="item.id"/>
+            :value="item.id"
+          />
         </el-select>
       </el-form-item>
       <!-- <el-form-item label="监测类型" prop="monitorType">
@@ -113,7 +120,10 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
   <!-- 列表 -->
   <ContentWrap class="relative">
     <!-- 识别结果 -->
-    <SpotResult ref="spotInstance" />
+    <SpotResult
+      ref="spotInstance"
+      :title="activeTitle"
+    />
 
     <!-- 标题 -->
     <div class="flex justify-between mb-[1rem]">
@@ -199,7 +209,7 @@ v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物�
           <el-button
             link
             type="primary"
-            @click="handleOpenSpotRes(scope.row.id)"
+            @click="handleOpenSpotRes(scope.row)"
           >
             识别结果
           </el-button>
@@ -385,7 +395,10 @@ import SpotResult from './spotResult.vue'
 defineOptions({ name: 'DiseasePestSurveillance' })
 
 const spotInstance = ref();
-const handleOpenSpotRes = (id:string) => {
+const activeTitle = ref<string>('')
+const handleOpenSpotRes = (item:any) => {
+  const { id, device } = item;
+  activeTitle.value = device;
   spotInstance.value.handleOpen(id)
 }
 
