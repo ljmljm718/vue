@@ -120,7 +120,8 @@
       <el-table-column label="投喂时间" align="center" prop="feedingTime" />
       <el-table-column label="注意事项" align="center" prop="precautions" />
       <el-table-column label="投喂建议" align="center" prop="feedingAdvice" />
-      <el-table-column label="投喂饲料" align="center" prop="feedingFood" />
+      <el-table-column label="投喂饲料" align="center" prop="inputProducts" />
+      <el-table-column label="投喂描述" align="center" prop="feedingFood" />
       <el-table-column
         label="创建时间"
         align="center"

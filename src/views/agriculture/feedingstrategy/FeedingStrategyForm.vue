@@ -28,8 +28,17 @@
       <el-form-item label="投喂建议" prop="feedingAdvice">
         <el-input type="textarea" v-model="formData.feedingAdvice" placeholder="请输入投喂建议" />
       </el-form-item>
-      <el-form-item label="投喂饲料" prop="feedingFood">
-        <el-input  v-model="formData.feedingFood" placeholder="请输入投喂饲料" />
+      <el-form-item label="投喂描述" prop="feedingFood" >
+        <el-input  v-model="formData.feedingFood" placeholder="请输入投喂描述" />
+      </el-form-item>
+      <el-form-item label="投喂饲料" prop="inputProducts" >
+        <el-select v-model="formData.inputProductList" multiple  clearable placeholder="请选择监测物种">
+          <el-option
+            v-for="item in listProduct"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name"/>
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -40,7 +49,7 @@
 </template>
 <script setup lang="ts">
 import { FeedingStrategyApi, FeedingStrategyVO } from '@/api/agriculture/feedingstrategy'
-
+import {ProductVO, ProductApi} from "@/api/erp/product/product";
 /** 投喂策略 表单 */
 defineOptions({ name: 'FeedingStrategyForm' })
 
@@ -61,6 +70,7 @@ const formData = ref({
   precautions: undefined,
   feedingAdvice: undefined,
   feedingFood: undefined,
+  inputProductList:[],
 })
 const formRules = reactive({
   growthPeriod: [{ required: true, message: '生长期不能为空', trigger: 'blur' }],
@@ -68,7 +78,7 @@ const formRules = reactive({
   cycle: [{ required: true, message: '周期不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
-
+const listProduct = ref<ProductVO[]>([])
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -76,10 +86,11 @@ const open = async (type: string, id?: number) => {
   formType.value = type
   resetForm()
   // 修改时，设置数据
+  listProduct.value = await ProductApi.getProductSimpleList()
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await FeedingStrategyApi.getFeedingStrategy(id)
+      formData.value = await FeedingStrategyApi.getFeedingStrategyNew(id)
     } finally {
       formLoading.value = false
     }
@@ -123,6 +134,7 @@ const resetForm = () => {
     precautions: undefined,
     feedingAdvice: undefined,
     feedingFood: undefined,
+    inputProductList:[],
   }
   formRef.value?.resetFields()
 }

@@ -44,4 +44,9 @@ export const FeedingStrategyApi = {
   exportFeedingStrategy: async (params) => {
     return await request.download({ url: `/agriculture/feeding-strategy/export-excel`, params })
   },
-}
+
+  //  新查询投喂策略详情，用于投喂饲料编辑回显
+  getFeedingStrategyNew: async (id: number) => {
+    return await request.get({ url: `/agriculture/feeding-strategy/get-new?id=` + id })
+  },
+}
