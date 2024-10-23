@@ -233,6 +233,13 @@ onMounted(async () => {
   await initChart(); 
 });
 
+const handleActive = () => {
+  nextTick(() => {
+    initChart()
+  })
+}
+defineExpose({ handleActive })
+
 
 /****************************** 农事任务 start ******************************/
 const calendarIns = ref()

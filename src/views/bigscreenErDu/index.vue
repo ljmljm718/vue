@@ -5,10 +5,23 @@ import AgriComponent from './agriculture.vue'
 import VisualMonitor from './visualmonitor.vue'
 import PlantModel from './plantmodel.vue'
 
-const acviveTab = ref<string>('agri')
+const activeTab = ref<string>('agri')
 const openPage = (url:string) => {
   if (!url) return;
   window.open(url);
+}
+
+const agricultureRef = ref()
+const visualMonitorRef = ref()
+const plantModelRef = ref()
+const handleTabChange = (tab:string) => {
+  if (!tab) return;
+  activeTab.value = tab;
+  nextTick(() => {
+    if (tab === 'agri') agricultureRef.value?.handleActive();
+    if (tab === 'monitor') visualMonitorRef.value?.handleActive();
+    if (tab === 'model') plantModelRef.value?.handleActive();
+  })
 }
 </script>
 <template>
@@ -20,21 +33,21 @@ const openPage = (url:string) => {
           <div class="h-86px flex items-center pl-50px">
             <div
               :class="`${
-                acviveTab === 'agri' ? 'active-btn-bg' : 'btn-bg'
+                activeTab === 'agri' ? 'active-btn-bg' : 'btn-bg'
               } w-117px h-32px text-14px text-#01F892 flex items-center justify-center cursor-pointer hover:scale-105 transition`"
-              @click="acviveTab = 'agri'"
+              @click="handleTabChange('agri')"
             >智慧农业</div>
             <div
               :class="`${
-                acviveTab === 'monitor' ? 'active-btn-bg' : 'btn-bg'
+                activeTab === 'monitor' ? 'active-btn-bg' : 'btn-bg'
               } w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition`"
-              @click="acviveTab = 'monitor'"
+              @click="activeTab = 'monitor'"
             >可视化监控</div>
             <div
               :class="`${
-                acviveTab === 'model' ? 'active-btn-bg' : 'btn-bg'
+                activeTab === 'model' ? 'active-btn-bg' : 'btn-bg'
               } w-117px h-32px text-14px text-#FFFFFF flex items-center justify-center cursor-pointer hover:scale-105 transition`"
-              @click="acviveTab = 'model'"
+              @click="activeTab = 'model'"
             >种植模型</div>
           </div>
           <div class="h-86px flex items-center pl-50px w-320px relative top-[-8px]">
@@ -42,9 +55,9 @@ const openPage = (url:string) => {
           </div>
         </div>
         <div class="w-full h-980px p-20px pt-10px box-border">
-          <agri-component v-if="acviveTab === 'agri'" />
-          <visual-monitor v-if="acviveTab === 'monitor'" />
-          <plant-model v-if="acviveTab === 'model'" />
+          <agri-component v-if="activeTab === 'agri'" ref="agricultureRef" />
+          <visual-monitor v-if="activeTab === 'monitor'" ref="visualMonitorRef" />
+          <plant-model v-if="activeTab === 'model'" ref="plantModelRef" />
         </div>
       </div>
     </scale-box>
