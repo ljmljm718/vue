@@ -272,7 +272,8 @@ export const getNameQuantityByDateAndPlotId = (params) => {
 export const getSortNumberByCustomize = (params) => {
   return request.get({ url: '/agriculture/statistical-intermediate-table/get-sort-number-by-customize', params })
 }
-// 太塬村 病虫害 趋势 按日查询
+
+// 太塬村 病虫害 趋势 按日查询 
 export const countDay = (params) => {
   return request.get({ url: '/agriculture/statistical-intermediate-table/count-day', params })
 }
@@ -280,6 +281,7 @@ export const countDay = (params) => {
 export const countMonth = (params) => {
   return request.get({ url: '/agriculture/statistical-intermediate-table/count-month', params })
 }
+
 // 太塬村 今日抓拍 设备列表
 export const devicePageList = (params) => {
   return request.get({ url: '/agriculture/device-info/page', params })
@@ -287,4 +289,8 @@ export const devicePageList = (params) => {
 // 太塬村 今日抓拍 设备信息
 export const snapPage = (params) => {
   return request.get({ url: '/agriculture/disease-pest-surveillance/page', params })
+}
+// 太塬村 今日抓拍 抓拍信息
+export const snapType = (params) => {
+  return request.get({ url: '/agriculture/identification-result/pest/number/type', params })
 }
