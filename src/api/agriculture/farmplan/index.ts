@@ -25,6 +25,9 @@ export interface FarmPlanVO {
   finishArea:string
   batchCode:string
   planDesc: string // 计划描述
+  taskPublisher:string
+  modeOperation:string
+  remark:string
 }
 
 // 农事计划 API

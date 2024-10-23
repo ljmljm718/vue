@@ -377,6 +377,15 @@
           <label>{{ scope.row.personName == 'null' ? '' : scope.row.personName }} </label>
         </template>
       </el-table-column>
+
+      <el-table-column label="任务发布者" align="center" prop="taskPublisher" width="180" >
+        <template #default="scope">
+          <label>{{ scope.row.taskPublisher == '0' ? "农户" : scope.row.taskPublisher == '1'? "认养用户" : "" }} </label>
+        </template>
+      </el-table-column>
+      <el-table-column label="认养用户" align="center" prop="modeOperation" width="180" />
+      <el-table-column label="备注" align="center" prop="remark" width="180" />
+
       <el-table-column
         label="计划开始时间"
         align="center"
@@ -733,7 +742,10 @@ const queryParams = reactive({
   endTime: [],
   planArea: undefined,
   area: undefined,
-  createTime: []
+  createTime: [],
+  taskPublisher:undefined,
+  modeOperation:undefined,
+  remark:undefined
 })
 const queryParamsA = reactive({
   pageNo: 1,
