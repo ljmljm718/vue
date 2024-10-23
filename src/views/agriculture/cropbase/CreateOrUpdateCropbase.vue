@@ -196,11 +196,10 @@
       </template>
     </EditFrame>
   </div>
-  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
-
-  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 
   <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
 </template>
 <script setup lang="ts">
 // 需要修改的方法
