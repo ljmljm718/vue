@@ -213,6 +213,9 @@ const initPlayer = async (containerId, dtu, channelId = '') => {
     hls.destroy()
   })
 }
+
+const handleActive = () => {}
+defineExpose({ handleActive })
 </script>
 <style scoped lang="scss">
 @for $i from 1 through 3 {
