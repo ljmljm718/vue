@@ -120,31 +120,35 @@ const selectChange = (current) => {
 }
 const monitorTime = ref([]) 
 const snapShotChange = (date) =>{
+  monitorTime.value=[]
   let data = new Date(date)
   let year = data.getFullYear()
   let month = data.getMonth()+1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth()+1)
-  let day = data.getDay() >= 10 ? data.getDay() : '0' + data.getDay()
+  let day = data.getDate() >= 10 ? data.getDate() : '0' + data.getDate()
   let time = `${year}-${month}-${day} 00:00:00`
   let time2 = `${year}-${month}-${day} 23:59:59`
   monitorTime.value.push( time )
   monitorTime.value.push( time2 )
-  if(snapId.value) getSnapPage(snapId.value)
+   getSnapPage(snapId.value)
 }
 
 //获取设备信息 图片列表 以及图片总数
 const snapDevice = ref({})
 const snapImgTotal = ref<Number>(0)
 const getSnapPage = async (id) =>{
-  console.log(name,'获取设备信息 图片 列表')
-  let res = await snapPage({identifyStatus:'0',pageNo:1,pageSize:10,device:id,monitorTime:[]})
-  console.log(res,'设备信息 v获取设备信息 图片 列表')
-  snapShotImg.value = res.list[0].monitorPicture
+  console.log(monitorTime.value,'monitorTime.valuemonitorTime.value')
+  let res = await snapPage({identifyStatus:'0',pageNo:1,pageSize:10,device:id,monitorTime:monitorTime.value})
+  snapShotImg.value = res.list[0]?.monitorPicture
   snapPictureList.value = res.list
   snapPictureList2.value = res.list 
   snapImgTotal.value = res.total
-  snapDevice.value.monitorSpecies = res.list[0].monitorSpecies
-  getSnapType(res.list[0].id)
-   
+  snapDevice.value.monitorSpecies = res.list[0]?.monitorSpecies
+  // console.log(res,'设备信息 v获取设备信息 图片 列表')
+  pestType.value = 0
+ pestTotalNum.value = 0
+ pestList.value = []
+  if(res.list.length > 0) getSnapType(res.list[0].id)
+  
 
 }
 
@@ -157,10 +161,12 @@ const getSnapType = async (id) => {
 //  pestListType.value = false
  let res = await snapType({mainId:id})
  console.log( res , '获取抓怕信息') 
-//  pestListType.value = true
- pestType.value = res.pest_type
+  pestType.value = res.pest_type
  pestTotalNum.value = res.pest_total_number
  pestList.value = res.pest_list
+
+//  pestListType.value = true
+
 }
 //图片点击
 const snapPictureChange = (item,index) =>{
