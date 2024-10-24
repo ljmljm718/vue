@@ -510,7 +510,10 @@ const activeName = ref<any>(['1', '2'])
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="作业方式" prop="modeOperation">
-                      <el-input v-model="formData.modeOperation" placeholder="请输入作业方式" />
+                      <el-select v-model="formData.modeOperation">
+                          <el-option value = "机械作业" lable="机械作业" />
+                          <el-option value = "人工作业" lable="人工作业" />
+                      </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">

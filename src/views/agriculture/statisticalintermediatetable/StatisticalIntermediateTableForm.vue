@@ -58,7 +58,7 @@
               </template>
             </el-input>
           </el-form-item>
-      <el-form-item label="预警状态" prop="earlyWarningState">
+      <!-- <el-form-item label="预警状态" prop="earlyWarningState">
         <el-select v-model="formData.earlyWarningState" placeholder="请选择预警状态">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_EARLY_WARNING_STATE)"
@@ -67,7 +67,7 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

@@ -140,11 +140,11 @@
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
       <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
+      <!-- <el-table-column label="预警状态" align="center" prop="earlyWarningState" >
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_EARLY_WARNING_STATE" :value="scope.row.earlyWarningState" />
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column
         label="创建时间"
         align="center"

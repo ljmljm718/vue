@@ -383,7 +383,7 @@
           <label>{{ scope.row.taskPublisher == '0' ? "农户" : scope.row.taskPublisher == '1'? "认养用户" : "" }} </label>
         </template>
       </el-table-column>
-      <el-table-column label="认养用户" align="center" prop="modeOperation" width="180" />
+      <el-table-column label="作业方式" align="center" prop="modeOperation" width="180" />
       <el-table-column label="备注" align="center" prop="remark" width="180" />
 
       <el-table-column
