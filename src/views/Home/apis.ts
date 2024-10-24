@@ -286,7 +286,7 @@ export const countMonth = (params) => {
 export const devicePageList = (params) => {
   return request.get({ url: '/agriculture/device-info/page', params })
 }
-// 太塬村 今日抓拍 设备信息
+// 太塬村 今日抓拍 设备信息 图片列表以及
 export const snapPage = (params) => {
   return request.get({ url: '/agriculture/disease-pest-surveillance/page', params })
 }

@@ -11,7 +11,7 @@ import {
   diseaseWarnInfo,
   snapType
 } from './apis'
-import { onMounted,ref } from 'vue'
+import { onMounted,ref,onBeforeUnmount } from 'vue'
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
 import { formatTime } from '@/utils/index'
 import dayjs from 'dayjs'
@@ -25,6 +25,7 @@ const filterNode = (value: string, data: Tree) => {
 }
 const categoryTree = ref<ParkInfoVO[]>([]) // 列表的数据
 const plotName = ref('') //地块ID
+const treeRef = ref()
 const treeLoading = ref<boolean>(false)
 /** 查询基地地块列表 */
 const getCategoryList = async () => {
@@ -42,16 +43,18 @@ const getCategoryList = async () => {
   getSnapShotDeviceOptions(categoryTree.value[0].child[0].id)
   getTopDataList(categoryTree.value[0].child[0].id)
   getGetNameQuantityByDateAndPlotId(categoryTree.value[0].child[0].id,'month')
+  getPreWarnList(categoryTree.value[0].child[0].id)
+  nextTick(()=>{
+        treeRef.value.setCurrentKey(categoryTree.value[0].child[0].id,true); //  当节点被点击时，更新currentNodeKey的值
+     })
 }
 getCategoryList()
 const handleCurrentCategoryChange = (currNodeData) => {
   console.log("🚀 ~ handleCurrentCategoryChange ~ currNodeData:", currNodeData)
   if (currNodeData.child) {
     // 这是基地
-    console.log(123) 
   } else {
     // 这是地块
-    console.log(currNodeData,'currNodeDatacurrNodeDatacurrNodeData9999')
     plotName.value = currNodeData.id
     // getGetSortNumberByDay(plotName.value)
     getCountDay(plotName.value)
@@ -59,13 +62,13 @@ const handleCurrentCategoryChange = (currNodeData) => {
     getSnapShotDeviceOptions(plotName.value)
     getTopDataList(plotName.value)
     getGetNameQuantityByDateAndPlotId(plotName.value,'month')
+    getPreWarnList(plotName.value)
   }
 }
 
 const topDataList = ref<any[]>([])
 const getTopDataList = async (landBlockId:string) => {
   const res = await getNumberByLandBlockId({ landBlockId })
-  console.log("🚀 ~ getTopDataList ~ res:", res)
   if (!Array.isArray(res)) return;
   const tempArr = [];
   res.forEach(item => {
@@ -74,7 +77,6 @@ const getTopDataList = async (landBlockId:string) => {
     tempArr.push({ title: category + '种类', value: number });
   })
   topDataList.value = tempArr;
-  console.log("🚀 ~ getTopDataList ~ tempArr:", tempArr)
 }
 
 
@@ -83,6 +85,7 @@ const snapShotDevice = ref<string>('');
 const snapShotTime = ref<string>('');
 const snapShotImg = ref<string>('');
 const snapPictureList = ref<any[]>([]); // 抓拍图片列表
+const snapPictureList2 = ref<any[]>([]); // 抓拍图片列表
 const snapShotDeviceOptions = ref<any[]>([])
 const getSnapShotDeviceOptions = async (id) => {
   let res = {}
@@ -95,22 +98,21 @@ const getSnapShotDeviceOptions = async (id) => {
     res = await devicePageList({pageNo:1,pageSize:30,deviceType:'133,138',belongPlot:id})
 
   }
-  console.log(res,'设别列表')
-  snapShotImg.value = res.list[0].imgId
+  console.log(res,' 今日抓拍 设备列表')
+  snapDevice.value = res.list[0]
+
   snapShotDeviceOptions.value = res.list
-  snapPictureList.value = res.list
-  getSnapPage(res.list[0].id)
+  snapShotDevice.value = res.list[0].deviceName
+  getSnapPage(res.list[0]?.id)
   //getSnapType(res.list[0].id)
 }
-//今日抓拍
+//今日抓拍 设备列表点击
+const snapId = ref<any>() 
 const selectChange = (current) => {
-  console.log(current,'current12345')
   snapShotDeviceOptions.value.forEach(item=>{
     if(current == item.id) {
       snapShotDevice.value = item.deviceName
-      console.log(snapShotDevice.value,'itemitem')
-      console.log("-->>获取：",item)
-
+      snapId.value = item.id
       getSnapPage(item.id)
       //getSnapType(item.id)
     }
@@ -122,29 +124,30 @@ const snapShotChange = (date) =>{
   let year = data.getFullYear()
   let month = data.getMonth()+1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth()+1)
   let day = data.getDay() >= 10 ? data.getDay() : '0' + data.getDay()
-  console.log(month,'month12399')
   let time = `${year}-${month}-${day} 00:00:00`
   let time2 = `${year}-${month}-${day} 23:59:59`
   monitorTime.value.push( time )
   monitorTime.value.push( time2 )
-  getSnapPage(snapShotDevice.value)
+  if(snapId.value) getSnapPage(snapId.value)
 }
 
-//获取设备信息
+//获取设备信息 图片列表 以及图片总数
 const snapDevice = ref({})
 const snapImgTotal = ref<Number>(0)
-const getSnapPage = async (name) =>{
-  let res = await snapPage({identifyStatus:'0',pageNo:1,pageSize:10,device:name,monitorTime:[]})
-  console.log(res,'设备信息')
-  snapDevice.value = res.list[0]
+const getSnapPage = async (id) =>{
+  console.log(name,'获取设备信息 图片 列表')
+  let res = await snapPage({identifyStatus:'0',pageNo:1,pageSize:10,device:id,monitorTime:[]})
+  console.log(res,'设备信息 v获取设备信息 图片 列表')
+  snapShotImg.value = res.list[0].monitorPicture
+  snapPictureList.value = res.list
+  snapPictureList2.value = res.list 
   snapImgTotal.value = res.total
+  snapDevice.value.monitorSpecies = res.list[0].monitorSpecies
   getSnapType(res.list[0].id)
+   
+
 }
 
-// 抓拍图片列表
-// const getSnapPictureList = async () => {}
-
-// getSnapPictureList()
 //今日抓拍 抓拍信息
 const pestType = ref<Number>(0) // 虫害种类
 const pestTotalNum = ref<Number>(0) //虫害总数量
@@ -159,21 +162,36 @@ const getSnapType = async (id) => {
  pestTotalNum.value = res.pest_total_number
  pestList.value = res.pest_list
 }
+//图片点击
+const snapPictureChange = (item,index) =>{
+  snapDevice.value.monitorSpecies = item.monitorSpecies
+
+  getSnapType(item.id)
+ 
+  snapNum1.value = snapNum.value
+  snapShotImg.value = item.monitorPicture
+  if(snapPictureList.value.length>4){
+    left.value = (snapNum1.value - snapNum.value ) * 80
+  }
+  console.log(left.value,'left.valueleft.value')
+  snapNum.value = index
+}
 
 // 预警信息列表
 const preWarnList = ref<any[]>([]), preWarnLoading = ref<boolean>(false)
-const getPreWarnList = async () => {
+const getPreWarnList = async (id) => {
+  console.log(id,' 预警信息 idid')
   preWarnLoading.value = true;
-  const { list } = await diseaseWarnInfo({ pageNo: 1, pageSize: 10 }).catch(() => {
+  const { list } = await diseaseWarnInfo({ pageNo: 1, pageSize: 10,belongPlot:id }).catch(() => {
     preWarnLoading.value = false;
   })
   preWarnLoading.value = false;
-  console.log("🚀 ~ getPreWarnList ~ res:", list)
+  console.log(list ,' 预警信息列表')
 
   if (!Array.isArray(list)) return;
   preWarnList.value = list;
 }
-getPreWarnList()
+
 
 // 病虫害排行日月年
 const diseaseList = ref<any[]>([]) // 病虫害 列表
@@ -181,7 +199,6 @@ const bugTime = ref<string>('本月')
 const bugTimeRange = ref<any[]>([])
 const getGetNameQuantityByDateAndPlotId = async (id, dateType = 'month') => {
   let res = await getNameQuantityByDateAndPlotId({plotId:id,dateType})
-  console.log(res,'binghconghai 日月排行')
   diseaseList.value = []
   insectList.value = []
   res.forEach( (item:any) => {
@@ -200,7 +217,6 @@ const datePickerChange = async (e) =>{
   let startTime= formatTime(bugTimeRange.value[0], 'yyyy-MM-dd HH:mm:ss')
   let endTime= formatTime(bugTimeRange.value[1], 'yyyy-MM-dd HH:mm:ss')
   let res = await getSortNumberByCustomize({landBlockId:plotName.value,startTime,endTime,})
-  console.log(res['病害'],'ddddres 日期自定义')
   diseaseList.value = []
   insectList.value = []
   res['病害'].forEach( (item:any) => {
@@ -283,7 +299,9 @@ const diseaseInitChart = async () =>{
               }
             }
           ],
-         
+          grid: {
+              bottom: "27%",
+            },
         })
       );
   
@@ -307,7 +325,6 @@ const diseaseInitChart2 = async () =>{
         symbol:'none',
       })
   })
-  console.log(series,'seriesseries1239999')
   initChartStatic(
     'diseaseDomRight',
     generateBaseOptions({
@@ -358,7 +375,7 @@ const diseaseInitChart2 = async () =>{
             color:['#009688','#73c0de',''],
             series,
             grid: {
-            bottom: "20%",
+            bottom: "27%",
           },
           })
 
@@ -418,7 +435,7 @@ const insectInitChart = () => {
             color:['#009688'],
             series: [
               {
-                name: countByType[0],
+                name: '虫害数量趋势',
                 data: insectChart.value.count.map( (item) => item.count),
                 type: "line",
                 barWidth: "20",
@@ -430,7 +447,7 @@ const insectInitChart = () => {
               },
             ],
             grid: {
-            bottom: "15%",
+            bottom: "27%",
           },
           })
 
@@ -456,7 +473,6 @@ const insectInitChart2 = () => {
         symbol:'none',
       })
   })
-  console.log(series,'seriesseries1239999')
   initChartStatic(
     'insectTypeChart',
     generateBaseOptions({
@@ -507,8 +523,8 @@ const insectInitChart2 = () => {
             color:['#009688','#73c0de',''],
             series:series,
             grid: {
-            bottom: "20%",
-          },
+              bottom: "27%",
+            },
           })
 
   )
@@ -522,7 +538,6 @@ const insectList = ref<any[]>([]); // 虫害列表 数据
 //病虫害排行 按照日期查询
 const getGetSortNumberByDay = async (id) => {
   let res = await getSortNumberByDay({landBlockId:id})
-  console.log("🚀 ~ getGetSortNumberByDay ~ res:", res)
   diseaseList.value = []
   insectList.value = []
   res['病害'].forEach( (item:any) => {
@@ -566,23 +581,19 @@ const getTime = () =>{
 getTime()
 // 获取 病虫害趋势分析 默认  按天 以及自定义时间 查询
 const getCountDay = async (id) =>{
-  console.log(timeList.value,'timeList.value123')
   let res = await countDay({belongPark:id,category:'病害',startTime:timeList.value[0],endTime:timeList.value[1]})
   // let res2 = await countDay({belongPark:id,category:'虫害',startTime:timeList.value[0],endTime:timeList.value[1]})
 
   diseaseChart.value = res
-  console.log("🚀 ~ getCountDay ~ diseaseChart.value : 1234 ", diseaseChart.value )
   // insectChar.value = res2
   
   diseaseInitChart()
   diseaseInitChart2()
 }
 const getCountDay2 = async (id) =>{
-  console.log(timeList.value,'timeList.value123')
   let res = await countDay({belongPark:id,category:'虫害',startTime:timeList.value[0],endTime:timeList.value[1]})
 
   insectChart.value = res
-  console.log("🚀 ~ getCountDay ~ diseaseChart.value : 1234 ", insectChart.value )
   
   insectInitChart()
   insectInitChart2()
@@ -605,10 +616,7 @@ const sickTraceTimeChange = async (e) =>{
 const sickTraceSearch = async () =>{
   let startTime= formatTime(sickTraceTimeRange.value[0], 'yyyy-MM-dd')
   let endTime= formatTime(sickTraceTimeRange.value[1], 'yyyy-MM-dd')
-  console.log(startTime,'startTime99')
-  console.log(endTime,'endTime99')
   let res = await countDay({belongPark:plotName.value,category:'病害',startTime,endTime})
-  console.log(res,'病害 自定义时间')
   diseaseChart.value = res
   diseaseInitChart()
   diseaseInitChart2()
@@ -620,10 +628,7 @@ const bugTraceTimeChange = async (e) => {
 const bugTraceSeacrh = async () => {
   let startTime= formatTime(bugTraceTimeRange.value[0], 'yyyy-MM-dd')
   let endTime= formatTime(bugTraceTimeRange.value[1], 'yyyy-MM-dd')
-  console.log(startTime,'startTime99')
-  console.log(endTime,'endTime99')
   let res = await countDay({belongPark:plotName.value,category:'虫害',startTime,endTime})
-  console.log(res,'虫害 自定义时间')
   insectChart.value = res
   insectInitChart()
   insectInitChart2()
@@ -631,17 +636,82 @@ const bugTraceSeacrh = async () => {
 //获取 病虫害趋势 按照月查询
 const getCountMonthdisease = async (id) => {
   let res = await countMonth({belongPark:id,category:'病害'})
-  console.log(res,' 获取 病虫害趋势 按照月查询 ')
   diseaseChart.value = res
   diseaseInitChart()
   diseaseInitChart2()
 }
 const getCountDayInsect = async (id) => {
   let res = await countMonth({belongPark:id,category:'虫害'})
-  console.log(res,'虫害 按月查询')
   insectChart.value = res
   insectInitChart()
   insectInitChart2()
+}
+
+//处理今日抓拍图片移动
+const snapDom = ref (null)
+const snapNum = ref (0)
+const snapNum1 = ref (0)
+const left = ref<number>(0)
+const snapDomWidth = ref<number>()
+onMounted(()=>{
+  console.log(snapDom.value.offsetWidth/4,'width9999')
+  snapDomWidth.value = snapDom.value.offsetWidth
+})
+const tabLeft = (str) => { 
+  if(str == 'right'){
+    if(snapNum.value >= snapPictureList.value.length-1 ){
+      left.value = 0
+      snapNum .value = 0
+      snapNum1.value = 0
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+      getSnapType(snapPictureList.value[snapNum.value].id)
+    }else{
+
+      if(snapPictureList.value.length>4 && snapNum.value >=3){
+        left.value = (snapNum1.value - snapNum.value ) * 80
+      }
+      snapNum1.value = snapNum.value
+
+      snapNum.value++
+      console.log(snapNum.value)
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+
+      getSnapType(snapPictureList.value[snapNum.value].id)
+    }
+  }else{
+    if(snapNum.value <= 0){
+      
+      if(snapPictureList.value.length>4){
+        left.value = (3 - snapPictureList.value.length) * 80
+      }
+
+      snapNum.value =  snapPictureList.value.length-1
+      snapNum1.value =  snapPictureList.value.length-2
+     
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+      getSnapType(snapPictureList.value[snapNum.value].id)
+      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+
+    }else{
+      console.log(snapNum1.value,'snapNum1.value')
+      console.log(snapNum.value,'snapNum.value')
+      if(snapPictureList.value.length>4){
+        left.value = (snapNum1.value - snapNum.value ) * 80
+      }else{ 
+        // left.value = (snapNum1.value - snapNum.value ) * 80
+
+      }
+      left.value = (snapNum1.value - snapNum.value ) * 80
+      snapNum1.value = snapNum.value
+      snapNum.value--
+      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+      getSnapType(snapPictureList.value[snapNum.value].id)
+    }
+  }
+  console.log(left.value,'left.valueleft.value9999')
 }
 
 </script>
@@ -862,14 +932,23 @@ const getCountDayInsect = async (id) => {
               />
             </div>
             <div class="rounded-1 h-10rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
-            <div class="grid grid-cols-4 gap-1 py-2">
-              <div
-                v-for="item in snapPictureList"
-                :key="item"
-                class="rounded-1 bg-#666 aspect-square"
-              > 
-              <img :src='item.imgId' class='w-100% h-100%'/>
-            </div>
+            <div class="flex w-full py-2 relative" style='overflow:hidden'>
+             <div v-if='snapPictureList.length != 0' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-25px'> > </div>
+              <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
+                <div
+                 
+                  v-for="item,index in snapPictureList"
+                  :key="item"
+                  
+                  @click="snapPictureChange(item,index)"
+                  :class="`aspect-square mr-10px ${snapNum == index ? 'snapNum' :''} `"
+                > 
+                  <img :src='item.monitorPicture' class='w-100% h-100%'/>
+                </div>
+              </div>
+              
+              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class=' z-22 cursor-pointer absolute right-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-25px'> > </div>
+
             </div>
             <div class="title-frame">设备信息</div>
             <div v-if="snapDevice" class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2">
@@ -878,7 +957,9 @@ const getCountDayInsect = async (id) => {
                 <div class="color-[#9ea2a2] text-13px">监测作物</div>
               </div>
               <div>
-                <div class="text-center flex items-center color-[#000] text-17px mb-7px" style="font-weight:600"><div :class="`${snapDevice.deviceStatus==0?'online-1': snapDevice.deviceStatus==1?'online-3':'online-2'} w-15px h-15px mr-7px`"></div> <div>{{ snapDevice.deviceStatus==0?'在线': snapDevice.deviceStatus==1?'故障':'离线'}}</div></div>
+                <div class="text-center flex items-center color-[#000] text-17px mb-7px" style="font-weight:600">
+                  <div :class="`${snapDevice.deviceStatus==0?'online-1': snapDevice.deviceStatus==1?'online-3': snapDevice.deviceStatus=='online'? 'online-1': snapDevice.deviceStatus=='offline'? 'online-3':'online-2'} w-15px h-15px mr-7px`"></div> 
+                  <div>{{ snapDevice.deviceStatus==0?'在线': snapDevice.deviceStatus==1?'离线':snapDevice.deviceStatus == 'online'? '在线': snapDevice.deviceStatus=='offline'? '离线': '故障'}}</div></div>
                 <div class="color-[#9ea2a2] text-13px">设备状态</div>
               </div>
               <div>
@@ -915,11 +996,7 @@ const getCountDayInsect = async (id) => {
                 <div style="font-weight:600" class="color-[#7b7b7b] text-[13px]">{{ item.name }}</div>
                 <div style="font-weight:600">{{ item.quantity }}</div>
               </div>
-              
             </div>
-            <!-- <div class=" mt-2rem px-15px py-15px box-border flex justify-center" style="border: 1px solid #ededed"
-                v-if="pestList.length === 0"
-              >暂无数据</div> -->
           </el-scrollbar>
           
         </el-card>
@@ -942,6 +1019,9 @@ const getCountDayInsect = async (id) => {
                   <div class="text-[.8rem]">{{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}</div>
                 </div>
               </div>
+              <div class="h-10rem w-full flex items-center justify-center"
+                      v-if="preWarnList.length === 0"
+                    >暂无数据</div>
             </div>
           </el-scrollbar>
         </el-card>
@@ -970,4 +1050,23 @@ const getCountDayInsect = async (id) => {
     background-image: url(./assets/online-#{$i}.png);
   }
 }
+// element-plus中tree时修改选中当前的样式
+::v-deep .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  // background: pink !important;
+  background-color: #e5f4f3 !important;
+  color: #3caea4 !important;
+  height: 35px;
+  line-height: 35px;
+}
+//修改未选中的元素
+::v-deep .el-tree .el-tree-node__content:not(.is-current) {
+  height: 35px;
+  line-height: 35px;
+  margin: 5px;
+}
+.snapNum{
+  width:23%;
+  border: 3px solid #009688
+}
+
 </style>
