@@ -249,20 +249,20 @@
               class="w-full flex justify-center items-center"
               ref="mainImgContainer"
             >
-              <!-- 当图片高度大于容器高度时 显示滚动条 -->
-              <el-scrollbar class="w-full h-full" v-show="showScroll()">
-                <img
-                  ref="mainImg"
-                  :src="list[curItem].monitorPicture"
-                  class="w-full object-contain rounded-lg"
-                />
-              </el-scrollbar>
               <!-- 否则不显示滚动条 -->
               <img
+                ref="mainImg"
                 v-show="!showScroll()"
                 :src="list[curItem].monitorPicture"
                 class="w-full object-contain rounded-lg"
               />
+              <!-- 当图片高度大于容器高度时 显示滚动条 -->
+              <el-scrollbar class="w-full h-full" v-show="showScroll()">
+                <img
+                  :src="list[curItem].monitorPicture"
+                  class="w-full object-contain rounded-lg"
+                />
+              </el-scrollbar>
             </div>
             <!-- 主图片地址缺失时显示样式 -->
             <div
