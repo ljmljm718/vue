@@ -59,6 +59,7 @@ const getFormInfo = async () => {
   // 获取设备分类树
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
   categoryOptions.value = retainFirstTwoLayers(categoryTree);
+  console.log("categoryO",categoryOptions.value);
   resetForm()
   if (route.query.id) {
     formData.value = await DeviceInfoApi.getDeviceInfo(route.query.id as any)
@@ -164,6 +165,11 @@ const handleChange = (value: any) => {
   console.log(value)
   formData.value.deviceType = value.join(',')
   formData.value.deviceKind = value[1]
+  const typeItem = categoryOptions.value.find(item => item.id === value[0])
+  const deviceItem = typeItem.children.find(item => item.id === value[1])
+  console.log("deviceItem",deviceItem.monitor)
+  //赋值设备监测类型
+  formData.value.deviceMonitorType = deviceItem.monitor.split(',');
 }
 
 //基地的选择
@@ -335,14 +341,14 @@ const handleSelectorChange = (val) => {
                 filterable
               />
             </el-form-item>
-            <el-form-item label="设备检测类型" prop="deviceMonitorType">
+            <el-form-item label="设备监测类型" prop="deviceMonitorType">
               <el-select
                 v-model="formData.deviceMonitorType"
                 multiple
                 filterable
                 allow-create
                 default-first-option
-                placeholder="请“选择”或“输入”设备检测类型">
+                placeholder="请“选择”或“输入”设备监测类型">
                 <el-option
                   v-for="item in options"
                   :key="item.value"

@@ -159,6 +159,11 @@
         width="180px"
       />
       <el-table-column label="分类排序" align="center" prop="categorySort" width="120"/>
+      <el-table-column label="监测属性" align="center" prop="monitor" width="160">
+        <template #default="scope">
+          <span>{{scope.row.monitor == undefined || scope.row.monitor == null ? "无" : scope.row.monitor}}</span>
+        </template>
+      </el-table-column>
       <!--      <el-table-column label="图片" align="center" prop="imgId" />-->
       <el-table-column label="描述" align="center" prop="description"/>
       <!--      <el-table-column label="部门id" align="center" prop="deptId" />-->

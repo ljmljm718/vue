@@ -13,6 +13,7 @@ export interface DeviceCategoryVO {
   description: string // 描述
   deptId: number // 部门id
   userId: number // 用户id
+  monitor: string // 监测类型
 }
 
 // 鲁渝协作设备分类 API
@@ -59,5 +60,12 @@ export const DeviceCategoryApi = {
   // 左二下-历史数据折线图
   waterQualityDataLineChartA: async (params) => {
     return await request.get({ url: `/yyang/equipment-data/waterQualityDataLineChartA`, params })
+  },
+
+  // ==================== 子表（设备监测类型） ====================
+
+  // 获得设备监测类型列表
+  getDeviceCategoryMonitorListByDeviceId: async (deviceId) => {
+    return await request.get({ url: `/agriculture/device-category/monitor/list-by-device-id?deviceId=` + deviceId })
   },
 }

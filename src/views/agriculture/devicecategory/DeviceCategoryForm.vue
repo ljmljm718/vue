@@ -7,49 +7,67 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="父结点" prop="parentId">
-        <el-tree-select
-          v-model="formData.parentId"
-          :data="deviceCategoryTree"
-          :props="{...defaultProps, label: 'categoryName'}"
-          check-strictly
-          default-expand-all
-          placeholder="请选择父结点"
-        />
-      </el-form-item>
-      <el-form-item label="分类名称" prop="categoryName">
-        <el-input v-model="formData.categoryName" placeholder="请输入分类名称" />
-      </el-form-item>
-      <el-form-item label="分类编码" prop="categoryCode">
-        <el-input v-model="formData.categoryCode" placeholder="请输入分类编码" />
-      </el-form-item>
-      <el-form-item label="分类标签" prop="categoryLabel">
-        <el-input v-model="formData.categoryLabel" placeholder="请输入分类标签" />
-      </el-form-item>
-      <el-form-item label="是否显示" prop="showStatus">
-        <el-radio-group v-model="formData.showStatus">
-          <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
-            :key="dict.value"
-            :label="dict.value"
-          >
-            {{ dict.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="分类排序" prop="categorySort">
-        <el-input-number
-          v-model="formData.categorySort"
-          :min="1"
-          :step="1"
-          step-strictly/>
-      </el-form-item>
-      <el-form-item label="图片" prop="imgId">
-        <UploadImg v-model="formData.imgId" />
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input type="textarea" v-model="formData.description" />
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="父结点" prop="parentId">
+            <el-tree-select
+              v-model="formData.parentId"
+              :data="deviceCategoryTree"
+              :props="{...defaultProps, label: 'categoryName'}"
+              check-strictly
+              default-expand-all
+              placeholder="请选择父结点"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分类名称" prop="categoryName">
+            <el-input v-model="formData.categoryName" placeholder="请输入分类名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分类编码" prop="categoryCode">
+            <el-input v-model="formData.categoryCode" placeholder="请输入分类编码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分类标签" prop="categoryLabel">
+            <el-input v-model="formData.categoryLabel" placeholder="请输入分类标签" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="是否显示" prop="showStatus">
+            <el-radio-group v-model="formData.showStatus">
+              <el-radio
+                v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
+                :key="dict.value"
+                :label="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分类排序" prop="categorySort">
+            <el-input-number
+              v-model="formData.categorySort"
+              :min="1"
+              :step="1"
+              step-strictly/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="图片" prop="imgId">
+            <UploadImg v-model="formData.imgId" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="描述" prop="description">
+            <el-input type="textarea" v-model="formData.description" />
+          </el-form-item>
+        </el-col>
+      </el-row>
 <!--      <el-form-item label="部门id" prop="deptId">-->
 <!--        <el-input v-model="formData.deptId" placeholder="请输入部门id" />-->
 <!--      </el-form-item>-->
@@ -57,6 +75,12 @@
 <!--        <el-input v-model="formData.userId" placeholder="请输入用户id" />-->
 <!--      </el-form-item>-->
     </el-form>
+    <!-- 子表的表单 -->
+    <el-tabs v-model="subTabsName">
+      <el-tab-pane label="  监测类型" name="deviceCategoryMonitor">
+        <DeviceCategoryMonitorForm ref="deviceCategoryMonitorFormRef" :device-id="formData.id" />
+      </el-tab-pane>
+    </el-tabs>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -67,6 +91,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { DeviceCategoryApi, DeviceCategoryVO } from '@/api/agriculture/devicecategory'
 import { defaultProps, handleTree } from '@/utils/tree'
+import DeviceCategoryMonitorForm from './components/DeviceCategoryMonitorForm.vue'
 
 /** 初始赋值 */
 const showStatus = 1;
@@ -104,6 +129,10 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 const deviceCategoryTree = ref() // 树形结构
 
+/** 子表的表单 */
+const subTabsName = ref('deviceCategoryMonitor')
+const deviceCategoryMonitorFormRef = ref()
+
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -128,10 +157,19 @@ const emit = defineEmits(['success']) // 定义 success 事件，用于操作成
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
+  // 校验子表单
+  try {
+    await deviceCategoryMonitorFormRef.value.validate()
+  } catch (e) {
+    subTabsName.value = 'deviceCategoryMonitor'
+    return
+  }
   // 提交请求
   formLoading.value = true
   try {
     const data = formData.value as unknown as DeviceCategoryVO
+    // 拼接子表的数据
+    data.deviceCategoryMonitors = deviceCategoryMonitorFormRef.value.getData()
     if (formType.value === 'create') {
       await DeviceCategoryApi.createDeviceCategory(data)
       message.success(t('common.createSuccess'))
