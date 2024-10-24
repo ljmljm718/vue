@@ -221,15 +221,15 @@
       </el-form-item>
       <div style="margin-top: 20px;margin-left: 30px;height: 30px">
         <el-form-item>
-          <!--          <el-button-->
-          <!--            type="primary"-->
-          <!--            plain-->
-          <!--            @click="openForm('create')"-->
-          <!--            v-hasPermi="['agriculture:disease-warn-info:create']"-->
-          <!--          >-->
-          <!--            <Icon icon="ep:plus" class="mr-5px"/>-->
-          <!--            新增-->
-          <!--          </el-button>-->
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:disease-warn-info:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
           <el-button
             type="success"
             plain
@@ -531,7 +531,7 @@ const formatTimestamp = (timestamp) => {
 const getTagType = (warnType: string) => {
   if (warnType.includes('一级') || warnType.includes('1级') || warnType.includes('严重')) {
     return 'danger'; // 红色
-  } else if (warnType.includes('二级') || warnType.includes('2级')|| warnType.includes('轻微')) {
+  } else if (warnType.includes('二级') || warnType.includes('2级') || warnType.includes('轻微')) {
     return 'warning'; // 橙色
   } else if (warnType.includes('三级') || warnType.includes('3级')) {
     return 'success'; // 绿色
