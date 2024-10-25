@@ -30,7 +30,8 @@ export const resolvePath = (userInfo: UserInfo): string => {
     ['shuangqiao', '/bigscreenShuangQiao'],
     ['erdu', '/bigscreenED'],
     ['taiyuan', '/bigscreenTY'],
-    ['tongming', '/bigscreenTM']
+    ['tongming', '/bigscreenTM'],
+    ['zhucha','/bigscreenCZ']
   ]);
 
   if (Array.isArray(userInfo.roles)) {
