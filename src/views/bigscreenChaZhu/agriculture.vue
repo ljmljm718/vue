@@ -686,7 +686,7 @@ defineExpose({ handleActive })
               <div class="flex justify-center">{{ item.monitoringType }}</div>
               <div class="flex text-1rem justify-center mt-10px"
                 >{{ item.dataValue }}
-                <div class="text-13px mt-[10px] color-[#929593]">{{ item.unit }}</div></div
+                <div class="text-13px mt-[5px] color-[#929593]">{{ item.unit }}</div></div
               >
             </div>
           </div>
