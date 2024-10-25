@@ -75,7 +75,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       terserOptions: {
         compress: {
           drop_debugger: env.VITE_DROP_DEBUGGER === 'true',
-          drop_console: env.VITE_DROP_CONSOLE === 'true'
+          drop_console: false
         }
       }
     },
