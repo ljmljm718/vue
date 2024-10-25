@@ -501,7 +501,7 @@ const getIconFrame = (text: string) => {
     亚硝酸: 'icon-15',
     风: 'icon-17',
     雨量: 'icon-12',
-    水位: 'icon-13',
+    位: 'icon-13',
     盐度: 'icon-14',
     浊: 'icon-16',
     辐射: 'icon-18',

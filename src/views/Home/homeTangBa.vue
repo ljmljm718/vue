@@ -2,12 +2,30 @@
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
     <MapTangBa ref="mapTangBgRef" class="h-full z-0" @satellite="satellite" />
     <div
-      class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl"
-      style="height: calc(100% - 4.5rem)"
+      class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl box-border transition-all"
+      :style="`height: ${collapsed ? '3rem' : 'calc(100% - 4.5rem)'};`"
       v-loading="menuDataLoading"
     >
-      <div style="font-weight: 600" class="pb-2 pl-1">设备监测列表</div>
-      <el-scrollbar class="overflow-auto pr-2" height="calc(100% - 2rem)">
+      <div class="h-[1.5rem] mb-[.5rem] flex justify-between items-center">
+        <div class="font-bold">设备监测列表</div>
+        <div
+          class="text-[.7rem] text-[#0160FF] pr-[.6rem]"
+          @click="collapsed = !collapsed"
+        >
+          <div v-if="collapsed" class="flex items-center space-x-1">
+            <span>展开</span>
+            <el-icon><ArrowDownBold /></el-icon>
+          </div>
+          <div v-else class="flex items-center space-x-1">
+            <span>折叠</span>
+            <el-icon><ArrowUpBold /></el-icon>
+          </div>
+        </div>
+      </div>
+      <el-scrollbar
+        class="overflow-auto pr-2"
+        style="height: calc(100% - 2rem);"
+      >
         <el-menu class="el-menu-vertical-demo min-w-[270px]" @select="handleSelect">
           <el-sub-menu :index="item.id" v-for="item in menuDataList" :key="item.id">
             <template #title>
@@ -79,6 +97,8 @@ import meassageBg from './assets/tangba/meassage-bg.png'
 import * as turf from '@turf/turf'
 
 defineOptions({ name: 'HomeTangBa' })
+
+const collapsed = ref<boolean>(false);
 
 const mapTangBgRef = ref<any>()
 const deviceDataList = ref<Array<any>>([])

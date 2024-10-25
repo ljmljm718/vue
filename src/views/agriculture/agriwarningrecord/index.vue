@@ -1,7 +1,12 @@
 <template>
   <el-tabs v-model="activeName" @tab-click="changeTab">
     <!-- 传感设备预警 -->
-    <el-tab-pane label="传感设备预警" name="sensorTab">
+    <el-tab-pane name="sensorTab">
+      <template #label>
+        <el-badge :value="total" class="item">
+          <span class="px-2">传感设备预警</span>
+        </el-badge>
+      </template>
       <!-- 搜索栏 -->
       <ContentWrap>
         <el-form
@@ -345,7 +350,12 @@
     </el-dialog>
 
     <!-- 监控设备预警 -->
-    <el-tab-pane label="监控设备预警" name="monitorTab">
+    <el-tab-pane name="monitorTab">
+      <template #label>
+        <el-badge :value="totalMonitor" class="item">
+          <span class="px-2">监控设备预警</span>
+        </el-badge>
+      </template>
       <!-- 搜索栏 -->
       <ContentWrap>
         <el-form
@@ -1005,7 +1015,7 @@ const handleExportMonitor = async () => {
 
 onMounted(() => {
   getList()
-
+  getListMonitor()
   // 获取当前是否是深色主题
   themeIsDark.value = appStore.getIsDark
 })
