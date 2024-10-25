@@ -268,6 +268,7 @@ import {
 } from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
 import { ImageList } from './assets/runtimeIcons/index'
+console.log("🚀 ~ ImageList:", ImageList)
 
 const formattedImageList = ImageList.map(item => {
   const matchItem = item.match(/([^\/]+)\/?.png/);
