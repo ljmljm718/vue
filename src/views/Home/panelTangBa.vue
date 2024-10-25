@@ -270,7 +270,7 @@ import * as echarts from 'echarts'
 import { ImageList } from './assets/runtimeIcons/index'
 
 const formattedImageList = ImageList.map(item => {
-  const matchItem = item.match(/([^\/]+)\/?.png$/);
+  const matchItem = item.match(/([^\/]+)\/?.png/);
   return matchItem ? matchItem[1] : null
 });
 const getPathByName = (name:string) => {
