@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="72px"
     >
       <el-form-item label="监测类型" prop="warnType">
         <el-select v-model="queryParams.warnType" placeholder="请选择监测类型" class="!w-240px">
@@ -180,15 +180,15 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <!--      <el-form-item label="预留4" prop="reservedFour">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.reservedFour"-->
-      <!--          placeholder="请输入预留4"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+      <el-form-item label="病虫害等级" prop="reservedFour">
+        <el-input
+          v-model="queryParams.reservedFour"
+          placeholder="请输入病虫害等级"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <!--      <el-form-item label="预留5" prop="reservedFive">-->
       <!--        <el-input-->
       <!--          v-model="queryParams.reservedFive"-->
