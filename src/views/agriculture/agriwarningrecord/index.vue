@@ -1015,7 +1015,7 @@ const handleExportMonitor = async () => {
 
 onMounted(() => {
   getList()
-
+  getListMonitor()
   // 获取当前是否是深色主题
   themeIsDark.value = appStore.getIsDark
 })
