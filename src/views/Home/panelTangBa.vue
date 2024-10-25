@@ -61,7 +61,7 @@
               <div v-show="item.monitoringType=='风力'" :class="`w-2rem h-2rem tb-home-25 `"></div>
               <div v-show="item.monitoringType=='空气温度'" :class="`w-2rem h-2rem tb-home-26 `"></div>
               <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div> -->
-              <img :src="item.icon" class="w-2rem h-2rem object-contain" />
+              <div :class="`w-2rem h-2rem object-contain ${item.icon}`"></div>
               <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -267,16 +267,21 @@ import {
   EquipmentDataApi
 } from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
-import { ImageList } from './assets/runtimeIcons/index'
-console.log("🚀 ~ ImageList:", ImageList)
 
-const formattedImageList = ImageList.map(item => {
-  const matchItem = item.match(/([^\/]+)\/?.png/);
-  return matchItem ? matchItem[1] : null
-});
-const getPathByName = (name:string) => {
-  const index = formattedImageList.findIndex(item => name.indexOf(item) !== -1);
-  return ImageList[index]
+const ImageClassList = [
+  'EC值', 'ORP', 'PH', 'PH值',
+  'pm2.5', 'pm10', 'TDS', '氨氮质浓度值',
+  '虫害数量', '虫害种类', '大气压力',
+  '氮', '当前雨量', '电池百分比', '电池电压',
+  '电导率', '风机状态', '风力', '风速', '风向',
+  '光照', '钾', '降雨状态', '空气湿度', '空气温度',
+  '磷', '氯', '溶解氧饱和度', '溶解氧浓度', '湿度',
+  '土壤湿度', '土壤温度', '温度', '盐度', '液位',
+  '引虫灯', '余氯浓度', '雨量', '浊度', '总辐射'
+]
+const getImgClassByName = (name:string) => {
+  const index = ImageClassList.findIndex(item => name.indexOf(item) !== -1);
+  return `runtime-icon-${index + 1}`
 }
 
 defineOptions({ name: 'PanelTangBa' })
@@ -598,7 +603,7 @@ const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
   const res = await getEquipmentDataByEquipmentCode({id:item.id})
   console.log("🚀 ~ getDeviceInfoData ~ res:", res)
-  if (Array.isArray(res)) runTimeDataList.value = res.map(item => ({ ...item, icon: getPathByName(item.monitoringType || "温度") }));
+  if (Array.isArray(res)) runTimeDataList.value = res.map(item => ({ ...item, icon: getImgClassByName(item.monitoringType || "温度") }));
 
   reset()
   const {
@@ -772,6 +777,13 @@ const clearChange = () => {
   padding: 0rem 1.4rem .4rem 2rem;
   background-image: url(./assets/tangba/itemHeader.png);
   background-size: 100% 100%;
+}
+
+@for $i from 1 through 40 {
+  .runtime-icon-#{$i} {
+    background-image: url(./assets/runtimeIcons/icon#{$i}.png);
+    background-size: contain;
+  }
 }
 
 .form-inner-label {
