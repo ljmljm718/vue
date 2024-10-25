@@ -45,5 +45,10 @@ export const ProductCategoryApi = {
   // 导出产品分类 Excel
   exportProductCategory: async (params) => {
     return await request.download({ url: `/erp/product-category/export-excel`, params })
+  },
+
+  // 根据父节点查询产品分类最大排序
+  getProductCategoryMaxSort: async (parentId: number) => {
+    return await request.get({ url: `/erp/product-category/getProductCategoryMaxSort?parentId=` + parentId })
   }
 }

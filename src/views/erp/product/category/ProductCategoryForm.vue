@@ -15,6 +15,7 @@
           check-strictly
           default-expand-all
           placeholder="请选择上级编号"
+          @change = "changeParentId()"
         />
       </el-form-item>
       <el-form-item label="名称" prop="name">
@@ -92,7 +93,8 @@ const open = async (type: string, id?: number) => {
     } finally {
       formLoading.value = false
     }
-  }
+  }else
+    await changeParentId()
   await getProductCategoryTree()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -141,5 +143,14 @@ const getProductCategoryTree = async () => {
   const root: Tree = { id: 0, name: '顶级产品分类', children: [] }
   root.children = handleTree(data, 'id', 'parentId')
   productCategoryTree.value.push(root)
+}
+
+const changeParentId = async () =>{
+   const value = await ProductCategoryApi.getProductCategoryMaxSort(formData.value.parentId != undefined ? formData.value.parentId : "0")
+   if (value.data == 0){
+     formData.value.sort = 1
+   }else
+     formData.value.sort = parseInt(value) +1
+
 }
 </script>
