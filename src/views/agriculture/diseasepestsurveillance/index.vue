@@ -249,16 +249,9 @@
               class="w-full flex justify-center items-center"
               ref="mainImgContainer"
             >
-              <!-- 否则不显示滚动条 -->
-              <img
-                ref="mainImg"
-                v-show="!showScroll()"
-                :src="list[curItem].monitorPicture"
-                class="w-full object-contain rounded-lg"
-              />
-              <!-- 当图片高度大于容器高度时 显示滚动条 -->
-              <el-scrollbar class="w-full h-full" v-show="showScroll()">
+              <el-scrollbar :style="`width: 100%; height: ${imgContainerHeight}px`">
                 <img
+                  ref="mainImg"
                   :src="list[curItem].monitorPicture"
                   class="w-full object-contain rounded-lg"
                 />
@@ -335,20 +328,27 @@
               <div class="h-[4rem] leading-[4rem] bg-[#F1F8FB] flex justify-between px-[2rem]">
                 <div>
                   <img :src="PestAmountIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">识别虫害数量</span>
+                  <span class="pl-[1rem]">病虫害数量</span>
                 </div>
                 <span class="text-[1.5rem]">{{ countDetail.dataSumByQuantity }}</span>
               </div>
               <div class="h-[4rem] leading-[4rem] bg-[#FEF9EE] flex justify-between px-[2rem] mt-[.5rem] lg:mt-0">
                 <div>
                   <img :src="PestCategoryIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">虫害分类</span>
+                  <span class="pl-[1rem]">病虫害分类</span>
                 </div>
                 <span class="text-[1.5rem]">{{ countDetail.dataSumByType }}</span>
               </div>
             </div>
+            <!-- 开始识别 & 手动标注 -->
+            <div class="my-[1rem]">
+              <el-button color="#009688" @click="handleClickIdentify">开始识别</el-button>
+              <el-button color="#59B9DE" @click="openRecognizeForm('create', list[curItem].id)">
+                <span class="text-white">手动标注</span>
+              </el-button>
+            </div>
             <!-- 识别记录 -->
-            <SpotResTable :activeMainTableId="list[curItem].id" :key="curItem" />
+            <SpotResTable :activeMainTableId="list[curItem].id" :monitorType="list[curItem].monitorType" :key="curItem" />
           </div>
         </div>
       </div>
@@ -447,6 +447,7 @@ const getList = async () => {
 
     // 设置当前展示的项为第一项 并查询病虫害数量 
     curItem.value = 0;
+    if (imgListRef.value) imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
     if (list.value.length > 0) {
       getCountDetail(list.value[curItem.value].id);
     }
@@ -549,28 +550,21 @@ const mainImgHeight = ref<any>();  // 大图高度
 const mainImgContainer = ref<any>();  // 大图容器的模板引用
 const cardContainer = ref<any>();  // 卡片容器的模板引用
 const imgSideLength = ref<any>();  // 图片列表每个项的边长
+const imgContainerHeight = ref<any>();  // 大图的高
 
 // 设置图片容器的高度就是宽度的3/4 以及小图片的边长
 const setImgContainerWidthAndImgStyle = () => {
   if (!cardContainer.value) return;
   const containerWidth = Number(window.getComputedStyle(cardContainer.value).width.slice(0, -2)) * 0.4 - 32;
-  const imgContainerHeight = containerWidth * (3 / 4);
-  mainImgHeight.value = imgContainerHeight;
+  imgContainerHeight.value = containerWidth * (3 / 4);
+  mainImgHeight.value = imgContainerHeight.value;
   if (!mainImgContainer.value) return;
-  mainImgContainer.value.style.height = imgContainerHeight + "px";
+  mainImgContainer.value.style.height = imgContainerHeight.value + "px";
   imgSideLength.value = (containerWidth - 3 * 16) / 4;
 }
 
 window.addEventListener("resize", setImgContainerWidthAndImgStyle);
 watchEffect(setImgContainerWidthAndImgStyle);
-
-// 当图片高度大于容器高度时 显示滚动条
-const showScroll = () => {
-  if (!mainImg.value || !mainImgContainer.value) return;
-  const imgHeight = Number(window.getComputedStyle(mainImg.value).height.slice(0, -2));
-  const imgContainerHeight = Number(window.getComputedStyle(mainImgContainer.value).height.slice(0, -2));
-  return imgHeight > imgContainerHeight;
-}
 
 const imgListRef = ref<any>();  // 图片列表的模板引用
 
@@ -621,6 +615,11 @@ const getCountDetail = async (id) => {
   const res = await DiseasePestSurveillanceApi.countDetails({ id });
   countDetail.value.dataSumByType = res.dataSumByType;
   countDetail.value.dataSumByQuantity = res.dataSumByQuantity;
+}
+
+// 点击开始识别
+const handleClickIdentify = () => {
+  message.alert("敬请期待!");
 }
 </script>
 

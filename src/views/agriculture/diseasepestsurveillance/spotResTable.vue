@@ -16,9 +16,11 @@ const queryParams = reactive({
 });
 
 const props = defineProps({
-  activeMainTableId: {type: String, required: true}
+  activeMainTableId: {type: String, required: true},
+  monitorType: {type: String, required: true}
 });
 const activeMainTableId = ref<string>(props.activeMainTableId);
+const monitorType = ref<string>(props.monitorType);
 
 const emits = defineEmits(['edit', 'delete']);
 
@@ -34,7 +36,9 @@ const getList = async (mainTableId:string = activeMainTableId.value) => {
   })
   loading.value = false;
   if (Array.isArray(list)) {
-    tableData.value = list;
+    tableData.value = list.map(ele => {
+      return {...ele, monitorType: monitorType};
+    });
     tableTotal.value = total;
   }
 }
@@ -61,21 +65,9 @@ const handleDelete = async (id: number) => {
     await getList()
   } catch {}
 }
-
-// 点击开始识别
-const handleClickIdentify = () => {
-  message.alert("敬请期待!");
-}
 </script>
 <template>
   <div>
-    <!-- 开始识别 & 手动标注 -->
-    <div class="my-[1rem]">
-      <el-button color="#009688" @click="handleClickIdentify">开始识别</el-button>
-      <el-button color="#59B9DE" @click="openForm('create')" v-hasPermi="['agriculture:identification-result:create']">
-        <span class="text-white">手动标注</span>
-      </el-button>
-    </div>
     <el-table
       v-loading="loading"
       :data="tableData"
@@ -96,7 +88,8 @@ const handleClickIdentify = () => {
     >
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="密度" align="center" prop="density" />
+      <el-table-column label="密度(个/m³)" align="center" prop="density" />
+      <el-table-column label="监测类型" align="center" prop="monitorType" />
       <el-table-column
         label="识别时间"
         align="center"
