@@ -34,7 +34,7 @@
               v-for="item in runTimeDataList"
               :key="item.id"
             >
-              <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
+              <!-- <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
               <div v-show="item.monitoringType=='湿度'" :class="`w-2rem h-2rem tb-home-2 `"></div>
               <div v-show="item.monitoringType=='PH值' || item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
               <div v-show="item.monitoringType=='EC值'" :class="`w-2rem h-2rem tb-home-4 `"></div>
@@ -60,7 +60,8 @@
               <div v-show="item.monitoringType=='当前雨量'" :class="`w-2rem h-2rem tb-home-24 `"></div>
               <div v-show="item.monitoringType=='风力'" :class="`w-2rem h-2rem tb-home-25 `"></div>
               <div v-show="item.monitoringType=='空气温度'" :class="`w-2rem h-2rem tb-home-26 `"></div>
-              <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div>
+              <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div> -->
+              <img :src="item.icon" class="w-2rem h-2rem object-contain" />
               <div>{{ item.monitoringType }}</div>
               <div>
                 <span>{{ item.dataValue }}</span>
@@ -122,7 +123,7 @@
           <div id="chartWindSpeed" class="chart-ins"></div>
         </el-scrollbar>
     </div>
-    <div   v-show="tabsVal==='报警'">
+    <div v-show="tabsVal==='报警'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <el-table
             :data="warnDataList"
@@ -266,6 +267,17 @@ import {
   EquipmentDataApi
 } from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
+import { ImageList } from './assets/runtimeIcons/index'
+
+const formattedImageList = ImageList.map(item => {
+  const matchItem = item.match(/([^\/]+)\/?.png$/);
+  return matchItem ? matchItem[1] : null
+});
+const getPathByName = (name:string) => {
+  const index = formattedImageList.findIndex(item => name.indexOf(item) !== -1);
+  return ImageList[index]
+}
+
 defineOptions({ name: 'PanelTangBa' })
 
 console.log("pinyin", pinyin("汉语拼音", { toneType: "none", type: "array" }).join(''));
@@ -315,6 +327,7 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   const activeApi = EquipmentDataApi.getEquipmentDataByEquipmentCode
   if (activeApi && typeCom.value) {
     const list = await activeApi(equipmentId)
+    console.log("🚀 ~ getRunTimeData ~ list =>:", list)
     if (Array.isArray(list)) runTimeDataList.value = list
   }
 
@@ -582,9 +595,10 @@ const curDeviceStatus = ref<string>('')
 const clearObj = ref({})
 const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
-  let res=await getEquipmentDataByEquipmentCode({id:item.id})
-  runTimeDataList.value = res
-  console.log(res,'getEquipmentDataByEquipmentCode1234')
+  const res = await getEquipmentDataByEquipmentCode({id:item.id})
+  console.log("🚀 ~ getDeviceInfoData ~ res:", res)
+  if (Array.isArray(res)) runTimeDataList.value = res.map(item => ({ ...item, icon: getPathByName(item.monitoringType || "温度") }));
+
   reset()
   const {
     id = '',
