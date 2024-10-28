@@ -1,46 +1,69 @@
 <template>
-  <!-- 第一栏 -->
-  <ContentWrap>
-    <div class="top-area">
-      <!-- 标题 -->
-      <div class="clear-float">
-        <div class="top-area-title float-left">实时数据</div>
-        <div class="top-area-select float-right">
-          <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
-            <el-option
-              v-for="item in refreshList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+  <div class="grid grid-cols-2 gap-3">
+    <!-- 第一栏 -->
+    <ContentWrap>
+      <div class="top-area">
+        <!-- 标题 -->
+        <div class="clear-float">
+          <div class="top-area-title float-left">实时数据</div>
+          <div class="top-area-select float-right">
+            <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
+              <el-option
+                v-for="item in refreshList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </div>
         </div>
-      </div>
-      <!-- 数据 -->
-      <div class="top-area-items">
-        <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
-          <!-- 单个项 -->
-          <div
-            class="weather-bg min-w-[8rem] rounded-lg py-2 px-3 flex justify-between items-center cursor-pointer space-x-3"
-            v-for="item,index in trendData"
-            :key="index"
-            @click="tabCli(item.equipmentCode,item.monitoringType,index)"
-          >
-            <!-- 左侧名称和数值 -->
-            <div class="top-area-item-data">
-              <div class="top-area-item-name">{{ item.monitoringType }}</div>
-              <div class="top-area-item-num">
-                <span>{{ item.dataValue }}</span>
-                <span class="top-area-item-unit">{{ item.yyUnit }}</span>
+        <!-- 数据 -->
+        <div class="top-area-items  ">
+          <div class="grid gap-3 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            <!-- 单个项 -->
+            <div
+              class="weather-bg min-w-[8rem] rounded-lg py-2 px-3 flex justify-between items-center cursor-pointer space-x-3"
+              v-for="item,index in trendData"
+              :key="index"
+              @click="tabCli(item.equipmentCode,item.monitoringType,index)"
+            >
+              <!-- 左侧名称和数值 -->
+              <div class="top-area-item-data">
+                <div class="top-area-item-name">{{ item.monitoringType }}</div>
+                <div class="top-area-item-num">
+                  <span>{{ item.dataValue }}</span>
+                  <span class="top-area-item-unit">{{ item.yyUnit }}</span>
+                </div>
               </div>
+              <!-- 右侧图标 -->
+              <div :class="`top-area-item-icon icon-extra-${getIconClass(item.monitoringType)}`"></div>
             </div>
-            <!-- 右侧图标 -->
-            <div :class="`top-area-item-icon icon-extra-${getIconClass(item.monitoringType)}`"></div>
           </div>
         </div>
       </div>
-    </div>
-  </ContentWrap>
+    </ContentWrap>
+    <!-- 第三栏 -->
+    <ContentWrap>
+      <div class="flex justify-between">
+        <span class="bottom-area-title">{{obj.monitoringType}}趋势</span>
+        <div class="flex items-center">
+          <el-radio-group v-model="isLineRadio" size="small" @change="handleRadioChange">
+            <el-radio-button label="pie" value="pie">
+              柱状图
+            </el-radio-button>
+            <el-radio-button label="line" value="line">
+              折线图
+            </el-radio-button>
+          </el-radio-group>
+        </div>
+      </div>
+      <div
+        id="chart"
+        style="width: 100%; height: 400px;"
+      ></div>
+    </ContentWrap>
+  </div>
+  
   <!-- 第二栏 -->
   <ContentWrap class="mid-area relative">
     <div class="mid-area-fold">
@@ -139,26 +162,7 @@
       />
     </div>
   </ContentWrap>
-  <!-- 第三栏 -->
-  <ContentWrap>
-    <div class="flex justify-between">
-      <span class="bottom-area-title">{{obj.monitoringType}}趋势</span>
-      <div class="flex items-center">
-        <el-radio-group v-model="isLineRadio" size="small" @change="handleRadioChange">
-          <el-radio-button label="pie" value="pie">
-            柱状图
-          </el-radio-button>
-          <el-radio-button label="line" value="line">
-            折线图
-          </el-radio-button>
-        </el-radio-group>
-      </div>
-    </div>
-    <div
-      id="chart"
-      style="width: 100%; height: 400px;"
-    ></div>
-  </ContentWrap>
+  
 </template>
 
 <script setup lang="ts">
