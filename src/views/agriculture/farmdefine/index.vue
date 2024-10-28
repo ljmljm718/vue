@@ -82,7 +82,7 @@
         </el-form-item>
       </div>
       <div class="grow">
-        <IntroduceAlert title="农事定义模块是阐述每个生长阶段所需的具体农事活动，帮助农业生产者合理安排作业计划。"/>
+        <IntroduceAlert title="该模块是阐述每个生长阶段所需的具体农事活动，帮助农业生产者合理安排作业计划。"/>
       </div>
     </div>
     <el-table

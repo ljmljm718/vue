@@ -155,7 +155,7 @@
         </el-button>
       </div>
       <div class="grow">
-        <IntroduceAlert title="生长日记是对不同基地地块下的不同作物的各个生长期进行解释说明，具体包括各生长期的起止时间，环境条件等等。"/>
+        <IntroduceAlert title="该模块是对不同基地地块下的不同作物的各个生长期进行解释说明，具体包括各生长期的起止时间，环境条件等等。"/>
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">

@@ -89,7 +89,7 @@
         </el-form-item>
       </div>
       <div class="grow">
-        <IntroduceAlert title="农事记录模块的主要功能是对农事活动的各项任务进行详细记录。"/>
+        <IntroduceAlert title="该模块的主要功能是对农事活动的各项任务进行详细记录。"/>
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
