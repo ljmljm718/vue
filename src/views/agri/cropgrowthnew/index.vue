@@ -109,7 +109,7 @@
       <div class="grow"
            style="margin-bottom: 1rem;margin-top: 1rem;margin-right: 1.5rem;height: 2.4rem">
         <IntroduceAlert
-          title="生长周期可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
+          title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
       </div>
       <div class="flex items-center cursor-pointer">
         <div
@@ -659,7 +659,7 @@ const getList = async () => {
   try {
     const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
     // @ts-ignore
-    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)    
+    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
     list.value = data.list
     total.value = data.total
   } catch (err) {
@@ -685,7 +685,7 @@ const resetQuery = () => {
 // 时间排序
 const timeNum=ref(2)
 const sortChange=async (val)=>{
-  timeNum.value=val  
+  timeNum.value=val
   plantNum.value=2
   if(val==2){
     queryParams.ordersSort=undefined
@@ -696,7 +696,7 @@ const sortChange=async (val)=>{
   queryParams.startTimeSort=val
   getList()
   }
-} 
+}
 //种植排序
 const plantNum=ref(2)
 const plantChange=async (val)=>{
@@ -712,7 +712,7 @@ const plantChange=async (val)=>{
   queryParams.startTimeSort=undefined
   getList()
   }
-  
+
 }
 /** 添加/修改操作 */
 const formRef = ref()
@@ -864,12 +864,12 @@ onMounted(() => {
 .time-icon{
   cursor: pointer;
   background-size:100% 100%;
-  background-image: url(../../../assets/imgs/time-icon.png); 
+  background-image: url(../../../assets/imgs/time-icon.png);
 }
 .time-icon2{
   cursor: pointer;
 
   background-size:100% 100%;
-  background-image: url(../../../assets/imgs/time-icon2.png); 
+  background-image: url(../../../assets/imgs/time-icon2.png);
 }
 </style>

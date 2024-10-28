@@ -108,8 +108,8 @@
       </div>
       <div class="grow">
         <IntroduceAlert
-        class="flex 2xl:h-100%   xl:h-100% 2xl:mt-1"  
-        title="种植管理是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"
+        class="flex 2xl:h-100%   xl:h-100% 2xl:mt-1"
+        title="该模块是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"
         />
       </div>
       <div class="flex items-center cursor-pointer ml-[1.5rem]">

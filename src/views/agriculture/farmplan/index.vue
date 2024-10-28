@@ -221,11 +221,11 @@
         >
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </div>
-        
+
         <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <div class="ml-10px" style='transform:rotate(90deg)'> > </div> </div>
       </div>
     </div>
-    
+
 
   </ContentWrap>
 
@@ -247,7 +247,7 @@
         </el-form-item>
       </div>
       <div v-if='cardList == "list" ' class="grow ">
-        <IntroduceAlert title="农事计划模块专门负责将作物的种植过程细分为若干个易于管理的计划。" />
+        <IntroduceAlert title="该模块专门负责将作物的种植过程细分为若干个易于管理的计划。" />
       </div>
         <div class="flex ml-1.5rem mt-[-10px]">
         <div @click="cardList ='card'" class="py-5px px-15px cursor-pointer rounded-l"
@@ -301,7 +301,7 @@
                 <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
                 <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
                 <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div> -->
-                
+
               </div>
                <!-- <div v-show='item.child.length!=0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
                 <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ itm.name }}</div>
@@ -787,7 +787,7 @@ const getList = async () => {
     })
     list.value = data.list
     total.value = data.total
-  
+
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
@@ -915,7 +915,7 @@ onMounted(async () => {
   })
   console.log(farmDefineObj.value,'list farmDefineObj.value')
     //   循环遍历不同背景色
-   
+
 
 
 })
@@ -1236,16 +1236,16 @@ const inputTab = (val:any,index:Number) => {
   }else{
   formData.value = {
       feedType: '',
-      feedName: '', 
+      feedName: '',
       consumeNum: '',
       feedCost: '',
       consumeUnit: ''
     }
   }
-    
+
 
   selectOption.value = val
- 
+
 }
 
 watch(() => formData.value, (val)=>{
@@ -1276,7 +1276,7 @@ const handlePlotPopupChange = (order: ParkDetailVO) => {
 
 const monthVal = ref('')
 const getFn = () => {
-  let data= new Date() 
+  let data= new Date()
   let yeare = data.getFullYear()
   let month = data.getMonth()+1
   monthVal.value = `${ yeare}-${month}`
@@ -1300,7 +1300,7 @@ const getData = () => {
       name:'',
       child:[]
     })
-  } 
+  }
   for(let i=0 ; i< num ; i++) {
       dataList2.value.unshift({
         data:data2.value-i,
@@ -1388,9 +1388,9 @@ const tabItem = (list:any[],str,indexA) => {
         dataList.value[indexA].plotName = list[ItemVal.value].plotName
         dataList.value[indexA].name = list[ItemVal.value].name
       }
-      
-      dataList.value[indexA].plotName = list[ItemVal.value].plotName 
-      dataList.value[indexA].name = list[ItemVal.value].name 
+
+      dataList.value[indexA].plotName = list[ItemVal.value].plotName
+      dataList.value[indexA].name = list[ItemVal.value].name
       ItemVal.value++
 
       console.log(ItemVal.value,'ItemVal.value');
@@ -1407,12 +1407,12 @@ const tabItem = (list:any[],str,indexA) => {
       dataList.value[indexA].name = list[ItemVal.value].name
       ItemVal.value--
 
-     
-  
+
+
     }
 
-  
-  
+
+
 }
 </script>
 <style lang="scss" scoped>

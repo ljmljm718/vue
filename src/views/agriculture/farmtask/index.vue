@@ -128,7 +128,7 @@
         </el-form-item>
       </div>
       <div class="grow">
-        <IntroduceAlert title="农事任务模块的核心功能在于为农事计划的具体实施制定明确的操作规范和验收标准。"/>
+        <IntroduceAlert title="该模块的核心功能在于为农事计划的具体实施制定明确的操作规范和验收标准。"/>
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
