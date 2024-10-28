@@ -27,6 +27,33 @@ const document = [
       name:"梧桐村"
     }
   },
+  {
+    id:generateUUID(),
+    content:'通明村',
+    meta:{
+      address:"重庆市永川区",
+      lonlat:"105.94944504357882, 29.34828952798748",
+      name:"通明村"
+    }
+  },
+  {
+    id:generateUUID(),
+    content:'天印村',
+    meta:{
+      address:"重庆市潼南区",
+      lonlat:"105.83271528835849, 30.040064853676487",
+      name:"天印村"
+    }
+  },
+  {
+    id:generateUUID(),
+    content:'二渡村',
+    meta:{
+      address:"重庆市涪陵区",
+      lonlat:"107.43767400964991, 29.7967828324522",
+      name:"二渡村"
+    }
+  },
 ]
 
 export const searchDoc = (query:string) => {
