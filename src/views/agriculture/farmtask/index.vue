@@ -267,7 +267,7 @@ const getList = async () => {
 const router = useRouter() // 路由
 /** 添加操作 */
 const handleCreate = () => {
-  router.push({ path: '/farm_work/FarmWorkCreate' })
+  router.push({ path: '/farm_work/farmWorkCreate' })
 }
 
 /** 详情操作 */

@@ -1,6 +1,6 @@
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible">
-    <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" v-loading="formLoading">
+    <el-form @submit.prevent ref="formRef" :model="formData" :rules="formRules" label-width="100px" v-loading="formLoading" >
       <el-form-item label="分类名称" prop="repositoryName">
         <el-input v-model="formData.repositoryName" placeholder="请输入知识库分类名称" />
       </el-form-item>

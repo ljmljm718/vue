@@ -62,7 +62,7 @@ const getCountryBuildData = async () => {
     const industryTypeNum = [...new Set([...item.map(ele => ele.industryType)])].length; // 产业形态
     return { villageNum, areaNum, formNum, industryTypeNum }
   }
-  
+
   countryBuildData.value = [
     { id: '1', year: '2022', ...formatData(res2022.list) },
     { id: '2', year: '2023', ...formatData(res2023.list) },
@@ -71,7 +71,7 @@ const getCountryBuildData = async () => {
   ]
 }
 getCountryBuildData()
-  
+
 const selectedCardId = ref<string>('1')
 const cardDataList = ref<any[]>([])
 const getCardDataList = async () => {
@@ -146,7 +146,7 @@ const selectChange = async (idx) => {
 // 点击表格中某一行的处理
 const toBigScreen = (row) => {
   console.log('被点击了 ', row)
-  if (row.bigscreen) { 
+  if (row.bigscreen) {
     window.open(row.bigscreen)
   } else {
     console.log(`示范村数据表格, 区县: ${row.county}, ID: ${row.id}, 没有对应的大屏地址`)
@@ -343,6 +343,7 @@ const mapTipData = ref()
 const initChinaMap = async () => {
   // 获取高亮地区列表并封装成ECharts用的形式
   mapDataList.value = await getDistinctData('1')
+  console.log("mapDataList =>", mapDataList.value)
   let highlightList = mapDataList.value.map(item => ({
     name: item.name, value: 2000, selected: false
   }))
@@ -352,7 +353,15 @@ const initChinaMap = async () => {
   // 准备ECharts地图tooltip数据，并修改highlighList中的名称
   const nameArr = jsonData.features.map((item) => item.properties.name)
   nameArr.forEach((item) => {
-    selectMap({ county: item }).then((res) => {
+    const locationMap = new Map([
+      ['彭水苗族土家族自治县', '彭水县'],
+      ['石柱土家族自治县', '石柱县'],
+      ['酉阳土家族苗族自治县', '酉阳县'],
+      ['秀山土家族苗族自治县', '秀山县'],
+    ])
+    const county = locationMap.get(item) || item
+    selectMap({ county }).then((res) => {
+      console.log("selectMap =>", res)
       nameDataMap.set(item, res)
     })
   })
@@ -574,17 +583,18 @@ const initChinaMap = async () => {
       tipDom.style.clipPath = `polygon(${pointOverTipInner}, ${pointUnderTipInner}, ${pointMapInner})`
     }
   }
-  
+
   // 点在地图上的处理
   myChart.on('click', (params) => {
-    // console.log('ECharts点击事件参数: ', params)
+    console.log('ECharts点击事件参数: ', params)
     mapTipShow.value = false
     mapTipData.value = null
     if (!params.event) return
     const x = params.event.offsetX
     const y = params.event.offsetY
     let key = params.name
-    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) { 
+    console.log("nameDataMap", nameDataMap)
+    if (nameDataMap.has(key) && checkMapTipData(nameDataMap.get(key)[0])) {
       mapTipData.value = nameDataMap.get(key)[0]
       mapTipShow.value = true
       setMapToTip(x, y)
@@ -645,9 +655,9 @@ const handleSwiperMouseEnter=()=>{
 // }
   swiperInstance.value?.autoplay.stop();
   // console.log("🚀 ~ handleSwiperMouseEnter ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
-  
+
 }
-  
+
 const handleSwiperMouseLeave=()=>{
   swiperInstance.value?.autoplay.start();
   // console.log("🚀 ~ handleSwiperMouseLeave ~ swiperInstance.value?.autoplay:", swiperInstance.value?.autoplay)
@@ -716,7 +726,7 @@ const offsetPer = ref<number>(100)
 const handleImgChange = (val) => {
   if (!Array.isArray(selectedSecItem.value.children)) return;
   if (!selectedThirItem.value?.bigscreen) return;
-  
+
   const selectedImgIndex = selectedSecItem.value.children.findIndex(item => (item.bigscreen === selectedThirItem.value.bigscreen))
 
   // if(!selectedThirItem.value?.bigscreenImg) selectedThirItem.value.bigscreenImg = './assets/new/noImg.png'
@@ -737,19 +747,19 @@ const handlePageJump = () =>{
   if (!selectedThirItem.value?.bigscreen) return;
   window.open(selectedThirItem.value.bigscreen, '_blank');
 }
-  
+
 
 //获得产业数据
 const getSelectImg = async () => {
   const res = await selectImg().catch(() => {});
   industriesTree.value = buildIndustriesTree(res)
   console.log("🚀 ~ getSelectImg ~ industriesTree.value:", industriesTree.value)
-  
+
   if (industriesTree.value.length > 0) {
     handleFirstItemClick(industriesTree.value[0])
   }
 }
-  
+
 getSelectImg()
 
 const btnAction = ref<boolean>(false)
@@ -799,7 +809,7 @@ onMounted(() => { enablePosterScroll() })
           </swiper-slide>
         </swiper>
       </div>
-      
+
       <div class="container px-3rem box-border relative z-20">
         <div class="text-3rem">数字农业一体化管理平台</div>
         <div class="w-[43rem] text-.9rem mt-1.2rem">
@@ -905,7 +915,7 @@ onMounted(() => { enablePosterScroll() })
           :spaceBetween="20"
           :freeMode="true"
           :navigation="{
-            nextEl: '.swiper-button-next', 
+            nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
           }"
           :pagination="{
@@ -957,7 +967,7 @@ onMounted(() => { enablePosterScroll() })
                   <div class='w-8px h-8px top--0.7 left-20px absolute bg-[#fff] rounded-full'></div>
                 </div>
               </div>
-              
+
               <div class='absolute color-[#f2f2f2] left-2rem w-85% text-1rem bottom-100px' style='text-align:left'>
                 <div class='mb-5px'>我们建设示范村<span class='text-1.4rem text-center inline-block p-3 font-bold text-#fff'>{{ item.villageNum }}</span>个</div>
                 <div>区县{{ item.areaNum }}个 | 产业类型{{ item.formNum }}种 | 产业形态{{ item.industryTypeNum }}种</div>
@@ -1107,7 +1117,7 @@ onMounted(() => { enablePosterScroll() })
             </div>
           </swiper-slide>
         </swiper>
-      </div>  
+      </div>
     </div>
 
     <!-- 打造产业 -->
@@ -1154,7 +1164,7 @@ onMounted(() => { enablePosterScroll() })
               </div>
             </div>
             <div class="w-full h-[10rem] bottom-[-2rem] flex justify-center">
-              <div class='flex flex-col justify-center items-center w-25rem'> 
+              <div class='flex flex-col justify-center items-center w-25rem'>
                   <div class="flex justify-center  h-20% text-center text-#fff text-1.2rem">{{ selectedSecItem.label }}</div>
                   <div class="flex justify-center  h-80%  w-23rem  semicircule-bg2 overflow-hidden" @click="handleNextItem(-1)">
                       <div class = 'dashCircle mt-11'></div>
@@ -1233,8 +1243,8 @@ onMounted(() => { enablePosterScroll() })
         <div class="text-#666 text-.7rem">COMPREHENSIVE SOLUTION CASE OF DIGITAL AGRICULTURE</div>
       </div>
       <div class="w-full py-1.4rem h-60vh overflow-hidden">
-        <div 
-          class="w-100vw h-1/3 cursor-pointer" 
+        <div
+          class="w-100vw h-1/3 cursor-pointer"
           style="position: relative; display: inline-flex"
           @mouseenter="handleSwiperMouseEnter"
           @mouseleave="handleSwiperMouseLeave"

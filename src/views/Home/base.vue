@@ -12,7 +12,9 @@
     <HomeTangBa v-else-if="deptId === 154 || deptId === 163" />
     <homeShuangQiao v-else-if="deptId === 156" />
     <HomeErdu v-else-if="deptId === 161" />
-    <HomeTaiYuan v-else-if="deptId === 166 || deptId === 165" />
+    <HomeTangBa v-else-if="deptId === 166" />
+    <HomeTaiYuan v-else-if="deptId === 165" />
+    <HomeChaZhu v-else-if="deptId === 168" />
     <div v-else v-loading class="w-full h-[30rem]"></div>
   </div>
 </template>
@@ -31,6 +33,7 @@ import HomeTangBa from './homeTangBa.vue'
 import homeShuangQiao from './homeShuangQiao.vue'
 import HomeErdu from './homeErDu.vue'
 import HomeTaiYuan from './homeTaiYuan.vue'
+import HomeChaZhu from './homeChaZhu.vue'
 import { ref } from 'vue'
 const deptId = ref(0)
 const judgeHomePage = async () => {

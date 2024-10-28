@@ -1,6 +1,17 @@
 <template>
   <div>
     <EditFrame>
+      <template #header>
+        <div>
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回</el-button>
+        </div>
+      </template>
       <template #content>
         <el-scrollbar class="croll-bar-template">
           <el-form

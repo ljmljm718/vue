@@ -24,7 +24,7 @@ const handleTabChange = (tab:string) => {
 
 </script>
 <template>
-  <div class="w-100vw h-100vw bg-#666">
+  <div class="w-100vw h-100vw bg-black">
     <ScaleBox>
       <div class="w-full h-full bg-black text-white">
         <div class="w-full h-100px header-bg flex items-center justify-between">

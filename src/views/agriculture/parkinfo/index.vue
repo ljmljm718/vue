@@ -18,7 +18,6 @@
             class="!w-240px"
           />
         </el-form-item>
-
         <el-form-item label="类型" prop="type">
           <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
             <el-option
@@ -29,13 +28,11 @@
             />
           </el-select>
         </el-form-item>
-
         <el-form-item label="面积" prop="area">
           <el-input v-model="queryParams.area" placeholder="请输入面积">
             <template #append>亩</template>
           </el-input>
         </el-form-item>
-
         <el-form-item label="联系人" prop="contact">
           <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
         </el-form-item>
@@ -47,11 +44,11 @@
       <div class="flex justify-center items-center">
         <el-button @click="handleQuery" type="primary" class="!bg-[#009688]">
           <Icon icon="ep:search" class="mr-5px" />
-          搜索
+          <span>搜索</span>
         </el-button>
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px" />
-          重置
+          <span>重置</span>
         </el-button>
       </div>
     </div>
@@ -548,6 +545,10 @@ const handleDraw = (item) => {
         }
           
       }
+    } else {
+      // TODO 如果不存在围栏，把中心点设置在基地中间
+      if (activeBaseCenter.value.length !== 2) return;
+      nextTick(() => { tiandiIns.value.setCenterZoom(activeBaseCenter.value, 17) })
     }
   })
 }
@@ -593,8 +594,17 @@ const handlePlotClick = (item) => {
   activePlotId.value = item.id
   handleDrawPark(item)
 }
+// TODO 设置活动的基地
+const activeBaseCenter = ref<number[]>([]);
+const setActiveBaseCenter = (item) => {
+  console.log("setActiveBaseCenter Item => ", item);
+  const { longitude, latitude, geofencing } = item;
+  if (!longitude || !latitude) return;
+  activeBaseCenter.value = [Number(latitude), Number(longitude)]
+}
 const handleParkClick = async (item, _showPlot = true) => {
-  if (!item?.id) return
+  if (!item?.id) return;
+  setActiveBaseCenter(item)
   const list = await ParkInfoApi.getParkDetailListByParkId(item.id)
   console.log('地块列表', list)
 

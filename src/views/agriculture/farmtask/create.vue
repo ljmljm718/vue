@@ -25,6 +25,13 @@
 <!--          >清空-->
 <!--          </el-button>-->
         </div>
+        <div>
+          <el-button
+            type="primary"
+            plain
+            @click="router.back()"
+          >返回</el-button>
+        </div>
       </template>
       <template #content>
         <el-scrollbar class="croll-bar-template">
@@ -258,7 +265,7 @@ import {FarmPlanVO} from "@/api/agriculture/farmplan";
 import {AdoptionPlanApi} from "@/api/agriculture/adoptionplan";
 import {AdoptionRuleApi} from "@/api/agriculture/adoptionrule";
 
-defineOptions({ name: 'FarmTaskForm' })
+defineOptions({ name: 'AgriFarmTaskForm' })
 
 const message = useMessage() // 消息弹窗
 const { delView } = useTagsViewStore() // 视图操作

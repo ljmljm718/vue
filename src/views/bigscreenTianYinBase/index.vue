@@ -1,11 +1,12 @@
 <script lang="tsx">
 import BigscreenBuilder from '@/components/BigscreenBuilder'
-import headerBg from './assets/headerBg.png'
+import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
 import CesiumMap from '@/views/tiandiMap/index.vue'
 import {
   getParkList,
   getLeftListInfo
 } from './api'
+import * as turf from '@turf/turf'
 
 const {
   BigscreenAdapter,
@@ -34,7 +35,7 @@ export default defineComponent({
         console.log('res', res);
 
         selectedBase.value = res.length > 0 ? res[0].name : ''
-        console.log('sssssssssss', selectedBase.value)
+        // console.log('sssssssssss', selectedBase.value)
         if (res.length > 0) {
           getMainDataList(res[0].id)
 
@@ -67,14 +68,48 @@ export default defineComponent({
 
     const leftDataList = ref<any[]>([])
     const rightDataList = ref<any[]>([])
+    //地图
+    const cesiumIns = ref()
 
+    const getMapData =  async () => {
+      const { list } = await ParkInfoApi.getParkInfoPage({})
+      if (Array.isArray(list) && list.length > 0) {
+        const _arr = list.map(item => {
+          const geofencing = JSON.parse(item.geofencing)
+          if (Array.isArray(geofencing)) return geofencing
+          const { corrdinates, option } = geofencing;
+          return corrdinates;
+        })
+
+        if (Array.isArray(_arr) && _arr.length > 0) {
+          const features = turf.points([
+            ..._arr[0][0].map(item => ([item.lng, item.lat]))
+          ]);
+
+          const _POS_ = turf.center(features);
+          const { geometry } = _POS_;
+          const { coordinates } = geometry
+          cesiumIns.value.flyTo(
+            undefined,
+            [...coordinates, 1400]
+          )
+        }
+      }
+    }
+
+    onMounted(() => {
+      setTimeout(() => {
+        getMapData()
+      }, 2000)
+
+    })
     return () => (
       <div class="w-[100%] bg-[#0d1724]">
         <BigscreenContainer width="100%" extraClass="aspect-[2]">
           <BigscreenMain>
             <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
               <div class="absolute z-2 w-full h-full">
-                <CesiumMap />
+                <CesiumMap ref={e => cesiumIns.value = e}/>
                 <div class="meng-ban z-0"></div>
               </div>
               <div
