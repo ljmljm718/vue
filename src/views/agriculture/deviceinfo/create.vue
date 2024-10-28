@@ -162,14 +162,23 @@ const props = {
   expandTrigger: 'hover' as const,
 }
 const handleChange = (value: any) => {
-  console.log(value)
   formData.value.deviceType = value.join(',')
   formData.value.deviceKind = value[1]
   const typeItem = categoryOptions.value.find(item => item.id === value[0])
   const deviceItem = typeItem.children.find(item => item.id === value[1])
-  console.log("deviceItem",deviceItem.monitor)
   //赋值设备监测类型
-  formData.value.deviceMonitorType = deviceItem.monitor.split(',');
+  if (deviceItem.monitor == null || deviceItem.monitor == undefined) {
+    formData.value.deviceMonitorType = null
+    options.value = []
+  } else {
+    formData.value.deviceMonitorType = deviceItem.monitor.split(',');
+    const monitorList = deviceItem.monitor.split(',');
+    const newMonitorList = []
+    monitorList.forEach(item => {
+      newMonitorList.push({value:item,label:item})
+    })
+    options.value = newMonitorList
+  }
 }
 
 //基地的选择
