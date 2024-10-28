@@ -1,6 +1,8 @@
 <template>
 <!--  -->
-
+  <introduce-alert
+    title="若有新增条目信息名称包含【农资】的相关数据，会单独展示在【投入品信息管理】"
+  />
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -128,6 +130,7 @@ import { handleTree } from '@/utils/tree'
 import download from '@/utils/download'
 import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
 import ProductCategoryForm from './ProductCategoryForm.vue'
+import IntroduceAlert from "@/components/IntroduceAlert/index.vue";
 
 /** ERP 产品分类 列表 */
 defineOptions({ name: 'ErpProductCategory' })

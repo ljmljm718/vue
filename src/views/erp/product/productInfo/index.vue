@@ -1,7 +1,9 @@
 <!-- ERP 产品列表 -->
 <template>
 <!--  -->
-
+    <introduce-alert
+      title="展示农资的投入品的基础信息，【产品分类】中属于【农资】的相关数据会展示在此页面"
+    />
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -174,6 +176,7 @@ import ProductForm from './ProductForm.vue'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { erpPriceTableColumnFormatter } from '@/utils'
 import ProductImportForm from "@/views/erp/product/productInfo/ProductImportForm.vue";
+import IntroduceAlert from "@/components/IntroduceAlert/index.vue";
 
 /** ERP 产品列表 */
 defineOptions({ name: 'ErpProduct' })
@@ -198,6 +201,15 @@ const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
 const getList = async () => {
   loading.value = true
   try {
+
+    console.log("categoryList", categoryList)
+    if (categoryList.value.length > 0){
+      queryParams.categoryId = categoryList.value[0].id
+      console.log("categoryList1", categoryList)
+    }else {
+
+    }
+    console.log("queryParams", queryParams)
     const data = await ProductApi.getProductPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -260,9 +272,15 @@ const handleCraftImport = () => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
   // 产品分类
   const categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-  categoryList.value = handleTree(categoryData, 'id', 'parentId')
+  let agriCategoryData = categoryData
+  if (categoryData.find(item => item.name.includes("农资"))){
+    agriCategoryData = categoryData.filter(item => item.name.includes("农资"))
+  }
+
+  categoryList.value = handleTree(agriCategoryData, 'id', 'parentId')
+  console.log("categoryList.value", categoryList.value)
+  await getList()
 })
 </script>
