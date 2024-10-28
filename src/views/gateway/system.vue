@@ -743,7 +743,7 @@ const highlights = ref<any[]>([{
         </div>
         <div :class="`sys-highlight-${ curHighlight + 1 } flex`">
           <div class="mt-[5rem] ml-[3.75rem] w-[40%]">
-            <div><span class="text-[1.5rem] leading-[3rem]">{{ highlights[curHighlight].title }}:</span></div>
+            <div><span class="text-[1.5rem] leading-[3rem]">{{ highlights[curHighlight].title }}</span></div>
             <div><span class="leading-[2rem]">{{ highlights[curHighlight].content }}</span></div>
           </div>
         </div>

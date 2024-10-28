@@ -92,7 +92,7 @@
         >新增</el-button>
         <div v-if='cardList'>
           <el-button
-            type="success" 
+            type="success"
             plain
             class="!color-[#fff] !bg-[#3ba272]"
             @click="handleExport"
@@ -373,7 +373,7 @@ defineOptions({ name: 'DeviceInfo' })
  * 111 - 酉阳县板桥乡双桥村
  * 120 - 万州区龙驹镇梧桐村
  */
-const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120, 131, 133])
+const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120, 131, 133, 143])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

@@ -9,7 +9,7 @@
       label-width="68px"
     >
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px" :disabled="true"> 
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search" />
