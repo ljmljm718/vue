@@ -371,7 +371,7 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 let farmDefineOptions = ref([])// 设备分类选项
 
-const area = ref()
+const area = ref<number>(0);
 const show = ref()
 const userStore = useUserStore()
 //获取部门ID
@@ -407,7 +407,7 @@ const handleSelectFarmPlanChange =async (order: FarmPlanVO) => {
   formData.value.batchCode=String(order[0].batchCode)
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
 }
 
 //基地的选择
@@ -442,7 +442,7 @@ const handleParkDetailPopupChange = async (order: ParkDetailVO) => {
   formData.value.plotName = String(order[0].name)
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
 }
 
 
@@ -464,7 +464,7 @@ const handleCropInfoPopupChange =async (order: CropBaseVO) => {
   formData.value.batchCode=String(order[0].batchCode)
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
 }
 
 
@@ -608,7 +608,12 @@ const localSave = () => {
 //获取浏览器缓存
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
+  if (_form) {
+    formData.value = _form.formContent
+    // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+    const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+    area.value = parkDetailData.area==""?0:parkDetailData.area
+  }
 }
 if (!formData.value.id) loadData()
 
@@ -622,7 +627,11 @@ const getFrom = async () =>{
     formData.value = await FarmRecordApi.getFarmRecord (route.query.id as any);
     formData.value.farmDefineType=formData.value.farmDefineType?parseInt(formData.value.farmDefineType):"";
     formData.value.personName = formData.value.personName =="null"? '': formData.value.personName
+    // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+    const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+    area.value = parkDetailData.area==""?0:parkDetailData.area
     loadData(route.query.id);
+
   }
   if (route.query && route.query.type === 'create') {
     formData.value = { ...route.query }

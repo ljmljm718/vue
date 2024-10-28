@@ -110,7 +110,7 @@ const handleParkDetailPopupChange = async ( order: ParkDetailVO) => {
   formData.value.plotName = String(order[0].name)
 // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
 }
 
 
@@ -132,7 +132,7 @@ const handleCropInfoPopupChange = async (order: CropBaseVO) => {
   formData.value.batchCode = String(order[0].batchCode)
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
 }
 
 
@@ -234,7 +234,12 @@ const localSave = () => {
 // 从本地加载数据
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
+  if (_form) {
+    formData.value = _form.formContent
+    // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+    const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+    area.value = parkDetailData.area==""?0:parkDetailData.area
+  }
 }
 
 const area = ref<number>(0);
@@ -247,7 +252,7 @@ const getFormInfo = async () => {
   formData.value.farmDefineType = formData.value.farmDefineType ? parseInt(formData.value.farmDefineType) : "";
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-  area.value = parkDetailData.area
+  area.value = parkDetailData.area==""?0:parkDetailData.area
   // 截至
   await loadData(route.query.id);
 }
