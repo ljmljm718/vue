@@ -88,7 +88,16 @@
   </div>
   <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
     <div v-for="item, index in list" :key="index" class="rounded bg-[#f5f5f5]" style="overflow: hidden;">
-      <img v-if="item.photo" :src="item.photo" class="w-100% h-150px rounded" alt="" />
+      <div class="w-100% h-190px relative overflow-hidden" v-if="item.photo">
+        <img
+          :src="item.photo"
+          class="w-full h-full rounded object-cover blur-lg absolute left-0 top-0 z-0"
+        />
+        <img
+          :src="item.photo"
+          class="w-full h-full rounded object-contain absolute left-0 top-0 z-10"
+        />
+      </div>
       <div v-else class="flex justify-center items-center w-100% h-150px bg-#00000010">暂无数据</div>
       <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
         <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}

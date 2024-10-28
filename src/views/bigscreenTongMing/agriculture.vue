@@ -20,11 +20,7 @@ import {
   qianjiangWarnRecordInfo
 } from './api'
 import BigscreenCalendar from './components/calendar.vue'
-
 import { initChartStatic, generatePieOptions } from '../../utils/bigscreenTool/index'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-
-const { BigscreenTable } = BigscreenBuilder
 
 adapter()
 // const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -164,7 +160,7 @@ const getTopDataList = async () => {
 }
 getTopDataList()
 //品种分布
-let chartIns = null;
+let chartIns:any = null;
 const initChart = async () => {
   if (chartIns) chartIns.dispose();
   const res = await getBreedCategory()
@@ -357,7 +353,7 @@ const missionremovePlanClass = (event: any) => {
 const getEquipmentMapData = async () => {
   const res = await getEquipmentMap({})
 
-  const latlngs = []
+  const latlngs:any[] = []
   const iconMap = {
     camrea: 'icon1',
     meteorologicalStation: 'icon2'
