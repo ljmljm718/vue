@@ -424,14 +424,19 @@ const activeItemId = ref<string>('')
 const loading = ref<boolean>(false)
 const list = ref<ParkInfoVO[]>([]) // 列表的数据
 const total = ref<number>(0) // 列表的总页数
-const getList = async () => {
+const getList = async (onlyGetData:boolean = false) => {
   loading.value = true
   try {
+    if (parkMapIns.value) parkMapIns.value.clearMap();
     const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
     list.value = list1
     console.log('🚀 ~ getList ~ list1:', list1)
     if (Array.isArray(list1) && list1.length > 0) {
-      handleParkClick(list1[0], false)
+      if (onlyGetData) {
+        const _item = list1.find(ele => ele.id === activeItemId.value)
+        console.log("_item", _item)
+        handleParkClick(_item, false)
+      } else handleParkClick(list1[0], false)
     }
     total.value = total1
   } finally {
@@ -629,6 +634,7 @@ const handleConfirm = async () => {
   else ElMessage.error('保存失败！')
   showDrawDialog.value = false
   selectedDrawId.value = ''
+  getList(true)
 }
 
 const handleCancel = () => {

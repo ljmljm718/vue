@@ -168,7 +168,7 @@ const getTopDataList = async()=>{
 }
 getTopDataList()
 //品种分布
-let chartIns = null;
+let chartIns:any = null;
 const initChart = async () => {
   if (chartIns) chartIns.dispose();
   const res = await getBreedCategory()
