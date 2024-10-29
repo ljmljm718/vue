@@ -76,19 +76,18 @@ function startTime(time) {
 }
 const queryCollectionShows = () => {
   console.log('DataCollectShows[0]', DataCollectShows[0])
-  console.log('DataCollectShows[1]', DataCollectShows[1])
-  if(DataCollectShows[1] ===  undefined || DataCollectShows[0] ===  undefined){
+  if (DataCollectShows[1] === undefined || DataCollectShows[0] === undefined) {
     alert('请选择开始时间和结束时间')
     return
   }
-  
+
   initDataCollectChart('appoint', DataCollectShows[0], DataCollectShows[1])
 }
 // 数据采集量展示
 const dataCollectRadio = ref('本年')
 const dataCollectDateRange = ref([])
 const CollectDate = (e) => {
-  if( e == null){
+  if (e == null) {
     dataCollectDateRange.value = []
     DataCollectShows[0] = undefined
     DataCollectShows[1] = undefined
@@ -103,7 +102,7 @@ const dataColleChange = async (val) => {
   dataCollectDateRange.value = []
   DataCollectShows[0] = undefined
   DataCollectShows[1] = undefined
-  await nextTick();
+  await nextTick()
   initDataCollectChart(val)
 }
 const el = document.documentElement
@@ -128,99 +127,99 @@ const initDataCollectChart = async (type, startDate = '', endDate = '') => {
   let res = await EquipmentDataApi.QueryCurrentDateCount(
     type == 'appoint' ? { type, startDate, endDate } : { type }
   )
-  console.log('🚀 ~ initDataCollectChart ~ res:', res)
   const chartElement = document.getElementById('dataCollectChart')
   if (!chartElement) {
-    console.error('Chart element not found!');
-    return;
+    console.error('Chart element not found!')
+    return
   }
-  const chartInstance = echarts.getInstanceByDom(chartElement)  // 检查该 DOM 元素上是否已经存在 ECharts 实例
-  if(chartInstance){
-    chartInstance.dispose()  // 销毁已有的图表实例，防止重复初始化
+  const chartInstance = echarts.getInstanceByDom(chartElement) // 检查该 DOM 元素上是否已经存在 ECharts 实例
+  if (chartInstance) {
+    chartInstance.dispose() // 销毁已有的图表实例，防止重复初始化
   }
-  if (chartElement) {
-    if (res.length < 1) {
-      chartElement.innerHTML = '<p style=" color:#a1a1aa;">暂无查询数据</p>'
-    } else {
-       // 清空提示文本，确保重新渲染图表
-      chartElement.innerHTML = '';
-      initChartStatic(
-        'dataCollectChart',
-        generateBaseOptions({
-          xAxis: {
+  // if (chartElement) {
+  if (res.length < 1) {
+    chartElement.innerHTML = '<p style=" color:#a1a1aa; ">暂无查询数据</p>'
+    return
+  } else {
+    // 清空提示文本，确保重新渲染图表
+    chartElement.innerHTML = ''
+    initChartStatic(
+      'dataCollectChart',
+      generateBaseOptions({
+        xAxis: {
+          data:
+            type == 'appoint'
+              ? res.map((item) => item.collectionDate)
+              : res.map((item) => item.collectionDate).reverse(),
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#a1a1aa80'
+            }
+          }
+        },
+        legend: {
+          show: false,
+          orient: 'horizontal',
+          itemWidth: 15,
+          itemHeight: 15
+        },
+        color: [elcolor.value, '#36e1d9'],
+        yAxis: {
+          name: '',
+          type: 'value',
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#a1a1aa80'
+            }
+          },
+          splitLine: {
+            //网格线
+            show: true, //是否显示
+            lineStyle: {
+              //网格线样式
+              color: '#a1a1aa80', //网格线颜色
+              width: 1, //网格线的加粗程度
+              type: 'dashed' //网格线类型
+            }
+          },
+          splitArea: {
+            //网格区域
+            show: false //是否显示
+          }
+        },
+        series: [
+          {
+            name: '数据采集量展示',
             data:
               type == 'appoint'
-                ? res.map((item) => item.collectionDate)
-                : res.map((item) => item.collectionDate).reverse(),
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#a1a1aa80'
+                ? res.map((item) => item.totalValue)
+                : res.map((item) => item.totalValue).reverse(),
+            type: 'line',
+            smooth: true,
+            label: {
+              show: true, //开启显示
+              position: 'right', //在上方显示
+              textStyle: {
+                //数值样式
+                color: '#a1a1aa',
+                fontSize: 10
               }
             }
-          },
-          legend: {
-            show: false,
-            orient: 'horizontal',
-            itemWidth: 15,
-            itemHeight: 15
-          },
-          color: [elcolor.value, '#36e1d9'],
-          yAxis: {
-            name: '',
-            type: 'value',
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#a1a1aa80'
-              }
-            },
-            splitLine: {
-              //网格线
-              show: true, //是否显示
-              lineStyle: {
-                //网格线样式
-                color: '#a1a1aa80', //网格线颜色
-                width: 1, //网格线的加粗程度
-                type: 'dashed' //网格线类型
-              }
-            },
-            splitArea: {
-              //网格区域
-              show: false //是否显示
-            }
-          },
-          series: [
-            {
-              name: '数据采集量展示',
-              data:
-                type == 'appoint'
-                  ? res.map((item) => item.totalValue)
-                  : res.map((item) => item.totalValue).reverse(),
-              type: 'line',
-              smooth: true,
-              label: {
-                show: true, //开启显示
-                position: 'right', //在上方显示
-                textStyle: {
-                  //数值样式
-                  color: '#a1a1aa',
-                  fontSize: 10
-                }
-              }
-            }
-          ],
-          grid: {
-            left: '0%',
-            right: '4%',
-            top: '8%',
-            bottom: '12%'
           }
-        })
-      )
-    }
+        ],
+        grid: {
+          left: '0%',
+          right: '4%',
+          top: '8%',
+          bottom: '12%'
+        }
+      })
+    )
   }
 }
+
 // 数据展示
 const dataShowRadio = ref('气象站')
 let seletValue = ref()
@@ -252,15 +251,24 @@ const selectCli = (e) => {
   initDataShowChart(dataShowRadio.value, seletValue.value, dataShowDate.value)
 }
 //选择时间
-const dataShowDateChange = (val) => {
-  let data = new Date(val)
-  let year = val.getFullYear()
-  let month = data.getMonth() + 1
-  let day = data.getDate()
-  dataShowDate.value = `${year}-${month}-${day}`
-}
 
+
+const dataShowDateChange = (val) => {
+  if (val === null) {
+    dataShowDate.value = ''
+  } else {
+    let data = new Date(val)
+    let year = val.getFullYear()
+    let month = data.getMonth() + 1
+    let day = data.getDate()
+    dataShowDate.value = `${year}-${month}-${day}`
+  }
+}
 const queryChart = () => {
+  if(dataShowDate.value === ''){
+     alert('请选择时间')
+    return
+  }
   initDataShowChart(dataShowRadio.value, seletValue.value, dataShowDate.value)
 }
 
@@ -378,7 +386,6 @@ const collectConditionData = ref([])
 function getTime(time) {
   let data = new Date(time[0])
   let data2 = new Date(time[1])
-  console.log(data.getDate(), 'asdasdq123')
   let year = data.getFullYear()
   let year2 = data2.getFullYear()
   let month = data.getMonth() + 1
@@ -395,11 +402,22 @@ function getTime(time) {
   collectConditionData[1] = `${year2}-${month2}-${day2} ${hour2}:${minute2}:${miao2}`
 }
 const queryCollection = () => {
+  if (collectConditionData[0] === undefined || collectConditionData[1] === undefined) {
+    alert('请选择开始时间和结束时间')
+    return
+  }
   initCollectConditionChart(collectConditionData[0], collectConditionData[1])
 }
-const collectChange = () => {
-  getTime(collectConditionDateRange.value)
+const collectChange = (e) => {
+  if (e == null) {
+    collectConditionDateRange.value = []
+    collectConditionData[0] = undefined
+    collectConditionData[1] = undefined
+  } else {
+    getTime(collectConditionDateRange.value)
+  }
 }
+
 //数据采集量情况
 
 const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') => {
@@ -414,6 +432,15 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
   let dataNum = 0
   for (var i = 0; i < data.length; i++) {
     dataNum += data[i].value
+  }
+  const chartElement = document.getElementById('collectConditionChart')
+  if (!chartElement) {
+    console.error('Chart element not found!')
+    return
+  }
+  const chartInstance = echarts.getInstanceByDom(chartElement) // 检查该 DOM 元素上是否已经存在 ECharts 实例
+  if (chartInstance) {
+    chartInstance.dispose() // 销毁已有的图表实例，防止重复初始化
   }
   initChartStatic(
     'collectConditionChart',
@@ -441,7 +468,6 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
           return name + '\r' + tarValue + '\r' + p + '%'
         }
       },
-
       graphic: {
         type: 'text',
         left: '32.5%',
@@ -480,6 +506,12 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
       ]
     })
   )
+  // 添加 resize 监听器，确保页面缩放时重新调整图表大小
+  window.addEventListener('resize', () => {
+    if (chartInstance) {
+      chartInstance.resize()
+    }
+  })
 }
 onMounted(async () => {
   initDataCollectChart('year')
@@ -912,7 +944,7 @@ watch(
   /* position: relative; */
   left: 36px;
   top: 64px;
-  width: 80px;
+  width: 100px;
   height: 16px;
   opacity: 1;
 
