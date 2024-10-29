@@ -62,22 +62,22 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="仓库" prop="warehouseId">
-        <el-select
-          v-model="queryParams.warehouseId"
-          clearable
-          filterable
-          placeholder="请选择仓库"
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in warehouseList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="仓库" prop="warehouseId">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.warehouseId"-->
+<!--          clearable-->
+<!--          filterable-->
+<!--          placeholder="请选择仓库"-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in warehouseList"-->
+<!--            :key="item.id"-->
+<!--            :label="item.name"-->
+<!--            :value="item.id"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="创建人" prop="creator">
         <el-select
           v-model="queryParams.creator"
@@ -94,43 +94,43 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="关联订单" prop="orderNo">
-        <el-input
-          v-model="queryParams.orderNo"
-          placeholder="请输入关联订单"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="结算账户" prop="accountId">
-        <el-select
-          v-model="queryParams.accountId"
-          clearable
-          filterable
-          placeholder="请选择结算账户"
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in accountList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="付款状态" prop="paymentStatus">
-        <el-select
-          v-model="queryParams.paymentStatus"
-          placeholder="请选择有款状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="未付款" value="0" />
-          <el-option label="部分付款" value="1" />
-          <el-option label="全部付款" value="2" />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="关联订单" prop="orderNo">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.orderNo"-->
+<!--          placeholder="请输入关联订单"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="结算账户" prop="accountId">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.accountId"-->
+<!--          clearable-->
+<!--          filterable-->
+<!--          placeholder="请选择结算账户"-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in accountList"-->
+<!--            :key="item.id"-->
+<!--            :label="item.name"-->
+<!--            :value="item.id"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="付款状态" prop="paymentStatus">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.paymentStatus"-->
+<!--          placeholder="请选择有款状态"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--        >-->
+<!--          <el-option label="未付款" value="0" />-->
+<!--          <el-option label="部分付款" value="1" />-->
+<!--          <el-option label="全部付款" value="2" />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="审核状态" prop="status">
         <el-select
           v-model="queryParams.status"
@@ -146,15 +146,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
+<!--      <el-form-item label="备注" prop="remark">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.remark"-->
+<!--          placeholder="请输入备注"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
