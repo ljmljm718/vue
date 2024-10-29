@@ -487,7 +487,9 @@ const handleBottomTabClick = (item) => {
 
     <!-- 中间部分 -->
     <div class="w-full h-full absolute left-0 top-0 bg-#001110 z-0 flex flex-col items-center">
-      <div class="industry-bg w-full h-[900px] flex flex-col items-center">
+      <div
+        :class="`${activeTab === '4' ? 'rice' : 'industry'}-bg w-full h-[900px] flex flex-col items-center`"
+      >
         <div class="w-[800px] mt-30px flex justify-between">
           <template v-if="activeTab === '1'">
             <div class="leftButtonBg box-border flex items-center pl-50px w-280px h-50px text-[#fff] text-[23px]">传统功效</div>
@@ -522,7 +524,7 @@ const handleBottomTabClick = (item) => {
           <div class="absolute middle-img-right-2 w-100px h-90px right-[-30px] bottom-70px"></div>
         </div>
         <div
-          class="middleTree2 w-650px h-650px mt-70px relative"
+          class="middleTree2 w-650px h-650px mt-70px relative top-[-30px]"
           v-if="activeTab === '2'"
         >
           <div class="left-card left-120px top-90px">维生素C</div>
@@ -542,7 +544,7 @@ const handleBottomTabClick = (item) => {
           <div class="absolute middle-icon-4 w-100px h-90px right-[30px] bottom-120px"></div>
         </div>
         <div
-          class="middleTree3 w-650px h-650px mt-70px relative"
+          class="middleTree3 w-650px h-650px mt-70px relative left-[-38px] top-[-82px]"
           v-if="activeTab === '3'"
         >
           <div class="left-card left-120px top-290px">解鱼蟹毒</div>
@@ -590,7 +592,7 @@ const handleBottomTabClick = (item) => {
           </div>
           <div class="absolute left-[-40px] bottom-80px flex flex-col items-end">
             <div class="text-#08ffff text-18px font-semibold">6.碾米</div>
-            <div class="w-[200px]">根据糙米的情将糙米放入碾米机中除去糙米的皮层和胚芽。况调整其水分和温度，使其达到适宜的碾米条件。</div>
+            <div class="w-[200px]">根据糙米的情况将糙米放入碾米机中除去糙米的皮层和胚芽。</div>
           </div>
           <div class="absolute left-[-80px] top-350px flex flex-col items-end">
             <div class="text-#08ffff text-18px font-semibold">7.白米分级</div>
@@ -640,7 +642,7 @@ const handleBottomTabClick = (item) => {
 }
 
 .bottom-border {
-  border-bottom: 1px solid #08FFFF;
+  border-bottom: 1px solid #00000083
 }
 
 .bottomBg {
@@ -652,6 +654,13 @@ const handleBottomTabClick = (item) => {
 
 .industry-bg {
   background-image: url(./assets/industryBg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.rice-bg {
+  background-image: url(./assets/riceBg.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -736,7 +745,7 @@ const handleBottomTabClick = (item) => {
 .left-card, .right-card, .bottom-card {
   padding: 8px 18px;
   position: absolute;
-  background-color: #363937;
+  background-color: #0000007d;
 }
 
 .left-card {
