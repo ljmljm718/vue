@@ -433,6 +433,10 @@ const submitForm = async () => {
     await router.push(ORIGIN_PATH)
     // 发送操作成功的事件
     emit('success')
+    deleteFormStorage(
+      ROUTE_PATH,
+      formData.value.id ? formData.value.id : 'new_form'
+    )
   } finally {
     formLoading.value = false
   }

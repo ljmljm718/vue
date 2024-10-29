@@ -162,7 +162,7 @@ const distributionList=ref([])
 const chartPieWidth=ref(0)
 const initChartPie1 = async () => {
   let res = await distribution({ parkId: baseCode.value, plotId: plotCode.value })
-  distributionList.value=res  
+  distributionList.value=res
   let data = []
   res.forEach((item) => {
     data.push({
@@ -370,18 +370,18 @@ const initChartBar2 = async () => {
       yData1.push({ name: item.variety, value: item.harvest })
     } else if (nameList[1] == item.variety) {
       yData2.push({ name: item.variety, value: item.harvest })
-     
+
     } else if (nameList[2] == item.variety) {
       yData3.push({ name: item.variety, value: item.harvest })
-      
+
     } else if (nameList[3] == item.variety) {
       yData4.push({ name: item.variety, value: item.harvest })
-    
+
     } else if (nameList[4] == item.variety) {
       yData5.push({ name: item.variety, value: item.harvest })
     }
   })
- 
+
   initChartStatic(
     'chartBar2',
     generateBaseOptions({
@@ -445,7 +445,7 @@ const initChartBar2 = async () => {
         }
       },
       color: ['#5470c6', '#91cc75'],
-      series: 
+      series:
       [
         {
           name:nameList[0],

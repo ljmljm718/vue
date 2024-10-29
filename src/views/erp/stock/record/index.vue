@@ -58,10 +58,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="业务单号" prop="bizNo">
+      <el-form-item label="出入库单号" prop="bizNo">
         <el-input
           v-model="queryParams.bizNo"
-          placeholder="请输入业务单号"
+          placeholder="请输入出入库单号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -115,6 +115,12 @@
         </template>
       </el-table-column>
       <el-table-column label="出入库单号" align="center" prop="bizNo" width="200" />
+      <el-table-column
+        :formatter="dateFormatter"
+        align="center"
+        label="创建时间"
+        prop="createTime"
+      />
       <el-table-column
         label="出入库日期"
         align="center"

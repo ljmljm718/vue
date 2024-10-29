@@ -97,11 +97,12 @@ export default defineComponent({
     let curModelId = ""
     const curVarietyName = ref("")
     const bgImage = ref(bg)
+    const varietyId = ref("")
 
     const getModelList = async () => {
       const params = {parkId: ""}
       const res = await getModel(params)
-      // console.log("ModelList", res)
+      console.log("ModelList", res)
       modelList.value = res.map((item) => {
         return {
           ...item,
@@ -112,6 +113,7 @@ export default defineComponent({
       modelList.value[0].activated = true
       changeBackground(modelList.value[0])
       curModelId = modelList.value[0].modelId
+      varietyId.value = modelList.value[0].varietyId
       curVarietyName.value = modelList.value[0].varietyName
     }
 
@@ -121,6 +123,7 @@ export default defineComponent({
           element.activated = true
           curModelId = element.modelId
           curVarietyName.value = element.varietyName
+          varietyId.value = element.varietyId
           changeBackground(element)
           if (chartInstance) {
             chartInstance.dispose()
@@ -133,6 +136,7 @@ export default defineComponent({
         element.key = `${ element.key }1`
       });
       await getCycleList()
+      await getPlotList()
     }
 
     const changeBackground = (item) => {
@@ -158,10 +162,10 @@ export default defineComponent({
     const getPlotList = async () => {
       const params = { parkId: base.value.id }
       const res = await getPlot(params)
-      plotList.value = res.map( (item) => {
-        return item
+      plotList.value = res.filter( (item) => {
+        return item.varietyId === varietyId.value
       })
-      // console.log("plotList", plotList.value)
+      console.log("plotList", plotList.value)
     }
 
     /** 修改品种模型绑定状态 */

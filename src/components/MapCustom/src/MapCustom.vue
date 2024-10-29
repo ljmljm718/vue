@@ -157,10 +157,19 @@ const getCurrentSaveCoordinates = () => {
   }
 }
 
+const clearMap = () => {
+  if (!map) return;
+  layerMap.forEach((item, key) => {
+    map.removeLayer(item)
+    layerMap.delete(key)
+  })
+}
+
 defineExpose({
   initMap,
   createPolygon,
   setCenterZoom,
+  clearMap,
   getCurrentSaveCoordinates
 })
 
