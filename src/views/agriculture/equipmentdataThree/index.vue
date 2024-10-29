@@ -411,7 +411,7 @@ const handleExport = async () => {
   }
 }
 let res = null
-let obj = ref({})
+let obj = ref<any>({})
 //tab切换
 const tabCli = async (id, val, index) => {
   active.value = index

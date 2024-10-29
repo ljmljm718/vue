@@ -334,7 +334,7 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
   if (activeApi && typeCom.value) {
     const list = await activeApi(equipmentId)
     console.log("🚀 ~ getRunTimeData ~ list =>:", list)
-    if (Array.isArray(list)) runTimeDataList.value = list
+    if (Array.isArray(list)) runTimeDataList.value = list.map(item => ({ ...item, icon: getImgClassByName(item.monitoringType || "温度") }));
   }
 
   // const {
