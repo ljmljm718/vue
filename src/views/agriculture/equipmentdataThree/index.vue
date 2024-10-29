@@ -5,7 +5,7 @@
       <div class="top-area">
         <!-- 标题 -->
         <div class="clear-float">
-          <div class="top-area-title float-left">实时数据</div>
+          <div class="top-area-title float-left font-bold">实时数据</div>
           <div class="top-area-select float-right">
             <el-select v-model="refreshValue" placeholder="请选择自动刷新时间" size="small" @change="changeRefresh">
               <el-option
@@ -48,11 +48,11 @@
         <span class="bottom-area-title">{{obj.monitoringType}}趋势</span>
         <div class="flex items-center">
           <el-radio-group v-model="isLineRadio" size="small" @change="handleRadioChange">
-            <el-radio-button label="pie" value="pie">
-              柱状图
-            </el-radio-button>
             <el-radio-button label="line" value="line">
               折线图
+            </el-radio-button>
+            <el-radio-button label="pie" value="pie">
+              柱状图
             </el-radio-button>
           </el-radio-group>
         </div>
@@ -174,7 +174,7 @@ import { initChartStatic,generateBaseOptions } from '../../../utils/bigscreenToo
 import { useRoute } from 'vue-router'
 
 const isLine = ref(false)
-const isLineRadio = ref('pie')
+const isLineRadio = ref('line')
 const handleRadioChange = (item) => {
   if (item === 'line') initChart(true)
   else initChart(false)
@@ -411,7 +411,7 @@ const handleExport = async () => {
   }
 }
 let res = null
-let obj = ref({})
+let obj = ref<any>({})
 //tab切换
 const tabCli = async (id, val, index) => {
   active.value = index
