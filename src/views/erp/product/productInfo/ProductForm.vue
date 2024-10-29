@@ -294,6 +294,7 @@ const resetForm = () => {
 
 const initCategoryData = (categoryData) => {
   let agriCategoryData = []
+  const originCategoryData = [...categoryData]
   let ids = categoryData.map(item => item.id)
   // 获取农资分类
   categoryData.forEach(item => {
@@ -311,8 +312,8 @@ const initCategoryData = (categoryData) => {
     }
   })
   // 如果产品分类为空，则设置查询参数为全部
-  if (agriCategoryData.size === 0) {
-    agriCategoryData = categoryData
+  if (!agriCategoryData || agriCategoryData.length === 0) {
+    agriCategoryData = originCategoryData
   }
   return agriCategoryData
 }
