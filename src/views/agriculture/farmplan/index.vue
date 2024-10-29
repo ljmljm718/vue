@@ -1329,7 +1329,6 @@ const dataChange = (e) => {
           dataList.value.forEach((item:any) => {
             if( item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
-              console.log(item,'999999999999999910')
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
               item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
