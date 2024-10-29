@@ -27,6 +27,11 @@
           v-model="queryParams.categoryId"
           :data="categoryList"
           :props="defaultProps"
+          multiple
+          clearable
+          collapse-tags
+          collapse-tags-tooltip
+          :max-collapse-tags="3"
           check-strictly
           default-expand-all
           placeholder="请输入分类"
@@ -168,13 +173,13 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter2 } from '@/utils/formatTime'
+import {dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { ProductApi, ProductVO } from '@/api/erp/product/product'
-import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
+import {ProductApi, ProductVO} from '@/api/erp/product/product'
+import {ProductCategoryApi, ProductCategoryVO} from '@/api/erp/product/category'
 import ProductForm from './ProductForm.vue'
-import { defaultProps, handleTree } from '@/utils/tree'
-import { erpPriceTableColumnFormatter } from '@/utils'
+import {defaultProps, handleTree} from '@/utils/tree'
+import {erpPriceTableColumnFormatter} from '@/utils'
 import ProductImportForm from "@/views/erp/product/productInfo/ProductImportForm.vue";
 import IntroduceAlert from "@/components/IntroduceAlert/index.vue";
 
@@ -201,15 +206,6 @@ const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
 const getList = async () => {
   loading.value = true
   try {
-
-    console.log("categoryList", categoryList)
-    if (categoryList.value.length > 0){
-      queryParams.categoryId = categoryList.value[0].id
-      console.log("categoryList1", categoryList)
-    }else {
-
-    }
-    console.log("queryParams", queryParams)
     const data = await ProductApi.getProductPage(queryParams)
     list.value = data.list
     total.value = data.total
@@ -221,12 +217,21 @@ const getList = async () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
+  // 如果产品分类为空，则设置查询参数
+  console.log("queryParams.categoryId", queryParams.categoryId)
+  if (!queryParams.categoryId || queryParams.categoryId.length === 0) {
+    queryParams.categoryId = agriCategoryData.map(item => item.id)
+  }
   getList()
 }
 
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  // 如果产品分类不为空，则设置查询参数
+  if (agriCategoryData.length > 0) {
+    queryParams.categoryId = agriCategoryData.map(item => item.id)
+  }
   handleQuery()
 }
 
@@ -270,17 +275,36 @@ const handleCraftImport = () => {
   importFormRef.value.open()
 }
 
+let agriCategoryData = []
+const initCategoryData = (categoryData) => {
+  let ids = categoryData.map(item => item.id)
+  // 获取农资分类
+  categoryData.forEach(item => {
+    if (item.name.includes("农资")) {
+      ids.push(item.id)
+      agriCategoryData = [
+        ...agriCategoryData,
+        ...categoryData.filter(i => {
+          ids.push(i.id)
+          return item.id === i.parentId
+        }),
+        item
+      ]
+      categoryData = categoryData.filter(i2 => !ids.includes(i2.id))
+    }
+  })
+  // 如果产品分类为空，则设置查询参数为全部
+  if (agriCategoryData.size === 0) {
+    agriCategoryData = categoryData
+  }
+}
+
 /** 初始化 **/
 onMounted(async () => {
   // 产品分类
-  const categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-  let agriCategoryData = categoryData
-  if (categoryData.find(item => item.name.includes("农资"))){
-    agriCategoryData = categoryData.filter(item => item.name.includes("农资"))
-  }
-
+  let categoryData = await ProductCategoryApi.getProductCategorySimpleList()
+  initCategoryData(categoryData)
   categoryList.value = handleTree(agriCategoryData, 'id', 'parentId')
-  console.log("categoryList.value", categoryList.value)
-  await getList()
+  await resetQuery()
 })
 </script>

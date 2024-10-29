@@ -238,8 +238,9 @@ const open = async (type: string, id?: number) => {
     }
   }
   // 产品分类
-  const categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-  categoryList.value = handleTree(categoryData, 'id', 'parentId')
+  let categoryData = await ProductCategoryApi.getProductCategorySimpleList()
+
+  categoryList.value = handleTree(initCategoryData(categoryData), 'id', 'parentId')
   // 产品单位
   unitList.value = await ProductUnitApi.getProductUnitSimpleList()
 }
@@ -289,5 +290,30 @@ const resetForm = () => {
     produceDate: undefined,
   }
   formRef.value?.resetFields()
+}
+
+const initCategoryData = (categoryData) => {
+  let agriCategoryData = []
+  let ids = categoryData.map(item => item.id)
+  // 获取农资分类
+  categoryData.forEach(item => {
+    if (item.name.includes("农资")) {
+      ids.push(item.id)
+      agriCategoryData = [
+        ...agriCategoryData,
+        ...categoryData.filter(i => {
+          ids.push(i.id)
+          return item.id === i.parentId
+        }),
+        item
+      ]
+      categoryData = categoryData.filter(i2 => !ids.includes(i2.id))
+    }
+  })
+  // 如果产品分类为空，则设置查询参数为全部
+  if (agriCategoryData.size === 0) {
+    agriCategoryData = categoryData
+  }
+  return agriCategoryData
 }
 </script>
