@@ -112,10 +112,10 @@ const getMarkNeedList = (tab:string) => {
 getMarkNeedList(activeTab.value)
 
 const markNeedTextMap = new Map([
-  ['1', '枳壳的市场需求规模受到多种因素的影响，近年来呈现出一定的变化趋势。 从整体市场需求来看，过去有数据显示国内外市场枳壳总需求曾达30000吨以上。中国市场是全球枳壳市场的主要消费国，占据了约70%的市场份额。国内部分地区的相关信息也能从侧面反映枳壳的市场需求，例如江苏扬子江药业年用量在500吨左右，重庆太极集团涪陵制药年用量为500吨左右（主要用于急支糖浆）。 就目前的市场情况而言，有报道称枳壳市场年需求量在5000吨左右。不过，由于枳壳前几年存在大面积扩种的情况，导致产量增加，目前市场处于供大于求的状态，行情较为低迷。近期各中药材市场上枳壳货源走销不快，商家关注力度一般。 总体来说，'],
+  ['1', '<div>枳壳的市场需求规模受到多种因素的影响，近年来呈现出一定的变化趋势。</div> <div >从整体市场需求来看，过去有数据显示国内外市场枳壳总需求曾达30000吨以上。中国市场是全球枳壳市场的主要消费国，占据了约70%的市场份额。国内部分地区的相关信息也能从侧面反映枳壳的市场需求，例如江苏扬子江药业年用量在500吨左右，重庆太极集团涪陵制药年用量为500吨左右（主要用于急支糖浆）。</div><div> 就目前的市场情况而言，有报道称枳壳市场年需求量在5000吨左右。不过，由于枳壳前几年存在大面积扩种的情况，导致产量增加，目前市场处于供大于求的状态，行情较为低迷。近期各中药材市场上枳壳货源走销不快，商家关注力度一般。</div> <div >总体来说，枳壳市场需求规模较大，但受到产量、市场行情等因素的影响，其实际的市场需求规模处于动态变化中。</div>'],
   ['2', '中国柠檬市场需求规模呈现不断增长的态势。2022 年全国柠檬产量在 269.75 万吨左右，进口为 1.44 万吨，出口为 4.17 万吨，国内市场需求为 267.02 万吨。 随着人们对健康饮食的关注度不断提高以及柠檬在食品、饮料、美容、医药等多个领域的应用不断拓展，柠檬市场需求持续扩大。从产业结构来看，鲜食（含餐饮、烹饪、食品初加工等）销售额占比接近 75%，柠檬深加工产品（果汁制造、提取物等）销售额约为 25%。并且，未来我国柠檬深加工行业产业预计将会保持增长。 智研咨询曾预测，到 2024 年中国柠檬行业市场规模将增长到 118.3 亿元左右。但这只是一个预测数据，实际的市场需求规模会受到多种因素的影响，如种植面积、产量、市场价格、消费者需求变化、进出口政策等。'],
   ['3', `<div>紫苏市场需求规模呈现出不断增长的态势。以下是具体分析：</div><div class="mt-2 text-#08FFFF text-18px">1. 药用领域：</div><div>- 传统中药需求：紫苏是中成药市场上销量较多的常用品种，这方面的需求较为稳定且持续。 - 新药研发推动需求：一些企业和科研机构正在利用紫苏开发新的药品和保健品，这也进一步增加了对紫苏的需求。</div><div class="mt-2 text-#08FFFF text-18px">2. 食用领域：</div><div>- 国内市场：紫苏叶常被用作香料、调料，用于烹饪中增添风味，尤其是在一些地方菜系中应用广泛。 - 国外市场：紫苏在亚洲地区的日本、韩国等国家也备受欢迎，是当地料理中常用的食材。近年来，在国际市场上的需求也在不断增长。</div><div class="mt-2 text-#08FFFF text-18px">3.工业领域</div><div>- 提取加工：紫苏可以提取紫苏油、紫苏胡萝卜素等，这些提取物在食品、化妆品、保健品等行业具有广泛的应用。 - 饲料添加剂：紫苏的一些成分具有抗菌、抗氧化等作用，可以作为饲料添加剂用于畜牧业，提高动物的免疫力和生产性能。</div>`],
-  ['4', '大米市场需求持续增长。大米作为世界上近一半人口的主食，其需求量巨大且持续增长。随着居民生活水平的提高和消费观念的转变，大米消费需求逐渐多样化，对品质、口感、包装等方面的要求也越来越高。此外，随着一些国家转向大米作为主要粮食来源，以及面粉和玉米饲料需求的减少，碎米等替代品的需求也大幅增加，这种需求结构的变化使得大米市场的供需关系更加紧张。全球大米市场的持续动荡，供应紧张与价格飙升成为了不可忽视的现象。这一系列变化背后，不仅关乎农业生产、国际贸易，还与全球气候、经济政策等紧密相连。全球大米供应的相对有限性是价格上涨的根本原因。主要大米出口国如印度、泰国等，由于国内政策调整、极端天气影响等因素，纷纷限制了大米的出口量，进一步加剧了全球大米市场的紧张局势']
+  ['4', '<div>大米市场需求持续增长。‌</div> <div>大米作为世界上近一半人口的主食，其需求量巨大且持续增长。随着居民生活水平的提高和消费观念的转变，大米消费需求逐渐多样化，对品质、口感、包装等方面的要求也越来越高。此外，随着一些国家转向大米作为主要粮食来源，以及面粉和玉米饲料需求的减少，碎米等替代品的需求也大幅增加，这种需求结构的变化使得大米市场的供需关系更加紧张‌。</div> <div>‌全球大米市场‌的持续动荡，供应紧张与价格飙升成为了不可忽视的现象。这一系列变化背后，不仅关乎农业生产、国际贸易，还与全球气候、经济政策等紧密相连。全球大米供应的相对有限性是价格上涨的根本原因。主要大米出口国如印度、泰国等，由于国内政策调整、极端天气影响等因素，纷纷限制了大米的出口量，进一步加剧了全球大米市场的紧张局势‌。</div> <div>‌中国大米市场‌保持平稳运行有坚实基础。国内大米供应充足，完全能够满足市场需求。尽管面临全球大米价格大幅上涨、国内大米进口大幅下降等问题，但中国大米连年丰收，库存充裕，稻谷自给率超过100%，确保了国内大米的稳定供给‌34。 ‌大米市场规模‌持续增长。2024年，中国大米市场规模达到7234亿元，近五年年均复合增长率为1.09%，预计2024年全国大米市场规模将达到7413亿元。这表明大米市场需求的持续增长趋势‌。</div> <div>综上所述，大米市场需求持续增长，受到多种因素的影响，包括人口增长、生活水平的提高、消费观念的转变等。同时，全球大米市场的供应紧张和价格波动也对市场需求产生了一定影响，但中国作为全球最大的大米生产国和消费国之一，通过稳定的供给和政策支持，有效保障了国内市场的需求‌。</div>']
 ])
 const markNeedText = ref<string>('')
 const getMarkNeedText = (tab:string) => {
@@ -487,7 +487,9 @@ const handleBottomTabClick = (item) => {
 
     <!-- 中间部分 -->
     <div class="w-full h-full absolute left-0 top-0 bg-#001110 z-0 flex flex-col items-center">
-      <div class="industry-bg w-full h-[900px] flex flex-col items-center">
+      <div
+        :class="`${activeTab === '4' ? 'rice' : 'industry'}-bg w-full h-[900px] flex flex-col items-center`"
+      >
         <div class="w-[800px] mt-30px flex justify-between">
           <template v-if="activeTab === '1'">
             <div class="leftButtonBg box-border flex items-center pl-50px w-280px h-50px text-[#fff] text-[23px]">传统功效</div>
@@ -522,7 +524,7 @@ const handleBottomTabClick = (item) => {
           <div class="absolute middle-img-right-2 w-100px h-90px right-[-30px] bottom-70px"></div>
         </div>
         <div
-          class="middleTree2 w-650px h-650px mt-70px relative"
+          class="middleTree2 w-650px h-650px mt-70px relative top-[-30px]"
           v-if="activeTab === '2'"
         >
           <div class="left-card left-120px top-90px">维生素C</div>
@@ -542,7 +544,7 @@ const handleBottomTabClick = (item) => {
           <div class="absolute middle-icon-4 w-100px h-90px right-[30px] bottom-120px"></div>
         </div>
         <div
-          class="middleTree3 w-650px h-650px mt-70px relative"
+          class="middleTree3 w-650px h-650px mt-70px relative left-[-38px] top-[-82px]"
           v-if="activeTab === '3'"
         >
           <div class="left-card left-120px top-290px">解鱼蟹毒</div>
@@ -590,7 +592,7 @@ const handleBottomTabClick = (item) => {
           </div>
           <div class="absolute left-[-40px] bottom-80px flex flex-col items-end">
             <div class="text-#08ffff text-18px font-semibold">6.碾米</div>
-            <div class="w-[200px]">根据糙米的情将糙米放入碾米机中除去糙米的皮层和胚芽。况调整其水分和温度，使其达到适宜的碾米条件。</div>
+            <div class="w-[200px]">根据糙米的情况将糙米放入碾米机中除去糙米的皮层和胚芽。</div>
           </div>
           <div class="absolute left-[-80px] top-350px flex flex-col items-end">
             <div class="text-#08ffff text-18px font-semibold">7.白米分级</div>
@@ -640,7 +642,7 @@ const handleBottomTabClick = (item) => {
 }
 
 .bottom-border {
-  border-bottom: 1px solid #08FFFF;
+  border-bottom: 1px solid #00000083
 }
 
 .bottomBg {
@@ -652,6 +654,13 @@ const handleBottomTabClick = (item) => {
 
 .industry-bg {
   background-image: url(./assets/industryBg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.rice-bg {
+  background-image: url(./assets/riceBg.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -736,7 +745,7 @@ const handleBottomTabClick = (item) => {
 .left-card, .right-card, .bottom-card {
   padding: 8px 18px;
   position: absolute;
-  background-color: #363937;
+  background-color: #0000007d;
 }
 
 .left-card {
@@ -810,4 +819,6 @@ const handleBottomTabClick = (item) => {
     background-size: 100% 100%;
   }
 }
+
+
 </style>

@@ -68,6 +68,7 @@ export default defineComponent({
       }
     }
     const animateBubbles = () => {
+      clearInterval(setInter.value)
       setInter.value = setInterval(() => {
         bubbles.value.forEach((bubble) => {
           bubble.x += bubble.velocityX
@@ -262,6 +263,7 @@ export default defineComponent({
       mainList.value = obj.modelIndicatorElementCardVOList
       rightSetNum.value = val
       createBubbles()
+      
     }
     const mainTopNum = ref(0)
     const infoList = ref([])

@@ -217,7 +217,12 @@ const getMenuDataList = async () => {
     '110':'Grow',
     '112':'Bug',
     '113':'Soil',
-    '119':'Weather'
+    '119':'Weather',
+    '148': 'Monitor',
+    '152' : 'Grow',
+    '150' :'Weather',
+    '151': 'Soil',
+    '153': 'Bug'
   }
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value))
 
@@ -289,7 +294,12 @@ const getIconClass = (item) => {
     '110':'grow',
     '112':'bug',
     '113':'soil',
-    '119':'weather'
+    '119':'weather',
+    '148': 'monitor',
+    '152' : 'grow',
+    '150' :'weather',
+    '151': 'soil',
+    '153': 'bug'
 
 
   }

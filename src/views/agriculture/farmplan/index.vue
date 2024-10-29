@@ -210,8 +210,8 @@
           <el-button @click="handleQuery" type="primary"
             ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
           >
-          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px ">收起 <div class="ml-10px" style='transform:rotate(270deg) '> > </div> </div>
+          <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>
         </el-form-item>
       </el-form>
       <div v-if="!formType" class="flex ">
@@ -219,10 +219,10 @@
           <el-button @click="handleQuery" type="primary"
           ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
         >
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </div>
 
-        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <div class="ml-10px" style='transform:rotate(90deg)'> > </div> </div>
+        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <img :src='select' class='w-13px h-13px ml-8px' /> </div>
       </div>
     </div>
 
@@ -275,7 +275,7 @@
             placeholder="请选择月份"
           />
           </div>
-          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[item.defineName]}] rounded-50%`'></div> {{ item.defineName }} </div>
+          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div :class='`w-8px h-8px mr-10px  rounded-50%`'  :style='`background-color:${farmDefineObj[item.defineName]}`'></div>{{ item.defineName }} </div>
         </div>
       </div>
       <div class="w-89% " >
@@ -283,51 +283,33 @@
           <div class="w-100% flex items-center justify-center h-60px border-1px border-[#e6e6e6] border-solid bg-[#f5f5f5]" v-for="item,index in ['一','二','三','四','五','六','日']" :key="index" style="font-weight:600">周{{ item }}</div>
         </div>
         <div class="grid grid-cols-7">
-          <div v-for="item,index in dataList2" :key="index" :class="`flex flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
+          <div v-for="item,index in dataList2" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
             <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item.data}}</div>
             <div class="w-88%">
-              <div v-show="item.plotName" class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName}} <div> > </div> </div>
-              <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
-              <div  v-show='item.name' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid grid-cols-2 wrapper-item-footer">
-                <!-- <div v-show='item.name == "浇水"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 浇水</div>
-                <div v-show='item.name == "水质调控"' class='flex items-center mt-20px'><div class='w-8px h-8px mr-10px bg-[#73c0de] rounded-50%'></div> 水质调控</div>
-                <div v-show='item.name == "施肥"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#3ba272] rounded-50%'></div> 施肥</div>
-                <div v-show='item.name == "除草"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#5db85a] rounded-50%'></div> 除草</div>
-                <div v-show='item.name == "种植"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 种植</div>
-                <div v-show='item.name == "播种"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#009688] rounded-50%'></div> 播种</div>
-                <div v-show='item.name == "打药"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#0d9b8e] rounded-50%'></div> 打药</div>
-                <div v-show='item.name == "采收"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#0d9b8e] rounded-50%'></div> 采收</div>
-                <div v-show='item.name == "喂养"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 喂养</div>
-                <div v-show='item.name == "饲料投喂"' class='flex items-center'><div class='w-8px h-8px my-20px mr-10px bg-[#5c7bb6] rounded-50%'></div> 饲料投喂</div>
-                <div v-show='item.name == "除虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 除虫防害</div>
-                <div v-show='item.name == "病虫防害"' class='flex items-center'><div class='w-8px h-8px mr-10px bg-[#ee6666] rounded-50%'></div> 病虫防害</div> -->
-
+              <div v-if="item.plotName" class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName}} <div> > </div> </div>
+              <div  v-show='item.name' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid grid-cols-2 justify-center items-center flex wrapper-item-footer">
+                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
               </div>
-               <!-- <div v-show='item.child.length!=0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
-                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[itm.name]}] rounded-50%`'></div> {{ itm.name }}</div>
-              </div> -->
-              <div v-show='!item.name' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
+              <div v-show='!item.name' class="bg-[#f0f7f7] w-100% h-130px mb-15px flex justify-center items-center flex-col">
                   <img :src='dataImg' class='w-40px h-30px'/>
                   <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
               </div>
             </div>
           </div>
           <div v-for="item,index in dataList" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
-            <div class='text-30px my-18px' style="font-weight:600">{{item.data}}</div>
-             <div class="w-88% h-130px"  v-if="item.child.length != 0">
+            <div class='text-28px my-18px' style="font-weight:600">{{item.data}}</div>
+             <div class="w-88%"  v-if="item.child.length != 0">
               <div v-show="item.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(item.child,'-',index)"> > </div> {{ item.plotName }} <div class='cursor-pointer' @click="tabItem(item.child,'+',index)"> > </div> </div>
-                    <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
                     <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
-                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px bg-[${farmDefineObj[item.name]}] rounded-50%`'></div> {{ item.name }}</div>
-                    </div>
-              </div>
-              <div class="w-88% h-130px" v-if="item.child.length == 0">
-                <div v-show="!item.plotName" class="flex items-center justify-between color-[#fff] box-border px-10px h-30px"></div>
-                <div v-show='item.child.length == 0 ' class="bg-[#f0f7f7] w-100% h-100px mb-15px flex justify-center items-center flex-col">
+                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
+                </div>
+               
+             </div>
+             <div v-if='item.child.length == 0 ' class="bg-[#f0f7f7] w-88% h-130px mb-15px flex justify-center items-center flex-col">
                     <img :src='dataImg' class='w-40px h-30px'/>
                     <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
                 </div>
-              </div>
+              
           </div>
         </div>
       </div>
@@ -703,6 +685,7 @@ import card2 from '../../../assets/imgs/card-actived.png'
 import listImg from '../../../assets/imgs/list-active.png'
 import listImg2 from '../../../assets/imgs/list-actived.png'
 import dataImg from '../../../assets/imgs/noData.png'
+import select from '../../../assets/imgs/select.png'
 
 import { watch } from 'vue'
 interface AnyObject {
@@ -785,6 +768,9 @@ const getList = async () => {
         if (item.cropType == itm.id) item.cropType = itm.categoryName
       })
     })
+    dataList.value = []
+    dataList2.value = []
+    getData()
     list.value = data.list
     total.value = data.total
 
@@ -792,20 +778,19 @@ const getList = async () => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
       if(monthA.value == Number(time[1])){
-
         dataList.value.forEach((item:any) => {
           if(  item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
               item.child.push({name:item.name,plotName:item.plotName})
+
             }
           }
         })
       }
     })
-    console.log(dataList.value,'dataList.valuedataList.value1234')
-
+   
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
@@ -823,6 +808,18 @@ const getList = async () => {
     })
 
     dataListA.value=[...dataList.value , ...dataList2.value]
+    // farmDefineObj.value 
+    const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+      // 生成并设置随机颜色
+      let list2 = []
+      for (let i = 0; i < farmDefineOptions.value.length; i++) {
+        list2.push( generateRandomColor());
+
+      }
+      list2.forEach((item,index) =>{
+        farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
+      })
+      console.log(dataList.value,'dataList.valuedataList.value1234')
   } finally {
     loading.value = false
   }
@@ -850,6 +847,7 @@ const handleQuery = () => {
     queryParams.plotName = undefined
     queryParams.belongPlot = undefined
   }
+  console.log(99)
   queryParams.pageNo = 1
   getList()
 }
@@ -857,6 +855,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  silderVal.value = ''
+  getFn()
   handleQuery()
 }
 
@@ -903,20 +903,6 @@ const handleExport = async () => {
 onMounted(async () => {
   // getList()
   farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
-  const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
-   // 生成并设置随机颜色
-  let list = []
-  for (let i = 0; i < farmDefineOptions.value.length; i++) {
-    list.push( generateRandomColor());
-
-  }
-  list.forEach((item,index) =>{
-    farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
-  })
-  console.log(farmDefineObj.value,'list farmDefineObj.value')
-    //   循环遍历不同背景色
-
-
 
 })
 onActivated(async () => {
@@ -1304,36 +1290,49 @@ const getData = () => {
   for(let i=0 ; i< num ; i++) {
       dataList2.value.unshift({
         data:data2.value-i,
-        name:''
+        name:'',
+        child:[]
+
       })
   }
 }
 getData()
 
-const dataChange = (e) =>{
+const dataChange = (e) => {
+  console.log(e,' 时间切换')
+  dataListA.value = []
+
   silderVal.value = ''
+  console.log(e.getMonth(),'e.getMonth()e.getMonth()')
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0
   // monthA.value=e.getMonth()+1
-  month.value=e.getMonth()+1
+
+  month.value = e.getMonth()+1
   firstDayOfMonth.value = new Date(e.getFullYear(), e.getMonth(), 1);
   lastDayOfMonth.value = new Date(e.getFullYear(), e.getMonth()+1, 0);
   lastDayOfMonth2.value = new Date(e.getFullYear(), e.getMonth(), 0);
-  dayOfWeek.value=firstDayOfMonth.value.getDay()
+  dayOfWeek.value = firstDayOfMonth.value.getDay()
   data.value = lastDayOfMonth.value.getDate()
   data2.value = lastDayOfMonth2.value.getDate()
   dataList.value=[]
   dataList2.value=[]
   getData()
+  console.log(dataList.value,' 时间点击')
+
   // getList()
   list.value.forEach((itm:any) => {
-      let time=new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
+      let time = new Date(itm.startTime).toLocaleDateString().split('/')
+      let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
       if( e.getMonth()+1 == Number(time[1])){
           dataList.value.forEach((item:any) => {
-            if(  item.data >= Number(time[2]) ){
+            if( item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
+            }else{
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
               item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
@@ -1343,11 +1342,12 @@ const dataChange = (e) =>{
       }
   })
   list.value.forEach((itm:any) => {
-      let time=new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
-      if( e.getMonth()+1 == Number(time[1])){
+      let time = new Date(itm.startTime).toLocaleDateString().split('/')
+      let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
+      console.log(time,'time 999')
+      if( e.getMonth() == Number(time[1])){
           dataList2.value.forEach((item:any) => {
-            if(  item.data >= Number(time[2]) ){
+            if( item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
@@ -1357,13 +1357,13 @@ const dataChange = (e) =>{
         })
       }
   })
-  console.log(dataList.value,'dataList.valuedataList.value12349')
-  console.log(dataList2.value,'dataList.valuedataList.value  99999')
+  
+  dataListA.value = [...dataList.value , ...dataList2.value]
 }
 // 左侧活动点击
 const silderVal = ref('')
 const silderTab = (val:any) => {
-  dataListA.value=[ ...dataList.value,...dataList2.value ]
+  
   dataList.value = []
   dataList2.value = []
 

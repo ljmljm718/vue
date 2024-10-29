@@ -4,10 +4,15 @@ import Dplayer from 'dplayer'
 import Hls from "hls.js";
 import { onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index'
 
 const hls = new Hls();
 onActivated(() => { initPlayer() })
 onDeactivated(() => { hls.destroy() })
+
+const sleep = (delaytime = 1000) => {
+  return new Promise(resolve => setTimeout(resolve, delaytime))
+}
 
 const route = useRoute()
 const checkOnce = ref<boolean>(true)
@@ -31,22 +36,34 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 3):Promise<string>
   if (liveToken && !isExpired) {
     // 获取视频流
     const { data: liveDataRes } = await axios.post(
-      "https://ezcloud.uniview.com/openapi/live/video/device/url/get",
-      { deviceSerial, channelNo },
+      "https://ezcloud.uniview.com/openapi/live/video/get",
+      { deviceSerial, channelNo, protocol: 2, quality: 1 },
       { headers: { Authorization: liveToken } }
     )
-    const { code, data: liveData } = liveDataRes;
+    const { code, data: UrlData } = liveDataRes;
+    const { status = -1, url } = UrlData;
     if (code === 200) {
-      const { liveUrlList } = liveData
-      if (Array.isArray(liveUrlList) && liveUrlList.length > 0) {
-        return liveUrlList[0].url
-      } else return ''
+      if (status !== 0) {
+        await await axios.post(
+          'https://ezcloud.uniview.com/openapi/live/video/start',
+          { url }, { headers: { Authorization: liveToken } }
+        )
+        await sleep(3000)
+      }
+      return url;
     } else return ''
   }
 
+  const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {})
+  let appId = "626194353357848583", secretKey = "ca06cd14935e031bd7a394ee7eca154d";
+  if (Array.isArray(list) && list.length > 0) {
+    const firstItem = list[0];
+    const { appId:_appId, secretKey:_secretKey } = firstItem;
+    appId = _appId;
+    secretKey = _secretKey
+  }
   const { data } = await axios.post("https://ezcloud.uniview.com/openapi/user/app/token/get", {
-    appId: "626194353357848583",
-    secretKey: "ca06cd14935e031bd7a394ee7eca154d"
+    appId, secretKey
   })
   if (data && data?.code === 200) {
     const { accessToken, expireTime } = data.data;

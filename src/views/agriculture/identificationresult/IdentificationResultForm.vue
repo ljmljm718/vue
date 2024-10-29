@@ -7,8 +7,7 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="主表ID" prop="mainTableId">
-        <!-- <el-input v-model="formData.mainTableId" placeholder="请输入主表ID" /> -->
+      <!-- <el-form-item label="主表ID" prop="mainTableId">
         <el-input v-model="formData.mainTableId" placeholder="请选择设备" disabled>
               <template #append>
                 <el-button @click="DiseasepestsureillanceSelectList">
@@ -17,7 +16,7 @@
                 </el-button>
               </template>
             </el-input>
-        </el-form-item>
+        </el-form-item> -->
       <el-form-item label="名称" prop="name">
         <el-select v-model="formData.name" placeholder="请选择名称">
           <el-option
