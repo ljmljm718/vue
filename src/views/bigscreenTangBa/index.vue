@@ -717,7 +717,7 @@ export default defineComponent({
                 </div>
               </div>
               <div class="w-1000px h-full center-card-bg box-border">
-                <div class="art-font text-white text-20px h-50px pl-9 flex items-center">产业介绍</div>
+                <div class="art-font text-white text-20px h-50px pl-9 flex items-center">村容村貌</div>
                 <div class="box-border px-4 py-1 flex justify-between">
                   <div class="w-300px h-160px overflow-hidden">
                     <Swiper
