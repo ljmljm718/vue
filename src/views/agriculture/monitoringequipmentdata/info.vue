@@ -12,8 +12,13 @@ import Dplayer from 'dplayer'
 import Hls from "hls.js";
 import axios from 'axios';
 import { isFunction } from '@/utils/is'
+import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index'
 
-const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string> => {
+const sleep = (delaytime = 1000) => {
+  return new Promise(resolve => setTimeout(resolve, delaytime))
+}
+
+const checkAuth = async (deviceSerial, channelNo, leftTimes = 2): Promise<string> => {
   if (leftTimes <= 0) {
     ElMessage.error("获取视频流失败，请联系管理员!");
   }
@@ -24,22 +29,34 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string>
   if (liveToken && !isExpired) {
     // 获取视频流
     const { data: liveDataRes } = await axios.post(
-      "https://ezcloud.uniview.com/openapi/live/video/device/url/get",
-      { deviceSerial, channelNo },
+      "https://ezcloud.uniview.com/openapi/live/video/get",
+      { deviceSerial, channelNo, protocol: 2, quality: 1 },
       { headers: { Authorization: liveToken } }
     )
-    const { code, data: liveData } = liveDataRes;
+    const { code, data: UrlData } = liveDataRes;
+    const { status = -1, url } = UrlData;
     if (code === 200) {
-      const { liveUrlList } = liveData
-      if (Array.isArray(liveUrlList) && liveUrlList.length > 0) {
-        return liveUrlList[0].url
-      } else return ''
+      if (status !== 0) {
+        await await axios.post(
+          'https://ezcloud.uniview.com/openapi/live/video/start',
+          { url }, { headers: { Authorization: liveToken } }
+        )
+        await sleep(3000)
+      }
+      return url;
     } else return ''
   }
 
+  const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {})
+  let appId = "626194353357848583", secretKey = "ca06cd14935e031bd7a394ee7eca154d";
+  if (Array.isArray(list) && list.length > 0) {
+    const firstItem = list[0];
+    const { appId:_appId, secretKey:_secretKey } = firstItem;
+    appId = _appId;
+    secretKey = _secretKey
+  }
   const { data } = await axios.post("https://ezcloud.uniview.com/openapi/user/app/token/get", {
-    appId: "626194353357848583",
-    secretKey: "ca06cd14935e031bd7a394ee7eca154d"
+    appId, secretKey
   })
   if (data && data?.code === 200) {
     const { accessToken, expireTime } = data.data;
@@ -49,7 +66,7 @@ const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string>
   return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
 }
 
-let destroyFunc:Function[] = []
+let destroyFunc: Function[] = []
 const destroyHls = () => {
   destroyFunc.forEach(item => {
     if (isFunction(item)) item();
@@ -58,7 +75,7 @@ const destroyHls = () => {
 }
 
 onActivated(() => {
-  deviceVideoList.value.forEach((item:any) => {
+  deviceVideoList.value.forEach((item: any) => {
     if (!item.dtu || !item.channelId) {
       initPlayer(item.domId, item.url);
     } else {
@@ -98,6 +115,13 @@ const initPlayer = async (containerId, dtu, channelId = '') => {
 const router = useRouter()
 const appStore = useAppStore()
 const leftParkList = ref<any[]>([])
+const parkDictionary = {};
+let parkDicArr:any[] = [];
+const getParkNameById = (id:string) => {
+  const item = parkDicArr.find(ele => ele.id === id)
+  if (item) return item.name;
+  return ''
+}
 const leftParkLoading = ref<boolean>(false)
 const getLeftParkList = async () => {
   leftParkLoading.value = true;
@@ -108,6 +132,19 @@ const getLeftParkList = async () => {
   leftParkLoading.value = false;
   if (!Array.isArray(res)) return;
   leftParkList.value = res
+  res.forEach(item => {
+    if (Array.isArray(item.child)) {
+      parkDicArr = [...parkDicArr, ...item.child]
+      // item.child.forEach(childItem => {
+      //   if (childItem.qrCode && childItem.name) {
+      //     parkDictionary[childItem.qrcode] = childItem.name;
+      //   }
+      // });
+    }
+  });
+  console.log("parkDicArr =>", parkDicArr)
+
+  console.log("🚀 ~ parkDictionary:", parkDictionary);
 }
 getLeftParkList()
 
@@ -137,9 +174,14 @@ interface DeviceVideoListItemType {
 }
 const deviceVideoLoading = ref<boolean>(false);
 const selectedItem = ref<string>('');
+const hoveredItem = ref<string>('');
 const handleDeviceVideoItemClick = (item) => {
   selectedItem.value = item.id
+  hoveredItem.value = item.id
+  // router.push('/internetMonitor/deviceData/monitoringequipmentdata?id=' + item.id)
 }
+
+
 const deviceVideoList = ref<DeviceVideoListItemType[]>([]);
 const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
   deviceVideoLoading.value = true;
@@ -148,6 +190,9 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
     deviceVideoLoading.value = false;
   })
   console.log("🚀 ~ getDeviceVideoList ~ res:", res)
+
+
+
   deviceVideoLoading.value = false;
   if (!Array.isArray) return;
   deviceVideoList.value = res.map(item => ({
@@ -155,9 +200,10 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
     domId: `VIDEO_${item.id ?? (item.dtu + item.channelId)}`,
     videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
     baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
+    plotName : item?.belongPlot
   }))
   nextTick(() => {
-    deviceVideoList.value.forEach((item:any) => {
+    deviceVideoList.value.forEach((item: any) => {
       if (!item.dtu || !item.channelId) {
         initPlayer(item.domId, item.url);
       } else {
@@ -165,6 +211,7 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
       }
     })
   })
+  console.log('deviceVideoList.value', deviceVideoList.value)
 }
 getDeviceVideoList()
 
@@ -185,102 +232,67 @@ window.addEventListener('resize', (item) => { adaptScreen() })
 </script>
 <template>
   <div class="flex justify-between items-start">
-    <div
-      class="w-[16rem] h-[calc(100vh_-_8rem)] rounded-md overflow-hidden p-1 box-border"
-      style="border: 1px solid var(--el-border-color);"
-    >
+    <div class="w-[16rem] h-[calc(100vh_-_8rem)] rounded-md overflow-hidden p-1 box-border"
+      style="border: 1px solid var(--el-border-color);">
       <el-scrollbar>
-        <el-menu
-          :active-text-color="`${appStore.getIsDark ? '#ffd04b' : '#1ed76d'}`"
-          :background-color="`${appStore.getIsDark ? '#383f45' : '#fff'}`"
-          class="el-menu-vertical-demo"
-          :text-color="`${appStore.getIsDark ? '#fff' : '#000'}`"
-          @select="handleMenuSelect"
-          @open="handleMenuCheck"
-          @close="handleMenuCheck"
-        >
-          <el-sub-menu
-            v-for="item in leftParkList"
-            :index="item.id"
-            :key="item.id"
-          >
+        <el-menu :active-text-color="`${appStore.getIsDark ? '#ffd04b' : '#1ed76d'}`"
+          :background-color="`${appStore.getIsDark ? '#383f45' : '#fff'}`" class="el-menu-vertical-demo"
+          :text-color="`${appStore.getIsDark ? '#fff' : '#000'}`" @select="handleMenuSelect" @open="handleMenuCheck"
+          @close="handleMenuCheck">
+          <el-sub-menu v-for="item in leftParkList" :index="item.id" :key="item.id">
             <template #title>
               <span>{{ item.name }}</span>
             </template>
-            <el-menu-item
-              v-for="ele in item.child"
-              :index="ele.id"
-              :key="ele.id"
-              :style="`
+            <el-menu-item v-for="ele in item.child" :index="ele.id" :key="ele.id" :style="`
                 background-color:${ele.id === activePlotId ? '#07998b30' : '#00000000'};
                 color: ${ele.id === activePlotId ? '#009688' : ''};
-              `"
-              class="w-full"
-            >{{ ele.name }}</el-menu-item>
+              `" class="w-full">{{ ele.name }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
     </div>
-    <div
-      class="w-[calc(100%_-_17rem)] h-[calc(100vh_-_8rem)] p-3 box-border rounded-md"
-      style="border: 1px solid var(--el-border-color);"
-    >
+    <div class="w-[calc(100%_-_17rem)] h-[calc(100vh_-_8rem)] p-3 box-border rounded-md"
+      style="border: 1px solid var(--el-border-color);">
       <div class="flex items-start justify-between h-2rem">
         <div class="font-bold">实时监控</div>
         <div class="flex space-x-2 cursor-pointer select-none text-[.8rem]">
-          <div
-            class="flex items-center space-x-1 px-2 py-1 rounded-1"
-            @click="handleShowTypeChange(2)"
-            :style="`
+          <div class="flex items-center space-x-1 px-2 py-1 rounded-1" @click="handleShowTypeChange(2)" :style="`
               background-color: ${columnNum === 2 ? '#e5f4f3' : ''};
               color: ${columnNum === 2 ? '#009688' : '#999'};
-            `"
-          >
-            <el-icon><Menu /></el-icon>
+            `">
+            <el-icon>
+              <Menu />
+            </el-icon>
             <div>两列</div>
           </div>
-          <div
-            class="flex items-center space-x-1 px-2 py-1 rounded-1"
-            @click="handleShowTypeChange(3)"
-            :style="`
+          <div class="flex items-center space-x-1 px-2 py-1 rounded-1" @click="handleShowTypeChange(3)" :style="`
               background-color: ${columnNum === 3 ? '#e5f4f3' : ''};
               color: ${columnNum === 3 ? '#009688' : '#999'};
-            `"
-          >
-            <el-icon><Grid /></el-icon>
+            `">
+            <el-icon>
+              <Grid />
+            </el-icon>
             <div>三列</div>
           </div>
-          <div
-            class="flex items-center space-x-1 px-2 py-1 rounded-1"
-            @click="handleShowTypeChange(4)"
-            :style="`
+          <div class="flex items-center space-x-1 px-2 py-1 rounded-1" @click="handleShowTypeChange(4)" :style="`
               background-color: ${columnNum === 4 ? '#e5f4f3' : ''};
               color: ${columnNum === 4 ? '#009688' : '#999'};
-            `"
-          >
-            <el-icon><Grid /></el-icon>
+            `">
+            <el-icon>
+              <Grid />
+            </el-icon>
             <div>四列</div>
           </div>
         </div>
       </div>
       <el-scrollbar height="calc(100% - 2rem)" v-loading="deviceVideoLoading">
-        <div
-          class="grid gap-3"
-          :style="{ gridTemplateColumns: `repeat(${columnNum}, 1fr)` }"
-        >
-          <template
-            v-for="item in deviceVideoList"
-            :key="item.id"
-          >
-            <div
-              class="rounded-1 p-2 box-border shadow-md transition"
-              :style="`${
-                selectedItem === item.id
+        <div class="grid gap-3" :style="{ gridTemplateColumns: `repeat(${columnNum}, 1fr)` }">
+          <template v-for="item in deviceVideoList" :key="item.id">
+            <div class="divstyle rounded-1 p-2 box-border shadow-md transition" :style="`${hoveredItem === item.id || selectedItem === item.id
                 ? 'border: 1px solid #009688;background-color: #00968820;'
                 : 'border: 1px solid #00968800;background-color: #00968810;'
-              }`"
-              @click="handleDeviceVideoItemClick(item)"
-            >
+              }`" @mouseover="hoveredItem = String(item.id)" @mouseleave="hoveredItem = String(null)"
+              @click="handleDeviceVideoItemClick(item)">
               <div class="flex justify-between">
                 <div class="flex items-center">
                   <img :src='cameraIcon' class="w-1.3rem mr-2" />
@@ -288,10 +300,11 @@ window.addEventListener('resize', (item) => { adaptScreen() })
                 </div>
                 <div
                   class="flex items-center text-[#9fa3a3] text-[.8rem] space-x-0 hover:text-blue cursor-pointer transition-all"
-                  @click="router.push('/internetMonitor/deviceData/monitoringequipmentdata?id=' + item.id)"
-                >
+                  @click="router.push('/internetMonitor/deviceData/monitoringequipmentdata?id=' + item.id)">
                   <div>更多</div>
-                  <el-icon class="scale-80"><ArrowRightBold /></el-icon>
+                  <el-icon class="scale-80">
+                    <ArrowRightBold />
+                  </el-icon>
                 </div>
               </div>
               <div class="relative w-full aspect-video pt-2 box-border">
@@ -305,30 +318,28 @@ window.addEventListener('resize', (item) => { adaptScreen() })
                   v-if="item.deviceStatus === 'online'"
                 ></video> -->
                 <div
-                  class="absolute z-20 right-1rem top-1rem bg-black p-2 py-1 flex items-center text-white space-x-[.4rem] text-[.6rem] rounded-1"
-                  style="border: 1px solid #f1f1f180;"
-                >
-                  <div
-                    class="w-[8px] h-[8px] rounded-full"
-                    :style="`background-color: ${item.deviceStatus === 'online' ? '#009688' : '#fff'}`"
-                  ></div>
-                  <div>{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</div>
+                  class="absolute z-20 left-1rem top-1rem bg-black p-2 py-1 flex items-center text-white space-x-[.4rem] text-[.6rem] rounded-1"
+                 >
+                  <div class="text-[#fff] text-[16px]">{{getParkNameById(item.belongPlot)}}</div>
                 </div>
                 <div
-                  v-if="item.deviceStatus !== 'online'"
-                  class="z-10 w-full h-100% absolute left-0 top-0 py-2 box-border"
-                >
+                  class="absolute z-20 right-1rem top-1rem bg-black p-2 py-1 flex items-center text-white space-x-[.4rem] text-[.6rem] rounded-1"
+                  style="border: 1px solid #f1f1f180;">
+                  <div class="w-[8px] h-[8px] rounded-full"
+                    :style="`background-color: ${item.deviceStatus === 'online' ? '#009688' : '#fff'}`"></div>
+                  <div>{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</div>
+                </div>
+                <div v-if="item.deviceStatus !== 'online'"
+                  class="z-10 w-full h-100% absolute left-0 top-0 py-2 box-border">
                   <img :src="mask" class="w-full h-full object-cover" />
-                  <img :src="item.imgId" class="w-full h-[calc(100%_-_1rem)] object-cover opacity-30 absolute left-0 top-0.5rem" />
+                  <img :src="item.imgId"
+                    class="w-full h-[calc(100%_-_1rem)] object-cover opacity-30 absolute left-0 top-0.5rem" />
                 </div>
               </div>
             </div>
           </template>
-          <el-card
-            v-if="deviceVideoList.length === 0"
-            style="grid-column: 1 / -1;"
-            :class="`col-span-${columnNum} h-[30vh] flex items-center justify-center`"
-          >
+          <el-card v-if="deviceVideoList.length === 0" style="grid-column: 1 / -1;"
+            :class="`col-span-${columnNum} h-[30vh] flex items-center justify-center`">
             暂无数据
           </el-card>
         </div>

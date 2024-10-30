@@ -28,6 +28,8 @@ export const setToken = (token: TokenType) => {
 export const removeToken = () => {
   wsCache.delete(AccessTokenKey)
   wsCache.delete(RefreshTokenKey)
+  localStorage.removeItem('LIVE_TOKEN')
+  localStorage.removeItem('LIVE_EXPIRE_TIME')
 }
 
 /** 格式化token（jwt格式） */

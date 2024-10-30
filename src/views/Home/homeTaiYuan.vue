@@ -38,8 +38,8 @@ const getCategoryList = async () => {
   categoryTree.value = data
   plotName.value = categoryTree.value[0].child[0].id
   // getGetSortNumberByDay(categoryTree.value[0].child[0].id)
-  getCountDay(categoryTree.value[0].child[0].id)
-  getCountDay2(categoryTree.value[0].child[0].id)
+  getCountDay(categoryTree.value[0].child[0].id,'day')
+  getCountDay2(categoryTree.value[0].child[0].id,'day')
   getSnapShotDeviceOptions(categoryTree.value[0].child[0].id)
   getTopDataList(categoryTree.value[0].child[0].id)
   getGetNameQuantityByDateAndPlotId(categoryTree.value[0].child[0].id,'month')
@@ -57,8 +57,8 @@ const handleCurrentCategoryChange = (currNodeData) => {
     // 这是地块
     plotName.value = currNodeData.id
     // getGetSortNumberByDay(plotName.value)
-    getCountDay(plotName.value)
-    getCountDay2(plotName.value)
+    getCountDay(plotName.value,'day')
+    getCountDay2(plotName.value,'day')
     getSnapShotDeviceOptions(plotName.value)
     getTopDataList(plotName.value)
     getGetNameQuantityByDateAndPlotId(plotName.value,'month')
@@ -105,6 +105,11 @@ const getSnapShotDeviceOptions = async (id) => {
   snapShotDevice.value = res.list[0].deviceName
   getSnapPage(res.list[0]?.id)
   //getSnapType(res.list[0].id)
+  let date =  new Date() 
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+  snapShotTime.value = `${year}-${month}-${day}`
 }
 //今日抓拍 设备列表点击
 const snapId = ref<any>() 
@@ -203,6 +208,14 @@ const getPreWarnList = async (id) => {
 const diseaseList = ref<any[]>([]) // 病虫害 列表
 const bugTime = ref<string>('本月')
 const bugTimeRange = ref<any[]>([])
+// const getBugTime = () => {
+//   const year = new Date().getUTCFullYear()
+//   const month = new Date().getMonth()+1
+//   const first = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,1).getDate()
+//   const last = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,0).getDate()
+//     bugTimeRange.value.push(`${year}-${month}-${first}`)
+//     bugTimeRange.value.push(`${year}-${month}-${last}`)
+// }
 const getGetNameQuantityByDateAndPlotId = async (id, dateType = 'month') => {
   let res = await getNameQuantityByDateAndPlotId({plotId:id,dateType})
   diseaseList.value = []
@@ -212,12 +225,42 @@ const getGetNameQuantityByDateAndPlotId = async (id, dateType = 'month') => {
     else insectList.value.push(item)
   })
 }
+// 获取 某一天 周一到周日的时间
+const getDaysOfWeek = (date) => {
+      const days = [];
+      for (let i = 1; i <= 7; i++) {
+        days.push(new Date(date));
+      }
+      // Set to Monday
+      days[0].setDate(days[0].getDate() - days[0].getDay() + 1);
+      // Set to Sunday
+      days[6].setDate(days[0].getDate() + 6);
+      return days;
+    };
 // 病害排行 日 周 月 查询
 const handleShortcutDaysChange = (e) =>{
-  if(e == '本周')  getGetNameQuantityByDateAndPlotId(plotName.value,'week')
-  else if(e == '本月') getGetNameQuantityByDateAndPlotId(plotName.value,'month')
-  else getGetSortNumberByDay(plotName.value)
+  const year = new Date().getUTCFullYear()
+  const month = new Date().getMonth()+1
+  const first = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,1).getDate()
+  const last = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,0).getDate()
+  bugTimeRange.value = []
+  if(e == '本周') {
+    let day = new Date()
+     bugTimeRange.value.push(`${new Date(getDaysOfWeek(day)[0]).getFullYear()}-${new Date(getDaysOfWeek(day)[0]).getMonth()+1}-${new Date(getDaysOfWeek(day)[0]).getDate()}`)
+     bugTimeRange.value.push(`${new Date(getDaysOfWeek(day)[6]).getFullYear()}-${new Date(getDaysOfWeek(day)[6]).getMonth()+1}-${new Date(getDaysOfWeek(day)[6]).getDate()}`)
+    getGetNameQuantityByDateAndPlotId(plotName.value,'week')
+  }else if(e == '本月'){
+    bugTimeRange.value.push(`${year}-${month}-${first}`)
+    bugTimeRange.value.push(`${year}-${month}-${last}`)
+    getGetNameQuantityByDateAndPlotId(plotName.value,'month')
+  }else if(e == '当日'){
+    let data= new Date().getDate()
+    bugTimeRange.value.push(`${year}-${month}-${data}`)
+    bugTimeRange.value.push(`${year}-${month}-${data}`)
+    getGetSortNumberByDay(plotName.value)
+  } 
 }
+handleShortcutDaysChange('本月')
 // 病害排行日期自定义查询
 const datePickerChange = async (e) =>{
   let startTime= formatTime(bugTimeRange.value[0], 'yyyy-MM-dd HH:mm:ss')
@@ -586,18 +629,21 @@ const getTime = () =>{
 }
 getTime()
 // 获取 病虫害趋势分析 默认  按天 以及自定义时间 查询
-const getCountDay = async (id) =>{
-  let res = await countDay({belongPark:id,category:'病害',startTime:timeList.value[0],endTime:timeList.value[1]})
-  // let res2 = await countDay({belongPark:id,category:'虫害',startTime:timeList.value[0],endTime:timeList.value[1]})
+const getCountDay = async (id,type) =>{
+  sickTraceTimeRange.value = []
+  sickTraceTimeRange.value.push(timeList.value[0])
+  sickTraceTimeRange.value.push(timeList.value[1])
+  let res = await countDay({belongPark:id,category:'病害',startTime:timeList.value[0],endTime:timeList.value[1],type})  //day
 
+  console.log(res,'病虫害趋势分析')
   diseaseChart.value = res
   // insectChar.value = res2
   
   diseaseInitChart()
   diseaseInitChart2()
 }
-const getCountDay2 = async (id) =>{
-  let res = await countDay({belongPark:id,category:'虫害',startTime:timeList.value[0],endTime:timeList.value[1]})
+const getCountDay2 = async (id,type) =>{
+  let res = await countDay({belongPark:id,category:'虫害',startTime:timeList.value[0],endTime:timeList.value[1],type})
 
   insectChart.value = res
   
@@ -607,34 +653,48 @@ const getCountDay2 = async (id) =>{
 
 //病害 虫害 按天 按月  获取数据
 const sickTraceChange = (e) => {
-  if(e == '按天')  getCountDay(plotName.value)
-  else getCountMonthdisease(plotName.value)
+  if(e == '按天') {
+     getCountDay(plotName.value,'day')
+     sickTraceTimeRange.value = []
+     sickTraceTimeRange.value.push(timeList.value[0])
+     sickTraceTimeRange.value.push(timeList.value[1])
+  }else{
+     sickTraceTimeRange.value = []
+     
+     getCountMonthdisease(plotName.value)
+  }
 }
+sickTraceChange('按天')
 const bugTraceChange = (e) => {
-  if(e == '按天')  getCountDay2(plotName.value)
+  if(e == '按天')  getCountDay2(plotName.value,'day')
   else getCountDayInsect(plotName.value)
 }
 //病害 虫害 按天 按月  获取数据
 const sickTraceTimeChange = async (e) =>{
-  sickTraceRadio.value = ''
+  sickTraceTimeRange.value
+  // sickTraceRadio.value = ''
 }
 //病害搜索
 const sickTraceSearch = async () =>{
   let startTime= formatTime(sickTraceTimeRange.value[0], 'yyyy-MM-dd')
   let endTime= formatTime(sickTraceTimeRange.value[1], 'yyyy-MM-dd')
-  let res = await countDay({belongPark:plotName.value,category:'病害',startTime,endTime})
+  // let startData = startTime.split('-')[1]
+  // let endData = endTime.split('-')[1]
+  // console.log(startData,'dasssssd')
+  let res = await countDay({belongPark:plotName.value,category:'病害',startTime,endTime,type: sickTraceRadio.value == '按月'? 'month' : 'day'  })
+  console.log(res ,' zidingyihsijain cahxun ')
   diseaseChart.value = res
   diseaseInitChart()
   diseaseInitChart2()
 }
 const bugTraceTimeChange = async (e) => {
-  bugTraceRadio.value = ''
+  // bugTraceRadio.value = ''
 }
 //虫害搜素
 const bugTraceSeacrh = async () => {
   let startTime= formatTime(bugTraceTimeRange.value[0], 'yyyy-MM-dd')
   let endTime= formatTime(bugTraceTimeRange.value[1], 'yyyy-MM-dd')
-  let res = await countDay({belongPark:plotName.value,category:'虫害',startTime,endTime})
+  let res = await countDay({belongPark:plotName.value,category:'虫害',startTime,endTime,type:bugTraceRadio.value == '按月' ? 'month' :'day'})
   insectChart.value = res
   insectInitChart()
   insectInitChart2()
@@ -726,7 +786,7 @@ const tabLeft = (str) => {
     class="flex space-x-[.5rem]"
     style="height: calc(100vh - 125px);"
   >
-    <el-card class="w-12rem h-full">
+    <el-card class="w-12rem h-100vh">
       <el-tree
         ref="treeRef"
         style="max-width: 600px"
@@ -746,12 +806,12 @@ const tabLeft = (str) => {
       style="max-width: calc(100% - 38rem);"
     >
       <el-card class="h-[7rem] mr-.5rem">
-        <div class="flex justify-center space-x-1rem items-center h-3.5rem">
+        <div class="flex justify-evenly space-x-1rem items-center h-3.5rem">
           <div
             v-for="item, index in topDataList"
             :key="index"
-            class="flex space-x-3 items-center px-1.3rem py-2 rounded-2"
-            style="border: 1px solid #99999980;"
+            :class="`flex space-x-3 items-center px-1.5rem py-3 rounded-2  homt-top-bg${index+1}`"
+            
           >
             <div :class="` w-2.5rem h-2.5rem disease-top-${index+1}`"></div>
             <div>
@@ -761,26 +821,29 @@ const tabLeft = (str) => {
           </div>
         </div>
       </el-card>
-      <el-scrollbar class="space-y-[1rem] grow">
+      <div class="space-y-[1rem] grow">
         <div class="space-y-[1rem] pr-.5rem pb-.5rem">
           <el-card class="h-[21rem]">
-            <div class="title-frame">病虫害排行</div>
-            <div class="flex space-x-3 py-2">
-              <el-radio-group v-model="bugTime" @change="handleShortcutDaysChange">
-                <el-radio-button label="当日" value="当日" />
-                <el-radio-button label="本周" value="本周" />
-                <el-radio-button label="本月" value="本月" />
-              </el-radio-group>
-              <div>
-                <el-date-picker
-                  v-model="bugTimeRange"
-                  type="daterange"
-                  range-separator="至"
-                  @change="datePickerChange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </div>
+            <div class='flex justify-between items-center'>
+              <div class="title-frame">病虫害排行</div>
+              <div class="flex space-x-3 py-2">
+                <el-radio-group v-model="bugTime" @change="handleShortcutDaysChange">
+                  <el-radio-button label="当日" value="当日" />
+                  <el-radio-button label="本周" value="本周" />
+                  <el-radio-button label="本月" value="本月" />
+                  <el-radio-button label="自定义" value="自定义" />
+                </el-radio-group>
+                <div>
+                  <el-date-picker
+                    v-model="bugTimeRange"
+                    type="daterange"
+                    range-separator="至"
+                    @change="datePickerChange"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                </div>
+            </div>
             </div>
             <div class="flex space-x-1rem justify-center">
               <div class="max-w-70rem flex space-x-1rem grow py-3">
@@ -798,7 +861,7 @@ const tabLeft = (str) => {
                     >
                       <div class="w-6rem text-right mr-1rem">{{ item.name }}</div>
                       <div class="relative bg-[#e1e1e1] h-.5rem grow">
-                        <div class="absolute left-0 top-0 w-40% h-full bg-#009688"></div>
+                        <div :class="`absolute left-0 top-0 h-full bg-#009688`" :style="`width:${item.quantity >= 100 ? '100' : item.quantity }% `"></div>
                       </div>
                       <div class="w-3rem text-left ml-1rem">{{ item.quantity }}</div>
                     </div>
@@ -822,7 +885,7 @@ const tabLeft = (str) => {
                     >
                       <div class="w-6rem text-right mr-1rem">{{ item.name }}</div>
                       <div class="relative bg-[#e1e1e1] h-.5rem grow">
-                        <div class="absolute left-0 top-0 w-40% h-full bg-#009688"></div>
+                        <div class="absolute left-0 top-0 h-full bg-#009688"  :style="`width:${item.quantity >= 100 ? '100' : item.quantity }% `"></div>
                       </div>
                       <div class="w-3rem text-left ml-1rem">{{ item.quantity }}</div>
                     </div>
@@ -916,12 +979,12 @@ const tabLeft = (str) => {
             </div>
           </el-card>
         </div>
-      </el-scrollbar>
+      </div>
     </div>
-    <el-scrollbar class="w-24rem h-full">
-      <div class="flex flex-col space-y-[1rem] h-full">
-        <el-card>
-          <el-scrollbar height="calc(100vh - 440px)">
+    <div class="w-24rem ">
+      <div class="flex flex-col space-y-[1rem]">
+        <el-card class="h-708px">
+          <div height="calc(100vh - 440px)">
             <div class="title-frame">今日抓拍</div>
             <div class="flex justify-between space-x-2 py-2">
               <el-select v-model="snapShotDevice"  placeholder="请选择" clearable @change="selectChange">
@@ -939,7 +1002,7 @@ const tabLeft = (str) => {
             </div>
             <div class="rounded-1 h-10rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
             <div class="flex w-full py-2 relative" style='overflow:hidden'>
-             <div v-if='snapPictureList.length != 0' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-25px'> > </div>
+             <div v-if='snapPictureList.length != 0' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
               <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
                 <div
                  
@@ -953,24 +1016,24 @@ const tabLeft = (str) => {
                 </div>
               </div>
               
-              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class=' z-22 cursor-pointer absolute right-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-25px'> > </div>
+              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
 
             </div>
             <div class="title-frame">设备信息</div>
             <div v-if="snapDevice" class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2">
               <div>
-                <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapDevice?.monitorSpecies }}</div>
-                <div class="color-[#9ea2a2] text-13px">监测作物</div>
+                <div class="color-[#9ea2a2] text-15px mb-5px">监测作物</div>
+                  <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapDevice?.monitorSpecies }}</div>
               </div>
               <div>
+                <div class="color-[#9ea2a2] text-15px mb-5px">设备状态</div>
                 <div class="text-center flex items-center color-[#000] text-17px mb-7px" style="font-weight:600">
                   <div :class="`${snapDevice.deviceStatus==0?'online-1': snapDevice.deviceStatus==1?'online-3': snapDevice.deviceStatus=='online'? 'online-1': snapDevice.deviceStatus=='offline'? 'online-3':'online-2'} w-15px h-15px mr-7px`"></div> 
                   <div>{{ snapDevice.deviceStatus==0?'在线': snapDevice.deviceStatus==1?'离线':snapDevice.deviceStatus == 'online'? '在线': snapDevice.deviceStatus=='offline'? '离线': '故障'}}</div></div>
-                <div class="color-[#9ea2a2] text-13px">设备状态</div>
               </div>
               <div>
-                <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapImgTotal }}</div>
-                <div class="color-[#9ea2a2] text-13px">抓拍图片</div>
+                  <div class="color-[#9ea2a2] text-15px mb-5px">抓拍图片</div>
+                  <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapImgTotal }}张</div>
               </div>
             </div>
             <div class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
@@ -983,7 +1046,7 @@ const tabLeft = (str) => {
               >
                 <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
                 <div>
-                  <div>虫害总数</div>
+                  <div class="text-16px">虫害总数</div>
                   <div class="art-font text-[1.4rem]">{{ pestTotalNum }}</div>
                 </div>
               </div>
@@ -992,23 +1055,23 @@ const tabLeft = (str) => {
               >
                 <div :class="` w-2.5rem h-2.5rem disease-top-4`"></div>
                 <div>
-                  <div>虫害种类</div>
+                  <div  class="text-16px">虫害种类</div>
                   <div class="art-font text-[1.4rem]">{{ pestType }}</div>
                 </div>
               </div>
             </div>
-            <div class=" mt-2rem px-15px py-15px box-border" style="border: 1px solid #ededed" >
+            <el-scrollbar class="h-150px mt-1rem px-15px py-15px box-border" style="border: 1px solid #ededed" >
               <div v-for="item, index in pestList" :key="index" class="h-40px leading-40px w-100% flex w-100% justify-between" style="border-bottom:1px dashed #ededed">
                 <div style="font-weight:600" class="color-[#7b7b7b] text-[13px]">{{ item.name }}</div>
                 <div style="font-weight:600">{{ item.quantity }}</div>
               </div>
-            </div>
-          </el-scrollbar>
+            </el-scrollbar>
+          </div>
           
         </el-card>
-        <el-card class="h-250px">
+        <el-card class="h-335px">
           <div class="title-frame mb-2">预警信息</div>
-          <el-scrollbar height="190px">
+          <el-scrollbar height="300px">
             <div class="p-3 box-border" v-loading="preWarnLoading">
               <div
                 class="py-1rem"
@@ -1032,12 +1095,13 @@ const tabLeft = (str) => {
           </el-scrollbar>
         </el-card>
       </div>
-    </el-scrollbar>
+    </div>
   </div>
 </template>
 <style scoped lang="scss">
 .title-frame {
   font-weight: bold;
+  color: #626262
 }
 .diseaseDomLeft, .diseaseDomRight{
   width: 100%;
@@ -1069,6 +1133,18 @@ const tabLeft = (str) => {
   height: 35px;
   line-height: 35px;
   margin: 5px;
+}
+.homt-top-bg1{
+  background-color:#ebf5f0
+}
+.homt-top-bg2{
+  background-color:#eef7ee
+}
+.homt-top-bg3{
+  background-color:#f1f8fb
+}
+.homt-top-bg4{
+  background-color:#fef9ee
 }
 .snapNum{
   width:23%;
