@@ -69,7 +69,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101'">
+          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101' && false">
             <video :src="curVideoLink" autoplay controls muted loop class="w-full aspect-video"></video>
           </div>
           <div v-show="curDeviceKind === '102'" class="py-3 pb-[42px]">

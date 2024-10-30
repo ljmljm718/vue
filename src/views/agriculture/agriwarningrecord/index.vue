@@ -350,7 +350,7 @@
     </el-dialog>
 
     <!-- 监控设备预警 -->
-    <el-tab-pane name="monitorTab">
+    <el-tab-pane name="monitorTab" v-if="hiddenMonitorTab">
       <template #label>
         <el-badge :value="totalMonitor" class="item">
           <span class="px-2">监控设备预警</span>
@@ -616,6 +616,12 @@ import { CACHE_KEY } from '@/hooks/web/useCache'
 import { useUserStore } from '@/store/modules/user'
 // import { da, vi } from 'node_modules/element-plus/es/locale'
 
+const hiddenMonitorTab = ref<boolean>(true)
+const judgeMonitorHidden = () => {
+  const tenantName = localStorage.getItem("TENANT_NAME");
+  hiddenMonitorTab.value = tenantName !== '太原乡村振兴数字化赋能'
+}
+judgeMonitorHidden()
 const activeName = ref('sensorTab')
 
 const changeTab = (tab: any) => {
