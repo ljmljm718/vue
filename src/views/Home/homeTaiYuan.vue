@@ -208,14 +208,6 @@ const getPreWarnList = async (id) => {
 const diseaseList = ref<any[]>([]) // 病虫害 列表
 const bugTime = ref<string>('本月')
 const bugTimeRange = ref<any[]>([])
-// const getBugTime = () => {
-//   const year = new Date().getUTCFullYear()
-//   const month = new Date().getMonth()+1
-//   const first = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,1).getDate()
-//   const last = new Date( new Date().getFullYear(),new Date().getMonth()+1 ,0).getDate()
-//     bugTimeRange.value.push(`${year}-${month}-${first}`)
-//     bugTimeRange.value.push(`${year}-${month}-${last}`)
-// }
 const getGetNameQuantityByDateAndPlotId = async (id, dateType = 'month') => {
   let res = await getNameQuantityByDateAndPlotId({plotId:id,dateType})
   diseaseList.value = []
@@ -236,7 +228,7 @@ const getDaysOfWeek = (date) => {
       // Set to Sunday
       days[6].setDate(days[0].getDate() + 6);
       return days;
-    };
+}
 // 病害排行 日 周 月 查询
 const handleShortcutDaysChange = (e) =>{
   const year = new Date().getUTCFullYear()
@@ -650,7 +642,17 @@ const getCountDay2 = async (id,type) =>{
   insectInitChart()
   insectInitChart2()
 }
-
+// 按月获取半年内的时间
+const getMonth = (date) =>{
+    let year = new Date().getFullYear()
+    let month = new Date().getMonth()+1
+    // let month = 4
+    let day = month - 6
+    let data = new Date( new Date().getFullYear(), new Date().getMonth()+1 ,0 ).getDate() 
+    console.log(  day > 0 ? month - 5 : 12 + (month - 5),' 按月获取使劲按 ')
+    date.push(`${ day > 0 ? year : year - 1 }-${day > 0 ? month - 5 : 12 + (month - 5) }-01`)
+    date.push(`${year}-${month}-${data}`)
+}
 //病害 虫害 按天 按月  获取数据
 const sickTraceChange = (e) => {
   if(e == '按天') {
@@ -659,16 +661,25 @@ const sickTraceChange = (e) => {
      sickTraceTimeRange.value.push(timeList.value[0])
      sickTraceTimeRange.value.push(timeList.value[1])
   }else{
-     sickTraceTimeRange.value = []
-     
+    sickTraceTimeRange.value = []
+     getMonth(sickTraceTimeRange.value)
      getCountMonthdisease(plotName.value)
   }
 }
 sickTraceChange('按天')
 const bugTraceChange = (e) => {
-  if(e == '按天')  getCountDay2(plotName.value,'day')
-  else getCountDayInsect(plotName.value)
+  if(e == '按天'){
+    bugTraceTimeRange.value = []
+    bugTraceTimeRange.value.push(timeList.value[0])
+    bugTraceTimeRange.value.push(timeList.value[1])
+    getCountDay2(plotName.value,'day')
+  }else { 
+    bugTraceTimeRange.value = []
+    getMonth(bugTraceTimeRange.value)
+    getCountDayInsect(plotName.value)
+  }
 }
+bugTraceChange('按天')
 //病害 虫害 按天 按月  获取数据
 const sickTraceTimeChange = async (e) =>{
   sickTraceTimeRange.value
@@ -678,9 +689,6 @@ const sickTraceTimeChange = async (e) =>{
 const sickTraceSearch = async () =>{
   let startTime= formatTime(sickTraceTimeRange.value[0], 'yyyy-MM-dd')
   let endTime= formatTime(sickTraceTimeRange.value[1], 'yyyy-MM-dd')
-  // let startData = startTime.split('-')[1]
-  // let endData = endTime.split('-')[1]
-  // console.log(startData,'dasssssd')
   let res = await countDay({belongPark:plotName.value,category:'病害',startTime,endTime,type: sickTraceRadio.value == '按月'? 'month' : 'day'  })
   console.log(res ,' zidingyihsijain cahxun ')
   diseaseChart.value = res
