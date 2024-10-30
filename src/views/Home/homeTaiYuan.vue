@@ -907,10 +907,6 @@ const tabLeft = (str) => {
             <div class="flex justify-between items-center">
               <div class="title-frame">病害趋势分析</div>
               <div class="flex items-center space-x-3">
-                <el-radio-group v-model="sickTraceRadio" @change="sickTraceChange">
-                  <el-radio-button label="按天" value="按天" />
-                  <el-radio-button label="按月" value="按月" />
-                </el-radio-group>
                 <div>
                   <el-date-picker
                     v-model="sickTraceTimeRange"
@@ -921,6 +917,10 @@ const tabLeft = (str) => {
                     end-placeholder="结束日期"
                   />
                 </div>
+                <el-radio-group v-model="sickTraceRadio" @change="sickTraceChange">
+                  <el-radio-button label="按天" value="按天" />
+                  <el-radio-button label="按月" value="按月" />
+                </el-radio-group>
                 <el-button type="primary" @click="sickTraceSearch()">查询</el-button>
               </div>
             </div>
@@ -1005,7 +1005,7 @@ const tabLeft = (str) => {
                 placeholder="选择日期"
               />
             </div>
-            <div class="rounded-1 h-10rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
+            <div class="rounded-1 h-11rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
             <div class="flex w-full py-2 relative" style='overflow:hidden'>
              <div v-if='snapPictureList.length != 0' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
               <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
@@ -1024,7 +1024,7 @@ const tabLeft = (str) => {
               <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
 
             </div>
-            <div class="title-frame">设备信息</div>
+            <div class="title-frame my-15px">设备信息</div>
             <div v-if="snapDevice" class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2">
               <div>
                 <div class="color-[#9ea2a2] text-15px mb-5px">监测作物</div>
@@ -1044,8 +1044,8 @@ const tabLeft = (str) => {
             <div class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
                 v-if="!snapDevice"
               >暂无数据</div>
-            <div class="title-frame">抓拍信息</div>
-            <div class="flex mt-10px justify-center space-x-1rem items-center h-3.5rem">
+            <div class="title-frame my-15px">抓拍信息</div>
+            <div class="flex mt-15px justify-center space-x-1rem items-center h-3.5rem">
               <div
                 class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2"
               >
@@ -1065,7 +1065,7 @@ const tabLeft = (str) => {
                 </div>
               </div>
             </div>
-            <el-scrollbar class="h-150px mt-1rem px-15px py-15px box-border" style="border: 1px solid #ededed" >
+            <el-scrollbar class="h-150px mt-2rem px-15px py-15px box-border" style="border: 1px solid #ededed" >
               <div v-for="item, index in pestList" :key="index" class="h-40px leading-40px w-100% flex w-100% justify-between" style="border-bottom:1px dashed #ededed">
                 <div style="font-weight:600" class="color-[#7b7b7b] text-[13px]">{{ item.name }}</div>
                 <div style="font-weight:600">{{ item.quantity }}</div>
