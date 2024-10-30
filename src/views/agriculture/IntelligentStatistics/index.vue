@@ -38,8 +38,8 @@
           </div>
         </template>
         <div :class="`w-[100%] h-210px relative ${distributionList.length==0?'chartNull':''}`" >
-          <div id="chartPie1"  class="w-100% h-100%"></div>
-          <div  v-if="distributionList.length==0" class="text-center mt-[-40px] color-[#999999] text-[14px]">暂无养殖品种，去“智慧农事”-“种植管理”中添加</div>
+          <div id="chartPie1" class="w-100% h-100%"></div>
+          <div v-if="distributionList.length==0" class="text-center mt-[-40px] color-[#999999] text-[14px]">暂无养殖品种，去“智慧农事”-“种植管理”中添加</div>
         </div>
       </el-card>
       <el-card class="w-100% h-100%">
@@ -162,6 +162,7 @@ const distributionList=ref([])
 const chartPieWidth=ref(0)
 const initChartPie1 = async () => {
   let res = await distribution({ parkId: baseCode.value, plotId: plotCode.value })
+  // console.log("养殖品种: ", res);
   distributionList.value=res
   let data = []
   res.forEach((item) => {
@@ -195,7 +196,7 @@ const initChartPie1 = async () => {
           data: data,
           label: {
             // formatter: "{c|{c}},{d|{d}%}",
-            formatter: '\n{c}\n {d}%',
+            formatter: '\n{b}\n {d}%',
             rich: {
               c: {
                 color: '#c1c1c1',
@@ -206,7 +207,15 @@ const initChartPie1 = async () => {
                 fontSize: 10
               }
             }
-          }
+          },
+          tooltip: {
+            trigger: "item",
+            valueFormatter: (value: any, dataIndex: number) => {
+              const amount = value;
+              const unit = res[dataIndex].unit;
+              return amount + unit;
+            }
+          },
         }
       ]
     })
@@ -217,6 +226,7 @@ const initChartPie1 = async () => {
 const DistriButionList=ref([])
 const initChartPie2 = async () => {
   let res = await stateDistriBution({ parkId: baseCode.value, plotId: plotCode.value })
+  // console.log("农事计划: ", res);
   DistriButionList.value=res
   initChartStatic(
     'chartPie2',
@@ -271,13 +281,22 @@ const initChartPie2 = async () => {
 //投入产出分析
 const initChartBar1 = async () => {
   let res = await getInOrOutAnalysis({ parkId: baseCode.value, plotId: plotCode.value })
+  // console.log("投入产出分析: ", res);
   let yData = Object.keys(res)
   let harvestList = []
   let inputList = []
+  // let mpUnit = new Map();
+  // const units: string[] = [];
   yData.forEach((item) => {
     harvestList.push(res[item].harvestAmount)
     inputList.push(res[item].inputAmount)
+    // if (!mpUnit.has(res[item].unit)) {
+    //   mpUnit.set(res[item].unit, units.length);
+    //   units.push(res[item].unit);
+    // }
   })
+  // 所有数据的单位 比如 只/亩/公斤
+  // const unit = units.join("/");
   initChartStatic(
     'chartBar1',
     generateBaseOptions({
@@ -349,6 +368,16 @@ const initChartBar1 = async () => {
         right: '5%',
         top: '15%',
         bottom: '15%'
+      },
+      tooltip: {
+        trigger: "axis",
+        valueFormatter: (value: any, dataIndex: number) => {
+          const key = yData[dataIndex];
+          const unit = res[key].unit;
+          // console.log(value, dataIndex);
+          // const unit = res[dataIndex].unit;
+          return value + unit;
+        }
       }
     })
   )
@@ -356,32 +385,88 @@ const initChartBar1 = async () => {
 //产量一览图
 const initChartBar2 = async () => {
   let res = await selectHarvest({ parkId: baseCode.value, plotId: plotCode.value })
-  let yData1 = []
-  let yData2 = []
-  let yData3 = []
-  let yData4 = []
-  let yData5 = []
-  let xData = []
-  let seriesList = []
-  let seriesList2 = []
-  let nameList={ ...Array.from(new Set(res.map(item=>item.variety)))}
-  res.forEach((item) => {
-    if (nameList[0] == item.variety) {
-      yData1.push({ name: item.variety, value: item.harvest })
-    } else if (nameList[1] == item.variety) {
-      yData2.push({ name: item.variety, value: item.harvest })
+  // console.log("产量一览图: ", res);
+  let mpYear = new Map();
+  let xArr: string[] = [];
+  let mpVar = new Map();
+  let varieties: string[] = [];
 
-    } else if (nameList[2] == item.variety) {
-      yData3.push({ name: item.variety, value: item.harvest })
-
-    } else if (nameList[3] == item.variety) {
-      yData4.push({ name: item.variety, value: item.harvest })
-
-    } else if (nameList[4] == item.variety) {
-      yData5.push({ name: item.variety, value: item.harvest })
+  res.forEach(ele => {
+    // 设置x轴数据
+    if (!mpYear.has(ele.time)) {
+      mpYear.set(ele.time, xArr.length);
+      xArr.push(ele.time);
     }
-  })
 
+    // variety为空 设置为 其他
+    if (!ele.variety) ele.variety = "其他";
+
+    // 获取品种数组
+    if (!mpVar.has(ele.variety)) {
+      mpVar.set(ele.variety, varieties.length);
+      varieties.push(ele.variety);
+    }
+  });
+  // console.log("######", mpYear, xArr, mpVar, varieties, res);
+
+  // 设置存储y轴数据的对象
+  let nx = xArr.length;
+  let yArr: any[] = [];
+  varieties.forEach(ele => {
+    const tmp = { name: ele, data: [] as string[], unit: "" };
+    for (let i = 0; i < nx; ++i) { tmp.data.push("0") };
+    yArr.push(tmp);
+  });
+  // console.log("########", yArr);
+
+  // 设置存储y轴的数据
+  res.forEach(ele => {
+    let yIdx = yArr.findIndex(item => ele.variety === item.name);
+    let vIdx = mpYear.get(ele.time);
+    yArr[yIdx].data[vIdx] = ele.harvest;
+    // yArr[yIdx].unit = ele.unit;
+  });
+  // console.log("##########", yArr);
+
+  // 生成series
+  const serieses = yArr.map(ele => {
+    return {
+      name: ele.name,
+      data: ele.data,
+      type: "bar",
+      smooth: false
+    }
+  });
+
+  // let yData1 = []
+  // let yData2 = []
+  // let yData3 = []
+  // let yData4 = []
+  // let yData5 = []
+  // let xData = []
+  // let seriesList = []
+  // let seriesList2 = []
+  // let nameList={ ...Array.from(new Set(res.map(item=>item.variety)))}
+  // console.log("nameList: ", nameList);
+  // res.forEach((item) => {
+  //   if (nameList[0] == item.variety) {
+  //     yData1.push({ name: item.variety, value: item.harvest })
+  //   } else if (nameList[1] == item.variety) {
+  //     yData2.push({ name: item.variety, value: item.harvest })
+
+  //   } else if (nameList[2] == item.variety) {
+  //     yData3.push({ name: item.variety, value: item.harvest })
+
+  //   } else if (nameList[3] == item.variety) {
+  //     yData4.push({ name: item.variety, value: item.harvest })
+
+  //   } else if (nameList[4] == item.variety) {
+  //     yData5.push({ name: item.variety, value: item.harvest })
+  //   }
+  // })
+  // console.log("######################", yData1, yData2, yData3, yData4, yData5);
+
+  const unit = "Kg";  // 单位目前固定是Kg
   initChartStatic(
     'chartBar2',
     generateBaseOptions({
@@ -432,7 +517,9 @@ const initChartBar2 = async () => {
           splitArea: {
             //网格区域
             show: false //是否显示
-          }
+          },
+          name: "单位(" + unit +")",
+          nameLocation: "end",
         }
       ],
       toolbox: {
@@ -445,28 +532,34 @@ const initChartBar2 = async () => {
         }
       },
       color: ['#5470c6', '#91cc75'],
-      series:
-      [
-        {
-          name:nameList[0],
-          data: yData1,
-          type: 'bar',
-          smooth: false,
-          barWidth: 28
-        },
-        {
-          name:nameList[1],
-          data:yData2,
-          type: 'bar',
-          smooth: false,
-          barWidth: 28
-        },
-      ],
+      series: serieses,
+      // [
+      //   {
+      //     name:nameList[0],
+      //     data: yData1,
+      //     type: 'bar',
+      //     smooth: false,
+      //     barWidth: 28
+      //   },
+      //   {
+      //     name:nameList[1],
+      //     data:yData2,
+      //     type: 'bar',
+      //     smooth: false,
+      //     barWidth: 28
+      //   },
+      // ],
       grid: {
         left: '10%',
         right: '5%',
         top: '15%',
         bottom: '15%'
+      },
+      tooltip: {
+        trigger: "axis",
+        valueFormatter: (value: any) => {
+          return value + unit;
+        }
       }
     })
   )
@@ -474,6 +567,7 @@ const initChartBar2 = async () => {
 //农事活动
 const initChartBar3 = async () => {
   let res = await getFarmRecordMap({ parkId: baseCode.value, plotId: plotCode.value })
+  console.log("农事活动: ", res);
   initChartStatic(
     'chartBar3',
     generateBaseOptions({
@@ -556,6 +650,7 @@ const initChartLine = async (val, num, type) => {
     endTime: val[1],
     findType: type
   })
+  // console.log("收获趋势图: ", res);
   let yData = res.map((item) => item.sumNum)
   let xData = res.map((item) => item.dateContent)
   let yAxisData = []
@@ -757,6 +852,7 @@ const initChartLine = async (val, num, type) => {
     }
     yAxisData = _Y
   }
+  const unit = "Kg";  // 单位目前固定是Kg
   initChartStatic(
     'chartLine',
     generateBaseOptions({
@@ -767,7 +863,7 @@ const initChartLine = async (val, num, type) => {
           lineStyle: {
             color: '#000'
           }
-        }
+        },
       },
       legend: {
         show: true,
@@ -805,7 +901,9 @@ const initChartLine = async (val, num, type) => {
           splitArea: {
             //网格区域
             show: false //是否显示
-          }
+          },
+          name: "单位(" + unit +")",
+          nameLocation: "end",
         }
       ],
       color: ['#5470c6'],
@@ -822,6 +920,12 @@ const initChartLine = async (val, num, type) => {
         right: '5%',
         top: '15%',
         bottom: '15%'
+      },
+      tooltip: {
+        trigger: "axis",
+        valueFormatter: (value: any) => {
+          return value + unit;
+        }
       }
     })
   )
