@@ -240,9 +240,22 @@ const getDataList = async () => {
   labelMap.clear()
   if (Array.isArray(res)) {
     res.forEach(item => {
-      const parkGeofencing = JSON.parse(item.parkGeofencing)
+      let parkGeofencing, parkGeoOptions = null;
+      const _fencing = JSON.parse(item.parkGeofencing)
+      if (Array.isArray(_fencing)) {
+        parkGeofencing = _fencing;
+      } else {
+        const { corrdinates, option } = _fencing;
+        if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+          parkGeofencing = corrdinates;
+          parkGeoOptions = option
+        }
+      }
+
+      console.log("🚀 ~ getDataList ~ parkGeofencing:", parkGeofencing)
       if (Array.isArray(parkGeofencing) && parkGeofencing.length > 0) {
         const _posi = parkGeofencing[0].map(ele => ([ele.lng, ele.lat]))
+        console.log("🚀 ~ getDataList ~ _posi:", _posi)
         
         createPolygon(undefined, _posi, {
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 1000000),
@@ -292,7 +305,18 @@ const getDataList = async () => {
         const childItem = item.plotList;
         if (Array.isArray(childItem)) {
           childItem.forEach(child => {
-            const childGeofencing = JSON.parse(child.plotGeofencing);
+            let childGeofencing, chilGeoOption = null;
+            const _childGeofencing = JSON.parse(child.plotGeofencing);
+
+            if (Array.isArray(_childGeofencing) && _childGeofencing.length > 0) {
+              childGeofencing = _childGeofencing
+            } else {
+              const { corrdinates, option } = _childGeofencing;
+              if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+                childGeofencing = corrdinates;
+                chilGeoOption = option
+              }
+            }
             if (Array.isArray(childGeofencing) && childGeofencing.length > 0) {
               const childPos = childGeofencing[0].map(ele => ([ele.lng, ele.lat]))
               const createdPolygonItem = createPolygon(undefined, childPos, {
