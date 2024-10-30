@@ -168,19 +168,14 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import * as echarts from 'echarts'
 import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
 import { initChartStatic,generateBaseOptions } from '../../../utils/bigscreenTool/index'
 import { useRoute } from 'vue-router'
 
-const isLine = ref(false)
-const isLineRadio = ref('line')
+const isLineRadio = ref<string>('line')
 const handleRadioChange = (item) => {
   if (item === 'line') initChart(true)
   else initChart(false)
-}
-const handleSwitchChange = (val) => {
-  initChart(val)
 }
 
 const getIconClass = (text:string) => {
@@ -337,7 +332,7 @@ const getList = async () => {
     }
     //console.log(trendData.value,"==trendData==");
     //初始化柱桩图
-    initChart()
+    initChart(isLineRadio.value === 'line')
     //结束
     total.value = data.total
   } finally {
@@ -417,7 +412,7 @@ const tabCli = async (id, val, index) => {
   active.value = index
   res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(id, val)
   //console.log(res,'res,22')
-  initChart()
+  initChart(isLineRadio.value === 'line')
 }
 //echarts
 const initChart = async (line = false) => {
