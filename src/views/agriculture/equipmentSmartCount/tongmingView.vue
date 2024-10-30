@@ -220,6 +220,12 @@ const initDataCollectChart = async (type, startDate = '', endDate = '') => {
       )
     }
   }
+    // 添加 resize 监听器，确保页面缩放时重新调整图表大小
+    window.addEventListener('resize', () => {
+    if (chartInstance) {
+      chartInstance.resize()
+    }
+  })
 }
 // 数据展示
 const dataShowRadio = ref('气象站')
@@ -253,14 +259,21 @@ const selectCli = (e) => {
 }
 //选择时间
 const dataShowDateChange = (val) => {
+  if (val === null) {
+    dataShowDate.value = ''
+  } else {
   let data = new Date(val)
   let year = val.getFullYear()
   let month = data.getMonth() + 1
   let day = data.getDate()
   dataShowDate.value = `${year}-${month}-${day}`
 }
-
+}
 const queryChart = () => {
+  if(dataShowDate.value === ''){
+     alert('请选择时间')
+    return
+  }
   initDataShowChart(dataShowRadio.value, seletValue.value, dataShowDate.value)
 }
 
@@ -395,10 +408,20 @@ function getTime(time) {
   collectConditionData[1] = `${year2}-${month2}-${day2} ${hour2}:${minute2}:${miao2}`
 }
 const queryCollection = () => {
+  if (collectConditionData[0] === undefined || collectConditionData[1] === undefined) {
+    alert('请选择开始时间和结束时间')
+    return
+  }
   initCollectConditionChart(collectConditionData[0], collectConditionData[1])
 }
-const collectChange = () => {
-  getTime(collectConditionDateRange.value)
+const collectChange = (e) => {
+  if (e == null) {
+    collectConditionDateRange.value = []
+    collectConditionData[0] = undefined
+    collectConditionData[1] = undefined
+  } else {
+    getTime(collectConditionDateRange.value)
+  }
 }
 //数据采集量情况
 
@@ -414,6 +437,15 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
   let dataNum = 0
   for (var i = 0; i < data.length; i++) {
     dataNum += data[i].value
+  }
+  const chartElement = document.getElementById('collectConditionChart')
+  if (!chartElement) {
+    console.error('Chart element not found!')
+    return
+  }
+  const chartInstance = echarts.getInstanceByDom(chartElement) // 检查该 DOM 元素上是否已经存在 ECharts 实例
+  if (chartInstance) {
+    chartInstance.dispose() // 销毁已有的图表实例，防止重复初始化
   }
   initChartStatic(
     'collectConditionChart',
@@ -480,6 +512,12 @@ const initCollectConditionChart = async (dataStartTime = '', dataEndTime = '') =
       ]
     })
   )
+    // 添加 resize 监听器，确保页面缩放时重新调整图表大小
+    window.addEventListener('resize', () => {
+    if (chartInstance) {
+      chartInstance.resize()
+    }
+  })
 }
 onMounted(async () => {
   initDataCollectChart('year')
@@ -495,7 +533,7 @@ const getIconFrame = (text: string) => {
     PH: 'icon-5',
     湿度: 'icon-6',
     EC: 'icon-7',
-    虫害种类: 'icon-8',
+    虫: 'icon-8',
     光: 'icon-27',
     风向: 'icon-10',
     亚硝酸: 'icon-15',
@@ -505,7 +543,6 @@ const getIconFrame = (text: string) => {
     盐度: 'icon-14',
     浊: 'icon-16',
     辐射: 'icon-18',
-    虫害数量: 'icon-19',
     ORP: 'icon-20',
     TDS: 'icon-21',
     余: 'icon-22',
@@ -517,7 +554,7 @@ const getIconFrame = (text: string) => {
     二氧化碳: 'icon-28',
     PM: 'icon-29'
   }
-  let res: string = 'icon-11'
+  let res: string = 'icon-19'
   let flag: boolean = false
   Object.keys(_iconMap).forEach((item) => {
     if (text.indexOf(item) !== -1 && !flag) {
@@ -912,7 +949,6 @@ watch(
   /* position: relative; */
   left: 36px;
   top: 64px;
-  width: 80px;
   height: 16px;
   opacity: 1;
 
