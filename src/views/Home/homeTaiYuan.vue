@@ -790,11 +790,8 @@ const tabLeft = (str) => {
 
 </script>
 <template>
-  <div
-    class="flex space-x-[.5rem]"
-    style="height: calc(100vh - 125px);"
-  >
-    <el-card class="w-12rem h-100vh">
+  <div class="flex space-x-[.5rem]">
+    <el-card class="w-12rem h-73rem">
       <el-tree
         ref="treeRef"
         style="max-width: 600px"
@@ -813,15 +810,15 @@ const tabLeft = (str) => {
       class="grow space-y-[1rem] flex flex-col pl-.5rem box-border"
       style="max-width: calc(100% - 38rem);"
     >
-      <el-card class="h-[7rem] mr-.5rem">
-        <div class="flex justify-evenly space-x-1rem items-center h-3.5rem">
+      <el-card class="h-[7rem] mr-.5rem ">
+        <div class="flex justify-evenly space-x-1rem items-center">
           <div
             v-for="item, index in topDataList"
             :key="index"
             :class="`flex space-x-3 items-center px-1.5rem py-3 rounded-2  homt-top-bg${index+1}`"
             
           >
-            <div :class="` w-2.5rem h-2.5rem disease-top-${index+1}`"></div>
+            <div :class="` w-2.5rem h-2.5rem disease-top-${index+1}`"> </div>
             <div>
               <div>{{ item.title }}</div>
               <div class="art-font text-[1.4rem]">{{ item.value }}</div>
@@ -989,9 +986,9 @@ const tabLeft = (str) => {
         </div>
       </div>
     </div>
-    <div class="w-24rem ">
+    <div class="w-24rem h-100vh">
       <div class="flex flex-col space-y-[1rem]">
-        <el-card class="h-708px">
+        <el-card class="h-823px">
           <div height="calc(100vh - 440px)">
             <div class="title-frame">今日抓拍</div>
             <div class="flex justify-between space-x-2 py-2">
