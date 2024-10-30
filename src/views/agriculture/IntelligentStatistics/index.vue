@@ -139,14 +139,16 @@ const formData = ref({
   plotCode: ''
 })
 //获取基地
-const baseCode = ref('')
-const plotCode = ref('')
+// const baseCode = ref('')
+// const plotCode = ref('')
 const baseList = ref([])
 const getPage = async () => {
   let res = await page()
   baseList.value = res.list
-  baseCode.value = res.list[0].id
-  getParkPage({ parkId: res.list.id })
+  formData.value.baseCode = res.list[0].id
+  await getParkPage({ parkId: res.list.id })
+  // console.log("基地列表: ", baseList.value);
+  // console.log("地块列表: ", plotList.value);
 }
 getPage()
 //获取地块
@@ -155,13 +157,13 @@ const plotList = ref([])
 const getParkPage = async (parkId) => {
   let res = await parkPage(parkId)
   plotList.value = res.list
-  plotCode.value = res.list[0].id
+  formData.value.plotCode = res.list[0].id
 }
 //养殖品种
 const distributionList=ref([])
 const chartPieWidth=ref(0)
 const initChartPie1 = async () => {
-  let res = await distribution({ parkId: baseCode.value, plotId: plotCode.value })
+  let res = await distribution({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("养殖品种: ", res);
   distributionList.value=res
   let data = []
@@ -225,7 +227,7 @@ const initChartPie1 = async () => {
 //农事计划
 const DistriButionList=ref([])
 const initChartPie2 = async () => {
-  let res = await stateDistriBution({ parkId: baseCode.value, plotId: plotCode.value })
+  let res = await stateDistriBution({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("农事计划: ", res);
   DistriButionList.value=res
   initChartStatic(
@@ -280,7 +282,7 @@ const initChartPie2 = async () => {
 
 //投入产出分析
 const initChartBar1 = async () => {
-  let res = await getInOrOutAnalysis({ parkId: baseCode.value, plotId: plotCode.value })
+  let res = await getInOrOutAnalysis({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("投入产出分析: ", res);
   let yData = Object.keys(res)
   let harvestList = []
@@ -384,7 +386,7 @@ const initChartBar1 = async () => {
 }
 //产量一览图
 const initChartBar2 = async () => {
-  let res = await selectHarvest({ parkId: baseCode.value, plotId: plotCode.value })
+  let res = await selectHarvest({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("产量一览图: ", res);
   let mpYear = new Map();
   let xArr: string[] = [];
@@ -566,7 +568,7 @@ const initChartBar2 = async () => {
 }
 //农事活动
 const initChartBar3 = async () => {
-  let res = await getFarmRecordMap({ parkId: baseCode.value, plotId: plotCode.value })
+  let res = await getFarmRecordMap({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   console.log("农事活动: ", res);
   initChartStatic(
     'chartBar3',
@@ -644,13 +646,13 @@ const radio = ref('本月')
 const dateData = ref([])
 const initChartLine = async (val, num, type) => {
   let res = await getHarvestManagementNumList({
-    parkId: baseCode.value,
-    plotId: plotCode.value,
+    parkId: formData.value.baseCode,
+    plotId: formData.value.plotCode,
     startTime: val[0],
     endTime: val[1],
     findType: type
   })
-  // console.log("收获趋势图: ", res);
+  console.log("收获趋势图: ", res);
   let yData = res.map((item) => item.sumNum)
   let xData = res.map((item) => item.dateContent)
   let yAxisData = []
@@ -932,8 +934,8 @@ const initChartLine = async (val, num, type) => {
 }
 //查询
 const onSubmit = () => {
-  baseCode.value = formData.value.baseCode
-  plotCode.value = formData.value.plotCode
+  // baseCode.value = formData.value.baseCode
+  // plotCode.value = formData.value.plotCode
   initChartPie1()
   initChartPie2()
   initChartBar1()
@@ -951,7 +953,7 @@ const handleRadioChange = (e) => {
   if (e == '本月') {
     type = 'month'
     let monthList = ['01', '03', '05', '07', '08', '10', '12']
-    let month = data.getMonth() + 1 > 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1)
+    let month = data.getMonth() + 1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1)
     let years = data.getFullYear()
     if (monthList.includes(month)) {
       _ANu = 1
@@ -995,12 +997,12 @@ const dataTime = (e) => {
 }
 //重置
 const offSubmit = () => {
-   formData.value = {
-  baseCode: '',
-  plotCode: ''
-}
-  baseCode.value = ''
-  plotCode.value = ''
+  formData.value = {
+    baseCode: '',
+    plotCode: ''
+  }
+  // baseCode.value = ''
+  // plotCode.value = ''
   initChartPie1()
   initChartPie2()
   initChartBar1()
