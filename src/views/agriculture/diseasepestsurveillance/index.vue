@@ -348,7 +348,7 @@
               </el-button>
             </div>
             <!-- 识别记录 -->
-            <SpotResTable :activeMainTableId="list[curItem].id" :monitorType="list[curItem].monitorType" :key="curItem" />
+            <SpotResTable :activeMainTableId="list[curItem].id" :monitorType="list[curItem].monitorType" :key="spotResTableKey" />
           </div>
         </div>
       </div>
@@ -358,7 +358,7 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="changePage"
     />
   </ContentWrap>
 
@@ -393,6 +393,13 @@ import SpotResult from './spotResult.vue'
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' })
+
+/*
+  识别记录组件绑定的key 用时间戳
+  这种做法并不好 但在本页面中 切换页码 切换图片 开始识别 手动标注执行完成后都需要刷新SpotResTable组件
+  现有数据不足以完成此功能 因此每次执行完获取当前时间戳作为新的key
+*/
+const spotResTableKey = ref(new Date().getTime());
 
 const spotInstance = ref();
 const activeTitle = ref<string>('')
@@ -445,15 +452,25 @@ const getList = async () => {
     console.log("🚀 ~ getList ~ list.value:", list.value)
     total.value = data.total
 
-    // 设置当前展示的项为第一项 并查询病虫害数量 
-    curItem.value = 0;
-    if (imgListRef.value) imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
-    if (list.value.length > 0) {
-      getCountDetail(list.value[curItem.value].id);
+    if ("card" === listType.value) {
+      if (list.value.length > 0) {
+        getCountDetail(list.value[curItem.value].id);
+      }
+      spotResTableKey.value = new Date().getTime();
     }
   } finally {
     loading.value = false
   }
+}
+
+// 切换页码操作 卡片模式下切换页码需要设置图片列表显示第一个 列表模式无影响
+const changePage = async () => {
+  if ("card" === listType.value) {
+    // 设置当前展示的项为第一项 并查询病虫害数量 
+    curItem.value = 0;
+    if (imgListRef.value) imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
+  }
+  await getList();
 }
 
 /** 搜索按钮操作 */
@@ -542,6 +559,7 @@ const handleCardChange = async () => {
   if ("card" === listType.value) {
     getCountDetail(list.value[0].id);
     imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
+    spotResTableKey.value = new Date().getTime();
   }
 }
 
@@ -575,6 +593,7 @@ const handleClickNextImg = throttle(() => {
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
+  spotResTableKey.value = new Date().getTime();
 }, 500)
 
 // 图片列表右移 当前查看的不是第一个时 右移一个单位 + 1rem
@@ -584,6 +603,7 @@ const handleClickLastImg = throttle(() => {
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
   imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
+  spotResTableKey.value = new Date().getTime();
 }, 500)
 
 // 点击图片切换到当前显示位置
@@ -592,6 +612,7 @@ const handleClickImg = (index) => {
   curItem.value = index;
   getCountDetail(list.value[curItem.value].id);
   imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - index) + 'px';
+  spotResTableKey.value = new Date().getTime();
 }
 
 // 初次显示列表时 右移一位 表示右二是当前查看的项
@@ -620,6 +641,7 @@ const getCountDetail = async (id) => {
 // 点击开始识别
 const handleClickIdentify = () => {
   message.alert("敬请期待!");
+  spotResTableKey.value = new Date().getTime();
 }
 </script>
 
