@@ -218,7 +218,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.density'"
               v-if="scope.row.isEditing"
             >
-              <el-input class="relative top-[.5rem]" v-model="scope.row.density" placeholder="请输入密度" clearable  />
+              <el-input class="relative top-[.5rem]" v-model="scope.row.density" placeholder="请输入密度" clearable  oninput="value=value.replace(/[^\d.]/g,'')"/>
             </el-form-item>
           </template>
         </el-table-column>
@@ -276,7 +276,7 @@ const baseFormRef = ref()
         <el-table-column label="操作" align="center" prop="identifyStatus">
           <template #default="scope">
             <el-form-item>
-              <div class="relative top-[.4rem]" style="width: 100%; text-align: center">
+              <div class="relative top-[.5rem]" style="width: 100%; text-align: center">
                 <el-button link type="primary" @click="saveInfo(scope.$index)">
                   {{ scope.row.isEditing ? '保存' : '编辑' }}
                 </el-button>
