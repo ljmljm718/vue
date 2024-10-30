@@ -124,6 +124,12 @@ const handleSubmit = async () => {
       recognitionType: typeMapping[recognitionType] || recognitionType // 保留原样，如果没有匹配到任何预定义值
     }
   })
+  // console.log('data.length',data.length)
+  if(data.length === 0){
+    alert('请添加数据')
+    isSubmitting.value = false
+    return
+  }
   const hasEmpty = data.some((item) => Object.values(item).some((value) => value === ''))
   if (hasEmpty) {
     alert('请填写完整信息并点击保存')
@@ -157,7 +163,7 @@ const baseFormRef = ref()
 </script>
 
 <template>
-  <Dialog title="" v-model="dialogVisible" :width="900" :height="1000">
+  <Dialog title="" v-model="dialogVisible" :width="1000" :height="1000">
     <div class="flex justify-between items-center p-2">
       <div class="text-[16px] text-black font-bond">识别</div>
       <!-- <el-button @click="$router.push('/dict/type/data/agri_disease_name')">字典</el-button>    -->
@@ -206,7 +212,7 @@ const baseFormRef = ref()
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="密度" align="center" prop="density">
+        <el-table-column label="密度(个/m³)" align="center" prop="density">
           <template #default="scope">
             <el-form-item
               :prop="'demoList.' + scope.$index + '.density'"
@@ -274,6 +280,9 @@ const baseFormRef = ref()
                 <el-button link type="primary" @click="saveInfo(scope.$index)">
                   {{ scope.row.isEditing ? '保存' : '编辑' }}
                 </el-button>
+                <span class="mx-[.2rem] cursor-default">|</span>
+                <el-button link type="primary" @click="$router.push('/dict/type/data/agri_disease_name')">配置</el-button>
+                <span class="mx-[.2rem] cursor-default text-[##f5f5f5]">|</span>
                 <el-button link type="primary" @click="handleDelete(scope.$index)">删除</el-button>
               </div>
             </el-form-item>
