@@ -527,7 +527,7 @@ const getIconFrame = (text: string) => {
     PH: 'icon-5',
     湿度: 'icon-6',
     EC: 'icon-7',
-    虫害种类: 'icon-8',
+    虫: 'icon-8',
     光: 'icon-27',
     风向: 'icon-10',
     亚硝酸: 'icon-15',
@@ -537,7 +537,6 @@ const getIconFrame = (text: string) => {
     盐度: 'icon-14',
     浊: 'icon-16',
     辐射: 'icon-18',
-    虫害数量: 'icon-19',
     ORP: 'icon-20',
     TDS: 'icon-21',
     余: 'icon-22',
@@ -549,7 +548,7 @@ const getIconFrame = (text: string) => {
     二氧化碳: 'icon-28',
     PM: 'icon-29'
   }
-  let res: string = 'icon-11'
+  let res: string = 'icon-19'
   let flag: boolean = false
   Object.keys(_iconMap).forEach((item) => {
     if (text.indexOf(item) !== -1 && !flag) {
