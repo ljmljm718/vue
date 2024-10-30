@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DiseasePestSurveillanceApi } from '@/api/agriculture/diseasepestsurveillance'
+import router from '@/router';
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 defineOptions({ name: 'RecognizeForm' })
 const { t } = useI18n() // 国际化
@@ -39,7 +40,7 @@ const open = (type: string, id: string) => {
       name: '',
       quantity: '',
       density: '',
-      recognitionTime: parseInt('0'),
+      recognitionTime: 0,
       recognitionType: '',
       recorder: '',
       isEditing: true
@@ -61,7 +62,7 @@ const addLine = () => {
     name: '',
     quantity: '',
     density: '',
-    recognitionTime: parseInt('0'),
+    recognitionTime: 0,
     recognitionType: '',
     recorder: '',
     isEditing: true // 默认为编辑状态
@@ -70,12 +71,31 @@ const addLine = () => {
 }
 /** 保存信息 */
 const saveInfo = (index) => {
+  console.log('baseForm.demoList[index]',baseForm.demoList[index])
+  if(baseForm.demoList[index].name == ''|| baseForm.demoList[index].
+recognitionTime == 0||baseForm.demoList[index].density == ''||baseForm.demoList[index].
+quantity == ''||baseForm.demoList[index].
+recognitionType == '' ||baseForm.demoList[index].
+recorder == ''){
+  alert('请填写完整信息')
+  return
+}
+
   const row = baseForm.demoList[index]
   if (row.isEditing) {
     row.isEditing = false
   } else {
     row.isEditing = true
   }
+}
+
+/**删除信息 */
+const handleDelete = async (index) => {
+  // 删除的二次确认
+  await message.delConfirm()
+  // 发起删除
+  await baseForm.demoList.splice(index, 1)
+  message.success(t('common.delSuccess'))
 }
 
 /** 提交识别信息 */
@@ -104,7 +124,6 @@ const handleSubmit = async () => {
       recognitionType: typeMapping[recognitionType] || recognitionType // 保留原样，如果没有匹配到任何预定义值
     }
   })
-  // console.log('🚀 ~ handleSubmit ~ data:', data)
   const hasEmpty = data.some((item) => Object.values(item).some((value) => value === ''))
   if (hasEmpty) {
     alert('请填写完整信息并点击保存')
@@ -117,11 +136,10 @@ const handleSubmit = async () => {
     isSubmitting.value = false
     return // 如果有未保存的行，则提示并中断提交
   }
-  console.log('🚀 ~ handleSubmit ~ data:', data)
   try {
     await DiseasePestSurveillanceApi.createDiseasePestSurveillanceRecognize(data)
     dialogVisible.value = false
-    message.success(t('common.updateSuccess'))
+    message.success(t('common.createSuccess'))
     emit('success')
   } catch (error) {
     ElMessage.error('提交失败，请重试') // 提交失败时的提示框
@@ -142,25 +160,33 @@ const baseFormRef = ref()
   <Dialog title="" v-model="dialogVisible" :width="900" :height="1000">
     <div class="flex justify-between items-center p-2">
       <div class="text-[16px] text-black font-bond">识别</div>
+      <!-- <el-button @click="$router.push('/dict/type/data/agri_disease_name')">字典</el-button>    -->
+      <!-- 'SystemDictType' -->
       <div>
         <el-button type="primary" @click="addLine">
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
       </div>
     </div>
-    <el-form class="p-2" ref="baseFormRef" :model="baseForm" auto-complete="on">
+    <el-form class="flex justify-center items-center p-2" ref="baseFormRef" :model="baseForm" auto-complete="on">
       <el-table
         v-loading="loading"
         :data="baseForm.demoList"
         :stripe="true"
-        :show-overflow-tooltip="true"
         highlight-current-row
         header-cell-class-name="table_header"
       >
-        <el-table-column label="名称" align="center" prop="name">
+        <el-table-column label="名称" align="center" prop="name" >
           <template #default="scope">
-            <el-form-item :prop="'demoList.' + scope.$index + '.name'" v-if="scope.row.isEditing">
-              <el-input v-model="scope.row.name" placeholder="请输入名称" clearable />
+            <el-form-item :prop="'demoList.' + scope.$index + '.name'" v-if="scope.row.isEditing" class="flex justify-center items-center ">
+              <el-select v-model="scope.row.name" clearable placeholder="请选择病虫害名称" class="!w-280px relative top-[.5rem]">
+                <el-option
+                  v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+                  :key="dict.label"
+                  :label="dict.label"
+                  :value="dict.label"
+                />
+              </el-select>
             </el-form-item>
           </template>
         </el-table-column>
@@ -171,6 +197,7 @@ const baseFormRef = ref()
               v-if="scope.row.isEditing"
             >
               <el-input
+                class="relative top-[.5rem]"
                 v-model="scope.row.quantity"
                 placeholder="请输入数量"
                 clearable
@@ -185,7 +212,7 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.density'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.density" placeholder="请输入密度" clearable />
+              <el-input class="relative top-[.5rem]" v-model="scope.row.density" placeholder="请输入密度" clearable  />
             </el-form-item>
           </template>
         </el-table-column>
@@ -200,7 +227,8 @@ const baseFormRef = ref()
                 value-format="YYYY-MM-DD hh:mm:ss"
                 type="datetime"
                 placeholder="请选择时间"
-                class="!w-240px"
+                class="!w-240px relative top-[.5rem]"
+                
               />
             </el-form-item>
           </template>
@@ -215,14 +243,14 @@ const baseFormRef = ref()
                   自动识别: 'automatic_recognition'
                 }[scope.row.recognitionType] || scope.row.recognitionType
               "
-              v-if="!scope.row.isEditing"
+              v-if="!scope.row.isEditing && scope.row.recognitionType"
             />
 
             <el-form-item
               :prop="'demoList.' + scope.$index + '.recognitionType'"
               v-if="scope.row.isEditing"
             >
-              <el-select v-model="scope.row.recognitionType" placeholder="请选择类型">
+              <el-select v-model="scope.row.recognitionType" placeholder="请选择类型" class="relative top-[.5rem]">
                 <el-option label="自动识别" value="自动识别" />
                 <el-option label="手动标注" value="手动标注" />
               </el-select>
@@ -235,17 +263,18 @@ const baseFormRef = ref()
               :prop="'demoList.' + scope.$index + '.recorder'"
               v-if="scope.row.isEditing"
             >
-              <el-input v-model="scope.row.recorder" placeholder="请输入记录人" clearable />
+              <el-input class="relative top-[.5rem]" v-model="scope.row.recorder" placeholder="请输入记录人" clearable />
             </el-form-item>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" prop="identifyStatus">
           <template #default="scope">
             <el-form-item>
-              <div style="width: 100%; text-align: center">
+              <div class="relative top-[.4rem]" style="width: 100%; text-align: center">
                 <el-button link type="primary" @click="saveInfo(scope.$index)">
                   {{ scope.row.isEditing ? '保存' : '编辑' }}
                 </el-button>
+                <el-button link type="primary" @click="handleDelete(scope.$index)">删除</el-button>
               </div>
             </el-form-item>
           </template>
