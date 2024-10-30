@@ -695,7 +695,7 @@ const windowOpen = item => window.open(item)
                       v-for="item,index in envVal"
                       :key="index"
                     >
-                      <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType]}`"></div>
+                      <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType] || 6}`"></div>
                       <div class="label-val-wrapper">
                         <div class="value-wrapper">
                           <span class="value">{{ item.dataValue }}</span>
@@ -879,7 +879,7 @@ const windowOpen = item => window.open(item)
                       v-for="(item, index) in waterTypeList"
                       :key="index"
                     >
-                      <div :class="`icon-wrapper r-icon-${index+1}`"></div>
+                      <div :class="`icon-wrapper r-icon-${index + 1}`"></div>
                       <div class="label-val-wrapper">
                         <div class="value-wrapper">
                           <span class="value">{{ item.dataValue }}</span>
@@ -1385,7 +1385,7 @@ const windowOpen = item => window.open(item)
   }
 }
 
-@for $i from 1 through 8 {
+@for $i from 1 through 10 {
   .r-icon-#{$i} {
     background-image: url(./assets/rcon#{$i}.png);
   }
