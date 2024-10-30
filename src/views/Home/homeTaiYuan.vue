@@ -947,10 +947,6 @@ const tabLeft = (str) => {
             <div class="flex justify-between items-center">
               <div class="title-frame">虫害趋势分析</div>
               <div class="flex items-center space-x-3">
-                <el-radio-group v-model="bugTraceRadio" @change="bugTraceChange">
-                  <el-radio-button label="按天" value="按天" />
-                  <el-radio-button label="按月" value="按月" />
-                </el-radio-group>
                 <div>
                   <el-date-picker
                     v-model="bugTraceTimeRange"
@@ -961,6 +957,10 @@ const tabLeft = (str) => {
                     end-placeholder="结束日期"
                   />
                 </div>
+                <el-radio-group v-model="bugTraceRadio" @change="bugTraceChange">
+                  <el-radio-button label="按天" value="按天" />
+                  <el-radio-button label="按月" value="按月" />
+                </el-radio-group>
                 <el-button type="primary" @click='bugTraceSeacrh()'>查询</el-button>
               </div>
             </div>
@@ -988,7 +988,7 @@ const tabLeft = (str) => {
     </div>
     <div class="w-24rem h-100vh">
       <div class="flex flex-col space-y-[1rem]">
-        <el-card class="h-823px">
+        <el-card class="h-820px">
           <div height="calc(100vh - 440px)">
             <div class="title-frame">今日抓拍</div>
             <div class="flex justify-between space-x-2 py-2">
@@ -1007,7 +1007,7 @@ const tabLeft = (str) => {
             </div>
             <div class="rounded-1 h-11rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
             <div class="flex w-full py-2 relative" style='overflow:hidden'>
-             <div v-if='snapPictureList.length != 0' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
+             <div v-if='snapNum >= 4' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
               <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
                 <div
                  
@@ -1028,30 +1028,30 @@ const tabLeft = (str) => {
             <div v-if="snapDevice" class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2">
               <div>
                 <div class="color-[#9ea2a2] text-15px mb-5px">监测作物</div>
-                  <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapDevice?.monitorSpecies }}</div>
+                  <div class="text-center color-[#3a3a3a] text-15px mb-7px" style="font-weight:600">{{ snapDevice?.monitorSpecies }}</div>
               </div>
               <div>
                 <div class="color-[#9ea2a2] text-15px mb-5px">设备状态</div>
-                <div class="text-center flex items-center color-[#000] text-17px mb-7px" style="font-weight:600">
+                <div class="text-center flex items-center color-[#3a3a3a] text-15px mb-7px" style="font-weight:600">
                   <div :class="`${snapDevice.deviceStatus==0?'online-1': snapDevice.deviceStatus==1?'online-3': snapDevice.deviceStatus=='online'? 'online-1': snapDevice.deviceStatus=='offline'? 'online-3':'online-2'} w-15px h-15px mr-7px`"></div> 
                   <div>{{ snapDevice.deviceStatus==0?'在线': snapDevice.deviceStatus==1?'离线':snapDevice.deviceStatus == 'online'? '在线': snapDevice.deviceStatus=='offline'? '离线': '故障'}}</div></div>
               </div>
               <div>
                   <div class="color-[#9ea2a2] text-15px mb-5px">抓拍图片</div>
-                  <div class="text-center color-[#000] text-17px mb-7px" style="font-weight:600">{{ snapImgTotal }}张</div>
+                  <div class="text-center color-[#3a3a3a] text-17px mb-7px" style="font-weight:550">{{ snapImgTotal }}张</div>
               </div>
             </div>
             <div class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
                 v-if="!snapDevice"
               >暂无数据</div>
             <div class="title-frame my-15px">抓拍信息</div>
-            <div class="flex mt-15px justify-center space-x-1rem items-center h-3.5rem">
+            <div class="flex mt-20px justify-center space-x-1rem items-center h-3.5rem">
               <div
                 class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2"
               >
                 <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
                 <div>
-                  <div class="text-16px">虫害总数</div>
+                  <div class="text-15px mb-7px">虫害总数</div>
                   <div class="art-font text-[1.4rem]">{{ pestTotalNum }}</div>
                 </div>
               </div>
@@ -1060,7 +1060,7 @@ const tabLeft = (str) => {
               >
                 <div :class="` w-2.5rem h-2.5rem disease-top-4`"></div>
                 <div>
-                  <div  class="text-16px">虫害种类</div>
+                  <div  class="text-15px mb-7px">虫害种类</div>
                   <div class="art-font text-[1.4rem]">{{ pestType }}</div>
                 </div>
               </div>
@@ -1074,7 +1074,7 @@ const tabLeft = (str) => {
           </div>
           
         </el-card>
-        <el-card class="h-335px">
+        <el-card class="h-335px"> 
           <div class="title-frame mb-2">预警信息</div>
           <el-scrollbar height="300px">
             <div class="p-3 box-border" v-loading="preWarnLoading">
