@@ -367,6 +367,18 @@ const formRules = reactive({
   recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }],
   recordState: [{ required: true, message: '记录状态不能为空', trigger: 'blur' }],
   recordImg: [{ required: true, message: '记录图片不能为空', trigger: 'blur' }],
+  recordArea: [
+    { required: true, message: '土地面积不能为空', trigger: 'blur' },
+    {
+      type: 'number',
+      validator: (rule, value, callback) => {
+        if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        return callback()
+      },
+      trigger: 'change'
+    },
+  ],
 })
 const formRef = ref() // 表单 Ref
 let farmDefineOptions = ref([])// 设备分类选项
@@ -640,6 +652,8 @@ const getFrom = async () =>{
     formData.value.recordArea = route.query.area
     formData.value.recordTime = new Date().toLocaleString(route.query.recordTime)
   }
+  formRef.value && formRef.value.clearValidate()
+
 }
 
 // 方式二 调用立即执行函数

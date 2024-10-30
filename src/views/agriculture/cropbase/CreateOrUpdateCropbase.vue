@@ -152,14 +152,14 @@
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="数量" prop="number">
+                <el-form-item label="种植数量" prop="number">
                   <el-input
                    v-model="formData.number"
-                   v-if="formData.unit=='亩'" 
+                   v-if="formData.unit=='亩'"
                    :placeholder="`请输入数量，数量不能超过${area}亩`"
                     style="width:100%;"
                     />
-                  <el-input v-model="formData.number" v-else placeholder="请输入数量" />
+                  <el-input v-model="formData.number" v-else placeholder="请输入种植数量" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -236,7 +236,7 @@ import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/cate
 //品种管理页面
 import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
 //
-import {ParkDetailApi} from "@/api/agriculture/parkdetail/index";    
+import {ParkDetailApi} from "@/api/agriculture/parkdetail/index";
 /** 鲁渝协作品种管理 表单 */
 defineOptions({name: 'CreateOrUpdateCropbase'})
 // 本地保存表单
@@ -290,7 +290,12 @@ const localSave = () => {
 //获取浏览器缓存
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
+  if (_form) {
+    formData.value = _form.formContent
+    // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
+    const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
+    area.value = parkDetailData.area
+  }
 }
 if (!formData.value.id) loadData()
 
@@ -314,17 +319,29 @@ const getFrom = async () => {
     area.value = parkDetailData.area
     // 截至
     await loadData(route.query.id);
-  }
-}
 
+  }
+  formRef.value && formRef.value.clearValidate()
+}
 const formRules = reactive({
   cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
   cropType: [{required: true, message: '品种不能为空', trigger: 'change'}],
   imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}],
   belongPlot: [{required: true, message: '所属基地不能为空', trigger: 'blur'}],
   belongPark: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
-  number: [{required: true, message: '数量不能为空', trigger: 'blur'}],
   unit: [{required: true, message: '单位不能为空', trigger: 'blur'}],
+  number: [
+    { required: true, message: '种植数量不能为空', trigger: 'blur' },
+    {
+      type: 'number',
+      validator: (rule, value, callback) => {
+        if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        return callback()
+      },
+      trigger: 'change'
+    },
+  ],
 })
 const formRef = ref() // 表单 Ref
 
@@ -411,17 +428,17 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    
+
     const data = formData.value as unknown as CropBaseVO
-    
-    if(formData.value.unit=='亩'){  
+
+    if(formData.value.unit=='亩'){
       if( Number(formData.value.number) > Number(area.value)){
         message.warning('数量超过输入的最大面积')
         return
       }
-    
+
     }
-    
+
     if (!formData.value.id) {
       await CropBaseApi.createCropBase(data)
       message.success(t('common.createSuccess'))

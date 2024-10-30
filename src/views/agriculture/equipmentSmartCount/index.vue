@@ -12,7 +12,8 @@ const 智能统计 = async () => {
 </script>
 <template>
   <div>
-    <TongMingView v-if="deptId === 166" />
-    <DefaultView v-else />
+    <!-- 有水质检测的 151-明月，156-双桥-->
+    <DefaultView v-if="[151,156].includes(deptId)" />
+    <TongMingView v-else />
   </div>
 </template>

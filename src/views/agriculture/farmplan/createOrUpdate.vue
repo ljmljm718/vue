@@ -72,9 +72,20 @@ const formRules = reactive({
   planName: [{required: true, message: '计划名称不能为空', trigger: 'blur'}],
   parkName: [{required: true, message: '基地名称不能为空', trigger: 'blur'}],
   plotName: [{required: true, message: '地块名称不能为空', trigger: 'blur'}],
-  planArea: [{required: true, message: '计划面积不能为空', trigger: 'blur'}],
   startTime: [{required: true, message: '计划开始时间不能为空', trigger: 'blur'}],
   endTime: [{required: true, message: '计划结束时间不能为空', trigger: 'blur'}],
+  planArea: [
+    { required: true, message: '计划面积不能为空', trigger: 'blur' },
+    {
+      type: 'number',
+      validator: (rule, value, callback) => {
+        if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        return callback()
+      },
+      trigger: 'change'
+    },
+  ],
 })
 
 //基地的选择
@@ -250,11 +261,13 @@ const getFormInfo = async () => {
   //请求品类信息
   listCategoryManagement.value = await allDataCacheManager.getData({})
   formData.value.farmDefineType = formData.value.farmDefineType ? parseInt(formData.value.farmDefineType) : "";
+  debugger
   // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
   const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
   area.value = parkDetailData.area==""?0:parkDetailData.area
   // 截至
   await loadData(route.query.id);
+  formRef.value && formRef.value.clearValidate()
 }
 const getTreeOptions = async () => {
   //请求品类信息
