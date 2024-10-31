@@ -714,7 +714,7 @@ watch(
       <el-card class="col-span-12">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 虫情监测 </div>
         <!-- </template> -->
-        <div class="grid grid-cols-1 gap-1 xl:gap-2 border-t-0">
+        <div class="grid grid-cols-6 gap-1 xl:gap-2 border-t-0">
           <div class="weather_div" v-for="(item, index) in infestation" :key="index">
             <div class="flex flex-col items-start justify-center">
               <div class="monitoringType">{{ item.monitoringType }}</div>
