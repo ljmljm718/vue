@@ -55,6 +55,7 @@ const options = ref([
 )
 let categoryOptions = ref([])// 设备分类选项
 const deviceType = ref()
+const monitorData = ref([])
 const getFormInfo = async () => {
   // 获取设备分类树
   const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
@@ -66,6 +67,14 @@ const getFormInfo = async () => {
     loadData(route.query.id);
     formData.value.deviceMonitorType = formData.value.deviceMonitorType.split(',');
     deviceType.value = formData.value.deviceType.split(',').map(Number)
+    //获取设备分类设备监测类型并赋值设备监测类型选择框
+    monitorData.value = await DeviceCategoryApi.getDeviceCategoryMonitorListByDeviceId(formData.value.deviceKind)
+    console.log("monitorData",monitorData)
+    const newMonitorList = []
+    monitorData.value.forEach(item => {
+      newMonitorList.push({value:item.monitor,label:item.monitor})
+    })
+    options.value = newMonitorList
   }
   if (!formData.value.id) loadData()
 }
