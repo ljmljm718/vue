@@ -456,7 +456,7 @@ onMounted(() => {
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
             >
               <div
-                :class="`t-${index + 1} w-[2rem] h-[2rem]`"
+                :class="`t-${index < 8 ? index + 1 : 'default'} w-[2rem] h-[2rem]`"
                 style="background-size: 100% 100%"
               ></div>
               <div>
@@ -481,7 +481,7 @@ onMounted(() => {
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
             >
               <div
-                :class="`b-${index + 1} w-[2rem] h-[2rem]`"
+                :class="`b-${index < 8 ? index + 1 : 'default'} w-[2rem] h-[2rem]`"
                 style="background-size: 100% 100%"
               ></div>
               <div>
@@ -614,7 +614,9 @@ onMounted(() => {
     background-image: url(./assets/home1/t#{$i}.png);
   }
 }
-
+.t-default {
+  background-image: url(./assets/home1/t5.png);
+}
 .b {
   background-image: url(./assets/home1/b.png);
 }
@@ -624,7 +626,9 @@ onMounted(() => {
     background-image: url(./assets/home1/b#{$i}.png);
   }
 }
-
+.b-default {  
+  background-image: url(./assets/home1/b5.png);
+}
 .selector-wrapper {
   select {
     margin: 0 0.3rem;
