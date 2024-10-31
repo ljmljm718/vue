@@ -143,10 +143,10 @@
             type="primary"
             :icon="Refresh"
             class="!color-[#fff] !bg-[#73c0de]"
+            :loading="refreshLoading"
             @click="refreshStatus()"
           >刷新</el-button>
         </div>
-
       </div>
       <div class="flex">
         <div
@@ -380,6 +380,7 @@ const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const cardList = ref(false)
 const loading = ref(true) // 列表的加载中
+const refreshLoading = ref(false)  //刷新按钮的加载中
 const list = ref<DeviceInfoVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
@@ -403,7 +404,7 @@ const queryParams = reactive({
   deviceKind: undefined,
   status: undefined,
   channelId: undefined,
-  dtu: undefined
+  dtu: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -456,6 +457,7 @@ if (route.query.deviceType) {
   getList()
 }
 getList()
+
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
 const handleSelectedDeviceIds = () => {
@@ -547,8 +549,13 @@ const openFormDetail = () => {
 
 /** 设备状态刷新操作 */
 const refreshStatus = async () => {
-  const response = await DeviceInfoApi.refreshDeviceStatus()
-  await getList()
+  refreshLoading.value = true
+  try {
+    const response = await DeviceInfoApi.refreshDeviceStatus()
+    await getList()
+  } finally {
+    refreshLoading.value = false
+  }
 }
 
 /** 导出按钮操作 */
