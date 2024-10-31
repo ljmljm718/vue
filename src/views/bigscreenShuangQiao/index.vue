@@ -571,7 +571,13 @@ const leftIconMap = {
   "空气湿度": 2,//空气湿度
   "大气压力": 6,//大气压力
   "光照强度": 3,//光照强度
-  "PM2.5/10": 9,//PM2.5/101
+  "PM2.5": 9,//PM2.5/101
+  "风力": 5,
+  "土壤湿度":2,
+  "土壤温度":1,
+  "土壤EC值":6,
+  "当前雨量":7,
+  "PM10": 9
 }
 
 const leftUnitMap = {
@@ -879,7 +885,7 @@ const windowOpen = item => window.open(item)
                       v-for="(item, index) in waterTypeList"
                       :key="index"
                     >
-                      <div :class="`icon-wrapper r-icon-${index + 1}`"></div>
+                      <div :class="`icon-wrapper r-icon-${index < 8 ? index + 1 : 'default'}`"></div>
                       <div class="label-val-wrapper">
                         <div class="value-wrapper">
                           <span class="value">{{ item.dataValue }}</span>
@@ -1390,7 +1396,9 @@ const windowOpen = item => window.open(item)
     background-image: url(./assets/rcon#{$i}.png);
   }
 }
-
+.r-icon-default {
+  background-image: url(./assets/rcon8.png);
+}
 @for $i from 1 through 4 {
   .t-icon-#{$i} {
     background-image: url(./assets/tcon#{$i}.png);
