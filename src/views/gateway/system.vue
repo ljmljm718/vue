@@ -10,6 +10,9 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+
+const router = useRouter()
+
 // 初始化 Video
 const initVideo = (containerId:string, url:string) => {
   const hls = new Hls();
@@ -457,7 +460,11 @@ const highlights = ref<any[]>([{
     <!-- 顶部 banner -->
     <div class="fixed left-0 w-full flex justify-center transition-all duration-1000 box-border top-0 z-999">
       <!-- 第一屏的banner -->
-      <div v-show="bannerStyle === 1" class="container flex items-center p-5 space-x-1rem">
+      <div 
+        v-show="bannerStyle === 1" 
+        class="container flex items-center p-5 space-x-1rem cursor-pointer"
+        @click="router.push('/home')"
+      >
         <div class="icon w-2.4rem h-2.4rem"></div>
         <div class="text-white">
           <div class="text-1.4rem">鲁渝协作乡村振兴示范村数字化赋能工程</div>
