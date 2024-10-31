@@ -321,7 +321,6 @@ const getList = async () => {
     //结束
     const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
     list.value = data.list
-
     //初始化上发图片
     //console.log(listRes,"==listRes==");
     if (queryParams.pageNo == 1) {
@@ -418,6 +417,10 @@ const tabCli = async (id, val, index) => {
 const initChart = async (line = false) => {
   if (res != null) {
     res = res
+    res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(
+      listRes.value.equipmentCode,
+      listRes.value.monitoringType
+    )
     obj.value = res[0]
   } else {
     res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(
