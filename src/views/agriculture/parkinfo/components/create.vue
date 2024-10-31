@@ -37,11 +37,6 @@ const getFormInfo = async () => {
 const getCategoryOptions = async () => {
   parkCategoryOptions.value =  await ParkCategoryApi.getAllParkCategory()
 }
-if (route.query.id) {
-  getFormInfo()
-}else {
-  getCategoryOptions()
-}
 
 // if (!route.query.id) getCategoryOptions()
 // 页面 Loading
@@ -191,9 +186,23 @@ const localSave = () => {
 //获取浏览器缓存
 const loadData = async (id = 'new_form') => {
   const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
+  if (_form) {
+    formData.value = _form.formContent;
+    return true;
+  } else {
+    return false;
+  }
 }
 if (!formData.value.id) loadData()
+
+if (route.query.id) {
+  const flag = loadData(route.query.id)
+  if (!flag) getFormInfo() // 如果缓存中有数据，则不调用接口
+}else {
+  getCategoryOptions()
+}
+
+
 // 手风琴展开项
 const activeName = ref<any>('1')
 </script>
