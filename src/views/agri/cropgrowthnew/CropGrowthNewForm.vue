@@ -51,7 +51,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="周期（/天）" prop="cycle">
-            <el-input v-model="formData.cycle" placeholder="请输入周期"/>
+            <el-input v-model="formData.cycle" placeholder="请输入周期" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -70,16 +70,24 @@
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="开始时间" prop="startTime">
-            <el-date-picker v-model="formData.startTime" type="date" value-format="x"
-                            placeholder="选择开始时间"
-                            @change="calculateDays"/>
+            <el-date-picker
+              v-model="formData.startTime"
+              type="date"
+              format="MM-DD"
+              value-format="MM-DD"
+              placeholder="选择开始时间"
+              @change="calculateDays"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="结束时间" prop="endTime">
-            <el-date-picker v-model="formData.endTime" type="date" value-format="x"
-                            placeholder="选择结束时间"
-                            @change="calculateDays"/>
+            <el-date-picker
+              v-model="formData.endTime"
+              type="date"
+              format="MM-DD"
+              value-format="MM-DD"
+              placeholder="选择结束时间"
+              @change="calculateDays"/>
           </el-form-item>
 
         </el-col>
@@ -314,16 +322,22 @@ const resetForm = () => {
 
 /** 计算日期之间的天数差 */
 const calculateDays = () => {
-  if (formData.value.startTime && formData.value.endTime < formData.value.startTime) {
-    formData.value.endTime = '';
-    message.error('结束时间不能早于开始时间');
-  }
+  // if (formData.value.startTime && formData.value.endTime < formData.value.startTime) {
+  //   formData.value.endTime = '';
+  //   message.error('结束时间不能早于开始时间');
+  // }
 
   if (formData.value.startTime && formData.value.endTime) {
     const start = new Date(formData.value.startTime);
     const end = new Date(formData.value.endTime);
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    let diffDays = 0
+    if(start <= end){
+      const diffTime = Math.abs(end - start);
+      diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }else {
+      const diffTime = Math.abs ( start - end );
+      diffDays = 365 - Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
 
     formData.value.cycle = diffDays.toString();
   }
