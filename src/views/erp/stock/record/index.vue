@@ -9,7 +9,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="78px"
     >
       <el-form-item label="产品" prop="productId">
         <el-select
@@ -67,7 +67,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <el-form-item label="出入库时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -115,12 +115,12 @@
         </template>
       </el-table-column>
       <el-table-column label="出入库单号" align="center" prop="bizNo" width="200" />
-      <el-table-column
-        :formatter="dateFormatter"
-        align="center"
-        label="创建时间"
-        prop="createTime"
-      />
+<!--      <el-table-column-->
+<!--        :formatter="dateFormatter"-->
+<!--        align="center"-->
+<!--        label="创建时间"-->
+<!--        prop="createTime"-->
+<!--      />-->
       <el-table-column
         label="出入库日期"
         align="center"
