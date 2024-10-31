@@ -71,8 +71,8 @@
       </el-form>
     </ContentWrap>
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
-                @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" ref="multipleTableRef"
+                @selection-change="handleSelectionChange" @select="select" @row-click="selectClick">
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="用户编号" align="center" key="id" prop="id"/>
         <el-table-column
@@ -124,6 +124,7 @@ import {DeviceBaseVO} from '@/api/kaizhou/devicebase'
 import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
 import * as UserApi from '@/api/system/user'
 import {UserVO} from "@/api/system/user";
+import {ElTable} from "element-plus";
 
 
 /** 设备管理 表单 */
@@ -161,6 +162,35 @@ const queryFormRef = ref() // 搜索的表单
 const selectionList = ref<UserVO[]>([])
 const handleSelectionChange = (rows: UserVO[]) => {
   selectionList.value = rows
+}
+const multipleTableRef = ref()
+const select = (selection, row)=> {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if(selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true);
+}
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
 }
 
 /** 提交选择 */
