@@ -34,36 +34,28 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="种类" prop="kinds">
-          <el-select
-            v-model="queryParams.kinds"
-            placeholder="请选择种类"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_KINDS)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="种类" prop="kinds">-->
+<!--          <el-select-->
+<!--            v-model="queryParams.kinds"-->
+<!--            placeholder="请选择种类"-->
+<!--            clearable-->
+<!--            class="!w-240px"-->
+<!--          >-->
+<!--            <el-option-->
+<!--              v-for="dict in categoryOptions"-->
+<!--              :key="dict.id"-->
+<!--              :label="dict.categoryLabel"-->
+<!--              :value="dict.id"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="设备类型" prop="deviceType">
-          <el-select
-            v-model="queryParams.deviceType"
-            placeholder="请先选择种类"
-            clearable
-            class="!w-240px"
-            :disabled="queryParams.kinds === undefined"
-          >
-            <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_TYPE).filter(item => item.value.toString().substring(0,6) === queryParams.kinds)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
+          <el-cascader
+            style="width: 100%"
+            v-model="deviceType"
+            :options="categoryOptions"
+            :props="categoryProps"
+          />
         </el-form-item>
         <el-form-item label="状态" prop="deviceStatus">
           <el-select
@@ -197,6 +189,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const deviceType = ref()
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -215,13 +208,13 @@ const queryParams = reactive({
   location: undefined
 })
 const parentValue = ref('')
-const formRules = reactive({
-  deviceName: [{required: true, message: '设备名称不能为空', trigger: 'blur'}],
-  belongPlot: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
-  belongPark: [{required: true, message: '所属园区不能为空', trigger: 'blur'}],
-  kinds: [{required: true, message: '种类不能为空', trigger: 'blur'}],
-  deviceType: [{required: true, message: '设备类型不能为空', trigger: 'blur'}],
-})
+// const formRules = reactive({
+//   deviceName: [{required: true, message: '设备名称不能为空', trigger: 'blur'}],
+//   belongPlot: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
+//   belongPark: [{required: true, message: '所属园区不能为空', trigger: 'blur'}],
+//   kinds: [{required: true, message: '种类不能为空', trigger: 'blur'}],
+//   deviceType: [{required: true, message: '设备类型不能为空', trigger: 'blur'}],
+// })
 const queryFormRef = ref() // 搜索的表单
 
 /** 选中操作 */
@@ -286,6 +279,7 @@ const getList = async () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  deviceType.value = null
   handleQuery()
 }
 
@@ -293,6 +287,9 @@ const resetQuery = () => {
 const handleQuery = () => {
   queryParams.pageNo = 1
   queryParams.id = parentValue.value
+  if (deviceType.value != null && deviceType.value != undefined) {
+    queryParams.deviceType = deviceType.value.join(",")
+  }
   getList()
 }
 </script>
