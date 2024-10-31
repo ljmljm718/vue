@@ -69,8 +69,12 @@
               </div>
             </div>
           </div>
-          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101' && false">
-            <video :src="curVideoLink" autoplay controls muted loop class="w-full aspect-video"></video>
+          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101'">
+            <div v-for="item in pictureList" :key="item.id">
+              <img :src="item.capturedImage" class="w-full min-h-10px object-contain" />
+            </div>
+            <div v-if="pictureList.length === 0" class="w-full flex items-center justify-center py-[3rem]">暂无监控图片</div>
+            <!-- <video :src="curVideoLink" autoplay controls muted loop class="w-full aspect-video"></video> -->
           </div>
           <div v-show="curDeviceKind === '102'" class="py-3 pb-[42px]">
             <el-table
@@ -257,7 +261,8 @@ import {
   getLineChar,
   environmentalDataHomePageA,
   environmentalDataHomePageC,
-  getEquipmentDataByEquipmentCode
+  getEquipmentDataByEquipmentCode,
+  getMonitoringEquipmentDataPage
 } from './apis'
 import {
   initChartStatic,
@@ -267,6 +272,12 @@ import {
   EquipmentDataApi
 } from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
+
+const pictureList = ref<any[]>([])
+const getPictureList = async (deviceId:string = '') => {
+  const { list } = await getMonitoringEquipmentDataPage({ pageNo: 1, pageSize: 7, deviceId })
+  if (Array.isArray(list)) pictureList.value = list
+}
 
 const ImageClassList = [
   'EC值', 'ORP', 'PH', 'PH值',
@@ -601,7 +612,9 @@ const curDeviceStatus = ref<string>('')
 const clearObj = ref({})
 const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
-  const res = await getEquipmentDataByEquipmentCode({id:item.id})
+  if (!(item && item.id)) return;
+  getPictureList(item.deviceCode)
+  const res = await getEquipmentDataByEquipmentCode({ id:item.id })
   console.log("🚀 ~ getDeviceInfoData ~ res:", res)
   if (Array.isArray(res)) runTimeDataList.value = res.map(item => ({ ...item, icon: getImgClassByName(item.monitoringType || "温度") }));
 

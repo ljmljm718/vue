@@ -294,3 +294,7 @@ export const snapPage = (params) => {
 export const snapType = (params) => {
   return request.get({ url: '/agriculture/identification-result/pest/number/type', params })
 }
+
+export const getMonitoringEquipmentDataPage = (params) => {
+  return request.get({ url: `/agri/monitoring-equipment-data/page`, params })
+}
