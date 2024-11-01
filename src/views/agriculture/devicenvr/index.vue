@@ -62,14 +62,14 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备序列号" align="center" prop="deviceSerial" />
+      <el-table-column label="设备编号" align="center" prop="deviceSerial" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="应用Id" align="center" prop="appId" />
-      <el-table-column label="密钥" align="center" prop="secretKey" />
+      <el-table-column label="类型" align="center" prop="remark1" />
+      <el-table-column label="地址" align="center" prop="secretKey" />
+      <el-table-column label="请求体" align="center" prop="appId" />
+      <el-table-column label="返回值" align="center" prop="remark2" />
       <el-table-column label="所属系统" align="center" prop="belongSys" />
       <el-table-column label="备注" align="center" prop="remark" />
-<!--      <el-table-column label="备注1" align="center" prop="remark1" />
-      <el-table-column label="备注2" align="center" prop="remark2" />-->
       <el-table-column
         label="创建时间"
         align="center"

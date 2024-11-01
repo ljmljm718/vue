@@ -7,16 +7,16 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="设备序列号" prop="deviceSerial">
+      <el-form-item label="设备编号" prop="deviceSerial">
         <el-input v-model="formData.deviceSerial" placeholder="请输入设备序列号" />
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
         <el-input v-model="formData.deviceName" placeholder="请输入设备名称" />
       </el-form-item>
-      <el-form-item label="应用Id" prop="appId">
+      <el-form-item label="请求体" prop="appId">
         <el-input v-model="formData.appId" placeholder="请输入应用Id" />
       </el-form-item>
-      <el-form-item label="密钥" prop="secretKey">
+      <el-form-item label="地址" prop="secretKey">
         <el-input v-model="formData.secretKey" placeholder="请输入密钥" />
       </el-form-item>
       <el-form-item label="所属系统" prop="belongSys">
@@ -25,12 +25,12 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
-<!--      <el-form-item label="备注1" prop="remark1">
-        <el-input v-model="formData.remark1" placeholder="请输入备注1" />
+      <el-form-item label="类型" prop="remark1">
+        <el-input v-model="formData.remark1" placeholder="请输入类型" />
       </el-form-item>
-      <el-form-item label="备注2" prop="remark2">
-        <el-input v-model="formData.remark2" placeholder="请输入备注2" />
-      </el-form-item>-->
+      <el-form-item label="返回值" prop="remark2">
+        <el-input v-model="formData.remark2" placeholder="请输入返回值" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -65,8 +65,8 @@ const formData = ref({
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
   deviceSerial: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
-  appId: [{ required: true, message: '应用ID不能为空', trigger: 'blur' }],
-  secretKey: [{ required: true, message: '密钥不能为空', trigger: 'blur' }],
+  appId: [{ required: true, message: '请求体不能为空', trigger: 'blur' }],
+  secretKey: [{ required: true, message: '地址不能为空', trigger: 'blur' }],
   belongSys: [{ required: true, message: '所属系统不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
