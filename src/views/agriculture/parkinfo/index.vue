@@ -39,10 +39,8 @@
         <el-form-item label="联系电话" prop="tel">
           <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
         </el-form-item>
-      </el-form>
-      <div class="w-[1px] bg-[#99999969] mx-5"></div>
-      <div class="flex justify-center items-center">
-        <el-button @click="handleQuery" type="primary" class="!bg-[#009688]">
+        <el-form-item class="pl-8">
+         <el-button @click="handleQuery" type="primary" class="!bg-[#009688]">
           <Icon icon="ep:search" class="mr-5px" />
           <span>搜索</span>
         </el-button>
@@ -50,7 +48,10 @@
           <Icon icon="ep:refresh" class="mr-5px" />
           <span>重置</span>
         </el-button>
-      </div>
+      </el-form-item>
+      </el-form>
+     
+
     </div>
   </ContentWrap>
 
