@@ -15,7 +15,7 @@ pipeline{
 
     triggers {
 //         cron('TZ=Asia/Shanghai\nH 19 * * *') // 每天下午19-20点随机一个时间执行
-        cron('TZ=Asia/Shanghai\n15 3 * * 3,5') // 每周三和周五凌晨3点执行
+        cron('TZ=Asia/Shanghai\n30 3 * * 3,5') // 每周三和周五凌晨3点执行
     }
 
     //定义流水线的加工流程

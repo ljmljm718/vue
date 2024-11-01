@@ -56,6 +56,7 @@ export default defineComponent({
     const getBaseList = async () => {
       baseList.value = []
       const res = await getBase()
+      console.log("基地列表: ", res);
       res.forEach((element: any) => {
         baseList.value.push({id: element.id, name: element.name})
       })
@@ -77,6 +78,7 @@ export default defineComponent({
     const getNums = async () => {
       const params = {parkId: ""}
       const res = await getNum(params)
+      console.log("品种数 模型数: ", res);
       nVariety.value = res["品种数"]
       nModel.value = res["模型数"]
     }
@@ -101,7 +103,8 @@ export default defineComponent({
     const getModelList = async () => {
       const params = {parkId: ""}
       const res = await getModel(params)
-      console.log("ModelList", res)
+      console.log("模型列表: ", res)
+      if (!Array.isArray(res) || res.length === 0) return;
       modelList.value = res.map((item) => {
         return {
           ...item,
@@ -138,6 +141,7 @@ export default defineComponent({
 
     const changeBackground = (item) => {
       let str = item.varietyName
+      if (!str) return;
       if (str.includes("鱼")) {
         bgImage.value = bgFish
       } else if (str.includes("鸭")) {
@@ -159,6 +163,7 @@ export default defineComponent({
     const getPlotList = async () => {
       const params = { parkId: base.value.id }
       const res = await getPlot(params)
+      console.log("地块列表: ", res);
       plotList.value = res.filter( (item) => {
         return item.modelId === curModelId
       })
@@ -223,11 +228,19 @@ export default defineComponent({
 
     const getCycleList = async () => {
       cycleNameList.value = []
+      curTips.value = []
+      cycleMap.value = new Map()
+      curItem = 0
+      curCycle.value = 0
+      curCropCode = ""
+      curRealPeriod.value = ""
+      offsetLeft.value = 0
 
       if (curModelId) {
         const params = { modelId: curModelId }
         const res = await getCycle(params)
-        // console.log("Cycle", res)
+        console.log("周期列表: ", res)
+        if (!Array.isArray(res) || res.length === 0) return;
 
         curPeriod.value = res[0].curPeriod
         curRealPeriod.value = res[0].curPeriod
@@ -325,9 +338,9 @@ export default defineComponent({
       const chartInstance = echarts.init(chart, 'default')
       chartInstance.setOption(option, true, true)
       window.addEventListener("resize", () => {
-          setTimeout(() => {
-              chartInstance && chartInstance.resize()
-          }, 10)
+        setTimeout(() => {
+            chartInstance && chartInstance.resize()
+        }, 10)
       })
 
       return { chartDom: chart, chartInstance: chartInstance}
@@ -365,7 +378,7 @@ export default defineComponent({
             borderWidth: 3,
           },
           radar: {
-            nameGap: 10,
+            axisNameGap: 10,
             triggerEvent: true,
             indicator: indicatorData,
             axisName: {
@@ -458,7 +471,7 @@ export default defineComponent({
         const params = { modelId: curModelId, growthId: curCropCode }
         // console.log("getIndicator params", params)
         const res = await getIndicator(params)
-        // console.log("Indicator", res)
+        console.log("指标要素: ", res)
 
         if (res.length) {
           res.map((item) => {
@@ -574,22 +587,30 @@ export default defineComponent({
               cardWidth={ 400 }
               cardHeight={ 230 }
             >
-              <el-scrollbar>
-                <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer pt-[10px]">
-                  {
-                    modelList.value.map((item, index) => (
-                      <ModelIcon 
-                        modelName={ item.modelName }
-                        activated={ item.activated }
-                        modelImg={ item.modelImg }
-                        key={ item.key }
-                        onClick={ () => { changeModel(index) } }
-                      >
-                      </ModelIcon>
-                    ))
-                  }
-                </div>
-              </el-scrollbar>
+              {
+                modelList.value.length > 0 ? (
+                  <el-scrollbar>
+                    <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer pt-[10px]">
+                      {
+                        modelList.value.map((item, index) => (
+                          <ModelIcon 
+                            modelName={ item.modelName }
+                            activated={ item.activated }
+                            modelImg={ item.modelImg }
+                            key={ item.key }
+                            onClick={ () => { changeModel(index) } }
+                          >
+                          </ModelIcon>
+                        ))
+                      }
+                    </div>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-full flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
+                  </div>
+                )
+              }
             </Card>
             <Card
               height={ 345 }
@@ -620,174 +641,186 @@ export default defineComponent({
                 }
               }}
             >
-              <el-scrollbar>
-                <div class="grid grid-cols-2 gap-3 justify-items-center">
-                  {/** 单个卡片 */}
-                  {
-                    plotList.value.map((item) => (
-                      <div class="w-full h-[130px] mb-[10px]">
-                        <div 
-                          style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
-                          class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
-                          onClick={()=>{ handleRoute(item) }}
-                        >
-                          <div 
-                            class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
-                            style="background-color: rgba(0, 0, 0, 0.659);"
-                          >
-                            { item.modelName }
-                          </div>
-                        </div>
-                        <div class="flex justify-between mt-[10px] px-[10px]">
-                          <div>{ item.plotName }</div>
-                          <div>
-                          {
-                            item.isEnableModel ? (
-                              <el-button
-                                style="color: #35DAD2; border: 1px solid #35DAD2; background-color: transparent;"
-                                round
-                                type="success"
-                                onClick={ () => { handleStatusChange(item) } }
+              {
+                plotList.value.length > 0 ? (
+                  <el-scrollbar>
+                    <div class="grid grid-cols-2 gap-3 justify-items-center">
+                      {/** 单个卡片 */}
+                      {
+                        plotList.value.map((item) => (
+                          <div class="w-full h-[130px] mb-[10px]">
+                            <div 
+                              style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
+                              class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
+                              onClick={()=>{ handleRoute(item) }}
+                            >
+                              <div 
+                                class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
+                                style="background-color: rgba(0, 0, 0, 0.659);"
                               >
-                                <el-icon><CircleCheck /></el-icon>
-                                <span>启用</span>
-                              </el-button>
-                            ) : (
-                              <el-button
-                                style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
-                                round
-                                type="danger"
-                                onClick={ () => { handleStatusChange(item) } }
-                              >
-                                <el-icon><CircleClose /></el-icon>
-                                <span>禁用</span>
-                              </el-button>
-                            )
-                          }
+                                { item.modelName }
+                              </div>
+                            </div>
+                            <div class="flex justify-between mt-[10px] px-[10px]">
+                              <div>{ item.plotName }</div>
+                              <div>
+                              {
+                                item.isEnableModel ? (
+                                  <el-button
+                                    style="color: #35DAD2; border: 1px solid #35DAD2; background-color: transparent;"
+                                    round
+                                    type="success"
+                                    onClick={ () => { handleStatusChange(item) } }
+                                  >
+                                    <el-icon><CircleCheck /></el-icon>
+                                    <span>启用</span>
+                                  </el-button>
+                                ) : (
+                                  <el-button
+                                    style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
+                                    round
+                                    type="danger"
+                                    onClick={ () => { handleStatusChange(item) } }
+                                  >
+                                    <el-icon><CircleClose /></el-icon>
+                                    <span>禁用</span>
+                                  </el-button>
+                                )
+                              }
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    ))
-                  }
-                </div>
-              </el-scrollbar>
+                        ))
+                      }
+                    </div>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-full flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
+                  </div>
+                )
+              }
             </Card>
           </div>
           {/** 中 */}
           <div class="grow h-full px-[20px] grid grid-cols-1 content-end relative">
             {/** 周期列表 */}
-            <div class="w-[1032px] h-[120px] absolute top-[0px] left-0 mx-[20px] mt-[30px] flex justify-center flex-wrap content-center">
-              {
-                cycleNameList.value.length < 6 ? (
-                  /** 
-                    * 周期数不足5个 不展示最左和最右的箭头 整体剧中 
-                    * 指向当前展示周期的指针跟随选中的周期
-                    */
-                  <div class="w-full flex">
-                    {/** 最左箭头 */}
-                    <div 
-                      class="cycle-item cursor-pointer p-[15px] box-border"
-                      onClick={ () => {leftArrowClick()} }
-                    >
-                      <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
-                    </div>
-                    <div class="w-[837px] h-[100px] flex justify-center">
-                      {
-                        cycleNameList.value.map((e, i, arr) => (
-                          <div class="flex">
-                            {/** 周期名称展示 */}
-                            <div 
-                              class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
-                              onClick={ () => { handleClick(i) } }
-                            >
-                              <span>{ e.growth }</span>
-                              {/** 当前物候期提示文字 */}
-                              {
-                                e.growth === curRealPeriod.value ? (
-                                  <div class="absolute top-[71px]">
-                                    <span>{ "(当前物候期)" }</span>
+            {
+              cycleNameList.value.length > 0 && (
+                <div class="w-[1032px] h-[120px] absolute top-[0px] left-0 mx-[20px] mt-[30px] flex justify-center flex-wrap content-center">
+                  {
+                    cycleNameList.value.length < 6 ? (
+                      /** 
+                        * 周期数不足5个 不展示最左和最右的箭头 整体剧中 
+                        * 指向当前展示周期的指针跟随选中的周期
+                        */
+                      <div class="w-full flex">
+                        {/** 最左箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {leftArrowClick()} }
+                        >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                        </div>
+                        <div class="w-[837px] h-[100px] flex justify-center">
+                          {
+                            cycleNameList.value.map((e, i, arr) => (
+                              <div class="flex">
+                                {/** 周期名称展示 */}
+                                <div 
+                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                                  onClick={ () => { handleClick(i) } }
+                                >
+                                  <span>{ e.growth }</span>
+                                  {/** 当前物候期提示文字 */}
+                                  {
+                                    e.growth === curRealPeriod.value ? (
+                                      <div class="absolute top-[71px]">
+                                        <span>{ "(当前物候期)" }</span>
+                                      </div>
+                                    ) : null
+                                  }
+                                  {/** 指向当前展示周期的指针 */}
+                                  { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
+                                </div>
+                                {/** 周期之间的箭头 */}
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
                                   </div>
-                                ) : null
-                              }
-                              {/** 指向当前展示周期的指针 */}
-                              { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
-                            </div>
-                            {/** 周期之间的箭头 */}
-                            { i != arr.length - 1 ? ( 
-                              <div class="cycle-item px-[33.5px] py-[23px] box-border">
-                                <div class="next-arrow"></div>
+                                ) : null }
                               </div>
-                            ) : null }
-                          </div>
-                        ))
-                      }
-                    </div>
-                    {/** 最右箭头 */}
-                    <div 
-                      class="cycle-item cursor-pointer p-[15px] box-border"
-                      onClick={ () => {rightArrowClick()} }
-                    >
-                      <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
-                    </div>
-                  </div>
-                ) : (
-                  /**
-                    * 周期数超越5个 一行只呈现5个 展示最左和最右的箭头
-                    * 指向当前展示周期的指针始终在中间
-                    */
-                  <div class="w-full flex">
-                    {/** 最左箭头 */}
-                    <div 
-                      class="cycle-item cursor-pointer p-[15px] box-border"
-                      onClick={ () => {leftArrowClick()} }
-                    >
-                      <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
-                    </div>
-                    {/** 指向当前展示周期的指针 */}
-                    <div class="cur-arrow cur-arrow-center"></div>
-                    {/** 周期展示 */}
-                    <div class="w-[837px] h-[100px] overflow-hidden">
-                      <div class="flex relative" style={ `left: ${ offsetLeft.value }px;` }>
-                      {
-                        cycleNameList.value.map((e, i, arr) => (
-                          <div class="flex">
-                            {/** 周期名称展示 */}
-                            <div 
-                              class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
-                              onClick={ () => { handleClick(i) } }
-                            >
-                              <span>{ e.growth }</span>
-                              {/** 当前物候期提示文字 */}
-                              {
-                                e.growth === curRealPeriod.value ? (
-                                  <div class="absolute top-[71px]">
-                                    <span>{ "(当前物候期)" }</span>
-                                  </div>
-                                ) : null
-                              }
-                            </div>
-                            {/** 周期之间的箭头 */}
-                            { i != arr.length - 1 ? ( 
-                              <div class="cycle-item px-[33.5px] py-[23px] box-border">
-                                <div class="next-arrow"></div>
-                              </div>
-                            ) : null }
-                          </div>
-                        ))
-                      }
+                            ))
+                          }
+                        </div>
+                        {/** 最右箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {rightArrowClick()} }
+                        >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                        </div>
                       </div>
-                    </div>
-                    {/** 最右箭头 */}
-                    <div 
-                      class="cycle-item cursor-pointer p-[15px] box-border"
-                      onClick={ () => {rightArrowClick()} }
-                    >
-                      <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
-                    </div>
-                  </div>
-                )
-              }
-            </div>
+                    ) : (
+                      /**
+                        * 周期数超越5个 一行只呈现5个 展示最左和最右的箭头
+                        * 指向当前展示周期的指针始终在中间
+                        */
+                      <div class="w-full flex">
+                        {/** 最左箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {leftArrowClick()} }
+                        >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                        </div>
+                        {/** 指向当前展示周期的指针 */}
+                        <div class="cur-arrow cur-arrow-center"></div>
+                        {/** 周期展示 */}
+                        <div class="w-[837px] h-[100px] overflow-hidden">
+                          <div class="flex relative" style={ `left: ${ offsetLeft.value }px;` }>
+                          {
+                            cycleNameList.value.map((e, i, arr) => (
+                              <div class="flex">
+                                {/** 周期名称展示 */}
+                                <div 
+                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                                  onClick={ () => { handleClick(i) } }
+                                >
+                                  <span>{ e.growth }</span>
+                                  {/** 当前物候期提示文字 */}
+                                  {
+                                    e.growth === curRealPeriod.value ? (
+                                      <div class="absolute top-[71px]">
+                                        <span>{ "(当前物候期)" }</span>
+                                      </div>
+                                    ) : null
+                                  }
+                                </div>
+                                {/** 周期之间的箭头 */}
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
+                                  </div>
+                                ) : null }
+                              </div>
+                            ))
+                          }
+                          </div>
+                        </div>
+                        {/** 最右箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {rightArrowClick()} }
+                        >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                        </div>
+                      </div>
+                    )
+                  }
+                </div>
+              )
+            }
             {/** 模型图片 */}
             {
               cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
@@ -841,8 +874,8 @@ export default defineComponent({
                     </el-timeline>
                   </el-scrollbar>
                 ) : (
-                  <div class="w-full h-[230px] leading-[200px] text-center text-[#35DAD2] text-[40px] tracking-widest">
-                    本周期暂无注意事项
+                  <div class="w-full h-[230px] flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
                   </div>
                 )
               }
@@ -878,8 +911,8 @@ export default defineComponent({
                     }
                   </div>
                 ) : (
-                  <div class="w-[370px] h-[320px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest">
-                    本周期暂无指标监测信息
+                  <div class="w-[370px] h-[320px] flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
                   </div>
                 )
               }
@@ -896,10 +929,10 @@ export default defineComponent({
                 {
                   curFactor.value.size ? null : (
                     <div 
-                      class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] leading-[320px] text-[22px] text-center text-[#35DAD2] tracking-widest"
+                      class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] flex justify-center items-center"
                       style="background: #0B212C;"
                     >
-                      本指标暂无要素信息
+                      <div class="growth-datacenter-no-data"></div>
                     </div>
                   )
                 }   
@@ -942,8 +975,8 @@ export default defineComponent({
                         </el-table>
                       </div>
                     ) : (
-                      <div class="w-[370px] h-[170px] leading-[170px] text-center text-[#35DAD2] tracking-widest" >
-                        本要素暂无描述信息
+                      <div class="w-[370px] h-[170px] flex justify-center items-center">
+                        <div class="growth-datacenter-no-data"></div>
                       </div>
                     )
                   }
@@ -1195,6 +1228,17 @@ export default defineComponent({
   position: absolute;
   top: 413px;
   left: 764px;
+}
+
+.growth-datacenter-no-data {
+  background: {
+    image: url(../bigscreenModel/assets/null.png);
+    size: contain;
+    position: center;
+    repeat: no-repeat;
+  }
+  width: 160px;
+  height: 160px;
 }
 </style>
 <style lang="scss" scoped>

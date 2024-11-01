@@ -808,8 +808,16 @@ const getList = async () => {
     })
 
     dataListA.value=[...dataList.value , ...dataList2.value]
-    // farmDefineObj.value 
-    const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+    // const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+    const generateRandomColor = () => {  
+        let color;  
+        do {  
+          // 生成一个随机颜色，范围是 0 到 16777214（不包含 16777215，即 FFFFFF）  
+          color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;  
+          // 检查颜色是否为白色  
+        } while (color === '#FFFFFF');  
+        return color;  
+      }; 
       // 生成并设置随机颜色
       let list2 = []
       for (let i = 0; i < farmDefineOptions.value.length; i++) {
@@ -819,7 +827,7 @@ const getList = async () => {
       list2.forEach((item,index) =>{
         farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
       })
-      console.log(dataList.value,'dataList.valuedataList.value1234')
+      console.log(farmDefineObj.value ,'dataList.valuedataList.value1234')
   } finally {
     loading.value = false
   }
