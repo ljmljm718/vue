@@ -15,11 +15,11 @@
             placeholder="请输入名称"
             clearable
             @keyup.enter="handleQuery"
-            class="!w-240px"
+            class="!w-200px"
           />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
+          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-200px">
             <el-option
               v-for="dict in parkCategoryOptions"
               :key="dict.value"
@@ -29,15 +29,15 @@
           </el-select>
         </el-form-item>
         <el-form-item label="面积" prop="area">
-          <el-input v-model="queryParams.area" placeholder="请输入面积">
+          <el-input v-model="queryParams.area" placeholder="请输入面积"  class="!w-200px">
             <template #append>亩</template>
           </el-input>
         </el-form-item>
         <el-form-item label="联系人" prop="contact">
-          <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
+          <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-200px" />
         </el-form-item>
         <el-form-item label="联系电话" prop="tel">
-          <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
+          <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-200px" />
         </el-form-item>
         <el-form-item class="pl-8">
          <el-button @click="handleQuery" type="primary" class="!bg-[#009688]">
@@ -50,8 +50,6 @@
         </el-button>
       </el-form-item>
       </el-form>
-     
-
     </div>
   </ContentWrap>
 
