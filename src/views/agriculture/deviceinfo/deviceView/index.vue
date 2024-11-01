@@ -74,10 +74,10 @@ const resetTreeSelections = () => {
       @click="isCollapse = false"
       class="
         flex items-center space-x-1
-        bg-white relative top-[-.5rem]
+        text-white relative top-[-.5rem]
         box-border p-3 py-1 text-[.9rem]
-        shadow-md bg-#72f6ff hover:bg-#305fcf
-        transition-all hover:text-white cursor-pointer
+        shadow-md bg-#009688
+        transition-all cursor-pointer
       "
       style="border-radius: 0 1000px 1000px 0;"
     >
@@ -100,12 +100,11 @@ const resetTreeSelections = () => {
               v-model="filterText"
               placeholder="输入关键字进行过滤"
               clearable
-              style="width:150px;"
             />
             <div
               class="
                 flex items-center space-x-1
-                text-[.9rem] rounded-2 p-1
+                rounded-2 p-1 w-[3.5rem] text-[.7rem]
                 px-2 shadow-sm cursor-pointer
               "
               style="border: 1px solid #e1e1e1;"
