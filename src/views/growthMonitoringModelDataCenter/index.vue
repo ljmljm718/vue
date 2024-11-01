@@ -136,7 +136,7 @@ export default defineComponent({
         element.key = `${ element.key }1`
       });
       await getCycleList()
-      await getPlotList()
+      await getPlotList(curModelId)
     }
 
     const changeBackground = (item) => {
@@ -160,8 +160,8 @@ export default defineComponent({
     */
     const plotList = ref<Array<any>>([])
 
-    const getPlotList = async () => {
-      const params = { parkId: base.value.id }
+    const getPlotList = async (modelId: string) => {
+      const params = { parkId: base.value.id, modelId }
       const res = await getPlot(params)
       console.log("地块列表: ", res);
       plotList.value = res.filter( (item) => {
@@ -179,7 +179,7 @@ export default defineComponent({
         // 发起修改状态
         await updateModelEnableStatus(row.cropBaseId, !row.isEnableModel)
         // 刷新列表
-        await getPlotList()
+        await getPlotList(curModelId)
       } catch {
         // 取消后，进行恢复按钮
         // row.isEnableModel = row.isEnableModel ? true : false
@@ -543,7 +543,7 @@ export default defineComponent({
       await getBaseList()
       await getNums()
       await getModelList()
-      await getPlotList()
+      await getPlotList("")
       await getCycleList()
       // await getIndicatorList()
       handleResize()
@@ -628,7 +628,7 @@ export default defineComponent({
                       value-key="id"
                       style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
                       popper-class="growth-monitoring-model-datacenter-popper"
-                      onChange={ () => { getPlotList() } }
+                      onChange={ () => { getPlotList(curModelId) } }
                     >
                       {
                         baseList.value.map(item => (

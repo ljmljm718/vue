@@ -3,80 +3,74 @@
     <!-- 搜索栏 -->
     <ContentWrap>
       <el-form
-        class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2"
+        class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
         :model="queryParams"
         ref="queryFormRef"
         label-width="68px"
         :inline="true"
       >
         <!-- 表单内容 -->
-        <div
-          class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"
-        >
-          <el-form-item label="基地名称" prop="monitoringBaseName">
-            <el-input v-model="queryParams.monitoringBaseName" placeholder="请选择">
-              <template #append>
-                <el-button @click="openParkPopup('0')">
-                  <Icon icon="ep:search" />
-                  选择
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="地块名称" prop="monitoringPlotName">
-            <el-input v-model="queryParams.monitoringPlotName" placeholder="请选择">
-              <template #append>
-                <el-button @click="openPlotPopup(queryParams.monitoringBaseId)">
-                  <Icon icon="ep:search" />
-                  选择
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="设备名称" prop="deviceName">
-            <el-input v-model="queryParams.deviceName" placeholder="请选择">
-              <template #append>
-                <el-button @click="openSelectDeviceInfo()">
-                  <Icon icon="ep:search" />
-                  选择
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="录入方式" prop="reserveOne">
-            <el-select v-model="queryParams.reserveOne" placeholder="请选择" clearable>
-              <el-option
-                v-for="dict in options"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="拍摄时间" prop="reserveTwo">
-            <el-date-picker
-              v-model="queryParams.reserveTwo"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+        <el-form-item label="基地名称" prop="monitoringBaseName">
+          <el-input v-model="queryParams.monitoringBaseName" placeholder="请选择">
+            <template #append>
+              <el-button @click="openParkPopup('0')">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="地块名称" prop="monitoringPlotName">
+          <el-input v-model="queryParams.monitoringPlotName" placeholder="请选择">
+            <template #append>
+              <el-button @click="openPlotPopup(queryParams.monitoringBaseId)">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="设备名称" prop="deviceName">
+          <el-input v-model="queryParams.deviceName" placeholder="请选择">
+            <template #append>
+              <el-button @click="openSelectDeviceInfo()">
+                <Icon icon="ep:search" />
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="录入方式" prop="reserveOne">
+          <el-select v-model="queryParams.reserveOne" placeholder="请选择" clearable>
+            <el-option
+              v-for="dict in options"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             />
-          </el-form-item>
-        </div>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="拍摄时间" prop="reserveTwo">
+          <el-date-picker
+            v-model="queryParams.reserveTwo"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          />
+        </el-form-item>
         <!-- 表单按钮 -->
-        <div class="flex flex-wrap justify-center content-center md:col-span-1">
-          <el-form-item>
-            <el-button @click="handleQuery" type="primary">
-              <Icon icon="ep:search" />
-              查询
-            </el-button>
-            <el-button @click="resetQuery">
-              <Icon icon="ep:refresh" />
-              重置
-            </el-button>
-          </el-form-item>
-        </div>
+        <el-form-item>
+          <el-button @click="handleQuery" type="primary">
+            <Icon icon="ep:search" />
+            查询
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" />
+            重置
+          </el-button>
+        </el-form-item>
       </el-form>
     </ContentWrap>
     <!-- 数据列表 -->
