@@ -148,14 +148,34 @@
           >刷新</el-button>
         </div>
       </div>
-      <div class="flex">
+      <div class="flex items-center cursor-pointer ml-[1.5rem]">
+        <div
+          :class="[!cardList ? 'tab-btn-selected' : 'tab-btn']"
+          @click="tabCard()"
+        >
+          <el-icon>
+            <Menu />
+          </el-icon>
+          <div class="pl-1 text-[13px]">卡片</div>
+        </div>
+        <div
+          :class="[cardList ? 'tab-btn-selected' : 'tab-btn']"
+          @click="listCard()"
+        >
+          <el-icon>
+            <List />
+          </el-icon>
+          <div class="pl-1 text-[13px]">列表</div>
+        </div>
+      </div>
+      <div class="flex !hidden">
         <div
           @click="tabCard()"
           class="py-3px px-15px cursor-pointer rounded-l"
           :style="`background-color: ${cardList ? '' : '#e5f4f3'}; border:1.5px solid ${cardList ? '#e6e6e6' : '#36a99e'}; color:${cardList ? '' : '#36a99e'}`"
         >
           <img :src="cardList ? card2 : card" class="w-10px h-10px" alt="" />
-          <span>卡片</span>
+          <span>卡片1</span>
         </div>
         <div
           @click="listCard()"
@@ -170,10 +190,7 @@
     <div
       v-if="!cardList"
       v-loading="loading"
-      class="
-        grid grid-cols-3
-        gap-15px grid-rows-3
-      "
+      class="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-15px"
     >
       <div
         class="
@@ -187,21 +204,31 @@
         :key='index'
       >
         <div>
-          <div class="text-18px mb-15px color-[#000] flex items-center">{{ item.deviceName }}
+          <div
+            class="text-18px mb-15px color-[#000] flex items-center flex-wrap space-y-[8px] space-x-[5px]"
+          >
+            <div>{{ item.deviceName }}</div>
             <div
               class="
-                bg-[#e8f9e9] text-[14px]
-                flex items-center px-10px ml-5px
+                bg-[#e8f9e9] text-[14px] w-[83px]
+                flex items-center px-10px py-[5px]
                 rounded-25px box-border color-[#27c05a]
               "
               v-show='item.deviceStatus == "online"'
             >
-              <div class='icon-1 mr-5px'></div> 在线
+              <div class='icon-1 mr-5px'></div>
+              <div>在线</div>
             </div>
             <div
-              class="bg-[#f5f5f5] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border color-[#9c9c9c]"
-              v-show='item.deviceStatus == "offline"'>
-              <div class='icon-2'></div> 离线
+              class="
+                bg-[#f5f5f5] text-[14px]
+                flex items-center px-10px ml-5px
+                py-3px rounded-25px box-border color-[#9c9c9c]
+              "
+              v-show='item.deviceStatus == "offline"'
+            >
+              <div class='icon-2'></div>
+              <div>离线</div>
             </div>
             <div
               class="bg-[#faeceb] text-[14px] flex items-center px-10px ml-5px py-3px rounded-25px box-border color-[#e31205]"
@@ -212,32 +239,44 @@
           <div class="text-14px color-[#707070]">经度：{{ item.longitude }}</div>
           <div class="text-14px color-[#707070] my-3px">纬度：{{ item.latitude }}</div>
           <div v-if="item.channelId" class="text-14px color-[#707070]">通道号：{{ item.channelId }}</div>
-          <div class="mt-10px">
+          <div class="mt-10px flex items-start justify-start space-x-[5px] pr-[5px]">
             <el-button
               v-if="deviceTypeMain.includes(item.deviceType[0])"
-              plain type="success"
+              plain
+              type="success"
               class="
                 !color-[#fff] !border-none
-                !bg-[#59b756] !px-25px !py-13px
+                !bg-[#59b756] !px-16px !py-13px
               "
               @click="$router.push({
                 path: '/internetMonitor/deviceData/equipment-data-three',
                 query: { equipmentCode: item.id }
               })"
             >查看数据</el-button>
-            <el-button v-if="item.deviceStatus == 'online' && item.url != null && item.url.indexOf('mp4') > 0" plain type="success"
-              class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px' @click="openExternalLink(item)">
-              查看监控
-            </el-button>
-            <el-button plain type="warning" class='!color-[#fff] !bg-[#fac858] !border-none !px-25px !py-13px'
-              @click="openEditForm(item.id)" v-hasPermi="['agriculture:device-info:update']">
-              编辑
-            </el-button>
 
-            <el-button plain type="danger" class='!color-[#fff] !bg-[#ee6666] !px-25px !py-13px'
-              @click="handleDelete(item.id)" v-hasPermi="['agriculture:device-info:delete']">
-              删除
-            </el-button>
+            <el-button
+              v-if="item.deviceStatus == 'online' && item.url != null && item.url.indexOf('mp4') > 0"
+              plain
+              type="success"
+              class='!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px'
+              @click="openExternalLink(item)"
+            >查看监控</el-button>
+
+            <el-button
+              plain
+              type="warning"
+              class='!color-[#fff] !bg-[#fac858] !border-none !px-25px !py-13px'
+              @click="openEditForm(item.id)"
+              v-hasPermi="['agriculture:device-info:update']"
+            >编辑</el-button>
+
+            <el-button
+              plain
+              type="danger"
+              class='!color-[#fff] !bg-[#ee6666] !px-25px !py-13px'
+              @click="handleDelete(item.id)"
+              v-hasPermi="['agriculture:device-info:delete']"
+            >删除</el-button>
           </div>
         </div>
         <div class="w-150px h-100%">
@@ -717,5 +756,26 @@ const openSubDeviceForm = () => {
     width: 13px;
     height: 13px;
   }
+}
+
+.tab-btn,
+.tab-btn-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  border-radius: 5px 0 0 5px;
+  height: 2rem;
+}
+
+.tab-btn {
+  border: 1px solid #e6e6e6;
+  color: #666666;
+}
+
+.tab-btn-selected {
+  border: 1px solid #009688;
+  background-color: #e5f4f3;
+  color: #009688;
 }
 </style>
