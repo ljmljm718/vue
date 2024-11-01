@@ -4,7 +4,6 @@
       <!-- 搜索工作栏 -->
       <el-form
         class="-mb-15px"
-        :style="`width:${isCollapse2 ? '85%' : '85%'}`"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
@@ -25,13 +24,6 @@
               :value="item.categoryName"
             />
           </el-select>
-          <!-- <el-input
-          v-model="queryParams.collectionType"
-          placeholder="请输入采集类型"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
         </el-form-item>
         <el-form-item label="监测类型" prop="monitoringType">
           <el-select
@@ -58,25 +50,7 @@
             :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
           />
         </el-form-item>
-
-        <!-- <el-form-item label="数据值" prop="dataValue">
-        <el-input
-          v-model="queryParams.dataValue"
-          placeholder="请输入数据值"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="yyUnit">
-        <el-input
-          v-model="queryParams.yyUnit"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
+        
         <el-form-item label="采集时间" prop="collectionTime">
           <el-date-picker
             v-model="queryParams.collectionTime"
@@ -98,55 +72,6 @@
           />
         </el-form-item>
 
-        <!-- <el-form-item label="基地名称" prop="parkName">
-        <el-select  v-model="queryParams.parkName" placeholder="请选择基地名称" clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px">
-          <el-option
-            v-for="item in selectBase"
-            :key="item"
-            :label="item.name"
-            :value="item.name"
-            />
-        </el-select> -->
-        <!-- <el-input
-          v-model="queryParams.parkName"
-          placeholder="请输入基地名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        /> -->
-        <!-- </el-form-item> -->
-        <!-- <el-form-item label="基地编码" prop="baseCode">
-        <el-input
-          v-model="queryParams.baseCode"
-          placeholder="请输入基地编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-       -->
-
-        <!-- <el-form-item label="地块名称" prop="parkDname">
-        <el-input
-          v-model="queryParams.parkDname"
-          placeholder="请输入地块名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-        <!-- <el-form-item label="地块编码" prop="plotCode">
-        <el-input
-          v-model="queryParams.plotCode"
-          placeholder="请输入地块编码"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-
         <el-form-item label="通道编码" prop="channelId">
           <el-input
             v-model="queryParams.channelId"
@@ -165,56 +90,13 @@
             class="!w-260px"
           />
         </el-form-item>
-        <!-- <el-form-item label="备用一" prop="reserveOne">
-        <el-input
-          v-model="queryParams.reserveOne"
-          placeholder="请输入备用一"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备用二" prop="reserveTwo">
-        <el-input
-          v-model="queryParams.reserveTwo"
-          placeholder="请输入备用二"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="备用三" prop="reserveThree">
-        <el-input
-          v-model="queryParams.reserveThree"
-          placeholder="请输入备用三"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      </el-form>
-      <div
-        :class="`w-[${isCollapse2 ? '13%' : '15%'}]   flex items-center`"
-      >
-        <div class="w-3px h-70px bg-[#f1f1f1]"></div>
-        <el-form-item class="flex ml-15px">
+        <el-form-item>
           <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"
             ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
           >
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </el-form-item>
-      </div>
+      </el-form>
     </div>
   </ContentWrap>
 
@@ -242,17 +124,6 @@
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="采集类型" align="center" prop="collectionType" />
-      <!-- <template #default="scope">
-          <el-cascader
-            style="width: 100%"
-            v-model="scope.row.collectionType"
-            :options="categoryOptions"
-            :props="categoryProps"
-            disabled
-          />
-        </template>
-      </el-table-column> -->
-
       <el-table-column label="监测类型" align="center" prop="monitoringType" />
       <el-table-column label="数据值" align="center" prop="dataValue" />
       <el-table-column label="单位" align="center" prop="yyUnit" />
@@ -263,24 +134,10 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <!-- <el-table-column label="基地编码" align="center" prop="baseCode" /> -->
       <el-table-column label="基地名称" align="center" prop="parkName" />
-      <!-- <el-table-column label="地块编码" align="center" prop="plotCode" /> -->
       <el-table-column label="地块名称" align="center" prop="parkDname" />
-
       <el-table-column label="通道编码" align="center" prop="channelId" />
       <el-table-column label="终端编码" align="center" prop="yyRemarks" />
-      <!-- <el-table-column label="设备id" align="center" prop="equipmentCode" /> -->
-      <!-- <el-table-column label="备用一" align="center" prop="reserveOne" />
-      <el-table-column label="备用二" align="center" prop="reserveTwo" />
-      <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
-      <!-- <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      /> -->
       <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
           <el-button link type="primary" @click="openForm('details', scope.row.id)">
@@ -329,14 +186,6 @@ import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
 import { ParkInfoApi } from '@/api/agriculture/parkinfo'
 import { useRoute } from 'vue-router'
 import { defineProps } from 'vue'
-// import {defineExpose} from 'vue'
-// let props=defineExpose({
-//   currCategory:''
-// })
-// watch(()=>props.currCategory,(oldVal,newVal)=>{
-//   console.log(oldVal,'oldVal')
-//   console.log(newVal,'newVal')
-// })
 /** 设备数据 列表 */
 defineOptions({ name: 'EquipmentData' })
 
