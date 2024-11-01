@@ -14,7 +14,7 @@
           placeholder="请输入方案名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
         />
       </el-form-item>
       <el-form-item label="创作人" prop="marketingCreator">
@@ -23,7 +23,7 @@
           placeholder="请输入创作人"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
         />
       </el-form-item>
       <el-form-item label="上传时间" prop="marketingUploadTime">
@@ -34,7 +34,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          :class="`${windowWidth <= 1204? '!w-140px' :'!w-210px'} `"
         />
       </el-form-item>
       <el-form-item label="分类" prop="marketingCategory">
@@ -43,7 +43,7 @@
           placeholder="请输入分类"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
         />
       </el-form-item>
       <el-form-item label="标签" prop="marketingTags">
@@ -52,7 +52,7 @@
           placeholder="请输入标签"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
         />
       </el-form-item>
       <!-- <el-form-item label="营销推广类型" prop="marketingType">
@@ -278,7 +278,6 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-
 //文件预览
 let dialogVisible=ref(false)
 let fileUrl=ref()
@@ -289,6 +288,16 @@ const filePreview=(url:any)=>{
   if (url.endsWith('docx')) renderDocx(url)
   else if (url.endsWith('pdf')) renderPDF(url)
   else renderError()
+}
+onMounted(()=>{
+   // 组件已挂载，添加事件监听
+   window.addEventListener('resize', handleResize);
+})
+const windowWidth = ref<any>()
+const handleResize = () => {
+  console.log(999)
+  windowWidth.value = window.innerWidth
+  console.log(windowWidth.value, '屏幕宽度 999')
 }
 onActivated(() => {
   resetQuery()

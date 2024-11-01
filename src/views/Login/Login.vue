@@ -1,51 +1,58 @@
 <template>
-  <div
-    :class="`${prefixCls} relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px basic-login ${isTaiyuan ? 'taiyuan-login' : ''}`"
-  >
-    <div class="logo"></div>
-    <div class="absolute left-[13vw] left-img w-[42vw] top-[25vh] aspect-[1.56]">
-    </div>
-    <div class="relative mx-auto h-full flex">
-      <div class="relative relative2 flex-1 p-30px dark:bg-[var(--login-bg-color)] lt-sm:p-10px overflow-hidden">
-        <!-- 右上角的主题、语言选择 -->
-        <!-- <div
-        class="flex items-center justify-between text-white at-2xl:justify-end at-xl:justify-end"
+   <div :class="` basic-login ${isTaiyuan ? 'taiyuan-login' : ''} w-[100vw] h-[100vh]`">
+    <ScaleBox>
+      <div
+        :class="`${prefixCls} relative w-full h-full lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px`"
       >
-        <div class="flex items-center at-2xl:hidden at-xl:hidden">
-          <img alt="" class="mr-10px h-48px w-48px" src="@/assets/imgs/logo.png" />
-          <span class="text-20px font-bold">{{ underlineToHump(appStore.getTitle) }}</span>
-        </div>
-        <div class="flex items-center justify-end space-x-10px">
-          <ThemeSwitch />
-          <LocaleDropdown class="dark:text-white lt-xl:text-white" />
-        </div>
-      </div>  -->
-        <!-- 右边的登录界面 -->
-        <!-- <Transition appear enter-active-class="animate__animated animate__bounceInRight" style="color:#fff">
-        
-        <div 
-          class="m-auto h-full w-[100%] flex items-center at-2xl:max-w-800px at-lg:max-w-500px at-md:max-w-500px at-xl:max-w-500px;"
-        > -->
-        <!-- 账号登录 -->
-        <!-- <LoginForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)"/> -->
-        <!-- 手机登录 -->
-        <!-- <MobileForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)"/> -->
-        <!-- 二维码登录 -->
-        <!-- <QrCodeForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
-        <!-- 注册 -->
-        <!-- <RegisterForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
-        <!-- 三方登录 -->
-        <!-- <SSOLoginVue class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
-        <!-- </div> -->
-        <!-- </Transition> -->
-        <div class="cont">
-          <div class="w-[34rem] ml-[56vw]">
-            <LoginForm />
+
+      <div class="logo"></div>
+      <div class="absolute left-[220px] left-img w-[850px] top-[270px] aspect-[1.56]">
+      </div>
+      <div class="relative mx-auto h-full flex">
+        <div class="relative relative2 flex-1 p-30px dark:bg-[var(--login-bg-color)] lt-sm:p-10px overflow-hidden">
+          <!-- 右上角的主题、语言选择 -->
+          <!-- <div
+          class="flex items-center justify-between text-white at-2xl:justify-end at-xl:justify-end"
+        >
+          <div class="flex items-center at-2xl:hidden at-xl:hidden">
+            <img alt="" class="mr-10px h-48px w-48px" src="@/assets/imgs/logo.png" />
+            <span class="text-20px font-bold">{{ underlineToHump(appStore.getTitle) }}</span>
+          </div>
+          <div class="flex items-center justify-end space-x-10px">
+            <ThemeSwitch />
+            <LocaleDropdown class="dark:text-white lt-xl:text-white" />
+          </div>
+        </div>  -->
+          <!-- 右边的登录界面 -->
+          <!-- <Transition appear enter-active-class="animate__animated animate__bounceInRight" style="color:#fff">
+          
+          <div 
+            class="m-auto h-full w-[100%] flex items-center at-2xl:max-w-800px at-lg:max-w-500px at-md:max-w-500px at-xl:max-w-500px;"
+          > -->
+          <!-- 账号登录 -->
+          <!-- <LoginForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)"/> -->
+          <!-- 手机登录 -->
+          <!-- <MobileForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)"/> -->
+          <!-- 二维码登录 -->
+          <!-- <QrCodeForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
+          <!-- 注册 -->
+          <!-- <RegisterForm class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
+          <!-- 三方登录 -->
+          <!-- <SSOLoginVue class="m-auto h-auto p-20px lt-xl:(rounded-3xl light:bg-white)" /> -->
+          <!-- </div> -->
+          <!-- </Transition> -->
+          <div class="cont">
+            <div class="w-[700px] h-600px ml-[1100px]">
+              <LoginForm />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      </div>
+    </ScaleBox>
   </div>
+
 </template>
 <script lang="ts" setup>
 import { underlineToHump } from '@/utils'
@@ -53,7 +60,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useAppStore } from '@/store/modules/app'
 import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
 import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
-
+import ScaleBox from "vue3-scale-box";
 import { LoginForm, MobileForm, QrCodeForm, RegisterForm, SSOLoginVue } from './components'
 import { mainEventBus } from '@/utils/eventBus'
 
@@ -80,6 +87,8 @@ onMounted(() => {
     localStorage.setItem("CURRENT_PROJECT_NAME", '')
   }
 })
+
+
 </script>
 <style lang="scss" scoped>
 $prefix-cls: #{$namespace}-login;
@@ -112,7 +121,7 @@ $prefix-cls: #{$namespace}-login;
   align-items: center;
   .cont {
     width: 90%;
-    height:80%;
+    height:100%;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -120,16 +129,16 @@ $prefix-cls: #{$namespace}-login;
 }
 
 .basic-login {
-  position: relative;
+  // position: relative;
   background-image: url('./assets/bgwithmengban.png');
   background-size: 100% 100%;
   .logo {
     position: absolute;
     top: 1.5%;
     z-index: 999;
-    left: 2vw;
+    left: 0px;
     // height: 40px;
-    width: 40vw;
+    width: 800px;
     aspect-ratio: 8.6;
     background-size: 100% 100%;
     object-fit: container;
@@ -148,8 +157,8 @@ $prefix-cls: #{$namespace}-login;
   background-image: url('./assets/bgwithmengban2.png') !important;
   .logo {
     top: 5% !important;
-    left: 5vw !important;
-    width: 35vw !important;
+    left: 0 !important;
+    width: 800px !important;
     aspect-ratio: 13 !important;
     background-image: url('./assets/leftTitle2.png') !important;
   }

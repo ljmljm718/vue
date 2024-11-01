@@ -91,14 +91,14 @@
       <div class="w-100% h-190px relative overflow-hidden" v-if="item.photo">
         <img
           :src="item.photo"
-          class="w-full h-full rounded object-cover blur-lg absolute left-0 top-0 z-0"
+          class="w-full h-100% rounded object-cover blur-lg absolute left-0 top-0 z-0"
         />
         <img
           :src="item.photo"
           class="w-full h-full rounded object-contain absolute left-0 top-0 z-10"
         />
       </div>
-      <div v-else class="flex justify-center items-center w-100% h-150px bg-#00000010">暂无数据</div>
+      <div v-else class="flex justify-center items-center w-100% h-190px bg-#00000010">暂无数据</div>
       <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
         <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}
           {{ item.specifications }}Kg

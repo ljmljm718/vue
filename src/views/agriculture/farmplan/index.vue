@@ -1,9 +1,9 @@
 <template>
   <ContentWrap  >
-    <div class="flex justify-between">
+    <div class="flex justify-between w-100%">
       <!-- 搜索工作栏 -->
       <el-form
-        class="-mb-15px"
+        :class="`-mb-15px ${formType?'w-100%':'w-80%'} `"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
@@ -44,7 +44,7 @@
             @keyup.enter="handleQuery"
             class="!w-240px"
           /> -->
-          <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
+          <el-input v-model="queryParams.parkName" class="!w-240px" placeholder="请选择所属基地">
             <template #append>
               <el-button @click="openParkPopup('0')">
                 <Icon icon="ep:search" />
@@ -93,7 +93,7 @@
           v-model="queryParams.farmDefineType"
           placeholder="请选择农事阶段"
           clearable
-          class="!w-150px"
+          class="!w-240px"
         >
           <el-option
             v-for="dict in farmDefineOptions"
@@ -214,7 +214,7 @@
           <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>
         </el-form-item>
       </el-form>
-      <div v-if="!formType" class="flex ">
+      <div v-if="!formType" class="flex w-20% items-center">
         <div>
           <el-button @click="handleQuery" type="primary"
           ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
@@ -268,7 +268,7 @@
           <div>农事计划</div>
           <div class="mt-20px">
             <el-date-picker
-            class="!w-130px"
+            class="!w-110px"
             v-model="monthVal"
             @change='dataChange'
             type="month"
@@ -299,7 +299,7 @@
           <div v-for="item,index in dataList" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
             <div class='text-28px my-18px' style="font-weight:600">{{item.data}}</div>
              <div class="w-88%"  v-if="item.child.length != 0">
-              <div v-show="item.plotName" class="flex items-center justify-between wrapper-item color-[#fff] box-border px-10px h-30px"><div class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(item.child,'-',index)"> > </div> {{ item.plotName }} <div class='cursor-pointer' @click="tabItem(item.child,'+',index)"> > </div> </div>
+              <div v-show="item.plotName" :class="`flex items-center  ${item.child.length > 1? 'justify-between' :'justify-center'} wrapper-item color-[#fff] box-border px-10px h-30px`"><div v-show="item.child.length > 1" class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(item.child,'-',index)"> > </div> {{ item.plotName }} <div v-show="item.child.length > 1" class='cursor-pointer' @click="tabItem(item.child,'+',index)"> > </div> </div>
                     <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
                       <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
                 </div>
@@ -1307,9 +1307,7 @@ const getData = () => {
 getData()
 
 const dataChange = (e) => {
-  console.log(e,' 时间切换')
   dataListA.value = []
-
   silderVal.value = ''
   console.log(e.getMonth(),'e.getMonth()e.getMonth()')
   if(e.getMonth()+1 == new Date().getMonth()+1){
@@ -1327,20 +1325,15 @@ const dataChange = (e) => {
   dataList.value=[]
   dataList2.value=[]
   getData()
-  console.log(dataList.value,' 时间点击')
 
   // getList()
   list.value.forEach((itm:any) => {
       let time = new Date(itm.startTime).toLocaleDateString().split('/')
       let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
       if( e.getMonth()+1 == Number(time[1])){
-          dataList.value.forEach((item:any) => {
-            if( item.data >= Number(time[2]) ){
+        dataList.value.forEach((item:any) => {
+          if( item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
-            }else{
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
               item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
@@ -1352,15 +1345,14 @@ const dataChange = (e) => {
   list.value.forEach((itm:any) => {
       let time = new Date(itm.startTime).toLocaleDateString().split('/')
       let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
-      console.log(time,'time 999')
       if( e.getMonth() == Number(time[1])){
           dataList2.value.forEach((item:any) => {
             if( item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
-            }
+              if(item.data <= Number(time2[2])){
+                item.name = fn(itm.farmDefineType)
+                item.plotName = itm.plotName
+                item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
+              }
           }
         })
       }

@@ -94,7 +94,7 @@
       </template>
       <div class="flex py-2">
         <el-radio-group v-model="radio" @change="handleRadioChange">
-          <el-radio-button label="本月" value="month" class="mr-15px" />
+          <el-radio-button label="本月" value="month"/>
           <el-radio-button label="本年" value="years" />
         </el-radio-group>
         <div style="margin: 0 0.4rem">
