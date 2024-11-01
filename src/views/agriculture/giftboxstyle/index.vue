@@ -3,72 +3,66 @@
     <!-- 搜索栏 -->
     <ContentWrap>
       <el-form
-        class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2"
+        class="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-5"
         :model="queryParams"
         ref="queryFormRef"
         label-width="68px"
         :inline="true"
       >
         <!-- 表单内容 -->
-        <div
-          class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"
-        >
-          <el-form-item label="产品名称" prop="schemeName">
-            <el-input
-              v-model="queryParams.schemeName"
-              placeholder="请输入"
-              clearable
-              @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="设计人" prop="marketingCreator">
-            <el-input
-              v-model="queryParams.marketingCreator"
-              placeholder="请输入"
-              clearable
-              @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="分类" prop="marketingCategory">
-            <el-input
-              v-model="queryParams.marketingCategory"
-              placeholder="请输入"
-              clearable
-              @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="标签" prop="marketingTags">
-            <el-input
-              v-model="queryParams.marketingTags"
-              placeholder="请输入"
-              clearable
-              @keyup.enter="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="上传时间" prop="marketingUploadTime">
-            <el-date-picker
-              v-model="queryParams.marketingUploadTime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            />
-          </el-form-item>
-        </div>
+        <el-form-item label="产品名称" prop="schemeName">
+          <el-input
+            v-model="queryParams.schemeName"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="设计人" prop="marketingCreator">
+          <el-input
+            v-model="queryParams.marketingCreator"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="分类" prop="marketingCategory">
+          <el-input
+            v-model="queryParams.marketingCategory"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="标签" prop="marketingTags">
+          <el-input
+            v-model="queryParams.marketingTags"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="上传时间" prop="marketingUploadTime">
+          <el-date-picker
+            v-model="queryParams.marketingUploadTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          />
+        </el-form-item>
         <!-- 表单按钮 -->
-        <div class="flex flex-wrap justify-center content-center md:col-span-1">
-          <el-form-item>
-            <el-button @click="handleQuery" type="primary">
-              <Icon icon="ep:search" />
-              查询
-            </el-button>
-            <el-button @click="resetQuery">
-              <Icon icon="ep:refresh" />
-              重置
-            </el-button>
-          </el-form-item>
-        </div>
+        <el-form-item>
+          <el-button @click="handleQuery" type="primary">
+            <Icon icon="ep:search" />
+            查询
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" />
+            重置
+          </el-button>
+        </el-form-item>
       </el-form>
     </ContentWrap>
     <!-- 数据列表 -->

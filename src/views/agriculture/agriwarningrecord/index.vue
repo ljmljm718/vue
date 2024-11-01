@@ -10,70 +10,64 @@
       <!-- 搜索栏 -->
       <ContentWrap>
         <el-form
-          class="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2"
+          class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
           :model="queryParams"
           ref="queryFormRef"
           label-width="68px"
           :inline="true"
         >
           <!-- 表单内容 -->
-          <div
-            class="lg:col-span-4 xl:col-span-5 2xl:col-span-6 lg:border-r lg:border-r-solid lg:border-[#E5E5E5] grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 gap-2 lg:pr-20px"
-          >
-            <el-form-item label="预警类型" prop="warnType">
-              <el-select v-model="queryParams.warnType" placeholder="请选择预警类型" clearable>
-                <el-option
-                  v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="预警状态" prop="warnStatus">
-              <el-select v-model="queryParams.warnStatus" placeholder="请选择预警状态" clearable>
-                <el-option
-                  v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="预警等级" prop="warnLevel">
-              <el-select v-model="queryParams.warnLevel" placeholder="请选择预警等级" clearable>
-                <el-option
-                  v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="预警时间" prop="warnTime">
-              <el-date-picker
-                v-model="queryParams.warnTime"
-                value-format="YYYY-MM-DD HH:mm:ss"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          <el-form-item label="预警类型" prop="warnType">
+            <el-select v-model="queryParams.warnType" placeholder="请选择预警类型" clearable>
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
               />
-            </el-form-item>
-          </div>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="预警状态" prop="warnStatus">
+            <el-select v-model="queryParams.warnStatus" placeholder="请选择预警状态" clearable>
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="预警等级" prop="warnLevel">
+            <el-select v-model="queryParams.warnLevel" placeholder="请选择预警等级" clearable>
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="预警时间" prop="warnTime">
+            <el-date-picker
+              v-model="queryParams.warnTime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+              type="daterange"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            />
+          </el-form-item>
           <!-- 表单按钮 -->
-          <div class="flex flex-wrap justify-center content-center md:col-span-1">
-            <el-form-item class="">
-              <el-button @click="handleQuery" type="primary">
-                <Icon icon="ep:search" />
-                查询
-              </el-button>
-              <el-button @click="resetQuery">
-                <Icon icon="ep:refresh" />
-                重置
-              </el-button>
-            </el-form-item>
-          </div>
+          <el-form-item>
+            <el-button @click="handleQuery" type="primary">
+              <Icon icon="ep:search" />
+              查询
+            </el-button>
+            <el-button @click="resetQuery">
+              <Icon icon="ep:refresh" />
+              重置
+            </el-button>
+          </el-form-item>
         </el-form>
       </ContentWrap>
       <!-- 数据列表 -->
