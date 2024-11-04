@@ -298,3 +298,7 @@ export const snapType = (params) => {
 export const getMonitoringEquipmentDataPage = (params) => {
   return request.get({ url: `/agri/monitoring-equipment-data/page`, params })
 }
+
+export const getMonitoringEquipmentNoticePage = (params) => {
+  return request.get({ url: `/agriculture/monitoring-equipment-notice/page`, params })
+}
