@@ -42,3 +42,10 @@ export const ModelOverviewStatistics = async (params) =>{
     params
   })
 }
+//中间下方折线图
+export const BatchCodeByModelId = async (params) =>{
+  return await request.get({
+    url:'/agriculture/model-management/getBatchCodeByModelId',
+    params
+  })
+}

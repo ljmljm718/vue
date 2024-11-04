@@ -88,7 +88,7 @@ const snapPictureList = ref<any[]>([]); // 抓拍图片列表
 const snapPictureList2 = ref<any[]>([]); // 抓拍图片列表
 const snapShotDeviceOptions = ref<any[]>([])
 const getSnapShotDeviceOptions = async (id) => {
-  let res = {}
+  let res:any = {}
   if (process.env.NODE_ENV == "development") {
     //开发环境
     res = await devicePageList({pageNo:1,pageSize:30,deviceType:'133,138',belongPlot:id})
@@ -1007,7 +1007,7 @@ const tabLeft = (str) => {
             </div>
             <div class="rounded-1 h-11rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
             <div class="flex w-full py-2 relative" style='overflow:hidden'>
-             <div v-if='snapNum >= 4' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
+             <div v-if='snapNum >= 4' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-1 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
               <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
                 <div
                  
@@ -1021,7 +1021,7 @@ const tabLeft = (str) => {
                 </div>
               </div>
               
-              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-0 top-20px w-50px h-50px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
+              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-0 top-1 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
 
             </div>
             <div class="title-frame my-15px">设备信息</div>

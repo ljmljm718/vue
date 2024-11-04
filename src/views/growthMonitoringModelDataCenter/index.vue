@@ -192,10 +192,10 @@ export default defineComponent({
         path:"/bigscreenModel",
         query:{
           modelName: item.modelName,
-          growthId: item.growthId,
+          // growthId: item.growthId,
           plotId:item.plotId,
           modelId: item.modelId,
-          batchCode:item.batchCode
+          // batchCode:item.batchCode
         }
       })
     }
