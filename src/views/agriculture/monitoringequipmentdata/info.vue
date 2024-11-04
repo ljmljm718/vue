@@ -13,6 +13,14 @@ import Hls from "hls.js";
 import axios from 'axios';
 import { isFunction } from '@/utils/is'
 import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index'
+import { getUserProfile } from '@/api/system/user/profile'
+
+const deptId = ref(0)
+const getDeptId = async () => {
+  const data = await getUserProfile()
+  deptId.value = data.dept.id
+}
+getDeptId()
 
 const sleep = (delaytime = 1000) => {
   return new Promise(resolve => setTimeout(resolve, delaytime))
@@ -202,6 +210,7 @@ const getDeviceVideoList = async (baseId = undefined, plotId = undefined) => {
     baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
     plotName : item?.belongPlot
   }))
+  return;
   nextTick(() => {
     deviceVideoList.value.forEach((item: any) => {
       if (!item.dtu || !item.channelId) {
@@ -308,7 +317,9 @@ window.addEventListener('resize', (item) => { adaptScreen() })
                 </div>
               </div>
               <div class="relative w-full aspect-video pt-2 box-border">
-                <div class="w-full h-full bg-black block" :id="item.domId"></div>
+                <ys-player v-if="deptId === 156" v-model="item.dtu" :channelNo="item.channelId" />
+                <ez-player v-else v-model="item.dtu" :channelNo="item.channelId" />
+                <!-- <div class="w-full h-full bg-black block" :id="item.domId"></div> -->
                 <!-- <video
                   class="w-full h-full bg-black block"
                   controls
