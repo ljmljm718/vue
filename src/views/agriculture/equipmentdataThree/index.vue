@@ -410,17 +410,19 @@ let obj = ref<any>({})
 const tabCli = async (id, val, index) => {
   active.value = index
   res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(id, val)
+  console.log("🚀 ~ tabCli ~ res:", res)
   //console.log(res,'res,22')
-  initChart(isLineRadio.value === 'line')
+  initChart(isLineRadio.value === 'line', val)
 }
 //echarts
-const initChart = async (line = false) => {
+const initChart = async (line = false, monitoringType = '') => {
   if (res != null) {
-    res = res
     res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(
       listRes.value.equipmentCode,
-      listRes.value.monitoringType
+      monitoringType ? monitoringType : listRes.value.monitoringType
     )
+    console.log("🚀 ~ initChart ~ listRes.value.monitoringType:", listRes.value.monitoringType)
+    console.log("🚀 ~ initChart ~ res:", res)
     obj.value = res[0]
   } else {
     res = await EquipmentDataApi.getEquipmentDataByEquipmentIdAndType(

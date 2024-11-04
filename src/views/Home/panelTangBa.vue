@@ -129,13 +129,48 @@
     </div>
     <div v-show="tabsVal==='报警'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
+        <el-table
+          :data="warnDataList"
+          size="small"
+          border
+          v-loading="warnDataLoading"
+          stripe
+          v-show="curDeviceKind === '110'"
+        >
+          <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
+          <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
+          <el-table-column align="center" prop="deviceName" label="设备名称" />
+          <el-table-column align="center" prop="noticeEvent" label="事件类型" />
+          <el-table-column align="center" prop="remarks" label="消息内容" />
+          <el-table-column align="center" label="拍摄时间">
+            <template #default="scope">
+              {{
+                scope.row.recordTime
+                  ? dayjs(scope.row.recordTime).format("YYYY-MM-DD")
+                  : ''
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column label="抓拍图片" align="center" prop="captured">
+            <template #default="scope">
+              <el-image
+                class="h-50px w-50px"
+                lazy
+                :src="scope.row.captured"
+                :preview-src-list="[scope.row.captured]"
+                preview-teleported
+                fit="contain"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
           <el-table
             :data="warnDataList"
             size="small"
             border
             v-loading="warnDataLoading"
             stripe
-            v-show="curDeviceKind !== '101'"
+            v-show="curDeviceKind !== '101' && curDeviceKind !== '110'"
           >
             <el-table-column label="报警类型" prop="warnType" width="150">
               <template #default="scope">
@@ -186,7 +221,7 @@
           </el-table>
         </el-scrollbar>
       </div>
-    <div  v-show="tabsVal==='设备属性'">
+    <div v-show="tabsVal==='设备属性'">
       <el-scrollbar :height="`${currentWindowHeight - 135}px`" class="px-2">
           <div class="tab-title-wrapper">设备点位信息</div>
           <div class="flex flex-col items-center mt-4">
@@ -262,7 +297,8 @@ import {
   environmentalDataHomePageA,
   environmentalDataHomePageC,
   getEquipmentDataByEquipmentCode,
-  getMonitoringEquipmentDataPage
+  getMonitoringEquipmentDataPage,
+  getMonitoringEquipmentNoticePage
 } from './apis'
 import {
   initChartStatic,
@@ -272,6 +308,7 @@ import {
   EquipmentDataApi
 } from '@/api/agriculture/equipmentdata'
 import * as echarts from 'echarts'
+import dayjs from 'dayjs'
 
 const pictureList = ref<any[]>([])
 const getPictureList = async (deviceId:string = '') => {
@@ -546,10 +583,12 @@ const initChart = (
 const warnDataLoading = ref<boolean>(false)
 const warnDataList = ref<Array<any>>([])
 const warnDataTotal = ref<number>(0)
-const getWarnDataList = async (deviceCode) => {
-  if (!deviceCode) return
+const getWarnDataList = async (deviceCode, deviceKind) => {
+  if (!deviceCode) return;
+  let requestFunc = getWarningRecordList
+  if (deviceKind === '110') requestFunc = getMonitoringEquipmentNoticePage
   warnDataLoading.value = true
-  const { list = [], total = 0 } = await getWarningRecordList({ deviceCode, pageSize: 100 }).catch(() => { warnDataLoading.value = false })
+  const { list = [], total = 0 } = await requestFunc({ deviceCode, pageSize: 100 }).catch(() => { warnDataLoading.value = false })
   console.log("报警列表", list);
   
   warnDataLoading.value = false
@@ -612,6 +651,7 @@ const curDeviceStatus = ref<string>('')
 const clearObj = ref({})
 const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
+  console.log("🚀 ~ getDeviceInfoData ~ item:", item)
   if (!(item && item.id)) return;
   getPictureList(item.deviceCode)
   const res = await getEquipmentDataByEquipmentCode({ id:item.id })
@@ -662,7 +702,7 @@ const getDeviceInfoData = async (item) => {
     getMonitorVideo(id)
     getMonitorWarnList(id)
   } else {
-    item.deviceCode && getWarnDataList(item.id)
+    item.deviceCode && getWarnDataList(item.id, deviceKind)
   }
 }
 
