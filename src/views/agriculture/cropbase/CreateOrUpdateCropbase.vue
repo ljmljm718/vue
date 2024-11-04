@@ -335,8 +335,11 @@ const formRules = reactive({
     {
       type: 'number',
       validator: (rule, value, callback) => {
-        if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
-        if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+        if(formData.value.unit=='亩') {
+          if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+          if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
+          return callback()
+        }
         return callback()
       },
       trigger: 'change'
