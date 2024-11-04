@@ -193,6 +193,8 @@ const createText = (_viewer, position, text = '', _option = {}) => {
   )
 }
 
+
+
 // 飞到某个地点
 const flyTo = (
   _viewer = viewer,
@@ -213,12 +215,61 @@ const flyTo = (
     complete: callback
   })
 }
+//flyToWithZoomLevel方法
+const flyToWithZoomLevel = (centerCoordinates, allPlotsCoordinates) => {
+  if (allPlotsCoordinates[0] !== allPlotsCoordinates[allPlotsCoordinates.length - 1]) {
+    console.log('AAAAAAAAA',allPlotsCoordinates)
+    allPlotsCoordinates.push(allPlotsCoordinates[0]); //确保多边形闭合
+    console.log('OOOOOOOO',allPlotsCoordinates)
+}
+    //计算原始边界框
+  const boundingBox = turf.bbox(turf.polygon([allPlotsCoordinates])); // [minX, minY, maxX, maxY]
 
+  //手动调整boundingBox的范围
+  const adjustmentFactor = 0.1; //设定调整比例
+  const minX = boundingBox[0] - adjustmentFactor * (boundingBox[2] - boundingBox[0]);
+  const minY = boundingBox[1] - adjustmentFactor * (boundingBox[3] - boundingBox[1]);
+  const maxX = boundingBox[2] + adjustmentFactor * (boundingBox[2] - boundingBox[0]);
+  const maxY = boundingBox[3] + adjustmentFactor * (boundingBox[3] - boundingBox[1]);
+
+  // 使用调整后的边界框重新计算对角线距离
+  const diagonalDistance = turf.distance(
+    turf.point([minX, minY]),
+    turf.point([maxX, maxY])
+  );
+  // console.log('调整后的对角线距离:', diagonalDistance)
+  // 设置缩放级别
+  // 根据diagonalDistance动态调整缩放系数
+  const baseZoomFactor = 1000; //基础缩放系数
+  const zoomFactor =
+                    // diagonalDistance < 0.5 ? baseZoomFactor * 3 : 
+                    diagonalDistance < 0.5 ? baseZoomFactor * 4 : 
+
+                    diagonalDistance < 1 ? baseZoomFactor * 5 : 
+                    diagonalDistance < 2 ? baseZoomFactor * 4: 
+                    baseZoomFactor; 
+  const zoomLevel = diagonalDistance * zoomFactor * 0.3;
+  // console.log('zoomLevel',zoomLevel)
+//   //加中心点标记(测试用)
+//   viewer.entities.add({
+//     position: Cesium.Cartesian3.fromDegrees(centerCoordinates[0], centerCoordinates[1]), 
+//     point: {
+//         pixelSize: 10,     
+//         color: Cesium.Color.RED, 
+//         outlineColor: Cesium.Color.WHITE,
+//         outlineWidth: 2
+//     },
+// });
+
+    // 使用中心点和缩放级别调用flyTo
+    flyTo(undefined, [...centerCoordinates, zoomLevel]);
+};
 defineExpose({
   createPolygon,
   createPoint,
   createText,
-  flyTo
+  flyTo,
+  flyToWithZoomLevel
 })
 
 let popupContainer:any = null
@@ -304,6 +355,7 @@ const getDataList = async () => {
 
         const childItem = item.plotList;
         if (Array.isArray(childItem)) {
+          let allPlotsCoordinates : any[]=[];
           childItem.forEach(child => {
             let childGeofencing, chilGeoOption = null;
             const _childGeofencing = JSON.parse(child.plotGeofencing);
@@ -319,6 +371,7 @@ const getDataList = async () => {
             }
             if (Array.isArray(childGeofencing) && childGeofencing.length > 0) {
               const childPos = childGeofencing[0].map(ele => ([ele.lng, ele.lat]))
+              allPlotsCoordinates.push(...childPos); // 将地块坐标添加到总坐标数组
               const createdPolygonItem = createPolygon(undefined, childPos, {
                 height: 3,
                 outlineWidth: 15000,
@@ -355,6 +408,16 @@ const getDataList = async () => {
                   distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
                 },
               });
+
+
+              // 在所有地块处理完后，计算所有地块的中心点并动态设置缩放级别
+              if (allPlotsCoordinates.length > 0) {
+                const center = turf.center(turf.points(allPlotsCoordinates));
+                const { coordinates } = center.geometry;
+
+                // 调用之前定义的 flyToWithZoomLevel 方法，动态调整缩放级别
+                flyToWithZoomLevel(coordinates, allPlotsCoordinates);
+              }
 
               if (Array.isArray(child.plantList) && child.plantList.length > 0) {
                 const plantItem = child.plantList[0]

@@ -77,25 +77,36 @@ export default defineComponent({
         const _arr = list.map(item => {
           const geofencing = JSON.parse(item.geofencing)
           if (Array.isArray(geofencing)) return geofencing
-          const { corrdinates, option } = geofencing;
+          const { corrdinates } = geofencing;
           return corrdinates;
         })
 
-        if (Array.isArray(_arr) && _arr.length > 0) {
-          const features = turf.points([
-            ..._arr[0][0].map(item => ([item.lng, item.lat]))
-          ]);
+        //提取所有地块的坐标点
+        const allCoordinates = _arr.flatMap(geofencing => geofencing[0].map(point => [point.lng, point.lat]));
+        if (allCoordinates.length > 0) {
+          //计算中心点
+          const features = turf.points(allCoordinates);
+          const centerPoint = turf.center(features);
+          const { coordinates } = centerPoint.geometry;
 
-          const _POS_ = turf.center(features);
-          const { geometry } = _POS_;
-          const { coordinates } = geometry
-          cesiumIns.value.flyTo(
-            undefined,
-            [...coordinates, 1400]
-          )
+          // 计算自动缩放级别
+          const boundingBox = turf.bbox(turf.polygon([allCoordinates]));
+          const diagonalDistance = turf.distance(
+            turf.point([boundingBox[0], boundingBox[1]]),
+            turf.point([boundingBox[2], boundingBox[3]])
+          );
+          const baseZoomFactor = 1000; //基础缩放系数
+          const zoomFactor = diagonalDistance < 1 ? baseZoomFactor * 5 :
+                            diagonalDistance < 5 ? baseZoomFactor * 2 :
+                            baseZoomFactor;
+
+          const zoomLevel = diagonalDistance * zoomFactor;
+
+          cesiumIns.value.flyToWithZoomLevel(coordinates, zoomLevel);
         }
       }
-    }
+    };
+
 
     onMounted(() => {
       setTimeout(() => {
