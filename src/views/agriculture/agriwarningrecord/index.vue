@@ -395,11 +395,17 @@
                 @change="handleSelectChangeEvent"
               >
                 <el-option
-                  v-for="dict in options"
-                  :key="dict.value"
+                  v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
+                  :key="dict.label"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="dict.label"
                 />
+<!--                <el-option-->
+<!--                  v-for="dict in options"-->
+<!--                  :key="dict.value"-->
+<!--                  :label="dict.label"-->
+<!--                  :value="dict.value"-->
+<!--                />-->
               </el-select>
             </el-form-item>
             <el-form-item label="拍摄时间" prop="recordTime">
@@ -538,7 +544,12 @@
               <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
               <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
               <el-table-column align="center" prop="deviceName" label="设备名称" />
-              <el-table-column align="center" prop="noticeEvent" label="事件类型" />
+<!--              <el-table-column align="center" prop="noticeEvent" label="事件类型" />-->
+              <el-table-column label="事件类型" align="center" prop="noticeEvent">
+                <template #default="scope">
+                  <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent"/>
+                </template>
+              </el-table-column>
               <el-table-column align="center" prop="remarks" label="消息内容" />
               <el-table-column align="center" label="拍摄时间">
                 <template #default="scope">
@@ -594,7 +605,7 @@
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import {getStrDictOptions, DICT_TYPE, getIntDictOptions} from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { AgriWarningRecordApi, AgriWarningRecordVO } from '@/api/agriculture/agriwarningrecord'
@@ -608,7 +619,7 @@ import { useRoute } from 'vue-router'
 import { getTenantId } from '@/utils/auth'
 import { CACHE_KEY } from '@/hooks/web/useCache'
 import { useUserStore } from '@/store/modules/user'
-import { getUserProfile } from '@/api/system/user/profile'    
+import { getUserProfile } from '@/api/system/user/profile'
 // import { da, vi } from 'node_modules/element-plus/es/locale'
 
 const deptName = ref()
