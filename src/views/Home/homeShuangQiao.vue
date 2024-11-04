@@ -121,17 +121,65 @@ const handleSelectorChange2 = (val) => {
 const topDataList = ref([])
 const getenvironmentalData = async () => {
   const res = await environmentalDataHomePage()
-  console.log('top Data', res)
-  topDataList.value = res
+  console.log('气象站数据', res);
+  topDataList.value = res.map(item => ({
+    ...item, icon: getIconIndex(item.monitoringType, 0)
+  }))
 }
 getenvironmentalData()
 
 const bottomDataList = ref([])
 const getWaterQualityData = async () => {
   const res = await waterQualityData()
-  bottomDataList.value = res
+  console.log("🚀 ~ getWaterQualityData ~ 水质监测-数据:", res)
+  bottomDataList.value = res.map(item => ({
+    ...item, icon: getIconIndex(item.monitoringType, 1)
+  }))
 }
 getWaterQualityData()
+
+const getIconIndex = (type, color = 0) => {
+  if (color === 0) {
+    // 气象站部分
+    const iconMap = new Map([
+      ['气象站', 't-9'],
+      ['空气温度', 't-1'],
+      ['当前雨量', 't-2'],
+      ['空气湿度', 't-2'],
+      ['光照', 't-3'],
+      ['大气压力', 't-4'],
+      ['土壤湿度', 't-2'],
+      ['PM2.5', 't-5'],
+      ['PM10', 't-5'],
+      ['土壤EC值', 't-6'],
+      ['当前雨量', 't-7'],
+      ['风向', 't-8'],
+      ['风力', 't-8']
+    ])
+    const item = iconMap.get(type);
+    if (!item) return 't-5';
+    return item;
+  } else {
+    // 水质监测部分
+    const iconMap = new Map([
+      ['水质监测', 'b-9'],
+      ['氨氮浓度', 'b-6'],
+      ['TDS', 'b-8'],
+      ['PH', 'b-5'],
+      ['ORP', 'b-8'],
+      ['溶解氧饱和度', 'b-6'],
+      ['盐度', 'b-2'],
+      ['电导率', 'b-8'],
+      ['溶解氧浓度', 'b-7'],
+      ['温度', 'b-1'],
+      ['液位', 'b-4'],
+      ['浊度', 'b-3'],
+    ])
+    const item = iconMap.get(type);
+    if (!item) return 'b-7';
+    return item;
+  }
+}
 
 const initChart = async () => {
   const res = await getDeviceState()
@@ -448,7 +496,7 @@ onMounted(() => {
             <span>实时监测数据</span>
           </div>
           <el-divider class="!my-3" />
-          <div class="grid gap-2 grid-cols-5 grid-rows-4">
+          <div class="grid gap-2 grid-cols-4 grid-rows-4">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
@@ -457,16 +505,16 @@ onMounted(() => {
               <div>气象站</div>
             </div>
             <div
-              v-for="(item, index) in topDataList"
+              v-for="item in topDataList"
               :key="item.monitoringType"
-              class="flex space-x-2 p-2 pl-4"
+              class="flex space-x-2 p-2 items-center"
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
             >
               <div
-                :class="`t-${index < 8 ? index + 1 : 'default'} w-[2rem] h-[2rem]`"
+                :class="`${item.icon} w-[2.5rem] h-[2.5rem]`"
                 style="background-size: 100% 100%"
               ></div>
-              <div>
+              <div style="width: calc(100% - 3rem);">
                 <div>
                   <span>{{ item.dataValue }}</span>
                   <span style="padding-left: 0.1rem">{{ item.yyUnit }}</span>
@@ -474,6 +522,8 @@ onMounted(() => {
                 <div style="font-size: 0.9rem; padding-top: 0.2rem">{{ item.monitoringType }}</div>
               </div>
             </div>
+          </div>
+          <div class="grid gap-2 grid-cols-4 grid-rows-4 mt-2">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
@@ -482,16 +532,16 @@ onMounted(() => {
               <div>水质监测</div>
             </div>
             <div
-              v-for="(item, index) in bottomDataList"
+              v-for="item in bottomDataList"
               :key="item"
-              class="flex space-x-2 p-2 pl-4"
+              class="flex space-x-2 p-2 items-center"
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
             >
               <div
-                :class="`b-${index < 8 ? index + 1 : 'default'} w-[2rem] h-[2rem]`"
+                :class="`${item.icon} w-[2.5rem] h-[2.5rem]`"
                 style="background-size: 100% 100%"
               ></div>
-              <div>
+              <div style="width: calc(100% - 3rem);">
                 <div>
                   <span>{{ item.dataValue }}</span>
                   <span style="padding-left: 0.1rem">{{ item.yyUnit }}</span>
@@ -616,7 +666,7 @@ onMounted(() => {
   background-image: url(./assets/home1/t.png);
 }
 
-@for $i from 1 through 8 {
+@for $i from 1 through 9 {
   .t-#{$i} {
     background-image: url(./assets/home1/t#{$i}.png);
   }
@@ -628,7 +678,7 @@ onMounted(() => {
   background-image: url(./assets/home1/b.png);
 }
 
-@for $i from 1 through 8 {
+@for $i from 1 through 9 {
   .b-#{$i} {
     background-image: url(./assets/home1/b#{$i}.png);
   }
