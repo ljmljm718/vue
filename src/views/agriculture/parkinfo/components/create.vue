@@ -195,9 +195,12 @@ const loadData = async (id = 'new_form') => {
 }
 if (!formData.value.id) loadData()
 
-if (route.query.id) {
-  const flag = loadData(route.query.id)
+const getAsyncData = async (id) => {
+  const flag = await loadData(id)
   if (!flag) getFormInfo() // 如果缓存中有数据，则不调用接口
+}
+if (route.query.id) {
+  getAsyncData(route.query.id)
 }else {
   getCategoryOptions()
 }
