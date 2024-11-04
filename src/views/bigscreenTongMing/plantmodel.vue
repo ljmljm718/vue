@@ -5,7 +5,7 @@ defineExpose({ handleActive })
 </script>
 <template>
   <div class="absolute left-0 top-[100px]">
-    <GrowthMonitorDataCenter :hiddenHeader="true" />
+    <GrowthMonitorDataCenter :hiddenHeader="true" :isChazhu="true" />
   </div>
   
   <div class="h-full flex justify-between !hidden">

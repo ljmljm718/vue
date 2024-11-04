@@ -60,7 +60,7 @@
                 @click="routerHandler('可视化驾驶舱')"
               ></div>
             </div>
-            <div class="monitor-detect" @click="routerHandler('模型监测')"></div>
+            <!-- <div class="monitor-detect" @click="routerHandler('模型监测')"></div> -->
             <!-- 两侧菜单 -->
             <div class="rect-bg text-[#fff] text-[1.2em] relative cursor-default">
               <div class="absolute left-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border">
@@ -145,6 +145,26 @@
               <div class="right-decorator"></div>
               <div class="right-arrow"></div>
             </div>
+          </div>
+        </div>
+        <div
+          class="
+            w-full py-3 justify-center
+            absolute bottom-[50px] space-x-[36px]
+            left-0 flex items-center
+          "
+        >
+          <div class="flex items-center" @click="routerHandler('模型监测')">
+            <div class="w-120px h-106px bottom-icon-1"></div>
+            <div class="flex items-center justify-center bottom-label">生长监测</div>
+          </div>
+          <div class="flex items-center" @click="routerHandler('产品溯源')">
+            <div class="w-120px h-106px bottom-icon-2"></div>
+            <div class="flex items-center justify-center bottom-label">产品溯源</div>
+          </div>
+          <div class="flex items-center" @click="routerHandler('病虫监测')">
+            <div class="w-120px h-106px bottom-icon-3"></div>
+            <div class="flex items-center justify-center bottom-label">病虫监测</div>
           </div>
         </div>
       </div>
@@ -235,7 +255,10 @@ const routerHandler = (item: string) => {
     '数字产销': '/pcg/production/village-product',
     '智慧农事': '/farm_work/crop-base',
     // '模型监测': '/growth_monitor/modelMonitor',
-    '模型监测': '/growthMonitoringModelDataCenter'
+    '模型监测': '/growthMonitoringModelDataCenter',
+
+    '产品溯源': '/trace/product-trace-erdu',
+    '病虫监测': '/disease_pest_surveillance/disease-pest-surveillance',
   }
 
   if (routeMap[item]) {
@@ -269,6 +292,22 @@ const loginOut = async () => {
   background-image: url(./assets/homeV2/bg.png);
   background-size: 100% 100%;
   font-size: 12px;
+}
+
+@for $i from 1 through 3 {
+  .bottom-icon-#{$i} {
+    background-image: url(./assets/homeV2/bottomIcon#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+.bottom-label {
+  width: 150px;
+  height: 50px;
+  font-size: 24px;
+  color: #d5f1e3;
+  background-image: url(./assets/homeV2/bottomLabel.png);
+  background-size: 100% 100%;
 }
 
 @media (min-width: 600px) {

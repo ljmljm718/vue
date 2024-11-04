@@ -8,8 +8,8 @@ import * as echarts from 'echarts'
 
 /** 引入其他组件 */
 import Header from "./components/Header.vue"
-import Card from "./components/Card.vue"
-import NumberShow from "./components/NumberShow.vue"
+// import Card from "./components/Card.vue"
+// import NumberShow from "./components/NumberShow.vue"
 import ModelIcon from "./components/ModelIcon.vue"
 
 /** 引入请求接口 */
@@ -19,6 +19,7 @@ import { getBase, getModel, getNum, getPlot, getCycle, getIndicator, updateModel
 import bg from "./assets/bg.png"
 import bgFish from './assets/bg-fish.png'
 import bgDuck from './assets/bg-duck.png'
+import BgChaZhu from "./assets/chazhu/bg.png";
 
 const {
   BigscreenAdapter,
@@ -31,10 +32,14 @@ export default defineComponent({
     hiddenHeader: {
       type: Boolean,
       default: false
+    },
+    isChazhu: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
-    const { hiddenHeader } = toRefs(props)
+    const { hiddenHeader, isChazhu } = toRefs(props)
     const imgBase = "/src/views/growthMonitoringModelDataCenter/assets"
     const message = useMessage() // 消息弹窗
 
@@ -70,8 +75,8 @@ export default defineComponent({
      * nVariety             品种数
      * nModel               模型数
      */
-    const varietyNumIcon = `${ imgBase }/variety-num.png`
-    const modelNumIcon = `${ imgBase }/model-num.png`
+    // const varietyNumIcon = `${ imgBase }/variety-num.png`
+    // const modelNumIcon = `${ imgBase }/model-num.png`
     const nVariety = ref()
     const nModel = ref()
 
@@ -192,10 +197,10 @@ export default defineComponent({
         path:"/bigscreenModel",
         query:{
           modelName: item.modelName,
-          growthId: item.growthId,
+          // growthId: item.growthId,
           plotId:item.plotId,
           modelId: item.modelId,
-          batchCode:item.batchCode
+          // batchCode:item.batchCode
         }
       })
     }
@@ -242,22 +247,36 @@ export default defineComponent({
         console.log("周期列表: ", res)
         if (!Array.isArray(res) || res.length === 0) return;
 
-        curPeriod.value = res[0].curPeriod
-        curRealPeriod.value = res[0].curPeriod
+        if (res[0].curPeriod) {
+          curPeriod.value = res[0].curPeriod
+          curRealPeriod.value = res[0].curPeriod
 
-        res.map((item, index) => {
-          if (index) {
+          res.map((item, index) => {
+            if (index) {
+              cycleMap.value.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2, imgId: item.imgId})
+
+              if (curPeriod.value === item.growth) {
+                cycleNameList.value.push({growth: item.growth, selected: true})
+                curCropCode = item.growthId
+                curItem = index - 1
+              } else {
+                cycleNameList.value.push({growth: item.growth, selected: false})
+              }
+            }
+          })
+        } else {
+          res.map((item, index) => {
             cycleMap.value.set(item.growth, {cycle: item.cycle, growthId: item.growthId, tips: item.child2, imgId: item.imgId})
-
-            if (curPeriod.value === item.growth) {
+            if (index) {
+              cycleNameList.value.push({growth: item.growth, selected: false})
+            } else {
               cycleNameList.value.push({growth: item.growth, selected: true})
               curCropCode = item.growthId
-              curItem = index - 1
-            } else {
-              cycleNameList.value.push({growth: item.growth, selected: false})
+              curItem = index
             }
-          }
-        })
+          })
+        }
+
         if (cycleNameList.value.length > 0) handleClick(0)
         curTips.value = cycleMap.value.get(curPeriod.value).tips
         curCycle.value = cycleMap.value.get(curPeriod.value).cycle
@@ -349,6 +368,21 @@ export default defineComponent({
     const initOption = () => {
       // console.log("curFactor", curFactor.value)
       // console.log("curFactorData", curFactorData.value)
+      let baseColor = '#1DFFFF';
+      let areaColor = '#172c37';
+      let colorStops = [
+        { offset: 0.25, color: "rgba(53, 218, 210, 0.25)" },
+        { offset: 0.91, color: 'rgba(29, 255, 255, 0.5)' }
+      ]
+      if (isChazhu.value) {
+        baseColor = '#01F892';
+        areaColor = "rgba(67, 91, 99, 0.2)";
+        colorStops = [
+          { offset: 0.25, color: "rgba(29, 255, 161, 0.25)" },
+          { offset: 0.91, color: 'rgba(53, 218, 149, 0.5)' }
+        ];
+      }
+
       if (curFactor.value.size) {
         let indicatorData = []
         let percentages = []
@@ -369,7 +403,7 @@ export default defineComponent({
         }
         const option = {
           color: [
-            '#1DFFFF',
+            baseColor,
           ],
           tooltip:{
             valueFormatter: (params) => {
@@ -382,7 +416,7 @@ export default defineComponent({
             triggerEvent: true,
             indicator: indicatorData,
             axisName: {
-              color: '#35DAD2',
+              color: baseColor,
               fontSize: "14px"
             },
             axisLine: {
@@ -392,7 +426,7 @@ export default defineComponent({
             },
             splitArea: {
               areaStyle: {
-                color: '#172c37'
+                color: areaColor
               }
             },
             splitLine: {
@@ -426,11 +460,7 @@ export default defineComponent({
                       y: 0,
                       x2: 0,
                       y2: 1,
-                      colorStops: [{
-                          offset: 0.25, color: "rgba(53, 218, 210, 0.25)"
-                      }, {
-                          offset: 0.91, color: 'rgba(29, 255, 255, 0.5)'
-                      }],
+                      colorStops: colorStops,
                     }
                   }
                 }
@@ -557,36 +587,37 @@ export default defineComponent({
             <img class="w-full h-full" src={bgImage.value} />
           </div>
           {/** 左 */}
-          <div class="w-[400px] h-full grid grid-cols-1 content-between">
-            <Card 
-              height={ 280 }
-              titleText="模型类型"
-              cardWidth={ 400 }
-              cardHeight={ 230 }
-            >
-              <div class="w-full h-[200px] flex flex-wrap justify-center content-between py-[15px]">
-                <NumberShow
-                  iconImg={ varietyNumIcon }
-                  numName="品种数"
-                  numAmount={ nVariety.value }
-                  numUnit="种"
-                >
-                </NumberShow>
-                <NumberShow
-                  iconImg={ modelNumIcon }
-                  numName="模型数"
-                  numAmount={ nModel.value }
-                  numUnit="个"
-                >
-                </NumberShow>
-              </div> 
-            </Card>
-            <Card 
-              height={ 280 }
-              titleText="品种模型"
-              cardWidth={ 400 }
-              cardHeight={ 230 }
-            >
+          <div class="w-[400px] h-full z-2">
+            <div class="h-40px w-400px dc-title-bg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">模型类型</div>
+              </div>
+              <div class="dc-right-arrow h-15px w-15px"></div>
+            </div>
+            <div class="mt-10px w-400px h-230px flex flex-col justify-center items-center dc-module-border">
+              <div class="dc-variety-bg w-301px h-88px flex items-center justify-between">
+                <div class="pl-120px">品种数</div>
+                <div class="text-[#435B63]">
+                  <span class="text-24px text-white pr-5px">{ nVariety.value }</span>种
+                </div>
+              </div>
+              <div class="dc-num-bg w-301px h-88px mt-18px flex items-center justify-between">
+                <div class="pl-120px">模型数</div>
+                <div class="text-[#435B63]">
+                  <span class="text-24px text-white pr-5px">{ nModel.value }</span>个
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-title-bg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">品种模型</div>
+              </div>
+              <div class="dc-right-arrow h-15px w-15px"></div>
+            </div>
+            <div class="mt-10px w-400px h-230px dc-module-border">
               {
                 modelList.value.length > 0 ? (
                   <el-scrollbar>
@@ -611,36 +642,34 @@ export default defineComponent({
                   </div>
                 )
               }
-            </Card>
-            <Card
-              height={ 345 }
-              titleText="地块监测"
-              cardWidth={ 400 }
-              cardHeight={ 292 }
-              showSelect={ true }
-              v-slots={{
-                selector: () => {
-                  return (
-                    <el-select
-                      id="base-select"
-                      class="plot-selector"
-                      v-model={ base.value }
-                      value-key="id"
-                      style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
-                      popper-class="growth-monitoring-model-datacenter-popper"
-                      onChange={ () => { getPlotList(curModelId) } }
-                    >
-                      {
-                        baseList.value.map(item => (
-                          <el-option key={ item.id } label={item.name} value={ item }>
-                          </el-option>
-                        ))
-                      }
-                    </el-select>
-                  )
-                }
-              }}
-            >
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-title-bg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">地块监测</div>
+              </div>
+              <div class="flex items-center">
+                <el-select
+                  id="base-select"
+                  class="plot-selector mr-10px"
+                  v-model={ base.value }
+                  value-key="id"
+                  style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
+                  popper-class="growth-monitoring-model-datacenter-popper"
+                  onChange={ () => { getPlotList(curModelId) } }
+                >
+                  {
+                    baseList.value.map(item => (
+                      <el-option key={ item.id } label={item.name} value={ item }>
+                      </el-option>
+                    ))
+                  }
+                </el-select>
+                <div class="dc-right-arrow h-15px w-15px"></div>
+              </div>
+            </div>
+            <div class="mt-10px w-400px h-285px dc-module-border p-2 box-border">
               {
                 plotList.value.length > 0 ? (
                   <el-scrollbar>
@@ -700,7 +729,7 @@ export default defineComponent({
                   </div>
                 )
               }
-            </Card>
+            </div>
           </div>
           {/** 中 */}
           <div class="grow h-full px-[20px] grid grid-cols-1 content-end relative">
@@ -830,13 +859,14 @@ export default defineComponent({
               ) : null
             }
             {/** 周期事项 */}
-            <Card
-              height={ 280 }
-              titleText="周期事项"
-              cardWidth={ 1032 }
-              cardHeight={ 230 }
-              addText={ `${ curPeriod.value }（${ curCycle.value }天）` }
-            >
+            <div class="w-1032px h-40px dc-title-bg-lg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">周期事项-{ curPeriod.value }（{ curCycle.value }天）</div>
+              </div>
+              <div class="dc-right-arrow h-15px w-15px"></div>
+            </div>
+            <div class="mt-10px w-1032px h-230px dc-module-border-lg box-border p-5">
               {
                 curTips.value.length ? (
                   <el-scrollbar>
@@ -879,80 +909,83 @@ export default defineComponent({
                   </div>
                 )
               }
-            </Card>
+            </div>
           </div>
           {/** 右 */}
-          <div class="w-[400px] h-full grid grid-cols-1 content-between">
-            <Card 
-              height={ 400 }
-              titleText="指标监测"
-              cardWidth={ 400 }
-              cardHeight={ 350 }
-            >
+          <div class="w-[400px] h-full z-2">
+            <div class="h-40px w-400px dc-title-bg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">指标监测</div>
+              </div>
+              <div class="dc-right-arrow h-15px w-15px"></div>
+            </div>
+            <div class="mt-10 w-400px h-350px dc-module-border-sm">
               <el-scrollbar>
-              {
-                indicatorList.value.length ? (
-                  <div class="grid grid-cols-2 gap-2 justify-items-center">
-                    {
-                      indicatorList.value.map((item, index) => (
-                        <div 
-                          class="cursor-pointer"
-                          onClick={ () => { handleIndicatorClick(index) } }
-                          style={ item.selected ? "box-shadow: 0px 2px 10px 0px #08795D;" : "" }
-                        >
+                {
+                  indicatorList.value.length ? (
+                    <div class="grid grid-cols-2 gap-2 justify-items-center">
+                      {
+                        indicatorList.value.map((item, index) => (
                           <div 
-                            class={ item.selected ? "text-center text-[18px] text-[#35DAD2] index-title-active" : "text-center text-[18px] text-[#fff] index-title"}
+                            class="cursor-pointer"
+                            onClick={ () => { handleIndicatorClick(index) } }
+                            style={ item.selected ? "box-shadow: 0px 2px 10px 0px #08795D;" : "" }
                           >
-                            { item.name }
+                            <div class={ item.selected ? "text-center text-[18px] text-[#35DAD2] index-title-active" : "text-center text-[18px] text-[#fff] index-title"}>
+                              { item.name }
+                            </div>
+                            <div class={ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology") }></div>
                           </div>
-                          <div class={ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology") }></div>
-                        </div>
-                      ))
-                    }
-                  </div>
-                ) : (
-                  <div class="w-[370px] h-[320px] flex justify-center items-center">
-                    <div class="growth-datacenter-no-data"></div>
-                  </div>
-                )
-              }
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <div class="w-[400px] h-[350px] flex justify-center items-center">
+                      <div class="growth-datacenter-no-data"></div>
+                    </div>
+                  )
+                }
               </el-scrollbar>
-            </Card>
-            <Card 
-              height={ 532 }
-              titleText="模型要素分析"
-              cardWidth={ 400 }
-              cardHeight={ 478 }
-            >
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-title-bg flex justify-between items-center px-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-title-icon h-27px w-24px"></div>
+                <div class="dc-title-text">模型要素分析</div>
+              </div>
+              <div class="dc-right-arrow h-15px w-15px"></div>
+            </div>
+            <div class="mt-10px w-400px h-445px dc-module-border-md">
               <div class="relative">
                 {/** 没有要素信息的提示 */}
                 {
                   curFactor.value.size ? null : (
                     <div 
-                      class="z-999 absolute top-0 left-[-10px] w-[390px] h-[475px] flex justify-center items-center"
+                      class="z-999 absolute top-0 left-1px w-[398px] h-[444px] flex justify-center items-center"
                       style="background: #0B212C;"
                     >
                       <div class="growth-datacenter-no-data"></div>
                     </div>
                   )
                 }   
-                <div class="w-full">
+                <div class="w-full flex flex-col items-center">
                   {/** ECharts图 */}
-                  <div id="chart" class="w-[370px] h-[254px]"></div>
+                  <div id="chart" class="w-[400px] h-[254px]"></div>
                   {/** 要素信息表格 */}
                   {
                     curFactorData.value.length ? (
                       <div class="text-[14px] border border-solid border-[#208282]">
                         <div 
-                          class="text-center w-[363px] h-[30px] leading-[30px]"
+                          class="text-center w-[380px] h-[30px] leading-[30px]"
                           style="background: linear-gradient(270deg, rgba(53, 218, 210, 0) 0%, rgba(53, 218, 210, 0.2971) 50%, rgba(53, 218, 210, 0) 100%);"
                         >
                           要素描述
                         </div>
                         <el-table 
                           data={ curFactorData.value }
-                          height="180"
-                          style={ {width: "370px"} }
+                          height="150"
+                          style={ {width: "380px"} }
                           row-style={(data) => {
                             let curBgColor = (Number(data.rowIndex) + 2) % 2 === 0 ? "#0F3940" : "transparent"
                             return {
@@ -982,14 +1015,483 @@ export default defineComponent({
                   }
                 </div>
               </div>
-            </Card>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    const ChazhuContainer = () => {
+      return (
+        <div class="w-[1880px] h-[947px] overflow-hidden bg-transparent px-[20px] pt-[13px] pb-[20px] flex relative text-[#fff]">
+          <div class="absolute left-0 top-[-100px] w-100% h-1080px z-0">
+            <img class="w-full h-full" src={ BgChaZhu } />
+          </div>
+          {/** 左 */}
+          <div class="w-[400px] h-full z-2">
+            <div class="h-40px w-400px dc-cz-title-bg flex justify-between items-center pl-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">模型类型</div>
+              </div>
+              <div class="dc-cz-right-arrow h-30px w-30px"></div>
+            </div>
+            <div class="mt-10px w-400px h-230px flex flex-col justify-center items-center dc-cz-module-border">
+              <div class="dc-cz-variety-bg w-301px h-88px flex items-center justify-between">
+                <div class="pl-120px">品种数</div>
+                <div class="text-[#435B63]">
+                  <span class="text-24px text-white pr-5px">{ nVariety.value }</span>种
+                </div>
+              </div>
+              <div class="dc-cz-num-bg w-301px h-88px mt-18px flex items-center justify-between">
+                <div class="pl-120px">模型数</div>
+                <div class="text-[#435B63]">
+                  <span class="text-24px text-white pr-5px">{ nModel.value }</span>个
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-cz-title-bg flex justify-between items-center pl-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">品种模型</div>
+              </div>
+              <div class="dc-cz-right-arrow h-30px w-30px"></div>
+            </div>
+            <div class="mt-10px w-400px h-230px dc-cz-module-border">
+              {
+                modelList.value.length > 0 ? (
+                  <el-scrollbar>
+                    <div class="grid grid-cols-2 gap-3 justify-items-center cursor-pointer p-[20px] pt-0">
+                      {
+                        modelList.value.map((item, index) => (
+                          <>
+                            {
+                              item.activated ? (
+                                <div 
+                                  class="w-185px h-176px dc-cz-active-model flex justify-center items-center relative" 
+                                  onClick={() => { changeModel(index) }}
+                                >
+                                  <div class="w-70px h-70px absolute top-[50%] left-[50%] dc-cz-model-img">
+                                    <img src={ item.modelImg } class="w-70px h-70px object-contain" />
+                                  </div>
+                                  <div class="mt-160px w-160px dc-cz-active-model-text">{ item.modelName }</div>
+                                </div>
+                              ) : (
+                                <div 
+                                  class="w-185px h-176px dc-cz-normal-model flex justify-center items-center relative" 
+                                  onClick={() => { changeModel(index) }}
+                                >
+                                  <div class="w-70px h-70px absolute top-[50%] left-[50%] dc-cz-model-img">
+                                    <img src={ item.modelImg } class="w-70px h-70px object-contain" />
+                                  </div>
+                                  <div class="mt-160px w-160px h-40px leading-40px text-center">{ item.modelName }</div>
+                                </div>
+                              )
+                            }
+                          </>
+                        ))
+                      }
+                    </div>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-full flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
+                  </div>
+                )
+              }
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-cz-title-bg flex justify-between items-center pl-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">地块监测</div>
+              </div>
+              <div class="flex items-center">
+                <el-select
+                  id="base-select"
+                  class="plot-selector mr-10px"
+                  v-model={ base.value }
+                  value-key="id"
+                  style={`background-image: url(${ imgBase }/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
+                  popper-class="growth-monitoring-model-datacenter-popper"
+                  onChange={ () => { getPlotList(curModelId) } }
+                >
+                  {
+                    baseList.value.map(item => (
+                      <el-option key={ item.id } label={item.name} value={ item }>
+                      </el-option>
+                    ))
+                  }
+                </el-select>
+                <div class="dc-cz-right-arrow h-30px w-30px"></div>
+              </div>
+            </div>
+            <div class="mt-10px w-400px h-285px dc-cz-module-border p-2 box-border">
+              {
+                plotList.value.length > 0 ? (
+                  <el-scrollbar>
+                    <div class="grid grid-cols-2 gap-3 justify-items-center">
+                      {/** 单个卡片 */}
+                      {
+                        plotList.value.map((item) => (
+                          <div class="w-full h-[130px] mb-[10px]">
+                            <div 
+                              style={`background-image: url(${ item.modelImg }); background-size: contain; background-position: center; background-repeat: no-repeat;`}
+                              class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
+                              onClick={()=>{ handleRoute(item) }}
+                            >
+                              <div 
+                                class="absolute top-0 left-0 h-[20px] leading-[20px] text-[12px] px-[5px]"
+                                style="background-color: rgba(0, 0, 0, 0.659);"
+                              >
+                                { item.modelName }
+                              </div>
+                            </div>
+                            <div class="flex justify-between mt-[10px] px-[10px]">
+                              <div>{ item.plotName }</div>
+                              <div>
+                              {
+                                item.isEnableModel ? (
+                                  <el-button
+                                    style="color: #01F892; border: 1px solid #01F892; background-color: transparent;"
+                                    round
+                                    type="success"
+                                    onClick={ () => { handleStatusChange(item) } }
+                                  >
+                                    <el-icon><CircleCheck /></el-icon>
+                                    <span>启用</span>
+                                  </el-button>
+                                ) : (
+                                  <el-button
+                                    style="color: #435B63; border: 1px solid #435B63; background-color: transparent;"
+                                    round
+                                    type="danger"
+                                    onClick={ () => { handleStatusChange(item) } }
+                                  >
+                                    <el-icon><CircleClose /></el-icon>
+                                    <span>禁用</span>
+                                  </el-button>
+                                )
+                              }
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-full flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+          {/** 中 */}
+          <div class="grow h-full px-[20px] grid grid-cols-1 content-end relative">
+            {/** 周期列表 */}
+            {
+              cycleNameList.value.length > 0 && (
+                <div class="w-[1032px] h-[120px] absolute top-[0px] left-0 mx-[20px] mt-[30px] flex justify-center flex-wrap content-center">
+                  {
+                    cycleNameList.value.length < 6 ? (
+                      /** 
+                        * 周期数不足5个 不展示最左和最右的箭头 整体剧中 
+                        * 指向当前展示周期的指针跟随选中的周期
+                        */
+                      <div class="w-full flex">
+                        {/** 最左箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {leftArrowClick()} }
+                        >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                        </div>
+                        <div class="w-[837px] h-[100px] flex justify-center">
+                          {
+                            cycleNameList.value.map((e, i, arr) => (
+                              <div class="flex">
+                                {/** 周期名称展示 */}
+                                <div 
+                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                                  onClick={ () => { handleClick(i) } }
+                                >
+                                  <span>{ e.growth }</span>
+                                  {/** 当前物候期提示文字 */}
+                                  {
+                                    e.growth === curRealPeriod.value ? (
+                                      <div class="absolute top-[71px]">
+                                        <span>{ "(当前物候期)" }</span>
+                                      </div>
+                                    ) : null
+                                  }
+                                  {/** 指向当前展示周期的指针 */}
+                                  { i === curItem ? ( <div class="cur-arrow"></div> ) : null }
+                                </div>
+                                {/** 周期之间的箭头 */}
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
+                                  </div>
+                                ) : null }
+                              </div>
+                            ))
+                          }
+                        </div>
+                        {/** 最右箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {rightArrowClick()} }
+                        >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                        </div>
+                      </div>
+                    ) : (
+                      /**
+                        * 周期数超越5个 一行只呈现5个 展示最左和最右的箭头
+                        * 指向当前展示周期的指针始终在中间
+                        */
+                      <div class="w-full flex">
+                        {/** 最左箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {leftArrowClick()} }
+                        >
+                          <div class={0 < curItem ? "left-arrow" : "left-arrow-disable"}></div>
+                        </div>
+                        {/** 指向当前展示周期的指针 */}
+                        <div class="cur-arrow cur-arrow-center"></div>
+                        {/** 周期展示 */}
+                        <div class="w-[837px] h-[100px] overflow-hidden">
+                          <div class="flex relative" style={ `left: ${ offsetLeft.value }px;` }>
+                          {
+                            cycleNameList.value.map((e, i, arr) => (
+                              <div class="flex">
+                                {/** 周期名称展示 */}
+                                <div 
+                                  class={ i === curItem ? "cycle-item chosen-cycle relative" : (e.growth === curRealPeriod.value ? "cycle-item cur-cycle relative" : "cycle-item normal-cycle relative") }
+                                  onClick={ () => { handleClick(i) } }
+                                >
+                                  <span>{ e.growth }</span>
+                                  {/** 当前物候期提示文字 */}
+                                  {
+                                    e.growth === curRealPeriod.value ? (
+                                      <div class="absolute top-[71px]">
+                                        <span>{ "(当前物候期)" }</span>
+                                      </div>
+                                    ) : null
+                                  }
+                                </div>
+                                {/** 周期之间的箭头 */}
+                                { i != arr.length - 1 ? ( 
+                                  <div class="cycle-item px-[33.5px] py-[23px] box-border">
+                                    <div class="next-arrow"></div>
+                                  </div>
+                                ) : null }
+                              </div>
+                            ))
+                          }
+                          </div>
+                        </div>
+                        {/** 最右箭头 */}
+                        <div 
+                          class="cycle-item cursor-pointer p-[15px] box-border"
+                          onClick={ () => {rightArrowClick()} }
+                        >
+                          <div class={cycleNameList.value.length - 1 > curItem ? "right-arrow" : "right-arrow-disable"}></div>
+                        </div>
+                      </div>
+                    )
+                  }
+                </div>
+              )
+            }
+            {/** 模型图片 */}
+            {
+              cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
+                <div class="center-model text-center pt-[50px] box-border z-2">
+                  <img src={ cycleMap.value.get(curPeriod.value).imgId } class="object-contain h-[390px]" />
+                </div>
+              ) : null
+            }
+            <div class="absolute bottom-250px left-137px w-801px h-240px cz-base"></div>
+            {/** 周期事项 */}
+            <div class="w-1032px h-40px dc-cz-title-bg-lg flex justify-between items-center pl-23px pb-10px box-border z-2">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">周期事项-{ curPeriod.value }（{ curCycle.value }天）</div>
+              </div>
+              <div class="dc-cz-right-arrow h-30px w-30px"></div>
+            </div>
+            <div class="mt-10px w-1032px h-230px dc-cz-module-border-lg box-border p-5">
+              {
+                curTips.value.length ? (
+                  <el-scrollbar>
+                    <el-timeline class="ps-[110px] pt-[10px] cz-timeline">
+                      {
+                        curTips.value.map( (item, index) => (
+                          <el-timeline-item
+                            key={ index }
+                            placement="top"
+                            class="relative"
+                          >
+                            <div class="w-[95%] tip-bg p-20px text-[#CDDEE3]">{ item.itemContent }</div>
+                            <div class="absolute top-0 left-[-110px] w-[90px] h-[19px] text-[18px] leading-[19px] text-[#01F892] flex justify-end">
+                              <div class="text-center tracking-widest">
+                                { item.itemName }
+                                <div>{ item.remark1 ? `（${ item.remark1 }天）` : "" }</div>
+                              </div>
+                            </div>
+                            <div
+                              class="absolute top-[10px] left-[-11px] w-33px h-1px"
+                              style="border-top: 1px dashed #01F892"></div>
+                            {
+                              !(index === curTips.value.length - 1) && (
+                                <div>
+                                  <div class="absolute top-[30px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[50px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[70px] left-[-8px] line-small-mark"></div>
+                                  <div class="absolute top-[90px] left-[-8px] line-small-mark"></div>
+                                </div>
+                              )
+                            }                              
+                          </el-timeline-item>
+                        ))
+                      }
+                    </el-timeline>
+                  </el-scrollbar>
+                ) : (
+                  <div class="w-full h-[230px] flex justify-center items-center">
+                    <div class="growth-datacenter-no-data"></div>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+          {/** 右 */}
+          <div class="w-[400px] h-full z-2">
+            <div class="h-40px w-400px dc-cz-title-bg flex justify-between items-center pl-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">指标监测</div>
+              </div>
+              <div class="dc-cz-right-arrow h-30px w-30px"></div>
+            </div>
+            <div class="mt-10 w-400px h-350px dc-cz-module-border-sm">
+              <el-scrollbar>
+                {
+                  indicatorList.value.length ? (
+                    <div class="grid grid-cols-2 justify-items-center">
+                      {
+                        indicatorList.value.map((item, index) => (
+                          <div 
+                            class="cursor-pointer"
+                            onClick={ () => { handleIndicatorClick(index) } }
+                          > 
+                            {
+                              item.selected ? (
+                                <>
+                                  <div class="w-132px dc-cz-active-model-text text-[18px] mb-20px">{ item.name }</div>
+                                  <div class={`${ item.name.includes("气象") ? "active-weather" : (item.name.includes("土壤") ? "active-soil" : "active-phenology")} mb-20px`}></div>
+                                </>
+                              ) : (
+                                <>
+                                  <div class="w-132px dc-cz-normal-indicator-text text-[18px] mb-20px">{ item.name }</div>
+                                  <div class={`${ item.name.includes("气象") ? "weather" : (item.name.includes("土壤") ? "soil" : "phenology")} mb-20px`}></div>
+                                </>                                
+                              )
+                            }
+                          </div>
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <div class="w-[400px] h-[350px] flex justify-center items-center">
+                      <div class="growth-datacenter-no-data"></div>
+                    </div>
+                  )
+                }
+              </el-scrollbar>
+            </div>
+            
+            <div class="mt-25px h-40px w-400px dc-cz-title-bg flex justify-between items-center pl-23px pb-10px box-border">
+              <div class="flex h-40px items-center">
+                <div class="dc-cz-title-icon h-27px w-24px"></div>
+                <div class="art-font dc-cz-title-text">模型要素分析</div>
+              </div>
+              <div class="dc-cz-right-arrow h-30px w-30px"></div>
+            </div>
+            <div class="mt-10px w-400px h-445px dc-cz-module-border-md">
+              <div class="relative">
+                {/** 没有要素信息的提示 */}
+                {
+                  curFactor.value.size ? null : (
+                    <div 
+                      class="z-999 absolute top-0 left-1px w-[398px] h-[444px] flex justify-center items-center"
+                      style="background: black;"
+                    >
+                      <div class="growth-datacenter-no-data"></div>
+                    </div>
+                  )
+                }   
+                <div class="w-full flex flex-col items-center">
+                  {/** ECharts图 */}
+                  <div id="chart" class="w-[400px] h-[254px]"></div>
+                  {/** 要素信息表格 */}
+                  {
+                    curFactorData.value.length ? (
+                      <div class="text-[14px] border border-solid border-[#35DA95]">
+                        <div 
+                          class="text-center w-[380px] h-[30px] leading-[30px]"
+                          style="background: linear-gradient( 270deg, rgba(53,218,149,0) 0%, rgba(53,218,149,0.3) 51%, rgba(53,218,149,0) 100%);"
+                        >
+                          要素描述
+                        </div>
+                        <el-table 
+                          data={ curFactorData.value }
+                          height="150"
+                          style={{ width: "380px" }}
+                          row-style={(data) => {
+                            let curBgColor = (Number(data.rowIndex) + 2) % 2 === 0 ? "rgba(1, 248, 146, 0.1)" : "transparent"
+                            return {
+                              "background-color": curBgColor,
+                              "height": "45px",
+                              "font-size": "16px"
+                            }
+                          }}
+                          header-row-style={{ "background-color": "transparent", "height": "45px", "font-size": "16px" }}
+                          header-cell-style={{ color: "#01F892" }}
+                        >
+                          <el-table-column label="范围" align="center" >
+                          {
+                            ({ row }) => {
+                              return `${ row.lowLimit }${ row.unit } ~ ${ row.highLimit }${ row.unit }`
+                            }
+                          }
+                          </el-table-column>
+                          <el-table-column label="健康值" prop="healthRatio" align="center" width="65px"/>
+                          <el-table-column label="要素结果" prop="indicatorResult" align="center" />
+                        </el-table>
+                      </div>
+                    ) : (
+                      <div class="w-[370px] h-[170px] flex justify-center items-center">
+                        <div class="growth-datacenter-no-data"></div>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )
     }
 
     return () => {
-      if (hiddenHeader.value) return <MainContainer />
+      if (hiddenHeader.value && !isChazhu.value) return <MainContainer />
+      if (hiddenHeader.value && isChazhu.value) return <ChazhuContainer />
       return (
         <div class="bg-[#0B2131] w-full h-full select-none">
           <BigscreenAdapter>
@@ -1019,6 +1521,73 @@ export default defineComponent({
 
 </script>
 <style lang="scss">
+.dc-title-bg {
+  background: {
+    image: url(./assets/title-bg.png);
+    size: 100% 100%;
+  }
+}
+
+.dc-title-bg-lg {
+  background-image: url(./assets/title-bg-lg.png);
+  background-size: 100% 100%;
+}
+
+.dc-image-contain {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.dc-title-icon {
+  @extend .dc-image-contain;
+  background-image: url(./assets/title-icon.png);
+}
+
+.dc-right-arrow {
+  @extend .dc-image-contain;
+  background-image: url(./assets/title-right-arrow.png);
+}
+
+.dc-title-text {
+  font-size: 20px;
+  letter-spacing: 0.025em;
+  background-image: linear-gradient(180deg, #FFFFFF 15%, #A9FFE1 100%);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.dc-variety-bg {
+  background-image: url(./assets/variety-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-num-bg {
+  background-image: url(./assets/num-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-module-border {
+  background-image: url(./assets/card/card-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-module-border-lg {
+  background-image: url(./assets/card-bg-lg.png);
+  background-size: 100% 100%;
+}
+
+.dc-module-border-sm {
+  background-image: url(./assets/card-bg-sm.png);
+  background-size: 100% 100%;
+}
+
+.dc-module-border-md {
+  background-image: url(./assets/card-bg-md.png);
+  background-size: 100% 100%;
+}
+
 .plot-selector {
 
   /** 去掉el-selector的背景和边框 */
@@ -1240,6 +1809,128 @@ export default defineComponent({
   width: 160px;
   height: 160px;
 }
+
+.dc-cz-title-bg {
+  background: {
+    image: url(./assets/chazhu/title-bg.png);
+    size: 100% 100%;
+  }
+}
+
+.dc-cz-title-bg-lg {
+  background-image: url(./assets/chazhu/title-bg-lg.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-title-icon {
+  @extend .dc-image-contain;
+  background-image: url(./assets/chazhu/title-icon.png);
+}
+
+.dc-cz-right-arrow {
+  @extend .dc-image-contain;
+  background-image: url(./assets/chazhu/title-right-arrow.png);
+}
+
+.dc-cz-title-text {
+  font-size: 20px;
+  letter-spacing: 0.025em;
+  background: linear-gradient(90deg, #FFFFFF 0%, #A9FFDB 100%);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.dc-cz-variety-bg {
+  background-image: url(./assets/chazhu/variety-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-num-bg {
+  background-image: url(./assets/chazhu/model-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-module-border {
+  background-image: url(./assets/chazhu/card-bg.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-module-border-lg {
+  background-image: url(./assets/chazhu/card-bg-lg.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-module-border-sm {
+  background-image: url(./assets/chazhu/card-bg-sm.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-module-border-md {
+  background-image: url(./assets/chazhu/card-bg-md.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-normal-model {
+  @extend .dc-image-contain;
+  background-image: url(./assets/chazhu/normal-model.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-active-model {
+  @extend .dc-image-contain;
+  background-image: url(./assets/chazhu/active-model.png);
+  background-size: 100% 100%;
+}
+
+.dc-cz-active-model-text {
+  height: 40px;
+  background: linear-gradient( 90deg, rgba(19,126,81,0) 0%, rgba(19,126,81,0.3) 51%, rgba(19,126,81,0) 100%);
+  border: 1px solid;
+  border-image: linear-gradient(90deg, rgba(1, 248, 146, 0), rgba(1, 248, 146, 1), rgba(1, 248, 146, 0)) 1 1;
+  color: #01F892;
+  line-height: 40px;
+  text-align: center;
+}
+
+.dc-cz-model-img {
+  transform: translate(-50%, -50%);
+}
+
+.dc-cz-normal-indicator-text {
+  height: 40px;
+  background: linear-gradient( 90deg, rgba(19,126,90,0) 0%, rgba(19,126,90,0.3) 51%, rgba(19,126,90,0) 100%);
+  border: 1px solid;
+  border-image: linear-gradient(90deg, rgba(109, 233, 207, 0), rgba(29, 255, 255, 1), rgba(59, 206, 161, 0)) 1 1;
+  color: #36E9E9;
+  line-height: 40px;
+  text-align: center;
+}
+
+.active-weather {
+  @extend .weather;
+  background-image: url(./assets/chazhu/weather.png);
+}
+
+.active-soil {
+  @extend .soil;
+  background-image: url(./assets/chazhu/soil.png);
+}
+
+.active-phenology {
+  @extend .phenology;
+  background-image: url(./assets/chazhu/phenology.png);
+}
+
+.tip-bg {
+  background-image: url(./assets/chazhu/tip-bg.png);
+  background-size: 100% 100%;
+}
+
+.cz-base {
+  @extend .dc-image-contain;
+  background-image: url(./assets/chazhu/base.png);
+}
 </style>
 <style lang="scss" scoped>
 :deep(.el-timeline-item__timestamp) {
@@ -1259,6 +1950,17 @@ export default defineComponent({
   height: 30px;
   left: -10px;
   top: -7px;
+}
+:deep(.cz-timeline .el-timeline-item__node) {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  background-image: url(./assets/chazhu/mark.png);  
+  width: 17px;
+  height: 17px;
+  top: -1px;
+  left: -3px;
 }
 :deep(.el-timeline-item__timestamp) {
   display: none;

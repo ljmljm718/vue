@@ -18,7 +18,8 @@ import {
   MonitorIndicatorWithDetail,
   CropPlotByModelId,
   modelMonitor,
-  ModelOverviewStatistics
+  ModelOverviewStatistics,
+  BatchCodeByModelId
 } from './api'
 const {
   BigscreenAdapter,
@@ -49,12 +50,18 @@ export default defineComponent({
     bigscreenName.value = route.query.modelName
     modelId.value = route.query.modelId
     beLongPlot.value = route.query.plotId
-    growthId.value = route.query.growthId
-    batch.value = route.query.batchCode
     const setInter = ref(null)
-    const bubbles = ref([])
+    const bubbles = ref<any[]>([])
     const widht = ref()
     const height = ref()
+    //获取批次号
+    const getBatchCodeByModelId = async () => {
+      let res = await BatchCodeByModelId({plotId: beLongPlot.value,modelId: modelId.value})
+      console.log(res, '获取批次号 ')
+      growthId.value = res[0].growthId
+      batch.value = res[0].batchCode
+    }
+    getBatchCodeByModelId()
     const createBubbles = () => {
       bubbles.value=[]
       for (let i = 0; i < mainList.value.length; i++) {
@@ -250,12 +257,13 @@ export default defineComponent({
     // 右侧移动
     const rightSetNum = ref(0)
     const cycleListChange3 = (index) => {
-      if (infoList.value.length > 3) {
-        rightRelativeNum.value += (rightSetNum.value - index) * 75 * 2
+      if (infoList.value.length > 4 ) {
+        detailLeft.value += (rightSetNum.value - index) * 100 * 1
       }
     }
     //模型要素切换
-    const mainList = ref([])
+    const detailLeft = ref (0)
+    const mainList = ref<any[]>([])
     const tabFn = (obj, val) => {
       cycleListChange3(val)
       rightNum.value = val
@@ -266,22 +274,23 @@ export default defineComponent({
       
     }
     const mainTopNum = ref(0)
-    const infoList = ref([])
+    const infoList = ref<any[]>([])
     //农事计划
-    const planByList = ref([])
+    const planByList = ref<any[]>([])
     const getModelPlanByModelId = async () => {
       let res = await ModelPlanByModelId({ modelId: modelId.value,plotId: beLongPlot.value })
       console.log(res,'农事计划')
       planByList.value = res
     }
-    getModelPlanByModelId()
+    // getModelPlanByModelId()
     //中间生长周期跟左下共用
     const leftRelatice = ref(0)
     const setNum = ref(0)
     const leftSetNum = ref(0)
-    const childList = ref([])
+    const childList = ref<any[]>([])
     const getModelInfo = async () => {
       let res = await modelInfo({ modelId: modelId.value })
+      console.log(res,'中间顶部')
       infoList.value = res.splice(1)
       infoList.value.forEach((item, index) => {
         if (item.growth == res[0].curPeriod) {
@@ -301,9 +310,9 @@ export default defineComponent({
       setNum.value = num
       leftSetNum.value = num2
     }
-    getModelInfo()
+    // getModelInfo()
     //模型要素
-    const DetailList = ref([])
+    const DetailList = ref<any[]>([])
     const DetailListChild = ref([])
     const rightRelativeNum = ref(0)
     const getMonitorIndicatorWithDetail = async () => {
@@ -311,7 +320,6 @@ export default defineComponent({
         modelId: modelId.value,
         growthId: growthId.value
       })
-      console.log(res,'moxyaosu ')
       DetailList.value = res
       mainList.value = res.length>0? res[0].modelIndicatorElementCardVOList:[]
       if(res.length>0){
@@ -324,25 +332,25 @@ export default defineComponent({
         createBubbles()
         animateBubbles()
       }
-      if(DetailList.value.length==0  ){
+      if(DetailList.value.length == 0 ){
          mainList.value=[]
          bubbles.value=[]
          drawRadarChart2()
         }
     }
-    getMonitorIndicatorWithDetail()
+    // getMonitorIndicatorWithDetail()
 
     //地块信息
-    const cropPlotList = ref({})
+    const cropPlotList = ref<any>({})
     const getCropPlotByModelId = async () => {
       let res = await CropPlotByModelId({ modelId: modelId.value, beLongPlot: beLongPlot.value })
       console.log(res,'dikuaixinxi')
       cropPlotList.value = res[0]
     }
-    getCropPlotByModelId()
+    // getCropPlotByModelId()
 
     //模型监测
-    const monitorList = ref([])
+    const monitorList = ref<any[]>([])
     const monitorListChild = ref([])
     const getModelMonitor = async () => {
       let res = await modelMonitor({ modelId: modelId.value, batch: batch.value })
@@ -354,9 +362,9 @@ export default defineComponent({
         }
       })
     }
-    getModelMonitor()
+    // getModelMonitor()
     //中间下方折线图
-    const footerList = ref([])
+    const footerList = ref<any[]>([])
     const chartLineNum = ref(0)
     const getModelOverviewStatistics = async () => {
       let res = await ModelOverviewStatistics({
@@ -370,7 +378,7 @@ export default defineComponent({
         initChartLine1(footerList.value[0])
       }, 500)
     }
-    getModelOverviewStatistics()
+    // getModelOverviewStatistics()
     //折线图
     const initChartLine1 = (list) => {
       footerList.value.forEach((item, index) => {
@@ -554,11 +562,18 @@ export default defineComponent({
         </div>
       )
     }
-    onMounted(() => {
+    onMounted( async () => {
       getCurTime()
       setInterval(() => {
         getCurTime()
       }, 1000)
+     await getBatchCodeByModelId()
+     await getModelPlanByModelId()
+     await getModelInfo()
+     await getMonitorIndicatorWithDetail()
+     await getCropPlotByModelId() 
+     await getModelMonitor() 
+     await getModelOverviewStatistics()
     })
     //中间内容
     const MainContent = () => {
@@ -930,27 +945,54 @@ export default defineComponent({
             </div>
             <div>
               <div class="box-title">模型要素</div>
-              <div class="box-item !h-400px">
+              <div class="box-item !h-400px w-100%">
                 {
                   DetailList.value.length>0?'': <div class='dataNull mx-auto my-100px w-200px h-150px '></div>
                 }
-              
-                  <div class="flex justify-evenly">
-                    {DetailList.value.map((item, index) => {
-                      return (
-                        <div
-                          onClick={() => {
-                            tabFn(item, index)
-                          }}
-                          style="cursor:pointer;"
-                          class={rightNum.value == index ? 'right-active' : 'right-actived'}
-                        >
-                          {item.indicatorName}
-                        </div>
-                      )
-                    })}
-                  </div>
-                      <div id="radarChart" class="w-100%  mt-10px" style="height:300px"></div>
+                {
+                  DetailList.value.length < 4 ?
+                  (
+                    <div class="flex justify-evenly">
+                      {DetailList.value.map((item, index) => {
+                        return (
+                          <div
+                            onClick={() => {
+                              tabFn(item, index)
+                            }}
+                            style="cursor:pointer;"
+                            class={rightNum.value == index ? 'right-active' : 'right-actived'}
+                          >
+                            {item.indicatorName}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ):
+                  (
+                    <div stlye='overflow:hidden' class='w-full'>
+                      <div class="w-full flex relative" style={`left:${detailLeft.value}px`}>
+                        { DetailList.value.map((item, index) => {
+                          return (
+                            <div class='flex'>
+                              <div
+                                onClick={() => {
+                                  tabFn(item, index)
+                                }}
+                                style="cursor:pointer;"
+                                class={rightNum.value == index ? 'right-active' : 'right-actived'}
+                              >
+                                {item.indicatorName}
+                              </div>
+                            </div>
+                            
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                }
+                  
+                  <div id="radarChart" class="w-100%  mt-10px" style="height:300px"></div>
               </div>
             </div>
           </div>
