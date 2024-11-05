@@ -6,6 +6,7 @@ import Hls from "hls.js";
 import axios from 'axios';
 import { uniqueId } from 'lodash-es';
 import request from '@/config/axios'
+import { ElMessage } from 'element-plus'
 
 const getAddressInfoRecordPage = async (params: any) => {
   return await request.get({ url: `/agriculture/device-nvr/getToken`, params })
@@ -59,6 +60,8 @@ const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 2): Promise<st
       { headers: { Authorization: liveToken } }
     )
     const { code, data: UrlData } = liveDataRes;
+    console.log("🚀 ~ checkAuth ~ UrlData:", UrlData);
+    if (!UrlData) return ElMessage.error(liveDataRes)
     const { status = -1, url } = UrlData;
     if (code === 200) {
       if (status !== 0) {
@@ -77,15 +80,15 @@ const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 2): Promise<st
 
   const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {})
   let appId = "626194353357848583", secretKey = "ca06cd14935e031bd7a394ee7eca154d";
+  let _deviceSerial_ = ''
   if (Array.isArray(list) && list.length > 0) {
     const firstItem = list[0];
-    const { appId:_appId, secretKey:_secretKey } = firstItem;
-    appId = _appId;
-    secretKey = _secretKey
+    const { deviceSerial: __deviceSerial } = firstItem;
+    _deviceSerial_ = __deviceSerial
   }
-  const data = await getAddressInfoRecordPage({ deviceSerial })
+  const data = await getAddressInfoRecordPage({ deviceSerial: _deviceSerial_ })
   console.log("🚀 ~ checkAuth ~ data:", data)
-  if (data) localStorage.setItem("LIVE_TOKEN", data)
+  if (data && data !== 'error') localStorage.setItem("LIVE_TOKEN", data)
   return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
 }
 
