@@ -385,7 +385,7 @@ onMounted(() => {
               "
               >在线</span
             >
-            <div style="padding-left: 4rem" class="flex">
+            <div style="padding-left: 4rem" class="flex space-x-2 items-center">
               <div class="w-[2rem] flex flex-end justify-end">{{ item.online }}</div>
               <div>台</div>
             </div>
@@ -404,7 +404,7 @@ onMounted(() => {
               "
               >离线</span
             >
-            <div style="padding-left: 4rem" class="flex">
+            <div style="padding-left: 4rem" class="flex space-x-2 items-center">
               <div class="w-[2rem] flex flex-end justify-end">{{ item.offline }}</div>
               <div>台</div>
             </div>
