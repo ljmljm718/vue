@@ -466,10 +466,16 @@
           <!-- 卡片形式 -->
           <div
             v-show="listTypeMonitor === 'card'"
-            :class="`grid grid-cols-3 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] ${themeIsDark ? 'text-white' : 'text-[#999999]'}`"
+            :class="`
+              grid grid-cols-2 gap-3
+              ${themeIsDark ? 'text-white' : 'text-[#999999]'}
+            `"
           >
             <!-- 预览区 -->
-            <div :class="`col-span-2 lg:col-span-2 2xl:col-span-1 rounded-md ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} shadow-md`">
+            <div :class="`
+              col-span-1 rounded-md shadow-md
+              ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
+            `">
               <div class="relative">
                 <el-image
                   lazy
@@ -482,61 +488,73 @@
                 <div
                   v-show="currentItem.videoLink"
                   @click="openVideoMonitor(currentItem.videoLink)"
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50
+                    w-[40px] h-[40px] bottom-[11px] right-[110px]
+                    rounded text-center leading-[40px] cursor-pointer
+                  "
                 >
                   <el-icon color="#FFFFFF" size="16px"><VideoCamera /></el-icon>
                 </div>
                 <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50
+                    w-[40px] h-[40px] bottom-[11px] right-[60px]
+                    rounded text-center leading-[40px] cursor-pointer
+                  "
                   @click="openFormMonitor('update', currentItem.id)"
                 >
                   <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
                 </div>
                 <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50
+                    w-[40px] h-[40px] bottom-[11px] right-[10px]
+                    rounded text-center leading-[40px] cursor-pointer
+                  "
                   @click="handleDeleteMonitor(currentItem.id)"
                 >
                   <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
                 </div>
               </div>
-              <div class="grid grid-cols-2 xl:grid-cols-3 gap-1 my-10px px-3">
-                <div>基地名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringBaseName }}</span></div>
-                <div>地块名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringPlotName }}</span></div>
-                <div>设备名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.deviceName }}</span></div>
-                <div>事件类型: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.noticeEvent }}</span></div>
-                <div>消息内容: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.remarks }}</span></div>
-                <div>记录时间: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(currentItem.recordTime) }}</span></div>
+              <div class="grid grid-cols-3 gap-1 my-10px px-3">
+                <div>基地名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringBaseName }}</span></div>
+                <div>地块名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.monitoringPlotName }}</span></div>
+                <div>设备名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.deviceName }}</span></div>
+                <div>事件类型: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.noticeEvent }}</span></div>
+                <div>消息内容: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ currentItem.remarks }}</span></div>
+                <div>记录时间: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(currentItem.recordTime) }}</span></div>
               </div>
             </div>
             <!-- 卡片列表区 -->
-            <div
-              class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded"
-            >
-              <div
-                :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh]`"
-                v-for="item in listMonitor"
-                :key="item.id"
-                @click="changCurrentItem(item)"
-              >
-                <el-scrollbar>
-                <div class="text-center">
-                  <el-image
-                    lazy
-                    :src="item.captured"
-                    preview-teleported
-                    fit="contain"
-                    class="h-[17vh] rounded"
-                  />
-                </div>
+            <el-scrollbar style="height: 70vh">
+              <div class="col-span-1 grid grid-cols-3 gap-3 rounded">
                 <div
-                  class="mt-[5px] text-[6px] lg:text-[8px] xl:text-[12px] 2xl:text-[14px] px-[5px]"
+                  :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh]`"
+                  v-for="item in listMonitor"
+                  :key="item.id"
+                  @click="changCurrentItem(item)"
                 >
-                  <div>设备名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ item.deviceName }}</span></div>
-                  <div class="mt-[5px]">记录时间: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(item.recordTime) }}</span></div>
+                  <el-scrollbar>
+                  <div class="text-center">
+                    <el-image
+                      lazy
+                      :src="item.captured"
+                      preview-teleported
+                      fit="contain"
+                      class="h-[17vh] rounded"
+                    />
+                  </div>
+                  <div
+                    class="mt-[5px] text-[6px] lg:text-[8px] xl:text-[12px] 2xl:text-[14px] px-[5px]"
+                  >
+                    <div>设备名称: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ item.deviceName }}</span></div>
+                    <div class="mt-[5px]">记录时间: <br class="lg:hidden"/><span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{ timeFormat(item.recordTime) }}</span></div>
+                  </div>
+                  </el-scrollbar>
                 </div>
-                </el-scrollbar>
               </div>
-            </div>
+            </el-scrollbar>
           </div>
           <!-- 列表形式 -->
           <div v-show="listTypeMonitor === 'list'">
