@@ -69,7 +69,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full box-border p-5 bg-#00000020" v-show="curDeviceKind === '101'">
+          <div class="w-full box-border p-5 bg-#00000020" v-show="['101', '79'].includes(curDeviceKind)">
             <div v-for="item in pictureList" :key="item.id">
               <img :src="item.capturedImage" class="w-full min-h-10px object-contain" />
             </div>
