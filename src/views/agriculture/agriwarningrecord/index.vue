@@ -1043,7 +1043,11 @@ const handleDeleteMonitor = async (id: number) => {
   // 删除后 设置curItem
   // 如果删除成功 则下标处是删除后的下一项
   // 如果删除失败 则下标处是原来的项
-  currentItem.value = listMonitor.value[idx];
+  if (idx >= listMonitor.value.length) {
+    currentItem.value = listMonitor.value[listMonitor.value.length - 1];
+  } else {
+    currentItem.value = listMonitor.value[idx];
+  }
 }
 /** 导出按钮操作 */
 const handleExportMonitor = async () => {
