@@ -142,41 +142,39 @@ const getIconIndex = (type, color = 0) => {
   if (color === 0) {
     // 气象站部分
     const iconMap = new Map([
-      ['气象站', 't-9'],
-      ['空气温度', 't-1'],
-      ['当前雨量', 't-2'],
-      ['空气湿度', 't-2'],
-      ['光照', 't-3'],
-      ['大气压力', 't-4'],
-      ['土壤湿度', 't-2'],
-      ['PM2.5', 't-5'],
-      ['PM10', 't-5'],
-      ['土壤EC值', 't-6'],
-      ['当前雨量', 't-7'],
-      ['风向', 't-8'],
-      ['风力', 't-8']
+      ['空气温度', 'env-icon-1'],
+      ['空气湿度', 'env-icon-2'],
+      ['光照', 'env-icon-3'],
+      ['PM2.5', 'env-icon-4'],
+      ['风力', 'env-icon-5'],
+      ['大气压力', 'env-icon-6'],
+      ['当前雨量', 'env-icon-7'],
+      ['风向', 'env-icon-8'],
+      ['土壤温度', 'env-icon-9'],
+      ['土壤湿度', 'env-icon-10'],
+      ['土壤EC值', 'env-icon-11'],
+      ['PM10', 'env-icon-12'],
     ])
     const item = iconMap.get(type);
-    if (!item) return 't-5';
+    if (!item) return 'env-icon-5';
     return item;
   } else {
     // 水质监测部分
     const iconMap = new Map([
-      ['水质监测', 'b-9'],
-      ['氨氮浓度', 'b-6'],
-      ['TDS', 'b-8'],
-      ['PH', 'b-5'],
-      ['ORP', 'b-8'],
-      ['溶解氧饱和度', 'b-6'],
-      ['盐度', 'b-2'],
-      ['电导率', 'b-8'],
-      ['溶解氧浓度', 'b-7'],
-      ['温度', 'b-1'],
-      ['液位', 'b-4'],
-      ['浊度', 'b-3'],
+      ['温度', 'water-icon-1'],
+      ['盐度', 'water-icon-2'],
+      ['浊度', 'water-icon-3'],
+      ['液位', 'water-icon-4'],
+      ['PH', 'water-icon-5'],
+      ['溶解氧浓度', 'water-icon-6'],
+      ['氨氮浓度', 'water-icon-7'],
+      ['ORP', 'water-icon-8'],
+      ['溶解氧饱和度', 'water-icon-9'],
+      ['电导率', 'water-icon-10'],
+      ['TDS', 'water-icon-11'],
     ])
     const item = iconMap.get(type);
-    if (!item) return 'b-7';
+    if (!item) return 'water-icon-7';
     return item;
   }
 }
@@ -501,7 +499,7 @@ onMounted(() => {
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
             >
-              <div class="t w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%"></div>
+              <div class="t w-[4rem] h-[4rem] mb-2" style="background-size: 100% 100%"></div>
               <div>气象站</div>
             </div>
             <div
@@ -528,7 +526,7 @@ onMounted(() => {
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
             >
-              <div class="b w-[2rem] h-[2rem] mb-2" style="background-size: 100% 100%"></div>
+              <div class="b w-[4rem] h-[4rem] mb-2" style="background-size: 100% 100%"></div>
               <div>水质监测</div>
             </div>
             <div
@@ -658,6 +656,20 @@ onMounted(() => {
 @for $i from 1 through 5 {
   .top-bg-#{$i} {
     background-image: url(./assets/top#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 12 {
+  .env-icon-#{$i} {
+    background-image: url(./assets/iconSQ/envIcon/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 11 {
+  .water-icon-#{$i} {
+    background-image: url(./assets/iconSQ/waterIcon/icon#{$i}.png);
     background-size: 100% 100%;
   }
 }
