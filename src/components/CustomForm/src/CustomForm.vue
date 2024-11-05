@@ -9,10 +9,10 @@ const props = defineProps({
   },
 });
 const componentID = generateUUID()
-const collapsed = ref<boolean>(false); // true 代表当前为折叠状态
+const collapsed = ref<boolean>(false); // true 代表当前为收起状态
 const init = () => {
   const dom = document.getElementById(componentID);
-  console.log("🚀 ~ init ~ dom:", dom)
+  handleCollapse()
 }
 onMounted(() => { init() })
 const handleCollapse = () => {
@@ -27,19 +27,21 @@ const handleCollapse = () => {
     // 当前是展开状态，使其折叠
     for (let i = 0; i < Array.from(formItemList).length; i++) {
       const formItem = formItemList[i];
+      //获取label名称
       const formItemLabel = formItem.querySelector(".el-form-item__label")?.innerText;
-      console.log("🚀 ~ handleCollapse ~ formItemLabel:", formItemLabel)
-      if (props.showLabels.indexOf(formItemLabel) !== -1) {
-        formItem.style.display = 'inline-flex';
+      // console.log("🚀 ~ handleCollapse ~ formItemLabel:", formItemLabel)
+      console.log("indexOf",props.showLabels.indexOf(formItemLabel))
+      //获取button
+      const btnDom = formItem.querySelector('.el-button')
+      //定义展示查询框，只展示定义的前2个，其余隐藏；如未定义默认展示前2个查询框，其余隐藏
+      //button全部显示不隐藏
+      if (props.showLabels.length > 0) {
+        if (props.showLabels.indexOf(formItemLabel) <= -1 && !btnDom) formItem.style.display = 'none';
       } else {
-        if (i > 1) {
-          formItemList[i].style.display = 'none';
-          const operateDom = formItemList[i];
-          const btnDom = operateDom.querySelector('.el-button')
-          if (btnDom) operateDom.style.display = 'inline-flex'
+        if (i > 1 && !btnDom) {
+          formItem.style.display = 'none';
         }
       }
-      
     }
   }
   collapsed.value = !collapsed.value
@@ -50,16 +52,25 @@ const resetFields = () => {
   if (!customFormRef) return;
   customFormRef.value.resetFields()
 }
-  
+
 defineExpose({ resetFields })
 </script>
 <template>
   <el-form ref="customFormRef" class="relative" :id="componentID" v-bind="$attrs">
     <slot></slot>
-    <div class="absolute right-0 bottom-0" @click="handleCollapse()">
-      {{ collapsed ? '展开' : '折叠' }}
+    <div class="absolute collapsed-css" @click="handleCollapse()">
+      {{ collapsed ? '展开' : '收起' }}
+      <el-icon v-if="collapsed"><ArrowDown/></el-icon>
+      <el-icon v-else><ArrowUp/></el-icon>
     </div>
   </el-form>
 </template>
 <style scoped lang="scss">
+.collapsed-css{
+  right: 0;
+  bottom: 5px;
+  font-size: 16px;
+  color: #009688;
+  cursor: pointer;
+}
 </style>

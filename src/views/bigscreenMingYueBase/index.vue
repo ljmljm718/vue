@@ -94,8 +94,7 @@ export default defineComponent({
     }
 
     // 获取作业排期
-    const calendarIns = ref(),
-      remindArr = ref<any[]>([])
+    const calendarIns = ref(), remindArr = ref<any[]>([])
     const farmPlanScheduleList = ref<any[]>([])
     const getFarmPlanSchedule = async (yearMonth, belongPlot) => {
       const res = await farmPlanSchedule({ yearMonth, belongPlot })
@@ -107,6 +106,7 @@ export default defineComponent({
       }
     }
 
+    const calendarDate = ref<string>('')
     const getPlotData = async (parentId) => {
       const res = await getParkBaseInfo({ parentId })
       if (Array.isArray(res)) {
@@ -120,8 +120,7 @@ export default defineComponent({
           options.value = res.map((item) => ({ label: item.name, value: item.id }))
           if (res.length > 0) {
             selectedPlot.value = res[0].id
-            const _date = new Date()
-            getFarmPlanSchedule(`${_date.getFullYear()}-${_date.getMonth() + 1}`, res[0].id)
+            getFarmPlanSchedule(calendarDate.value, res[0].id)
           }
         }
         
@@ -363,7 +362,7 @@ export default defineComponent({
     const handleCalendarChange = (item) => {
       console.log('🚀 ~ handleCalendarChange ~ item:', item)
       if (!selectedPlot.value) return
-      getFarmPlanSchedule(`${item.getFullYear()}-${item.getMonth() + 1}`, selectedPlot.value)
+      getFarmPlanSchedule(calendarDate.value, selectedPlot.value)
     }
     return () => (
       <div
@@ -463,7 +462,7 @@ export default defineComponent({
                                 selectedPlot.value = item.value
                                 const _date = new Date()
                                 getFarmPlanSchedule(
-                                  `${_date.getFullYear()}-${_date.getMonth() + 1}`,
+                                  calendarDate.value,
                                   item.value
                                 )
                               }}
@@ -483,6 +482,10 @@ export default defineComponent({
                   remind={remindArr.value}
                   onSelect={(item) => {
                     handleCalendarClick(item)
+                  }}
+                  calendarDate={calendarDate.value}
+                  onUpdateCalendarDate={(e) => {
+                    calendarDate.value = e
                   }}
                   onChange={(item) => handleCalendarChange(item)}
                 />

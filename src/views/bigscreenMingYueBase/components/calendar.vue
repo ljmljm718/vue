@@ -1,11 +1,15 @@
 <script lang="tsx">
 export default defineComponent({
   name: 'BigscreenCalendar',
-  emits: ['select', 'change'],
+  emits: ['select', 'change', 'updateCalendarDate'],
   props: {
     remind: {
       type: Array<any>,
       default: []
+    },
+    calendarDate: {
+      type: String,
+      default: ''
     }
   },
   setup(props, { emit }) {
@@ -22,6 +26,7 @@ export default defineComponent({
       const date = new Date()
       curYear.value = date.getFullYear()
       curMonth.value = date.getMonth() + 1
+      emit('updateCalendarDate', `${curYear.value}-${curMonth.value}`)
       curDay.value = date.getDate()
       buildCalendar()
     }
@@ -51,6 +56,7 @@ export default defineComponent({
       date.setTime(date.getTime() - 1000 * 60 * 60 * 24)
       curYear.value = date.getFullYear()
       curMonth.value = date.getMonth() + 1
+      emit('updateCalendarDate', `${curYear.value}-${curMonth.value}`)
       curDay.value = date.getDate()
       for (let i = 0; i < date.getDate(); i++) {
         buildArr.push({
@@ -71,6 +77,7 @@ export default defineComponent({
       _date.setDate(1)
       _date.setTime(_date.getTime() - 1000 * 60 * 60 * 24 * 2)
       curMonth.value = _date.getMonth() + 1
+      emit('updateCalendarDate', `${curYear.value}-${curMonth.value}`)
       showedDate.value = _date;
       emit('change', _date)
     }
@@ -81,6 +88,7 @@ export default defineComponent({
       _date.setDate(1)
       _date.setTime(_date.getTime() - 1000 * 60 * 60 * 24 * 2)
       curMonth.value = _date.getMonth() + 1
+      emit('updateCalendarDate', `${curYear.value}-${curMonth.value}`)
       showedDate.value = _date;
       emit('change', _date)
     }
@@ -91,7 +99,7 @@ export default defineComponent({
     return () => (
       <div class="w-full">
         <div class="calendar-header">
-          <div class="calendar-header-btn select-none cursor-pointer">{curYear.value + '年'}</div>
+          <div class="calendar-header-btn select-none cursor-pointer !px-0 !w-4.8rem">{curYear.value + '年'}</div>
           <div class="flex items-center space-x-2">
             <div class="p-1 text-[#42d56e] font-bold select-none cursor-pointer" onClick={() => setLastMonth()}>{'<'}</div>
             <div class="calendar-header-btn select-none cursor-pointer">
@@ -103,6 +111,7 @@ export default defineComponent({
           <div class="calendar-header-btn select-none cursor-pointer" onClick={() => {
             const _date = new Date()
             curMonth.value = _date.getMonth() + 1
+            emit('updateCalendarDate', `${curYear.value}-${curMonth.value}`)
             showedDate.value = _date;
             emit('change', _date)
           }}>今天</div>
