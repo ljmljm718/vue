@@ -8,6 +8,9 @@ import { uniqueId } from 'lodash-es';
 import request from '@/config/axios'
 import { ElMessage } from 'element-plus'
 
+const liveToken = localStorage.getItem("LIVE_TOKEN");
+if (liveToken === 'error') localStorage.removeItem("LIVE_TOKEN")
+
 const getAddressInfoRecordPage = async (params: any) => {
   return await request.get({ url: `/agriculture/device-nvr/getToken`, params })
 }
