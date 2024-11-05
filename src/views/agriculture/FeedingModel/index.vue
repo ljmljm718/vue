@@ -174,7 +174,7 @@
               <div
                 class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-              <div class="!w-150px">鱼塘规模:</div>
+              <div class="!w-150px">池塘规模:</div>
               <div class="!w-160px">
                 <el-input class='!w-100%' type="number" v-model="sycleCount" >
                   <template #suffix> 只 </template>
@@ -184,7 +184,7 @@
               <div
                 class="!flex box-border mb-18px !h-35px !px-[10px] !w-100% bg-[#fff] !items-center !border-2 !border-[#40b0a6] rounded !border-solid"
               >
-              <div class="!w-150px">鱼塘面积:</div>
+              <div class="!w-150px">池塘面积:</div>
               <div class="!w-160px">
                 <el-input class="!w-100%" type="number" v-model="sycleArea" >
                   <template #suffix> 亩 </template>
