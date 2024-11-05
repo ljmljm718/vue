@@ -480,6 +480,13 @@ export default defineComponent({
         )
         marker.on('click', () => {
           handleSelect(item.id)
+          
+          const { belongPark, belongPlot } = item;
+          selectedBase.value = belongPark;
+          selectedPlot.value = belongPlot;
+          getWeatherAndSoilDataList('气象站')
+          getWeatherAndSoilDataList('土壤墒情')
+          getWeatherAndSoilDataList('杀虫设备')
         })
       })
 
@@ -550,7 +557,7 @@ export default defineComponent({
                   soilDataList.value.length > 0 ? soilDataList.value.map((item:any) => (
                     <div class="flex justify-center items-center">
                       <div class="w-[190px] h-[40px] soil-bg flex items-center justify-between px-3">
-                        <div>{item.monitoringType}</div>
+                        <div class="text-[12px]">{item.monitoringType}</div>
                         <div class="art-font linear-title">
                           <span>{item.dataValue}</span>
                           <span class="pl-1">{item.unit}</span>
