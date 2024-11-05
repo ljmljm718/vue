@@ -1,12 +1,13 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
       label-width="68px"
+      :hidden-labels="['分类名称']"
     >
       <!--      <el-form-item label="父结点id" prop="parentId">-->
       <!--        <el-input-->
@@ -127,7 +128,7 @@
           </el-button>
         </el-form-item>
       </el-row>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
