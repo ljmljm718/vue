@@ -258,7 +258,7 @@ const routerHandler = (item: string) => {
     '模型监测': '/growthMonitoringModelDataCenter',
 
     '产品溯源': '/trace/trace-visual',
-    '病虫监测': '/disease_pest_surveillance/disease-pest-surveillance',
+    '病虫监测': '/disease_pest_surveillance/pestWarn',
   }
 
   if (routeMap[item]) {
