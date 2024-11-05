@@ -35,7 +35,6 @@ export default defineComponent({
         console.log('res', res);
 
         selectedBase.value = res.length > 0 ? res[0].name : ''
-        // console.log('sssssssssss', selectedBase.value)
         if (res.length > 0) {
           getMainDataList(res[0].id)
 
@@ -88,21 +87,7 @@ export default defineComponent({
           const features = turf.points(allCoordinates);
           const centerPoint = turf.center(features);
           const { coordinates } = centerPoint.geometry;
-
-          // 计算自动缩放级别
-          const boundingBox = turf.bbox(turf.polygon([allCoordinates]));
-          const diagonalDistance = turf.distance(
-            turf.point([boundingBox[0], boundingBox[1]]),
-            turf.point([boundingBox[2], boundingBox[3]])
-          );
-          const baseZoomFactor = 1000; //基础缩放系数
-          const zoomFactor = diagonalDistance < 1 ? baseZoomFactor * 5 :
-                            diagonalDistance < 5 ? baseZoomFactor * 2 :
-                            baseZoomFactor;
-
-          const zoomLevel = diagonalDistance * zoomFactor;
-
-          cesiumIns.value.flyToWithZoomLevel(coordinates, zoomLevel);
+          cesiumIns.value.flyToWithZoomLevel(coordinates, allCoordinates);
         }
       }
     };

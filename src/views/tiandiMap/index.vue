@@ -218,9 +218,7 @@ const flyTo = (
 //flyToWithZoomLevel方法
 const flyToWithZoomLevel = (centerCoordinates, allPlotsCoordinates) => {
   if (allPlotsCoordinates[0] !== allPlotsCoordinates[allPlotsCoordinates.length - 1]) {
-    console.log('AAAAAAAAA',allPlotsCoordinates)
     allPlotsCoordinates.push(allPlotsCoordinates[0]); //确保多边形闭合
-    console.log('OOOOOOOO',allPlotsCoordinates)
 }
     //计算原始边界框
   const boundingBox = turf.bbox(turf.polygon([allPlotsCoordinates])); // [minX, minY, maxX, maxY]
@@ -237,19 +235,17 @@ const flyToWithZoomLevel = (centerCoordinates, allPlotsCoordinates) => {
     turf.point([minX, minY]),
     turf.point([maxX, maxY])
   );
-  // console.log('调整后的对角线距离:', diagonalDistance)
+  console.log('调整后的对角线距离:', diagonalDistance)
   // 设置缩放级别
-  // 根据diagonalDistance动态调整缩放系数
   const baseZoomFactor = 1000; //基础缩放系数
   const zoomFactor =
                     // diagonalDistance < 0.5 ? baseZoomFactor * 3 : 
                     diagonalDistance < 0.5 ? baseZoomFactor * 4 : 
-
                     diagonalDistance < 1 ? baseZoomFactor * 5 : 
-                    diagonalDistance < 2 ? baseZoomFactor * 4: 
+                    diagonalDistance < 2 ? baseZoomFactor * 6: 
                     baseZoomFactor; 
   const zoomLevel = diagonalDistance * zoomFactor * 0.3;
-  // console.log('zoomLevel',zoomLevel)
+  console.log('zoomLevel',zoomLevel)
 //   //加中心点标记(测试用)
 //   viewer.entities.add({
 //     position: Cesium.Cartesian3.fromDegrees(centerCoordinates[0], centerCoordinates[1]), 
