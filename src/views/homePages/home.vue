@@ -257,7 +257,7 @@ const routerHandler = (item: string) => {
     // '模型监测': '/growth_monitor/modelMonitor',
     '模型监测': '/growthMonitoringModelDataCenter',
 
-    '产品溯源': '/trace/product-trace-erdu',
+    '产品溯源': '/trace/trace-visual',
     '病虫监测': '/disease_pest_surveillance/disease-pest-surveillance',
   }
 
