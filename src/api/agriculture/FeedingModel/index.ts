@@ -80,3 +80,10 @@ export const  feedingGet= async (params) => {
     params
   })
 }
+//不同地块获取不同的水质数据
+export const  dataByPlotId= async (params) => {
+  return await request.get({
+    url: '/yyang/equipment-data/feed/factor/real/data-by-plot-id',
+    params
+  })
+}

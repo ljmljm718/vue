@@ -213,7 +213,7 @@
           </div>
           <div class="w-32%">
             <div
-              v-for="(item, index) in waterList.water"
+              v-for="(item, index) in waterListA"
               :key="index"
               class="!flex !px-[10px] box-border bg-[#fff] !w-100% flex justify-between items-center h-35px mb-18px rounded !items-center"
             >
@@ -282,7 +282,8 @@ import {
   plotList,
   infoByBasePlot,
   byGrowthPeriod,
-  feedingGet
+  feedingGet,
+  dataByPlotId
 } from '@/api/agriculture/FeedingModel/index'
 import {
   initChartStatic,
@@ -291,7 +292,7 @@ import {
 } from '../../../utils/bigscreenTool/index'
 //获取生长周期
 const growthPeriod = ref('')
-const FeedingTopList = ref([])
+const FeedingTopList = ref<any[]>([])
 const getPeriodStrategyAll = async () => {
   let res = await periodStrategyAll()
   console.log(res, '生长周期123')
@@ -314,7 +315,7 @@ const tabFeeding = (val) => {
 }
 //喂养量影响因子
 const influence=ref('')
-const FactorList = ref([])
+const FactorList = ref<any[]>([])
 const getFactorPage = async () => {
   let res = await factorPage()
   console.log(res, '喂养量因子')
@@ -478,7 +479,7 @@ const getFeedInfoPage = async () => {
   let res = await FeedInfoPage({ pageNo: 1, pageSize: 10 ,farmingStage: 25})
   console.log(res, '喂养日志')
   tableData.value = res.list
-  tableData.value.forEach((item) => {
+  tableData.value.forEach((item:any) => {
     item.feedNum = item.feedNum + item.feedOne
     item.feedTime = timestampToDateTime(item.feedTime)
   })
@@ -497,17 +498,17 @@ const waterList = reactive({
 const getRealData = async () => {
   let res = await realData()
   console.log(res, '水质')
-  res.map((item) => {
+  res.map((item:any) => {
     if (item.collectionType === '气象站') waterList.meteorological.push(item)
   })
   console.log(waterList.meteorological, 'ddddddd')
-  res.map((item) => {
+  res.map((item:any) => {
     if (item.collectionType === '水质监测') waterList.water.push(item)
   })
 }
 getRealData()
 //获取基地
-const parkList = ref([])
+const parkList = ref<any[]>([])
 const getBaseList = async () => {
   let res = await BaseList()
   console.log(res, 'jidi')
@@ -517,24 +518,38 @@ const getBaseList = async () => {
 }
 getBaseList()
 //获取地块
-const dkList = ref([])
+const dkList = ref<any[]>([])
 const getPlotList = async (val) => {
   let res = await plotList({ parkId: val,pageSize:20,pageNo:1 })
   plotCode.value = res.list[0].id
   dkList.value = res.list
   getInfoByBasePlot()
+  getDataByPlotId(res.list[0].id)
+
 }
+//不同地块切换不同水质数据
+const waterListA = ref<any[]>([])
+const  getDataByPlotId = async (id) => {
+  let res = await dataByPlotId({plotId:id})
+  console.log(res,'水质监测 99999999')
+  waterListA.value = res
+}
+
 //基地切换
 const select = (e) => {
   baseCode.value = e.target.value
   getPlotList(baseCode.value)
 }
-const feedVal = ref('')
+const feedVal = ref(0)
 
 const select2 = (e) => {
+  console.log(e.target.value,'地块切换')
+
   plotCode.value = e.target.value
   feedVal.value = 0
   getInfoByBasePlot()
+  getDataByPlotId(e.target.value)
+
 }
 //获取周期数量初始值
 //获取周期数量初始值
@@ -550,8 +565,7 @@ function shallowUniqueByKeys(arr, keys) {
   }
   return uniqueObjects
 }
-const infoObj = ref({})
-const infoList = ref([])
+const infoList = ref<any[]>([])
 const sycleCount = ref('')
 const sycleArea = ref('')
 const getInfoByBasePlot = async () => {
