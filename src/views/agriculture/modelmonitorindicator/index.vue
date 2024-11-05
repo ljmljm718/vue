@@ -94,7 +94,7 @@
                         >{{ cardVo.text }}
                       </div>
                       <div class="flex space-x-[.5rem] items-center">
-                        <div class="w-[3.7rem] text-center"
+                        <div class="w-[4.7rem] text-center"
                           >{{ cardVo.lowVal }}{{ cardVo.unit ?? '' }}</div
                         >
                         <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
@@ -116,7 +116,7 @@
                           >
                           </div>
                         </div>
-                        <div class="w-[3.7rem] text-center"
+                        <div class="w-[4.7rem] text-center"
                           >{{ cardVo.hightVal }}{{ cardVo.unit ?? '' }}</div
                         >
                       </div>
