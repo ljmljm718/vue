@@ -140,7 +140,11 @@
           <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
           <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
           <el-table-column align="center" prop="deviceName" label="设备名称" />
-          <el-table-column align="center" prop="noticeEvent" label="事件类型" />
+          <el-table-column label="事件类型" align="center" prop="noticeEvent">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent"/>
+              </template>
+            </el-table-column>
           <el-table-column align="center" prop="remarks" label="消息内容" />
           <el-table-column align="center" label="拍摄时间">
             <template #default="scope">
@@ -588,7 +592,9 @@ const getWarnDataList = async (deviceCode, deviceKind) => {
   let requestFunc = getWarningRecordList
   if (deviceKind === '110') requestFunc = getMonitoringEquipmentNoticePage
   warnDataLoading.value = true
-  const { list = [], total = 0 } = await requestFunc({ deviceCode, pageSize: 100 }).catch(() => { warnDataLoading.value = false })
+  const { list = [], total = 0 } = await requestFunc(deviceKind === '110' ? {
+    deviceId: deviceCode, pageSize: 100
+  } : { deviceCode, pageSize: 100 }).catch(() => { warnDataLoading.value = false })
   console.log("报警列表", list);
   
   warnDataLoading.value = false
