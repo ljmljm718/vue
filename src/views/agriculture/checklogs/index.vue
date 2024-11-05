@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -77,7 +77,7 @@
           重置
         </el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-row>
         <el-form-item>
           <!--          <el-button-->
           <!--            type="primary"-->
@@ -99,8 +99,8 @@
             导出
           </el-button>
         </el-form-item>
-      </div>
-    </el-form>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

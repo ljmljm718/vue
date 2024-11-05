@@ -9,8 +9,8 @@
       </template>
       <!-- 搜索栏 -->
       <ContentWrap>
-        <el-form
-          class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
+        <custom-form
+          class="-mb-15px"
           :model="queryParams"
           ref="queryFormRef"
           label-width="68px"
@@ -18,7 +18,7 @@
         >
           <!-- 表单内容 -->
           <el-form-item label="预警类型" prop="warnType">
-            <el-select v-model="queryParams.warnType" placeholder="请选择预警类型" clearable>
+            <el-select class="!w-240px" v-model="queryParams.warnType" placeholder="请选择预警类型" clearable>
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
                 :key="dict.value"
@@ -28,7 +28,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="预警状态" prop="warnStatus">
-            <el-select v-model="queryParams.warnStatus" placeholder="请选择预警状态" clearable>
+            <el-select class="!w-240px" v-model="queryParams.warnStatus" placeholder="请选择预警状态" clearable>
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
                 :key="dict.value"
@@ -38,7 +38,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="预警等级" prop="warnLevel">
-            <el-select v-model="queryParams.warnLevel" placeholder="请选择预警等级" clearable>
+            <el-select class="!w-240px" v-model="queryParams.warnLevel" placeholder="请选择预警等级" clearable>
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
                 :key="dict.value"
@@ -49,6 +49,7 @@
           </el-form-item>
           <el-form-item label="预警时间" prop="warnTime">
             <el-date-picker
+              class="!w-220px"
               v-model="queryParams.warnTime"
               value-format="YYYY-MM-DD HH:mm:ss"
               type="daterange"
@@ -68,7 +69,7 @@
               重置
             </el-button>
           </el-form-item>
-        </el-form>
+        </custom-form>
       </ContentWrap>
       <!-- 数据列表 -->
       <ContentWrap>
@@ -352,19 +353,20 @@
       </template>
       <!-- 搜索栏 -->
       <ContentWrap>
-        <el-form
-          class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2"
+        <custom-form
+          class="-mb-15px"
           :model="queryParamsMonitor"
           ref="queryFormRefMonitor"
           label-width="68px"
           :inline="true"
         >
           <!-- 表单内容 -->
-          <div
-            class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"
-          >
+<!--          <div-->
+<!--            class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"-->
+<!--          >-->
             <el-form-item label="基地名称" prop="monitoringBaseName">
               <el-input
+                class="!w-240px"
                 v-model="queryParamsMonitor.monitoringBaseName"
                 placeholder="请输入"
                 clearable
@@ -373,6 +375,7 @@
             </el-form-item>
             <el-form-item label="地块名称" prop="monitoringPlotName">
               <el-input
+                class="!w-240px"
                 v-model="queryParamsMonitor.monitoringPlotName"
                 placeholder="请输入"
                 clearable
@@ -381,6 +384,7 @@
             </el-form-item>
             <el-form-item label="设备名称" prop="deviceName">
               <el-input
+                class="!w-240px"
                 v-model="queryParamsMonitor.deviceName"
                 placeholder="请输入"
                 clearable
@@ -389,6 +393,7 @@
             </el-form-item>
             <el-form-item label="事件类型" prop="noticeEvent">
               <el-select
+                class="!w-240px"
                 v-model="queryParamsMonitor.noticeEvent"
                 placeholder="请选择"
                 clearable
@@ -409,6 +414,7 @@
             </el-form-item>
             <el-form-item label="拍摄时间" prop="recordTime">
               <el-date-picker
+                class="!w-220px"
                 v-model="queryParamsMonitor.recordTime"
                 value-format="YYYY-MM-DD HH:mm:ss"
                 type="daterange"
@@ -417,9 +423,9 @@
                 :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
               />
             </el-form-item>
-          </div>
+<!--          </div>-->
           <!-- 表单按钮 -->
-          <div class="flex flex-wrap justify-center content-center md:col-span-1">
+<!--          <div class="flex flex-wrap justify-center content-center md:col-span-1">-->
             <el-form-item>
               <el-button @click="handleQueryMonitor" type="primary">
                 <Icon icon="ep:search" />
@@ -430,8 +436,8 @@
                 重置
               </el-button>
             </el-form-item>
-          </div>
-        </el-form>
+<!--          </div>-->
+        </custom-form>
       </ContentWrap>
       <!-- 数据列表 -->
       <ContentWrap>
@@ -471,7 +477,7 @@
             `"
           >
             <!-- 预览区 -->
-            <div 
+            <div
               :class="`
                 col-span-1 rounded-md shadow-md
                 ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
@@ -650,7 +656,7 @@ const hiddenMonitorTab = ref<boolean>(true)
 const judgeMonitorHidden = () => {
   const tenantName = localStorage.getItem("TENANT_NAME");
   console.log("=========",tenantName !== '太原乡村振兴数字化赋能');
-  
+
   hiddenMonitorTab.value = tenantName !== '太原乡村振兴数字化赋能'
 }
 judgeMonitorHidden()
@@ -1087,24 +1093,24 @@ watch(() => appStore.isDark, (newVal, oldVal) => {
 
 <style scoped lang="scss">
 /* 消除element部分组件的部分样式 */
-.el-tabs__nav-wrap::after {
-  display: none;
-}
-.el-form-item {
-  margin-bottom: 0;
-}
-.el-form-item--small {
-  margin-bottom: 0;
-}
-.el-form--inline .el-form-item {
-  margin-right: 0;
-}
-.el-range-editor.el-input__wrapper {
-  padding: 0;
-}
-.el-button + .el-button {
-  margin-left: 10px;
-}
+//.el-tabs__nav-wrap::after {
+//  display: none;
+//}
+//.el-form-item {
+//  margin-bottom: 0;
+//}
+//.el-form-item--small {
+//  margin-bottom: 0;
+//}
+//.el-form--inline .el-form-item {
+//  margin-right: 0;
+//}
+//.el-range-editor.el-input__wrapper {
+//  padding: 0;
+//}
+//.el-button + .el-button {
+//  margin-left: 10px;
+//}
 
 /* 单个卡片样式 */
 .card-item {

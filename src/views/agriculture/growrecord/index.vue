@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -99,31 +99,31 @@
         </el-button>
 
       </el-form-item>
-    </el-form>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:grow-record:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:grow-record:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
 
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:grow-record:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:grow-record:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
   </ContentWrap>
 
   <!-- 列表 -->

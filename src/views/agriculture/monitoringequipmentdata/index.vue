@@ -2,7 +2,7 @@
   <!-- <el-scrollbar height="79vh" @scroll="scroll"> -->
     <!-- 搜索栏 -->
     <ContentWrap>
-      <el-form
+      <custom-form
         class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
         :model="queryParams"
         ref="queryFormRef"
@@ -71,7 +71,7 @@
             重置
           </el-button>
         </el-form-item>
-      </el-form>
+      </custom-form>
     </ContentWrap>
     <!-- 数据列表 -->
     <ContentWrap>

@@ -18,6 +18,7 @@ onMounted(() => { init() })
 const handleCollapse = () => {
   const dom = document.getElementById(componentID);
   const formItemList = dom.querySelectorAll(".el-form-item");
+  console.log('🚀 ~ formItemList',formItemList);
   if (collapsed.value) {
     // 当前折叠状态，使其展开
     for (let i = 0; i < Array.from(formItemList).length; i++) {
@@ -29,16 +30,17 @@ const handleCollapse = () => {
       const formItem = formItemList[i];
       //获取label名称
       const formItemLabel = formItem.querySelector(".el-form-item__label")?.innerText;
-      // console.log("🚀 ~ handleCollapse ~ formItemLabel:", formItemLabel)
-      console.log("indexOf",props.showLabels.indexOf(formItemLabel))
+      console.log("🚀 ~ handleCollapse ~ formItemLabel:", formItemLabel)
+      console.log("🚀 ~ !formItemLabel:", !formItemLabel)
       //获取button
       const btnDom = formItem.querySelector('.el-button')
+      console.log("🚀 ~ btnDom:", !btnDom)
       //定义展示查询框，只展示定义的前2个，其余隐藏；如未定义默认展示前2个查询框，其余隐藏
       //button全部显示不隐藏
       if (props.showLabels.length > 0) {
-        if (props.showLabels.indexOf(formItemLabel) <= -1 && !btnDom) formItem.style.display = 'none';
+        if (props.showLabels.indexOf(formItemLabel) <= -1 && (!btnDom || formItemLabel)) formItem.style.display = 'none';
       } else {
-        if (i > 1 && !btnDom) {
+        if (i > 1 && (!btnDom || formItemLabel)) {
           formItem.style.display = 'none';
         }
       }

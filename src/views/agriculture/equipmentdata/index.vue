@@ -2,12 +2,13 @@
   <ContentWrap>
     <div class="flex items-center relative">
       <!-- 搜索工作栏 -->
-      <el-form
+      <custom-form
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
         label-width="70px"
+        style="width: 100%"
       >
         <el-form-item label="采集类型" prop="collectionType">
           <el-select
@@ -15,7 +16,7 @@
             placeholder="请选择"
             clearable
             @keyup.enter="handleQuery"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           >
             <el-option
               v-for="item in selectEquipmentType"
@@ -32,7 +33,7 @@
             placeholder="请选择监测类型"
             clearable
             @keyup.enter="handleQuery"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           >
             <el-option
               v-for="item in selectCollectionType"
@@ -47,10 +48,10 @@
             placeholder="请输入"
             clearable
             @keyup.enter="handleQuery"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           />
         </el-form-item>
-        
+
         <el-form-item label="采集时间" prop="collectionTime">
           <el-date-picker
             v-model="queryParams.collectionTime"
@@ -59,7 +60,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="设备名称" prop="deviceName">
@@ -68,7 +69,7 @@
             placeholder="请输入"
             clearable
             @keyup.enter="handleQuery"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           />
         </el-form-item>
 
@@ -78,7 +79,7 @@
             placeholder="请输入"
             clearable
             @keyup.enter="handleQuery"
-            :class="`!w-${isCollapse2 ? '240px' : '240px'}`"
+            class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="终端编码" prop="yyRemarks">
@@ -87,16 +88,16 @@
             placeholder="请输入"
             clearable
             @keyup.enter="handleQuery"
-            class="!w-260px"
+            :class="isCollapse2 ? '!w-240px' : '!w-260px'"
           />
         </el-form-item>
         <el-form-item>
-          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]"
-            ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
-          >
+          <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]">
+            <Icon icon="ep:search" class="mr-5px" /> 搜索
+          </el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </el-form-item>
-      </el-form>
+      </custom-form>
     </div>
   </ContentWrap>
 

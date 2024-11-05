@@ -88,7 +88,7 @@ const focusInput=(e)=>{
   }
 }
 const inputFoucs=()=>{
-  
+
 }
 </script>
 
@@ -126,7 +126,7 @@ const inputFoucs=()=>{
         <img :src="img" class="w-12px h-7px mr-10px" /> 收起</div
       >
       </el-menu>
-      
+
     </el-col>
     <div v-show="isCollapse" class="flex h-50px !w-[98.5%] m-auto bg-[#fff] rounded mb-15px">
       <el-input
@@ -141,8 +141,9 @@ const inputFoucs=()=>{
         style="cursor: pointer"
         class="flex w-80px color-[#5abbb2] items-center justify-center"
       >
-        <img :src="img2" class="w-12px h-7px mr-10px" />
         展开
+        <el-icon style="padding-left: 5px"><ArrowDown/></el-icon>
+<!--        <img :src="img2" class="w-12px h-7px mr-10px" />-->
       </div>
     </div>
     <el-col :span="isCollapse ? 24 : 20">

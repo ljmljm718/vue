@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item label="设备类型" prop="deviceType">
           <el-cascader
-            style="width: 100%"
+            class="!w-240px"
             v-model="deviceType"
             :options="categoryOptions"
             :props="categoryProps"
@@ -74,7 +74,7 @@
         </el-form-item>
       </el-row>
 
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
