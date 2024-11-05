@@ -7,7 +7,7 @@
       ref="queryFormRef"
       :inline="true"
       label-width="68px"
-      :hidden-labels="['分类名称']"
+      :show-labels="['分类名称']"
     >
       <!--      <el-form-item label="父结点id" prop="parentId">-->
       <!--        <el-input-->
