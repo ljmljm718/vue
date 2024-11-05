@@ -392,7 +392,6 @@
                 v-model="queryParamsMonitor.noticeEvent"
                 placeholder="请选择"
                 clearable
-                @change="handleSelectChangeEvent"
               >
                 <el-option
                   v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
@@ -472,18 +471,19 @@
             `"
           >
             <!-- 预览区 -->
-            <div :class="`
-              col-span-1 rounded-md shadow-md
-              ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
-            `">
+            <div 
+              :class="`
+                col-span-1 rounded-md shadow-md
+                ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
+              `"
+            >
               <div class="relative">
                 <el-image
-                  lazy
                   :src="currentItem.captured"
                   :preview-src-list="[currentItem.captured]"
                   preview-teleported
                   fit="contain"
-                  class="w-full rounded"
+                  class="w-full h-[50vh] rounded"
                 />
                 <div
                   v-show="currentItem.videoLink"
@@ -538,7 +538,6 @@
                   <el-scrollbar>
                   <div class="text-center">
                     <el-image
-                      lazy
                       :src="item.captured"
                       preview-teleported
                       fit="contain"
@@ -1026,6 +1025,9 @@ const openFormMonitor = (type: string, id?: number) => {
 
 /** 删除按钮操作 */
 const handleDeleteMonitor = async (id: number) => {
+  // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
+  const idx = listMonitor.value.findIndex(ele => ele.id === currentItem.value.id);
+
   try {
     // 删除的二次确认
     await message.delConfirm()
@@ -1034,7 +1036,14 @@ const handleDeleteMonitor = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getListMonitor()
-  } catch {}
+  } catch {
+    console.log("删除失败")
+  }
+
+  // 删除后 设置curItem
+  // 如果删除成功 则下标处是删除后的下一项
+  // 如果删除失败 则下标处是原来的项
+  currentItem.value = listMonitor.value[idx];
 }
 /** 导出按钮操作 */
 const handleExportMonitor = async () => {
