@@ -465,7 +465,8 @@ const getQianjiangWarnRecordInfo = async () => {
   if (Array.isArray(res)) warnRecordList.value = res.map(item => ({
     ...item,
     warnStatus: item.warnStatus === '0' ? '未处理' : '已处理',
-    warnTime: dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss")
+    warnTime: dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss"),
+    warnInfo: item.warnInfo.replaceAll("null", "")
   }));
 }
 getQianjiangWarnRecordInfo()
