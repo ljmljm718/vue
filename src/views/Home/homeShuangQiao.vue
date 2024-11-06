@@ -329,12 +329,98 @@ getdeviceInfoByPark()
 onMounted(() => {
   initChart()
 })
+
+const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
 </script>
 <template>
   <div>
     <div class="grid grid-cols-5 gap-4">
       <div
-        :class="`top-bg-${index + 1} px-6 flex flex-col justify-center`"
+        v-for="(item, index) in cardList"
+        :key="item.id"
+        :class="`top-bg-${index + 1}`"
+        :style="`color: ${cardTextColor[index]};`"
+      >
+        <div
+          v-if="['设备总数', '预警数量'].includes(item.title)"
+          class="flex flex-col justify-evenly w-full h-full px-[2rem] py-1rem box-border"
+        >
+          <div class="text-1.3rem art-font">{{ item.title }}</div>
+          <div
+            class="min-w-3rem max-w-4rem flex justify-between items-center"
+            @click="
+              $router.push(
+                item.title === '设备总数'
+                ? '/internetMonitor/device/deviceView'
+                : '/internetMonitor/warn/agri-warning-record'
+              )
+            "
+          >
+            <div class="text-1.4rem font-bold art-font">{{ item.total }}</div>
+            <div>台</div>
+          </div>
+        </div>
+        <div
+          v-else
+          class="flex flex-col space-y-.4rem justify-evenly w-full h-full px-2rem py-1rem box-border"
+        >
+          <div class="flex justify-between items-center">
+            <div class="text-1.3rem art-font">{{ item.title }}</div>
+            <div
+              class="min-w-4rem max-w-5rem flex justify-between items-center"
+              @click="
+                $router.push({
+                  path: '/internetMonitor/device/deviceView',
+                  query: { deviceType: item.deviceType }
+                })
+              "
+            >
+              <div class="text-1.4rem font-bold art-font">{{ item.total }}</div>
+              <div>台</div>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-[.4rem] md:space-y-[.1rem] px-3">
+            <div
+              class="min-w-5rem max-w-7rem flex justify-between items-center"
+              @click="
+                $router.push({
+                  path: '/internetMonitor/device/deviceView',
+                  query: {
+                    deviceStatus: 'online',
+                    deviceType: item.deviceType
+                  }
+                })
+              "
+            >
+              <div>在线</div>
+              <div class="flex items-center">
+                <div class="w-2rem text-right pr-2 text-[1.2rem] art-font">{{ item.online }}</div>
+                <div>台</div>
+              </div>
+            </div>
+            <div
+              class="min-w-5rem max-w-7rem flex justify-between items-center"
+              @click="
+                $router.push({
+                  path: '/internetMonitor/device/deviceView',
+                  query: {
+                    deviceStatus: 'offline',
+                    deviceType: item.deviceType
+                  }
+                })
+              "
+            >
+              <div>离线</div>
+              <div class="flex items-center">
+                <div class="w-2rem text-right pr-2 text-[1.2rem] art-font">{{ item.offline }}</div>
+                <div>台</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        :class="`top-bg-${index + 1} px-6 flex flex-col justify-center !hidden`"
         :style="`aspect-ratio: 2;color: ${index == 0 ? '#1c64ba' : index == 1 ? '#1f887f' : index == 2 ? '#0a7ebc' : index == 3 ? '#765082' : index == 4 ? '#cb7e10' : ''};`"
         v-for="(item, index) in cardList"
         :key="item.id"
@@ -413,34 +499,37 @@ onMounted(() => {
       </div>
     </div>
     <div class="grid grid-cols-4 gap-4 py-4">
-      <el-card>
+      <el-card class="2xl:col-span-1 xl:col-span-2 col-span-2">
         <el-skeleton :loading="loading" animated>
           <div class="flex pl-7 title-icon">
             <span>设备运行状态</span>
           </div>
           <el-divider class="!my-3" />
           <div class="left1">
-            <div id="chart"></div>
+            <div id="chart" class="2xl:h-20rem xl:h-26rem h-26rem"></div>
           </div>
         </el-skeleton>
       </el-card>
-      <el-card>
+      <el-card class="2xl:col-span-1 xl:col-span-2 col-span-2">
         <el-skeleton :loading="loading" animated>
-          <div class="flex pl-7 title-icon justify-between items-center">
-            <span>养殖品种</span>
-            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-              <select @change="handleSelectorChange1">
-                <option :value="item.id" v-for="(item, index) in options1" :key="index"
-                  >{{ item.name }}
-                </option>
-              </select>
-              <select @change="handleSelectorChange2">
-                <option :value="item.id" v-for="(item, index) in options2" :key="index"
-                  >{{ item.name }}
-                </option>
-              </select>
+          <div class="flex justify-between flex-wrap space-y-2">
+            <div class="flex pl-7 title-icon justify-between items-center flex-wrap">
+              <span>养殖品种</span>
             </div>
+            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                <select @change="handleSelectorChange1">
+                  <option :value="item.id" v-for="(item, index) in options1" :key="index"
+                    >{{ item.name }}
+                  </option>
+                </select>
+                <select @change="handleSelectorChange2">
+                  <option :value="item.id" v-for="(item, index) in options2" :key="index"
+                    >{{ item.name }}
+                  </option>
+                </select>
+              </div>
           </div>
+          
           <el-divider class="!my-3" />
           <div class="p-1">
             <div
@@ -453,9 +542,27 @@ onMounted(() => {
             </div>
             <div class="p-1 mt-3" v-if="growthTypes.length !== 0">
               <img :src="growthTypes[growthIndex].imgId" alt="" class="w-100% object-cover" />
-              <div class="px-2 w-100% h-100% mt-10px grid grid-cols-2 gap-3px">
+              <div class="grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3 text-15px py-1rem">
+                <div class="flex items-center">
+                  <div class="w-6rem">养殖品类:</div>
+                  <div>{{ getListCategaryLabelById(growthTypes[growthIndex].cropType) }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">当前生育期:</div>
+                  <div>{{ growthTypes[growthIndex].growth }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">开始时间:</div>
+                  <div>{{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd') }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">结束时间:</div>
+                  <div>{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}</div>
+                </div>
+              </div>
+              <div class="px-2 w-100% h-100% mt-10px grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3px !hidden">
                 <div class="p-1 flex items-center">
-                  <div class="text-15px">养殖品类: </div>
+                  <div class="text-15px w-5rem">养殖品类: </div>
                   <div class="pl-2">{{
                     getListCategaryLabelById(growthTypes[growthIndex].cropType)
                   }}</div>
@@ -488,13 +595,13 @@ onMounted(() => {
           </div>
         </el-skeleton>
       </el-card>
-      <el-card class="col-span-2">
+      <el-card class="2xl:col-span-2 xl:col-span-4 col-span-4">
         <el-skeleton :loading="loading" animated>
           <div class="flex pl-7 title-icon">
             <span>实时监测数据</span>
           </div>
           <el-divider class="!my-3" />
-          <div class="grid gap-2 grid-cols-4 grid-rows-4">
+          <div class="grid gap-2 2xl:grid-cols-4 xl:grid-cols-5 grid-cols-5">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
@@ -521,7 +628,7 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div class="grid gap-2 grid-cols-4 grid-rows-4 mt-2">
+          <div class="grid gap-2 2xl:grid-cols-4 xl:grid-cols-5 grid-cols-5 mt-2">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
@@ -638,9 +745,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-#chart {
-  height: 18rem;
-}
 
 .title-icon {
   background-image: url(./assets/titleIcon.png);

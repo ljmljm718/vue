@@ -1,120 +1,122 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="设备" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请选择设备"
-          disabled
-          class="!w-240px"
-        >
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search"/>
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="监测物种" prop="monitorSpecies">
-        <el-select
-          v-model="queryParams.monitorSpecies"
-          clearable
-          placeholder="请选择监测物种"
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in listCategoryManagement"
-            :key="item.id"
-            :label="item.categoryName"
-            :value="item.id"
+      <el-row>
+        <el-form-item label="设备" prop="deviceName">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请选择设备"
+            disabled
+            class="!w-240px"
+          >
+            <template #append>
+              <el-button @click="openPurchaseOrderInEnableList">
+                <Icon icon="ep:search"/>
+                选择
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="监测物种" prop="monitorSpecies">
+          <el-select
+            v-model="queryParams.monitorSpecies"
+            clearable
+            placeholder="请选择监测物种"
+            class="!w-240px"
+          >
+            <el-option
+              v-for="item in listCategoryManagement"
+              :key="item.id"
+              :label="item.categoryName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="监测类型" prop="monitorType">
+          <el-select
+            v-model="queryParams.monitorType"
+            placeholder="请选择监测类型"
+            clearable
+            class="!w-240px"
+          >
+            <el-option label="请选择字典生成" value="" />
+          </el-select>
+        </el-form-item> -->
+        <el-form-item label="监测时间" prop="monitorTime">
+          <el-date-picker
+            v-model="queryParams.monitorTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-220px"
           />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="监测类型" prop="monitorType">
-        <el-select
-          v-model="queryParams.monitorType"
-          placeholder="请选择监测类型"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item label="监测时间" prop="monitorTime">
-        <el-date-picker
-          v-model="queryParams.monitorTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="监测抓图" prop="monitorPicture">
-        <el-input
-          v-model="queryParams.monitorPicture"
-          placeholder="请输入监测抓图"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      <el-form-item label="地块" prop="belongPark">
-        <el-select class="!w-240px" v-model="queryParams.belongPark">
-          <el-option
-            v-for="(item, index) in plotList"
-            :key="index"
-            :value="item.id"
-            :label="item.name"
-            placeholder="请选择"
+        </el-form-item>
+        <!-- <el-form-item label="监测抓图" prop="monitorPicture">
+          <el-input
+            v-model="queryParams.monitorPicture"
+            placeholder="请输入监测抓图"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="识别状态" prop="identifyStatus">
-        <el-select v-model="queryParams.identifyStatus" class="!w-240px" clearable placeholder="请选择状态">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+        </el-form-item> -->
+        <el-form-item label="地块" prop="belongPark">
+          <el-select class="!w-240px" v-model="queryParams.belongPark">
+            <el-option
+              v-for="(item, index) in plotList"
+              :key="index"
+              :value="item.id"
+              :label="item.name"
+              placeholder="请选择"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="识别状态" prop="identifyStatus">
+          <el-select v-model="queryParams.identifyStatus" class="!w-240px" clearable placeholder="请选择状态">
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="设备状态" prop="deviceStatus">
+          <el-select
+            v-model="queryParams.deviceStatus"
+            placeholder="请选择设备状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option label="请选择字典生成" value="" />
+          </el-select>
+        </el-form-item> -->
+        <!-- <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
           />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="设备状态" prop="deviceStatus">
-        <el-select
-          v-model="queryParams.deviceStatus"
-          placeholder="请选择设备状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item> -->
+        <el-form-item>
+          <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

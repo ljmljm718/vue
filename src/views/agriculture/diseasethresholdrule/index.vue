@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -183,7 +183,7 @@ v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种�
           </el-button>
         </el-form-item>
       </div>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

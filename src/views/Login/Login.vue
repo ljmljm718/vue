@@ -1,5 +1,8 @@
 <template>
-   <div :class="` basic-login ${isTaiyuan ? 'taiyuan-login' : ''} w-[100vw] h-[100vh]`">
+  <div
+    :class="` basic-login ${isTaiyuan ? 'taiyuan-login' : ''} w-[100vw] h-[100vh]`"
+    id="loginPageDom"
+  >
     <ScaleBox>
       <div
         :class="`${prefixCls} relative w-full h-full lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px`"
@@ -138,7 +141,7 @@ $prefix-cls: #{$namespace}-login;
     z-index: 999;
     left: 0px;
     // height: 40px;
-    width: 800px;
+    width: 1200px;
     aspect-ratio: 8.6;
     background-size: 100% 100%;
     object-fit: container;

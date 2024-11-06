@@ -734,7 +734,7 @@ const queryParamsA = reactive({
   pageNo: 1,
   pageSize: 10
 })
-const queryFormRef = ref() // 搜索的表单
+const queryFormRef = ref() // 搜索的表单 
 const exportLoading = ref(false) // 导出的加载中
 const formData = ref({
   feedType: '',
@@ -770,14 +770,58 @@ const getList = async () => {
     })
     dataList.value = []
     dataList2.value = []
-    getData()
     list.value = data.list
     total.value = data.total
+
+    if(statTimeType.value){
+      let time = queryParams.startTime[0].split(' ')
+      let time2 = queryParams.startTime[1].split(' ')
+
+        if( time[0].split('-')[1] == time2[0].split('-')[1] ){
+          for( let i = time[0].split('-')[2] ; i <= time2[0].split('-')[2] ; i++ ) {
+            dataList.value.push({
+              data:i,
+              name:'',
+              child:[]
+            })
+          }
+        }else{
+          let lastDay =  new Date(time[0].split('-')[0], time[0].split('-')[1], 0)
+          console.log(lastDay.getDate(),'lastDaylastDay9999')
+          for( let i = time[0].split('-')[2] ; i <= lastDay.getDate() ; i++ ) {
+            dataList.value.push({
+              data:i,
+              name:'',
+              child:[]
+            })
+          }
+          for( let i = 1 ; i <= time2[0].split('-')[2] ; i++ ) {
+            dataList.value.push({
+              data:i,
+              name:'',
+              child:[]
+            })
+          }
+        }
+        
+
+    }else getData()
 
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
       if(monthA.value == Number(time[1])){
+        dataList.value.forEach((item:any) => {
+          if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
+
+            }
+          }
+        })
+      }else{
         dataList.value.forEach((item:any) => {
           if(  item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
@@ -794,7 +838,7 @@ const getList = async () => {
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
-      if(month == Number(time[1])){
+      if(monthA.value - 1 == Number(time[1])){
         dataList2.value.forEach((item:any) => {
           if(  item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
@@ -808,7 +852,6 @@ const getList = async () => {
     })
 
     dataListA.value=[...dataList.value , ...dataList2.value]
-    // const generateRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
     const generateRandomColor = () => {  
         let color;  
         do {  
@@ -817,17 +860,17 @@ const getList = async () => {
           // 检查颜色是否为白色  
         } while (color === '#FFFFFF');  
         return color;  
-      }; 
-      // 生成并设置随机颜色
-      let list2 = []
-      for (let i = 0; i < farmDefineOptions.value.length; i++) {
+    }; 
+    // 生成并设置随机颜色
+    let list2 = []
+    for (let i = 0; i < farmDefineOptions.value.length; i++) {
         list2.push( generateRandomColor());
 
-      }
-      list2.forEach((item,index) =>{
+    }
+    list2.forEach((item,index) =>{
         farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
       })
-      console.log(farmDefineObj.value ,'dataList.valuedataList.value1234')
+      
   } finally {
     loading.value = false
   }
@@ -846,7 +889,10 @@ const fn = (id) =>{
 
 
 /** 搜索按钮操作 */
+const statTimeType = ref(false)
 const handleQuery = () => {
+  statTimeType.value = queryParams.startTime.length > 0? true : false
+  console.log(statTimeType.value,'statTimeType 999')
   if (queryParams.parkName == null || queryParams.parkName == '') {
     queryParams.belongPark = undefined
     queryParams.parkName = undefined
@@ -855,7 +901,6 @@ const handleQuery = () => {
     queryParams.plotName = undefined
     queryParams.belongPlot = undefined
   }
-  console.log(99)
   queryParams.pageNo = 1
   getList()
 }

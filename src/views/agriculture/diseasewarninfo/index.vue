@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!--    搜索工作栏-->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -25,7 +25,8 @@
         <!--          @keyup.enter="handleQuery"-->
         <!--          class="!w-240px"-->
         <!--        />-->
-        <el-input v-model="queryParams.reservedOne" placeholder="请选择设备" disabled
+        <el-input
+v-model="queryParams.reservedOne" placeholder="请选择设备" disabled
                   class="!w-240px">
           <template #append>
             <el-button @click="openPurchaseOrderInEnableList">
@@ -206,7 +207,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item>
@@ -242,7 +243,7 @@
           </el-button>
         </el-form-item>
       </div>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

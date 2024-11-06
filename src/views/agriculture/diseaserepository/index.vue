@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -70,7 +70,7 @@
           重置
         </el-button>
       </el-form-item>
-    </el-form>
+    </custom-form>
     <div style="margin-top: 20px;margin-left: 30px;height: 30px">
       <el-form-item>
         <el-button
@@ -135,7 +135,8 @@
       />
       <el-table-column label="详情" align="center" width="150px">
         <template #default="scope">
-          <el-button type="primary"
+          <el-button
+type="primary"
                      @click="drawer = true ;openFormA(scope.row.id)"
                      v-hasPermi="['agriculture:disease-repository:update']">
             防治方案
@@ -202,24 +203,29 @@
         </el-select>
       </el-form-item>
       <el-form-item label="形态特征" prop="description">
-        <el-input v-model="formData.description" type="textarea" placeholder="请输入形态特征"
+        <el-input
+v-model="formData.description" type="textarea" placeholder="请输入形态特征"
                   maxlength="500" show-word-limit :rows="4"/>
       </el-form-item>
       <el-form-item label="发病条件" prop="morbidityCondition">
-        <el-input v-model="formData.morbidityCondition" type="textarea" :rows="4"
+        <el-input
+v-model="formData.morbidityCondition" type="textarea" :rows="4"
                   placeholder="请输入发病条件" maxlength="500" show-word-limit/>
       </el-form-item>
       <el-form-item label="发病规律" prop="morbidityLaw">
-        <el-input v-model="formData.morbidityLaw" type="textarea" placeholder="请输入发病规律"
+        <el-input
+v-model="formData.morbidityLaw" type="textarea" placeholder="请输入发病规律"
                   maxlength="500" show-word-limit :rows="4"/>
       </el-form-item>
 
       <el-form-item label="症状表现" prop="manifestedIllness">
-        <el-input v-model="formData.manifestedIllness" type="textarea" :rows="6"
+        <el-input
+v-model="formData.manifestedIllness" type="textarea" :rows="6"
                   placeholder="请输入症状表现" maxlength="500" show-word-limit/>
       </el-form-item>
       <el-form-item label="治理方法" prop="treatmentMethod">
-        <el-input v-model="formData.treatmentMethod" type="textarea" placeholder="请输入治理方法"
+        <el-input
+v-model="formData.treatmentMethod" type="textarea" placeholder="请输入治理方法"
                   maxlength="500" show-word-limit :rows="6"/>
       </el-form-item>
 

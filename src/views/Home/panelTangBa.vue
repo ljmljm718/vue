@@ -69,7 +69,10 @@
               </div>
             </div>
           </div>
-          <div class="w-full box-border p-5 bg-#00000020" v-show="['101', '79'].includes(curDeviceKind)">
+          <div
+            class="w-full box-border p-5 bg-#00000020"
+            v-show="['101', '79'].includes(curDeviceKind) || pictureList.length > 0"
+          >
             <div v-for="item in pictureList" :key="item.id">
               <img :src="item.capturedImage" class="w-full min-h-10px object-contain" />
             </div>
@@ -692,7 +695,7 @@ const getDeviceInfoData = async (item) => {
   updateForm.value.latitude = latitude
   updateForm.value.deviceMonitorType = [deviceMonitorType]
   updateForm.value.createTime = createTime
-  title.value = parkDetailName + '-' + deviceName
+  title.value = (parkDetailName ?? '未分配地块') + '-' + deviceName
   let timeDate = res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
   time.value = '最新数据更新于:' + timeDate
   deviceKinds.value = deviceKind
