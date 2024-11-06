@@ -1,9 +1,9 @@
 <template>
 <ContentWrap>
   <!-- 搜索工作栏 -->
-  <el-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="98px">
+  <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
     <el-form-item label="产品名称" prop="product">
-      <el-input v-model="queryParams.product" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-200px" />
+      <el-input v-model="queryParams.product" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-240px" />
     </el-form-item>
     <el-form-item label="所属基地" prop="park">
       <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly class="!w-240px">
@@ -27,14 +27,14 @@
       </el-input>
     </el-form-item>
     <el-form-item label="产品年份" prop="years">
-      <el-input v-model="queryParams.years" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-200px" />
+      <el-input v-model="queryParams.years" placeholder="请输入" clearable @keyup.enter="handleQuery" class="!w-240px" />
     </el-form-item>
-    <el-form-item label="" size="normal">
-      <div class="w-2px h-40px bg-[#e6e6e6]"></div>
-    </el-form-item>
+<!--    <el-form-item label="" size="normal">-->
+<!--      <div class="w-2px h-40px bg-[#e6e6e6]"></div>-->
+<!--    </el-form-item>-->
 
     <el-form-item>
-      <el-button @click="handleQuery" class='!bg-[#009688] !color-[#fff]'>
+      <el-button @click="handleQuery" type="primary">
         <Icon icon="ep:search" class="mr-5px" />
         搜索
       </el-button>
@@ -43,7 +43,7 @@
         重置
       </el-button>
     </el-form-item>
-  </el-form>
+  </custom-form>
 
 </ContentWrap>
 

@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -39,22 +39,22 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
 
       <el-form-item label="通知事件类型" prop="noticeEvent">
-        <el-select  
-          v-model="queryParams.noticeEvent"  
-          placeholder="请选择通知事件类型"  
-          clearable   
-          class="!w-240px"  
-        >  
-          <el-option  
+        <el-select
+          v-model="queryParams.noticeEvent"
+          placeholder="请选择通知事件类型"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
           v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
             :key="dict.value"
             :label="dict.label"
-            :value="dict.value"  
-          />  
-        </el-select>  
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="记录时间" prop="recordTime">
@@ -65,38 +65,38 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
         />
       </el-form-item>
 
-      
-     
+
+
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-    </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:monitoring-equipment-notice:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:monitoring-equipment-notice:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
-      </el-form-item>
-    </div>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:monitoring-equipment-notice:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px" /> 新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:monitoring-equipment-notice:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px" /> 导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -110,7 +110,7 @@
           <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent" />
         </template>
       </el-table-column>
-      
+
       <el-table-column label="消息內容" align="center" prop="remarks" />
 
       <el-table-column
@@ -120,7 +120,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      
+
       <el-table-column label="抓拍图片" align="center" prop="captured"  >
         <template #default="{ row }">
           <el-image
@@ -133,11 +133,11 @@
           />
         </template>
       </el-table-column>
-      
+
       <!-- <el-table-column label="视频链接" align="center" prop="videoLink" />-->
-      
-      
-    
+
+
+
 
     <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
@@ -186,7 +186,7 @@
     controls
     autoplay
     class="video"
-    width="800px" 
+    width="800px"
     height="800px"
    ></video>
   </el-dialog>

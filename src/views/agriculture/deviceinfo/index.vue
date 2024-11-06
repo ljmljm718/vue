@@ -65,7 +65,7 @@
             class="!color-[#fff] !bg-[#009688]"
           >
             <Icon icon="ep:search" class="mr-5px" />
-            <span>查询</span>
+            <span>搜索</span>
           </el-button>
           <el-button @click="resetQuery">
             <Icon icon="ep:refresh" class="mr-5px" />

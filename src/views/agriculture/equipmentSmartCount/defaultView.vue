@@ -614,11 +614,11 @@ watch(
         <el-form-item>
           <div class="flex space-x-3">
             <el-button @click="handleQuery" type="primary" class="btn1">
-              <!-- <Icon icon="ep:search" class="mr-5px"/> -->
-              查询
+               <Icon icon="ep:search" class="mr-5px"/>
+              搜索
             </el-button>
             <el-button @click="resetQuery" class="btn2">
-              <!-- <Icon icon="ep:refresh" class="mr-5px"/> -->
+               <Icon icon="ep:refresh" class="mr-5px"/>
               重置
             </el-button>
           </div>

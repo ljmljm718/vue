@@ -38,7 +38,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -218,7 +218,7 @@ const getList = async () => {
 
 if(route.query.type){
   console.log("-----=",route.query.type);
-  
+
   queryParams.type = route.query.type
   getList();
 }

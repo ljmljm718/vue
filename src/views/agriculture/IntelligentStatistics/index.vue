@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[#f5f5f5]">
-    <div class="bg-[#fff] flex h-40px items-center">
+    <div class="bg-[#fff] flex h-45px items-center">
       <el-form :model="formData" label-width="80px" class="!h-25px" :inline="true">
         <el-form-item label="选择基地">
           <el-select class="!w-300px" v-model="formData.baseCode">
@@ -25,8 +25,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-          <el-button @click="offSubmit">重置</el-button>
+          <el-button type="primary" @click="onSubmit"><Icon icon="ep:search" class="mr-5px"/>搜索</el-button>
+          <el-button @click="offSubmit"><Icon icon="ep:refresh" class="mr-5px"/>重置</el-button>
         </el-form-item>
       </el-form>
     </div>

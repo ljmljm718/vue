@@ -1,13 +1,13 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       label-position="left"
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="130px"
+      label-width="75px"
     >
       <!-- <el-form-item label="计划流水号" prop="serialNumber">
         <el-input
@@ -18,21 +18,21 @@
           class="!w-240px"
         />
       </el-form-item> -->
-      <el-form-item label="订单流水号" prop="orderNumber" label-width="100px" >
+      <el-form-item label="订单流水号" prop="orderNumber" >
         <el-input
           v-model="queryParams.orderNumber"
           placeholder="请输入订单流水号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-150px"
+          class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status" label-width="50px">
+      <el-form-item label="状态" prop="status" label-width="45px">
         <el-select
           v-model="queryParams.status"
           placeholder="请选择状态"
           clearable
-          class="!w-120px"
+          class="!w-240px"
         >
         <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.ADOPTION_ORDER_STATUS)"
@@ -42,28 +42,28 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="预计收获日期（起）" prop="expectStart">
+      <el-form-item label="预计收获日期（起）" prop="expectStart" label-width="120px">
         <el-date-picker
           v-model="queryParams.expectStart"
           value-format="YYYY-MM-DD"
           type="date"
           placeholder="选择预计收获日期（起）"
           clearable
-          class="!w-200px"
+          class="!w-220px"
         />
       </el-form-item>
-      <el-form-item label="预计收获日期（止）" prop="expectEnd">
+      <el-form-item label="预计收获日期（止）" prop="expectEnd" label-width="120px">
         <el-date-picker
           v-model="queryParams.expectEnd"
           value-format="YYYY-MM-DD"
           type="date"
           placeholder="选择预计收获日期（止）"
           clearable
-          class="!w-200px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
 <!--        <el-button-->
 <!--          type="primary"-->
@@ -83,7 +83,7 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button> -->
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

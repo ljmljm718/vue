@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -9,7 +9,7 @@
       label-width="68px"
     >
       <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="queryParams.parkName" placeholder="请选择所属基地">
+        <el-input class="!w-240px" v-model="queryParams.parkName" placeholder="请选择所属基地">
           <template #append>
             <el-button @click="openParkPopup('0')">
               <Icon icon="ep:search"/>
@@ -19,7 +19,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
+        <el-input class="!w-240px" v-model="queryParams.plotName" placeholder="请选择所属地块">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search"/>
@@ -69,7 +69,7 @@
         <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

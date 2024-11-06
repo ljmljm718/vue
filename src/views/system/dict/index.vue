@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索工作栏 -->
   <ContentWrap>
-    <el-form
+    <custom-form
       ref="queryFormRef"
       :inline="true"
       :model="queryParams"
@@ -45,7 +45,7 @@
         <el-date-picker
           v-model="queryParams.createTime"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
+          class="!w-220px"
           end-placeholder="结束日期"
           start-placeholder="开始日期"
           type="daterange"
@@ -53,7 +53,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon class="mr-5px" icon="ep:search" />
           搜索
         </el-button>
@@ -61,27 +61,31 @@
           <Icon class="mr-5px" icon="ep:refresh" />
           重置
         </el-button>
-        <el-button
-          v-hasPermi="['system:dict:create']"
-          plain
-          type="primary"
-          @click="openForm('create')"
-        >
-          <Icon class="mr-5px" icon="ep:plus" />
-          新增
-        </el-button>
-        <el-button
-          v-hasPermi="['system:dict:export']"
-          :loading="exportLoading"
-          plain
-          type="success"
-          @click="handleExport"
-        >
-          <Icon class="mr-5px" icon="ep:download" />
-          导出
-        </el-button>
       </el-form-item>
-    </el-form>
+      <el-row>
+        <el-form-item>
+          <el-button
+            v-hasPermi="['system:dict:create']"
+            plain
+            type="primary"
+            @click="openForm('create')"
+          >
+            <Icon class="mr-5px" icon="ep:plus" />
+            新增
+          </el-button>
+          <el-button
+            v-hasPermi="['system:dict:export']"
+            :loading="exportLoading"
+            plain
+            type="success"
+            @click="handleExport"
+          >
+            <Icon class="mr-5px" icon="ep:download" />
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

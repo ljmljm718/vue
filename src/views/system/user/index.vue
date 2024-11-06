@@ -13,7 +13,7 @@
     <el-col :span="20" :xs="24">
       <!-- 搜索 -->
       <ContentWrap>
-        <el-form
+        <custom-form
           class="-mb-15px"
           :model="queryParams"
           ref="queryFormRef"
@@ -60,11 +60,11 @@
               type="datetimerange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              class="!w-240px"
+              class="!w-220px"
             />
           </el-form-item>
           <el-form-item>
-            <el-button @click="handleQuery">
+            <el-button @click="handleQuery" type="primary">
               <Icon icon="ep:search"/>
               搜索
             </el-button>
@@ -72,36 +72,40 @@
               <Icon icon="ep:refresh"/>
               重置
             </el-button>
-            <el-button
-              type="primary"
-              plain
-              @click="openForm('create')"
-              v-hasPermi="['system:user:create']"
-            >
-              <Icon icon="ep:plus"/>
-              新增
-            </el-button>
-            <el-button
-              type="warning"
-              plain
-              @click="handleImport"
-              v-hasPermi="['system:user:import']"
-            >
-              <Icon icon="ep:upload"/>
-              导入
-            </el-button>
-            <el-button
-              type="success"
-              plain
-              @click="handleExport"
-              :loading="exportLoading"
-              v-hasPermi="['system:user:export']"
-            >
-              <Icon icon="ep:download"/>
-              导出
-            </el-button>
           </el-form-item>
-        </el-form>
+          <el-row>
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="openForm('create')"
+                v-hasPermi="['system:user:create']"
+              >
+                <Icon icon="ep:plus"/>
+                新增
+              </el-button>
+              <el-button
+                type="warning"
+                plain
+                @click="handleImport"
+                v-hasPermi="['system:user:import']"
+              >
+                <Icon icon="ep:upload"/>
+                导入
+              </el-button>
+              <el-button
+                type="success"
+                plain
+                @click="handleExport"
+                :loading="exportLoading"
+                v-hasPermi="['system:user:export']"
+              >
+                <Icon icon="ep:download"/>
+                导出
+              </el-button>
+            </el-form-item>
+          </el-row>
+        </custom-form>
       </ContentWrap>
       <ContentWrap>
         <el-table v-loading="loading" :data="list">
