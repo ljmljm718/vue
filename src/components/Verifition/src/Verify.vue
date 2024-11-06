@@ -1,5 +1,16 @@
 <template>
   <div v-show="showBox" :class="mode == 'pop' ? 'mask' : ''">
+    <div v-show="showBox">
+      <div class="fixed left-[-1920px] w-1920px h-1080px top-0 bg-[#0000004d]"></div>
+      <div class="fixed right-[-1920px] w-1920px h-1080px top-0 bg-[#0000004d]"></div>
+      <div class="fixed top-[1080px] w-1920px h-1080px left-0 bg-[#000000]"></div>
+      <div class="fixed top-[-1080px] w-1920px h-1080px left-0 bg-[#0000004d]"></div>
+
+      <div class="fixed left-[-1920px] w-1920px h-1080px top-[-1080px] bg-[#0000004d]"></div>
+      <div class="fixed right-[-1920px] w-1920px h-1080px top-[-1080px] bg-[#0000004d]"></div>
+      <div class="fixed bottom-[-1080px] w-1920px h-1080px left-[-1920px] bg-[#0000004d]"></div>
+      <div class="fixed top-[-1080px] w-1920px h-1080px right-[-1920px] bg-[#0000004d]"></div>
+    </div>
     <div
       :class="mode == 'pop' ? 'verifybox' : ''"
       :style="{ 'max-width': parseInt(imgSize.width) + 20 + 'px' }"
@@ -186,9 +197,9 @@ export default {
   top: 0;
   left: 0;
   z-index: 1001;
-  width: 100%;
-  height: 100vh;
-  background: rgb(0 0 0 / 30%);
+  width: 1920px;
+  height: 1080px;
+  background: #0000004d;
 
   /* display: none; */
   transition: all 0.5s;
