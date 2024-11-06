@@ -24,46 +24,52 @@
           <template #append>天</template>
         </el-input>
       </el-form-item>
-      <!--<el-form-item label="备注2" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注2" />
-      </el-form-item>
-      <el-form-item label="所属基地" prop="belongPark">
-        <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
-      </el-form-item>
-      <el-form-item label="所属地块" prop="belongPlot">
-        <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
-      </el-form-item>
-      <el-form-item label="开始时间" prop="startTime">
-        <el-date-picker
-          v-model="formData.startTime"
-          type="date"
-          value-format="x"
-          placeholder="选择开始时间"
+      <el-form-item label="技术指导" prop="remark">
+        <upload-file
+          v-model="formData.remark"
+          :file-type="['mp4']"
+          :file-size="10"
+          :title="'视频上传'"
+          :limit="1"
         />
       </el-form-item>
-      <el-form-item label="结束时间" prop="endTime">
-        <el-date-picker
-          v-model="formData.endTime"
-          type="date"
-          value-format="x"
-          placeholder="选择结束时间"
-        />
-      </el-form-item>
-      <el-form-item label="作物关联id" prop="cropId">
-        <el-input v-model="formData.cropId" placeholder="请输入作物关联id" />
-      </el-form-item>
-      <el-form-item label="环境条件" prop="envCondition">
-        <el-input v-model="formData.envCondition" placeholder="请输入环境条件" />
-      </el-form-item>
-      <el-form-item label="生长地点" prop="growSite">
-        <el-input v-model="formData.growSite" placeholder="请输入生长地点" />
-      </el-form-item>
-      <el-form-item label="基地名称" prop="parkName">
-        <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
-      </el-form-item>
-      <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
-      </el-form-item> -->
+      <!-- <el-form-item label="所属基地" prop="belongPark">
+         <el-input v-model="formData.belongPark" placeholder="请输入所属基地" />
+       </el-form-item>
+       <el-form-item label="所属地块" prop="belongPlot">
+         <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />
+       </el-form-item>
+       <el-form-item label="开始时间" prop="startTime">
+         <el-date-picker
+           v-model="formData.startTime"
+           type="date"
+           value-format="x"
+           placeholder="选择开始时间"
+         />
+       </el-form-item>
+       <el-form-item label="结束时间" prop="endTime">
+         <el-date-picker
+           v-model="formData.endTime"
+           type="date"
+           value-format="x"
+           placeholder="选择结束时间"
+         />
+       </el-form-item>
+       <el-form-item label="作物关联id" prop="cropId">
+         <el-input v-model="formData.cropId" placeholder="请输入作物关联id" />
+       </el-form-item>
+       <el-form-item label="环境条件" prop="envCondition">
+         <el-input v-model="formData.envCondition" placeholder="请输入环境条件" />
+       </el-form-item>
+       <el-form-item label="生长地点" prop="growSite">
+         <el-input v-model="formData.growSite" placeholder="请输入生长地点" />
+       </el-form-item>
+       <el-form-item label="基地名称" prop="parkName">
+         <el-input v-model="formData.parkName" placeholder="请输入基地名称" />
+       </el-form-item>
+       <el-form-item label="地块名称" prop="plotName">
+         <el-input v-model="formData.plotName" placeholder="请输入地块名称" />
+       </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -73,6 +79,9 @@
 </template>
 <script setup lang="ts">
 import {CropGrowthSubApi, CropGrowthSubVO} from '@/api/agriculture/cropgrowthsub'
+import {ref, reactive} from "vue";
+import {ElMessageBox} from "element-plus";
+import {updateFile} from "@/api/infra/file";
 
 /** 生长周期子表 表单 */
 defineOptions({name: 'CropGrowthSubForm'})
@@ -103,9 +112,53 @@ const formData = ref({
   growth: undefined
 })
 const formRules = reactive({
-  itemName: [{required: true, message: '事项名称不能为空', trigger: 'blur'}]
+  itemName: [{required: true, message: '事项名称不能为空', trigger: 'blur'}],
+  remark: [{required: true, message: '请上传视频或等待视频上传完成！', trigger: 'change'}]
 })
 const subformRef = ref() // 表单 Ref
+// 上传文件和进度管理
+const uploadProgress = ref(0); // 上传进度
+const fileList = ref([]); // 文件列表
+
+// 处理视频上传进度
+const handleProgress = (event: any) => {
+  console.log('上传进度:', event.percent);
+  uploadProgress.value = event.percent; // 更新进度条
+}
+
+// 处理上传成功
+const handleSuccess = (response: any) => {
+  uploadProgress.value = 100; // 上传成功，进度条完成
+}
+
+// 处理上传失败
+const handleError = (err: any) => {
+  console.error('上传失败:', err);
+  ElMessageBox.alert('上传失败，请重试', '错误', {type: 'error'});
+  uploadProgress.value = 0; // 重置进度条
+}
+
+// 上传前检查文件格式
+const beforeUpload = async (file: any) => {
+  const isVideo = file.raw.type === 'video/mp4';
+  if (!isVideo) {
+    ElMessageBox.alert('请上传视频文件（.mp4格式）', '错误', {type: 'error'});
+    return false; // 禁止上传非视频文件
+  }
+
+  const fileForm = new FormData();
+  fileForm.append('file', file.raw);
+
+  // 文件上传逻辑
+  try {
+    const {data} = await updateFile(fileForm); // 上传文件
+    formData.value.remark = data;  // 保存返回的视频链接
+  } catch (error) {
+    ElMessageBox.alert('文件上传失败', '错误', {type: 'error'});
+  }
+
+  return isVideo; // 允许上传
+}
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number, growth?: string) => {
@@ -145,6 +198,7 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as CropGrowthSubVO
     if (formType.value === 'create') {
+      console.log("22222", data)
       await CropGrowthSubApi.createCropGrowthSub(data)
       message.success(t('common.createSuccess'))
     } else {

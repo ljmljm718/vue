@@ -153,7 +153,13 @@ const formData = ref({
   farmAdvice: undefined,
 })
 const formRules = reactive({
-  cropType: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+  cropType: [{required: true, message: '品类不能为空', trigger: 'blur'}],
+  cropName: [{required: true, message: '品种不能为空', trigger: 'blur'}],
+  growth: [{required: true, message: '生长期不能为空', trigger: 'blur'}],
+  cycle: [{required: true, message: '周期不能为空', trigger: 'blur'}],
+  startTime: [{required: true, message: '开始时间不能为空', trigger: 'blur'}],
+  endTime: [{required: true, message: '结束时间不能为空', trigger: 'blur'}],
+  orders: [{required: true, message: '种植顺序不能为空', trigger: 'blur'}],
 })
 const formRef = ref() // 表单 Ref
 const categoryData = ref({   //品类信息
