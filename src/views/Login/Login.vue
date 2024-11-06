@@ -1,5 +1,8 @@
 <template>
-   <div :class="` basic-login ${isTaiyuan ? 'taiyuan-login' : ''} w-[100vw] h-[100vh]`">
+  <div
+    :class="` basic-login ${isTaiyuan ? 'taiyuan-login' : ''} w-[100vw] h-[100vh]`"
+    id="loginPageDom"
+  >
     <ScaleBox>
       <div
         :class="`${prefixCls} relative w-full h-full lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px`"
