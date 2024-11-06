@@ -48,14 +48,15 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog
+    <fence-dialog
       v-model="showDrawDialog"
       title="绘制围栏"
-      width="1200px"
+      width="80vw"
       append-to-body
       destroy-on-close
+      draggable
     >
-      <div class="w-full h-[60vh]">
+      <div class="w-full h-full">
         <map-custom
           ref="tiandiIns1"
           :enableEdit="true"
@@ -65,7 +66,7 @@
         <el-button size="small" @click="handleCancel()">取 消</el-button>
         <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
       </template>
-    </el-dialog>
+    </fence-dialog>
   </ContentWrap>
 </template>
 <script setup lang="ts">
@@ -76,6 +77,7 @@ import { ElMessage } from 'element-plus'
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
 import * as turf from '@turf/turf'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import FenceDialog from './fenceDialog.vue'
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗

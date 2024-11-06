@@ -349,21 +349,22 @@
     </div>
   </ContentWrap>
 
-  <el-dialog
+  <fence-dialog
     v-model="showDrawDialog"
     title="绘制围栏"
-    width="1200px"
+    width="80vw"
+    draggable
     append-to-body
     destroy-on-close
   >
-    <div class="w-full h-[60vh]">
+    <div class="w-full h-full">
       <map-custom ref="tiandiIns" :enableEdit="true" />
     </div>
     <template #footer>
       <el-button size="small" @click="handleCancel()">取 消</el-button>
       <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
     </template>
-  </el-dialog>
+  </fence-dialog>
 </template>
 
 <script setup lang="ts">
@@ -378,6 +379,7 @@ import dayjs from 'dayjs'
 import ParkDetailList from './components/ParkDetailList.vue'
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
 import * as turf from '@turf/turf'
+import FenceDialog from './components/fenceDialog.vue'
 
 const showType = ref<string>('card')
 const parkMapIns = ref() // 地图实例
