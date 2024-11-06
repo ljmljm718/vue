@@ -787,7 +787,6 @@ const getList = async () => {
           }
         }else{
           let lastDay =  new Date(time[0].split('-')[0], time[0].split('-')[1], 0)
-          console.log(lastDay.getDate(),'lastDaylastDay9999')
           for( let i = time[0].split('-')[2] ; i <= lastDay.getDate() ; i++ ) {
             dataList.value.push({
               data:i,
@@ -892,7 +891,6 @@ const fn = (id) =>{
 const statTimeType = ref(false)
 const handleQuery = () => {
   statTimeType.value = queryParams.startTime.length > 0? true : false
-  console.log(statTimeType.value,'statTimeType 999')
   if (queryParams.parkName == null || queryParams.parkName == '') {
     queryParams.belongPark = undefined
     queryParams.parkName = undefined
@@ -1072,7 +1070,6 @@ const skipCli = async () => {
   //跳过之前处理params中croType字段
   const data = await FarmPlanApi.getFarmPlanPage(queryParams)
   data.list.forEach((item:any) => {
-    console.log(item,'itemtiaoguo')
     if(item.id == params.value.id){
       params.value.cropType = item.cropType
     }
@@ -1110,7 +1107,6 @@ const submitForm = async () => {
    //提交之前处理params中croType字段
    const data = await FarmPlanApi.getFarmPlanPage(queryParams)
   data.list.forEach((item:any) => {
-    console.log(item,'itemtiaoguo')
     if(item.id == params.value.id){
       params.value.cropType = item.cropType
     }
@@ -1354,7 +1350,6 @@ getData()
 const dataChange = (e) => {
   dataListA.value = []
   silderVal.value = ''
-  console.log(e.getMonth(),'e.getMonth()e.getMonth()')
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0

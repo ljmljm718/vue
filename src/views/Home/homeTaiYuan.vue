@@ -788,6 +788,18 @@ const tabLeft = (str) => {
   console.log(left.value,'left.valueleft.value9999')
 }
 
+const amplify = ref(false)
+const amplifyList = ref<any[]>([])
+const amplifyAdd = () => {
+  amplify.value = true ;
+}
+function closePreview() {
+  console.log(99999)
+  // amplifyList.value = []
+  amplify.value = false ;
+
+
+}
 </script>
 <template>
   <div class="flex space-x-[.5rem]">
@@ -1005,17 +1017,25 @@ const tabLeft = (str) => {
                 placeholder="选择日期"
               />
             </div>
-            <div class="rounded-1 h-11rem bg-#666"> <img :src='snapShotImg' class='w-100% h-100%'/> </div>
-            <div class="flex w-full py-2 relative" style='overflow:hidden'>
-             <div v-if='snapNum >= 4' @click='tabLeft("left")' style="opacity:.6; background-color:#000;transform:rotate(180deg)" class='z-22 cursor-pointer absolute left-0 top-1 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div> > </div>  </div>
-              <div  ref='snapDom' class='flex w-full relative' :style='`left:${left}px`'>
+            <div class="rounded-1 h-11rem bg-#666 relative">
+               <img :src='snapShotImg' class='w-100% h-100%'/> 
+               <div class="absolute w-93% flex justify-between bottom-3 left-3">
+                  <div class="amplify cursor-pointer" @click=" amplifyAdd()">
+                    <el-image-viewer  v-if="amplify"  hide-on-click-modal  @close="closePreview" class="h-100px w-100px" :url-list="[snapShotImg]" 
+                        fit="cover" />
+                  </div>
+                  <div class="color-#fff flex">{{ snapNum+1 <= 9? '0'+(snapNum+1) : (snapNum+1)  }}<div class="color-[#eee]">  / {{ snapImgTotal }}</div> </div>
+               </div>
+            </div>
+            <div class=" w-full py-2 relative" style=''>
+              <div  ref='snapDom' class=' w-full h-60px relative ' :style='`overflow:hidden; left:${left}px`'>
                 <div
                  
                   v-for="item,index in snapPictureList"
                   :key="item"
                   
                   @click="snapPictureChange(item,index)"
-                  :class="`aspect-square mr-10px ${snapNum == index ? 'snapNum' :''} `"
+                  :class="`w-53px h-53px mr-10px inline-block ${snapNum == index ? 'snapNum' :''} `"
                 > 
                   <img :src='item.monitorPicture' class='w-100% h-100%'/>
                 </div>
@@ -1052,7 +1072,7 @@ const tabLeft = (str) => {
                 <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
                 <div>
                   <div class="text-15px mb-7px">虫害总数</div>
-                  <div class="art-font text-[1.4rem]">{{ pestTotalNum }}</div>
+                  <div class="  text-15px" style="font-weight:600">{{ pestTotalNum }}</div>
                 </div>
               </div>
               <div
@@ -1061,7 +1081,7 @@ const tabLeft = (str) => {
                 <div :class="` w-2.5rem h-2.5rem disease-top-4`"></div>
                 <div>
                   <div  class="text-15px mb-7px">虫害种类</div>
-                  <div class="art-font text-[1.4rem]">{{ pestType }}</div>
+                  <div class=" text-15px"  style="font-weight:600">{{ pestType }}</div>
                 </div>
               </div>
             </div>
@@ -1152,8 +1172,16 @@ const tabLeft = (str) => {
   background-color:#fef9ee
 }
 .snapNum{
-  width:23%;
+  width:50px;
+  height: 50px;
   border: 3px solid #009688
 }
-
+.amplify{
+  width: 20px;
+  height: 20px;
+  background: {
+    size: 100% 100%;
+    image: url(./assets/amplify.png)
+  }
+}
 </style>
