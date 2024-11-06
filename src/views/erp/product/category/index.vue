@@ -37,29 +37,33 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['erp:product-category:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['erp:product-category:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
-        </el-button>
-        <el-button type="danger" plain @click="toggleExpandAll">
-          <Icon icon="ep:sort" class="mr-5px" /> 展开/折叠
-        </el-button>
       </el-form-item>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['erp:product-category:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px" /> 新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['erp:product-category:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px" /> 导出
+          </el-button>
+          <el-button type="danger" plain @click="toggleExpandAll">
+            <Icon icon="ep:sort" class="mr-5px" /> 展开/折叠
+          </el-button>
+        </el-form-item>
+      </el-row>
     </el-form>
   </ContentWrap>
 

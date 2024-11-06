@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -57,7 +57,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -66,29 +66,28 @@
           重置
         </el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-row>
         <el-form-item>
           <el-button
             type="primary"
+            plain
             @click="openForm('create')"
-            v-hasPermi="['agriculture:crop-base:create']"
+            v-hasPermi="['agriculture:feeding-rule:create']"
           >
-            <Icon icon="ep:plus" class="mr-5px"/>
-            新增
+            <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
             type="success"
             plain
             @click="handleExport"
             :loading="exportLoading"
-            v-hasPermi="['agriculture:crop-base:export']"
+            v-hasPermi="['agriculture:feeding-rule:export']"
           >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
+            <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
         </el-form-item>
-      </div>
-    </el-form>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

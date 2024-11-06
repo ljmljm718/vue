@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -86,7 +86,7 @@
         <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px"  /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+      <el-row>
         <el-form-item>
           <el-button
             type="primary"
@@ -106,8 +106,8 @@
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
         </el-form-item>
-      </div>
-    </el-form>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

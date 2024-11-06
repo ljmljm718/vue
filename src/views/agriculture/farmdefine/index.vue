@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -14,7 +14,7 @@
           placeholder="请输入分类编码"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="分类名称" prop="defineName">
@@ -23,7 +23,7 @@
           placeholder="请输入分类名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="分类标签" prop="defineLabel">
@@ -32,7 +32,7 @@
           placeholder="请输入分类标签"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="是否显示" prop="showStatus">
@@ -40,7 +40,7 @@
           v-model="queryParams.showStatus"
           placeholder="请选择是否显示"
           clearable
-          class="!w-150px"
+          class="!w-240px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_INTEGER_STRING)"
@@ -61,7 +61,7 @@
         </el-button>
 
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

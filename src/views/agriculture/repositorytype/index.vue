@@ -12,14 +12,14 @@
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]" class="!w-240px" />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" /> 搜索
         </el-button>
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px" /> 重置
         </el-button>
       </el-form-item>
-      <div style="margin-top: 1rem;margin-left: 2rem;height: 2rem">
+      <el-row>
           <el-form-item>
             <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:repository-type:create']">
               <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -29,7 +29,7 @@
               <Icon icon="ep:download" class="mr-5px" /> 导出
             </el-button>
           </el-form-item>
-        </div>
+      </el-row>
     </el-form>
   </ContentWrap>
 

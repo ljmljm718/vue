@@ -1,9 +1,9 @@
 <template>
   <ContentWrap  >
-    <div class="flex justify-between w-100%">
+<!--    <div class="flex justify-between w-100%">-->
       <!-- 搜索工作栏 -->
-      <el-form
-        :class="`-mb-15px ${formType?'w-100%':'w-80%'} `"
+      <custom-form
+        class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
@@ -62,7 +62,7 @@
         <!--          class="!w-240px"-->
         <!--        />-->
         <!--      </el-form-item>-->
-        <el-form-item label="地块名称" prop="plotName" v-if="formType">
+        <el-form-item label="地块名称" prop="plotName">
           <!-- <el-input
             v-model="queryParams.plotName"
             placeholder="请输入地块名称"
@@ -70,7 +70,7 @@
             @keyup.enter="handleQuery"
             class="!w-240px"
           /> -->
-          <el-input v-model="queryParams.plotName" placeholder="请选择所属地块">
+          <el-input class="!w-240px" v-model="queryParams.plotName" placeholder="请选择所属地块">
             <template #append>
               <el-button @click="openPlotPopup(queryParams.belongPark)">
                 <Icon icon="ep:search" />
@@ -103,7 +103,7 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="作物名称" prop="cropName" v-if="formType">
+        <el-form-item label="作物名称" prop="cropName">
           <el-input
             v-model="queryParams.cropName"
             placeholder="请输入作物名称"
@@ -122,12 +122,12 @@
         <!--          <el-option label="请选择字典生成" value="" />-->
         <!--        </el-select>-->
         <!--      </el-form-item>-->
-        <el-form-item label="计划状态" prop="planState" v-if="formType">
+        <el-form-item label="计划状态" prop="planState">
           <el-select
             v-model="queryParams.planState"
             placeholder="请选择计划状态"
             clearable
-            class="!w-150px"
+            class="!w-240px"
           >
             <el-option
               v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
@@ -146,7 +146,7 @@
         <!--          class="!w-240px"-->
         <!--        />-->
         <!--      </el-form-item>-->
-        <el-form-item label="责任人" prop="personName" v-if="formType">
+        <el-form-item label="责任人" prop="personName">
           <el-input
             v-model="queryParams.personName"
             placeholder="请输入责任人"
@@ -155,7 +155,7 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="计划开始时间" prop="startTime" v-if="formType">
+        <el-form-item label="计划开始时间" prop="startTime">
           <el-date-picker
             v-model="queryParams.startTime"
             value-format="YYYY-MM-DD HH:mm:ss"
@@ -163,7 +163,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            class="!w-240px"
+            class="!w-220px"
           />
         </el-form-item>
       <!--      <el-form-item label="计划结束时间" prop="endTime">-->
@@ -206,26 +206,24 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-        <el-form-item v-if="formType">
+        <el-form-item>
           <el-button @click="handleQuery" type="primary"
             ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
           >
           <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>
+<!--          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>-->
         </el-form-item>
-      </el-form>
-      <div v-if="!formType" class="flex w-20% items-center">
-        <div>
-          <el-button @click="handleQuery" type="primary"
-          ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
-        >
-        <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        </div>
+      </custom-form>
+<!--      <div v-if="!formType" class="flex w-20% items-center">-->
+<!--        <div>-->
+<!--          <el-button @click="handleQuery" type="primary"-->
+<!--          ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button-->
+<!--        >-->
+<!--        <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>-->
+<!--        </div>-->
 
-        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <img :src='select' class='w-13px h-13px ml-8px' /> </div>
-      </div>
-    </div>
-
+<!--        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <img :src='select' class='w-13px h-13px ml-8px' /> </div>-->
+<!--      </div>-->
 
   </ContentWrap>
 
@@ -303,13 +301,13 @@
                     <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
                       <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
                 </div>
-               
+
              </div>
              <div v-if='item.child.length == 0 ' class="bg-[#f0f7f7] w-88% h-130px mb-15px flex justify-center items-center flex-col">
                     <img :src='dataImg' class='w-40px h-30px'/>
                     <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
                 </div>
-              
+
           </div>
         </div>
       </div>
@@ -734,7 +732,7 @@ const queryParamsA = reactive({
   pageNo: 1,
   pageSize: 10
 })
-const queryFormRef = ref() // 搜索的表单 
+const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const formData = ref({
   feedType: '',
@@ -787,7 +785,6 @@ const getList = async () => {
           }
         }else{
           let lastDay =  new Date(time[0].split('-')[0], time[0].split('-')[1], 0)
-          console.log(lastDay.getDate(),'lastDaylastDay9999')
           for( let i = time[0].split('-')[2] ; i <= lastDay.getDate() ; i++ ) {
             dataList.value.push({
               data:i,
@@ -803,7 +800,7 @@ const getList = async () => {
             })
           }
         }
-        
+
 
     }else getData()
 
@@ -834,7 +831,7 @@ const getList = async () => {
         })
       }
     })
-   
+
     list.value.forEach((itm:any) => {
       let time=new Date(itm.startTime).toLocaleDateString().split('/')
       let time2=new Date(itm.endTime).toLocaleDateString().split('/')
@@ -852,15 +849,15 @@ const getList = async () => {
     })
 
     dataListA.value=[...dataList.value , ...dataList2.value]
-    const generateRandomColor = () => {  
-        let color;  
-        do {  
-          // 生成一个随机颜色，范围是 0 到 16777214（不包含 16777215，即 FFFFFF）  
-          color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;  
-          // 检查颜色是否为白色  
-        } while (color === '#FFFFFF');  
-        return color;  
-    }; 
+    const generateRandomColor = () => {
+        let color;
+        do {
+          // 生成一个随机颜色，范围是 0 到 16777214（不包含 16777215，即 FFFFFF）
+          color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+          // 检查颜色是否为白色
+        } while (color === '#FFFFFF');
+        return color;
+    };
     // 生成并设置随机颜色
     let list2 = []
     for (let i = 0; i < farmDefineOptions.value.length; i++) {
@@ -870,7 +867,7 @@ const getList = async () => {
     list2.forEach((item,index) =>{
         farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
       })
-      
+
   } finally {
     loading.value = false
   }
@@ -892,7 +889,6 @@ const fn = (id) =>{
 const statTimeType = ref(false)
 const handleQuery = () => {
   statTimeType.value = queryParams.startTime.length > 0? true : false
-  console.log(statTimeType.value,'statTimeType 999')
   if (queryParams.parkName == null || queryParams.parkName == '') {
     queryParams.belongPark = undefined
     queryParams.parkName = undefined
@@ -1072,7 +1068,6 @@ const skipCli = async () => {
   //跳过之前处理params中croType字段
   const data = await FarmPlanApi.getFarmPlanPage(queryParams)
   data.list.forEach((item:any) => {
-    console.log(item,'itemtiaoguo')
     if(item.id == params.value.id){
       params.value.cropType = item.cropType
     }
@@ -1110,7 +1105,6 @@ const submitForm = async () => {
    //提交之前处理params中croType字段
    const data = await FarmPlanApi.getFarmPlanPage(queryParams)
   data.list.forEach((item:any) => {
-    console.log(item,'itemtiaoguo')
     if(item.id == params.value.id){
       params.value.cropType = item.cropType
     }
@@ -1354,7 +1348,6 @@ getData()
 const dataChange = (e) => {
   dataListA.value = []
   silderVal.value = ''
-  console.log(e.getMonth(),'e.getMonth()e.getMonth()')
   if(e.getMonth()+1 == new Date().getMonth()+1){
     day.value = new Date().getDate()
   }else day.value = 0
@@ -1402,13 +1395,13 @@ const dataChange = (e) => {
         })
       }
   })
-  
+
   dataListA.value = [...dataList.value , ...dataList2.value]
 }
 // 左侧活动点击
 const silderVal = ref('')
 const silderTab = (val:any) => {
-  
+
   dataList.value = []
   dataList2.value = []
 

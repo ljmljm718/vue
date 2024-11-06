@@ -1,8 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <div class="flex">
-      <el-form
+    <custom-form
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
@@ -15,11 +14,11 @@
             placeholder="请输入名称"
             clearable
             @keyup.enter="handleQuery"
-            class="!w-200px"
+            class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-200px">
+          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
             <el-option
               v-for="dict in parkCategoryOptions"
               :key="dict.value"
@@ -29,18 +28,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="面积" prop="area">
-          <el-input v-model="queryParams.area" placeholder="请输入面积"  class="!w-200px">
+          <el-input v-model="queryParams.area" placeholder="请输入面积"  class="!w-240px">
             <template #append>亩</template>
           </el-input>
         </el-form-item>
         <el-form-item label="联系人" prop="contact">
-          <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-200px" />
+          <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
         </el-form-item>
         <el-form-item label="联系电话" prop="tel">
-          <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-200px" />
+          <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
         </el-form-item>
         <el-form-item class="pl-8">
-         <el-button @click="handleQuery" type="primary" class="!bg-[#009688]">
+         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
           <span>搜索</span>
         </el-button>
@@ -49,8 +48,7 @@
           <span>重置</span>
         </el-button>
       </el-form-item>
-      </el-form>
-    </div>
+      </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -547,9 +545,9 @@ const handleDraw = (item) => {
           setTimeout(() => {
             tiandiIns.value.createPolygon(corrdinates[0].map(location => ([location.lat, location.lng])), option)
           }, 500)
-          
+
         }
-          
+
       }
     } else {
       // TODO 如果不存在围栏，把中心点设置在基地中间

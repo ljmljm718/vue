@@ -2,8 +2,8 @@
   <el-scrollbar height="79vh" @scroll="scroll">
     <!-- 搜索栏 -->
     <ContentWrap>
-      <el-form
-        class="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-5"
+      <custom-form
+        class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         label-width="68px"
@@ -12,6 +12,7 @@
         <!-- 表单内容 -->
         <el-form-item label="产品名称" prop="schemeName">
           <el-input
+            class="!w-240px"
             v-model="queryParams.schemeName"
             placeholder="请输入"
             clearable
@@ -20,6 +21,7 @@
         </el-form-item>
         <el-form-item label="设计人" prop="marketingCreator">
           <el-input
+            class="!w-240px"
             v-model="queryParams.marketingCreator"
             placeholder="请输入"
             clearable
@@ -28,6 +30,7 @@
         </el-form-item>
         <el-form-item label="分类" prop="marketingCategory">
           <el-input
+            class="!w-240px"
             v-model="queryParams.marketingCategory"
             placeholder="请输入"
             clearable
@@ -36,6 +39,7 @@
         </el-form-item>
         <el-form-item label="标签" prop="marketingTags">
           <el-input
+            class="!w-240px"
             v-model="queryParams.marketingTags"
             placeholder="请输入"
             clearable
@@ -44,6 +48,7 @@
         </el-form-item>
         <el-form-item label="上传时间" prop="marketingUploadTime">
           <el-date-picker
+            class="!w-220px"
             v-model="queryParams.marketingUploadTime"
             value-format="YYYY-MM-DD HH:mm:ss"
             type="daterange"
@@ -56,14 +61,14 @@
         <el-form-item>
           <el-button @click="handleQuery" type="primary">
             <Icon icon="ep:search" />
-            查询
+            搜索
           </el-button>
           <el-button @click="resetQuery">
             <Icon icon="ep:refresh" />
             重置
           </el-button>
         </el-form-item>
-      </el-form>
+      </custom-form>
     </ContentWrap>
     <!-- 数据列表 -->
     <ContentWrap>
@@ -559,23 +564,23 @@ const scroll = ({ scrollTop }) => {
 
 <style scoped lang="scss">
 /* 消除element部分组件的部分样式 */
-.el-tabs__nav-wrap::after {
-  display: none;
-}
-.el-form-item {
-  margin-bottom: 0;
-}
-.el-form-item--small {
-  margin-bottom: 0;
-}
-.el-form--inline .el-form-item {
-  margin-right: 0;
-}
-.el-range-editor.el-input__wrapper {
-  padding: 0;
-}
-.el-button + .el-button {
-  margin-left: 10px;
-}
+//.el-tabs__nav-wrap::after {
+//  display: none;
+//}
+//.el-form-item {
+//  margin-bottom: 0;
+//}
+//.el-form-item--small {
+//  margin-bottom: 0;
+//}
+//.el-form--inline .el-form-item {
+//  margin-right: 0;
+//}
+//.el-range-editor.el-input__wrapper {
+//  padding: 0;
+//}
+//.el-button + .el-button {
+//  margin-left: 10px;
+//}
 </style>
 

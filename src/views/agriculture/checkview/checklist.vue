@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>

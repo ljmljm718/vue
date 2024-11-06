@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -14,7 +14,7 @@
           placeholder="请输入方案名称"
           clearable
           @keyup.enter="handleQuery"
-          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-240px'} `"
         />
       </el-form-item>
       <el-form-item label="创作人" prop="marketingCreator">
@@ -23,7 +23,7 @@
           placeholder="请输入创作人"
           clearable
           @keyup.enter="handleQuery"
-          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-240px'} `"
         />
       </el-form-item>
       <el-form-item label="上传时间" prop="marketingUploadTime">
@@ -34,7 +34,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          :class="`${windowWidth <= 1204? '!w-140px' :'!w-210px'} `"
+          :class="`${windowWidth <= 1204? '!w-140px' :'!w-220px'} `"
         />
       </el-form-item>
       <el-form-item label="分类" prop="marketingCategory">
@@ -43,7 +43,7 @@
           placeholder="请输入分类"
           clearable
           @keyup.enter="handleQuery"
-          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-240px'} `"
         />
       </el-form-item>
       <el-form-item label="标签" prop="marketingTags">
@@ -52,7 +52,7 @@
           placeholder="请输入标签"
           clearable
           @keyup.enter="handleQuery"
-          :class="`${windowWidth <= 1204? '!w-160px' :'!w-230px'} `"
+          :class="`${windowWidth <= 1204? '!w-160px' :'!w-240px'} `"
         />
       </el-form-item>
       <!-- <el-form-item label="营销推广类型" prop="marketingType">
@@ -112,31 +112,30 @@
           重置
         </el-button>
       </el-form-item>
-
-    </el-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:marketing-program:create']"
-        >
-        <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:marketing-program:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['agriculture:marketing-program:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:marketing-program:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

@@ -77,13 +77,13 @@ const getRepositoryList = async () => {
     label: item.repositoryLabel,
     repositoryId: getRep(item)
   }))
-  
+
 function timestampToDate(timestamp) {
-    var date = new Date(timestamp); 
-    var year = date.getFullYear(); 
-    var month = ("0" + (date.getMonth() + 1)).slice(-2); 
-    var day = ("0" + date.getDate()).slice(-2); 
-    return year + "." + month + '.' + day; 
+    var date = new Date(timestamp);
+    var year = date.getFullYear();
+    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+    return year + "." + month + '.' + day;
 }
   repositoryList.value.forEach(item=>{
     console.log(item,'item12345')
@@ -200,7 +200,7 @@ const handleLabelClick = (item) => {
           @keyup.enter="getRepositoryList()"
           style="width: 300px"
         />
-        <el-button @click="getRepositoryList()" style="color: val" type="primary">搜索 </el-button>
+        <el-button @click="getRepositoryList()" style="color: val" type="primary"><Icon icon="ep:search" class="mr-5px"/>搜索 </el-button>
       </div>
     </el-card>
     <el-card class="mb-2">

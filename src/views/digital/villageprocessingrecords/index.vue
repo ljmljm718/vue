@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -38,7 +38,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -56,21 +56,21 @@
         <!--          新增-->
         <!--        </el-button>-->
       </el-form-item>
-    </el-form>
-    <div style="margin-top: 20px;margin-left: 8px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['digital:village-processing-records:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['digital:village-processing-records:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

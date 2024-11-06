@@ -62,7 +62,7 @@
           <el-form-item>
             <el-button @click="handleQuery" type="primary">
               <Icon icon="ep:search" />
-              查询
+              搜索
             </el-button>
             <el-button @click="resetQuery">
               <Icon icon="ep:refresh" />
@@ -429,7 +429,7 @@
             <el-form-item>
               <el-button @click="handleQueryMonitor" type="primary">
                 <Icon icon="ep:search" />
-                查询
+                搜索
               </el-button>
               <el-button @click="resetQueryMonitor">
                 <Icon icon="ep:refresh" />
