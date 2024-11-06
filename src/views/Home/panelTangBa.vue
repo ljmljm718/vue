@@ -695,7 +695,7 @@ const getDeviceInfoData = async (item) => {
   updateForm.value.latitude = latitude
   updateForm.value.deviceMonitorType = [deviceMonitorType]
   updateForm.value.createTime = createTime
-  title.value = (parkDetailName ?? '未知地块') + '-' + deviceName
+  title.value = (parkDetailName ?? '未分配地块') + '-' + deviceName
   let timeDate = res.length > 0? formatTime(res[0].collectionTime, 'yyyy-MM-dd HH:mm:ss') :formatTime(createTime, 'yyyy-MM-dd HH:mm:ss')
   time.value = '最新数据更新于:' + timeDate
   deviceKinds.value = deviceKind
