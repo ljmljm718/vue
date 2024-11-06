@@ -489,8 +489,11 @@ export default defineComponent({
                   }}
                   onChange={(item) => handleCalendarChange(item)}
                 />
-                <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
-                  {bottomDataList.value.map((item) => (
+                {
+                  bottomDataList.value.length>0 ? (
+                    <div class="item-bg p-3 mt-2 px-4 pb-1 h-[8.3rem] overflow-auto">
+                  {
+                    bottomDataList.value.map((item) => (
                     <>
                       <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2">
@@ -502,9 +505,12 @@ export default defineComponent({
                       <div class="line-clamp-4 mt-1 mb-2 leading-6 px-3 text-[#DAF5FA]">
                         {item.planDesc ?? '暂无详细介绍'}
                       </div>
-                    </>
-                  ))}
+                    </>))
+                  }
                 </div>
+                  ) : null
+                }
+
               </div>
             </div>
           </el-scrollbar>
