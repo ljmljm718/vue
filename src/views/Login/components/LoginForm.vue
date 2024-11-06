@@ -24,7 +24,7 @@
             prop="tenantName"
           >
             <el-input
-              class="login-input is-empty h-[4rem] !font-size-[1.5rem]"
+              class="login-input is-empty h-[4rem] !font-size-[1.4rem]"
               style="border:none"
               v-model="loginData.loginForm.tenantName"
               :placeholder="t('login.tenantNamePlaceholder')"
@@ -48,7 +48,7 @@
             class="form-item"
           >
             <el-input
-              class="login-input h-[4rem] !font-size-[1.5rem]"
+              class="login-input h-[4rem] !font-size-[1.4rem]"
               v-model="loginData.loginForm.username"
               :placeholder="t('login.usernamePlaceholder')"
             >
@@ -69,7 +69,7 @@
             class="form-item"
           >
             <el-input
-              class="login-input h-[4rem] !font-size-[1.5rem]"
+              class="login-input h-[4rem] !font-size-[1.4rem]"
               v-model="loginData.loginForm.password"
               :placeholder="t('login.passwordPlaceholder')"
               show-password
