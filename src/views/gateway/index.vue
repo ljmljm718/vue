@@ -358,11 +358,22 @@ const initChinaMap = async () => {
       ['石柱土家族自治县', '石柱县'],
       ['酉阳土家族苗族自治县', '酉阳县'],
       ['秀山土家族苗族自治县', '秀山县'],
+      ['城口县', '城口区']
     ])
     const county = locationMap.get(item) || item
     selectMap({ county }).then((res) => {
       console.log("selectMap =>", res)
-      nameDataMap.set(item, res)
+      const mapData = res.map(resItem => {
+        const resItemData = Array.isArray(resItem.data)
+          ? resItem.data.filter(ele => ele.village && ele.years)
+          : []
+        return {
+          ...resItem,
+          data: resItemData
+        }
+      })
+      nameDataMap.set(item, mapData)
+      if (county === '城口区') nameDataMap.set(county, mapData)
     })
   })
   const fixData = () => {
@@ -518,12 +529,7 @@ const initChinaMap = async () => {
   // 检查mapTipData是否合法
   const checkMapTipData = (obj) => {
     if (!Object.keys(obj).length) return false
-    if (!obj.data || !Array.isArray(obj.data) || obj.data.length === 0) return false
-    obj.data.forEach((ele) => {
-      if (!ele.years || !ele.village || !ele.bigscreen) {
-        return false
-      }
-    })
+    if (!obj.data || !Array.isArray(obj.data)) return false
     return true
   }
 
