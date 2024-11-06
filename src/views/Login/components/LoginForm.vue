@@ -5,7 +5,7 @@
       ref="formLogin"
       :model="loginData.loginForm"
       :rules="LoginRules"
-      class=" bg-[#ffffff] px-[2rem] rounded-3 py-[3rem]"
+      class=" bg-[#ffffff] px-[3rem] rounded-3 py-[4rem]"
       label-position="top"
       label-width="120px"
       size="small"
@@ -15,7 +15,7 @@
       <el-row style="margin-right: -10px; margin-left: -10px;">
         <el-col
           :span="24"
-          class="px-[1.5rem] mt-[1.5rem] mb-[0.5rem]"
+          class="px-[1.7rem] mt-[2rem] mb-[0.6rem]"
         >
           <el-form-item
             class="form-item"
@@ -24,7 +24,7 @@
             prop="tenantName"
           >
             <el-input
-              class="login-input is-empty h-[3rem] !font-size-[1rem]"
+              class="login-input is-empty h-[4rem] !font-size-[1.5rem]"
               style="border:none"
               v-model="loginData.loginForm.tenantName"
               :placeholder="t('login.tenantNamePlaceholder')"
@@ -41,14 +41,14 @@
 
         <el-col
           :span="24"
-          class="px-[1.5rem] mb-[0.5rem]"
+          class="px-[1.7rem] mb-[0.6rem]"
         >
           <el-form-item
             prop="username"
             class="form-item"
           >
             <el-input
-              class="login-input h-[3rem] !font-size-[1rem]"
+              class="login-input h-[4rem] !font-size-[1.5rem]"
               v-model="loginData.loginForm.username"
               :placeholder="t('login.usernamePlaceholder')"
             >
@@ -62,14 +62,14 @@
         </el-col>
         <el-col
           :span="24"
-          class="px-[1.5rem] mb-[0.5rem]"
+          class="px-[1.7rem] mb-[0.6rem]"
         >
           <el-form-item
             prop="password"
             class="form-item"
           >
             <el-input
-              class="login-input h-[3rem] !font-size-[1rem]"
+              class="login-input h-[4rem] !font-size-[1.5rem]"
               v-model="loginData.loginForm.password"
               :placeholder="t('login.passwordPlaceholder')"
               show-password
@@ -128,7 +128,7 @@
             <XButton
               :loading="loginLoading"
               :title="t('login.login')"
-              class="w-[100%] btn-bg mb-20px !color-[#fff]  !py-1.5rem !text-1.3rem"
+              class="w-[100%] btn-bg mb-20px !color-[#fff]  !py-[1.8rem] !text-1.3rem"
               @click="getCode()"
             />
           </el-form-item>

@@ -138,7 +138,7 @@ $prefix-cls: #{$namespace}-login;
     z-index: 999;
     left: 0px;
     // height: 40px;
-    width: 800px;
+    width: 1200px;
     aspect-ratio: 8.6;
     background-size: 100% 100%;
     object-fit: container;
