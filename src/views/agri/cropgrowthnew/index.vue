@@ -186,14 +186,17 @@
           :formatter="dateFormatter3"
           width="100px"
         >
-        <template #header>
-          <div class="flex items-center">
-            <div>开始时间</div>
-            <div  @click="sortChange(0)" class="time-icon2 w-10px ml-10px h-15px" v-if="timeNum==2"></div>
-            <div  @click="sortChange(1)" class="time-icon w-10px ml-10px h-15px" v-else-if="timeNum==0"></div>
-            <div  @click="sortChange(2)" class="time-icon w-10px ml-10px h-15px" v-else style="transform:rotate(180deg)"></div>
-          </div>
-        </template>
+          <template #header>
+            <div class="flex items-center">
+              <div>开始时间</div>
+              <div @click="sortChange(0)" class="time-icon2 w-10px ml-10px h-15px"
+                   v-if="timeNum==2"></div>
+              <div @click="sortChange(1)" class="time-icon w-10px ml-10px h-15px"
+                   v-else-if="timeNum==0"></div>
+              <div @click="sortChange(2)" class="time-icon w-10px ml-10px h-15px" v-else
+                   style="transform:rotate(180deg)"></div>
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           label="结束时间"
@@ -237,14 +240,17 @@
           prop="orders"
           width="200px"
         >
-        <template #header>
-          <div class="flex items-center">
-            <div>种植顺序</div>
-            <div  @click="plantChange(0)" class="time-icon2 w-10px ml-10px h-15px" v-if="plantNum==2"></div>
-            <div  @click="plantChange(1)" class="time-icon w-10px ml-10px h-15px" v-else-if="plantNum==0" ></div>
-            <div  @click="plantChange(2)" class="time-icon w-10px ml-10px h-15px" v-else style="transform:rotate(180deg)"></div>
-          </div>
-        </template>
+          <template #header>
+            <div class="flex items-center">
+              <div>种植顺序</div>
+              <div @click="plantChange(0)" class="time-icon2 w-10px ml-10px h-15px"
+                   v-if="plantNum==2"></div>
+              <div @click="plantChange(1)" class="time-icon w-10px ml-10px h-15px"
+                   v-else-if="plantNum==0"></div>
+              <div @click="plantChange(2)" class="time-icon w-10px ml-10px h-15px" v-else
+                   style="transform:rotate(180deg)"></div>
+            </div>
+          </template>
         </el-table-column>
         <!--      <el-table-column-->
         <!--        label="创建时间"-->
@@ -417,6 +423,17 @@
     ref="subformRef"
     @success="getList()"
   />
+  <el-dialog
+    v-model="dialogVisible"
+    title="指导视频"
+    width="700"
+    :before-close="handleClose"
+  >
+    <video width="100%" :autoplay :src="vedioUrl" controls>
+
+    </video>
+  </el-dialog>
+
   <!-- start事项查看弹窗 -->
   <el-drawer
     v-model="drawer2"
@@ -442,6 +459,9 @@
           <p v-if='thisCropType'>品种: {{ thisCropType }}</p>
           <p>事项名称: {{ item.itemName }}</p>
           <p>事项内容：{{ item.itemContent }}</p>
+          <el-button v-if='item.remark!=null' @click="lookVedio(item)" type="primary">
+            查看指导视频
+          </el-button>
         </el-card>
       </div>
     </template>
@@ -469,7 +489,7 @@ import {dateFormatter3} from "@/utils/formatTime";
 
 /** 作物生长周期 列表 */
 defineOptions({name: 'CropGrowthNew'})
-
+const dialogVisible = ref(false)
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
@@ -498,8 +518,8 @@ const queryParams = reactive({
   cycle: undefined,
   orders: undefined,
   farmAdvice: undefined,
-  startTimeSort:undefined,
-  ordersSort:undefined,
+  startTimeSort: undefined,
+  ordersSort: undefined,
 })
 const queryParams1 = reactive({
   pageNo: 1,
@@ -676,41 +696,41 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  plantNum.value=2
-  timeNum.value=2
+  plantNum.value = 2
+  timeNum.value = 2
   queryFormRef.value.resetFields()
   handleQuery()
 }
 
 // 时间排序
-const timeNum=ref(2)
-const sortChange=async (val)=>{
-  timeNum.value=val
-  plantNum.value=2
-  if(val==2){
-    queryParams.ordersSort=undefined
-  queryParams.startTimeSort=undefined
-  getList()
-  }else{
-    queryParams.ordersSort=undefined
-  queryParams.startTimeSort=val
-  getList()
+const timeNum = ref(2)
+const sortChange = async (val) => {
+  timeNum.value = val
+  plantNum.value = 2
+  if (val == 2) {
+    queryParams.ordersSort = undefined
+    queryParams.startTimeSort = undefined
+    getList()
+  } else {
+    queryParams.ordersSort = undefined
+    queryParams.startTimeSort = val
+    getList()
   }
 }
 //种植排序
-const plantNum=ref(2)
-const plantChange=async (val)=>{
-  console.log(val,'zhongzhipaixu ')
-  timeNum.value=2
-  plantNum.value=val
-  if(val==2){
-    queryParams.ordersSort=undefined
-  queryParams.startTimeSort=undefined
-  getList()
-  }else{
-    queryParams.ordersSort=val
-  queryParams.startTimeSort=undefined
-  getList()
+const plantNum = ref(2)
+const plantChange = async (val) => {
+  console.log(val, 'zhongzhipaixu ')
+  timeNum.value = 2
+  plantNum.value = val
+  if (val == 2) {
+    queryParams.ordersSort = undefined
+    queryParams.startTimeSort = undefined
+    getList()
+  } else {
+    queryParams.ordersSort = val
+    queryParams.startTimeSort = undefined
+    getList()
   }
 
 }
@@ -758,6 +778,12 @@ const openSubDeviceForm = (id, growth) => {
 const initValue = async () => {
   const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
   listVarietyManagementVO.value = data1.list
+}
+const vedioUrl = ref('')
+const lookVedio = (item) => {
+  vedioUrl.value = item.remark
+  dialogVisible.value = true
+
 }
 /** 初始化 **/
 onMounted(() => {
@@ -861,15 +887,17 @@ onMounted(() => {
     width: 1100px;
   }
 }
-.time-icon{
+
+.time-icon {
   cursor: pointer;
-  background-size:100% 100%;
+  background-size: 100% 100%;
   background-image: url(../../../assets/imgs/time-icon.png);
 }
-.time-icon2{
+
+.time-icon2 {
   cursor: pointer;
 
-  background-size:100% 100%;
+  background-size: 100% 100%;
   background-image: url(../../../assets/imgs/time-icon2.png);
 }
 </style>
