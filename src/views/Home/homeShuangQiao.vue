@@ -512,21 +512,24 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
       </el-card>
       <el-card class="2xl:col-span-1 xl:col-span-2 col-span-2">
         <el-skeleton :loading="loading" animated>
-          <div class="flex pl-7 title-icon justify-between items-center">
-            <span>养殖品种</span>
-            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-              <select @change="handleSelectorChange1">
-                <option :value="item.id" v-for="(item, index) in options1" :key="index"
-                  >{{ item.name }}
-                </option>
-              </select>
-              <select @change="handleSelectorChange2">
-                <option :value="item.id" v-for="(item, index) in options2" :key="index"
-                  >{{ item.name }}
-                </option>
-              </select>
+          <div class="flex justify-between flex-wrap space-y-2">
+            <div class="flex pl-7 title-icon justify-between items-center flex-wrap">
+              <span>养殖品种</span>
             </div>
+            <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                <select @change="handleSelectorChange1">
+                  <option :value="item.id" v-for="(item, index) in options1" :key="index"
+                    >{{ item.name }}
+                  </option>
+                </select>
+                <select @change="handleSelectorChange2">
+                  <option :value="item.id" v-for="(item, index) in options2" :key="index"
+                    >{{ item.name }}
+                  </option>
+                </select>
+              </div>
           </div>
+          
           <el-divider class="!my-3" />
           <div class="p-1">
             <div
@@ -539,9 +542,27 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
             </div>
             <div class="p-1 mt-3" v-if="growthTypes.length !== 0">
               <img :src="growthTypes[growthIndex].imgId" alt="" class="w-100% object-cover" />
-              <div class="px-2 w-100% h-100% mt-10px grid grid-cols-2 gap-3px">
+              <div class="grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3 text-15px py-1rem">
+                <div class="flex items-center">
+                  <div class="w-6rem">养殖品类:</div>
+                  <div>{{ getListCategaryLabelById(growthTypes[growthIndex].cropType) }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">当前生育期:</div>
+                  <div>{{ growthTypes[growthIndex].growth }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">开始时间:</div>
+                  <div>{{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd') }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-6rem">结束时间:</div>
+                  <div>{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}</div>
+                </div>
+              </div>
+              <div class="px-2 w-100% h-100% mt-10px grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3px !hidden">
                 <div class="p-1 flex items-center">
-                  <div class="text-15px">养殖品类: </div>
+                  <div class="text-15px w-5rem">养殖品类: </div>
                   <div class="pl-2">{{
                     getListCategaryLabelById(growthTypes[growthIndex].cropType)
                   }}</div>
@@ -580,7 +601,7 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
             <span>实时监测数据</span>
           </div>
           <el-divider class="!my-3" />
-          <div class="grid gap-2 grid-cols-4 grid-rows-4">
+          <div class="grid gap-2 2xl:grid-cols-4 xl:grid-cols-5 grid-cols-5">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #5293eaa0; background-color: #5293ea30"
@@ -607,7 +628,7 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
               </div>
             </div>
           </div>
-          <div class="grid gap-2 grid-cols-4 grid-rows-4 mt-2">
+          <div class="grid gap-2 2xl:grid-cols-4 xl:grid-cols-5 grid-cols-5 mt-2">
             <div
               class="row-span-2 flex flex-col items-center justify-center"
               style="border: 1px solid #b5ead8a0; background-color: #b5ead830"
