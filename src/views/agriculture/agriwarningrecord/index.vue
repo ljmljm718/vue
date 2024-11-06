@@ -470,7 +470,7 @@
         <div class="mt-[20px]">
           <!-- 卡片形式 -->
           <div
-            v-show="listTypeMonitor === 'card'"
+            v-if=" listMonitor.length && currentItem && listTypeMonitor === 'card'"
             :class="`
               grid grid-cols-2 gap-3
               ${themeIsDark ? 'text-white' : 'text-[#999999]'}
@@ -560,6 +560,9 @@
                 </div>
               </div>
             </el-scrollbar>
+          </div>
+          <div v-else-if="listTypeMonitor === 'card'" class="text-center tracking-widest">
+            暂无数据
           </div>
           <!-- 列表形式 -->
           <div v-show="listTypeMonitor === 'list'">
