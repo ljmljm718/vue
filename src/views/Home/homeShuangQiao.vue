@@ -499,18 +499,18 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
       </div>
     </div>
     <div class="grid grid-cols-4 gap-4 py-4">
-      <el-card class="col-span-1 md:col-span-2">
+      <el-card class="2xl:col-span-1 xl:col-span-2 col-span-2">
         <el-skeleton :loading="loading" animated>
           <div class="flex pl-7 title-icon">
             <span>设备运行状态</span>
           </div>
           <el-divider class="!my-3" />
           <div class="left1">
-            <div id="chart" class="!md:h-[26rem]"></div>
+            <div id="chart" class="2xl:h-20rem xl:h-26rem h-26rem"></div>
           </div>
         </el-skeleton>
       </el-card>
-      <el-card class="col-span-1 md:col-span-2">
+      <el-card class="2xl:col-span-1 xl:col-span-2 col-span-2">
         <el-skeleton :loading="loading" animated>
           <div class="flex pl-7 title-icon justify-between items-center">
             <span>养殖品种</span>
@@ -574,7 +574,7 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
           </div>
         </el-skeleton>
       </el-card>
-      <el-card class="col-span-2 md:col-span-4">
+      <el-card class="2xl:col-span-2 xl:col-span-4 col-span-4">
         <el-skeleton :loading="loading" animated>
           <div class="flex pl-7 title-icon">
             <span>实时监测数据</span>
@@ -724,9 +724,6 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
 </template>
 
 <style lang="scss" scoped>
-#chart {
-  height: 18rem;
-}
 
 .title-icon {
   background-image: url(./assets/titleIcon.png);
