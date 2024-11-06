@@ -9,6 +9,7 @@ import { searchDoc } from './searchTool'
 import 'leaflet-draw'
 import "leaflet/dist/leaflet.css"
 import 'leaflet-draw/dist/leaflet.draw.css'
+import * as turf from '@turf/turf'
 
 adapter()
 defineOptions({ name: 'MapCustom' })
@@ -119,7 +120,11 @@ const layerMap = new Map<string, any>()
 
 // 创建多边形
 const createPolygon = (latlngs: L.point[], option = {}, enableEdit = true) => {
-  const sha256 = CryptoJS.SHA256(latlngs.toString().replace(' ', '')).toString()
+  const _center = turf.centroid(turf.points(latlngs[0].map(ele => ([ele.lng, ele.lat]))))
+  const { geometry } = _center;
+  const { coordinates } = geometry;
+  const centerString = coordinates.toString()
+  const sha256 = CryptoJS.SHA256(latlngs.toString().replace(' ', '')).toString() + centerString;
   const polygon = L.polygon(latlngs, option)
   if (!layerMap.has(sha256)) {
     polygon.addTo(map)
