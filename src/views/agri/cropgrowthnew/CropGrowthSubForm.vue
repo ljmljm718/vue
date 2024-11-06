@@ -28,7 +28,7 @@
         <upload-file
           v-model="formData.remark"
           :file-type="['mp4']"
-          :file-size="10"
+          :file-size="50"
           :title="'视频上传'"
           :limit="1"
         />
