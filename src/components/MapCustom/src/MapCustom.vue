@@ -9,6 +9,7 @@ import { searchDoc } from './searchTool'
 import 'leaflet-draw'
 import "leaflet/dist/leaflet.css"
 import 'leaflet-draw/dist/leaflet.draw.css'
+import * as turf from '@turf/turf'
 
 adapter()
 defineOptions({ name: 'MapCustom' })
@@ -117,9 +118,26 @@ onMounted(() => {
 })
 const layerMap = new Map<string, any>()
 
+const formatCenterString = (latlngs: L.point[]):string => {
+  if (!Array.isArray(latlngs)) return '';
+  if (latlngs.length === 0) return '';
+  const firstItem = latlngs.length === 1 ? latlngs[0] : latlngs;
+  const filteredPointer = firstItem.map(_poi => {
+    if (Array.isArray(_poi) && _poi.length === 2) return _poi;
+    const { lat, lng } = _poi;
+    if (!lat || !lng) return null;
+    return [_poi.lng, _poi.lat]
+  })
+  const _center = turf.centroid(turf.points(filteredPointer))
+  const { geometry } = _center;
+  const { coordinates } = geometry;
+  return '';
+}
+
 // 创建多边形
 const createPolygon = (latlngs: L.point[], option = {}, enableEdit = true) => {
-  const sha256 = CryptoJS.SHA256(latlngs.toString().replace(' ', '')).toString()
+  const centerString = formatCenterString(latlngs)
+  const sha256 = CryptoJS.SHA256(latlngs.toString().replace(' ', '')).toString() + centerString;
   const polygon = L.polygon(latlngs, option)
   if (!layerMap.has(sha256)) {
     polygon.addTo(map)
