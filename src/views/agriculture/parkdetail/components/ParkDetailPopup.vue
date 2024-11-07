@@ -75,7 +75,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection"/>
-        <el-table-column label="所属基地" align="center" prop="parkId" />
+        <el-table-column label="所属基地" align="center" prop="parkName" width="150"/>
         <el-table-column label="编号" align="center" prop="code" width="200"/>
         <el-table-column label="名称" align="center" prop="name" width="150"/>
         <el-table-column label="海拔（米）" align="center" prop="altitude" width="100"/>
@@ -98,7 +98,7 @@
     <template #footer>
       <el-button
         :disabled="!selectionList.length"
-        type="primary" 
+        type="primary"
         @click="submitForm"
       >确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
