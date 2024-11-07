@@ -154,7 +154,7 @@ const formData = ref({
 })
 const formRules = reactive({
   cropType: [{required: true, message: '品类不能为空', trigger: 'blur'}],
-  cropName: [{required: true, message: '品种不能为空', trigger: 'blur'}],
+  // cropName: [{required: true, message: '品种不能为空', trigger: 'blur'}],
   growth: [{required: true, message: '生长期不能为空', trigger: 'blur'}],
   cycle: [{required: true, message: '周期不能为空', trigger: 'blur'}],
   startTime: [{required: true, message: '开始时间不能为空', trigger: 'blur'}],

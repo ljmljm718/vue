@@ -5,6 +5,13 @@ import AgriculturePage from './agriculture.vue'
 import VisualMonitor from './visualmonitor.vue'
 import PlantModel from './plantmodel.vue'
 
+const props = defineProps({
+  title: {
+    type: String,
+    default: '永川区茶竹村大屏驾驶舱'
+  },
+})
+
 const agricultureRef = ref()
 const visualMonitorRef = ref()
 const plantModelRef = ref()
@@ -42,7 +49,7 @@ const handleTabChange = (tab:string) => {
               @click="handleTabChange('model')"
             >种植模型</div>
           </div>
-          <div class="text-36px art-font">永川区茶竹村大屏驾驶舱</div>
+          <div class="text-36px art-font">{{ props.title }}</div>
           <div class="w-410px flex justify-center">
             <div class="w-300px"><CurrentTime /></div>
           </div>

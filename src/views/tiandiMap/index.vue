@@ -359,10 +359,12 @@ const getDataList = async () => {
             if (Array.isArray(_childGeofencing) && _childGeofencing.length > 0) {
               childGeofencing = _childGeofencing
             } else {
-              const { corrdinates, option } = _childGeofencing;
-              if (Array.isArray(corrdinates) && corrdinates.length > 0) {
-                childGeofencing = corrdinates;
-                chilGeoOption = option
+              if (_childGeofencing) {
+                const { corrdinates, option } = _childGeofencing;
+                if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+                  childGeofencing = corrdinates;
+                  chilGeoOption = option
+                }
               }
             }
             if (Array.isArray(childGeofencing) && childGeofencing.length > 0) {
