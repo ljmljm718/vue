@@ -178,10 +178,10 @@ const initChartPie1 = async () => {
     generatePieOptions({
       legend: {
         show: true,
-        top: 'center',
-        left: 'right',
+        top:windWidth.value < 1200 ?'top': 'center',
+        left:  windWidth.value < 1200 ?'center':'right',
         bottom: '0',
-        orient: '',
+        orient:windWidth.value < 1200 ? 'horizontal' : 'vertical',
         textStyle: {
           color: '#000'
         },
@@ -484,7 +484,7 @@ const initChartBar2 = async () => {
       legend: {
         show: true,
         top: 'top',
-        left: 'center',
+        left: windWidth.value < 1200 ? '70':'center',
         textStyle: {
           color: '#000'
         }
@@ -528,7 +528,7 @@ const initChartBar2 = async () => {
         show: true,
         feature: {
           dataView: { readOnly: false },
-          magicType: { type: ['line', 'bar'] },
+          magicType: { type: ['line',] },
           restore: {},
           saveAsImage: {}
         }
@@ -1010,8 +1010,22 @@ const offSubmit = () => {
   initChartBar3()
   handleRadioChange(radio.value)
 }
-onMounted(() => {
+const windWidth = ref(0) 
+window.addEventListener("resize", ()=>{
+  console.log(window.innerWidth,'window.innerWidth')
 
+  windWidth.value = window.innerWidth
+  initChartPie1()
+  // initChartPie2()
+  // initChartBar1()
+  initChartBar2()
+  // initChartBar3()
+  // handleRadioChange(radio.value)
+
+})
+onMounted(() => {
+  console.log(window.innerWidth,'window.innerWidth')
+  windWidth.value = window.innerWidth
   initChartPie1()
   initChartPie2()
   initChartBar1()

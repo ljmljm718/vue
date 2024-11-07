@@ -69,6 +69,7 @@ const handleCurrentCategoryChange = (currNodeData) => {
 const topDataList = ref<any[]>([])
 const getTopDataList = async (landBlockId:string) => {
   const res = await getNumberByLandBlockId({ landBlockId })
+  console.log(res,' 顶部数据')
   if (!Array.isArray(res)) return;
   const tempArr = [];
   res.forEach(item => {
@@ -77,6 +78,7 @@ const getTopDataList = async (landBlockId:string) => {
     tempArr.push({ title: category + '种类', value: number });
   })
   topDataList.value = tempArr;
+
 }
 
 
@@ -173,19 +175,20 @@ const getSnapType = async (id) => {
 //  pestListType.value = true
 
 }
+
 //图片点击
 const snapPictureChange = (item,index) =>{
   snapDevice.value.monitorSpecies = item.monitorSpecies
-
-  getSnapType(item.id)
- 
-  snapNum1.value = snapNum.value
-  snapShotImg.value = item.monitorPicture
-  if(snapPictureList.value.length>4){
-    left.value = (snapNum1.value - snapNum.value ) * 80
+  if(snapPictureList.value.length > 4 ){
+    left.value += (snapNum1.value - index ) * 50 
   }
-  console.log(left.value,'left.valueleft.value')
+  getSnapType(item.id)
+
+  snapShotImg.value = item.monitorPicture
+
+  snapNum1.value = index
   snapNum.value = index
+
 }
 
 // 预警信息列表
@@ -379,7 +382,7 @@ const diseaseInitChart2 = async () =>{
               },
             },
             legend: {
-              show: true,
+              show: windWidth.value < 1400? false: true,
               orient:'horizontal',
               itemWidth: 15,
               itemHeight: 15,
@@ -527,7 +530,7 @@ const insectInitChart2 = () => {
               },
             },
             legend: {
-              show: true,
+              show: windWidth.value < 1400? false: true,
               orient:'horizontal',
               itemWidth: 15,
               itemHeight: 15,
@@ -728,81 +731,106 @@ const snapNum1 = ref (0)
 const left = ref<number>(0)
 const snapDomWidth = ref<number>()
 onMounted(()=>{
-  console.log(snapDom.value.offsetWidth/4,'width9999')
+  console.log(window.innerWidth ,'width9999')
   snapDomWidth.value = snapDom.value.offsetWidth
+  windWidth.value = window.innerWidth
+
 })
 const tabLeft = (str) => { 
   if(str == 'right'){
-    if(snapNum.value >= snapPictureList.value.length-1 ){
-      left.value = 0
+    if(snapNum.value >= snapPictureList.value.length - 1 ){
+      left.value = 0  
       snapNum .value = 0
       snapNum1.value = 0
       snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
       snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
       getSnapType(snapPictureList.value[snapNum.value].id)
     }else{
-
-      if(snapPictureList.value.length>4 && snapNum.value >=3){
-        left.value = (snapNum1.value - snapNum.value ) * 80
+      if(snapPictureList.value.length > 4 && snapNum.value >= 4){
+        left.value += (snapNum1.value - (snapNum.value+1) ) * 50 
       }
       snapNum1.value = snapNum.value
-
       snapNum.value++
-      console.log(snapNum.value)
+       console.log(snapNum.value,'snapNum 999')
+
       snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
       snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
 
       getSnapType(snapPictureList.value[snapNum.value].id)
     }
-  }else{
-    if(snapNum.value <= 0){
-      
-      if(snapPictureList.value.length>4){
-        left.value = (3 - snapPictureList.value.length) * 80
-      }
 
-      snapNum.value =  snapPictureList.value.length-1
-      snapNum1.value =  snapPictureList.value.length-2
-     
-      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-      getSnapType(snapPictureList.value[snapNum.value].id)
-      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
-
-    }else{
-      console.log(snapNum1.value,'snapNum1.value')
-      console.log(snapNum.value,'snapNum.value')
-      if(snapPictureList.value.length>4){
-        left.value = (snapNum1.value - snapNum.value ) * 80
-      }else{ 
-        // left.value = (snapNum1.value - snapNum.value ) * 80
-
-      }
-      left.value = (snapNum1.value - snapNum.value ) * 80
-      snapNum1.value = snapNum.value
-      snapNum.value--
-      snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
-      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-      getSnapType(snapPictureList.value[snapNum.value].id)
-    }
   }
-  console.log(left.value,'left.valueleft.value9999')
+
+  // else{
+  //   if(snapNum.value <= 0){
+      
+  //     if(snapPictureList.value.length>4){
+  //       left.value = (3 - snapPictureList.value.length) * 80
+  //     }
+
+  //     snapNum.value =  snapPictureList.value.length-1
+  //     snapNum1.value =  snapPictureList.value.length-2
+     
+  //     snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+  //     getSnapType(snapPictureList.value[snapNum.value].id)
+  //     snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+
+  //   }else{
+  //     console.log(snapNum1.value,'snapNum1.value')
+  //     console.log(snapNum.value,'snapNum.value')
+  //     if(snapPictureList.value.length>4){
+  //       left.value = (snapNum1.value - snapNum.value ) * 80
+  //     }else{ 
+  //       // left.value = (snapNum1.value - snapNum.value ) * 80
+
+  //     }
+  //     left.value = (snapNum1.value - snapNum.value ) * 80
+  //     snapNum1.value = snapNum.value
+  //     snapNum.value--
+  //     snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
+  //     snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
+  //     getSnapType(snapPictureList.value[snapNum.value].id)
+  //   }
+  // }
 }
 
 const amplify = ref(false)
-const amplifyList = ref<any[]>([])
-const amplifyAdd = () => {
-  amplify.value = true ;
+const amplify2 = ref(false)
+const amplifyAdd = (val) => {
+  if(amplify2.value) {
+    amplify.value = false
+    amplify2.value = false
+
+  }else{
+    amplify.value = true
+  }
 }
-function closePreview() {
-  console.log(99999)
-  // amplifyList.value = []
-  amplify.value = false ;
+const closePreview = () => {
+  amplify2.value = true
+  amplify.value = false
+}
+window.addEventListener('keyup',(e)=>{
+  if(e.keyCode){
+    amplify.value = false
+    amplify2.value = false
+  }
+})
+const windWidth = ref()
+window.addEventListener("resize", ()=>{
+
+  console.log(window.innerWidth,'window.innerWidth')
+  windWidth.value = window.innerWidth
+  // diseaseInitChart()
+  // diseaseInitChart2()
+  // insectInitChart()
+  // insectInitChart2()
+  getCategoryList()
+})
 
 
-}
 </script>
 <template>
-  <div class="flex space-x-[.5rem]">
+  <div class="flex space-x-[.5rem] domDiv">
     <el-card class="w-12rem h-73rem">
       <el-tree
         ref="treeRef"
@@ -823,17 +851,17 @@ function closePreview() {
       style="max-width: calc(100% - 38rem);"
     >
       <el-card class="h-[7rem] mr-.5rem ">
-        <div class="flex justify-evenly space-x-1rem items-center">
+        <div class="flex h-4.5rem justify-evenly space-x-1rem items-center">
           <div
             v-for="item, index in topDataList"
             :key="index"
-            :class="`flex space-x-3 items-center px-1.5rem py-3 rounded-2  homt-top-bg${index+1}`"
+            :class="`flex space-x-3 topDom items-center box-border px-${windWidth<1400?'.5rem':'1.5rem'}  py-${windWidth<1400?'1':'3'} rounded-2  homt-top-bg${index+1}`"
             
           >
             <div :class="` w-2.5rem h-2.5rem disease-top-${index+1}`"> </div>
             <div>
-              <div>{{ item.title }}</div>
-              <div class="art-font text-[1.4rem]">{{ item.value }}</div>
+              <div class="top-dom-title">{{ item.title }}</div>
+              <div class="art-font topListText text-[1.4rem]">{{ item.value }}</div>
             </div>
           </div>
         </div>
@@ -843,7 +871,7 @@ function closePreview() {
           <el-card class="h-[21rem]">
             <div class='flex justify-between items-center'>
               <div class="title-frame">病虫害排行</div>
-              <div class="flex space-x-3 py-2">
+              <div class="flex space-x-3 py-2 box-border">
                 <el-radio-group v-model="bugTime" @change="handleShortcutDaysChange">
                   <el-radio-button label="当日" value="当日" />
                   <el-radio-button label="本周" value="本周" />
@@ -852,6 +880,7 @@ function closePreview() {
                 </el-radio-group>
                 <div>
                   <el-date-picker
+                    :style="`width:${windWidth< 1400 ?'auto':'auto'} `"
                     v-model="bugTimeRange"
                     type="daterange"
                     range-separator="至"
@@ -862,14 +891,14 @@ function closePreview() {
                 </div>
             </div>
             </div>
-            <div class="flex space-x-1rem justify-center">
-              <div class="max-w-70rem flex space-x-1rem grow py-3">
-                <div class="grow" style="border: 1px solid #d1d1d1;">
+            <div class="flex space-x-1rem ">
+              <div :class="`max-w-70rem insect-disease flex space-x-1rem box-border grow py-3`">
+                <div class="flex-1 insect-disease-left" style="border: 1px solid #d1d1d1;">
                   <div
                     class="h-2rem flex items-center px-1rem"
                     style="border-bottom: 1px solid #d1d1d1;"
                   >虫害</div>
-                  <el-scrollbar height="12rem">
+                  <el-scrollbar class="left-scrollbar" height="12rem">
                     <div
                       class="py-4 flex justify-center space-x-3 items-center"
                       style="border-bottom: 1px solid #99999929;"
@@ -888,14 +917,14 @@ function closePreview() {
                     >暂无数据</div>
                   </el-scrollbar>
                 </div>
-                <div class="grow" style="border: 1px solid #d1d1d1;">
+                <div class="flex-1 insect-disease-right" style="border: 1px solid #d1d1d1;">
                   <div
                     class="h-2rem flex items-center px-1rem"
                     style="border-bottom: 1px solid #d1d1d1;"
                   >病害</div>
                   <el-scrollbar height="12rem">
                     <div
-                      class="py-4 flex justify-center space-x-3 items-center"
+                      class="py-4 box-border flex justify-center space-x-3 items-center"
                       style="border-bottom: 1px solid #99999929;"
                       v-for="item in diseaseList"
                       :key="item.id"
@@ -921,6 +950,7 @@ function closePreview() {
               <div class="flex items-center space-x-3">
                 <div>
                   <el-date-picker
+                  :style="`width:${windWidth< 1200 ?'100px':'auto'} `"
                     v-model="sickTraceTimeRange"
                     type="daterange"
                     range-separator="至"
@@ -961,6 +991,7 @@ function closePreview() {
               <div class="flex items-center space-x-3">
                 <div>
                   <el-date-picker
+                  :style="`width:${windWidth< 1200 ?'100px':'auto'} `"
                     v-model="bugTraceTimeRange"
                     type="daterange"
                     @change="bugTraceTimeChange"
@@ -1020,28 +1051,27 @@ function closePreview() {
             <div class="rounded-1 h-11rem bg-#666 relative">
                <img :src='snapShotImg' class='w-100% h-100%'/> 
                <div class="absolute w-93% flex justify-between bottom-3 left-3">
-                  <div class="amplify cursor-pointer" @click=" amplifyAdd()">
-                    <el-image-viewer  v-if="amplify"  hide-on-click-modal  @close="closePreview" class="h-100px w-100px" :url-list="[snapShotImg]" 
+                  <div class="amplify cursor-pointer" @click=" amplifyAdd(2)">
+                    <el-image-viewer  v-if="amplify"  hide-on-click-modal  @close="closePreview" class="h-100px w-100px" :initial-index="0" :url-list="[snapShotImg]" 
                         fit="cover" />
                   </div>
                   <div class="color-#fff flex">{{ snapNum+1 <= 9? '0'+(snapNum+1) : (snapNum+1)  }}<div class="color-[#eee]">  / {{ snapImgTotal }}</div> </div>
                </div>
-            </div>
-            <div class=" w-full py-2 relative" style=''>
-              <div  ref='snapDom' class=' w-full h-60px relative ' :style='`overflow:hidden; left:${left}px`'>
+            </div> 
+            <div class=" py-2 relative" style="overflow:hidden;">
+              <div  ref='snapDom' :class='`w-[${snapDomWidth}px] flex relative `' :style='`left:${left}px`'>
                 <div
-                 
                   v-for="item,index in snapPictureList"
                   :key="item"
-                  
                   @click="snapPictureChange(item,index)"
-                  :class="`w-53px h-53px mr-10px inline-block ${snapNum == index ? 'snapNum' :''} `"
+                  style=" flex-shrink: 0;"
+                  :class="`w-70px h-70px mr-10px box-border ${snapNum == index ? 'snapNum' :''}`"
                 > 
                   <img :src='item.monitorPicture' class='w-100% h-100%'/>
                 </div>
               </div>
               
-              <div  v-if='snapPictureList.length != 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-0 top-1 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
+              <div  v-if='snapPictureList.length > 0' @click='tabLeft("right")' style="opacity: .6; background-color:#000" class='z-22 cursor-pointer absolute right-3 top-5 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px'> <div class="-mt-[5px]"> > </div> </div>
 
             </div>
             <div class="title-frame my-15px">设备信息</div>
@@ -1124,6 +1154,45 @@ function closePreview() {
   </div>
 </template>
 <style scoped lang="scss">
+@media (max-width: 1400px) {
+    .domDiv{
+      font-size: 12px;
+    }
+  .disease-top-1,.disease-top-3{
+    width: 25px;
+    height: 25px;
+  }
+  .disease-top-2,.disease-top-4{
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .topDom{
+   padding: 10px 5px;
+   .top-dom-title{
+      font-size: 10px;
+   }
+   .topListText{
+      font-size: 15px;
+    }
+  }
+  .insect-disease{
+    width: 300px !important;
+    height: 200px;
+    .left-scrollbar{
+      height: 200px;
+    }
+    .insect-disease-left{
+      width: 40%;
+      font-size: 10px;
+
+    }
+    .insect-disease-right{
+      width: 40%;
+      font-size: 10px;
+    }
+  }
+  
+}
 .title-frame {
   font-weight: bold;
   color: #626262
@@ -1172,8 +1241,8 @@ function closePreview() {
   background-color:#fef9ee
 }
 .snapNum{
-  width:50px;
-  height: 50px;
+  width:70px;
+  height: 70px;
   border: 3px solid #009688
 }
 .amplify{
