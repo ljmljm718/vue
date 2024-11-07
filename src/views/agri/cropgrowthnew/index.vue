@@ -307,41 +307,30 @@
       v-show="showType === 'card'"
     >
       <div
-        v-for="item, index in cardDataList"
-        :key="index"
-        class="p-3 rounded-2 px-4"
+        class="rounded-2 p-3 flex flex-wrap items-center"
         style="border: 1px solid #66666666"
+        v-for="item in cardDataList"
+        :key="item.id"
       >
-        <div class="w-full flex justify-between items-center mb-2">
-          <div class="text-[1rem] font-bold">{{ item.cropName }}</div>
-          <div class="space-x-2">
-            <!-- <el-button
-              class="!hover:bg-[#009688] !hover:text-white"
-              @click="openForm('update', item.id)"
-              v-hasPermi="['agri:crop-growth-new:update']"
-            >编辑</el-button>
-            <el-button
-              class="!hover:bg-[#009688] !hover:text-white"
-              @click="handleDelete(item.id)"
-              v-hasPermi="['agri:crop-growth-new:delete']"
-            >删除</el-button> -->
-          </div>
-        </div>
-        <div class="flex justify-between item-start">
-          <div class="text-[15px]">
+        <div class="flex items-center 2xl:w-[calc(100%_-_700px)] w-full">
+          <div
+            class="h-[14rem] space-y-2 box-border px-3 py-1"
+            style="width: calc(100% - 15.5rem)"
+          >
+            <div class="text-[1rem] font-bold">{{ item.cropName }}</div>
             <div class="text-[#666666]">
               <span>品类:</span>
               <span class="pl-2">{{ item.cropType }}</span>
               <span v-show="item.cropName" class="pl-4">品种:</span>
               <span v-show="item.cropName" class="pl-2">{{ item.cropName }}</span>
             </div>
-            <div class="flex items-start mt-[1rem]">
+            <div class="flex items-start w-full">
               <img
                 :src="item.imgId"
                 class="h-130px w-130px object-contain shadow-md rounded-md !bg-[#f5f7f9] p-1"
                 style="border: 1px solid #25252525;"
               />
-              <div class="ml-3 text-[15px] w-[14rem]">
+              <div class="ml-3 text-[15px] grow">
                 <div class="mb-1 font-bold">环境条件:</div>
                 <div class="line-clamp-2">
                   <el-tooltip
@@ -365,42 +354,37 @@
               </div>
             </div>
           </div>
-          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5">
-          </div>
+          <div class="block h-[13rem] w-1px bg-[#66666636] mx-3"></div>
           <div :id="`chart_${item.id}`" class="w-[15rem] h-[14rem]"></div>
-          <div
-            class="!hidden w-[9rem] h-[9rem] mt-1 mx-3 chart-bg flex items-center justify-center flex-col text-[.9rem]">
-            <div>{{ item.growth }}</div>
-            <div>{{ item.cycle + '天' }}</div>
-          </div>
-          <div class="w-[1px] bg-[#66666640] h-[12rem] mt-3 mx-5"></div>
-          <div class="right-content-wrapper">
-            <div class="flex justify-between items-center mt-3 px-6 overflow-hidden pb-[25px]">
+        </div>
+        <div class="2xl:hidden w-full h-[1px] bg-[#66666636] my-3"></div>
+        <div class="2xl:block hidden h-[13rem] w-1px bg-[#66666656] mx-12px"></div>
+        <div class="2xl:w-[660px] w-full 2xl:p-1 p-3 box-border min-h-10rem">
+          <div class="flex justify-between items-center px-6 overflow-hidden pb-[25px]">
+            <div
+              v-for="ele, idx in item.child1"
+              :key="idx"
+              class="relative cursor-pointer select-none"
+              @click="item.growth = ele.growth;updateInstanceOptions(`chart_${item.id}`, {
+                title: { text: ele.growth, subtext: ele.cycle + '天' }
+              }, item.cropCode, item.cropId)"
+            >
+              <div>{{ ele.growth }}</div>
+              <div>{{ ele.cycle }}天</div>
               <div
-                v-for="ele, idx in item.child1"
-                :key="idx"
-                class="relative cursor-pointer select-none"
-                @click="item.growth = ele.growth;updateInstanceOptions(`chart_${item.id}`, {
-                  title: { text: ele.growth, subtext: ele.cycle + '天' }
-                }, item.cropCode, item.cropId)"
-              >
-                <div>{{ ele.growth }}</div>
-                <div>{{ ele.cycle }}天</div>
-                <div
-                  :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
-              </div>
+                :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
             </div>
-            <div class="flex mt-2">
-              <div
-                :class="`grow text-[#ffffff] ${child.id === item.activeBar ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'} text-center py-2`"
-                v-for="child, flag in item.child2"
-                :key="flag"
-                @click="item.activeBar = child.id"
-              >{{ child.itemName }}
-              </div>
-            </div>
-            <div class="px-[1rem] pt-3">{{ getLabelById(item.child2, item.activeBar) }}</div>
           </div>
+          <div class="flex mt-2">
+            <div
+              :class="`grow text-[#ffffff] ${child.id === item.activeBar ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'} text-center py-2`"
+              v-for="child, flag in item.child2"
+              :key="flag"
+              @click="item.activeBar = child.id"
+            >{{ child.itemName }}
+            </div>
+          </div>
+          <div class="px-[1rem] pt-3">{{ getLabelById(item.child2, item.activeBar) }}</div>
         </div>
       </div>
     </div>
