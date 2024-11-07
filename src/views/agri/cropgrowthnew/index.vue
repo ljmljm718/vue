@@ -303,11 +303,11 @@
       </el-table>
     </div>
     <div
-      class="w-full space-y-2 pt-2"
+      class="w-full space-y-3 pt-2"
       v-show="showType === 'card'"
     >
       <div
-        class="rounded-2 p-3 flex flex-wrap items-center"
+        class="rounded-2 p-3 flex flex-wrap items-center shadow-md"
         style="border: 1px solid #66666666"
         v-for="item in cardDataList"
         :key="item.id"
@@ -318,7 +318,7 @@
             style="width: calc(100% - 15.5rem)"
           >
             <div class="text-[1rem] font-bold">{{ item.cropName }}</div>
-            <div class="text-[#666666]">
+            <div class="text-[#666666] pb-1">
               <span>品类:</span>
               <span class="pl-2">{{ item.cropType }}</span>
               <span v-show="item.cropName" class="pl-4">品种:</span>
@@ -358,7 +358,7 @@
           <div :id="`chart_${item.id}`" class="w-[15rem] h-[14rem]"></div>
         </div>
         <div class="2xl:hidden w-full h-[1px] bg-[#66666636] my-3"></div>
-        <div class="2xl:block hidden h-[13rem] w-1px bg-[#66666656] mx-12px"></div>
+        <div class="2xl:block hidden h-[13rem] w-1px bg-[#66666636] mx-12px"></div>
         <div class="2xl:w-[660px] w-full 2xl:p-1 p-3 box-border min-h-10rem">
           <div class="flex justify-between items-center px-6 overflow-hidden pb-[25px]">
             <div
@@ -381,10 +381,9 @@
               v-for="child, flag in item.child2"
               :key="flag"
               @click="item.activeBar = child.id"
-            >{{ child.itemName }}
-            </div>
+            >{{ child.itemName }}</div>
           </div>
-          <div class="px-[1rem] pt-3">{{ getLabelById(item.child2, item.activeBar) }}</div>
+          <div class="px-[1rem] pt-3 text-[.9rem]">{{ getLabelById(item.child2, item.activeBar) }}</div>
         </div>
       </div>
     </div>
