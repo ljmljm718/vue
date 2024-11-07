@@ -131,7 +131,7 @@ const formatCenterString = (latlngs: L.point[]):string => {
   const _center = turf.centroid(turf.points(filteredPointer))
   const { geometry } = _center;
   const { coordinates } = geometry;
-  return '';
+  return coordinates.toString();
 }
 
 // 创建多边形

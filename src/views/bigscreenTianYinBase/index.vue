@@ -87,7 +87,7 @@ export default defineComponent({
           const features = turf.points(allCoordinates);
           const centerPoint = turf.center(features);
           const { coordinates } = centerPoint.geometry;
-          cesiumIns.value.flyToWithZoomLevel(coordinates, allCoordinates);
+          // cesiumIns.value.flyToWithZoomLevel(coordinates, allCoordinates);
         }
       }
     };

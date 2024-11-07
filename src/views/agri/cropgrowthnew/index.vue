@@ -92,8 +92,10 @@
   </ContentWrap>
   <ContentWrap>
     <div class="flex items-center">
-      <div class="space-x-1"
-           style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem">
+      <div
+        class="space-x-1"
+        style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem"
+      >
         <el-button
           class="!text-white !bg-[#009688] !h-2.4rem"
           @click="openForm('create')"
@@ -103,7 +105,7 @@
             icon="ep:plus"
             class="mr-5px"
           />
-          新增
+          <span>新增</span>
         </el-button>
       </div>
       <div class="grow"
@@ -189,12 +191,22 @@
           <template #header>
             <div class="flex items-center">
               <div>开始时间</div>
-              <div @click="sortChange(0)" class="time-icon2 w-10px ml-10px h-15px"
-                   v-if="timeNum==2"></div>
-              <div @click="sortChange(1)" class="time-icon w-10px ml-10px h-15px"
-                   v-else-if="timeNum==0"></div>
-              <div @click="sortChange(2)" class="time-icon w-10px ml-10px h-15px" v-else
-                   style="transform:rotate(180deg)"></div>
+              <div
+                @click="sortChange(0)"
+                class="time-icon2 w-10px ml-10px h-15px"
+                v-if="timeNum==2"
+              ></div>
+              <div
+                @click="sortChange(1)"
+                class="time-icon w-10px ml-10px h-15px"
+                v-else-if="timeNum==0"
+              ></div>
+              <div
+                @click="sortChange(2)"
+                class="time-icon w-10px ml-10px h-15px"
+                v-else
+                style="transform:rotate(180deg)"
+              ></div>
             </div>
           </template>
         </el-table-column>
@@ -243,12 +255,22 @@
           <template #header>
             <div class="flex items-center">
               <div>种植顺序</div>
-              <div @click="plantChange(0)" class="time-icon2 w-10px ml-10px h-15px"
-                   v-if="plantNum==2"></div>
-              <div @click="plantChange(1)" class="time-icon w-10px ml-10px h-15px"
-                   v-else-if="plantNum==0"></div>
-              <div @click="plantChange(2)" class="time-icon w-10px ml-10px h-15px" v-else
-                   style="transform:rotate(180deg)"></div>
+              <div
+                @click="plantChange(0)"
+                class="time-icon2 w-10px ml-10px h-15px"
+                v-if="plantNum==2"
+              ></div>
+              <div
+                @click="plantChange(1)"
+                class="time-icon w-10px ml-10px h-15px"
+                v-else-if="plantNum==0"
+              ></div>
+              <div
+                @click="plantChange(2)"
+                class="time-icon w-10px ml-10px h-15px"
+                v-else
+                style="transform:rotate(180deg)"
+              ></div>
             </div>
           </template>
         </el-table-column>
@@ -412,9 +434,12 @@
     width="700"
     :before-close="handleClose"
   >
-    <video width="100%" :autoplay :src="vedioUrl" controls>
-
-    </video>
+    <video
+      width="100%"
+      autoplay
+      :src="vedioUrl"
+      controls
+    ></video>
   </el-dialog>
 
   <!-- start事项查看弹窗 -->

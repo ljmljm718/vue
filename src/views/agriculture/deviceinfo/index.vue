@@ -248,7 +248,7 @@
                 !color-[#fff] !border-none
                 !bg-[#59b756] !px-16px !py-13px
               "
-              @click="$router.push({
+              @click="router.push({
                 path: '/internetMonitor/deviceData/equipment-data-three',
                 query: { equipmentCode: item.id }
               })"
@@ -345,7 +345,7 @@
             link
             type="primary"
             v-if="deviceTypeMain.includes(scope.row.deviceType[0])"
-            @click="$router.push({
+            @click="router.push({
               path: '/internetMonitor/deviceData/equipment-data-three',
               query: { equipmentCode: scope.row.id }
             })"
@@ -354,7 +354,7 @@
             link
             type="primary"
             v-if="mingYueDeviceTypeMain.includes(scope.row.deviceType[0])"
-            @click="$router.push({
+            @click="router.push({
               path: '/internetMonitor/interface/equipment-data-rule',
               query: { dtuId: scope.row.deviceCode }
             })"
@@ -384,7 +384,6 @@ import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
 import DeviceInfoForm from './DeviceInfoForm.vue'
 import { DeviceCategoryApi } from "@/api/agriculture/devicecategory";
 import { retainFirstTwoLayers } from "@/utils/tree";
-import router from "@/router";
 import { useRoute } from 'vue-router'
 import { EquipmentDataApi } from "@/api/agriculture/equipmentdata";
 import SubDeviceListForm from "@/views/agriculture/deviceinfo/components/SubDeviceListForm.vue";
@@ -400,6 +399,8 @@ import {
 /** 设备信息 列表 */
 defineOptions({ name: 'DeviceInfo' })
 
+const router = useRouter()
+
 /**
  * 需要跳转的设备类型，一级分类为监测设备的
  * 14 - 武隆
@@ -412,8 +413,9 @@ defineOptions({ name: 'DeviceInfo' })
  * 111 - 酉阳县板桥乡双桥村
  * 120 - 万州区龙驹镇梧桐村
  * 149 - 茶竹
+ * 156 - 望岩村
  */
-const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120, 131, 133, 143, 149])
+const deviceTypeMain = ref([14, 25, 39, 59, 46, 76, 80, 90, 100, 111, 120, 131, 133, 143, 149,156])
 const mingYueDeviceTypeMain = ref([80])
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
