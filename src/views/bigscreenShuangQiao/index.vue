@@ -710,7 +710,6 @@ const windowOpen = item => window.open(item)
                         <div class="label-wrapper">{{ item.monitoringType }}</div>
                       </div>
                       <div
-                        v-show="leftUnitMap[item.monitoringType]"
                         :class="btnIndex==index? 'check-btn2':'check-btn'"
                         @click="getChart(item.monitoringType,index)"
                       >查看</div>
