@@ -245,7 +245,18 @@ export default defineComponent({
         const params = { modelId: curModelId }
         const res = await getCycle(params)
         console.log("周期列表: ", res)
-        if (!Array.isArray(res) || res.length === 0) return;
+        if (!Array.isArray(res) || res.length === 0) {
+          // 周期没数据则指标要素重置
+          indicatorList.value = []
+          indicatorNames = []
+          curIndicatorIndex = 0
+          factorMap = new Map()
+          curFactor.value = new Map()
+          chartDom = null
+          chartInstance = null
+          curFactorData.value = []
+          return;
+        }
 
         if (res[0].curPeriod) {
           curPeriod.value = res[0].curPeriod
