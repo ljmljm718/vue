@@ -662,7 +662,7 @@ const clearObj2 = ref({})
 const getDeviceInfoData = async (item) => {
   console.log("🚀 ~ getDeviceInfoData ~ item:", item)
   if (!(item && item.id)) return;
-  getPictureList(item.deviceCode)
+  getPictureList(item.id)
   const res = await getEquipmentDataByEquipmentCode({ id:item.id })
   console.log("🚀 ~ getDeviceInfoData ~ res:", res)
   if (Array.isArray(res)) runTimeDataList.value = res.map(item => ({ ...item, icon: getImgClassByName(item.monitoringType || "温度") }));
