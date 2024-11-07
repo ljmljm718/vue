@@ -135,7 +135,7 @@ const getTimeLineData = async (batchCode:string) => {
 </script>
 <template>
   <ContentWrap>
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -147,7 +147,7 @@ const getTimeLineData = async (batchCode:string) => {
           v-model="queryParams.belongPlot"
           clearable
           placeholder="请选择地块名称"
-          class="!w-180px"
+          class="!w-240px"
         >
           <el-option
             v-for="item in plotList"
@@ -162,7 +162,7 @@ const getTimeLineData = async (batchCode:string) => {
           v-model="queryParams.cropType"
           clearable
           placeholder="请选择品类"
-          class="!w-180px"
+          class="!w-240px"
         >
           <el-option
             v-for="item in listCategoryManagement"
@@ -177,7 +177,7 @@ const getTimeLineData = async (batchCode:string) => {
           v-model="queryParams.breedId"
           clearable
           placeholder="请选择品种"
-          class="!w-180px"
+          class="!w-240px"
         >
           <el-option
             v-for="item in listVarietyManagementVO"
@@ -193,7 +193,7 @@ const getTimeLineData = async (batchCode:string) => {
           placeholder="请输入批次号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item>
@@ -206,7 +206,7 @@ const getTimeLineData = async (batchCode:string) => {
           重置
         </el-button>
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
   <ContentWrap>
     <div class="flex" style="height: calc(100vh - 250px);">

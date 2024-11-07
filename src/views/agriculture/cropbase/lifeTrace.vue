@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -18,7 +18,7 @@
       <!--        />-->
       <!--      </el-form-item>-->
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-180px">
+        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-240px">
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search"/>
@@ -29,7 +29,7 @@
       </el-form-item>
       <el-form-item label="品类" prop="cropType">
         <el-select v-model="queryParams.cropType" clearable placeholder="请选择品类"
-                   class="!w-180px">
+                   class="!w-240px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -38,7 +38,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="品种" prop="cropName">
-        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-180px">
+        <el-input v-model="queryParams.cropName" placeholder="请选择品种" class="!w-240px">
           <template #append>
             <el-button @click="openBreedFrom()">
               <Icon icon="ep:search"/>
@@ -55,7 +55,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-180px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item label="批次号" prop="batchCode">
@@ -64,11 +64,11 @@
           placeholder="请输入批次号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -78,7 +78,7 @@
         </el-button>
 
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
