@@ -212,7 +212,7 @@ v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种�
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="100">
         <template #default="scope">
           <el-button
             link

@@ -198,7 +198,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" prop="identifyStatus">
+      <el-table-column label="操作" align="center" fixed="right" prop="identifyStatus" width="200">
         <template #default="scope">
           <el-button
             v-show="scope.row.identifyStatus == '1'"
