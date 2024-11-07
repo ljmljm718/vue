@@ -111,7 +111,7 @@ const handleDelete = async (id: number) => {
         </template>
       </el-table-column>
       <el-table-column label="记录人" align="center" prop="recorder" />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" fixed="right" width="100">
         <template #default="scope">
           <a @click="handleDelete(scope.row.id)" v-hasPermi="['agriculture:identification-result:delete']">
             <span class="text-[#009688] cursor-pointer">删除</span>

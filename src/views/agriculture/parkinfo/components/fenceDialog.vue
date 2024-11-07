@@ -15,7 +15,7 @@ const emit = defineEmits(['update:modelValue']);
 <template>
   <div
     class="
-      fixed left-0 top-0 z-9999
+      fixed left-0 top-0 z-2000
       w-100vw h-100vh overflow-hidden
       bg-white flex flex-col
     "

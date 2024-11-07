@@ -779,7 +779,11 @@ const windowOpen = item => window.open(item)
                       <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
                       <div class="text-row">位置: {{ sjList.parkName }}</div>
                       <div class="text-row">设备: {{ sjList.deviceName }}</div>
-                      <div class="text-row">当前读数: {{ sjList.dataValue + " " + sjList.yyUnit }}</div>
+                      <div class="text-row">
+                        当前读数:
+                        {{ sjList.dataValue }}
+                        <span v-if="sjList.yyUnit">{{ sjList.yyUnit }}</span>
+                      </div>
                     </div>
                   </div>
                   <img :src="sensor" alt="" />

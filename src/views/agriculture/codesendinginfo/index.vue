@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -61,7 +61,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          style="width: 220px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item label="是否赋码" prop="codeType">
@@ -95,11 +95,11 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          style="width: 220px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -107,18 +107,22 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:code-sending-info:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
       </el-form-item>
-    </el-form>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:code-sending-info:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
