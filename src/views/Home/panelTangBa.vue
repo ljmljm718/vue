@@ -34,33 +34,6 @@
               v-for="item in runTimeDataList"
               :key="item.id"
             >
-              <!-- <div v-show="item.monitoringType=='温度'" :class="`w-2rem h-2rem tb-home-1 `"></div>
-              <div v-show="item.monitoringType=='湿度'" :class="`w-2rem h-2rem tb-home-2 `"></div>
-              <div v-show="item.monitoringType=='PH值' || item.monitoringType=='PH'" :class="`w-2rem h-2rem tb-home-3 `"></div>
-              <div v-show="item.monitoringType=='EC值'" :class="`w-2rem h-2rem tb-home-4 `"></div>
-              <div v-show="item.monitoringType=='光照'" :class="`w-2rem h-2rem tb-home-5 `"></div>
-              <div v-show="item.monitoringType=='雨量'" :class="`w-2rem h-2rem tb-home-6 `"></div>
-              <div v-show="item.monitoringType=='氮'" :class="`w-2rem h-2rem tb-home-7 `"></div>
-              <div v-show="item.monitoringType=='磷'" :class="`w-2rem h-2rem tb-home-8 `"></div>
-              <div v-show="item.monitoringType=='钾'" :class="`w-2rem h-2rem tb-home-9 `"></div>
-              <div v-show="item.monitoringType=='风向'" :class="`w-2rem h-2rem tb-home-10 `"></div>
-              <div v-show="item.monitoringType=='风速'" :class="`w-2rem h-2rem tb-home-11 `"></div>
-              <div v-show="item.monitoringType=='大气压力'" :class="`w-2rem h-2rem tb-home-12 `"></div>
-              <div v-show="item.monitoringType=='虫害种类'" :class="`w-2rem h-2rem tb-home-13 `"></div>
-              <div v-show="item.monitoringType=='虫害数量'" :class="`w-2rem h-2rem tb-home-14 `"></div>
-              <div v-show="item.monitoringType=='TDS'" :class="`w-2rem h-2rem tb-home-15 `"></div>
-              <div v-show="item.monitoringType=='浊度'" :class="`w-2rem h-2rem tb-home-16 `"></div>
-              <div v-show="item.monitoringType=='溶解氧饱和度'" :class="`w-2rem h-2rem tb-home-17 `"></div>
-              <div v-show="item.monitoringType=='溶解氧浓度'" :class="`w-2rem h-2rem tb-home-18 `"></div>
-              <div v-show="item.monitoringType=='余氯浓度'" :class="`w-2rem h-2rem tb-home-19 `"></div>
-              <div v-show="item.monitoringType=='ORP'" :class="`w-2rem h-2rem tb-home-20 `"></div>
-              <div v-show="item.monitoringType=='电导率'" :class="`w-2rem h-2rem tb-home-21 `"></div>
-              <div v-show="item.monitoringType=='盐度'" :class="`w-2rem h-2rem tb-home-22 `"></div>
-              <div v-show="item.monitoringType=='总辐射'" :class="`w-2rem h-2rem tb-home-23 `"></div>
-              <div v-show="item.monitoringType=='当前雨量'" :class="`w-2rem h-2rem tb-home-24 `"></div>
-              <div v-show="item.monitoringType=='风力'" :class="`w-2rem h-2rem tb-home-25 `"></div>
-              <div v-show="item.monitoringType=='空气温度'" :class="`w-2rem h-2rem tb-home-26 `"></div>
-              <div v-show="item.monitoringType=='空气湿度'" :class="`w-2rem h-2rem tb-home-27 `"></div> -->
               <div :class="`w-2rem h-2rem object-contain ${item.icon}`"></div>
               <div>{{ item.monitoringType }}</div>
               <div>
@@ -138,7 +111,7 @@
           border
           v-loading="warnDataLoading"
           stripe
-          v-show="curDeviceKind === '110'"
+          v-show="['110', '135'].includes(curDeviceKind)"
         >
           <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
           <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
@@ -177,7 +150,7 @@
             border
             v-loading="warnDataLoading"
             stripe
-            v-show="curDeviceKind !== '101' && curDeviceKind !== '110'"
+            v-show="curDeviceKind !== '101' && curDeviceKind !== '110' && curDeviceKind !== '135'"
           >
             <el-table-column label="报警类型" prop="warnType" width="150">
               <template #default="scope">
@@ -593,9 +566,9 @@ const warnDataTotal = ref<number>(0)
 const getWarnDataList = async (deviceCode, deviceKind) => {
   if (!deviceCode) return;
   let requestFunc = getWarningRecordList
-  if (deviceKind === '110') requestFunc = getMonitoringEquipmentNoticePage
+  if (['110', '135'].includes(deviceKind)) requestFunc = getMonitoringEquipmentNoticePage
   warnDataLoading.value = true
-  const { list = [], total = 0 } = await requestFunc(deviceKind === '110' ? {
+  const { list = [], total = 0 } = await requestFunc(['110', '135'].includes(deviceKind) ? {
     deviceId: deviceCode, pageSize: 100
   } : { deviceCode, pageSize: 100 }).catch(() => { warnDataLoading.value = false })
   console.log("报警列表", list);
