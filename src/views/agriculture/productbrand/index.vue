@@ -119,25 +119,25 @@
     <div v-if="selectType === 'card' && list.length<1" class="flex w-full justify-center items-center text-[13px] pt-2"> 暂无数据</div>
     <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols">
       <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2">
-        <div class="flex justify-between h-[150px] p-2" >
-          <div class="p-2 w-full">
+        <div class="flex flex-row justify-center items-center h-[150px] p-2" >
+          <div class="p-2 ">
             <img
             :src = "item.brandLogo"
-            class=" w-full h-full object-contain"
+            class=" w-[100px] h-full object-contain"
              />
           </div>
           <div class = "p-2 w-full">
             <div class="text-18px p-1.5">{{ item.productBrand}}</div>
-            <div class="text-14px p-1.5"> {{ item.belongCategory }}</div>
-            <div class="pt-4">
+            <div class="text-14px p-1.5 pt-3"> {{ item.belongCategory }}</div>
+            <div class="pt-3">
               <span class="text-14px p-1.5">{{item.usedStatus === 0 ?'已启用':'已禁用'}}</span>
               <el-switch
                 v-model="item.usedStatus"
                 :active-value="0"
                 :inactive-value="1"
-                @change="handleStatusChange1(item)" /> <!--这个地方改一下-->
+                @change="handleStatusChange1(item)" />
             </div>
-            <div style="display: flex; margin-left: auto; justify-content: flex-end;" class="p-2 pb-3">
+            <div style="display: flex; margin-left: auto; justify-content: flex-end;" class=" pt-2.5 pb-1">
               <el-button
                 type="primary"
                 @click="openForm('update', item.id)"
