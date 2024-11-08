@@ -423,7 +423,7 @@ const diseaseInitChart2 = async () => {
           show: false //是否显示
         }
       },
-      color: ['#009688', '#73c0de', ''],
+      color: ['#009688', '#73c0de', '#fac858', '#89ca78', '#b45edd', '#ff226c', '#deb581'],
       series,
       grid: {
         bottom: '32%',
@@ -573,7 +573,7 @@ const insectInitChart2 = () => {
           show: false //是否显示
         }
       },
-      color: ['#009688', '#73c0de', ''],
+      color: ['#009688', '#73c0de', '#fac858', '#89ca78', '#b45edd', '#ff226c', '#deb581'],
       series: series,
       grid: {
         bottom: '32%',
