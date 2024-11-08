@@ -161,7 +161,7 @@ const getRecordStatistics = async (time) => {
     }
     return 0
   })
-  
+
 }
 getRecordStatistics('today')
 
@@ -251,7 +251,7 @@ getRecordStatistics('today')
         <div class="circle-container ">
           <!-- 外层虚线大圆环 -->
           <svg :width="size" :height="size" viewBox="0 0 100 100">
-            <!-- 外层大圆环，虚线 --> 
+            <!-- 外层大圆环，虚线 -->
             <circle cx="50" cy="51" r="37" stroke="#E5E5E5"  stroke-width="0.5px" stroke-dasharray="2,2" fill="none" />
             <!-- 外层小黄圆点 -->
             <circle :cx="smallCircleX" :cy="smallCircleY" r="1.8" fill="#59B756" />
@@ -280,9 +280,9 @@ getRecordStatistics('today')
             <div class="p-2 text-[16px]">未使用 </div>
             <div class="p-2 text-[16px] font-bold">{{ unusedCodes }}</div>
           </div>
-          <div class="text-[16px] font-bold p-2"
-            >{{ ((unusedCodes / codeds) * 100).toFixed(1) }}%</div
-          >
+          <div class="text-[16px] font-bold p-2" v-if="codeds != 0">
+            {{ ((unusedCodes / codeds) * 100).toFixed(1) }}%
+          </div>
         </div>
         <div
           class="flex justify-between p-3 mt-3 h-[30px] items-center cursor-pointer"
@@ -296,9 +296,9 @@ getRecordStatistics('today')
             <div class="p-2 text-[16px]">已使用 </div>
             <div class="p-2 text-[16px] font-bold">{{ usedCodes }}</div>
           </div>
-          <div class="text-[16px] font-bold p-2"
-            >{{ ((usedCodes / codeds) * 100).toFixed(1) }}%</div
-          >
+          <div class="text-[16px] font-bold p-2" v-if="codeds != 0">
+            {{ ((usedCodes / codeds) * 100).toFixed(1) }}%
+          </div>
         </div>
 
 
