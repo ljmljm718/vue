@@ -159,7 +159,7 @@
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
         <div
-          :class="[cardList ? 'tab-btn-selected' : 'tab-btn']"
+          :class="[cardList ? 'tab-btn-selected2' : 'tab-btn']"
           @click="listCard()"
         >
           <el-icon>
@@ -175,7 +175,7 @@
           :style="`background-color: ${cardList ? '' : '#e5f4f3'}; border:1.5px solid ${cardList ? '#e6e6e6' : '#36a99e'}; color:${cardList ? '' : '#36a99e'}`"
         >
           <img :src="cardList ? card2 : card" class="w-10px h-10px" alt="" />
-          <span>卡片1</span>
+          <span>卡片</span>
         </div>
         <div
           @click="listCard()"
@@ -769,13 +769,25 @@ const openSubDeviceForm = () => {
   border-radius: 5px 0 0 5px;
   height: 2rem;
 }
-
+.tab-btn-selected2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  border-radius: 0 5px 5px 0;
+  height: 2rem;
+}
 .tab-btn {
   border: 1px solid #e6e6e6;
   color: #666666;
 }
 
 .tab-btn-selected {
+  border: 1px solid #009688;
+  background-color: #e5f4f3;
+  color: #009688;
+}
+.tab-btn-selected2 {
   border: 1px solid #009688;
   background-color: #e5f4f3;
   color: #009688;
