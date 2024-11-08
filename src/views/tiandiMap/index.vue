@@ -219,7 +219,7 @@ const flyTo = (
 const flyToWithZoomLevel = (centerCoordinates, allPlotsCoordinates) => {
   if (allPlotsCoordinates[0] !== allPlotsCoordinates[allPlotsCoordinates.length - 1]) {
     allPlotsCoordinates.push(allPlotsCoordinates[0]); //确保多边形闭合
-}
+  }
     //计算原始边界框
   const boundingBox = turf.bbox(turf.polygon([allPlotsCoordinates])); // [minX, minY, maxX, maxY]
 
@@ -279,7 +279,7 @@ const createPopup = () => {
 const labelMap:Map<string, any> = new Map()
 const getDataList = async () => {
   const res = await getPlotAreaData({});
-  console.log("getDataList", res);
+  console.log("🚀 ~ getDataList ~ res:", res)
   if (!popupContainer) createPopup();
   viewer.camera.moveStart.addEventListener((movement) => {
     if (popupContainer) popupContainer.style.display = 'none'
@@ -303,7 +303,8 @@ const getDataList = async () => {
       if (Array.isArray(parkGeofencing) && parkGeofencing.length > 0) {
         const _posi = parkGeofencing[0].map(ele => ([ele.lng, ele.lat]))
         console.log("🚀 ~ getDataList ~ _posi:", _posi)
-        
+        const { parkLongitude, parkLatitude } = item;
+        const _parkLng = Number(parkLongitude), _parkLat = Number(parkLatitude)
         createPolygon(undefined, _posi, {
           distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 1000000),
         })
@@ -312,10 +313,11 @@ const getDataList = async () => {
         const _POS_ = turf.center(features);
         const { geometry } = _POS_;
         const { coordinates } = geometry
-        flyTo(
-          undefined,
-          [...coordinates, 1400]
-        )
+        if (!isNaN(_parkLng) && !isNaN(_parkLat)) {
+          flyTo(undefined, [_parkLng, _parkLat, 1400])
+        } else {
+          flyTo(undefined, [...coordinates, 1400])
+        }
         viewer.entities.add({
           id: generateUUID(),
           name: item.parkName,
@@ -343,11 +345,6 @@ const getDataList = async () => {
             distanceDisplayCondition: new Cesium.DistanceDisplayCondition(2000, 5000),
           }
         })
-        
-        flyTo(
-          undefined,
-          [...coordinates, 1000]
-        )
 
         const childItem = item.plotList;
         if (Array.isArray(childItem)) {
@@ -414,7 +411,7 @@ const getDataList = async () => {
                 const { coordinates } = center.geometry;
 
                 // 调用之前定义的 flyToWithZoomLevel 方法，动态调整缩放级别
-                flyToWithZoomLevel(coordinates, allPlotsCoordinates);
+                if (isNaN(_parkLng) || isNaN(_parkLat)) flyToWithZoomLevel(coordinates, allPlotsCoordinates);
               }
 
               if (Array.isArray(child.plantList) && child.plantList.length > 0) {

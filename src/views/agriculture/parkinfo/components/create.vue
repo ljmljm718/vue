@@ -16,6 +16,7 @@ import { useTagsViewStore } from "@/store/modules/tagsView";
 import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
 import {ParkCategoryApi} from "@/api/agriculture/parkcategory";
 import ParkDetailForm from "@/views/agriculture/parkinfo/components/ParkDetailForm.vue";
+import FenceDialog from './fenceDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -208,6 +209,44 @@ if (route.query.id) {
 
 // 手风琴展开项
 const activeName = ref<any>('1')
+
+const tiandiIns = ref()
+const handleSelectPoint = () => {
+  showDrawDialog.value = true;
+  setTimeout(() => {
+    const latitude = Number(formData.value.latitude);
+    const longitude = Number(formData.value.longitude);
+    if (!isNaN(latitude) && !isNaN(longitude)) {
+      const positionString = `${longitude},${latitude}`
+      if (positionString) tiandiIns.value.handleSearchItemClick({ lonlat: positionString })
+    }
+  }, 300)
+}
+const showDrawDialog = ref<boolean>(false);
+const handleCancel = () => {
+  showDrawDialog.value = false;
+  selectedLat.value = '';
+  selectedLng.value = '';
+}
+const handleConfirm = () => {
+  showDrawDialog.value = false;
+  if (!selectedLat.value || !selectedLat.value) return
+  formData.value.latitude = selectedLat.value;
+  formData.value.longitude = selectedLng.value;
+}
+
+const selectedLng = ref<string>('')
+const selectedLat = ref<string>('')
+const handleMapClick = (item) => {
+  tiandiIns.value.clearMarkers()
+  setTimeout(() => {
+    const { lng, lat } = item;
+    selectedLng.value = lng.toString();
+    selectedLat.value = lat.toString();
+    const positionString = `${lng},${lat}`
+    if (positionString) tiandiIns.value.handleSearchItemClick({ lonlat: positionString })
+  }, 200)
+}
 </script>
 <template>
   <div>
@@ -267,10 +306,30 @@ const activeName = ref<any>('1')
               </el-select>
             </el-form-item>
             <el-form-item label="经度" prop="longitude">
-              <el-input v-model="formData.longitude" placeholder="请输入经度" />
+              <el-input
+                v-model="formData.longitude"
+                placeholder="请输入经度"
+              >
+                <template #suffix>
+                  <div
+                    class="px-2 h-full text-[#009688] cursor-pointer"
+                    @click="handleSelectPoint()"
+                  >选点</div>
+                </template>
+              </el-input> 
             </el-form-item>
             <el-form-item label="纬度" prop="latitude">
-              <el-input v-model="formData.latitude" placeholder="请输入纬度" />
+              <el-input
+                v-model="formData.latitude"
+                placeholder="请输入纬度"
+              >
+                <template #suffix>
+                  <div
+                    class="px-2 h-full text-[#009688] cursor-pointer"
+                    @click="handleSelectPoint()"
+                  >选点</div>
+                </template>
+              </el-input>
             </el-form-item>
             <el-form-item label="海拔" prop="altitude">
               <el-input v-model="formData.altitude" placeholder="请输入海拔" >
@@ -310,6 +369,23 @@ const activeName = ref<any>('1')
         </el-scrollbar>
       </template>
     </EditFrame>
+    <fence-dialog
+      v-model="showDrawDialog"
+      title="地图选点"
+    >
+      <div class="w-full h-full">
+        <map-custom
+          ref="tiandiIns"
+          :enableEdit="false"
+          :searchLocation="true"
+          @mapClick="handleMapClick"
+        />
+      </div>
+      <template #footer>
+        <el-button size="small" @click="handleCancel()">取 消</el-button>
+        <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
+      </template>
+    </fence-dialog>
   </div>
 </template>
 <style scoped>

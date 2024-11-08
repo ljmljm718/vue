@@ -21,8 +21,14 @@ const props = defineProps({
   enableEdit: {
     type: Boolean,
     default: () => false
+  },
+  searchLocation: {
+    type: Boolean,
+    default: () => false
   }
 })
+
+const emit = defineEmits(['mapClick'])
 
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
 const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}'
@@ -55,6 +61,7 @@ const initMap = () => {
   map.on('click', ({ latlng }) => {
     const { lat, lng } = latlng
     navigator.clipboard.writeText(`[${lng}, ${lat}],`)
+    emit('mapClick', { lng, lat });
   })
 
   L.control
@@ -183,14 +190,6 @@ const clearMap = () => {
   })
 }
 
-defineExpose({
-  initMap,
-  createPolygon,
-  setCenterZoom,
-  clearMap,
-  getCurrentSaveCoordinates
-})
-
 const keyword = ref<string>('')
 const searchList = ref<any[]>([])
 const handleSearch = () => {
@@ -203,20 +202,45 @@ const handleSearch = () => {
     if (Array.isArray(data)) searchList.value = [...localSuggests.map(item => item.meta), ...data];
   })
 }
+
+const markMap = new Map()
 const handleSearchItemClick = (item) => {
   const { lonlat } = item;
   const lonlatArr = lonlat.split(',');
   const [lng, lat] = lonlatArr;
   const longitude = parseFloat(lng), latitude = parseFloat(lat)
-  L.marker([latitude, longitude], {
-    icon: L.icon({
-      iconUrl: '/location.png',
-      iconSize: [58, 38],
-      iconAnchor: [29, 38]
-    })
-  }).addTo(map)
-  setCenterZoom([latitude, longitude], 17)
+  
+  if (markMap.has(lonlat)) {
+    setCenterZoom([latitude, longitude], 17)
+  } else {
+    const _marker = L.marker([latitude, longitude], {
+      icon: L.icon({
+        iconUrl: '/location.png',
+        iconSize: [58, 38],
+        iconAnchor: [29, 38]
+      })
+    }).addTo(map)
+    markMap.set(lonlat, _marker)
+    setCenterZoom([latitude, longitude], 17)
+  }
 }
+
+const clearMarkers = () => {
+  if (!map) return;
+  markMap.forEach(item => {
+    map.removeLayer(item)
+  })
+}
+
+defineExpose({
+  initMap,
+  createPolygon,
+  setCenterZoom,
+  clearMap,
+  getCurrentSaveCoordinates,
+  handleSearchItemClick,
+  clearMarkers
+})
 </script>
 <template>
   <div class="w-full h-full relative">
@@ -226,7 +250,7 @@ const handleSearchItemClick = (item) => {
     ></div>
     <div
       class="absolute left-3 bottom-3 p-3 bg-white z-999 rounded-2 shadow-md"
-      v-show="props.enableEdit"
+      v-show="props.enableEdit || props.searchLocation"
     >
       <el-scrollbar
         class="mb-1 rounded-1 px-2 box-border transition"
