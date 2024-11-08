@@ -861,7 +861,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
 </script>
 <template>
   <div class="flex space-x-[.5rem] domDiv">
-    <el-card class="w-12rem h-73rem">
+    <el-card class="w-12rem 2xl:h-73.5rem xl:h-79rem ">
       <el-tree
         ref="treeRef"
         style="max-width: 600px"
@@ -876,7 +876,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
         @current-change="handleCurrentCategoryChange"
       />
     </el-card>
-    <div style="width: calc(100% - 12.5rem);">
+    <div style="width: calc(100% - 12.5rem);" >
       <el-card class="mr-.5rem flex justify-center items-center mb-[1rem]">
         <div class="flex flex-wrap justify-center space-x-2 space-y-2">
           <div></div>
@@ -896,7 +896,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
           </div>
         </div>
       </el-card>
-      <div class="flex justify-between box-border pr-[.5rem]">
+      <div class="flex justify-between box-border  pr-[.5rem]">
         <div
           class="grow space-y-[1rem] flex flex-col box-border"
           style="max-width: calc(100% - 24.5rem)"
@@ -1099,9 +1099,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
           </div>
         </div>
         <!-- 右侧 -->
-        <div class="w-24rem">
+        <div class="w-24rem ">
           <div class="flex flex-col space-y-[1rem]">
-            <el-card class="h-820px">
+            <el-card class=" 2xl:h-705px xl:h-760px sm:h-1250px">
               <div height="calc(100vh - 440px)">
                 <div class="title-frame">今日抓拍</div>
                 <div class="flex justify-between space-x-2 py-2">
@@ -1125,7 +1125,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     placeholder="选择日期"
                   />
                 </div>
-                <div class="rounded-1 h-14rem bg-#666 relative">
+                <div class="rounded-1 xl:h-12rem 2xl:h-12rem sm-20rem bg-#666 relative">
                   <img :src="snapShotImg" class="w-100% h-100%" />
                   <div class="absolute w-93% flex justify-between bottom-3 left-3">
                     <div class="amplify cursor-pointer" @click="amplifyAdd(2)">
@@ -1156,7 +1156,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                       :key="item"
                       @click="snapPictureChange(item, index)"
                       style="flex-shrink: 0"
-                      :class="`w-70px h-70px mr-10px box-border ${snapNum == index ? 'snapNum' : ''}`"
+                      :class="`w-60px h-60px mr-10px box-border ${snapNum == index ? 'snapNum' : ''}`"
                     >
                       <img :src="item.monitorPicture" class="w-100% h-100%" />
                     </div>
@@ -1171,7 +1171,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     <div class="-mt-[5px]"> > </div>
                   </div>
                 </div>
-                <div class="title-frame my-15px">设备信息</div>
+                <div class="title-frame my-10px">设备信息</div>
                 <div
                   v-if="snapDevice"
                   class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2"
@@ -1218,8 +1218,8 @@ window.addEventListener('resize', () => { handleWindowResize() })
                   v-if="!snapDevice"
                   >暂无数据</div
                 >
-                <div class="title-frame my-15px">抓拍信息</div>
-                <div class="flex mt-20px justify-center space-x-1rem items-center h-3.5rem">
+                <div class="title-frame my-10px">抓拍信息</div>
+                <div class="flex mt-20px justify-center space-x-1rem items-center h-3rem">
                   <div class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2">
                     <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
                     <div>
@@ -1235,14 +1235,14 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     </div>
                   </div>
                 </div>
-                <el-scrollbar
-                  class="h-150px mt-2rem px-15px py-15px box-border"
+                <el-scrollbar :height="`${windWidth < 1200 ? '250px':'100px' } `" 
+                  class="mt-15px px-15px 2xl:py-10px xl:py-15px sm:15px box-border"
                   style="border: 1px solid #ededed"
                 >
                   <div
                     v-for="(item, index) in pestList"
                     :key="index"
-                    class="h-40px leading-40px w-100% flex w-100% justify-between"
+                    class="xl:h-30px 2xl:h-30px  xl:leading-30px 2xl:leading-30px sm:h-80px sm:leading-80px  w-100% flex w-100% justify-between"
                     style="border-bottom: 1px dashed #ededed"
                   >
                     <div style="font-weight: 600" class="color-[#7b7b7b] text-[13px]">{{
@@ -1253,9 +1253,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
                 </el-scrollbar>
               </div>
             </el-card>
-            <el-card>
+            <el-card class="xl:h-350px sm:h-590px 2xl:h-330px">
               <div class="title-frame mb-2">预警信息</div>
-              <el-scrollbar height="400px">
+              <el-scrollbar  :height="`${windWidth < 1200 ? '520px':'250px' } `" >
                 <div class="p-3 box-border" v-loading="preWarnLoading">
                   <div
                     class="py-1rem"
@@ -1388,8 +1388,8 @@ window.addEventListener('resize', () => { handleWindowResize() })
   background-color: #FEEEEE;
 }
 .snapNum {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border: 3px solid #009688;
 }
 .amplify {

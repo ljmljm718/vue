@@ -3,7 +3,7 @@
     <div class="bg-[#fff] flex h-45px items-center">
       <el-form :model="formData" label-width="80px" class="!h-25px" :inline="true">
         <el-form-item label="选择基地">
-          <el-select class="!w-300px" v-model="formData.baseCode">
+          <el-select :class="`!w-${windWidth<1200 ? '220px' :'300px'}`" v-model="formData.baseCode">
             <el-option
               v-for="(item, index) in baseList"
               :key="index"
@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择地块">
-          <el-select class="!w-300px" v-model="formData.plotCode">
+          <el-select :class="`!w-${windWidth<1200 ? '220px' :'300px'}`" v-model="formData.plotCode">
             <el-option
               v-for="(item, index) in plotList"
               :key="index"
@@ -149,8 +149,13 @@ const getPage = async () => {
   await getParkPage({ parkId: res.list.id })
   // console.log("基地列表: ", baseList.value);
   // console.log("地块列表: ", plotList.value);
+  initChartPie1()
+  initChartPie2()
+  initChartBar1()
+  initChartBar2()
+  initChartBar3()
+  handleRadioChange(radio.value)
 }
-getPage()
 //获取地块
 const plotList = ref([])
 
@@ -996,11 +1001,13 @@ const dataTime = (e) => {
   }
 }
 //重置
-const offSubmit = () => {
+const offSubmit = async () => {
   formData.value = {
     baseCode: '',
     plotCode: ''
   }
+   await getPage()
+
   // baseCode.value = ''
   // plotCode.value = ''
   initChartPie1()
@@ -1015,6 +1022,7 @@ window.addEventListener("resize", ()=>{
   console.log(window.innerWidth,'window.innerWidth')
 
   windWidth.value = window.innerWidth
+  // onSubmit()
   initChartPie1()
   // initChartPie2()
   // initChartBar1()
@@ -1023,15 +1031,11 @@ window.addEventListener("resize", ()=>{
   // handleRadioChange(radio.value)
 
 })
-onMounted(() => {
+onMounted(async () => {
   console.log(window.innerWidth,'window.innerWidth')
   windWidth.value = window.innerWidth
-  initChartPie1()
-  initChartPie2()
-  initChartBar1()
-  initChartBar2()
-  initChartBar3()
-  handleRadioChange(radio.value)
+ await getPage()
+  
 })
 </script>
 <style lang='scss' scoped>
