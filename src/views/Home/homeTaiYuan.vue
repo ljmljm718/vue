@@ -9,7 +9,8 @@ import {
   devicePageList,
   snapPage,
   diseaseWarnInfo,
-  snapType
+  snapType,
+  diseaseWarnCount
 } from './apis'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
@@ -77,6 +78,9 @@ const getTopDataList = async (landBlockId: string) => {
     tempArr.push({ title: category + '总数', value: sum })
     tempArr.push({ title: category + '种类', value: number })
   })
+  const warnData = await diseaseWarnCount({ landBlockId });
+  console.log("🚀 ~ getTopDataList ~ warnData:", warnData)
+  tempArr.push({ title: "病虫预警", value: warnData })
   topDataList.value = tempArr
 }
 
@@ -870,19 +874,16 @@ window.addEventListener('resize', () => {
         @current-change="handleCurrentCategoryChange"
       />
     </el-card>
-    <div
-      class="grow space-y-[1rem] flex flex-col pl-.5rem box-border"
-      style="max-width: calc(100% - 38rem)"
-    >
-      <el-card class="mr-.5rem flex justify-center items-center">
-        <div class="max-w-[900px] grid 2xl:grid-cols-4 xl:grid-cols-2 grid-cols-2 gap-2">
+    <div style="width: calc(100% - 12.5rem);">
+      <el-card class="mr-.5rem flex justify-center items-center mb-[1rem]">
+        <div class="flex flex-wrap justify-center space-x-2 space-y-2">
+          <div></div>
           <div
             v-for="(item, index) in topDataList"
             :key="index"
             :class="`
-              flex space-x-3 topDom items-center px-4
-              box-border px-${windWidth < 1400 ? '.5rem' : '1.5rem'}
-              py-${windWidth < 1400 ? '1' : '3'} rounded-2  homt-top-bg${index + 1}
+              flex space-x-3 items-center p-4 py-2
+              box-border rounded-2  homt-top-bg${index + 1}
             `"
           >
             <div :class="` w-2.5rem h-2.5rem disease-top-${index + 1}`"> </div>
@@ -892,382 +893,401 @@ window.addEventListener('resize', () => {
             </div>
           </div>
         </div>
-        <div class="flex h-4.5rem justify-evenly space-x-1rem items-center !hidden">
-          <div
-            v-for="(item, index) in topDataList"
-            :key="index"
-            :class="`flex space-x-3 topDom items-center box-border px-${windWidth < 1400 ? '.5rem' : '1.5rem'}  py-${windWidth < 1400 ? '1' : '3'} rounded-2  homt-top-bg${index + 1}`"
-          >
-            <div :class="` w-2.5rem h-2.5rem disease-top-${index + 1}`"> </div>
-            <div>
-              <div class="top-dom-title">{{ item.title }}</div>
-              <div class="art-font topListText text-[1.4rem]">{{ item.value }}</div>
+      </el-card>
+      <div class="flex justify-between box-border pr-[.5rem]">
+        <div
+          class="grow space-y-[1rem] flex flex-col box-border"
+          style="max-width: calc(100% - 24.5rem)"
+        >
+          <div class="space-y-[1rem] grow">
+            <div class="space-y-[1rem] pr-.5rem pb-.5rem">
+              <el-card>
+                <div class="flex justify-between items-center flex-wrap">
+                  <div class="title-frame relative top-[-.2rem]">病虫害排行</div>
+                  <div class="flex space-x-3 py-2 box-border">
+                    <el-radio-group v-model="bugTime" @change="handleShortcutDaysChange">
+                      <el-radio-button label="当日" value="当日" />
+                      <el-radio-button label="本周" value="本周" />
+                      <el-radio-button label="本月" value="本月" />
+                      <el-radio-button label="自定义" value="自定义" />
+                    </el-radio-group>
+                  </div>
+                  <div>
+                    <el-date-picker
+                      :style="`width:${windWidth < 1400 ? 'auto' : 'auto'} `"
+                      v-model="bugTimeRange"
+                      type="daterange"
+                      range-separator="至"
+                      @change="datePickerChange"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                    />
+                  </div>
+                </div>
+                <div class="flex space-x-1rem">
+                  <div
+                    :class="`max-w-70rem insect-disease1 grid grid-cols-1 xl:grid-cols-2 gap-2 box-border grow py-3`"
+                  >
+                    <div>
+                      <div
+                        class="h-2rem flex items-center px-1"
+                      >
+                        <div class="h-1rem w-5px mr-2 bg-#009688 relative top-[1px]"></div>
+                        <div>虫害排行</div>
+                      </div>
+                      <el-scrollbar class="left-scrollbar" height="12rem">
+                        <div
+                          class="flex items-center space-x-3 mb-1 p-2"
+                          v-for="(item, index) in insectList"
+                          :key="item.id"
+                        >
+                          <div
+                            class="
+                              w-1.6rem h-1.6rem rounded-full
+                              flex justify-center items-center
+                              text-[#fff] text-[.8rem]
+                            "
+                            :style="`background-color: ${index < 3 ? '#009688' : '#cccccc'}`"
+                          >{{ index + 1 }}</div>
+                          <div class="grow space-y-2 box-border pr-2">
+                            <div class="flex justify-between items-center">
+                              <div class="text-[.8rem]">{{ item.name }}</div>
+                              <div class="text-[.8rem] font-bold">{{ item.quantity }}</div>
+                            </div>
+                            <div class="relative w-full h-8px bg-[#f0f0f0]">
+                              <div
+                                class="absolute left-0 top-0 h-full bg-#009688"
+                                :style="`width:${item.quantity >= 100 ? '100' : item.quantity}% `"
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="h-12rem w-full flex items-center justify-center"
+                          v-if="insectList.length === 0"
+                          >暂无数据</div
+                        >
+                      </el-scrollbar>
+                    </div>
+                    <div>
+                      <div class="h-2rem flex items-center px-1">
+                        <div class="h-1rem w-5px mr-2 bg-#009688 relative top-[1px]"></div>
+                        <div>病害排行</div>
+                      </div>
+                      <el-scrollbar height="12rem">
+                        <div
+                          v-for="(item, index) in diseaseList"
+                          :key="item.id"
+                          class="flex items-center space-x-3 mb-1 p-2"
+                        >
+                          <div
+                            class="
+                              w-1.6rem h-1.6rem rounded-full
+                              flex justify-center items-center
+                              text-[#fff] text-[.8rem]
+                            "
+                            :style="`background-color: ${index < 3 ? '#009688' : '#cccccc'}`"
+                          >{{ index + 1 }}</div>
+                          <div class="grow space-y-2 box-border pr-2">
+                            <div class="flex justify-between items-center">
+                              <div class="text-[.8rem]">{{ item.name }}</div>
+                              <div class="text-[.8rem] font-bold">{{ item.quantity }}</div>
+                            </div>
+                            <div class="relative w-full h-8px bg-[#f0f0f0]">
+                              <div
+                                class="absolute left-0 top-0 h-full bg-#009688"
+                                :style="`width:${item.quantity >= 100 ? '100' : item.quantity}% `"
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="h-12rem w-full flex items-center justify-center"
+                          v-if="diseaseList.length === 0"
+                          >暂无数据</div
+                        >
+                      </el-scrollbar>
+                    </div>
+                  </div>
+                </div>
+              </el-card>
+              <el-card>
+                <div class="flex justify-between items-center flex-wrap space-y-2">
+                  <div class="title-frame">病害趋势分析</div>
+                  <div>
+                    <el-date-picker
+                      :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
+                      v-model="sickTraceTimeRange"
+                      type="daterange"
+                      range-separator="至"
+                      @change="sickTraceTimeChange"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                    />
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <el-radio-group v-model="sickTraceRadio" @change="sickTraceChange">
+                      <el-radio-button label="按天" value="按天" />
+                      <el-radio-button label="按月" value="按月" />
+                    </el-radio-group>
+                    <el-button type="primary" @click="sickTraceSearch()">查询</el-button>
+                  </div>
+                </div>
+                <div class="flex space-x-1rem justify-center">
+                  <div class="max-w-70rem grid grid-col-1 xl:grid-cols-2 gap-2 grow py-3">
+                    <div class="px-1 box-border">
+                      <div class="flex space-x-.6rem items-center">
+                        <div class="w-5px h-1rem bg-#009688"></div>
+                        <div>孢子数量分析</div>
+                      </div>
+                      <div id="diseaseDomLeft" class="h-12.5rem mt-.6rem"></div>
+                    </div>
+                    <div class="px-1 box-border">
+                      <div class="flex space-x-.6rem items-center">
+                        <div class="w-5px h-1rem bg-#009688"></div>
+                        <div>孢子种类分析</div>
+                      </div>
+                      <div id="diseaseDomRight" class="h-12.5rem mt-.6rem"></div>
+                    </div>
+                  </div>
+                </div>
+              </el-card>
+              <el-card>
+                <div class="flex justify-between items-center flex-wrap space-y-2">
+                  <div class="title-frame">虫害趋势分析</div>
+                  <div>
+                    <el-date-picker
+                      :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
+                      v-model="bugTraceTimeRange"
+                      type="daterange"
+                      @change="bugTraceTimeChange"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                    />
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <el-radio-group v-model="bugTraceRadio" @change="bugTraceChange">
+                      <el-radio-button label="按天" value="按天" />
+                      <el-radio-button label="按月" value="按月" />
+                    </el-radio-group>
+                    <el-button type="primary" @click="bugTraceSeacrh()">查询</el-button>
+                  </div>
+                </div>
+                <div class="flex space-x-1rem justify-center">
+                  <div class="max-w-70rem grid grid-col-1 xl:grid-cols-2 gap-2 grow py-3">
+                    <div>
+                      <div class="flex space-x-.6rem items-center">
+                        <div class="w-5px h-1rem bg-#009688"></div>
+                        <div>虫量趋势分析</div>
+                      </div>
+                      <div id="insectNumChart" class="h-12.5rem mt-.6rem"></div>
+                    </div>
+                    <div>
+                      <div class="flex space-x-.6rem items-center">
+                        <div class="w-5px h-1rem bg-#009688"></div>
+                        <div>虫类趋势分析</div>
+                      </div>
+                      <div id="insectTypeChart" class="h-12.5rem mt-.6rem"></div>
+                    </div>
+                  </div>
+                </div>
+              </el-card>
             </div>
           </div>
         </div>
-      </el-card>
-      <div class="space-y-[1rem] grow">
-        <div class="space-y-[1rem] pr-.5rem pb-.5rem">
-          <el-card>
-            <div class="flex justify-between items-center flex-wrap">
-              <div class="title-frame relative top-[-.2rem]">病虫害排行</div>
-              <div class="flex space-x-3 py-2 box-border">
-                <el-radio-group v-model="bugTime" @change="handleShortcutDaysChange">
-                  <el-radio-button label="当日" value="当日" />
-                  <el-radio-button label="本周" value="本周" />
-                  <el-radio-button label="本月" value="本月" />
-                  <el-radio-button label="自定义" value="自定义" />
-                </el-radio-group>
-              </div>
-              <div>
-                <el-date-picker
-                  :style="`width:${windWidth < 1400 ? 'auto' : 'auto'} `"
-                  v-model="bugTimeRange"
-                  type="daterange"
-                  range-separator="至"
-                  @change="datePickerChange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </div>
-            </div>
-            <div class="flex space-x-1rem">
-              <div
-                :class="`max-w-70rem insect-disease1 grid grid-cols-1 xl:grid-cols-2 gap-2 box-border grow py-3`"
-              >
-                <div style="border: 1px solid #d1d1d1">
-                  <div
-                    class="h-2rem flex items-center px-1rem"
-                    style="border-bottom: 1px solid #d1d1d1"
-                    >虫害</div
+        <!-- 右侧 -->
+        <div class="w-24rem h-100vh">
+          <div class="flex flex-col space-y-[1rem]">
+            <el-card class="h-820px">
+              <div height="calc(100vh - 440px)">
+                <div class="title-frame">今日抓拍</div>
+                <div class="flex justify-between space-x-2 py-2">
+                  <el-select
+                    v-model="snapShotDevice"
+                    placeholder="请选择"
+                    clearable
+                    @change="selectChange"
                   >
-                  <el-scrollbar class="left-scrollbar" height="12rem">
-                    <div
-                      class="py-4 flex justify-center space-x-3 items-center"
-                      v-for="item in insectList"
+                    <el-option
+                      v-for="item in snapShotDeviceOptions"
                       :key="item.id"
-                    >
-                      <div class="w-6rem text-right mr-1rem">{{ item.name }}</div>
-                      <div class="relative bg-[#e1e1e1] h-.5rem grow">
-                        <div
-                          :class="`absolute left-0 top-0 h-full bg-#009688`"
-                          :style="`width:${item.quantity >= 100 ? '100' : item.quantity}% `"
-                        ></div>
-                      </div>
-                      <div class="w-3rem text-left ml-1rem">{{ item.quantity }}</div>
-                    </div>
-                    <div
-                      class="h-12rem w-full flex items-center justify-center"
-                      v-if="insectList.length === 0"
-                      >暂无数据</div
-                    >
-                  </el-scrollbar>
-                </div>
-                <div style="border: 1px solid #d1d1d1">
-                  <div
-                    class="h-2rem flex items-center px-1rem"
-                    style="border-bottom: 1px solid #d1d1d1"
-                    >病害</div
-                  >
-                  <el-scrollbar height="12rem">
-                    <div
-                      class="py-4 box-border flex justify-center space-x-3 items-center"
-                      v-for="item in diseaseList"
-                      :key="item.id"
-                    >
-                      <div class="w-6rem text-right mr-1rem">{{ item.name }}</div>
-                      <div class="relative bg-[#e1e1e1] h-.5rem grow">
-                        <div
-                          class="absolute left-0 top-0 h-full bg-#009688"
-                          :style="`width:${item.quantity >= 100 ? '100' : item.quantity}% `"
-                        ></div>
-                      </div>
-                      <div class="w-3rem text-left ml-1rem">{{ item.quantity }}</div>
-                    </div>
-                    <div
-                      class="h-12rem w-full flex items-center justify-center"
-                      v-if="diseaseList.length === 0"
-                      >暂无数据</div
-                    >
-                  </el-scrollbar>
-                </div>
-              </div>
-            </div>
-          </el-card>
-          <el-card>
-            <div class="flex justify-between items-center flex-wrap space-y-2">
-              <div class="title-frame">病害趋势分析</div>
-              <div>
-                <el-date-picker
-                  :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
-                  v-model="sickTraceTimeRange"
-                  type="daterange"
-                  range-separator="至"
-                  @change="sickTraceTimeChange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </div>
-              <div class="flex items-center space-x-3">
-                <el-radio-group v-model="sickTraceRadio" @change="sickTraceChange">
-                  <el-radio-button label="按天" value="按天" />
-                  <el-radio-button label="按月" value="按月" />
-                </el-radio-group>
-                <el-button type="primary" @click="sickTraceSearch()">查询</el-button>
-              </div>
-            </div>
-            <div class="flex space-x-1rem justify-center">
-              <div class="max-w-70rem grid grid-col-1 xl:grid-cols-2 gap-2 grow py-3">
-                <div class="px-1 box-border">
-                  <div class="flex space-x-.6rem items-center">
-                    <div class="w-5px h-1rem bg-#009688"></div>
-                    <div>孢子数量分析</div>
-                  </div>
-                  <div id="diseaseDomLeft" class="h-12.5rem mt-.6rem"></div>
-                </div>
-                <div class="px-1 box-border">
-                  <div class="flex space-x-.6rem items-center">
-                    <div class="w-5px h-1rem bg-#009688"></div>
-                    <div>孢子种类分析</div>
-                  </div>
-                  <div id="diseaseDomRight" class="h-12.5rem mt-.6rem"></div>
-                </div>
-              </div>
-            </div>
-          </el-card>
-          <el-card>
-            <div class="flex justify-between items-center flex-wrap space-y-2">
-              <div class="title-frame">虫害趋势分析</div>
-              <div>
-                <el-date-picker
-                  :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
-                  v-model="bugTraceTimeRange"
-                  type="daterange"
-                  @change="bugTraceTimeChange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </div>
-              <div class="flex items-center space-x-3">
-                <el-radio-group v-model="bugTraceRadio" @change="bugTraceChange">
-                  <el-radio-button label="按天" value="按天" />
-                  <el-radio-button label="按月" value="按月" />
-                </el-radio-group>
-                <el-button type="primary" @click="bugTraceSeacrh()">查询</el-button>
-              </div>
-            </div>
-            <div class="flex space-x-1rem justify-center">
-              <div class="max-w-70rem grid grid-col-1 xl:grid-cols-2 gap-2 grow py-3">
-                <div>
-                  <div class="flex space-x-.6rem items-center">
-                    <div class="w-5px h-1rem bg-#009688"></div>
-                    <div>虫量趋势分析</div>
-                  </div>
-                  <div id="insectNumChart" class="h-12.5rem mt-.6rem"></div>
-                </div>
-                <div>
-                  <div class="flex space-x-.6rem items-center">
-                    <div class="w-5px h-1rem bg-#009688"></div>
-                    <div>虫类趋势分析</div>
-                  </div>
-                  <div id="insectTypeChart" class="h-12.5rem mt-.6rem"></div>
-                </div>
-              </div>
-            </div>
-          </el-card>
-        </div>
-      </div>
-    </div>
-    <!-- 右侧 -->
-    <div class="w-24rem h-100vh">
-      <div class="flex flex-col space-y-[1rem]">
-        <el-card class="h-820px">
-          <div height="calc(100vh - 440px)">
-            <div class="title-frame">今日抓拍</div>
-            <div class="flex justify-between space-x-2 py-2">
-              <el-select
-                v-model="snapShotDevice"
-                placeholder="请选择"
-                clearable
-                @change="selectChange"
-              >
-                <el-option
-                  v-for="item in snapShotDeviceOptions"
-                  :key="item.id"
-                  :label="item.deviceName"
-                  :value="item.id"
-                />
-              </el-select>
-              <el-date-picker
-                v-model="snapShotTime"
-                @change="snapShotChange"
-                type="date"
-                placeholder="选择日期"
-              />
-            </div>
-            <div class="rounded-1 h-14rem bg-#666 relative">
-              <img :src="snapShotImg" class="w-100% h-100%" />
-              <div class="absolute w-93% flex justify-between bottom-3 left-3">
-                <div class="amplify cursor-pointer" @click="amplifyAdd(2)">
-                  <el-image-viewer
-                    v-if="amplify"
-                    hide-on-click-modal
-                    @close="closePreview"
-                    class="h-100px w-100px"
-                    :initial-index="0"
-                    :url-list="[snapShotImg]"
-                    fit="cover"
+                      :label="item.deviceName"
+                      :value="item.id"
+                    />
+                  </el-select>
+                  <el-date-picker
+                    v-model="snapShotTime"
+                    @change="snapShotChange"
+                    type="date"
+                    placeholder="选择日期"
                   />
                 </div>
-                <div class="color-#fff flex"
-                  >{{ snapNum + 1 <= 9 ? '0' + (snapNum + 1) : snapNum + 1
-                  }}<div class="color-[#eee]"> / {{ snapImgTotal }}</div>
+                <div class="rounded-1 h-14rem bg-#666 relative">
+                  <img :src="snapShotImg" class="w-100% h-100%" />
+                  <div class="absolute w-93% flex justify-between bottom-3 left-3">
+                    <div class="amplify cursor-pointer" @click="amplifyAdd(2)">
+                      <el-image-viewer
+                        v-if="amplify"
+                        hide-on-click-modal
+                        @close="closePreview"
+                        class="h-100px w-100px"
+                        :initial-index="0"
+                        :url-list="[snapShotImg]"
+                        fit="cover"
+                      />
+                    </div>
+                    <div class="color-#fff flex"
+                      >{{ snapNum + 1 <= 9 ? '0' + (snapNum + 1) : snapNum + 1
+                      }}<div class="color-[#eee]"> / {{ snapImgTotal }}</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="py-2 relative" style="overflow: hidden">
-              <div
-                ref="snapDom"
-                :class="`w-[${snapDomWidth}px] flex relative `"
-                :style="`left:${left}px`"
-              >
-                <div
-                  v-for="(item, index) in snapPictureList"
-                  :key="item"
-                  @click="snapPictureChange(item, index)"
-                  style="flex-shrink: 0"
-                  :class="`w-70px h-70px mr-10px box-border ${snapNum == index ? 'snapNum' : ''}`"
-                >
-                  <img :src="item.monitorPicture" class="w-100% h-100%" />
-                </div>
-              </div>
+                <div class="py-2 relative" style="overflow: hidden">
+                  <div
+                    ref="snapDom"
+                    :class="`w-[${snapDomWidth}px] flex relative `"
+                    :style="`left:${left}px`"
+                  >
+                    <div
+                      v-for="(item, index) in snapPictureList"
+                      :key="item"
+                      @click="snapPictureChange(item, index)"
+                      style="flex-shrink: 0"
+                      :class="`w-70px h-70px mr-10px box-border ${snapNum == index ? 'snapNum' : ''}`"
+                    >
+                      <img :src="item.monitorPicture" class="w-100% h-100%" />
+                    </div>
+                  </div>
 
-              <div
-                v-if="snapPictureList.length > 0"
-                @click="tabLeft('right')"
-                style="opacity: 0.6; background-color: #000"
-                class="z-22 cursor-pointer absolute right-3 top-5 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px"
-              >
-                <div class="-mt-[5px]"> > </div>
-              </div>
-            </div>
-            <div class="title-frame my-15px">设备信息</div>
-            <div
-              v-if="snapDevice"
-              class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2"
-            >
-              <div>
-                <div class="color-[#9ea2a2] text-15px mb-5px">监测作物</div>
+                  <div
+                    v-if="snapPictureList.length > 0"
+                    @click="tabLeft('right')"
+                    style="opacity: 0.6; background-color: #000"
+                    class="z-22 cursor-pointer absolute right-3 top-5 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px"
+                  >
+                    <div class="-mt-[5px]"> > </div>
+                  </div>
+                </div>
+                <div class="title-frame my-15px">设备信息</div>
                 <div
-                  class="text-center color-[#3a3a3a] text-15px mb-7px"
-                  style="font-weight: 600"
-                  >{{ snapDevice?.monitorSpecies }}</div
+                  v-if="snapDevice"
+                  class="rounded-1 flex justify-evenly items-center bg-#00968810 p-2 my-2"
                 >
-              </div>
-              <div>
-                <div class="color-[#9ea2a2] text-15px mb-5px">设备状态</div>
+                  <div>
+                    <div class="color-[#9ea2a2] text-15px mb-5px">监测作物</div>
+                    <div
+                      class="text-center color-[#3a3a3a] text-15px mb-7px"
+                      style="font-weight: 600"
+                      >{{ snapDevice?.monitorSpecies }}</div
+                    >
+                  </div>
+                  <div>
+                    <div class="color-[#9ea2a2] text-15px mb-5px">设备状态</div>
+                    <div
+                      class="text-center flex items-center color-[#3a3a3a] text-15px mb-7px"
+                      style="font-weight: 600"
+                    >
+                      <div
+                        :class="`${snapDevice.deviceStatus == 0 ? 'online-1' : snapDevice.deviceStatus == 1 ? 'online-3' : snapDevice.deviceStatus == 'online' ? 'online-1' : snapDevice.deviceStatus == 'offline' ? 'online-3' : 'online-2'} w-15px h-15px mr-7px`"
+                      ></div>
+                      <div>{{
+                        snapDevice.deviceStatus == 0
+                          ? '在线'
+                          : snapDevice.deviceStatus == 1
+                            ? '离线'
+                            : snapDevice.deviceStatus == 'online'
+                              ? '在线'
+                              : snapDevice.deviceStatus == 'offline'
+                                ? '离线'
+                                : '故障'
+                      }}</div></div
+                    >
+                  </div>
+                  <div>
+                    <div class="color-[#9ea2a2] text-15px mb-5px">抓拍图片</div>
+                    <div class="text-center color-[#3a3a3a] text-17px mb-7px" style="font-weight: 550"
+                      >{{ snapImgTotal }}张</div
+                    >
+                  </div>
+                </div>
                 <div
-                  class="text-center flex items-center color-[#3a3a3a] text-15px mb-7px"
-                  style="font-weight: 600"
+                  class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
+                  v-if="!snapDevice"
+                  >暂无数据</div
+                >
+                <div class="title-frame my-15px">抓拍信息</div>
+                <div class="flex mt-20px justify-center space-x-1rem items-center h-3.5rem">
+                  <div class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2">
+                    <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
+                    <div>
+                      <div class="text-15px mb-7px">虫害总数</div>
+                      <div class="text-15px" style="font-weight: 600">{{ pestTotalNum }}</div>
+                    </div>
+                  </div>
+                  <div class="flex space-x-3 items-center px-1.3rem bg-[#fef9ee] py-2 rounded-2">
+                    <div :class="` w-2.5rem h-2.5rem disease-top-4`"></div>
+                    <div>
+                      <div class="text-15px mb-7px">虫害种类</div>
+                      <div class="text-15px" style="font-weight: 600">{{ pestType }}</div>
+                    </div>
+                  </div>
+                </div>
+                <el-scrollbar
+                  class="h-150px mt-2rem px-15px py-15px box-border"
+                  style="border: 1px solid #ededed"
                 >
                   <div
-                    :class="`${snapDevice.deviceStatus == 0 ? 'online-1' : snapDevice.deviceStatus == 1 ? 'online-3' : snapDevice.deviceStatus == 'online' ? 'online-1' : snapDevice.deviceStatus == 'offline' ? 'online-3' : 'online-2'} w-15px h-15px mr-7px`"
-                  ></div>
-                  <div>{{
-                    snapDevice.deviceStatus == 0
-                      ? '在线'
-                      : snapDevice.deviceStatus == 1
-                        ? '离线'
-                        : snapDevice.deviceStatus == 'online'
-                          ? '在线'
-                          : snapDevice.deviceStatus == 'offline'
-                            ? '离线'
-                            : '故障'
-                  }}</div></div
-                >
-              </div>
-              <div>
-                <div class="color-[#9ea2a2] text-15px mb-5px">抓拍图片</div>
-                <div class="text-center color-[#3a3a3a] text-17px mb-7px" style="font-weight: 550"
-                  >{{ snapImgTotal }}张</div
-                >
-              </div>
-            </div>
-            <div
-              class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
-              v-if="!snapDevice"
-              >暂无数据</div
-            >
-            <div class="title-frame my-15px">抓拍信息</div>
-            <div class="flex mt-20px justify-center space-x-1rem items-center h-3.5rem">
-              <div class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2">
-                <div :class="` w-2.5rem h-2.5rem disease-top-3`"></div>
-                <div>
-                  <div class="text-15px mb-7px">虫害总数</div>
-                  <div class="text-15px" style="font-weight: 600">{{ pestTotalNum }}</div>
-                </div>
-              </div>
-              <div class="flex space-x-3 items-center px-1.3rem bg-[#fef9ee] py-2 rounded-2">
-                <div :class="` w-2.5rem h-2.5rem disease-top-4`"></div>
-                <div>
-                  <div class="text-15px mb-7px">虫害种类</div>
-                  <div class="text-15px" style="font-weight: 600">{{ pestType }}</div>
-                </div>
-              </div>
-            </div>
-            <el-scrollbar
-              class="h-150px mt-2rem px-15px py-15px box-border"
-              style="border: 1px solid #ededed"
-            >
-              <div
-                v-for="(item, index) in pestList"
-                :key="index"
-                class="h-40px leading-40px w-100% flex w-100% justify-between"
-                style="border-bottom: 1px dashed #ededed"
-              >
-                <div style="font-weight: 600" class="color-[#7b7b7b] text-[13px]">{{
-                  item.name
-                }}</div>
-                <div style="font-weight: 600">{{ item.quantity }}</div>
-              </div>
-            </el-scrollbar>
-          </div>
-        </el-card>
-        <el-card class="xl:h-335px h-600px">
-          <div class="title-frame mb-2">预警信息</div>
-          <div class="xl:h-300px h-545px overflow-auto">
-            <div class="p-3 box-border" v-loading="preWarnLoading">
-              <div
-                class="py-1rem"
-                style="border-top: 1px solid #99999980"
-                v-for="item in preWarnList"
-                :key="item.id"
-              >
-                <div
-                  class="line-clamp-1 mb-2 cursor-pointer font-bold text-[.9rem]"
-                  :title="item.lowMsg"
-                  >{{ item.lowMsg }}</div
-                >
-                <div class="flex space-x-3 items-center text-[.7rem]">
-                  <div class="rounded-1 bg-#fdefef px-2 py-1"
-                    >{{ item.reservedFour }} {{ item.warnType }}</div
+                    v-for="(item, index) in pestList"
+                    :key="index"
+                    class="h-40px leading-40px w-100% flex w-100% justify-between"
+                    style="border-bottom: 1px dashed #ededed"
                   >
-                  <div class="text-[.8rem]">{{
-                    formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss')
-                  }}</div>
+                    <div style="font-weight: 600" class="color-[#7b7b7b] text-[13px]">{{
+                      item.name
+                    }}</div>
+                    <div style="font-weight: 600">{{ item.quantity }}</div>
+                  </div>
+                </el-scrollbar>
+              </div>
+            </el-card>
+            <el-card class="xl:h-335px h-600px">
+              <div class="title-frame mb-2">预警信息</div>
+              <div class="xl:h-300px h-545px overflow-auto">
+                <div class="p-3 box-border" v-loading="preWarnLoading">
+                  <div
+                    class="py-1rem"
+                    style="border-top: 1px solid #99999980"
+                    v-for="item in preWarnList"
+                    :key="item.id"
+                  >
+                    <div
+                      class="line-clamp-1 mb-2 cursor-pointer font-bold text-[.9rem]"
+                      :title="item.lowMsg"
+                      >{{ item.lowMsg }}</div
+                    >
+                    <div class="flex space-x-3 items-center text-[.7rem]">
+                      <div class="rounded-1 bg-#fdefef px-2 py-1"
+                        >{{ item.reservedFour }} {{ item.warnType }}</div
+                      >
+                      <div class="text-[.8rem]">{{
+                        formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss')
+                      }}</div>
+                    </div>
+                  </div>
+                  <div
+                    class="h-10rem w-full flex items-center justify-center"
+                    v-if="preWarnList.length === 0"
+                    >暂无数据</div
+                  >
                 </div>
               </div>
-              <div
-                class="h-10rem w-full flex items-center justify-center"
-                v-if="preWarnList.length === 0"
-                >暂无数据</div
-              >
-            </div>
+            </el-card>
           </div>
-        </el-card>
+        </div>
       </div>
     </div>
+    
   </div>
 </template>
 <style scoped lang="scss">
@@ -1284,6 +1304,10 @@ window.addEventListener('resize', () => {
   .disease-top-4 {
     width: 30px !important;
     height: 30px !important;
+  }
+  .disease-top-5 {
+    width: 25px;
+    height: 25px;
   }
   .topDom {
     padding: 10px 5px;
@@ -1320,7 +1344,7 @@ window.addEventListener('resize', () => {
   height: 100%;
   border: 1px solid red;
 }
-@for $i from 1 through 4 {
+@for $i from 1 through 5 {
   .disease-top-#{$i} {
     background-size: 100% 100%;
     background-image: url(./assets/disease-top-#{$i}.png);
@@ -1357,6 +1381,10 @@ window.addEventListener('resize', () => {
 }
 .homt-top-bg4 {
   background-color: #fef9ee;
+}
+
+.homt-top-bg5 {
+  background-color: #FEEEEE;
 }
 .snapNum {
   width: 70px;

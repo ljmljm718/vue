@@ -295,7 +295,7 @@ export const snapType = (params) => {
   return request.get({ url: '/agriculture/identification-result/pest/number/type', params })
 }
 
-
+  
 export const getMonitoringEquipmentDataPage = (params) => {
   return request.get({ url: `/agri/monitoring-equipment-data/page`, params })
 }
@@ -303,3 +303,8 @@ export const getMonitoringEquipmentDataPage = (params) => {
 export const getMonitoringEquipmentNoticePage = (params) => {
   return request.get({ url: `/agriculture/monitoring-equipment-notice/page`, params })
 }
+
+export const diseaseWarnCount = (params) => {
+  return request.get({ url: `/agriculture/disease-warn-info/warn-count`, params })
+}
+
