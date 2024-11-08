@@ -13,9 +13,10 @@
           <div class="relative top-[-10em] z-20 w-[32em] h-[32em]">
             <!-- 中心 -->
             <div class="up-down-frame">
-              <div class="absolute left-0 top-0 circle-bg w-[32em] h-[32em]"></div>
+              <div class="absolute left-.6em top-.4rem circle-bg w-[32em] h-[32em]"></div>
               <div class="absolute center-bg w-[31em] h-[31em] left-[1em] top-[1em]">
-                <div :class="['icon-frame', 'icon-' + curIcon]"></div>
+                <!-- <div :class="['icon-frame', 'icon-' + curIcon]"></div> -->
+                <div class="icon-frame center-img"></div>
                 <div class="light-bg"></div>
                 <div class="pedestal1"></div>
                 <div class="pedestal2"></div>
@@ -288,6 +289,11 @@ const loginOut = async () => {
 }
 </script>
 <style lang="scss" scoped>
+.center-img {
+  background-image: url(./assets/homeV2/centerImg.png);
+  background-size: 100% 100%;
+}
+
 .home-bg {
   background-image: url(./assets/homeV2/bg.png);
   background-size: 100% 100%;
@@ -579,11 +585,11 @@ const loginOut = async () => {
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% auto;
-  width: 15em;
-  height: 15em;
+  width: 31em;
+  height: 31em;
   position: relative;
-  left: 8em;
-  top: 9em;
+  left: 0em;
+  top: 0em;
   z-index: 6;
 }
 
