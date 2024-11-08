@@ -12,6 +12,7 @@ import {
   snapType,
   diseaseWarnCount
 } from './apis'
+import { debounce } from 'lodash-es'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
 import { formatTime } from '@/utils/index'
@@ -847,7 +848,7 @@ window.addEventListener('keyup', (e) => {
   }
 })
 const windWidth = ref()
-window.addEventListener('resize', () => {
+const handleWindowResize = debounce(() => {
   console.log(window.innerWidth, 'window.innerWidth')
   windWidth.value = window.innerWidth
   // diseaseInitChart()
@@ -855,7 +856,8 @@ window.addEventListener('resize', () => {
   // insectInitChart()
   // insectInitChart2()
   getCategoryList()
-})
+}, 1000)
+window.addEventListener('resize', () => { handleWindowResize() })
 </script>
 <template>
   <div class="flex space-x-[.5rem] domDiv">
@@ -924,7 +926,7 @@ window.addEventListener('resize', () => {
                     />
                   </div>
                 </div>
-                <div class="flex space-x-1rem">
+                <div class="flex justify-center space-x-1rem">
                   <div
                     :class="`max-w-70rem insect-disease1 grid grid-cols-1 xl:grid-cols-2 gap-2 box-border grow py-3`"
                   >
@@ -935,7 +937,7 @@ window.addEventListener('resize', () => {
                         <div class="h-1rem w-5px mr-2 bg-#009688 relative top-[1px]"></div>
                         <div>虫害排行</div>
                       </div>
-                      <el-scrollbar class="left-scrollbar" height="12rem">
+                      <el-scrollbar class="left-scrollbar" height="14rem">
                         <div
                           class="flex items-center space-x-3 mb-1 p-2"
                           v-for="(item, index) in insectList"
@@ -974,7 +976,7 @@ window.addEventListener('resize', () => {
                         <div class="h-1rem w-5px mr-2 bg-#009688 relative top-[1px]"></div>
                         <div>病害排行</div>
                       </div>
-                      <el-scrollbar height="12rem">
+                      <el-scrollbar height="14rem">
                         <div
                           v-for="(item, index) in diseaseList"
                           :key="item.id"
@@ -1097,7 +1099,7 @@ window.addEventListener('resize', () => {
           </div>
         </div>
         <!-- 右侧 -->
-        <div class="w-24rem h-100vh">
+        <div class="w-24rem">
           <div class="flex flex-col space-y-[1rem]">
             <el-card class="h-820px">
               <div height="calc(100vh - 440px)">
@@ -1251,9 +1253,9 @@ window.addEventListener('resize', () => {
                 </el-scrollbar>
               </div>
             </el-card>
-            <el-card class="xl:h-335px h-600px">
+            <el-card>
               <div class="title-frame mb-2">预警信息</div>
-              <div class="xl:h-300px h-545px overflow-auto">
+              <el-scrollbar height="400px">
                 <div class="p-3 box-border" v-loading="preWarnLoading">
                   <div
                     class="py-1rem"
@@ -1281,13 +1283,12 @@ window.addEventListener('resize', () => {
                     >暂无数据</div
                   >
                 </div>
-              </div>
+              </el-scrollbar>
             </el-card>
           </div>
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 <style scoped lang="scss">
