@@ -1,9 +1,9 @@
 <template>
   <div class="bg-[#f5f5f5]">
-    <div class="bg-[#fff] flex h-45px items-center">
-      <el-form :model="formData" label-width="80px" class="!h-25px" :inline="true">
+    <div class="bg-[#fff] flex pt-[20px] items-center">
+      <el-form :model="formData" label-width="80px"   :inline="true">
         <el-form-item label="选择基地">
-          <el-select :class="`!w-${windWidth<1200 ? '220px' :'300px'}`" v-model="formData.baseCode">
+          <el-select :class="`!w-${windWidth<1200 ? '300px' :'300px'}`" v-model="formData.baseCode">
             <el-option
               v-for="(item, index) in baseList"
               :key="index"
@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择地块">
-          <el-select :class="`!w-${windWidth<1200 ? '220px' :'300px'}`" v-model="formData.plotCode">
+          <el-select :class="`!w-${windWidth<1200 ? '300px' :'300px'}`" v-model="formData.plotCode">
             <el-option
               v-for="(item, index) in plotList"
               :key="index"
@@ -149,13 +149,10 @@ const getPage = async () => {
   await getParkPage({ parkId: res.list.id })
   // console.log("基地列表: ", baseList.value);
   // console.log("地块列表: ", plotList.value);
-  initChartPie1()
-  initChartPie2()
-  initChartBar1()
-  initChartBar2()
-  initChartBar3()
-  handleRadioChange(radio.value)
+  
 }
+getPage()
+
 //获取地块
 const plotList = ref([])
 
@@ -168,7 +165,10 @@ const getParkPage = async (parkId) => {
 const distributionList=ref([])
 const chartPieWidth=ref(0)
 const initChartPie1 = async () => {
-  let res = await distribution({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
+  let res = []
+  if( !windType.value){
+     res = await distribution({ parkId: '', plotId: '' })
+    }else res = await distribution({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("养殖品种: ", res);
   distributionList.value=res
   let data = []
@@ -391,7 +391,9 @@ const initChartBar1 = async () => {
 }
 //产量一览图
 const initChartBar2 = async () => {
-  let res = await selectHarvest({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
+  let res = []
+  if(!windType.value) res =  await selectHarvest({ parkId: '', plotId: '' })
+  else res =  await selectHarvest({ parkId: formData.value.baseCode, plotId: formData.value.plotCode })
   // console.log("产量一览图: ", res);
   let mpYear = new Map();
   let xArr: string[] = [];
@@ -940,6 +942,7 @@ const initChartLine = async (val, num, type) => {
 //查询
 const onSubmit = () => {
   // baseCode.value = formData.value.baseCode
+  windType.value = true
   // plotCode.value = formData.value.plotCode
   initChartPie1()
   initChartPie2()
@@ -1002,14 +1005,13 @@ const dataTime = (e) => {
 }
 //重置
 const offSubmit = async () => {
-  formData.value = {
+ 
+   await getPage()
+   formData.value= {
     baseCode: '',
     plotCode: ''
   }
-   await getPage()
-
-  // baseCode.value = ''
-  // plotCode.value = ''
+   windType.value = false
   initChartPie1()
   initChartPie2()
   initChartBar1()
@@ -1018,24 +1020,21 @@ const offSubmit = async () => {
   handleRadioChange(radio.value)
 }
 const windWidth = ref(0) 
+const windType = ref(true)
 window.addEventListener("resize", ()=>{
-  console.log(window.innerWidth,'window.innerWidth')
-
+  windType.value = false
   windWidth.value = window.innerWidth
-  // onSubmit()
   initChartPie1()
-  // initChartPie2()
-  // initChartBar1()
   initChartBar2()
-  // initChartBar3()
-  // handleRadioChange(radio.value)
 
 })
 onMounted(async () => {
-  console.log(window.innerWidth,'window.innerWidth')
-  windWidth.value = window.innerWidth
- await getPage()
-  
+ initChartPie1()
+  initChartPie2()
+  initChartBar1()
+  initChartBar2()
+  initChartBar3()
+  handleRadioChange(radio.value)
 })
 </script>
 <style lang='scss' scoped>
