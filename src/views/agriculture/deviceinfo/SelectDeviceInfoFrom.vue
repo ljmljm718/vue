@@ -124,7 +124,7 @@
             />
           </template>
         </el-table-column>
-       
+
         <el-table-column label="位置" align="center" prop="location" />
         <el-table-column label="备注" align="center" prop="remark" />
         <el-table-column
@@ -165,7 +165,7 @@
       />
     </ContentWrap>
     <template #footer >
-   
+
         <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
         确 定
       </el-button>
