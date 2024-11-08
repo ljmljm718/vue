@@ -170,6 +170,7 @@ const selectGrowth = (key) => {
 
 const subformRef = ref()
 const openSubDeviceForm = () => {
+  console.log('selectId.value', selectId.value)
   if (!selectId.value) return ElMessage.warning('请选择生长期')
   else subformRef.value.open('create', selectId.value)
 }

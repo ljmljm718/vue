@@ -271,7 +271,7 @@ const getList = async () => {
 }
 const goGrowthCycle = (id: number) => {
 
-// console.log('id',id)
+console.log('id',id)
   router.push({path: '/growthCycle', query: {cropId: id, tag: 'variety'}})
 }
 /** 搜索按钮操作 */

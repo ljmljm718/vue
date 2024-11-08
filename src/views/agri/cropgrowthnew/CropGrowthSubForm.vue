@@ -25,6 +25,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="技术指导" prop="remark">
+        <el-input v-model="formData.remark"
+                  placeholder="请选取视频文件！如已经选取视频请等待上传完成!"/>
         <upload-file
           v-model="formData.remark"
           :file-type="['mp4']"
@@ -113,7 +115,7 @@ const formData = ref({
 })
 const formRules = reactive({
   itemName: [{required: true, message: '事项名称不能为空', trigger: 'blur'}],
-  remark: [{required: true, message: '请上传视频或等待视频上传完成！', trigger: 'change'}]
+  // remark: [{required: true, message: '请上传视频或等待视频上传完成！', trigger: 'change'}]
 })
 const subformRef = ref() // 表单 Ref
 // 上传文件和进度管理
