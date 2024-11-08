@@ -12,6 +12,7 @@ import {
   snapType,
   diseaseWarnCount
 } from './apis'
+import { isNumber } from '@/utils/is'
 import { debounce } from 'lodash-es'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
@@ -81,7 +82,7 @@ const getTopDataList = async (landBlockId: string) => {
   })
   const warnData = await diseaseWarnCount({ landBlockId });
   console.log("🚀 ~ getTopDataList ~ warnData:", warnData)
-  tempArr.push({ title: "病虫预警", value: warnData })
+  tempArr.push({ title: "病虫预警", value: isNumber(warnData) ? warnData : 0 })
   topDataList.value = tempArr
 }
 
@@ -1125,7 +1126,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     placeholder="选择日期"
                   />
                 </div>
-                <div class="rounded-1 xl:h-12rem 2xl:h-12rem sm-20rem bg-#666 relative">
+                <div class="rounded-1 xl:h-14rem 2xl:h-14rem sm-20rem bg-#666 relative">
                   <img :src="snapShotImg" class="w-100% h-100%" />
                   <div class="absolute w-93% flex justify-between bottom-3 left-3">
                     <div class="amplify cursor-pointer" @click="amplifyAdd(2)">
@@ -1235,7 +1236,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     </div>
                   </div>
                 </div>
-                <el-scrollbar :height="`${windWidth < 1200 ? '250px':'100px' } `" 
+                <el-scrollbar :height="`${windWidth < 1200 ? '250px':'100px' } `"
                   class="mt-15px px-15px 2xl:py-10px xl:py-15px sm:15px box-border"
                   style="border: 1px solid #ededed"
                 >
