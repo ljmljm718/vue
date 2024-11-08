@@ -3,7 +3,7 @@
     <div class="bg-[#fff] flex pt-[20px] items-center">
       <el-form :model="formData" label-width="80px"   :inline="true">
         <el-form-item label="选择基地">
-          <el-select :class="`!w-${windWidth<1200 ? '300px' :'300px'}`" v-model="formData.baseCode">
+          <el-select class="!w-300px" v-model="formData.baseCode">
             <el-option
               v-for="(item, index) in baseList"
               :key="index"
@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择地块">
-          <el-select :class="`!w-${windWidth<1200 ? '300px' :'300px'}`" v-model="formData.plotCode">
+          <el-select class="!w-300px" v-model="formData.plotCode">
             <el-option
               v-for="(item, index) in plotList"
               :key="index"
@@ -183,10 +183,10 @@ const initChartPie1 = async () => {
     generatePieOptions({
       legend: {
         show: true,
-        top:windWidth.value < 1200 ?'top': 'center',
-        left:  windWidth.value < 1200 ?'center':'right',
+        top:windWidth.value < 1390 ?'top': 'center',
+        left:  windWidth.value < 1390 ?'center':'right',
         bottom: '0',
-        orient:windWidth.value < 1200 ? 'horizontal' : 'vertical',
+        orient:windWidth.value < 1390 ? 'horizontal' : 'vertical',
         textStyle: {
           color: '#000'
         },
@@ -1024,6 +1024,8 @@ const windType = ref(true)
 window.addEventListener("resize", ()=>{
   windType.value = false
   windWidth.value = window.innerWidth
+  console.log(windWidth.value,'99999999999');
+  
   initChartPie1()
   initChartBar2()
 
