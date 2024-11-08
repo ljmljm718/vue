@@ -110,7 +110,7 @@ const tag = route.query.tag  //品种/品类的标签
 const growthList = ref<any[]>([]) //所以周期信息的列表
 const growthPeriod = ref<any[]>([]) //只有周期
 let showList = ref<any[]>([])
-
+const sendGrowth = ref<string>()
 //--- 查询周期-----
 const getGrowthPeriod = () => {
   growthPeriod.value = growthList.value.map((item) => ({
@@ -157,8 +157,10 @@ const selectId = ref('')
 const selectGrowth = (key) => {
   slectedItem.value = key
   const growthItem = growthList.value.find((item) => item.id == key)
-  if (growthItem) showList.value = [growthItem]
-
+  if (growthItem) {
+    showList.value = [growthItem]
+    sendGrowth.value = growthItem.growth
+  }
   cycleId.value = Number(key)
   console.log('事项值的传入', key)
   selectId.value = key
@@ -172,12 +174,12 @@ const subformRef = ref()
 const openSubDeviceForm = () => {
   console.log('selectId.value', selectId.value)
   if (!selectId.value) return ElMessage.warning('请选择生长期')
-  else subformRef.value.open('create', selectId.value)
+  else subformRef.value.open('create', selectId.value, sendGrowth.value)
 }
 //-----------事项的编辑-----------------
 
 const EditSubDeviceForm = (id) => {
-  subformRef.value.open('update', id)
+  subformRef.value.open('update', id, sendGrowth.value)
 }
 // -------------------------------
 const message = useMessage() // 消息弹窗

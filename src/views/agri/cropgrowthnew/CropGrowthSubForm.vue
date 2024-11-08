@@ -166,7 +166,7 @@ const beforeUpload = async (file: any) => {
 const open = async (type: string, id?: number, growth?: string) => {
   console.log("ID", id);
 
-
+  console.log("growth", growth);
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -179,7 +179,9 @@ const open = async (type: string, id?: number, growth?: string) => {
         formData.value.cropCode = id
         formData.value.growth = growth
       } else {
+
         formData.value = await CropGrowthSubApi.getCropGrowthSub(id)
+        formData.value.growth = growth
       }
     } finally {
       formLoading.value = false
