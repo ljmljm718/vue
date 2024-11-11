@@ -101,7 +101,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-button
             link
