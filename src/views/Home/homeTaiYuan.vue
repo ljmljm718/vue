@@ -878,9 +878,8 @@ window.addEventListener('resize', () => { handleWindowResize() })
       />
     </el-card>
     <div style="width: calc(100% - 12.5rem);" >
-      <el-card class="mr-.5rem flex justify-center items-center mb-[1rem]">
-        <div class="flex flex-wrap justify-center space-x-2 space-y-2">
-          <div></div>
+      <el-card class="mb-.5rem mr-.5rem">
+        <div class="grid grid-cols-5 w-full gap-3">
           <div
             v-for="(item, index) in topDataList"
             :key="index"
@@ -889,7 +888,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
               box-border rounded-2  homt-top-bg${index + 1}
             `"
           >
-            <div :class="` w-2.5rem h-2.5rem disease-top-${index + 1}`"> </div>
+            <div :class="`disease-top-${index + 1}`"> </div>
             <div>
               <div class="top-dom-title">{{ item.title }}</div>
               <div class="art-font topListText text-[1.4rem]">{{ item.value }}</div>
@@ -1297,20 +1296,6 @@ window.addEventListener('resize', () => { handleWindowResize() })
   .domDiv {
     font-size: 12px;
   }
-  .disease-top-1,
-  .disease-top-3 {
-    width: 25px;
-    height: 25px;
-  }
-  .disease-top-2,
-  .disease-top-4 {
-    width: 30px !important;
-    height: 30px !important;
-  }
-  .disease-top-5 {
-    width: 25px;
-    height: 25px;
-  }
   .topDom {
     padding: 10px 5px;
     .top-dom-title {
@@ -1348,6 +1333,8 @@ window.addEventListener('resize', () => { handleWindowResize() })
 }
 @for $i from 1 through 5 {
   .disease-top-#{$i} {
+    width: 25px;
+    height: 25px;
     background-size: 100% 100%;
     background-image: url(./assets/disease-top-#{$i}.png);
   }
