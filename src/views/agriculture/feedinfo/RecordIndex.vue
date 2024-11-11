@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
       <!--      <el-form-item label="所属基地" prop="belongPark">-->
       <!--        <el-input-->

@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="80px"
+      label-width="88px"
     >
       <el-form-item label="农作物" prop="breedId">
         <el-select

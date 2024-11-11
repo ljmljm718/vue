@@ -306,6 +306,7 @@ export enum DICT_TYPE {
 
   PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status',//生产商入库审批状态
   AGRI_RECOGNITION_TYPE = 'agri_recognition_type', // 太原 识别类型
+  MACHINE_PROCESS_FIXED = 'machine_process_fixed', // 库存不足预警
 
   // =========== agri -  病虫害监测 ==========
   AGRI_IDENTIFY_STATUS = 'agri_identify_status',//识别状态
