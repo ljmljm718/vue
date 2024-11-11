@@ -1,13 +1,13 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="100px"
-    >
+    <custom-form
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="100px"
+      >
       <el-form-item label="名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -94,7 +94,7 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
