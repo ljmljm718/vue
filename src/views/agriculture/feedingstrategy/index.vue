@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
       <el-form-item label="生长期" prop="growthPeriod">
         <el-input
