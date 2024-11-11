@@ -19,7 +19,7 @@ const handleCollapse = () => {
   const dom = document.getElementById(componentID);
   const formItemList = dom.querySelectorAll(".el-form-item");
   console.log('🚀 ~ formItemList',formItemList);
-  if (collapsed.value) {
+  if (!collapsed.value) {
     // 当前折叠状态，使其展开
     for (let i = 0; i < Array.from(formItemList).length; i++) {
       formItemList[i].style.display = 'inline-flex';
@@ -62,8 +62,8 @@ defineExpose({ resetFields })
     <slot></slot>
     <div class="absolute collapsed-css" @click="handleCollapse()">
       <!-- {{ collapsed ? '展开' : '收起' }} -->
-      <el-icon v-if="collapsed"><ArrowDown/></el-icon>
-      <el-icon v-else><ArrowUp/></el-icon>
+      <el-icon v-if="collapsed"><ArrowUp/></el-icon>
+      <el-icon v-else><ArrowDown/></el-icon>
     </div>
   </el-form>
 </template>
