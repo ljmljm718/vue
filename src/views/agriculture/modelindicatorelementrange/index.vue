@@ -119,7 +119,11 @@
 <!--      <el-table-column label="上限" align="center" prop="highLimit" />-->
 <!--      <el-table-column label="单位" align="center" prop="unit" />-->
       <el-table-column label="健康值" align="center" prop="healthRatio" />
-      <el-table-column label="健康等级" align="center" prop="healthLevel" />
+      <el-table-column label="健康等级" align="center" prop="healthLevel" >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AGRI_HEALTH_LEVEL" :value="scope.row.healthLevel" />
+        </template>
+      </el-table-column>
       <el-table-column label="指标结果" align="center" prop="indicatorResult" width="240"/>
       <el-table-column label="排序" align="center" prop="sortBy" />
       <el-table-column label="操作" align="center">
@@ -165,6 +169,7 @@ import { ModelIndicatorElementRangeApi, ModelIndicatorElementRangeVO } from '@/a
 import ModelIndicatorElementRangeForm from './ModelIndicatorElementRangeForm.vue'
 import {ModelIndicatorElementVO} from "@/api/agriculture/modelindicatorelement";
 import ModelIndicatorElementSelectPopup from "@/views/agriculture/modelindicatorelement/components/ModelIndicatorElementSelectPopup.vue";
+import {DICT_TYPE} from "@/utils/dict";
 
 /** 指标要素范围 列表 */
 defineOptions({ name: 'ModelIndicatorElementRange' })
