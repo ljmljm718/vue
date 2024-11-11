@@ -1,6 +1,6 @@
 <template>
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
-    <MapTangBa ref="mapTangBgRef" class="h-full z-0" @satellite="satellite" />
+    <MapTangBa ref="mapTangBgRef" class="h-full z-0" />
     <div
       class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl box-border transition-all"
       :style="`height: ${collapsed ? '3rem' : 'calc(100% - 4.5rem)'};`"
@@ -91,9 +91,12 @@ import MapTangBa from './mapTangBacopy.vue'
 
 // @ts-ignore
 import PanelTangBa from './panelTangBa.vue'
-import { getDeviceCategoryTree, getDeviceInfo } from './apis'
+import {
+  getDeviceCategoryTree,
+  getDeviceInfo,
+  parkInfoPage
+} from './apis'
 import meassageTop from './assets/tangba/meassage-top.png'
-import meassageBg from './assets/tangba/meassage-bg.png'
 import * as turf from '@turf/turf'
 
 defineOptions({ name: 'HomeTangBa' })
@@ -181,7 +184,7 @@ const getMenuDataList = async () => {
   const res = await getDeviceCategoryTree({}).catch(() => {
     menuDataLoading.value = false
   })
-  console.log('getMenuDataList14123', res)
+  console.log("🚀 ~ getMenuDataList ~ res:", res)
   menuDataLoading.value = false
   if (Array.isArray(res))
     menuDataList.value = res.map((_first) => ({
@@ -242,16 +245,23 @@ const getMenuDataList = async () => {
     )
   )
 
-  const { geometry } = _center
-  const { coordinates } = geometry
-  const [_lng, _lat] = coordinates
-  mapTangBgRef.value.setViewport(
-    allDeviceDataList.value.map((item) => {
-      return { lng: item.longitude, lat: item.latitude }
-    })
-  )
-  mapTangBgRef.value.setMapCenter(_lng, _lat)
-  // mapTangBgRef.value.setMapZoom(17)
+  const { list } = await parkInfoPage({ pageNo: 1, pageSize: 10 }).catch(() => {{}})
+  console.log("🚀 ~ getMenuDataList ~ resPark:", list)
+  if (Array.isArray(list) && list.length === 1) {
+    // 如果基地只有一条且配置了中心点，定位到此中心点
+    const { longitude, latitude } = list[0];
+    mapTangBgRef.value.setMapCenter(longitude, latitude)
+  } else {
+    const { geometry } = _center
+    const { coordinates } = geometry
+    const [_lng, _lat] = coordinates
+    mapTangBgRef.value.setViewport(
+      allDeviceDataList.value.map((item) => {
+        return { lng: item.longitude, lat: item.latitude }
+      })
+    )
+    mapTangBgRef.value.setMapCenter(_lng, _lat)
+  }
 
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item))
