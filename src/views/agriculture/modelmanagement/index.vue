@@ -114,10 +114,11 @@
         </div>
       </div>
     </div>
-    <div
-      v-if="showType === 'card'"
-      class="mt-3 mb-3 grid gap-4 grid-cols-3 2xl:grid-cols-4 changecols"
-    >
+    
+
+
+    <div class="flex justify-center">
+      <div v-if="showType === 'card'"  class="container mt-3 mb-3 grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       <div v-for="(item, index) in list" :key="index" class="p-5 bg-[#f5f5f5]">
         <div class="flex justify-center items-center flex-row">
           <div class="pr-2">
@@ -165,7 +166,7 @@
         </div>
       </div>
     </div>
-
+  </div>
     <el-table
       v-if="showType === 'list'"
       v-loading="loading"

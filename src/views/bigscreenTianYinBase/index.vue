@@ -114,13 +114,13 @@ export default defineComponent({
                   left: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="left-title w-full aspect-[6.8]"></div>
+                <div class="left-title w-full 2xl:aspect-[6.8] xl:aspect-[5] lg:aspect-[4] md:aspect-[3] sm:aspect-[2]"></div>
                 <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     leftDataList.value.map(item => (
                       <div class="item-wrapper w-full min-h-[1rem]">
                         <div class=' w-full h-[45px] relative flex items-center'>
-                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px]">{item.name}</div>
                           <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
                             {
                               Array.isArray(item.child) && item.child.length > 0 ? (
@@ -147,7 +147,7 @@ export default defineComponent({
                                 {
                                   item.child.map(_ele => (
                                     <div>
-                                      <div class="gap-2 grid grid-cols-2">
+                                      <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>品种：</div>
                                           <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
@@ -157,7 +157,7 @@ export default defineComponent({
                                           <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-2/5 whitespace-nowrap' style='color:#11EAC9'>物候期：</div>
                                           <div class='w-3/5' >{_ele.growth}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
@@ -167,8 +167,8 @@ export default defineComponent({
 
                                       </div>
                                       <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
-                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
-                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                        <div class='w-2/10 whitespace-nowrap' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex  ml-1rem' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
                                     </div>
                                   ))
@@ -201,13 +201,13 @@ export default defineComponent({
                   right: showSidePanel.value ? '1rem' : '-40rem'
                 }}
               >
-                <div class="right-title w-full aspect-[6.8]"></div>
+                <div class="right-title w-full 2xl:aspect-[6.8] xl:aspect-[5] lg:aspect-[4] md:aspect-[3] sm:aspect-[2]"></div>
                 <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
                   {
                     rightDataList.value.map(item => (
                       <div class="item-wrapper w-full min-h-[1rem]">
                         <div class=' w-full h-[45px] relative flex items-center'>
-                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[18px]">{item.name}</div>
+                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px] ">{item.name}</div>
                           <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
                             {
                               Array.isArray(item.child) && item.child.length > 0 ? (
@@ -232,7 +232,7 @@ export default defineComponent({
                                 {
                                   item.child.map(_ele => (
                                     <div>
-                                      <div class="gap-2 grid grid-cols-2">
+                                      <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
                                         <div class='flex ml-4 mt-2'>
                                           <div class='w-2/5' style='color:#11EAC9'>品种：</div>
                                           <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
@@ -242,7 +242,7 @@ export default defineComponent({
                                           <div class='w-3/5' >{item.area + '亩'}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>物候期：</div>
+                                          <div class='w-2/5 whitespace-nowrap' style='color:#11EAC9'>物候期：</div>
                                           <div class='w-3/5' >{_ele.growth}</div>
                                         </div>
                                         <div class='flex ml-4 mt-2'>
@@ -251,8 +251,8 @@ export default defineComponent({
                                         </div>
                                       </div>
                                       <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
-                                        <div class='w-2/10 ' style='color:#11EAC9'>时间：</div>
-                                        <div class='w-full flex ' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
+                                        <div class='w-2/10 whitespace-nowrap' style='color:#11EAC9'>时间：</div>
+                                        <div class='w-full flex ml-1rem' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
                                       </div>
                                     </div>
                                   ))

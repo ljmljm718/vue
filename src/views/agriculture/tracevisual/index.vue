@@ -167,8 +167,8 @@ getRecordStatistics('today')
 
 </script>
 <template>
-  <div class="flex">
-    <div class="w-70% h-[100hv] pb-2 mr-1">
+  <div class="grid  xl:grid-cols-3 sm:grid-cols-1 grap-5">
+    <div class="col-span-2 pb-2 mr-1">
       <ContentWrap>
         <div class="flex items-start space-x-2 pb-2">
           <div class="w-5px h-20px bg-#009688 mt-1.5 ml-1"></div>
@@ -236,7 +236,7 @@ getRecordStatistics('today')
         </div>
       </ContentWrap>
     </div>
-    <div class="w-30% h-[80px] pl-2 ml-1">
+    <div class="  pl-2 ml-1">
       <ContentWrap>
         <div class="flex items-start space-x-2 mt-2 pb-2 mb-2">
           <div class="w-5px h-20px bg-#009688 mt-1.5 ml-1"></div>

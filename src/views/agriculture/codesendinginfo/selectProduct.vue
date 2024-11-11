@@ -2,7 +2,7 @@
   <Dialog :title="dialogTitle" v-model="dialogVisible" width="80%">
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <el-form
+      <custom-form
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
@@ -52,12 +52,8 @@
             class="!w-180px"
           />
         </el-form-item>
-        <el-form-item label="" size="normal">
-          <div class="w-2px h-40px bg-[#e6e6e6]"></div>
-        </el-form-item>
-
         <el-form-item>
-          <el-button @click="handleQuery" class='!bg-[#009688] !color-[#fff]'>
+          <el-button @click="handleQuery" type="primary">
             <Icon icon="ep:search" class="mr-5px"/>
             搜索
           </el-button>
@@ -66,12 +62,14 @@
             重置
           </el-button>
         </el-form-item>
-      </el-form>
+      </custom-form>
 
     </ContentWrap>
     <ContentWrap>
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
                 ref="suibian"
+                style="height: 450px;overflow-y: auto"
+                @row-click="selectClick"
                 @select="fangfa">
         <!--        <el-table-column label="" width="55">-->
         <!--          <template #default="scope">-->
@@ -283,9 +281,24 @@ const fangfa = (select: any, row: any) => {
   }
   selectedRow.value = row
 }
+const selectClick = (row) => {
+  if (selectedRow.value && row.id === selectedRow.value.id) {
+    suibian.value.toggleRowSelection(row, false);
+    selectedRow.value = null
+  } else {
+    suibian.value.clearSelection()
+    suibian.value.toggleRowSelection(row, true);
+    selectedRow.value = row
+  }
+  console.log("selectedRow",selectedRow.value)
+}
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
+  if (!selectedRow.value) {
+    message.warning("请选择产品")
+    return
+  }
   //选择赋码对应的产品
   if (multipleSelectionA.value.length == selectedRow.value.inventory) {
     multipleSelectionA.value.forEach((multipleSelectionB, index) => {
@@ -324,3 +337,9 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+<style scoped lang='scss'>
+// 隐藏全选按钮
+:deep(.el-table th.el-table__cell:nth-child(1) .cell) {
+  visibility: hidden;
+}
+</style>

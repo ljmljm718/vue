@@ -151,14 +151,20 @@
       <el-table-column label="二维码" align="center" prop="qrImg" width="100px">
         <template #default="scope">
           <el-image
+            v-if="scope.row.img != undefined && scope.row.img != null"
             :src="scope.row.img"
             style="object-fit: cover; width: 2rem; height: 2rem"
             preview-teleported
             :preview-src-list="[scope.row.img]"
           />
+          <span v-else>无</span>
         </template>
       </el-table-column>
-      <el-table-column label="批次号" align="center" prop="batchNum"/>
+      <el-table-column label="批次号" align="center" prop="batchNum">
+        <template #default="scope">
+          <span>{{scope.row.batchNum != undefined && scope.row.batchNum != null ? scope.row.batchNum : '无'}}</span>
+        </template>
+      </el-table-column>
       <!--      <el-table-column label="备用字段" align="center" prop="prepareOne" />-->
       <!--      <el-table-column label="备用字段" align="center" prop="prepareTwo" />-->
       <!--      <el-table-column label="备用字段" align="center" prop="prepareThree" />-->

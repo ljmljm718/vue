@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -61,7 +61,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          style="width: 220px"
+          class="!w-220px"
         />
       </el-form-item>
       <!--      <el-form-item label="是否赋码" prop="codeType">-->
@@ -95,11 +95,11 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          style="width: 220px"
+          class="!w-220px"
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -107,26 +107,30 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:code-sending-info:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-        <el-button
-          plain
-          type="primary"
-          @click="fuMa()"
-          v-hasPermi="['agriculture:code-sending-info:update']"
-        >
-          赋码
-        </el-button>
       </el-form-item>
-    </el-form>
+      <el-row>
+        <el-form-item>
+          <el-button
+            type="success"
+            plain
+            @click="handleExport"
+            :loading="exportLoading"
+            v-hasPermi="['agriculture:code-sending-info:export']"
+          >
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+          <el-button
+            plain
+            type="primary"
+            @click="fuMa()"
+            v-hasPermi="['agriculture:code-sending-info:update']"
+          >
+            赋码
+          </el-button>
+        </el-form-item>
+      </el-row>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -134,6 +138,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :row-key="(row) => row.id"
               ref="multipleTable"
               @selection-change="handleSelectionChange" :show-overflow-tooltip="true"
+              @row-click="clickSelect"
               size="default">
       <!--      <el-table-column label="id" align="center" prop="id"/>-->
       <el-table-column type="selection" width="55" :reserve-selection="true"/>
@@ -278,6 +283,20 @@ const getListA = async () => {
 //选中
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
+}
+//点击列表一行任意地方选中当前行
+const clickSelect = (row) => {
+  const selectList = multipleSelection.value
+  if (selectList && selectList.length > 0) {
+    const selectRow = selectList.find(selectRow => selectRow.id === row.id)
+    if (selectRow) {
+      multipleTable.value.toggleRowSelection(row, false)
+    } else {
+      multipleTable.value.toggleRowSelection(row, true)
+    }
+  } else {
+    multipleTable.value.toggleRowSelection(row, true)
+  }
 }
 //选中
 /** 赋码操作 */

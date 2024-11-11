@@ -285,8 +285,17 @@
         </div>
       </div>
     </div>
-    <el-table v-if="cardList" ref="deviceInfoTableRef" v-loading="loading" :data="list" :row-key="(row) => row.id"
-      :stripe="true" :show-overflow-tooltip="true" @selection-change="handleSelectionChange" height='900px'>
+    <el-table
+      v-if="cardList"
+      ref="deviceInfoTableRef"
+      v-loading="loading"
+      :data="list"
+      :row-key="(row) => row.id"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+      @selection-change="handleSelectionChange"
+      height='900px'
+    >
       <el-table-column type="selection" width="55" :reserve-selection="true" />
       <!-- 子设备的列表 -->
       <!--      <el-table-column type="expand">
@@ -492,11 +501,6 @@ const getList = async () => {
     })
   }
 }
-let route = useRoute()
-if (route.query.deviceType) {
-  queryParams.deviceType = route.query.deviceType
-}
-onActivated(() => { getList() })
 
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
@@ -628,7 +632,7 @@ onMounted(async () => {
       deviceType.value = type.toString().split(',').map(Number)
     }
   }
-  let location = route.query
+  let location = route.query王
   if (location) {
     queryParams.deviceCode = location.deviceCode
     queryParams.deviceKind = location.id
@@ -671,6 +675,21 @@ const props = defineProps({
   }
 })
 
+let route = useRoute()
+if (route.query.deviceType) {
+  queryParams.deviceType = route.query.deviceType
+}
+const selectedItemSet = ref<any[]>([])
+onActivated(() => {
+  getList()
+  if (selectedItemSet.value.length > 0 && deviceInfoTableRef.value) nextTick(() => {
+    list.value.forEach(item => {
+      const flag = selectedItemSet.value.find(ele => ele === item.id)
+      if (flag) deviceInfoTableRef.value.toggleRowSelection(item, true)
+    })
+  })
+})
+
 /**
  * table多选
  * 目前只是作为组件向父组件传值
@@ -678,8 +697,10 @@ const props = defineProps({
 const multipleSelection = ref<DeviceInfoVO[]>([])
 const emit = defineEmits(["selectedDeviceInfo"]);
 const handleSelectionChange = (val: DeviceInfoVO[]) => {
+  console.log("🚀 ~ handleSelectionChange ~ val:", val)
   multipleSelection.value = val
   emit('selectedDeviceInfo', multipleSelection.value)
+  selectedItemSet.value = val.map(item => item.id)
 
   single.value = val.length !== 1
   deviceId.value = val.map(item => item.id)
