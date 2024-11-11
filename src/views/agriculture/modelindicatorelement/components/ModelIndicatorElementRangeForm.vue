@@ -40,7 +40,13 @@
       <el-table-column label="健康等级" align="center" min-width="120">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.healthLevel`" :rules="formRules.healthLevel" class="mb-0px!">
-            <el-input v-model="row.healthLevel" placeholder="请输入健康等级" />
+            <el-select v-model="row.healthLevel" placeholder="请选择健康等级">
+              <el-option v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+                         :key="dict.value"
+                         :label="dict.label"
+                         :value="dict.value"
+              />
+            </el-select>
           </el-form-item>
         </template>
       </el-table-column>
@@ -71,6 +77,7 @@
 </template>
 <script setup lang="ts">
 import { ModelIndicatorElementApi } from '@/api/agriculture/modelindicatorelement'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 const props = defineProps<{
   indicatorElementId: undefined // 指标要素id（主表的关联字段）

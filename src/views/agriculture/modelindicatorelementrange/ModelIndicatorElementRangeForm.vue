@@ -35,7 +35,18 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="健康等级" prop="healthLevel">
-            <el-input v-model="formData.healthLevel" placeholder="请输入健康等级" />
+            <el-select
+              v-model="formData.healthLevel"
+              placeholder="请选择健康等级"
+              clearable
+            >
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -56,6 +67,7 @@
 </template>
 <script setup lang="ts">
 import { ModelIndicatorElementRangeApi, ModelIndicatorElementRangeVO } from '@/api/agriculture/modelindicatorelementrange'
+import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
 
 /** 指标要素范围 表单 */
 defineOptions({ name: 'ModelIndicatorElementRangeForm' })
