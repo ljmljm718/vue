@@ -3,15 +3,20 @@
     <!-- 搜索栏 -->
     <ContentWrap>
       <custom-form
-        class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
+        class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
-        label-width="68px"
+        label-width="88px"
         :inline="true"
       >
         <!-- 表单内容 -->
         <el-form-item label="基地名称" prop="monitoringBaseName">
-          <el-input v-model="queryParams.monitoringBaseName" placeholder="请选择">
+          <el-input
+            v-model="queryParams.monitoringBaseName"
+            placeholder="请选择"
+            clearable
+            class="!w-240px"
+          >
             <template #append>
               <el-button @click="openParkPopup('0')">
                 <Icon icon="ep:search" />
@@ -21,7 +26,12 @@
           </el-input>
         </el-form-item>
         <el-form-item label="地块名称" prop="monitoringPlotName">
-          <el-input v-model="queryParams.monitoringPlotName" placeholder="请选择">
+          <el-input
+            v-model="queryParams.monitoringPlotName"
+            placeholder="请选择"
+            clearable
+            class="!w-240px"
+          >
             <template #append>
               <el-button @click="openPlotPopup(queryParams.monitoringBaseId)">
                 <Icon icon="ep:search" />
@@ -31,7 +41,12 @@
           </el-input>
         </el-form-item>
         <el-form-item label="设备名称" prop="deviceName">
-          <el-input v-model="queryParams.deviceName" placeholder="请选择">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请选择"
+            clearable
+            class="!w-240px"
+          >
             <template #append>
               <el-button @click="openSelectDeviceInfo()">
                 <Icon icon="ep:search" />
@@ -41,7 +56,12 @@
           </el-input>
         </el-form-item>
         <el-form-item label="录入方式" prop="reserveOne">
-          <el-select v-model="queryParams.reserveOne" placeholder="请选择" clearable>
+          <el-select
+            v-model="queryParams.reserveOne"
+            placeholder="请选择"
+            clearable
+            class="!w-240px"
+          >
             <el-option
               v-for="dict in options"
               :key="dict.value"
@@ -58,6 +78,8 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            clearable
+            class="!w-220px"
           />
         </el-form-item>
         <!-- 表单按钮 -->
@@ -116,17 +138,22 @@
           <!-- 卡片形式 -->
           <div
             v-if="list.length && currentItem && listType === 'card'"
-            class="grid grid-cols-2 gap-3 text-[10px] xl:text-[14px] text-[#999999]"
+            class="grid grid-cols-2 gap-3 text-[#999999]"
             :class="{'text-[#fff]': themeIsDark}"
             v-loading="loading"
           >
             <!-- 预览区 -->
-            <div class="col-span-1 rounded-md bg-[#F5F5F5] shadow-md previewContainer" :class="{'dark-card-bg shadow-[#666]': themeIsDark}">
+            <div
+              class="
+                col-span-1 rounded-md bg-[#F5F5F5]
+                shadow-md previewContainer pb-[10px]
+              "
+              :class="{'dark-card-bg shadow-[#666]': themeIsDark}"
+            >
               <div class="previewArea sticky top-0">
                 <div class="relative">
                   <div class="text-center">
                     <el-image
-                      lazy
                       :src="currentItem.capturedImage"
                       :preview-src-list="[currentItem.capturedImage]"
                       preview-teleported
@@ -137,18 +164,30 @@
                   <div
                     v-show="currentItem.videoLink"
                     @click="openVideo(currentItem.videoLink)"
-                    class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] hover:cursor-pointer"
+                    class="
+                      absolute bg-black opacity-50 w-[40px] h-[40px]
+                      bottom-[11px] right-[110px] rounded text-center
+                      leading-[40px] hover:cursor-pointer
+                    "
                   >
                     <el-icon color="#FFFFFF" size="16px"><VideoCamera /></el-icon>
                   </div>
                   <div
-                    class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] hover:cursor-pointer"
+                    class="
+                      absolute bg-black opacity-50 w-[40px] h-[40px]
+                      bottom-[11px] right-[60px] rounded text-center
+                      leading-[40px] hover:cursor-pointer
+                    "
                     @click="openForm('update', currentItem.id)"
                   >
                     <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
                   </div>
                   <div
-                    class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] hover:cursor-pointer"
+                    class="
+                      absolute bg-black opacity-50 w-[40px] h-[40px]
+                      bottom-[11px] right-[10px] rounded text-center
+                      leading-[40px] hover:cursor-pointer
+                    "
                     @click="handleDelete(currentItem.id)"
                   >
                     <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
@@ -177,11 +216,9 @@
               </div>
             </div>
             <!-- 卡片列表区 -->
-            <div
-              class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded"
-            >
+            <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
               <div
-                class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md h-[30vh]"
+                class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md pb-[10px]"
                 :class="{'dark-card-bg shadow-[#666]': themeIsDark}"
                 v-for="item in list"
                 :key="item.id"
@@ -189,16 +226,13 @@
               >
                 <div class="text-center">
                   <el-image
-                    lazy
                     :src="item.capturedImage"
                     preview-teleported
                     fit="contain"
                     class="h-[17vh] rounded"
                   />
                 </div>
-                <div
-                  class="text-[6px] lg:text-[10px] 2xl:text-[14px] px-[5px] mt-[5px]"
-                >
+                <div class="px-[5px] mt-[5px]">
                   <div>
                     设备名称: <span class="text-[#666666]" :class="{'text-[#999]': themeIsDark}">{{ item.deviceName }}</span>
                   </div>
@@ -563,19 +597,8 @@ watch(() => appStore.isDark, (newVal, oldVal) => {
 .el-tabs__nav-wrap::after {
   display: none;
 }
-.el-form-item {
-  margin-bottom: 0;
-}
-.el-form-item--small {
-  margin-bottom: 0;
-}
-.el-form--inline .el-form-item {
-  margin-right: 0;
-}
+
 .el-range-editor.el-input__wrapper {
   padding: 0;
-}
-.el-button + .el-button {
-  margin-left: 10px;
 }
 </style>
