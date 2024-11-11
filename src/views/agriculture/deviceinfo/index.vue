@@ -159,7 +159,7 @@
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
         <div
-          :class="[cardList ? 'tab-btn-selected2' : 'tab-btn']"
+          :class="[cardList ? 'tab-btn-selected2' : 'tab-btn2']"
           @click="listCard()"
         >
           <el-icon>
@@ -769,6 +769,7 @@ const openSubDeviceForm = () => {
   border-radius: 5px 0 0 5px;
   height: 2rem;
 }
+.tab-btn2,
 .tab-btn-selected2 {
   display: flex;
   align-items: center;
@@ -781,7 +782,10 @@ const openSubDeviceForm = () => {
   border: 1px solid #e6e6e6;
   color: #666666;
 }
-
+.tab-btn2 {
+  border: 1px solid #e6e6e6;
+  color: #666666;
+}
 .tab-btn-selected {
   border: 1px solid #009688;
   background-color: #e5f4f3;
