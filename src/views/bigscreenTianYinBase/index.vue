@@ -105,7 +105,7 @@ export default defineComponent({
           <BigscreenMain>
             <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
               <div class="absolute z-2 w-full h-full">
-                {/* <CesiumMap ref={e => cesiumIns.value = e}/> */}
+                <CesiumMap ref={e => cesiumIns.value = e}/>
                 <div class="meng-ban z-0"></div>
               </div>
               <div
