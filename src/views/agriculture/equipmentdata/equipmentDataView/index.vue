@@ -90,76 +90,95 @@ const focusInput=(e)=>{
 const inputFoucs=()=>{
 
 }
+
+// 根据右侧高度设置左侧菜单的高度
+const treeHeight = ref(1);
+const setLeftHeight = (height: number) => {
+  treeHeight.value = height - 80;
+}
+
 </script>
 
 <template>
-  <el-row :gutter="20" v-loading="loading">
-    <el-col :span="isCollapse ? 0 : 4" class="relative">
-      <el-menu default-active="2" class="el-menu-vertical-demo relative h-full" :collapse="isCollapse">
-        <!-- <ContentWrap> -->
-          <!-- <ContentWrap> -->
-            <div class="w-100% h-80px flex justify-center items-center">
-              <el-input class="!w-80% mt-30px h-30px rounded" v-model="filterText" @focus="inputFoucs" ref='inputFous' placeholder="搜索基地"  clearable />
-            </div>
-          <!-- </ContentWrap> -->
-          <!-- <ContentWrap style="height: 62vh; overflow: auto"> -->
-            <el-tree
-              ref="treeRef"
-              style="max-width: 600px"
-              class="filter-tree"
-              :data="categoryTree"
-              :props="defaultProps"
-              default-expand-all
-              :filter-node-method="filterNode"
-              highlight-current
-              node-key="id"
-              :expand-on-click-node="false"
-              @current-change="handleCurrentCategoryChange"
-            />
-          <!-- </ContentWrap> -->
-        <!-- </ContentWrap> -->
-        <div
-        @click="isCollapse = true"
-        class="  flex absolute bottom-2 left-50%  items-center justify-center w-145px h-35px rounded bg-[#e5f4f3] color-[#38aca1]"
-        style="cursor: pointer; transform: translateX(-50%)"
+  <div class="w-full flex relative">
+    <!-- 左侧 -->
+    <div
+      :class="`
+        w-[330px] pl-[20px] bg-white mb-[15px] border border-solid border-[#e4e7ed]
+        ${isCollapse ? 'slide-from-right-to-left' : 'slide-from-left-to-right'}
+      `"
+    >
+      <el-menu
+        default-active="2"
+        class="el-menu-vertical-demo relative"
+        :collapse="isCollapse"
       >
-        <img :src="img" class="w-12px h-7px mr-10px" /> 收起</div
-      >
+        <div class="w-[220px] h-80px flex justify-start items-center">
+          <el-input
+            class="!w-[220px] h-30px rounded"
+            v-model="filterText"
+            @focus="inputFoucs"
+            ref='inputFous'
+            placeholder="搜索基地"
+            clearable
+          />
+        </div>
+        <el-scrollbar :height="treeHeight">
+          <el-tree
+            ref="treeRef"
+            style="max-width: 600px"
+            class="filter-tree"
+            :data="categoryTree"
+            :props="defaultProps"
+            default-expand-all
+            :filter-node-method="filterNode"
+            highlight-current
+            node-key="id"
+            :expand-on-click-node="false"
+            @current-change="handleCurrentCategoryChange"
+          />
+        </el-scrollbar>
       </el-menu>
-
-    </el-col>
-    <div v-show="isCollapse" class="flex h-50px !w-[98.5%] m-auto bg-[#fff] rounded mb-15px">
-      <el-input
-        v-model="filterText2"
-        placeholder="搜索基地"
-        :prefix-icon="Search"
-        class="pl-[10px] searchTop"
-        @input="focusInput"
-      />
-      <div
-        @click="isCollapse = false"
-        style="cursor: pointer"
-        class="flex w-80px color-[#5abbb2] items-center justify-center"
-      >
-        展开
-        <el-icon style="padding-left: 5px"><ArrowDown/></el-icon>
-<!--        <img :src="img2" class="w-12px h-7px mr-10px" />-->
-      </div>
     </div>
-    <el-col :span="isCollapse ? 24 : 20">
-      <ContentWrap style="height: 78vh; overflow: auto">
+
+    <!-- 右侧 -->
+    <div
+      :class="`
+        grid relative grow w-[calc(100%-350px)]
+        ${ isCollapse ? 'content-grow' : 'content-shrink'}
+      `"
+    >
+      <!-- 展开收起侧边面板按钮 -->
+      <div
+        @click="isCollapse = !isCollapse"
+        :class="`
+          h-[25px] w-[25px] rounded-full shadow-md bg-white
+          cursor-pointer flex items-center justify-center text-[14px]
+          absolute top-[30px] left-[0px] translate-x-[-12.5px]
+        `"
+        :style="{
+          color: 'var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)',
+        }"
+      >
+        <el-icon v-show="!isCollapse"><ArrowLeftBold /></el-icon>
+        <el-icon v-show="isCollapse"><ArrowRightBold /></el-icon>
+      </div>
+
+      <!-- 内容 需要想办法获取元素高度来设置左侧高度 -->
+      <ContentWrap>
         <DeviceInfo
           :isCollapse="isCollapse"
           :currCategory="currCategory"
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
-          @updataChange="updataChange"
           :collectionType="route.query"
           @clearTree="clearTree"
+          @heightChange="setLeftHeight"
         />
       </ContentWrap>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -178,5 +197,61 @@ const inputFoucs=()=>{
   // background: pink !important;
   background-image: url('../../../../assets/imgs/treeActive.png') !important;
   background-size:100% 100%  !important;
+}
+
+@keyframes slide-from-left-to-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-from-left-to-right {
+  animation: slide-from-left-to-right 0.1s ease-out forwards;
+}
+
+@keyframes slide-from-right-to-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.slide-from-right-to-left {
+  animation: slide-from-right-to-left 0.1s ease-in forwards;
+}
+
+@keyframes content-grow {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: -350px;
+  }
+}
+
+.content-grow {
+  animation: content-grow 0.1s ease-out forwards;
+}
+
+@keyframes content-shrink {
+  from {
+    margin-left: -350px;
+  }
+  to {
+    margin-left: 0;
+  }
+}
+
+.content-shrink {
+  animation: content-shrink 0.1s ease-out forwards;
 }
 </style>
