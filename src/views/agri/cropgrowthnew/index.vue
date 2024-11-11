@@ -1,94 +1,91 @@
 <template>
   <ContentWrap v-show="showType !== 'card'">
-    <div class="flex items-start">
-      <el-form
-        class="grow"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="68px"
+    <custom-form
+      class="-mb-15px"
+      :model="queryParams"
+      ref="queryFormRef"
+      :inline="true"
+      label-width="88px"
+    >
+      <!--      <el-form-->
+      <!--        class="grow"-->
+      <!--        :model="queryParams"-->
+      <!--        ref="queryFormRef"-->
+      <!--        :inline="true"-->
+      <!--        label-width="68px"-->
+      <!--      >-->
+      <!--        <el-form-item label="品种名称" prop="cropName">-->
+      <!--          <el-input-->
+      <!--            v-model="queryParams.cropName"-->
+      <!--            placeholder="请输入品种名称"-->
+      <!--            clearable-->
+      <!--            @keyup.enter="handleQuery"-->
+      <!--            class="!w-240px"-->
+      <!--          />-->
+      <!--        </el-form-item>-->
+      <el-form-item
+        label="品种"
+        prop="cropCode"
       >
-        <!--        <el-form-item label="品种名称" prop="cropName">-->
-        <!--          <el-input-->
-        <!--            v-model="queryParams.cropName"-->
-        <!--            placeholder="请输入品种名称"-->
-        <!--            clearable-->
-        <!--            @keyup.enter="handleQuery"-->
-        <!--            class="!w-240px"-->
-        <!--          />-->
-        <!--        </el-form-item>-->
-        <el-form-item
-          label="品种"
-          prop="cropCode"
+        <el-select
+          v-model="queryParams.cropCode"
+          clearable
+          placeholder="请选择品种"
+          class="!w-240px"
         >
-          <el-select
-            v-model="queryParams.cropCode"
-            clearable
-            placeholder="请选择品种"
-            class="!w-240px"
-          >
-            <el-option
-              v-for="item in listVarietyManagementVO"
-              :key="item.id"
-              :label="item.varietyName"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          label="品类"
-          prop="cropId"
-        >
-          <el-select
-            v-model="queryParams.cropId"
-            clearable
-            placeholder="请选择品类"
-            class="!w-240px"
-          >
-            <el-option
-              v-for="item in listCategoryManagement"
-              :key="item.id"
-              :label="item.categoryName"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          label="生长期"
-          prop="growth"
-        >
-          <el-input
-            v-model="queryParams.growth"
-            placeholder="请输入生长期"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+          <el-option
+            v-for="item in listVarietyManagementVO"
+            :key="item.id"
+            :label="item.varietyName"
+            :value="item.id"
           />
-        </el-form-item>
-      </el-form>
-      <div class="w-[1px] bg-#25252545 h-[3rem] mx-2"></div>
-      <div
-        class="w-[100px] flex space-x-2 lg:w-[150px] lg:flex-row flex-col space-y-2 items-center">
-        <div class="w-0 h-0 sm:hidden"></div>
-        <el-button
-          @click="handleQuery"
-          class="!bg-[#009688] !text-[#fff]"
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="品类"
+        prop="cropId"
+      >
+        <el-select
+          v-model="queryParams.cropId"
+          clearable
+          placeholder="请选择品类"
+          class="!w-240px"
         >
-          <Icon
-            icon="ep:search"
-            class="mr-5px"
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"
           />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="生长期"
+        prop="growth"
+      >
+        <el-input
+          v-model="queryParams.growth"
+          placeholder="请输入生长期"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <!--      </el-form>-->
+      <el-form-item>
+        <el-button @click="handleQuery" type="primary"
+        >
+          <Icon icon="ep:search" class="mr-5px"/>
           搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon
-            icon="ep:refresh"
-            class="mr-5px"
-          />
+        </el-button
+        >
+        <el-button @click="resetQuery()">
+          <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-      </div>
-    </div>
+        <!--          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>-->
+      </el-form-item>
+    </custom-form>
   </ContentWrap>
   <ContentWrap>
     <div class="flex items-center">
@@ -403,9 +400,13 @@
               v-for="child, flag in item.child2"
               :key="flag"
               @click="item.activeBar = child.id"
-            >{{ child.itemName }}</div>
+            >{{ child.itemName }}
+            </div>
           </div>
-          <div class="px-[1rem] pt-3 text-[.9rem]">{{ getLabelById(item.child2, item.activeBar) }}</div>
+          <div class="px-[1rem] pt-3 text-[.9rem]">{{
+              getLabelById(item.child2, item.activeBar)
+            }}
+          </div>
         </div>
       </div>
     </div>

@@ -86,31 +86,36 @@
       </div>
     </div>
   </div>
-  <div v-if="!cardList" v-loading="loading" class="grid grid-cols-5 grid-rows-2 gap-15px">
-    <div v-for="item, index in list" :key="index" class="rounded bg-[#f5f5f5]" style="overflow: hidden;">
-      <div class="w-100% h-190px relative overflow-hidden" v-if="item.photo">
-        <img
-          :src="item.photo"
-          class="w-full h-100% rounded object-cover blur-lg absolute left-0 top-0 z-0"
-        />
-        <img
-          :src="item.photo"
-          class="w-full h-full rounded object-contain absolute left-0 top-0 z-10"
-        />
+  <div class="flex justify-center">
+    <div
+      v-if="!cardList"
+      v-loading="loading"
+      class="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-rows-1 gap-15px container"
+    >
+      <div v-for="item, index in list" :key="index" class="rounded bg-[#f5f5f5]" style="overflow: hidden;">
+        <div class="w-100% h-190px relative overflow-hidden" v-if="item.photo">
+          <img
+            :src="item.photo"
+            class="w-full h-100% rounded object-cover blur-lg absolute left-0 top-0 z-0"
+          />
+          <img
+            :src="item.photo"
+            class="w-full h-full rounded object-contain absolute left-0 top-0 z-10"
+          />
+        </div>
+        <div v-else class="flex justify-center items-center w-100% h-190px bg-#00000010">暂无数据</div>
+        <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
+          <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}
+            {{ item.specifications }}Kg
+          </div>
+          <div class="text-15px mt-10px mb-10px color-[#878787] " style="word-break:break-all">
+            {{ item.park }}-{{ item.parkDetail }}-{{ item.batchCode }}
+          </div>
+          <div class="flex justify-end">
+            <div class="color-[#898989] text-sm">数量：{{ item.inventory }}</div>
+          </div>
+        </div>
       </div>
-      <div v-else class="flex justify-center items-center w-100% h-190px bg-#00000010">暂无数据</div>
-      <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5] ">
-        <div class="text-17px" style="font-weight:600">{{ item.years }}{{ item.product }}
-          {{ item.specifications }}Kg
-        </div>
-        <div class="text-15px mt-10px mb-10px color-[#878787] " style="word-break:break-all">
-          {{ item.park }}-{{ item.parkDetail }}-{{ item.batchCode }}
-        </div>
-        <div class="flex justify-end">
-          <div class="color-[#898989] text-sm">数量：{{ item.inventory }}</div>
-        </div>
-      </div>
-
     </div>
   </div>
   <el-table v-if="cardList" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
