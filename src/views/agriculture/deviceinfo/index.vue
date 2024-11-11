@@ -14,7 +14,7 @@
             v-model="queryParams.deviceCode"
             placeholder="请输入设备编号"
             clearable
-            @keyup.enter="handleQuery"
+            @keyup.enter="handleQuery()"
             class="!w-240px"
           />
         </el-form-item>
@@ -23,7 +23,7 @@
             v-model="queryParams.deviceName"
             placeholder="请输入设备点位"
             clearable
-            @keyup.enter="handleQuery"
+            @keyup.enter="handleQuery()"
             class="!w-240px"
           />
         </el-form-item>
@@ -40,7 +40,7 @@
             v-model="queryParams.deviceMonitorType"
             placeholder="请输入监测类型"
             clearable
-            @keyup.enter="handleQuery"
+            @keyup.enter="handleQuery()"
             class="!w-240px"
           />
         </el-form-item>
@@ -61,7 +61,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            @click="handleQuery"
+            @click="handleQuery()"
             class="!color-[#fff] !bg-[#009688]"
           >
             <Icon icon="ep:search" class="mr-5px" />
@@ -95,7 +95,7 @@
             type="success"
             plain
             class="!color-[#fff] !bg-[#3ba272]"
-            @click="handleExport"
+            @click="handleExport()"
             :icon="Download"
             :loading="exportLoading"
             v-hasPermi="['agriculture:device-info:export']"
@@ -373,7 +373,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceInfoForm ref="formRef" @success="getList()" />
-  <SubDeviceListForm ref="subDeviceFormRef" @success="getList" />
+  <SubDeviceListForm ref="subDeviceFormRef" @success="getList()" />
 </template>
 
 <script setup lang="ts">
@@ -397,7 +397,7 @@ import {
 } from '@element-plus/icons-vue'
 
 /** 设备信息 列表 */
-defineOptions({ name: 'DeviceInfo' })
+defineOptions({ name: 'DeviceView' })
 
 const router = useRouter()
 
@@ -495,9 +495,8 @@ const getList = async () => {
 let route = useRoute()
 if (route.query.deviceType) {
   queryParams.deviceType = route.query.deviceType
-  getList()
 }
-getList()
+onActivated(() => { getList() })
 
 // 选中已经绑定的设备id
 const deviceInfoTableRef = ref()
@@ -557,10 +556,6 @@ const openEditForm = (val) => {
   const id = val ? val : deviceId.value.toString()
   router.push(`/internetMonitor/device/deviceView/create?id=${id}`)
 }
-
-onActivated(() => {
-  resetQuery()
-})
 
 /** 删除按钮操作 */
 const handleDelete = async (val) => {

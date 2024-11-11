@@ -140,7 +140,7 @@ const submitForm = async () => {
     )
     // 关闭当前页面
     useTagsViewStore().delView(router.currentRoute.value);
-    router.push(ORIGIN_PATH)
+    router.push({ name: 'DeviceView' })
   } catch (err) {
     ElMessage.error('提交失败, 请联系管理员')
   } finally {
