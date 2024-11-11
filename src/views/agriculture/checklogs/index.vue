@@ -68,11 +68,11 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery" type="primary">
+        <el-button @click="handleQuery()" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
-        <el-button @click="resetQuery">
+        <el-button @click="resetQuery()">
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
@@ -91,7 +91,7 @@
           <el-button
             type="success"
             plain
-            @click="handleExport"
+            @click="handleExport()"
             :loading="exportLoading"
             v-hasPermi="['agriculture:check-logs:export']"
           >
@@ -189,12 +189,12 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="getList()"
     />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CheckLogsForm ref="formRef" @success="getList"/>
+  <CheckLogsForm ref="formRef" @success="getList()"/>
 </template>
 
 <script setup lang="ts">
@@ -205,10 +205,11 @@ import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
 import CheckLogsForm from './CheckLogsForm.vue'
 import {parseTime} from "element-plus/es/components/time-select/src/utils";
 import {getTenantId} from "@/utils/auth";
-import router from "@/router";
 
 /** 巡检记录 列表 */
 defineOptions({name: 'CheckLogs'})
+
+const router = useRouter()
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
@@ -305,12 +306,8 @@ const handleExport = async () => {
 }
 
 //新增或修改跳转列表后，自动刷新列表
-onActivated(() => {
-  resetQuery()
-})
+onActivated(() => { getList() })
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
-})
+onMounted(() => { getList() })
 </script>

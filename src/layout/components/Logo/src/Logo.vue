@@ -57,7 +57,7 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div style="border-bottom: 1px solid #e1e1e1;">
     <router-link
       :class="[
         prefixCls,
@@ -73,7 +73,7 @@ watch(
       <div
         v-if="show"
         :class="[
-          'ml-10px text-16px font-700',
+          'ml-10px text-14px font-700',
           {
             'text-[var(--logo-title-text-color)]': layout === 'classic',
             'text-[var(--top-header-text-color)]':

@@ -66,7 +66,7 @@ export const useRenderLayout = () => {
         <div
           class={[
             `${prefixCls}-content`,
-            'absolute top-0 h-[100%]',
+            'absolute top-0 h-[100%] grow',
             {
               'w-[calc(100%-var(--left-menu-min-width))] left-[var(--left-menu-min-width)]':
                 collapse.value && !mobile.value && !mobile.value,
@@ -75,7 +75,7 @@ export const useRenderLayout = () => {
               'fixed !w-full !left-0': mobile.value
             }
           ]}
-          style={`transition: all var(--transition-time-02);width: calc(100% - calc(var(--left-menu-max-width) + ${showRightPanel.value ? '300px' : '0px'}));`}
+          style={`transition: all var(--transition-time-02);`}
         >
           <ElScrollbar
             v-loading={pageLoading.value}
