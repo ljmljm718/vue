@@ -27,23 +27,7 @@
             class="!w-240px"
           />
         </el-form-item>
-        <!--      <el-form-item label="所属基地" prop="belongPark">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.belongPark"-->
-        <!--          placeholder="请输入所属基地"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
         <el-form-item label="基地名称" prop="parkName">
-          <!-- <el-input
-            v-model="queryParams.parkName"
-            placeholder="请输入基地名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          /> -->
           <el-input v-model="queryParams.parkName" class="!w-240px" placeholder="请选择所属基地">
             <template #append>
               <el-button @click="openParkPopup('0')">
@@ -53,23 +37,7 @@
             </template>
           </el-input>
         </el-form-item>
-        <!--      <el-form-item label="所属地块" prop="belongPlot">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.belongPlot"-->
-        <!--          placeholder="请输入所属地块"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
         <el-form-item label="地块名称" prop="plotName">
-          <!-- <el-input
-            v-model="queryParams.plotName"
-            placeholder="请输入地块名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          /> -->
           <el-input class="!w-240px" v-model="queryParams.plotName" placeholder="请选择所属地块">
             <template #append>
               <el-button @click="openPlotPopup(queryParams.belongPark)">
@@ -79,15 +47,6 @@
             </template>
           </el-input>
         </el-form-item>
-        <!--      <el-form-item label="作物id" prop="cropId">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.cropId"-->
-        <!--          placeholder="请输入作物id"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
         <el-form-item label="农事阶段" prop="farmDefineType">
         <el-select
           v-model="queryParams.farmDefineType"
@@ -112,16 +71,6 @@
             class="!w-240px"
           />
         </el-form-item>
-        <!--      <el-form-item label="品种" prop="cropType">-->
-        <!--        <el-select-->
-        <!--          v-model="queryParams.cropType"-->
-        <!--          placeholder="请选择品种"-->
-        <!--          clearable-->
-        <!--          class="!w-240px"-->
-        <!--        >-->
-        <!--          <el-option label="请选择字典生成" value="" />-->
-        <!--        </el-select>-->
-        <!--      </el-form-item>-->
         <el-form-item label="计划状态" prop="planState">
           <el-select
             v-model="queryParams.planState"
@@ -137,15 +86,6 @@
             />
           </el-select>
         </el-form-item>
-        <!--      <el-form-item label="责任人编号" prop="personId">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.personId"-->
-        <!--          placeholder="请输入责任人编号"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
         <el-form-item label="责任人" prop="personName">
           <el-input
             v-model="queryParams.personName"
@@ -155,57 +95,17 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="计划开始时间" prop="startTime">
-          <el-date-picker
-            v-model="queryParams.startTime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            class="!w-220px"
-          />
-        </el-form-item>
-      <!--      <el-form-item label="计划结束时间" prop="endTime">-->
-      <!--        <el-date-picker-->
-      <!--          v-model="queryParams.endTime"-->
-      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-      <!--          type="daterange"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="计划面积（亩）" prop="planArea">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.planArea"-->
-      <!--          placeholder="请输入计划面积（亩）"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="土地面积（亩）" prop="area">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.area"-->
-      <!--          placeholder="请输入土地面积（亩）"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
-      <!--      <el-form-item label="创建时间" prop="createTime">-->
-      <!--        <el-date-picker-->
-      <!--          v-model="queryParams.createTime"-->
-      <!--          value-format="YYYY-MM-DD HH:mm:ss"-->
-      <!--          type="daterange"-->
-      <!--          start-placeholder="开始日期"-->
-      <!--          end-placeholder="结束日期"-->
-      <!--          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+<!--        <el-form-item label="计划开始时间" prop="startTime">-->
+<!--          <el-date-picker-->
+<!--            v-model="queryParams.startTime"-->
+<!--            value-format="YYYY-MM-DD HH:mm:ss"-->
+<!--            type="daterange"-->
+<!--            start-placeholder="开始日期"-->
+<!--            end-placeholder="结束日期"-->
+<!--            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+<!--            class="!w-220px"-->
+<!--          />-->
+<!--        </el-form-item>-->
         <el-form-item>
           <el-button @click="handleQuery" type="primary"
             ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
@@ -848,7 +748,7 @@ const getList = async () => {
         })
       }
     })
-   
+
     dataListA.value=[...dataList.value , ...dataList2.value]
     const generateRandomColor = () => {
         let color;
