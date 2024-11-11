@@ -123,7 +123,7 @@
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
         <div
-          :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
+          :class="[showType === 'list' ? 'tab-btn-selected2' : 'tab-btn2']"
           @click="showType = 'list'"
         >
           <el-icon>
@@ -728,8 +728,25 @@ onActivated(async () => {
   border: 1px solid #e6e6e6;
   color: #666666;
 }
-
 .tab-btn-selected {
+  border: 1px solid #009688;
+  background-color: #e5f4f3;
+  color: #009688;
+}
+.tab-btn2,
+.tab-btn-selected2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  border-radius: 0 5px 5px 0;
+  height: 2rem;
+}
+.tab-btn2 {
+  border: 1px solid #e6e6e6;
+  color: #666666;
+}
+.tab-btn-selected2 {
   border: 1px solid #009688;
   background-color: #e5f4f3;
   color: #009688;

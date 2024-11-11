@@ -818,7 +818,8 @@ const getList = async () => {
             }
           }
         })
-      }else{
+      }
+      else if(monthA.value == Number(time2[1])){
         dataList.value.forEach((item:any) => {
           if(  item.data >= Number(time[2]) ){
             if(item.data <= Number(time2[2])){
@@ -847,7 +848,7 @@ const getList = async () => {
         })
       }
     })
-
+   
     dataListA.value=[...dataList.value , ...dataList2.value]
     const generateRandomColor = () => {
         let color;
@@ -862,7 +863,6 @@ const getList = async () => {
     let list2 = []
     for (let i = 0; i < farmDefineOptions.value.length; i++) {
         list2.push( generateRandomColor());
-
     }
     list2.forEach((item,index) =>{
         farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
@@ -1204,7 +1204,7 @@ const handleSelectionChange = (rows) => {
 }
 
 const multipleTableRef = ref()
-// 控制单选——table选择项发生变化时
+// 控制table-----多选选择
 const selectClick = ( row ) => {
   const selectData = selectionList.value
   if (selectData.length) {
@@ -1375,6 +1375,17 @@ const dataChange = (e) => {
               item.name = fn(itm.farmDefineType)
               item.plotName = itm.plotName
               item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
+            }
+          }
+        })
+      }else if(e.getMonth()+1 == Number(time2[1])){
+        dataList.value.forEach((item:any) => {
+          if(  item.data >= Number(time[2]) ){
+            if(item.data <= Number(time2[2])){
+              item.name = fn(itm.farmDefineType)
+              item.plotName = itm.plotName
+              item.child.push({name:item.name,plotName:item.plotName})
+
             }
           }
         })
