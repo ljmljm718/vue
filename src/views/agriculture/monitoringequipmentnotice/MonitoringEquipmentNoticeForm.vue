@@ -68,12 +68,17 @@
       </el-form-item> -->
 
       <el-form-item label="通知事件类型" prop="noticeEvent">
-        <el-select v-model="formData.noticeEvent" placeholder="请选择通知事件类型">
+        <el-select
+          v-model="formData.noticeEvent"
+          placeholder="请选择通知事件类型"
+          clearable
+          class="!w-450px"
+        >
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -107,6 +112,7 @@ import { MonitoringEquipmentNoticeApi, MonitoringEquipmentNoticeVO } from '@/api
 //=================新增的引用
 import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
 import {DeviceInfoVO} from '@/api/agriculture/deviceinfo';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 
 /** 监控设备通知 表单 */
