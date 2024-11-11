@@ -61,7 +61,7 @@ defineExpose({ resetFields })
   <el-form ref="customFormRef" class="relative" :id="componentID" v-bind="$attrs">
     <slot></slot>
     <div class="absolute collapsed-css" @click="handleCollapse()">
-      {{ collapsed ? '展开' : '收起' }}
+      <!-- {{ collapsed ? '展开' : '收起' }} -->
       <el-icon v-if="collapsed"><ArrowDown/></el-icon>
       <el-icon v-else><ArrowUp/></el-icon>
     </div>
@@ -70,9 +70,12 @@ defineExpose({ resetFields })
 <style scoped lang="scss">
 .collapsed-css{
   right: 0;
-  bottom: 5px;
+  bottom: -5px;
   font-size: 16px;
-  color: #009688;
+  color: #fff;
   cursor: pointer;
+  background: #009688;
+  padding: 3px 8px 1px 8px;
+  border-radius: 5px 5px 0 0;
 }
 </style>
