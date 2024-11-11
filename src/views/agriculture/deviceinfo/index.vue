@@ -628,7 +628,7 @@ onMounted(async () => {
       deviceType.value = type.toString().split(',').map(Number)
     }
   }
-  let location = route.query
+  let location = route.query王
   if (location) {
     queryParams.deviceCode = location.deviceCode
     queryParams.deviceKind = location.id
