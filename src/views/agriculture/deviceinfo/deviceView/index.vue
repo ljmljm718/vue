@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {ElTree} from "element-plus";
-import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
-import DeviceInfo from "@/views/agriculture/deviceinfo/index.vue";
-
+import { ElTree } from 'element-plus'
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
+import DeviceInfo from '@/views/agriculture/deviceinfo/index.vue'
+const route = useRoute()
 /** 设备信息 列表 */
-defineOptions({name: 'DeviceView'})
+defineOptions({ name: 'DeviceView' })
 
 const loading = ref(true) // 列表的加载中
 
@@ -17,7 +17,7 @@ const treeRef = ref<InstanceType<typeof ElTree>>()
 
 const defaultProps = {
   children: 'child',
-  label: 'name',
+  label: 'name'
 }
 
 watch(filterText, (val) => {
@@ -45,7 +45,7 @@ const getCategoryList = async () => {
 }
 
 onMounted(() => {
-  getCategoryList();
+  getCategoryList()
 })
 
 let currCategory = ref({})
@@ -59,89 +59,148 @@ const clearCategory = () => {
 }
 const resetTreeSelections = () => {
   clearCategory() // 清空选中的节点
-};
- let isCollapse=ref(true)
+}
+let isCollapse = ref(true)
 
+//清空树节点
+const clearTree = () => {
+  clearCategory()
+}
+
+// 根据右侧高度设置左侧菜单的高度
+const treeHeight = ref(1)
+const setLeftHeight = (height: number) => {
+  treeHeight.value = height - 80
+}
 </script>
 
 <template>
-  <el-row
-    :gutter="24"
-    v-loading="loading"
-  >
+  <div class="w-full flex relative">
+    <!-- 左侧 -->
     <div
-      v-if="isCollapse"
-      @click="isCollapse = false"
-      class="
-        flex items-center space-x-1
-        text-white relative top-[-.5rem]
-        box-border p-3 py-1 text-[.9rem]
-        shadow-md bg-#009688
-        transition-all cursor-pointer
-      "
-      style="border-radius: 0 1000px 1000px 0;"
+      :class="`
+        w-[330px] pl-[20px] bg-white mb-[15px] border border-solid border-[#e4e7ed]
+        ${isCollapse ? 'slide-from-right-to-left' : 'slide-from-left-to-right'}
+      `"
     >
-      <div>展开</div>
-      <el-icon><DArrowRight /></el-icon>
-    </div>
-
-    <el-col :span="isCollapse ? 0 : 4">
-      <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo relative"
-        :collapse="isCollapse"
-      >
-        <ContentWrap>
-          <div
-            class="flex items-center box-border p-3 justify-between rounded-2 mb-2"
-            style="border: 1px solid #e1e1e1;"
-          >
-            <el-input
-              v-model="filterText"
-              placeholder="输入关键字进行过滤"
-              clearable
-            />
-            <div
-              class="
-                flex items-center space-x-1
-                rounded-2 p-1 w-[3.5rem] text-[.7rem]
-                px-2 shadow-sm cursor-pointer
-              "
-              style="border: 1px solid #e1e1e1;"
-              @click="isCollapse = true"
-            >
-              <el-icon><DArrowLeft /></el-icon>
-              <div>收起</div>
-            </div>
-            
-          </div>
-          <ContentWrap style="height: 70vh; overflow: auto;">
-            <el-tree
-              ref="treeRef"
-              style="max-width: 600px"
-              class="filter-tree"
-              :data="categoryTree"
-              :props="defaultProps"
-              default-expand-all
-              :filter-node-method="filterNode"
-              highlight-current
-              node-key="id"
-              :expand-on-click-node="false"
-              @current-change="handleCurrentCategoryChange"
-            />
-          </ContentWrap>
-        </ContentWrap>
+      <el-menu default-active="2" class="el-menu-vertical-demo relative" :collapse="isCollapse">
+        <div class="w-[220px] h-80px flex justify-start items-center">
+          <el-input
+            class="!w-[220px] h-30px rounded"
+            v-model="filterText"
+            placeholder="输入关键字进行过滤"
+            clearable
+          />
+        </div>
+        <el-scrollbar :height="treeHeight">
+          <el-tree
+            ref="treeRef"
+            style="max-width: 600px"
+            class="filter-tree"
+            :data="categoryTree"
+            :props="defaultProps"
+            default-expand-all
+            :filter-node-method="filterNode"
+            highlight-current
+            node-key="id"
+            :expand-on-click-node="false"
+            @current-change="handleCurrentCategoryChange"
+          />
+        </el-scrollbar>
       </el-menu>
-    </el-col>
+    </div>
+    <!-- 右侧 -->
+    <div
+      :class="`
+        grid relative grow w-[calc(100%-350px)]
+        ${isCollapse ? 'content-grow' : 'content-shrink'}
+      `"
+    >
+      <!-- 展开收起侧边面板按钮 -->
+      <div
+        @click="isCollapse = !isCollapse"
+        :class="`
+          h-[25px] w-[25px] rounded-full shadow-md bg-white
+          cursor-pointer flex items-center justify-center text-[14px]
+          absolute top-[30px] left-[0px] translate-x-[-12.5px]
+        `"
+        :style="{
+          color: 'var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)'
+        }"
+      >
+        <el-icon v-show="!isCollapse"><ArrowLeftBold /></el-icon>
+        <el-icon v-show="isCollapse"><ArrowRightBold /></el-icon>
+      </div>
 
-    <el-col :span="isCollapse?24:20">
-      <ContentWrap style=" overflow: auto;">
+      <ContentWrap>
         <device-info
+          :isCollapse="isCollapse"
           :currCategory="currCategory"
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
+          :collectionType="route.query"
+          @clearTree="clearTree"
+          @heightChange="setLeftHeight"
         />
       </ContentWrap>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
+<style scoped lang='scss'>
+@keyframes slide-from-left-to-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-from-left-to-right {
+  animation: slide-from-left-to-right 0.1s ease-out forwards;
+}
+
+@keyframes slide-from-right-to-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.slide-from-right-to-left {
+  animation: slide-from-right-to-left 0.1s ease-in forwards;
+}
+
+@keyframes content-grow {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: -350px;
+  }
+}
+
+.content-grow {
+  animation: content-grow 0.1s ease-out forwards;
+}
+
+@keyframes content-shrink {
+  from {
+    margin-left: -350px;
+  }
+  to {
+    margin-left: 0;
+  }
+}
+
+.content-shrink {
+  animation: content-shrink 0.1s ease-out forwards;
+}
+</style>

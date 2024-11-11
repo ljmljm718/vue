@@ -1,4 +1,6 @@
 <template>
+  <div ref="containerDom">
+
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <custom-form
@@ -383,6 +385,7 @@
   <!-- 表单弹窗：添加/修改 -->
   <DeviceInfoForm ref="formRef" @success="getList()" />
   <SubDeviceListForm ref="subDeviceFormRef" @success="getList()" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -475,6 +478,7 @@ const openExternalLink = (item) => {
 }
 /** 查询列表 */
 const enableSwitch = ref<boolean>(false)
+  const containerDom = ref()
 
 const getList = async () => {
   loading.value = true
@@ -494,6 +498,8 @@ const getList = async () => {
     setTimeout(() => {
       handleSelectedDeviceIds()
     })
+    emit("heightChange", containerDom.value.clientHeight);
+
   } finally {
     loading.value = false
     nextTick(() => {
@@ -672,9 +678,21 @@ const props = defineProps({
   inDialog: {
     type: Boolean,
     default: () => false
+  },
+  isCollapse: {
+    type: Boolean,
+    default: false
   }
 })
-
+//监听父组件isCollapse变化
+const isCollapse2 = ref(false)
+watch(
+  () => props.isCollapse,
+  (val) => {
+    console.log(val, '1234isCollapse')
+    isCollapse2.value = val
+  }
+)
 let route = useRoute()
 if (route.query.deviceType) {
   queryParams.deviceType = route.query.deviceType
@@ -695,7 +713,7 @@ onActivated(() => {
  * 目前只是作为组件向父组件传值
  */
 const multipleSelection = ref<DeviceInfoVO[]>([])
-const emit = defineEmits(["selectedDeviceInfo"]);
+const emit = defineEmits(["selectedDeviceInfo",'clearTree', 'heightChange']);
 const handleSelectionChange = (val: DeviceInfoVO[]) => {
   console.log("🚀 ~ handleSelectionChange ~ val:", val)
   multipleSelection.value = val
