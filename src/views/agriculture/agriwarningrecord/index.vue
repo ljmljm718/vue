@@ -13,13 +13,17 @@
           class="-mb-15px"
           :model="queryParams"
           ref="queryFormRef"
-          label-width="68px"
+          label-width="88px"
           :inline="true"
         >
           <!-- 表单内容 -->
           <el-form-item label="预警类型" prop="warnType">
-            <el-select class="!w-240px" v-model="queryParams.warnType" placeholder="请选择预警类型"
-                       clearable>
+            <el-select
+              class="!w-240px"
+              v-model="queryParams.warnType"
+              placeholder="请选择预警类型"
+              clearable
+            >
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
                 :key="dict.value"
@@ -29,8 +33,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="预警状态" prop="warnStatus">
-            <el-select class="!w-240px" v-model="queryParams.warnStatus"
-                       placeholder="请选择预警状态" clearable>
+            <el-select
+              class="!w-240px"
+              v-model="queryParams.warnStatus"
+              placeholder="请选择预警状态"
+              clearable
+            >
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
                 :key="dict.value"
@@ -40,8 +48,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="预警等级" prop="warnLevel">
-            <el-select class="!w-240px" v-model="queryParams.warnLevel" placeholder="请选择预警等级"
-                       clearable>
+            <el-select
+              class="!w-240px"
+              v-model="queryParams.warnLevel"
+              placeholder="请选择预警等级"
+              clearable
+            >
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
                 :key="dict.value"
@@ -363,8 +375,11 @@
     <!-- 监控设备预警 -->
     <el-tab-pane name="monitorTab">
       <template #label>
-        <el-badge :value="totalMonitor" class="item"
-                  v-if="deptName != '竹茶村' && deptName != '茶竹村'  ">
+        <el-badge
+          :value="totalMonitor"
+          class="item"
+          v-if="deptName != '竹茶村' && deptName != '茶竹村'"
+        >
           <span class="px-2">监控设备预警</span>
         </el-badge>
       </template>
@@ -374,7 +389,7 @@
           class="-mb-15px"
           :model="queryParamsMonitor"
           ref="queryFormRefMonitor"
-          label-width="68px"
+          label-width="88px"
           :inline="true"
         >
           <!-- 表单内容 -->
@@ -504,7 +519,7 @@
             <!-- 预览区 -->
             <div
               :class="`
-                col-span-1 rounded-md shadow-md
+                col-span-1 rounded-md shadow-md pb-[10px]
                 ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
               `"
             >
@@ -554,7 +569,7 @@
                   </el-icon>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-1 my-10px px-3">
+              <div class="grid grid-cols-2 2xl:grid-cols-3 gap-1 my-10px px-3">
                 <div>基地名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
                     currentItem.monitoringBaseName
                   }}</span></div>
@@ -580,9 +595,12 @@
             </div>
             <!-- 卡片列表区 -->
             <el-scrollbar style="height: 70vh">
-              <div class="col-span-1 grid grid-cols-3 gap-3 rounded">
+              <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
                 <div
-                  :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh]`"
+                  :class="`
+                    ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
+                    cursor-pointer shadow-md rounded-md pb-[10px]
+                  `"
                   v-for="item in listMonitor"
                   :key="item.id"
                   @click="changCurrentItem(item)"
@@ -597,7 +615,7 @@
                       />
                     </div>
                     <div
-                      class="mt-[5px] text-[6px] lg:text-[8px] xl:text-[12px] 2xl:text-[14px] px-[5px]"
+                      class="mt-[5px] px-[5px]"
                     >
                       <div>设备名称: <br class="lg:hidden"/><span
                         :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{

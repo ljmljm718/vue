@@ -6,7 +6,7 @@
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
-        label-width="68px"
+        label-width="88px"
         :inline="true"
       >
         <!-- 表单内容 -->
@@ -112,11 +112,14 @@
         <!-- 卡片形式 -->
         <div
           v-if="list.length && currentItem && listType === 'card'"
-          class="grid grid-cols-8 lg:grid-cols-3 2xl:grid-cols-2 gap-3 text-[12px] 2xl:text-[14px] text-[#999999]"
+          class="grid grid-cols-2 gap-3 text-[#999999]"
         >
           <!-- 预览区 -->
           <div
-            :class="`col-span-7 lg:col-span-2 2xl:col-span-1 rounded-md ${themeIsDark ? 'bg-[#343A46]': 'bg-[#F5F5F5]'} shadow-md previewContainer`"
+            :class="`
+              col-span-1 rounded-md shadow-md previewContainer pb-[10px]
+              ${themeIsDark ? 'bg-[#343A46]': 'bg-[#F5F5F5]'}
+            `"
           >
             <div class="previewArea">
               <div class="relative">
@@ -125,11 +128,15 @@
                   :preview-src-list="[currentItem.coverImage]"
                   preview-teleported
                   fit="contain"
-                  class="w-full h-[60vh]"
+                  class="w-full h-[50vh]"
                 />
                 <div
                   v-show="currentItem.fileManagement"
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[210px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50 w-[40px] h-[40px]
+                    bottom-[11px] right-[210px] rounded text-center
+                    leading-[40px] cursor-pointer
+                  "
                 >
                   <a :href="currentItem.fileManagement">
                     <el-icon color="#FFFFFF" size="16px" class="p-[10px]">
@@ -140,26 +147,42 @@
                 <div
                   v-show="currentItem.fileManagement"
                   @click="filePreview(currentItem.fileManagement)"
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[160px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50 w-[40px] h-[40px]
+                    bottom-[11px] right-[160px] rounded text-center
+                    leading-[40px] cursor-pointer
+                  "
                 >
                   <el-icon color="#FFFFFF" size="16px"><View /></el-icon>
                 </div>
                 <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50 w-[40px] h-[40px]
+                    bottom-[11px] right-[110px] rounded text-center
+                    leading-[40px] cursor-pointer
+                  "
                   @click="openDetailForm('view', currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:update']"
                 >
                   <el-icon color="#FFFFFF" size="16px"><More /></el-icon>
                 </div>
                 <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50 w-[40px] h-[40px]
+                    bottom-[11px] right-[60px] rounded text-center
+                    leading-[40px] cursor-pointer
+                  "
                   @click="openForm('update', currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:update']"
                 >
                   <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
                 </div>
                 <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] hover:cursor-pointer"
+                  class="
+                    absolute bg-black opacity-50 w-[40px] h-[40px]
+                    bottom-[11px] right-[10px] rounded text-center
+                    leading-[40px] cursor-pointer
+                  "
                   @click="handleDelete(currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:delete']"
                 >
@@ -177,9 +200,12 @@
             </div>
           </div>
           <!-- 卡片列表区 -->
-          <div class="col-span-1 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3 rounded">
+          <div class="col-span-1 grid grid-cols-2 2xl:grid-cols-3 gap-3 rounded">
             <div
-              :class="`${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'} cursor-pointer shadow-md rounded-md h-[33vh] overflow-hidden`"
+              :class="`
+                ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
+                cursor-pointer shadow-md rounded-md pb-[10px] px-[10px]
+              `"
               v-for="item in list"
               :key="item.id"
               @click="changCurrentItem(item)"
@@ -188,17 +214,13 @@
                 :src="item.coverImage"
                 preview-teleported
                 fit="contain"
-                class="w-full h-[17vh] mt-[1vh]"
+                class="w-full h-[17vh]"
               />
-              <div
-                class="grid grid-cols-1 2xl:gap-1 2xl:mt-[10px] text-[4px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
-              >
-                <div>
-                  <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[6px] lg:text-[10px] xl:text-[12px] 2xl:text-[16px]`">{{ item.schemeName }}</span>
-                </div>
-                <div class="h-[5vh] truncate">
-                  {{ item.briefIntroduction }}
-                </div>
+              <div>
+                <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`">{{ item.schemeName }}</span>
+              </div>
+              <div class="h-[5vh] truncate">
+                {{ item.briefIntroduction }}
               </div>
             </div>
           </div>

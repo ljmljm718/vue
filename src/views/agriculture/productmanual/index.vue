@@ -5,7 +5,7 @@
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
-      label-width="68px"
+      label-width="88px"
       :inline="true"
     >
       <!-- 表单内容 -->
@@ -109,11 +109,11 @@
     <!-- 第二行列表数据 -->
     <div class="mt-[20px]">
       <!-- 卡片形式 -->
-      <div v-if="list.length && listType === 'card'" class="text-[12px] 2xl:text-[14px] text-[#999999]">
+      <div v-if="list.length && listType === 'card'" class="text-[#999999]">
         <!-- 卡片列表区 -->
-        <div class="grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-5 gap-3 rounded">
+        <div class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 rounded">
           <div
-            class="bg-[#F5F5F5] pb-[20px] cursor-pointer shadow-md rounded-md"
+            class="bg-[#F5F5F5] pb-[20px] shadow-md rounded-md"
             v-for="item in list"
             :key="item.id"
           >
@@ -150,9 +150,7 @@
               </div>
             </div>
             <!-- 文字介绍 -->
-            <div
-              class="grid grid-cols-1 2xl:row-span-1 2xl:gap-1 2xl:mt-[10px] text-[14px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px] ml-2px mb-2px px-3"
-            >
+            <div class="px-3">
               <div class="text-center">
                 <span class="text-[#666666]">{{ item.schemeName }}</span>
               </div>

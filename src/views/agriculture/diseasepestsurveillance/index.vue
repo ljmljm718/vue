@@ -235,7 +235,7 @@
       </el-table-column>
     </el-table>
     <!-- 卡片 -->
-    <div v-show="listType === 'card'">
+    <div v-show="listType === 'card'" class="mb-[20px]">
       <!-- 无数据 -->
       <div v-if="list.length === 0" class="w-full flex justify-center items-center">
         <div class="no-data">暂无数据</div>
@@ -324,7 +324,7 @@
             <div class="corner-right-bottom"></div>
           </div>
           <!-- 右侧识别记录 -->
-          <div class="col-span-3 h-[20rem] ml-[2rem]">
+          <div class="col-span-3 h-[25rem] ml-[2rem]">
             <!-- 识别虫害数量 & 虫害分类 -->
             <div class="lg:grid lg:grid-cols-2 lg:gap-2">
               <div class="h-[4rem] leading-[4rem] bg-[#F1F8FB] flex justify-between px-[2rem]">
@@ -350,7 +350,12 @@
               </el-button>
             </div>
             <!-- 识别记录 -->
-            <SpotResTable :activeMainTableId="list[curItem].id" :monitorType="list[curItem].monitorType" :key="spotResTableKey" />
+            <SpotResTable
+              :activeMainTableId="list[curItem].id"
+              :monitorType="list[curItem].monitorType"
+              :key="spotResTableKey"
+              height="h-[10rem] lg:h-[15rem]"
+            />
           </div>
         </div>
       </div>
@@ -557,8 +562,9 @@ const curItem = ref<number>(0);  // 当前list被查看的项
 const handleCardChange = async () => {
   queryParams.pageNo = 1;
   await getList();
-  // 切换回卡片时需要设置图片列表移动到第一项 此时curItem已经设置为0
+  // 切换回卡片时需要设置图片列表移动到第一项
   if ("card" === listType.value) {
+    curItem.value = 0;
     getCountDetail(list.value[0].id);
     imgListRef.value.style.left = (imgSideLength.value + 16) + 'px';
     spotResTableKey.value = new Date().getTime();

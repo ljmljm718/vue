@@ -17,7 +17,8 @@ const queryParams = reactive({
 
 const props = defineProps({
   activeMainTableId: {type: String, required: true},
-  monitorType: {type: String, required: true}
+  monitorType: {type: String, required: true},
+  height: {type: String, required: true},
 });
 const activeMainTableId = ref<string>(props.activeMainTableId);
 const monitorType = ref<string>(props.monitorType);
@@ -67,8 +68,9 @@ const handleDelete = async (id: number) => {
 }
 </script>
 <template>
-  <div>
+  <div :class="height">
     <el-table
+      style="height: 100%"
       v-loading="loading"
       :data="tableData"
       :show-overflow-tooltip="true"
