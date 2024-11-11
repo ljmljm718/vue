@@ -117,41 +117,43 @@
       </el-table-column>
     </el-table>
     <div v-if="selectType === 'card' && list.length<1" class="flex w-full justify-center items-center text-[13px] pt-2"> 暂无数据</div>
-    <div v-if="selectType === 'card'"  class="mt-3 mb-3 grid grid-cols-3 gap-3 changecols">
-      <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2">
-        <div class="flex flex-row justify-center items-center h-[150px] p-2" >
-          <div class="p-2 ">
-            <img
-            :src = "item.brandLogo"
-            class=" w-[100px] h-full object-contain"
-             />
-          </div>
-          <div class = "p-2 w-full">
-            <div class="text-18px p-1.5">{{ item.productBrand}}</div>
-            <div class="text-14px p-1.5 pt-3"> {{ item.belongCategory }}</div>
-            <div class="pt-3">
-              <span class="text-14px p-1.5">{{item.usedStatus === 0 ?'已启用':'已禁用'}}</span>
-              <el-switch
-                v-model="item.usedStatus"
-                :active-value="0"
-                :inactive-value="1"
-                @change="handleStatusChange1(item)" />
+    <div class="flex justify-center">
+      <div v-if="selectType === 'card'"  class="container mt-3 mb-3 grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        <div v-for="item in list" :key="item.id" class="bg-[#f5f5f5] p-2">
+          <div class="flex flex-row justify-center items-center h-[150px] p-2" >
+            <div class="p-2 ">
+              <img
+              :src = "item.brandLogo"
+              class=" w-[100px] h-full object-contain"
+              />
             </div>
-            <div style="display: flex; margin-left: auto; justify-content: flex-end;" class=" pt-2.5 pb-1">
-              <el-button
-                type="primary"
-                @click="openForm('update', item.id)"
-                v-hasPermi="['agriculture:product-brand:update']"
-              >
-                编辑
-              </el-button>
-              <el-button
-                type="danger"
-                @click="handleDelete(item.id)"
-                v-hasPermi="['agriculture:product-brand:delete']"
-              >
-                删除
-              </el-button>
+            <div class = "p-2 w-full">
+              <div class="text-18px p-1.5">{{ item.productBrand}}</div>
+              <div class="text-14px p-1.5 pt-3"> {{ item.belongCategory }}</div>
+              <div class="pt-3">
+                <span class="text-14px p-1.5">{{item.usedStatus === 0 ?'已启用':'已禁用'}}</span>
+                <el-switch
+                  v-model="item.usedStatus"
+                  :active-value="0"
+                  :inactive-value="1"
+                  @change="handleStatusChange1(item)" />
+              </div>
+              <div style="display: flex; margin-left: auto; justify-content: flex-end;" class=" pt-2.5 pb-1">
+                <el-button
+                  type="primary"
+                  @click="openForm('update', item.id)"
+                  v-hasPermi="['agriculture:product-brand:update']"
+                >
+                  编辑
+                </el-button>
+                <el-button
+                  type="danger"
+                  @click="handleDelete(item.id)"
+                  v-hasPermi="['agriculture:product-brand:delete']"
+                >
+                  删除
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -344,11 +346,11 @@ onMounted(() => {
   background-color: #e5f4f3;
   color: var(--el-color-primary);
 }
-@for $i from 1 through 10 {
-  @media screen and (min-width: calc(400px + calc(#{$i} * 300px))) {
-    .changecols {
-      grid-template-columns: repeat(#{$i}, 1fr);
-    }
-  }
-}
+// @for $i from 1 through 10 {
+//   @media screen and (min-width: calc(400px + calc(#{$i} * 300px))) {
+//     .changecols {
+//       grid-template-columns: repeat(#{$i}, 1fr);
+//     }
+//   }
+// }
 </style>
