@@ -1,23 +1,32 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-      <custom-form
+    <!-- <div class="flex"> -->
+    <!-- <el-form
+      :model="queryParams"
+      ref="queryFormRef"
+      :inline="true"
+      label-width="68px"
+      :style="{ height: '22px' }"
+      class="w-full flex"
+    > -->
+    <custom-form
+        class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
-        label-width="68px"
-        class="-mb-15px"
+        label-width="88px"
       >
-        <el-form-item label="模型名称" prop="modelName">
-          <el-input
-            v-model="queryParams.modelName"
-            placeholder="请输入"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <!-- <el-form-item label="模型类型" prop="modelType">
+      <el-form-item label="模型名称" prop="modelName" class="flex">
+        <el-input
+          v-model="queryParams.modelName"
+          placeholder="请输入"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <!-- <el-form-item label="模型类型" prop="modelType">
           <el-select
             v-model="queryParams.modelType"
             placeholder="请选择模型类型"
@@ -32,74 +41,42 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-form-item label="品种" prop="belongVarietyId">
-          <el-select
-            v-model="queryParams.belongVarietyId"
-            placeholder="请选择"
-            clearable
-            @change="handleVarietyChange"
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in listVarietyManagement"
-              :key="dict.id"
-              :label="dict.varietyName"
-              :value="dict.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="品类" prop="belongCategoryId">
-          <el-select
-            v-model="queryParams.belongCategoryId"
-            placeholder="请选择"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in listCategoryManagement"
-              :key="dict.id"
-              :label="dict.categoryName"
-              :value="dict.id"
-            />
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="启用状态" prop="enabledStatus">
-          <el-select
-            v-model="queryParams.enabledStatus"
-            placeholder="请选择启用状态"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item> -->
-        <el-form-item>
-          <!-- <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:model-management:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button> -->
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery" type="primary">
-            <Icon icon="ep:search" class="mr-5px"/>
-            搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
-            重置
-          </el-button>
-        </el-form-item>
-      </custom-form>
+      <el-form-item label="品种" prop="belongVarietyId" class="flex">
+        <el-select
+          v-model="queryParams.belongVarietyId"
+          placeholder="请选择"
+          clearable
+          @change="handleVarietyChange"
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in listVarietyManagement"
+            :key="dict.id"
+            :label="dict.varietyName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="品类" prop="belongCategoryId" class="flex">
+        <el-select
+          v-model="queryParams.belongCategoryId"
+          placeholder="请选择"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in listCategoryManagement"
+            :key="dict.id"
+            :label="dict.categoryName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleQuery" type="primary"> 查询 </el-button>
+        <el-button @click="resetQuery"> 重置 </el-button>
+      </el-form-item>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -141,58 +118,50 @@
       v-if="showType === 'card'"
       class="mt-3 mb-3 grid gap-4 grid-cols-3 2xl:grid-cols-4 changecols"
     >
-      <div
-        v-for="(item, index) in list"
-        :key="index"
-        class="justify-between"
-        style="border: 1px solid #e6e6e6; border-radius: 4px"
-      >
-        <div
-          class="bg-[#EDF4F4] text-[18px] text-[#333] mb-[15px] h-[40px] flex items-center px-[25px]"
-          style="font-weight: 600; text-align: left"
-          >{{ item.modelName }}模型</div
-        >
-        <div class="flex flex-row justify-center items-center">
-          <div class="flex justify-center items-center p-2">
-            <img :src="item.modelImageId" style="width: 130px; height: 85px; object-fit: contain" />
+      <div v-for="(item, index) in list" :key="index" class="p-5 bg-[#f5f5f5]">
+        <div class="flex justify-center items-center flex-row">
+          <div class="pr-2">
+            <img :src="item.modelImageId" style="width: 100px; height: 85px; object-fit: contain" />
           </div>
-          <div
-            class="w-[80%] pl-2 text-[16px] text-[#999]"
-            style="font-weight: 400; line-height: 28px"
-          >
-            <!-- <div style="font-size: 18px; margin-bottom: 15px;">{{ item.modelName }}</div> -->
-            <div class="mb-[5px]">品类：{{ item.categoryName }}</div>
-            <div class="mb-[5px]">品种：{{ item.varietyName }}</div>
+          <div class="w-full pl-2">
+            <div style="font-size: 18px; margin-bottom: 15px">{{ item.modelName }}</div>
+            <div style="font-size: 14px; margin-bottom: 5px">品类：{{ item.categoryName }}</div>
+            <div style="font-size: 14px; margin-bottom: 5px">品种：{{ item.varietyName }}</div>
           </div>
         </div>
-        <div
-          class="mt-15px grid grid-cols-4 text-[#666] text-[16px]  cursor-pointer"
-          style=" border-top: 1px solid #e6e6e6; font-weight: 400;"
-        >
-          <div
+        <div class="mt-15px grid grid-cols-4">
+          <el-button
+            style="font-size: 12px"
+            type="primary"
             @click="
               router.push(
                 `/growth_monitor/model-monitor-indicator?modelId=${item.id}&belongVarietyId=${item.belongVarietyId}`
               )
             "
-            style="border-right: 1px solid #e6e6e6 ;" class="changeBtnColor"
-            >监测指标</div
           >
-          <div
+            监测指标
+          </el-button>
+          <el-button
+            style="font-size: 12px"
             @click="openForm('detail', item.id)"
             v-hasPermi="['agriculture:model-management:update']"
-            style="border-right: 1px solid #e6e6e6;" class="changeBtnColor"
-            >详情</div
           >
-          <div
+            详情
+          </el-button>
+          <el-button
+            style="font-size: 12px"
             @click="openForm('update', item.id)"
             v-hasPermi="['agriculture:model-management:update']"
-            style="border-right: 1px solid #e6e6e6;" class="changeBtnColor"
-            >编辑</div
           >
-          <div @click="handleDelete(item.id)" v-hasPermi="['agriculture:model-management:delete']" class="changeBtnColor"
-            >删除</div
+            编辑
+          </el-button>
+          <el-button
+            style="font-size: 12px"
+            @click="handleDelete(item.id)"
+            v-hasPermi="['agriculture:model-management:delete']"
           >
+            删除
+          </el-button>
         </div>
       </div>
     </div>
@@ -462,19 +431,12 @@ onMounted(() => {
   background-color: #e5f4f3;
   color: #009688;
 }
-.changeBtnColor{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 25px;
-}
+
 .changeBtnColor:hover,
 .changeBtnColor:focus {
-  background-color: #e5f4f3;
-  color: #009688;
+  color: #ffffff;
+  background: #009688;
 }
-
 
 // @media screen and (min-width: 1680px) {
 //   .changecols {
@@ -488,11 +450,10 @@ onMounted(() => {
 //   }
 // }
 @for $i from 1 through 10 {
-  @media screen and (min-width: calc(400px + calc(#{$i} * 300px))) {
+  @media screen and (min-width: calc(320px + calc(#{$i} * 300px))) {
     .changecols {
       grid-template-columns: repeat(#{$i}, 1fr);
     }
   }
 }
-
 </style>
