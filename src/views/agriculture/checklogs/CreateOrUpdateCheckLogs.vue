@@ -293,7 +293,7 @@ const submitForm = async () => {
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
-    await router.push(ORIGIN_PATH)
+    await router.go(-1)
   } finally {
     formLoading.value = false
   }
