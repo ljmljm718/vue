@@ -271,9 +271,9 @@ const handleQuery = () => {
   getList()
 }
 //新增或修改跳转列表后，自动刷新列表
-onActivated(() => {
-  resetQuery()
-})
+// onActivated(() => {
+//   resetQuery()
+// })
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
@@ -317,7 +317,8 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
-
+//新增或修改跳转列表后，自动刷新列表
+onActivated(() => { getList() })
 /** 初始化 **/
 onMounted(() => {
   getList()
