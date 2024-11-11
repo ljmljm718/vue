@@ -92,6 +92,17 @@
         width="140"
       />
       <el-table-column label="有效期天数" align="center" prop="expiryDay" />
+      <el-table-column label="操作" align="center" fixed="right" width="150">
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            @click="openWarnForm(scope.row.id)"
+          >
+            预警配置
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <Pagination
@@ -101,6 +112,7 @@
       @pagination="getList"
     />
   </ContentWrap>
+  <StockWarnConfiguration ref="formWarnRef" @success="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -109,7 +121,8 @@ import { StockApi, StockVO } from '@/api/erp/stock/stock'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { WarehouseApi, WarehouseVO } from '@/api/erp/stock/warehouse'
 import { erpCountTableColumnFormatter } from '@/utils'
-import {dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter2} from "@/utils/formatTime"
+import StockWarnConfiguration from '@/views/agriculture/stockwarn/StockWarnConfiguration.vue';
 
 /** ERP 产品库存列表 */
 defineOptions({ name: 'ErpStock' })
@@ -198,4 +211,12 @@ onMounted(async () => {
   console.log("productList.value", productList.value)
   warehouseList.value = await WarehouseApi.getWarehouseSimpleList()
 })
+
+/** 预警配置操作 */
+const formWarnRef = ref()
+const openWarnForm = (id: number) => {
+  formWarnRef.value.open(id)
+}
+
+
 </script>
