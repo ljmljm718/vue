@@ -1125,7 +1125,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     placeholder="选择日期"
                   />
                 </div>
-                <div class="rounded-1 xl:h-14rem 2xl:h-14rem sm-20rem bg-#666 relative">
+                <div class="rounded-1 xl:h-14rem 2xl:h-14rem sm:h-15rem h-12rem bg-#666 relative">
                   <img :src="snapShotImg" class="w-100% h-100%" />
                   <div class="absolute w-93% flex justify-between bottom-3 left-3">
                     <div class="amplify cursor-pointer" @click="amplifyAdd(2)">

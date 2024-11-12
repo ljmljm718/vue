@@ -296,6 +296,8 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
+      highlight-current-row
+      @row-click="selectClick"
       height='900px'
     >
       <el-table-column type="selection" width="55" :reserve-selection="true" />
@@ -723,6 +725,25 @@ const handleSelectionChange = (val: DeviceInfoVO[]) => {
   single.value = val.length !== 1
   deviceId.value = val.map(item => item.id)
   deviceName.value = val.map(item => item.deviceName)
+}
+
+// 控制table-----多选选择
+const selectClick = ( row ) => {
+  const selectData = multipleSelection.value
+  if (selectData.length) {
+    selectData.forEach((item) => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        deviceInfoTableRef.value.toggleRowSelection(row, false)
+      }
+      // 不然就让当前的一行勾选
+      else {
+        deviceInfoTableRef.value.toggleRowSelection(row, true)
+      }
+    })
+  } else {
+    deviceInfoTableRef.value.toggleRowSelection(row, true)
+  }
 }
 
 // 监听父组件category变化
