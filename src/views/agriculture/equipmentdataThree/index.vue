@@ -66,7 +66,7 @@
   
   <!-- 第二栏 -->
   <ContentWrap class="mid-area relative">
-    <div class="mid-area-fold">
+    <div class=" right-4 !absolute md:top-48px lg:top-20px top-10px xl:30px color-[#009688] text-15px">
       <div class="flex items-center" @click="changeCollis">
         <span>折叠/展示</span>
         <el-icon>
@@ -108,7 +108,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            class="!w-240px"
+            class="!w-220px"
           />
         </el-form-item>
         <el-form-item>
