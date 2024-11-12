@@ -1,9 +1,15 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
+    <custom-form :model="queryParams" ref="queryFormRef" :inline="true">
       <el-form-item label="终端" prop="dtuId">
-        <el-input v-model="queryParams.dtuId" placeholder="请输入终端" clearable @keyup.enter="handleQuery" class="!w-240px" />
+        <el-input
+          v-model="queryParams.dtuId"
+          placeholder="请输入终端"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item label="通道" prop="channelId">
         <el-input
@@ -51,17 +57,23 @@
           重置
         </el-button>
       </el-form-item>
+
+      <el-form-item>
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:equipment-data-rule:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </el-form-item>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-form-item>
-      <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:equipment-data-rule:create']">
-        <Icon icon="ep:plus" class="mr-5px" />
-        新增
-      </el-button>
-    </el-form-item>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="终端" align="center" prop="dtuId" />
@@ -73,7 +85,13 @@
       <el-table-column label="字典" align="center" prop="dictionary" />
       <el-table-column label="单位" align="center" prop="ruleUnit" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-button
@@ -96,7 +114,12 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList" />
+    <Pagination
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->

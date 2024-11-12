@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="90px">
+    <custom-form :model="queryParams" ref="queryFormRef" :inline="true">
       <el-form-item label="主题名称" prop="topicName">
         <el-input
           v-model="queryParams.topicName"
@@ -50,51 +50,69 @@
           重置
         </el-button>
       </el-form-item>
+
+      <el-form-item>
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:topic-data:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:topic-data:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+        <el-button
+          type="primary"
+          plain
+          :disabled="multiple || sub"
+          @click="handleSubscribe"
+          v-hasPermi="['agriculture:topic-data:subscribe']"
+        >
+          订阅主题
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="warning"
+          plain
+          :disabled="multiple || unsub"
+          @click="handleUnsubscribe"
+          v-hasPermi="['agriculture:topic-data:unsubscribe']"
+        >
+          退订主题
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleSubscribeAll"
+          v-hasPermi="['agriculture:topic-data:subscribeall']"
+        >
+          全部订阅
+        </el-button>
+        <el-button
+          type="danger"
+          plain
+          @click="handleUnSubscribeAll"
+          v-hasPermi="['agriculture:topic-data:unsubscribeAll']"
+        >
+          全部退订
+        </el-button>
+      </el-form-item>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-form-item>
-      <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:topic-data:create']">
-        <Icon icon="ep:plus" class="mr-5px" />
-        新增
-      </el-button>
-      <el-button
-        type="success"
-        plain
-        @click="handleExport"
-        :loading="exportLoading"
-        v-hasPermi="['agriculture:topic-data:export']"
-      >
-        <Icon icon="ep:download" class="mr-5px" />
-        导出
-      </el-button>
-      <el-button
-        type="primary"
-        plain
-        :disabled="multiple || sub"
-        @click="handleSubscribe"
-        v-hasPermi="['agriculture:topic-data:subscribe']"
-      >
-        订阅主题
-      </el-button>
-      <el-button
-        type="warning"
-        plain
-        :disabled="multiple || unsub"
-        @click="handleUnsubscribe"
-        v-hasPermi="['agriculture:topic-data:unsubscribe']"
-      >
-        退订主题
-      </el-button>
-      <el-button type="success" plain @click="handleSubscribeAll" v-hasPermi="['agriculture:topic-data:subscribeall']">
-        全部订阅
-      </el-button>
-      <el-button type="danger" plain @click="handleUnSubscribeAll" v-hasPermi="['agriculture:topic-data:unsubscribeAll']">
-        全部退订
-      </el-button>
-    </el-form-item>
     <el-table
       v-loading="loading"
       :data="list"
@@ -123,20 +141,41 @@
       </el-table-column>
       <el-table-column label="处理类" align="center" prop="topicClass" />
       <el-table-column label="备注" align="center" prop="topicNote" />
-      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="操作" align="center" width="100">
         <template #default="scope">
-          <el-button link type="primary" @click="openForm('update', scope.row.id)" v-hasPermi="['agriculture:topic-data:update']">
+          <el-button
+            link
+            type="primary"
+            @click="openForm('update', scope.row.id)"
+            v-hasPermi="['agriculture:topic-data:update']"
+          >
             编辑
           </el-button>
-          <el-button link type="danger" @click="handleDelete(scope.row.id)" v-hasPermi="['agriculture:topic-data:delete']">
+          <el-button
+            link
+            type="danger"
+            @click="handleDelete(scope.row.id)"
+            v-hasPermi="['agriculture:topic-data:delete']"
+          >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList" />
+    <Pagination
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->

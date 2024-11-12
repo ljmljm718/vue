@@ -11,290 +11,294 @@ import {
   diseaseWarnInfo,
   snapType,
   diseaseWarnCount
-} from './apis'
-import { isNumber } from '@/utils/is'
-import { debounce } from 'lodash-es'
-import { onMounted, ref, onBeforeUnmount } from 'vue'
-import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
-import { formatTime } from '@/utils/index'
-import dayjs from 'dayjs'
-import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index'
+} from './apis';
+import { isNumber } from '@/utils/is';
+import { debounce } from 'lodash-es';
+import { onMounted, ref, onBeforeUnmount } from 'vue';
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { formatTime } from '@/utils/index';
+import dayjs from 'dayjs';
+import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index';
 
-const defaultProps = { children: 'child', label: 'name' }
+const defaultProps = { children: 'child', label: 'name' };
 /** 搜索节点过滤 */
 const filterNode = (value: string, data: Tree) => {
-  if (!value) return true
-  return data.name.includes(value)
-}
-const categoryTree = ref<ParkInfoVO[]>([]) // 列表的数据
-const plotName = ref('') //地块ID
-const treeRef = ref()
-const treeLoading = ref<boolean>(false)
+  if (!value) return true;
+  return data.name.includes(value);
+};
+const categoryTree = ref<ParkInfoVO[]>([]); // 列表的数据
+const plotName = ref(''); //地块ID
+const treeRef = ref();
+const treeLoading = ref<boolean>(false);
 /** 查询基地地块列表 */
 const getCategoryList = async () => {
-  treeLoading.value = true
+  treeLoading.value = true;
   const data = await ParkInfoApi.getParkTree({}).catch(() => {
-    treeLoading.value = false
-  })
-  console.log('🚀 ~ getCategoryList ~ data:', data)
-  if (!Array.isArray(data)) return
-  categoryTree.value = data
-  plotName.value = categoryTree.value[0].child[0].id
+    treeLoading.value = false;
+  });
+  console.log('🚀 ~ getCategoryList ~ data:', data);
+  if (!Array.isArray(data)) return;
+  categoryTree.value = data;
+  plotName.value = categoryTree.value[0].child[0].id;
   // getGetSortNumberByDay(categoryTree.value[0].child[0].id)
-  getCountDay(categoryTree.value[0].child[0].id, 'day')
-  getCountDay2(categoryTree.value[0].child[0].id, 'day')
-  getSnapShotDeviceOptions(categoryTree.value[0].child[0].id)
-  getTopDataList(categoryTree.value[0].child[0].id)
-  getGetNameQuantityByDateAndPlotId(categoryTree.value[0].child[0].id, 'month')
-  getPreWarnList(categoryTree.value[0].child[0].id)
+  getCountDay(categoryTree.value[0].child[0].id, 'day');
+  getCountDay2(categoryTree.value[0].child[0].id, 'day');
+  getSnapShotDeviceOptions(categoryTree.value[0].child[0].id);
+  getTopDataList(categoryTree.value[0].child[0].id);
+  getGetNameQuantityByDateAndPlotId(categoryTree.value[0].child[0].id, 'month');
+  getPreWarnList(categoryTree.value[0].child[0].id);
   nextTick(() => {
-    treeRef.value.setCurrentKey(categoryTree.value[0].child[0].id, true) //  当节点被点击时，更新currentNodeKey的值
-  })
-}
-getCategoryList()
+    treeRef.value.setCurrentKey(categoryTree.value[0].child[0].id, true); //  当节点被点击时，更新currentNodeKey的值
+  });
+};
+getCategoryList();
 const handleCurrentCategoryChange = (currNodeData) => {
-  console.log('🚀 ~ handleCurrentCategoryChange ~ currNodeData:', currNodeData)
+  console.log('🚀 ~ handleCurrentCategoryChange ~ currNodeData:', currNodeData);
   if (currNodeData.child) {
     // 这是基地
   } else {
     // 这是地块
-    plotName.value = currNodeData.id
+    plotName.value = currNodeData.id;
     // getGetSortNumberByDay(plotName.value)
-    getCountDay(plotName.value, 'day')
-    getCountDay2(plotName.value, 'day')
-    getSnapShotDeviceOptions(plotName.value)
-    getTopDataList(plotName.value)
-    getGetNameQuantityByDateAndPlotId(plotName.value, 'month')
-    getPreWarnList(plotName.value)
+    getCountDay(plotName.value, 'day');
+    getCountDay2(plotName.value, 'day');
+    getSnapShotDeviceOptions(plotName.value);
+    getTopDataList(plotName.value);
+    getGetNameQuantityByDateAndPlotId(plotName.value, 'month');
+    getPreWarnList(plotName.value);
   }
-}
+};
 
-const topDataList = ref<any[]>([])
+const topDataList = ref<any[]>([]);
 const getTopDataList = async (landBlockId: string) => {
-  const res = await getNumberByLandBlockId({ landBlockId })
-  console.log(res, ' 顶部数据')
-  if (!Array.isArray(res)) return
-  const tempArr = []
+  const res = await getNumberByLandBlockId({ landBlockId });
+  console.log(res, ' 顶部数据');
+  if (!Array.isArray(res)) return;
+  const tempArr = [];
   res.forEach((item) => {
-    const { sum = 0, number = 0, category } = item
-    tempArr.push({ title: category + '总数', value: sum })
-    tempArr.push({ title: category + '种类', value: number })
-  })
+    const { sum = 0, number = 0, category } = item;
+    tempArr.push({ title: category + '总数', value: sum });
+    tempArr.push({ title: category + '种类', value: number });
+  });
   const warnData = await diseaseWarnCount({ landBlockId });
-  console.log("🚀 ~ getTopDataList ~ warnData:", warnData)
-  tempArr.push({ title: "病虫预警", value: isNumber(warnData) ? warnData : 0 })
-  topDataList.value = tempArr
-}
+  console.log('🚀 ~ getTopDataList ~ warnData:', warnData);
+  tempArr.push({ title: '病虫预警', value: isNumber(warnData) ? warnData : 0 });
+  topDataList.value = tempArr;
+};
 
 // 今日抓拍
-const snapShotDevice = ref<string>('')
-const snapShotTime = ref<string>('')
-const snapShotImg = ref<string>('')
-const snapPictureList = ref<any[]>([]) // 抓拍图片列表
-const snapPictureList2 = ref<any[]>([]) // 抓拍图片列表
-const snapShotDeviceOptions = ref<any[]>([])
+const snapShotDevice = ref<string>('');
+const snapShotTime = ref<string>('');
+const snapShotImg = ref<string>('');
+const snapPictureList = ref<any[]>([]); // 抓拍图片列表
+const snapPictureList2 = ref<any[]>([]); // 抓拍图片列表
+const snapShotDeviceOptions = ref<any[]>([]);
 const getSnapShotDeviceOptions = async (id) => {
-  let res: any = {}
+  let res: any = {};
   if (process.env.NODE_ENV == 'development') {
     //开发环境
-    res = await devicePageList({ pageNo: 1, pageSize: 30, deviceType: '133,138', belongPlot: id })
+    res = await devicePageList({ pageNo: 1, pageSize: 30, deviceType: '133,138', belongPlot: id });
   } else if (process.env.NODE_ENV == 'production') {
     //生产环境
-    res = await devicePageList({ pageNo: 1, pageSize: 30, deviceType: '133,138', belongPlot: id })
+    res = await devicePageList({ pageNo: 1, pageSize: 30, deviceType: '133,138', belongPlot: id });
   }
-  console.log(res, ' 今日抓拍 设备列表')
-  snapDevice.value = res.list[0]
+  console.log(res, ' 今日抓拍 设备列表');
+  snapDevice.value = res.list[0];
 
-  snapShotDeviceOptions.value = res.list
-  snapShotDevice.value = res.list[0].deviceName
-  getSnapPage(res.list[0]?.id)
+  snapShotDeviceOptions.value = res.list;
+  snapShotDevice.value = res.list[0].deviceName;
+  getSnapPage(res.list[0]?.id);
   //getSnapType(res.list[0].id)
-  let date = new Date()
-  let year = date.getFullYear()
-  let month = date.getMonth() + 1
-  let day = date.getDate()
-  snapShotTime.value = `${year}-${month}-${day}`
-}
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  snapShotTime.value = `${year}-${month}-${day}`;
+};
 //今日抓拍 设备列表点击
-const snapId = ref<any>()
+const snapId = ref<any>();
 const selectChange = (current) => {
   snapShotDeviceOptions.value.forEach((item) => {
     if (current == item.id) {
-      snapShotDevice.value = item.deviceName
-      snapId.value = item.id
-      getSnapPage(item.id)
+      snapShotDevice.value = item.deviceName;
+      snapId.value = item.id;
+      getSnapPage(item.id);
       //getSnapType(item.id)
     }
-  })
-}
-const monitorTime = ref([])
+  });
+};
+const monitorTime = ref([]);
 const snapShotChange = (date) => {
-  monitorTime.value = []
-  let data = new Date(date)
-  let year = data.getFullYear()
-  let month = data.getMonth() + 1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1)
-  let day = data.getDate() >= 10 ? data.getDate() : '0' + data.getDate()
-  let time = `${year}-${month}-${day} 00:00:00`
-  let time2 = `${year}-${month}-${day} 23:59:59`
-  monitorTime.value.push(time)
-  monitorTime.value.push(time2)
-  getSnapPage(snapId.value)
-}
+  monitorTime.value = [];
+  let data = new Date(date);
+  let year = data.getFullYear();
+  let month = data.getMonth() + 1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1);
+  let day = data.getDate() >= 10 ? data.getDate() : '0' + data.getDate();
+  let time = `${year}-${month}-${day} 00:00:00`;
+  let time2 = `${year}-${month}-${day} 23:59:59`;
+  monitorTime.value.push(time);
+  monitorTime.value.push(time2);
+  getSnapPage(snapId.value);
+};
 
 //获取设备信息 图片列表 以及图片总数
-const snapDevice = ref({})
-const snapImgTotal = ref<Number>(0)
+const snapDevice = ref({});
+const snapImgTotal = ref<Number>(0);
 const getSnapPage = async (id) => {
-  console.log(monitorTime.value, 'monitorTime.valuemonitorTime.value')
+  console.log(monitorTime.value, 'monitorTime.valuemonitorTime.value');
   let res = await snapPage({
     identifyStatus: '0',
     pageNo: 1,
     pageSize: 10,
     device: id,
     monitorTime: monitorTime.value
-  })
-  snapShotImg.value = res.list[0]?.monitorPicture
-  snapPictureList.value = res.list
-  snapPictureList2.value = res.list
-  snapImgTotal.value = res.total
-  snapDevice.value.monitorSpecies = res.list[0]?.monitorSpecies
+  });
+  snapShotImg.value = res.list[0]?.monitorPicture;
+  snapPictureList.value = res.list;
+  snapPictureList2.value = res.list;
+  snapImgTotal.value = res.total;
+  snapDevice.value.monitorSpecies = res.list[0]?.monitorSpecies;
   // console.log(res,'设备信息 v获取设备信息 图片 列表')
-  pestType.value = 0
-  pestTotalNum.value = 0
-  pestList.value = []
-  if (res.list.length > 0) getSnapType(res.list[0].id)
-}
+  pestType.value = 0;
+  pestTotalNum.value = 0;
+  pestList.value = [];
+  if (res.list.length > 0) getSnapType(res.list[0].id);
+};
 
 //今日抓拍 抓拍信息
-const pestType = ref<Number>(0) // 虫害种类
-const pestTotalNum = ref<Number>(0) //虫害总数量
-const pestList = ref<any[]>([]) // 抓拍列表
+const pestType = ref<Number>(0); // 虫害种类
+const pestTotalNum = ref<Number>(0); //虫害总数量
+const pestList = ref<any[]>([]); // 抓拍列表
 // const pestListType = ref<boolean>(false)
 const getSnapType = async (id) => {
   //  pestListType.value = false
-  let res = await snapType({ mainId: id })
-  console.log(res, '获取抓怕信息')
-  pestType.value = res.pest_type
-  pestTotalNum.value = res.pest_total_number
-  pestList.value = res.pest_list
+  let res = await snapType({ mainId: id });
+  console.log(res, '获取抓怕信息');
+  pestType.value = res.pest_type;
+  pestTotalNum.value = res.pest_total_number;
+  pestList.value = res.pest_list;
 
   //  pestListType.value = true
-}
+};
 
 //图片点击
 const snapPictureChange = (item, index) => {
-  snapDevice.value.monitorSpecies = item.monitorSpecies
+  snapDevice.value.monitorSpecies = item.monitorSpecies;
   if (snapPictureList.value.length > 4) {
-    left.value += (snapNum1.value - index) * 50
+    left.value += (snapNum1.value - index) * 50;
   }
-  getSnapType(item.id)
+  getSnapType(item.id);
 
-  snapShotImg.value = item.monitorPicture
+  snapShotImg.value = item.monitorPicture;
 
-  snapNum1.value = index
-  snapNum.value = index
-}
+  snapNum1.value = index;
+  snapNum.value = index;
+};
 
 // 预警信息列表
 const preWarnList = ref<any[]>([]),
-  preWarnLoading = ref<boolean>(false)
+  preWarnLoading = ref<boolean>(false);
 const getPreWarnList = async (id) => {
-  console.log(id, ' 预警信息 idid')
-  preWarnLoading.value = true
+  console.log(id, ' 预警信息 idid');
+  preWarnLoading.value = true;
   const { list } = await diseaseWarnInfo({ pageNo: 1, pageSize: 10, belongPlot: id }).catch(() => {
-    preWarnLoading.value = false
-  })
-  preWarnLoading.value = false
-  console.log(list, ' 预警信息列表')
+    preWarnLoading.value = false;
+  });
+  preWarnLoading.value = false;
+  console.log(list, ' 预警信息列表');
 
-  if (!Array.isArray(list)) return
-  preWarnList.value = list
-}
+  if (!Array.isArray(list)) return;
+  preWarnList.value = list;
+};
 
 // 病虫害排行日月年
-const diseaseList = ref<any[]>([]) // 病虫害 列表
-const bugTime = ref<string>('本月')
-const bugTimeRange = ref<any[]>([])
+const diseaseList = ref<any[]>([]); // 病虫害 列表
+const bugTime = ref<string>('本月');
+const bugTimeRange = ref<any[]>([]);
 const getGetNameQuantityByDateAndPlotId = async (id, dateType = 'month') => {
-  let res = await getNameQuantityByDateAndPlotId({ plotId: id, dateType })
-  diseaseList.value = []
-  insectList.value = []
+  let res = await getNameQuantityByDateAndPlotId({ plotId: id, dateType });
+  diseaseList.value = [];
+  insectList.value = [];
   res.forEach((item: any) => {
-    if (item.category == '病害') diseaseList.value.push(item)
-    else insectList.value.push(item)
-  })
-}
+    if (item.category == '病害') diseaseList.value.push(item);
+    else insectList.value.push(item);
+  });
+};
 // 获取 某一天 周一到周日的时间
 const getDaysOfWeek = (date) => {
-  const days = []
+  const days = [];
   for (let i = 1; i <= 7; i++) {
-    days.push(new Date(date))
+    days.push(new Date(date));
   }
   // Set to Monday
-  days[0].setDate(days[0].getDate() - days[0].getDay() + 1)
+  days[0].setDate(days[0].getDate() - days[0].getDay() + 1);
   // Set to Sunday
-  days[6].setDate(days[0].getDate() + 6)
-  return days
-}
+  days[6].setDate(days[0].getDate() + 6);
+  return days;
+};
 // 病害排行 日 周 月 查询
 const handleShortcutDaysChange = (e) => {
-  const year = new Date().getUTCFullYear()
-  const month = new Date().getMonth() + 1
-  const first = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).getDate()
-  const last = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
-  bugTimeRange.value = []
+  const year = new Date().getUTCFullYear();
+  const month = new Date().getMonth() + 1;
+  const first = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).getDate();
+  const last = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  bugTimeRange.value = [];
   if (e == '本周') {
-    let day = new Date()
+    let day = new Date();
     bugTimeRange.value.push(
-      `${new Date(getDaysOfWeek(day)[0]).getFullYear()}-${new Date(getDaysOfWeek(day)[0]).getMonth() + 1}-${new Date(getDaysOfWeek(day)[0]).getDate()}`
-    )
+      `${new Date(getDaysOfWeek(day)[0]).getFullYear()}-${new Date(getDaysOfWeek(day)[0]).getMonth() + 1}-${new Date(
+        getDaysOfWeek(day)[0]
+      ).getDate()}`
+    );
     bugTimeRange.value.push(
-      `${new Date(getDaysOfWeek(day)[6]).getFullYear()}-${new Date(getDaysOfWeek(day)[6]).getMonth() + 1}-${new Date(getDaysOfWeek(day)[6]).getDate()}`
-    )
-    getGetNameQuantityByDateAndPlotId(plotName.value, 'week')
+      `${new Date(getDaysOfWeek(day)[6]).getFullYear()}-${new Date(getDaysOfWeek(day)[6]).getMonth() + 1}-${new Date(
+        getDaysOfWeek(day)[6]
+      ).getDate()}`
+    );
+    getGetNameQuantityByDateAndPlotId(plotName.value, 'week');
   } else if (e == '本月') {
-    bugTimeRange.value.push(`${year}-${month}-${first}`)
-    bugTimeRange.value.push(`${year}-${month}-${last}`)
-    getGetNameQuantityByDateAndPlotId(plotName.value, 'month')
+    bugTimeRange.value.push(`${year}-${month}-${first}`);
+    bugTimeRange.value.push(`${year}-${month}-${last}`);
+    getGetNameQuantityByDateAndPlotId(plotName.value, 'month');
   } else if (e == '当日') {
-    let data = new Date().getDate()
-    bugTimeRange.value.push(`${year}-${month}-${data}`)
-    bugTimeRange.value.push(`${year}-${month}-${data}`)
-    getGetSortNumberByDay(plotName.value)
+    let data = new Date().getDate();
+    bugTimeRange.value.push(`${year}-${month}-${data}`);
+    bugTimeRange.value.push(`${year}-${month}-${data}`);
+    getGetSortNumberByDay(plotName.value);
   }
-}
-handleShortcutDaysChange('本月')
+};
+handleShortcutDaysChange('本月');
 // 病害排行日期自定义查询
 const datePickerChange = async (e) => {
-  let startTime = formatTime(bugTimeRange.value[0], 'yyyy-MM-dd HH:mm:ss')
-  let endTime = formatTime(bugTimeRange.value[1], 'yyyy-MM-dd HH:mm:ss')
-  let res = await getSortNumberByCustomize({ landBlockId: plotName.value, startTime, endTime })
-  diseaseList.value = []
-  insectList.value = []
+  let startTime = formatTime(bugTimeRange.value[0], 'yyyy-MM-dd HH:mm:ss');
+  let endTime = formatTime(bugTimeRange.value[1], 'yyyy-MM-dd HH:mm:ss');
+  let res = await getSortNumberByCustomize({ landBlockId: plotName.value, startTime, endTime });
+  diseaseList.value = [];
+  insectList.value = [];
   res['病害'].forEach((item: any) => {
     diseaseList.value.push({
       name: item.name,
       quantity: item.number
-    })
-  })
+    });
+  });
   res['虫害'].forEach((item: any) => {
     insectList.value.push({
       name: item.name,
       quantity: item.number
-    })
-  })
-}
+    });
+  });
+};
 
 // 病害趋势分析
-const sickTraceRadio = ref<string>('按天')
-const sickTraceTimeRange = ref<any[]>([])
-const diseaseChart = ref<Object>({}) // 病害趋势 echarts 数据
+const sickTraceRadio = ref<string>('按天');
+const sickTraceTimeRange = ref<any[]>([]);
+const diseaseChart = ref<Object>({}); // 病害趋势 echarts 数据
 const diseaseInitChart = async () => {
   if (sickTraceRadio.value != '按月') {
     diseaseChart.value.count.forEach((item) => {
-      let data = item.date.split('-')
-      item.date = `${data[1]}-${data[2]}`
-    })
+      let data = item.date.split('-');
+      item.date = `${data[1]}-${data[2]}`;
+    });
   }
   initChartStatic(
     'diseaseDomLeft',
@@ -357,17 +361,17 @@ const diseaseInitChart = async () => {
         right: '8%'
       }
     })
-  )
-}
+  );
+};
 const diseaseInitChart2 = async () => {
-  const countByType = Object.keys(diseaseChart.value.countByType)
+  const countByType = Object.keys(diseaseChart.value.countByType);
   if (sickTraceRadio.value != '按月') {
     diseaseChart.value.countByType[countByType[0]].forEach((item) => {
-      let data = item.date.split('-')
-      item.date = `${data[1]}-${data[2]}`
-    })
+      let data = item.date.split('-');
+      item.date = `${data[1]}-${data[2]}`;
+    });
   }
-  let series = []
+  let series = [];
   countByType.forEach((item) => {
     series.push({
       name: item,
@@ -376,8 +380,8 @@ const diseaseInitChart2 = async () => {
       barWidth: '20',
       smooth: true,
       symbol: 'none'
-    })
-  })
+    });
+  });
   initChartStatic(
     'diseaseDomRight',
     generateBaseOptions({
@@ -434,15 +438,15 @@ const diseaseInitChart2 = async () => {
         right: '8%'
       }
     })
-  )
-}
+  );
+};
 const insectInitChart = () => {
-  const countByType = Object.keys(insectChart.value.countByType)
+  const countByType = Object.keys(insectChart.value.countByType);
   if (bugTraceRadio.value != '按月') {
     insectChart.value.countByType[countByType[0]].forEach((item) => {
-      let data = item.date.split('-')
-      item.date = `${data[1]}-${data[2]}`
-    })
+      let data = item.date.split('-');
+      item.date = `${data[1]}-${data[2]}`;
+    });
   }
   initChartStatic(
     'insectNumChart',
@@ -507,17 +511,17 @@ const insectInitChart = () => {
         right: '8%'
       }
     })
-  )
-}
+  );
+};
 const insectInitChart2 = () => {
-  const countByType = Object.keys(insectChart.value.countByType)
+  const countByType = Object.keys(insectChart.value.countByType);
   if (bugTraceRadio.value != '按月') {
     insectChart.value.countByType[countByType[0]].forEach((item) => {
       // let data = item.date.split('-')
       // item.date = `${data[1]}-${data[2]}`
-    })
+    });
   }
-  let series = []
+  let series = [];
   countByType.forEach((item) => {
     series.push({
       name: item,
@@ -526,8 +530,8 @@ const insectInitChart2 = () => {
       barWidth: '20',
       smooth: true,
       symbol: 'none'
-    })
-  })
+    });
+  });
   initChartStatic(
     'insectTypeChart',
     generateBaseOptions({
@@ -584,77 +588,77 @@ const insectInitChart2 = () => {
         right: '8%'
       }
     })
-  )
-}
+  );
+};
 // 虫害趋势分析
-const bugTraceRadio = ref<string>('按天')
-const bugTraceTimeRange = ref<any[]>([])
-const insectChart = ref<Object>({}) // 虫害趋势 echarts 数据
-const insectList = ref<any[]>([]) // 虫害列表 数据
+const bugTraceRadio = ref<string>('按天');
+const bugTraceTimeRange = ref<any[]>([]);
+const insectChart = ref<Object>({}); // 虫害趋势 echarts 数据
+const insectList = ref<any[]>([]); // 虫害列表 数据
 //病虫害排行 按照日期查询
 const getGetSortNumberByDay = async (id) => {
-  let res = await getSortNumberByDay({ landBlockId: id })
-  diseaseList.value = []
-  insectList.value = []
+  let res = await getSortNumberByDay({ landBlockId: id });
+  diseaseList.value = [];
+  insectList.value = [];
   res['病害'].forEach((item: any) => {
     diseaseList.value.push({
       name: item.name,
       quantity: item.number
-    })
-  })
+    });
+  });
   res['虫害'].forEach((item: any) => {
     insectList.value.push({
       name: item.name,
       quantity: item.number
-    })
-  })
-}
+    });
+  });
+};
 
 //获取前六天时间
-const timeList = ref<any[]>([])
+const timeList = ref<any[]>([]);
 const getTime = () => {
-  let date = new Date()
-  let frontDate = new Date()
-  let year = date.getFullYear()
-  frontDate.setDate(frontDate.getDate() - 5) //前7天减7，前N天减N
-  let dateArr1 = [frontDate.getMonth() + 1, frontDate.getDate()]
-  let dateArr2 = [date.getMonth() + 1, date.getDate()]
+  let date = new Date();
+  let frontDate = new Date();
+  let year = date.getFullYear();
+  frontDate.setDate(frontDate.getDate() - 5); //前7天减7，前N天减N
+  let dateArr1 = [frontDate.getMonth() + 1, frontDate.getDate()];
+  let dateArr2 = [date.getMonth() + 1, date.getDate()];
   //开始格式是M,经过以下循环变为MM
   for (let i = 0; i < dateArr1.length; i++) {
     if (dateArr1[i] >= 1 && dateArr1[i] <= 9) {
-      dateArr1[i] = '0' + dateArr1[i]
+      dateArr1[i] = '0' + dateArr1[i];
     }
   }
   for (let i = 0; i < dateArr2.length; i++) {
     if (dateArr2[i] >= 1 && dateArr2[i] <= 9) {
-      dateArr2[i] = '0' + dateArr2[i]
+      dateArr2[i] = '0' + dateArr2[i];
     }
   }
-  let strDate1 = year + '-' + dateArr1[0] + '-' + dateArr1[1] + ' '
-  let strDate2 = year + '-' + dateArr2[0] + '-' + dateArr2[1] + ' '
-  timeList.value = [strDate1, strDate2]
-}
-getTime()
+  let strDate1 = year + '-' + dateArr1[0] + '-' + dateArr1[1] + ' ';
+  let strDate2 = year + '-' + dateArr2[0] + '-' + dateArr2[1] + ' ';
+  timeList.value = [strDate1, strDate2];
+};
+getTime();
 // 获取 病虫害趋势分析 默认  按天 以及自定义时间 查询
 const getCountDay = async (id, type) => {
-  sickTraceTimeRange.value = []
-  sickTraceTimeRange.value.push(timeList.value[0])
-  sickTraceTimeRange.value.push(timeList.value[1])
+  sickTraceTimeRange.value = [];
+  sickTraceTimeRange.value.push(timeList.value[0]);
+  sickTraceTimeRange.value.push(timeList.value[1]);
   let res = await countDay({
     belongPark: id,
     category: '病害',
     startTime: timeList.value[0],
     endTime: timeList.value[1],
     type
-  }) //day
+  }); //day
 
-  console.log(res, '病虫害趋势分析')
-  diseaseChart.value = res
+  console.log(res, '病虫害趋势分析');
+  diseaseChart.value = res;
   // insectChar.value = res2
 
-  diseaseInitChart()
-  diseaseInitChart2()
-}
+  diseaseInitChart();
+  diseaseInitChart2();
+};
 const getCountDay2 = async (id, type) => {
   let res = await countDay({
     belongPark: id,
@@ -662,136 +666,136 @@ const getCountDay2 = async (id, type) => {
     startTime: timeList.value[0],
     endTime: timeList.value[1],
     type
-  })
+  });
 
-  insectChart.value = res
+  insectChart.value = res;
 
-  insectInitChart()
-  insectInitChart2()
-}
+  insectInitChart();
+  insectInitChart2();
+};
 // 按月获取半年内的时间
 const getMonth = (date) => {
-  let year = new Date().getFullYear()
-  let month = new Date().getMonth() + 1
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth() + 1;
   // let month = 4
-  let day = month - 6
-  let data = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
-  console.log(day > 0 ? month - 5 : 12 + (month - 5), ' 按月获取使劲按 ')
-  date.push(`${day > 0 ? year : year - 1}-${day > 0 ? month - 5 : 12 + (month - 5)}-01`)
-  date.push(`${year}-${month}-${data}`)
-}
+  let day = month - 6;
+  let data = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  console.log(day > 0 ? month - 5 : 12 + (month - 5), ' 按月获取使劲按 ');
+  date.push(`${day > 0 ? year : year - 1}-${day > 0 ? month - 5 : 12 + (month - 5)}-01`);
+  date.push(`${year}-${month}-${data}`);
+};
 //病害 虫害 按天 按月  获取数据
 const sickTraceChange = (e) => {
   if (e == '按天') {
-    getCountDay(plotName.value, 'day')
-    sickTraceTimeRange.value = []
-    sickTraceTimeRange.value.push(timeList.value[0])
-    sickTraceTimeRange.value.push(timeList.value[1])
+    getCountDay(plotName.value, 'day');
+    sickTraceTimeRange.value = [];
+    sickTraceTimeRange.value.push(timeList.value[0]);
+    sickTraceTimeRange.value.push(timeList.value[1]);
   } else {
-    sickTraceTimeRange.value = []
-    getMonth(sickTraceTimeRange.value)
-    getCountMonthdisease(plotName.value)
+    sickTraceTimeRange.value = [];
+    getMonth(sickTraceTimeRange.value);
+    getCountMonthdisease(plotName.value);
   }
-}
-sickTraceChange('按天')
+};
+sickTraceChange('按天');
 const bugTraceChange = (e) => {
   if (e == '按天') {
-    bugTraceTimeRange.value = []
-    bugTraceTimeRange.value.push(timeList.value[0])
-    bugTraceTimeRange.value.push(timeList.value[1])
-    getCountDay2(plotName.value, 'day')
+    bugTraceTimeRange.value = [];
+    bugTraceTimeRange.value.push(timeList.value[0]);
+    bugTraceTimeRange.value.push(timeList.value[1]);
+    getCountDay2(plotName.value, 'day');
   } else {
-    bugTraceTimeRange.value = []
-    getMonth(bugTraceTimeRange.value)
-    getCountDayInsect(plotName.value)
+    bugTraceTimeRange.value = [];
+    getMonth(bugTraceTimeRange.value);
+    getCountDayInsect(plotName.value);
   }
-}
-bugTraceChange('按天')
+};
+bugTraceChange('按天');
 //病害 虫害 按天 按月  获取数据
 const sickTraceTimeChange = async (e) => {
-  sickTraceTimeRange.value
+  sickTraceTimeRange.value;
   // sickTraceRadio.value = ''
-}
+};
 //病害搜索
 const sickTraceSearch = async () => {
-  let startTime = formatTime(sickTraceTimeRange.value[0], 'yyyy-MM-dd')
-  let endTime = formatTime(sickTraceTimeRange.value[1], 'yyyy-MM-dd')
+  let startTime = formatTime(sickTraceTimeRange.value[0], 'yyyy-MM-dd');
+  let endTime = formatTime(sickTraceTimeRange.value[1], 'yyyy-MM-dd');
   let res = await countDay({
     belongPark: plotName.value,
     category: '病害',
     startTime,
     endTime,
     type: sickTraceRadio.value == '按月' ? 'month' : 'day'
-  })
-  console.log(res, ' zidingyihsijain cahxun ')
-  diseaseChart.value = res
-  diseaseInitChart()
-  diseaseInitChart2()
-}
+  });
+  console.log(res, ' zidingyihsijain cahxun ');
+  diseaseChart.value = res;
+  diseaseInitChart();
+  diseaseInitChart2();
+};
 const bugTraceTimeChange = async (e) => {
   // bugTraceRadio.value = ''
-}
+};
 //虫害搜素
 const bugTraceSeacrh = async () => {
-  let startTime = formatTime(bugTraceTimeRange.value[0], 'yyyy-MM-dd')
-  let endTime = formatTime(bugTraceTimeRange.value[1], 'yyyy-MM-dd')
+  let startTime = formatTime(bugTraceTimeRange.value[0], 'yyyy-MM-dd');
+  let endTime = formatTime(bugTraceTimeRange.value[1], 'yyyy-MM-dd');
   let res = await countDay({
     belongPark: plotName.value,
     category: '虫害',
     startTime,
     endTime,
     type: bugTraceRadio.value == '按月' ? 'month' : 'day'
-  })
-  insectChart.value = res
-  insectInitChart()
-  insectInitChart2()
-}
+  });
+  insectChart.value = res;
+  insectInitChart();
+  insectInitChart2();
+};
 //获取 病虫害趋势 按照月查询
 const getCountMonthdisease = async (id) => {
-  let res = await countMonth({ belongPark: id, category: '病害' })
-  diseaseChart.value = res
-  diseaseInitChart()
-  diseaseInitChart2()
-}
+  let res = await countMonth({ belongPark: id, category: '病害' });
+  diseaseChart.value = res;
+  diseaseInitChart();
+  diseaseInitChart2();
+};
 const getCountDayInsect = async (id) => {
-  let res = await countMonth({ belongPark: id, category: '虫害' })
-  insectChart.value = res
-  insectInitChart()
-  insectInitChart2()
-}
+  let res = await countMonth({ belongPark: id, category: '虫害' });
+  insectChart.value = res;
+  insectInitChart();
+  insectInitChart2();
+};
 
 //处理今日抓拍图片移动
-const snapDom = ref(null)
-const snapNum = ref(0)
-const snapNum1 = ref(0)
-const left = ref<number>(0)
-const snapDomWidth = ref<number>()
+const snapDom = ref(null);
+const snapNum = ref(0);
+const snapNum1 = ref(0);
+const left = ref<number>(0);
+const snapDomWidth = ref<number>();
 onMounted(() => {
-  console.log(window.innerWidth, 'width9999')
-  snapDomWidth.value = snapDom.value.offsetWidth
-  windWidth.value = window.innerWidth
-})
+  console.log(window.innerWidth, 'width9999');
+  snapDomWidth.value = snapDom.value.offsetWidth;
+  windWidth.value = window.innerWidth;
+});
 const tabLeft = (str) => {
   if (str == 'right') {
     if (snapNum.value >= snapPictureList.value.length - 1) {
-      left.value = 0
-      snapNum.value = 0
-      snapNum1.value = 0
-      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-      snapDevice.value.monitorSpecies = snapPictureList.value[snapNum.value].monitorSpecies
-      getSnapType(snapPictureList.value[snapNum.value].id)
+      left.value = 0;
+      snapNum.value = 0;
+      snapNum1.value = 0;
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture;
+      snapDevice.value.monitorSpecies = snapPictureList.value[snapNum.value].monitorSpecies;
+      getSnapType(snapPictureList.value[snapNum.value].id);
     } else {
       if (snapPictureList.value.length > 4 && snapNum.value >= 4) {
-        left.value += (snapNum1.value - (snapNum.value + 1)) * 50
+        left.value += (snapNum1.value - (snapNum.value + 1)) * 50;
       }
-      snapNum1.value = snapNum.value
-      snapNum.value++
-      console.log(snapNum.value, 'snapNum 999')
+      snapNum1.value = snapNum.value;
+      snapNum.value++;
+      console.log(snapNum.value, 'snapNum 999');
 
-      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-      snapDevice.value.monitorSpecies = snapPictureList.value[snapNum.value].monitorSpecies
+      snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture;
+      snapDevice.value.monitorSpecies = snapPictureList.value[snapNum.value].monitorSpecies;
 
-      getSnapType(snapPictureList.value[snapNum.value].id)
+      getSnapType(snapPictureList.value[snapNum.value].id);
     }
   }
 
@@ -826,43 +830,45 @@ const tabLeft = (str) => {
   //     getSnapType(snapPictureList.value[snapNum.value].id)
   //   }
   // }
-}
+};
 
-const amplify = ref(false)
-const amplify2 = ref(false)
+const amplify = ref(false);
+const amplify2 = ref(false);
 const amplifyAdd = (val) => {
   if (amplify2.value) {
-    amplify.value = false
-    amplify2.value = false
+    amplify.value = false;
+    amplify2.value = false;
   } else {
-    amplify.value = true
+    amplify.value = true;
   }
-}
+};
 const closePreview = () => {
-  amplify2.value = true
-  amplify.value = false
-}
+  amplify2.value = true;
+  amplify.value = false;
+};
 window.addEventListener('keyup', (e) => {
   if (e.keyCode) {
-    amplify.value = false
-    amplify2.value = false
+    amplify.value = false;
+    amplify2.value = false;
   }
-})
-const windWidth = ref()
+});
+const windWidth = ref();
 const handleWindowResize = debounce(() => {
-  console.log(window.innerWidth, 'window.innerWidth')
-  windWidth.value = window.innerWidth
+  console.log(window.innerWidth, 'window.innerWidth');
+  windWidth.value = window.innerWidth;
   // diseaseInitChart()
   // diseaseInitChart2()
   // insectInitChart()
   // insectInitChart2()
-  getCategoryList()
-}, 1000)
-window.addEventListener('resize', () => { handleWindowResize() })
+  getCategoryList();
+}, 1000);
+window.addEventListener('resize', () => {
+  handleWindowResize();
+});
 </script>
 <template>
   <div class="flex space-x-[.5rem] domDiv">
-    <el-card class="w-12rem 2xl:h-73.5rem xl:h-79rem ">
+    <el-card class="w-12rem 2xl:h-77.5rem xl:h-82.5rem">
       <el-tree
         ref="treeRef"
         style="max-width: 600px"
@@ -877,7 +883,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
         @current-change="handleCurrentCategoryChange"
       />
     </el-card>
-    <div style="width: calc(100% - 12.5rem);" >
+    <div style="width: calc(100% - 12.5rem)">
       <el-card class="mb-.5rem mr-.5rem">
         <div class="grid grid-cols-5 w-full gap-3">
           <div
@@ -888,7 +894,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
               box-border rounded-2  homt-top-bg${index + 1}
             `"
           >
-            <div :class="`disease-top-${index + 1}`"> </div>
+            <div :class="`disease-top-${index + 1}`"></div>
             <div>
               <div class="top-dom-title">{{ item.title }}</div>
               <div class="art-font topListText text-[1.4rem]">{{ item.value }}</div>
@@ -896,7 +902,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
           </div>
         </div>
       </el-card>
-      <div class="flex justify-between box-border  pr-[.5rem]">
+      <div class="flex justify-between box-border pr-[.5rem]">
         <div
           class="grow space-y-[1rem] flex flex-col box-border"
           style="max-width: calc(100% - 24.5rem)"
@@ -931,9 +937,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     :class="`max-w-70rem insect-disease1 grid grid-cols-1 xl:grid-cols-2 gap-2 box-border grow py-3`"
                   >
                     <div>
-                      <div
-                        class="h-2rem flex items-center px-1"
-                      >
+                      <div class="h-2rem flex items-center px-1">
                         <div class="h-1rem w-5px mr-2 bg-#009688 relative top-[1px]"></div>
                         <div>虫害排行</div>
                       </div>
@@ -944,13 +948,11 @@ window.addEventListener('resize', () => { handleWindowResize() })
                           :key="item.id"
                         >
                           <div
-                            class="
-                              w-1.6rem h-1.6rem rounded-full
-                              flex justify-center items-center
-                              text-[#fff] text-[.8rem]
-                            "
+                            class="w-1.6rem h-1.6rem rounded-full flex justify-center items-center text-[#fff] text-[.8rem]"
                             :style="`background-color: ${index < 3 ? '#009688' : '#cccccc'}`"
-                          >{{ index + 1 }}</div>
+                          >
+                            {{ index + 1 }}
+                          </div>
                           <div class="grow space-y-2 box-border pr-2">
                             <div class="flex justify-between items-center">
                               <div class="text-[.8rem]">{{ item.name }}</div>
@@ -967,8 +969,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
                         <div
                           class="h-12rem w-full flex items-center justify-center"
                           v-if="insectList.length === 0"
-                          >暂无数据</div
                         >
+                          暂无数据
+                        </div>
                       </el-scrollbar>
                     </div>
                     <div>
@@ -983,13 +986,11 @@ window.addEventListener('resize', () => { handleWindowResize() })
                           class="flex items-center space-x-3 mb-1 p-2"
                         >
                           <div
-                            class="
-                              w-1.6rem h-1.6rem rounded-full
-                              flex justify-center items-center
-                              text-[#fff] text-[.8rem]
-                            "
+                            class="w-1.6rem h-1.6rem rounded-full flex justify-center items-center text-[#fff] text-[.8rem]"
                             :style="`background-color: ${index < 3 ? '#009688' : '#cccccc'}`"
-                          >{{ index + 1 }}</div>
+                          >
+                            {{ index + 1 }}
+                          </div>
                           <div class="grow space-y-2 box-border pr-2">
                             <div class="flex justify-between items-center">
                               <div class="text-[.8rem]">{{ item.name }}</div>
@@ -1006,19 +1007,22 @@ window.addEventListener('resize', () => { handleWindowResize() })
                         <div
                           class="h-12rem w-full flex items-center justify-center"
                           v-if="diseaseList.length === 0"
-                          >暂无数据</div
                         >
+                          暂无数据
+                        </div>
                       </el-scrollbar>
                     </div>
                   </div>
                 </div>
               </el-card>
               <el-card>
-                <div class="flex justify-between items-center flex-wrap space-y-2">
+                <div
+                  class="2xl:flex 2xl:justify-between 2xl:items-center 2xl:flex-wrap xl:flex xl:justify-between xl:items-center xl:flex-wrap lg:grid lg:grid-cols-1 gap-4 space-y-2 py-10px"
+                >
                   <div class="title-frame">病害趋势分析</div>
                   <div>
                     <el-date-picker
-                      :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
+                      :style="`width:${windWidth < 1200 ? 'auto' : 'auto'} `"
                       v-model="sickTraceTimeRange"
                       type="daterange"
                       range-separator="至"
@@ -1055,11 +1059,13 @@ window.addEventListener('resize', () => { handleWindowResize() })
                 </div>
               </el-card>
               <el-card>
-                <div class="flex justify-between items-center flex-wrap space-y-2">
+                <div
+                  class="2xl:flex 2xl:justify-between 2xl:items-center 2xl:flex-wrap xl:flex xl:justify-between xl:items-center xl:flex-wrap lg:grid lg:grid-cols-1 gap-4 space-y-2 py-10px"
+                >
                   <div class="title-frame">虫害趋势分析</div>
                   <div>
                     <el-date-picker
-                      :style="`width:${windWidth < 1200 ? '100px' : 'auto'} `"
+                      :style="`width:${windWidth < 1200 ? 'auto' : 'auto'} `"
                       v-model="bugTraceTimeRange"
                       type="daterange"
                       @change="bugTraceTimeChange"
@@ -1099,9 +1105,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
           </div>
         </div>
         <!-- 右侧 -->
-        <div class="w-24rem ">
+        <div class="w-24rem">
           <div class="flex flex-col space-y-[1rem]">
-            <el-card class=" 2xl:h-705px xl:h-760px sm:h-1250px">
+            <el-card class="2xl:h-725px xl:h-800px md:h-1330px sm:h-1410px">
               <div height="calc(100vh - 440px)">
                 <div class="title-frame">今日抓拍</div>
                 <div class="flex justify-between space-x-2 py-2">
@@ -1139,9 +1145,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
                         fit="cover"
                       />
                     </div>
-                    <div class="color-#fff flex"
-                      >{{ snapNum + 1 <= 9 ? '0' + (snapNum + 1) : snapNum + 1
-                      }}<div class="color-[#eee]"> / {{ snapImgTotal }}</div>
+                    <div class="color-#fff flex">
+                      {{ snapNum + 1 <= 9 ? '0' + (snapNum + 1) : snapNum + 1 }}
+                      <div class="color-[#eee]">/ {{ snapImgTotal }}</div>
                     </div>
                   </div>
                 </div>
@@ -1168,7 +1174,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     style="opacity: 0.6; background-color: #000"
                     class="z-22 cursor-pointer absolute right-3 top-5 w-35px h-35px rounded-50% color-[#fff] flex justify-center items-center text-20px"
                   >
-                    <div class="-mt-[5px]"> > </div>
+                    <div class="-mt-[5px]">></div>
                   </div>
                 </div>
                 <div class="title-frame my-10px">设备信息</div>
@@ -1181,8 +1187,9 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     <div
                       class="text-center color-[#3a3a3a] text-15px mb-7px"
                       style="font-weight: 600"
-                      >{{ snapDevice?.monitorSpecies }}</div
                     >
+                      {{ snapDevice?.monitorSpecies }}
+                    </div>
                   </div>
                   <div>
                     <div class="color-[#9ea2a2] text-15px mb-5px">设备状态</div>
@@ -1191,33 +1198,49 @@ window.addEventListener('resize', () => { handleWindowResize() })
                       style="font-weight: 600"
                     >
                       <div
-                        :class="`${snapDevice.deviceStatus == 0 ? 'online-1' : snapDevice.deviceStatus == 1 ? 'online-3' : snapDevice.deviceStatus == 'online' ? 'online-1' : snapDevice.deviceStatus == 'offline' ? 'online-3' : 'online-2'} w-15px h-15px mr-7px`"
+                        :class="`${
+                          snapDevice.deviceStatus == 0
+                            ? 'online-1'
+                            : snapDevice.deviceStatus == 1
+                              ? 'online-3'
+                              : snapDevice.deviceStatus == 'online'
+                                ? 'online-1'
+                                : snapDevice.deviceStatus == 'offline'
+                                  ? 'online-3'
+                                  : 'online-2'
+                        } w-15px h-15px mr-7px`"
                       ></div>
-                      <div>{{
-                        snapDevice.deviceStatus == 0
-                          ? '在线'
-                          : snapDevice.deviceStatus == 1
-                            ? '离线'
-                            : snapDevice.deviceStatus == 'online'
-                              ? '在线'
-                              : snapDevice.deviceStatus == 'offline'
-                                ? '离线'
-                                : '故障'
-                      }}</div></div
-                    >
+                      <div>
+                        {{
+                          snapDevice.deviceStatus == 0
+                            ? '在线'
+                            : snapDevice.deviceStatus == 1
+                              ? '离线'
+                              : snapDevice.deviceStatus == 'online'
+                                ? '在线'
+                                : snapDevice.deviceStatus == 'offline'
+                                  ? '离线'
+                                  : '故障'
+                        }}
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <div class="color-[#9ea2a2] text-15px mb-5px">抓拍图片</div>
-                    <div class="text-center color-[#3a3a3a] text-17px mb-7px" style="font-weight: 550"
-                      >{{ snapImgTotal }}张</div
+                    <div
+                      class="text-center color-[#3a3a3a] text-17px mb-7px"
+                      style="font-weight: 550"
                     >
+                      {{ snapImgTotal }}张
+                    </div>
                   </div>
                 </div>
                 <div
                   class="h-3rem w-full my-2 flex items-center bg-#00968810 justify-center"
                   v-if="!snapDevice"
-                  >暂无数据</div
                 >
+                  暂无数据
+                </div>
                 <div class="title-frame my-10px">抓拍信息</div>
                 <div class="flex mt-20px justify-center space-x-1rem items-center h-3rem">
                   <div class="flex space-x-3 items-center bg-[#f1f8fb] px-1.3rem py-2 rounded-2">
@@ -1235,27 +1258,28 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     </div>
                   </div>
                 </div>
-                <el-scrollbar :height="`${windWidth < 1200 ? '250px':'100px' } `"
+                <el-scrollbar
+                  :height="`${windWidth < 1200 ? '250px' : '100px'} `"
                   class="mt-15px px-15px 2xl:py-10px xl:py-15px sm:15px box-border"
                   style="border: 1px solid #ededed"
                 >
                   <div
                     v-for="(item, index) in pestList"
                     :key="index"
-                    class="xl:h-30px 2xl:h-30px  xl:leading-30px 2xl:leading-30px sm:h-80px sm:leading-80px  w-100% flex w-100% justify-between"
+                    class="xl:h-30px 2xl:h-30px xl:leading-30px 2xl:leading-30px sm:h-80px sm:leading-80px w-100% flex w-100% justify-between"
                     style="border-bottom: 1px dashed #ededed"
                   >
-                    <div style="font-weight: 600" class="color-[#7b7b7b] text-[13px]">{{
-                      item.name
-                    }}</div>
+                    <div style="font-weight: 600" class="color-[#7b7b7b] text-[13px]">
+                      {{ item.name }}
+                    </div>
                     <div style="font-weight: 600">{{ item.quantity }}</div>
                   </div>
                 </el-scrollbar>
               </div>
             </el-card>
-            <el-card class="xl:h-350px sm:h-590px 2xl:h-330px">
+            <el-card class="xl:h-390px md:h-640px sm:h-650px 2xl:h-380px">
               <div class="title-frame mb-2">预警信息</div>
-              <el-scrollbar  :height="`${windWidth < 1200 ? '520px':'250px' } `" >
+              <el-scrollbar :height="`${windWidth < 1200 ? '520px' : '250px'} `">
                 <div class="p-3 box-border" v-loading="preWarnLoading">
                   <div
                     class="py-1rem"
@@ -1266,22 +1290,24 @@ window.addEventListener('resize', () => { handleWindowResize() })
                     <div
                       class="line-clamp-1 mb-2 cursor-pointer font-bold text-[.9rem]"
                       :title="item.lowMsg"
-                      >{{ item.lowMsg }}</div
                     >
+                      {{ item.lowMsg }}
+                    </div>
                     <div class="flex space-x-3 items-center text-[.7rem]">
-                      <div class="rounded-1 bg-#fdefef px-2 py-1"
-                        >{{ item.reservedFour }} {{ item.warnType }}</div
-                      >
-                      <div class="text-[.8rem]">{{
-                        formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss')
-                      }}</div>
+                      <div class="rounded-1 bg-#fdefef px-2 py-1">
+                        {{ item.reservedFour }} {{ item.warnType }}
+                      </div>
+                      <div class="text-[.8rem]">
+                        {{ formatTime(item.createTime, 'yyyy-MM-dd HH:mm:ss') }}
+                      </div>
                     </div>
                   </div>
                   <div
                     class="h-10rem w-full flex items-center justify-center"
                     v-if="preWarnList.length === 0"
-                    >暂无数据</div
                   >
+                    暂无数据
+                  </div>
                 </div>
               </el-scrollbar>
             </el-card>
@@ -1373,7 +1399,7 @@ window.addEventListener('resize', () => { handleWindowResize() })
 }
 
 .homt-top-bg5 {
-  background-color: #FEEEEE;
+  background-color: #feeeee;
 }
 .snapNum {
   width: 60px;

@@ -9,7 +9,12 @@
       label-width="88px"
     >
       <el-form-item label="地块名称" prop="plotName">
-        <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-240px" :disabled="true">
+        <el-input
+          v-model="queryParams.plotName"
+          placeholder="请选择"
+          class="!w-240px"
+          :disabled="true"
+        >
           <template #append>
             <el-button @click="openPlotPopup(queryParams.belongPark)">
               <Icon icon="ep:search" />
@@ -108,8 +113,8 @@
       </div>
       <div class="grow">
         <IntroduceAlert
-        class="flex 2xl:h-100%   xl:h-100% 2xl:mt-1"
-        title="该模块是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"
+          class="flex 2xl:h-100% xl:h-100% 2xl:mt-1"
+          title="该模块是对不同基地地块下的作物种植信息进行管理，记录作物种植数量以及预估产量，同时生成批次号，对作物进行溯源管理。"
         />
       </div>
       <div class="flex items-center cursor-pointer ml-[1.5rem]">
@@ -278,17 +283,14 @@
       </el-table>
     </div>
     <!-- 卡片 -->
-    <div
-      class="w-full pt-2 grid 2xl:grid-cols-3 md:lg:xl:grid-cols-2 sm:grid-cols-1 gap-3 "
-      v-show="showType === 'card'"
-    >
+    <div class="w-full pt-2 grid 2xl:grid-cols-3 grid-cols-2 gap-3" v-show="showType === 'card'">
       <div
         v-for="(item, index) in cardDataList"
         :key="index"
         class="p-3 rounded-2 px-4 border-[#E5E5E5] border-1 border-solid flex relative"
       >
         <div class="flex w-1/3">
-          <img :src="item.imgId" class="h-100% w-100% object-contain rounded-md " />
+          <img :src="item.imgId" class="h-100% w-100% object-cover rounded-md" />
         </div>
         <div class="flex flex-col space-y-1.5 w-2/3">
           <div class="flex mt-1rem">
@@ -301,14 +303,14 @@
           </div>
           <div class="flex text-#666666 flex-col space-y-1 !mt-2rem">
             <div class="flex ml-1rem">所属地块：{{ item.plotName }}</div>
-            <div class="flex ml-1rem"
-              >起止时间：{{
+            <div class="flex ml-1rem">
+              起止时间：{{
                 `${formatTime(item.receiptStartTime, 'yyyy.MM.dd')}-${formatTime(
                   item.receiptEndTime,
                   'yyyy.MM.dd'
                 )}`
-              }}</div
-            >
+              }}
+            </div>
           </div>
           <div class="flex space-x-2 ml-1rem !mt-1rem">
             <el-button
@@ -319,7 +321,7 @@
             >
               详情
             </el-button>
-            <el-button type="success" @click="damn(item)" v-if="show !== 118"> 溯源 </el-button>
+            <el-button type="success" @click="damn(item)" v-if="show !== 118">溯源</el-button>
             <el-button
               type="warning"
               @click="openFormA('create', item)"
@@ -357,16 +359,16 @@
               <span
                 class="flex w-[0.9rem] h-[0.9rem] mt-[1.2rem] ml-[-1rem] rounded-full bg-[#089df7] absolute left-10px top--7px timeline-dot"
               ></span>
-              <div class="flex mb-[0.5rem] mt-[0.5rem] absolute left-40px"
-                >{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}
+              <div class="flex mb-[0.5rem] mt-[0.5rem] absolute left-40px">
+                {{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}
               </div>
             </div>
 
             <div>
               <el-card class="w-[20rem] ml-[2rem] mt-[2rem]">
                 <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
-                <p
-                  >品类：
+                <p>
+                  品类：
                   <el-tag>{{ item.cropType }}</el-tag>
                   <!--            <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>-->
                 </p>
@@ -378,9 +380,9 @@
         </div>
         <div v-else class="w-full h-[20rem] flex flex-col justify-center space-y-2 items-center">
           <img src="/images/noData.png" class="aspect-1 w-8rem" />
-          <div class="py-3 text-[.9rem] text-[#999]"
-            >暂无溯源记录，去“智慧农事”-“农事活动”-“农事记录”中添加</div
-          >
+          <div class="py-3 text-[.9rem] text-[#999]">
+            暂无溯源记录，去“智慧农事”-“农事活动”-“农事记录”中添加
+          </div>
           <div
             class="flex space-x-1 items-center justify-center bg-[#009688] text-white p-1 px-3 rounded-2 cursor-pointer text-.8rem"
             @click="router.push('/farm_work/farmManage/farm-record')"
@@ -406,40 +408,40 @@
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import { FarmDefineApi } from '@/api/agriculture/farmdefine'
-import download from '@/utils/download'
-import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase'
-import CropBaseForm from './CropBaseForm.vue'
-import HarvestManagementAdd from '@/views/agriculture/harvestmanagement/HarvestManagementAdd.vue'
-import { DrawerProps } from 'element-plus'
-import { FarmRecordApi, FarmRecordVO } from '@/api/agriculture/farmrecord'
-import { formatTime } from '@/utils/index'
-import router from '@/router'
-import { getTenantId } from '@/utils/auth'
-import { useUserStore } from '@/store/modules/user'
-import avatarImg from '@/assets/imgs/avatar.gif'
-import { CategoryManagementVO, allDataCacheManager } from '@/api/agriculture/categorymanagement'
-import { getUserProfile } from '@/api/system/user/profile'
-import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
-import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
-import { ParkInfoVO } from '@/api/agriculture/parkinfo'
-import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue'
-import { ParkDetailVO } from '@/api/agriculture/parkdetail'
-import { CommonStatusEnum, CommonStatusEnumBoolean } from '@/utils/constants'
-import BreedFrom from '@/views/agriculture/varietymanagement/SelectVarirtManagement.vue'
-import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import { FarmDefineApi } from '@/api/agriculture/farmdefine';
+import download from '@/utils/download';
+import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase';
+import CropBaseForm from './CropBaseForm.vue';
+import HarvestManagementAdd from '@/views/agriculture/harvestmanagement/HarvestManagementAdd.vue';
+import { DrawerProps } from 'element-plus';
+import { FarmRecordApi, FarmRecordVO } from '@/api/agriculture/farmrecord';
+import { formatTime } from '@/utils/index';
+import router from '@/router';
+import { getTenantId } from '@/utils/auth';
+import { useUserStore } from '@/store/modules/user';
+import avatarImg from '@/assets/imgs/avatar.gif';
+import { CategoryManagementVO, allDataCacheManager } from '@/api/agriculture/categorymanagement';
+import { getUserProfile } from '@/api/system/user/profile';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import { ParkInfoVO } from '@/api/agriculture/parkinfo';
+import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue';
+import { ParkDetailVO } from '@/api/agriculture/parkdetail';
+import { CommonStatusEnum, CommonStatusEnumBoolean } from '@/utils/constants';
+import BreedFrom from '@/views/agriculture/varietymanagement/SelectVarirtManagement.vue';
+import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement';
 
 /** 鲁渝协作品种管理 列表 */
-defineOptions({ name: 'AgriCropBase' })
-const drawer2 = ref(false)
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const direction = ref<DrawerProps['direction']>('rtl')
-const loading = ref(true) // 列表的加载中
-const list = ref<CropBaseVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+defineOptions({ name: 'AgriCropBase' });
+const drawer2 = ref(false);
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const direction = ref<DrawerProps['direction']>('rtl');
+const loading = ref(true); // 列表的加载中
+const list = ref<CropBaseVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 12,
@@ -457,8 +459,8 @@ const queryParams = reactive({
   deptId: undefined,
   userId: undefined,
   isEnableModel: undefined
-})
-const formData = ref<FarmRecordVO[]>([])
+});
+const formData = ref<FarmRecordVO[]>([]);
 const queryParam = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -482,7 +484,7 @@ const queryParam = reactive({
   recordArea: undefined,
   recordState: undefined,
   createTime: []
-})
+});
 const queryParams1 = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -497,211 +499,211 @@ const queryParams1 = reactive({
   status: undefined,
   remark2: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-const show = ref()
-const userStore = useUserStore()
-const userName = computed(() => userStore.user.deptId ?? '0')
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-const listVarietyManagementVO = ref<VarietyManagementVO[]>([]) // 品种列表的数据
-const deptId = ref(0)
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+const show = ref();
+const userStore = useUserStore();
+const userName = computed(() => userStore.user.deptId ?? '0');
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
+const listVarietyManagementVO = ref<VarietyManagementVO[]>([]); // 品种列表的数据
+const deptId = ref(0);
 const judgeHomePage = async () => {
-  const data = await getUserProfile()
-  deptId.value = data.dept.id
-}
-judgeHomePage()
+  const data = await getUserProfile();
+  deptId.value = data.dept.id;
+};
+judgeHomePage();
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
-  show.value = userName.value
-  listCategoryManagement.value = await allDataCacheManager.getData({})
+  loading.value = true;
+  show.value = userName.value;
+  listCategoryManagement.value = await allDataCacheManager.getData({});
   try {
-    const data = await CropBaseApi.getCropBasePage(queryParams)
-    const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
-    listVarietyManagementVO.value = data1.list
-    list.value = data.list
-    cardDataList.value = data.list
+    const data = await CropBaseApi.getCropBasePage(queryParams);
+    const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1);
+    listVarietyManagementVO.value = data1.list;
+    list.value = data.list;
+    cardDataList.value = data.list;
     //把品类数据的namep拼接到列表中
     list.value.forEach((item) => {
       listCategoryManagement.value.forEach((itm) => {
-        if (item.cropType == itm.id) item.cropType = itm.categoryName
-      })
-    })
-    total.value = data.total
+        if (item.cropType == itm.id) item.cropType = itm.categoryName;
+      });
+    });
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 //基地的选择
-const parkPopupRef = ref()
-const openType = ref('')
+const parkPopupRef = ref();
+const openType = ref('');
 const openParkPopup = (id: string) => {
-  openType.value = id
+  openType.value = id;
   if (openType.value === undefined || openType.value === '') {
-    message.error('请选择基地')
-  } else parkPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else parkPopupRef.value.open(id);
+};
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    queryParams.belongPark = String(order[0].id)
-    queryParams.parkName = String(order[0].name)
-  } else queryParams.parkName = String(order[0].name)
-}
+    queryParams.belongPark = String(order[0].id);
+    queryParams.parkName = String(order[0].name);
+  } else queryParams.parkName = String(order[0].name);
+};
 
 //地块的选择
-const plotPopupRef = ref()
-const openType1 = ref('')
+const plotPopupRef = ref();
+const openType1 = ref('');
 const openPlotPopup = (id: string) => {
-  openType1.value = id
+  openType1.value = id;
   // if (!openType1.value) {
   //   message.error('请选择基地')
   // } else
-  plotPopupRef.value.open(id)
-}
+  plotPopupRef.value.open(id);
+};
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  console.log('--->>查看选择的地块信息：', order[0])
-  queryParams.belongPlot = String(order[0].id)
-  queryParams.plotName = String(order[0].name)
-}
+  console.log('--->>查看选择的地块信息：', order[0]);
+  queryParams.belongPlot = String(order[0].id);
+  queryParams.plotName = String(order[0].name);
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  queryParams.belongPlot = null
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  queryParams.belongPlot = null;
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
   // formRef.value.open(type, id)
-  if (type == 'create') router.push('/farm_work/CreateOrUpdateCropbase')
-  else router.push('/farm_work/CreateOrUpdateCropbase?id=' + id + '&type=' + type)
-}
+  if (type == 'create') router.push('/farm_work/CreateOrUpdateCropbase');
+  else router.push('/farm_work/CreateOrUpdateCropbase?id=' + id + '&type=' + type);
+};
 
 /** 添加/修改操作 */
-const formRefA = ref()
+const formRefA = ref();
 const openFormA = (type: string, row?: any) => {
-  formRefA.value.open(type, row)
-}
+  formRefA.value.open(type, row);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await CropBaseApi.deleteCropBase(id)
-    message.success(t('common.delSuccess'))
+    await CropBaseApi.deleteCropBase(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await CropBaseApi.exportCropBase(queryParams)
-    download.excel(data, '鲁渝协作品种管理.xls')
+    exportLoading.value = true;
+    const data = await CropBaseApi.exportCropBase(queryParams);
+    download.excel(data, '鲁渝协作品种管理.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 function cancelClick() {
-  drawer2.value = false
+  drawer2.value = false;
 }
 
 /** 修改品种模型绑定状态 */
 const handleStatusChange = async (row: CropBaseApi.CropBaseVO) => {
   try {
     // 修改状态的二次确认
-    const text = row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? '绑定' : '停绑'
-    await message.confirm('确认要' + text + '当前模型吗?')
+    const text = row.isEnableModel === CommonStatusEnumBoolean.ENABLE ? '绑定' : '停绑';
+    await message.confirm('确认要' + text + '当前模型吗?');
     // 发起修改状态
-    await CropBaseApi.updateModelEnableStatus(row.id, row.isEnableModel)
+    await CropBaseApi.updateModelEnableStatus(row.id, row.isEnableModel);
     // 刷新列表
-    await getList()
+    await getList();
   } catch {
     // 取消后，进行恢复按钮
     row.isEnableModel =
       row.isEnableModel === CommonStatusEnumBoolean.ENABLE
         ? CommonStatusEnumBoolean.DISABLE
-        : CommonStatusEnumBoolean.ENABLE
+        : CommonStatusEnumBoolean.ENABLE;
   }
-}
+};
 
 const damn = async (row) => {
-  queryParam.batchCode = row.batchCode
-  const data = await FarmRecordApi.getFarmRecordPage(queryParam)
-  console.log('🚀 ~ damn ~ data:', data)
+  queryParam.batchCode = row.batchCode;
+  const data = await FarmRecordApi.getFarmRecordPage(queryParam);
+  console.log('🚀 ~ damn ~ data:', data);
   data.list.forEach((item) => {
-    item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ''
-  })
-  formData.value = data.list
-  listCategoryManagement.value = await allDataCacheManager.getData({})
+    item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : '';
+  });
+  formData.value = data.list;
+  listCategoryManagement.value = await allDataCacheManager.getData({});
   //把品类数据的namep拼接到列表中
   formData.value.forEach((item) => {
     listCategoryManagement.value.forEach((itm) => {
-      if (item.cropType == itm.id) item.cropType = itm.categoryName
-    })
-  })
-  console.log('222222', formData.value)
-  drawer2.value = true
-}
+      if (item.cropType == itm.id) item.cropType = itm.categoryName;
+    });
+  });
+  console.log('222222', formData.value);
+  drawer2.value = true;
+};
 
 /** */
-const { push } = useRouter()
+const { push } = useRouter();
 // const goCheck = (row) => {
 //   //打开新的页签并传递参数
 //   push(`/farm_work/farmManage/farm-record?batchCode=${row.batchCode}`);
 // }
 
 /** 初始化 **/
-const farmDefineOptions = ref([]) // 设备分类选项
+const farmDefineOptions = ref([]); // 设备分类选项
 const getValByDict = (item) => {
-  let res = ''
+  let res = '';
   farmDefineOptions.value.forEach((dict) => {
-    if (dict.id === item) res = dict.defineName
-  })
-  return res
-}
+    if (dict.id === item) res = dict.defineName;
+  });
+  return res;
+};
 
 //品种名称管理
-const BreedFromRef = ref()
+const BreedFromRef = ref();
 const openBreedFrom = () => {
-  BreedFromRef.value.open()
-}
+  BreedFromRef.value.open();
+};
 
 const BreedFromSuccess = (order: any) => {
-  queryParams.breedId = String(order[0].id)
-  queryParams.cropName = String(order[0].varietyName)
-}
+  queryParams.breedId = String(order[0].id);
+  queryParams.cropName = String(order[0].varietyName);
+};
 
 //卡片、列表按钮切换
-const showType = ref('card')
-const cardDataList = ref<any[]>([])
+const showType = ref('card');
+const cardDataList = ref<any[]>([]);
 
 onMounted(async () => {
-  await getList()
-  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
-})
+  await getList();
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 });
+});
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 </script>
 <style lang="scss" scoped>
 .timeline-dot::after {
