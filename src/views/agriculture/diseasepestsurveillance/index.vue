@@ -394,7 +394,7 @@ import PestAmountIcon from "./assets/pest-amount-icon.png";
 import PestCategoryIcon from "./assets/pest-category-icon.png";
 import SpotResTable from "./spotResTable.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
-import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
 import { throttle } from "./utils";
 import SpotResult from './spotResult.vue'
 
