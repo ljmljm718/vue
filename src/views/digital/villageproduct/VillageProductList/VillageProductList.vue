@@ -45,7 +45,7 @@
             class="!w-240px"
           />
         </el-form-item>
-                  <el-form-item label="产品年份" prop="years">
+        <el-form-item label="产品年份" prop="years">
           <el-input
             v-model="queryParams.years"
             placeholder="请输入产品年份"

@@ -19,6 +19,7 @@ import { DICT_TYPE } from '@/utils/dict'
 import { initChartStatic, generatePieOptions } from '../../utils/bigscreenTool/index'
 import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index'
 import { CategoryManagementVO, allDataCacheManager } from '@/api/agriculture/categorymanagement'
+import { AgriWarningRecordApi, AgriWarningRecordVO } from '@/api/agriculture/agriwarningrecord'
 
 const optionsX = ref([])
 const handleSelectorChangeX = (e) => {
@@ -121,9 +122,10 @@ const handleSelectorChange2 = (val) => {
 const topDataList = ref([])
 const getenvironmentalData = async () => {
   const res = await environmentalDataHomePage()
-  console.log('气象站数据', res);
-  topDataList.value = res.map(item => ({
-    ...item, icon: getIconIndex(item.monitoringType, 0)
+  console.log('气象站数据', res)
+  topDataList.value = res.map((item) => ({
+    ...item,
+    icon: getIconIndex(item.monitoringType, 0)
   }))
 }
 getenvironmentalData()
@@ -131,9 +133,10 @@ getenvironmentalData()
 const bottomDataList = ref([])
 const getWaterQualityData = async () => {
   const res = await waterQualityData()
-  console.log("🚀 ~ getWaterQualityData ~ 水质监测-数据:", res)
-  bottomDataList.value = res.map(item => ({
-    ...item, icon: getIconIndex(item.monitoringType, 1)
+  console.log('🚀 ~ getWaterQualityData ~ 水质监测-数据:', res)
+  bottomDataList.value = res.map((item) => ({
+    ...item,
+    icon: getIconIndex(item.monitoringType, 1)
   }))
 }
 getWaterQualityData()
@@ -153,11 +156,11 @@ const getIconIndex = (type, color = 0) => {
       ['土壤温度', 'env-icon-9'],
       ['土壤湿度', 'env-icon-10'],
       ['土壤EC值', 'env-icon-11'],
-      ['PM10', 'env-icon-12'],
+      ['PM10', 'env-icon-12']
     ])
-    const item = iconMap.get(type);
-    if (!item) return 'env-icon-5';
-    return item;
+    const item = iconMap.get(type)
+    if (!item) return 'env-icon-5'
+    return item
   } else {
     // 水质监测部分
     const iconMap = new Map([
@@ -171,11 +174,11 @@ const getIconIndex = (type, color = 0) => {
       ['ORP', 'water-icon-8'],
       ['溶解氧饱和度', 'water-icon-9'],
       ['电导率', 'water-icon-10'],
-      ['TDS', 'water-icon-11'],
+      ['TDS', 'water-icon-11']
     ])
-    const item = iconMap.get(type);
-    if (!item) return 'water-icon-7';
-    return item;
+    const item = iconMap.get(type)
+    if (!item) return 'water-icon-7'
+    return item
   }
 }
 
@@ -298,6 +301,9 @@ const getdeviceInfoByPark = async () => {
   const res = await deviceInfoByPark()
   console.log('getdeviceInfoByPark', res)
   const stateRes = await getDeviceState()
+  const total1 = ref(0)
+  const data = await AgriWarningRecordApi.getAgriWarningRecordPage()
+  total1.value = data.total
   const { list } = await deviceInfoPage()
   cardList.value = [
     {
@@ -320,7 +326,7 @@ const getdeviceInfoByPark = async () => {
     {
       id: 'prewarn',
       title: '预警数量',
-      total: list.length
+      total: total1
     }
   ]
 }
@@ -351,8 +357,8 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
             @click="
               $router.push(
                 item.title === '设备总数'
-                ? '/internetMonitor/device/deviceView'
-                : '/internetMonitor/warn/agri-warning-record'
+                  ? '/internetMonitor/device/deviceView'
+                  : '/internetMonitor/warn/agri-warning-record'
               )
             "
           >
@@ -435,10 +441,8 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
               })
             "
             style="font-weight: 600"
-            >{{
-              item.title !== '设备总数' && item.title !== '预警数量' ? item.total + '台' : ''
-            }}</div
-          >
+            >{{ item.title !== '设备总数' && item.title !== '预警数量' ? item.total + '台' : '' }}
+          </div>
         </div>
         <div v-if="item.title === '设备总数' || item.title === '预警数量'">
           <div class="flex items-center pt-2 h-[2.5rem] px-2" style="font-weight: 600">
@@ -475,7 +479,6 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
               <div class="w-[2rem] flex flex-end justify-end">{{ item.online }}</div>
               <div>台</div>
             </div>
-            
           </div>
           <div style="font-weight: 600" class="h-[1rem] p-1 flex items-center">
             <span
@@ -517,19 +520,19 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
               <span>养殖品种</span>
             </div>
             <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
-                <select @change="handleSelectorChange1">
-                  <option :value="item.id" v-for="(item, index) in options1" :key="index"
-                    >{{ item.name }}
-                  </option>
-                </select>
-                <select @change="handleSelectorChange2">
-                  <option :value="item.id" v-for="(item, index) in options2" :key="index"
-                    >{{ item.name }}
-                  </option>
-                </select>
-              </div>
+              <select @change="handleSelectorChange1">
+                <option :value="item.id" v-for="(item, index) in options1" :key="index"
+                  >{{ item.name }}
+                </option>
+              </select>
+              <select @change="handleSelectorChange2">
+                <option :value="item.id" v-for="(item, index) in options2" :key="index"
+                  >{{ item.name }}
+                </option>
+              </select>
+            </div>
           </div>
-          
+
           <el-divider class="!my-3" />
           <div class="p-1">
             <div
@@ -560,23 +563,23 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
                   <div>{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}</div>
                 </div>
               </div>
-              <div class="px-2 w-100% h-100% mt-10px grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3px !hidden">
+              <div
+                class="px-2 w-100% h-100% mt-10px grid 2xl:grid-cols-1 xl:grid-cols-2 grid-cols-2 gap-3px !hidden"
+              >
                 <div class="p-1 flex items-center">
-                  <div class="text-15px w-5rem">养殖品类: </div>
-                  <div class="pl-2">{{
-                    getListCategaryLabelById(growthTypes[growthIndex].cropType)
-                  }}</div>
+                  <div class="text-15px w-5rem">养殖品类:</div>
+                  <div class="pl-2"
+                    >{{ getListCategaryLabelById(growthTypes[growthIndex].cropType) }}
+                  </div>
                 </div>
                 <div class="p-1 flex items-center ml-[-20px] grid-cols-2">
-                  <div class="text-15px">当前生育期: </div>
+                  <div class="text-15px">当前生育期:</div>
                   <div class="pl-2">{{ growthTypes[growthIndex].growth }}</div>
                 </div>
                 <div class="p-1 py-2">
                   <div
-                    >开始时间:{{
-                      formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd')
-                    }}</div
-                  >
+                    >开始时间:{{ formatTime(growthTypes[growthIndex].startTime, 'yyyy-MM-dd') }}
+                  </div>
                   <!--                  <div class="pt-2">{{-->
 
                   <!--                    }}-->
@@ -584,8 +587,8 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
                 </div>
                 <div class="p-1 py-2">
                   <div
-                    >结束时间:{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}</div
-                  >
+                    >结束时间:{{ formatTime(growthTypes[growthIndex].endTime, 'yyyy-MM-dd') }}
+                  </div>
                   <!--                  <div class="pt-2">-->
                   <!--                   -->
                   <!--                  </div>-->
@@ -619,7 +622,7 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
                 :class="`${item.icon} w-[2.5rem] h-[2.5rem]`"
                 style="background-size: 100% 100%"
               ></div>
-              <div style="width: calc(100% - 3rem);">
+              <div style="width: calc(100% - 3rem)">
                 <div>
                   <span>{{ item.dataValue }}</span>
                   <span style="padding-left: 0.1rem">{{ item.yyUnit }}</span>
@@ -646,7 +649,7 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
                 :class="`${item.icon} w-[2.5rem] h-[2.5rem]`"
                 style="background-size: 100% 100%"
               ></div>
-              <div style="width: calc(100% - 3rem);">
+              <div style="width: calc(100% - 3rem)">
                 <div>
                   <span>{{ item.dataValue }}</span>
                   <span style="padding-left: 0.1rem">{{ item.yyUnit }}</span>
@@ -745,7 +748,6 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
 </template>
 
 <style lang="scss" scoped>
-
 .title-icon {
   background-image: url(./assets/titleIcon.png);
   background-repeat: no-repeat;
@@ -787,9 +789,11 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
     background-image: url(./assets/home1/t#{$i}.png);
   }
 }
+
 .t-default {
   background-image: url(./assets/home1/t5.png);
 }
+
 .b {
   background-image: url(./assets/home1/b.png);
 }
@@ -799,9 +803,11 @@ const cardTextColor = ['#1c64ba', '#1f887f', '#0a7ebc', '#765082', '#cb7e10']
     background-image: url(./assets/home1/b#{$i}.png);
   }
 }
-.b-default {  
+
+.b-default {
   background-image: url(./assets/home1/b5.png);
 }
+
 .selector-wrapper {
   select {
     margin: 0 0.3rem;
