@@ -100,7 +100,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" ref="suibian" :show-overflow-tooltip="true" @select="fangfa"  @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="list" :stripe="true" ref="multipleTableRef" :show-overflow-tooltip="true"
+              @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
       <el-table-column width="30" label="选择" type="selection"/>
       <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
       <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
@@ -231,11 +232,11 @@ const deviceType = ref()
 
 //开始
 
-let suibian=ref(null)
-const fangfa=(select:any,row:any)=>{
-  if(select.length>1){
-    let del_row =select.shift();
-    suibian.value.toggleRowSelection(del_row,false);
+const multipleTableRef=ref()
+const select=(selection,row)=>{
+  if(selection.length>1){
+    let del_row =selection.shift();
+    multipleTableRef.value.toggleRowSelection(del_row,false);
   }
 }
 
@@ -262,12 +263,14 @@ const submitForm = () => {
 const open = async (item:any) => {
   dialogVisible.value = true
   //s(item,"------");
-  queryParams.belongPark = item.monitoringBaseId;
-  queryParams.belongPlot = item.monitoringPlotId;
+  if (item != null){
+    queryParams.belongPark = item.monitoringBaseId;
+    queryParams.belongPlot = item.monitoringPlotId;
+  }
+  console.log("open")
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery()
-  getList()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 //结束
@@ -306,10 +309,10 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   deviceType.value = null
-  queryParams.deviceCode = null
-  queryParams.deviceName = null
-  queryParams.deviceType = null
-  queryParams.deviceStatus = null
+  queryParams.deviceCode = undefined
+  queryParams.deviceName = undefined
+  queryParams.deviceType = undefined
+  queryParams.deviceStatus = undefined
   handleQuery()
 }
 
@@ -358,7 +361,7 @@ const categoryProps = {
 /** 初始化 **/
 onMounted(async () => {
   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-  await getList()
+  await resetQuery()
 })
 
 // 定义属性
@@ -368,6 +371,26 @@ const props = defineProps({
     default: () => ({})
   },
 })
+
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
+
 // 监听父组件category变化
 watch(() => props.currCategory,
   () => {
@@ -383,3 +406,9 @@ watch(() => props.currCategory,
     handleQuery()
   })
 </script>
+<style scoped lang='scss'>
+// 隐藏全选按钮
+:deep(.el-table th.el-table__cell:nth-child(1) .cell) {
+  visibility: hidden;
+}
+</style>

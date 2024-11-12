@@ -6,6 +6,7 @@ import {
   monitoringEquNoticePage,
   getPondCountFrySum
 } from './api'
+import { cloneDeep } from 'lodash-es'
 import cameraIcon from './assets/camera.png'
 import mask from './assets/mask.png'
 import Dplayer from 'dplayer'
@@ -123,6 +124,21 @@ const initPlayer = async (containerId, dtu, channelId = '') => {
 const router = useRouter()
 const appStore = useAppStore()
 const leftParkList = ref<any[]>([])
+const filteredParkList = computed(() => {
+  return leftParkList.value.map(item => {
+    console.log("🚀 ~ filteredParkList ~ item:", item)
+    return {
+      ...cloneDeep(item),
+      child: Array.isArray(item.child)
+        ? item.child.filter(ele => {
+          return ele.name.indexOf(filterText.value) !== -1;
+        }) : []
+    };
+  }).filter((parkItem) => {
+    return Array.isArray(parkItem.child) && parkItem.child.length !== 0;
+  })
+})
+  
 const parkDictionary = {};
 let parkDicArr:any[] = [];
 const getParkNameById = (id:string) => {
@@ -238,30 +254,82 @@ const adaptScreen = () => {
   if (width >= 2600) columnNum.value = 4
 }
 window.addEventListener('resize', (item) => { adaptScreen() })
+
+const filterText = ref<string>('')
+const isCollapse = ref<boolean>(false)
 </script>
 <template>
-  <div class="flex justify-between items-start">
-    <div class="w-[16rem] h-[calc(100vh_-_8rem)] rounded-md overflow-hidden p-1 box-border"
-      style="border: 1px solid var(--el-border-color);">
-      <el-scrollbar>
-        <el-menu :active-text-color="`${appStore.getIsDark ? '#ffd04b' : '#1ed76d'}`"
-          :background-color="`${appStore.getIsDark ? '#383f45' : '#fff'}`" class="el-menu-vertical-demo"
-          :text-color="`${appStore.getIsDark ? '#fff' : '#000'}`" @select="handleMenuSelect" @open="handleMenuCheck"
-          @close="handleMenuCheck">
-          <el-sub-menu v-for="item in leftParkList" :index="item.id" :key="item.id">
+  <div class="flex justify-between items-start w-full">
+    <div
+      :class="`
+        h-[calc(100vh_-_8rem)] relative transition-all
+        rounded-md p-4 box-border !overflow-visible
+        ${isCollapse ? '!w-0px !p-0' : 'w-16rem'}
+      `"
+      style="
+        border: 1px solid var(--el-border-color);
+        background-color: var(--el-menu-bg-color);
+      "
+    >
+      <el-input
+        class="w-full mb-8px h-30px rounded"
+        v-model="filterText"
+        ref='inputFous'
+        placeholder="搜索地块"
+        clearable
+        v-show="!isCollapse"
+      />
+      <el-scrollbar height="calc(100% - 38px)">
+        <el-menu
+          :active-text-color="`${appStore.getIsDark ? '#ffd04b' : '#1ed76d'}`"
+          :background-color="`${appStore.getIsDark ? '#383f45' : '#fff'}`"
+          class="el-menu-vertical-demo"
+          :text-color="`${appStore.getIsDark ? '#fff' : '#000'}`"
+          @select="handleMenuSelect"
+          @open="handleMenuCheck"
+          @close="handleMenuCheck"
+        >
+          <el-sub-menu v-for="item in filteredParkList" :index="item.id" :key="item.id">
             <template #title>
               <span>{{ item.name }}</span>
             </template>
-            <el-menu-item v-for="ele in item.child" :index="ele.id" :key="ele.id" :style="`
+            <el-menu-item
+              v-for="ele in item.child"
+              :index="ele.id"
+              :key="ele.id"
+              :style="`
                 background-color:${ele.id === activePlotId ? '#07998b30' : '#00000000'};
                 color: ${ele.id === activePlotId ? '#009688' : ''};
-              `" class="w-full">{{ ele.name }}</el-menu-item>
+              `"
+              class="w-full"
+            >{{ ele.name }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
+      <div
+        @click="isCollapse = !isCollapse"
+        :class="`
+          h-[25px] w-[25px] rounded-full shadow-md bg-white
+          cursor-pointer flex items-center justify-center text-[14px]
+          absolute top-[30px] right-[-27px] translate-x-[-12.5px]
+        `"
+        :style="{
+          color: 'var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)',
+        }"
+      >
+        <el-icon v-show="!isCollapse"><ArrowLeftBold /></el-icon>
+        <el-icon v-show="isCollapse"><ArrowRightBold /></el-icon>
+      </div>
     </div>
-    <div class="w-[calc(100%_-_17rem)] h-[calc(100vh_-_8rem)] p-3 box-border rounded-md"
-      style="border: 1px solid var(--el-border-color);">
+    <div
+      class="h-[calc(100vh_-_8rem)] p-3 box-border rounded-md transition-all"
+      :style="`
+        border: 1px solid var(--el-border-color);
+        background-color: var(--el-menu-bg-color);
+        width: ${isCollapse ? '100%' : 'calc(100% - 16.1rem)'};
+      `"
+    >
       <div class="flex items-start justify-between h-2rem">
         <div class="font-bold">实时监控</div>
         <div class="flex space-x-2 cursor-pointer select-none text-[.8rem]">

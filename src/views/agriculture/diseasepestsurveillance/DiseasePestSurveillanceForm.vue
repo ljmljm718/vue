@@ -70,7 +70,7 @@
 </template>
 <script setup lang="ts">
 import { DiseasePestSurveillanceApi, DiseasePestSurveillanceVO } from '@/api/agriculture/diseasepestsurveillance';
-import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
+import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
 import { DICT_TYPE, getIntDictOptions,getStrDictOptions } from '@/utils/dict';
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 import {CategoryManagementApi, CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";

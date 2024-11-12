@@ -334,10 +334,10 @@ const getList = async () => {
   await nextTick();
   emit("heightChange", containerDom.value.clientHeight);
 }
-if (props.collectionType) {
-  queryParams.collectionType = props.collectionType.collectionType
-  getList()
-}
+// if (props.collectionType) {
+//   queryParams.collectionType = props.collectionType.collectionType
+//   getList()
+// }
 /** 搜索按钮操作 */
 const handleQuery = () => {
   if (queryParams.collectionTime == null) {
@@ -358,6 +358,20 @@ const resetQuery = () => {
 const formRef = ref()
 const router = useRouter()
 const openForm = (type: string, id?: number) => {
+
+  // 执行新增、编辑、详情操作 保存搜索栏数据和页码
+  sessionStorage.removeItem("equipmentDataQueryParams");
+  const data = {
+    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    collectionType: queryParams.collectionType,
+    monitoringType: queryParams.monitoringType,
+    collectionTime: queryParams.collectionTime,
+    deviceName: queryParams.deviceName,
+    channelId: queryParams.channelId,
+    yyRemarks: queryParams.yyRemarks,
+  }
+  sessionStorage.setItem("equipmentDataQueryParams", JSON.stringify(data));
+
   if (type == 'create') {
     router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData')
   } else {
@@ -408,6 +422,21 @@ onMounted(() => {
   if (location) {
     queryParams.collectionType = location.collectionType
   }
+
+  // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
+  const sessionParams = sessionStorage.getItem("equipmentDataQueryParams");
+  if (sessionParams) {
+    const data = JSON.parse(sessionParams);
+    queryParams.pageNo = data.pageNo;
+    queryParams.collectionType = data.collectionType;
+    queryParams.monitoringType = data.monitoringType;
+    queryParams.collectionTime = data.collectionTime;
+    queryParams.deviceName = data.deviceName;
+    queryParams.channelId = data.channelId;
+    queryParams.yyRemarks = data.yyRemarks;
+  }
+  sessionStorage.removeItem("equipmentDataQueryParams");
+
   getList()
 })
 </script>

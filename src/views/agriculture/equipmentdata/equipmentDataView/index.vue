@@ -9,7 +9,7 @@ import img from '../../../../assets/imgs/retract.png'
 import img2 from '../../../../assets/imgs/expand.png'
 let route = useRoute()
 /** 设备信息 列表 */
-defineOptions({name: 'DeviceView'})
+defineOptions({name: 'EquipmentDataView'})
 console.log(route.query.collectionType,'router')
 
 const loading = ref(true) // 列表的加载中

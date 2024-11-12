@@ -125,8 +125,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border
-              @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="list" :stripe="true" ref="multipleTableRef" :show-overflow-tooltip="true" border
+              @select="select" @row-click="selectClick" @selection-change="handleSelectionChange" >
       <el-table-column type="selection" width="55px" align="left"/>
       <el-table-column label="主题名称" align="center" prop="topicName"/>
       <el-table-column label="主题类型" align="center" prop="topicType">
@@ -337,8 +337,41 @@ const handleUnSubscribeAll = async () => {
   // 刷新列表
   await getList()
 }
+
+const multipleTableRef=ref()
+const select=(selection,row)=>{
+  if(selection.length>1){
+    let del_row =selection.shift();
+    multipleTableRef.value.toggleRowSelection(del_row,false);
+  }
+}
+const selectClick = (row) => {
+  const selectData = topicLists.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
+
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style scoped lang='scss'>
+// 隐藏全选按钮
+:deep(.el-table th.el-table__cell:nth-child(1) .cell) {
+  visibility: hidden;
+}
+</style>

@@ -42,7 +42,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
         </el-button>
@@ -162,8 +162,8 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-else>
-      <div class="grid gap-3 card-wrapper">
+    <div v-else class="flex justify-center">
+      <div class="grid gap-3 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 container">
         <div
           v-for="item in list"
           :key="item.id"
@@ -254,13 +254,6 @@ const getList = async () => {
     const data = await TraceTemplateApi.getTraceTemplatePage(queryParams)
     console.log("🚀 ~ getList ~ data:", data.list)
     list.value = data.list
-    // nextTick(() => {
-    //   list.value.forEach(async item => {
-    //     QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
-    //       item.img = url
-    //     })
-    //   })
-    // })
     total.value = data.total
   } finally {
     loading.value = false
@@ -339,16 +332,5 @@ onMounted(() => {
   border: 1px solid #009688;
   background-color: #e5f4f3;
   color: #009688;
-}
-
-.card-wrapper {
-  grid-template-columns: repeat(2, 1fr);
-}
-@for $i from 2 through 8 {
-  @media screen and (min-width: #{100 + $i * 400}px) {
-    .card-wrapper {
-      grid-template-columns: repeat($i, 1fr);
-    }
-  }
 }
 </style>

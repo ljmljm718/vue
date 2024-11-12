@@ -84,7 +84,7 @@
 
     <ContentWrap>
       <el-table ref="dialogTable" v-loading="loading" :data="list" :show-overflow-tooltip="true" :stripe="true"
-                :row-key="getRowKeys" @selection-change="handleSelectionChange" >
+                :row-key="getRowKeys" @selection-change="handleSelectionChange" @row-click="selectClick" highlight-current-row>
         <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>
         <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
         <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
@@ -251,6 +251,25 @@ const handleSelectionChange = (val) => {
         ids.value.push(row.id);
       }
     });
+  }
+}
+
+// 控制table-----多选选择
+const selectClick = ( row ) => {
+  const selectData = multipleSelection.value
+  if (selectData.length) {
+    selectData.forEach((item) => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        dialogTable.value.toggleRowSelection(row, false)
+      }
+      // 不然就让当前的一行勾选
+      else {
+        dialogTable.value.toggleRowSelection(row, true)
+      }
+    })
+  } else {
+    dialogTable.value.toggleRowSelection(row, true)
   }
 }
 

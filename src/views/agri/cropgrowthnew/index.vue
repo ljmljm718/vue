@@ -88,13 +88,14 @@
     </custom-form>
   </ContentWrap>
   <ContentWrap>
-    <div class="flex items-center">
+    <div class="flex items-center justify-between">
       <div
         class="space-x-1"
-        style="margin-bottom: 1rem;margin-top: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2.4rem"
+        style="margin-bottom: .6rem;margin-top: .7rem;margin-left: 0rem;margin-right: 1.5rem;height: 2.4rem"
       >
         <el-button
-          class="!text-white !bg-[#009688] !h-2.4rem"
+          class="!h-2.4rem"
+          type="primary"
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth-new:create']"
         >
@@ -105,10 +106,13 @@
           <span>新增</span>
         </el-button>
       </div>
-      <div class="grow"
-           style="margin-bottom: 1rem;margin-top: 1rem;margin-right: 1.5rem;height: 2.4rem">
-        <IntroduceAlert
-          title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"/>
+      <div
+        class="
+          grow xl:block hidden mb-1rem
+          mt-1rem mr-1.5rem h-2.4rem
+        "
+      >
+        <IntroduceAlert title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动1。"/>
       </div>
       <div class="flex items-center cursor-pointer">
         <div
@@ -132,6 +136,15 @@
           <div class="pl-1 text-[13px]">列表</div>
         </div>
       </div>
+    </div>
+    <div class="xl:hidden block rounded-sm" style="border: 1px solid #72c63c;">
+      <el-alert
+        title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"
+        type="success"
+        closable
+        effect="light"
+        show-icon
+      />
     </div>
     <div
       class="w-full pt-5"

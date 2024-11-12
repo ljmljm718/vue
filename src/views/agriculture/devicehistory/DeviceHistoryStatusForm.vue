@@ -113,7 +113,7 @@ const submitForm = async () => {
 // 机器信息选择
 const SelectDeviceInfoRef = ref()
 const openSelectDeviceInfo = () => {
-  SelectDeviceInfoRef.value.open('jk') //监控
+  SelectDeviceInfoRef.value.open() //监控
 }
 //点击确定后
 const SelectDeviceInfoSuccess = (item: any) => {
