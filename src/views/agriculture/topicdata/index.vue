@@ -50,69 +50,66 @@
           重置
         </el-button>
       </el-form-item>
-
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:topic-data:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:topic-data:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" />
-          导出
-        </el-button>
-        <el-button
-          type="primary"
-          plain
-          :disabled="multiple || sub"
-          @click="handleSubscribe"
-          v-hasPermi="['agriculture:topic-data:subscribe']"
-        >
-          订阅主题
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="warning"
-          plain
-          :disabled="multiple || unsub"
-          @click="handleUnsubscribe"
-          v-hasPermi="['agriculture:topic-data:unsubscribe']"
-        >
-          退订主题
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleSubscribeAll"
-          v-hasPermi="['agriculture:topic-data:subscribeall']"
-        >
-          全部订阅
-        </el-button>
-        <el-button
-          type="danger"
-          plain
-          @click="handleUnSubscribeAll"
-          v-hasPermi="['agriculture:topic-data:unsubscribeAll']"
-        >
-          全部退订
-        </el-button>
-      </el-form-item>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <el-form-item>
+      <el-button
+        type="primary"
+        plain
+        @click="openForm('create')"
+        v-hasPermi="['agriculture:topic-data:create']"
+      >
+        <Icon icon="ep:plus" class="mr-5px" />
+        新增
+      </el-button>
+      <el-button
+        type="success"
+        plain
+        @click="handleExport"
+        :loading="exportLoading"
+        v-hasPermi="['agriculture:topic-data:export']"
+      >
+        <Icon icon="ep:download" class="mr-5px" />
+        导出
+      </el-button>
+      <el-button
+        type="primary"
+        plain
+        :disabled="multiple || sub"
+        @click="handleSubscribe"
+        v-hasPermi="['agriculture:topic-data:subscribe']"
+      >
+        订阅主题
+      </el-button>
+      <el-button
+        type="warning"
+        plain
+        :disabled="multiple || unsub"
+        @click="handleUnsubscribe"
+        v-hasPermi="['agriculture:topic-data:unsubscribe']"
+      >
+        退订主题
+      </el-button>
+      <el-button
+        type="success"
+        plain
+        @click="handleSubscribeAll"
+        v-hasPermi="['agriculture:topic-data:subscribeall']"
+      >
+        全部订阅
+      </el-button>
+      <el-button
+        type="danger"
+        plain
+        @click="handleUnSubscribeAll"
+        v-hasPermi="['agriculture:topic-data:unsubscribeAll']"
+      >
+        全部退订
+      </el-button>
+    </el-form-item>
     <el-table
       v-loading="loading"
       :data="list"

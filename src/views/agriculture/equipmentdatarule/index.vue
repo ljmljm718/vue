@@ -57,23 +57,22 @@
           重置
         </el-button>
       </el-form-item>
-
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:equipment-data-rule:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
-      </el-form-item>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <el-form-item>
+      <el-button
+        type="primary"
+        plain
+        @click="openForm('create')"
+        v-hasPermi="['agriculture:equipment-data-rule:create']"
+      >
+        <Icon icon="ep:plus" class="mr-5px" />
+        新增
+      </el-button>
+    </el-form-item>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="终端" align="center" prop="dtuId" />
