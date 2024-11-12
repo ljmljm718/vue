@@ -2,13 +2,11 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <custom-form
-      class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="88px"
     >
-      <el-row>
+   
         <el-form-item label="设备" prop="deviceName">
           <el-input
             v-model="queryParams.deviceName"
@@ -115,7 +113,7 @@
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         </el-form-item>
-      </el-row>
+     
     </custom-form>
   </ContentWrap>
 
