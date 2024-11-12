@@ -298,9 +298,7 @@ const handleResize = () => {
   windowWidth.value = window.innerWidth
   console.log(windowWidth.value, '屏幕宽度 999')
 }
-onActivated(() => {
-  resetQuery()
-})
+
 const renderError = () => {
   const _p = document.createElement("p")
   _p.innerHTML = '格式暂不支持！'
@@ -403,6 +401,10 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
+
+onActivated(() => {
+  getList()
+})
 /** 初始化 **/
 onMounted(() => {
   getList()
