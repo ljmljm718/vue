@@ -1,42 +1,35 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <custom-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-row>
-        <el-form-item label="终端" prop="dtuId">
-          <el-input
-            v-model="queryParams.dtuId"
-            placeholder="请输入终端"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="通道" prop="channelId">
-          <el-input
-            v-model="queryParams.channelId"
-            placeholder="请输入通道"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="监测类型" prop="monitoringType">
-          <el-input
-            v-model="queryParams.monitoringType"
-            placeholder="请输入监测类型"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <!--      <el-form-item label="规则类型" prop="ruleType">
+    <custom-form :model="queryParams" ref="queryFormRef" :inline="true">
+      <el-form-item label="终端" prop="dtuId">
+        <el-input
+          v-model="queryParams.dtuId"
+          placeholder="请输入终端"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="通道" prop="channelId">
+        <el-input
+          v-model="queryParams.channelId"
+          placeholder="请输入通道"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="监测类型" prop="monitoringType">
+        <el-input
+          v-model="queryParams.monitoringType"
+          placeholder="请输入监测类型"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <!--      <el-form-item label="规则类型" prop="ruleType">
                 <el-input
                   v-model="queryParams.ruleType"
                   placeholder="请输入规则类型"
@@ -45,55 +38,53 @@
                   class="!w-240px"
                 />
               </el-form-item> -->
-        <el-form-item label="设备名称" prop="deviceName">
-          <el-input
-            v-model="queryParams.deviceName"
-            placeholder="请输入设备名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery" type="primary">
-            <Icon icon="ep:search" class="mr-5px"/>
-            搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
-            重置
-          </el-button>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:equipment-data-rule:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px"/>
-            新增
-          </el-button>
-        </el-form-item>
-      </el-row>
+      <el-form-item label="设备名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入设备名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:equipment-data-rule:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </el-form-item>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备名称" align="center" prop="deviceName"/>
-      <el-table-column label="终端" align="center" prop="dtuId"/>
-      <el-table-column label="通道" align="center" prop="channelId"/>
-      <el-table-column label="参数" align="center" prop="param"/>
-      <el-table-column label="监测类型" align="center" prop="monitoringType"/>
-      <el-table-column label="规则类型" align="center" prop="ruleType"/>
-      <el-table-column label="系数" align="center" prop="rule"/>
-      <el-table-column label="字典" align="center" prop="dictionary"/>
-      <el-table-column label="单位" align="center" prop="ruleUnit"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="终端" align="center" prop="dtuId" />
+      <el-table-column label="通道" align="center" prop="channelId" />
+      <el-table-column label="参数" align="center" prop="param" />
+      <el-table-column label="监测类型" align="center" prop="monitoringType" />
+      <el-table-column label="规则类型" align="center" prop="ruleType" />
+      <el-table-column label="系数" align="center" prop="rule" />
+      <el-table-column label="字典" align="center" prop="dictionary" />
+      <el-table-column label="单位" align="center" prop="ruleUnit" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -132,20 +123,20 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <EquipmentDataRuleForm ref="formRef" @success="getList"/>
+  <EquipmentDataRuleForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {EquipmentDataRuleApi, EquipmentDataRuleVO} from '@/api/agriculture/equipmentdatarule'
+import { EquipmentDataRuleApi, EquipmentDataRuleVO } from '@/api/agriculture/equipmentdatarule'
 import EquipmentDataRuleForm from './EquipmentDataRuleForm.vue'
 
 /** 设备数据规则 列表 */
-defineOptions({name: 'EquipmentDataRule'})
+defineOptions({ name: 'EquipmentDataRule' })
 
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<EquipmentDataRuleVO[]>([]) // 列表的数据
@@ -163,13 +154,13 @@ const queryParams = reactive({
   deviceId: undefined,
   deviceName: undefined,
   createTime: [],
-  remark: undefined,
+  remark: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
-const {currentRoute} = useRouter()
+const { currentRoute } = useRouter()
 const route = currentRoute.value
 /** 查询列表 */
 const getList = async () => {
@@ -211,8 +202,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {
-  }
+  } catch {}
 }
 
 /** 导出按钮操作 */
@@ -232,8 +222,7 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
-  if (route.query.dtuId)
-    queryParams.dtuId = route.query.dtuId as string
+  if (route.query.dtuId) queryParams.dtuId = route.query.dtuId as string
   getList()
 })
 </script>
