@@ -50,12 +50,12 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
-  <AgriculturalBaseList   ref="purchaseOrderInEnableListRef"
-                          @success="handlePurchaseOrderChange"/>
+  <SelectDeviceInfo   ref="SelectDeviceInfoRef"
+                          @success="SelectDeviceInfoSuccess"/>
 </template>
 <script setup lang="ts">
 import { EquipmentDataRuleApi, EquipmentDataRuleVO } from '@/api/agriculture/equipmentdatarule'
-import AgriculturalBaseList from "@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue";
+import SelectDeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
 import {EquipmentDataVO} from "@/api/agriculture/equipmentdata";
 
 /** 设备数据规则 表单 */
@@ -152,11 +152,11 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 /* 选择设备 */
-const purchaseOrderInEnableListRef = ref()
+const SelectDeviceInfoRef = ref()
 const openPurchaseOrderInEnableList = () => {
-  purchaseOrderInEnableListRef.value.open()
+  SelectDeviceInfoRef.value.open()
 }
-const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
+const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
   //赋值id
   formData.value.deviceId = order[0].id
   //赋值设备名称
