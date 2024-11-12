@@ -18,7 +18,7 @@
       <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-row>
+      
         <el-form-item label="分类编码" prop="categoryCode">
           <el-input
             v-model="queryParams.categoryCode"
@@ -100,9 +100,9 @@
             重置
           </el-button>
         </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item>
+ 
+   
+        <div class="pb-2">
           <el-button
             type="primary"
             plain
@@ -126,8 +126,8 @@
             <Icon icon="ep:sort" class="mr-5px"/>
             展开/折叠
           </el-button>
-        </el-form-item>
-      </el-row>
+        </div>
+    
     </custom-form>
   </ContentWrap>
 
