@@ -1,5 +1,11 @@
 <template>
-  <Dialog title="设备列表"  v-model="dialogVisible"  :appendToBody="true" :scroll="true" width="1400">
+  <Dialog
+    title="设备列表"
+    v-model="dialogVisible"
+    :appendToBody="true"
+    :scroll="true"
+    width="1400"
+  >
     <ContentWrap>
       <!-- 搜索工作栏 -->
       <el-form
@@ -69,14 +75,20 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-          <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px" />
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px" />
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
 
     <!-- 列表 -->
-    <ContentWrap >
+    <ContentWrap>
       <el-table
         v-loading="loading"
         :data="list"
@@ -84,13 +96,31 @@
         ref="suibian"
         :show-overflow-tooltip="true"
         @select="fangfa"
-        scrollbar-always-on='false'
+        scrollbar-always-on="false"
         @selection-change="handleSelectionChange"
+        @row-click="selectClick"
       >
-        <el-table-column fixed  width="30" label="选择" type="selection" />
-        <el-table-column fixed  label="设备编号" align="center" prop="deviceCode" width="200" />
-        <el-table-column fixed  label="设备点位" align="center" prop="deviceName" width="150" />
-        <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+        <el-table-column fixed width="30" label="选择" type="selection" />
+        <el-table-column
+          fixed
+          label="设备编号"
+          align="center"
+          prop="deviceCode"
+          width="200"
+        />
+        <el-table-column
+          fixed
+          label="设备点位"
+          align="center"
+          prop="deviceName"
+          width="150"
+        />
+        <el-table-column
+          label="设备类型"
+          align="center"
+          prop="deviceType"
+          width="200"
+        >
           <template #default="scope">
             <el-cascader
               style="width: 100%"
@@ -101,15 +131,38 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="所属基地" align="center" prop="belongPark" width="200" />
-        <el-table-column label="基地名称" align="center" prop="parkName" width="200" />
-        <el-table-column label="所属地块" align="center" prop="belongPlot" width="200" />
-        <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200" />
+        <el-table-column
+          label="所属基地"
+          align="center"
+          prop="belongPark"
+          width="200"
+        />
+        <el-table-column
+          label="基地名称"
+          align="center"
+          prop="parkName"
+          width="200"
+        />
+        <el-table-column
+          label="所属地块"
+          align="center"
+          prop="belongPlot"
+          width="200"
+        />
+        <el-table-column
+          label="地块名称"
+          align="center"
+          prop="parkDetailName"
+          width="200"
+        />
         <el-table-column label="经度" align="center" prop="longitude" />
         <el-table-column label="纬度" align="center" prop="latitude" />
         <el-table-column label="状态" align="center" prop="deviceStatus">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+            <dict-tag
+              :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS"
+              :value="scope.row.deviceStatus"
+            />
           </template>
         </el-table-column>
         <el-table-column label="图片" align="center" prop="imgId">
@@ -164,13 +217,16 @@
         @pagination="getList"
       />
     </ContentWrap>
-    <template #footer >
-
-        <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
+    <template #footer>
+      <el-button
+        :disabled="!selectionList.length"
+        type="primary"
+        @click="submitForm"
+      >
         确 定
       </el-button>
-      <el-button @click="clear()" >取 消</el-button>
-      </template>
+      <el-button @click="clear()">取 消</el-button>
+    </template>
   </Dialog>
 
   <!-- 表单弹窗：添加/修改 -->
@@ -227,15 +283,34 @@ const fangfa = (select: any, row: any) => {
   }
 }
 
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  suibian.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach((item) => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        suibian.value.toggleRowSelection(row, false)
+      }
+      // 不然就让当前的一行勾选
+      else {
+        suibian.value.toggleRowSelection(row, true)
+      }
+    })
+  } else {
+    suibian.value.toggleRowSelection(row, true)
+  }
+}
 
 window.addEventListener('keydown', (e) => {
-     if (e.keyCode === 27) {
-        resetQuery()
-        dialogVisible.value = false
-     }
+  if (e.keyCode === 27) {
+    resetQuery()
+    dialogVisible.value = false
+  }
 })
 
-const clear = async()=>{
+const clear = async () => {
   dialogVisible.value = false
   resetQuery()
 }
@@ -262,9 +337,9 @@ const submitForm = () => {
 /** 打开弹窗 */
 const open = async (id: string) => {
   dialogVisible.value = true
-  Object.keys(queryParams).forEach(key => {
-    queryParams[key] = undefined;
-  });
+  Object.keys(queryParams).forEach((key) => {
+    queryParams[key] = undefined
+  })
   await resetQuery()
   // console.log("id:" + id)
   await nextTick() // 等待，避免 queryFormRef 为空
@@ -318,14 +393,12 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  Object.keys(queryParams).forEach(key => {
-    queryParams[key] = undefined;
-  });
+  Object.keys(queryParams).forEach((key) => {
+    queryParams[key] = undefined
+  })
   deviceType.value = null
   handleQuery()
 }
-
-
 
 /** 添加/修改操作 */
 const formRef = ref()
@@ -371,7 +444,10 @@ const categoryProps = {
 
 /** 初始化 **/
 onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({ parentId: 0, status: 1 })
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({
+    parentId: 0,
+    status: 1
+  })
   await getList()
 })
 
@@ -383,7 +459,8 @@ watch(
       if (props.currCategory.parentId === 0) {
         queryParams.deviceType = props.currCategory.id
       } else {
-        queryParams.deviceType = props.currCategory.parentId + ',' + props.currCategory.id
+        queryParams.deviceType =
+          props.currCategory.parentId + ',' + props.currCategory.id
       }
     } else {
       queryParams.deviceType = undefined
@@ -392,5 +469,4 @@ watch(
   }
 )
 </script>
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

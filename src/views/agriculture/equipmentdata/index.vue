@@ -8,7 +8,7 @@
           :model="queryParams"
           ref="queryFormRef"
           :inline="true"
-          label-width="88px"
+          label-width="auto"
           style="width: 100%"
         >
           <el-form-item label="采集类型" prop="collectionType">
@@ -94,9 +94,13 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="handleQuery" class="!bg-[#009688] !color-[#fff]">
-              <Icon icon="ep:search" class="mr-5px" /> 搜索
+              <Icon icon="ep:search" class="mr-5px" />
+              搜索
             </el-button>
-            <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+            <el-button @click="resetQuery">
+              <Icon icon="ep:refresh" class="mr-5px" />
+              重置
+            </el-button>
           </el-form-item>
         </custom-form>
       </div>
@@ -111,7 +115,8 @@
           @click="openForm('create')"
           v-hasPermi="['yyang:equipment-data:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
         <el-button
           plain
@@ -119,14 +124,28 @@
           :loading="exportLoading"
           v-hasPermi="['yyang:equipment-data:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
         </el-button>
       </div>
-      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+      >
         <!-- <el-table-column label="主键" align="center" prop="id" /> -->
         <el-table-column label="设备名称" align="center" prop="deviceName" />
-        <el-table-column label="采集类型" align="center" prop="collectionType" />
-        <el-table-column label="监测类型" align="center" prop="monitoringType" />
+        <el-table-column
+          label="采集类型"
+          align="center"
+          prop="collectionType"
+        />
+        <el-table-column
+          label="监测类型"
+          align="center"
+          prop="monitoringType"
+        />
         <el-table-column label="数据值" align="center" prop="dataValue" />
         <el-table-column label="单位" align="center" prop="yyUnit" />
         <el-table-column
@@ -142,7 +161,11 @@
         <el-table-column label="终端编码" align="center" prop="yyRemarks" />
         <el-table-column label="操作" align="center" width="200px">
           <template #default="scope">
-            <el-button link type="primary" @click="openForm('details', scope.row.id)">
+            <el-button
+              link
+              type="primary"
+              @click="openForm('details', scope.row.id)"
+            >
               详情
             </el-button>
             <el-button
@@ -181,7 +204,10 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
+import {
+  EquipmentDataApi,
+  EquipmentDataVO
+} from '@/api/agriculture/equipmentdata'
 import EquipmentDataForm from './EquipmentDataForm.vue'
 //导入设备分类
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
@@ -289,7 +315,9 @@ let selectBase = ref([])
 let selectCollectionType = ref([])
 //查询上方列表
 const queryList = async () => {
-  const dataId = await DeviceCategoryApi.getDeviceCategoryList({ categoryName: '监测设备' })
+  const dataId = await DeviceCategoryApi.getDeviceCategoryList({
+    categoryName: '监测设备'
+  })
   // console.log(dataId,"dataId");
   selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({
     parentId: dataId[0].id
@@ -320,7 +348,7 @@ watch(
   { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整
 )
 
-const containerDom = ref();
+const containerDom = ref()
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -331,8 +359,8 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
-  await nextTick();
-  emit("heightChange", containerDom.value.clientHeight);
+  await nextTick()
+  emit('heightChange', containerDom.value.clientHeight)
 }
 // if (props.collectionType) {
 //   queryParams.collectionType = props.collectionType.collectionType
@@ -358,22 +386,23 @@ const resetQuery = () => {
 const formRef = ref()
 const router = useRouter()
 const openForm = (type: string, id?: number) => {
-
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem("equipmentDataQueryParams");
+  sessionStorage.removeItem('equipmentDataQueryParams')
   const data = {
-    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    pageNo: type === 'create' ? 1 : queryParams.pageNo,
     collectionType: queryParams.collectionType,
     monitoringType: queryParams.monitoringType,
     collectionTime: queryParams.collectionTime,
     deviceName: queryParams.deviceName,
     channelId: queryParams.channelId,
-    yyRemarks: queryParams.yyRemarks,
+    yyRemarks: queryParams.yyRemarks
   }
-  sessionStorage.setItem("equipmentDataQueryParams", JSON.stringify(data));
+  sessionStorage.setItem('equipmentDataQueryParams', JSON.stringify(data))
 
   if (type == 'create') {
-    router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData')
+    router.push(
+      '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData'
+    )
   } else {
     router.push(
       '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type=' +
@@ -424,18 +453,18 @@ onMounted(() => {
   }
 
   // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem("equipmentDataQueryParams");
+  const sessionParams = sessionStorage.getItem('equipmentDataQueryParams')
   if (sessionParams) {
-    const data = JSON.parse(sessionParams);
-    queryParams.pageNo = data.pageNo;
-    queryParams.collectionType = data.collectionType;
-    queryParams.monitoringType = data.monitoringType;
-    queryParams.collectionTime = data.collectionTime;
-    queryParams.deviceName = data.deviceName;
-    queryParams.channelId = data.channelId;
-    queryParams.yyRemarks = data.yyRemarks;
+    const data = JSON.parse(sessionParams)
+    queryParams.pageNo = data.pageNo
+    queryParams.collectionType = data.collectionType
+    queryParams.monitoringType = data.monitoringType
+    queryParams.collectionTime = data.collectionTime
+    queryParams.deviceName = data.deviceName
+    queryParams.channelId = data.channelId
+    queryParams.yyRemarks = data.yyRemarks
   }
-  sessionStorage.removeItem("equipmentDataQueryParams");
+  sessionStorage.removeItem('equipmentDataQueryParams')
 
   getList()
 })

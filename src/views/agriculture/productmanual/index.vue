@@ -5,7 +5,7 @@
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
-      label-width="88px"
+      label-width="auto"
       :inline="true"
     >
       <!-- 表单内容 -->
@@ -94,7 +94,11 @@
         </el-button>
       </div>
       <div class="flex flex-wrap content-center">
-        <el-radio-group v-model="listType" size="small" @change="handleCardChange">
+        <el-radio-group
+          v-model="listType"
+          size="small"
+          @change="handleCardChange"
+        >
           <el-radio-button label="card" value="card">
             <el-icon><Menu /></el-icon>
             卡片
@@ -111,7 +115,9 @@
       <!-- 卡片形式 -->
       <div v-if="list.length && listType === 'card'" class="text-[#999999]">
         <!-- 卡片列表区 -->
-        <div class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 rounded">
+        <div
+          class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 rounded"
+        >
           <div
             class="bg-[#F5F5F5] pb-[20px] shadow-md rounded-md"
             v-for="item in list"
@@ -164,7 +170,10 @@
                   v-if="item.fileManagement"
                   class="w-1/2 lg:w-1/4 text-center"
                 >
-                  <a :href="item.fileManagement" class="text-white no-underline text-[14px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px]">
+                  <a
+                    :href="item.fileManagement"
+                    class="text-white no-underline text-[14px] lg:text-[8px] xl:text-[10px] 2xl:text-[14px]"
+                  >
                     <el-icon class="align-bottom"><Download /></el-icon>
                     <span>下载</span>
                   </a>
@@ -179,10 +188,22 @@
       </div>
       <!-- 列表形式 -->
       <div v-show="listType === 'list'">
-        <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
+        <el-table
+          :data="list"
+          v-loading="loading"
+          :show-overflow-tooltip="true"
+        >
           <el-table-column label="手册名称" align="center" prop="schemeName" />
-          <el-table-column label="简介" align="center" prop="briefIntroduction" />
-          <el-table-column label="创作人" align="center" prop="marketingCreator" />
+          <el-table-column
+            label="简介"
+            align="center"
+            prop="briefIntroduction"
+          />
+          <el-table-column
+            label="创作人"
+            align="center"
+            prop="marketingCreator"
+          />
           <el-table-column
             label="上传时间"
             align="center"
@@ -190,12 +211,23 @@
             :formatter="dateFormatter"
             width="180px"
           />
-          <el-table-column label="分类" align="center" prop="marketingCategory" />
+          <el-table-column
+            label="分类"
+            align="center"
+            prop="marketingCategory"
+          />
           <el-table-column label="标签" align="center" prop="marketingTags" />
-          <el-table-column label="文件管理" align="center" prop="fileManagement">
+          <el-table-column
+            label="文件管理"
+            align="center"
+            prop="fileManagement"
+          >
             <template #default="scope">
               <el-button type="primary" round v-if="scope.row.fileManagement">
-                <a :href="scope.row.fileManagement" style="color: aliceblue; text-decoration: none">
+                <a
+                  :href="scope.row.fileManagement"
+                  style="color: aliceblue; text-decoration: none"
+                >
                   点击下载
                 </a>
               </el-button>
@@ -212,7 +244,12 @@
               />
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" fixed="right" width="200px">
+          <el-table-column
+            align="center"
+            label="操作"
+            fixed="right"
+            width="200px"
+          >
             <template #default="scope">
               <el-button
                 v-if="scope.row.fileManagement"
@@ -255,7 +292,12 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
   <!-- 文件预览 -->
-  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
+  <el-dialog
+    v-model="dialogVisible"
+    title="预览"
+    width="70vw"
+    :before-close="handleDialogClose"
+  >
     <el-scrollbar height="65vh" class="px-2">
       <div id="filePreview"></div>
     </el-scrollbar>
@@ -265,7 +307,10 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
+import {
+  MarketingProgramApi,
+  MarketingProgramVO
+} from '@/api/agriculture/marketingprogram'
 import MarketingProgramForm from './MarketingProgramForm.vue'
 //文件预览引入
 import { renderAsync } from 'docx-preview'
@@ -393,24 +438,27 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   sessionStorage.setItem('latestListType', listType.value)
-    
+
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem("productManualQueryParams");
+  sessionStorage.removeItem('productManualQueryParams')
   const data = {
-    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    pageNo: type === 'create' ? 1 : queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
-    marketingUploadTime: queryParams.marketingUploadTime,
+    marketingUploadTime: queryParams.marketingUploadTime
   }
-  sessionStorage.setItem("productManualQueryParams", JSON.stringify(data));
+  sessionStorage.setItem('productManualQueryParams', JSON.stringify(data))
 
   if (type == 'create') {
     router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram')
   } else {
     router.push(
-      '/pcg/marketingCenter/productManual/CreateMarketingProgram?type=' + type + '&id=' + id
+      '/pcg/marketingCenter/productManual/CreateMarketingProgram?type=' +
+        type +
+        '&id=' +
+        id
     )
   }
 }
@@ -446,17 +494,17 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(() => {
   // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem("productManualQueryParams");
+  const sessionParams = sessionStorage.getItem('productManualQueryParams')
   if (sessionParams) {
-    const data = JSON.parse(sessionParams);
-    queryParams.pageNo = data.pageNo;
-    queryParams.schemeName = data.schemeName;
-    queryParams.marketingCreator = data.marketingCreator;
-    queryParams.marketingCategory = data.marketingCategory;
-    queryParams.marketingTags = data.marketingTags;
-    queryParams.marketingUploadTime = data.marketingUploadTime;
+    const data = JSON.parse(sessionParams)
+    queryParams.pageNo = data.pageNo
+    queryParams.schemeName = data.schemeName
+    queryParams.marketingCreator = data.marketingCreator
+    queryParams.marketingCategory = data.marketingCategory
+    queryParams.marketingTags = data.marketingTags
+    queryParams.marketingUploadTime = data.marketingUploadTime
   }
-  sessionStorage.removeItem("productManualQueryParams");
+  sessionStorage.removeItem('productManualQueryParams')
 
   getList()
 })
