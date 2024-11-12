@@ -14,9 +14,9 @@
         <el-select v-model="formData.monitorType" placeholder="请选择传感器监测类型" class="w-1/1">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.MONITOR_TYPE)"
-            :key="dict.value"
+            :key="dict.label"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.label"
           />
         </el-select>
       </el-form-item>
