@@ -310,7 +310,7 @@
   <!-- </el-scrollbar> -->
 
   <!-- 表单弹窗：添加/修改 -->
-  <MonitoringEquipmentDataForm ref="formRef" @success="getList" />
+  <MonitoringEquipmentDataForm ref="formRef" @success="handleUpdateSuccess" />
   <!-- 视频弹窗 -->
   <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
     <video :src="videoUrl" controls autoplay class="video" width="800px" height="800px"></video>
@@ -334,6 +334,8 @@ import MonitoringEquipmentDataForm from './MonitoringEquipmentDataForm.vue'
 import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
 import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
 import SelectDeviceInfo from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue'
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
 
 /** 监控设备数据 列表 */
 defineOptions({ name: 'MonitoringEquipmentData' })
@@ -460,12 +462,37 @@ const handleCardChange = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
+const tmpIndex = ref(-1)
 const openForm = (type: string, id?: number) => {
+  // 编辑前 保存当前编辑项的下标
+  if ("update" === type && "card" === listType.value) {
+    tmpIndex.value = list.value.findIndex(ele => {
+      return ele.id === currentItem.value.id;
+    });
+  }
   formRef.value.open(type, id)
+}
+
+// 修改成功后调用的函数
+const handleUpdateSuccess = async () => {
+  await getList();
+  if ("card" !== listType.value) return;
+  if (-1 !== tmpIndex.value) {
+    currentItem.value = list.value[tmpIndex.value];
+    tmpIndex.value = -1;
+  }
 }
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
+  // 保留当前展示项的下标
+  let tmp: number = -1;
+  if ("card" === listType.value) {
+    tmp = list.value.findIndex(ele => {
+      return ele.id === currentItem.value.id;
+    });
+  }
+
   try {
     // 删除的二次确认
     await message.delConfirm()
@@ -475,6 +502,14 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {}
+
+  if (-1 === tmp) return;
+  if ("card" === listType.value && tmp >= list.value.length) {
+    currentItem.value = list.value[list.value.length - 1];
+  }
+  if ("card" === listType.value && tmp < list.value.length) {
+    currentItem.value = list.value[tmp];
+  }
 }
 
 /** 导出按钮操作 */
@@ -575,9 +610,6 @@ const scroll = ({ scrollTop }) => {
     dom?.setAttribute("style", "position: relative;width: auto;top: 0;")
   }
 }
-
-import { useAppStore } from '@/store/modules/app'
-import { watch } from "vue"
 
 const appStore = useAppStore()
 const themeIsDark = ref(false)
