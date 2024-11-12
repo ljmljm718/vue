@@ -331,7 +331,7 @@ v-model="queryParams.reservedOne" placeholder="请选择设备" disabled
     </div>
     <!-- 卡片 -->
     <div
-      class="w-full pt-2 grid 2xl:grid-cols-4 xl:grid-cols-2 gap-3"
+      class="w-full pt-2 grid 2xl:grid-cols-4 xl:grid-cols-3 md:lg:grid-cols-2 sm:grid-cols-1 gap-3"
       v-show="showType === 'card'"
     >
       <div
