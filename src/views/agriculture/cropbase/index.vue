@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
       <el-form-item label="地块名称" prop="plotName">
         <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-240px" :disabled="true">
@@ -279,7 +279,7 @@
     </div>
     <!-- 卡片 -->
     <div
-      class="w-full pt-2 grid 2xl:grid-cols-3 xl:grid-cols-2 gap-3 "
+      class="w-full pt-2 grid 2xl:grid-cols-3 md:lg:xl:grid-cols-2 sm:grid-cols-1 gap-3 "
       v-show="showType === 'card'"
     >
       <div
