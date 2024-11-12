@@ -378,7 +378,6 @@
         <el-badge
           :value="totalMonitor"
           class="item"
-          v-if="deptName != '竹茶村' && deptName != '茶竹村'"
         >
           <span class="px-2">监控设备预警</span>
         </el-badge>

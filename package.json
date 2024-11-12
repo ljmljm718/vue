@@ -60,6 +60,7 @@
     "fast-xml-parser": "^4.3.2",
     "highlight.js": "^11.9.0",
     "hls.js": "^1.5.14",
+    "husky": "^9.1.6",
     "jsencrypt": "^3.3.2",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
@@ -165,6 +166,8 @@
     "node": "20.14.0"
   },
   "lint-staged": {
-    "*.vue": "prettier --write --ignore-unknown"
+    "*.vue": "prettier --write --ignore-unknown",
+    "*.js": "eslint --cache --fix",
+    "*.css": "stylelint --fix"
   }
 }
