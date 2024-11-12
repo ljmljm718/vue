@@ -40,9 +40,9 @@ const handleCollapse = () => {
       if (props.showLabels.length > 0) {
         if (props.showLabels.indexOf(formItemLabel) <= -1 && (!btnDom || formItemLabel)) formItem.style.display = 'none';
       } else {
-        if (i > 1 && (!btnDom || formItemLabel)) {
+        // if (i > 1 && (!btnDom || formItemLabel)) {
           formItem.style.display = 'none';
-        }
+        // }
       }
     }
   }
@@ -58,24 +58,38 @@ const resetFields = () => {
 defineExpose({ resetFields })
 </script>
 <template>
-  <el-form ref="customFormRef" class="relative" :id="componentID" v-bind="$attrs">
+  <el-form 
+    ref="customFormRef" 
+    :id="componentID" 
+    v-bind="$attrs" 
+    class="relative -mb-15px grid xl:grid-cols-4 2xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
+    label-width="auto">
     <slot></slot>
+    <div class="w-full h-1px">
     <div class="absolute collapsed-css" @click="handleCollapse()">
       <!-- {{ collapsed ? '展开' : '收起' }} -->
       <el-icon v-if="collapsed"><ArrowUp/></el-icon>
       <el-icon v-else><ArrowDown/></el-icon>
     </div>
+  </div>
   </el-form>
 </template>
 <style scoped lang="scss">
 .collapsed-css{
-  right: 0;
+  position: absolute;
+  right : 0;
   bottom: -5px;
   font-size: 16px;
   color: #fff;
   cursor: pointer;
   background: #009688;
   padding: 3px 8px 1px 8px;
-  border-radius: 5px 5px 0 0;
+ 
+  width : 18px;
+  z-index: 1;
+  display: flex; // 让图标居中对齐
+  align-items: center;
+  justify-content: center;
+
 }
 </style>
