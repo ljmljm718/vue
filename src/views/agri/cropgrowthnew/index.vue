@@ -23,10 +23,7 @@
       <!--            class="!w-240px"-->
       <!--          />-->
       <!--        </el-form-item>-->
-      <el-form-item
-        label="品种"
-        prop="cropCode"
-      >
+      <el-form-item label="品种" prop="cropCode">
         <el-select
           v-model="queryParams.cropCode"
           clearable
@@ -41,16 +38,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item
-        label="品类"
-        prop="cropId"
-      >
-        <el-select
-          v-model="queryParams.cropId"
-          clearable
-          placeholder="请选择品类"
-          class="!w-240px"
-        >
+      <el-form-item label="品类" prop="cropId">
+        <el-select v-model="queryParams.cropId" clearable placeholder="请选择品类" class="!w-240px">
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -59,10 +48,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item
-        label="生长期"
-        prop="growth"
-      >
+      <el-form-item label="生长期" prop="growth">
         <el-input
           v-model="queryParams.growth"
           placeholder="请输入生长期"
@@ -73,14 +59,12 @@
       </el-form-item>
       <!--      </el-form>-->
       <el-form-item>
-        <el-button @click="handleQuery" type="primary"
-        >
-          <Icon icon="ep:search" class="mr-5px"/>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
           搜索
-        </el-button
-        >
+        </el-button>
         <el-button @click="resetQuery()">
-          <Icon icon="ep:refresh" class="mr-5px"/>
+          <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
         <!--          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>-->
@@ -91,7 +75,13 @@
     <div class="flex items-center justify-between">
       <div
         class="space-x-1"
-        style="margin-bottom: .6rem;margin-top: .7rem;margin-left: 0rem;margin-right: 1.5rem;height: 2.4rem"
+        style="
+          margin-bottom: 0.6rem;
+          margin-top: 0.7rem;
+          margin-left: 0rem;
+          margin-right: 1.5rem;
+          height: 2.4rem;
+        "
       >
         <el-button
           class="!h-2.4rem"
@@ -99,20 +89,14 @@
           @click="openForm('create')"
           v-hasPermi="['agri:crop-growth-new:create']"
         >
-          <Icon
-            icon="ep:plus"
-            class="mr-5px"
-          />
+          <Icon icon="ep:plus" class="mr-5px" />
           <span>新增</span>
         </el-button>
       </div>
-      <div
-        class="
-          grow xl:block hidden mb-1rem
-          mt-1rem mr-1.5rem h-2.4rem
-        "
-      >
-        <IntroduceAlert title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动1。"/>
+      <div class="grow xl:block hidden mb-1rem mt-1rem mr-1.5rem h-2.4rem">
+        <IntroduceAlert
+          title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动1。"
+        />
       </div>
       <div class="flex items-center cursor-pointer">
         <div
@@ -121,7 +105,7 @@
           @click="showType = 'card'"
         >
           <el-icon>
-            <Menu/>
+            <Menu />
           </el-icon>
           <div class="pl-1 text-[13px]">卡片</div>
         </div>
@@ -131,13 +115,13 @@
           @click="showType = 'list'"
         >
           <el-icon>
-            <List/>
+            <List />
           </el-icon>
           <div class="pl-1 text-[13px]">列表</div>
         </div>
       </div>
     </div>
-    <div class="xl:hidden block rounded-sm" style="border: 1px solid #72c63c;">
+    <div class="xl:hidden block rounded-sm" style="border: 1px solid #72c63c">
       <el-alert
         title="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"
         type="success"
@@ -146,36 +130,16 @@
         show-icon
       />
     </div>
-    <div
-      class="w-full pt-5"
-      v-show="showType === 'list'"
-    >
-      <el-table
-        v-loading="loading"
-        :data="list"
-        :stripe="true"
-        :show-overflow-tooltip="true"
-      >
+    <div class="w-full pt-5" v-show="showType === 'list'">
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- <el-table-column type="selection" width="55" /> -->
         <!--      <el-table-column label="主键" align="center" prop="id" />-->
-        <el-table-column
-          label="品种名称"
-          align="center"
-          prop="cropName"
-        />
-        <el-table-column
-          label="品类名称"
-          align="center"
-          prop="cropType"
-        />
+        <el-table-column label="品种名称" align="center" prop="cropName" />
+        <el-table-column label="品类名称" align="center" prop="cropType" />
         <!--      <el-table-column label="品种编号" align="center" prop="cropCode" />-->
         <!--      <el-table-column label="品类编号" align="center" prop="cropId" />-->
         <!--      <el-table-column label="图片" align="center" prop="imgId" />-->
-        <el-table-column
-          label="图片"
-          align="center"
-          prop="imgId"
-        >
+        <el-table-column label="图片" align="center" prop="imgId">
           <template #default="{ row }">
             <el-image
               class="h-50px w-50px"
@@ -186,13 +150,9 @@
             />
           </template>
         </el-table-column>
+        <el-table-column label="生长期" align="center" prop="growth" />
         <el-table-column
-          label="生长期"
-          align="center"
-          prop="growth"
-        />
-        <el-table-column
-          label='开始时间'
+          label="开始时间"
           align="center"
           prop="startTime"
           :formatter="dateFormatter3"
@@ -204,18 +164,18 @@
               <div
                 @click="sortChange(0)"
                 class="time-icon2 w-10px ml-10px h-15px"
-                v-if="timeNum==2"
+                v-if="timeNum == 2"
               ></div>
               <div
                 @click="sortChange(1)"
                 class="time-icon w-10px ml-10px h-15px"
-                v-else-if="timeNum==0"
+                v-else-if="timeNum == 0"
               ></div>
               <div
                 @click="sortChange(2)"
                 class="time-icon w-10px ml-10px h-15px"
                 v-else
-                style="transform:rotate(180deg)"
+                style="transform: rotate(180deg)"
               ></div>
             </div>
           </template>
@@ -227,59 +187,30 @@
           :formatter="dateFormatter3"
           width="100px"
         />
-        <el-table-column
-          label="环境条件"
-          align="center"
-          prop="envCondition"
-          width="220px"
-        />
-        <el-table-column
-          label="生长地点"
-          align="center"
-          prop="growSite"
-          width="180px"
-        />
-        <el-table-column
-          label="周期（/天）"
-          align="center"
-          prop="cycle"
-          width="120px"
-        />
-        <el-table-column
-          label="特点"
-          align="center"
-          prop="feature"
-          width="220px"
-        />
-        <el-table-column
-          label="农事建议"
-          align="center"
-          prop="farmAdvice"
-          width="200px"
-        />
-        <el-table-column
-          align="center"
-          prop="orders"
-          width="200px"
-        >
+        <el-table-column label="环境条件" align="center" prop="envCondition" width="220px" />
+        <el-table-column label="生长地点" align="center" prop="growSite" width="180px" />
+        <el-table-column label="周期（/天）" align="center" prop="cycle" width="120px" />
+        <el-table-column label="特点" align="center" prop="feature" width="220px" />
+        <el-table-column label="农事建议" align="center" prop="farmAdvice" width="200px" />
+        <el-table-column align="center" prop="orders" width="200px">
           <template #header>
             <div class="flex items-center">
               <div>种植顺序</div>
               <div
                 @click="plantChange(0)"
                 class="time-icon2 w-10px ml-10px h-15px"
-                v-if="plantNum==2"
+                v-if="plantNum == 2"
               ></div>
               <div
                 @click="plantChange(1)"
                 class="time-icon w-10px ml-10px h-15px"
-                v-else-if="plantNum==0"
+                v-else-if="plantNum == 0"
               ></div>
               <div
                 @click="plantChange(2)"
                 class="time-icon w-10px ml-10px h-15px"
                 v-else
-                style="transform:rotate(180deg)"
+                style="transform: rotate(180deg)"
               ></div>
             </div>
           </template>
@@ -291,26 +222,14 @@
         <!--        :formatter="dateFormatter"-->
         <!--        width="180px"-->
         <!--      />-->
-        <el-table-column
-          label="操作"
-          align="center"
-          width="270px"
-          fixed="right"
-        >
+        <el-table-column label="操作" align="center" width="270px" fixed="right">
           <template #default="scope">
-            <el-button
-              link
-              type="success"
-              plain
-              @click="damn(scope.row)"
-            >
-              事项查看
-            </el-button>
+            <el-button link type="success" plain @click="damn(scope.row)">事项查看</el-button>
             <el-button
               link
               type="warning"
               plain
-              @click="openSubDeviceForm(scope.row.id,scope.row.growth)"
+              @click="openSubDeviceForm(scope.row.id, scope.row.growth)"
             >
               事项添加
             </el-button>
@@ -334,10 +253,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div
-      class="w-full space-y-3 pt-2"
-      v-show="showType === 'card'"
-    >
+    <div class="w-full space-y-3 pt-2" v-show="showType === 'card'">
       <div
         class="rounded-2 p-3 flex flex-wrap items-center shadow-md"
         style="border: 1px solid #66666666"
@@ -345,42 +261,41 @@
         :key="item.id"
       >
         <div class="flex items-center 2xl:w-[calc(100%_-_700px)] w-full">
-          <div
-            class="h-[14rem] space-y-2 box-border px-3 py-1"
-            style="width: calc(100% - 15.5rem)"
-          >
-            <div class="text-[1rem] font-bold">{{ item.cropName }}</div>
+          <div class="h-[14rem] space-y-2 box-border px-3 py-1" style="width: calc(100% - 15.5rem)">
+            <div class="text-[1rem] font-bold">
+              {{ item.cropName }}
+            </div>
             <div class="text-[#666666] pb-1">
               <span>品类:</span>
-              <span class="pl-2">{{ item.cropType }}</span>
+              <span class="pl-2">
+                {{ item.cropType }}
+              </span>
               <span v-show="item.cropName" class="pl-4">品种:</span>
-              <span v-show="item.cropName" class="pl-2">{{ item.cropName }}</span>
+              <span v-show="item.cropName" class="pl-2">
+                {{ item.cropName }}
+              </span>
             </div>
             <div class="flex items-start w-full">
               <img
                 :src="item.imgId"
-                class="h-130px w-130px object-contain shadow-md rounded-md !bg-[#f5f7f9] p-1"
-                style="border: 1px solid #25252525;"
+                class="h-130px !w-130px object-contain shadow-md rounded-md !bg-[#f5f7f9] p-1"
+                style="border: 1px solid #25252525"
               />
-              <div class="ml-3 text-[15px] grow">
+              <div class="ml-3 text-[15px] grow" style="width: calc(100% - 142px)">
                 <div class="mb-1 font-bold">环境条件:</div>
                 <div class="line-clamp-2">
-                  <el-tooltip
-                    class="box-item"
-                    :content="item.envCondition"
-                    placement="top-start"
-                  >
-                    <div>{{ item.envCondition }}</div>
+                  <el-tooltip class="box-item" :content="item.envCondition" placement="top-start">
+                    <div>
+                      {{ item.envCondition }}
+                    </div>
                   </el-tooltip>
                 </div>
                 <div class="mt-2 mb-1 font-bold">特点:</div>
                 <div class="line-clamp-2">
-                  <el-tooltip
-                    class="w-[300px]"
-                    :content="item.feature"
-                    placement="top-start"
-                  >
-                    <div>{{ item.feature }}</div>
+                  <el-tooltip class="w-[300px]" :content="item.feature" placement="top-start">
+                    <div>
+                      {{ item.feature }}
+                    </div>
                   </el-tooltip>
                 </div>
               </div>
@@ -394,31 +309,46 @@
         <div class="2xl:w-[660px] w-full 2xl:p-1 p-3 box-border min-h-10rem">
           <div class="flex justify-between items-center px-6 overflow-hidden pb-[25px]">
             <div
-              v-for="ele, idx in item.child1"
+              v-for="(ele, idx) in item.child1"
               :key="idx"
               class="relative cursor-pointer select-none"
-              @click="item.growth = ele.growth;updateInstanceOptions(`chart_${item.id}`, {
-                title: { text: ele.growth, subtext: ele.cycle + '天' }
-              }, item.cropCode, item.cropId)"
+              @click="
+                item.growth =
+                  ele.growth &&
+                  updateInstanceOptions(
+                    `chart_${item.id}`,
+                    {
+                      title: {
+                        text: ele.growth,
+                        subtext: ele.cycle + '天'
+                      }
+                    },
+                    item.cropCode,
+                    item.cropId
+                  )
+              "
             >
-              <div>{{ ele.growth }}</div>
+              <div>
+                {{ ele.growth }}
+              </div>
               <div>{{ ele.cycle }}天</div>
               <div
-                :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"></div>
+                :class="[ele.growth === item.growth ? 'progress-bar-active' : 'progress-bar']"
+              ></div>
             </div>
           </div>
           <div class="flex mt-2">
             <div
               :class="`grow text-[#ffffff] ${child.id === item.activeBar ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'} text-center py-2`"
-              v-for="child, flag in item.child2"
+              v-for="(child, flag) in item.child2"
               :key="flag"
               @click="item.activeBar = child.id"
-            >{{ child.itemName }}
+            >
+              {{ child.itemName }}
             </div>
           </div>
-          <div class="px-[1rem] pt-3 text-[.9rem]">{{
-              getLabelById(item.child2, item.activeBar)
-            }}
+          <div class="px-[1rem] pt-3 text-[.9rem]">
+            {{ getLabelById(item.child2, item.activeBar) }}
           </div>
         </div>
       </div>
@@ -434,54 +364,33 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CropGrowthNewForm
-    ref="formRef"
-    @success="getList()"
-  />
-  <CropGrowthSubForm
-    ref="subformRef"
-    @success="getList()"
-  />
-  <el-dialog
-    v-model="dialogVisible"
-    title="指导视频"
-    width="700"
-    :before-close="handleClose"
-  >
-    <video
-      width="100%"
-      autoplay
-      :src="vedioUrl"
-      controls
-    ></video>
+  <CropGrowthNewForm ref="formRef" @success="getList()" />
+  <CropGrowthSubForm ref="subformRef" @success="getList()" />
+  <el-dialog v-model="dialogVisible" title="指导视频" width="700" :before-close="handleClose">
+    <video width="100%" autoplay :src="vedioUrl" controls></video>
   </el-dialog>
 
   <!-- start事项查看弹窗 -->
-  <el-drawer
-    v-model="drawer2"
-    :direction="direction"
-    :data="formData"
-  >
+  <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
       <h3>{{ thisGrowth }}注意事项</h3>
     </template>
     <template #default>
       <div class="relative space-y-3 py-4 box-border">
-        <el-card
-          class="w-full"
-          v-for="item, index in formData"
-          :key="index"
-        >
+        <el-card class="w-full" v-for="(item, index) in formData" :key="index">
           <!-- <h4>农事活动：{{ getValByDict(item.farmDefineType) }}</h4>
           <p>品种：
             <dict-tag :type="DICT_TYPE.AGRI_CROP_CULTIVARS" :value="item.cropType"/>
           </p>
           <p>作物名称：{{ item.cropName }}</p>
           <p>记录时间：{{ formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss') }}</p> -->
-          <p v-if='thisCropType'>品种: {{ thisCropType }}</p>
-          <p>事项名称: {{ item.itemName }}</p>
+          <p v-if="thisCropType">品种: {{ thisCropType }}</p>
+          <p>
+            事项名称:
+            {{ item.itemName }}
+          </p>
           <p>事项内容：{{ item.itemContent }}</p>
-          <el-button v-if='item.remark!=null' @click="lookVedio(item)" type="primary">
+          <el-button v-if="item.remark != null" @click="lookVedio(item)" type="primary">
             查看指导视频
           </el-button>
         </el-card>
@@ -489,38 +398,37 @@
     </template>
   </el-drawer>
   <!-- end事项查看弹窗 -->
-
 </template>
 
 <script setup lang="ts">
-import download from '@/utils/download'
-import {CropGrowthNewApi, CropGrowthNewVO} from '@/api/agri/cropgrowthnew'
+import download from '@/utils/download';
+import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew';
 // @ts-ignore
-import CropGrowthNewForm from './CropGrowthNewForm.vue'
-import {allDataCacheManager, CategoryManagementVO} from '@/api/agriculture/categorymanagement'
-import {VarietyManagementApi, VarietyManagementVO} from '@/api/agriculture/varietymanagement'
+import CropGrowthNewForm from './CropGrowthNewForm.vue';
+import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement';
+import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement';
 // @ts-ignore
-import CropGrowthSubForm from './CropGrowthSubForm.vue'
+import CropGrowthSubForm from './CropGrowthSubForm.vue';
 //本次请求接口 生长周期子表接口
-import {CropGrowthSubApi, CropGrowthSubVO} from '@/api/agriculture/cropgrowthsub'
+import { CropGrowthSubApi, CropGrowthSubVO } from '@/api/agriculture/cropgrowthsub';
 // 时间格式化工具类
-import {formatTime} from '@/utils/index'
-import {generateUUID} from '@/utils'
-import {initChartStatic, generatePieOptions} from '@/utils/bigscreenTool/index'
-import {dateFormatter3} from "@/utils/formatTime";
+import { formatTime } from '@/utils/index';
+import { generateUUID } from '@/utils';
+import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index';
+import { dateFormatter3 } from '@/utils/formatTime';
 
 /** 作物生长周期 列表 */
-defineOptions({name: 'CropGrowthNew'})
-const dialogVisible = ref(false)
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+defineOptions({ name: 'CropGrowthNew' });
+const dialogVisible = ref(false);
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const showType = ref('card')
-const loading = ref(true) // 列表的加载中
-const list = ref<CropGrowthNewVO[]>([]) // 列表的数据
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-const listVarietyManagementVO = ref<VarietyManagementVO[]>([]) // 品种列表的数据
-const total = ref(0) // 列表的总页数
+const showType = ref('card');
+const loading = ref(true); // 列表的加载中
+const list = ref<CropGrowthNewVO[]>([]); // 列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
+const listVarietyManagementVO = ref<VarietyManagementVO[]>([]); // 品种列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -541,8 +449,8 @@ const queryParams = reactive({
   orders: undefined,
   farmAdvice: undefined,
   startTimeSort: undefined,
-  ordersSort: undefined,
-})
+  ordersSort: undefined
+});
 const queryParams1 = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -557,43 +465,43 @@ const queryParams1 = reactive({
   status: undefined,
   remark2: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-const CategoryManagementQueryParams = reactive({})
-const VarietyManagementVOQueryParams = reactive({})
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+const CategoryManagementQueryParams = reactive({});
+const VarietyManagementVOQueryParams = reactive({});
 
 //start事件查看方法
-const drawer2 = ref(false)
+const drawer2 = ref(false);
 
 function cancelClick() {
-  thisCropType.value = undefined
-  thisGrowth.value = undefined
-  drawer2.value = false
+  thisCropType.value = undefined;
+  thisGrowth.value = undefined;
+  drawer2.value = false;
 }
 
-const formData = ref<CropGrowthSubVO[]>([])
-const thisCropType = ref()
-const thisGrowth = ref()
+const formData = ref<CropGrowthSubVO[]>([]);
+const thisCropType = ref();
+const thisGrowth = ref();
 const damn = async (row) => {
-  thisCropType.value = row.cropName
-  thisGrowth.value = row.growth
-  const datas = await CropGrowthSubApi.getCropGrowthSubPage({cropCode: row.id})
-  formData.value = datas.list
-  drawer2.value = true
-}
+  thisCropType.value = row.cropName;
+  thisGrowth.value = row.growth;
+  const datas = await CropGrowthSubApi.getCropGrowthSubPage({ cropCode: row.id });
+  formData.value = datas.list;
+  drawer2.value = true;
+};
 //end事件查看
 
 // TODO: 生长周期卡片 接口参数
 const getLabelById = (arr: any[], id: string) => {
-  const _item = arr.find((item) => item.id === id)
-  if (_item) return _item.itemContent
-  return ''
-}
+  const _item = arr.find((item) => item.id === id);
+  if (_item) return _item.itemContent;
+  return '';
+};
 
-const instanceMap = new Map<string, any>()
+const instanceMap = new Map<string, any>();
 const updateInstanceOptions = async (id: string, option, cropCode = '', cropId = '') => {
-  console.log("🚀 ~ updateInstanceOptions ~ option:", option)
+  console.log('🚀 ~ updateInstanceOptions ~ option:', option);
 
   if (!option || !id) return;
   const instance = instanceMap.get(id);
@@ -602,25 +510,29 @@ const updateInstanceOptions = async (id: string, option, cropCode = '', cropId =
     growth: option.title.text,
     cropCode,
     cropId
-  })
+  });
   if (!Array.isArray(res)) return;
-  if (Array.isArray(res)) console.log("🚀 ~ updateInstanceOptions ~ res:", res)
-  const _resFiltedItem = res.find(ele => ele.cropCode === cropCode && ele.cropId === cropId);
-  let activeBar = ''
+  if (Array.isArray(res)) console.log('🚀 ~ updateInstanceOptions ~ res:', res);
+  const _resFiltedItem = res.find((ele) => ele.cropCode === cropCode && ele.cropId === cropId);
+  let activeBar = '';
   if (Array.isArray(_resFiltedItem.child2) && _resFiltedItem.child2.length > 0) {
-    activeBar = _resFiltedItem.child2[0].id
+    activeBar = _resFiltedItem.child2[0].id;
   }
-  cardDataList.value = cardDataList.value.map(item => {
-    const _id_ = id.split("_")[1];
+  cardDataList.value = cardDataList.value.map((item) => {
+    const _id_ = id.split('_')[1];
     if (item.id !== _id_) return item;
-    console.log("item.id !== id", item.id !== id)
-    return {..._resFiltedItem, activeBar, id: item.id}
-  })
-}
+    console.log('item.id !== id', item.id !== id);
+    return {
+      ..._resFiltedItem,
+      activeBar,
+      id: item.id
+    };
+  });
+};
 
 const initCharts = () => {
-  cardDataList.value.forEach(item => {
-    console.log("🚀 ~ initCharts ~ item:", item)
+  cardDataList.value.forEach((item) => {
+    console.log('🚀 ~ initCharts ~ item:', item);
     if (!Array.isArray(item.child1)) return;
     const instance = initChartStatic(
       `chart_${item.id}`,
@@ -631,16 +543,16 @@ const initCharts = () => {
           left: 'center',
           top: '37%',
           textStyle: {
-            color: "#252525",
-            fontSize: 15,
+            color: '#252525',
+            fontSize: 15
           },
           subtextStyle: {
-            color: "#252525",
-            fontSize: 15,
+            color: '#252525',
+            fontSize: 15
           }
         },
-        legend: {show: false},
-        tooltip: {show: false},
+        legend: { show: false },
+        tooltip: { show: false },
         color: ['#59b756', '#009688', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
         series: [
           {
@@ -648,170 +560,188 @@ const initCharts = () => {
             type: 'pie',
             radius: ['40%', '80%'],
             center: 'center',
-            data: item.child1.map(ele => ({
-              name: ele.growth, value: ele.cycle
+            data: item.child1.map((ele) => ({
+              name: ele.growth,
+              value: ele.cycle
             })),
             label: {
               position: 'inside',
               formatter: '{b}',
               rich: {
-                b: {color: '#c1c1c1', fontSize: 10},
-                d: {color: '#c1c1c1', fontSize: 10}
+                b: {
+                  color: '#c1c1c1',
+                  fontSize: 10
+                },
+                d: {
+                  color: '#c1c1c1',
+                  fontSize: 10
+                }
               }
             },
-            emphasis: {disabled: false},
-            itemStyle: {borderWidth: 5, borderColor: '#ffffff'}
+            emphasis: {
+              disabled: false
+            },
+            itemStyle: {
+              borderWidth: 5,
+              borderColor: '#ffffff'
+            }
           }
         ]
       })
-    )
-    console.log("🚀 ~ instance&&instance.on ~ instance:", instance)
-    const existIns = instanceMap.has(`chart_${item.id}`)
+    );
+    console.log('🚀 ~ instance&&instance.on ~ instance:', instance);
+    const existIns = instanceMap.has(`chart_${item.id}`);
     if (!existIns) instanceMap.set(`chart_${item.id}`, instance);
-    instance && instance.on("click", (params) => {
-      console.log("🚀 ~ instance&&instance.on ~ params:", params)
-      item.growth = params.name
-      updateInstanceOptions(`chart_${item.id}`, {
-        title: {text: params.name, subtext: params.value + '天'}
-      }, item.cropCode, item.cropId)
-    })
-  })
-}
-const cardDataList = ref<any[]>([])
+    instance &&
+      instance.on('click', (params) => {
+        console.log('🚀 ~ instance&&instance.on ~ params:', params);
+        item.growth = params.name;
+        updateInstanceOptions(
+          `chart_${item.id}`,
+          {
+            title: {
+              text: params.name,
+              subtext: params.value + '天'
+            }
+          },
+          item.cropCode,
+          item.cropId
+        );
+      });
+  });
+};
+const cardDataList = ref<any[]>([]);
 const getCardDataList = async () => {
-  const res = await CropGrowthNewApi.getCropGrowthCardMap({})
-  console.log('getCardDataList', getCardDataList)
+  const res = await CropGrowthNewApi.getCropGrowthCardMap({});
+  console.log('getCardDataList', getCardDataList);
   if (Array.isArray(res)) {
     cardDataList.value = res.map((item) => ({
       ...item,
       id: generateUUID(),
       activeBar: Array.isArray(item.child2) && item.child2.length > 0 ? item.child2[0].id : ''
-    }))
-    console.log("🚀 ~ cardDataList.value=res.map ~ cardDataList.value:", cardDataList.value)
+    }));
+    console.log('🚀 ~ cardDataList.value=res.map ~ cardDataList.value:', cardDataList.value);
     nextTick(() => {
-      initCharts()
-    })
+      initCharts();
+    });
   }
-}
-getCardDataList()
+};
+getCardDataList();
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams)
+    const data = await CropGrowthNewApi.getCropGrowthNewPage(queryParams);
     // @ts-ignore
-    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams)
-    list.value = data.list
-    total.value = data.total
+    listCategoryManagement.value = await allDataCacheManager.getData(CategoryManagementQueryParams);
+    list.value = data.list;
+    total.value = data.total;
   } catch (err) {
-    console.error(err)
+    console.error(err);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  plantNum.value = 2
-  timeNum.value = 2
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  plantNum.value = 2;
+  timeNum.value = 2;
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 // 时间排序
-const timeNum = ref(2)
+const timeNum = ref(2);
 const sortChange = async (val) => {
-  timeNum.value = val
-  plantNum.value = 2
+  timeNum.value = val;
+  plantNum.value = 2;
   if (val == 2) {
-    queryParams.ordersSort = undefined
-    queryParams.startTimeSort = undefined
-    getList()
+    queryParams.ordersSort = undefined;
+    queryParams.startTimeSort = undefined;
+    getList();
   } else {
-    queryParams.ordersSort = undefined
-    queryParams.startTimeSort = val
-    getList()
+    queryParams.ordersSort = undefined;
+    queryParams.startTimeSort = val;
+    getList();
   }
-}
+};
 //种植排序
-const plantNum = ref(2)
+const plantNum = ref(2);
 const plantChange = async (val) => {
-  console.log(val, 'zhongzhipaixu ')
-  timeNum.value = 2
-  plantNum.value = val
+  console.log(val, 'zhongzhipaixu ');
+  timeNum.value = 2;
+  plantNum.value = val;
   if (val == 2) {
-    queryParams.ordersSort = undefined
-    queryParams.startTimeSort = undefined
-    getList()
+    queryParams.ordersSort = undefined;
+    queryParams.startTimeSort = undefined;
+    getList();
   } else {
-    queryParams.ordersSort = val
-    queryParams.startTimeSort = undefined
-    getList()
+    queryParams.ordersSort = val;
+    queryParams.startTimeSort = undefined;
+    getList();
   }
-
-}
+};
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await CropGrowthNewApi.deleteCropGrowthNew(id)
-    message.success(t('common.delSuccess'))
+    await CropGrowthNewApi.deleteCropGrowthNew(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+    await getList();
+  } catch {}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await CropGrowthNewApi.exportCropGrowthNew(queryParams)
-    download.excel(data, '作物生长周期.xls')
+    exportLoading.value = true;
+    const data = await CropGrowthNewApi.exportCropGrowthNew(queryParams);
+    download.excel(data, '作物生长周期.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 添加生长周期子表操作 */
-const subformRef = ref()
+const subformRef = ref();
 const openSubDeviceForm = (id, growth) => {
-  subformRef.value.open('create', id, growth)
-}
+  subformRef.value.open('create', id, growth);
+};
 
 const initValue = async () => {
-  const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1)
-  listVarietyManagementVO.value = data1.list
-}
-const vedioUrl = ref('')
+  const data1 = await VarietyManagementApi.getVarietyManagementPage(queryParams1);
+  listVarietyManagementVO.value = data1.list;
+};
+const vedioUrl = ref('');
 const lookVedio = (item) => {
-  vedioUrl.value = item.remark
-  dialogVisible.value = true
-
-}
+  vedioUrl.value = item.remark;
+  dialogVisible.value = true;
+};
 /** 初始化 **/
 onMounted(() => {
-  getList()
-  initValue()
-})
+  getList();
+  initValue();
+});
 </script>
 <style lang="scss" scoped>
 .tab-btn,

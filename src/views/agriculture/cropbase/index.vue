@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="88px"
     >
       <el-form-item label="地块名称" prop="plotName">
         <el-input v-model="queryParams.plotName" placeholder="请选择" class="!w-240px" :disabled="true">
@@ -279,16 +279,16 @@
     </div>
     <!-- 卡片 -->
     <div
-      class="w-full pt-2 grid 2xl:grid-cols-3 xl:grid-cols-2 gap-3 "
+      class="w-full pt-2 grid 2xl:grid-cols-3 grid-cols-2 gap-3 "
       v-show="showType === 'card'"
     >
       <div
         v-for="(item, index) in cardDataList"
         :key="index"
-        class="p-3 rounded-2 px-4 border-[#E5E5E5] border-1 border-solid flex relative"
+        class="p-3 rounded-2 px-4 border-[#E5E5E5] border-1 border-solid flex relative "
       >
         <div class="flex w-1/3">
-          <img :src="item.imgId" class="h-100% w-100% object-contain rounded-md " />
+          <img :src="item.imgId" class="h-100% w-100% object-cover rounded-md " />
         </div>
         <div class="flex flex-col space-y-1.5 w-2/3">
           <div class="flex mt-1rem">
