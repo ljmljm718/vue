@@ -79,8 +79,10 @@ const pathTitleIcoMap = new Map<string, TitleIcon>([
   ['/page', { href: '/logo.png', title: '工业安全生产数字化产品平台' }],
   ['/inspurHome', { href: '', title: '装备智能制造产品云控中台' }],
 ])
+
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
+  localStorage.setItem("PREV_PATH", from.path)
   if (pathTitleIcoMap.has(to.path)) {
     const titleIconObj = pathTitleIcoMap.get(to.path);
     if (!titleIconObj) return;
