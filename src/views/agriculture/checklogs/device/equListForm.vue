@@ -34,21 +34,21 @@
             class="!w-240px"
           />
         </el-form-item>
-<!--        <el-form-item label="种类" prop="kinds">-->
-<!--          <el-select-->
-<!--            v-model="queryParams.kinds"-->
-<!--            placeholder="请选择种类"-->
-<!--            clearable-->
-<!--            class="!w-240px"-->
-<!--          >-->
-<!--            <el-option-->
-<!--              v-for="dict in categoryOptions"-->
-<!--              :key="dict.id"-->
-<!--              :label="dict.categoryLabel"-->
-<!--              :value="dict.id"-->
-<!--            />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="种类" prop="kinds">-->
+        <!--          <el-select-->
+        <!--            v-model="queryParams.kinds"-->
+        <!--            placeholder="请选择种类"-->
+        <!--            clearable-->
+        <!--            class="!w-240px"-->
+        <!--          >-->
+        <!--            <el-option-->
+        <!--              v-for="dict in categoryOptions"-->
+        <!--              :key="dict.id"-->
+        <!--              :label="dict.categoryLabel"-->
+        <!--              :value="dict.id"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item label="设备类型" prop="deviceType">
           <el-cascader
             style="width: 100%"
@@ -106,7 +106,8 @@
     <!-- 列表 -->
     <ContentWrap>
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
-                @selection-change="handleSelectionChange">
+                ref="multipleTableRef"
+                @selection-change="handleSelectionChange" @select="select" @row-click="selectClick">
         <el-table-column width="30" label="选择" type="selection"/>
         <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
         <el-table-column label="设备名称" align="center" prop="deviceName" width="150"/>
@@ -121,14 +122,14 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="经度" align="center" prop="longitude" />
-        <el-table-column label="纬度" align="center" prop="latitude" />
+        <el-table-column label="经度" align="center" prop="longitude"/>
+        <el-table-column label="纬度" align="center" prop="latitude"/>
         <el-table-column label="状态" align="center" prop="deviceStatus">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+            <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="图片" align="center" prop="imgId" >
+        <el-table-column label="图片" align="center" prop="imgId">
           <template #default="{ row }">
             <el-image
               class="h-50px w-50px"
@@ -142,8 +143,8 @@
         </el-table-column>
         <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
         <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/>
-        <el-table-column label="位置" align="center" prop="location" />
-        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column label="位置" align="center" prop="location"/>
+        <el-table-column label="备注" align="center" prop="remark"/>
         <el-table-column
           label="创建时间"
           align="center"
@@ -170,11 +171,12 @@
 <script setup lang="ts">
 import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
 import {dateFormatter} from '@/utils/formatTime'
-import { getTenantId } from '@/utils/auth'
+import {getTenantId} from '@/utils/auth'
 import {DeviceBaseApi, DeviceBaseVO} from '@/api/kaizhou/devicebase'
 import {DeviceInfoApi, DeviceInfoVO} from "@/api/agriculture/deviceinfo";
 import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
 import {retainFirstTwoLayers} from "@/utils/tree";
+import {ElTable} from "element-plus";
 
 
 /** 设备管理 表单 */
@@ -269,7 +271,10 @@ const getList = async () => {
   try {
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     console.log(data)
-    list.value = data.list.map(item => ({ ...item, deviceType: item.deviceType.split(',').map(Number)}))
+    list.value = data.list.map(item => ({
+      ...item,
+      deviceType: item.deviceType.split(',').map(Number)
+    }))
     total.value = data.total
   } finally {
     loading.value = false
@@ -282,7 +287,35 @@ const resetQuery = () => {
   deviceType.value = null
   handleQuery()
 }
+const multipleTableRef = ref()
+const select = (selection, row) => {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if (selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true);
+}
 
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach(item => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true);
+  }
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
