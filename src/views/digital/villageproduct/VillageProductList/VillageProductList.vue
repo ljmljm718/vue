@@ -1,12 +1,5 @@
 <template>
-  <Dialog
-    title="产品列表"
-    v-model="dialogVisible"
-    :appendToBody="true"
-    :scroll="true"
-    width="1300"
-  >
-
+  <Dialog title="产品列表" v-model="dialogVisible" :appendToBody="true" :scroll="true" width="1300">
     <ContentWrap>
       <!-- 搜索工作栏 -->
       <el-form
@@ -29,9 +22,9 @@
           <el-input
             v-model="queryParams.park"
             placeholder="请输入所属基地"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="产品码" prop="parkDetailId">
@@ -63,11 +56,11 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
-            <Icon icon="ep:search" class="mr-5px"/>
+            <Icon icon="ep:search" class="mr-5px" />
             搜索
           </el-button>
           <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
+            <Icon icon="ep:refresh" class="mr-5px" />
             重置
           </el-button>
         </el-form-item>
@@ -76,14 +69,22 @@
 
     <!-- 列表 -->
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
-                @selection-change="handleSelectionChange">
-        <el-table-column width="30" label="选择" type="selection"/>
-        <el-table-column label="产品名称" align="center" prop="product"/>
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+        ref="multipleTableRef"
+        @selection-change="handleSelectionChange"
+        @select="select"
+        @row-click="selectClick"
+      >
+        <el-table-column width="30" label="选择" type="selection" />
+        <el-table-column label="产品名称" align="center" prop="product" />
         <!--      <el-table-column label="所属基地id" align="center" prop="parkId" />-->
-        <el-table-column label="所属基地" align="center" prop="park"/>
-<!--        <el-table-column label="产品码" align="center" prop="parkDetailId"/>-->
-        <el-table-column label="所属地块" align="center" prop="parkDetail"/>
+        <el-table-column label="所属基地" align="center" prop="park" />
+        <!--        <el-table-column label="产品码" align="center" prop="parkDetailId"/>-->
+        <el-table-column label="所属地块" align="center" prop="parkDetail" />
         <el-table-column label="图片" align="center" prop="photo">
           <template #default="{ row }">
             <el-image
@@ -96,11 +97,11 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="产品年份" align="center" prop="years"/>
-        <el-table-column label="库存(袋)" align="center" prop="inventory"/>
-        <el-table-column label="规格(Kg)" align="center" prop="specifications"/>
-        <el-table-column label="批次号" align="center" prop="batchCode"/>
-<!--        <el-table-column label="采收编号" align="center" prop="recoveryNum"/>-->
+        <el-table-column label="产品年份" align="center" prop="years" />
+        <el-table-column label="库存(袋)" align="center" prop="inventory" />
+        <el-table-column label="规格(Kg)" align="center" prop="specifications" />
+        <el-table-column label="批次号" align="center" prop="batchCode" />
+        <!--        <el-table-column label="采收编号" align="center" prop="recoveryNum"/>-->
       </el-table>
       <!-- 分页 -->
       <Pagination
@@ -115,22 +116,21 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
-
 </template>
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
-import {getTenantId} from '@/utils/auth'
-import {DeviceBaseApi, DeviceBaseVO} from '@/api/kaizhou/devicebase'
-import {VillageProductApi, VillageProductVO} from "@/api/digital/villageproduct";
-
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
+import { getTenantId } from '@/utils/auth'
+import { DeviceBaseApi, DeviceBaseVO } from '@/api/kaizhou/devicebase'
+import { VillageProductApi, VillageProductVO } from '@/api/digital/villageproduct'
+import { ElTable } from 'element-plus'
 
 /** 设备管理 表单 */
-defineOptions({name: 'VillageProductForm'})
+defineOptions({ name: 'VillageProductForm' })
 const list = ref<VillageProductVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -152,7 +152,7 @@ const queryParams = reactive({
   remark: undefined,
   createTime: [],
   batchCode: undefined,
-  recoveryNum: undefined,
+  recoveryNum: undefined
 })
 const parentValue = ref('')
 const queryFormRef = ref() // 搜索的表单
@@ -178,13 +178,12 @@ const submitForm = () => {
 const open = async (id: string) => {
   dialogVisible.value = true
   parentValue.value = id
-  console.log("id:" + id)
+  console.log('id:' + id)
   await nextTick() // 等待，避免 queryFormRef 为空
   // 加载列表
   await resetQuery()
 }
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
-
+defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 加载列表  */
 const getList = async () => {
@@ -196,6 +195,35 @@ const getList = async () => {
     total.value = data.total
   } finally {
     loading.value = false
+  }
+}
+const multipleTableRef = ref()
+const select = (selection, row) => {
+  // 清除 所有勾选项
+  multipleTableRef.value.clearSelection()
+  // 当表格数据都没有被勾选的时候 就返回
+  // 主要用于将当前勾选的表格状态清除
+  if (selection.length == 0) return
+  multipleTableRef.value.toggleRowSelection(row, true)
+}
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value
+  multipleTableRef.value.clearSelection()
+  if (selectData.length == 1) {
+    selectData.forEach((item) => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        multipleTableRef.value.toggleRowSelection(row, false)
+      }
+      // 不然就让当前的一行勾选
+      else {
+        multipleTableRef.value.toggleRowSelection(row, true)
+      }
+    })
+  } else {
+    multipleTableRef.value.toggleRowSelection(row, true)
   }
 }
 
@@ -212,4 +240,3 @@ const handleQuery = () => {
   getList()
 }
 </script>
-

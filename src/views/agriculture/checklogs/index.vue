@@ -69,11 +69,11 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery()" type="primary">
-          <Icon icon="ep:search" class="mr-5px"/>
+          <Icon icon="ep:search" class="mr-5px" />
           搜索
         </el-button>
         <el-button @click="resetQuery()">
-          <Icon icon="ep:refresh" class="mr-5px"/>
+          <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
       </el-form-item>
@@ -95,7 +95,7 @@
             :loading="exportLoading"
             v-hasPermi="['agriculture:check-logs:export']"
           >
-            <Icon icon="ep:download" class="mr-5px"/>
+            <Icon icon="ep:download" class="mr-5px" />
             导出
           </el-button>
         </el-form-item>
@@ -109,25 +109,27 @@
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!--       <el-table-column label="巡检编号" align="center" prop="inspectionNum"/>-->
       <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
-      <el-table-column label="设备" align="center" prop="equName"/>
+      <el-table-column label="设备" align="center" prop="equName" />
       <el-table-column label="巡检状态" align="center" prop="inspectionState">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
+          <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState" />
         </template>
       </el-table-column>
       <el-table-column label="巡检结果状态" align="center" prop="resultState">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
+          <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState" />
         </template>
       </el-table-column>
       <!--      <el-table-column label="巡检结果" align="center" prop="inspectionResults"/>-->
 
-
-      <el-table-column label="所属基地" align="center" prop="base"/>
-      <el-table-column :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
-                       prop="massif"/>
+      <el-table-column label="所属基地" align="center" prop="base" />
+      <el-table-column
+        :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'"
+        align="center"
+        prop="massif"
+      />
       <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
-      <el-table-column label="巡检人" align="center" prop="inspector"/>
+      <el-table-column label="巡检人" align="center" prop="inspector" />
       <el-table-column
         label="巡检时间"
         align="center"
@@ -148,7 +150,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="巡检内容" align="center" prop="content"/>
+      <el-table-column label="巡检内容" align="center" prop="content" />
       <!--      <el-table-column-->
       <!--        label="创建时间"-->
       <!--        align="center"-->
@@ -158,11 +160,7 @@
       <!--      />-->
       <el-table-column label="操作" align="center" width="200px">
         <template #default="scope">
-          <el-button
-            link
-            type="warning"
-            @click="openFormA('update', scope.row.id)"
-          >
+          <el-button link type="warning" @click="openFormA('update', scope.row.id)">
             详情
           </el-button>
           <el-button
@@ -194,25 +192,25 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <CheckLogsForm ref="formRef" @success="getList()"/>
+  <CheckLogsForm ref="formRef" @success="getList()" />
 </template>
 
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
+import { CheckLogsApi, CheckLogsVO } from '@/api/agriculture/checklogs'
 import CheckLogsForm from './CheckLogsForm.vue'
-import {parseTime} from "element-plus/es/components/time-select/src/utils";
-import {getTenantId} from "@/utils/auth";
+import { parseTime } from 'element-plus/es/components/time-select/src/utils'
+import { getTenantId } from '@/utils/auth'
 
 /** 巡检记录 列表 */
-defineOptions({name: 'CheckLogs'})
+defineOptions({ name: 'CheckLogs' })
 
 const router = useRouter()
 
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<CheckLogsVO[]>([]) // 列表的数据
@@ -232,7 +230,7 @@ const queryParams = reactive({
   inspectionTime: [],
   inspectionImage: undefined,
   content: undefined,
-  createTime: [],
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -266,13 +264,12 @@ const formRef = ref()
 const openForm = (type: string, id?: number) => {
   if (type == 'create') {
     router.push('/internetMonitor/check/CreateOrUpdateCheckLogs')
-
-  } else router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + "&id=" + id)
+  } else router.push('/internetMonitor/check/CreateOrUpdateCheckLogs?type=' + type + '&id=' + id)
   // formRef.value.open(type, id)
 }
 
 const openFormA = (type: string, id?: number) => {
-  router.push('/internetMonitor/check/CheckLogsLookInfo?type=' + type + "&id=" + id)
+  router.push('/internetMonitor/check/CheckLogsLookInfo?type=' + type + '&id=' + id)
   // formRef.value.open(type, id)
 }
 
@@ -286,8 +283,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {
-  }
+  } catch {}
 }
 
 /** 导出按钮操作 */
@@ -306,8 +302,12 @@ const handleExport = async () => {
 }
 
 //新增或修改跳转列表后，自动刷新列表
-onActivated(() => { getList() })
+onActivated(() => {
+  getList()
+})
 
 /** 初始化 **/
-onMounted(() => { getList() })
+onMounted(() => {
+  getList()
+})
 </script>
