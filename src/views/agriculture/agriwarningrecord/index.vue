@@ -378,7 +378,6 @@
         <el-badge
           :value="totalMonitor"
           class="item"
-          v-if="deptName != '竹茶村' && deptName != '茶竹村'"
         >
           <span class="px-2">监控设备预警</span>
         </el-badge>
@@ -656,7 +655,6 @@
                 <template #default="scope">
                   <el-image
                     class="h-50px w-50px"
-                    lazy
                     :src="scope.row.captured"
                     :preview-src-list="[scope.row.captured]"
                     preview-teleported
@@ -692,7 +690,7 @@
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
-    <MonitoringEquipmentNoticeForm ref="formRefMonitor" @success="getListMonitor"/>
+    <MonitoringEquipmentNoticeForm ref="formRefMonitor" @success="handleUpdateSuccess"/>
     <!-- 视频弹窗 -->
     <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
       <video :src="videoUrl" controls autoplay class="video" width="800px" height="800px"></video>
@@ -943,7 +941,7 @@ const resetForm = () => {
 const handleDeal = async (id: number) => {
   openDeal.value = true
   title.value = '预警处理'
-  resetForm()
+  // resetForm()
   // 修改时，设置数据
   console.log('ID', id)
   if (id) {
@@ -979,7 +977,8 @@ const submitDialog = async (formEl) => {
       // 发送操作成功的事件
       emit('success')
     } finally {
-      resetQuery()
+      // resetQuery()
+      getList()
     }
   }
 }
@@ -1100,8 +1099,25 @@ const changCurrentItem = (item: any) => {
 
 /** 添加/修改操作 */
 const formRefMonitor = ref()
+const tmpIndex = ref(-1)
 const openFormMonitor = (type: string, id?: number) => {
+  // 编辑前 保存当前编辑项的下标
+  if ("update" === type && "card" === listTypeMonitor.value) {
+    tmpIndex.value = listMonitor.value.findIndex(ele => {
+      return ele.id === currentItem.value.id;
+    });
+  }
   formRefMonitor.value.open(type, id)
+}
+
+// 修改成功后调用的函数
+const handleUpdateSuccess = async () => {
+  await getListMonitor();
+  if ("card" !== listTypeMonitor.value) return;
+  if (-1 !== tmpIndex.value) {
+    currentItem.value = listMonitor.value[tmpIndex.value];
+    tmpIndex.value = -1;
+  }
 }
 
 /** 删除按钮操作 */
