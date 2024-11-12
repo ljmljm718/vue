@@ -22,9 +22,9 @@
           <el-input
             v-model="queryParams.park"
             placeholder="请输入所属基地"
-              clearable
-              @keyup.enter="handleQuery"
-              class="!w-240px"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="产品码" prop="parkDetailId">
@@ -45,7 +45,7 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="产品年份" prop="years">
+                  <el-form-item label="产品年份" prop="years">
           <el-input
             v-model="queryParams.years"
             placeholder="请输入产品年份"
