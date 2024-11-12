@@ -49,6 +49,63 @@ const handlePlotClick = (item) => {
   getModelList(item.id)
 }
 
+// 根据右侧高度设置左侧菜单的高度
+//获取右侧内容高度
+const rightContentHeight = ref<number>(0);
+const rightContent = ref<HTMLElement | null>(null);
+// const isFirstToggleDone = ref(false);
+//计算右侧内容的高度
+const updateRightContentHeight = () => {
+  nextTick(() => {
+    if (rightContent.value) {
+      rightContentHeight.value = rightContent.value.clientHeight;
+    }
+  });
+  // if(rightContent.value){
+  //   rightContentHeight.value = rightContent.value.clientHeight;
+  // }
+};
+
+// 延迟执行（初始化加载的高度有问题）
+const updateRightContentHeightWithDelay = () => {
+  setTimeout(() => {
+    updateRightContentHeight();
+  }, 100); //延迟 100 毫秒后更新高度，确保渲染完成
+};
+
+const handleResize = () => {
+  updateRightContentHeight();
+  checkCollapsed();
+  // if (isFirstToggleDone.value) {
+  //   checkCollapsed(); //只有在第一次点击后，才根据屏幕大小检查折叠状态
+  // }
+};
+
+// 在组件挂载后和窗口大小改变时更新高度
+onMounted(() => {
+  updateRightContentHeightWithDelay();
+  window.addEventListener("resize", handleResize);
+});
+
+//清理监听
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
+const handleCollapse = () =>{
+  collapsed.value = !collapsed.value;
+  updateRightContentHeight();
+  // isFirstToggleDone.value = true;
+}
+// 检查屏幕宽度是否需要折叠
+const checkCollapsed = () => {
+  if (window.innerWidth <= 1280) {
+    collapsed.value = true;
+  } else {
+    collapsed.value = false;
+  }
+};
+
 // 评分列表
 const healthValLoading = ref<boolean>(false)
 const healthValList = ref<any[]>([])
@@ -341,13 +398,17 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
 </script>
 <template>
   <div class="flex justify-between" v-loading="loading">
-    <el-card :style="{ display: collapsed ? 'none' : 'block' }" class="w-[15rem] ">
+    <el-card 
+      :class="[collapsed ? 'slide-from-right-to-left' : 'slide-from-left-to-right', 'w-[15rem]','mt-[0.5rem]']" 
+      :style="{ height: `${rightContentHeight.value}px` }"
+    >
       <div
-        class=" space-y-3 py-0 mr-0"
+        class=" space-y-3 !py-0 mr-0"
         v-loading="plotListLoading"
         v-show="!collapsed"
       >
-        <el-scrollbar height="80vh">
+        <!-- <el-scrollbar height="80vh"> -->
+        <el-scrollbar :height="rightContentHeight- 65">
           <div class="mr-2 space-y-3">
             <div
               v-for="item in plotList"
@@ -367,18 +428,32 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
           </div>
         </el-scrollbar>
       </div>
-      <div
-        class="bg-[#e5f4f3] py-2 mt-3 w-full rounded-md text-[#009688] text-center cursor-pointer"
-        @click="collapsed = !collapsed"
-      >{{ collapsed ? '展开' : '折叠' }}</div>
     </el-card>
     <div
-      class="space-y-2"
+      class="space-y-2 relative"
+      :class="`${ collapsed ? 'content-grow' : 'content-shrink'}`"
       :style="{
         width: `calc(100% - ${collapsed ? '0px' : '15.5rem'})`
       }"
+      ref="rightContent"
     >
-      <el-card v-if="collapsed">
+    <!-- 折叠按钮 -->
+    <div 
+        @click="handleCollapse"
+        :class="`
+          h-[25px] w-[25px] rounded-full shadow-md bg-white
+          cursor-pointer flex items-center justify-center text-[14px]
+          absolute top-[30px] left-[0px] translate-x-[-12.5px]
+        `"
+        :style="{
+          color: 'var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)',
+        }"
+      >
+        <el-icon v-show="!collapsed"><ArrowLeftBold /></el-icon>
+        <el-icon v-show="collapsed"><ArrowRightBold /></el-icon>
+    </div>
+      <!-- <el-card v-if="collapsed">
         <div class="overflow-auto flex justify-between items-center">
           <div class="w-[calc(100%_-_5rem)]">
             <el-scrollbar>
@@ -400,14 +475,14 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
           </div>
           <div class="w-[4rem] cursor-pointer text-[#009688] flex justify-center" @click="collapsed = !collapsed">展开</div>
         </div>
-      </el-card>
+      </el-card> -->
       <el-card>
         <div
           class="flex space-x-[6rem] px-4 box-border min-h-[2.8rem]"
           v-loading="healthValLoading"
         >
           <div v-for="item in healthValList" :key="item.id" class="flex space-x-4">
-            <div :class="[item.icon, 'w-[2.6rem] h-[2.6rem] bg-[length:100%_100%]']"></div>
+            <div :class="[item.icon, 'w-[2.6rem] h-[2.6rem] bg-[length:100%_100%] ']"></div>
             <div class="flex flex-col space-y-1 text-[.7rem]">
               <div class="text-[1.2rem] art-font">{{ item.value || '暂无数据' }}</div>
               <div class="flex space-x-1">
@@ -449,11 +524,11 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         </div>
       </el-card>
       <el-card>
-        <div class="text-[1.2rem]">{{ listFirstItem.model }}模型周期与栽培要点</div>
-        <div class="flex space-x-2 p-3 pb-0" v-loading="keypointLoading">
-          <div id="chart" class="w-[15rem] h-[12rem]"></div>
+        <div class="2xl:text-[1.2rem]">{{ listFirstItem.model }}模型周期与栽培要点</div>
+        <div class="flex p-3 pb-0 !pl-0" v-loading="keypointLoading">
+          <div id="chart" class="w-[15rem] h-[12rem] "></div>
           <div class="grow w-[calc(100%_-_15.4rem)]">
-            <div class="flex justify-between items-center mt-3 px-6 overflow-hidden pb-[25px]">
+            <div class="flex justify-evenly items-end mt-3 px-6 overflow-hidden pb-[25px] ">
               <div
                 v-for="(ele, idx) in periodList"
                 :key="idx"
@@ -465,7 +540,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                     ele.growthId === activeGrowthId ? 'progress-font-active' : ''
                   }`"
                 >
-                  <div>{{ ele.growth }}</div>
+                  <div class="sm:ml-[0.5rem] 2xl:ml-0 sm:[writing-mode:vertical-lr] sm:mb-[.1rem] 2xl:[writing-mode:horizontal-tb]">{{ ele.growth }}</div>
                   <div class="flex justify-center">{{ ele.cycle }}天</div>
                 </div>
                 <div
@@ -475,10 +550,10 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                 ></div>
               </div>
             </div>
-            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center">
-              <div class="flex justify-center w-full">
+            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center ">
+              <div class="flex justify-center w-full ">
                 <div
-                  :class="`px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
+                  :class="`sm:px-0 2xl:px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
                     child.id === selectedKeyPoint ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'
                   } text-center py-2`"
                   v-for="(child, flag) in keyPointList"
@@ -493,7 +568,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         </div>
       </el-card>
       <el-card>
-        <div class="text-[1.2rem]"
+        <div class="2xl:text-[1.2rem]"
           >{{ listFirstItem.model }}{{ activeGrowth || defaultGrowth }}监测指标</div
         >
         <div class="w-full flex justify-center">
@@ -656,7 +731,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   position: absolute;
   left: 0px;
   bottom: -15px;
-  width: 14000px;
+  width: 1400px;
   height: 2px;
   background-color: #b7b7b7;
 }
@@ -696,5 +771,62 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
 
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0px;
+}
+
+
+@keyframes slide-from-left-to-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-from-left-to-right {
+  animation: slide-from-left-to-right 0.1s ease-out forwards;
+}
+
+@keyframes slide-from-right-to-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.slide-from-right-to-left {
+  animation: slide-from-right-to-left 0.1s ease-in forwards;
+}
+
+@keyframes content-grow {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: -350px;
+  }
+}
+
+.content-grow {
+  animation: content-grow 0.1s ease-out forwards;
+}
+
+@keyframes content-shrink {
+  from {
+    margin-left: -350px;
+  }
+  to {
+    margin-left: 0;
+  }
+}
+
+.content-shrink {
+  animation: content-shrink 0.1s ease-out forwards;
 }
 </style>
