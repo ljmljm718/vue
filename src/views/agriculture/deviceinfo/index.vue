@@ -4,13 +4,10 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <custom-form
-      class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
     >
-      <el-row>
         <el-form-item label="设备编号" prop="deviceCode">
           <el-input
             v-model="queryParams.deviceCode"
@@ -74,8 +71,6 @@
             <span>重置</span>
           </el-button>
         </el-form-item>
-      </el-row>
-
     </custom-form>
   </ContentWrap>
 
