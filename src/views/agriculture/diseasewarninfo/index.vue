@@ -2,11 +2,11 @@
   <ContentWrap>
     <!--    搜索工作栏-->
     <custom-form
-      class="-mb-15px"
+      class="-mb-15px grid xl:grid-cols-4 2xl:xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="72px"
+      label-width="auto"
     >
       <el-form-item label="监测类型" prop="warnType">
         <el-select v-model="queryParams.warnType" placeholder="请选择监测类型" class="!w-240px">
@@ -331,7 +331,7 @@ v-model="queryParams.reservedOne" placeholder="请选择设备" disabled
     </div>
     <!-- 卡片 -->
     <div
-      class="w-full pt-2 grid 2xl:grid-cols-4 xl:grid-cols-2 gap-3"
+      class="w-full pt-2 grid 2xl:grid-cols-4 xl:grid-cols-3 md:lg:grid-cols-2 sm:grid-cols-1 gap-3"
       v-show="showType === 'card'"
     >
       <div
