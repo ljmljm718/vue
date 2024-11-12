@@ -42,8 +42,8 @@
           </el-tabs>
         </template>
       </el-table-column>
-      <el-table-column label="设备类型" align="center" prop="categoryName" width="600"/>
-      <el-table-column label="巡检设备总数" align="center" prop="sumNum"/>
+      <el-table-column label="设备类型" align="center" prop="categoryName" width="450"/>
+      <el-table-column label="巡检设备总数" align="center" prop="sumNum" width="100"/>
       <el-table-column label="未巡检/个" align="center" prop="unFinishCheckNum"/>
       <el-table-column label="已巡检/个" align="center" prop="finishCheckNum" />
 <!--      <el-table-column label="操作" align="center">
