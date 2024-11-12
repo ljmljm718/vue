@@ -1,40 +1,28 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-row>
-        <el-form-item label="设备" prop="deviceId">
-          <el-input class="!w-240px" v-model="queryParams.deviceName" placeholder="请选择设备" readonly>
-            <template #append>
-              <el-button @click="openSelectDeviceInfo()">
-                <Icon icon="ep:search" />
-                选择
-              </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="设备状态" prop="deviceStatus">
-          <el-select
-            v-model="queryParams.deviceStatus"
-            placeholder="请选择状态"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item>
-        <!--      <el-form-item label="创建时间" prop="createTime">
+    <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
+      <el-form-item label="设备" prop="deviceId">
+        <el-input class="!w-240px" v-model="queryParams.deviceName" placeholder="请选择设备" readonly>
+          <template #append>
+            <el-button @click="openSelectDeviceInfo()">
+              <Icon icon="ep:search" />
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="设备状态" prop="deviceStatus">
+        <el-select v-model="queryParams.deviceStatus" placeholder="请选择状态" clearable class="!w-240px">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <!--      <el-form-item label="创建时间" prop="createTime">
                 <el-date-picker
                   v-model="queryParams.createTime"
                   value-format="YYYY-MM-DD HH:mm:ss"
@@ -45,61 +33,47 @@
                   class="!w-240px"
                 />
               </el-form-item>-->
-        <el-form-item>
-          <el-button @click="handleQuery" type="primary">
-            <Icon icon="ep:search" class="mr-5px"/>
-            搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
-            重置
-          </el-button>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:device-history-status:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px"/>
-            新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:device-history-status:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
-          </el-button>
-        </el-form-item>
-      </el-row>
-    </el-form>
+      <el-form-item>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+      </el-form-item>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <el-form-item>
+      <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:device-history-status:create']">
+        <Icon icon="ep:plus" class="mr-5px" />
+        新增
+      </el-button>
+      <el-button
+        type="success"
+        plain
+        @click="handleExport"
+        :loading="exportLoading"
+        v-hasPermi="['agriculture:device-history-status:export']"
+      >
+        <Icon icon="ep:download" class="mr-5px" />
+        导出
+      </el-button>
+    </el-form-item>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <!--      <el-table-column label="设备Id" align="center" prop="deviceId" />-->
-      <el-table-column label="设备名称" align="center" prop="deviceName"/>
+      <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="设备状态" align="center" prop="deviceStatus">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus"/>
+          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
         </template>
       </el-table-column>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -122,37 +96,32 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList" />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <DeviceHistoryStatusForm ref="formRef" @success="getList"/>
+  <DeviceHistoryStatusForm ref="formRef" @success="getList" />
   <!--  选择设备-->
   <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess" />
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
-import download from '@/utils/download'
-import {DeviceHistoryStatusApi, DeviceHistoryStatusVO} from '@/api/agriculture/devicehistory'
-import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue'
-import {DICT_TYPE, getStrDictOptions} from '@/utils/dict'
-import SelectDeviceInfo from "@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue";
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory';
+import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
+import SelectDeviceInfo from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue';
 
 /** 设备历史状态 列表 */
-defineOptions({name: 'DeviceHistoryStatus'})
+defineOptions({ name: 'DeviceHistoryStatus' });
 
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<DeviceHistoryStatusVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<DeviceHistoryStatusVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -160,81 +129,80 @@ const queryParams = reactive({
   deviceStatus: undefined,
   deviceName: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await DeviceHistoryStatusApi.getDeviceHistoryStatusPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await DeviceHistoryStatusApi.getDeviceHistoryStatusPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  queryParams.deviceName = null
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  queryParams.deviceName = null;
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await DeviceHistoryStatusApi.deleteDeviceHistoryStatus(id)
-    message.success(t('common.delSuccess'))
+    await DeviceHistoryStatusApi.deleteDeviceHistoryStatus(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+    await getList();
+  } catch {}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await DeviceHistoryStatusApi.exportDeviceHistoryStatus(queryParams)
-    download.excel(data, '设备历史状态.xls')
+    exportLoading.value = true;
+    const data = await DeviceHistoryStatusApi.exportDeviceHistoryStatus(queryParams);
+    download.excel(data, '设备历史状态.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 // 机器信息选择
-const SelectDeviceInfoRef = ref()
+const SelectDeviceInfoRef = ref();
 const openSelectDeviceInfo = () => {
-  SelectDeviceInfoRef.value.open('jk') //监控
-}
+  SelectDeviceInfoRef.value.open('jk'); //监控
+};
 //点击确定后
 const SelectDeviceInfoSuccess = (item: any) => {
-  queryParams.deviceId = item[0].id
-  queryParams.deviceName = item[0].deviceName
-}
+  queryParams.deviceId = item[0].id;
+  queryParams.deviceName = item[0].deviceName;
+};
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
