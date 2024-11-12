@@ -23,7 +23,8 @@
     "lint:format": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
     "lint:style": "stylelint --fix \"./src/**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
     "lint:lint-staged": "lint-staged -c ",
-    "git:sync": "git fetch & git stash & git rebase & git stash pop & git push"
+    "git:sync": "git fetch & git stash & git rebase & git stash pop & git push",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@cesium-china/cesium-map": "^1.0.0",
@@ -162,5 +163,8 @@
   },
   "volta": {
     "node": "20.14.0"
+  },
+  "lint-staged": {
+    "*.vue": "prettier --check --ignore-unknown"
   }
 }
