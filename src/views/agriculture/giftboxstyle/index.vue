@@ -6,7 +6,7 @@
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
-        label-width="88px"
+        label-width="auto"
         :inline="true"
       >
         <!-- 表单内容 -->
@@ -95,7 +95,11 @@
           </el-button>
         </div>
         <div class="flex flex-wrap content-center">
-          <el-radio-group v-model="listType" size="small" @change="handleCardChange">
+          <el-radio-group
+            v-model="listType"
+            size="small"
+            @change="handleCardChange"
+          >
             <el-radio-button label="card" value="card">
               <el-icon><Menu /></el-icon>
               卡片
@@ -118,7 +122,7 @@
           <div
             :class="`
               col-span-1 rounded-md shadow-md previewContainer pb-[10px]
-              ${themeIsDark ? 'bg-[#343A46]': 'bg-[#F5F5F5]'}
+              ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
             `"
           >
             <div class="previewArea">
@@ -132,11 +136,7 @@
                 />
                 <div
                   v-show="currentItem.fileManagement"
-                  class="
-                    absolute bg-black opacity-50 w-[40px] h-[40px]
-                    bottom-[11px] right-[210px] rounded text-center
-                    leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[210px] rounded text-center leading-[40px] cursor-pointer"
                 >
                   <a :href="currentItem.fileManagement">
                     <el-icon color="#FFFFFF" size="16px" class="p-[10px]">
@@ -147,42 +147,26 @@
                 <div
                   v-show="currentItem.fileManagement"
                   @click="filePreview(currentItem.fileManagement)"
-                  class="
-                    absolute bg-black opacity-50 w-[40px] h-[40px]
-                    bottom-[11px] right-[160px] rounded text-center
-                    leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[160px] rounded text-center leading-[40px] cursor-pointer"
                 >
                   <el-icon color="#FFFFFF" size="16px"><View /></el-icon>
                 </div>
                 <div
-                  class="
-                    absolute bg-black opacity-50 w-[40px] h-[40px]
-                    bottom-[11px] right-[110px] rounded text-center
-                    leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] cursor-pointer"
                   @click="openDetailForm('view', currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:update']"
                 >
                   <el-icon color="#FFFFFF" size="16px"><More /></el-icon>
                 </div>
                 <div
-                  class="
-                    absolute bg-black opacity-50 w-[40px] h-[40px]
-                    bottom-[11px] right-[60px] rounded text-center
-                    leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] cursor-pointer"
                   @click="openForm('update', currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:update']"
                 >
                   <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
                 </div>
                 <div
-                  class="
-                    absolute bg-black opacity-50 w-[40px] h-[40px]
-                    bottom-[11px] right-[10px] rounded text-center
-                    leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] cursor-pointer"
                   @click="handleDelete(currentItem.id)"
                   v-hasPermi="['agriculture:marketing-program:delete']"
                 >
@@ -191,16 +175,24 @@
               </div>
               <div class="grid grid-cols-1 gap-1 my-10px px-3">
                 <div>
-                  <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`">{{ currentItem.schemeName }}</span>
+                  <span
+                    :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`"
+                  >
+                    {{ currentItem.schemeName }}
+                  </span>
                 </div>
                 <div>
-                  <span class="text-[14px]">{{ currentItem.briefIntroduction }}</span>
+                  <span class="text-[14px]">
+                    {{ currentItem.briefIntroduction }}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
           <!-- 卡片列表区 -->
-          <div class="col-span-1 grid grid-cols-2 2xl:grid-cols-3 gap-3 rounded">
+          <div
+            class="col-span-1 grid grid-cols-2 2xl:grid-cols-3 gap-3 rounded"
+          >
             <div
               :class="`
                 ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
@@ -217,7 +209,11 @@
                 class="w-full h-[17vh]"
               />
               <div>
-                <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`">{{ item.schemeName }}</span>
+                <span
+                  :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`"
+                >
+                  {{ item.schemeName }}
+                </span>
               </div>
               <div class="h-[5vh] truncate">
                 {{ item.briefIntroduction }}
@@ -225,15 +221,34 @@
             </div>
           </div>
         </div>
-        <div v-else-if="listType === 'card'" class="text-center tracking-widest">
+        <div
+          v-else-if="listType === 'card'"
+          class="text-center tracking-widest"
+        >
           暂无数据
         </div>
         <!-- 列表形式 -->
         <div v-show="listType === 'list'">
-          <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
-            <el-table-column label="产品名称" align="center" prop="schemeName" />
-            <el-table-column label="简介" align="center" prop="briefIntroduction" />
-            <el-table-column label="设计人" align="center" prop="marketingCreator" />
+          <el-table
+            :data="list"
+            v-loading="loading"
+            :show-overflow-tooltip="true"
+          >
+            <el-table-column
+              label="产品名称"
+              align="center"
+              prop="schemeName"
+            />
+            <el-table-column
+              label="简介"
+              align="center"
+              prop="briefIntroduction"
+            />
+            <el-table-column
+              label="设计人"
+              align="center"
+              prop="marketingCreator"
+            />
             <el-table-column
               label="上传时间"
               align="center"
@@ -241,9 +256,17 @@
               :formatter="dateFormatter"
               width="180px"
             />
-            <el-table-column label="分类" align="center" prop="marketingCategory" />
+            <el-table-column
+              label="分类"
+              align="center"
+              prop="marketingCategory"
+            />
             <el-table-column label="标签" align="center" prop="marketingTags" />
-            <el-table-column label="文件管理" align="center" prop="fileManagement">
+            <el-table-column
+              label="文件管理"
+              align="center"
+              prop="fileManagement"
+            >
               <template #default="scope">
                 <el-button type="primary" round v-if="scope.row.fileManagement">
                   <a
@@ -266,7 +289,12 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" fixed="right" width="200px">
+            <el-table-column
+              align="center"
+              label="操作"
+              fixed="right"
+              width="200px"
+            >
               <template #default="scope">
                 <el-button
                   v-if="scope.row.fileManagement"
@@ -318,7 +346,12 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
   <!-- 文件预览 -->
-  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
+  <el-dialog
+    v-model="dialogVisible"
+    title="预览"
+    width="70vw"
+    :before-close="handleDialogClose"
+  >
     <el-scrollbar height="65vh" class="px-2">
       <div id="filePreview"></div>
     </el-scrollbar>
@@ -328,13 +361,16 @@
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram'
+import {
+  MarketingProgramApi,
+  MarketingProgramVO
+} from '@/api/agriculture/marketingprogram'
 import MarketingProgramForm from './MarketingProgramForm.vue'
 //文件预览引入
 import { renderAsync } from 'docx-preview'
 import axios from 'axios'
 import { useAppStore } from '@/store/modules/app'
-import { watch } from "vue"
+import { watch } from 'vue'
 
 /** 营销方案 列表 */
 defineOptions({ name: 'MarketingProgram' })
@@ -425,7 +461,7 @@ const getList = async () => {
     const data = await MarketingProgramApi.getMarketingProgramPage(queryParams)
     list.value = data.list
     total.value = data.total
-    if ("card" === listType.value) {
+    if ('card' === listType.value) {
       currentItem.value = list.value[0]
     }
   } finally {
@@ -481,29 +517,34 @@ const handleCardChange = () => {
 const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  sessionStorage.setItem("latestListType", listType.value)
+  sessionStorage.setItem('latestListType', listType.value)
 
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem("giftboxStyleQueryParams");
+  sessionStorage.removeItem('giftboxStyleQueryParams')
   let data: any = {
-    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    pageNo: type === 'create' ? 1 : queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
-    marketingUploadTime: queryParams.marketingUploadTime,
+    marketingUploadTime: queryParams.marketingUploadTime
   }
-  if ("card" === listType.value) {
-    const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
-    data = { ...data, id: idx };
+  if ('card' === listType.value) {
+    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
+    data = { ...data, id: idx }
   }
-  sessionStorage.setItem("giftboxStyleQueryParams", JSON.stringify(data));
+  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data))
 
   if (type == 'create') {
-    router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram')
+    router.push(
+      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram'
+    )
   } else {
     router.push(
-      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type=' + type + '&id=' + id
+      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type=' +
+        type +
+        '&id=' +
+        id
     )
   }
 }
@@ -514,31 +555,36 @@ const openForm = (type: string, id?: number) => {
  * @param id
  */
 const openDetailForm = (type: string, id?: number) => {
-  sessionStorage.setItem("latestListType", listType.value)
-  
+  sessionStorage.setItem('latestListType', listType.value)
+
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码 和 当前选择项
-  sessionStorage.removeItem("giftboxStyleQueryParams");
+  sessionStorage.removeItem('giftboxStyleQueryParams')
   let data: any = {
-    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    pageNo: type === 'create' ? 1 : queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
-    marketingUploadTime: queryParams.marketingUploadTime,
+    marketingUploadTime: queryParams.marketingUploadTime
   }
-  if ("card" === listType.value) {
-    const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
-    data = { ...data, id: idx };
+  if ('card' === listType.value) {
+    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
+    data = { ...data, id: idx }
   }
-  sessionStorage.setItem("giftboxStyleQueryParams", JSON.stringify(data));
-  
-  router.push('/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' + type + '&id=' + id)
+  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data))
+
+  router.push(
+    '/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' +
+      type +
+      '&id=' +
+      id
+  )
 }
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
+  const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
 
   try {
     // 删除的二次确认
@@ -552,9 +598,9 @@ const handleDelete = async (id: number) => {
 
   // 删除后 设置curItem
   if (idx >= list.value.length) {
-    currentItem.value = list.value[list.value.length - 1];
+    currentItem.value = list.value[list.value.length - 1]
   } else {
-    currentItem.value = list.value[idx];
+    currentItem.value = list.value[idx]
   }
 }
 
@@ -576,25 +622,25 @@ const handleExport = async () => {
 /** 初始化 **/
 onMounted(async () => {
   // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem("giftboxStyleQueryParams");
-  let idx: number = -1;
+  const sessionParams = sessionStorage.getItem('giftboxStyleQueryParams')
+  let idx: number = -1
   if (sessionParams) {
-    const data = JSON.parse(sessionParams);
-    queryParams.pageNo = data.pageNo;
-    queryParams.schemeName = data.schemeName;
-    queryParams.marketingCreator = data.marketingCreator;
-    queryParams.marketingCategory = data.marketingCategory;
-    queryParams.marketingTags = data.marketingTags;
-    queryParams.marketingUploadTime = data.marketingUploadTime;
-    idx = data.id;
+    const data = JSON.parse(sessionParams)
+    queryParams.pageNo = data.pageNo
+    queryParams.schemeName = data.schemeName
+    queryParams.marketingCreator = data.marketingCreator
+    queryParams.marketingCategory = data.marketingCategory
+    queryParams.marketingTags = data.marketingTags
+    queryParams.marketingUploadTime = data.marketingUploadTime
+    idx = data.id
   }
-  sessionStorage.removeItem("giftboxStyleQueryParams");
+  sessionStorage.removeItem('giftboxStyleQueryParams')
 
-  console.log("aaaaaaaaaaa");
+  console.log('aaaaaaaaaaa')
   await getList()
 
   if (-1 !== idx) {
-    currentItem.value = list.value[idx];
+    currentItem.value = list.value[idx]
   }
 
   // 获取当前是否是深色主题
@@ -605,10 +651,13 @@ const appStore = useAppStore()
 const themeIsDark = ref(false)
 
 // 监听主题模式变化
-watch(() => appStore.isDark, (newVal, oldVal) => {
-  console.log("isDark", newVal, oldVal)
-  themeIsDark.value = newVal
-})
+watch(
+  () => appStore.isDark,
+  (newVal, oldVal) => {
+    console.log('isDark', newVal, oldVal)
+    themeIsDark.value = newVal
+  }
+)
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS
 const timeFormat = (dataString: string) => {
@@ -640,7 +689,10 @@ const scroll = ({ scrollTop }) => {
   let dom = document.querySelector('.previewArea')
   let domContainer = document.querySelector('.previewContainer')
   if (scrollTop >= dom?.offsetTop) {
-    dom?.setAttribute('style', `position: fixed;width: ${domContainer?.clientWidth}px;top: 105px;`)
+    dom?.setAttribute(
+      'style',
+      `position: fixed;width: ${domContainer?.clientWidth}px;top: 105px;`
+    )
   } else {
     dom?.setAttribute('style', 'position: relative;width: auto;top: 0;')
   }
@@ -668,4 +720,3 @@ const scroll = ({ scrollTop }) => {
 //  margin-left: 10px;
 //}
 </style>
-

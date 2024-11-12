@@ -13,7 +13,7 @@
           class="-mb-15px"
           :model="queryParams"
           ref="queryFormRef"
-          label-width="88px"
+          label-width="auto"
           :inline="true"
         >
           <!-- 表单内容 -->
@@ -76,11 +76,11 @@
           <!-- 表单按钮 -->
           <el-form-item>
             <el-button @click="handleQuery" type="primary">
-              <Icon icon="ep:search"/>
+              <Icon icon="ep:search" />
               搜索
             </el-button>
             <el-button @click="resetQuery">
-              <Icon icon="ep:refresh"/>
+              <Icon icon="ep:refresh" />
               重置
             </el-button>
           </el-form-item>
@@ -98,7 +98,7 @@
               v-hasPermi="['agriculture:agri-warning-record:create']"
             >
               <el-icon>
-                <Plus/>
+                <Plus />
               </el-icon>
               新增
             </el-button>
@@ -109,22 +109,26 @@
               v-hasPermi="['agriculture:agri-warning-record:export']"
             >
               <el-icon>
-                <Download/>
+                <Download />
               </el-icon>
               导出
             </el-button>
           </div>
           <div class="flex flex-wrap content-center">
-            <el-radio-group v-model="listType" size="small" @change="cardChange">
+            <el-radio-group
+              v-model="listType"
+              size="small"
+              @change="cardChange"
+            >
               <el-radio-button label="card" value="card">
                 <el-icon>
-                  <Menu/>
+                  <Menu />
                 </el-icon>
                 卡片
               </el-radio-button>
               <el-radio-button label="list" value="list">
                 <el-icon>
-                  <List/>
+                  <List />
                 </el-icon>
                 列表
               </el-radio-button>
@@ -138,11 +142,16 @@
             v-show="listType === 'card'"
             class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            <div v-for="item in list" :key="item.id"
-                 :class="themeIsDark ? 'card-item-dark' : 'card-item'">
+            <div
+              v-for="item in list"
+              :key="item.id"
+              :class="themeIsDark ? 'card-item-dark' : 'card-item'"
+            >
               <!-- 第一行 -->
               <div class="h-[37px] flex md:block xl:flex md:mb-[5px] 2xl:mb-0">
-                <div class="text-[18px] md:text-[12px] lg:text-[14px] 2xl:text-[18px]">
+                <div
+                  class="text-[18px] md:text-[12px] lg:text-[14px] 2xl:text-[18px]"
+                >
                   {{ item.deviceName }}
                 </div>
                 <dict-tag
@@ -157,13 +166,19 @@
                 />
               </div>
               <!-- 第二行 -->
-              <div class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]">
+              <div
+                class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]"
+              >
                 当前值:
-                <span class="text-[#E31205] border-r border-r-solid border-[#E5E5E5] pr-[5px]">
+                <span
+                  class="text-[#E31205] border-r border-r-solid border-[#E5E5E5] pr-[5px]"
+                >
                   {{ item.currentValue }}{{ item.warnUnit }}
                 </span>
                 阈值:
-                <span class="border-r border-r-solid border-[#E5E5E5] pr-[5px] pl-[5px]">
+                <span
+                  class="border-r border-r-solid border-[#E5E5E5] pr-[5px] pl-[5px]"
+                >
                   {{ item.threshold }}{{ item.warnUnit }}
                 </span>
                 预警时间:
@@ -171,9 +186,11 @@
                   {{ timeFormat(item.warnTime) }}
                 </span>
               </div>
-              <div class="warn-popover text-[16px] md:text-[10px] lg:text-[12px] 2xl:text-[16px]">
+              <div
+                class="warn-popover text-[16px] md:text-[10px] lg:text-[12px] 2xl:text-[16px]"
+              >
                 <el-icon>
-                  <WarnTriangleFilled/>
+                  <WarnTriangleFilled />
                 </el-icon>
                 {{ item.warnInfo }}!
                 <!-- 旋转10乘10的正方形区域45度 -->
@@ -200,23 +217,31 @@
                 class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] md:text-[10px] 2xl:text-[14px]"
                 v-show="'1' === item.warnStatus"
               >
-                <div class=""> 预警状态: <span class="text-[#009688]">已处理</span></div>
-                <div> 处理人: {{ item.dealPerson }}</div>
-                <div> 处理信息: {{ item.dealInfo }}</div>
-                <div> 处理时间: {{ timeFormat(item.dealTime) }}</div>
+                <div class="">
+                  预警状态:
+                  <span class="text-[#009688]">已处理</span>
+                </div>
+                <div>处理人: {{ item.dealPerson }}</div>
+                <div>处理信息: {{ item.dealInfo }}</div>
+                <div>处理时间: {{ timeFormat(item.dealTime) }}</div>
               </div>
               <div
                 class="grid grid-cols-2 grid-rows-2 gap-1 mt-15px text-[#999999] text-[14px] md:text-[10px] 2xl:text-[14px]"
                 v-show="'0' === item.warnStatus"
               >
-                <div class=""> 预警状态: <span class="text-[#FF8500]">未处理</span></div>
+                <div class="">
+                  预警状态:
+                  <span class="text-[#FF8500]">未处理</span>
+                </div>
                 <div></div>
                 <div></div>
                 <div></div>
               </div>
               <!-- 第四行 处理预警的功能按钮 -->
               <div v-show="'0' === item.warnStatus" class="flex justify-end">
-                <el-button type="primary" @click="handleDeal(item.id)"> 处理</el-button>
+                <el-button type="primary" @click="handleDeal(item.id)">
+                  处理
+                </el-button>
                 <el-button
                   @click="openForm('update', item.id)"
                   v-hasPermi="['agriculture:agri-warning-record:update']"
@@ -235,15 +260,25 @@
           <!-- 列表形式 -->
           <div v-show="listType === 'list'">
             <el-table :data="list">
-              <el-table-column align="center" prop="deviceName" label="设备名称"/>
+              <el-table-column
+                align="center"
+                prop="deviceName"
+                label="设备名称"
+              />
               <el-table-column align="center" label="预警类型">
                 <template #default="scope">
-                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType"/>
+                  <dict-tag
+                    :type="DICT_TYPE.AGRI_MONITOR_TYPE"
+                    :value="scope.row.warnType"
+                  />
                 </template>
               </el-table-column>
               <el-table-column align="center" label="预警等级">
                 <template #default="scope">
-                  <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel"/>
+                  <dict-tag
+                    :type="DICT_TYPE.AGRI_WARN_LEVEL"
+                    :value="scope.row.warnLevel"
+                  />
                 </template>
               </el-table-column>
               <el-table-column
@@ -270,14 +305,24 @@
               </el-table-column>
               <el-table-column align="center" label="预警状态">
                 <template #default="scope">
-                  <span :class="scope.row.warnStatus === '1' ? 'text-[#009688]' : 'text-[#FF8500]'">
+                  <span
+                    :class="
+                      scope.row.warnStatus === '1'
+                        ? 'text-[#009688]'
+                        : 'text-[#FF8500]'
+                    "
+                  >
                     {{ scope.row.warnStatus === '1' ? '已处理' : '未处理' }}
                   </span>
                 </template>
               </el-table-column>
               <el-table-column align="center" prop="dealTime" label="处理时间">
                 <template #default="scope">
-                  {{ scope.row.warnStatus === '1' ? timeFormat(scope.row.dealTime) : '' }}
+                  {{
+                    scope.row.warnStatus === '1'
+                      ? timeFormat(scope.row.dealTime)
+                      : ''
+                  }}
                 </template>
               </el-table-column>
               <el-table-column align="center" prop="dealPerson" label="处理人">
@@ -290,7 +335,12 @@
                   {{ scope.row.warnStatus === '1' ? scope.row.dealInfo : '' }}
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="操作" fixed="right" width="280px">
+              <el-table-column
+                align="center"
+                label="操作"
+                fixed="right"
+                width="280px"
+              >
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -328,7 +378,7 @@
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
-    <AgriWarningRecordForm ref="formRef" @success="getList"/>
+    <AgriWarningRecordForm ref="formRef" @success="getList" />
 
     <!-- 处理预警信息对话框 -->
     <el-dialog
@@ -347,7 +397,7 @@
         class="grid grid-cols-1 gap-6"
       >
         <el-form-item label="处理人" prop="dealPerson">
-          <el-input v-model="dealData.dealPerson" placeholder="请输入处理人"/>
+          <el-input v-model="dealData.dealPerson" placeholder="请输入处理人" />
         </el-form-item>
         <el-form-item label="处理信息" prop="dealInfo">
           <el-input
@@ -360,13 +410,17 @@
       </el-form>
       <template #footer>
         <div class="flex justify-center">
-          <el-button @click="submitDialog(dealDataFormRef)" type="primary" size="large"
-          ><span class="text-[16px]">确 定</span></el-button
+          <el-button
+            @click="submitDialog(dealDataFormRef)"
+            type="primary"
+            size="large"
           >
+            <span class="text-[16px]">确 定</span>
+          </el-button>
           <div class="ml-[20px]">
-            <el-button @click="cancelSubmit(dealDataFormRef)" size="large"
-            ><span class="text-[16px]">取 消</span></el-button
-            >
+            <el-button @click="cancelSubmit(dealDataFormRef)" size="large">
+              <span class="text-[16px]">取 消</span>
+            </el-button>
           </div>
         </div>
       </template>
@@ -375,10 +429,7 @@
     <!-- 监控设备预警 -->
     <el-tab-pane name="monitorTab">
       <template #label>
-        <el-badge
-          :value="totalMonitor"
-          class="item"
-        >
+        <el-badge :value="totalMonitor" class="item">
           <span class="px-2">监控设备预警</span>
         </el-badge>
       </template>
@@ -388,7 +439,7 @@
           class="-mb-15px"
           :model="queryParamsMonitor"
           ref="queryFormRefMonitor"
-          label-width="88px"
+          label-width="auto"
           :inline="true"
         >
           <!-- 表单内容 -->
@@ -430,7 +481,9 @@
               clearable
             >
               <el-option
-                v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
+                v-for="dict in getIntDictOptions(
+                  DICT_TYPE.AGRI_NOTICEEVENT_TYPE
+                )"
                 :key="dict.label"
                 :label="dict.label"
                 :value="dict.label"
@@ -459,11 +512,11 @@
           <!--          <div class="flex flex-wrap justify-center content-center md:col-span-1">-->
           <el-form-item>
             <el-button @click="handleQueryMonitor" type="primary">
-              <Icon icon="ep:search"/>
+              <Icon icon="ep:search" />
               搜索
             </el-button>
             <el-button @click="resetQueryMonitor">
-              <Icon icon="ep:refresh"/>
+              <Icon icon="ep:refresh" />
               重置
             </el-button>
           </el-form-item>
@@ -477,28 +530,36 @@
           <div class="flex flex-wrap content-center">
             <el-button type="primary" plain @click="openFormMonitor('create')">
               <el-icon>
-                <Plus/>
+                <Plus />
               </el-icon>
               新增
             </el-button>
-            <el-button plain @click="handleExportMonitor" :loading="exportLoadingMonitor">
+            <el-button
+              plain
+              @click="handleExportMonitor"
+              :loading="exportLoadingMonitor"
+            >
               <el-icon>
-                <Download/>
+                <Download />
               </el-icon>
               导出
             </el-button>
           </div>
           <div class="flex flex-wrap content-center">
-            <el-radio-group v-model="listTypeMonitor" size="small" @change="cardChangeMonitor">
+            <el-radio-group
+              v-model="listTypeMonitor"
+              size="small"
+              @change="cardChangeMonitor"
+            >
               <el-radio-button label="card" value="card">
                 <el-icon>
-                  <Menu/>
+                  <Menu />
                 </el-icon>
                 卡片
               </el-radio-button>
               <el-radio-button label="list" value="list">
                 <el-icon>
-                  <List/>
+                  <List />
                 </el-icon>
                 列表
               </el-radio-button>
@@ -509,7 +570,9 @@
         <div class="mt-[20px]">
           <!-- 卡片形式 -->
           <div
-            v-if=" listMonitor.length && currentItem && listTypeMonitor === 'card'"
+            v-if="
+              listMonitor.length && currentItem && listTypeMonitor === 'card'
+            "
             :class="`
               grid grid-cols-2 gap-3
               ${themeIsDark ? 'text-white' : 'text-[#999999]'}
@@ -533,68 +596,84 @@
                 <div
                   v-show="currentItem.videoLink"
                   @click="openVideoMonitor(currentItem.videoLink)"
-                  class="
-                    absolute bg-black opacity-50
-                    w-[40px] h-[40px] bottom-[11px] right-[110px]
-                    rounded text-center leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] cursor-pointer"
                 >
                   <el-icon color="#FFFFFF" size="16px">
-                    <VideoCamera/>
+                    <VideoCamera />
                   </el-icon>
                 </div>
                 <div
-                  class="
-                    absolute bg-black opacity-50
-                    w-[40px] h-[40px] bottom-[11px] right-[60px]
-                    rounded text-center leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] cursor-pointer"
                   @click="openFormMonitor('update', currentItem.id)"
                 >
                   <el-icon color="#FFFFFF" size="16px">
-                    <Edit/>
+                    <Edit />
                   </el-icon>
                 </div>
                 <div
-                  class="
-                    absolute bg-black opacity-50
-                    w-[40px] h-[40px] bottom-[11px] right-[10px]
-                    rounded text-center leading-[40px] cursor-pointer
-                  "
+                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] cursor-pointer"
                   @click="handleDeleteMonitor(currentItem.id)"
                 >
                   <el-icon color="#FFFFFF" size="16px">
-                    <Delete/>
+                    <Delete />
                   </el-icon>
                 </div>
               </div>
               <div class="grid grid-cols-2 2xl:grid-cols-3 gap-1 my-10px px-3">
-                <div>基地名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                    currentItem.monitoringBaseName
-                  }}</span></div>
-                <div>地块名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                    currentItem.monitoringPlotName
-                  }}</span></div>
-                <div>设备名称: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                    currentItem.deviceName
-                  }}</span></div>
-                <div>事件类型:
+                <div>
+                  基地名称:
+                  <span
+                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                  >
+                    {{ currentItem.monitoringBaseName }}
+                  </span>
+                </div>
+                <div>
+                  地块名称:
+                  <span
+                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                  >
+                    {{ currentItem.monitoringPlotName }}
+                  </span>
+                </div>
+                <div>
+                  设备名称:
+                  <span
+                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                  >
+                    {{ currentItem.deviceName }}
+                  </span>
+                </div>
+                <div>
+                  事件类型:
                   <dict-tag
                     :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
                     :value="currentItem.noticeEvent"
                   />
                 </div>
-                <div>消息内容: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                    currentItem.remarks
-                  }}</span></div>
-                <div>记录时间: <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                    timeFormat(currentItem.recordTime)
-                  }}</span></div>
+                <div>
+                  消息内容:
+                  <span
+                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                  >
+                    {{ currentItem.remarks }}
+                  </span>
+                </div>
+                <div>
+                  记录时间:
+                  <span
+                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                  >
+                    {{ timeFormat(currentItem.recordTime) }}
+                  </span>
+                </div>
               </div>
             </div>
             <!-- 卡片列表区 -->
             <el-scrollbar style="height: 70vh">
-              <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
+              <div
+                class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded"
+              >
                 <div
                   :class="`
                     ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
@@ -613,39 +692,69 @@
                         class="h-[17vh] rounded"
                       />
                     </div>
-                    <div
-                      class="mt-[5px] px-[5px]"
-                    >
-                      <div>设备名称: <br class="lg:hidden"/><span
-                        :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                          item.deviceName
-                        }}</span></div>
-                      <div class="mt-[5px]">记录时间: <br class="lg:hidden"/><span
-                        :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">{{
-                          timeFormat(item.recordTime)
-                        }}</span></div>
+                    <div class="mt-[5px] px-[5px]">
+                      <div>
+                        设备名称:
+                        <br class="lg:hidden" />
+                        <span
+                          :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                        >
+                          {{ item.deviceName }}
+                        </span>
+                      </div>
+                      <div class="mt-[5px]">
+                        记录时间:
+                        <br class="lg:hidden" />
+                        <span
+                          :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
+                        >
+                          {{ timeFormat(item.recordTime) }}
+                        </span>
+                      </div>
                     </div>
                   </el-scrollbar>
                 </div>
               </div>
             </el-scrollbar>
           </div>
-          <div v-else-if="listTypeMonitor === 'card'" class="text-center tracking-widest">
+          <div
+            v-else-if="listTypeMonitor === 'card'"
+            class="text-center tracking-widest"
+          >
             暂无数据
           </div>
           <!-- 列表形式 -->
           <div v-show="listTypeMonitor === 'list'">
             <el-table :data="listMonitor">
-              <el-table-column align="center" prop="monitoringBaseName" label="基地名称"/>
-              <el-table-column align="center" prop="monitoringPlotName" label="地块名称"/>
-              <el-table-column align="center" prop="deviceName" label="设备名称"/>
+              <el-table-column
+                align="center"
+                prop="monitoringBaseName"
+                label="基地名称"
+              />
+              <el-table-column
+                align="center"
+                prop="monitoringPlotName"
+                label="地块名称"
+              />
+              <el-table-column
+                align="center"
+                prop="deviceName"
+                label="设备名称"
+              />
               <!--              <el-table-column align="center" prop="noticeEvent" label="事件类型" />-->
-              <el-table-column label="事件类型" align="center" prop="noticeEvent">
+              <el-table-column
+                label="事件类型"
+                align="center"
+                prop="noticeEvent"
+              >
                 <template #default="scope">
-                  <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent"/>
+                  <dict-tag
+                    :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
+                    :value="scope.row.noticeEvent"
+                  />
                 </template>
               </el-table-column>
-              <el-table-column align="center" prop="remarks" label="消息内容"/>
+              <el-table-column align="center" prop="remarks" label="消息内容" />
               <el-table-column align="center" label="拍摄时间">
                 <template #default="scope">
                   {{ timeFormat(scope.row.recordTime) }}
@@ -662,7 +771,12 @@
                   />
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="操作" fixed="right" width="280px">
+              <el-table-column
+                align="center"
+                label="操作"
+                fixed="right"
+                width="280px"
+              >
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -671,8 +785,13 @@
                   >
                     查看视频
                   </el-button>
-                  <el-button @click="openFormMonitor('update', scope.row.id)"> 编辑</el-button>
-                  <el-button type="danger" @click="handleDeleteMonitor(scope.row.id)">
+                  <el-button @click="openFormMonitor('update', scope.row.id)">
+                    编辑
+                  </el-button>
+                  <el-button
+                    type="danger"
+                    @click="handleDeleteMonitor(scope.row.id)"
+                  >
                     删除
                   </el-button>
                 </template>
@@ -690,31 +809,49 @@
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
-    <MonitoringEquipmentNoticeForm ref="formRefMonitor" @success="handleUpdateSuccess"/>
+    <MonitoringEquipmentNoticeForm
+      ref="formRefMonitor"
+      @success="handleUpdateSuccess"
+    />
     <!-- 视频弹窗 -->
-    <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
-      <video :src="videoUrl" controls autoplay class="video" width="800px" height="800px"></video>
+    <el-dialog
+      v-model="isShow"
+      width="900px"
+      height="900px"
+      @close="closeDialog"
+      class="videoBox"
+    >
+      <video
+        :src="videoUrl"
+        controls
+        autoplay
+        class="video"
+        width="800px"
+        height="800px"
+      ></video>
     </el-dialog>
   </el-tabs>
 </template>
 
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE, getIntDictOptions} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
+import { getStrDictOptions, DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import {AgriWarningRecordApi, AgriWarningRecordVO} from '@/api/agriculture/agriwarningrecord'
+import {
+  AgriWarningRecordApi,
+  AgriWarningRecordVO
+} from '@/api/agriculture/agriwarningrecord'
 import AgriWarningRecordForm from './AgriWarningRecordForm.vue'
 import {
   MonitoringEquipmentNoticeApi,
   MonitoringEquipmentNoticeVO
 } from '@/api/agriculture/monitoringequipmentnotice'
-import MonitoringEquipmentNoticeForm
-  from '@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue'
-import {useRoute} from 'vue-router'
-import {getTenantId} from '@/utils/auth'
-import {CACHE_KEY} from '@/hooks/web/useCache'
-import {useUserStore} from '@/store/modules/user'
-import {getUserProfile} from '@/api/system/user/profile'
+import MonitoringEquipmentNoticeForm from '@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue'
+import { useRoute } from 'vue-router'
+import { getTenantId } from '@/utils/auth'
+import { CACHE_KEY } from '@/hooks/web/useCache'
+import { useUserStore } from '@/store/modules/user'
+import { getUserProfile } from '@/api/system/user/profile'
 // import { da, vi } from 'node_modules/element-plus/es/locale'
 
 const deptName = ref()
@@ -726,8 +863,8 @@ showDeptId()
 
 const hiddenMonitorTab = ref<boolean>(true)
 const judgeMonitorHidden = () => {
-  const tenantName = localStorage.getItem("TENANT_NAME");
-  console.log("=========", tenantName !== '太原乡村振兴数字化赋能');
+  const tenantName = localStorage.getItem('TENANT_NAME')
+  console.log('=========', tenantName !== '太原乡村振兴数字化赋能')
 
   hiddenMonitorTab.value = tenantName !== '太原乡村振兴数字化赋能'
 }
@@ -745,7 +882,7 @@ const changeTab = (tab: any) => {
 }
 
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const { t } = useI18n() // 国际化
 
 // --------------------------- sensorTab ---------------------------
 const queryParams = reactive({
@@ -773,13 +910,14 @@ const getList = async () => {
   // 卡片形式每页加载9项，列表形式每页加载10项
   // queryParams.pageSize = listType.value === 'card' ? 9 : 10
   try {
-    const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
+    const data =
+      await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
     loading.value = false
   }
-  console.log("列表数据", list.value)
+  console.log('列表数据', list.value)
 }
 
 // 查询
@@ -861,8 +999,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {
-  }
+  } catch {}
 }
 
 const exportLoading = ref(false) // 导出的加载中
@@ -905,8 +1042,8 @@ const dealData = ref({
 } as any)
 
 const dealDataRules = reactive({
-  dealPerson: [{required: true, message: '处理人不能为空', trigger: 'blur'}],
-  dealInfo: [{required: true, message: '处理信息不能为空', trigger: 'blur'}]
+  dealPerson: [{ required: true, message: '处理人不能为空', trigger: 'blur' }],
+  dealInfo: [{ required: true, message: '处理信息不能为空', trigger: 'blur' }]
 })
 
 const title = ref('')
@@ -1060,7 +1197,9 @@ const getListMonitor = async () => {
   // queryParamsMonitor.pageSize = listTypeMonitor.value === 'card' ? 6 : 10
   try {
     const data =
-      await MonitoringEquipmentNoticeApi.getMonitoringEquipmentNoticePage(queryParamsMonitor)
+      await MonitoringEquipmentNoticeApi.getMonitoringEquipmentNoticePage(
+        queryParamsMonitor
+      )
     listMonitor.value = data.list
     totalMonitor.value = data.total
     if ('card' === listTypeMonitor.value) {
@@ -1102,28 +1241,30 @@ const formRefMonitor = ref()
 const tmpIndex = ref(-1)
 const openFormMonitor = (type: string, id?: number) => {
   // 编辑前 保存当前编辑项的下标
-  if ("update" === type && "card" === listTypeMonitor.value) {
-    tmpIndex.value = listMonitor.value.findIndex(ele => {
-      return ele.id === currentItem.value.id;
-    });
+  if ('update' === type && 'card' === listTypeMonitor.value) {
+    tmpIndex.value = listMonitor.value.findIndex((ele) => {
+      return ele.id === currentItem.value.id
+    })
   }
   formRefMonitor.value.open(type, id)
 }
 
 // 修改成功后调用的函数
 const handleUpdateSuccess = async () => {
-  await getListMonitor();
-  if ("card" !== listTypeMonitor.value) return;
+  await getListMonitor()
+  if ('card' !== listTypeMonitor.value) return
   if (-1 !== tmpIndex.value) {
-    currentItem.value = listMonitor.value[tmpIndex.value];
-    tmpIndex.value = -1;
+    currentItem.value = listMonitor.value[tmpIndex.value]
+    tmpIndex.value = -1
   }
 }
 
 /** 删除按钮操作 */
 const handleDeleteMonitor = async (id: number) => {
   // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = listMonitor.value.findIndex(ele => ele.id === currentItem.value.id);
+  const idx = listMonitor.value.findIndex(
+    (ele) => ele.id === currentItem.value.id
+  )
 
   try {
     // 删除的二次确认
@@ -1134,16 +1275,16 @@ const handleDeleteMonitor = async (id: number) => {
     // 刷新列表
     await getListMonitor()
   } catch {
-    console.log("删除失败")
+    console.log('删除失败')
   }
 
   // 删除后 设置curItem
   // 如果删除成功 则下标处是删除后的下一项
   // 如果删除失败 则下标处是原来的项
   if (idx >= listMonitor.value.length) {
-    currentItem.value = listMonitor.value[listMonitor.value.length - 1];
+    currentItem.value = listMonitor.value[listMonitor.value.length - 1]
   } else {
-    currentItem.value = listMonitor.value[idx];
+    currentItem.value = listMonitor.value[idx]
   }
 }
 /** 导出按钮操作 */
@@ -1153,7 +1294,10 @@ const handleExportMonitor = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await MonitoringEquipmentNoticeApi.exportMonitoringEquipmentNotice(queryParams)
+    const data =
+      await MonitoringEquipmentNoticeApi.exportMonitoringEquipmentNotice(
+        queryParams
+      )
     download.excel(data, '监控设备通知.xls')
   } catch {
   } finally {
@@ -1169,18 +1313,21 @@ onMounted(() => {
   themeIsDark.value = appStore.getIsDark
 })
 
-import {useAppStore} from '@/store/modules/app'
-import {watch} from "vue"
-import {Delete} from "@element-plus/icons-vue";
+import { useAppStore } from '@/store/modules/app'
+import { watch } from 'vue'
+import { Delete } from '@element-plus/icons-vue'
 
 const appStore = useAppStore()
 const themeIsDark = ref(false)
 
 // 监听主题模式变化
-watch(() => appStore.isDark, (newVal, oldVal) => {
-  console.log("isDark", newVal, oldVal)
-  themeIsDark.value = newVal
-})
+watch(
+  () => appStore.isDark,
+  (newVal, oldVal) => {
+    console.log('isDark', newVal, oldVal)
+    themeIsDark.value = newVal
+  }
+)
 </script>
 
 <style scoped lang="scss">
@@ -1222,7 +1369,7 @@ watch(() => appStore.isDark, (newVal, oldVal) => {
   height: 260px;
   border-radius: 4px;
   opacity: 1;
-  background-color: #343A46;
+  background-color: #343a46;
   box-sizing: border-box;
   box-shadow: 0px 2px 5px 0px rgba(153, 153, 153, 0.5);
   padding: 20px;

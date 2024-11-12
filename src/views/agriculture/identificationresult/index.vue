@@ -6,7 +6,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="88px"
+      label-width="auto"
     >
       <el-form-item label="主表ID" prop="mainTableId">
         <el-input
@@ -98,15 +98,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:identification-result:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
         <el-button
           type="success"
@@ -115,7 +122,8 @@
           :loading="exportLoading"
           v-hasPermi="['agriculture:identification-result:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
         </el-button>
       </el-form-item>
     </el-form>
@@ -123,7 +131,12 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+    >
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="主表ID" align="center" prop="mainTableId" />
       <el-table-column label="名称" align="center" prop="name" />
@@ -138,7 +151,10 @@
       />
       <el-table-column label="识别类型" align="center" prop="recognitionType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_RECOGNITION_TYPE" :value="scope.row.recognitionType" />
+          <dict-tag
+            :type="DICT_TYPE.AGRI_RECOGNITION_TYPE"
+            :value="scope.row.recognitionType"
+          />
         </template>
       </el-table-column>
       <el-table-column label="记录人" align="center" prop="recorder" />
@@ -187,7 +203,10 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { IdentificationResultApi, IdentificationResultVO } from '@/api/agriculture/identificationresult'
+import {
+  IdentificationResultApi,
+  IdentificationResultVO
+} from '@/api/agriculture/identificationresult'
 import IdentificationResultForm from './IdentificationResultForm.vue'
 
 /** 识别结果 列表 */
@@ -218,7 +237,8 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await IdentificationResultApi.getIdentificationResultPage(queryParams)
+    const data =
+      await IdentificationResultApi.getIdentificationResultPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -264,7 +284,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await IdentificationResultApi.exportIdentificationResult(queryParams)
+    const data =
+      await IdentificationResultApi.exportIdentificationResult(queryParams)
     download.excel(data, '识别结果.xls')
   } catch {
   } finally {
