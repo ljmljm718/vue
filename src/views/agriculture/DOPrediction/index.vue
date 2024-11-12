@@ -168,7 +168,7 @@
             溶解氧标准值： {{ standardDo.optimalTemperature }}
             <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
           </div> -->
-          <div class="text-#009688 bg-[#e5f4f3] px-6 py-2 rounded-full">
+          <div class="text-#009688 bg-[#e5f4f3] px-5 py-2 rounded-full">
             <span >溶解氧标准值：</span>
             <span 
               >{{ standardDo.optimalTemperature }} 
@@ -176,7 +176,7 @@
             </span>
           </div>
         </div>
-        <div class="flex flex-col relative w-full h-[200px] items-center  ">
+        <div class="flex flex-col relative w-full h-[200px] items-center">
           <img
             src="./assets/currentScore.png"
             class="w-[250px] h-[250px] object-contain absolute -translate-y-1/10"
@@ -189,15 +189,18 @@
             >溶解氧当前值</span
           >
         </div>
-
-        <div
-          class="flex items-center my-4 bg-[#fdeceb] text-[#E31205] text-lg p-2 rounded-md"
-          v-for="(warning, index) in warningMessage"
-          :key="index"
-        >
-          <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 " />
-          <span class="text-3.5">设备警告：{{ warning }}</span>
+        <el-scrollbar height="100%">
+          <div class="flex flex-col max-h-[8rem]">
+            <div
+              class="flex items-center my-1 bg-[#fdeceb] text-[#E31205] text-lg p-2 rounded-md"
+              v-for="(warning, index) in warningMessage"
+              :key="index"
+            >
+              <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 " />
+              <span class="text-3.5">设备警告：{{ warning }}</span>
+          </div>
         </div>
+      </el-scrollbar>
       </el-card>
 
       <el-card class="w-full">
