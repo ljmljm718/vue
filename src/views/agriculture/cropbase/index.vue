@@ -432,6 +432,7 @@ import { ParkDetailVO } from '@/api/agriculture/parkdetail';
 import { CommonStatusEnum, CommonStatusEnumBoolean } from '@/utils/constants';
 import BreedFrom from '@/views/agriculture/varietymanagement/SelectVarirtManagement.vue';
 import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement';
+import { cloneDeep } from 'lodash-es'
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({ name: 'AgriCropBase' });
@@ -696,6 +697,16 @@ const BreedFromSuccess = (order: any) => {
 //卡片、列表按钮切换
 const showType = ref('card');
 const cardDataList = ref<any[]>([]);
+
+watch(() => showType.value, (val) => {
+  if (val === 'list') {
+    const _list = cloneDeep(list.value)
+    list.value = []
+    nextTick(() => {
+      list.value = _list
+    })
+  }
+})
 
 onMounted(async () => {
   await getList();
