@@ -333,6 +333,8 @@ import MarketingProgramForm from './MarketingProgramForm.vue'
 //文件预览引入
 import { renderAsync } from 'docx-preview'
 import axios from 'axios'
+import { useAppStore } from '@/store/modules/app'
+import { watch } from "vue"
 
 /** 营销方案 列表 */
 defineOptions({ name: 'MarketingProgram' })
@@ -480,6 +482,23 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   sessionStorage.setItem("latestListType", listType.value)
+
+  // 执行新增、编辑、详情操作 保存搜索栏数据和页码
+  sessionStorage.removeItem("giftboxStyleQueryParams");
+  let data: any = {
+    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    schemeName: queryParams.schemeName,
+    marketingCreator: queryParams.marketingCreator,
+    marketingCategory: queryParams.marketingCategory,
+    marketingTags: queryParams.marketingTags,
+    marketingUploadTime: queryParams.marketingUploadTime,
+  }
+  if ("card" === listType.value) {
+    const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
+    data = { ...data, id: idx };
+  }
+  sessionStorage.setItem("giftboxStyleQueryParams", JSON.stringify(data));
+
   if (type == 'create') {
     router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram')
   } else {
@@ -496,11 +515,31 @@ const openForm = (type: string, id?: number) => {
  */
 const openDetailForm = (type: string, id?: number) => {
   sessionStorage.setItem("latestListType", listType.value)
+  
+  // 执行新增、编辑、详情操作 保存搜索栏数据和页码 和 当前选择项
+  sessionStorage.removeItem("giftboxStyleQueryParams");
+  let data: any = {
+    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    schemeName: queryParams.schemeName,
+    marketingCreator: queryParams.marketingCreator,
+    marketingCategory: queryParams.marketingCategory,
+    marketingTags: queryParams.marketingTags,
+    marketingUploadTime: queryParams.marketingUploadTime,
+  }
+  if ("card" === listType.value) {
+    const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
+    data = { ...data, id: idx };
+  }
+  sessionStorage.setItem("giftboxStyleQueryParams", JSON.stringify(data));
+  
   router.push('/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' + type + '&id=' + id)
 }
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
+  // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
+  const idx = list.value.findIndex(ele => ele.id === currentItem.value.id);
+
   try {
     // 删除的二次确认
     await message.delConfirm()
@@ -510,6 +549,13 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {}
+
+  // 删除后 设置curItem
+  if (idx >= list.value.length) {
+    currentItem.value = list.value[list.value.length - 1];
+  } else {
+    currentItem.value = list.value[idx];
+  }
 }
 
 /** 导出按钮操作 */
@@ -528,15 +574,32 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
+onMounted(async () => {
+  // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
+  const sessionParams = sessionStorage.getItem("giftboxStyleQueryParams");
+  let idx: number = -1;
+  if (sessionParams) {
+    const data = JSON.parse(sessionParams);
+    queryParams.pageNo = data.pageNo;
+    queryParams.schemeName = data.schemeName;
+    queryParams.marketingCreator = data.marketingCreator;
+    queryParams.marketingCategory = data.marketingCategory;
+    queryParams.marketingTags = data.marketingTags;
+    queryParams.marketingUploadTime = data.marketingUploadTime;
+    idx = data.id;
+  }
+  sessionStorage.removeItem("giftboxStyleQueryParams");
+
+  console.log("aaaaaaaaaaa");
+  await getList()
+
+  if (-1 !== idx) {
+    currentItem.value = list.value[idx];
+  }
 
   // 获取当前是否是深色主题
   themeIsDark.value = appStore.getIsDark
 })
-
-import { useAppStore } from '@/store/modules/app'
-import { watch } from "vue"
 
 const appStore = useAppStore()
 const themeIsDark = ref(false)

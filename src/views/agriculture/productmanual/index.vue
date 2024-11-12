@@ -393,6 +393,19 @@ const router = useRouter() // 路由
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   sessionStorage.setItem('latestListType', listType.value)
+    
+  // 执行新增、编辑、详情操作 保存搜索栏数据和页码
+  sessionStorage.removeItem("productManualQueryParams");
+  const data = {
+    pageNo: type === "create" ? 1 : queryParams.pageNo,
+    schemeName: queryParams.schemeName,
+    marketingCreator: queryParams.marketingCreator,
+    marketingCategory: queryParams.marketingCategory,
+    marketingTags: queryParams.marketingTags,
+    marketingUploadTime: queryParams.marketingUploadTime,
+  }
+  sessionStorage.setItem("productManualQueryParams", JSON.stringify(data));
+
   if (type == 'create') {
     router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram')
   } else {
@@ -432,6 +445,19 @@ const handleExport = async () => {
 
 /** 初始化 **/
 onMounted(() => {
+  // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
+  const sessionParams = sessionStorage.getItem("productManualQueryParams");
+  if (sessionParams) {
+    const data = JSON.parse(sessionParams);
+    queryParams.pageNo = data.pageNo;
+    queryParams.schemeName = data.schemeName;
+    queryParams.marketingCreator = data.marketingCreator;
+    queryParams.marketingCategory = data.marketingCategory;
+    queryParams.marketingTags = data.marketingTags;
+    queryParams.marketingUploadTime = data.marketingUploadTime;
+  }
+  sessionStorage.removeItem("productManualQueryParams");
+
   getList()
 })
 </script>

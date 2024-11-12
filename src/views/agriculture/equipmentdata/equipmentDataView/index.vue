@@ -25,7 +25,7 @@ const defaultProps = {
   children: 'child',
   label: 'name',
 }
-const isCollapse = ref(false)
+const isCollapse = ref(true)
 
 watch(filterText, (val) => {
   treeRef.value!.filter(val)
