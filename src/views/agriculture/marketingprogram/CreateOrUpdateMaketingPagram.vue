@@ -228,7 +228,8 @@ const submitForm = async () => {
     // 关闭当前页面
     useTagsViewStore().delView(router.currentRoute.value);
     // 发送操作成功的事件
-    router.push(ORIGIN_PATH)
+    await router.go(-1)
+    // router.push(ORIGIN_PATH)
   } finally {
     formLoading.value = false
   }

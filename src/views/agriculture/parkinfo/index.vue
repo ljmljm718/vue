@@ -465,8 +465,13 @@ const resetQuery = () => {
   handleQuery()
 }
 
+const router = useRouter() // 路由
 onActivated(() => {
-  handleQuery()
+  const prevPath = localStorage.getItem("PREV_PATH")
+  if (prevPath !== '/asset/base/parkInfo/create') return;
+  getList()
+  handleBack() // 清空地块信息列表
+  // handleQuery()
 })
 
 /** 查看操作 */
@@ -486,8 +491,6 @@ const handleDelete = async (id: number) => {
     await getList()
   } catch {}
 }
-
-const router = useRouter() // 路由
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (id?: number) => {
@@ -674,8 +677,6 @@ const fetchCoordinatesFromLocalStorage = () => {
   }
 }
 //fetchCoordinatesFromLocalStorage()
-
-
 handleQuery()
 </script>
 
