@@ -223,7 +223,8 @@ const queryParams = reactive({
   createTime: [],
   deptId: undefined,
   userId: undefined,
-  location: undefined
+  location: undefined,
+  deviceKind: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -260,12 +261,19 @@ const submitForm = () => {
   }
 }
 /** 打开弹窗 */
+const JkObjectId = ref()
 const open = async (item:any) => {
   dialogVisible.value = true
   //s(item,"------");
   if (item != null){
     queryParams.belongPark = item.monitoringBaseId;
     queryParams.belongPlot = item.monitoringPlotId;
+  }
+  console.log(item,"============");
+  console.log(item == 'jk',"============");
+  if(item == 'jk'){
+    // 查询 视频监控 ID
+    JkObjectId.value = await DeviceCategoryApi.getDeviceCategoryList({parentId:'0',categoryName:'视频监控'});
   }
   console.log("open")
   await nextTick() // 等待，避免 queryFormRef 为空
@@ -279,7 +287,9 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
-    console.log(queryParams,"---===")
+    if(JkObjectId){
+      queryParams.deviceType =  JkObjectId.value[0].id
+    }
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
     /*if(data.total==0){
       message.error("暂无设备,请添加")
