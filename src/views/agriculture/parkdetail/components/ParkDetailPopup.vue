@@ -204,12 +204,10 @@ const props = defineProps({
 // 地块单选
 const multipleTableRef = ref()
 const select = (selection, row)=> {
-  // 清除 所有勾选项
-  multipleTableRef.value.clearSelection()
-  // 当表格数据都没有被勾选的时候 就返回
-  // 主要用于将当前勾选的表格状态清除
-  if(selection.length == 0) return
-  multipleTableRef.value.toggleRowSelection(row, true);
+  if(selection.length>1){
+    let del_row =selection.shift();
+    multipleTableRef.value.toggleRowSelection(del_row,false);
+  }
 }
 
 // 控制单选——table选择项发生变化时
