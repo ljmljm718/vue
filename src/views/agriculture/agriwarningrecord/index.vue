@@ -115,11 +115,7 @@
             </el-button>
           </div>
           <div class="flex flex-wrap content-center">
-            <el-radio-group
-              v-model="listType"
-              size="small"
-              @change="cardChange"
-            >
+            <el-radio-group v-model="listType" size="small" @change="cardChange">
               <el-radio-button label="card" value="card">
                 <el-icon>
                   <Menu />
@@ -138,10 +134,7 @@
         <!-- 第二行列表数据 -->
         <div class="mt-[20px]">
           <!-- 卡片形式 -->
-          <div
-            v-show="listType === 'card'"
-            class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
+          <div v-show="listType === 'card'" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
               v-for="item in list"
               :key="item.id"
@@ -149,9 +142,7 @@
             >
               <!-- 第一行 -->
               <div class="h-[37px] flex md:block xl:flex md:mb-[5px] 2xl:mb-0">
-                <div
-                  class="text-[18px] md:text-[12px] lg:text-[14px] 2xl:text-[18px]"
-                >
+                <div class="text-[18px] md:text-[12px] lg:text-[14px] 2xl:text-[18px]">
                   {{ item.deviceName }}
                 </div>
                 <dict-tag
@@ -166,19 +157,13 @@
                 />
               </div>
               <!-- 第二行 -->
-              <div
-                class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]"
-              >
+              <div class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]">
                 当前值:
-                <span
-                  class="text-[#E31205] border-r border-r-solid border-[#E5E5E5] pr-[5px]"
-                >
+                <span class="text-[#E31205] border-r border-r-solid border-[#E5E5E5] pr-[5px]">
                   {{ item.currentValue }}{{ item.warnUnit }}
                 </span>
                 阈值:
-                <span
-                  class="border-r border-r-solid border-[#E5E5E5] pr-[5px] pl-[5px]"
-                >
+                <span class="border-r border-r-solid border-[#E5E5E5] pr-[5px] pl-[5px]">
                   {{ item.threshold }}{{ item.warnUnit }}
                 </span>
                 预警时间:
@@ -186,9 +171,7 @@
                   {{ timeFormat(item.warnTime) }}
                 </span>
               </div>
-              <div
-                class="warn-popover text-[16px] md:text-[10px] lg:text-[12px] 2xl:text-[16px]"
-              >
+              <div class="warn-popover text-[16px] md:text-[10px] lg:text-[12px] 2xl:text-[16px]">
                 <el-icon>
                   <WarnTriangleFilled />
                 </el-icon>
@@ -239,9 +222,7 @@
               </div>
               <!-- 第四行 处理预警的功能按钮 -->
               <div v-show="'0' === item.warnStatus" class="flex justify-end">
-                <el-button type="primary" @click="handleDeal(item.id)">
-                  处理
-                </el-button>
+                <el-button type="primary" @click="handleDeal(item.id)">处理</el-button>
                 <el-button
                   @click="openForm('update', item.id)"
                   v-hasPermi="['agriculture:agri-warning-record:update']"
@@ -260,25 +241,15 @@
           <!-- 列表形式 -->
           <div v-show="listType === 'list'">
             <el-table :data="list">
-              <el-table-column
-                align="center"
-                prop="deviceName"
-                label="设备名称"
-              />
+              <el-table-column align="center" prop="deviceName" label="设备名称" />
               <el-table-column align="center" label="预警类型">
                 <template #default="scope">
-                  <dict-tag
-                    :type="DICT_TYPE.AGRI_MONITOR_TYPE"
-                    :value="scope.row.warnType"
-                  />
+                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
                 </template>
               </el-table-column>
               <el-table-column align="center" label="预警等级">
                 <template #default="scope">
-                  <dict-tag
-                    :type="DICT_TYPE.AGRI_WARN_LEVEL"
-                    :value="scope.row.warnLevel"
-                  />
+                  <dict-tag :type="DICT_TYPE.AGRI_WARN_LEVEL" :value="scope.row.warnLevel" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -305,24 +276,14 @@
               </el-table-column>
               <el-table-column align="center" label="预警状态">
                 <template #default="scope">
-                  <span
-                    :class="
-                      scope.row.warnStatus === '1'
-                        ? 'text-[#009688]'
-                        : 'text-[#FF8500]'
-                    "
-                  >
+                  <span :class="scope.row.warnStatus === '1' ? 'text-[#009688]' : 'text-[#FF8500]'">
                     {{ scope.row.warnStatus === '1' ? '已处理' : '未处理' }}
                   </span>
                 </template>
               </el-table-column>
               <el-table-column align="center" prop="dealTime" label="处理时间">
                 <template #default="scope">
-                  {{
-                    scope.row.warnStatus === '1'
-                      ? timeFormat(scope.row.dealTime)
-                      : ''
-                  }}
+                  {{ scope.row.warnStatus === '1' ? timeFormat(scope.row.dealTime) : '' }}
                 </template>
               </el-table-column>
               <el-table-column align="center" prop="dealPerson" label="处理人">
@@ -335,12 +296,7 @@
                   {{ scope.row.warnStatus === '1' ? scope.row.dealInfo : '' }}
                 </template>
               </el-table-column>
-              <el-table-column
-                align="center"
-                label="操作"
-                fixed="right"
-                width="280px"
-              >
+              <el-table-column align="center" label="操作" fixed="right" width="280px">
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -410,11 +366,7 @@
       </el-form>
       <template #footer>
         <div class="flex justify-center">
-          <el-button
-            @click="submitDialog(dealDataFormRef)"
-            type="primary"
-            size="large"
-          >
+          <el-button @click="submitDialog(dealDataFormRef)" type="primary" size="large">
             <span class="text-[16px]">确 定</span>
           </el-button>
           <div class="ml-[20px]">
@@ -481,9 +433,7 @@
               clearable
             >
               <el-option
-                v-for="dict in getIntDictOptions(
-                  DICT_TYPE.AGRI_NOTICEEVENT_TYPE
-                )"
+                v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
                 :key="dict.label"
                 :label="dict.label"
                 :value="dict.label"
@@ -534,11 +484,7 @@
               </el-icon>
               新增
             </el-button>
-            <el-button
-              plain
-              @click="handleExportMonitor"
-              :loading="exportLoadingMonitor"
-            >
+            <el-button plain @click="handleExportMonitor" :loading="exportLoadingMonitor">
               <el-icon>
                 <Download />
               </el-icon>
@@ -546,11 +492,7 @@
             </el-button>
           </div>
           <div class="flex flex-wrap content-center">
-            <el-radio-group
-              v-model="listTypeMonitor"
-              size="small"
-              @change="cardChangeMonitor"
-            >
+            <el-radio-group v-model="listTypeMonitor" size="small" @change="cardChangeMonitor">
               <el-radio-button label="card" value="card">
                 <el-icon>
                   <Menu />
@@ -570,9 +512,7 @@
         <div class="mt-[20px]">
           <!-- 卡片形式 -->
           <div
-            v-if="
-              listMonitor.length && currentItem && listTypeMonitor === 'card'
-            "
+            v-if="listMonitor.length && currentItem && listTypeMonitor === 'card'"
             :class="`
               grid grid-cols-2 gap-3
               ${themeIsDark ? 'text-white' : 'text-[#999999]'}
@@ -622,25 +562,19 @@
               <div class="grid grid-cols-2 2xl:grid-cols-3 gap-1 my-10px px-3">
                 <div>
                   基地名称:
-                  <span
-                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                  >
+                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                     {{ currentItem.monitoringBaseName }}
                   </span>
                 </div>
                 <div>
                   地块名称:
-                  <span
-                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                  >
+                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                     {{ currentItem.monitoringPlotName }}
                   </span>
                 </div>
                 <div>
                   设备名称:
-                  <span
-                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                  >
+                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                     {{ currentItem.deviceName }}
                   </span>
                 </div>
@@ -653,17 +587,13 @@
                 </div>
                 <div>
                   消息内容:
-                  <span
-                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                  >
+                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                     {{ currentItem.remarks }}
                   </span>
                 </div>
                 <div>
                   记录时间:
-                  <span
-                    :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                  >
+                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                     {{ timeFormat(currentItem.recordTime) }}
                   </span>
                 </div>
@@ -671,9 +601,7 @@
             </div>
             <!-- 卡片列表区 -->
             <el-scrollbar style="height: 70vh">
-              <div
-                class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded"
-              >
+              <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
                 <div
                   :class="`
                     ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
@@ -696,18 +624,14 @@
                       <div>
                         设备名称:
                         <br class="lg:hidden" />
-                        <span
-                          :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                        >
+                        <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                           {{ item.deviceName }}
                         </span>
                       </div>
                       <div class="mt-[5px]">
                         记录时间:
                         <br class="lg:hidden" />
-                        <span
-                          :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`"
-                        >
+                        <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
                           {{ timeFormat(item.recordTime) }}
                         </span>
                       </div>
@@ -717,36 +641,17 @@
               </div>
             </el-scrollbar>
           </div>
-          <div
-            v-else-if="listTypeMonitor === 'card'"
-            class="text-center tracking-widest"
-          >
+          <div v-else-if="listTypeMonitor === 'card'" class="text-center tracking-widest">
             暂无数据
           </div>
           <!-- 列表形式 -->
           <div v-show="listTypeMonitor === 'list'">
             <el-table :data="listMonitor">
-              <el-table-column
-                align="center"
-                prop="monitoringBaseName"
-                label="基地名称"
-              />
-              <el-table-column
-                align="center"
-                prop="monitoringPlotName"
-                label="地块名称"
-              />
-              <el-table-column
-                align="center"
-                prop="deviceName"
-                label="设备名称"
-              />
+              <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
+              <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
+              <el-table-column align="center" prop="deviceName" label="设备名称" />
               <!--              <el-table-column align="center" prop="noticeEvent" label="事件类型" />-->
-              <el-table-column
-                label="事件类型"
-                align="center"
-                prop="noticeEvent"
-              >
+              <el-table-column label="事件类型" align="center" prop="noticeEvent">
                 <template #default="scope">
                   <dict-tag
                     :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
@@ -771,12 +676,7 @@
                   />
                 </template>
               </el-table-column>
-              <el-table-column
-                align="center"
-                label="操作"
-                fixed="right"
-                width="280px"
-              >
+              <el-table-column align="center" label="操作" fixed="right" width="280px">
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -785,13 +685,8 @@
                   >
                     查看视频
                   </el-button>
-                  <el-button @click="openFormMonitor('update', scope.row.id)">
-                    编辑
-                  </el-button>
-                  <el-button
-                    type="danger"
-                    @click="handleDeleteMonitor(scope.row.id)"
-                  >
+                  <el-button @click="openFormMonitor('update', scope.row.id)">编辑</el-button>
+                  <el-button type="danger" @click="handleDeleteMonitor(scope.row.id)">
                     删除
                   </el-button>
                 </template>
@@ -809,80 +704,61 @@
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
-    <MonitoringEquipmentNoticeForm
-      ref="formRefMonitor"
-      @success="handleUpdateSuccess"
-    />
+    <MonitoringEquipmentNoticeForm ref="formRefMonitor" @success="handleUpdateSuccess" />
     <!-- 视频弹窗 -->
-    <el-dialog
-      v-model="isShow"
-      width="900px"
-      height="900px"
-      @close="closeDialog"
-      class="videoBox"
-    >
-      <video
-        :src="videoUrl"
-        controls
-        autoplay
-        class="video"
-        width="800px"
-        height="800px"
-      ></video>
+    <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
+      <video :src="videoUrl" controls autoplay class="video" width="800px" height="800px"></video>
     </el-dialog>
   </el-tabs>
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import {
-  AgriWarningRecordApi,
-  AgriWarningRecordVO
-} from '@/api/agriculture/agriwarningrecord'
-import AgriWarningRecordForm from './AgriWarningRecordForm.vue'
+import { getStrDictOptions, DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { AgriWarningRecordApi, AgriWarningRecordVO } from '@/api/agriculture/agriwarningrecord';
+import AgriWarningRecordForm from './AgriWarningRecordForm.vue';
 import {
   MonitoringEquipmentNoticeApi,
   MonitoringEquipmentNoticeVO
-} from '@/api/agriculture/monitoringequipmentnotice'
-import MonitoringEquipmentNoticeForm from '@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue'
-import { useRoute } from 'vue-router'
-import { getTenantId } from '@/utils/auth'
-import { CACHE_KEY } from '@/hooks/web/useCache'
-import { useUserStore } from '@/store/modules/user'
-import { getUserProfile } from '@/api/system/user/profile'
+} from '@/api/agriculture/monitoringequipmentnotice';
+import MonitoringEquipmentNoticeForm from '@/views/agriculture/monitoringequipmentnotice/MonitoringEquipmentNoticeForm.vue';
+import { useRoute } from 'vue-router';
+import { getTenantId } from '@/utils/auth';
+import { CACHE_KEY } from '@/hooks/web/useCache';
+import { useUserStore } from '@/store/modules/user';
+import { getUserProfile } from '@/api/system/user/profile';
 // import { da, vi } from 'node_modules/element-plus/es/locale'
 
-const deptName = ref()
+const deptName = ref();
 const showDeptId = async () => {
-  let res = await getUserProfile()
-  deptName.value = res.nickname
-}
-showDeptId()
+  let res = await getUserProfile();
+  deptName.value = res.nickname;
+};
+showDeptId();
 
-const hiddenMonitorTab = ref<boolean>(true)
+const hiddenMonitorTab = ref<boolean>(true);
 const judgeMonitorHidden = () => {
-  const tenantName = localStorage.getItem('TENANT_NAME')
-  console.log('=========', tenantName !== '太原乡村振兴数字化赋能')
+  const tenantName = localStorage.getItem('TENANT_NAME');
+  console.log('=========', tenantName !== '太原乡村振兴数字化赋能');
 
-  hiddenMonitorTab.value = tenantName !== '太原乡村振兴数字化赋能'
-}
-judgeMonitorHidden()
-const activeName = ref('sensorTab')
+  hiddenMonitorTab.value = tenantName !== '太原乡村振兴数字化赋能';
+};
+judgeMonitorHidden();
+const activeName = ref('sensorTab');
 
 const changeTab = (tab: any) => {
   if ('monitorTab' === tab.props.name) {
-    visible.value = false
-    getListMonitor()
+    visible.value = false;
+    getListMonitor();
   } else {
-    visible.value = true
-    getList()
+    visible.value = true;
+    getList();
   }
-}
+};
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
 // --------------------------- sensorTab ---------------------------
 const queryParams = reactive({
@@ -893,44 +769,43 @@ const queryParams = reactive({
   deviceType: undefined,
   warnType: undefined,
   id: undefined
-})
-const queryFormRef = ref()
-const loading = ref(true) // 列表的加载中
-const show = ref()
-const userStore = useUserStore()
+});
+const queryFormRef = ref();
+const loading = ref(true); // 列表的加载中
+const show = ref();
+const userStore = useUserStore();
 //获取部门ID
-const userName = computed(() => userStore.user.deptId ?? '0')
-const list = ref<AgriWarningRecordVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const userName = computed(() => userStore.user.deptId ?? '0');
+const list = ref<AgriWarningRecordVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   //show的值是部门ID的值
-  show.value = userName.value
+  show.value = userName.value;
   // 卡片形式每页加载9项，列表形式每页加载10项
   // queryParams.pageSize = listType.value === 'card' ? 9 : 10
   try {
-    const data =
-      await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await AgriWarningRecordApi.getAgriWarningRecordPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-  console.log('列表数据', list.value)
-}
+  console.log('列表数据', list.value);
+};
 
 // 查询
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 // 重置整个页面
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 // 预警等级从数字转换成汉字
 const getWarnLevel = (level: string) => {
@@ -938,20 +813,20 @@ const getWarnLevel = (level: string) => {
     '1': '一级',
     '2': '二级',
     '3': '三级'
-  }
-  return warnLevelDict[level]
-}
+  };
+  return warnLevelDict[level];
+};
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS
 const timeFormat = (dataString: string) => {
   //dataString是整数，否则要parseInt转换
-  var time = new Date(dataString)
-  var year = time.getFullYear()
-  var month = time.getMonth() + 1
-  var day = time.getDate()
-  var hour = time.getHours()
-  var minute = time.getMinutes()
-  var second = time.getSeconds()
+  var time = new Date(dataString);
+  var year = time.getFullYear();
+  var month = time.getMonth() + 1;
+  var day = time.getDate();
+  var hour = time.getHours();
+  var minute = time.getMinutes();
+  var second = time.getSeconds();
   return (
     year +
     '-' +
@@ -964,60 +839,71 @@ const timeFormat = (dataString: string) => {
     (minute < 10 ? '0' + minute : minute) +
     ':' +
     (second < 10 ? '0' + second : second)
-  )
-}
+  );
+};
 
 // 列表展示的形式
-const listType = ref('card')
+const listType = ref('card');
 
 // 预警信息提示框是否显示
-const visible = ref(true)
+const visible = ref(true);
 
 const cardChange = () => {
   if ('card' === listType.value) {
-    visible.value = true
+    visible.value = true;
   } else {
-    visible.value = false
+    visible.value = false;
   }
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
+
+// 新增前 重置表单 然后设置查询最后一页
+// if (type === "create") {
+//   resetQuery()
+
+//   if ( total.value % queryParams.pageSize === 0 ) {
+//     queryParams.pageNo = Math.ceil( total.value / queryParams.pageSize ) + 1;
+//   } else {
+//     queryParams.pageNo = Math.ceil( total.value / queryParams.pageSize );
+//   }
+// }
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await AgriWarningRecordApi.deleteAgriWarningRecord(id)
-    message.success(t('common.delSuccess'))
+    await AgriWarningRecordApi.deleteAgriWarningRecord(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
-const exportLoading = ref(false) // 导出的加载中
+const exportLoading = ref(false); // 导出的加载中
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await AgriWarningRecordApi.exportAgriWarningRecord(queryParams)
-    download.excel(data, '预警记录.xls')
+    exportLoading.value = true;
+    const data = await AgriWarningRecordApi.exportAgriWarningRecord(queryParams);
+    download.excel(data, '预警记录.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 const dealData = ref({
   id: undefined,
@@ -1039,16 +925,16 @@ const dealData = ref({
   warnUnit: undefined,
   warnTitle: undefined,
   warnLevel: undefined
-} as any)
+} as any);
 
 const dealDataRules = reactive({
   dealPerson: [{ required: true, message: '处理人不能为空', trigger: 'blur' }],
   dealInfo: [{ required: true, message: '处理信息不能为空', trigger: 'blur' }]
-})
+});
 
-const title = ref('')
+const title = ref('');
 
-const openDeal = ref(false)
+const openDeal = ref(false);
 
 const resetForm = () => {
   dealData.value = {
@@ -1071,78 +957,78 @@ const resetForm = () => {
     warnUnit: undefined,
     warnTitle: undefined,
     warnLevel: undefined
-  }
-}
+  };
+};
 
 /** 处理按钮操作 */
 const handleDeal = async (id: number) => {
-  openDeal.value = true
-  title.value = '预警处理'
+  openDeal.value = true;
+  title.value = '预警处理';
   // resetForm()
   // 修改时，设置数据
-  console.log('ID', id)
+  console.log('ID', id);
   if (id) {
     try {
-      dealData.value = await AgriWarningRecordApi.getAgriWarningRecord(id)
+      dealData.value = await AgriWarningRecordApi.getAgriWarningRecord(id);
     } finally {
     }
   }
-}
+};
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitDialog = async (formEl) => {
-  if (!formEl) return
-  let allowSubmit = false
+  if (!formEl) return;
+  let allowSubmit = false;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log('submit!')
-      allowSubmit = true
+      console.log('submit!');
+      allowSubmit = true;
     } else {
-      console.log('error submit!', fields)
+      console.log('error submit!', fields);
     }
-  })
+  });
   if (allowSubmit) {
     try {
       // console.log("dealData", dealData.value)
-      dealData.value.dealTime = new Date().valueOf()
-      dealData.value.warnStatus = '1'
-      const data = dealData.value as unknown as AgriWarningRecordVO
+      dealData.value.dealTime = new Date().valueOf();
+      dealData.value.warnStatus = '1';
+      const data = dealData.value as unknown as AgriWarningRecordVO;
       // console.log("data", data)
-      await AgriWarningRecordApi.updateAgriWarningRecord(data)
-      message.success(t('common.updateSuccess'))
-      openDeal.value = false
+      await AgriWarningRecordApi.updateAgriWarningRecord(data);
+      message.success(t('common.updateSuccess'));
+      openDeal.value = false;
       // 发送操作成功的事件
-      emit('success')
+      emit('success');
     } finally {
       // resetQuery()
-      getList()
+      getList();
     }
   }
-}
+};
 // 取消提交
-const dealDataFormRef = ref()
+const dealDataFormRef = ref();
 const cancelSubmit = (formEl) => {
-  if (!formEl) return
-  formEl.resetFields()
-  openDeal.value = false
-}
+  if (!formEl) return;
+  formEl.resetFields();
+  openDeal.value = false;
+};
 // --------------------------- sensorTab ---------------------------
 
 // --------------------------- monitorTab --------------------------
 // openVideo
-let videoUrl = ref()
-let isShow = ref(false)
+let videoUrl = ref();
+let isShow = ref(false);
 const openVideoMonitor = (video: any) => {
-  videoUrl.value = video
-  isShow.value = true
-}
+  videoUrl.value = video;
+  isShow.value = true;
+};
 const closeDialog = () => {
-  isShow.value = false
-}
-const queryFormRefMonitor = ref() // 搜索的表单
-const exportLoadingMonitor = ref(false) // 导出的加载中
-const listMonitor = ref<MonitoringEquipmentNoticeVO[]>([]) // 列表的数据
-const totalMonitor = ref(0) // 列表的总页数
+  isShow.value = false;
+};
+const queryFormRefMonitor = ref(); // 搜索的表单
+const exportLoadingMonitor = ref(false); // 导出的加载中
+const listMonitor = ref<MonitoringEquipmentNoticeVO[]>([]); // 列表的数据
+const totalMonitor = ref(0); // 列表的总页数
 const queryParamsMonitor = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -1158,7 +1044,7 @@ const queryParamsMonitor = reactive({
   recordTime: [],
   remarks: undefined,
   createTime: []
-})
+});
 const options = [
   {
     value: '逗留',
@@ -1172,7 +1058,7 @@ const options = [
     value: '非法入侵',
     label: '非法入侵'
   }
-]
+];
 
 const currentItem = ref({
   id: undefined,
@@ -1188,146 +1074,151 @@ const currentItem = ref({
   recordTime: undefined,
   remarks: undefined,
   createTime: undefined
-})
+});
 
 /** 查询列表 */
 const getListMonitor = async () => {
-  loading.value = true
+  loading.value = true;
   // // 卡片形式每页加载6项，列表形式每页加载10项
   // queryParamsMonitor.pageSize = listTypeMonitor.value === 'card' ? 6 : 10
   try {
     const data =
-      await MonitoringEquipmentNoticeApi.getMonitoringEquipmentNoticePage(
-        queryParamsMonitor
-      )
-    listMonitor.value = data.list
-    totalMonitor.value = data.total
+      await MonitoringEquipmentNoticeApi.getMonitoringEquipmentNoticePage(queryParamsMonitor);
+    listMonitor.value = data.list;
+    totalMonitor.value = data.total;
     if ('card' === listTypeMonitor.value) {
-      currentItem.value = listMonitor.value[0]
-      console.log('aaaaaaaaaaaa', currentItem.value)
+      currentItem.value = listMonitor.value[0];
+      console.log('aaaaaaaaaaaa', currentItem.value);
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-if (show.value === 119 || show.value === 120) getListMonitor()
+if (show.value === 119 || show.value === 120) getListMonitor();
 
 /** 搜索按钮操作 */
 const handleQueryMonitor = () => {
-  queryParamsMonitor.pageNo = 1
-  getListMonitor()
-}
+  queryParamsMonitor.pageNo = 1;
+  getListMonitor();
+};
 /** 重置按钮操作 */
 const resetQueryMonitor = () => {
-  queryFormRefMonitor.value.resetFields()
-  handleQueryMonitor()
-}
+  queryFormRefMonitor.value.resetFields();
+  handleQueryMonitor();
+};
 
 // 列表展示的形式
-const listTypeMonitor = ref('card')
+const listTypeMonitor = ref('card');
 
 const cardChangeMonitor = () => {
-  queryParamsMonitor.pageNo = 1
-  getListMonitor()
-}
+  queryParamsMonitor.pageNo = 1;
+  getListMonitor();
+};
 
 const changCurrentItem = (item: any) => {
-  currentItem.value = item
-}
+  currentItem.value = item;
+};
 
 /** 添加/修改操作 */
-const formRefMonitor = ref()
-const tmpIndex = ref(-1)
+const formRefMonitor = ref();
+const tmpIndex = ref(-1);
 const openFormMonitor = (type: string, id?: number) => {
   // 编辑前 保存当前编辑项的下标
   if ('update' === type && 'card' === listTypeMonitor.value) {
     tmpIndex.value = listMonitor.value.findIndex((ele) => {
-      return ele.id === currentItem.value.id
-    })
+      return ele.id === currentItem.value.id;
+    });
   }
-  formRefMonitor.value.open(type, id)
-}
+
+  formRefMonitor.value.open(type, id);
+};
 
 // 修改成功后调用的函数
 const handleUpdateSuccess = async () => {
-  await getListMonitor()
-  if ('card' !== listTypeMonitor.value) return
+  await getListMonitor();
+  if ('card' !== listTypeMonitor.value) return;
   if (-1 !== tmpIndex.value) {
-    currentItem.value = listMonitor.value[tmpIndex.value]
-    tmpIndex.value = -1
+    currentItem.value = listMonitor.value[tmpIndex.value];
+    tmpIndex.value = -1;
   }
-}
+
+  // 新增前 重置表单 然后设置查询最后一页
+  // if (-1 === tmpIndex.value) {
+  //   resetQueryMonitor()
+  //   if ( totalMonitor.value % queryParamsMonitor.pageSize === 0 ) {
+  //     queryParamsMonitor.pageNo = Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize ) + 1;
+  //   } else {
+  //     queryParamsMonitor.pageNo = Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize );
+  //   }
+  //   await getListMonitor()
+  // }
+};
 
 /** 删除按钮操作 */
 const handleDeleteMonitor = async (id: number) => {
   // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = listMonitor.value.findIndex(
-    (ele) => ele.id === currentItem.value.id
-  )
+  const idx = listMonitor.value.findIndex((ele) => ele.id === currentItem.value.id);
 
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await MonitoringEquipmentNoticeApi.deleteMonitoringEquipmentNotice(id)
-    message.success(t('common.delSuccess'))
+    await MonitoringEquipmentNoticeApi.deleteMonitoringEquipmentNotice(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getListMonitor()
+    await getListMonitor();
   } catch {
-    console.log('删除失败')
+    console.log('删除失败');
   }
 
   // 删除后 设置curItem
   // 如果删除成功 则下标处是删除后的下一项
   // 如果删除失败 则下标处是原来的项
   if (idx >= listMonitor.value.length) {
-    currentItem.value = listMonitor.value[listMonitor.value.length - 1]
+    currentItem.value = listMonitor.value[listMonitor.value.length - 1];
   } else {
-    currentItem.value = listMonitor.value[idx]
+    currentItem.value = listMonitor.value[idx];
   }
-}
+};
 /** 导出按钮操作 */
 const handleExportMonitor = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data =
-      await MonitoringEquipmentNoticeApi.exportMonitoringEquipmentNotice(
-        queryParams
-      )
-    download.excel(data, '监控设备通知.xls')
+    exportLoading.value = true;
+    const data = await MonitoringEquipmentNoticeApi.exportMonitoringEquipmentNotice(queryParams);
+    download.excel(data, '监控设备通知.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 // --------------------------- monitorTab --------------------------
 
 onMounted(() => {
-  getList()
-  getListMonitor()
+  getList();
+  getListMonitor();
   // 获取当前是否是深色主题
-  themeIsDark.value = appStore.getIsDark
-})
+  themeIsDark.value = appStore.getIsDark;
+});
 
-import { useAppStore } from '@/store/modules/app'
-import { watch } from 'vue'
-import { Delete } from '@element-plus/icons-vue'
+import { useAppStore } from '@/store/modules/app';
+import { watch } from 'vue';
+import { Delete } from '@element-plus/icons-vue';
 
-const appStore = useAppStore()
-const themeIsDark = ref(false)
+const appStore = useAppStore();
+const themeIsDark = ref(false);
 
 // 监听主题模式变化
 watch(
   () => appStore.isDark,
   (newVal, oldVal) => {
-    console.log('isDark', newVal, oldVal)
-    themeIsDark.value = newVal
+    console.log('isDark', newVal, oldVal);
+    themeIsDark.value = newVal;
   }
-)
+);
 </script>
 
 <style scoped lang="scss">

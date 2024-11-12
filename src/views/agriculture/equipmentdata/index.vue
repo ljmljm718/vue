@@ -128,24 +128,11 @@
           导出
         </el-button>
       </div>
-      <el-table
-        v-loading="loading"
-        :data="list"
-        :stripe="true"
-        :show-overflow-tooltip="true"
-      >
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- <el-table-column label="主键" align="center" prop="id" /> -->
         <el-table-column label="设备名称" align="center" prop="deviceName" />
-        <el-table-column
-          label="采集类型"
-          align="center"
-          prop="collectionType"
-        />
-        <el-table-column
-          label="监测类型"
-          align="center"
-          prop="monitoringType"
-        />
+        <el-table-column label="采集类型" align="center" prop="collectionType" />
+        <el-table-column label="监测类型" align="center" prop="monitoringType" />
         <el-table-column label="数据值" align="center" prop="dataValue" />
         <el-table-column label="单位" align="center" prop="yyUnit" />
         <el-table-column
@@ -161,11 +148,7 @@
         <el-table-column label="终端编码" align="center" prop="yyRemarks" />
         <el-table-column label="操作" align="center" width="200px">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              @click="openForm('details', scope.row.id)"
-            >
+            <el-button link type="primary" @click="openForm('details', scope.row.id)">
               详情
             </el-button>
             <el-button
@@ -202,28 +185,25 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import {
-  EquipmentDataApi,
-  EquipmentDataVO
-} from '@/api/agriculture/equipmentdata'
-import EquipmentDataForm from './EquipmentDataForm.vue'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata';
+import EquipmentDataForm from './EquipmentDataForm.vue';
 //导入设备分类
-import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 //导入基地列表
-import { ParkInfoApi } from '@/api/agriculture/parkinfo'
-import { useRoute } from 'vue-router'
-import { defineProps } from 'vue'
+import { ParkInfoApi } from '@/api/agriculture/parkinfo';
+import { useRoute } from 'vue-router';
+import { defineProps } from 'vue';
 /** 设备数据 列表 */
-defineOptions({ name: 'EquipmentData' })
+defineOptions({ name: 'EquipmentData' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<EquipmentDataVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<EquipmentDataVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -244,9 +224,9 @@ const queryParams = reactive({
   parkName: undefined,
   parkDname: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 const props = defineProps({
   // todo (zhangyu26, 2024-03-26 15:19:17) : currCategory, 暂时没用
@@ -261,36 +241,36 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
-})
+});
 // 监听父组件category变化
 watch(
   () => props.currCategory,
   () => {
     if (props.currCategory) {
       if (props.currCategory.parkId === undefined) {
-        queryParams.baseCode = props.currCategory.id
-        queryParams.plotCode = undefined
+        queryParams.baseCode = props.currCategory.id;
+        queryParams.plotCode = undefined;
       } else {
-        queryParams.baseCode = undefined
-        queryParams.plotCode = props.currCategory.id
+        queryParams.baseCode = undefined;
+        queryParams.plotCode = props.currCategory.id;
       }
     } else {
-      queryParams.baseCode = undefined
-      queryParams.plotCode = undefined
+      queryParams.baseCode = undefined;
+      queryParams.plotCode = undefined;
     }
-    handleQuery()
+    handleQuery();
   }
-)
+);
 
 //监听父组件isCollapse变化
-const isCollapse2 = ref(false)
+const isCollapse2 = ref(false);
 watch(
   () => props.isCollapse,
   (val) => {
-    console.log(val, '1234isCollapse')
-    isCollapse2.value = val
+    console.log(val, '1234isCollapse');
+    isCollapse2.value = val;
   }
-)
+);
 /**
  * 设备分类级联选择器
  */
@@ -306,62 +286,62 @@ watch(
 //   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
 //   await getList()
 // })
-const emit = defineEmits(['clearTree', 'heightChange'])
+const emit = defineEmits(['clearTree', 'heightChange']);
 //存放监测类型
-let selectEquipmentType = ref([])
+let selectEquipmentType = ref([]);
 //存放基地信息
-let selectBase = ref([])
+let selectBase = ref([]);
 //存放采集类型
-let selectCollectionType = ref([])
+let selectCollectionType = ref([]);
 //查询上方列表
 const queryList = async () => {
   const dataId = await DeviceCategoryApi.getDeviceCategoryList({
     categoryName: '监测设备'
-  })
+  });
   // console.log(dataId,"dataId");
   selectEquipmentType.value = await DeviceCategoryApi.getDeviceCategoryList({
     parentId: dataId[0].id
-  })
+  });
   // console.log(selectEquipmentType,"selectEquipmentType");
-  const selectBaseList = await ParkInfoApi.getParkInfoPage({})
-  selectBase.value = selectBaseList.list
-}
-queryList()
+  const selectBaseList = await ParkInfoApi.getParkInfoPage({});
+  selectBase.value = selectBaseList.list;
+};
+queryList();
 //查询采集类型列表
 const queryType = async () => {
   if (queryParams.collectionType) {
-    queryParams.monitoringType = undefined
+    queryParams.monitoringType = undefined;
     selectCollectionType.value = await EquipmentDataApi.getCollectionType(
       queryParams.collectionType
-    )
+    );
     // console.log(selectCollectionType,"selectCollectionType");
   }
-}
+};
 watch(
   () => queryParams.collectionType, // 监听 queryParams.collectionType 的变化
   (newVal, oldVal) => {
     if (newVal !== oldVal) {
       // 确保值确实发生了变化
-      queryType()
+      queryType();
     }
   },
   { immediate: false, deep: false } // 立即执行和深度监听选项，根据你的需求进行调整
-)
+);
 
-const containerDom = ref()
+const containerDom = ref();
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await EquipmentDataApi.getEquipmentDataPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await EquipmentDataApi.getEquipmentDataPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-  await nextTick()
-  emit('heightChange', containerDom.value.clientHeight)
-}
+  await nextTick();
+  emit('heightChange', containerDom.value.clientHeight);
+};
 // if (props.collectionType) {
 //   queryParams.collectionType = props.collectionType.collectionType
 //   getList()
@@ -369,103 +349,111 @@ const getList = async () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   if (queryParams.collectionTime == null) {
-    queryParams.collectionTime = undefined
+    queryParams.collectionTime = undefined;
   }
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  emit('clearTree')
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  emit('clearTree');
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
-const router = useRouter()
+const formRef = ref();
+const router = useRouter();
 const openForm = (type: string, id?: number) => {
-  // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem('equipmentDataQueryParams')
-  const data = {
-    pageNo: type === 'create' ? 1 : queryParams.pageNo,
-    collectionType: queryParams.collectionType,
-    monitoringType: queryParams.monitoringType,
-    collectionTime: queryParams.collectionTime,
-    deviceName: queryParams.deviceName,
-    channelId: queryParams.channelId,
-    yyRemarks: queryParams.yyRemarks
-  }
-  sessionStorage.setItem('equipmentDataQueryParams', JSON.stringify(data))
+  // 执行编辑、详情操作 保存搜索栏数据和页码
+  // if ( "create" !== type ) {
+  //   sessionStorage.removeItem('equipmentDataQueryParams');
+  //   const data = {
+  //     pageNo: queryParams.pageNo,
+  //     collectionType: queryParams.collectionType,
+  //     monitoringType: queryParams.monitoringType,
+  //     collectionTime: queryParams.collectionTime,
+  //     deviceName: queryParams.deviceName,
+  //     channelId: queryParams.channelId,
+  //     yyRemarks: queryParams.yyRemarks
+  //   };
+  //   sessionStorage.setItem('equipmentDataQueryParams', JSON.stringify(data));
+  // }
 
   if (type == 'create') {
-    router.push(
-      '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData'
-    )
+    // 新增之前清空表单
+    // queryFormRef.value.resetFields();
+
+    router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData');
   } else {
     router.push(
       '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type=' +
         type +
         '&id=' +
         id
-    )
+    );
   }
   //formRef.value.open(type, id)
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await EquipmentDataApi.deleteEquipmentData(id)
-    message.success(t('common.delSuccess'))
+    await EquipmentDataApi.deleteEquipmentData(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await EquipmentDataApi.exportEquipmentData(queryParams)
-    download.excel(data, '设备数据.xls')
+    exportLoading.value = true;
+    const data = await EquipmentDataApi.exportEquipmentData(queryParams);
+    download.excel(data, '设备数据.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
-let route = useRoute()
+let route = useRoute();
 
 /** 初始化 **/
 onMounted(() => {
-  let location = route.query
-  console.log(window.innerWidth, '123456innerwidth')
+  let location = route.query;
+  console.log(window.innerWidth, '123456innerwidth');
   if (location) {
-    queryParams.collectionType = location.collectionType
+    queryParams.collectionType = location.collectionType;
   }
 
-  // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem('equipmentDataQueryParams')
-  if (sessionParams) {
-    const data = JSON.parse(sessionParams)
-    queryParams.pageNo = data.pageNo
-    queryParams.collectionType = data.collectionType
-    queryParams.monitoringType = data.monitoringType
-    queryParams.collectionTime = data.collectionTime
-    queryParams.deviceName = data.deviceName
-    queryParams.channelId = data.channelId
-    queryParams.yyRemarks = data.yyRemarks
-  }
-  sessionStorage.removeItem('equipmentDataQueryParams')
+  // 如果执行编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
+  // const sessionParams = sessionStorage.getItem('equipmentDataQueryParams');
+  // queryFormRef.value.resetFields();
+  // if (sessionParams) {
+  //   const data = JSON.parse(sessionParams);
+  //   queryParams.pageNo = data.pageNo;
+  //   queryParams.collectionType = data.collectionType;
+  //   queryParams.monitoringType = data.monitoringType;
+  //   queryParams.collectionTime = data.collectionTime;
+  //   queryParams.deviceName = data.deviceName;
+  //   queryParams.channelId = data.channelId;
+  //   queryParams.yyRemarks = data.yyRemarks;
+  // }
+  // sessionStorage.removeItem('equipmentDataQueryParams');
 
-  getList()
-})
+  getList();
+});
+
+onActivated(() => {
+  getList();
+});
 </script>

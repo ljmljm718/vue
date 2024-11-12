@@ -41,12 +41,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="设备名称" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请选择"
-          clearable
-          class="!w-240px"
-        >
+        <el-input v-model="queryParams.deviceName" placeholder="请选择" clearable class="!w-240px">
           <template #append>
             <el-button @click="openSelectDeviceInfo()">
               <Icon icon="ep:search" />
@@ -56,12 +51,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="录入方式" prop="reserveOne">
-        <el-select
-          v-model="queryParams.reserveOne"
-          placeholder="请选择"
-          clearable
-          class="!w-240px"
-        >
+        <el-select v-model="queryParams.reserveOne" placeholder="请选择" clearable class="!w-240px">
           <el-option
             v-for="dict in options"
             :key="dict.value"
@@ -120,11 +110,7 @@
         </el-button>
       </div>
       <div class="flex flex-wrap content-center">
-        <el-radio-group
-          v-model="listType"
-          size="small"
-          @change="handleCardChange"
-        >
+        <el-radio-group v-model="listType" size="small" @change="handleCardChange">
           <el-radio-button label="card" value="card">
             <el-icon><Menu /></el-icon>
             卡片
@@ -185,55 +171,37 @@
               <div class="grid grid-cols-2 xl:grid-cols-3 gap-1 my-10px px-3">
                 <div>
                   基地名称:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ currentItem.monitoringBaseName }}
                   </span>
                 </div>
                 <div>
                   地块名称:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ currentItem.monitoringPlotName }}
                   </span>
                 </div>
                 <div>
                   设备名称:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ currentItem.deviceName }}
                   </span>
                 </div>
                 <div>
                   录入方式:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ currentItem.reserveOne }}
                   </span>
                 </div>
                 <div>
                   备注:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ currentItem.remarks ? currentItem.remarks : '无' }}
                   </span>
                 </div>
                 <div>
                   拍摄时间:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ timeFormat(currentItem.reserveTwo) }}
                   </span>
                 </div>
@@ -260,19 +228,13 @@
               <div class="px-[5px] mt-[5px]">
                 <div>
                   设备名称:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ item.deviceName }}
                   </span>
                 </div>
                 <div class="mt-[5px]">
                   拍摄时间:
-                  <span
-                    class="text-[#666666]"
-                    :class="{ 'text-[#999]': themeIsDark }"
-                  >
+                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
                     {{ timeFormat(item.reserveTwo) }}
                   </span>
                 </div>
@@ -280,44 +242,15 @@
             </div>
           </div>
         </div>
-        <div
-          v-else-if="listType === 'card'"
-          class="text-center tracking-widest"
-        >
-          暂无数据
-        </div>
+        <div v-else-if="listType === 'card'" class="text-center tracking-widest">暂无数据</div>
         <!-- 列表形式 -->
         <div v-show="listType === 'list'">
-          <el-table
-            :data="list"
-            v-loading="loading"
-            :show-overflow-tooltip="true"
-          >
-            <el-table-column
-              align="center"
-              prop="monitoringBaseName"
-              label="基地名称"
-            />
-            <el-table-column
-              align="center"
-              prop="monitoringPlotName"
-              label="地块名称"
-            />
-            <el-table-column
-              align="center"
-              prop="deviceName"
-              label="设备名称"
-            />
-            <el-table-column
-              align="center"
-              prop="reserveOne"
-              label="录入方式"
-            />
-            <el-table-column
-              label="抓拍图片"
-              align="center"
-              prop="capturedImage"
-            >
+          <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
+            <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
+            <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
+            <el-table-column align="center" prop="deviceName" label="设备名称" />
+            <el-table-column align="center" prop="reserveOne" label="录入方式" />
+            <el-table-column label="抓拍图片" align="center" prop="capturedImage">
               <template #default="scope">
                 <el-image
                   class="h-50px w-50px"
@@ -336,12 +269,7 @@
               width="180px"
             />
             <el-table-column label="备注" align="center" prop="remarks" />
-            <el-table-column
-              align="center"
-              label="操作"
-              fixed="right"
-              width="280px"
-            >
+            <el-table-column align="center" label="操作" fixed="right" width="280px">
               <template #default="scope">
                 <el-button
                   type="primary"
@@ -381,56 +309,40 @@
   <!-- 表单弹窗：添加/修改 -->
   <MonitoringEquipmentDataForm ref="formRef" @success="handleUpdateSuccess" />
   <!-- 视频弹窗 -->
-  <el-dialog
-    v-model="isShow"
-    width="900px"
-    height="900px"
-    @close="closeDialog"
-    class="videoBox"
-  >
-    <video
-      :src="videoUrl"
-      controls
-      autoplay
-      class="video"
-      width="800px"
-      height="800px"
-    ></video>
+  <el-dialog v-model="isShow" width="900px" height="900px" @close="closeDialog" class="videoBox">
+    <video :src="videoUrl" controls autoplay class="video" width="800px" height="800px"></video>
   </el-dialog>
   <!--  选择基地-->
   <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
   <!--  选择地块-->
   <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange" />
   <!--  选择设备-->
-  <SelectDeviceInfo
-    ref="SelectDeviceInfoRef"
-    @success="SelectDeviceInfoSuccess"
-  />
+  <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess" />
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
 import {
   MonitoringEquipmentDataApi,
   MonitoringEquipmentDataVO
-} from '@/api/agriculture/monitoringequipmentdata'
-import MonitoringEquipmentDataForm from './MonitoringEquipmentDataForm.vue'
-import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
-import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
-import SelectDeviceInfo from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue'
-import { useAppStore } from '@/store/modules/app'
-import { watch } from 'vue'
+} from '@/api/agriculture/monitoringequipmentdata';
+import MonitoringEquipmentDataForm from './MonitoringEquipmentDataForm.vue';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import SelectDeviceInfo from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue';
+import { useAppStore } from '@/store/modules/app';
+import { watch } from 'vue';
 
 /** 监控设备数据 列表 */
-defineOptions({ name: 'MonitoringEquipmentData' })
+defineOptions({ name: 'MonitoringEquipmentData' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<MonitoringEquipmentDataVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<MonitoringEquipmentDataVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -447,10 +359,10 @@ const queryParams = reactive({
   reserveTwo: [],
   reserveThree: undefined,
   createTime: []
-})
+});
 
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 const options = [
   {
@@ -461,70 +373,61 @@ const options = [
     value: '机器',
     label: '机器'
   }
-]
+];
 
 // openVideo
-let videoUrl = ref()
-let isShow = ref(false)
+let videoUrl = ref();
+let isShow = ref(false);
 const openVideo = (video: any) => {
-  videoUrl.value = video
-  isShow.value = true
-}
+  videoUrl.value = video;
+  isShow.value = true;
+};
 const closeDialog = () => {
-  isShow.value = false
-}
+  isShow.value = false;
+};
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data =
-      await MonitoringEquipmentDataApi.getMonitoringEquipmentDataPage(
-        queryParams
-      )
+    const data = await MonitoringEquipmentDataApi.getMonitoringEquipmentDataPage(queryParams);
     // console.log("data", data)
-    list.value = data.list
-    total.value = data.total
+    list.value = data.list;
+    total.value = data.total;
     if ('card' === listType.value) {
-      currentItem.value = list.value[0]
+      currentItem.value = list.value[0];
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  if (
-    queryParams.monitoringBaseName == null ||
-    queryParams.monitoringBaseName == ''
-  ) {
-    queryParams.monitoringBaseName = undefined
-    queryParams.monitoringBaseId = undefined
+  if (queryParams.monitoringBaseName == null || queryParams.monitoringBaseName == '') {
+    queryParams.monitoringBaseName = undefined;
+    queryParams.monitoringBaseId = undefined;
   }
-  if (
-    queryParams.monitoringPlotName == null ||
-    queryParams.monitoringPlotName == ''
-  ) {
-    queryParams.monitoringPlotName = undefined
-    queryParams.monitoringPlotId = undefined
+  if (queryParams.monitoringPlotName == null || queryParams.monitoringPlotName == '') {
+    queryParams.monitoringPlotName = undefined;
+    queryParams.monitoringPlotId = undefined;
   }
   if (queryParams.deviceName == null || queryParams.deviceName == '') {
-    queryParams.deviceName = undefined
-    queryParams.deviceId = undefined
+    queryParams.deviceName = undefined;
+    queryParams.deviceId = undefined;
   }
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 // 列表展示类型
-const listType = ref('card')
+const listType = ref('card');
 
 // 当前查看的数据
 const currentItem = ref({
@@ -542,146 +445,146 @@ const currentItem = ref({
   reserveTwo: undefined,
   reserveThree: null,
   createTime: undefined
-})
+});
 
 const changCurrentItem = (item: any) => {
-  currentItem.value = item
-}
+  currentItem.value = item;
+};
 
 // 切换列表展示类型
 const handleCardChange = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
-const tmpIndex = ref(-1)
+const formRef = ref();
+const tmpIndex = ref(-1);
 const openForm = (type: string, id?: number) => {
   // 编辑前 保存当前编辑项的下标
   if ('update' === type && 'card' === listType.value) {
     tmpIndex.value = list.value.findIndex((ele) => {
-      return ele.id === currentItem.value.id
-    })
+      return ele.id === currentItem.value.id;
+    });
   }
-  formRef.value.open(type, id)
-}
+
+  // 新增前 清空表单数据
+  // if ("create" === type) {
+  //   resetQuery()
+  // }
+
+  formRef.value.open(type, id);
+};
 
 // 修改成功后调用的函数
 const handleUpdateSuccess = async () => {
-  await getList()
-  if ('card' !== listType.value) return
+  await getList();
+  if ('card' !== listType.value) return;
   if (-1 !== tmpIndex.value) {
-    currentItem.value = list.value[tmpIndex.value]
-    tmpIndex.value = -1
+    currentItem.value = list.value[tmpIndex.value];
+    tmpIndex.value = -1;
   }
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   // 保留当前展示项的下标
-  let tmp: number = -1
-  if ('card' === listType.value) {
-    tmp = list.value.findIndex((ele) => {
-      return ele.id === currentItem.value.id
-    })
-  }
+  let tmp: number = -1;
+  tmp = list.value.findIndex((ele) => {
+    return ele.id === currentItem.value.id;
+  });
 
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await MonitoringEquipmentDataApi.deleteMonitoringEquipmentData(id)
-    message.success(t('common.delSuccess'))
+    await MonitoringEquipmentDataApi.deleteMonitoringEquipmentData(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
 
-  if (-1 === tmp) return
-  if ('card' === listType.value && tmp >= list.value.length) {
-    currentItem.value = list.value[list.value.length - 1]
+  if (-1 === tmp) return;
+  if (tmp >= list.value.length) {
+    currentItem.value = list.value[list.value.length - 1];
+  } else {
+    currentItem.value = list.value[tmp];
   }
-  if ('card' === listType.value && tmp < list.value.length) {
-    currentItem.value = list.value[tmp]
-  }
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data =
-      await MonitoringEquipmentDataApi.exportMonitoringEquipmentData(
-        queryParams
-      )
-    download.excel(data, '监控设备数据.xls')
+    exportLoading.value = true;
+    const data = await MonitoringEquipmentDataApi.exportMonitoringEquipmentData(queryParams);
+    download.excel(data, '监控设备数据.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
+  getList();
 
   // 获取当前是否是深色主题
-  themeIsDark.value = appStore.getIsDark
-})
+  themeIsDark.value = appStore.getIsDark;
+});
 
 //基地的选择
-const parkPopupRef = ref()
-const openType = ref('')
+const parkPopupRef = ref();
+const openType = ref('');
 const openParkPopup = (id: string) => {
-  openType.value = id
+  openType.value = id;
   if (openType.value === undefined || openType.value === '') {
-    message.error('请选择基地')
-  } else parkPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else parkPopupRef.value.open(id);
+};
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    queryParams.monitoringBaseId = String(order[0].id)
-    queryParams.monitoringBaseName = String(order[0].name)
-  } else queryParams.monitoringBaseName = String(order[0].name)
-}
+    queryParams.monitoringBaseId = String(order[0].id);
+    queryParams.monitoringBaseName = String(order[0].name);
+  } else queryParams.monitoringBaseName = String(order[0].name);
+};
 
 //地块的选择
-const plotPopupRef = ref()
-const openType1 = ref('')
+const plotPopupRef = ref();
+const openType1 = ref('');
 const openPlotPopup = (id: string) => {
-  openType1.value = id
+  openType1.value = id;
   if (!openType1.value) {
-    message.error('请选择基地')
-  } else plotPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else plotPopupRef.value.open(id);
+};
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  console.log('--->>查看选择的地块信息：', order[0])
-  queryParams.monitoringPlotName = String(order[0].name)
-}
+  console.log('--->>查看选择的地块信息：', order[0]);
+  queryParams.monitoringPlotName = String(order[0].name);
+};
 // 机器信息选择
-const SelectDeviceInfoRef = ref()
+const SelectDeviceInfoRef = ref();
 const openSelectDeviceInfo = () => {
-  SelectDeviceInfoRef.value.open('jk') //监控
-}
+  SelectDeviceInfoRef.value.open('jk'); //监控
+};
 //点击确定后
 const SelectDeviceInfoSuccess = (item: any) => {
-  queryParams.deviceId = item[0].id
-  queryParams.deviceName = item[0].deviceName
-}
+  queryParams.deviceId = item[0].id;
+  queryParams.deviceName = item[0].deviceName;
+};
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS
 const timeFormat = (dataString: string) => {
   //dataString是整数，否则要parseInt转换
-  var time = new Date(dataString)
-  var year = time.getFullYear()
-  var month = time.getMonth() + 1
-  var day = time.getDate()
-  var hour = time.getHours()
-  var minute = time.getMinutes()
-  var second = time.getSeconds()
+  var time = new Date(dataString);
+  var year = time.getFullYear();
+  var month = time.getMonth() + 1;
+  var day = time.getDate();
+  var hour = time.getHours();
+  var minute = time.getMinutes();
+  var second = time.getSeconds();
   return (
     year +
     '-' +
@@ -694,34 +597,31 @@ const timeFormat = (dataString: string) => {
     (minute < 10 ? '0' + minute : minute) +
     ':' +
     (second < 10 ? '0' + second : second)
-  )
-}
+  );
+};
 
 // 设置预览区始终显示在视口范围内
 const scroll = ({ scrollTop }) => {
-  let dom = document.querySelector('.previewArea')
-  let domContainer = document.querySelector('.previewContainer')
+  let dom = document.querySelector('.previewArea');
+  let domContainer = document.querySelector('.previewContainer');
   if (scrollTop >= dom?.offsetTop) {
-    dom?.setAttribute(
-      'style',
-      `position: fixed;width: ${domContainer?.clientWidth}px;top: 80px;`
-    )
+    dom?.setAttribute('style', `position: fixed;width: ${domContainer?.clientWidth}px;top: 80px;`);
   } else {
-    dom?.setAttribute('style', 'position: relative;width: auto;top: 0;')
+    dom?.setAttribute('style', 'position: relative;width: auto;top: 0;');
   }
-}
+};
 
-const appStore = useAppStore()
-const themeIsDark = ref(false)
+const appStore = useAppStore();
+const themeIsDark = ref(false);
 
 // 监听主题模式变化
 watch(
   () => appStore.isDark,
   (newVal, oldVal) => {
-    console.log('isDark', newVal, oldVal)
-    themeIsDark.value = newVal
+    console.log('isDark', newVal, oldVal);
+    themeIsDark.value = newVal;
   }
-)
+);
 </script>
 
 <style scoped lang="scss">
