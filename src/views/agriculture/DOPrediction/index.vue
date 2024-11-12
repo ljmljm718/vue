@@ -708,7 +708,7 @@ const getLineChartInfo = async (date) => {
   )
 }
 
-const SelectedDate = ref('2024-07-18')
+const SelectedDate = ref('2024-10-23')
 const onFilterDate = () => {
   const date = SelectedDate.value
   getLineChartInfo(date)
