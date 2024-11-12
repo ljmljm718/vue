@@ -165,6 +165,6 @@
     "node": "20.14.0"
   },
   "lint-staged": {
-    "*.vue": "prettier --check --ignore-unknown"
+    "*.vue": "prettier --write --ignore-unknown"
   }
 }
