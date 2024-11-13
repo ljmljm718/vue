@@ -319,7 +319,5 @@ const consumeNumInput = async (consumeNum) => {
     formData.value.feedNum = consumeNum * standards
     formData.value.feedCost =  consumeNum *  formData.value.purchasePrice
   }
- 
-  
 }
 </script>
