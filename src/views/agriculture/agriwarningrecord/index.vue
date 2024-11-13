@@ -394,10 +394,6 @@
           label-width="auto"
           :inline="true"
         >
-          <!-- 表单内容 -->
-          <!--          <div-->
-          <!--            class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-6 md:border-r md:border-r-solid md:border-[#E5E5E5] md:pr-20px"-->
-          <!--          >-->
           <el-form-item label="基地名称" prop="monitoringBaseName">
             <el-input
               class="!w-240px"
@@ -1124,8 +1120,8 @@ const changCurrentItem = (item: any) => {
 const formRefMonitor = ref();
 const tmpIndex = ref(-1);
 const openFormMonitor = (type: string, id?: number) => {
-  // 编辑前 保存当前编辑项的下标
-  if ('update' === type && 'card' === listTypeMonitor.value) {
+  // 新增和编辑前 保存当前编辑项的下标
+  if ('card' === listTypeMonitor.value) {
     tmpIndex.value = listMonitor.value.findIndex((ele) => {
       return ele.id === currentItem.value.id;
     });
@@ -1134,7 +1130,7 @@ const openFormMonitor = (type: string, id?: number) => {
   formRefMonitor.value.open(type, id);
 };
 
-// 修改成功后调用的函数
+// 新增和修改成功后调用的函数
 const handleUpdateSuccess = async () => {
   await getListMonitor();
   if ('card' !== listTypeMonitor.value) return;
@@ -1147,9 +1143,11 @@ const handleUpdateSuccess = async () => {
   // if (-1 === tmpIndex.value) {
   //   resetQueryMonitor()
   //   if ( totalMonitor.value % queryParamsMonitor.pageSize === 0 ) {
-  //     queryParamsMonitor.pageNo = Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize ) + 1;
+  //     queryParamsMonitor.pageNo =
+  //       Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize ) + 1;
   //   } else {
-  //     queryParamsMonitor.pageNo = Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize );
+  //     queryParamsMonitor.pageNo =
+  //       Math.ceil( totalMonitor.value / queryParamsMonitor.pageSize );
   //   }
   //   await getListMonitor()
   // }

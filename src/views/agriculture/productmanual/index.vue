@@ -94,11 +94,7 @@
         </el-button>
       </div>
       <div class="flex flex-wrap content-center">
-        <el-radio-group
-          v-model="listType"
-          size="small"
-          @change="handleCardChange"
-        >
+        <el-radio-group v-model="listType" size="small" @change="handleCardChange">
           <el-radio-button label="card" value="card">
             <el-icon><Menu /></el-icon>
             卡片
@@ -115,9 +111,7 @@
       <!-- 卡片形式 -->
       <div v-if="list.length && listType === 'card'" class="text-[#999999]">
         <!-- 卡片列表区 -->
-        <div
-          class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 rounded"
-        >
+        <div class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 rounded">
           <div
             class="bg-[#F5F5F5] pb-[20px] shadow-md rounded-md"
             v-for="item in list"
@@ -183,27 +177,13 @@
           </div>
         </div>
       </div>
-      <div v-else-if="listType === 'card'" class="text-center tracking-widest">
-        暂无数据
-      </div>
+      <div v-else-if="listType === 'card'" class="text-center tracking-widest">暂无数据</div>
       <!-- 列表形式 -->
       <div v-show="listType === 'list'">
-        <el-table
-          :data="list"
-          v-loading="loading"
-          :show-overflow-tooltip="true"
-        >
+        <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
           <el-table-column label="手册名称" align="center" prop="schemeName" />
-          <el-table-column
-            label="简介"
-            align="center"
-            prop="briefIntroduction"
-          />
-          <el-table-column
-            label="创作人"
-            align="center"
-            prop="marketingCreator"
-          />
+          <el-table-column label="简介" align="center" prop="briefIntroduction" />
+          <el-table-column label="创作人" align="center" prop="marketingCreator" />
           <el-table-column
             label="上传时间"
             align="center"
@@ -211,23 +191,12 @@
             :formatter="dateFormatter"
             width="180px"
           />
-          <el-table-column
-            label="分类"
-            align="center"
-            prop="marketingCategory"
-          />
+          <el-table-column label="分类" align="center" prop="marketingCategory" />
           <el-table-column label="标签" align="center" prop="marketingTags" />
-          <el-table-column
-            label="文件管理"
-            align="center"
-            prop="fileManagement"
-          >
+          <el-table-column label="文件管理" align="center" prop="fileManagement">
             <template #default="scope">
               <el-button type="primary" round v-if="scope.row.fileManagement">
-                <a
-                  :href="scope.row.fileManagement"
-                  style="color: aliceblue; text-decoration: none"
-                >
+                <a :href="scope.row.fileManagement" style="color: aliceblue; text-decoration: none">
                   点击下载
                 </a>
               </el-button>
@@ -244,12 +213,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column
-            align="center"
-            label="操作"
-            fixed="right"
-            width="200px"
-          >
+          <el-table-column align="center" label="操作" fixed="right" width="200px">
             <template #default="scope">
               <el-button
                 v-if="scope.row.fileManagement"
@@ -292,12 +256,7 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
   <!-- 文件预览 -->
-  <el-dialog
-    v-model="dialogVisible"
-    title="预览"
-    width="70vw"
-    :before-close="handleDialogClose"
-  >
+  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
     <el-scrollbar height="65vh" class="px-2">
       <div id="filePreview"></div>
     </el-scrollbar>
@@ -305,26 +264,23 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import {
-  MarketingProgramApi,
-  MarketingProgramVO
-} from '@/api/agriculture/marketingprogram'
-import MarketingProgramForm from './MarketingProgramForm.vue'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram';
+import MarketingProgramForm from './MarketingProgramForm.vue';
 //文件预览引入
-import { renderAsync } from 'docx-preview'
-import axios from 'axios'
+import { renderAsync } from 'docx-preview';
+import axios from 'axios';
 
 /** 营销方案 列表 */
-defineOptions({ name: 'MarketingProgram' })
+defineOptions({ name: 'MarketingProgram' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<MarketingProgramVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<MarketingProgramVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -341,173 +297,170 @@ const queryParams = reactive({
   reserveTwo: undefined,
   reserveThree: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 //文件预览
-let dialogVisible = ref(false)
-let fileUrl = ref()
+let dialogVisible = ref(false);
+let fileUrl = ref();
 const filePreview = (url: any) => {
-  dialogVisible.value = true
-  console.log('preview url', url)
+  dialogVisible.value = true;
+  console.log('preview url', url);
 
-  if (url.endsWith('docx')) renderDocx(url)
-  else if (url.endsWith('pdf')) renderPDF(url)
-  else renderError()
-}
+  if (url.endsWith('docx')) renderDocx(url);
+  else if (url.endsWith('pdf')) renderPDF(url);
+  else renderError();
+};
 
 const renderError = () => {
-  const _p = document.createElement('p')
-  _p.innerHTML = '格式暂不支持！'
+  const _p = document.createElement('p');
+  _p.innerHTML = '格式暂不支持！';
   setTimeout(() => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    if (_dom) _dom.appendChild(_p)
-  }, 200)
-}
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    if (_dom) _dom.appendChild(_p);
+  }, 200);
+};
 
 const handleDialogClose = () => {
-  const _dom = document.getElementById('filePreview') as HTMLElement
-  if (_dom) _dom.innerHTML = ''
-  dialogVisible.value = false
-}
+  const _dom = document.getElementById('filePreview') as HTMLElement;
+  if (_dom) _dom.innerHTML = '';
+  dialogVisible.value = false;
+};
 // 渲染docx
 const renderDocx = (url: string) => {
-  if (!url.endsWith('docx')) return
+  if (!url.endsWith('docx')) return;
   axios.get(url, { responseType: 'blob' }).then(({ data }) => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    renderAsync(data, _dom)
-  })
-}
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    renderAsync(data, _dom);
+  });
+};
 
 const renderPDF = (url: string) => {
-  const _iframe = document.createElement('iframe')
-  _iframe.src = url
-  _iframe.width = '100%'
-  _iframe.height = '600px'
+  const _iframe = document.createElement('iframe');
+  _iframe.src = url;
+  _iframe.width = '100%';
+  _iframe.height = '600px';
   setTimeout(() => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    console.log('dom', _dom)
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    console.log('dom', _dom);
 
-    if (_dom) _dom.appendChild(_iframe)
-  }, 200)
-}
+    if (_dom) _dom.appendChild(_iframe);
+  }, 200);
+};
 //--------结束文件预览
 
 /** 查询列表 */
 const getList = async () => {
   if (sessionStorage.getItem('latestListType')) {
-    listType.value = sessionStorage.getItem('latestListType')
+    listType.value = sessionStorage.getItem('latestListType');
   }
-  sessionStorage.removeItem('latestListType')
-  loading.value = true
+  sessionStorage.removeItem('latestListType');
+  loading.value = true;
   try {
-    const data = await MarketingProgramApi.getMarketingProgramPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await MarketingProgramApi.getMarketingProgramPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 onActivated(() => {
-  resetQuery()
-})
+  resetQuery();
+});
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 // 列表展示形式
-const listType = ref('card')
+const listType = ref('card');
 
 // listType切换list或card
 const handleCardChange = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 添加/修改操作 */
-const router = useRouter() // 路由
-const formRef = ref()
+const router = useRouter(); // 路由
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  sessionStorage.setItem('latestListType', listType.value)
+  sessionStorage.setItem('latestListType', listType.value);
 
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem('productManualQueryParams')
+  sessionStorage.removeItem('productManualQueryParams');
   const data = {
-    pageNo: type === 'create' ? 1 : queryParams.pageNo,
+    pageNo: queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
     marketingUploadTime: queryParams.marketingUploadTime
-  }
-  sessionStorage.setItem('productManualQueryParams', JSON.stringify(data))
+  };
+  sessionStorage.setItem('productManualQueryParams', JSON.stringify(data));
 
   if (type == 'create') {
-    router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram')
+    router.push('/pcg/marketingCenter/productManual/CreateMarketingProgram');
   } else {
     router.push(
-      '/pcg/marketingCenter/productManual/CreateMarketingProgram?type=' +
-        type +
-        '&id=' +
-        id
-    )
+      '/pcg/marketingCenter/productManual/CreateMarketingProgram?type=' + type + '&id=' + id
+    );
   }
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await MarketingProgramApi.deleteMarketingProgram(id)
-    message.success(t('common.delSuccess'))
+    await MarketingProgramApi.deleteMarketingProgram(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await MarketingProgramApi.exportMarketingProgram(queryParams)
-    download.excel(data, '产品手册.xls')
+    exportLoading.value = true;
+    const data = await MarketingProgramApi.exportMarketingProgram(queryParams);
+    download.excel(data, '产品手册.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
   // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem('productManualQueryParams')
+  const sessionParams = sessionStorage.getItem('productManualQueryParams');
   if (sessionParams) {
-    const data = JSON.parse(sessionParams)
-    queryParams.pageNo = data.pageNo
-    queryParams.schemeName = data.schemeName
-    queryParams.marketingCreator = data.marketingCreator
-    queryParams.marketingCategory = data.marketingCategory
-    queryParams.marketingTags = data.marketingTags
-    queryParams.marketingUploadTime = data.marketingUploadTime
+    const data = JSON.parse(sessionParams);
+    queryParams.pageNo = data.pageNo;
+    queryParams.schemeName = data.schemeName;
+    queryParams.marketingCreator = data.marketingCreator;
+    queryParams.marketingCategory = data.marketingCategory;
+    queryParams.marketingTags = data.marketingTags;
+    queryParams.marketingUploadTime = data.marketingUploadTime;
   }
-  sessionStorage.removeItem('productManualQueryParams')
+  sessionStorage.removeItem('productManualQueryParams');
 
-  getList()
-})
+  getList();
+});
 </script>
 
 <style scoped lang="scss">

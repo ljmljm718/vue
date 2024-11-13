@@ -94,11 +94,7 @@
         </el-button>
       </div>
       <div class="flex flex-wrap content-center">
-        <el-radio-group
-          v-model="listType"
-          size="small"
-          @change="handleCardChange"
-        >
+        <el-radio-group v-model="listType" size="small" @change="handleCardChange">
           <el-radio-button label="card" value="card">
             <el-icon><Menu /></el-icon>
             卡片
@@ -176,9 +172,7 @@
             </div>
             <div class="grid grid-cols-1 gap-1 my-10px px-3">
               <div>
-                <span
-                  :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`"
-                >
+                <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`">
                   {{ currentItem.schemeName }}
                 </span>
               </div>
@@ -208,9 +202,7 @@
               class="w-full h-[17vh]"
             />
             <div>
-              <span
-                :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`"
-              >
+              <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`">
                 {{ item.schemeName }}
               </span>
             </div>
@@ -220,27 +212,13 @@
           </div>
         </div>
       </div>
-      <div v-else-if="listType === 'card'" class="text-center tracking-widest">
-        暂无数据
-      </div>
+      <div v-else-if="listType === 'card'" class="text-center tracking-widest">暂无数据</div>
       <!-- 列表形式 -->
       <div v-show="listType === 'list'">
-        <el-table
-          :data="list"
-          v-loading="loading"
-          :show-overflow-tooltip="true"
-        >
+        <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
           <el-table-column label="产品名称" align="center" prop="schemeName" />
-          <el-table-column
-            label="简介"
-            align="center"
-            prop="briefIntroduction"
-          />
-          <el-table-column
-            label="设计人"
-            align="center"
-            prop="marketingCreator"
-          />
+          <el-table-column label="简介" align="center" prop="briefIntroduction" />
+          <el-table-column label="设计人" align="center" prop="marketingCreator" />
           <el-table-column
             label="上传时间"
             align="center"
@@ -248,23 +226,12 @@
             :formatter="dateFormatter"
             width="180px"
           />
-          <el-table-column
-            label="分类"
-            align="center"
-            prop="marketingCategory"
-          />
+          <el-table-column label="分类" align="center" prop="marketingCategory" />
           <el-table-column label="标签" align="center" prop="marketingTags" />
-          <el-table-column
-            label="文件管理"
-            align="center"
-            prop="fileManagement"
-          >
+          <el-table-column label="文件管理" align="center" prop="fileManagement">
             <template #default="scope">
               <el-button type="primary" round v-if="scope.row.fileManagement">
-                <a
-                  :href="scope.row.fileManagement"
-                  style="color: aliceblue; text-decoration: none"
-                >
+                <a :href="scope.row.fileManagement" style="color: aliceblue; text-decoration: none">
                   点击下载
                 </a>
               </el-button>
@@ -281,12 +248,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column
-            align="center"
-            label="操作"
-            fixed="right"
-            width="200px"
-          >
+          <el-table-column align="center" label="操作" fixed="right" width="200px">
             <template #default="scope">
               <el-button
                 v-if="scope.row.fileManagement"
@@ -337,12 +299,7 @@
   <MarketingProgramForm ref="formRef" @success="getList" />
 
   <!-- 文件预览 -->
-  <el-dialog
-    v-model="dialogVisible"
-    title="预览"
-    width="70vw"
-    :before-close="handleDialogClose"
-  >
+  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
     <el-scrollbar height="65vh" class="px-2">
       <div id="filePreview"></div>
     </el-scrollbar>
@@ -350,28 +307,25 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import {
-  MarketingProgramApi,
-  MarketingProgramVO
-} from '@/api/agriculture/marketingprogram'
-import MarketingProgramForm from './MarketingProgramForm.vue'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram';
+import MarketingProgramForm from './MarketingProgramForm.vue';
 //文件预览引入
-import { renderAsync } from 'docx-preview'
-import axios from 'axios'
-import { useAppStore } from '@/store/modules/app'
-import { watch } from 'vue'
+import { renderAsync } from 'docx-preview';
+import axios from 'axios';
+import { useAppStore } from '@/store/modules/app';
+import { watch } from 'vue';
 
 /** 营销方案 列表 */
-defineOptions({ name: 'MarketingProgram' })
+defineOptions({ name: 'MarketingProgram' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<MarketingProgramVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<MarketingProgramVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -388,92 +342,92 @@ const queryParams = reactive({
   reserveTwo: undefined,
   reserveThree: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 //文件预览
-let dialogVisible = ref(false)
-let fileUrl = ref()
+let dialogVisible = ref(false);
+let fileUrl = ref();
 const filePreview = (url: any) => {
-  dialogVisible.value = true
-  console.log('preview url', url)
+  dialogVisible.value = true;
+  console.log('preview url', url);
 
-  if (url.endsWith('docx')) renderDocx(url)
-  else if (url.endsWith('pdf')) renderPDF(url)
-  else renderError()
-}
+  if (url.endsWith('docx')) renderDocx(url);
+  else if (url.endsWith('pdf')) renderPDF(url);
+  else renderError();
+};
 
 const renderError = () => {
-  const _p = document.createElement('p')
-  _p.innerHTML = '格式暂不支持！'
+  const _p = document.createElement('p');
+  _p.innerHTML = '格式暂不支持！';
   setTimeout(() => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    if (_dom) _dom.appendChild(_p)
-  }, 200)
-}
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    if (_dom) _dom.appendChild(_p);
+  }, 200);
+};
 
 const handleDialogClose = () => {
-  const _dom = document.getElementById('filePreview') as HTMLElement
-  if (_dom) _dom.innerHTML = ''
-  dialogVisible.value = false
-}
+  const _dom = document.getElementById('filePreview') as HTMLElement;
+  if (_dom) _dom.innerHTML = '';
+  dialogVisible.value = false;
+};
 // 渲染docx
 const renderDocx = (url: string) => {
-  if (!url.endsWith('docx')) return
+  if (!url.endsWith('docx')) return;
   axios.get(url, { responseType: 'blob' }).then(({ data }) => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    renderAsync(data, _dom)
-  })
-}
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    renderAsync(data, _dom);
+  });
+};
 
 const renderPDF = (url: string) => {
-  const _iframe = document.createElement('iframe')
-  _iframe.src = url
-  _iframe.width = '100%'
-  _iframe.height = '600px'
+  const _iframe = document.createElement('iframe');
+  _iframe.src = url;
+  _iframe.width = '100%';
+  _iframe.height = '600px';
   setTimeout(() => {
-    const _dom = document.getElementById('filePreview') as HTMLElement
-    console.log('dom', _dom)
+    const _dom = document.getElementById('filePreview') as HTMLElement;
+    console.log('dom', _dom);
 
-    if (_dom) _dom.appendChild(_iframe)
-  }, 200)
-}
+    if (_dom) _dom.appendChild(_iframe);
+  }, 200);
+};
 //--------结束文件预览
 
 /** 查询列表 */
 const getList = async () => {
   if (sessionStorage.getItem('latestListType')) {
-    listType.value = sessionStorage.getItem('latestListType')
+    listType.value = sessionStorage.getItem('latestListType');
   }
-  sessionStorage.removeItem('latestListType')
-  loading.value = true
+  sessionStorage.removeItem('latestListType');
+  loading.value = true;
   try {
-    const data = await MarketingProgramApi.getMarketingProgramPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await MarketingProgramApi.getMarketingProgramPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
     if ('card' === listType.value) {
-      currentItem.value = list.value[0]
+      currentItem.value = list.value[0];
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 // 列表展示形式 card list
-const listType = ref('card')
+const listType = ref('card');
 
 // 预览区展示项
 const currentItem = ref({
@@ -491,54 +445,49 @@ const currentItem = ref({
   reserveTwo: null,
   reserveThree: null,
   createTime: undefined
-})
+});
 
 // 切换预览区展示项
 const changCurrentItem = (item: any) => {
-  currentItem.value = item
-}
+  currentItem.value = item;
+};
 
 // listType切换list或card
 const handleCardChange = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 添加/修改操作 */
-const router = useRouter() // 路由
-const formRef = ref()
+const router = useRouter(); // 路由
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  sessionStorage.setItem('latestListType', listType.value)
+  sessionStorage.setItem('latestListType', listType.value);
 
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem('giftboxStyleQueryParams')
+  sessionStorage.removeItem('giftboxStyleQueryParams');
   let data: any = {
-    pageNo: type === 'create' ? 1 : queryParams.pageNo,
+    pageNo: queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
     marketingUploadTime: queryParams.marketingUploadTime
-  }
+  };
   if ('card' === listType.value) {
-    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
-    data = { ...data, id: idx }
+    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
+    data = { ...data, id: idx };
   }
-  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data))
+  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data));
 
   if (type == 'create') {
-    router.push(
-      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram'
-    )
+    router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram');
   } else {
     router.push(
-      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type=' +
-        type +
-        '&id=' +
-        id
-    )
+      '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type=' + type + '&id=' + id
+    );
   }
-}
+};
 
 /**
  * 详情按钮操作
@@ -546,120 +495,114 @@ const openForm = (type: string, id?: number) => {
  * @param id
  */
 const openDetailForm = (type: string, id?: number) => {
-  sessionStorage.setItem('latestListType', listType.value)
+  sessionStorage.setItem('latestListType', listType.value);
 
   // 执行新增、编辑、详情操作 保存搜索栏数据和页码 和 当前选择项
-  sessionStorage.removeItem('giftboxStyleQueryParams')
+  sessionStorage.removeItem('giftboxStyleQueryParams');
   let data: any = {
-    pageNo: type === 'create' ? 1 : queryParams.pageNo,
+    pageNo: queryParams.pageNo,
     schemeName: queryParams.schemeName,
     marketingCreator: queryParams.marketingCreator,
     marketingCategory: queryParams.marketingCategory,
     marketingTags: queryParams.marketingTags,
     marketingUploadTime: queryParams.marketingUploadTime
-  }
+  };
   if ('card' === listType.value) {
-    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
-    data = { ...data, id: idx }
+    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
+    data = { ...data, id: idx };
   }
-  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data))
+  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data));
 
-  router.push(
-    '/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' +
-      type +
-      '&id=' +
-      id
-  )
-}
+  router.push('/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' + type + '&id=' + id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id)
+  const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
 
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await MarketingProgramApi.deleteMarketingProgram(id)
-    message.success(t('common.delSuccess'))
+    await MarketingProgramApi.deleteMarketingProgram(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
 
   // 删除后 设置curItem
   if (idx >= list.value.length) {
-    currentItem.value = list.value[list.value.length - 1]
+    currentItem.value = list.value[list.value.length - 1];
   } else {
-    currentItem.value = list.value[idx]
+    currentItem.value = list.value[idx];
   }
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await MarketingProgramApi.exportMarketingProgram(queryParams)
-    download.excel(data, '礼盒样式.xls')
+    exportLoading.value = true;
+    const data = await MarketingProgramApi.exportMarketingProgram(queryParams);
+    download.excel(data, '礼盒样式.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(async () => {
   // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem('giftboxStyleQueryParams')
-  let idx: number = -1
+  const sessionParams = sessionStorage.getItem('giftboxStyleQueryParams');
+  let idx: number = -1;
   if (sessionParams) {
-    const data = JSON.parse(sessionParams)
-    queryParams.pageNo = data.pageNo
-    queryParams.schemeName = data.schemeName
-    queryParams.marketingCreator = data.marketingCreator
-    queryParams.marketingCategory = data.marketingCategory
-    queryParams.marketingTags = data.marketingTags
-    queryParams.marketingUploadTime = data.marketingUploadTime
-    idx = data.id
+    const data = JSON.parse(sessionParams);
+    queryParams.pageNo = data.pageNo;
+    queryParams.schemeName = data.schemeName;
+    queryParams.marketingCreator = data.marketingCreator;
+    queryParams.marketingCategory = data.marketingCategory;
+    queryParams.marketingTags = data.marketingTags;
+    queryParams.marketingUploadTime = data.marketingUploadTime;
+    idx = data.id;
   }
-  sessionStorage.removeItem('giftboxStyleQueryParams')
+  sessionStorage.removeItem('giftboxStyleQueryParams');
 
-  console.log('aaaaaaaaaaa')
-  await getList()
+  await getList();
 
   if (-1 !== idx) {
-    currentItem.value = list.value[idx]
+    currentItem.value = list.value[idx];
   }
 
   // 获取当前是否是深色主题
-  themeIsDark.value = appStore.getIsDark
-})
+  themeIsDark.value = appStore.getIsDark;
+});
 
-const appStore = useAppStore()
-const themeIsDark = ref(false)
+const appStore = useAppStore();
+const themeIsDark = ref(false);
 
 // 监听主题模式变化
 watch(
   () => appStore.isDark,
   (newVal, oldVal) => {
-    console.log('isDark', newVal, oldVal)
-    themeIsDark.value = newVal
+    console.log('isDark', newVal, oldVal);
+    themeIsDark.value = newVal;
   }
-)
+);
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS
 const timeFormat = (dataString: string) => {
   //dataString是整数，否则要parseInt转换
-  var time = new Date(dataString)
-  var year = time.getFullYear()
-  var month = time.getMonth() + 1
-  var day = time.getDate()
-  var hour = time.getHours()
-  var minute = time.getMinutes()
-  var second = time.getSeconds()
+  var time = new Date(dataString);
+  var year = time.getFullYear();
+  var month = time.getMonth() + 1;
+  var day = time.getDate();
+  var hour = time.getHours();
+  var minute = time.getMinutes();
+  var second = time.getSeconds();
   return (
     year +
     '-' +
@@ -672,8 +615,8 @@ const timeFormat = (dataString: string) => {
     (minute < 10 ? '0' + minute : minute) +
     ':' +
     (second < 10 ? '0' + second : second)
-  )
-}
+  );
+};
 </script>
 
 <style scoped lang="scss">

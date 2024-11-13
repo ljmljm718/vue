@@ -461,8 +461,8 @@ const handleCardChange = () => {
 const formRef = ref();
 const tmpIndex = ref(-1);
 const openForm = (type: string, id?: number) => {
-  // 编辑前 保存当前编辑项的下标
-  if ('update' === type && 'card' === listType.value) {
+  // 新增和编辑前 保存当前查看项的下标
+  if ('card' === listType.value) {
     tmpIndex.value = list.value.findIndex((ele) => {
       return ele.id === currentItem.value.id;
     });
@@ -476,7 +476,7 @@ const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id);
 };
 
-// 修改成功后调用的函数
+// 新增和修改成功后调用的函数
 const handleUpdateSuccess = async () => {
   await getList();
   if ('card' !== listType.value) return;

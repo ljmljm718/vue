@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -18,12 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-select
-          v-model="queryParams.name"
-          placeholder="请选择名称"
-          clearable
-          class="!w-240px"
-        >
+        <el-select v-model="queryParams.name" placeholder="请选择名称" clearable class="!w-240px">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
             :key="dict.value"
@@ -97,7 +92,7 @@
           class="!w-220px"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="four-btn-form-item">
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px" />
           搜索
@@ -126,17 +121,12 @@
           导出
         </el-button>
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table
-      v-loading="loading"
-      :data="list"
-      :stripe="true"
-      :show-overflow-tooltip="true"
-    >
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="主表ID" align="center" prop="mainTableId" />
       <el-table-column label="名称" align="center" prop="name" />
@@ -151,10 +141,7 @@
       />
       <el-table-column label="识别类型" align="center" prop="recognitionType">
         <template #default="scope">
-          <dict-tag
-            :type="DICT_TYPE.AGRI_RECOGNITION_TYPE"
-            :value="scope.row.recognitionType"
-          />
+          <dict-tag :type="DICT_TYPE.AGRI_RECOGNITION_TYPE" :value="scope.row.recognitionType" />
         </template>
       </el-table-column>
       <el-table-column label="记录人" align="center" prop="recorder" />
@@ -200,24 +187,24 @@
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
 import {
   IdentificationResultApi,
   IdentificationResultVO
-} from '@/api/agriculture/identificationresult'
-import IdentificationResultForm from './IdentificationResultForm.vue'
+} from '@/api/agriculture/identificationresult';
+import IdentificationResultForm from './IdentificationResultForm.vue';
 
 /** 识别结果 列表 */
-defineOptions({ name: 'IdentificationResult' })
+defineOptions({ name: 'IdentificationResult' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<IdentificationResultVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<IdentificationResultVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -229,72 +216,77 @@ const queryParams = reactive({
   recognitionType: undefined,
   recorder: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data =
-      await IdentificationResultApi.getIdentificationResultPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await IdentificationResultApi.getIdentificationResultPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await IdentificationResultApi.deleteIdentificationResult(id)
-    message.success(t('common.delSuccess'))
+    await IdentificationResultApi.deleteIdentificationResult(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data =
-      await IdentificationResultApi.exportIdentificationResult(queryParams)
-    download.excel(data, '识别结果.xls')
+    exportLoading.value = true;
+    const data = await IdentificationResultApi.exportIdentificationResult(queryParams);
+    download.excel(data, '识别结果.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
+
+<style lang="scss" scoped>
+// 搜索表单最后一项是四个按钮 超过每个表单项宽度 单独设置
+:deep(.four-btn-form-item .el-form-item__content) {
+  flex-wrap: nowrap;
+}
+</style>
