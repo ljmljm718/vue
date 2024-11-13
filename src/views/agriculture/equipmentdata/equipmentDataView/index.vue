@@ -1,102 +1,99 @@
 <script setup lang="ts">
-import { ElTree } from 'element-plus'
-import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
-import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata'
-import DeviceInfo from '@/views/agriculture/equipmentdata/index.vue'
-import { useRoute } from 'vue-router'
-import { Search } from '@element-plus/icons-vue'
-import img from '../../../../assets/imgs/retract.png'
-import img2 from '../../../../assets/imgs/expand.png'
-let route = useRoute()
+import { ElTree } from 'element-plus';
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { EquipmentDataApi, EquipmentDataVO } from '@/api/agriculture/equipmentdata';
+import DeviceInfo from '@/views/agriculture/equipmentdata/index.vue';
+import { useRoute } from 'vue-router';
+import { Search } from '@element-plus/icons-vue';
+import img from '../../../../assets/imgs/retract.png';
+import img2 from '../../../../assets/imgs/expand.png';
+let route = useRoute();
 /** 设备信息 列表 */
-defineOptions({name: 'EquipmentDataView'})
-console.log(route.query.collectionType,'router')
+defineOptions({ name: 'EquipmentDataView' });
+console.log(route.query.collectionType, 'router');
 
-const loading = ref(true) // 列表的加载中
+const loading = ref(true); // 列表的加载中
 
 interface Tree {
-  [key: string]: any
+  [key: string]: any;
 }
 
-const filterText = ref('')
-const treeRef = ref<InstanceType<typeof ElTree>>()
+const filterText = ref('');
+const treeRef = ref<InstanceType<typeof ElTree>>();
 
 const defaultProps = {
   children: 'child',
-  label: 'name',
-}
-const isCollapse = ref(true)
+  label: 'name'
+};
+const isCollapse = ref(true);
 
 watch(filterText, (val) => {
-  treeRef.value!.filter(val)
-})
+  treeRef.value!.filter(val);
+});
 watch(isCollapse, (val) => {
-  if(!val){
-    outputFous.value=''
-    filterText2.value=''
+  if (!val) {
+    outputFous.value = '';
+    filterText2.value = '';
   }
-  })
+});
 
 /** 搜索节点过滤 */
 const filterNode = (value: string, data: Tree) => {
-  if (!value) return true
-  console.log(data,'datadata')
-  return data.name.includes(value)
-}
+  if (!value) return true;
+  console.log(data, 'datadata');
+  return data.name.includes(value);
+};
 //清空树节点
 const clearTree = () => {
-  clearCategory()
-}
-const categoryTree = ref<ParkInfoVO[]>([]) // 列表的数据
+  clearCategory();
+};
+const categoryTree = ref<ParkInfoVO[]>([]); // 列表的数据
 /** 查询基地地块列表 */
 const getCategoryList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const queryParams = null
-    const data = await ParkInfoApi.getParkTree(queryParams)
-    console.log(data)
-    categoryTree.value = data
+    const queryParams = null;
+    const data = await ParkInfoApi.getParkTree(queryParams);
+    console.log(data);
+    categoryTree.value = data;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 onMounted(() => {
-  getCategoryList()
-})
+  getCategoryList();
+});
 
-let currCategory = ref({})
+let currCategory = ref({});
 const handleCurrentCategoryChange = (currNodeData) => {
-  console.log(currNodeData, '-------------')
-  currCategory.value = currNodeData
-}
+  console.log(currNodeData, '-------------');
+  currCategory.value = currNodeData;
+};
 // 取消选择
 const clearCategory = () => {
-  treeRef.value.setCurrentKey()
-}
+  treeRef.value.setCurrentKey();
+};
 const resetTreeSelections = () => {
-  clearCategory() // 清空选中的节点
-}
+  clearCategory(); // 清空选中的节点
+};
 //自动聚焦
-const inputFous=ref()
-const outputFous=ref('')
-const filterText2=ref('')
-const focusInput=(e)=>{
-  if(e){
-    isCollapse.value=false
-    filterText.value=e
+const inputFous = ref();
+const outputFous = ref('');
+const filterText2 = ref('');
+const focusInput = (e) => {
+  if (e) {
+    isCollapse.value = false;
+    filterText.value = e;
   }
-}
-const inputFoucs=()=>{
-
-}
+};
+const inputFoucs = () => {};
 
 // 根据右侧高度设置左侧菜单的高度
 const treeHeight = ref(1);
 const setLeftHeight = (height: number) => {
   treeHeight.value = height - 80;
-}
-
+};
 </script>
 
 <template>
@@ -104,21 +101,17 @@ const setLeftHeight = (height: number) => {
     <!-- 左侧 -->
     <div
       :class="`
-        w-[330px] pl-[20px] bg-white mb-[15px] border border-solid border-[#e4e7ed]
+        w-[240px] pl-[20px] bg-white mb-[15px] border border-solid border-[#e4e7ed]
         ${isCollapse ? 'slide-from-right-to-left' : 'slide-from-left-to-right'}
       `"
     >
-      <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo relative"
-        :collapse="isCollapse"
-      >
+      <el-menu default-active="2" class="el-menu-vertical-demo relative" :collapse="isCollapse">
         <div class="w-[220px] h-80px flex justify-start items-center">
           <el-input
             class="!w-[220px] h-30px rounded"
             v-model="filterText"
             @focus="inputFoucs"
-            ref='inputFous'
+            ref="inputFous"
             placeholder="搜索基地"
             clearable
           />
@@ -144,8 +137,8 @@ const setLeftHeight = (height: number) => {
     <!-- 右侧 -->
     <div
       :class="`
-        grid relative grow w-[calc(100%-350px)]
-        ${ isCollapse ? 'content-grow' : 'content-shrink'}
+        grid relative grow w-[calc(100%-260px)]
+        ${isCollapse ? 'content-grow' : 'content-shrink'}
       `"
     >
       <!-- 展开收起侧边面板按钮 -->
@@ -158,7 +151,7 @@ const setLeftHeight = (height: number) => {
         `"
         :style="{
           color: 'var(--el-color-primary)',
-          border: '1px solid var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)'
         }"
       >
         <el-icon v-show="!isCollapse"><ArrowLeftBold /></el-icon>
@@ -193,10 +186,10 @@ const setLeftHeight = (height: number) => {
 }
 
 // 选中当前node的样式
-:deep(.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content) {
+:deep(.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content) {
   // background: pink !important;
   background-image: url('../../../../assets/imgs/treeActive.png') !important;
-  background-size:100% 100%  !important;
+  background-size: 100% 100% !important;
 }
 
 @keyframes slide-from-left-to-right {
@@ -234,7 +227,7 @@ const setLeftHeight = (height: number) => {
     margin-left: 0;
   }
   to {
-    margin-left: -350px;
+    margin-left: -260px;
   }
 }
 
@@ -244,7 +237,7 @@ const setLeftHeight = (height: number) => {
 
 @keyframes content-shrink {
   from {
-    margin-left: -350px;
+    margin-left: -260px;
   }
   to {
     margin-left: 0;
