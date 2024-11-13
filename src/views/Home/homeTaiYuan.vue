@@ -865,10 +865,37 @@ const handleWindowResize = debounce(() => {
 window.addEventListener('resize', () => {
   handleWindowResize();
 });
+const collapsed = ref(true)
+//折叠按钮
+const handleCollapse = () =>{
+  collapsed.value = !collapsed.value;
+  // updateRightContentHeight();
+  // isFirstToggleDone.value = true;
+}
+// 检查屏幕宽度是否需要折叠
+const checkCollapsed = () => {
+  if (window.innerWidth <= 1150) {
+    collapsed.value = true;
+  } else {
+    collapsed.value = false;
+  }
+}
+// 在组件挂载后和窗口大小改变时更新高度
+onMounted(() => {
+
+  window.addEventListener("resize", checkCollapsed);
+});
+
+//清理监听
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkCollapsed);
+});
 </script>
 <template>
   <div class="flex space-x-[.5rem] domDiv">
-    <el-card class="w-12rem 2xl:h-77.5rem xl:h-82.5rem">
+    <el-card  
+      :class = "[collapsed ? 'slide-from-right-to-left' : 'slide-from-left-to-right', 'w-[12rem]']"
+      v-if="!collapsed"> 
       <el-tree
         ref="treeRef"
         style="max-width: 600px"
@@ -883,7 +910,27 @@ window.addEventListener('resize', () => {
         @current-change="handleCurrentCategoryChange"
       />
     </el-card>
-    <div style="width: calc(100% - 12.5rem)">
+    <div  
+      :class="`relative ${ collapsed ? 'contentgrow' : 'content-shrink'}`"
+      :style="{
+        width: `calc(100% - ${collapsed ? '0px' : '12.5rem'})`}"
+      >
+   <!-- 折叠按钮 -->
+   <div 
+        @click="handleCollapse"
+        :class="`
+          h-[25px] w-[25px] rounded-full shadow-md bg-white
+          cursor-pointer flex items-center justify-center text-[14px]
+          absolute top-[40px] translate-x-[-12.5px]
+        `"
+        :style="{
+          color: 'var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)',
+        }"
+      >
+        <el-icon v-show="!collapsed"><ArrowLeftBold /></el-icon>
+        <el-icon v-show="collapsed"><ArrowRightBold /></el-icon>
+    </div>
       <el-card class="mb-.5rem mr-.5rem">
         <div class="grid grid-cols-5 w-full gap-3">
           <div
@@ -1412,6 +1459,54 @@ window.addEventListener('resize', () => {
   background: {
     size: 100% 100%;
     image: url(./assets/amplify.png);
+  }
+}
+@keyframes slide-from-left-to-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-from-left-to-right {
+  animation: slide-from-left-to-right 0.3s ease-out forwards;
+}
+
+@keyframes slide-from-right-to-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.slide-from-right-to-left {
+  animation: slide-from-right-to-left 0.3s ease-in forwards;
+}
+
+
+.contentgrow {
+  animation: contentgrow 0.2s ease-out forwards;
+}
+
+
+.content-shrink {
+  animation: content-shrink 0.2s ease-out forwards;
+}
+
+@keyframes content-grow {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: -350px;
   }
 }
 </style>
