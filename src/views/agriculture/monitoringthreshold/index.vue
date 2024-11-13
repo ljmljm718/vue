@@ -6,7 +6,7 @@
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
-        label-width="100px"
+        label-width="120px"
       >
       <el-form-item label="名称" prop="name">
         <el-input
@@ -73,25 +73,14 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:monitoring-threshold:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+       <el-form-item>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" />
+          搜索
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:monitoring-threshold:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" />
+          重置
         </el-button>
       </el-form-item>
     </custom-form>
@@ -99,6 +88,27 @@
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="mb-20px -mt-5px ml-10px">
+        <el-button
+          class="!bg-[#009688] !color-[#fff]"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:monitoring-threshold:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+        <el-button
+           plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:monitoring-threshold:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+      </div>
+      
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="名称" align="center" prop="name" />

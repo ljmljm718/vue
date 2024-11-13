@@ -7,7 +7,6 @@
       ref="queryFormRef"
       :inline="true"
       label-width="68px"
-      :show-labels="['分类编码', '分类名称']"
     >
       <!--      <el-form-item label="父结点id" prop="parentId">-->
       <!--        <el-input-->
@@ -106,7 +105,12 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-form-item>
-      <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:device-category:create']">
+      <el-button
+        type="primary"
+        plain
+        @click="openForm('create')"
+        v-hasPermi="['agriculture:device-category:create']"
+      >
         <Icon icon="ep:plus" class="mr-5px" />
         新增
       </el-button>
@@ -144,11 +148,21 @@
           <dict-tag :type="DICT_TYPE.INFRA_INTEGER_STRING" :value="scope.row.showStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="分类排序" align="center" prop="categorySort" width="120" />
       <el-table-column label="监测属性" align="center" prop="monitor" width="160">
         <template #default="scope">
-          <span>{{ scope.row.monitor == undefined || scope.row.monitor == null ? '无' : scope.row.monitor }}</span>
+          <span>
+            {{
+              scope.row.monitor == undefined || scope.row.monitor == null ? '无' : scope.row.monitor
+            }}
+          </span>
         </template>
       </el-table-column>
       <!--      <el-table-column label="图片" align="center" prop="imgId" />-->
@@ -173,14 +187,24 @@
           >
             编辑
           </el-button>
-          <el-button link type="danger" @click="handleDelete(scope.row.id)" v-hasPermi="['agriculture:device-category:delete']">
+          <el-button
+            link
+            type="danger"
+            @click="handleDelete(scope.row.id)"
+            v-hasPermi="['agriculture:device-category:delete']"
+          >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList" />
+    <Pagination
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->

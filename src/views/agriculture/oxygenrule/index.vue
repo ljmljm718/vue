@@ -8,15 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <!--      <el-form-item label="增氧设备" prop="equipId">-->
-      <!--        <el-input-->
-      <!--          v-model="queryParams.equipId"-->
-      <!--          placeholder="请输入增氧设备"-->
-      <!--          clearable-->
-      <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
-      <!--        />-->
-      <!--      </el-form-item>-->
+      
       <!--      <el-form-item label="监测设备ID" prop="equipjianId">-->
       <!--        <el-input-->
       <!--          v-model="queryParams.equipjianId"-->
@@ -75,6 +67,55 @@
           />
         </el-select>
       </el-form-item>
+        <el-form-item label="最大值" prop="maxNum">
+          <el-input
+            v-model="queryParams.maxNum"
+            placeholder="请输入最大值"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        
+        <el-form-item label="最小值" prop="minNum">
+          <el-input
+            v-model="queryParams.minNum"
+            placeholder="请输入最小值"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        
+        <el-form-item label="评分值" prop="scoreNum">
+          <el-input
+            v-model="queryParams.scoreNum"
+            placeholder="请输入评分值"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        
+        <el-form-item label="目标分值" prop="targetNum">
+          <el-input
+            v-model="queryParams.targetNum"
+            placeholder="请输入目标分值"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        
+        <el-form-item label="建议功率" prop="suggestNum">
+          <el-input
+            v-model="queryParams.suggestNum"
+            placeholder="请输入建议功率"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
       <!--      <el-form-item label="备注" prop="remark">-->
       <!--        <el-input-->
       <!--          v-model="queryParams.remark"-->
