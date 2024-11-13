@@ -62,12 +62,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="采购价格" prop="purchasePrice">
-            <el-input v-model="formData.purchasePrice" placeholder="选择投入品后自动填入采购价格"/>
+            <el-input v-model="formData.purchasePrice" placeholder="选择投入品后自动填入采购价格" :disabled="true"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="投入品规格" prop="standard">
-            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格"/>
+            <el-input v-model="formData.standard" placeholder="选择投入品后自动填入规格" :disabled="true"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -104,8 +104,8 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="投喂量" prop="feedNum">
-            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）"/>
+          <el-form-item label="投喂量" prop="feedNum" >
+            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）" :disabled="true"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -115,7 +115,7 @@
         </el-col>
       </el-row>
       <el-form-item label="投入品费用/元" prop="feedCost">
-        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用(消耗量*采购价格)"/>
+        <el-input v-model="formData.feedCost" placeholder="请输入投入品费用(消耗量*采购价格)" :disabled="true"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -134,6 +134,7 @@ import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetai
 import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
 import {ProductApi} from '@/api/erp/product/product'
 import {FarmDefineApi} from "@/api/agriculture/farmdefine";
+import { log } from 'console';
 
 /** 投喂记录 表单 */
 defineOptions({name: 'FeedInfoForm'})
@@ -299,14 +300,26 @@ const feedTypeSelect = (feedType) => {
       formData.value.feedType = item.id
       formData.value.standard = item.standard
       formData.value.purchasePrice = item.purchasePrice
-      if (!formData.value.consumeUnit) {
-        formData.value.consumeUnit = item.unitName
-      }
+      formData.value.consumeUnit = '袋'
+      formData.value.feedOne = 'KG'
+      formData.value.consumeNum = null
+      // formData.value.consumeUnit = item.unitName
+      // formData.value.feedOne = item.unitName
     }
   })
 }
 
-const consumeNumInput = (consumeNum) => {
-  // formData.value.feedCost =  consumeNum *  formData.value.standard
+const consumeNumInput = async (consumeNum) => {
+  // 使用正则表达式仅获取数字
+  if(formData.value.standard && formData.value.purchasePrice){
+    let standards = formData.value.standard.match(/^\d+/)[0];
+    // console.log(standards,"standards=======");
+    // console.log(consumeNum * standards,"consumeNum * standards=======");
+    // console.log(consumeNum *  formData.value.purchasePrice,"consumeNum *  formData.value.purchasePrice=======");
+    formData.value.feedNum = consumeNum * standards
+    formData.value.feedCost =  consumeNum *  formData.value.purchasePrice
+  }
+ 
+  
 }
 </script>
