@@ -53,15 +53,30 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+      </el-form-item>
+    </custom-form>
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <el-row>
+      <el-form-item>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:trace-record:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
         <el-button
           type="success"
@@ -70,14 +85,11 @@
           :loading="exportLoading"
           v-hasPermi="['agriculture:trace-record:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
         </el-button>
       </el-form-item>
-    </custom-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
+    </el-row>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="溯源码" align="center" prop="traceCode" />
       <el-table-column label="品牌" align="center" prop="productBrand" />
@@ -99,7 +111,7 @@
       />
       <el-table-column label="操作" align="center">
         <template #default="scope">
-<!--          <el-button
+          <!--          <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
@@ -132,22 +144,22 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { TraceRecordApi, TraceRecordVO } from '@/api/agriculture/tracerecord'
-import TraceRecordForm from './TraceRecordForm.vue'
-import {ProducerEntryApi, ProducerEntryVO} from "@/api/agriculture/producerentry";
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { TraceRecordApi, TraceRecordVO } from '@/api/agriculture/tracerecord';
+import TraceRecordForm from './TraceRecordForm.vue';
+import { ProducerEntryApi, ProducerEntryVO } from '@/api/agriculture/producerentry';
 
 /** 溯源记录 列表 */
-defineOptions({ name: 'TraceRecord' })
+defineOptions({ name: 'TraceRecord' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const producerEntryList = ref<ProducerEntryVO[]>([]) // 生产商的数据
-const loading = ref(true) // 列表的加载中
-const list = ref<TraceRecordVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const producerEntryList = ref<ProducerEntryVO[]>([]); // 生产商的数据
+const loading = ref(true); // 列表的加载中
+const list = ref<TraceRecordVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -160,82 +172,82 @@ const queryParams = reactive({
   reserveTwo: undefined,
   batchCode: undefined,
   createTime: [],
-  traceTime: [],
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+  traceTime: []
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询生产商列表 */
 const getProducerEntryList = async () => {
-  const data = await ProducerEntryApi.getProducerEntryAll({approvalStatus: 1})
-  producerEntryList.value = data
-}
+  const data = await ProducerEntryApi.getProducerEntryAll({ approvalStatus: 1 });
+  producerEntryList.value = data;
+};
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await TraceRecordApi.getTraceRecordPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await TraceRecordApi.getTraceRecordPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await TraceRecordApi.deleteTraceRecord(id)
-    message.success(t('common.delSuccess'))
+    await TraceRecordApi.deleteTraceRecord(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await TraceRecordApi.exportTraceRecord(queryParams)
-    download.excel(data, '溯源记录.xls')
+    exportLoading.value = true;
+    const data = await TraceRecordApi.exportTraceRecord(queryParams);
+    download.excel(data, '溯源记录.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onActivated(() => {
-  getProducerEntryList()
-  getList()
-})
+  getProducerEntryList();
+  getList();
+});
 onMounted(() => {
-  getProducerEntryList()
-  getList()
-})
+  getProducerEntryList();
+  getList();
+});
 </script>

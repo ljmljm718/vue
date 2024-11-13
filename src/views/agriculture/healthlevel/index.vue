@@ -8,7 +8,6 @@
       :inline="true"
       label-width="68px"
     >
-
       <el-form-item label="品种名称" prop="cropName">
         <el-input
           v-model="queryParams.cropName"
@@ -43,52 +42,66 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
       </el-form-item>
-      <el-row>
-        <el-form-item>
-          <el-button
-            type="primary"
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:health-level:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:health-level:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
-          </el-button>
-        </el-form-item>
-      </el-row>
     </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <el-row>
+      <el-form-item>
+        <el-button
+          type="primary"
+          plain
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:health-level:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:health-level:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+      </el-form-item>
+    </el-row>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="品种名称" align="center" prop="cropName" />
-      <el-table-column label="健康等级" align="center" prop="healthLevel" >
+      <el-table-column label="健康等级" align="center" prop="healthLevel">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_HEALTH_LEVEL" :value="scope.row.healthLevel" />
         </template>
       </el-table-column>
       <el-table-column label="分数范围" align="center" prop="monitorCode">
         <template #default="scope">
-          {{ scope.row.min+ '~' + scope.row.max}}
+          {{ scope.row.min + '~' + scope.row.max }}
         </template>
       </el-table-column>
       <el-table-column label="模型名称" align="center" prop="modelName" />
       <el-table-column label="健康等级图标" align="center" prop="modelImageId">
         <template #default="{ row }">
-          <el-image class="h-50px w-50px" lazy :src="row.img" :preview-src-list="[row.img]"
-                    preview-teleported fit="cover" />
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.img"
+            :preview-src-list="[row.img]"
+            preview-teleported
+            fit="cover"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -133,21 +146,21 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel'
-import HealthLevelForm from './HealthLevelForm.vue'
-import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { HealthLevelApi, HealthLevelVO } from '@/api/agriculture/healthlevel';
+import HealthLevelForm from './HealthLevelForm.vue';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 
 /** 健康等级 列表 */
-defineOptions({ name: 'HealthLevel' })
+defineOptions({ name: 'HealthLevel' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<HealthLevelVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<HealthLevelVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -159,71 +172,71 @@ const queryParams = reactive({
   modelId: undefined,
   modelName: undefined,
   createTime: [],
-  img: undefined,
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+  img: undefined
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await HealthLevelApi.getHealthLevelPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await HealthLevelApi.getHealthLevelPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await HealthLevelApi.deleteHealthLevel(id)
-    message.success(t('common.delSuccess'))
+    await HealthLevelApi.deleteHealthLevel(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await HealthLevelApi.exportHealthLevel(queryParams)
-    download.excel(data, '健康等级.xls')
+    exportLoading.value = true;
+    const data = await HealthLevelApi.exportHealthLevel(queryParams);
+    download.excel(data, '健康等级.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
