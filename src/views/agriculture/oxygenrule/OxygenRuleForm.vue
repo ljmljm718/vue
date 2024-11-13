@@ -13,10 +13,21 @@
           <el-option
             v-for="item in formOxygenFactorAll"
             :key="item.id"
-            :label="'因素名称：' +item.factorName + '(绑定设备：' + item.deviceNames+ ')'"
+            :label=" item.factorName "
+            :value="item.id"/>
+        </el-select>
+        <!-- + '(绑定设备：' + item.deviceNames+ ')' -->
+      </el-form-item>
+      <el-form-item label="绑定设备" >
+        <el-select v-model="formData.oxygenId" placeholder="绑定设备：" disabled >
+          <el-option
+            v-for="item in formOxygenFactorAll"
+            :key="item.id"
+            :label=" item.deviceNames "
             :value="item.id"/>
         </el-select>
       </el-form-item>
+
       <el-form-item label="最小值" prop="minNum">
         <el-input v-model="formData.minNum" placeholder="请输入最小值,不得大于最大值" />
       </el-form-item>
