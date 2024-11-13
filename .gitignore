@@ -9,3 +9,4 @@ auto-*.d.ts
 .idea
 .vscode
 .history
+.eslintcache

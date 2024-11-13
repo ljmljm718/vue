@@ -166,8 +166,8 @@
     "node": "20.14.0"
   },
   "lint-staged": {
-    "*.vue": "prettier --write --ignore-unknown",
-    "*.js": "eslint --cache --fix",
+    "*.(ts|vue|tsx)": "eslint --cache --fix",
+    "*.(vue|ts|tsx|scss)": "prettier --write --ignore-unknown",
     "*.css": "stylelint --fix"
   }
 }
