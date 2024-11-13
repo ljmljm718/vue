@@ -1,9 +1,20 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
+    <custom-form
+      class="-mb-15px"
+      :model="queryParams"
+      ref="queryFormRef"
+      :inline="true"
+      label-width="68px"
+    >
       <el-form-item label="设备" prop="deviceId">
-        <el-input class="!w-240px" v-model="queryParams.deviceName" placeholder="请选择设备" readonly>
+        <el-input
+          class="!w-240px"
+          v-model="queryParams.deviceName"
+          placeholder="请选择设备"
+          readonly
+        >
           <template #append>
             <el-button @click="openSelectDeviceInfo()">
               <Icon icon="ep:search" />
@@ -13,7 +24,12 @@
         </el-input>
       </el-form-item>
       <el-form-item label="设备状态" prop="deviceStatus">
-        <el-select v-model="queryParams.deviceStatus" placeholder="请选择状态" clearable class="!w-240px">
+        <el-select
+          v-model="queryParams.deviceStatus"
+          placeholder="请选择状态"
+          clearable
+          class="!w-240px"
+        >
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
             :key="dict.value"
@@ -49,7 +65,12 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-form-item>
-      <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['agriculture:device-history-status:create']">
+      <el-button
+        type="primary"
+        plain
+        @click="openForm('create')"
+        v-hasPermi="['agriculture:device-history-status:create']"
+      >
         <Icon icon="ep:plus" class="mr-5px" />
         新增
       </el-button>
@@ -73,7 +94,13 @@
           <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -96,13 +123,18 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList" />
+    <Pagination
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    />
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
   <DeviceHistoryStatusForm ref="formRef" @success="getList" />
   <!--  选择设备-->
-  <SelectDeviceInfo ref="SelectDeviceInfoRef" @success="SelectDeviceInfoSuccess" />
+  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange" />
 </template>
 
 <script setup lang="ts">
@@ -111,7 +143,7 @@ import download from '@/utils/download';
 import { DeviceHistoryStatusApi, DeviceHistoryStatusVO } from '@/api/agriculture/devicehistory';
 import DeviceHistoryStatusForm from './DeviceHistoryStatusForm.vue';
 import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
-import SelectDeviceInfo from '@/views/agriculture/deviceinfo/SelectDeviceInfoForms.vue';
+import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue';
 
 /** 设备历史状态 列表 */
 defineOptions({ name: 'DeviceHistoryStatus' });
@@ -192,12 +224,12 @@ const handleExport = async () => {
   }
 };
 // 机器信息选择
-const SelectDeviceInfoRef = ref();
+const purchaseOrderInEnableListRef = ref();
 const openSelectDeviceInfo = () => {
-  SelectDeviceInfoRef.value.open('jk'); //监控
+  purchaseOrderInEnableListRef.value.open(); //监控
 };
 //点击确定后
-const SelectDeviceInfoSuccess = (item: any) => {
+const handlePurchaseOrderChange = (item: any) => {
   queryParams.deviceId = item[0].id;
   queryParams.deviceName = item[0].deviceName;
 };
