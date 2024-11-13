@@ -266,7 +266,6 @@
               type="primary"
               @click="openForm('update', scope.row.id)"
               v-hasPermi="['agriculture:crop-base:update']"
-              v-if="!scope.row.recoveryNo"
             >
               编辑
             </el-button>
@@ -432,7 +431,7 @@ import { ParkDetailVO } from '@/api/agriculture/parkdetail';
 import { CommonStatusEnum, CommonStatusEnumBoolean } from '@/utils/constants';
 import BreedFrom from '@/views/agriculture/varietymanagement/SelectVarirtManagement.vue';
 import { VarietyManagementApi, VarietyManagementVO } from '@/api/agriculture/varietymanagement';
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash-es';
 
 /** 鲁渝协作品种管理 列表 */
 defineOptions({ name: 'AgriCropBase' });
@@ -698,15 +697,18 @@ const BreedFromSuccess = (order: any) => {
 const showType = ref('card');
 const cardDataList = ref<any[]>([]);
 
-watch(() => showType.value, (val) => {
-  if (val === 'list') {
-    const _list = cloneDeep(list.value)
-    list.value = []
-    nextTick(() => {
-      list.value = _list
-    })
+watch(
+  () => showType.value,
+  (val) => {
+    if (val === 'list') {
+      const _list = cloneDeep(list.value);
+      list.value = [];
+      nextTick(() => {
+        list.value = _list;
+      });
+    }
   }
-})
+);
 
 onMounted(async () => {
   await getList();
