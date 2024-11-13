@@ -578,9 +578,9 @@ watch(
 </script>
 <template>
   <div>
-    <el-card style="height: 64px" class="mt-1 mb-3 grid gap-3 2xl:grid-cols-12 xl:grid-cols-12">
-      <el-form :model="queryParams" label-width="80px" class="flex items-center space-x-3 ss">
-        <el-form-item label="选择基地：" class="form-item1">
+    <el-card  class="mb-3 ">
+      <custom-form :model="queryParams"  :inline="true">
+        <el-form-item label="选择基地：">
           <el-select
             v-model="queryParams.name"
             placeholder="请选择"
@@ -591,7 +591,7 @@ watch(
             <el-option v-for="item in selectBase" :key="item" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item :model="queryParams" label="选择地块：" class="flex space-x-3">
+        <el-form-item :model="queryParams" label="选择地块：" >
           <el-input
             v-if="!boo"
             v-model="queryParams.plot"
@@ -618,7 +618,7 @@ watch(
           </el-select>
         </el-form-item>
         <el-form-item>
-          <div class="flex space-x-3">
+    
             <el-button @click="handleQuery" type="primary" class="btn1">
               <!-- <Icon icon="ep:search" class="mr-5px"/> -->
               查询
@@ -627,9 +627,9 @@ watch(
               <!-- <Icon icon="ep:refresh" class="mr-5px"/> -->
               重置
             </el-button>
-          </div>
+       
         </el-form-item>
-      </el-form>
+      </custom-form>
     </el-card>
     <div class="grid gap-3 2xl:grid-cols-12 xl:grid-cols-6">
       <!-- 气象站 -->

@@ -125,7 +125,7 @@
         <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
       </el-form-item>
-      <el-row>
+   
         <el-form-item>
           <el-button
             type="primary"
@@ -135,6 +135,18 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+          <el-button
+            type="danger"
+            plain
+            @click="handleDelete(selectionList.map((item) => item.id))"
+            v-hasPermi="['erp:purchase-order:delete']"
+            :disabled="selectionList.length === 0"
+          >
+            <Icon icon="ep:delete" class="mr-5px" /> 删除
+          </el-button>
+          
+        </el-form-item>
+        <el-form-item>
           <el-button
             type="success"
             plain
@@ -152,17 +164,9 @@
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
-          <el-button
-            type="danger"
-            plain
-            @click="handleDelete(selectionList.map((item) => item.id))"
-            v-hasPermi="['erp:purchase-order:delete']"
-            :disabled="selectionList.length === 0"
-          >
-            <Icon icon="ep:delete" class="mr-5px" /> 删除
-          </el-button>
+
         </el-form-item>
-      </el-row>
+   
     </custom-form>
   </ContentWrap>
 
