@@ -382,8 +382,8 @@ const ImageClassList = [
 ];
 const getImgClassByName = (name: string) => {
   const index = ImageClassList.findIndex((item) => name.indexOf(item) !== -1);
-  if (name === 'PM2.5') return 'runtime-icon-4';
-  if (name === 'PM10') return 'runtime-icon-5';
+  if (name === 'PM2.5') return 'runtime-icon-5';
+  if (name === 'PM10') return 'runtime-icon-6';
   return `runtime-icon-${index + 1}`;
 };
 
