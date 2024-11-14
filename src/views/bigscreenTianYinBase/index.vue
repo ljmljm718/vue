@@ -1,54 +1,48 @@
 <script lang="tsx">
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-import { ParkInfoApi } from '@/api/agriculture/parkinfo/index'
-import CesiumMap from '@/views/tiandiMap/index.vue'
-import {
-  getParkList,
-  getLeftListInfo
-} from './api'
-import * as turf from '@turf/turf'
+import BigscreenBuilder from '@/components/BigscreenBuilder';
+import { ParkInfoApi } from '@/api/agriculture/parkinfo/index';
+import CesiumMap from '@/views/tiandiMap/index.vue';
+import { getParkList, getLeftListInfo } from './api';
+import * as turf from '@turf/turf';
 
-const {
-  BigscreenAdapter,
-  BigscreenContainer,
-  BigscreenHeader,
-  BigscreenMain,
-} = BigscreenBuilder
-
+const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenMain } = BigscreenBuilder;
 
 export default defineComponent({
   name: 'BigscreenTianYinBase',
   setup() {
-    const showSidePanel = ref<boolean>(false)
+    const route = useRoute();
+    console.log('ROUTE => ', route);
+    const useLayout = route.path === '/asset/tianyin';
+    const showSidePanel = ref<boolean>(false);
     setTimeout(() => {
-      showSidePanel.value = true
-    }, 100)
+      showSidePanel.value = true;
+    }, 100);
 
     // 中间部分选择基地
-    const selectorBases = ref<string>('枳壳树种植基地')
-    const selectedBase = ref<any>('')
-    const parkDataList = ref<any[]>([])
+    const selectorBases = ref<string>('枳壳树种植基地');
+    const selectedBase = ref<any>('');
+    const parkDataList = ref<any[]>([]);
     const getParkData = async () => {
-      const res = await getParkList()
+      const res = await getParkList();
       if (Array.isArray(res)) {
-        parkDataList.value = res
+        parkDataList.value = res;
         console.log('res', res);
 
-        selectedBase.value = res.length > 0 ? res[0].name : ''
+        selectedBase.value = res.length > 0 ? res[0].name : '';
         if (res.length > 0) {
-          getMainDataList(res[0].id)
-
+          getMainDataList(res[0].id);
         }
       }
-    }
-    getParkData()
+    };
+    getParkData();
 
     // 获取除标题外的外层数据
     const getMainDataList = async (parkId) => {
-      const res = await getLeftListInfo({ parkId })
+      const res = await getLeftListInfo({ parkId });
       if (Array.isArray(res)) {
-        const _res = res.map(item => ({
-          ...item, children: [
+        const _res = res.map((item) => ({
+          ...item,
+          children: [
             // {
             //   title: '地块编号',
             //   value: item.code
@@ -56,32 +50,34 @@ export default defineComponent({
             {
               title: '地块面积',
               value: item.area + ' 亩'
-            },
-          ],
-        }))
-        const num = _res.length / 2
-        leftDataList.value = _res.slice(0, num)
-        rightDataList.value = _res.slice(num)
+            }
+          ]
+        }));
+        const num = _res.length / 2;
+        leftDataList.value = _res.slice(0, num);
+        rightDataList.value = _res.slice(num);
       }
-    }
+    };
 
-    const leftDataList = ref<any[]>([])
-    const rightDataList = ref<any[]>([])
+    const leftDataList = ref<any[]>([]);
+    const rightDataList = ref<any[]>([]);
     //地图
-    const cesiumIns = ref()
+    const cesiumIns = ref();
 
-    const getMapData =  async () => {
-      const { list } = await ParkInfoApi.getParkInfoPage({})
+    const getMapData = async () => {
+      const { list } = await ParkInfoApi.getParkInfoPage({});
       if (Array.isArray(list) && list.length > 0) {
-        const _arr = list.map(item => {
-          const geofencing = JSON.parse(item.geofencing)
-          if (Array.isArray(geofencing)) return geofencing
+        const _arr = list.map((item) => {
+          const geofencing = JSON.parse(item.geofencing);
+          if (Array.isArray(geofencing)) return geofencing;
           const { corrdinates } = geofencing;
           return corrdinates;
-        })
+        });
 
         //提取所有地块的坐标点
-        const allCoordinates = _arr.flatMap(geofencing => geofencing[0].map(point => [point.lng, point.lat]));
+        const allCoordinates = _arr.flatMap((geofencing) =>
+          geofencing[0].map((point) => [point.lng, point.lat])
+        );
         if (allCoordinates.length > 0) {
           //计算中心点
           const features = turf.points(allCoordinates);
@@ -92,20 +88,22 @@ export default defineComponent({
       }
     };
 
-
     onMounted(() => {
       setTimeout(() => {
-        getMapData()
-      }, 2000)
-
-    })
+        getMapData();
+      }, 2000);
+    });
     return () => (
       <div class="w-[100%] bg-[#0d1724]">
-        <BigscreenContainer width="100%" extraClass="aspect-[2]">
+        <BigscreenContainer
+          width="100%"
+          extraClass="aspect-[2]"
+          height={useLayout ? 'calc(100vh - 125px)' : '1080px'}
+        >
           <BigscreenMain>
             <div class="bg-[#0d1724] w-full h-full relative overflow-hidden">
               <div class="absolute z-2 w-full h-full">
-                <CesiumMap ref={e => cesiumIns.value = e}/>
+                <CesiumMap ref={(e) => (cesiumIns.value = e)} />
                 <div class="meng-ban z-0"></div>
               </div>
               <div
@@ -115,83 +113,96 @@ export default defineComponent({
                 }}
               >
                 <div class="left-title w-full 2xl:aspect-[6.8] xl:aspect-[5] lg:aspect-[4] md:aspect-[3] sm:aspect-[2]"></div>
-                <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
-                  {
-                    leftDataList.value.map(item => (
-                      <div class="item-wrapper w-full min-h-[1rem]">
-                        <div class=' w-full h-[45px] relative flex items-center'>
-                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px]">{item.name}</div>
-                          <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
-                            {
-                              Array.isArray(item.child) && item.child.length > 0 ? (
-                                <div class='flex justify-center items-center'>
-                                  <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
-                                  <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
-                                </div>
-
-                              ) : (
-                                <div class='flex justify-center items-center'>
-                                  <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
-                                  <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
-                                </div>
-                              )
-                            }
-                          </div>
+                <div
+                  style="height: calc(100% - 6rem) ; padding-bottom: 10rem"
+                  class="w-full overflow-auto space-y-3 hidden-scrollbar"
+                >
+                  {leftDataList.value.map((item) => (
+                    <div class="item-wrapper w-full min-h-[1rem]">
+                      <div class=" w-full h-[45px] relative flex items-center">
+                        <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px]">
+                          {item.name}
                         </div>
-                        <div class="line-bar w-full h-[3px]"></div>
-                        <div class="grid  gap-3 p-2">
-
-                          {
-                            Array.isArray(item.child) && item.child.length > 0 ? (
-                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
-                                {
-                                  item.child.map(_ele => (
-                                    <div>
-                                      <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
-                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
-                                          <div class='w-3/5' >{item.area + '亩'}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5 whitespace-nowrap' style='color:#11EAC9'>物候期：</div>
-                                          <div class='w-3/5' >{_ele.growth}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
-                                          <div class='w-3/5' >{_ele.amount} {_ele.unit}</div>
-                                        </div>
-
-                                      </div>
-                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
-                                        <div class='w-2/10 whitespace-nowrap' style='color:#11EAC9'>时间：</div>
-                                        <div class='w-full flex  ml-1rem' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
-                                      </div>
+                        <div class="useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center">
+                          {Array.isArray(item.child) && item.child.length > 0 ? (
+                            <div class="flex justify-center items-center">
+                              <div class="w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]"></div>
+                              <div class="text-[14px] text-[#C0DDDE]  ml-[7px]">使用中</div>
+                            </div>
+                          ) : (
+                            <div class="flex justify-center items-center">
+                              <div class="w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]"></div>
+                              <div class="text-[14px] text-[#C0DDDE]  ml-[7px]">空闲中</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div class="line-bar w-full h-[3px]"></div>
+                      <div class="grid  gap-3 p-2">
+                        {Array.isArray(item.child) && item.child.length > 0 ? (
+                          <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
+                            {item.child.map((_ele) => (
+                              <div>
+                                <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      品种：
                                     </div>
-                                  ))
-                                }
-                              </div>
-                            ) : (
-                              <div class='flex w-fll flex-col'>
-                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
-                                  <div style='color:#11EAC9'>面积：</div>
-                                  <div >{item.area + '亩'}</div>
+                                    <div class="w-3/5" style="color:#11F47F">
+                                      {_ele.cropName}
+                                    </div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      面积：
+                                    </div>
+                                    <div class="w-3/5">{item.area + '亩'}</div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5 whitespace-nowrap" style="color:#11EAC9">
+                                      物候期：
+                                    </div>
+                                    <div class="w-3/5">{_ele.growth}</div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      规模：
+                                    </div>
+                                    <div class="w-3/5">
+                                      {_ele.amount} {_ele.unit}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div class='flex justify-center items-center w-full  flex-col'>
-                                  <div class="noVariety w-full " >
-                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                <div class="flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2">
+                                  <div class="w-2/10 whitespace-nowrap" style="color:#11EAC9">
+                                    时间：
+                                  </div>
+                                  <div class="w-full flex  ml-1rem">
+                                    {_ele.startTime.replace(/-/g, '.')} -{' '}
+                                    {_ele.endTime.replace(/-/g, '.')}
                                   </div>
                                 </div>
                               </div>
-                            )
-                          }
-                        </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div class="flex w-fll flex-col">
+                            <div class=" flex ml-5 mt-2 mb-3 w-full">
+                              <div style="color:#11EAC9">面积：</div>
+                              <div>{item.area + '亩'}</div>
+                            </div>
+                            <div class="flex justify-center items-center w-full  flex-col">
+                              <div class="noVariety w-full ">
+                                <div class="flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5">
+                                  地块暂无品种
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
               </div>
               {/* 右侧 */}
@@ -202,84 +213,103 @@ export default defineComponent({
                 }}
               >
                 <div class="right-title w-full 2xl:aspect-[6.8] xl:aspect-[5] lg:aspect-[4] md:aspect-[3] sm:aspect-[2]"></div>
-                <div style="height: calc(100% - 6rem) ; padding-bottom: 10rem" class="w-full overflow-auto space-y-3 hidden-scrollbar" >
-                  {
-                    rightDataList.value.map(item => (
-                      <div class="item-wrapper w-full min-h-[1rem]">
-                        <div class=' w-full h-[45px] relative flex items-center'>
-                          <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px] ">{item.name}</div>
-                          <div class='useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center' >
-                            {
-                              Array.isArray(item.child) && item.child.length > 0 ? (
-                                <div class='flex justify-center items-center'>
-                                  <div class='w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]'></div>
-                                  <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>使用中</div>
-                                </div>
-                              ) : (
-                                <div class='flex justify-center items-center'>
-                                  <div class='w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]'></div>
-                                  <div class='text-[14px] text-[#C0DDDE]  ml-[7px]'>空闲中</div>
-                                </div>
-                              )
-                            }
-                          </div>
+                <div
+                  style="height: calc(100% - 6rem) ; padding-bottom: 10rem"
+                  class="w-full overflow-auto space-y-3 hidden-scrollbar"
+                >
+                  {rightDataList.value.map((item) => (
+                    <div class="item-wrapper w-full min-h-[1rem]">
+                      <div class=" w-full h-[45px] relative flex items-center">
+                        <div class="absolute left-1/2 transform -translate-x-1/2  flex justify-center items-center text-[#11F47F] py-2 text-[13px] 2xl:text-[18px] ">
+                          {item.name}
                         </div>
-                        <div class="line-bar w-full h-[3px]"></div>
-                        <div class="grid  gap-3 p-2">
-                          {
-                            Array.isArray(item.child) && item.child.length > 0 ? (
-                              <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
-                                {
-                                  item.child.map(_ele => (
-                                    <div>
-                                      <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>品种：</div>
-                                          <div class='w-3/5' style='color:#11F47F'>{_ele.cropName}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>面积：</div>
-                                          <div class='w-3/5' >{item.area + '亩'}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5 whitespace-nowrap' style='color:#11EAC9'>物候期：</div>
-                                          <div class='w-3/5' >{_ele.growth}</div>
-                                        </div>
-                                        <div class='flex ml-4 mt-2'>
-                                          <div class='w-2/5' style='color:#11EAC9'>规模：</div>
-                                          <div class='w-3/5' >{_ele.amount} {_ele.unit}</div>
-                                        </div>
-                                      </div>
-                                      <div class='flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2'>
-                                        <div class='w-2/10 whitespace-nowrap' style='color:#11EAC9'>时间：</div>
-                                        <div class='w-full flex ml-1rem' >{_ele.startTime.replace(/-/g, '.')} - {_ele.endTime.replace(/-/g, '.')}</div>
-                                      </div>
+                        <div class="useState w-[80px] h-[30px] ml-auto mb-auto flex justify-center items-center">
+                          {Array.isArray(item.child) && item.child.length > 0 ? (
+                            <div class="flex justify-center items-center">
+                              <div class="w-[7px] h-[7px] bg-[#11F47F] rounded-full shadow-[0px_0px_6px_0px_#11F47F]"></div>
+                              <div class="text-[14px] text-[#C0DDDE]  ml-[7px]">使用中</div>
+                            </div>
+                          ) : (
+                            <div class="flex justify-center items-center">
+                              <div class="w-[7px] h-[7px] bg-[#C0DDDE] rounded-full shadow-[0px_0px_6px_0px_#FFFFFF]"></div>
+                              <div class="text-[14px] text-[#C0DDDE]  ml-[7px]">空闲中</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div class="line-bar w-full h-[3px]"></div>
+                      <div class="grid  gap-3 p-2">
+                        {Array.isArray(item.child) && item.child.length > 0 ? (
+                          <div class="grid grid-cols-1 gap-2 col-span-2 text-[16px]">
+                            {item.child.map((_ele) => (
+                              <div>
+                                <div class="gap-2 grid grid-cols-1 2xl:grid-cols-2">
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      品种：
                                     </div>
-                                  ))
-                                }
-                              </div>
-                            ) : (
-                              <div class='flex w-fll flex-col'>
-                                <div class=' flex ml-5 mt-2 mb-3 w-full'>
-                                  <div style='color:#11EAC9'>面积：</div>
-                                  <div >{item.area + '亩'}</div>
+                                    <div class="w-3/5" style="color:#11F47F">
+                                      {_ele.cropName}
+                                    </div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      面积：
+                                    </div>
+                                    <div class="w-3/5">{item.area + '亩'}</div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5 whitespace-nowrap" style="color:#11EAC9">
+                                      物候期：
+                                    </div>
+                                    <div class="w-3/5">{_ele.growth}</div>
+                                  </div>
+                                  <div class="flex ml-4 mt-2">
+                                    <div class="w-2/5" style="color:#11EAC9">
+                                      规模：
+                                    </div>
+                                    <div class="w-3/5">
+                                      {_ele.amount} {_ele.unit}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div class='flex justify-center items-center w-full  flex-col'>
-                                  <div class="noVariety w-full " >
-                                    <div class='flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5' >地块暂无品种</div>
+                                <div class="flex ml-4 mt-4 mb-4.5 grid grid-cols-1 gap-2">
+                                  <div class="w-2/10 whitespace-nowrap" style="color:#11EAC9">
+                                    时间：
+                                  </div>
+                                  <div class="w-full flex ml-1rem">
+                                    {_ele.startTime.replace(/-/g, '.')} -{' '}
+                                    {_ele.endTime.replace(/-/g, '.')}
                                   </div>
                                 </div>
                               </div>
-                            )
-                          }
-                        </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div class="flex w-fll flex-col">
+                            <div class=" flex ml-5 mt-2 mb-3 w-full">
+                              <div style="color:#11EAC9">面积：</div>
+                              <div>{item.area + '亩'}</div>
+                            </div>
+                            <div class="flex justify-center items-center w-full  flex-col">
+                              <div class="noVariety w-full ">
+                                <div class="flex justify-center  text-[#577D7E]  text-[14px] mt-15 mb-5">
+                                  地块暂无品种
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div class="absolute z-10 w-[326px] h-[60px] top-8 center-title flex justify-center items-center text-[2rem]" style="left: calc(50% - 163px);">
+            <div
+              class="absolute z-10 w-[326px] h-[60px] top-8 center-title flex justify-center items-center text-[2rem]"
+              style="left: calc(50% - 163px);"
+            >
               <select
                 class="bg=[#ffffff00]"
                 style="
@@ -294,19 +324,15 @@ export default defineComponent({
                           letter-spacing: 0px;
                           border:none;"
               >
-                {
-                  <option >
-                    {selectedBase.value}
-                  </option>
-                }
+                {<option>{selectedBase.value}</option>}
               </select>
             </div>
-          </BigscreenMain >
-        </BigscreenContainer >
-      </div >
-    )
+          </BigscreenMain>
+        </BigscreenContainer>
+      </div>
+    );
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 .meng-ban {
@@ -353,7 +379,7 @@ export default defineComponent({
 
 .useState {
   border-radius: 0px 6px 0px 12px;
-  background: linear-gradient(180deg, rgba(17, 244, 127, 0.5) 0%, rgba(17, 244, 127, 0.06) 50%)
+  background: linear-gradient(180deg, rgba(17, 244, 127, 0.5) 0%, rgba(17, 244, 127, 0.06) 50%);
 }
 
 .noVariety {
