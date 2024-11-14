@@ -25,42 +25,46 @@ export interface ProductVO {
 export const ProductApi = {
   // 查询产品分页
   getProductPage: async (params: any) => {
-    return await request.get({ url: `/erp/product/page`, params })
+    return await request.get({url: `/erp/product/page`, params})
   },
 
   // 查询产品精简列表
   getProductSimpleList: async () => {
-    return await request.get({ url: `/erp/product/simple-list` })
+    return await request.get({url: `/erp/product/simple-list`})
   },
 
   // 查询产品详情
   getProduct: async (id: number) => {
-    return await request.get({ url: `/erp/product/get?id=` + id })
+    return await request.get({url: `/erp/product/get?id=` + id})
+  },
+  // 查询产品详情
+  getProductUnit: async (id: number) => {
+    return await request.get({url: `/erp/product/get-unit?id=` + id})
   },
 
   // 新增产品
   createProduct: async (data: ProductVO) => {
-    return await request.post({ url: `/erp/product/create`, data })
+    return await request.post({url: `/erp/product/create`, data})
   },
 
   // 修改产品
   updateProduct: async (data: ProductVO) => {
-    return await request.put({ url: `/erp/product/update`, data })
+    return await request.put({url: `/erp/product/update`, data})
   },
 
   // 删除产品
   deleteProduct: async (id: number) => {
-    return await request.delete({ url: `/erp/product/delete?id=` + id })
+    return await request.delete({url: `/erp/product/delete?id=` + id})
   },
 
   // 导出产品 Excel
   exportProduct: async (params) => {
-    return await request.download({ url: `/erp/product/export-excel`, params })
+    return await request.download({url: `/erp/product/export-excel`, params})
   },
 
   // 导出产品 Excel
   uploadImportStandard: async () => {
-    return await request.download({ url: `/erp/product/uploadStandard` })
+    return await request.download({url: `/erp/product/uploadStandard`})
   },
   // 导出产品 Excel
   uploadImport: async () => {
@@ -68,13 +72,13 @@ export const ProductApi = {
   },
 
   //提交认证与审核认证
-  certifyProduct:async (id: number,certifyStatus:string) =>{
-      return await request.get({ url: `/erp/product/certify?id=` + id +`&certifyStatus=`+certifyStatus})
+  certifyProduct: async (id: number, certifyStatus: string) => {
+    return await request.get({url: `/erp/product/certify?id=` + id + `&certifyStatus=` + certifyStatus})
   },
 
   // 查询所有产品
   selectAll: async () => {
-    return await request.get({ url: `/erp/product/selectAll`})
+    return await request.get({url: `/erp/product/selectAll`})
   },
 
 }
