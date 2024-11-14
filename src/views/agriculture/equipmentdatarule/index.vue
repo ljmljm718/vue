@@ -73,16 +73,20 @@
         新增
       </el-button>
     </el-form-item>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="终端" align="center" prop="dtuId" />
-      <el-table-column label="通道" align="center" prop="channelId" />
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border>
+      <el-table-column label="设备名称" align="center" prop="deviceName" width="180" />
+      <el-table-column label="终端" align="center" prop="dtuId" width="150" />
+      <el-table-column label="通道" align="center" prop="channelId" width="150" />
       <el-table-column label="参数" align="center" prop="param" />
-      <el-table-column label="监测类型" align="center" prop="monitoringType" />
-      <el-table-column label="规则类型" align="center" prop="ruleType" />
+      <el-table-column label="监测类型" align="center" prop="monitoringType" width="100" />
+      <el-table-column label="单位" align="center" prop="ruleUnit" />
+      <el-table-column label="规则类型" align="center" prop="ruleType" width="150">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.DATA_SYNC_RULE_TYPE" :value="scope.row.ruleType" />
+        </template>
+      </el-table-column>
       <el-table-column label="系数" align="center" prop="rule" />
       <el-table-column label="字典" align="center" prop="dictionary" />
-      <el-table-column label="单位" align="center" prop="ruleUnit" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
@@ -158,6 +162,7 @@ const queryParams = reactive({
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 import { useRouter } from 'vue-router';
+import { DICT_TYPE } from '@/utils/dict';
 
 const { currentRoute } = useRouter();
 const route = currentRoute.value;

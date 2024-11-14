@@ -1,10 +1,10 @@
 /**
  * 数据字典工具类
  */
-import {useDictStoreWithOut} from '@/store/modules/dict'
-import {ElementPlusInfoType} from '@/types/elementPlus'
+import { useDictStoreWithOut } from '@/store/modules/dict';
+import { ElementPlusInfoType } from '@/types/elementPlus';
 
-const dictStore = useDictStoreWithOut()
+const dictStore = useDictStoreWithOut();
 
 /**
  * 获取 dictType 对应的数据字典数组
@@ -13,59 +13,59 @@ const dictStore = useDictStoreWithOut()
  * @returns {*|Array} 数据字典数组
  */
 export interface DictDataType {
-  dictType: string
-  label: string
-  value: string | number | boolean
-  colorType: ElementPlusInfoType | ''
-  cssClass: string
+  dictType: string;
+  label: string;
+  value: string | number | boolean;
+  colorType: ElementPlusInfoType | '';
+  cssClass: string;
 }
 
 export interface NumberDictDataType extends DictDataType {
-  value: number
+  value: number;
 }
 
 export const getDictOptions = (dictType: string) => {
-  return dictStore.getDictByType(dictType) || []
-}
+  return dictStore.getDictByType(dictType) || [];
+};
 
 export const getIntDictOptions = (dictType: string): NumberDictDataType[] => {
   // 获得通用的 DictDataType 列表
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
   // 转换成 number 类型的 NumberDictDataType 类型
   // why 需要特殊转换：避免 IDEA 在 v-for="dict in getIntDictOptions(...)" 时，el-option 的 key 会告警
-  const dictOption: NumberDictDataType[] = []
+  const dictOption: NumberDictDataType[] = [];
   dictOptions.forEach((dict: DictDataType) => {
     dictOption.push({
       ...dict,
       value: parseInt(dict.value + '')
-    })
-  })
-  return dictOption
-}
+    });
+  });
+  return dictOption;
+};
 
 export const getStrDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOption: DictDataType[] = [];
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
   dictOptions.forEach((dict: DictDataType) => {
     dictOption.push({
       ...dict,
       value: dict.value + ''
-    })
-  })
-  return dictOption
-}
+    });
+  });
+  return dictOption;
+};
 
 export const getBoolDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOption: DictDataType[] = [];
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
   dictOptions.forEach((dict: DictDataType) => {
     dictOption.push({
       ...dict,
       value: dict.value + '' === 'true'
-    })
-  })
-  return dictOption
-}
+    });
+  });
+  return dictOption;
+};
 
 /**
  * 获取指定字典类型的指定值对应的字典对象
@@ -74,13 +74,13 @@ export const getBoolDictOptions = (dictType: string) => {
  * @return DictDataType 字典对象
  */
 export const getDictObj = (dictType: string, value: any): DictDataType | undefined => {
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
   for (const dict of dictOptions) {
     if (dict.value === value + '') {
-      return dict
+      return dict;
     }
   }
-}
+};
 
 /**
  * 获得字典数据的文本展示
@@ -90,15 +90,15 @@ export const getDictObj = (dictType: string, value: any): DictDataType | undefin
  * @return 字典名称
  */
 export const getDictLabel = (dictType: string, value: any): string => {
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
-  const dictLabel = ref('')
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
+  const dictLabel = ref('');
   dictOptions.forEach((dict: DictDataType) => {
     if (dict.value === value + '') {
-      dictLabel.value = dict.label
+      dictLabel.value = dict.label;
     }
-  })
-  return dictLabel.value
-}
+  });
+  return dictLabel.value;
+};
 
 export enum DICT_TYPE {
   USER_TYPE = 'user_type',
@@ -217,26 +217,25 @@ export enum DICT_TYPE {
   KAIZHOU_AGRICULTURAL_ORDER_STATUS = 'kaizhou_agricultural_order_status', // 农资采购订单状态
   KAIZHOU_FARM_WORK = 'kaizhou_farm_work', // 园区类型
   KAIZHOU_CROP_CULTIVARS = 'kaizhou_crop_cultivars', // 作物品种
-  APPROVE_STATUS = 'approve_status',//认证状态
-  KAIZHOU_IDENTIFICATION_BINDING = 'kaizhou_identification_binding',//绑定状态
+  APPROVE_STATUS = 'approve_status', //认证状态
+  KAIZHOU_IDENTIFICATION_BINDING = 'kaizhou_identification_binding', //绑定状态
   KAIZHOU_DEVICE_KINDS = 'kaizhou_device_kinds', // 设备种类
   KAIZHOU_DEVICE_TYPE = 'kaizhou_device_type', // 设备类型
   KAIZHOU_DEVICE_STATUS = 'kaizhou_device_status', // 设备状态
   KAIZHOU_DEVICE_DATA_TYPE = 'kaizhou_device_data_type', //设备监测数据类型
-  KAIZHOU_FARM_TASK_STATUS = 'kaizhou_farm_task_status',//农事认证状态
-  KAIZHOU_PRODUCT_CERTIFY_STATUS = 'kaizhou_product_certify_status',//产品认证状态
-  KAIZHOU_WARN_STATUS = 'kaizhou_warn_status',//预警状态
-  KAIZHOU_WARN_TYPE = 'kaizhou_warn_type',//预警类型
-  KAIZHOU_WARN_MSG_LEVEL = 'kaizhou_warn_msg_level',//预警消息级别
-  KAIZHOU_MSG_TYPE = 'kaizhou_msg_type',//预警消息类型
-  KAIZHOU_WARN_RULE_TYPE = 'kaizhou_warn_rule_type',//预警规则类型
-  KAIZHOU_WARN_RULE_STATUS = 'kaizhou_warn_rule_status',//预警规则生效状态
-  KAIZHOU_VALUE_UNIT = 'kaizhou_value_unit',//数据单位
+  KAIZHOU_FARM_TASK_STATUS = 'kaizhou_farm_task_status', //农事认证状态
+  KAIZHOU_PRODUCT_CERTIFY_STATUS = 'kaizhou_product_certify_status', //产品认证状态
+  KAIZHOU_WARN_STATUS = 'kaizhou_warn_status', //预警状态
+  KAIZHOU_WARN_TYPE = 'kaizhou_warn_type', //预警类型
+  KAIZHOU_WARN_MSG_LEVEL = 'kaizhou_warn_msg_level', //预警消息级别
+  KAIZHOU_MSG_TYPE = 'kaizhou_msg_type', //预警消息类型
+  KAIZHOU_WARN_RULE_TYPE = 'kaizhou_warn_rule_type', //预警规则类型
+  KAIZHOU_WARN_RULE_STATUS = 'kaizhou_warn_rule_status', //预警规则生效状态
+  KAIZHOU_VALUE_UNIT = 'kaizhou_value_unit', //数据单位
   WUSHAN_FARM_WORK = 'wushan_farm_work', // 巫山园区类型
   DEVICE_CONNECT = 'device_connect', // 设备连接类型
   EQU_STATE = 'equ_state', // 设备在线状态
-  KAIZHOU_PLANT_PLAN_CATEGORY = 'kaizhou_plant_plan_category',//开州区种植计划作物类别
-
+  KAIZHOU_PLANT_PLAN_CATEGORY = 'kaizhou_plant_plan_category', //开州区种植计划作物类别
 
   // ========== WUSHAN -巫山  ==========
   WUSHAN_CROP_CULTIVARS = 'wushan_crop_cultivars',
@@ -245,72 +244,73 @@ export enum DICT_TYPE {
 
   // ========== PORTAL - 门户  ==========
   PORTAL_PROJECT_SERVICE_TYPE = 'portal_project_service_type', // 项目服务类型
-  PROJECT_FRAME_TYPE = 'project_frame_type',//项目框架类型
+  PROJECT_FRAME_TYPE = 'project_frame_type', //项目框架类型
 
   // ========== AGRI - 武隆  ==========
   AGRI_PARK_TYPE = 'agri_park_type', //基地种植类型
-  AGRI_CROP_CULTIVARS = 'agri_crop_cultivars',//作物品种
+  AGRI_CROP_CULTIVARS = 'agri_crop_cultivars', //作物品种
   AGRI_MONITOR_TYPE = 'agri_monitor_type', //预警类型
   AGRI_MONITOR_UNIT = 'agri_monitor_unit', //预警单位
-  AGRI_WARN_LEVEL = 'agri_warn_level',//预警等级
+  AGRI_WARN_LEVEL = 'agri_warn_level', //预警等级
 
   // =========== YYANG -  酉阳 ==========
-  YYANG_WATER_DETECTION = 'yyang_water_detection',//水质监测
+  YYANG_WATER_DETECTION = 'yyang_water_detection', //水质监测
   AGRI_FARMER_SEX = 'agri_farmer_sex', //性别1男2女
   CHECK_STATE = 'check_state',
   CHECK_RESULT_STATE = 'check_result_state',
-  YYANG_ENVIRONMENTAL_MONITORING = 'yyang_environmental_monitoring',//环境监测
+  YYANG_ENVIRONMENTAL_MONITORING = 'yyang_environmental_monitoring', //环境监测
 
   // =========== agri -  隘口 ==========
   AGRI_GROW_TYPE = 'agri_grow_type', //长势管理测量类型
   EQU_SWITH_STATE = 'equ_swith_state', //设备开启状态
-  AGRI_PRODUCTION_STATUS = 'agri_production_status',//生产状态
-  AGRI_SCENIC_STAR = 'agri_scenic_star',//星级
+  AGRI_PRODUCTION_STATUS = 'agri_production_status', //生产状态
+  AGRI_SCENIC_STAR = 'agri_scenic_star', //星级
 
   // =========== agri -  百部 ==========
-  DRYING_METHOD = 'drying_method',//烘干方式
+  DRYING_METHOD = 'drying_method', //烘干方式
 
-  FARM_PLAN_STATE = 'farm_plan_state',//农事计划状态
-  FARM_RECORD_STATE = 'farm_record_state',//农事记录状态
+  FARM_PLAN_STATE = 'farm_plan_state', //农事计划状态
+  FARM_RECORD_STATE = 'farm_record_state', //农事记录状态
   // =========== agri -   明月 ==========
   AGRI_DUCKHOUSE_CLASSIFICATION = 'agri_duckhouse_classification', //鸭舍分类
   AGRI_PLOT_TYPE = 'agri_plot_type', //鸭舍分类
-  AGRI_REPOSITORYINFO_TYPE = 'agri_repositoryinfo_type',//产业模型服务类型
-  AGRI_REPOSITORYINFO_LABEL = 'agri_repositoryinfo_label',//产业模型服务标签
+  AGRI_REPOSITORYINFO_TYPE = 'agri_repositoryinfo_type', //产业模型服务类型
+  AGRI_REPOSITORYINFO_LABEL = 'agri_repositoryinfo_label', //产业模型服务标签
   AGRI_REPOSITORY_STATUS = 'agri_repository_status',
   AGRI_NOTICEEVENT_TYPE = 'agri_noticeevent_type', //通知事件类型
-  AGRI_HEALTH_LEVEL = 'agri_health_level',  //健康等级
+  AGRI_HEALTH_LEVEL = 'agri_health_level', //健康等级
+  DATA_SYNC_RULE_TYPE = 'data_sync_rule_type', // 数据同步规则-规则类型
 
   // =========== agri -   MQTT ==========
   AGRI_MQTT_SUBSCRIBE_STATUS = 'agri_mqtt_subscribe_status', //主题订阅状态
-  AGRI_MQTT_TOPIC_TYPE = 'agri_mqtt_topic_type',  //主题类型
+  AGRI_MQTT_TOPIC_TYPE = 'agri_mqtt_topic_type', //主题类型
 
   // =========== agri -   大闸蟹 ==========
-  GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status',//赠送订单接收状态
-  ADOPTION_ORDER_STATUS = 'adoption_order_status',//认养订单状态
-  ADOPTION_ORDER_GIFT_STATUS = 'adoption_order_gift_status',//认养订单赠送状态
-  ADOPTION_ORDER_TYPE = 'adoption_order_type',//认养订单类型
-  ADOPTION_ODER_REMIND_STATUS = 'adoption_oder_remind_status',//认养订单是否被提醒
+  GIFT_ORDER_RECEIVE_STATUS = 'gift_order_receive_status', //赠送订单接收状态
+  ADOPTION_ORDER_STATUS = 'adoption_order_status', //认养订单状态
+  ADOPTION_ORDER_GIFT_STATUS = 'adoption_order_gift_status', //认养订单赠送状态
+  ADOPTION_ORDER_TYPE = 'adoption_order_type', //认养订单类型
+  ADOPTION_ODER_REMIND_STATUS = 'adoption_oder_remind_status', //认养订单是否被提醒
 
   // =========== agri -   生长监测 ==========
-  GROWTH_MODEL_TYPE = 'growth_model_type',//生长模型类型
-  MONITOR_TYPE = 'monitor_type',//因子类别
-  FACTOR_TYPE = 'factor_type',//传感器监测类型
-  JOB_TYPE= 'job_type',//作业类型
-  AGRI_CAPITAL_CONSUME='agri_capital_consume',//消耗农资
+  GROWTH_MODEL_TYPE = 'growth_model_type', //生长模型类型
+  MONITOR_TYPE = 'monitor_type', //因子类别
+  FACTOR_TYPE = 'factor_type', //传感器监测类型
+  JOB_TYPE = 'job_type', //作业类型
+  AGRI_CAPITAL_CONSUME = 'agri_capital_consume', //消耗农资
 
   // =========== agri -   质量码溯源 ==========
-  AGRI_CODE_APPLY_STATUS = 'agri_code_apply_status',//码申请状态
-  AGRI_CODE_DATE_FORMAT = 'agri_code_date_format',//码日期
-  AGRI_CODE_SERIAL = 'agri_code_serial',//码序列号
+  AGRI_CODE_APPLY_STATUS = 'agri_code_apply_status', //码申请状态
+  AGRI_CODE_DATE_FORMAT = 'agri_code_date_format', //码日期
+  AGRI_CODE_SERIAL = 'agri_code_serial', //码序列号
 
-  PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status',//生产商入库审批状态
+  PRODUCER_ENTRY_APPROVAL_STATUS = 'producer_entry_approval_status', //生产商入库审批状态
   AGRI_RECOGNITION_TYPE = 'agri_recognition_type', // 太原 识别类型
   MACHINE_PROCESS_FIXED = 'machine_process_fixed', // 库存不足预警
 
   // =========== agri -  病虫害监测 ==========
-  AGRI_IDENTIFY_STATUS = 'agri_identify_status',//识别状态
-  AGRI_DEVICE_STATUS = 'agri_device_status',//设备状态
-  AGRI_DISEASE_NAME = 'agri_disease_name',//设备状态
-  AGRI_EARLY_WARNING_STATE = 'agri_early_warning_state',//预警状态
+  AGRI_IDENTIFY_STATUS = 'agri_identify_status', //识别状态
+  AGRI_DEVICE_STATUS = 'agri_device_status', //设备状态
+  AGRI_DISEASE_NAME = 'agri_disease_name', //设备状态
+  AGRI_EARLY_WARNING_STATE = 'agri_early_warning_state' //预警状态
 }

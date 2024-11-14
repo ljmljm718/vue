@@ -7,8 +7,18 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="终端id" prop="dtuId">
-        <el-input v-model="formData.dtuId" placeholder="请输入终端id" />
+      <el-form-item label="设备" prop="deviceName">
+        <el-input v-model="formData.deviceName" placeholder="请选择设备" disabled>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search" />
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="终端号" prop="dtuId">
+        <el-input v-model="formData.dtuId" placeholder="请输入终端号" />
       </el-form-item>
       <el-form-item label="通道" prop="channelId">
         <el-input v-model="formData.channelId" placeholder="请输入通道" />
@@ -17,10 +27,30 @@
         <el-input v-model="formData.param" placeholder="请输入参数" />
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-input v-model="formData.monitoringType" placeholder="请输入监测类型" />
+        <el-select
+          v-model="formData.monitoringType"
+          filterable
+          allow-create
+          default-first-option
+          placeholder="请“选择”或“输入”监测类型"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="规则类型" prop="ruleType">
-        <el-input v-model="formData.ruleType" placeholder="请输入规则类型" />
+        <el-select v-model="formData.ruleType" clearable>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.DATA_SYNC_RULE_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="系数" prop="rule">
         <el-input v-model="formData.rule" placeholder="请输入规则" />
@@ -34,16 +64,6 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
-      <el-form-item label="设备" prop="deviceName">
-        <el-input v-model="formData.deviceName" placeholder="请选择设备" disabled>
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search" />
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -56,6 +76,7 @@
 import { EquipmentDataRuleApi, EquipmentDataRuleVO } from '@/api/agriculture/equipmentdatarule';
 import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue';
 import { EquipmentDataVO } from '@/api/agriculture/equipmentdata';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
 
 /** 设备数据规则 表单 */
 defineOptions({ name: 'EquipmentDataRuleForm' });
@@ -89,7 +110,8 @@ const formRules = reactive({
   ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }]
 });
 const formRef = ref(); // 表单 Ref
-
+const options = ref([]);
+const monitorData = ref([]);
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true;
@@ -160,5 +182,17 @@ const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
   formData.value.deviceId = order[0].id;
   //赋值设备名称
   formData.value.deviceName = order[0].deviceName;
+  //终端号默认为设备编号
+  formData.value.dtuId = order[0].deviceCode;
+
+  // 赋值监测类型
+  monitorData.value = order[0].deviceMonitorType.split(',');
+  console.log(monitorData.value);
+  const newMonitorList = [];
+  monitorData.value.forEach((item) => {
+    newMonitorList.push({ value: item, label: item });
+  });
+  options.value = newMonitorList;
+  console.log(options);
 };
 </script>
