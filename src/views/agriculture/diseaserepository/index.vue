@@ -71,7 +71,12 @@
         </el-button>
       </el-form-item>
     </custom-form>
-    <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+
+  </ContentWrap>
+
+  <!-- 列表 -->
+  <ContentWrap>
+    <div style="padding: 2px;margin-left: 5px;height: 30px">
       <el-form-item>
         <el-button
           type="primary"
@@ -84,10 +89,6 @@
         </el-button>
       </el-form-item>
     </div>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id"/>-->
       <el-table-column label="学名" align="center" prop="scientificName" width="100px"/>
