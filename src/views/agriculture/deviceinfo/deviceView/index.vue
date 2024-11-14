@@ -26,19 +26,33 @@ const collapsed = ref<boolean>(false);
 const handleCollapse = (e) => {
   collapsed.value = e;
 };
+
+const divDom = ref();
+const domHieght = ref(1);
+window.addEventListener('resize', () => {
+  domHieght.value = divDom.value.offsetHeight;
+});
+onMounted(() => {
+  domHieght.value = divDom.value.offsetHeight;
+});
 </script>
 
 <template>
-  <div class="flex space-x-.1rem w-full pb-4 box-border" style="height: calc(100vh - 125px)">
+  <div
+    class="flex space-x-.1rem w-full pb-4 box-border"
+    ref="divDom"
+    :style="{ height: domHieght }"
+  >
     <plot-selector
       ref="plotSelectorRef"
       @current-change="handleCurrentCategoryChange"
       @collapse="handleCollapse"
+      :domHieght="domHieght"
     />
     <div
       :style="{
         width: collapsed ? '100%' : 'calc(100% - 240px)',
-        height: 'calc(100vh - 125px)'
+        height: '100%'
       }"
     >
       <device-info

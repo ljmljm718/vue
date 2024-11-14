@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-20 h-full">
+  <div class="relative z-20" :style="{ height: props.domHieght }">
     <div
       @click="handleCollapse()"
       :class="`
@@ -9,22 +9,14 @@
       `"
       :style="{
         color: 'var(--el-color-primary)',
-        border: '1px solid var(--el-color-primary)',
+        border: '1px solid var(--el-color-primary)'
       }"
     >
       <el-icon v-show="!isCollapse"><ArrowLeftBold /></el-icon>
       <el-icon v-show="isCollapse"><ArrowRightBold /></el-icon>
     </div>
-    <el-card
-      class="h-full w-240px"
-      v-show="!isCollapse"
-    >
-      <el-input
-        v-model="filterText"
-        placeholder="输入关键字进行过滤"
-        clearable
-        class="mb-3"
-      />
+    <el-card class="h-full w-240px" v-show="!isCollapse">
+      <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable class="mb-3" />
       <el-scrollbar height="100%">
         <el-tree
           ref="treeRef"
@@ -44,45 +36,49 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ParkInfoApi, ParkInfoVO} from "@/api/agriculture/parkinfo";
-defineOptions({ name: 'PlotSelector' })
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo';
+defineOptions({ name: 'PlotSelector' });
 
-const emit = defineEmits(['current-change', 'collapse'])
-
-const isCollapse = ref<boolean>(false)
+const emit = defineEmits(['current-change', 'collapse']);
+const props = defineProps({
+  domHieght: {
+    default: 0
+  }
+});
+const isCollapse = ref<boolean>(false);
 const handleCollapse = () => {
   isCollapse.value = !isCollapse.value;
-  emit('collapse', isCollapse.value)
-}
+  emit('collapse', isCollapse.value);
+};
 
 const handleCurrentCategoryChange = (e) => {
-  emit('current-change', e)
-}
+  emit('current-change', e);
+};
 
-const filterText = ref<string>('')
-const treeRef = ref()
+const filterText = ref<string>('');
+const treeRef = ref();
 watch(filterText, (val) => {
-  treeRef.value!.filter(val)
-})
+  treeRef.value!.filter(val);
+});
 
 /** 搜索节点过滤 */
 const filterNode = (value: string, data: Tree) => {
-  if (!value) return true
-  return data.name.includes(value)
-}
+  if (!value) return true;
+  return data.name.includes(value);
+};
 
-const defaultProps = { children: 'child', label: 'name' }
-const categoryTree = ref<ParkInfoVO[]>([]) // 列表的数据
+const defaultProps = { children: 'child', label: 'name' };
+const categoryTree = ref<ParkInfoVO[]>([]); // 列表的数据
 /** 查询基地地块列表 */
 const getCategoryList = async () => {
-  const data = await ParkInfoApi.getParkTree({})
-  if (Array.isArray(data)) categoryTree.value = data
-}
-getCategoryList()
+  const data = await ParkInfoApi.getParkTree({});
+  if (Array.isArray(data)) categoryTree.value = data;
+};
+getCategoryList();
 
 const clearCategory = () => {
-  treeRef.value.setCurrentKey()
-}
+  treeRef.value.setCurrentKey();
+};
 
-defineExpose({ clearCategory })
+defineExpose({ clearCategory });
 </script>

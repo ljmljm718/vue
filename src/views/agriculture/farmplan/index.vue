@@ -1,53 +1,53 @@
 <template>
-  <ContentWrap  >
-<!--    <div class="flex justify-between w-100%">-->
-      <!-- 搜索工作栏 -->
-      <custom-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="88px"
-      >
-        <el-form-item label="计划编码" prop="planCode">
-          <el-input
-            v-model="queryParams.planCode"
-            placeholder="请输入计划编码"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="计划名称" prop="planName">
-          <el-input
-            v-model="queryParams.planName"
-            placeholder="请输入计划名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="基地名称" prop="parkName">
-          <el-input v-model="queryParams.parkName" class="!w-240px" placeholder="请选择所属基地">
-            <template #append>
-              <el-button @click="openParkPopup('0')">
-                <Icon icon="ep:search" />
-                选择
-              </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="地块名称" prop="plotName">
-          <el-input class="!w-240px" v-model="queryParams.plotName" placeholder="请选择所属地块">
-            <template #append>
-              <el-button @click="openPlotPopup(queryParams.belongPark)">
-                <Icon icon="ep:search" />
-                选择
-              </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="农事阶段" prop="farmDefineType">
+  <ContentWrap>
+    <!--    <div class="flex justify-between w-100%">-->
+    <!-- 搜索工作栏 -->
+    <custom-form
+      class="-mb-15px"
+      :model="queryParams"
+      ref="queryFormRef"
+      :inline="true"
+      label-width="88px"
+    >
+      <el-form-item label="计划编码" prop="planCode">
+        <el-input
+          v-model="queryParams.planCode"
+          placeholder="请输入计划编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="计划名称" prop="planName">
+        <el-input
+          v-model="queryParams.planName"
+          placeholder="请输入计划名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="基地名称" prop="parkName">
+        <el-input v-model="queryParams.parkName" class="!w-240px" placeholder="请选择所属基地">
+          <template #append>
+            <el-button @click="openParkPopup('0')">
+              <Icon icon="ep:search" />
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="地块名称" prop="plotName">
+        <el-input class="!w-240px" v-model="queryParams.plotName" placeholder="请选择所属地块">
+          <template #append>
+            <el-button @click="openPlotPopup(queryParams.belongPark)">
+              <Icon icon="ep:search" />
+              选择
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="农事阶段" prop="farmDefineType">
         <el-select
           v-model="queryParams.farmDefineType"
           placeholder="请选择农事阶段"
@@ -62,69 +62,72 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="作物名称" prop="cropName">
-          <el-input
-            v-model="queryParams.cropName"
-            placeholder="请输入作物名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+      <el-form-item label="作物名称" prop="cropName">
+        <el-input
+          v-model="queryParams.cropName"
+          placeholder="请输入作物名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="计划状态" prop="planState">
+        <el-select
+          v-model="queryParams.planState"
+          placeholder="请选择计划状态"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
-        </el-form-item>
-        <el-form-item label="计划状态" prop="planState">
-          <el-select
-            v-model="queryParams.planState"
-            placeholder="请选择计划状态"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-              v-for="dict in getIntDictOptions(DICT_TYPE.FARM_PLAN_STATE)"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="责任人" prop="personName">
-          <el-input
-            v-model="queryParams.personName"
-            placeholder="请输入责任人"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-<!--        <el-form-item label="计划开始时间" prop="startTime">-->
-<!--          <el-date-picker-->
-<!--            v-model="queryParams.startTime"-->
-<!--            value-format="YYYY-MM-DD HH:mm:ss"-->
-<!--            type="daterange"-->
-<!--            start-placeholder="开始日期"-->
-<!--            end-placeholder="结束日期"-->
-<!--            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
-<!--            class="!w-220px"-->
-<!--          />-->
-<!--        </el-form-item>-->
-        <el-form-item>
-          <el-button @click="handleQuery" type="primary"
-            ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button
-          >
-          <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-<!--          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>-->
-        </el-form-item>
-      </custom-form>
-<!--      <div v-if="!formType" class="flex w-20% items-center">-->
-<!--        <div>-->
-<!--          <el-button @click="handleQuery" type="primary"-->
-<!--          ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button-->
-<!--        >-->
-<!--        <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>-->
-<!--        </div>-->
+        </el-select>
+      </el-form-item>
+      <el-form-item label="责任人" prop="personName">
+        <el-input
+          v-model="queryParams.personName"
+          placeholder="请输入责任人"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <!--        <el-form-item label="计划开始时间" prop="startTime">-->
+      <!--          <el-date-picker-->
+      <!--            v-model="queryParams.startTime"-->
+      <!--            value-format="YYYY-MM-DD HH:mm:ss"-->
+      <!--            type="daterange"-->
+      <!--            start-placeholder="开始日期"-->
+      <!--            end-placeholder="结束日期"-->
+      <!--            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"-->
+      <!--            class="!w-220px"-->
+      <!--          />-->
+      <!--        </el-form-item>-->
+      <el-form-item>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery()">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <!--          <div @click='formType = !formType' class="color-[#009688] ml-10px cursor-pointer flex text-13px flex items-center ">收起  <img :src='select' style='transform:rotate(180deg)' class='w-10px h-10px ml-8px' /> </div>-->
+      </el-form-item>
+    </custom-form>
+    <!--      <div v-if="!formType" class="flex w-20% items-center">-->
+    <!--        <div>-->
+    <!--          <el-button @click="handleQuery" type="primary"-->
+    <!--          ><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button-->
+    <!--        >-->
+    <!--        <el-button @click="resetQuery()"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>-->
+    <!--        </div>-->
 
-<!--        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <img :src='select' class='w-13px h-13px ml-8px' /> </div>-->
-<!--      </div>-->
-
+    <!--        <div @click='formType = !formType' class="color-[#009688] ml-15px cursor-pointer flex items-center text-13px">展开 <img :src='select' class='w-13px h-13px ml-8px' /> </div>-->
+    <!--      </div>-->
   </ContentWrap>
 
   <!-- 列表 -->
@@ -144,75 +147,178 @@
           </el-button>
         </el-form-item>
       </div>
-      <div v-if='cardList == "list" ' class="grow ">
+      <div v-if="cardList == 'list'" class="grow">
         <IntroduceAlert title="该模块专门负责将作物的种植过程细分为若干个易于管理的计划。" />
       </div>
-        <div class="flex ml-1.5rem mt-[-10px]">
-        <div @click="cardList ='card'" class="py-5px px-15px cursor-pointer rounded-l"
-             :style="`background-color: ${cardList  == 'card' ? '#e5f4f3':''}; border:1.5px solid ${cardList  == 'card'?'#36a99e':'#e6e6e6'}; color:${cardList  == 'card' ? '#36a99e' : ''}`">
-          <img :src="cardList == 'card'?card:card2" class="w-10px h-10px" alt=""/>
+      <div class="flex ml-1.5rem mt-[-10px]">
+        <div
+          @click="cardList = 'card'"
+          class="py-5px px-15px cursor-pointer rounded-l"
+          :style="`background-color: ${cardList == 'card' ? '#e5f4f3' : ''}; border:1.5px solid ${
+            cardList == 'card' ? '#36a99e' : '#e6e6e6'
+          }; color:${cardList == 'card' ? '#36a99e' : ''}`"
+        >
+          <img :src="cardList == 'card' ? card : card2" class="w-10px h-10px" alt="" />
           卡片
         </div>
-        <div @click="cardList='list'" class="py-5px cursor-pointer px-15px rounded-r"
-             :style="`border:1.5px solid ${cardList == 'list'?'#36a99e':'#e6e6e6'};background-color: ${cardList == 'list'?'#e5f4f3':''}; color:${cardList == 'list'?'#36a99e':''}`">
-          <img :src="cardList == 'list'?listImg:listImg2" class="w-10px h-10px" alt=""/>
+        <div
+          @click="cardList = 'list'"
+          class="py-5px cursor-pointer px-15px rounded-r"
+          :style="`border:1.5px solid ${
+            cardList == 'list' ? '#36a99e' : '#e6e6e6'
+          };background-color: ${cardList == 'list' ? '#e5f4f3' : ''}; color:${
+            cardList == 'list' ? '#36a99e' : ''
+          }`"
+        >
+          <img :src="cardList == 'list' ? listImg : listImg2" class="w-10px h-10px" alt="" />
           列表
         </div>
       </div>
     </div>
-    <div v-if="cardList == 'card'" class='flex justify-between'>
-      <div class='w-10%'>
-        <div class='ml-20px'>
+    <div v-if="cardList == 'card'" class="flex justify-between">
+      <div class="w-10%">
+        <div class="ml-20px">
           <div>农事计划</div>
           <div class="mt-20px">
             <el-date-picker
-            class="!w-110px"
-            v-model="monthVal"
-            @change='dataChange'
-            type="month"
-            placeholder="请选择月份"
-          />
+              class="!w-110px"
+              v-model="monthVal"
+              @change="dataChange"
+              type="month"
+              placeholder="请选择月份"
+            />
           </div>
-          <div  @click="silderTab(item.defineName)" v-for="item,index in farmDefineOptions" :key="index" :class='`mt-15px ${silderVal == item.defineName ? "bg-[#e5f4f3]":""} cursor-pointer flex items-center h-40px pl-[15px]  box-border`'> <div :class='`w-8px h-8px mr-10px  rounded-50%`'  :style='`background-color:${farmDefineObj[item.defineName]}`'></div>{{ item.defineName }} </div>
+          <div
+            @click="silderTab(item.defineName)"
+            v-for="(item, index) in farmDefineOptions"
+            :key="index"
+            :class="`mt-15px ${
+              silderVal == item.defineName ? 'bg-[#e5f4f3]' : ''
+            } cursor-pointer flex items-center h-40px pl-[15px]  box-border`"
+          >
+            <div
+              :class="`w-8px h-8px mr-10px  rounded-50%`"
+              :style="`background-color:${farmDefineObj[item.defineName]}`"
+            ></div>
+            {{ item.defineName }}
+          </div>
         </div>
       </div>
-      <div class="w-89% " >
-        <div class='grid grid-cols-7 '>
-          <div class="w-100% flex items-center justify-center h-60px border-1px border-[#e6e6e6] border-solid bg-[#f5f5f5]" v-for="item,index in ['一','二','三','四','五','六','日']" :key="index" style="font-weight:600">周{{ item }}</div>
+      <div class="w-89%">
+        <div class="grid grid-cols-7">
+          <div
+            class="w-100% flex items-center justify-center h-60px border-1px border-[#e6e6e6] border-solid bg-[#f5f5f5]"
+            v-for="(item, index) in ['一', '二', '三', '四', '五', '六', '日']"
+            :key="index"
+            style="font-weight: 600"
+          >
+            周{{ item }}
+          </div>
         </div>
         <div class="grid grid-cols-7">
-          <div v-for="item,index in dataList2" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`">
-            <div class='text-30px my-18px color-[#999999]' style="font-weight:600">{{item.data}}</div>
+          <div
+            v-for="(item, index) in dataList2"
+            :key="index"
+            :class="`flex w-100% h-100% flex-col items-center justify-center border-1px border-[#e6e6e6]  border-solid`"
+          >
+            <div class="text-30px my-18px color-[#999999]" style="font-weight: 600">
+              {{ item.data }}
+            </div>
             <div class="w-88%">
-              <div v-if="item.plotName" class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"><div style= "transform: rotate(180deg) "> > </div> {{item.plotName}} <div> > </div> </div>
-              <div  v-show='item.name' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid grid-cols-2 justify-center items-center flex wrapper-item-footer">
-                <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
+              <div
+                v-if="item.plotName"
+                class="flex items-center justify-between bg-[#80cac3] color-[#fff] box-border px-10px h-30px"
+              >
+                <div style="transform: rotate(180deg)">></div>
+                {{ item.plotName }}
+                <div>></div>
               </div>
-              <div v-show='!item.name' class="bg-[#f0f7f7] w-100% h-130px mb-15px flex justify-center items-center flex-col">
-                  <img :src='dataImg' class='w-40px h-30px'/>
-                  <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
+              <div
+                v-show="item.name"
+                class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid grid-cols-2 justify-center items-center flex wrapper-item-footer"
+              >
+                <div class="flex items-center">
+                  <div
+                    :class="`w-8px h-8px mr-10px rounded-50%`"
+                    :style="`background-color:${farmDefineObj[item.name]}`"
+                  ></div>
+                  {{ item.name }}
+                </div>
+              </div>
+              <div
+                v-show="!item.name"
+                class="bg-[#f0f7f7] w-100% h-130px mb-15px flex justify-center items-center flex-col"
+              >
+                <img :src="dataImg" class="w-40px h-30px" />
+                <div class="color-[#909292] mt-10px font-600">暂无农事计划</div>
               </div>
             </div>
           </div>
-          <div v-for="item,index in dataList" :key="index" :class="`flex w-100% h-100% flex-col items-center justify-center ${day == item.data ? 'border-2px':'border-1px' } ${day == item.data ? 'color-[#009688]':'' }  ${day == item.data ?'border-[#009688]':'border-[#e6e6e6]' }   border-solid`">
-            <div class='text-28px my-18px' style="font-weight:600">{{item.data}}</div>
-             <div class="w-88%"  v-if="item.child.length != 0">
-              <div v-show="item.plotName" :class="`flex items-center  ${item.child.length > 1? 'justify-between' :'justify-center'} wrapper-item color-[#fff] box-border px-10px h-30px`"><div v-show="item.child.length > 1" class='cursor-pointer' style= "transform: rotate(180deg)" @click="tabItem(item.child,'-',index)"> > </div> {{ item.plotName }} <div v-show="item.child.length > 1" class='cursor-pointer' @click="tabItem(item.child,'+',index)"> > </div> </div>
-                    <div v-show='item.child.length != 0' class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center  wrapper-item-footer">
-                      <div class='flex items-center'><div :class='`w-8px h-8px mr-10px rounded-50%`' :style='`background-color:${farmDefineObj[item.name]}`'></div> {{ item.name }}</div>
+          <div
+            v-for="(item, index) in dataList"
+            :key="index"
+            :class="`flex w-100% h-100% flex-col items-center justify-center ${
+              day == item.data ? 'border-2px' : 'border-1px'
+            } ${day == item.data ? 'color-[#009688]' : ''}  ${
+              day == item.data ? 'border-[#009688]' : 'border-[#e6e6e6]'
+            }   border-solid`"
+          >
+            <div class="text-28px my-18px" style="font-weight: 600">{{ item.data }}</div>
+            <div class="w-88%" v-if="item.child.length != 0">
+              <div
+                v-show="item.plotName"
+                :class="`flex items-center  ${
+                  item.child.length > 1 ? 'justify-between' : 'justify-center'
+                } wrapper-item color-[#fff] box-border px-10px h-30px`"
+              >
+                <div
+                  v-show="item.child.length > 1"
+                  class="cursor-pointer"
+                  style="transform: rotate(180deg)"
+                  @click="tabItem(item.child, '-', index)"
+                >
+                  >
                 </div>
-
-             </div>
-             <div v-if='item.child.length == 0 ' class="bg-[#f0f7f7] w-88% h-130px mb-15px flex justify-center items-center flex-col">
-                    <img :src='dataImg' class='w-40px h-30px'/>
-                    <div class='color-[#909292] mt-10px font-600'>暂无农事计划</div>
+                {{ item.plotName }}
+                <div
+                  v-show="item.child.length > 1"
+                  class="cursor-pointer"
+                  @click="tabItem(item.child, '+', index)"
+                >
+                  >
                 </div>
-
+              </div>
+              <div
+                v-show="item.child.length != 0"
+                class="bg-[#f0f7f7] box-border px-[5px] w-100% h-100px mb-15px grid justify-center items-center wrapper-item-footer"
+              >
+                <div class="flex items-center">
+                  <div
+                    :class="`w-8px h-8px mr-10px rounded-50%`"
+                    :style="`background-color:${farmDefineObj[item.name]}`"
+                  ></div>
+                  {{ item.name }}
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="item.child.length == 0"
+              class="bg-[#f0f7f7] w-88% h-130px mb-15px flex justify-center items-center flex-col"
+            >
+              <img :src="dataImg" class="w-40px h-30px" />
+              <div class="color-[#909292] mt-10px font-600">暂无农事计划</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <el-table v-if="cardList == 'list'" v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table
+      v-if="cardList == 'list'"
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+    >
       <el-table-column label="计划编码" align="center" prop="planCode" width="180" />
       <el-table-column label="计划名称" align="center" prop="planName" width="180" />
       <!--      <el-table-column label="所属基地" align="center" prop="belongPark" />-->
@@ -243,7 +349,7 @@
       </el-table-column>
       <el-table-column label="品类" align="center" prop="cropType" width="100">
         <template #default="scope">
-          <el-tag>{{ scope.row.cropType }} </el-tag>
+          <el-tag>{{ scope.row.cropType }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="计划状态" align="center" prop="planState" width="100">
@@ -254,13 +360,21 @@
       <!--      <el-table-column label="责任人编号" align="center" prop="personId" />-->
       <el-table-column label="责任人" align="center" prop="personName" width="150">
         <template #default="scope">
-          <label>{{ scope.row.personName == 'null' ? '' : scope.row.personName }} </label>
+          <label>{{ scope.row.personName == 'null' ? '' : scope.row.personName }}</label>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务发布者" align="center" prop="taskPublisher" width="180" >
+      <el-table-column label="任务发布者" align="center" prop="taskPublisher" width="180">
         <template #default="scope">
-          <label>{{ scope.row.taskPublisher == '0' ? "农户" : scope.row.taskPublisher == '1'? "认养用户" : "" }} </label>
+          <label>
+            {{
+              scope.row.taskPublisher == '0'
+                ? '农户'
+                : scope.row.taskPublisher == '1'
+                ? '认养用户'
+                : ''
+            }}
+          </label>
         </template>
       </el-table-column>
       <el-table-column label="作业方式" align="center" prop="modeOperation" width="180" />
@@ -323,7 +437,7 @@
     </el-table>
     <!-- 分页 -->
     <Pagination
-    v-if="cardList == 'list'"
+      v-if="cardList == 'list'"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
@@ -369,8 +483,17 @@
       <div class="w-170px">
         <div class="text-18px mb-15px color-[#000]" style="font-weight: 600">投入品信息</div>
         <div class="text-16px mb-15px">产品名称</div>
-        <div class='nameList-wrapper w-100% h-200px'>
-          <div @click="inputTab(item,index)" :class="`mb-15px cursor-pointer ${selectOption.name == item.name ? ' color-[#2ca3d8]' : 'color-[#8ca860]'} `"   v-for='item,index in NameList' :key='index'>{{ item.name }}</div>
+        <div class="nameList-wrapper w-100% h-200px">
+          <div
+            @click="inputTab(item, index)"
+            :class="`mb-15px cursor-pointer ${
+              selectOption.name == item.name ? ' color-[#2ca3d8]' : 'color-[#8ca860]'
+            } `"
+            v-for="(item, index) in NameList"
+            :key="index"
+          >
+            {{ item.name }}
+          </div>
         </div>
       </div>
       <el-card class="box-card !mt-20px">
@@ -418,15 +541,17 @@
         type="primary"
         class="!bg-[#81d3f8] !color-[#000] !border-none"
         :disabled="formLoading"
-        >上一步</el-button
       >
+        上一步
+      </el-button>
       <el-button
         @click="submitForm"
         type="primary"
         class="!bg-[#facd91] !color-[#000] !border-none"
         :disabled="formLoading"
-        >确认执行</el-button
       >
+        确认执行
+      </el-button>
       <el-button @click="clearForm" class="!bg-[#cccccc]">取消执行</el-button>
     </template>
   </Dialog>
@@ -547,7 +672,8 @@
         @click="skipCli"
         type="primary"
         :disabled="formLoading"
-        ><el-tooltip content="跳过选择投入品,直接执行" placement="top">
+      >
+        <el-tooltip content="跳过选择投入品,直接执行" placement="top">
           <div>跳过</div>
         </el-tooltip>
       </el-button>
@@ -557,53 +683,54 @@
         class="!bg-[#f59a23] !border-none"
         type="primary"
         :disabled="formLoading"
-        >下一步</el-button
       >
+        下一步
+      </el-button>
       <el-button @click="clearFormA">取 消</el-button>
     </template>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan'
-import FarmPlanForm from './FarmPlanForm.vue'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { FarmDefineApi } from '@/api/agriculture/farmdefine'
-import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue'
-import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
-import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
-import { ParkInfoVO } from '@/api/agriculture/parkinfo'
-import { ParkDetailVO } from '@/api/agriculture/parkdetail'
-import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue'
-import { page, carryOutUpdate, isFarmPlan } from './api'
-import card from '../../../assets/imgs/card-active.png'
-import card2 from '../../../assets/imgs/card-actived.png'
-import listImg from '../../../assets/imgs/list-active.png'
-import listImg2 from '../../../assets/imgs/list-actived.png'
-import dataImg from '../../../assets/imgs/noData.png'
-import select from '../../../assets/imgs/select.png'
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan';
+import FarmPlanForm from './FarmPlanForm.vue';
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { FarmDefineApi } from '@/api/agriculture/farmdefine';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement';
+import { ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { ParkDetailVO } from '@/api/agriculture/parkdetail';
+import QuestionMaskTip from '@/components/QuestionMaskTip/index.vue';
+import { page, carryOutUpdate, isFarmPlan } from './api';
+import card from '../../../assets/imgs/card-active.png';
+import card2 from '../../../assets/imgs/card-actived.png';
+import listImg from '../../../assets/imgs/list-active.png';
+import listImg2 from '../../../assets/imgs/list-actived.png';
+import dataImg from '../../../assets/imgs/noData.png';
+import select from '../../../assets/imgs/select.png';
 
-import { watch } from 'vue'
+import { watch } from 'vue';
 interface AnyObject {
   [key: string]: any;
 }
 /** 农事计划 列表 */
-defineOptions({ name: 'FarmPlan' })
+defineOptions({ name: 'FarmPlan' });
 
-const cardList=ref('card') //列表和网格
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const loading = ref(true) // 列表的加载中
-const day = ref(new Date().getDate())
-const formType = ref(false)
-const farmDefineOptions = ref([]) // 设备分类选项
+const cardList = ref('card'); //列表和网格
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const loading = ref(true); // 列表的加载中
+const day = ref(new Date().getDate());
+const formType = ref(false);
+const farmDefineOptions = ref([]); // 设备分类选项
 
-const farmDefineObj = ref({})
+const farmDefineObj = ref({});
 
-const list = ref<FarmPlanVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const list = ref<FarmPlanVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -624,307 +751,301 @@ const queryParams = reactive({
   planArea: undefined,
   area: undefined,
   createTime: [],
-  taskPublisher:undefined,
-  modeOperation:undefined,
-  remark:undefined
-})
+  taskPublisher: undefined,
+  modeOperation: undefined,
+  remark: undefined
+});
 const queryParamsA = reactive({
   pageNo: 1,
   pageSize: 10
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 const formData = ref({
   feedType: '',
   feedName: '',
   consumeNum: '',
   feedCost: '',
   consumeUnit: ''
-})
+});
 const formSearch = ref({
   feedName: '',
   feedType: ''
-})
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-const dataListA = ref<any[]>([])
-const resSetList = ref<any[]>([])
-const preList = ref<any[]>([])
-const monthA= ref(new Date().getMonth()+1)
+});
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
+const dataListA = ref<any[]>([]);
+const resSetList = ref<any[]>([]);
+const preList = ref<any[]>([]);
+const monthA = ref(new Date().getMonth() + 1);
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await FarmPlanApi.getFarmPlanPage(queryParams)
+    const data = await FarmPlanApi.getFarmPlanPage(queryParams);
     //请求品类信息
-    listCategoryManagement.value = await allDataCacheManager.getData({})
-    console.log(data.list,'列表')
-    console.log(listCategoryManagement.value,'品种')
+    listCategoryManagement.value = await allDataCacheManager.getData({});
+    console.log(data.list, '列表');
+    console.log(listCategoryManagement.value, '品种');
     //把品类数据的name拼接到列表中
     data.list.forEach((item) => {
-      item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ''
+      item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : '';
       listCategoryManagement.value.forEach((itm) => {
-        if (item.cropType == itm.id) item.cropType = itm.categoryName
-      })
-    })
-    dataList.value = []
-    dataList2.value = []
-    list.value = data.list
-    total.value = data.total
+        if (item.cropType == itm.id) item.cropType = itm.categoryName;
+      });
+    });
+    dataList.value = [];
+    dataList2.value = [];
+    list.value = data.list;
+    total.value = data.total;
 
-    if(statTimeType.value){
-      let time = queryParams.startTime[0].split(' ')
-      let time2 = queryParams.startTime[1].split(' ')
+    if (statTimeType.value) {
+      let time = queryParams.startTime[0].split(' ');
+      let time2 = queryParams.startTime[1].split(' ');
 
-        if( time[0].split('-')[1] == time2[0].split('-')[1] ){
-          for( let i = time[0].split('-')[2] ; i <= time2[0].split('-')[2] ; i++ ) {
-            dataList.value.push({
-              data:i,
-              name:'',
-              child:[]
-            })
-          }
-        }else{
-          let lastDay =  new Date(time[0].split('-')[0], time[0].split('-')[1], 0)
-          for( let i = time[0].split('-')[2] ; i <= lastDay.getDate() ; i++ ) {
-            dataList.value.push({
-              data:i,
-              name:'',
-              child:[]
-            })
-          }
-          for( let i = 1 ; i <= time2[0].split('-')[2] ; i++ ) {
-            dataList.value.push({
-              data:i,
-              name:'',
-              child:[]
-            })
-          }
+      if (time[0].split('-')[1] == time2[0].split('-')[1]) {
+        for (let i = time[0].split('-')[2]; i <= time2[0].split('-')[2]; i++) {
+          dataList.value.push({
+            data: i,
+            name: '',
+            child: []
+          });
         }
+      } else {
+        let lastDay = new Date(time[0].split('-')[0], time[0].split('-')[1], 0);
+        for (let i = time[0].split('-')[2]; i <= lastDay.getDate(); i++) {
+          dataList.value.push({
+            data: i,
+            name: '',
+            child: []
+          });
+        }
+        for (let i = 1; i <= time2[0].split('-')[2]; i++) {
+          dataList.value.push({
+            data: i,
+            name: '',
+            child: []
+          });
+        }
+      }
+    } else getData();
 
-
-    }else getData()
-
-    list.value.forEach((itm:any) => {
-      let time=new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
-      if(monthA.value == Number(time[1])){
-        dataList.value.forEach((item:any) => {
-          if(  item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
-
+    list.value.forEach((itm: any) => {
+      let time = new Date(itm.startTime).toLocaleDateString().split('/');
+      let time2 = new Date(itm.endTime).toLocaleDateString().split('/');
+      if (monthA.value == Number(time[1])) {
+        dataList.value.forEach((item: any) => {
+          if (item.data >= Number(time[2])) {
+            if (item.data <= Number(time2[2])) {
+              item.name = fn(itm.farmDefineType);
+              item.plotName = itm.plotName;
+              item.child.push({ name: item.name, plotName: item.plotName });
             }
           }
-        })
-      }
-      else if(monthA.value == Number(time2[1])){
-        dataList.value.forEach((item:any) => {
-          if(  item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
-
+        });
+      } else if (monthA.value == Number(time2[1])) {
+        dataList.value.forEach((item: any) => {
+          if (item.data >= Number(time[2])) {
+            if (item.data <= Number(time2[2])) {
+              item.name = fn(itm.farmDefineType);
+              item.plotName = itm.plotName;
+              item.child.push({ name: item.name, plotName: item.plotName });
             }
           }
-        })
+        });
       }
-    })
+    });
 
-    list.value.forEach((itm:any) => {
-      let time=new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2=new Date(itm.endTime).toLocaleDateString().split('/')
-      if(monthA.value - 1 == Number(time[1])){
-        dataList2.value.forEach((item:any) => {
-          if(  item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
+    list.value.forEach((itm: any) => {
+      let time = new Date(itm.startTime).toLocaleDateString().split('/');
+      let time2 = new Date(itm.endTime).toLocaleDateString().split('/');
+      if (monthA.value - 1 == Number(time[1])) {
+        dataList2.value.forEach((item: any) => {
+          if (item.data >= Number(time[2])) {
+            if (item.data <= Number(time2[2])) {
+              item.name = fn(itm.farmDefineType);
+              item.plotName = itm.plotName;
+              item.child.push({ name: item.name, plotName: item.plotName });
             }
           }
-        })
+        });
       }
-    })
+    });
 
-    dataListA.value=[...dataList.value , ...dataList2.value]
+    dataListA.value = [...dataList.value, ...dataList2.value];
     const generateRandomColor = () => {
-        let color;
-        do {
-          // 生成一个随机颜色，范围是 0 到 16777214（不包含 16777215，即 FFFFFF）
-          color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-          // 检查颜色是否为白色
-        } while (color === '#FFFFFF');
-        return color;
+      let color;
+      do {
+        // 生成一个随机颜色，范围是 0 到 16777214（不包含 16777215，即 FFFFFF）
+        color = `#${Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, '0')}`;
+        // 检查颜色是否为白色
+      } while (color === '#FFFFFF');
+      return color;
     };
     // 生成并设置随机颜色
-    let list2 = []
+    let list2 = [];
     for (let i = 0; i < farmDefineOptions.value.length; i++) {
-        list2.push( generateRandomColor());
+      list2.push(generateRandomColor());
     }
-    list2.forEach((item,index) =>{
-        farmDefineObj.value[ farmDefineOptions.value[index].defineName] = item
-      })
-
+    list2.forEach((item, index) => {
+      farmDefineObj.value[farmDefineOptions.value[index].defineName] = item;
+    });
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
-getList()
+};
+getList();
 //替换方法
-const fn = (id) =>{
-  let name = ''
-  farmDefineOptions.value.forEach((item:any)=>{
-    if(id == item.id){
-      name = item.defineName
+const fn = (id) => {
+  let name = '';
+  farmDefineOptions.value.forEach((item: any) => {
+    if (id == item.id) {
+      name = item.defineName;
     }
-  })
-  return name
-}
-
+  });
+  return name;
+};
 
 /** 搜索按钮操作 */
-const statTimeType = ref(false)
+const statTimeType = ref(false);
 const handleQuery = () => {
-  statTimeType.value = queryParams.startTime.length > 0? true : false
+  statTimeType.value = queryParams.startTime.length > 0 ? true : false;
   if (queryParams.parkName == null || queryParams.parkName == '') {
-    queryParams.belongPark = undefined
-    queryParams.parkName = undefined
+    queryParams.belongPark = undefined;
+    queryParams.parkName = undefined;
   }
   if (queryParams.plotName == null || queryParams.plotName == '') {
-    queryParams.plotName = undefined
-    queryParams.belongPlot = undefined
+    queryParams.plotName = undefined;
+    queryParams.belongPlot = undefined;
   }
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  silderVal.value = ''
-  getFn()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  silderVal.value = '';
+  getFn();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
-const router = useRouter()
+const formRef = ref();
+const router = useRouter();
 const openForm = (type: string, id?: number) => {
   if (type == 'create') {
-    router.push('/farm_work/farmManage/createOrUpdate')
+    router.push('/farm_work/farmManage/createOrUpdate');
   } else {
-    router.push('/farm_work/farmManage/createOrUpdate?type=' + type + '&id=' + id)
+    router.push('/farm_work/farmManage/createOrUpdate?type=' + type + '&id=' + id);
   }
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await FarmPlanApi.deleteFarmPlan(id)
-    message.success(t('common.delSuccess'))
+    await FarmPlanApi.deleteFarmPlan(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await FarmPlanApi.exportFarmPlan(queryParams)
-    download.excel(data, '农事计划.xls')
+    exportLoading.value = true;
+    const data = await FarmPlanApi.exportFarmPlan(queryParams);
+    download.excel(data, '农事计划.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(async () => {
   // getList()
-  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 })
-
-})
+  farmDefineOptions.value = await FarmDefineApi.getFarmDefineTree({ parentId: 0, status: 1 });
+});
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 //基地的选择
-const parkPopupRef = ref()
-const openType = ref('')
+const parkPopupRef = ref();
+const openType = ref('');
 const openParkPopup = (id: string) => {
-  openType.value = id
+  openType.value = id;
   if (openType.value === undefined || openType.value === '') {
-    message.error('请选择基地')
-  } else parkPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else parkPopupRef.value.open(id);
+};
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    queryParams.belongPark = String(order[0].id)
-    queryParams.parkName = String(order[0].name)
-  } else queryParams.parkName = String(order[0].name)
-}
+    queryParams.belongPark = String(order[0].id);
+    queryParams.parkName = String(order[0].name);
+  } else queryParams.parkName = String(order[0].name);
+};
 //获取投入品
-const selectList = ref([])
-const totalA = ref(0)
-const selectList2 = ref([])
-const formSelectList = ref([])
+const selectList = ref([]);
+const totalA = ref(0);
+const selectList2 = ref([]);
+const formSelectList = ref([]);
 const getPage = async () => {
-  let res = await page({ pageNo: queryParamsA.pageNo, pageSize: queryParamsA.pageSize })
-  totalA.value = res.total
-  selectList.value = res.list
-  selectList2.value = res.list
-  formSelectList.value = Array.from(new Set(res.list.map((item) => item.categoryName)))
-}
-getPage()
+  let res = await page({ pageNo: queryParamsA.pageNo, pageSize: queryParamsA.pageSize });
+  totalA.value = res.total;
+  selectList.value = res.list;
+  selectList2.value = res.list;
+  formSelectList.value = Array.from(new Set(res.list.map((item) => item.categoryName)));
+};
+getPage();
 //监听消耗费用
-const selectOption = ref<AnyObject>({})
+const selectOption = ref<AnyObject>({});
 watch(
   () => formData.value.consumeNum,
   (newVal) => {
-    formData.value.feedCost = newVal * selectOption.value.minPrice
+    formData.value.feedCost = newVal * selectOption.value.minPrice;
   }
-)
+);
 //选择消耗品
 const openCropInfoPopup = () => {
-  dialogVisible.value = false
-  dialogVisibleA.value = true
-}
+  dialogVisible.value = false;
+  dialogVisibleA.value = true;
+};
 //执行按钮
-const paramsA = ref<Array<any>>([])
-const params = ref<Object>({})
-const dialogVisible = ref<Boolean>(false)
-const dialogVisibleA = ref<Boolean>(false)
-const endTime = ref()
-const startTime = ref()
-const feedType = ref(0)
-const subExecuteId = ref()
+const paramsA = ref<Array<any>>([]);
+const params = ref<Object>({});
+const dialogVisible = ref<Boolean>(false);
+const dialogVisibleA = ref<Boolean>(false);
+const endTime = ref();
+const startTime = ref();
+const feedType = ref(0);
+const subExecuteId = ref();
 const subExecute = async (obj) => {
-  subExecuteId.value = obj.id
-  startTime.value = new Date(obj.startTime).toLocaleString()
-  endTime.value = new Date(obj.endTime).toLocaleString()
-  params.value = obj
-  paramsA.value.push(obj)
+  subExecuteId.value = obj.id;
+  startTime.value = new Date(obj.startTime).toLocaleString();
+  endTime.value = new Date(obj.endTime).toLocaleString();
+  params.value = obj;
+  paramsA.value.push(obj);
   if (obj.planState == 1) {
-    let res = await isFarmPlan({ id: obj.id, planState: obj.planState })
-    if (res == true) dialogVisibleA.value = true
+    let res = await isFarmPlan({ id: obj.id, planState: obj.planState });
+    if (res == true) dialogVisibleA.value = true;
     else if (res.data == false) {
-      message.error('执行农事计划失败，请先去农事记录添加')
-      dialogVisibleA.value = false
+      message.error('执行农事计划失败，请先去农事记录添加');
+      dialogVisibleA.value = false;
     }
   } else {
-    dialogVisibleA.value = true
+    dialogVisibleA.value = true;
   }
-}
+};
 watch(
   () => dialogVisible.value,
   (val) => {
@@ -936,42 +1057,40 @@ watch(
         feedCost: '',
         consumeUnit: 'KG',
         feedTwo: '元'
-      }
-    }else if( !val && !dialogVisibleA.value){
-      paramsA.value = []
+      };
+    } else if (!val && !dialogVisibleA.value) {
+      paramsA.value = [];
     }
   }
-)
+);
 watch(
   () => dialogVisibleA.value,
   (val) => {
     if (!val) {
-      selectionList.value = []
-      selectList.value = selectList2.value
+      selectionList.value = [];
+      selectList.value = selectList2.value;
     }
   }
-)
+);
 //Esc关闭
 window.addEventListener('keydown', (e) => {
-     if (e.keyCode === 27) {
-        paramsA.value = []
-        formSearch.value = {
-          feedName: '',
-          feedType: ''
-        }
-
-     }
+  if (e.keyCode === 27) {
+    paramsA.value = [];
+    formSearch.value = {
+      feedName: '',
+      feedType: ''
+    };
+  }
 });
 //跳过
 const skipCli = async () => {
-
   //跳过之前处理params中croType字段
-  const data = await FarmPlanApi.getFarmPlanPage(queryParams)
-  data.list.forEach((item:any) => {
-    if(item.id == params.value.id){
-      params.value.cropType = item.cropType
+  const data = await FarmPlanApi.getFarmPlanPage(queryParams);
+  data.list.forEach((item: any) => {
+    if (item.id == params.value.id) {
+      params.value.cropType = item.cropType;
     }
-  })
+  });
 
   let res = await carryOutUpdate({
     ...params.value,
@@ -979,21 +1098,21 @@ const skipCli = async () => {
     agriFarmRecordSaveReqVO: {
       ...params.value,
       recordTime: params.value.startTime,
-      recordArea: params.value.area,
+      recordArea: params.value.area
     }
-  })
+  });
   if (res) {
-    message.success('执行农事计划成功')
-    dialogVisibleA.value = false
-    await getList()
+    message.success('执行农事计划成功');
+    dialogVisibleA.value = false;
+    await getList();
   }
-}
+};
 //上一步
 const preCli = () => {
-  dialogVisibleA.value = true
-  dialogVisible.value = false
-  selectionList.value = []
-}
+  dialogVisibleA.value = true;
+  dialogVisible.value = false;
+  selectionList.value = [];
+};
 //确认
 const submitForm = async () => {
   // if(inputNum.value == 0 ){
@@ -1002,22 +1121,22 @@ const submitForm = async () => {
   //   ...formData.value
   //   }
   // }
-   //提交之前处理params中croType字段
-   const data = await FarmPlanApi.getFarmPlanPage(queryParams)
-  data.list.forEach((item:any) => {
-    if(item.id == params.value.id){
-      params.value.cropType = item.cropType
+  //提交之前处理params中croType字段
+  const data = await FarmPlanApi.getFarmPlanPage(queryParams);
+  data.list.forEach((item: any) => {
+    if (item.id == params.value.id) {
+      params.value.cropType = item.cropType;
     }
-  })
-  delete formData.value.id
-  delete params.value.id
-  NameList.value= NameList.value.map((item:any) => ({
+  });
+  delete formData.value.id;
+  delete params.value.id;
+  NameList.value = NameList.value.map((item: any) => ({
     ...item,
     ...params.value,
-     farmPlanId: subExecuteId.value,
+    farmPlanId: subExecuteId.value,
     feedTime: new Date().getTime(),
-    farmingStage : params.value.farmDefineType
-  }))
+    farmingStage: params.value.farmDefineType
+  }));
   let res = await carryOutUpdate({
     id: subExecuteId.value,
     planName: params.value.planName,
@@ -1034,10 +1153,10 @@ const submitForm = async () => {
       recordArea: params.value.area
     },
     feedInfoSaveReqVO: NameList.value
-  })
+  });
   if (res) {
-    message.success('执行农事计划成功')
-    dialogVisible.value = false
+    message.success('执行农事计划成功');
+    dialogVisible.value = false;
     formData.value = {
       feedType: '',
       feedName: '',
@@ -1045,340 +1164,344 @@ const submitForm = async () => {
       feedCost: '',
       consumeUnit: 'KG',
       feedTwo: '元'
-    }
-    await getList()
-    paramsA.value = []
+    };
+    await getList();
+    paramsA.value = [];
   }
-}
+};
 //取消并且清除Form
 const clearForm = () => {
-  dialogVisible.value = false
+  dialogVisible.value = false;
   formData.value = {
     feedType: '',
     consumeNum: '',
     feedCost: '',
     consumeUnit: 'KG',
     feedTwo: '元'
-  }
-  paramsA.value = []
-}
+  };
+  paramsA.value = [];
+};
 //取消并且清除Form
 const clearFormA = () => {
-  dialogVisibleA.value = false
+  dialogVisibleA.value = false;
   formData.value = {
     feedType: '',
     consumeNum: '',
     feedCost: '',
     consumeUnit: 'KG',
     feedTwo: '元'
-  }
-  formSearch.value={
+  };
+  formSearch.value = {
     feedName: '',
-  feedType: ''
-  }
-  selectList.value = selectList2.value
-  selectionList.value = []
-}
+    feedType: ''
+  };
+  selectList.value = selectList2.value;
+  selectionList.value = [];
+};
 //投入品表格确定
-const NameList = ref<Array<any>>([])
+const NameList = ref<Array<any>>([]);
 const submitTable = () => {
   if (selectionList.value.length == 0) {
-    message.warning('请先选择投入品，再点击下一步')
-    dialogVisibleA.value = true
-    dialogVisible.value = false
+    message.warning('请先选择投入品，再点击下一步');
+    dialogVisibleA.value = true;
+    dialogVisible.value = false;
   } else {
-    dialogVisibleA.value = false
-    dialogVisible.value = true
-    selectOption.value = selectionList.value[0]
-    NameList.value = selectionList.value
-    formData.value.feedType = selectionList.value[0].id
-    formData.value.consumeUnit = selectionList.value[0].unitName
+    dialogVisibleA.value = false;
+    dialogVisible.value = true;
+    selectOption.value = selectionList.value[0];
+    NameList.value = selectionList.value;
+    formData.value.feedType = selectionList.value[0].id;
+    formData.value.consumeUnit = selectionList.value[0].unitName;
 
-    formData.value.feedName = selectionList.value[0].name
+    formData.value.feedName = selectionList.value[0].name;
   }
-}
+};
 /** 选中操作 */
-const selectionList = ref<Array<any>>([])
+const selectionList = ref<Array<any>>([]);
 const handleSelectionChange = (rows) => {
-  selectionList.value = rows
-}
+  selectionList.value = rows;
+};
 
-const multipleTableRef = ref()
+const multipleTableRef = ref();
 // 控制table-----多选选择
-const selectClick = ( row ) => {
-  const selectData = selectionList.value
+const selectClick = (row) => {
+  const selectData = selectionList.value;
   if (selectData.length) {
     selectData.forEach((item) => {
       // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
       if (item == row) {
-        multipleTableRef.value.toggleRowSelection(row, false)
+        multipleTableRef.value.toggleRowSelection(row, false);
       }
       // 不然就让当前的一行勾选
       else {
-        multipleTableRef.value.toggleRowSelection(row, true)
+        multipleTableRef.value.toggleRowSelection(row, true);
       }
-    })
+    });
   } else {
-    multipleTableRef.value.toggleRowSelection(row, true)
+    multipleTableRef.value.toggleRowSelection(row, true);
   }
-}
+};
 //重置
 const resetQueryA = () => {
-  console.log(resSetList.value,'resSetList.value')
-  console.log(preList.value,'preList.value')
-  dataList.value = resSetList.value
-  dataList2.value = preList.value
+  console.log(resSetList.value, 'resSetList.value');
+  console.log(preList.value, 'preList.value');
+  dataList.value = resSetList.value;
+  dataList2.value = preList.value;
   formSearch.value = {
     feedName: '',
     feedType: ''
-  }
-  getPage()
-  getList()
-  handleQueryA()
-}
+  };
+  getPage();
+  getList();
+  handleQueryA();
+};
 //搜索
 const handleQueryA = () => {
   selectList.value = selectList2.value.filter((item: any) => {
     if (item.name.includes(formSearch.value.feedName)) {
-      return item
+      return item;
     }
-  })
-}
+  });
+};
 //投入品下拉框事件
 const formSelect = (e) => {
-  if(e == '') selectList.value = selectList2.value
+  if (e == '') selectList.value = selectList2.value;
   else {
     selectList.value = selectList2.value.filter((item: any) => {
       if (item.categoryName == e) {
-        return item
+        return item;
       }
-    })
+    });
   }
-}
+};
 //投入品切换
-const inputNum = ref<Number>(0)
-const inputTab = (val:any,index:Number) => {
-  inputNum.value=index
+const inputNum = ref<Number>(0);
+const inputTab = (val: any, index: Number) => {
+  inputNum.value = index;
   // NameList.value[index]={
   //   ...NameList.value[index],
   //   ...formData.value
   // }
-  if(NameList.value[index].consumeNum && NameList.value[index].feedCost){
-    formData.value.consumeNum = NameList.value[index].consumeNum
-    formData.value.feedCost = NameList.value[index].feedCost
-  }else{
-  formData.value = {
+  if (NameList.value[index].consumeNum && NameList.value[index].feedCost) {
+    formData.value.consumeNum = NameList.value[index].consumeNum;
+    formData.value.feedCost = NameList.value[index].feedCost;
+  } else {
+    formData.value = {
       feedType: '',
       feedName: '',
       consumeNum: '',
       feedCost: '',
       consumeUnit: ''
-    }
+    };
   }
 
+  selectOption.value = val;
+};
 
-  selectOption.value = val
-
-}
-
-watch(() => formData.value, (val)=>{
-  NameList.value[inputNum.value] = {
-    ...NameList.value[inputNum.value],
-    ...val
+watch(
+  () => formData.value,
+  (val) => {
+    NameList.value[inputNum.value] = {
+      ...NameList.value[inputNum.value],
+      ...val
+    };
+  },
+  {
+    deep: true,
+    immediate: true
   }
-
-},{
-  deep:true,immediate:true
-})
+);
 
 //地块的选择
-const plotPopupRef = ref()
-const openType1 = ref('')
+const plotPopupRef = ref();
+const openType1 = ref('');
 const openPlotPopup = (id: string) => {
-  openType1.value = id
+  openType1.value = id;
   if (!openType1.value) {
-    message.error('请选择基地')
-  } else plotPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else plotPopupRef.value.open(id);
+};
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  queryParams.belongPlot = String(order[0].id)
-  queryParams.plotName = String(order[0].name)
-}
+  queryParams.belongPlot = String(order[0].id);
+  queryParams.plotName = String(order[0].name);
+};
 
 /******************************* 卡片 *******************************/
 
-const monthVal = ref('')
+const monthVal = ref('');
 const getFn = () => {
-  let data= new Date()
-  let yeare = data.getFullYear()
-  let month = data.getMonth()+1
-  monthVal.value = `${ yeare}-${month}`
-}
-getFn()
-const dataList = ref<Array<any>>([])
-const dataList2 = ref<Array<any>>([])
-const firstDayOfMonth = ref( new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-const lastDayOfMonth = ref( new Date(new Date().getFullYear(), new Date().getMonth()+1, 0))
-const lastDayOfMonth2 = ref( new Date(new Date().getFullYear(), new Date().getMonth(), 0))
-const dayOfWeek = ref(firstDayOfMonth.value.getDay())
-const data = ref(lastDayOfMonth.value.getDate())
-const month =ref()
-const data2 = ref(lastDayOfMonth2.value.getDate())
+  let data = new Date();
+  let yeare = data.getFullYear();
+  let month = data.getMonth() + 1;
+  monthVal.value = `${yeare}-${month}`;
+};
+getFn();
+const dataList = ref<Array<any>>([]);
+const dataList2 = ref<Array<any>>([]);
+const firstDayOfMonth = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+const lastDayOfMonth = ref(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+const lastDayOfMonth2 = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 0));
+const dayOfWeek = ref(firstDayOfMonth.value.getDay());
+const data = ref(lastDayOfMonth.value.getDate());
+const month = ref();
+const data2 = ref(lastDayOfMonth2.value.getDate());
 
 const getData = () => {
-  const num= dayOfWeek.value == 0?6: dayOfWeek.value == 6?5:dayOfWeek.value == 5?4:dayOfWeek.value == 4?3:dayOfWeek.value == 3?2:dayOfWeek.value == 2?1:''
-  for( let i = 1 ; i <= data.value ; i++ ) {
+  const num =
+    dayOfWeek.value == 0
+      ? 6
+      : dayOfWeek.value == 6
+      ? 5
+      : dayOfWeek.value == 5
+      ? 4
+      : dayOfWeek.value == 4
+      ? 3
+      : dayOfWeek.value == 3
+      ? 2
+      : dayOfWeek.value == 2
+      ? 1
+      : '';
+  for (let i = 1; i <= data.value; i++) {
     dataList.value.push({
-      data:i,
-      name:'',
-      child:[]
-    })
+      data: i,
+      name: '',
+      child: []
+    });
   }
-  for(let i=0 ; i< num ; i++) {
-      dataList2.value.unshift({
-        data:data2.value-i,
-        name:'',
-        child:[]
-
-      })
+  for (let i = 0; i < num; i++) {
+    dataList2.value.unshift({
+      data: data2.value - i,
+      name: '',
+      child: []
+    });
   }
-}
-getData()
+};
+getData();
 
 const dataChange = (e) => {
-  dataListA.value = []
-  silderVal.value = ''
-  if(e.getMonth()+1 == new Date().getMonth()+1){
-    day.value = new Date().getDate()
-  }else day.value = 0
+  dataListA.value = [];
+  silderVal.value = '';
+  if (e.getMonth() + 1 == new Date().getMonth() + 1) {
+    day.value = new Date().getDate();
+  } else day.value = 0;
   // monthA.value=e.getMonth()+1
 
-  month.value = e.getMonth()+1
+  month.value = e.getMonth() + 1;
   firstDayOfMonth.value = new Date(e.getFullYear(), e.getMonth(), 1);
-  lastDayOfMonth.value = new Date(e.getFullYear(), e.getMonth()+1, 0);
+  lastDayOfMonth.value = new Date(e.getFullYear(), e.getMonth() + 1, 0);
   lastDayOfMonth2.value = new Date(e.getFullYear(), e.getMonth(), 0);
-  dayOfWeek.value = firstDayOfMonth.value.getDay()
-  data.value = lastDayOfMonth.value.getDate()
-  data2.value = lastDayOfMonth2.value.getDate()
-  dataList.value=[]
-  dataList2.value=[]
-  getData()
+  dayOfWeek.value = firstDayOfMonth.value.getDay();
+  data.value = lastDayOfMonth.value.getDate();
+  data2.value = lastDayOfMonth2.value.getDate();
+  dataList.value = [];
+  dataList2.value = [];
+  getData();
 
   // getList()
-  list.value.forEach((itm:any) => {
-      let time = new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
-      if( e.getMonth()+1 == Number(time[1])){
-        dataList.value.forEach((item:any) => {
-          if( item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
-            }
+  list.value.forEach((itm: any) => {
+    let time = new Date(itm.startTime).toLocaleDateString().split('/');
+    let time2 = new Date(itm.endTime).toLocaleDateString().split('/');
+    if (e.getMonth() + 1 == Number(time[1])) {
+      dataList.value.forEach((item: any) => {
+        if (item.data >= Number(time[2])) {
+          if (item.data <= Number(time2[2])) {
+            item.name = fn(itm.farmDefineType);
+            item.plotName = itm.plotName;
+            item.child.push({ name: fn(itm.farmDefineType), plotName: itm.plotName });
           }
-        })
-      }else if(e.getMonth()+1 == Number(time2[1])){
-        dataList.value.forEach((item:any) => {
-          if(  item.data >= Number(time[2]) ){
-            if(item.data <= Number(time2[2])){
-              item.name = fn(itm.farmDefineType)
-              item.plotName = itm.plotName
-              item.child.push({name:item.name,plotName:item.plotName})
-
-            }
+        }
+      });
+    } else if (e.getMonth() + 1 == Number(time2[1])) {
+      dataList.value.forEach((item: any) => {
+        if (item.data >= Number(time[2])) {
+          if (item.data <= Number(time2[2])) {
+            item.name = fn(itm.farmDefineType);
+            item.plotName = itm.plotName;
+            item.child.push({ name: item.name, plotName: item.plotName });
           }
-        })
-      }
-  })
-  list.value.forEach((itm:any) => {
-      let time = new Date(itm.startTime).toLocaleDateString().split('/')
-      let time2 = new Date(itm.endTime).toLocaleDateString().split('/')
-      if( e.getMonth() == Number(time[1])){
-          dataList2.value.forEach((item:any) => {
-            if( item.data >= Number(time[2]) ){
-              if(item.data <= Number(time2[2])){
-                item.name = fn(itm.farmDefineType)
-                item.plotName = itm.plotName
-                item.child.push({name:fn(itm.farmDefineType),plotName:itm.plotName})
-              }
-          }
-        })
-      }
-  })
-
-  dataListA.value = [...dataList.value , ...dataList2.value]
-}
-// 左侧活动点击
-const silderVal = ref('')
-const silderTab = (val:any) => {
-
-  dataList.value = []
-  dataList2.value = []
-
-  silderVal.value=val
-  dataListA.value.forEach( (item:any) => {
-    if(item.name == val){
-      dataList.value.push(item)
+        }
+      });
     }
-  })
-}
+  });
+  list.value.forEach((itm: any) => {
+    let time = new Date(itm.startTime).toLocaleDateString().split('/');
+    let time2 = new Date(itm.endTime).toLocaleDateString().split('/');
+    if (e.getMonth() == Number(time[1])) {
+      dataList2.value.forEach((item: any) => {
+        if (item.data >= Number(time[2])) {
+          if (item.data <= Number(time2[2])) {
+            item.name = fn(itm.farmDefineType);
+            item.plotName = itm.plotName;
+            item.child.push({ name: fn(itm.farmDefineType), plotName: itm.plotName });
+          }
+        }
+      });
+    }
+  });
+
+  dataListA.value = [...dataList.value, ...dataList2.value];
+};
+// 左侧活动点击
+const silderVal = ref('');
+const silderTab = (val: any) => {
+  dataList.value = [];
+  dataList2.value = [];
+
+  silderVal.value = val;
+  dataListA.value.forEach((item: any) => {
+    if (item.name == val) {
+      dataList.value.push(item);
+    }
+  });
+};
 
 //******************************地块切换***********************
-const ItemVal = ref<Number>(0)
-const ItemVal2 = ref<Number>(-1)
-const ItemVal3 = ref<Number>(-1)
-const tabItem = (list:any[],str,indexA) => {
-  let lengNum = list.length
-  if( lengNum == 1) return true
-  if(str == '+'){
-    if(ItemVal.value >= lengNum-1 ){
-        ItemVal.value = 0
-        dataList.value[indexA].plotName = list[ItemVal.value].plotName
-        dataList.value[indexA].name = list[ItemVal.value].name
-      }
-
-      dataList.value[indexA].plotName = list[ItemVal.value].plotName
-      dataList.value[indexA].name = list[ItemVal.value].name
-      ItemVal.value++
-
-      console.log(ItemVal.value,'ItemVal.value');
-
-  }else{
-
-    if(ItemVal.value == 0 ){
-        ItemVal.value = lengNum-1
-        dataList.value[indexA].plotName = list[ItemVal.value].plotName
-        dataList.value[indexA].name = list[ItemVal.value].name
-      }
-
-      dataList.value[indexA].plotName = list[ItemVal.value].plotName
-      dataList.value[indexA].name = list[ItemVal.value].name
-      ItemVal.value--
-
-
-
+const ItemVal = ref<Number>(0);
+const ItemVal2 = ref<Number>(-1);
+const ItemVal3 = ref<Number>(-1);
+const tabItem = (list: any[], str, indexA) => {
+  let lengNum = list.length;
+  if (lengNum == 1) return true;
+  if (str == '+') {
+    if (ItemVal.value >= lengNum - 1) {
+      ItemVal.value = 0;
+      dataList.value[indexA].plotName = list[ItemVal.value].plotName;
+      dataList.value[indexA].name = list[ItemVal.value].name;
     }
 
+    dataList.value[indexA].plotName = list[ItemVal.value].plotName;
+    dataList.value[indexA].name = list[ItemVal.value].name;
+    ItemVal.value++;
 
+    console.log(ItemVal.value, 'ItemVal.value');
+  } else {
+    if (ItemVal.value == 0) {
+      ItemVal.value = lengNum - 1;
+      dataList.value[indexA].plotName = list[ItemVal.value].plotName;
+      dataList.value[indexA].name = list[ItemVal.value].name;
+    }
 
-}
+    dataList.value[indexA].plotName = list[ItemVal.value].plotName;
+    dataList.value[indexA].name = list[ItemVal.value].name;
+    ItemVal.value--;
+  }
+};
 </script>
 <style lang="scss" scoped>
 ::v-deep .com-dialog .el-dialog__body {
   padding: 0 !important;
 }
-.wrapper-item{
+.wrapper-item {
   background-size: 100% 100%;
   background-image: url(../../../assets/imgs/wrapper-item-top.png);
 }
 ::v-deep .custom-label-width .el-form-item__label {
   width: 110px !important;
 }
-.wrapper-item-footer{
+.wrapper-item-footer {
   overflow-y: scroll;
 }
-.wrapper-item-footer::-webkit-scrollbar{
+.wrapper-item-footer::-webkit-scrollbar {
   width: 0;
 }
 .formParams {
@@ -1392,11 +1515,10 @@ const tabItem = (list:any[],str,indexA) => {
   align-items: center !important;
   justify-content: center !important;
 }
-.nameList-wrapper{
-  overflow-y: scroll ;
+.nameList-wrapper {
+  overflow-y: scroll;
 }
-.nameList-wrapper::-webkit-scrollbar{
-  width:0;
+.nameList-wrapper::-webkit-scrollbar {
+  width: 0;
 }
-
 </style>
