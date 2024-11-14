@@ -2,7 +2,7 @@
   <div ref="containerDom">
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <el-form
+      <custom-form
         class="-mb-15px"
         :model="queryParamsCountPageByBaseId"
         ref="queryFormRef"
@@ -28,7 +28,7 @@
             重置
           </el-button>
         </el-form-item>
-      </el-form>
+      </custom-form>
     </ContentWrap>
     <ContentWrap>
       <!--    待修改-->

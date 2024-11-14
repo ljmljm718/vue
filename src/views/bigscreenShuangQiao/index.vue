@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import {onMounted, ref, watch} from 'vue'
-import * as echarts from 'echarts'
-import {initChartStatic, generateBaseOptions} from '../../utils/bigscreenTool/index'
-import preWarn from '@/views/bigscreen6/assets/preWarn.png'
-import sensor from '@/views/bigscreen6/assets/sensor.png'
-import monitor from '@/views/bigscreen6/assets/monitor.png'
-import {ParkBaseInfo, ParkBaseInfo2} from '@/api/kaizhou/bigscreen/index'
-import ScaleBox from "vue3-scale-box";
+import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue';
+import { onMounted, ref, watch } from 'vue';
+import * as echarts from 'echarts';
+import { initChartStatic, generateBaseOptions } from '../../utils/bigscreenTool/index';
+import preWarn from '@/views/bigscreen6/assets/preWarn.png';
+import sensor from '@/views/bigscreen6/assets/sensor.png';
+import monitor from '@/views/bigscreen6/assets/monitor.png';
+import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index';
+import ScaleBox from 'vue3-scale-box';
 import {
   largeScreenGetWarning,
   largeScreenGetOneWarning,
@@ -25,9 +25,131 @@ import {
   park,
   page2,
   page3,
-  list, environmentalDataHomePageA
-} from './apis'
-import dayjs from "dayjs";
+  list,
+  environmentalDataHomePageA,
+  getEquipmentMap
+} from './apis';
+import dayjs from 'dayjs';
+import adapter from '@/components/MapCustom/src/adapter';
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import MapIcon1 from './assets/mp-icon1.png';
+import MapIcon2 from './assets/mp-icon2.png';
+import MapIcon3 from './assets/mp-icon3.png';
+import MapIcon4 from './assets/mp-icon4.png';
+import MapIcon5 from './assets/mp-icon5.png';
+
+adapter();
+// const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
+const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}';
+const CVA_TILE = '/tdCache/api/tdtmap/tile?T=cva_w&x={x}&y={y}&l={z}';
+
+let map: L.Map | null = null;
+const initMap = () => {
+  if (map) return;
+  // const vecLayer = L.tileLayer(VEC_TILE, { attribution: 'vec' })
+  const imgLayer = L.tileLayer(IMG_TILE, { attribution: 'img' });
+  const cvaLayer = L.tileLayer(CVA_TILE, { attribution: 'cva' });
+  const img_cva_group = L.layerGroup([imgLayer, cvaLayer]);
+
+  map = new L.Map(`bigMapContainer`, {
+    minZoom: 1,
+    maxZoom: 18,
+    center: [39.89945, 116.40769],
+    zoom: 12,
+    zoomOffset: 1,
+    zoomControl: false,
+    attributionControl: false
+  });
+
+  img_cva_group.addTo(map);
+
+  map.on('click', ({ latlng }) => {
+    const { lat, lng } = latlng;
+    navigator.clipboard.writeText(`[${lng}, ${lat}],`);
+  });
+
+  window.addEventListener('resize', () => {
+    map.invalidateSize(true);
+  });
+
+  // 获取地图数据
+  getEquipmentMapData();
+};
+
+// 中间地图接口
+const getEquipmentMapData = async () => {
+  const res = await getEquipmentMap({});
+
+  const latlngs = [];
+  const iconMap = {
+    camrea: 'icon1',
+    meteorologicalStation: 'icon2'
+  };
+  Object.keys(res).forEach((key: string) => {
+    const {
+      longitude,
+      latitude,
+      deviceName = '',
+      baseName = '',
+      plotName = '',
+      location = ''
+    } = res[key];
+    if (!longitude || !latitude) return;
+    latlngs.push([latitude, longitude]);
+    const icon = L.icon({
+      iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`, //marker图片地址
+      iconSize: [42, 46], //marker宽高
+      iconAnchor: [21, -4] //marker中心点位置
+    });
+    L.marker([latitude, longitude], { icon })
+      .addTo(map)
+      .on('click', () => {
+        L.popup()
+          .setLatLng([latitude, longitude])
+          .setContent(
+            `
+        <div>${deviceName}</div>
+        <div class="mt-[.4rem]">${baseName}-${plotName}</div>
+        <div class="mt-[.4rem]">位置:${location}</div>
+      `
+          )
+          .openOn(map);
+      });
+    map.fitBounds(latlngs, { padding: [5, 5] });
+  });
+};
+
+onMounted(initMap);
+
+// 地图图标列表
+const mapIcons = ref([
+  {
+    id: 'mapIcon-1',
+    name: '摄像',
+    icon: MapIcon1
+  },
+  {
+    id: 'mapIcon-2',
+    name: '气象',
+    icon: MapIcon2
+  },
+  {
+    id: 'mapIcon-3',
+    name: '土壤',
+    icon: MapIcon3
+  },
+  {
+    id: 'mapIcon-4',
+    name: '杀虫',
+    icon: MapIcon4
+  },
+  {
+    id: 'mapIcon-5',
+    name: '生长记录',
+    icon: MapIcon5
+  }
+]);
 
 // 大屏中央右边监控设备(单条) 未完成
 // const singleMonitor = ref({
@@ -36,35 +158,37 @@ import dayjs from "dayjs";
 // name: "",
 // status: ""
 // })
-const singleMonitor = ref<Array<any>>([])
+const singleMonitor = ref<Array<any>>([]);
 const getViewMonitoring = async () => {
-  const {list = []} = await viewMonitoring({});
-  Array.isArray(list) ? (singleMonitor.value = list.map((item) => ({
-    ...item,
-    id: item.id
-  }))) : null;
+  const { list = [] } = await viewMonitoring({});
+  Array.isArray(list)
+    ? (singleMonitor.value = list.map((item) => ({
+        ...item,
+        id: item.id
+      })))
+    : null;
   console.log('监控设备(单条)');
-}
+};
 
 // 传感器 （单条）
 const singleSensorInfo = ref({
-  dataValue: "",
-  deviceCode: "",
-  deviceName: "",
-  name: "",
-  unit: ""
-})
+  dataValue: '',
+  deviceCode: '',
+  deviceName: '',
+  name: '',
+  unit: ''
+});
 const getwaterDetectionByAddress = async () => {
   const res = await waterDetectionByAddress({
     belongPark: curBelongPark.value,
     belongPlot: curBelongPlot.value
   });
   console.log('singleSensorInfo', res);
-  singleSensorInfo.value = res
-}
+  singleSensorInfo.value = res;
+};
 
 // 左上角 根据设备获取环境监测值
-const envVal = ref([])
+const envVal = ref([]);
 // const envVal = ref({
 //   "气压": "0",
 //   "二氧化碳": "0",
@@ -77,29 +201,29 @@ const envVal = ref([])
 // })
 const leftCurDeviceCode1 = ref(0);
 const leftCurDeviceCode2 = ref(0);
-const leftTabSelected = ref('湿度')
-const envLabel = ref('温度')
+const leftTabSelected = ref('湿度');
+const envLabel = ref('温度');
 const getGetDeviceDataYouEnvironment = async (id) => {
   leftCurDeviceCode1.value = id;
   // leftCurDeviceCode2.value = belongPlot;
-  const res = await environmentalDataHomePageA(id)
-  console.log("数据1 环境监测", res)
+  const res = await environmentalDataHomePageA(id);
+  console.log('数据1 环境监测', res);
   envVal.value = res;
-  envLabel.value = res[0].monitoringType
-  console.log(leftTabSelected.value, id, 'jiegoufuhzi')
+  envLabel.value = res[0].monitoringType;
+  console.log(leftTabSelected.value, id, 'jiegoufuhzi');
 
-  let id2 = id.id
-  await initChart1({typeName: res[0].monitoringType, id: id2})
-}
+  let id2 = id.id;
+  await initChart1({ typeName: res[0].monitoringType, id: id2 });
+};
 
 // 左下角设备监控
-const monitorEquipList = ref<Array<any>>([])
+const monitorEquipList = ref<Array<any>>([]);
 const getMonitoringEquipment = async () => {
-  const res = await monitoringEquipment({pageNo: '1', pageSize: '10', deviceType: '108,109'})
-  console.log('左下角设备监控', res)
-  monitorEquipList.value = res.list.slice(0, 2)
-}
-getMonitoringEquipment()
+  const res = await monitoringEquipment({ pageNo: '1', pageSize: '10', deviceType: '108,109' });
+  console.log('左下角设备监控', res);
+  monitorEquipList.value = res.list.slice(0, 2);
+};
+getMonitoringEquipment();
 
 // 单条预警
 const onWarningInfo = ref({
@@ -107,94 +231,94 @@ const onWarningInfo = ref({
   id: '',
   parkName: '',
   warnInfo: ''
-})
+});
 const getLargeScreenGetOneWarning = async (parkId) => {
-  const res = await largeScreenGetOneWarning({parkId})
-  console.log('getLargeScreenGetOneWarninges', res)
-  onWarningInfo.value = res
-}
+  const res = await largeScreenGetOneWarning({ parkId });
+  console.log('getLargeScreenGetOneWarninges', res);
+  onWarningInfo.value = res;
+};
 
 const getDeviceBasePage = async () => {
-  const {list = []} = await deviceBasePage()
-  console.log('左上下拉', list)
+  const { list = [] } = await deviceBasePage();
+  console.log('左上下拉', list);
   Array.isArray(list)
     ? (envOptions.value = list.map((item) => ({
-      ...item,
-      id: item.id,
-      name: item.deviceName
-    })))
+        ...item,
+        id: item.id,
+        name: item.deviceName
+      })))
     : null;
 
-  console.log(list, 'id')
-  getGetDeviceDataYouEnvironment({id: list[0].id})
-  await initChart1({typeName: '温度', id: list[0].id})
-}
-getDeviceBasePage()
+  console.log(list, 'id');
+  getGetDeviceDataYouEnvironment({ id: list[0].id });
+  await initChart1({ typeName: '温度', id: list[0].id });
+};
+getDeviceBasePage();
 //单个摄像头
-let sxtObj = ref([])
+let sxtObj = ref([]);
 const getPage2 = () => {
-  page2({pageSize: 1, pageNo: 1, deviceType: '108,109'}).then(res => {
-    console.log(res, '单个摄像头')
-    sxtObj.value = res.list
-  })
-}
-getPage2()
+  page2({ pageSize: 1, pageNo: 1, deviceType: '108,109' }).then((res) => {
+    console.log(res, '单个摄像头');
+    sxtObj.value = res.list;
+  });
+};
+getPage2();
 //单个数据采集
-let sjList = ref({})
+let sjList = ref({});
 const getPage3 = () => {
-  page3({pageSize: 1, pageNo: 1}).then(res => {
-    console.log(res, '单个shuju')
-    sjList.value = res.list[0]
-  })
-}
-getPage3()
+  page3({ pageSize: 1, pageNo: 1 }).then((res) => {
+    console.log(res, '单个shuju');
+    sjList.value = res.list[0];
+  });
+};
+getPage3();
 //预警信息
-let warnList = ref({})
+let warnList = ref({});
 const getList = () => {
-  list({pageSize: 1, pageNo: 1}).then(res => {
-    console.log(res, '单个yujing')
-    warnList.value = res.list[0]
-  })
-}
-getList()
+  list({ pageSize: 1, pageNo: 1 }).then((res) => {
+    console.log(res, '单个yujing');
+    warnList.value = res.list[0];
+  });
+};
+getList();
 // 大屏中央设备设备数量统计
 const deviceBaseInfo = ref<any>({
   total: 0,
   online: 0,
   offline: 0
-})
+});
 const getDeviceBaseList = async () => {
-  const res = await deviceBaseList()
-  console.log('大屏中央设备设备数量统计', res)
-  deviceBaseInfo.value = res[0]
-}
-getDeviceBaseList()
+  const res = await deviceBaseList();
+  console.log('大屏中央设备设备数量统计', res);
+  deviceBaseInfo.value = res[0];
+};
+getDeviceBaseList();
 
 // 预警信息（大屏右下角）
 const getlargeScreenGetWarning = async () => {
-  const {list = []} = await largeScreenGetWarning({pageSize: 10})
-  console.log('shit', list)
+  const { list = [] } = await largeScreenGetWarning({ pageSize: 10 });
+  console.log('shit', list);
   if (Array.isArray(list))
     tableData.value = list.map((item) => ({
       name: item.plotCode,
       device: item.deviceCode,
       info: item.warnInfo,
-      time: dayjs(item.warnTime).format("YYYY-MM-DD HH:mm:ss"),
+      time: dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss'),
       status: item.warnStatus === '0' ? '未处理' : '已处理'
-    }))
-  console.log("右下角", list)
-  console.log("右下角", tableData.value)
-}
-getlargeScreenGetWarning()
+    }));
+  console.log('右下角', list);
+  console.log('右下角', tableData.value);
+};
+getlargeScreenGetWarning();
 
 // 大屏中央设备设备数量统计
-const deviceNumCount = ref<Array<any>>([])
+const deviceNumCount = ref<Array<any>>([]);
 const getSelectStateNum = async () => {
-  const res = await selectStateNum()
-  Array.isArray(res) ? (deviceNumCount.value = [res[0], res[1], res[2], res[3]]) : null
-  console.log(res)
-}
-getSelectStateNum()
+  const res = await selectStateNum();
+  Array.isArray(res) ? (deviceNumCount.value = [res[0], res[1], res[2], res[3]]) : null;
+  console.log(res);
+};
+getSelectStateNum();
 
 // 水质监测（八项参数）
 const waterTypeList = ref<Array<any>>([
@@ -246,19 +370,19 @@ const waterTypeList = ref<Array<any>>([
     dataValue: 0,
     type: 'temperature'
   }
-])
+]);
 
 /**
  * belongPark 基地编号
  * belongPlot 塘口编号
  */
 const getWaterDetectionType = async (belongPark, belongPlot) => {
-  const res = await waterDetectionType({belongPark, belongPlot})
-  console.log('水质监测（八项参数）', res)
-  Array.isArray(res) ? (waterTypeList.value = res) : null
-}
+  const res = await waterDetectionType({ belongPark, belongPlot });
+  console.log('水质监测（八项参数）', res);
+  Array.isArray(res) ? (waterTypeList.value = res) : null;
+};
 
-const options1 = ref<Array<any>>([])
+const options1 = ref<Array<any>>([]);
 // const getOptions1 = async (parentId = '0') => {
 //   const res = await ParkBaseInfo({parentId})
 //   options1.value = res
@@ -267,74 +391,72 @@ const options1 = ref<Array<any>>([])
 // getOptions1()
 
 //获取基地
-let selecteId1 = ref('')
+let selecteId1 = ref('');
 const getPage = () => {
-  page({}).then(res => {
-    console.log(res, '基地')
-    options1.value = res.list
-    selecteId1.value = res.list[0].id
-    getPark({parkId: res.list[0].id})
-  })
-}
-getPage()
+  page({}).then((res) => {
+    console.log(res, '基地');
+    options1.value = res.list;
+    selecteId1.value = res.list[0].id;
+    getPark({ parkId: res.list[0].id });
+  });
+};
+getPage();
 //获取堂口
-const rightTabSelected = ref('溶氧量')
-const options2 = ref<Array<any>>([])
+const rightTabSelected = ref('溶氧量');
+const options2 = ref<Array<any>>([]);
 const getPark = (id) => {
-  park(id).then(res => {
-    console.log(res, '塘口')
-    options2.value = res
-    initChart2(rightTabSelected.value)
-    getWaterDetectionType2({belongPark: selecteId1.value, belongPlot: res[0].id})
-
-  })
-}
+  park(id).then((res) => {
+    console.log(res, '塘口');
+    options2.value = res;
+    initChart2(rightTabSelected.value);
+    getWaterDetectionType2({ belongPark: selecteId1.value, belongPlot: res[0].id });
+  });
+};
 //获取八项
 const getWaterDetectionType2 = (val) => {
-  waterDetectionType(val).then(res => {
-    console.log(res, '八项参数')
+  waterDetectionType(val).then((res) => {
+    console.log(res, '八项参数');
     waterTypeList.value = res;
-  })
-}
+  });
+};
 const selecte2 = (val) => {
-  getWaterDetectionType2({belongPark: selecteId1.value, belongPlot: val.target.value})
-}
+  getWaterDetectionType2({ belongPark: selecteId1.value, belongPlot: val.target.value });
+};
 const getOptions2 = async (parentId) => {
-  curBelongPark.value = parentId
-  const res = await ParkBaseInfo2({parentId})
-  options2.value = res
+  curBelongPark.value = parentId;
+  const res = await ParkBaseInfo2({ parentId });
+  options2.value = res;
   handleSelectorChange2({
-    target: {value: res[0].id}
-  })
-}
-const curBelongPark = ref('')
+    target: { value: res[0].id }
+  });
+};
+const curBelongPark = ref('');
 const handleSelectorChange1 = (val) => {
-  selecteId1.value = val.target.value
-  getPark({parkId: val.target.value})
-}
-const curBelongPlot = ref('')
+  selecteId1.value = val.target.value;
+  getPark({ parkId: val.target.value });
+};
+const curBelongPlot = ref('');
 const handleSelectorChange2 = (val) => {
   const parentId = val.target.value || 0;
   console.log('基地编号', curBelongPark.value);
-  console.log('塘口编号', parentId)
+  console.log('塘口编号', parentId);
   curBelongPlot.value = parentId;
-  getWaterDetectionType(curBelongPark.value, parentId)
-  initChart2(rightTabSelected.value, curBelongPark.value, parentId)
-  getwaterDetectionByAddress()
-  getViewMonitoring()
-  getLargeScreenGetOneWarning(parentId)
-}
+  getWaterDetectionType(curBelongPark.value, parentId);
+  initChart2(rightTabSelected.value, curBelongPark.value, parentId);
+  getwaterDetectionByAddress();
+  getViewMonitoring();
+  getLargeScreenGetOneWarning(parentId);
+};
 
 // 环境监测 options
-const envOptions = ref<Array<any>>([])
+const envOptions = ref<Array<any>>([]);
 const handleEnvSelectorChange = (val) => {
-  console.log(val.target.value, 'huanjjcid')
-  const item = envOptions.value.find(item => {
-    return item.id === val.target.value
-  })
-  getGetDeviceDataYouEnvironment({id: val.target.value})
-}
-
+  console.log(val.target.value, 'huanjjcid');
+  const item = envOptions.value.find((item) => {
+    return item.id === val.target.value;
+  });
+  getGetDeviceDataYouEnvironment({ id: val.target.value });
+};
 
 const tableColumns = ref([
   {
@@ -362,25 +484,25 @@ const tableColumns = ref([
     label: '状态',
     width: '4rem'
   }
-])
+]);
 
-const tableData = ref<Array<any>>([])
+const tableData = ref<Array<any>>([]);
 
 const initChart1 = async (lineChart) => {
   const deviceCode1 = leftCurDeviceCode1.value;
   const deviceCode2 = leftCurDeviceCode2.value;
-  if (!lineChart || !deviceCode1) return
-  console.log('lineChart ', lineChart)
+  if (!lineChart || !deviceCode1) return;
+  console.log('lineChart ', lineChart);
 
-  const res = await getDeviceDataYouEnvironmentLine(lineChart)
+  const res = await getDeviceDataYouEnvironmentLine(lineChart);
   console.log('getDeviceDataYouEnvironmentLine ==', res);
-  let xAxisData = []
-  let yAxisData = []
-  res.forEach(item => {
-    xAxisData.push(item.collectionTime)
-    yAxisData.push(item.dataValue)
-  })
-  console.log(xAxisData, yAxisData, 'data')
+  let xAxisData = [];
+  let yAxisData = [];
+  res.forEach((item) => {
+    xAxisData.push(item.collectionTime);
+    yAxisData.push(item.dataValue);
+  });
+  console.log(xAxisData, yAxisData, 'data');
   nextTick(() => {
     initChartStatic(
       'chart1',
@@ -419,7 +541,7 @@ const initChart1 = async (lineChart) => {
               width: 1, //网格线的加粗程度
               type: 'dashed' //网格线类型
             }
-          },
+          }
         },
         series: [
           {
@@ -439,12 +561,12 @@ const initChart1 = async (lineChart) => {
             itemStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  {offset: 1, color: '#ffa77300'},
-                  {offset: 0, color: '#ffa773'}
+                  { offset: 1, color: '#ffa77300' },
+                  { offset: 0, color: '#ffa773' }
                 ])
-              },
+              }
             },
-            areaStyle: {normal: {}},
+            areaStyle: { normal: {} }
           }
         ],
         grid: {
@@ -454,28 +576,28 @@ const initChart1 = async (lineChart) => {
           bottom: '15%'
         }
       })
-    )
-  })
-}
-let btnIndex = ref(0)
+    );
+  });
+};
+let btnIndex = ref(0);
 const getChart = (val, index) => {
-  leftTabSelected.value = val
-  envLabel.value = val
-  btnIndex.value = index
-  initChart1({typeName: val, id: leftCurDeviceCode1.value.id})
-}
+  leftTabSelected.value = val;
+  envLabel.value = val;
+  btnIndex.value = index;
+  initChart1({ typeName: val, id: leftCurDeviceCode1.value.id });
+};
 const initChart2 = async (lineChart, belongPark, belongPlot) => {
   // 水质监测（折线图）
-  const res = await waterDetection({lineChart, belongPark, belongPlot})
-  console.log('水质监测（折线图）', res)
-  const seriseName = rightLabelMap[res[0].type]
-  const yName = rightUnitMap[res[0].type]
-  let xAxisData = []
-  let yAxisData = []
-  res.forEach(item => {
-    xAxisData.push(item.collectionTime)
-    yAxisData.push(item.dataValue)
-  })
+  const res = await waterDetection({ lineChart, belongPark, belongPlot });
+  console.log('水质监测（折线图）', res);
+  const seriseName = rightLabelMap[res[0].type];
+  const yName = rightUnitMap[res[0].type];
+  let xAxisData = [];
+  let yAxisData = [];
+  res.forEach((item) => {
+    xAxisData.push(item.collectionTime);
+    yAxisData.push(item.dataValue);
+  });
   initChartStatic(
     'chart2',
     generateBaseOptions({
@@ -513,7 +635,7 @@ const initChart2 = async (lineChart, belongPark, belongPlot) => {
             width: 1, //网格线的加粗程度
             type: 'dashed' //网格线类型
           }
-        },
+        }
       },
       series: [
         {
@@ -533,12 +655,12 @@ const initChart2 = async (lineChart, belongPark, belongPlot) => {
           itemStyle: {
             normal: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {offset: 1, color: '#30c3ef00'},
-                {offset: 0, color: '#30c3ef'}
+                { offset: 1, color: '#30c3ef00' },
+                { offset: 0, color: '#30c3ef' }
               ])
-            },
+            }
           },
-          areaStyle: {normal: {}},
+          areaStyle: { normal: {} }
         }
       ],
       grid: {
@@ -548,81 +670,80 @@ const initChart2 = async (lineChart, belongPark, belongPlot) => {
         bottom: '15%'
       }
     })
-  )
-}
+  );
+};
 
 watch(
   () => leftTabSelected.value,
   (newValue) => {
-    console.log('newValue', newValue)
-    initChart1({typeName: newValue, id: leftCurDeviceCode1.value.id})
+    console.log('newValue', newValue);
+    initChart1({ typeName: newValue, id: leftCurDeviceCode1.value.id });
   }
-)
+);
 const leftIconMap = {
-  "温度": 1, //环境温度
-  "湿度": 2, //环境湿度
-  "光照": 3, //光照
-  "二氧化碳": 4, //二氧化碳浓度
-  "风速": 5, //风速
-  "气压": 6, //气压
-  "雨量": 7, //降雨量
-  "风向": 8, //风向
-  "空气温度": 1,//空气温度
-  "空气湿度": 2,//空气湿度
-  "大气压力": 6,//大气压力
-  "光照强度": 3,//光照强度
-  "PM2.5": 9,//PM2.5/101
-  "风力": 5,
-  "土壤湿度":2,
-  "土壤温度":1,
-  "土壤EC值":6,
-  "当前雨量":7,
-  "PM10": 9
-}
+  温度: 1, //环境温度
+  湿度: 2, //环境湿度
+  光照: 3, //光照
+  二氧化碳: 4, //二氧化碳浓度
+  风速: 5, //风速
+  气压: 6, //气压
+  雨量: 7, //降雨量
+  风向: 8, //风向
+  空气温度: 1, //空气温度
+  空气湿度: 2, //空气湿度
+  大气压力: 6, //大气压力
+  光照强度: 3, //光照强度
+  'PM2.5': 9, //PM2.5/101
+  风力: 5,
+  土壤湿度: 2,
+  土壤温度: 1,
+  土壤EC值: 6,
+  当前雨量: 7,
+  PM10: 9
+};
 
 const leftUnitMap = {
-  "温度": '℃', //环境温度
-  "湿度": '%', //环境湿度
-  "光照": 'Lux', //光照
-  "二氧化碳": 'ppm', //二氧化碳浓度
-  "风速": 'm/s', //风速
-  "气压": 'hPa', //气压
-  "雨量": 'mm', //降雨量
-  "风向": '度', //风向
-  "空气温度": '℃',//空气温度
-  "空气湿度": '%',//空气湿度
-  "大气压力": 'hPa',//大气压力
-  "光照强度": 'Lux',//光照强度
-  "PM2.5/10": 'μg/m³',//PM2.5/101
-}
+  温度: '℃', //环境温度
+  湿度: '%', //环境湿度
+  光照: 'Lux', //光照
+  二氧化碳: 'ppm', //二氧化碳浓度
+  风速: 'm/s', //风速
+  气压: 'hPa', //气压
+  雨量: 'mm', //降雨量
+  风向: '度', //风向
+  空气温度: '℃', //空气温度
+  空气湿度: '%', //空气湿度
+  大气压力: 'hPa', //大气压力
+  光照强度: 'Lux', //光照强度
+  'PM2.5/10': 'μg/m³' //PM2.5/101
+};
 
 const leftLabelMap = {
-  "温度": '温度', //环境温度
-  "湿度": '湿度', //环境湿度
-  "光照": '光照', //光照
-  "二氧化碳": '二氧化碳', //二氧化碳浓度
-  "风速": '风速', //风速
-  "气压": '气压', //气压
-  "雨量": '雨量', //降雨量
-  "风向": '风向' //风向
-}
+  温度: '温度', //环境温度
+  湿度: '湿度', //环境湿度
+  光照: '光照', //光照
+  二氧化碳: '二氧化碳', //二氧化碳浓度
+  风速: '风速', //风速
+  气压: '气压', //气压
+  雨量: '雨量', //降雨量
+  风向: '风向' //风向
+};
 
-
-let btnIndex2 = ref(0)
-let right2Val = ref('溶氧量')
+let btnIndex2 = ref(0);
+let right2Val = ref('溶氧量');
 const btnCli = (val, index) => {
-  rightTabSelected.value = val.monitoringType
-  right2Val.value = val.monitoringType
-  btnIndex2.value = index
-  initChart2(rightTabSelected.value)
-}
+  rightTabSelected.value = val.monitoringType;
+  right2Val.value = val.monitoringType;
+  btnIndex2.value = index;
+  initChart2(rightTabSelected.value);
+};
 watch(
   () => rightTabSelected.value,
   (newValue) => {
-    console.log('newValue', newValue)
-    initChart2(newValue, curBelongPark.value, curBelongPlot.value)
+    console.log('newValue', newValue);
+    initChart2(newValue, curBelongPark.value, curBelongPlot.value);
   }
-)
+);
 const rightIconMap = {
   temperature: 'PH值',
   salinity: 2,
@@ -632,7 +753,7 @@ const rightIconMap = {
   dissolved_oxygen: 6,
   ammonia_oxygen: 7,
   nitrite_nitrogen: 8
-}
+};
 const rightLabelMap = {
   temperature: '温度',
   salinity: '盐度',
@@ -642,7 +763,7 @@ const rightLabelMap = {
   dissolved_oxygen: '溶氧量',
   ammonia_oxygen: '氨氧量',
   nitrite_nitrogen: '亚硝酸盐氮'
-}
+};
 
 const rightUnitMap = {
   temperature: '℃',
@@ -653,9 +774,9 @@ const rightUnitMap = {
   dissolved_oxygen: 'mg/L',
   ammonia_oxygen: 'mg/L',
   nitrite_nitrogen: 'mg/L'
-}
+};
 
-const windowOpen = item => window.open(item)
+const windowOpen = (item) => window.open(item);
 </script>
 <template>
   <div class="w-[100vw] h-[100vh] overflow-hidden bg-black">
@@ -663,11 +784,9 @@ const windowOpen = item => window.open(item)
       <div class="bigscreen-main-wrapper">
         <div class="header-main-wrapper header-bg">
           <div class="header-left-part-wrapper">
-            <BigScreenTime/>
+            <BigScreenTime />
           </div>
-          <div class="header-title-wrapper">
-            板桥乡双桥村鲁渝协作示范村数字化赋能
-          </div>
+          <div class="header-title-wrapper">板桥乡双桥村鲁渝协作示范村数字化赋能</div>
           <div class="header-right-part-wrapper"></div>
         </div>
         <div class="content-main-wrapper grid-container">
@@ -675,21 +794,18 @@ const windowOpen = item => window.open(item)
             <div class="grid-main-item">
               <div
                 class="main-item-title title-bg"
-                @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=气象站')"
+                @click="
+                  windowOpen(
+                    '/internetMonitor/deviceData/equipment-data-three?collectionType=气象站'
+                  )
+                "
               >
                 <div>环境监测</div>
-                <div
-                  class="selector-wrapper"
-                  @click="(e) => e.stopPropagation()"
-                >
-                  <select
-                    @change="handleEnvSelectorChange"
-                  >
-                    <option
-                      :value="item.id"
-                      v-for="item,index in envOptions"
-                      :key="index"
-                    >{{ item.name }}</option>
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
+                  <select @change="handleEnvSelectorChange">
+                    <option :value="item.id" v-for="(item, index) in envOptions" :key="index">
+                      {{ item.name }}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -698,10 +814,12 @@ const windowOpen = item => window.open(item)
                   <div class="card-grid-wrapper min-h-[16rem]">
                     <div
                       :class="`card-grid-item ${leftTabSelected === item.monitoringType ? 'card-selected' : ''}`"
-                      v-for="item,index in envVal"
+                      v-for="(item, index) in envVal"
                       :key="index"
                     >
-                      <div :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType] || 6}`"></div>
+                      <div
+                        :class="`icon-wrapper l-icon-${leftIconMap[item.monitoringType] || 6}`"
+                      ></div>
                       <div class="label-val-wrapper">
                         <div class="value-wrapper">
                           <span class="value">{{ item.dataValue }}</span>
@@ -710,30 +828,32 @@ const windowOpen = item => window.open(item)
                         <div class="label-wrapper">{{ item.monitoringType }}</div>
                       </div>
                       <div
-                        :class="btnIndex==index? 'check-btn2':'check-btn'"
-                        @click="getChart(item.monitoringType,index)"
-                      >查看</div>
+                        :class="btnIndex == index ? 'check-btn2' : 'check-btn'"
+                        @click="getChart(item.monitoringType, index)"
+                      >
+                        查看
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="sub-title-wrapper">
-                  <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
+                  <div style="width: 8px; height: 1rem; background-color: #68fffe"></div>
+                  <div style="font-family: 'TitleFont'; font-size: 1rem; padding: 0 0.3rem">
+                    {{ envLabel }}变化趋势
+                  </div>
                   <div
-                    style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;"
-                  >{{ envLabel }}变化趋势</div>
-                  <div style="width: calc(100% - 7rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+                    style="
+                      width: calc(100% - 7rem);
+                      height: 100%;
+                      background: linear-gradient(to right, #68fffe, #68fffe00);
+                    "
+                  ></div>
                 </div>
-                <div
-                  class="h-[250px]"
-                  id="chart1"
-                ></div>
+                <div class="h-[250px]" id="chart1"></div>
               </div>
             </div>
           </div>
-          <div
-            class="gird-item-wrapper"
-            style="grid-row: span 3;z-index: 10;"
-          >
+          <div class="gird-item-wrapper" style="grid-row: span 3; z-index: 10">
             <div class="grid-main-item center-container">
               <div class="tool-tip-wrapper">
                 <div class="tool-tip-item">
@@ -749,7 +869,7 @@ const windowOpen = item => window.open(item)
                   <span>监控设备</span>
                 </div>
               </div>
-              <div id="mainMap">
+              <!-- <div id="mainMap">
                 <div
                   class="tool-info"
                   style="left: calc(400px - 100px);bottom: 300px;"
@@ -804,36 +924,35 @@ const windowOpen = item => window.open(item)
                   </div>
                   <img :src="preWarn" alt="" />
                 </div>
-              </div>
+              </div> -->
               <div class="top-card-wrapper">
                 <div class="top-card-item">
                   <div class="label-card">设备总数</div>
-                  <div
-                    class="value-card"
-                    @click="windowOpen('/internetMonitor/device/deviceView')"
-                  >{{ deviceBaseInfo.total }}</div>
+                  <div class="value-card" @click="windowOpen('/internetMonitor/device/deviceView')">
+                    {{ deviceBaseInfo.total }}
+                  </div>
                 </div>
                 <div class="top-card-item">
                   <div class="label-card">在线总数</div>
                   <div
                     class="value-card"
                     @click="windowOpen('/internetMonitor/device/deviceView?val=online')"
-                  >{{ deviceBaseInfo.online }}</div>
+                  >
+                    {{ deviceBaseInfo.online }}
+                  </div>
                 </div>
                 <div class="top-card-item">
                   <div class="label-card">离线总数</div>
                   <div
                     class="value-card"
                     @click="windowOpen('/internetMonitor/device/deviceView?val=offline')"
-                  >{{ deviceBaseInfo.offline }}</div>
+                  >
+                    {{ deviceBaseInfo.offline }}
+                  </div>
                 </div>
               </div>
               <div class="extra-card-wrappper">
-                <div
-                  class="top-card-item"
-                  v-for="item in deviceNumCount"
-                  :key="item"
-                >
+                <div class="top-card-item" v-for="item in deviceNumCount" :key="item">
                   <div class="extra-icon t-icon-1"></div>
                   <div class="extra-text-wrapper">
                     <div class="extra-text-row extra-title-font">
@@ -842,12 +961,31 @@ const windowOpen = item => window.open(item)
                     </div>
                     <div class="extra-text-row">
                       <div>在线数量</div>
-                      <div style="color: #0fc87c;">{{ item.online }}</div>
+                      <div style="color: #0fc87c">{{ item.online }}</div>
                     </div>
                     <div class="extra-text-row">
                       <div>离线数量</div>
-                      <div style="color: #c51416;">{{ item.offline }}</div>
+                      <div style="color: #c51416">{{ item.offline }}</div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-[12.8px] h-[770px] z-0" id="bigMapContainer"></div>
+
+              <div
+                class="absolute bottom-[20px] left-0 w-full h-[54px] z-2 flex justify-center items-center"
+              >
+                <div
+                  class="w-[600px] h-[54px] bg-[#000]/60 backdrop-blur-sm flex justify-evenly items-center rounded-3 cursor-default"
+                >
+                  <div v-for="item in mapIcons" :key="item.id" class="flex items-center">
+                    <img
+                      :src="item.icon"
+                      :alt="item.name"
+                      class="w-[26px] h-[30px] object-contain"
+                    />
+                    <span class="ml-[10px]">{{ item.name }}</span>
                   </div>
                 </div>
               </div>
@@ -857,26 +995,23 @@ const windowOpen = item => window.open(item)
             <div class="grid-main-item">
               <div
                 class="main-item-title title-bg"
-                @click="windowOpen('/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测')"
+                @click="
+                  windowOpen(
+                    '/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测'
+                  )
+                "
               >
                 <div>水质监测</div>
-                <div
-                  class="selector-wrapper"
-                  @click="(e) => e.stopPropagation()"
-                >
+                <div class="selector-wrapper" @click="(e) => e.stopPropagation()">
                   <select @change="handleSelectorChange1">
-                    <option
-                      :value="item.id"
-                      v-for="item,index in options1"
-                      :key="index"
-                    >{{ item.name }}</option>
+                    <option :value="item.id" v-for="(item, index) in options1" :key="index">
+                      {{ item.name }}
+                    </option>
                   </select>
                   <select @change="selecte2">
-                    <option
-                      :value="item.id"
-                      v-for="item,index in options2"
-                      :key="index"
-                    >{{ item.name }}</option>
+                    <option :value="item.id" v-for="(item, index) in options2" :key="index">
+                      {{ item.name }}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -888,7 +1023,9 @@ const windowOpen = item => window.open(item)
                       v-for="(item, index) in waterTypeList"
                       :key="index"
                     >
-                      <div :class="`icon-wrapper r-icon-${index < 8 ? index + 1 : 'default'}`"></div>
+                      <div
+                        :class="`icon-wrapper r-icon-${index < 8 ? index + 1 : 'default'}`"
+                      ></div>
                       <div class="label-val-wrapper">
                         <div class="value-wrapper">
                           <span class="value">{{ item.dataValue }}</span>
@@ -897,23 +1034,28 @@ const windowOpen = item => window.open(item)
                         <div class="label-wrapper">{{ item.monitoringType }}</div>
                       </div>
                       <div
-                        :class="btnIndex2==index ? 'check-btn2' : 'check-btn'"
-                        @click="btnCli(item,index)"
-                      >查看</div>
+                        :class="btnIndex2 == index ? 'check-btn2' : 'check-btn'"
+                        @click="btnCli(item, index)"
+                      >
+                        查看
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="sub-title-wrapper">
-                  <div style="width: 8px;height: 1rem;background-color: #68fffe;"></div>
-                  <div style="font-family: 'TitleFont';font-size: 1rem;padding: 0 .3rem;">
+                  <div style="width: 8px; height: 1rem; background-color: #68fffe"></div>
+                  <div style="font-family: 'TitleFont'; font-size: 1rem; padding: 0 0.3rem">
                     {{ right2Val }}变化趋势
                   </div>
-                  <div style="width: calc(100% - 11rem);height: 100%;background: linear-gradient(to right, #68fffe, #68fffe00);"></div>
+                  <div
+                    style="
+                      width: calc(100% - 11rem);
+                      height: 100%;
+                      background: linear-gradient(to right, #68fffe, #68fffe00);
+                    "
+                  ></div>
                 </div>
-                <div
-                  class="h-[250px]"
-                  id="chart2"
-                ></div>
+                <div class="h-[250px]" id="chart2"></div>
               </div>
             </div>
           </div>
@@ -925,20 +1067,13 @@ const windowOpen = item => window.open(item)
               >
                 <div>监控设备</div>
               </div>
-              <div
-                class="main-item-container monitor-device"
-                style="flex-direction: row;"
-              >
-                <div
-                  class="monitor-item"
-                  v-for="(item, index) in monitorEquipList"
-                  :key="index"
-                >
+              <div class="main-item-container monitor-device" style="flex-direction: row">
+                <div class="monitor-item" v-for="(item, index) in monitorEquipList" :key="index">
                   <div class="video-wrapper">
                     <img
                       :src="item.imgId"
                       alt=""
-                      style="width: 100%;height: 100%;object-fit: contain;"
+                      style="width: 100%; height: 100%; object-fit: contain"
                     />
                     <div
                       class="filter-img"
@@ -948,13 +1083,13 @@ const windowOpen = item => window.open(item)
                   <div class="text-wrapper">
                     <div class="text-row">名称:{{ item.deviceName }}</div>
                     <div class="text-row">位置:{{ item.location }}</div>
-                    <div
-                      class="text-row"
-                    >
+                    <div class="text-row">
                       状态:
                       <span
                         :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`"
-                      >{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</span>
+                      >
+                        {{ item.deviceStatus === 'online' ? '在线' : '离线' }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -973,23 +1108,23 @@ const windowOpen = item => window.open(item)
                 <div class="table-header">
                   <div
                     class="table-cell"
-                    v-for="(item) in tableColumns"
+                    v-for="item in tableColumns"
                     :key="item.key"
                     :style="`width: ${item.width};`"
-                  >{{ item.label }}</div>
+                  >
+                    {{ item.label }}
+                  </div>
                 </div>
                 <div class="table-container">
-                  <div
-                    class="row-wrapper"
-                    v-for="(item, index) in tableData"
-                    :key="index"
-                  >
+                  <div class="row-wrapper" v-for="(item, index) in tableData" :key="index">
                     <div
                       class="table-cell"
-                      v-for="(column) in tableColumns"
+                      v-for="column in tableColumns"
                       :key="column.key"
                       :style="`width: ${column.width};`"
-                    >{{ item[column.key] }}</div>
+                    >
+                      {{ item[column.key] }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1001,7 +1136,7 @@ const windowOpen = item => window.open(item)
     </scale-box>
   </div>
 </template>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import url(../../utils/bigscreenTool/index.scss);
 
 .header-bg {
@@ -1233,7 +1368,7 @@ const windowOpen = item => window.open(item)
       .info-rect {
         background-size: 100% 100%;
         width: 100%;
-        aspect-ratio: .8;
+        aspect-ratio: 0.8;
         background-image: url(./assets/infoRect.png);
 
         .text-info {
