@@ -1,34 +1,35 @@
 <script setup lang="ts">
-import DeviceInfo from "@/views/agriculture/deviceinfo/index.vue";
+import DeviceInfo from '@/views/agriculture/deviceinfo/index.vue';
 
 /** 设备信息 列表 */
-defineOptions({ name: 'DeviceView' })
+defineOptions({ name: 'DeviceView' });
 
-const currCategory = ref({})
+onActivated(() => {
+  console.log('view onActivated');
+});
+
+const currCategory = ref({});
 const handleCurrentCategoryChange = (currNodeData) => {
-  currCategory.value = currNodeData
-}
-
-const plotSelectorRef = ref()
-// 取消选择
-const clearCategory = () => {
-  plotSelectorRef.value.clearCategory()
-}
-const resetTreeSelections = () => {
-  clearCategory() // 清空选中的节点
+  currCategory.value = currNodeData;
 };
 
-const collapsed = ref<boolean>(false)
+const plotSelectorRef = ref();
+// 取消选择
+const clearCategory = () => {
+  plotSelectorRef.value.clearCategory();
+};
+const resetTreeSelections = () => {
+  clearCategory(); // 清空选中的节点
+};
+
+const collapsed = ref<boolean>(false);
 const handleCollapse = (e) => {
-  collapsed.value = e
-}
+  collapsed.value = e;
+};
 </script>
 
 <template>
-  <div
-    class="flex space-x-.1rem w-full pb-4 box-border"
-    style="height: calc(100vh - 125px);"
-  >
+  <div class="flex space-x-.1rem w-full pb-4 box-border" style="height: calc(100vh - 125px)">
     <plot-selector
       ref="plotSelectorRef"
       @current-change="handleCurrentCategoryChange"
@@ -48,7 +49,7 @@ const handleCollapse = (e) => {
     </div>
   </div>
 </template>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 @keyframes slide-from-left-to-right {
   from {
     transform: translateX(-100%);

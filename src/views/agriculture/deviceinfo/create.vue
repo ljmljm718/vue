@@ -4,33 +4,29 @@ import {
   addOrUpdateFormStorage,
   deleteFormStorage,
   getFormStorage
-} from '@/components/EditFrame/index'
-import {
-  FolderChecked,
-  TopRight,
-  Refresh
-} from '@element-plus/icons-vue'
-import {ElMessage} from 'element-plus'
-import {useTagsViewStore} from "@/store/modules/tagsView";
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
-import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
-import {retainFirstTwoLayers} from "@/utils/tree";
-import {ParkDetailVO} from '@/api/agriculture/parkdetail'
-import {ParkInfoVO} from '@/api/agriculture/parkinfo'
-import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-import MapPosSelector from '@/components/MapPosSelector/index.vue'
+} from '@/components/EditFrame/index';
+import { FolderChecked, TopRight, Refresh } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import { useTagsViewStore } from '@/store/modules/tagsView';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
+import { retainFirstTwoLayers } from '@/utils/tree';
+import { ParkDetailVO } from '@/api/agriculture/parkdetail';
+import { ParkInfoVO } from '@/api/agriculture/parkinfo';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import MapPosSelector from '@/components/MapPosSelector/index.vue';
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 // 下面是抽象出的基本配置
-const ROUTE_PATH = route.path
-const FORMPAGE_NAME = '设备信息'
-const ORIGIN_PATH = '/internetMonitor/device/deviceView' // 关闭表单时跳转的路径
+const ROUTE_PATH = route.path;
+const FORMPAGE_NAME = '设备信息';
+const ORIGIN_PATH = '/internetMonitor/device/deviceView'; // 关闭表单时跳转的路径
 
 // name使用创建菜单时填写的组件名
-defineOptions({name: 'DeviceInfoForm'})
+defineOptions({ name: 'DeviceInfoForm' });
 const options = ref([
   {
     value: '温度',
@@ -51,38 +47,40 @@ const options = ref([
   {
     value: 'PH值检测',
     label: 'PH值检测'
-  }]
-)
-let categoryOptions = ref([])// 设备分类选项
-const deviceType = ref()
-const monitorData = ref([])
+  }
+]);
+let categoryOptions = ref([]); // 设备分类选项
+const deviceType = ref();
+const monitorData = ref([]);
 const getFormInfo = async () => {
   // 获取设备分类树
-  const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
+  const categoryTree = await DeviceCategoryApi.getDeviceCategoryTree({ parentId: 0, status: 1 });
   categoryOptions.value = retainFirstTwoLayers(categoryTree);
-  console.log("categoryO",categoryOptions.value);
-  resetForm()
+  console.log('categoryO', categoryOptions.value);
+  resetForm();
   if (route.query.id) {
-    formData.value = await DeviceInfoApi.getDeviceInfo(route.query.id as any)
+    formData.value = await DeviceInfoApi.getDeviceInfo(route.query.id as any);
     loadData(route.query.id);
     formData.value.deviceMonitorType = formData.value.deviceMonitorType.split(',');
-    deviceType.value = formData.value.deviceType.split(',').map(Number)
+    deviceType.value = formData.value.deviceType.split(',').map(Number);
     //获取设备分类设备监测类型并赋值设备监测类型选择框
-    monitorData.value = await DeviceCategoryApi.getDeviceCategoryMonitorListByDeviceId(formData.value.deviceKind)
-    console.log("monitorData",monitorData)
-    const newMonitorList = []
-    monitorData.value.forEach(item => {
-      newMonitorList.push({value:item.monitor,label:item.monitor})
-    })
-    options.value = newMonitorList
+    monitorData.value = await DeviceCategoryApi.getDeviceCategoryMonitorListByDeviceId(
+      formData.value.deviceKind
+    );
+    console.log('monitorData', monitorData);
+    const newMonitorList = [];
+    monitorData.value.forEach((item) => {
+      newMonitorList.push({ value: item.monitor, label: item.monitor });
+    });
+    options.value = newMonitorList;
   }
-  if (!formData.value.id) loadData()
-}
+  if (!formData.value.id) loadData();
+};
 // 页面 Loading
-const formLoading = ref<boolean>(false)
+const formLoading = ref<boolean>(false);
 
 // 表单 Ref
-const formRef = ref()
+const formRef = ref();
 
 // 表单字段数据
 const formData = ref({
@@ -107,121 +105,117 @@ const formData = ref({
   parkDetailName: undefined,
   channelId: undefined,
   dtu: undefined
-})
+});
 
 // 表单校验规则
 const formRules = reactive({
-  deviceName: [{required: true, message: '设备点位不能为空', trigger: 'blur'}],
-  deviceType: [{required: true, message: '设备类型不能为空', trigger: 'change'}],
-  deviceMonitorType: [{required: true, message: '设备监测类型不能为空', trigger: 'change'}],
-  deviceStatus: [{required: true, message: '状态不能为空', trigger: 'change'}],
-  imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}]
-})
+  deviceName: [{ required: true, message: '设备点位不能为空', trigger: 'blur' }],
+  deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
+  deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
+  deviceStatus: [{ required: true, message: '状态不能为空', trigger: 'change' }],
+  imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
+});
 
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as DeviceInfoVO
+    const data = formData.value as unknown as DeviceInfoVO;
     if (!formData.value.id) {
-      await DeviceInfoApi.createDeviceInfo(data)
-      ElMessage.success('提交成功！')
+      await DeviceInfoApi.createDeviceInfo(data);
+      ElMessage.success('提交成功！');
     } else {
-      await DeviceInfoApi.updateDeviceInfo(data)
-      ElMessage.success('提交成功！')
+      await DeviceInfoApi.updateDeviceInfo(data);
+      ElMessage.success('提交成功！');
     }
     // 表单已提交，从本地删除此表单
-    deleteFormStorage(
-      ROUTE_PATH,
-      formData.value.id ? formData.value.id : 'new_form'
-    )
+    deleteFormStorage(ROUTE_PATH, formData.value.id ? formData.value.id : 'new_form');
     // 关闭当前页面
     useTagsViewStore().delView(router.currentRoute.value);
-    router.push({ name: 'DeviceView' })
+    router.push({ name: 'DeviceView' });
   } catch (err) {
-    ElMessage.error('提交失败, 请联系管理员')
+    ElMessage.error('提交失败, 请联系管理员');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 const ifBeingByNameButton = async () => {
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as DeviceInfoVO
-    const being = await DeviceInfoApi.ifBeingByName(data)
-    formLoading.value = false
-    ElMessage.warning(being)
+    const data = formData.value as unknown as DeviceInfoVO;
+    const being = await DeviceInfoApi.ifBeingByName(data);
+    formLoading.value = false;
+    ElMessage.warning(being);
   } catch (err) {
-    ElMessage.error('校验失败, 请联系管理员')
+    ElMessage.error('校验失败, 请联系管理员');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 /**
  * 设备分类级联选择器
  */
 const props = {
   value: 'id',
   label: 'categoryName',
-  expandTrigger: 'hover' as const,
-}
+  expandTrigger: 'hover' as const
+};
 const handleChange = (value: any) => {
-  formData.value.deviceType = value.join(',')
-  formData.value.deviceKind = value[1]
-  const typeItem = categoryOptions.value.find(item => item.id === value[0])
-  const deviceItem = typeItem.children.find(item => item.id === value[1])
+  formData.value.deviceType = value.join(',');
+  formData.value.deviceKind = value[1];
+  const typeItem = categoryOptions.value.find((item) => item.id === value[0]);
+  const deviceItem = typeItem.children.find((item) => item.id === value[1]);
   //赋值设备监测类型
   if (deviceItem.monitor == null || deviceItem.monitor == undefined) {
-    formData.value.deviceMonitorType = null
-    options.value = []
+    formData.value.deviceMonitorType = null;
+    options.value = [];
   } else {
     formData.value.deviceMonitorType = deviceItem.monitor.split(',');
     const monitorList = deviceItem.monitor.split(',');
-    const newMonitorList = []
-    monitorList.forEach(item => {
-      newMonitorList.push({value:item,label:item})
-    })
-    options.value = newMonitorList
+    const newMonitorList = [];
+    monitorList.forEach((item) => {
+      newMonitorList.push({ value: item, label: item });
+    });
+    options.value = newMonitorList;
   }
-}
+};
 
 //基地的选择
-const parkInfoPopupRef = ref()
-const openType = ref('')
+const parkInfoPopupRef = ref();
+const openType = ref('');
 const openParkInfoPopup = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    ElMessage.error("请选择基地")
-  } else parkInfoPopupRef.value.open(id)
-}
+  if (openType.value === undefined || openType.value === '') {
+    ElMessage.error('请选择基地');
+  } else parkInfoPopupRef.value.open(id);
+};
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    formData.value.belongPark = String(order[0].code)
-    formData.value.parkName = String(order[0].name)
-  } else formData.value.belongPlot = String(order[0].id)
-}
+    formData.value.belongPark = String(order[0].code);
+    formData.value.parkName = String(order[0].name);
+  } else formData.value.belongPlot = String(order[0].id);
+};
 
 //地块的选择
-const parkDetailPopupRef = ref()
-const openType1 = ref('')
+const parkDetailPopupRef = ref();
+const openType1 = ref('');
 const openParkDetailPopup = (id: string) => {
   openType1.value = id;
   if (!openType1.value) {
-    ElMessage.error("请选择基地")
-  } else parkDetailPopupRef.value.open(id)
-}
+    ElMessage.error('请选择基地');
+  } else parkDetailPopupRef.value.open(id);
+};
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-
-  console.log("--->>查看选择的地块信息：", order[0])
-  formData.value.belongPark = String(order[0].parkId)
-  formData.value.belongPlot = String(order[0].id)
-  formData.value.parkDetailName = String(order[0].name)
-}
+  console.log('--->>查看选择的地块信息：', order[0]);
+  formData.value.belongPark = String(order[0].parkId);
+  formData.value.belongPlot = String(order[0].id);
+  formData.value.parkDetailName = String(order[0].name);
+};
 
 // 重置表单方法
 const resetForm = () => {
@@ -247,9 +241,9 @@ const resetForm = () => {
     parkDetailName: undefined,
     channelId: undefined,
     dtu: undefined
-  }
-  deviceType.value = []
-}
+  };
+  deviceType.value = [];
+};
 
 // 本地保存表单
 const localSave = () => {
@@ -258,29 +252,29 @@ const localSave = () => {
     FORMPAGE_NAME + (formData.value.id ? '编辑' : '新增'), // 前面的表单名称写成当前页面名称
     formData.value.id ? formData.value.id : 'new_form',
     formData.value
-  )
-  ElMessage.success('暂存成功！')
-}
+  );
+  ElMessage.success('暂存成功！');
+};
 
 const loadData = async (id = 'new_form') => {
-  const _form = await getFormStorage(ROUTE_PATH, id)
-  if (_form) formData.value = _form.formContent
-}
-if (!formData.value.id) loadData()
+  const _form = await getFormStorage(ROUTE_PATH, id);
+  if (_form) formData.value = _form.formContent;
+};
+if (!formData.value.id) loadData();
 /** 初始化 **/
 onMounted(() => {
-  getFormInfo()
-})
+  getFormInfo();
+});
 // 手风琴展开项
-const activeName = ref<any>('1')
+const activeName = ref<any>('1');
 
-const openPosSelector = ref<boolean>(false)
+const openPosSelector = ref<boolean>(false);
 const handleSelectorChange = (val) => {
-  console.log("handleSelectorChange", val[0]);
-  if (val.length !== 2) return
-  formData.value.longitude = val[0]
-  formData.value.latitude = val[1]
-}
+  console.log('handleSelectorChange', val[0]);
+  if (val.length !== 2) return;
+  formData.value.longitude = val[0];
+  formData.value.latitude = val[1];
+};
 </script>
 <template>
   <div>
@@ -292,34 +286,17 @@ const handleSelectorChange = (val) => {
     <EditFrame>
       <template #header>
         <div class="flex">
-          <el-button
-            type="success"
-            :icon="TopRight"
-            plain
-            @click="submitForm"
-          >提交
-          </el-button>
-          <el-button
-            type="danger"
-            :icon="Refresh"
-            plain
-            @click="resetForm()"
-          >清空
-          </el-button>
+          <el-button type="success" :icon="TopRight" plain @click="submitForm">提交</el-button>
+          <el-button type="danger" :icon="Refresh" plain @click="resetForm()">清空</el-button>
         </div>
         <div>
-          <el-button
-            type="primary"
-            plain
-            @click="router.back()"
-          >返回
-          </el-button>
+          <el-button type="primary" plain @click="router.back()">返回</el-button>
           <el-button
             type="primary"
             :icon="FolderChecked"
             plain
             @click="localSave()"
-            v-if="route.query.type as any !=='detail'"
+            v-if="(route.query.type as any) !== 'detail'"
           >
             暂存
           </el-button>
@@ -336,18 +313,14 @@ const handleSelectorChange = (val) => {
             class="grid 2xl:grid-cols-3 gap-2 p-4"
           >
             <el-form-item label="设备编号" prop="deviceCode">
-              <el-input v-model="formData.deviceCode" placeholder="请输入设备编号"/>
+              <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
             </el-form-item>
             <el-form-item label="设备点位" prop="deviceName">
-              <el-input
-                v-model="formData.deviceName"
-                placeholder="请输入设备点位"
-              >
+              <el-input v-model="formData.deviceName" placeholder="请输入设备点位">
                 <template #append>
                   <el-button @click="ifBeingByNameButton">存在验证</el-button>
                 </template>
               </el-input>
-
             </el-form-item>
             <el-form-item label="设备类型" prop="deviceType">
               <el-cascader
@@ -363,22 +336,21 @@ const handleSelectorChange = (val) => {
               <el-select
                 v-model="formData.deviceMonitorType"
                 multiple
-                filterable
-                allow-create
-                default-first-option
-                placeholder="请“选择”或“输入”设备监测类型">
+                placeholder="请选择设备监测类型"
+              >
                 <el-option
                   v-for="item in options"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"/>
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="所属基地" prop="belongPark">
               <el-input v-model="formData.parkName" placeholder="请输入所属基地" readonly>
                 <template #append>
                   <el-button @click="openParkInfoPopup('0')">
-                    <Icon icon="ep:search"/>
+                    <Icon icon="ep:search" />
                     选择
                   </el-button>
                 </template>
@@ -388,7 +360,7 @@ const handleSelectorChange = (val) => {
               <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly>
                 <template #append>
                   <el-button @click="openParkDetailPopup(formData.belongPark)">
-                    <Icon icon="ep:search"/>
+                    <Icon icon="ep:search" />
                     选择
                   </el-button>
                 </template>
@@ -409,7 +381,7 @@ const handleSelectorChange = (val) => {
               <el-input v-model="formData.longitude" placeholder="请输入经度">
                 <template #append>
                   <el-button @click="openPosSelector = true">
-                    <Icon icon="ep:search"/>
+                    <Icon icon="ep:search" />
                     选择点
                   </el-button>
                 </template>
@@ -419,29 +391,29 @@ const handleSelectorChange = (val) => {
               <el-input v-model="formData.latitude" placeholder="请输入纬度">
                 <template #append>
                   <el-button @click="openPosSelector = true">
-                    <Icon icon="ep:search"/>
+                    <Icon icon="ep:search" />
                     选择点
                   </el-button>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item label="位置" prop="location">
-              <el-input v-model="formData.location" placeholder="请输入位置"/>
+              <el-input v-model="formData.location" placeholder="请输入位置" />
             </el-form-item>
             <el-form-item label="NVR序列号" prop="dtu">
-              <el-input v-model="formData.dtu" placeholder="请输入NVR序列号"/>
+              <el-input v-model="formData.dtu" placeholder="请输入NVR序列号" />
             </el-form-item>
             <el-form-item label="通道号" prop="channelId">
-              <el-input v-model="formData.channelId" placeholder="请输入通道号"/>
+              <el-input v-model="formData.channelId" placeholder="请输入通道号" />
             </el-form-item>
             <el-form-item label="图片" prop="imgId">
-              <UploadImg v-model="formData.imgId"/>
+              <UploadImg v-model="formData.imgId" />
             </el-form-item>
             <el-form-item label="访问地址" prop="url">
-              <el-input v-model="formData.url" placeholder="请输入访问地址"/>
+              <el-input v-model="formData.url" placeholder="请输入访问地址" />
             </el-form-item>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
+              <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
             </el-form-item>
           </el-form>
         </el-scrollbar>
@@ -449,9 +421,9 @@ const handleSelectorChange = (val) => {
     </EditFrame>
   </div>
   <!--  选择基地-->
-  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange" />
   <!--  选择大棚-->
-  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange" />
 </template>
 <style scoped>
 .scroll-bar-template {
