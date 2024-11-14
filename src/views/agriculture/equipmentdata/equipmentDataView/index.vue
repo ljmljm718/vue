@@ -9,7 +9,7 @@ import img from '../../../../assets/imgs/retract.png';
 import img2 from '../../../../assets/imgs/expand.png';
 let route = useRoute();
 /** 设备信息 列表 */
-defineOptions({ name: 'EquipmentDataView' });
+defineOptions({ name: 'EquipmentData' });
 console.log(route.query.collectionType, 'router');
 
 const loading = ref(true); // 列表的加载中
@@ -166,8 +166,8 @@ const setLeftHeight = (height: number) => {
           @clear-category="clearCategory"
           @reset="resetTreeSelections"
           :collectionType="route.query"
-          @clearTree="clearTree"
-          @heightChange="setLeftHeight"
+          @clear-tree="clearTree"
+          @height-change="setLeftHeight"
         />
       </ContentWrap>
     </div>
