@@ -1,13 +1,8 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
+    <custom-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true"
+                 label-width="68px">
       <el-form-item label="产品名称" prop="product">
         <el-input
           v-model="queryParams.product"
@@ -45,34 +40,31 @@
           重置
         </el-button>
       </el-form-item>
-    </el-form>
-    <div style="margin-top: 20px;margin-left: 8px;height: 30px">
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['digital:village-product-circulation:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['digital:village-product-circulation:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
+    <div class="flex items-center justify-between mb-15px">
+      <div style="margin-top: 20px;margin-left: 30px;height: 30px">
+        <el-form-item>
+          <el-button
+            class='!bg-[#009688] !color-[#fff]'
+            plain
+            @click="openForm('create')"
+            v-hasPermi="['digital:village-product:create']"
+          >
+            <Icon icon="ep:plus" class="mr-5px"/>
+            新增
+          </el-button>
+          <el-button plain @click="handleExport" :loading="exportLoading"
+                     v-hasPermi="['digital:village-product:export']">
+            <Icon icon="ep:download" class="mr-5px"/>
+            导出
+          </el-button>
+        </el-form-item>
+      </div>
+    </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="产品名称" align="center" prop="product"/>
@@ -133,6 +125,10 @@ import {
   VillageProductCirculationVO
 } from '@/api/digital/villageproductcirculation'
 import VillageProductCirculationForm from './VillageProductCirculationForm.vue'
+import card2 from "@/assets/imgs/card-actived.png";
+import card from "@/assets/imgs/card-active.png";
+import listImg from "@/assets/imgs/list-active.png";
+import listImg2 from "@/assets/imgs/list-actived.png";
 
 /** 产品流通 列表 */
 defineOptions({name: 'VillageProductCirculation'})

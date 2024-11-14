@@ -1,7 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
+    <custom-form
       class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
@@ -114,7 +114,7 @@
         <!--          <Icon icon="ep:download" class="mr-5px" /> 导出-->
         <!--        </el-button>-->
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->

@@ -873,23 +873,23 @@ const handleCollapse = () =>{
   // isFirstToggleDone.value = true;
 }
 // 检查屏幕宽度是否需要折叠
-const checkCollapsed = () => {
-  if (window.innerWidth <= 1150) {
-    collapsed.value = true;
-  } else {
-    collapsed.value = false;
-  }
-}
-// 在组件挂载后和窗口大小改变时更新高度
-onMounted(() => {
+// const checkCollapsed = () => {
+//   if (window.innerWidth <= 1150) {
+//     collapsed.value = true;
+//   } else {
+//     collapsed.value = false;
+//   }
+// }
+// // 在组件挂载后和窗口大小改变时更新高度
+// onMounted(() => {
 
-  window.addEventListener("resize", checkCollapsed);
-});
+//   window.addEventListener("resize", checkCollapsed);
+// });
 
-//清理监听
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', checkCollapsed);
-});
+// //清理监听
+// onBeforeUnmount(() => {
+//   window.removeEventListener('resize', checkCollapsed);
+// });
 </script>
 <template>
   <div class="flex space-x-[.5rem] domDiv">

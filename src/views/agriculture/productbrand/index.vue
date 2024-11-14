@@ -1,8 +1,7 @@
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
+    <custom-form
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
@@ -23,7 +22,7 @@
 
 
       </el-form-item>
-    </el-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -69,7 +68,7 @@
       <el-table-column label="品牌名" align="center" prop="productBrand" />
       <el-table-column label="品类" align="center" prop="belongCategory" width="120"/>
       <el-table-column label="品种" align="center" prop="belongVariety" width="120"/>
-      <el-table-column label="品牌logo" align="center" prop="brandLogo">
+      <el-table-column label="品牌logos" align="center" prop="brandLogo">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"

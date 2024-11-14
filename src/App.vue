@@ -1,33 +1,38 @@
 <script lang="ts" setup>
-import { isDark } from '@/utils/is'
-import { useAppStore } from '@/store/modules/app'
-import { useDesign } from '@/hooks/web/useDesign'
-import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
-import routerSearch from '@/components/RouterSearch/index.vue'
+import { isDark } from '@/utils/is';
+import { useAppStore } from '@/store/modules/app';
+import { useDesign } from '@/hooks/web/useDesign';
+import { CACHE_KEY, useCache } from '@/hooks/web/useCache';
+import routerSearch from '@/components/RouterSearch/index.vue';
 
-defineOptions({ name: 'APP' })
+defineOptions({ name: 'APP' });
 
-const { getPrefixCls } = useDesign()
-const prefixCls = getPrefixCls('app')
-const appStore = useAppStore()
-const currentSize = computed(() => appStore.getCurrentSize)
-const greyMode = computed(() => appStore.getGreyMode)
-const { wsCache } = useCache()
+const { getPrefixCls } = useDesign();
+const prefixCls = getPrefixCls('app');
+const appStore = useAppStore();
+const currentSize = computed(() => appStore.getCurrentSize);
+const greyMode = computed(() => appStore.getGreyMode);
+const { wsCache } = useCache();
 
 // 根据浏览器当前主题设置系统主题色
 const setDefaultTheme = () => {
-  let isDarkTheme = wsCache.get(CACHE_KEY.IS_DARK)
+  let isDarkTheme = wsCache.get(CACHE_KEY.IS_DARK);
   if (isDarkTheme === null) {
-    isDarkTheme = isDark()
+    isDarkTheme = isDark();
   }
-  appStore.setIsDark(isDarkTheme)
-}
-setDefaultTheme()
+  appStore.setIsDark(isDarkTheme);
+};
+setDefaultTheme();
 </script>
 <template>
   <ConfigGlobal :size="currentSize">
     <RouterView :class="greyMode ? `${prefixCls}-grey-mode` : ''" />
     <routerSearch />
+    <div class="fixed right-0 top-0 z-999 text-red !hidden">
+      <div
+        class="sm:after:content-['sm'] md:after:content-['md'] lg:after:content-['lg'] xl:after:content-['xl'] 2xl:after:content-['2xl']"
+      ></div>
+    </div>
   </ConfigGlobal>
 </template>
 <style lang="scss">
@@ -88,7 +93,6 @@ body {
     border: 2px solid #0be3de;
   }
 }
-
 
 $max-lines: 20; // 设定最大的行数
 
