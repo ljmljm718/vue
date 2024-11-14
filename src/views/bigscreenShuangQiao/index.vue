@@ -977,7 +977,7 @@ const windowOpen = (item) => window.open(item);
                 class="absolute bottom-[20px] left-0 w-full h-[54px] z-2 flex justify-center items-center"
               >
                 <div
-                  class="w-[600px] h-[54px] bg-[#000]/60 backdrop-blur-sm flex justify-evenly items-center rounded-3"
+                  class="w-[600px] h-[54px] bg-[#000]/60 backdrop-blur-sm flex justify-evenly items-center rounded-3 cursor-default"
                 >
                   <div v-for="item in mapIcons" :key="item.id" class="flex items-center">
                     <img
