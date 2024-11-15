@@ -163,7 +163,11 @@
             <el-table-column align="center" prop="remarks" label="消息内容" />
             <el-table-column align="center" label="拍摄时间">
               <template #default="scope">
-                {{ scope.row.recordTime ? dayjs(scope.row.recordTime).format('YYYY-MM-DD') : '' }}
+                {{
+                  scope.row.recordTime
+                    ? dayjs(scope.row.recordTime).format('YYYY-MM-DD HH:mm:ss')
+                    : ''
+                }}
               </template>
             </el-table-column>
             <el-table-column label="抓拍图片" align="center" prop="captured">
