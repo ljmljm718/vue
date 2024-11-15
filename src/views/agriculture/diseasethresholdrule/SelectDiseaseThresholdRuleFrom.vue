@@ -1,12 +1,14 @@
 <template>
-  <Dialog title="设备列表" v-model="dialogVisible" :appendToBody="true" :scroll="true" width="1400">
+  <Dialog
+    title="预警信息列表"
+    v-model="dialogVisible"
+    :appendToBody="true"
+    :scroll="true"
+    width="1400"
+  >
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <el-form
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-      >
+      <el-form :model="queryParams" ref="queryFormRef" :inline="true">
         <el-form-item label="农作物" prop="breedId">
           <el-select
             v-model="queryParams.breedId"
@@ -18,12 +20,17 @@
               v-for="item in listCategoryManagement"
               :key="item.id"
               :label="item.categoryName"
-              :value="item.id"/>
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="虫害种类" prop="diseaseType">
-          <el-select v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类"
-                     class="!w-240px">
+          <el-select
+            v-model="queryParams.diseaseType"
+            clearable
+            placeholder="请选择病虫害种类"
+            class="!w-240px"
+          >
             <el-option
               v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
               :key="dict.label"
@@ -43,11 +50,11 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
-            <Icon icon="ep:search" class="mr-5px"/>
+            <Icon icon="ep:search" class="mr-5px" />
             搜索
           </el-button>
           <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px"/>
+            <Icon icon="ep:refresh" class="mr-5px" />
             重置
           </el-button>
         </el-form-item>
@@ -63,18 +70,19 @@
         ref="suibian"
         :show-overflow-tooltip="true"
         @select="fangfa"
-        scrollbar-always-on='false'
+        scrollbar-always-on="false"
         @selection-change="handleSelectionChange"
+        @row-click="selectClick"
       >
-        <el-table-column fixed width="30" label="选择" type="selection"/>
-        <el-table-column label="农作物" align="center" prop="reservedTwo"/>
-        <el-table-column label="虫害种类" align="center" prop="diseaseType"/>
-        <el-table-column label="监测周期" align="center" prop="monitorPeriod"/>
-        <el-table-column label="阈值下限" align="center" prop="warnLowValue"/>
-        <el-table-column label="阈值上限" align="center" prop="warnHighValue"/>
-        <el-table-column label="单位" align="center" prop="warnUnit"/>
-        <el-table-column label="病虫害等级" align="center" prop="reservedOne"/>
-        <el-table-column label="预警信息" align="center" prop="lowMsg"/>
+        <el-table-column fixed width="30" label="选择" type="selection" />
+        <el-table-column label="农作物" align="center" prop="reservedTwo" />
+        <el-table-column label="虫害种类" align="center" prop="diseaseType" />
+        <el-table-column label="监测周期" align="center" prop="monitorPeriod" />
+        <el-table-column label="阈值下限" align="center" prop="warnLowValue" />
+        <el-table-column label="阈值上限" align="center" prop="warnHighValue" />
+        <el-table-column label="单位" align="center" prop="warnUnit" />
+        <el-table-column label="病虫害等级" align="center" prop="reservedOne" />
+        <el-table-column label="预警信息" align="center" prop="lowMsg" />
         <!--      <el-table-column label="品种名称" align="center" prop="cropName"/>-->
         <!--      <el-table-column label="病虫害Id" align="center" prop="diseaseId"/>-->
         <!--      <el-table-column label="监测类型" align="center" prop="warnType"/>-->
@@ -82,7 +90,7 @@
         <!--      <el-table-column label="预留3" align="center" prop="reservedThree"/>-->
         <!--      <el-table-column label="预留4" align="center" prop="reservedFour"/>-->
         <!--      <el-table-column label="预留5" align="center" prop="reservedFive"/>-->
-        <el-table-column label="备注" align="center" prop="remark"/>
+        <el-table-column label="备注" align="center" prop="remark" />
         <el-table-column
           label="创建时间"
           align="center"
@@ -109,30 +117,30 @@
 </template>
 
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE, getIntDictOptions} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
-import download from '@/utils/download'
-import {DeviceInfoApi, DeviceInfoVO} from '@/api/agriculture/deviceinfo'
-import DeviceInfoForm from './DeviceInfoForm.vue'
-import {DeviceCategoryApi} from '@/api/agriculture/devicecategory'
-import {defaultProps} from '@/utils/tree'
+import { getStrDictOptions, DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import DeviceInfoForm from './DeviceInfoForm.vue';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
+import { defaultProps } from '@/utils/tree';
 import {
   DiseaseThresholdRuleApi,
   DiseaseThresholdRuleVO
-} from "@/api/agriculture/diseasethresholdrule";
-import {allDataCacheManager, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
+} from '@/api/agriculture/diseasethresholdrule';
+import { allDataCacheManager, CategoryManagementVO } from '@/api/agriculture/categorymanagement';
 
 /** 设备信息 列表 */
-defineOptions({name: 'DiseaseThresholdRule'})
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-let categoryOptions = ref([]) // 设备分类选项
-const deviceType = ref()
-const loading = ref(true) // 列表的加载中
-const list = ref<DiseaseThresholdRuleVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+defineOptions({ name: 'DiseaseThresholdRule' });
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+let categoryOptions = ref([]); // 设备分类选项
+const deviceType = ref();
+const loading = ref(true); // 列表的加载中
+const list = ref<DiseaseThresholdRuleVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -153,65 +161,84 @@ const queryParams = reactive({
   reservedFive: undefined,
   remark: undefined,
   createTime: []
-})
-
+});
 
 //开始
 
-let suibian = ref(null)
+let suibian = ref(null);
 const fangfa = (select: any, row: any) => {
   if (select.length > 1) {
-    let del_row = select.shift()
-    suibian.value.toggleRowSelection(del_row, false)
+    let del_row = select.shift();
+    suibian.value.toggleRowSelection(del_row, false);
   }
-}
+};
+
+// 控制单选——table选择项发生变化时
+const selectClick = (row) => {
+  const selectData = selectionList.value;
+  suibian.value.clearSelection();
+  if (selectData.length == 1) {
+    selectData.forEach((item) => {
+      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+      if (item == row) {
+        suibian.value.toggleRowSelection(row, false);
+      }
+      // 不然就让当前的一行勾选
+      else {
+        suibian.value.toggleRowSelection(row, true);
+      }
+    });
+  } else {
+    suibian.value.toggleRowSelection(row, true);
+  }
+};
 
 window.addEventListener('keydown', (e) => {
   if (e.keyCode === 27) {
-    resetQuery()
-    dialogVisible.value = false
+    resetQuery();
+    dialogVisible.value = false;
   }
-})
+});
 const clear = async () => {
-  dialogVisible.value = false
-  resetQuery()
-}
+  dialogVisible.value = false;
+  resetQuery();
+};
 
 /** 选中操作 */
-const dialogVisible = ref(false) // 弹窗的是否展示
-const selectionList = ref<DiseaseThresholdRuleVO[]>([])
+const dialogVisible = ref(false); // 弹窗的是否展示
+const selectionList = ref<DiseaseThresholdRuleVO[]>([]);
 const handleSelectionChange = (rows: DeviceInfoVO[]) => {
-  selectionList.value = rows
-}
+  selectionList.value = rows;
+};
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: DiseaseThresholdRuleVO[]): void
-}>()
+  (e: 'success', value: DiseaseThresholdRuleVO[]): void;
+}>();
 const submitForm = () => {
   try {
-    emits('success', selectionList.value)
+    emits('success', selectionList.value);
   } finally {
     // 关闭弹窗
-    dialogVisible.value = false
+    dialogVisible.value = false;
   }
-}
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+};
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
 const getType = async () => {
-  listCategoryManagement.value = await allDataCacheManager.getData({})
-}
+  listCategoryManagement.value = await allDataCacheManager.getData({});
+};
 /** 打开弹窗 */
 const open = async (id: string) => {
-  dialogVisible.value = true
-  Object.keys(queryParams).forEach(key => {
+  dialogVisible.value = true;
+  Object.keys(queryParams).forEach((key) => {
     queryParams[key] = undefined;
   });
-  await resetQuery()
+  await resetQuery();
   // console.log("id:" + id)
-  await nextTick() // 等待，避免 queryFormRef 为空
+  await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
-}
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 //结束
 
@@ -225,53 +252,52 @@ const props = defineProps({
     type: String,
     default: ''
   }
-})
+});
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await DiseaseThresholdRuleApi.getDiseaseThresholdRulePage(queryParams)
-    list.value = data.list
+    const data = await DiseaseThresholdRuleApi.getDiseaseThresholdRulePage(queryParams);
+    list.value = data.list;
     //把品类数据的namep拼接到列表中
-    list.value.forEach(item => {
-      listCategoryManagement.value.forEach(itm => {
-        if (item.breedId == itm.id)
-          item.reservedTwo = itm.categoryName
-      })
-    })
-    total.value = data.total
+    list.value.forEach((item) => {
+      listCategoryManagement.value.forEach((itm) => {
+        if (item.breedId == itm.id) item.reservedTwo = itm.categoryName;
+      });
+    });
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  Object.keys(queryParams).forEach(key => {
+  Object.keys(queryParams).forEach((key) => {
     queryParams[key] = undefined;
   });
-  deviceType.value = null
-  handleQuery()
-}
+  deviceType.value = null;
+  handleQuery();
+};
 /**
  * 设备分类级联选择器
  */
 const categoryProps = {
   value: 'id',
   label: 'categoryName'
-}
+};
 
 /** 初始化 **/
 onMounted(async () => {
-  await getType()
-  await getList()
-})
+  await getType();
+  await getList();
+});
 
 // 监听父组件category变化
 watch(
@@ -279,16 +305,15 @@ watch(
   () => {
     if (props.currCategory) {
       if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id
+        queryParams.deviceType = props.currCategory.id;
       } else {
-        queryParams.deviceType = props.currCategory.parentId + ',' + props.currCategory.id
+        queryParams.deviceType = props.currCategory.parentId + ',' + props.currCategory.id;
       }
     } else {
-      queryParams.deviceType = undefined
+      queryParams.deviceType = undefined;
     }
-    handleQuery()
+    handleQuery();
   }
-)
+);
 </script>
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>
