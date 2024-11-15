@@ -271,7 +271,8 @@ const lookPlanDetail = (planId: any) => {
 };
 /** 初始化 **/
 onMounted(async () => {
-  getInfo();
+  await getInfo();
+  await productInfo(formData.value.jobType);
   productInfoListALL.value = await ProductApi.selectAll();
 });
 const formData1 = ref({
@@ -297,7 +298,7 @@ const formData1 = ref({
 const productInfo = async (id) => {
   try {
     const productData = await ProductApi.getProductUnit(id);
-    // console.log("productData-------------------------------------", productData)
+    console.log("productData-------------------------------------", id)
     formData1.value = productData;
     formData.value.agriCapitalUnit = productData.unitName;
   } catch (error) {
