@@ -27,7 +27,11 @@
         <el-input v-model="formData.param" placeholder="请输入参数" />
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-select v-model="formData.monitoringType" placeholder="请选择监测类型">
+        <el-select
+          v-model="formData.monitoringType"
+          placeholder="请选择监测类型"
+          @click="focusMonitoringType"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -71,6 +75,7 @@ import { EquipmentDataRuleApi, EquipmentDataRuleVO } from '@/api/agriculture/equ
 import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue';
 import { EquipmentDataVO } from '@/api/agriculture/equipmentdata';
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { DeviceInfoApi } from '@/api/agriculture/deviceinfo';
 
 /** 设备数据规则 表单 */
 defineOptions({ name: 'EquipmentDataRuleForm' });
@@ -118,6 +123,19 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true;
     try {
       formData.value = await EquipmentDataRuleApi.getEquipmentDataRule(id);
+      if (formData.value.deviceId != null) {
+        const deviceInfo = await DeviceInfoApi.getDeviceInfo(formData.value.deviceId);
+        console.log(deviceInfo);
+        if (deviceInfo != null) {
+          // 赋值监测类型
+          monitorData.value = deviceInfo.deviceMonitorType.split(',');
+          const newMonitorList = [];
+          monitorData.value.forEach((item) => {
+            newMonitorList.push({ value: item, label: item });
+          });
+          options.value = newMonitorList;
+        }
+      }
     } finally {
       formLoading.value = false;
     }
@@ -189,5 +207,15 @@ const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
     newMonitorList.push({ value: item, label: item });
   });
   options.value = newMonitorList;
+};
+
+const focusMonitoringType = async () => {
+  if (formData.value.deviceId == null) {
+    message.error('请选择设备');
+  } else {
+    if (options.value == null) {
+      message.error('当前设备无监测类型');
+    }
+  }
 };
 </script>
