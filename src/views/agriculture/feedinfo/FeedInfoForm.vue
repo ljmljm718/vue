@@ -105,7 +105,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="投喂量" prop="feedNum" >
-            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）" :disabled="true"/>
+            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
