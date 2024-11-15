@@ -201,14 +201,14 @@ const getMenuDataList = async () => {
     '103': 'Weather',
     '159': 'Weather',
     '81': 'Weather',
-    '86': 'Soil',
+    '86': 'Water',
     '104': 'Soil',
     '107': 'Bug',
     '88': 'Bug',
     '109': 'Monitor',
     '110': 'Grow',
-    '112': 'Bug',
-    '113': 'Soil',
+    '112': 'Weather',
+    '113': 'Water',
     '119': 'Weather',
     '148': 'Monitor',
     '152': 'Grow',
@@ -293,14 +293,14 @@ const getIconClass = (item) => {
     '103': 'weather',
     '159': 'weather',
     '81': 'weather',
-    '86': 'soil',
+    '86': 'water',
     '104': 'soil',
     '107': 'bug',
     '88': 'bug',
     '109': 'monitor',
     '110': 'grow',
-    '112': 'bug',
-    '113': 'soil',
+    '112': 'weather',
+    '113': 'water',
     '119': 'weather',
     '148': 'monitor',
     '152': 'grow',
@@ -359,7 +359,9 @@ const getIconClass = (item) => {
 .online-weather,
 .offline-weather,
 .online-grow,
-.offline-grow {
+.offline-grow,
+.online-water,
+.offline-water {
   background-size: 100% auto;
 }
 .online-bug {
@@ -395,5 +397,11 @@ const getIconClass = (item) => {
 }
 .offline-grow {
   background-image: url(./assets/tangba/offlineGrow.png);
+}
+.online-water {
+  background-image: url(./assets/tangba/onlineWater.png);
+}
+.offline-water {
+  background-image: url(./assets/tangba/offlineWater.png);
 }
 </style>
