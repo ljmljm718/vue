@@ -285,6 +285,7 @@
         <el-table-column label="预警信息" align="center" prop="lowMsg" />
         <el-table-column label="监测类型" align="center" prop="warnType" />
         <el-table-column label="病害虫种类" align="center" prop="diseaseType" />
+        <el-table-column label="当前值" align="center" prop="reservedTwo" />
         <el-table-column label="病虫害等级" align="center" prop="reservedFour" />
         <el-table-column
           label="预警时间"
@@ -300,7 +301,6 @@
         <el-table-column label="阈值上限" align="center" prop="warnHighValue" />
         <el-table-column label="单位" align="center" prop="warnUnit" />
         <el-table-column label="监测周期" align="center" prop="monitorPeriod" />
-        <el-table-column label="当前值" align="center" prop="reservedTwo" />
         <!--      <el-table-column label="所属基地" align="center" prop="belongPark"/>-->
         <!--      <el-table-column label="所属地块" align="center" prop="belongPlot"/>-->
         <!--      <el-table-column label="基地名称" align="center" prop="parkName"/>-->
