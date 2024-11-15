@@ -27,13 +27,7 @@
         <el-input v-model="formData.param" placeholder="请输入参数" />
       </el-form-item>
       <el-form-item label="监测类型" prop="monitoringType">
-        <el-select
-          v-model="formData.monitoringType"
-          filterable
-          allow-create
-          default-first-option
-          placeholder="请“选择”或“输入”监测类型"
-        >
+        <el-select v-model="formData.monitoringType" placeholder="请选择监测类型">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -107,7 +101,8 @@ const formRules = reactive({
   channelId: [{ required: true, message: '通道不能为空', trigger: 'blur' }],
   param: [{ required: true, message: '参数不能为空', trigger: 'blur' }],
   monitoringType: [{ required: true, message: '监测类型不能为空', trigger: 'blur' }],
-  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }]
+  ruleType: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }],
+  deviceName: [{ required: true, message: '设备不能为空', trigger: 'change' }]
 });
 const formRef = ref(); // 表单 Ref
 const options = ref([]);
@@ -171,6 +166,7 @@ const resetForm = () => {
     dictionary: undefined
   };
   formRef.value?.resetFields();
+  options.value = null;
 };
 /* 选择设备 */
 const SelectDeviceInfoRef = ref();
@@ -193,6 +189,5 @@ const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
     newMonitorList.push({ value: item, label: item });
   });
   options.value = newMonitorList;
-  console.log(options);
 };
 </script>
