@@ -300,7 +300,7 @@ const feedTypeSelect = (feedType) => {
       formData.value.feedType = item.id
       formData.value.standard = item.standard
       formData.value.purchasePrice = item.purchasePrice
-      formData.value.consumeUnit = '袋'
+      formData.value.consumeUnit = item.unitName
       formData.value.feedOne = 'KG'
       formData.value.consumeNum = null
       // formData.value.consumeUnit = item.unitName
