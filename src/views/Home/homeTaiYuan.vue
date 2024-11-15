@@ -106,8 +106,9 @@ const getSnapShotDeviceOptions = async (id) => {
   snapDevice.value = res.list[0];
 
   snapShotDeviceOptions.value = res.list;
-  snapShotDevice.value = res.list[0].deviceName;
+  snapShotDevice.value = res.list[0]?.deviceName;
   getSnapPage(res.list[0]?.id);
+  snapId.value = res.list[0]?.id
   //getSnapType(res.list[0].id)
   let date = new Date();
   let year = date.getFullYear();
@@ -123,13 +124,13 @@ const selectChange = (current) => {
       snapShotDevice.value = item.deviceName;
       snapId.value = item.id;
       getSnapPage(item.id);
-      //getSnapType(item.id)
     }
   });
 };
 const monitorTime = ref([]);
 const snapShotChange = (date) => {
   monitorTime.value = [];
+  snapNum.value = 0
   let data = new Date(date);
   let year = data.getFullYear();
   let month = data.getMonth() + 1 >= 10 ? data.getMonth() + 1 : '0' + (data.getMonth() + 1);
@@ -145,35 +146,33 @@ const snapShotChange = (date) => {
 const snapDevice = ref({});
 const snapImgTotal = ref<Number>(0);
 const getSnapPage = async (id) => {
-  console.log(monitorTime.value, 'monitorTime.valuemonitorTime.value');
+  console.log(id,'99999999 id')
   let res = await snapPage({
     identifyStatus: '0',
-    pageNo: 1,
-    pageSize: 10,
+    pageNo: 1,//        
+    pageSize: 100,
     device: id,
     monitorTime: monitorTime.value
   });
+  console.log(res,'获取图片i西南西')
   snapShotImg.value = res.list[0]?.monitorPicture;
   snapPictureList.value = res.list;
   snapPictureList2.value = res.list;
   snapImgTotal.value = res.total;
   snapDevice.value.monitorSpecies = res.list[0]?.monitorSpecies;
-  // console.log(res,'设备信息 v获取设备信息 图片 列表')
   pestType.value = 0;
   pestTotalNum.value = 0;
   pestList.value = [];
-  if (res.list.length > 0) getSnapType(res.list[0].id);
+  // if(res.total == 0) snapNum.value = 0
+  if (res.list.length > 0) getSnapType(res.list[0].id); 
 };
 
 //今日抓拍 抓拍信息
 const pestType = ref<Number>(0); // 虫害种类
 const pestTotalNum = ref<Number>(0); //虫害总数量
 const pestList = ref<any[]>([]); // 抓拍列表
-// const pestListType = ref<boolean>(false)
 const getSnapType = async (id) => {
-  //  pestListType.value = false
   let res = await snapType({ mainId: id });
-  console.log(res, '获取抓怕信息');
   pestType.value = res.pest_type;
   pestTotalNum.value = res.pest_total_number;
   pestList.value = res.pest_list;
@@ -185,7 +184,7 @@ const getSnapType = async (id) => {
 const snapPictureChange = (item, index) => {
   snapDevice.value.monitorSpecies = item.monitorSpecies;
   if (snapPictureList.value.length > 4) {
-    left.value += (snapNum1.value - index) * 50;
+    left.value += (snapNum1.value - index) * 55 + 8;
   }
   getSnapType(item.id);
 
@@ -199,13 +198,11 @@ const snapPictureChange = (item, index) => {
 const preWarnList = ref<any[]>([]),
   preWarnLoading = ref<boolean>(false);
 const getPreWarnList = async (id) => {
-  console.log(id, ' 预警信息 idid');
   preWarnLoading.value = true;
   const { list } = await diseaseWarnInfo({ pageNo: 1, pageSize: 10, belongPlot: id }).catch(() => {
     preWarnLoading.value = false;
   });
   preWarnLoading.value = false;
-  console.log(list, ' 预警信息列表');
 
   if (!Array.isArray(list)) return;
   preWarnList.value = list;
@@ -652,7 +649,6 @@ const getCountDay = async (id, type) => {
     type
   }); //day
 
-  console.log(res, '病虫害趋势分析');
   diseaseChart.value = res;
   // insectChar.value = res2
 
@@ -680,7 +676,6 @@ const getMonth = (date) => {
   // let month = 4
   let day = month - 6;
   let data = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  console.log(day > 0 ? month - 5 : 12 + (month - 5), ' 按月获取使劲按 ');
   date.push(`${day > 0 ? year : year - 1}-${day > 0 ? month - 5 : 12 + (month - 5)}-01`);
   date.push(`${year}-${month}-${data}`);
 };
@@ -771,7 +766,6 @@ const snapNum1 = ref(0);
 const left = ref<number>(0);
 const snapDomWidth = ref<number>();
 onMounted(() => {
-  console.log(window.innerWidth, 'width9999');
   snapDomWidth.value = snapDom.value.offsetWidth;
   windWidth.value = window.innerWidth;
 });
@@ -799,37 +793,6 @@ const tabLeft = (str) => {
     }
   }
 
-  // else{
-  //   if(snapNum.value <= 0){
-
-  //     if(snapPictureList.value.length>4){
-  //       left.value = (3 - snapPictureList.value.length) * 80
-  //     }
-
-  //     snapNum.value =  snapPictureList.value.length-1
-  //     snapNum1.value =  snapPictureList.value.length-2
-
-  //     snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-  //     getSnapType(snapPictureList.value[snapNum.value].id)
-  //     snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
-
-  //   }else{
-  //     console.log(snapNum1.value,'snapNum1.value')
-  //     console.log(snapNum.value,'snapNum.value')
-  //     if(snapPictureList.value.length>4){
-  //       left.value = (snapNum1.value - snapNum.value ) * 80
-  //     }else{
-  //       // left.value = (snapNum1.value - snapNum.value ) * 80
-
-  //     }
-  //     left.value = (snapNum1.value - snapNum.value ) * 80
-  //     snapNum1.value = snapNum.value
-  //     snapNum.value--
-  //     snapDevice.value.monitorSpecies  = snapPictureList.value[snapNum.value].monitorSpecies
-  //     snapShotImg.value = snapPictureList.value[snapNum.value].monitorPicture
-  //     getSnapType(snapPictureList.value[snapNum.value].id)
-  //   }
-  // }
 };
 
 const amplify = ref(false);
@@ -860,7 +823,7 @@ const handleWindowResize = debounce(() => {
   // diseaseInitChart2()
   // insectInitChart()
   // insectInitChart2()
-  getCategoryList();
+  // getCategoryList();
 }, 1000);
 window.addEventListener('resize', () => {
   handleWindowResize();

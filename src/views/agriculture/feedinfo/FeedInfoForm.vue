@@ -105,7 +105,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="投喂量" prop="feedNum" >
-            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）" :disabled="true"/>
+            <el-input v-model="formData.feedNum" placeholder="请输入使用量（消耗量*规格）" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -300,7 +300,7 @@ const feedTypeSelect = (feedType) => {
       formData.value.feedType = item.id
       formData.value.standard = item.standard
       formData.value.purchasePrice = item.purchasePrice
-      formData.value.consumeUnit = '袋'
+      formData.value.consumeUnit = item.unitName
       formData.value.feedOne = 'KG'
       formData.value.consumeNum = null
       // formData.value.consumeUnit = item.unitName
