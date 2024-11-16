@@ -140,7 +140,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="病虫害等级" prop="reservedFour">
-            <el-input v-model="formData.reservedFour" placeholder="请输入病虫害等级" />
+            <el-input v-model="formData.reservedFour" placeholder="请输入病虫害等级" disabled />
           </el-form-item>
         </el-col>
       </el-row>

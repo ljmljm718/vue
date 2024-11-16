@@ -1,6 +1,6 @@
 <template>
   <Dialog
-    title="预警信息列表"
+    title="预警阈值列表"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
