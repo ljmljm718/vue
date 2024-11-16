@@ -373,7 +373,10 @@ const enableActiveVideo = (tab:string) => {
   if (item) initVideo('player', item)
   else initVideo('player', '/public/zhiqiao/zhiqiao.m3u8')
 }
-onMounted(() => { enableActiveVideo(activeTab.value) })
+onMounted(() => { 
+  enableActiveVideo(activeTab.value)
+  
+})
 
 const handleBottomTabClick = (item) => {
   activeTab.value = item.id;
@@ -384,7 +387,30 @@ const handleBottomTabClick = (item) => {
   getMedicalData(activeTab.value)
   getActiveVideo(activeTab.value)
   enableActiveVideo(activeTab.value)
+  nextTick(() => checkedOverFlow())
+  
 }
+
+const checkedOverFlow = () => {
+  const div = document.getElementById("overflowTest")
+  console.log('div', div)
+  if (!div) return
+  const _scrollHeight = div.scrollHeight;
+  console.log("🚀 ~ checkedOverFlow ~ _scrollHeight:", _scrollHeight)
+  const _clientHeight = div.clientHeight;
+  console.log("🚀 ~ checkedOverFlow ~ _clientHeight:", _clientHeight)
+  const activeItem = document.getElementById("scrollItem")
+  if (!activeItem) return
+  if (_scrollHeight > _clientHeight) {
+    
+    activeItem.classList.add('animate-scroll');
+  } else {
+    activeItem.classList.remove('animate-scroll');
+  }
+}
+onMounted(() => {
+  checkedOverFlow()
+})
 </script>
 <template>
   <div class="w-[1920px] h-[970px] relative">
@@ -475,13 +501,13 @@ const handleBottomTabClick = (item) => {
           <div class="bg-#08FFFF text-[#011414] flex justify-center items-center w-80px h-26px rounded-full font-semibold">{{ item.label }}</div>
         </div>
       </div>
-      <div class="w-full h-390px">
-        <el-scrollbar height="390px">
-          <div
-            class="p-4 px-6 leading-6"
-            v-html="markNeedText"
-          ></div>
-        </el-scrollbar>
+      <div class="w-full h-390px relative overflow-hidden" id = "overflowTest">
+        <div
+          class="p-4 px-6 leading-6 absolute"
+          v-html="markNeedText"
+          id="scrollItem"
+        ></div>
+      
       </div>
     </div>
 
@@ -820,5 +846,17 @@ const handleBottomTabClick = (item) => {
   }
 }
 
+@keyframes scroll {
+  from {
+    transform: translateY(15%); /* 从上边开始滚动 */
+  }
+  to {
+    transform: translateY(-100%); /* 滚动到下边后，位置重新从上边开始 */
+  }
+}
+
+.animate-scroll {
+  animation: scroll 10s linear infinite;
+}
 
 </style>

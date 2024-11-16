@@ -218,7 +218,11 @@ const getMenuDataList = async () => {
     '135': 'Grow',
     '136': 'Soil',
     '137': 'Weather',
-    '138': 'Bug'
+    '138': 'Bug',
+    '142': 'Grow',
+    '144': 'Weather',
+    '145': 'Bug',
+    '146': 'Soil'
   };
   localStorage.setItem('maplist', JSON.stringify(allDeviceDataList.value));
 
@@ -310,8 +314,14 @@ const getIconClass = (item) => {
     '135': 'grow',
     '136': 'soil',
     '137': 'weather',
-    '138': 'bug'
+    '138': 'bug',
+    '142': 'grow',
+    '144': 'weather',
+    '145': 'bug',
+    '146': 'soil'
   };
+  console.log('deviceStatus', deviceStatus);
+  if (deviceStatus === 'fault') return 'offline' + '-' + (kindMap[deviceKind] || 'monitor');
   return deviceStatus + '-' + (kindMap[deviceKind] || 'monitor');
 };
 </script>
