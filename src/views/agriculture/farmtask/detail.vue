@@ -237,7 +237,6 @@ const formData = ref({
   agriCapitalUnit: undefined,
   agriCapitalAmount: undefined,
   agriCapitalConsume: undefined,
-  jobType: undefined,
   taskImg: undefined
 });
 
@@ -258,7 +257,8 @@ const getInfo = async () => {
   detailLoading.value = true;
   try {
     formData.value = await FarmTaskApi.getFarmTask(props.id || queryId);
-    formData.value.jobType = toInteger(formData.value.jobType);
+    formData.value.jobType =
+      formData.value.jobType == null ? '' : toInteger(formData.value.jobType);
   } finally {
     detailLoading.value = false;
   }
@@ -297,10 +297,11 @@ const formData1 = ref({
 });
 const productInfo = async (id) => {
   try {
-    const productData = await ProductApi.getProductUnit(id);
-    console.log("productData-------------------------------------", id)
-    formData1.value = productData;
-    formData.value.agriCapitalUnit = productData.unitName;
+    if (id) {
+      const productData = await ProductApi.getProductUnit(id);
+      formData1.value = productData;
+      formData.value.agriCapitalUnit = productData.unitName;
+    }
   } catch (error) {
     console.error('没有找到该条信息:', error);
   }
