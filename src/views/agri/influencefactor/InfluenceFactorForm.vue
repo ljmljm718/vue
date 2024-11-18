@@ -10,18 +10,26 @@
       <el-form-item label="因子名称" prop="factorName">
         <el-input v-model="formData.factorName" placeholder="请输入因子名称"/>
       </el-form-item>
-      <el-form-item label="监测类型" prop="monitorType">
-        <el-select v-model="formData.monitorType" placeholder="请选择传感器监测类型" class="w-1/1">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.MONITOR_TYPE)"
-            :key="dict.label"
-            :label="dict.label"
-            :value="dict.label"
-          />
+      <el-form-item label="监测类型" prop="monitorType" class="flex">
+        <el-select
+            v-model="formData.monitorType"
+            placeholder="请选择"
+            class="flex-1"
+          >
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.MONITOR_TYPE)"
+              :key="dict.label"
+              :label="dict.label"
+              :value="dict.label"
+            />
         </el-select>
+        <el-button @click="router.push('/dict/type/data/monitor_type')">
+            <Icon icon="ep:search"/>
+            配置
+          </el-button>
       </el-form-item>
-      <el-form-item label="因子类别" prop="factorType">
-        <el-select v-model="formData.factorType" placeholder="请选择因子类别" class="w-1/1">
+      <el-form-item label="因子类别" prop="factorType" class="flex">
+        <el-select v-model="formData.factorType" placeholder="请选择因子类别" class="flex-1">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.FACTOR_TYPE)"
             :key="dict.label"
@@ -29,6 +37,10 @@
             :value="dict.label"
           />
         </el-select>
+         <el-button @click="router.push('/dict/type/data/factor_type')">
+            <Icon icon="ep:search"/>
+            配置
+          </el-button>
       </el-form-item>
       <el-form-item label="影响类别" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入影响类别"/>
@@ -52,10 +64,11 @@
 <script setup lang="ts">
 import {InfluenceFactorApi, InfluenceFactorVO} from '@/api/agri/influencefactor'
 import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
-
+import {useRouter} from "vue-router";  
 /** 影响因子 表单 */
 defineOptions({name: 'InfluenceFactorForm'})
 
+const router = useRouter();
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
