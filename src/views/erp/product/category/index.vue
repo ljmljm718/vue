@@ -27,6 +27,7 @@
           placeholder="请输入产品类别"
           clearable
           @keyup.enter="handleQuery"
+          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="开启状态" prop="status">
