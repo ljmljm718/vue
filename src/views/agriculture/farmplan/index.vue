@@ -1012,7 +1012,7 @@ const selectOption = ref<AnyObject>({});
 watch(
   () => formData.value.consumeNum,
   (newVal) => {
-    formData.value.feedCost = newVal * selectOption.value.minPrice;
+    formData.value.feedCost = newVal * selectOption.value.purchasePrice;
   }
 );
 //选择消耗品
