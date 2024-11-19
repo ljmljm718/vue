@@ -31,9 +31,9 @@
         />
       </div>
     </div>
-    <div class="w-75% p-15px box-border grid grid-rows-4 grid-cols-4 gap-15px h-100% device-main">
+    <div class="w-75% p-15px box-border flex flex-wrap h-100% device-main overflow-auto ">
       <div
-        class="w-100% h-100% flex justify-center items-center px-10px py-10px box-border main-item"
+        class="w-23% h-200px m-10px flex justify-center items-center px-10px py-10px box-border main-item"
         v-for="(item, index) in videoList"
         :key="index"
       >
@@ -268,6 +268,9 @@ defineExpose({ handleActive })
 .device-main {
   background-image: url(./assets/device-main.png);
   background-size: 100% 100%;
+}
+.device-main::-webkit-scrollbar{
+  width: 0;
 }
 .online {
   background-image: url(./assets/online.png);
