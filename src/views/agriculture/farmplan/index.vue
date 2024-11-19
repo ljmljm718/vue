@@ -505,7 +505,7 @@
         <div>
           <div class="flex w-100% justify-evenly">
             <div>分类：{{ selectOption.categoryName }}</div>
-            <div>采购价格：{{ selectOption.minPrice }}(元)</div>
+            <div>采购价格：{{ selectOption.purchasePrice }}(元)</div>
           </div>
           <div class="flex my-15px w-100% justify-evenly">
             <div>单位：{{ selectOption.unitName }}</div>
@@ -1066,9 +1066,14 @@ watch(
 watch(
   () => dialogVisibleA.value,
   (val) => {
+
     if (!val) {
       selectionList.value = [];
       selectList.value = selectList2.value;
+    }else if(paramsA.value.length > 1){
+
+      paramsA.value = paramsA.value.slice(1) ;
+      
     }
   }
 );
@@ -1451,8 +1456,16 @@ const silderTab = (val: any) => {
   dataListA.value.forEach((item: any) => {
     if (item.name == val) {
       dataList.value.push(item);
+    }else if(item.name != val){
+      item.child.forEach((itm:any)=>{
+        if(itm.name == val){
+          dataList.value.push(item)
+        }
+      })
     }
   });
+  let list = Array.from(new Set([...dataList.value]))
+  dataList.value = list
 };
 
 //******************************地块切换***********************
