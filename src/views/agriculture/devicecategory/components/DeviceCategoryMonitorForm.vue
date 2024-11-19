@@ -8,10 +8,14 @@
     :inline-message="true"
   >
     <el-table :data="formData" class="-mt-10px">
-      <el-table-column label="编号" width="160" >
+      <el-table-column label="编号" width="160">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.serialNumber`" :rules="formRules.serialNumber" class="mb-0px!">
-<!--            <el-input v-model="row.serialNumber" placeholder="请输入编号" />-->
+          <el-form-item
+            :prop="`${$index}.serialNumber`"
+            :rules="formRules.serialNumber"
+            class="mb-0px!"
+          >
+            <!--            <el-input v-model="row.serialNumber" placeholder="请输入编号" />-->
             <el-input-number
               v-model="row.serialNumber"
               :min="1"
@@ -26,6 +30,13 @@
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.monitor`" :rules="formRules.monitor" class="mb-0px!">
             <el-input v-model="row.monitor" placeholder="请输入监测类型" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="单位" min-width="120">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.unit`" :rules="formRules.unit" class="mb-0px!">
+            <el-input v-model="row.unit" placeholder="请输入单位" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -48,38 +59,39 @@
   </el-row>
 </template>
 <script setup lang="ts">
-import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 
 const props = defineProps<{
-  deviceId: undefined // 设备分类id（主表的关联字段）
-}>()
-const formLoading = ref(false) // 表单的加载中
-const formData = ref([])
+  deviceId: undefined; // 设备分类id（主表的关联字段）
+}>();
+const formLoading = ref(false); // 表单的加载中
+const formData = ref([]);
 const formRules = reactive({
   serialNumber: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
   monitor: [{ required: true, message: '监测类型不能为空', trigger: 'blur' }],
-})
-const formRef = ref() // 表单 Ref
+  unit: [{ required: true, message: '单位不能为空', trigger: 'blur' }]
+});
+const formRef = ref(); // 表单 Ref
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
   () => props.deviceId,
   async (val) => {
     // 1. 重置表单
-    formData.value = []
+    formData.value = [];
     // 2. val 非空，则加载数据
     if (!val) {
       return;
     }
     try {
-      formLoading.value = true
-      formData.value = await DeviceCategoryApi.getDeviceCategoryMonitorListByDeviceId(val)
+      formLoading.value = true;
+      formData.value = await DeviceCategoryApi.getDeviceCategoryMonitorListByDeviceId(val);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   },
   { immediate: true }
-)
+);
 
 /** 新增按钮操作 */
 const handleAdd = () => {
@@ -89,25 +101,26 @@ const handleAdd = () => {
     serialNumber: undefined,
     monitor: undefined,
     remark: undefined,
-  }
-  row.deviceId = props.deviceId
-  formData.value.push(row)
-}
+    unit: undefined
+  };
+  row.deviceId = props.deviceId;
+  formData.value.push(row);
+};
 
 /** 删除按钮操作 */
 const handleDelete = (index) => {
-  formData.value.splice(index, 1)
-}
+  formData.value.splice(index, 1);
+};
 
 /** 表单校验 */
 const validate = () => {
-  return formRef.value.validate()
-}
+  return formRef.value.validate();
+};
 
 /** 表单值 */
 const getData = () => {
-  return formData.value
-}
+  return formData.value;
+};
 
-defineExpose({ validate, getData })
+defineExpose({ validate, getData });
 </script>
