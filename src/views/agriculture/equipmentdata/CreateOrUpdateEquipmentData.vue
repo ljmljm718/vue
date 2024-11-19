@@ -144,6 +144,16 @@
 
   <div v-if= boo>
     <EditFrame>
+      <template #header>
+        <div class="flex w-full justify-end ">
+            <el-button
+              type="primary"
+              plain
+              @click="router.back()"
+            >返回</el-button>
+        </div>
+      </template>
+
       <template #content>
         <el-scrollbar class="croll-bar-template">
         <!-- 原内容 -->
