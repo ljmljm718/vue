@@ -39,10 +39,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item
-        label="品种"
-        prop="varietyId"
-      >
+      <el-form-item label="品种" prop="varietyId">
         <el-select
           v-model="queryParams.varietyId"
           clearable
@@ -57,10 +54,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item
-        label="品类"
-        prop="variety"
-      >
+      <el-form-item label="品类" prop="variety">
         <el-select
           v-model="queryParams.variety"
           clearable
@@ -88,14 +82,13 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px"/>
+          <Icon icon="ep:search" class="mr-5px" />
           搜索
         </el-button>
         <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
+          <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-
       </el-form-item>
     </custom-form>
   </ContentWrap>
@@ -103,7 +96,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <div class="flex items-center mb-3">
-      <div style="margin-bottom: 1rem;margin-left: 1.5rem;margin-right: 1.5rem;height: 2rem">
+      <div style="margin-bottom: 1rem; margin-left: 1.5rem; margin-right: 1.5rem; height: 2rem">
         <el-form-item>
           <el-button
             type="primary"
@@ -112,14 +105,15 @@
             @click="openForm('create')"
             v-hasPermi="['agriculture:harvest-management:create']"
           >
-            <Icon icon="ep:plus" class="mr-5px"/>
+            <Icon icon="ep:plus" class="mr-5px" />
             新增
           </el-button>
         </el-form-item>
       </div>
       <div class="grow">
         <IntroduceAlert
-          title="采收管理模块的主要职责是集中展示作物的产量信息、库存状况以及相关的人工数据。"/>
+          title="采收管理模块的主要职责是集中展示作物的产量信息、库存状况以及相关的人工数据。"
+        />
       </div>
     </div>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border>
@@ -127,13 +121,17 @@
       <!-- <el-table-column label="记录编号" align="center" prop="recordNum" /> -->
 
       <!-- <el-table-column label="基地ID" align="center" prop="belongParkId" /> -->
-      <el-table-column label="基地" align="center" prop="belongPark" width="180"/>
+      <el-table-column label="基地" align="center" prop="belongPark" width="180" />
       <!-- <el-table-column label="地块ID" align="center" prop="belongPlotId" /> -->
-      <el-table-column label="地块" align="center" prop="belongPlot" width="180"/>
+      <el-table-column label="地块" align="center" prop="belongPlot" width="180" />
       <!-- <el-table-column label="品种ID" align="center" prop="varietyId" /> -->
       <el-table-column
-        label="批次码" align="center" prop="batchCode" width="180"
-        v-if="show !==118"/>
+        label="批次码"
+        align="center"
+        prop="batchCode"
+        width="180"
+        v-if="show !== 118"
+      />
       <el-table-column
         label="上传时间"
         align="center"
@@ -142,11 +140,19 @@
         width="180px"
       />
       <el-table-column
-        label="品种名称" align="center" prop="varietyName" width="140"
-        v-if="show !==118"/>
+        label="品种名称"
+        align="center"
+        prop="varietyName"
+        width="140"
+        v-if="show !== 118"
+      />
       <el-table-column
-        label="品类名称" align="center" prop="variety" width="120"
-        v-if="show !==118"/>
+        label="品类名称"
+        align="center"
+        prop="variety"
+        width="120"
+        v-if="show !== 118"
+      />
       <!--      <el-table-column label="采收数量(亩/只/条)" align="center" prop="harvestNum" />-->
       <el-table-column label="采收数量（亩/只/条）" align="center" prop="harvestNum" width="160">
         <!--        <template #default="scope">-->
@@ -184,6 +190,7 @@
           <el-button
             link
             type="success"
+            v-if="parseInt(scope.row.remark) > 0"
             @click="openVillageProductForm('create', scope.row.id)"
           >
             加工
@@ -199,6 +206,7 @@
           <el-button
             link
             type="primary"
+            v-if="parseInt(scope.row.remark) >= parseInt(scope.row.harvestVolume)"
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['agriculture:harvest-management:update']"
           >
@@ -207,6 +215,7 @@
           <el-button
             link
             type="danger"
+            v-if="parseInt(scope.row.remark) >= parseInt(scope.row.harvestVolume)"
             @click="handleDelete(scope.row.id)"
             v-hasPermi="['agriculture:harvest-management:delete']"
           >
@@ -225,9 +234,9 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <HarvestManagementForm ref="formRef" @success="getList"/>
+  <HarvestManagementForm ref="formRef" @success="getList" />
   <!-- 表单弹窗：添加/修改 -->
-  <VillageProductForm ref="formVpRef" @success="getList"/>
+  <VillageProductForm ref="formVpRef" @success="getList" />
 
   <el-drawer v-model="drawer2" :direction="direction" :data="formData">
     <template #header>
@@ -250,11 +259,11 @@
       <!--        </el-timeline-item>-->
       <!--      </el-timeline>-->
       <el-table v-loading="loading" :data="formData" :stripe="true" :show-overflow-tooltip="true">
-        <el-table-column label="品种名称" align="center" prop="product"/>
-        <el-table-column label="产品数量" align="center" prop="inventory"/>
-        <el-table-column label="产品规格" align="center" prop="specifications"/>
-        <el-table-column label="消耗量" align="center" prop="remark"/>
-        <el-table-column label="批次号" align="center" prop="batchCode"/>
+        <el-table-column label="品种名称" align="center" prop="product" />
+        <el-table-column label="产品数量" align="center" prop="inventory" />
+        <el-table-column label="产品规格" align="center" prop="specifications" />
+        <el-table-column label="消耗量" align="center" prop="remark" />
+        <el-table-column label="批次号" align="center" prop="batchCode" />
         <el-table-column
           label="加工时间"
           align="center"
@@ -271,49 +280,48 @@
     </template>
   </el-drawer>
 
-
   <!--  选择基地-->
-  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange"/>
+  <ParkInfoPopup ref="parkPopupRef" @success="handleParkPopupChange" />
   <!--  选择地块-->
-  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange"/>
+  <ParkDetailPopup ref="plotPopupRef" @success="handlePlotPopupChange" />
 </template>
 
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
-import download from '@/utils/download'
-import {HarvestManagementApi, HarvestManagementVO} from '@/api/agriculture/harvestmanagement'
-import HarvestManagementForm from './HarvestManagementForm.vue'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { HarvestManagementApi, HarvestManagementVO } from '@/api/agriculture/harvestmanagement';
+import HarvestManagementForm from './HarvestManagementForm.vue';
 
-import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue'
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {DrawerProps} from "element-plus";
-import {FarmRecordApi, FarmRecordVO} from "@/api/agriculture/farmrecord";
-import {formatTime} from "@/utils";
+import VillageProductForm from '@/views/digital/villageproduct/VillageProductForm.vue';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { DrawerProps } from 'element-plus';
+import { FarmRecordApi, FarmRecordVO } from '@/api/agriculture/farmrecord';
+import { formatTime } from '@/utils';
 import {
   VillageProcessingRecordsApi,
   VillageProcessingRecordsVO
-} from "@/api/digital/villageprocessingrecords";
-import {getTenantId} from "@/utils/auth";
-import {useUserStore} from "@/store/modules/user";
-import {allDataCacheManager, VarietyManagementVO} from "@/api/agriculture/varietymanagement";
-import {CategoryManagementApi, CategoryManagementVO} from "@/api/agriculture/categorymanagement";
-import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-import {ParkDetailVO} from '@/api/agriculture/parkdetail'
-import {ParkInfoVO} from '@/api/agriculture/parkinfo'
-import {page, parkPage} from '@/views/agriculture/IntelligentStatistics/api.ts'
+} from '@/api/digital/villageprocessingrecords';
+import { getTenantId } from '@/utils/auth';
+import { useUserStore } from '@/store/modules/user';
+import { allDataCacheManager, VarietyManagementVO } from '@/api/agriculture/varietymanagement';
+import { CategoryManagementApi, CategoryManagementVO } from '@/api/agriculture/categorymanagement';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import { ParkDetailVO } from '@/api/agriculture/parkdetail';
+import { ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { page, parkPage } from '@/views/agriculture/IntelligentStatistics/api.ts';
 
 /** 采收管理 列表 */
-defineOptions({name: 'HarvestManagement'})
-const drawer2 = ref(false)
-const direction = ref<DrawerProps['direction']>('rtl')
-const formData = ref<VillageProcessingRecordsVO[]>([])
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+defineOptions({ name: 'HarvestManagement' });
+const drawer2 = ref(false);
+const direction = ref<DrawerProps['direction']>('rtl');
+const formData = ref<VillageProcessingRecordsVO[]>([]);
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<HarvestManagementVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<HarvestManagementVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -333,7 +341,7 @@ const queryParams = reactive({
   belongPlotId: undefined, // 地块ID
   varietyCode: undefined,
   harvestNum: undefined
-})
+});
 const queryParam = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -342,72 +350,71 @@ const queryParam = reactive({
   product: undefined,
   batchCode: undefined,
   createTime: [],
-  remark: undefined,
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-const show = ref()
-const userStore = useUserStore()
-const userName = computed(() => userStore.user.deptId ?? '0')
+  remark: undefined
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+const show = ref();
+const userStore = useUserStore();
+const userName = computed(() => userStore.user.deptId ?? '0');
 
 function cancelClick() {
-  drawer2.value = false
+  drawer2.value = false;
 }
 
 const handleVarietyChange = (e) => {
-  const _item = listVarietyManagement.value.find(item => (item.id === e))
-  if (_item) queryParams.variety = _item.categoryId
-}
+  const _item = listVarietyManagement.value.find((item) => item.id === e);
+  if (_item) queryParams.variety = _item.categoryId;
+};
 const damn = async (row) => {
   queryParam.recoveryNum = row.id;
-  const data = await VillageProcessingRecordsApi.getVillageProcessingRecordsPage(queryParam)
+  const data = await VillageProcessingRecordsApi.getVillageProcessingRecordsPage(queryParam);
   data.list.forEach((item) => {
     // item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : ""
-  })
-  formData.value = data.list
-  drawer2.value = true
-}
+  });
+  formData.value = data.list;
+  drawer2.value = true;
+};
 //获取基地
-const baseList = ref([])
+const baseList = ref([]);
 const getPage = async () => {
-  let res = await page()
-  baseList.value = res.list
+  let res = await page();
+  baseList.value = res.list;
   // queryParams.belongPark = res.list[0].id
-  getParkPage({parkId: res.list.id})
-}
-getPage()
+  getParkPage({ parkId: res.list.id });
+};
+getPage();
 //获取地块
-const plotList = ref([])
+const plotList = ref([]);
 
 const getParkPage = async (parkId) => {
-  let res = await parkPage(parkId)
-  plotList.value = res.list
+  let res = await parkPage(parkId);
+  plotList.value = res.list;
   // queryParams.belongPlot = res.list[0].id
-}
+};
 
 // 采收管理
-const formVpRef = ref()
+const formVpRef = ref();
 const openVillageProductForm = async (type: string, id: number) => {
-  formVpRef.value.open(type, await HarvestManagementApi.getHarvestManagement(id))
-}
+  formVpRef.value.open(type, await HarvestManagementApi.getHarvestManagement(id));
+};
 
-const listVarietyManagement = ref<VarietyManagementVO[]>([]) // 品类列表的数据
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
+const listVarietyManagement = ref<VarietyManagementVO[]>([]); // 品类列表的数据
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
 const getTypeData = async () => {
   //@ignore
-  listVarietyManagement.value = await allDataCacheManager.getData({})
-  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({})
-}
-getTypeData()
-
+  listVarietyManagement.value = await allDataCacheManager.getData({});
+  listCategoryManagement.value = await CategoryManagementApi.getAllCategoryManagement({});
+};
+getTypeData();
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
-  show.value = userName.value
+  loading.value = true;
+  show.value = userName.value;
   try {
-    const data = await HarvestManagementApi.getHarvestManagementPage(queryParams)
-    list.value = data.list
+    const data = await HarvestManagementApi.getHarvestManagementPage(queryParams);
+    list.value = data.list;
     // list.value.forEach((item, index) => {
     //   const _itemA = listVarietyManagement.value.find(itemA => (itemA.id === item.varietyId))
     //   if (_itemA) {
@@ -416,102 +423,101 @@ const getList = async () => {
     //     item.varietyCode = _itemA.categoryId
     //   }
     // });
-    total.value = data.total
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  queryParams.belongParkId = undefined
-  queryParams.belongPlotId = undefined
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  queryParams.belongParkId = undefined;
+  queryParams.belongPlotId = undefined;
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 const openForm1 = () => {
-  message.alertWarning(t('新增需前往种植管理进行采收'))
-}
+  message.alertWarning(t('新增需前往种植管理进行采收'));
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await HarvestManagementApi.deleteHarvestManagement(id)
-    message.success(t('common.delSuccess'))
+    await HarvestManagementApi.deleteHarvestManagement(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+    await getList();
+  } catch {}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await HarvestManagementApi.exportHarvestManagement(queryParams)
-    download.excel(data, '采收管理.xls')
+    exportLoading.value = true;
+    const data = await HarvestManagementApi.exportHarvestManagement(queryParams);
+    download.excel(data, '采收管理.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 //基地的选择
-const parkPopupRef = ref()
-const openType = ref('')
+const parkPopupRef = ref();
+const openType = ref('');
 const openParkPopup = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    message.error("请选择基地")
-  } else parkPopupRef.value.open(id)
-}
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地');
+  } else parkPopupRef.value.open(id);
+};
 const handleParkPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    queryParams.belongParkId = String(order[0].code)
-    queryParams.belongPark = String(order[0].name)
-  } else queryParams.belongPark = String(order[0].name)
-}
+    queryParams.belongParkId = String(order[0].code);
+    queryParams.belongPark = String(order[0].name);
+  } else queryParams.belongPark = String(order[0].name);
+};
 
 //地块的选择
-const plotPopupRef = ref()
-const openType1 = ref('')
+const plotPopupRef = ref();
+const openType1 = ref('');
 const openPlotPopup = (id: string) => {
   openType1.value = id;
   if (!openType1.value) {
-    message.error("请选择基地")
-  } else plotPopupRef.value.open(id)
-}
+    message.error('请选择基地');
+  } else plotPopupRef.value.open(id);
+};
 const handlePlotPopupChange = (order: ParkDetailVO) => {
-  console.log("--->>查看选择的地块信息：", order[0])
-  queryParams.belongParkId = String(order[0].parkId)
-  queryParams.belongPlotId = String(order[0].id)
-  queryParams.belongPlot = String(order[0].name)
-}
+  console.log('--->>查看选择的地块信息：', order[0]);
+  queryParams.belongParkId = String(order[0].parkId);
+  queryParams.belongPlotId = String(order[0].id);
+  queryParams.belongPlot = String(order[0].name);
+};
 </script>
