@@ -287,7 +287,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
-    if(JkObjectId){
+    if(JkObjectId.value){
       queryParams.deviceType =  JkObjectId.value[0].id
     }
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
@@ -307,12 +307,13 @@ const getList = async () => {
 }
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+const handleQuery = async () => {
   queryParams.pageNo = 1
   if (deviceType.value != null && deviceType.value != undefined){
    queryParams.deviceType = deviceType.value.join(",")
   }
-  getList()
+  console.log("queryParams", queryParams)
+  await getList()
 }
 
 /** 重置按钮操作 */
