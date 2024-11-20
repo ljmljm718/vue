@@ -344,7 +344,7 @@
             </div>
             <!-- 开始识别 & 手动标注 -->
             <div class="my-[1rem]">
-              <el-button color="#009688" @click="handleClickIdentify">开始识别</el-button>
+              <el-button color="#009688" @click="handleClickIdentify(list[curItem])">开始识别</el-button>
               <el-button color="#59B9DE" @click="openRecognizeForm('create', list[curItem].id)">
                 <span class="text-white">手动标注</span>
               </el-button>
@@ -657,8 +657,24 @@ const getCountDetail = async (id) => {
 };
 
 // 点击开始识别
-const handleClickIdentify = () => {
-  message.alert('敬请期待!');
+const handleClickIdentify = async (objects:any) => {
+  if(objects.identifyStatus == 0){
+    ElMessage.error('该图片已识别，请选择未识别的图片')
+    return
+  }
+  if('虫害' == objects.monitorType){
+    ElMessage.warning( '识别中，请稍等')
+    let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
+    ElMessage({
+      message: restMsg,
+      type: 'success',
+      });
+  }else{
+    ElMessage('抱歉，无法识别病害图片');
+  }
+  
+  
+  
   spotResTableKey.value = new Date().getTime();
 };
 </script>
