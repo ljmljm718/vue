@@ -54,5 +54,9 @@ export const DiseasePestSurveillanceApi = {
   //新增病虫害识别
   createDiseasePestSurveillanceRecognize: async (data) => {
     return await request.post({ url :`/agriculture/identification-result/batch-create` ,data})
+  },
+  // python自动识别病害接口
+  pyCreateDiseasePestSurveillance : async (params) =>{
+    return await request.get({ url :`/agriculture/identification-result/main-id-by-python-insert?id=`+params})
   }
 }
