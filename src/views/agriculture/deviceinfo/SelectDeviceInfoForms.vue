@@ -287,7 +287,9 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true
   try {
-    if(JkObjectId){
+    console.log("JkObjectId",JkObjectId.value != undefined);
+    
+    if(JkObjectId.value ){
       queryParams.deviceType =  JkObjectId.value[0].id
     }
     const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
