@@ -38,7 +38,7 @@
       <el-form-item label="订单时间" prop="orderTime">
         <el-date-picker
           v-model="queryParams.orderTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
