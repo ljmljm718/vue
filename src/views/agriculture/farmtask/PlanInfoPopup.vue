@@ -159,7 +159,7 @@
 
 <script lang="ts" setup>
 import { ElTable } from 'element-plus';
-import {DICT_TYPE, getIntDictOptions, getStrDictOptions} from '@/utils/dict';
+import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '@/utils/dict';
 import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
 import { FarmDefineApi } from '@/api/agriculture/farmdefine';
 import { FarmPlanApi, FarmPlanVO } from '@/api/agriculture/farmplan';
@@ -239,7 +239,7 @@ const getList = async () => {
     data.list.forEach((item) => {
       item.farmDefineType = item.farmDefineType ? parseInt(item.farmDefineType) : '';
       listCategoryManagement.value.forEach((itm) => {
-        if (item.cropType == itm.id) item.cropType = itm.categoryName;
+        if (item.cropType == itm.categoryId) item.cropType = itm.categoryName;
       });
     });
     list.value = data.list;
