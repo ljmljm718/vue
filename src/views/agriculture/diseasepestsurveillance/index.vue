@@ -669,8 +669,9 @@ const handleClickIdentify = async (objects:any) => {
       message: restMsg,
       type: 'success',
       });
+    await getList();
   }else{
-    ElMessage('抱歉，无法识别病害图片');
+    ElMessage.error('抱歉，无法识别病害图片');
   }
   
   
