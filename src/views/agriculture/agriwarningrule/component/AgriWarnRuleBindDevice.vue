@@ -272,6 +272,17 @@ const selectionList = ref<Array<any>>([]);
 const handleSelectionChange = (rows) => {
   // 解决来回切换页面，也无法清除上次选中情况
   selectionList.value = rows;
+  ids.value = [];
+  if (rows) {
+    undefined;
+    rows.forEach((row) => {
+      undefined;
+      if (row) {
+        undefined;
+        ids.value.push(row.id);
+      }
+    });
+  }
 };
 
 // 控制table-----多选选择
