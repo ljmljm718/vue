@@ -387,6 +387,9 @@ const handleBottomTabClick = (item) => {
   getMedicalData(activeTab.value)
   getActiveVideo(activeTab.value)
   enableActiveVideo(activeTab.value)
+  const activeItem = document.getElementById("scrollItem")
+  if (!activeItem) return
+  activeItem.classList.remove('animate-scroll');
   nextTick(() => checkedOverFlow())
   
 }
@@ -402,11 +405,8 @@ const checkedOverFlow = () => {
   const activeItem = document.getElementById("scrollItem")
   if (!activeItem) return
   if (_scrollHeight > _clientHeight) {
-    
     activeItem.classList.add('animate-scroll');
-  } else {
-    activeItem.classList.remove('animate-scroll');
-  }
+  } 
 }
 onMounted(() => {
   checkedOverFlow()
