@@ -1,136 +1,134 @@
 <template>
-  <!-- 搜索栏 -->
-  <ContentWrap>
-    <custom-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      label-width="auto"
-      :inline="true"
-    >
-      <!-- 表单内容 -->
-      <el-form-item label="产品名称" prop="schemeName">
-        <el-input
-          class="!w-240px"
-          v-model="queryParams.schemeName"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="设计人" prop="marketingCreator">
-        <el-input
-          class="!w-240px"
-          v-model="queryParams.marketingCreator"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="分类" prop="marketingCategory">
-        <el-input
-          class="!w-240px"
-          v-model="queryParams.marketingCategory"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="标签" prop="marketingTags">
-        <el-input
-          class="!w-240px"
-          v-model="queryParams.marketingTags"
-          placeholder="请输入"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="上传时间" prop="marketingUploadTime">
-        <el-date-picker
-          class="!w-220px"
-          v-model="queryParams.marketingUploadTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-        />
-      </el-form-item>
-      <!-- 表单按钮 -->
-      <el-form-item>
-        <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" />
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" />
-          重置
-        </el-button>
-      </el-form-item>
-    </custom-form>
-  </ContentWrap>
-  <!-- 数据列表 -->
-  <ContentWrap>
-    <!-- 第一行功能按钮 -->
-    <div class="flex justify-between">
-      <div class="flex flex-wrap content-center">
-        <el-button
-          type="primary"
-          plain
+  <div
+    class="w-full bg-[#ECEFF7] rounded-[6px] text-[#666] text-[14px]"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <!-- 标题 -->
+    <div class="w-full p-[16px] box-border flex justify-between items-center">
+      <h1 class="m-0 text-[#333] font-bold text-[18px]">礼盒样式</h1>
+      <div>
+        <button
+          class="primary-btn"
           @click="openForm('create')"
           v-hasPermi="['agriculture:marketing-program:create']"
         >
-          <el-icon><Plus /></el-icon>
           新增
-        </el-button>
-        <el-button
-          plain
+        </button>
+        <button
+          class="secondary-btn ml-[8px]"
           @click="handleExport"
-          :loading="exportLoading"
           v-hasPermi="['agriculture:marketing-program:export']"
         >
-          <el-icon><Download /></el-icon>
           导出
-        </el-button>
-      </div>
-      <div class="flex flex-wrap content-center">
-        <el-radio-group v-model="listType" size="small" @change="handleCardChange">
-          <el-radio-button label="card" value="card">
-            <el-icon><Menu /></el-icon>
-            卡片
-          </el-radio-button>
-          <el-radio-button label="list" value="list">
-            <el-icon><List /></el-icon>
-            列表
-          </el-radio-button>
-        </el-radio-group>
+        </button>
       </div>
     </div>
-    <!-- 第二行列表数据 -->
-    <el-scrollbar height="70vh" class="mt-[20px]">
-      <!-- 卡片形式 -->
-      <div
-        v-if="list.length && currentItem && listType === 'card'"
-        class="grid grid-cols-2 gap-3 text-[#999999]"
-      >
-        <!-- 预览区 -->
-        <div
-          :class="`
-            col-span-1 rounded-md shadow-md previewContainer pb-[10px]
-            ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
-          `"
+
+    <div
+      class="w-full bg-white rounded-[6px] px-[16px] pt-[8px] box-border flex flex-col min-h-[570px]"
+      :style="{ height: 'calc(100% - ' + (btnHeight + 2 * modulePadding) + 'px)' }"
+    >
+      <!-- 操作按钮 -->
+      <div class="flex justify-end items-center">
+        <button class="primary-btn flex items-center" @click="handleQuery">
+          <Icon :size="14" icon="ep:search" class="mr-[8px]" />
+          查询
+        </button>
+        <button class="secondary-btn ml-[8px] flex items-center" @click="resetQuery">
+          <Icon :size="14" icon="ep:refresh" class="mr-[8px]" />
+          重置
+        </button>
+
+        <el-radio-group v-model="listType" class="ml-[8px] card-list" @change="handleCardChange">
+          <el-radio-button label="list" value="list">
+            <Icon :size="14" icon="ep:list" />
+          </el-radio-button>
+          <el-radio-button label="card" value="card">
+            <Icon :size="14" icon="ep:menu" />
+          </el-radio-button>
+        </el-radio-group>
+
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
         >
-          <div class="previewArea sticky top-0">
-            <div class="relative">
-              <div class="text-center">
-                <el-image
-                  :src="currentItem.coverImage"
-                  :preview-src-list="[currentItem.coverImage]"
-                  preview-teleported
-                  fit="contain"
-                  class="w-full h-[50vh]"
-                />
-              </div>
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+
+      <!-- 搜索栏 -->
+      <el-form
+        class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[8px] mt-[8px] transition-all duration-500"
+        :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+        :model="queryParams"
+        ref="queryFormRef"
+        label-width="88px"
+        :inline="true"
+        id="formDom"
+      >
+        <el-form-item label="产品名称" prop="schemeName" class="!m-0">
+          <el-input
+            v-model="queryParams.schemeName"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="设计人" prop="marketingCreator" class="!m-0">
+          <el-input
+            v-model="queryParams.marketingCreator"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="分类" prop="marketingCategory" class="!m-0">
+          <el-input
+            v-model="queryParams.marketingCategory"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="标签" prop="marketingTags" class="!m-0">
+          <el-input
+            v-model="queryParams.marketingTags"
+            placeholder="请输入"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="上传时间" prop="marketingUploadTime" class="!m-0">
+          <el-date-picker
+            v-model="queryParams.marketingUploadTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          />
+        </el-form-item>
+      </el-form>
+
+      <!-- 内容 卡片形式 -->
+      <div
+        v-if="list.length > 0 && listType === 'card'"
+        v-loading="loading"
+        class="w-full mt-[16px] grid grid-cols-2 gap-[16px] transition-all duration-500"
+        :style="{ height: mainHeight }"
+      >
+        <el-scrollbar
+          style="height: 100%; border: 1px solid var(--el-color-primary)"
+          class="rounded-[6px]"
+        >
+          <div :class="`rounded-[6px] bg-white pb-[16px]`">
+            <div class="w-full pb-[56.25%] relative">
+              <img
+                :src="currentItem.coverImage"
+                :alt="currentItem.schemeName"
+                class="w-full h-full object-contain absolute top-0 left-0 rounded-t-[6px]"
+              />
               <div
                 v-show="currentItem.fileManagement"
                 class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[210px] rounded text-center leading-[40px] cursor-pointer"
@@ -170,52 +168,56 @@
                 <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
               </div>
             </div>
-            <div class="grid grid-cols-1 gap-1 my-10px px-3">
-              <div>
-                <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'} text-[18px]`">
-                  {{ currentItem.schemeName }}
-                </span>
-              </div>
-              <div>
-                <span class="text-[14px]">
-                  {{ currentItem.briefIntroduction }}
-                </span>
-              </div>
+
+            <div class="mt-[16px] px-[16px] text-[16px] font-bold">
+              {{ currentItem.schemeName }}
             </div>
+            <div class="m-[16px] border-t border-t-dashed border-[#E6E6E6]"></div>
+            <div class="px-[16px]">{{ currentItem.briefIntroduction }}</div>
           </div>
-        </div>
-        <!-- 卡片列表区 -->
-        <div class="col-span-1 grid grid-cols-2 2xl:grid-cols-3 gap-3 rounded">
-          <div
-            :class="`
-              ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
-              cursor-pointer shadow-md rounded-md pb-[10px] px-[10px]
-            `"
-            v-for="item in list"
-            :key="item.id"
-            @click="changCurrentItem(item)"
-          >
-            <el-image
-              :src="item.coverImage"
-              preview-teleported
-              fit="contain"
-              class="w-full h-[17vh]"
-            />
-            <div>
-              <span :class="`${themeIsDark ? 'text-[#fff]' : 'text-[#666666]'}`">
+        </el-scrollbar>
+
+        <el-scrollbar style="height: 100%">
+          <div class="w-full grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
+            <div
+              :class="`
+                cursor-pointer shadow-md rounded-[6px] pb-[10px] bg-white
+              `"
+              v-for="item in list"
+              :key="item.id"
+              @click="changCurrentItem(item)"
+            >
+              <div class="w-full pb-[56.25%] overflow-hidden relative">
+                <img
+                  :src="item.coverImage"
+                  :alt="item.schemeName"
+                  class="absolute top-0 left-0 w-full h-full object-cover rounded-t-[6px]"
+                />
+              </div>
+              <div class="mt-[16px] px-[16px]">
                 {{ item.schemeName }}
-              </span>
-            </div>
-            <div class="h-[5vh] truncate">
-              {{ item.briefIntroduction }}
+              </div>
+              <div class="mt-[8px] px-[16px] truncate">
+                {{ item.briefIntroduction }}
+              </div>
             </div>
           </div>
-        </div>
+        </el-scrollbar>
       </div>
       <div v-else-if="listType === 'card'" class="text-center tracking-widest">暂无数据</div>
-      <!-- 列表形式 -->
-      <div v-show="listType === 'list'">
-        <el-table :data="list" v-loading="loading" :show-overflow-tooltip="true">
+
+      <!-- 内容 列表形式 -->
+      <div
+        v-else
+        class="w-full mt-[16px] transition-all duration-500"
+        :style="{ height: mainHeight }"
+      >
+        <el-table
+          style="height: 100%"
+          :data="list"
+          v-loading="loading"
+          :show-overflow-tooltip="true"
+        >
           <el-table-column label="产品名称" align="center" prop="schemeName" />
           <el-table-column label="简介" align="center" prop="briefIntroduction" />
           <el-table-column label="设计人" align="center" prop="marketingCreator" />
@@ -286,14 +288,17 @@
           </el-table-column>
         </el-table>
       </div>
+
       <Pagination
+        style="margin-bottom: 0; margin-top: 8px"
+        class="self-end"
         :total="total"
         v-model:page="queryParams.pageNo"
         v-model:limit="queryParams.pageSize"
         @pagination="getList()"
       />
-    </el-scrollbar>
-  </ContentWrap>
+    </div>
+  </div>
 
   <!-- 表单弹窗：添加/修改 -->
   <MarketingProgramForm ref="formRef" @success="getList" />
@@ -617,26 +622,182 @@ const timeFormat = (dataString: string) => {
     (second < 10 ? '0' + second : second)
   );
 };
+
+/**
+ * 以下为布局需要的各类元素的高度
+ * 需要修改的是 searchAreaHeight 搜索栏区域的高度
+ * 以及 pagnitionHeight 页码组件的高度 这个需要包括margin
+ * 运行页面用控制台查看一下
+ *
+ * topMenuHeight      顶部菜单和标签页高度
+ * contentPadding     页面内容外边距
+ * modulePadding      模块内边距
+ * btnHeight          按钮高度
+ * searchAreaHeight   搜索栏区域高度
+ * pagnitionHeight    页码组件高度 需要包括margin
+ *
+ * mainHeight 是 本页 列表内容的高度 用白色区域的高度 - 操作按钮 - 搜索栏 - 页码 - 所有垂直方向上的边距
+ */
+const topMenuHeight = 85;
+const contentPadding = 8;
+const modulePadding = 16;
+const btnHeight = 32;
+// const searchAreaHeight = 56;
+const pagnitionHeight = 24 + 8;
+const mainHeight = ref();
+
+// 计算列表内容的高度
+const calcMainHeight = () => {
+  let dom = document.querySelector('#formDom');
+  if (!dom) return;
+  mainHeight.value =
+    'calc(100% - ' +
+    (2 * contentPadding + modulePadding + btnHeight + dom.clientHeight + pagnitionHeight) +
+    'px)';
+  dom = null;
+};
+
+onMounted(() => {
+  calcMainHeight();
+  window.addEventListener('resize', calcMainHeight);
+});
+
+// 展开或收起搜索栏
+const showSearch = ref(true);
+const handleClickShowSearch = async () => {
+  showSearch.value = !showSearch.value;
+  await nextTick();
+  calcMainHeight();
+};
 </script>
 
 <style scoped lang="scss">
-/* 消除element部分组件的部分样式 */
-//.el-tabs__nav-wrap::after {
-//  display: none;
-//}
-//.el-form-item {
-//  margin-bottom: 0;
-//}
-//.el-form-item--small {
-//  margin-bottom: 0;
-//}
-//.el-form--inline .el-form-item {
-//  margin-right: 0;
-//}
-//.el-range-editor.el-input__wrapper {
-//  padding: 0;
-//}
-//.el-button + .el-button {
-//  margin-left: 10px;
-//}
+// 主按钮
+.primary-btn {
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 32px;
+  font-size: 14px;
+  color: white;
+  border-width: 0;
+  border-radius: 6px;
+  background-color: var(--el-color-primary);
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+}
+
+// 次按钮
+.secondary-btn {
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 32px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  background-color: white;
+
+  &:hover {
+    cursor: pointer;
+    border-color: var(--el-color-primary);
+    color: var(--el-color-primary);
+  }
+}
+
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #e6e6e6;
+  color: #333;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+
+// el-radio-button 的内边距
+:deep(.card-list .el-radio-button__inner) {
+  padding: 8px 16px;
+  border-color: #e6e6e6;
+}
+
+// 第一个 el-radio-button 的左圆角 和 hover时样式
+:deep(.card-list .el-radio-button:first-child .el-radio-button__inner) {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+
+  &:hover {
+    border-color: var(--el-color-primary);
+  }
+}
+
+// 最后一个 el-radio-button 的左圆角 和 hover时样式
+:deep(.card-list .el-radio-button:last-child .el-radio-button__inner) {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-left: 1px solid #e6e6e6;
+
+  &:hover {
+    border-color: var(--el-color-primary);
+  }
+}
+
+// radio 激活时的样式
+:deep(.card-list .el-radio-button__original-radio:checked + .el-radio-button__inner) {
+  background-color: white;
+  color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+  box-shadow: none;
+}
+
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: white;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: white;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
+}
 </style>

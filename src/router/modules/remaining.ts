@@ -527,6 +527,14 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/bigscreenCZExtra',
+    name: 'bigscreenCZExtra',
+    component: () => import('@/views/bigscreenCZExtra/index.vue'),
+    meta: {
+      hidden: true
+    }
+  },
+  {
     path: '/bigscreenWY',
     name: 'bigscreenWY',
     component: () => import('@/views/bigscreenWangYan/index.vue'),

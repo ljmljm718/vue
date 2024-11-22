@@ -49,16 +49,16 @@
             <el-input v-model="formData.standard" placeholder="请输入规格" />
           </el-form-item>
         </el-col>
-<!--        <el-col :span="12">-->
-<!--          <el-form-item label="重量（kg）" prop="weight">-->
-<!--            <el-input-number-->
-<!--              v-model="formData.weight"-->
-<!--              placeholder="请输入重量（kg）"-->
-<!--              :min="0"-->
-<!--              class="!w-1/1"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <!--        <el-col :span="12">-->
+        <!--          <el-form-item label="重量（kg）" prop="weight">-->
+        <!--            <el-input-number-->
+        <!--              v-model="formData.weight"-->
+        <!--              placeholder="请输入重量（kg）"-->
+        <!--              :min="0"-->
+        <!--              class="!w-1/1"-->
+        <!--            />-->
+        <!--          </el-form-item>-->
+        <!--        </el-col>-->
         <el-col :span="12">
           <el-form-item label="采购价格" prop="purchasePrice">
             <el-input-number
@@ -140,12 +140,12 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="登记证号" prop="registerNum">
-            <el-input  v-model="formData.registerNum" placeholder="请输入登记证号" />
+            <el-input v-model="formData.registerNum" placeholder="请输入登记证号" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="包装关系" prop="packagingRelationship">
-            <el-input  v-model="formData.packagingRelationship" placeholder="请输入包装关系" />
+            <el-input v-model="formData.packagingRelationship" placeholder="请输入包装关系" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -167,23 +167,23 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { ProductApi, ProductVO } from '@/api/erp/product/product'
-import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
-import { ProductUnitApi, ProductUnitVO } from '@/api/erp/product/unit'
-import { CommonStatusEnum } from '@/utils/constants'
-import { defaultProps, handleTree } from '@/utils/tree'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { ProductApi, ProductVO } from '@/api/erp/product/product';
+import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category';
+import { ProductUnitApi, ProductUnitVO } from '@/api/erp/product/unit';
+import { CommonStatusEnum } from '@/utils/constants';
+import { defaultProps, handleTree } from '@/utils/tree';
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
 
 /** ERP 产品 表单 */
-defineOptions({ name: 'ProductForm' })
+defineOptions({ name: 'ProductForm' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
@@ -202,8 +202,8 @@ const formData = ref({
   produceDate: undefined,
   registerNum: undefined,
   packagingRelationship: undefined,
-  effectiveTime: undefined,
-})
+  effectiveTime: undefined
+});
 const formRules = reactive({
   name: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
   barCode: [{ required: true, message: '产品条码不能为空', trigger: 'blur' }],
@@ -217,58 +217,59 @@ const formRules = reactive({
   minPrice: [{ required: true, message: '最低价格不能为空', trigger: 'blur' }],
   standard: [{ required: true, message: '规格不能为空', trigger: 'blur' }],
   expiryDay: [{ required: true, message: '保质期天数不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
-const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
-const unitList = ref<ProductUnitVO[]>([]) // 产品单位列表
+});
+const formRef = ref(); // 表单 Ref
+const categoryList = ref<ProductCategoryVO[]>([]); // 产品分类列表
+const unitList = ref<ProductUnitVO[]>([]); // 产品单位列表
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await ProductApi.getProduct(id)
+      formData.value = await ProductApi.getProduct(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
   // 产品分类
-  let categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-
-  categoryList.value = handleTree(initCategoryData(categoryData), 'id', 'parentId')
+  let categoryData = await ProductCategoryApi.getProductCategorySimpleList();
+  // 筛选分类中产品类别为“投入品”的
+  categoryData = categoryData.filter((item) => item.productCategory === '投入品');
+  categoryList.value = handleTree(initCategoryData(categoryData), 'id', 'parentId');
   // 产品单位
-  unitList.value = await ProductUnitApi.getProductUnitSimpleList()
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+  unitList.value = await ProductUnitApi.getProductUnitSimpleList();
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as ProductVO
+    const data = formData.value as unknown as ProductVO;
     if (formType.value === 'create') {
-      await ProductApi.createProduct(data)
-      message.success(t('common.createSuccess'))
+      await ProductApi.createProduct(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await ProductApi.updateProduct(data)
-      message.success(t('common.updateSuccess'))
+      await ProductApi.updateProduct(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -287,34 +288,34 @@ const resetForm = () => {
     salePrice: undefined,
     minPrice: undefined,
     img: undefined,
-    produceDate: undefined,
-  }
-  formRef.value?.resetFields()
-}
+    produceDate: undefined
+  };
+  formRef.value?.resetFields();
+};
 
 const initCategoryData = (categoryData) => {
-  let agriCategoryData = []
-  const originCategoryData = [...categoryData]
-  let ids = categoryData.map(item => item.id)
+  let agriCategoryData = [];
+  const originCategoryData = [...categoryData];
+  let ids = categoryData.map((item) => item.id);
   // 获取农资分类
-  categoryData.forEach(item => {
-    if (item.name.includes("农资")) {
-      ids.push(item.id)
+  categoryData.forEach((item) => {
+    if (item.name.includes('农资')) {
+      ids.push(item.id);
       agriCategoryData = [
         ...agriCategoryData,
-        ...categoryData.filter(i => {
-          ids.push(i.id)
-          return item.id === i.parentId
+        ...categoryData.filter((i) => {
+          ids.push(i.id);
+          return item.id === i.parentId;
         }),
         item
-      ]
-      categoryData = categoryData.filter(i2 => !ids.includes(i2.id))
+      ];
+      categoryData = categoryData.filter((i2) => !ids.includes(i2.id));
     }
-  })
+  });
   // 如果产品分类为空，则设置查询参数为全部
   if (!agriCategoryData || agriCategoryData.length === 0) {
-    agriCategoryData = originCategoryData
+    agriCategoryData = originCategoryData;
   }
-  return agriCategoryData
-}
+  return agriCategoryData;
+};
 </script>

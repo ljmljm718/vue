@@ -193,7 +193,8 @@
           >
             <el-table-column label="报警类型" prop="warnType" width="150">
               <template #default="scope">
-                <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
+                <el-tag type="primary">{{ scope.row.warnType }}</el-tag>
+                <!--                <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />-->
               </template>
             </el-table-column>
             <el-table-column label="报警等级" prop="warnLevel">

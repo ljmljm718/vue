@@ -1,5 +1,5 @@
 <template>
-<!--  -->
+  <!--  -->
   <introduce-alert
     title="若有新增条目信息名称包含【农资】的相关数据，会单独展示在【投入品信息管理】"
   />
@@ -21,6 +21,15 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="产品类别" prop="productCategory">
+        <el-input
+          v-model="queryParams.productCategory"
+          placeholder="请输入产品类别"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="开启状态" prop="status">
         <el-select
           v-model="queryParams.status"
@@ -37,8 +46,14 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery" type="primary"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
       </el-form-item>
       <el-row>
         <el-form-item>
@@ -48,7 +63,8 @@
             @click="openForm('create')"
             v-hasPermi="['erp:product-category:create']"
           >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
+            <Icon icon="ep:plus" class="mr-5px" />
+            新增
           </el-button>
           <el-button
             type="success"
@@ -57,10 +73,12 @@
             :loading="exportLoading"
             v-hasPermi="['erp:product-category:export']"
           >
-            <Icon icon="ep:download" class="mr-5px" /> 导出
+            <Icon icon="ep:download" class="mr-5px" />
+            导出
           </el-button>
           <el-button type="danger" plain @click="toggleExpandAll">
-            <Icon icon="ep:sort" class="mr-5px" /> 展开/折叠
+            <Icon icon="ep:sort" class="mr-5px" />
+            展开/折叠
           </el-button>
         </el-form-item>
       </el-row>
@@ -80,6 +98,7 @@
     >
       <el-table-column label="编码" align="center" prop="code" />
       <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="产品类别" align="center" prop="productCategory" />
       <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column label="状态" align="center" prop="status">
         <template #default="scope">
@@ -128,98 +147,99 @@
 </template>
 
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import { handleTree } from '@/utils/tree'
-import download from '@/utils/download'
-import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
-import ProductCategoryForm from './ProductCategoryForm.vue'
-import IntroduceAlert from "@/components/IntroduceAlert/index.vue";
+import { getIntDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import { handleTree } from '@/utils/tree';
+import download from '@/utils/download';
+import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category';
+import ProductCategoryForm from './ProductCategoryForm.vue';
+import IntroduceAlert from '@/components/IntroduceAlert/index.vue';
 
 /** ERP 产品分类 列表 */
-defineOptions({ name: 'ErpProductCategory' })
+defineOptions({ name: 'ErpProductCategory' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<ProductCategoryVO[]>([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const list = ref<ProductCategoryVO[]>([]); // 列表的数据
 const queryParams = reactive({
   name: undefined,
-  status: undefined
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+  status: undefined,
+  productCategory: undefined
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ProductCategoryApi.getProductCategoryList(queryParams)
-    list.value = handleTree(data, 'id', 'parentId')
+    const data = await ProductCategoryApi.getProductCategoryList(queryParams);
+    list.value = handleTree(data, 'id', 'parentId');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await ProductCategoryApi.deleteProductCategory(id)
-    message.success(t('common.delSuccess'))
+    await ProductCategoryApi.deleteProductCategory(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await ProductCategoryApi.exportProductCategory(queryParams)
-    download.excel(data, '产品分类.xls')
+    exportLoading.value = true;
+    const data = await ProductCategoryApi.exportProductCategory(queryParams);
+    download.excel(data, '产品分类.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 展开/折叠操作 */
-const isExpandAll = ref(true) // 是否展开，默认全部展开
-const refreshTable = ref(true) // 重新渲染表格状态
+const isExpandAll = ref(true); // 是否展开，默认全部展开
+const refreshTable = ref(true); // 重新渲染表格状态
 const toggleExpandAll = async () => {
-  refreshTable.value = false
-  isExpandAll.value = !isExpandAll.value
-  await nextTick()
-  refreshTable.value = true
-}
+  refreshTable.value = false;
+  isExpandAll.value = !isExpandAll.value;
+  await nextTick();
+  refreshTable.value = true;
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

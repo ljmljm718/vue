@@ -10,7 +10,6 @@
               size="large"
               style="width: 190px"
               @change="filterLeftData"
-             
             >
               <el-option
                 v-for="item in basicInfo"
@@ -25,7 +24,6 @@
               size="large"
               style="width: 120px"
               @change="filterRightData"
-             
             >
               <el-option
                 v-for="item in plotInfo"
@@ -44,12 +42,13 @@
               />
               <span
                 class="text-[#009688] absolute bottom-[9%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                >{{
+              >
+                {{
                   deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
                     ? deviceDetail[0].deviceName
                     : ''
-                }}</span
-              >
+                }}
+              </span>
               <img
                 src="./assets/subTitleBg.png"
                 class="w-90% h-10 absolute bottom-0 left-1/2 transform -translate-x-1/2"
@@ -67,12 +66,13 @@
                 <span
                   :style="{ color: textColor1 }"
                   class="device1-text text-[#009688] absolute bottom-[9%] left-1/4 transform -translate-x-1/2 -translate-y-1/2"
-                  >{{
+                >
+                  {{
                     deviceDetail && deviceDetail[0] && deviceDetail[0].deviceName
                       ? deviceDetail[0].deviceName
                       : ''
-                  }}</span
-                >
+                  }}
+                </span>
               </div>
               <div id="device2" @click="handleClick(1)" class="cursor-pointer z-0">
                 <img
@@ -82,12 +82,13 @@
                 <span
                   :style="{ color: textColor2 }"
                   class="device2-text text-[#009688] absolute bottom-[9%] right-1/4 transform translate-x-1/4 -translate-y-1/2"
-                  >{{
+                >
+                  {{
                     deviceDetail && deviceDetail[1] && deviceDetail[1].deviceName
                       ? deviceDetail[1].deviceName
                       : ''
-                  }}</span
-                >
+                  }}
+                </span>
               </div>
 
               <img
@@ -136,28 +137,32 @@
             </div>
             <div class="mb-2">
               <span>通信时间：</span>
-              <span>{{
-                deviceDetail && deviceDetail[0] && deviceDetail[0].updateTime
-                  ? deviceDetail[0].updateTime
-                  : ''
-              }}</span>
+              <span>
+                {{
+                  deviceDetail && deviceDetail[0] && deviceDetail[0].updateTime
+                    ? deviceDetail[0].updateTime
+                    : ''
+                }}
+              </span>
             </div>
             <div>
               <span>负责人：</span>
-              <span>{{
-                deviceDetail && deviceDetail[0] && deviceDetail[0].contact
-                  ? deviceDetail[0].contact
-                  : ''
-              }}</span>
+              <span>
+                {{
+                  deviceDetail && deviceDetail[0] && deviceDetail[0].contact
+                    ? deviceDetail[0].contact
+                    : ''
+                }}
+              </span>
             </div>
           </div>
         </div>
       </el-card>
 
-      <el-card >
+      <el-card>
         <div class="font-bold mb-4">当前要素健康分析</div>
         <div class="flex justify-center items-center w-full">
-          <div id="radarChart" class="w-[100%] h-[270px] "></div>
+          <div id="radarChart" class="w-[100%] h-[270px]"></div>
         </div>
       </el-card>
 
@@ -169,9 +174,9 @@
             <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
           </div> -->
           <div class="text-#009688 bg-[#e5f4f3] px-5 py-2 rounded-full">
-            <span >溶解氧标准值：</span>
-            <span 
-              >{{ standardDo.optimalTemperature }} 
+            <span>溶解氧标准值：</span>
+            <span>
+              {{ standardDo.optimalTemperature }}
               <span v-if="CurrentDoInfo.dataValue !== '暂无数据'">{{ yyUnit }}</span>
             </span>
           </div>
@@ -185,9 +190,11 @@
             <span class="text-[1.6rem]">{{ CurrentDoInfo.dataValue }}</span>
             <span class="text-[#999999] text-[1.2rem]">{{ CurrentDoInfo.yyUnit }}</span>
           </div>
-          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%] xl:whitespace-nowrap"
-            >溶解氧当前值</span
+          <span
+            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-[50%] xl:whitespace-nowrap"
           >
+            溶解氧当前值
+          </span>
         </div>
         <el-scrollbar height="100%">
           <div class="flex flex-col max-h-[8rem]">
@@ -196,11 +203,11 @@
               v-for="(warning, index) in warningMessage"
               :key="index"
             >
-              <img src="./assets/warnIcon.png" class="w-5 h-5 m-3 " />
+              <img src="./assets/warnIcon.png" class="w-5 h-5 m-3" />
               <span class="text-3.5">设备警告：{{ warning }}</span>
+            </div>
           </div>
-        </div>
-      </el-scrollbar>
+        </el-scrollbar>
       </el-card>
 
       <el-card class="w-full">
@@ -208,8 +215,8 @@
         <div class="flex flex-col h-17 gap-3">
           <div class="flex justify-between bg-[#e5f4f3] text-center p-2 text-#333333 px-3">
             <span>当前功率:</span>
-            <span>{{ currentPower }}</span></div
-          >
+            <span>{{ currentPower }}</span>
+          </div>
           <div class="flex justify-between bg-[#f5f5f5] text-center p-2 text-#333333 px-3">
             <span>建议功率:</span>
             <span>{{ suggestNumList[0] }}</span>
@@ -229,13 +236,14 @@
             @click="
               router.push('/internetMonitor/device/deviceView?deviceCode=' + deviceDetail[0].id)
             "
-            >去调整</el-button
-          ></div
-        >
+          >
+            去调整
+          </el-button>
+        </div>
       </el-card>
     </div>
 
-    <div class="md:col-span-3 mt-4 ">
+    <div class="md:col-span-3 mt-4">
       <el-card>
         <div class="flex justify-between items-center p-4">
           <div class="font-bold">实时数据</div>
@@ -256,9 +264,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import * as echarts from 'echarts'
-import deviceIcon from './assets/deviceIcon.png'
-import deviceIcon1 from './assets/deviceIcon1.png'
+import * as echarts from 'echarts';
+import deviceIcon from './assets/deviceIcon.png';
+import deviceIcon1 from './assets/deviceIcon1.png';
 import {
   getParkInfoPage,
   getParkDetailPage,
@@ -268,91 +276,89 @@ import {
   getCurrentPower,
   getOxygenRuleInfo,
   getCurrentDO
-} from './api'
-import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index'
-import dayjs from 'dayjs'
-const router = useRouter() // 路由
+} from './api';
+import { initChartStatic, generateBaseOptions } from '@/utils/bigscreenTool/index';
+import dayjs from 'dayjs';
+const router = useRouter(); // 路由
 
-const basicInfo = ref<any[]>([])
-const plotInfo = ref<any[]>([])
-const selectedParkName = ref('')
-const selectedPlotName = ref('')
-const deviceDetail = ref<any[]>([])
-const yyUnit = ref('')
+const basicInfo = ref<any[]>([]);
+const plotInfo = ref<any[]>([]);
+const selectedParkName = ref('');
+const selectedPlotName = ref('');
+const deviceDetail = ref<any[]>([]);
+const yyUnit = ref('');
 
 //获取增氧机状态
 const getParkInfo = async () => {
-  const parkRes = await getParkInfoPage()
-  basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }))
-}
+  const parkRes = await getParkInfoPage();
+  basicInfo.value = parkRes.list.map(({ id, name }) => ({ id, name }));
+};
 
 const getPlotInfo = async (parkId) => {
-  const plotRes = await getParkDetailPage({ parkId })
+  const plotRes = await getParkDetailPage({ parkId: parkId, pageSize: 30 });
   plotInfo.value = plotRes.list.map(({ id, parkId, name, contact }) => ({
     id,
     parkId,
     name,
     contact
-  }))
-}
+  }));
+};
 
 //左侧选择框
 const filterLeftData = () => {
-  const selectedItem = basicInfo.value.find((item) => item.name === selectedParkName.value)
+  const selectedItem = basicInfo.value.find((item) => item.name === selectedParkName.value);
   if (selectedItem) {
-    getPlotInfo(selectedItem.id)
+    getPlotInfo(selectedItem.id);
   }
-}
+};
 //右侧选择框
 const filterRightData = () => {
-  const selectedItem = plotInfo.value.find((item) => item.name === selectedPlotName.value)
+  const selectedItem = plotInfo.value.find((item) => item.name === selectedPlotName.value);
   if (selectedItem) {
-    getDeviceDetail(selectedItem.parkId, selectedItem.id)
+    getDeviceDetail(selectedItem.parkId, selectedItem.id);
   }
-}
+};
 
 //设备信息获取
 const getDeviceDetail = async (baseId, plotId) => {
-  const res = await getDissolvedOxygenEquipmentList({ baseId, plotId })
-  deviceDetail.value = res.map(
-    ({ deviceName, deviceStatus, updateTime, belongPlot, id }) => ({
-      deviceName,
-      deviceStatus,
-      updateTime: dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss'),
-      belongPlot,
-      id
-    })
-  )
+  const res = await getDissolvedOxygenEquipmentList({ baseId, plotId });
+  deviceDetail.value = res.map(({ deviceName, deviceStatus, updateTime, belongPlot, id }) => ({
+    deviceName,
+    deviceStatus,
+    updateTime: dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss'),
+    belongPlot,
+    id
+  }));
 
   deviceDetail.value = deviceDetail.value.map((item) => {
-    const plotContactInfo = plotInfo.value.find((ele) => ele.id === item.belongPlot)
+    const plotContactInfo = plotInfo.value.find((ele) => ele.id === item.belongPlot);
     return {
       ...item,
       contact: plotContactInfo ? plotContactInfo.contact : null
-    }
-  })
-  getDoInfo(deviceDetail.value[0].id)
-  getCurrentPowerInfo(deviceDetail.value[0].id)
-  getScoreInfo(deviceDetail.value[0].id)
-}
+    };
+  });
+  getDoInfo(deviceDetail.value[0].id);
+  getCurrentPowerInfo(deviceDetail.value[0].id);
+  getScoreInfo(deviceDetail.value[0].id);
+};
 
 //切换显示
-const imgSrc1 = ref(deviceIcon)
-const imgSrc2 = ref(deviceIcon1)
-const textColor1 = ref('#009688')
-const textColor2 = ref('#666666')
+const imgSrc1 = ref(deviceIcon);
+const imgSrc2 = ref(deviceIcon1);
+const textColor1 = ref('#009688');
+const textColor2 = ref('#666666');
 
 const handleClick = (index) => {
-  const tempImgSrc = imgSrc1.value
-  imgSrc1.value = imgSrc2.value
-  imgSrc2.value = tempImgSrc
+  const tempImgSrc = imgSrc1.value;
+  imgSrc1.value = imgSrc2.value;
+  imgSrc2.value = tempImgSrc;
 
   // 交换文本颜色
-  const tempColor = textColor1.value
-  textColor1.value = textColor2.value
-  textColor2.value = tempColor
-// 获取图片元素
-const imgElement1 = document.getElementById('device1');
+  const tempColor = textColor1.value;
+  textColor1.value = textColor2.value;
+  textColor2.value = tempColor;
+  // 获取图片元素
+  const imgElement1 = document.getElementById('device1');
   const imgElement2 = document.getElementById('device2');
 
   // 检查并切换z-index
@@ -369,51 +375,51 @@ const imgElement1 = document.getElementById('device1');
   }
 
   // 调用函数
-  const selectedDeviceId = deviceDetail.value[index].id
-  getDoInfo(selectedDeviceId)
-  getCurrentPowerInfo(selectedDeviceId)
-  getScoreInfo(selectedDeviceId)
-}
+  const selectedDeviceId = deviceDetail.value[index].id;
+  getDoInfo(selectedDeviceId);
+  getCurrentPowerInfo(selectedDeviceId);
+  getScoreInfo(selectedDeviceId);
+};
 
-const CurrentDoInfo = ref<any>({})
+const CurrentDoInfo = ref<any>({});
 const getDoInfo = async (equipmentId) => {
-  CurrentDoInfo.value = await getCurrentDO({ equipmentId })
-}
+  CurrentDoInfo.value = await getCurrentDO({ equipmentId });
+};
 
-const standardDo = ref<any>({})
+const standardDo = ref<any>({});
 const getStandardDo = async () => {
-  standardDo.value = await getRopriateEnvironmentalByDissolvedOxygen()
-}
+  standardDo.value = await getRopriateEnvironmentalByDissolvedOxygen();
+};
 
 //获取当前设备功率
-const currentPower = ref<any[]>([])
+const currentPower = ref<any[]>([]);
 const getCurrentPowerInfo = async (devicesId, subDevicesName = '当前功率') => {
-  const _res = await getCurrentPower({ devicesId, subDevicesName })
-  currentPower.value = _res
-}
+  const _res = await getCurrentPower({ devicesId, subDevicesName });
+  currentPower.value = _res;
+};
 
-const suggestNumList = ref<string[]>([])
-const warningList = ref<string[]>([])
-const suggestList = ref<string[]>([])
-const warningMessage = ref<string[]>([])
-const suggestMessage = ref<string>('')
+const suggestNumList = ref<string[]>([]);
+const warningList = ref<string[]>([]);
+const suggestList = ref<string[]>([]);
+const warningMessage = ref<string[]>([]);
+const suggestMessage = ref<string>('');
 const getScoreInfo = async (equipId) => {
-  const ScoreData = await getOxygenRuleInfo({ equipId })
-  const targetNum = ScoreData.targetNum.map(Number) || []
-  const currentNum = ScoreData.currentNum.map(Number) || []
+  const ScoreData = await getOxygenRuleInfo({ equipId });
+  const targetNum = ScoreData.targetNum.map(Number) || [];
+  const currentNum = ScoreData.currentNum.map(Number) || [];
   // suggestNumList.value = ScoreData.suggestNumList.map((item) => Number(item.replace('%', ''))) || []
-  suggestNumList.value = ScoreData.suggestNumList || []
-  const factorName = ScoreData.factorName || []
-  suggestList.value = ScoreData.suggestList || []
-  warningList.value = ScoreData.warningList || []
-  warningMessage.value = warningList.value
-  suggestMessage.value = suggestList.value.join('; ')
-  const currentData = ScoreData.nowData || []
-  drawRadarChart(targetNum, currentNum, factorName, currentData)
-}
+  suggestNumList.value = ScoreData.suggestNumList || [];
+  const factorName = ScoreData.factorName || [];
+  suggestList.value = ScoreData.suggestList || [];
+  warningList.value = ScoreData.warningList || [];
+  warningMessage.value = warningList.value;
+  suggestMessage.value = suggestList.value.join('; ');
+  const currentData = ScoreData.nowData || [];
+  drawRadarChart(targetNum, currentNum, factorName, currentData);
+};
 
 //画图一
-let chartIns: any = null
+let chartIns: any = null;
 const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], currentData = []) => {
   if (
     !Array.isArray(targetNum) ||
@@ -425,10 +431,10 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
     factorName.length === 0 ||
     currentData.length === 0
   ) {
-    chartIns && chartIns.clear()
+    chartIns && chartIns.clear();
   }
-  console.log("DSDSAD", factorName);
-  
+  console.log('DSDSAD', factorName);
+
   chartIns = initChartStatic('radarChart', {
     title: {
       // text: '评估评分占比分析图'
@@ -442,13 +448,13 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
             return `<span style="font-size: 14px;">
                     <span style="display: inline-block; width: 4px; height: 4px; background-color: #a3d7d1; border-radius: 50%; margin-right: 5px;margin-bottom: 5px"></span>
                     <strong>${name}</strong>\n:\n\n  ${currentNum[index]} 分 (${currentData[index]})
-                </span>`
+                </span>`;
           })
-          .join('<br/>')
-        return `${params.seriesName}<br/>${combinedData}`
+          .join('<br/>');
+        return `${params.seriesName}<br/>${combinedData}`;
       },
       position: function (point) {
-        return [point[0] - 90, point[1] + 20]
+        return [point[0] - 90, point[1] + 20];
       },
       extraCssText: 'box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);'
     },
@@ -482,7 +488,7 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
             color: 'rgba(241, 241, 241)'
           }
         },
-        radius:'60%'
+        radius: '60%'
       }
     ],
     series: [
@@ -521,39 +527,39 @@ const drawRadarChart = (targetNum = [], currentNum = [], factorName = [], curren
         }
       }
     ]
-  })
-}
+  });
+};
 
 // 实时数据 Chart
-const colorList = ['#FF8C69', '#64DDA0', '#FFBB78', '#FF6F61', '#6FC2FF', '#FFD700']
+const colorList = ['#FF8C69', '#64DDA0', '#FFBB78', '#FF6F61', '#6FC2FF', '#FFD700'];
 const hexToRgba = (hex, alpha) => {
   const rgb = hex
     .replace('#', '')
     .match(/.{2}/g)
-    .map((x) => parseInt(x, 16))
-  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
-}
+    .map((x) => parseInt(x, 16));
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+};
 const getLineChartInfo = async (date) => {
-  const LineChartData = await getlineChartData({ date })
-  const LineSeriesData: any[] = []
-  let colorIndex = 0
+  const LineChartData = await getlineChartData({ date });
+  const LineSeriesData: any[] = [];
+  let colorIndex = 0;
   for (let key in LineChartData) {
-    const seriesName = key
-    const seriesData = LineChartData[key]
+    const seriesName = key;
+    const seriesData = LineChartData[key];
     LineSeriesData.push({
       name: seriesName,
       data: seriesData.map((item) => item.dataValue),
       color: colorList[colorIndex % colorList.length]
-    })
-    colorIndex++
+    });
+    colorIndex++;
     if (colorIndex >= colorList.length) {
-      colorIndex = 0 // 当 colorIndex 超过 colorList 长度时重置为 0
+      colorIndex = 0; // 当 colorIndex 超过 colorList 长度时重置为 0
     }
   }
   const PH = LineChartData.PH,
     Temp = LineChartData['温度'],
-    Light = LineChartData['光照强度']
-  const xValue = PH.map((item) => item.hour ?? '')
+    Light = LineChartData['光照强度'];
+  const xValue = PH.map((item) => item.hour ?? '');
   initChartStatic(
     'lineChart',
     generateBaseOptions({
@@ -573,7 +579,7 @@ const getLineChartInfo = async (date) => {
         itemWidth: 15,
         itemHeight: 15,
         // left: '80%',
-        padding:[0,40,0,0],
+        padding: [0, 40, 0, 0],
         textStyle: {
           color: '#999999',
           fontSize: 14
@@ -611,9 +617,9 @@ const getLineChartInfo = async (date) => {
             fontSize: 10,
             formatter: function (value) {
               if (value === 0) {
-                return ''
+                return '';
               }
-              return value
+              return value;
             }
           }
           // min: 0,
@@ -653,9 +659,9 @@ const getLineChartInfo = async (date) => {
             fontSize: 10,
             formatter: function (value) {
               if (value === 0) {
-                return ''
+                return '';
               }
-              return value
+              return value;
             }
           }
         }
@@ -705,36 +711,34 @@ const getLineChartInfo = async (date) => {
         bottom: '10%'
       }
     })
-  )
-}
+  );
+};
 
-const SelectedDate = ref('2024-10-23')
+const SelectedDate = ref('2024-10-23');
 const onFilterDate = () => {
-  const date = SelectedDate.value
-  getLineChartInfo(date)
-}
+  const date = SelectedDate.value;
+  getLineChartInfo(date);
+};
 // 初始化
 const init = async () => {
-  await getParkInfo()
+  await getParkInfo();
   if (basicInfo.value.length > 0) {
-    selectedParkName.value = basicInfo.value[0].name
-    await getPlotInfo(basicInfo.value[0].id)
+    selectedParkName.value = basicInfo.value[0].name;
+    await getPlotInfo(basicInfo.value[0].id);
     if (plotInfo.value.length > 0) {
-      selectedPlotName.value = plotInfo.value[0].name
+      selectedPlotName.value = plotInfo.value[0].name;
     }
-    await getDeviceDetail(basicInfo.value[0].id, plotInfo.value[0].id)
+    await getDeviceDetail(basicInfo.value[0].id, plotInfo.value[0].id);
   }
-  await getStandardDo()
-  onFilterDate()
-}
+  await getStandardDo();
+  onFilterDate();
+};
 // 初始化
-onMounted(() => init())
+onMounted(() => init());
 </script>
 <style lang="scss" scoped>
 .buttonSize {
   width: 100%;
   font-size: 16px;
 }
-
-
 </style>

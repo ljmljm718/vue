@@ -312,5 +312,6 @@ export enum DICT_TYPE {
   AGRI_IDENTIFY_STATUS = 'agri_identify_status', //识别状态
   AGRI_DEVICE_STATUS = 'agri_device_status', //设备状态
   AGRI_DISEASE_NAME = 'agri_disease_name', //设备状态
-  AGRI_EARLY_WARNING_STATE = 'agri_early_warning_state' //预警状态
+  AGRI_EARLY_WARNING_STATE = 'agri_early_warning_state', //预警状态
+  AGRI_CODE_TYPE = 'agri_code_type' //是否赋码
 }
