@@ -232,7 +232,11 @@
             <el-table-column label="设备名称" prop="deviceName" />
             <el-table-column label="基地名称" prop="monitoringBaseName" />
             <el-table-column label="地块名称" prop="monitoringPlotName" />
-            <el-table-column label="预警事件" prop="noticeEvent" />
+            <el-table-column label="预警事件" prop="noticeEvent">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent" />
+              </template>
+            </el-table-column>
             <el-table-column
               label="记录时间"
               prop="recordTime"
