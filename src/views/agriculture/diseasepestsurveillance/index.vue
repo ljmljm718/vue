@@ -376,6 +376,12 @@
 
   <!-- 识别表单 -->
   <RecognizeForm ref="recognizeFormRef" @success="getList" />
+  <!-- 遮罩层 -->
+  <div v-if="isLoading" class="loading-overlay">
+    <div class="loading-content">
+      Loading...
+    </div>
+  </div>
 
 </template>
 
@@ -657,10 +663,13 @@ const getCountDetail = async (id) => {
   countDetail.value.dataSumByQuantity = res.dataSumByQuantity;
 };
 
+const isLoading = ref(false);
 // 点击开始识别
 const handleClickIdentify = async (objects:any) => {
+  isLoading.value = true;
   // 判断当前状态
   if(objects.identifyStatus == 0){
+    isLoading.value = false;
     ElMessage.error('该图片已识别，请选择未识别的图片')
     spotResTableKey.value = new Date().getTime();
     return
@@ -669,8 +678,8 @@ const handleClickIdentify = async (objects:any) => {
   if('虫害' == objects.monitorType){
     ElMessage.warning({message : '识别中，请稍等',duration : 1000})
     let pyData = await DiseasePestSurveillanceApi.pyDiseasePestSurveillance(objects.id);
-    let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
     if(Object.keys(pyData.data.resultMap).length > 0){
+      let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
       for (let key in pyData.data.resultMap) {
         if (pyData.data.resultMap.hasOwnProperty(key)) {
           resultString += '虫害名称: ' +key + ', 数量: ' + pyData.data.resultMap[key]+'\n';
@@ -678,22 +687,46 @@ const handleClickIdentify = async (objects:any) => {
       }
       resultString += '请选择是否替换'
       console.log(resultString,"resultString");
+      isLoading.value = false;
       ElMessageBox.confirm(resultString).then(async() => {
+        isLoading.value = true;
         let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
+        isLoading.value = false;
         ElMessage.success(restMsg);
         await getList();
       })
+      isLoading.value = false;
     }else{
+      isLoading.value = false;
       ElMessage.error(pyData.msg + ",请更换图片再试"); 
     }
   }else{
+    isLoading.value = false;
     ElMessage.error('抱歉，无法识别病害图片');
   }
+  
   spotResTableKey.value = new Date().getTime();
 };
 </script>
 
 <style lang="scss" scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明的背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 确保遮罩层在其他内容之上 */
+}
+
+.loading-content {
+  color: white;
+  /* 可以添加更多的样式来美化加载提示 */
+}
 // 无数据
 .no-data {
   background: {
