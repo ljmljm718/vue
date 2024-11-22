@@ -17,21 +17,21 @@
           :inline="true"
         >
           <!-- 表单内容 -->
-          <el-form-item label="预警类型" prop="warnType">
-            <el-select
-              class="!w-240px"
-              v-model="queryParams.warnType"
-              placeholder="请选择预警类型"
-              clearable
-            >
-              <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
+          <!--          <el-form-item label="预警类型" prop="warnType">-->
+          <!--            <el-select-->
+          <!--              class="!w-240px"-->
+          <!--              v-model="queryParams.warnType"-->
+          <!--              placeholder="请选择预警类型"-->
+          <!--              clearable-->
+          <!--            >-->
+          <!--              <el-option-->
+          <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"-->
+          <!--                :key="dict.value"-->
+          <!--                :label="dict.label"-->
+          <!--                :value="dict.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
           <el-form-item label="预警状态" prop="warnStatus">
             <el-select
               class="!w-240px"
@@ -150,11 +150,14 @@
                   :type="DICT_TYPE.AGRI_WARN_LEVEL"
                   :value="item.warnLevel"
                 />
-                <dict-tag
-                  class="ml-10px md:!text-[10px] md:!h-[16px] 2xl:!text-[12px] 2xl:!h-[20px]"
-                  :type="DICT_TYPE.AGRI_MONITOR_TYPE"
-                  :value="item.warnType"
-                />
+                <!--                <dict-tag-->
+                <!--                  class="ml-10px md:!text-[10px] md:!h-[16px] 2xl:!text-[12px] 2xl:!h-[20px]"-->
+                <!--                  :type="DICT_TYPE.AGRI_MONITOR_TYPE"-->
+                <!--                  :value="item.warnType"-->
+                <!--                />-->
+                <el-tag class="ml-10px md:!text-[10px] md:!h-[16px] 2xl:!text-[12px] 2xl:!h-[20px]">
+                  {{ item.warnType }}
+                </el-tag>
               </div>
               <!-- 第二行 -->
               <div class="text-[14px] md:text-[10px] 2xl:text-[14px] text-[#999999]">
@@ -244,7 +247,8 @@
               <el-table-column align="center" prop="deviceName" label="设备名称" />
               <el-table-column align="center" label="预警类型">
                 <template #default="scope">
-                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />
+                  <el-tag type="primary">{{ scope.row.warnType }}</el-tag>
+                  <!--                  <dict-tag :type="DICT_TYPE.AGRI_MONITOR_TYPE" :value="scope.row.warnType" />-->
                 </template>
               </el-table-column>
               <el-table-column align="center" label="预警等级">

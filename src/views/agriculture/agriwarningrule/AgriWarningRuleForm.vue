@@ -29,16 +29,16 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="规则类型" prop="warnType">
-            <el-input v-model="formData.warnType" placeholder="请输入规则类型" />
-<!--            <el-select v-model="formData.warnType" placeholder="请选择规则类型">
+          <el-form-item label="预警类型" prop="warnType">
+            <!--            <el-input v-model="formData.warnType" placeholder="请输入规则类型" />-->
+            <el-select v-model="formData.warnType" placeholder="请选择预警类型">
               <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+                v-for="item in monitorTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
-            </el-select>-->
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -52,11 +52,7 @@
           <el-form-item label="预警下限" prop="warnLowValue">
             <el-input v-model="formData.warnLowValue" placeholder="请输入预警下限" type="number">
               <template #append>
-                <el-select
-                  v-model="formData.warnUnit"
-                  placeholder="单位"
-                  style="width: 80px;"
-                >
+                <el-select v-model="formData.warnUnit" placeholder="单位" style="width: 80px">
                   <el-option
                     v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_UNIT)"
                     :key="dict.value"
@@ -84,11 +80,7 @@
           <el-form-item label="预警上限" prop="warnHighValue">
             <el-input v-model="formData.warnHighValue" placeholder="请输入预警上限" type="number">
               <template #append>
-                <el-select
-                  v-model="formData.warnUnit"
-                  placeholder="单位"
-                  style="width: 80px;"
-                >
+                <el-select v-model="formData.warnUnit" placeholder="单位" style="width: 80px">
                   <el-option
                     v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_UNIT)"
                     :key="dict.value"
@@ -124,7 +116,6 @@
             <el-input v-model="formData.thresholdValue" placeholder="请输入阈值，例如:90" />
           </el-form-item>
         </el-col>
-
       </el-row>
     </el-form>
     <template #footer>
@@ -134,21 +125,21 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwarningrule'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwarningrule';
 
 /** 鲁渝协作预警规则 表单 */
-defineOptions({ name: 'AgriWarningRuleForm' })
+defineOptions({ name: 'AgriWarningRuleForm' });
 
-const status = "0" // 初始化生效状态为未生效
+const status = '0'; // 初始化生效状态为未生效
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   warnLowValue: undefined,
@@ -163,59 +154,70 @@ const formData = ref({
   effectiveStatus: status,
   ruleTitle: undefined,
   warnLevel: undefined,
-  thresholdValue: undefined,
-})
+  thresholdValue: undefined
+});
 const formRules = reactive({
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
   warnHighValue: [{ required: true, message: '预警上限不能为空', trigger: 'blur' }],
   warnType: [{ required: true, message: '规则类型不能为空', trigger: 'change' }],
-  effectiveStatus: [{ required: true, message: '生效状态（0-未生效，1-生效）不能为空', trigger: 'blur' }],
+  effectiveStatus: [
+    { required: true, message: '生效状态（0-未生效，1-生效）不能为空', trigger: 'blur' }
+  ],
   ruleTitle: [{ required: true, message: '规则标题不能为空', trigger: 'blur' }],
-  thresholdValue: [{ required: true, message: '阈值不能为空', trigger: 'blur' }],
-})
-const formRef = ref() // 表单 Ref
+  thresholdValue: [{ required: true, message: '阈值不能为空', trigger: 'blur' }]
+});
+const formRef = ref(); // 表单 Ref
+//初始化监测类型
+const monitorTypeOptions = ref([]);
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
+  //预警规则类型下拉框
+  const monitorTypeList = await AgriWarningRuleApi.getAllMonitorType();
+  const monitorType = [];
+  monitorTypeList.forEach((item) => {
+    monitorType.push({ value: item, label: item });
+  });
+  monitorTypeOptions.value = monitorType;
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await AgriWarningRuleApi.getAgriWarningRule(id)
+      formData.value = await AgriWarningRuleApi.getAgriWarningRule(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as AgriWarningRuleVO
+    const data = formData.value as unknown as AgriWarningRuleVO;
     if (formType.value === 'create') {
-      await AgriWarningRuleApi.createAgriWarningRule(data)
-      message.success(t('common.createSuccess'))
+      await AgriWarningRuleApi.createAgriWarningRule(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await AgriWarningRuleApi.updateAgriWarningRule(data)
-      message.success(t('common.updateSuccess'))
+      await AgriWarningRuleApi.updateAgriWarningRule(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -232,8 +234,8 @@ const resetForm = () => {
     warnType: undefined,
     effectiveStatus: status,
     ruleTitle: undefined,
-    warnLevel: undefined,
-  }
-  formRef.value?.resetFields()
-}
+    warnLevel: undefined
+  };
+  formRef.value?.resetFields();
+};
 </script>

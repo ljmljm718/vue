@@ -6,7 +6,7 @@
     :appendToBody="true"
     :scroll="true"
     width="1250"
-    :before-close="handleBeforeClose()"
+    :before-close="handleBeforeClose"
   >
     <ContentWrap>
       <!-- 搜索工作栏 -->
@@ -35,14 +35,15 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="设备类型" prop="deviceType">
-          <el-cascader
-            style="width: 100%"
-            v-model="deviceType"
-            :options="categoryOptions"
-            :props="categoryProps"
-          />
-        </el-form-item>
+        <!--    根据监测类型直接筛选，暂不需要设备类型    -->
+        <!--        <el-form-item label="设备类型" prop="deviceType">
+                  <el-cascader
+                    style="width: 100%"
+                    v-model="deviceType"
+                    :options="categoryOptions"
+                    :props="categoryProps"
+                  />
+                </el-form-item>-->
         <el-form-item label="状态" prop="deviceStatus">
           <el-select
             v-model="queryParams.deviceStatus"
@@ -155,7 +156,7 @@
     </ContentWrap>
     <template #footer>
       <el-button type="primary" @click="handleBindDevice">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="handleBeforeClose()">取 消</el-button>
     </template>
   </Dialog>
 </template>
@@ -167,6 +168,7 @@ import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
 import { createEmptyNewsItem, NewsItem } from '@/views/mp/draft/components';
+import { AgriWarningRuleApi } from '@/api/agriculture/agriwarningrule';
 
 defineOptions({ name: 'AgriWarnRuleBindDevice' });
 
@@ -177,6 +179,7 @@ const queryFormRef = ref(); // 搜索的表单
 const handleBeforeClose = () => {
   queryFormRef.value?.resetFields();
   list.value = [];
+  dialogVisible.value = false;
 };
 
 const props = defineProps({
@@ -191,6 +194,10 @@ const props = defineProps({
   currCategory: {
     type: Object,
     default: () => ({})
+  },
+  monitorType: {
+    type: String,
+    default: ''
   }
 }); // 绑定的规则id
 const ids = ref([]); // 绑定的设备id
@@ -219,9 +226,10 @@ const multipleSelection: any = ref([]);
 let categoryOptions = ref([]); // 设备分类选项
 const deviceType = ref();
 
-const open = async (id: string) => {
+const open = async (monitorType: string) => {
   dialogVisible.value = true;
-  console.log('id:' + id);
+  // console.log('id:' + id);
+  queryParams.monitorType = props.monitorType;
   await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery();
@@ -233,7 +241,9 @@ const dialogTable = ref();
 const getList = async () => {
   loading.value = true;
   try {
-    const data = await DeviceInfoApi.getDeviceInfoPage(queryParams);
+    //原查询设备接口 const data = await DeviceInfoApi.getDeviceInfoPage(queryParams);
+    //根据所选监测类型查询对应设备
+    const data = await AgriWarningRuleApi.getDeviceByMonitorType(queryParams);
     list.value = data.list.map((item: any) => {
       item.deviceType = item.deviceType.split(',').map(Number);
       return item;
@@ -241,7 +251,7 @@ const getList = async () => {
     list.value.forEach((row) => {
       if (Array.isArray(props.deviceId))
         props.deviceId.forEach((ele) => {
-          if (row.deviceCode == ele) dialogTable.value.toggleRowSelection(row, true);
+          if (row.id == ele) dialogTable.value.toggleRowSelection(row, true);
         });
     });
 
@@ -346,16 +356,16 @@ const handleBindDevice = async () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields();
-  deviceType.value = null;
+  // deviceType.value = null;
   handleQuery();
 };
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1;
-  if (deviceType.value != null && deviceType.value != undefined) {
-    queryParams.deviceType = deviceType.value.join(',');
-  }
+  // if (deviceType.value != null && deviceType.value != undefined) {
+  //   queryParams.deviceType = deviceType.value.join(',');
+  // }
   getList();
 };
 </script>
