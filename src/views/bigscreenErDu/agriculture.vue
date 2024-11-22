@@ -397,6 +397,8 @@ const getEquipmentMapData = async () => {
   Object.keys(res).forEach((key: string) => {
     if (Array.isArray(res[key])) {
       res[key].forEach((ele) => addLayerMap(ele, key));
+    } else {
+      addLayerMap(res[key], key);
     }
   });
 };
