@@ -169,6 +169,7 @@ import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
 import { createEmptyNewsItem, NewsItem } from '@/views/mp/draft/components';
 import { AgriWarningRuleApi } from '@/api/agriculture/agriwarningrule';
+import { isObject } from '@/utils/is';
 
 defineOptions({ name: 'AgriWarnRuleBindDevice' });
 
@@ -254,9 +255,8 @@ const getList = async () => {
           if (row.id == ele) dialogTable.value.toggleRowSelection(row, true);
         });
     });
-
     total.value = data.total;
-    multipleSelection.value = props.deviceId;
+    // multipleSelection.value = props.deviceId;
   } finally {
     loading.value = false;
   }
@@ -267,41 +267,19 @@ const getRowKeys = (row) => {
   //记录每行的key值
   return row.id;
 };
-
+const selectionList = ref<Array<any>>([]);
 //当表格选择项发生变化时会触发该事件
-const handleSelectionChange = (val) => {
+const handleSelectionChange = (rows) => {
   // 解决来回切换页面，也无法清除上次选中情况
-  multipleSelection.value = val;
-  ids.value = [];
-  if (val) {
-    undefined;
-    val.forEach((row) => {
-      undefined;
-      if (row) {
-        undefined;
-        ids.value.push(row.id);
-      }
-    });
-  }
+  selectionList.value = rows;
 };
 
 // 控制table-----多选选择
 const selectClick = (row) => {
-  const selectData = multipleSelection.value;
-  if (selectData.length) {
-    selectData.forEach((item) => {
-      // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
-      if (item == row) {
-        dialogTable.value.toggleRowSelection(row, false);
-      }
-      // 不然就让当前的一行勾选
-      else {
-        dialogTable.value.toggleRowSelection(row, true);
-      }
-    });
-  } else {
-    dialogTable.value.toggleRowSelection(row, true);
-  }
+  const selectData = selectionList.value;
+  // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
+  const isRowSelected = selectData.some((selectedRow) => selectedRow === row);
+  dialogTable.value.toggleRowSelection(row, !isRowSelected);
 };
 
 /**

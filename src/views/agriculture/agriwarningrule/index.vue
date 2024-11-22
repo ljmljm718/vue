@@ -421,7 +421,7 @@ const bindDevice = async (row) => {
     });
     warnRuleId.value = id;
     loadingDevice.value = false;
-    monitorType.value = warnType;
+    monitorType.value = warnType ? warnType : monitorType.value;
   } catch {
     loadingDevice.value = false;
   }
@@ -431,7 +431,7 @@ const bindDeviceA = async () => {
     console.log('warnRuleId', warnRuleId.value);
     const data = await AgriWarningRuleDeviceApi.selectAgriDeviceByWarnRuleId(warnRuleId.value);
     deviceId.value = data.map((item) => item.deviceId);
-    console.log('deviceId', deviceId.value);
+    console.log('monitorType11111111', monitorType.value);
     warnRuleBindDeviceRef.value.open(monitorType.value);
   } catch {}
 };
