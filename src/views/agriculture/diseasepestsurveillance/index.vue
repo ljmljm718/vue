@@ -376,6 +376,7 @@
 
   <!-- 识别表单 -->
   <RecognizeForm ref="recognizeFormRef" @success="getList" />
+
 </template>
 
 <script setup lang="ts">
@@ -658,24 +659,36 @@ const getCountDetail = async (id) => {
 
 // 点击开始识别
 const handleClickIdentify = async (objects:any) => {
+  // 判断当前状态
   if(objects.identifyStatus == 0){
     ElMessage.error('该图片已识别，请选择未识别的图片')
+    spotResTableKey.value = new Date().getTime();
     return
   }
+  // 判断是否属于虫害
   if('虫害' == objects.monitorType){
-    ElMessage.warning( '识别中，请稍等')
-    let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
-    ElMessage({
-      message: restMsg,
-      type: 'success',
-      });
-    await getList();
+    ElMessage.warning({message : '识别中，请稍等',duration : 1000})
+    let pyData = await DiseasePestSurveillanceApi.pyDiseasePestSurveillance(objects.id);
+    let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
+    if(Object.keys(pyData.data.resultMap).length > 0){
+      for (let key in pyData.data.resultMap) {
+        if (pyData.data.resultMap.hasOwnProperty(key)) {
+          resultString += '虫害名称: ' +key + ', 数量: ' + pyData.data.resultMap[key]+'\n';
+        }
+      }
+      resultString += '请选择是否替换'
+      console.log(resultString,"resultString");
+      ElMessageBox.confirm(resultString).then(async() => {
+        let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
+        ElMessage.success(restMsg);
+        await getList();
+      })
+    }else{
+      ElMessage.error(pyData.msg + ",请更换图片再试"); 
+    }
   }else{
     ElMessage.error('抱歉，无法识别病害图片');
   }
-  
-  
-  
   spotResTableKey.value = new Date().getTime();
 };
 </script>
