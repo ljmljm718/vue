@@ -140,13 +140,12 @@ const handleClickShowSearch = () => {
         <!-- todo原新增按钮 -->
         <el-button
           type="primary"
-          plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:category-management:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 
-          新增
-        </el-button>
+            <Icon icon="ep:plus" class="mr-5px" /> 
+            新增
+          </el-button>
       </div>
 
       <div class="flex items-center">

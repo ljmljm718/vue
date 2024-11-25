@@ -152,7 +152,6 @@ const handleClickShowSearch = () => {
         <!-- 一级标题旁边的按钮 -->
         <el-button
             type="primary"
-            plain
             @click="openForm('create')"
             v-hasPermi="['agriculture:variety-management:create']"
           >
