@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useAppStore } from '@/store/modules/app';
-import { colorOpt } from '@/config/colorTheme/colorConfig';
-import { setCssVar } from '@/utils';
-
 /* 原页面的js代码复制在下面 */
 import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
