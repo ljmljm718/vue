@@ -344,7 +344,9 @@
             </div>
             <!-- 开始识别 & 手动标注 -->
             <div class="my-[1rem]">
-              <el-button color="#009688" @click="handleClickIdentify(list[curItem])">开始识别</el-button>
+              <el-button color="#009688" @click="handleClickIdentify(list[curItem])">
+                开始识别
+              </el-button>
               <el-button color="#59B9DE" @click="openRecognizeForm('create', list[curItem].id)">
                 <span class="text-white">手动标注</span>
               </el-button>
@@ -378,11 +380,16 @@
   <RecognizeForm ref="recognizeFormRef" @success="getList" />
   <!-- 遮罩层 -->
   <div v-if="isLoading" class="loading-overlay">
-    <div class="loading-content">
-      Loading...
-    </div>
+    <div class="loading-content">Loading...</div>
   </div>
 
+  <!-- 自动识别补充表单 -->
+  <AutoRecognizeAddForm
+    ref="autoRecognizeAddFormRef"
+    :imgId="imgId"
+    :resultMap="resultMap"
+    @success="getList"
+  />
 </template>
 
 <script setup lang="ts">
@@ -408,6 +415,7 @@ import { EquipmentDataVO } from '@/api/agriculture/equipmentdata';
 import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInfoFrom.vue';
 import { throttle } from './utils';
 import SpotResult from './spotResult.vue';
+import AutoRecognizeAddForm from './AutoRecognizeAddForm.vue';
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' });
@@ -520,6 +528,12 @@ const openForm = (type: string, id?: number) => {
 const recognizeFormRef = ref();
 const openRecognizeForm = (type: string, id?: string) => {
   recognizeFormRef.value.open(type, id);
+};
+
+// 自动识别后的手动补充操作
+const autoRecognizeAddFormRef = ref();
+const openAutoRecognizeAddForm = (type: string, id?: string) => {
+  autoRecognizeAddFormRef.value.open(type, id);
 };
 
 /** 删除按钮操作 */
@@ -664,51 +678,61 @@ const getCountDetail = async (id) => {
 };
 
 const isLoading = ref(false);
+const imgId = ref(); //传入补充对话框的图片url
+const resultMap = ref(); //自动识别的虫害map
+
 // 点击开始识别
-const handleClickIdentify = async (objects:any) => {
+const handleClickIdentify = async (objects: any) => {
+  console.log('objects.id', objects.id);
   isLoading.value = true;
   // 判断当前状态
-  if(objects.identifyStatus == 0){
-    isLoading.value = false;
-    ElMessage.error('该图片已识别，请选择未识别的图片')
-    spotResTableKey.value = new Date().getTime();
-    return
-  }
+  // if(objects.identifyStatus == 0){
+  //   isLoading.value = false;
+  //   ElMessage.error('该图片已识别，请选择未识别的图片')
+  //   spotResTableKey.value = new Date().getTime();
+  //   return
+  // }
   // 判断是否属于虫害
-  if('虫害' == objects.monitorType){
-    ElMessage.warning({message : '识别中，请稍等',duration : 1000})
+  if ('虫害' == objects.monitorType) {
+    ElMessage.warning({ message: '识别中，请稍等', duration: 1000 });
     let pyData = await DiseasePestSurveillanceApi.pyDiseasePestSurveillance(objects.id);
-    if(Object.keys(pyData.data.resultMap).length > 0){
-      let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
-      for (let key in pyData.data.resultMap) {
-        if (pyData.data.resultMap.hasOwnProperty(key)) {
-          resultString += '虫害名称: ' +key + ', 数量: ' + pyData.data.resultMap[key]+'\n';
-        }
-      }
-      resultString += '请选择是否替换'
-      console.log(resultString,"resultString");
-      isLoading.value = false;
-      ElMessageBox.confirm(resultString).then(async() => {
-        isLoading.value = true;
-        try{
-          let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
-          isLoading.value = false;
-          ElMessage.success(restMsg);
-        }catch{
-          isLoading.value = false;
-        }
-        await getList();
-      })
-      isLoading.value = false;
-    }else{
-      isLoading.value = false;
-      ElMessage.error(pyData.msg + ",请更换图片再试"); 
-    }
-  }else{
+    console.log('pyData.data', pyData.data);
+    // 无论是否有识别结果均打开编辑对话框
+    imgId.value = pyData.data.imgId;
+    resultMap.value = pyData.data.resultMap;
+    openAutoRecognizeAddForm('create', objects.id);
+    isLoading.value = false;
+    // if(Object.keys(pyData.data.resultMap).length > 0){
+    //   let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
+    //   for (let key in pyData.data.resultMap) {
+    //     if (pyData.data.resultMap.hasOwnProperty(key)) {
+    //       resultString += '虫害名称: ' +key + ', 数量: ' + pyData.data.resultMap[key]+'\n';
+    //     }
+    //   }
+    //   resultString += '请选择是否替换'
+    //   console.log(resultString,"resultString");
+    //   isLoading.value = false;
+    //   ElMessageBox.confirm(resultString).then(async() => {
+    //     isLoading.value = true;
+    //     try{
+    //       let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
+    //       isLoading.value = false;
+    //       ElMessage.success(restMsg);
+    //     }catch{
+    //       isLoading.value = false;
+    //     }
+    //     await getList();
+    //   })
+    //   isLoading.value = false;
+    // }else{
+    //   isLoading.value = false;
+    //   ElMessage.error(pyData.msg + ",请更换图片再试");
+    // }
+  } else {
     isLoading.value = false;
     ElMessage.error('抱歉，无法识别病害图片');
   }
-  
+
   spotResTableKey.value = new Date().getTime();
 };
 </script>
