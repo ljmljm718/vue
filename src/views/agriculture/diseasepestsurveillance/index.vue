@@ -690,9 +690,13 @@ const handleClickIdentify = async (objects:any) => {
       isLoading.value = false;
       ElMessageBox.confirm(resultString).then(async() => {
         isLoading.value = true;
-        let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
-        isLoading.value = false;
-        ElMessage.success(restMsg);
+        try{
+          let restMsg = await DiseasePestSurveillanceApi.pyCreateDiseasePestSurveillance(objects.id);
+          isLoading.value = false;
+          ElMessage.success(restMsg);
+        }catch{
+          isLoading.value = false;
+        }
         await getList();
       })
       isLoading.value = false;
