@@ -271,7 +271,6 @@ const handleClickShowSearch = () => {
           v-model="queryParams.reservedOne"
           placeholder="请选择知识库类别"
           clearable
-          class="!w-240px"
         >
           <el-option
             v-for="item in optionsType"
@@ -286,7 +285,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入学名"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="作物品类" prop="cropType">
@@ -294,7 +292,6 @@ const handleClickShowSearch = () => {
           v-model="queryParams.cropType"
           placeholder="请选择品类"
           clearable
-          class="!w-240px"
         >
           <el-option
             v-for="item in listCategoryManagement"
@@ -309,7 +306,6 @@ const handleClickShowSearch = () => {
           v-model="queryParams.hazardRating"
           placeholder="请选择危害等级"
           clearable
-          class="!w-240px"
         >
           <el-option
             v-for="item in options"

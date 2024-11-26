@@ -223,7 +223,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入品种名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="品种编码" prop="varietyCode">
@@ -232,12 +231,11 @@ const handleClickShowSearch = () => {
           placeholder="请输入品种编码"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="品类名称" prop="categoryId">
         <el-select v-model="queryParams.categoryId" clearable placeholder="请选择品类"
-                   class="!w-240px">
+                   >
           <el-option
             v-for="item in listCategoryManagement"
             :key="item.id"
@@ -251,7 +249,7 @@ const handleClickShowSearch = () => {
       <!--          placeholder="请输入品种来源"-->
       <!--          clearable-->
       <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
+      <!--          -->
       <!--        />-->
       <!--      </el-form-item>-->
       <!--      <el-form-item label="品种特征" prop="categoryStigma">-->
@@ -260,7 +258,7 @@ const handleClickShowSearch = () => {
       <!--          placeholder="请输入品种特征"-->
       <!--          clearable-->
       <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
+      <!--          -->
       <!--        />-->
       <!--      </el-form-item>-->
       <!--      <el-form-item label="分布地区" prop="areaDistribution">-->
@@ -269,7 +267,7 @@ const handleClickShowSearch = () => {
       <!--          placeholder="请输入分布地区"-->
       <!--          clearable-->
       <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
+      <!--          -->
       <!--        />-->
       <!--      </el-form-item>-->
       <!--      <el-form-item label="简介" prop="briefIntroduction">-->
@@ -278,7 +276,7 @@ const handleClickShowSearch = () => {
       <!--          placeholder="请输入简介"-->
       <!--          clearable-->
       <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
+      <!--          -->
       <!--        />-->
       <!--      </el-form-item>-->
       <!--      <el-form-item label="是否启用" prop="status">-->
@@ -286,7 +284,7 @@ const handleClickShowSearch = () => {
       <!--          v-model="queryParams.status"-->
       <!--          placeholder="请选择启用停用"-->
       <!--          clearable-->
-      <!--          class="!w-240px"-->
+      <!--          -->
       <!--        >-->
       <!--          <el-option label="请选择字典生成" value="" />-->
       <!--        </el-select>-->
@@ -299,7 +297,6 @@ const handleClickShowSearch = () => {
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-220px"
         />
       </el-form-item>
     </el-form>

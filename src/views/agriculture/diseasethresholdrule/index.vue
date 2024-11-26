@@ -208,7 +208,6 @@ const handleClickShowSearch = () => {
           v-model="queryParams.breedId"
           placeholder="请选择农作物"
           clearable
-          class="!w-240px"
         >
           <el-option
             v-for="item in listCategoryManagement"
@@ -223,7 +222,6 @@ const handleClickShowSearch = () => {
       <!--          placeholder="请输入品种名称"-->
       <!--          clearable-->
       <!--          @keyup.enter="handleQuery"-->
-      <!--          class="!w-240px"-->
       <!--        />-->
       <!--      </el-form-item>-->
       <el-form-item label="病虫害种类" prop="diseaseType">
@@ -232,11 +230,10 @@ const handleClickShowSearch = () => {
         <!--          placeholder="请输入病虫害种类"-->
         <!--          clearable-->
         <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
         <!--        />-->
         <el-select
 v-model="queryParams.diseaseType" clearable placeholder="请选择病虫害种类"
-                   class="!w-240px">
+                   >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
             :key="dict.label"

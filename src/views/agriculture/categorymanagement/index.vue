@@ -195,7 +195,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入品类名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <el-form-item label="品类编码" prop="categoryCode">
@@ -204,7 +204,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入品类编码"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <el-form-item label="门类" prop="phylum">
@@ -213,7 +213,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入门类"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <el-form-item label="科类" prop="family">
@@ -222,7 +222,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入科类"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <el-form-item label="属类" prop="genus">
@@ -231,7 +231,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入属类"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <!-- <el-form-item label="图片" prop="images">
@@ -240,7 +240,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入图片"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item> -->
       <!-- <el-form-item label="简介" prop="briefIntroduction">
@@ -249,7 +249,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入简介"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item> -->
       <!-- <el-form-item label="备注1" prop="remark1">
@@ -258,7 +258,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入备注1"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item>
       <el-form-item label="备注2" prop="remark2">
@@ -267,7 +267,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入备注2"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          
         />
       </el-form-item> -->
       <el-form-item label="创建时间" prop="createTime">
@@ -278,7 +278,6 @@ const handleClickShowSearch = () => {
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-220px"
         />
       </el-form-item>
     </el-form>

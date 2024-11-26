@@ -66,7 +66,7 @@ const handleClickShowSearch = () => {
     >
       <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
       <!-- todo复制原来的搜索列表 -->
-       
+      <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
     </el-form>
 
     <div class="w-full mt-[8px]">
