@@ -1,33 +1,29 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <custom-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="规则名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入规则名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable class="!w-240px">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_JOB_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
+  <el-scrollbar
+    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+        <!-- 一级标题名字 -->
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">巡检规则管理</h1>
+
+        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+
+        <!-- 一级标题旁边的按钮 -->
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:check-rule:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </div>
+
+      <div class="flex items-center">
+        <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
           搜索
@@ -36,104 +32,152 @@
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:check-rule:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+
+    <!-- 搜索栏 注意 :model 和 ref 的名称 -->
+    <el-form
+      :model="queryParams"
+      ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+      label-width="95px"
+      :inline="true"
+    >
+      <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
+      <el-form-item label="规则名称" prop="name">
+        <el-input v-model="queryParams.name" placeholder="请输入规则名称" clearable />
       </el-form-item>
-    </custom-form>
-  </ContentWrap>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.INFRA_JOB_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+    </el-form>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-form-item>
-      <el-button
-        type="primary"
-        plain
-        @click="openForm('create')"
-        v-hasPermi="['agriculture:check-rule:create']"
-      >
-        <Icon icon="ep:plus" class="mr-5px" />
-        新增
-      </el-button>
-      <el-button
-        type="success"
-        plain
-        @click="handleExport"
-        :loading="exportLoading"
-        v-hasPermi="['agriculture:check-rule:export']"
-      >
-        <Icon icon="ep:download" class="mr-5px" />
-        导出
-      </el-button>
-    </el-form-item>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="规则编号" width="200px" align="center" prop="id" />
-      <el-table-column label="规则名称" width="300px" align="center" prop="name" />
-      <el-table-column label="规则状态" align="center" prop="status">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.INFRA_JOB_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
-      <!--      <el-table-column label="处理器的名字" align="center" prop="handlerName" />-->
-      <!--      <el-table-column label="处理器的参数" align="center" prop="handlerParam" />-->
-      <el-table-column label="CRON 表达式" align="center" prop="cronExpression" />
-      <el-table-column label="重试次数" align="center" prop="retryCount" />
-      <el-table-column label="重试间隔" align="center" prop="retryInterval" />
-      <el-table-column label="监控超时时间" align="center" prop="monitorTimeout" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="操作" align="center" width="400px" fixed="right">
-        <template #default="scope">
-          <el-button link type="primary" @click="getDeviceId(scope.row.handlerParam)">
-            查看设备列表
-          </el-button>
+    <div class="w-full mt-[8px]">
+      <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+        <el-table-column label="规则编号" width="200px" align="center" prop="id" />
+        <el-table-column label="规则名称" width="300px" align="center" prop="name" />
+        <el-table-column label="规则状态" align="center" prop="status">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.INFRA_JOB_STATUS" :value="scope.row.status" />
+          </template>
+        </el-table-column>
+        <!--      <el-table-column label="处理器的名字" align="center" prop="handlerName" />-->
+        <!--      <el-table-column label="处理器的参数" align="center" prop="handlerParam" />-->
+        <el-table-column label="CRON 表达式" align="center" prop="cronExpression" />
+        <el-table-column label="重试次数" align="center" prop="retryCount" />
+        <el-table-column label="重试间隔" align="center" prop="retryInterval" />
+        <el-table-column label="监控超时时间" align="center" prop="monitorTimeout" />
+        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+          <template #default="scope">
+            <div class="flex items-center justify-center">
+              <el-button link type="primary" @click="getDeviceId(scope.row.handlerParam)">
+                查看设备列表
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                type="primary"
+                link
+                @click="handleChangeStatus(scope.row)"
+                v-hasPermi="['agriculture:check-rule:update']"
+              >
+                {{ scope.row.status === InfraJobStatusEnum.STOP ? '开启' : '暂停' }}
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
 
-          <el-button
-            type="primary"
-            link
-            @click="openDeviceInfoHelperDialog(scope.row)"
-            v-hasPermi="['agriculture:check-rule:update']"
-          >
-            绑定设备
-          </el-button>
-          <el-button
-            type="primary"
-            link
-            @click="handleChangeStatus(scope.row)"
-            v-hasPermi="['agriculture:check-rule:update']"
-          >
-            {{ scope.row.status === InfraJobStatusEnum.STOP ? '开启' : '暂停' }}
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:check-rule:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:check-rule:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
+              <el-popover :width="104" trigger="hover" popper-style="min-width: 0">
+                <template #reference>
+                  <button class="link-btn flex items-center">
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                  </button>
+                </template>
+
+                <div class="flex flex-col items-start space-y-[8px] space-x-0">
+                  <!-- 隐藏的其他按钮 -->
+                  <el-button
+                    type="primary"
+                    link
+                    @click="openDeviceInfoHelperDialog(scope.row)"
+                    v-hasPermi="['agriculture:check-rule:update']"
+                  >
+                    绑定设备
+                  </el-button>
+                  <el-button
+                    link
+                    type="primary"
+                    @click="openForm('update', scope.row.id)"
+                    v-hasPermi="['agriculture:check-rule:update']"
+                  >
+                    编辑
+                  </el-button>
+                  <el-button
+                    link
+                    type="danger"
+                    @click="handleDelete(scope.row.id)"
+                    v-hasPermi="['agriculture:check-rule:delete']"
+                  >
+                    删除
+                  </el-button>
+                </div>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 页码组件 注意绑定的值和事件函数 -->
     <Pagination
+      style="margin-bottom: 0; margin-top: 8px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-  </ContentWrap>
+  </el-scrollbar>
 
   <!-- 表单弹窗：添加/修改 -->
   <CheckRuleForm ref="formRef" @success="getList" />
@@ -159,7 +203,7 @@ import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { CheckRuleApi, CheckRuleVO } from '@/api/agriculture/checkrule';
 import CheckRuleForm from './CheckRuleForm.vue';
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '@/utils/dict';
 import { InfraJobStatusEnum } from '@/utils/constants';
 import DeviceInfoHelper from '@/views/components/DeviceInfoHelper/index.vue';
 import { JobVO } from '@/api/infra/job';
@@ -320,4 +364,94 @@ const getDeviceId = async (str: any) => {
 
   dialogVisible.value = true;
 };
+/* 原页面的代码复制在上面 */
+
+/**
+ * topMenuHeight      顶部菜单和标签页高度
+ * contentPadding     页面内容外边距
+ */
+const topMenuHeight = 85;
+const contentPadding = 8;
+
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 </script>
+
+<style lang="scss" scoped>
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ebebeb;
+  color: #333;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: white;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: white;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
+}
+</style>
