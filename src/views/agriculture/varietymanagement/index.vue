@@ -352,6 +352,15 @@ const handleClickShowSearch = () => {
                 编辑
               </el-button>
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                link
+                type="primary"
+                @click="goGrowthCycle(scope.row.id)"
+                v-hasPermi="['agriculture:variety-management:update']"
+              >
+                生长周期
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
                 <el-button
                   link
                   type="danger"
