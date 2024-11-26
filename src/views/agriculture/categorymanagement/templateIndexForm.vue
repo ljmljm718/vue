@@ -42,6 +42,7 @@ const handleClickShowSearch = () => {
       <div class="flex items-center">
         <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
         <!-- todo复制原页面【搜索、重置、导出】 -->
+        <!-- todo记得检测搜索按钮的type属性是否等于'primary' -->
         <!-- todo删除导出按钮的type和plain属性 -->
 
         <button
