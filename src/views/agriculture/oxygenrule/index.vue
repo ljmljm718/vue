@@ -67,13 +67,6 @@
       <!-- todo复制原来的搜索列表 -->
       <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
       <el-form-item label="因素" prop="oxygenId">
-        <!--        <el-input-->
-        <!--          v-model="queryParams.oxygenId"-->
-        <!--          placeholder="请输入因素"-->
-        <!--          clearable-->
-        <!--          @keyup.enter="handleQuery"-->
-        <!--          class="!w-240px"-->
-        <!--        />-->
         <el-select v-model="queryParams.oxygenId" placeholder="请选择因素">
           <el-option
             v-for="item in formOxygenFactorAll"
@@ -83,7 +76,6 @@
           />
         </el-select>
       </el-form-item>
-
       <el-form-item label="最大值" prop="maxNum">
         <el-input
           v-model="queryParams.maxNum"
