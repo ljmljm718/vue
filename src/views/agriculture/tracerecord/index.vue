@@ -139,7 +139,11 @@ const handleClickShowSearch = () => {
           一级标题旁边的按钮
           主按钮 type="primary" 次按钮不设置 type 属性 不设置 plain 属性
         -->
-        <el-button type="primary" @click="openForm('create')">
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:trace-record:create']"
+        >
           <Icon icon="ep:plus" class="mr-5px" />
           新增
         </el-button>
@@ -155,7 +159,7 @@ const handleClickShowSearch = () => {
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-        <el-button @click="handleExport">
+        <el-button @click="handleExport" v-hasPermi="['agriculture:trace-record:export']">
           <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
@@ -190,7 +194,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入溯源码"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="品牌" prop="productBrand">
@@ -199,16 +202,10 @@ const handleClickShowSearch = () => {
           placeholder="请输入品牌"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="生产商" prop="producerId">
-        <el-select
-          v-model="queryParams.producerId"
-          placeholder="请选择生产商"
-          clearable
-          class="!w-240px"
-        >
+        <el-select v-model="queryParams.producerId" placeholder="请选择生产商" clearable>
           <el-option
             v-for="item in producerEntryList"
             :key="item.id"
@@ -225,7 +222,6 @@ const handleClickShowSearch = () => {
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
         />
       </el-form-item>
     </el-form>
@@ -260,7 +256,7 @@ const handleClickShowSearch = () => {
                 link
                 type="danger"
                 @click="handleDelete(scope.row.id)"
-                v-hasPermi="['agriculture:device-history-status:delete']"
+                v-hasPermi="['agriculture:trace-record:delete']"
               >
                 删除
               </el-button>

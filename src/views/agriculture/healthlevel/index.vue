@@ -126,7 +126,11 @@ const handleClickShowSearch = () => {
           一级标题旁边的按钮
           主按钮 type="primary" 次按钮不设置 type 属性 不设置 plain 属性
         -->
-        <el-button type="primary" @click="openForm('create')">
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:health-level:create']"
+        >
           <Icon icon="ep:plus" class="mr-5px" />
           新增
         </el-button>
@@ -142,7 +146,7 @@ const handleClickShowSearch = () => {
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-        <el-button @click="handleExport">
+        <el-button @click="handleExport" v-hasPermi="['agriculture:health-level:export']">
           <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
@@ -177,16 +181,10 @@ const handleClickShowSearch = () => {
           placeholder="请输入品种名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="健康等级" prop="healthLevel">
-        <el-select
-          v-model="queryParams.healthLevel"
-          placeholder="请选择健康等级"
-          clearable
-          class="!w-240px"
-        >
+        <el-select v-model="queryParams.healthLevel" placeholder="请选择健康等级" clearable>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
             :key="dict.value"
@@ -201,7 +199,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入模型名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
     </el-form>
@@ -249,7 +246,7 @@ const handleClickShowSearch = () => {
                 link
                 type="primary"
                 @click="openForm('update', scope.row.id)"
-                v-hasPermi="['agriculture:device-history-status:update']"
+                v-hasPermi="['agriculture:health-level:update']"
               >
                 编辑
               </el-button>
@@ -258,7 +255,7 @@ const handleClickShowSearch = () => {
                 link
                 type="danger"
                 @click="handleDelete(scope.row.id)"
-                v-hasPermi="['agriculture:device-history-status:delete']"
+                v-hasPermi="['agriculture:health-level:delete']"
               >
                 删除
               </el-button>
