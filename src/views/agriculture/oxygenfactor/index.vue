@@ -1,4 +1,4 @@
-// templateIndexForm模版
+
 <script setup lang="ts">
 /* todo原页面的js代码复制在下面 */
 

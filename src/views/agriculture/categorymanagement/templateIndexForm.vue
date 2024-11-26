@@ -84,11 +84,30 @@ const handleClickShowSearch = () => {
                     <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
                   这段代码的含义是“竖杠”分隔符
                 </div>
+                2.请注意“方案一”和“方案二”只采用一种，请根据自身按钮数量选择性删除或保留
               -->
+            <!-- todo方案一 -->
             <div class="flex items-center justify-center">
-              
+                <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+            </div>
+            <!-- todo方案二&&当按钮大于3个时  -->
+            <div class="flex items-center justify-center">
+             <!-- todo按钮一 -->
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-             
+              <!-- todo按钮二 -->
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-popover :width="104" trigger="hover" popper-style="min-width: 0">
+                <template #reference>
+                  <button class="link-btn flex items-center">
+                    <div class="w-[2px] h-[2px] mx-[1px] rounded-full" style="background-color: var(--el-color-primary)"></div>
+                    <div class="w-[2px] h-[2px] mx-[1px] rounded-full" style="background-color: var(--el-color-primary)"></div>
+                    <div class="w-[2px] h-[2px] mx-[1px] rounded-full" style="background-color: var(--el-color-primary)"></div>
+                  </button>
+                </template>
+                <div class="flex flex-col items-start space-y-[8px] space-x-0">
+                  <!-- 隐藏的其他按钮 中间不需要加上方div隔断-->
+                </div>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
