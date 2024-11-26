@@ -10,42 +10,10 @@
 
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
-
         <!--
           一级标题旁边的按钮
           主按钮 type="primary" 次按钮不设置 type 属性 不设置 plain 属性
         -->
-        <el-button
-          type="primary"
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:topic-data:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
-        <el-button
-          :disabled="multiple || sub"
-          @click="handleSubscribe"
-          v-hasPermi="['agriculture:topic-data:subscribe']"
-        >
-          订阅主题
-        </el-button>
-        <el-button
-          :disabled="multiple || unsub"
-          @click="handleUnsubscribe"
-          v-hasPermi="['agriculture:topic-data:unsubscribe']"
-        >
-          退订主题
-        </el-button>
-        <el-button @click="handleSubscribeAll" v-hasPermi="['agriculture:topic-data:subscribeall']">
-          全部订阅
-        </el-button>
-        <el-button
-          @click="handleUnSubscribeAll"
-          v-hasPermi="['agriculture:topic-data:unsubscribeAll']"
-        >
-          全部退订
-        </el-button>
       </div>
 
       <div class="flex items-center">
@@ -57,14 +25,6 @@
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
-        </el-button>
-        <el-button
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:topic-data:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" />
-          导出
         </el-button>
 
         <button
@@ -129,8 +89,54 @@
         </el-select>
       </el-form-item>
     </el-form>
-
-    <div class="w-full mt-[16px]">
+    <div class="flex justify-between mt-[16px]">
+      <div class="space-x-[8px]">
+        <!-- 左侧的按钮写在下面 -->
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:topic-data:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+        <el-button
+          :disabled="multiple || sub"
+          @click="handleSubscribe"
+          v-hasPermi="['agriculture:topic-data:subscribe']"
+        >
+          订阅主题
+        </el-button>
+        <el-button
+          :disabled="multiple || unsub"
+          @click="handleUnsubscribe"
+          v-hasPermi="['agriculture:topic-data:unsubscribe']"
+        >
+          退订主题
+        </el-button>
+        <el-button @click="handleSubscribeAll" v-hasPermi="['agriculture:topic-data:subscribeall']">
+          全部订阅
+        </el-button>
+        <el-button
+          @click="handleUnSubscribeAll"
+          v-hasPermi="['agriculture:topic-data:unsubscribeAll']"
+        >
+          全部退订
+        </el-button>
+      </div>
+      <div class="space-x-[8px]">
+        <!-- 右侧的按钮写在这 -->
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:topic-data:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+      </div>
+    </div>
+    <div class="w-full mt-[8px]">
       <el-table
         v-loading="loading"
         :data="list"
