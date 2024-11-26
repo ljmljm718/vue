@@ -73,17 +73,16 @@ const handleClickShowSearch = () => {
     <div class="w-full mt-[8px]">
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-        <!-- todo复制列表，没什么要改订单 -->
-        <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-        
+        <!-- todo复制列表 -->
+
        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope">
              <!-- todo操作按钮 -->
             <!-- 1.  <template #default="scope"> 中，加入
                 <div class="flex items-center justify-center">
-                  其中放入编辑，删除按钮等，每一个按钮中完成后加入
+                  其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
                     <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-                  这段代码
+                  这段代码的含义是“竖杠”分隔符
                 </div>
               -->
             <div class="flex items-center justify-center">
