@@ -36,13 +36,14 @@ const handleClickShowSearch = () => {
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
         <!-- 一级标题旁边的按钮 -->
         <!-- todo原新增按钮 -->
+        <!-- todo需要包含type="primary"&&不能有plain属性 -->
 
       </div>
 
       <div class="flex items-center">
         <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
         <!-- todo复制原页面【搜索、重置、导出】 -->
-        <!-- todo记得检测搜索按钮的type属性是否等于'primary' -->
+        <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
         <!-- todo删除导出按钮的type和plain属性 -->
 
         <button
