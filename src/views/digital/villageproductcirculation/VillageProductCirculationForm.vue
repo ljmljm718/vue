@@ -138,7 +138,14 @@ const formData = ref({
   countiesCode: undefined,
   countiesName: undefined
 });
-const formRules = reactive({});
+const formRules = reactive({
+  productId: [{ required: true, message: '产品id不能为空', trigger: 'blur' }],
+  product: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
+  customer: [{ required: true, message: '客户名称为空', trigger: 'blur' }],
+  unitPrice: [{ required: true, message: '单价不能为空', trigger: 'blur' }],
+  quantity: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
+  salesLocation: [{ required: true, message: '销售地不能为空', trigger: 'blur' }]
+});
 const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
