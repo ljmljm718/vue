@@ -6,13 +6,23 @@
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <h1 class="m-0 text-[#333] dark:text-[#ddd] font-bold text-[18px]">生长周期</h1>
-        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+        <el-popover
+          placement="bottom-start"
+          trigger="hover"
+          :width="400"
+          content="该模块可以对不同作物的各个生长期进行汇总管理，可以添加不同生长期的注意事项以及需要进行的农事活动。"
+        >
+          <template #reference>
+            <Icon
+              icon="ep:question-filled"
+              :size="14"
+              class="ml-[8px] cursor-pointer text-[#F08000]"
+            />
+          </template>
+        </el-popover>
+
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
 
-        <!--
-          一级标题旁边的按钮
-          主按钮 type="primary" 次按钮不设置 type 属性 不设置 plain 属性
-        -->
         <el-button
           type="primary"
           @click="openForm('create')"
