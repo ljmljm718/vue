@@ -1,131 +1,109 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <!--
+    demo6.2.3新增 录入条目少于6个:width="480" 否则:width="780"
+    top的值是对话框到页面顶部的距离(不是到浏览器) 可以不加top属性(15vh)
+    但如果显示效果不佳请自行调整
+  -->
+  <Dialog :title="dialogTitle" v-model="dialogVisible" :width="780" top="9vh">
+    <!-- demo6.2.3新增 :width="780"时 class加上grid-cols-2 gap-x-[16px] 否则不加 -->
     <el-form
+      class="form grid gap-y-[8px] grid-cols-2 gap-x-[16px]"
       ref="formRef"
       :model="formData"
       :rules="formRules"
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="设备编号" prop="deviceCode">
-            <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" disabled>
-              <template #append>
-                <el-button @click="openPurchaseOrderInEnableList">
-                  <Icon icon="ep:search" />
-                  选择
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="设备名称" prop="dealPerson">
-            <el-input v-model="formData.deviceName" placeholder="选择后自动填入设备名称" disabled />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="地块编号" prop="plotCode">
-            <el-input v-model="formData.plotCode" placeholder="请输入地块编号" disabled />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="基地编号" prop="parkCode">
-            <el-input v-model="formData.parkCode" placeholder="请输入基地编号" disabled />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <el-col :span="8">
-          <el-form-item label="预警信息" prop="warnInfo">
-            <el-input v-model="formData.warnInfo" placeholder="请输入预警信息" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="预警类型" prop="warnType">
-            <el-select
-              v-model="formData.warnType"
-              placeholder="选择设备后可填写"
-              :disabled="disabled"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-              <!--              <el-option-->
-              <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"-->
-              <!--                :key="dict.value"-->
-              <!--                :label="dict.label"-->
-              <!--                :value="dict.value"-->
-              <!--              />-->
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="预警单位" prop="warnUnit">
-            <el-select
-              v-model="formData.warnUnit"
-              placeholder="选择设备后可填写"
-              :disabled="disabled"
-            >
-              <el-option
-                v-for="item in unitOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-              <!--              <el-option-->
-              <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_UNIT)"-->
-              <!--                :key="dict.value"-->
-              <!--                :label="dict.label"-->
-              <!--                :value="dict.value"-->
-              <!--              />-->
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="当前值" prop="currentValue">
-            <el-input v-model="formData.currentValue" placeholder="请输入当前值" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="阈值" prop="threshold">
-            <el-input v-model="formData.threshold" placeholder="请输入阈值" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="3">
-        <el-col :span="12">
-          <el-form-item label="预警时间" prop="warnTime">
-            <el-date-picker
-              v-model="formData.warnTime"
-              type="datetime"
-              value-format="x"
-              placeholder="选择预警时间"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="预警状态" prop="warnStatus">
-            <el-radio-group v-model="formData.warnStatus">
-              <el-radio
-                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
-                :key="dict.value"
-                :label="dict.value"
-              >
-                {{ dict.label }}
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!-- demo6.2.3新增 删掉所有的el-row el-col 输入框内的按钮只保留图标 -->
+      <el-form-item label="设备编号" prop="deviceCode">
+        <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" disabled>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search" />
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+
+      <el-form-item label="设备名称" prop="dealPerson">
+        <el-input v-model="formData.deviceName" placeholder="选择后自动填入设备名称" disabled />
+      </el-form-item>
+
+      <el-form-item label="地块编号" prop="plotCode">
+        <el-input v-model="formData.plotCode" placeholder="请输入地块编号" disabled />
+      </el-form-item>
+
+      <el-form-item label="基地编号" prop="parkCode">
+        <el-input v-model="formData.parkCode" placeholder="请输入基地编号" disabled />
+      </el-form-item>
+
+      <el-form-item label="预警类型" prop="warnType">
+        <el-select v-model="formData.warnType" placeholder="选择设备后可填写" :disabled="disabled">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+          <!--              <el-option-->
+          <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"-->
+          <!--                :key="dict.value"-->
+          <!--                :label="dict.label"-->
+          <!--                :value="dict.value"-->
+          <!--              />-->
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="预警单位" prop="warnUnit">
+        <el-select v-model="formData.warnUnit" placeholder="选择设备后可填写" :disabled="disabled">
+          <el-option
+            v-for="item in unitOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+          <!--              <el-option-->
+          <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_UNIT)"-->
+          <!--                :key="dict.value"-->
+          <!--                :label="dict.label"-->
+          <!--                :value="dict.value"-->
+          <!--              />-->
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="预警信息" prop="warnInfo">
+        <el-input v-model="formData.warnInfo" placeholder="请输入预警信息" />
+      </el-form-item>
+
+      <el-form-item label="当前值" prop="currentValue">
+        <el-input v-model="formData.currentValue" placeholder="请输入当前值" />
+      </el-form-item>
+
+      <el-form-item label="阈值" prop="threshold">
+        <el-input v-model="formData.threshold" placeholder="请输入阈值" />
+      </el-form-item>
+
+      <el-form-item label="预警时间" prop="warnTime">
+        <el-date-picker
+          v-model="formData.warnTime"
+          type="datetime"
+          value-format="x"
+          placeholder="选择预警时间"
+        />
+      </el-form-item>
+
+      <el-form-item label="预警状态" prop="warnStatus">
+        <el-radio-group v-model="formData.warnStatus">
+          <el-radio
+            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
+
       <!--      <el-row :gutter="3">-->
       <!--        <el-col :span="12">-->
       <!--          <el-form-item label="处理时间" prop="dealTime">-->
@@ -155,32 +133,27 @@
       <!--          </el-form-item>-->
       <!--        </el-col>-->
       <!--      </el-row>-->
-      <el-row :gutter="3">
-        <!--            <el-col :span="12">-->
-        <!--                <el-form-item label="设备类型" prop="deviceType">-->
-        <!--                    <el-select v-model="formData.deviceType" placeholder="请选择设备类型">-->
-        <!--                        <el-option label="请选择字典生成" value="" />-->
-        <!--                    </el-select>-->
-        <!--                </el-form-item>-->
-        <!--            </el-col>-->
-        <el-col :span="12">
-          <el-form-item label="预警等级" prop="warnLevel">
-            <el-select v-model="formData.warnLevel" placeholder="请选择预警等级">
-              <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="预警图片" prop="imgId">
-            <UploadImg v-model="formData.imgId" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!--            <el-col :span="12">-->
+      <!--                <el-form-item label="设备类型" prop="deviceType">-->
+      <!--                    <el-select v-model="formData.deviceType" placeholder="请选择设备类型">-->
+      <!--                        <el-option label="请选择字典生成" value="" />-->
+      <!--                    </el-select>-->
+      <!--                </el-form-item>-->
+      <!--            </el-col>-->
+      <el-form-item label="预警等级" prop="warnLevel">
+        <el-select v-model="formData.warnLevel" placeholder="请选择预警等级">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="预警图片" prop="imgId">
+        <UploadImg v-model="formData.imgId" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -386,3 +359,14 @@ const handlePurchaseOrderChange = async (order: EquipmentDataVO) => {
   disabled.value = false;
 };
 </script>
+
+<style lang="scss" scoped>
+// demo6.2.3新增
+.form > * {
+  margin: 0;
+}
+
+:deep(.el-date-editor.el-input) {
+  width: 100% !important;
+}
+</style>

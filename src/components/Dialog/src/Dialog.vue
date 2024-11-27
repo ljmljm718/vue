@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { propTypes } from '@/utils/propTypes'
-import { isNumber } from '@/utils/is'
-defineOptions({ name: 'Dialog' })
+import { propTypes } from '@/utils/propTypes';
+import { isNumber } from '@/utils/is';
+defineOptions({ name: 'Dialog' });
 
-const slots = useSlots()
+const slots = useSlots();
 
 const props = defineProps({
   modelValue: propTypes.bool.def(false),
@@ -12,49 +12,49 @@ const props = defineProps({
   width: propTypes.oneOfType([String, Number]).def('40%'),
   scroll: propTypes.bool.def(false), // 是否开启滚动条。如果是的话，按照 maxHeight 设置最大高度
   maxHeight: propTypes.oneOfType([String, Number]).def('400px')
-})
+});
 
 const getBindValue = computed(() => {
-  const delArr: string[] = ['fullscreen', 'title', 'maxHeight', 'appendToBody']
-  const attrs = useAttrs()
-  const obj = { ...attrs, ...props }
+  const delArr: string[] = ['fullscreen', 'title', 'maxHeight', 'appendToBody'];
+  const attrs = useAttrs();
+  const obj = { ...attrs, ...props };
   for (const key in obj) {
     if (delArr.indexOf(key) !== -1) {
-      delete obj[key]
+      delete obj[key];
     }
   }
-  return obj
-})
+  return obj;
+});
 
-const isFullscreen = ref(false)
+const isFullscreen = ref(false);
 
 const toggleFull = () => {
-  isFullscreen.value = !unref(isFullscreen)
-}
+  isFullscreen.value = !unref(isFullscreen);
+};
 
-const dialogHeight = ref(isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight)
+const dialogHeight = ref(isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight);
 
 watch(
   () => isFullscreen.value,
   async (val: boolean) => {
-    await nextTick()
+    await nextTick();
     if (val) {
-      const windowHeight = document.documentElement.offsetHeight
-      dialogHeight.value = `${windowHeight - 55 - 60 - (slots.footer ? 63 : 0)}px`
+      const windowHeight = document.documentElement.offsetHeight;
+      dialogHeight.value = `${windowHeight - 55 - 60 - (slots.footer ? 63 : 0)}px`;
     } else {
-      dialogHeight.value = isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight
+      dialogHeight.value = isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight;
     }
   },
   {
     immediate: true
   }
-)
+);
 
 const dialogStyle = computed(() => {
   return {
     height: unref(dialogHeight)
-  }
-})
+  };
+});
 </script>
 
 <template>
@@ -77,14 +77,14 @@ const dialogStyle = computed(() => {
         <div
           class="absolute right-15px top-[50%] h-54px flex translate-y-[-50%] items-center justify-between"
         >
-          <Icon
+          <!-- <Icon
             v-if="fullscreen"
             class="is-hover mr-10px cursor-pointer"
             :icon="isFullscreen ? 'radix-icons:exit-full-screen' : 'radix-icons:enter-full-screen'"
             color="var(--el-color-info)"
             hover-color="var(--el-color-primary)"
             @click="toggleFull"
-          />
+          /> -->
           <Icon
             class="is-hover cursor-pointer"
             icon="ep:close"

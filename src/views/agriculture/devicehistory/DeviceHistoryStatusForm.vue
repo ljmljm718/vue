@@ -15,7 +15,6 @@
           <template #append>
             <el-button @click="openSelectDeviceInfo()">
               <Icon icon="ep:search" />
-              选择
             </el-button>
           </template>
         </el-input>
