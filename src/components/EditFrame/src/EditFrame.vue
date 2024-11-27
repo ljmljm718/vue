@@ -1,5 +1,19 @@
 <script lang="ts" setup>
 defineOptions({ name: 'EditFrame' });
+
+const scrollY = ref(0);
+const handleScroll = (scrollValue: any) => {
+  scrollY.value = scrollValue.scrollTop;
+};
+const contentH = ref();
+const calcContentH = () => {
+  const dom = document.getElementById('contentDom');
+  contentH.value = dom ? dom.offsetHeight : 0;
+};
+onMounted(() => {
+  calcContentH();
+  window.addEventListener('resize', calcContentH);
+});
 </script>
 
 <template>
@@ -9,8 +23,12 @@ defineOptions({ name: 'EditFrame' });
         <div></div>
       </slot>
     </div>
-    <el-scrollbar class="w-full p-[16px] box-border bg-white rounded-[6px] content-height">
-      <slot name="content"></slot>
+    <el-scrollbar
+      class="w-full p-[16px] box-border bg-white rounded-[6px] content-height"
+      @scroll="handleScroll"
+      id="contentDom"
+    >
+      <slot name="content" :scrollY="scrollY" :contentH="contentH"></slot>
     </el-scrollbar>
   </div>
 </template>
