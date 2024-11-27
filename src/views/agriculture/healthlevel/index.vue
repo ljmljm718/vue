@@ -146,7 +146,11 @@ const handleClickShowSearch = () => {
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-        <el-button @click="handleExport" v-hasPermi="['agriculture:health-level:export']">
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:health-level:export']"
+        >
           <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
