@@ -1,47 +1,78 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <custom-form
-      class="-mb-15px"
+  <el-scrollbar
+    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+        <!-- 一级标题名字 todo替换成菜单名称-->
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">巡检处理</h1>
+        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+        <!-- 一级标题旁边的按钮 -->
+        <!-- todo原新增按钮 -->
+        <!-- todo需要包含type="primary"&&不能有plain属性 -->
+      </div>
+
+      <div class="flex items-center">
+        <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
+        <!-- todo复制原页面【搜索、重置、导出】 -->
+        <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
+        <!-- todo删除导出按钮的type和plain属性 -->
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:check-logs:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+
+    <!-- 搜索栏 注意 :model 和 ref 的名称 -->
+    <el-form
       :model="queryParams"
       ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+      label-width="95px"
       :inline="true"
-      label-width="68px"
     >
-      <!-- <el-form-item label="巡检编号" prop="inspectionNum">
-        <el-input
-          v-model="queryParams.inspectionNum"
-          placeholder="请输入巡检编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
+      <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
+      <!-- todo复制原来的搜索列表 -->
+      <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
       <el-form-item label="处理状态" prop="dealType">
         <el-select v-model="queryParams.dealType" placeholder="请选择处理状态" class="!w-240px">
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value"/>
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="巡检结果" prop="inspectionResults">
-        <el-input
-          v-model="queryParams.inspectionResults"
-          placeholder="请输入巡检结果"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
       <el-form-item label="巡检人" prop="inspector">
         <el-input
           v-model="queryParams.inspector"
           placeholder="请输入巡检人"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="巡检时间" prop="inspectionTime">
@@ -52,190 +83,175 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-220px"
         />
       </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px"/>
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
-          重置
-        </el-button>
-      </el-form-item>
-      <el-row>
-        <el-form-item>
-<!--          <el-button-->
-<!--            type="primary"-->
-<!--            plain-->
-<!--            @click="openForm('create')"-->
-<!--            v-hasPermi="['agriculture:check-logs:create']"-->
-<!--          >-->
-<!--            <Icon icon="ep:plus" class="mr-5px"/>-->
-<!--            新增-->
-<!--          </el-button>-->
-          <el-button
-            type="success"
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['agriculture:check-logs:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px"/>
-            导出
-          </el-button>
-        </el-form-item>
-      </el-row>
-    </custom-form>
-  </ContentWrap>
+    </el-form>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table
-v-loading="loading" :data="list" :stripe="true" prefix="right"
-              :show-overflow-tooltip="true">
-      <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <!-- <el-table-column label="巡检编号" align="center" prop="inspectionNum" width="200"/> -->
-      <!--      <el-table-column label="设备" align="center" prop="equNum"/>-->
-      <el-table-column label="设备" align="center" prop="equName" width="200"/>
-      <el-table-column label="巡检状态" align="center" prop="inspectionState" width="100">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="巡检结果状态" align="center" prop="resultState" width="150">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState"/>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/> -->
-      <el-table-column label="处理状态" align="center" prop="dealType" width="120">
-        <template #default="scope">
-          {{ scope.row.dealType === "0" ? '未处理' : '已处理' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="处理人" align="center" prop="dealPerson"/>
-      <el-table-column
-        label="处理时间"
-        align="center"
-        prop="dealTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="处理结果" align="center" prop="dealResult" width="180"/>
-      <el-table-column label="处理图片" align="center" prop="dealImage">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.dealImage"
-            :preview-src-list="[row.inspectionImage]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
+    <div class="w-full mt-[8px]">
+      <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+        <!-- todo复制列表 -->
+        <el-table-column label="设备" align="center" prop="equName" width="200" />
+        <el-table-column label="巡检状态" align="center" prop="inspectionState" width="100">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.CHECK_STATE" :value="scope.row.inspectionState" />
+          </template>
+        </el-table-column>
+        <el-table-column label="巡检结果状态" align="center" prop="resultState" width="150">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.CHECK_RESULT_STATE" :value="scope.row.resultState" />
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="巡检结果" align="center" prop="inspectionResults" width="120"/> -->
+        <el-table-column label="处理状态" align="center" prop="dealType" width="120">
+          <template #default="scope">
+            {{ scope.row.dealType === '0' ? '未处理' : '已处理' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="处理人" align="center" prop="dealPerson" />
+        <el-table-column
+          label="处理时间"
+          align="center"
+          prop="dealTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="处理结果" align="center" prop="dealResult" width="180" />
+        <el-table-column label="处理图片" align="center" prop="dealImage">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              lazy
+              :src="row.dealImage"
+              :preview-src-list="[row.inspectionImage]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
 
-      <el-table-column label="所属基地" align="center" prop="base" width="200"/>
-      <el-table-column
-:label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'" align="center"
-                       prop="massif" width="200"/>
-      <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
-      <el-table-column label="巡检人" align="center" prop="inspector"/>
-      <el-table-column
-        label="巡检时间"
-        align="center"
-        prop="inspectionTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
-      <el-table-column label="巡检影像" align="center" prop="inspectionImage">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.inspectionImage"
-            :preview-src-list="[row.inspectionImage]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="巡检内容" align="center" prop="content"/>
-      <!--      <el-table-column-->
-      <!--        label="创建时间"-->
-      <!--        align="center"-->
-      <!--        prop="createTime"-->
-      <!--        :formatter="dateFormatter"-->
-      <!--        width="180px"-->
-      <!--      />-->
-      <el-table-column label="操作" align="center" fixed="right" width="200">
-        <template #default="scope">
-          <div v-if= "scope.row.dealPerson == null ">
-            <el-button
-              link
-              type="primary"
-              v-if= "scope.row.dealType === '0' "
-              @click="openErrorFrom('updateDispose', scope.row.id)"
-              v-hasPermi="['agriculture:check-logs:update']"
-            >
-              处理
-            </el-button>
-            <el-button
-              link
-              type="primary"
-              @click="openForm('update', scope.row.id)"
-              v-hasPermi="['agriculture:check-logs:update']"
-            >
-              编辑
-            </el-button>
-            <el-button
-              link
-              type="danger"
-              @click="handleDelete(scope.row.id)"
-              v-hasPermi="['agriculture:check-logs:delete']"
-            >
-              删除
-            </el-button>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
+        <el-table-column label="所属基地" align="center" prop="base" width="200" />
+        <el-table-column
+          :label="getTenantId() === 157 ? '所属鱼塘' : '所属地块'"
+          align="center"
+          prop="massif"
+          width="200"
+        />
+        <!--      <el-table-column label="巡检人id" align="center" prop="inspectorId" />-->
+        <el-table-column label="巡检人" align="center" prop="inspector" />
+        <el-table-column
+          label="巡检时间"
+          align="center"
+          prop="inspectionTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <!--      <el-table-column label="巡检影像" align="center" prop="inspectionImage"/>-->
+        <el-table-column label="巡检影像" align="center" prop="inspectionImage">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              lazy
+              :src="row.inspectionImage"
+              :preview-src-list="[row.inspectionImage]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="巡检内容" align="center" prop="content" />
+        <!--      <el-table-column-->
+        <!--        label="创建时间"-->
+        <!--        align="center"-->
+        <!--        prop="createTime"-->
+        <!--        :formatter="dateFormatter"-->
+        <!--        width="180px"-->
+        <!--      />-->
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+          <template #default="scope">
+            <!-- todo操作按钮 -->
+            <!-- 1.  <template #default="scope"> 中，加入
+                <div class="flex items-center justify-center">
+                  其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
+                    <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+                  这段代码的含义是“竖杠”分隔符
+                </div>
+                2.请注意“方案一”和“方案二”只采用一种，请根据自身按钮数量选择性删除或保留
+              -->
+            <!-- todo方案一 -->
+            <div class="flex items-center justify-center">
+              <el-button
+                link
+                type="primary"
+                v-if="scope.row.dealType === '0'"
+                @click="openErrorFrom('updateDispose', scope.row.id)"
+                v-hasPermi="['agriculture:check-logs:update']"
+              >
+                处理
+              </el-button>
+              <div
+                class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"
+                v-if="scope.row.dealType === '0'"
+              ></div>
+              <el-button
+                link
+                type="primary"
+                @click="openForm('update', scope.row.id)"
+                v-hasPermi="['agriculture:check-logs:update']"
+              >
+                编辑
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                link
+                type="danger"
+                @click="handleDelete(scope.row.id)"
+                v-hasPermi="['agriculture:check-logs:delete']"
+              >
+                删除
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 页码组件 注意绑定的值和事件函数 -->
+    <!-- 不用改 -->
     <Pagination
+      style="margin-bottom: 0; margin-top: 8px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-  </ContentWrap>
+  </el-scrollbar>
+  <!-- todo页面组件复制在下面 -->
+  <!-- 表单弹窗-->
 
   <!-- 表单弹窗：添加/修改 -->
-  <CheckLogsForm ref="formRef" @success="getList"/>
-  <CheckErrorLogsForm ref="errFormRef" @success="getList"/>
+  <CheckLogsForm ref="formRef" @success="getList" />
+  <CheckErrorLogsForm ref="errFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import {getStrDictOptions, DICT_TYPE} from '@/utils/dict'
-import {dateFormatter} from '@/utils/formatTime'
-import download from '@/utils/download'
-import {CheckLogsApi, CheckLogsVO} from '@/api/agriculture/checklogs'
-import CheckLogsForm from './CheckLogsForm.vue'
-import CheckErrorLogsForm from "@/views/agriculture/checklogs/CheckErrorLogsForm.vue";
-import {getTenantId} from "@/utils/auth";
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { CheckLogsApi, CheckLogsVO } from '@/api/agriculture/checklogs';
+import CheckLogsForm from './CheckLogsForm.vue';
+import CheckErrorLogsForm from '@/views/agriculture/checklogs/CheckErrorLogsForm.vue';
+import { getTenantId } from '@/utils/auth';
 
 /** 巡检记录 列表 */
-defineOptions({name: 'CheckLogs'})
+defineOptions({ name: 'CheckLogs' });
 
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<CheckLogsVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<CheckLogsVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -252,85 +268,177 @@ const queryParams = reactive({
   inspectionTime: [],
   inspectionImage: undefined,
   content: undefined,
-  createTime: [],
-})
-const options = [{
-  value: '0',
-  label: '未处理'
-}, {
-  value: '1',
-  label: '已处理'
-}]
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+  createTime: []
+});
+const options = [
+  {
+    value: '0',
+    label: '未处理'
+  },
+  {
+    value: '1',
+    label: '已处理'
+  }
+];
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await CheckLogsApi.getCheckLogsPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await CheckLogsApi.getCheckLogsPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
-const errFormRef = ref()
+const errFormRef = ref();
 const openErrorFrom = (type: string, id?: number) => {
-  errFormRef.value.open(type, id)
-}
+  errFormRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await CheckLogsApi.deleteCheckLogs(id)
-    message.success(t('common.delSuccess'))
+    await CheckLogsApi.deleteCheckLogs(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+    await getList();
+  } catch {}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await CheckLogsApi.exportCheckLogs(queryParams)
-    download.excel(data, '巡检记录.xls')
+    exportLoading.value = true;
+    const data = await CheckLogsApi.exportCheckLogs(queryParams);
+    download.excel(data, '巡检记录.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 
+/**
+ * topMenuHeight      顶部菜单和标签页高度
+ * contentPadding     页面内容外边距
+ */
+const topMenuHeight = 85;
+const contentPadding = 8;
+
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 </script>
+
+<style lang="scss" scoped>
+// 原页面样式复制在下面
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ebebeb;
+  color: #333;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: white;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: white;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
+}
+</style>
