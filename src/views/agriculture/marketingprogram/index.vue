@@ -1,4 +1,3 @@
-// templateIndexForm模版
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app';
 import { colorOpt } from '@/config/colorTheme/colorConfig';
