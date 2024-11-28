@@ -152,7 +152,7 @@ const handleClickShowSearch = () => {
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <!-- 一级标题名字 -->
-        <h1 class="m-0 text-[#333] font-bold text-[18px]">其他入库</h1>
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">其它入库</h1>
 
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
