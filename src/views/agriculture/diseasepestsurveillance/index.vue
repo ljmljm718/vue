@@ -1,397 +1,3 @@
-<template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <custom-form :model="queryParams" ref="queryFormRef" :inline="true">
-      <el-form-item label="设备" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请选择设备"
-          disabled
-          class="!w-240px"
-        >
-          <template #append>
-            <el-button @click="openPurchaseOrderInEnableList">
-              <Icon icon="ep:search" />
-              选择
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="监测物种" prop="monitorSpecies">
-        <el-select
-          v-model="queryParams.monitorSpecies"
-          clearable
-          placeholder="请选择监测物种"
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in listCategoryManagement"
-            :key="item.id"
-            :label="item.categoryName"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="监测类型" prop="monitorType">
-          <el-select
-            v-model="queryParams.monitorType"
-            placeholder="请选择监测类型"
-            clearable
-            class="!w-240px"
-          >
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
-        </el-form-item> -->
-      <el-form-item label="监测时间" prop="monitorTime">
-        <el-date-picker
-          v-model="queryParams.monitorTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-220px"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="监测抓图" prop="monitorPicture">
-          <el-input
-            v-model="queryParams.monitorPicture"
-            placeholder="请输入监测抓图"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item> -->
-      <el-form-item label="地块" prop="belongPark">
-        <el-select class="!w-240px" v-model="queryParams.belongPark">
-          <el-option
-            v-for="(item, index) in plotList"
-            :key="index"
-            :value="item.id"
-            :label="item.name"
-            placeholder="请选择"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="识别状态" prop="identifyStatus">
-        <el-select
-          v-model="queryParams.identifyStatus"
-          class="!w-240px"
-          clearable
-          placeholder="请选择状态"
-        >
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="设备状态" prop="deviceStatus">
-          <el-select
-            v-model="queryParams.deviceStatus"
-            placeholder="请选择设备状态"
-            clearable
-            class="!w-240px"
-          >
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
-        </el-form-item> -->
-      <!-- <el-form-item label="创建时间" prop="createTime">
-          <el-date-picker
-            v-model="queryParams.createTime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-            class="!w-240px"
-          />
-        </el-form-item> -->
-      <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px" />
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" />
-          重置
-        </el-button>
-      </el-form-item>
-    </custom-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap class="relative">
-    <!-- 识别结果 -->
-    <SpotResult ref="spotInstance" :title="activeTitle" />
-
-    <!-- 标题 -->
-    <div class="flex justify-between mb-[1rem]">
-      <span class="text-[1.125rem]">病虫害监测</span>
-      <el-radio-group size="small" v-model="listType" @change="handleCardChange">
-        <el-radio-button label="card" value="card">
-          <el-icon><Menu /></el-icon>
-          <span>卡片</span>
-        </el-radio-button>
-        <el-radio-button label="list" value="list">
-          <el-icon><List /></el-icon>
-          <span>列表</span>
-        </el-radio-button>
-      </el-radio-group>
-    </div>
-    <div>
-      <el-form-item>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:disease-pest-surveillance:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:disease-pest-surveillance:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" />
-          导出
-        </el-button>
-      </el-form-item>
-    </div>
-    <!-- 列表 -->
-    <el-table
-      v-show="listType === 'list'"
-      v-loading="loading"
-      :data="list"
-      :stripe="true"
-      :show-overflow-tooltip="true"
-    >
-      <el-table-column label="设备" align="center" prop="device" />
-      <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
-      <el-table-column label="监测类型" align="center" prop="monitorType" />
-      <el-table-column
-        label="监测时间"
-        align="center"
-        prop="monitorTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="监测抓图" align="center" prop="monitorPicture">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            :src="row.monitorPicture"
-            :preview-src-list="[row.monitorPicture]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="地块" align="center" prop="belongPark" />
-      <el-table-column label="识别状态" align="center" prop="identifyStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_IDENTIFY_STATUS" :value="scope.row.identifyStatus" />
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" fixed="right" prop="identifyStatus" width="200">
-        <template #default="scope">
-          <el-button
-            v-show="scope.row.identifyStatus == '1'"
-            link
-            type="primary"
-            @click="openRecognizeForm('create', scope.row.id)"
-          >
-            识别
-          </el-button>
-          <el-button link type="primary" @click="handleOpenSpotRes(scope.row)">识别结果</el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:disease-pest-surveillance:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:disease-pest-surveillance:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 卡片 -->
-    <div v-show="listType === 'card'" class="mb-[20px]">
-      <!-- 无数据 -->
-      <div v-if="list.length === 0" class="w-full flex justify-center items-center">
-        <div class="no-data">暂无数据</div>
-      </div>
-      <!-- 有数据 -->
-      <div v-else>
-        <div class="grid grid-cols-5" ref="cardContainer">
-          <!-- 左侧展示图片(列表) -->
-          <div class="col-span-2 p-[1rem] relative" style="border: 1px solid #e6e6e6">
-            <!-- 主图片展示 -->
-            <div
-              v-show="list[curItem].monitorPicture"
-              class="w-full flex justify-center items-center"
-              ref="mainImgContainer"
-            >
-              <el-scrollbar :style="`width: 100%; height: ${imgContainerHeight}px`">
-                <img
-                  ref="mainImg"
-                  :src="list[curItem].monitorPicture"
-                  class="w-full object-contain rounded-lg"
-                />
-              </el-scrollbar>
-            </div>
-            <!-- 主图片地址缺失时显示样式 -->
-            <div
-              v-show="!list[curItem].monitorPicture"
-              class="w-full flex justify-center items-center"
-              :style="{ height: mainImgHeight + 'px' }"
-            >
-              <div class="no-data">暂无图片</div>
-            </div>
-            <!-- 图片列表 -->
-            <div class="mt-[1rem] w-full relative" :style="{ height: imgSideLength + 4 + 'px' }">
-              <div class="absolute top-0 overflow-hidden h-full" style="width: calc(100% + 1rem)">
-                <div ref="imgListRef" class="flex w-full relative transition-all mt-[2px]">
-                  <div
-                    v-for="(item, index) in list"
-                    :key="item.id"
-                    class="mr-[1rem] flex-none relative cursor-pointer"
-                    :style="{ width: imgSideLength + 'px', height: imgSideLength + 'px' }"
-                    @click="handleClickImg(index)"
-                  >
-                    <img
-                      :src="item.monitorPicture"
-                      alt="图片展示"
-                      class="object-cover w-full h-full rounded-lg"
-                    />
-                  </div>
-                </div>
-                <!-- 左右箭头 -->
-                <div
-                  class="last-icon cursor-pointer"
-                  :style="{
-                    width: 0.2 * imgSideLength + 'px',
-                    height: 0.2 * imgSideLength + 'px',
-                    left: imgSideLength / 2 + 'px',
-                    top: imgSideLength / 2 + 'px'
-                  }"
-                  @click="handleClickLastImg"
-                ></div>
-                <div
-                  class="next-icon cursor-pointer"
-                  :style="{
-                    width: 0.2 * imgSideLength + 'px',
-                    height: 0.2 * imgSideLength + 'px',
-                    right: imgSideLength / 2 - 16 + 'px',
-                    top: imgSideLength / 2 + 'px'
-                  }"
-                  @click="handleClickNextImg"
-                ></div>
-                <!-- 当前展示项边框 -->
-                <div
-                  class="absolute rounded-lg"
-                  :style="{
-                    width: imgSideLength + 'px',
-                    height: imgSideLength + 'px',
-                    left: imgSideLength + 14 + 'px',
-                    top: 0,
-                    border: '2px solid #009688'
-                  }"
-                ></div>
-              </div>
-            </div>
-            <!-- 边框四个角 -->
-            <div class="corner-left-top"></div>
-            <div class="corner-left-bottom"></div>
-            <div class="corner-right-top"></div>
-            <div class="corner-right-bottom"></div>
-          </div>
-          <!-- 右侧识别记录 -->
-          <div class="col-span-3 h-[25rem] ml-[2rem]">
-            <!-- 识别虫害数量 & 虫害分类 -->
-            <div class="lg:grid lg:grid-cols-2 lg:gap-2">
-              <div class="h-[4rem] leading-[4rem] bg-[#F1F8FB] flex justify-between px-[2rem]">
-                <div>
-                  <img :src="PestAmountIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">病虫害数量</span>
-                </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumByQuantity }}</span>
-              </div>
-              <div
-                class="h-[4rem] leading-[4rem] bg-[#FEF9EE] flex justify-between px-[2rem] mt-[.5rem] lg:mt-0"
-              >
-                <div>
-                  <img :src="PestCategoryIcon" class="align-middle objcet-contain h-[2.5rem]" />
-                  <span class="pl-[1rem]">病虫害分类</span>
-                </div>
-                <span class="text-[1.5rem]">{{ countDetail.dataSumByType }}</span>
-              </div>
-            </div>
-            <!-- 开始识别 & 手动标注 -->
-            <div class="my-[1rem]">
-              <el-button color="#009688" @click="handleClickIdentify(list[curItem])">
-                开始识别
-              </el-button>
-              <el-button color="#59B9DE" @click="openRecognizeForm('create', list[curItem].id)">
-                <span class="text-white">手动标注</span>
-              </el-button>
-            </div>
-            <!-- 识别记录 -->
-            <SpotResTable
-              :activeMainTableId="list[curItem].id"
-              :monitorType="list[curItem].monitorType"
-              :key="spotResTableKey"
-              height="h-[10rem] lg:h-[15rem]"
-              @refresh="getCountDetail(list[curItem].id)"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="changePage"
-    />
-  </ContentWrap>
-
-  <!-- 表单弹窗：添加/修改 -->
-  <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
-  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange" />
-
-  <!-- 识别表单 -->
-  <RecognizeForm ref="recognizeFormRef" @success="getList" />
-  <!-- 遮罩层 -->
-  <div v-if="isLoading" class="loading-overlay">
-    <div class="loading-content">Loading...</div>
-  </div>
-
-  <!-- 自动识别补充表单 -->
-  <AutoRecognizeAddForm
-    ref="autoRecognizeAddFormRef"
-    :imgId="imgId"
-    :resultMap="resultMap"
-    @success="getList"
-  />
-</template>
-
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
@@ -416,6 +22,8 @@ import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInf
 import { throttle } from './utils';
 import SpotResult from './spotResult.vue';
 import AutoRecognizeAddForm from './AutoRecognizeAddForm.vue';
+import ImgNoIdentify from './assets/not-identify.png';
+import ImgNoData from '@/assets/imgs/chartNull.png';
 
 /** 病虫害监测 列表 */
 defineOptions({ name: 'DiseasePestSurveillance' });
@@ -489,12 +97,16 @@ const getList = async () => {
   }
 };
 
+const ratio = (3 / 4) * 100; // 图片比例 这里宽:高=4:3
+const numShowImg = 5; // 大图下面的小图列表显示的图片个数
+const imgInterval = 8; // 小图的图片间隔 单位px
+
 // 切换页码操作 卡片模式下切换页码需要设置图片列表显示第一个 列表模式无影响
 const changePage = async () => {
   if ('card' === listType.value) {
     // 设置当前展示的项为第一项 并查询病虫害数量
     curItem.value = 0;
-    if (imgListRef.value) imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+    if (imgListRef.value) imgListRef.value.style.left = imgSideLength.value + imgInterval + 'px';
   }
   await getList();
 };
@@ -505,7 +117,7 @@ const handleQuery = () => {
   if ('card' === listType.value) {
     // 设置当前展示的项为第一项 并查询病虫害数量
     curItem.value = 0;
-    if (imgListRef.value) imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+    if (imgListRef.value) imgListRef.value.style.left = imgSideLength.value + imgInterval + 'px';
   }
   getList();
 };
@@ -596,72 +208,56 @@ const handleCardChange = async () => {
   if ('card' === listType.value) {
     curItem.value = 0;
     getCountDetail(list.value[0].id);
-    imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+    imgListRef.value.style.left = imgSideLength.value + imgInterval + 'px';
     spotResTableKey.value = new Date().getTime();
   }
 };
 
-const mainImg = ref<any>(); // 大图的模板引用
-const mainImgHeight = ref<any>(); // 大图高度
-const mainImgContainer = ref<any>(); // 大图容器的模板引用
-const cardContainer = ref<any>(); // 卡片容器的模板引用
 const imgSideLength = ref<any>(); // 图片列表每个项的边长
-const imgContainerHeight = ref<any>(); // 大图的高
-
-// 设置图片容器的高度就是宽度的3/4 以及小图片的边长
-const setImgContainerWidthAndImgStyle = () => {
-  if (!cardContainer.value) return;
-  const containerWidth =
-    Number(window.getComputedStyle(cardContainer.value).width.slice(0, -2)) * 0.4 - 32;
-  imgContainerHeight.value = containerWidth * (3 / 4);
-  mainImgHeight.value = imgContainerHeight.value;
-  if (!mainImgContainer.value) return;
-  mainImgContainer.value.style.height = imgContainerHeight.value + 'px';
-  imgSideLength.value = (containerWidth - 3 * 16) / 4;
-};
-
-window.addEventListener('resize', setImgContainerWidthAndImgStyle);
-watchEffect(setImgContainerWidthAndImgStyle);
-
 const imgListRef = ref<any>(); // 图片列表的模板引用
 
-// 图片列表左移 当前查看的不是最后一个时 左移一个单位 + 1rem
+// 图片列表左移 当前查看的不是最后一个时 左移一个单位 + imgInterval px
 const handleClickNextImg = throttle(() => {
   if (curItem.value === list.value.length - 1) return;
+  imgId.value = null;
   curItem.value = curItem.value + 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
-  imgListRef.value.style.left = curLeft - (imgSideLength.value + 16) + 'px';
+  imgListRef.value.style.left = curLeft - (imgSideLength.value + imgInterval) + 'px';
   spotResTableKey.value = new Date().getTime();
 }, 500);
 
-// 图片列表右移 当前查看的不是第一个时 右移一个单位 + 1rem
+// 图片列表右移 当前查看的不是第一个时 右移一个单位 + imgInterval px
 const handleClickLastImg = throttle(() => {
   if (curItem.value === 0) return;
+  imgId.value = null;
   curItem.value = curItem.value - 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
-  imgListRef.value.style.left = curLeft + imgSideLength.value + 16 + 'px';
+  imgListRef.value.style.left = curLeft + imgSideLength.value + imgInterval + 'px';
   spotResTableKey.value = new Date().getTime();
 }, 500);
 
 // 点击图片切换到当前显示位置
 const handleClickImg = (index) => {
   if (curItem.value === index) return;
+  imgId.value = null;
   curItem.value = index;
   getCountDetail(list.value[curItem.value].id);
-  imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - index) + 'px';
+  imgListRef.value.style.left = (imgSideLength.value + imgInterval) * (1 - index) + 'px';
   spotResTableKey.value = new Date().getTime();
 };
 
 // 初次显示列表时 右移一位 表示右二是当前查看的项
-// 因为刚加载页面时可能没有cardContainer.value 因此不能用onMounted
-watchEffect(() => {
-  if (!cardContainer.value) return;
-  imgListRef.value.style.left = imgSideLength.value + 16 + 'px';
+watch(imgListRef, () => {
+  if (!imgListRef.value) return;
+  imgSideLength.value = Number(window.getComputedStyle(imgListRef.value).height.slice(0, -2));
+  imgListRef.value.style.left = imgSideLength.value + imgInterval + 'px';
 });
 window.addEventListener('resize', () => {
-  imgListRef.value.style.left = (imgSideLength.value + 16) * (1 - curItem.value) + 'px';
+  if (!imgListRef.value) return;
+  imgSideLength.value = Number(window.getComputedStyle(imgListRef.value).height.slice(0, -2));
+  imgListRef.value.style.left = (imgSideLength.value + imgInterval) * (1 - curItem.value) + 'px';
 });
 
 // 病虫害数量
@@ -735,7 +331,467 @@ const handleClickIdentify = async (objects: any) => {
 
   spotResTableKey.value = new Date().getTime();
 };
+
+const handleIdentifyImgError = (e) => {
+  console.log('Error when loading identify image');
+  console.log(e);
+};
+
+/**
+ * topMenuHeight      顶部菜单和标签页高度
+ * contentPadding     页面内容外边距
+ */
+const topMenuHeight = 85;
+const contentPadding = 8;
+
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 </script>
+
+<template>
+  <el-scrollbar
+    class="w-full bg-white dark:bg-#333 rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+        <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">病虫害监测</h1>
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:disease-pest-surveillance:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </div>
+
+      <div class="flex items-center space-x-[8px]">
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:disease-pest-surveillance:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+
+        <el-radio-group v-model="listType" @change="handleCardChange">
+          <el-radio-button label="card" value="card">
+            <div class="flex items-center">
+              <el-icon class="mr-[5px]"><Menu /></el-icon>
+              <span>卡片</span>
+            </div>
+          </el-radio-button>
+          <el-radio-button label="list" value="list">
+            <div class="flex items-center">
+              <el-icon class="mr-[5px]"><List /></el-icon>
+              <span>列表</span>
+            </div>
+          </el-radio-button>
+        </el-radio-group>
+
+        <button
+          class="circle-arrow-up !ml-[16px] !dark:text-[#ccc]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+
+    <el-form
+      :model="queryParams"
+      ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form overflow-hidden"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+      label-width="95px"
+      :inline="true"
+    >
+      <el-form-item label="设备" prop="deviceName">
+        <el-input v-model="queryParams.deviceName" placeholder="请选择设备" disabled>
+          <template #append>
+            <el-button @click="openPurchaseOrderInEnableList">
+              <Icon icon="ep:search" />
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="监测物种" prop="monitorSpecies">
+        <el-select v-model="queryParams.monitorSpecies" clearable placeholder="请选择监测物种">
+          <el-option
+            v-for="item in listCategoryManagement"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <!-- <el-form-item label="监测类型" prop="monitorType">
+          <el-select
+            v-model="queryParams.monitorType"
+            placeholder="请选择监测类型"
+            clearable
+            class="!w-240px"
+          >
+            <el-option label="请选择字典生成" value="" />
+          </el-select>
+        </el-form-item> -->
+      <el-form-item label="监测时间" prop="monitorTime">
+        <el-date-picker
+          v-model="queryParams.monitorTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+        />
+      </el-form-item>
+      <!-- <el-form-item label="监测抓图" prop="monitorPicture">
+          <el-input
+            v-model="queryParams.monitorPicture"
+            placeholder="请输入监测抓图"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item> -->
+      <el-form-item label="地块" prop="belongPark">
+        <el-select v-model="queryParams.belongPark">
+          <el-option
+            v-for="(item, index) in plotList"
+            :key="index"
+            :value="item.id"
+            :label="item.name"
+            placeholder="请选择"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="识别状态" prop="identifyStatus">
+        <el-select v-model="queryParams.identifyStatus" clearable placeholder="请选择状态">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_IDENTIFY_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <!-- <el-form-item label="设备状态" prop="deviceStatus">
+          <el-select
+            v-model="queryParams.deviceStatus"
+            placeholder="请选择设备状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option label="请选择字典生成" value="" />
+          </el-select>
+        </el-form-item> -->
+      <!-- <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
+          />
+        </el-form-item> -->
+    </el-form>
+
+    <div class="w-full mt-[16px]">
+      <!-- 识别结果 -->
+      <SpotResult ref="spotInstance" :title="activeTitle" />
+
+      <!-- 列表 -->
+      <el-table
+        v-show="listType === 'list'"
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+      >
+        <el-table-column label="设备" align="center" prop="device" />
+        <el-table-column label="监测物种" align="center" prop="monitorSpecies" />
+        <el-table-column label="监测类型" align="center" prop="monitorType" />
+        <el-table-column
+          label="监测时间"
+          align="center"
+          prop="monitorTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="监测抓图" align="center" prop="monitorPicture">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              :src="row.monitorPicture"
+              :preview-src-list="[row.monitorPicture]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="地块" align="center" prop="belongPark" />
+        <el-table-column label="识别状态" align="center" prop="identifyStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.AGRI_IDENTIFY_STATUS" :value="scope.row.identifyStatus" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          prop="identifyStatus"
+          width="200"
+        >
+          <template #default="scope">
+            <el-button
+              v-show="scope.row.identifyStatus == '1'"
+              link
+              type="primary"
+              @click="openRecognizeForm('create', scope.row.id)"
+            >
+              识别
+            </el-button>
+            <el-button link type="primary" @click="handleOpenSpotRes(scope.row)">
+              识别结果
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['agriculture:disease-pest-surveillance:update']"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['agriculture:disease-pest-surveillance:delete']"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div v-show="listType === 'list'">
+        <Pagination
+          style="margin-bottom: 0; margin-top: 8px"
+          :total="total"
+          v-model:page="queryParams.pageNo"
+          v-model:limit="queryParams.pageSize"
+          @pagination="changePage"
+        />
+      </div>
+
+      <!-- 卡片 -->
+      <div v-show="listType === 'card'" class="mb-[20px]">
+        <!-- 无数据 -->
+        <div v-if="list.length === 0" class="w-full flex justify-center items-center">
+          <div class="no-data">暂无数据</div>
+        </div>
+
+        <!-- 有数据 -->
+        <div v-else>
+          <div class="grid grid-cols-2 gap-x-[20px]">
+            <!-- 左侧展示图片(列表) -->
+            <div class="col-span-1">
+              <div class="relative p-[8px]" style="border: 1px solid #e6e6e6">
+                <div class="w-full relative" :class="`pb-[${ratio}%]`">
+                  <el-image
+                    v-show="list[curItem].monitorPicture"
+                    :src="list[curItem].monitorPicture"
+                    alt="图片展示"
+                    fit="cover"
+                    :preview-src-list="[list[curItem].monitorPicture]"
+                    class="w-full h-full !absolute top-0 left-0"
+                  />
+                  <div
+                    v-show="!list[curItem].monitorPicture"
+                    class="absolute top-0 left-0 w-full h-full flex justify-center items-center"
+                  >
+                    <div class="no-data">暂无图片</div>
+                  </div>
+                </div>
+
+                <div
+                  class="mt-[9px] w-full relative"
+                  :class="`pb-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]`"
+                >
+                  <div class="absolute top-0 left-0 overflow-hidden w-full">
+                    <div
+                      class="flex relative transition-all"
+                      :class="`space-x-[${imgInterval}px]`"
+                      ref="imgListRef"
+                    >
+                      <div
+                        v-for="(item, index) in list"
+                        :key="item.id"
+                        class="flex-none relative cursor-pointer"
+                        :class="`
+                          pb-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
+                          w-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
+                        `"
+                        @click="handleClickImg(index)"
+                      >
+                        <img
+                          :src="item.monitorPicture"
+                          alt="图片展示"
+                          class="object-cover w-full h-full absolute top-0 left-0"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="last-icon" @click="handleClickLastImg(index)"></div>
+                    <div class="next-icon" @click="handleClickNextImg(index)"></div>
+
+                    <div
+                      class="h-full absolute top-0 box-border"
+                      :class="`
+                        w-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
+                        left-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg}+${imgInterval}px)]
+                      `"
+                      :style="{
+                        border: '2px solid var(--el-color-primary)'
+                      }"
+                    ></div>
+                  </div>
+                </div>
+                <!-- 边框四个角 -->
+                <div class="corner-left-top"></div>
+                <div class="corner-left-bottom"></div>
+                <div class="corner-right-top"></div>
+                <div class="corner-right-bottom"></div>
+              </div>
+              <Pagination
+                style="margin-bottom: 0; margin-top: 8px"
+                :total="total"
+                v-model:page="queryParams.pageNo"
+                v-model:limit="queryParams.pageSize"
+                @pagination="changePage"
+              />
+            </div>
+
+            <!-- 右侧识别记录 -->
+            <div class="col-span-1">
+              <!-- 开始识别 & 手动标注 -->
+              <div class="mb-[1rem]">
+                <el-button type="primary" @click="handleClickIdentify(list[curItem])">
+                  开始识别
+                </el-button>
+                <el-button class="!ml-[8px]" @click="openRecognizeForm('create', list[curItem].id)">
+                  手动标注
+                </el-button>
+              </div>
+
+              <!-- 识别虫害数量 & 虫害分类 -->
+              <div class="lg:grid lg:grid-cols-2 gap-x-[16px] mb-[16px]">
+                <div class="w-full relative" :class="`pb-[${ratio}%]`">
+                  <el-image
+                    v-show="imgId"
+                    :src="imgId"
+                    alt="识别结果"
+                    fit="cover"
+                    class="!absolute top-0 left-0 w-full h-full"
+                    :preview-src-list="[imgId]"
+                  />
+                  <img
+                    v-show="!imgId"
+                    :src="ImgNoIdentify"
+                    alt="加载失败"
+                    class="absolute top-0 left-0 w-full h-full object-contain"
+                  />
+                </div>
+
+                <div class="mt-[16px] lg:mt-0 grid grid-cols-1 grid-rows-2 gap-y-[8px]">
+                  <div
+                    class="py-[8px] lg:py-0 pl-[16px] flex items-center border border-solid border-[#e6e6e6] rounded-[4px]"
+                  >
+                    <div class="flex">
+                      <img
+                        :src="PestAmountIcon"
+                        class="objcet-contain h-[48px] w-[48px] 2xl:h-[64px] 2xl:w-[64px]"
+                      />
+                      <div class="ml-[20px] flex flex-col justify-center">
+                        <span>识别虫害数量</span>
+                        <span class="font-bold 2xl:text-[30px]">
+                          {{ countDetail.dataSumByQuantity }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="py-[8px] lg:py-0 pl-[16px] flex items-center border border-solid border-[#e6e6e6] rounded-[4px]"
+                  >
+                    <div class="flex">
+                      <img
+                        :src="PestCategoryIcon"
+                        class="objcet-contain h-[48px] w-[48px] 2xl:h-[64px] 2xl:w-[64px]"
+                      />
+                      <div class="ml-[20px] flex flex-col justify-center">
+                        <span>病虫害分类</span>
+                        <span class="font-bold 2xl:text-[30px]">
+                          {{ countDetail.dataSumByType }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 识别记录 -->
+              <SpotResTable
+                :activeMainTableId="list[curItem].id"
+                :monitorType="list[curItem].monitorType"
+                :key="spotResTableKey"
+                @refresh="getCountDetail(list[curItem].id)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-scrollbar>
+
+  <!-- 表单弹窗：添加/修改 -->
+  <DiseasePestSurveillanceForm ref="formRef" @success="getList" />
+  <AgriculturalBaseList ref="purchaseOrderInEnableListRef" @success="handlePurchaseOrderChange" />
+
+  <!-- 识别表单 -->
+  <RecognizeForm ref="recognizeFormRef" @success="getList" />
+  <!-- 遮罩层 -->
+  <div v-if="isLoading" class="loading-overlay">
+    <div class="loading-content">Loading...</div>
+  </div>
+
+  <!-- 自动识别补充表单 -->
+  <AutoRecognizeAddForm
+    ref="autoRecognizeAddFormRef"
+    :imgId="imgId"
+    :resultMap="resultMap"
+    @success="getList"
+  />
+</template>
 
 <style lang="scss" scoped>
 .loading-overlay {
@@ -806,20 +862,102 @@ const handleClickIdentify = async (objects: any) => {
 
 .last-icon,
 .next-icon {
+  width: 37px;
+  height: 37px;
   background: {
     position: center;
     repeat: no-repeat;
     size: contain;
   }
   position: absolute;
-  transform: translate(-50%, -50%);
+  top: 50%;
+  cursor: pointer;
+  margin: 0;
 }
 
 .last-icon {
   background-image: url(./assets/last-icon.png);
+  left: calc((100% - 32px) / 5 / 2);
+  transform: translate(-50%, -50%);
 }
 
 .next-icon {
   background-image: url(./assets/next-icon.png);
+  right: calc((100% - 32px) / 5 / 2);
+  transform: translate(50%, -50%);
+}
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ebebeb;
+  color: #333;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: transparent;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: transparent;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
 }
 </style>
