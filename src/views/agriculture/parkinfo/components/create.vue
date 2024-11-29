@@ -257,7 +257,7 @@ const subFormDom = ref();
       <template #header>
         <!-- demo6.2.2新增 一级标题和按钮 -->
         <div>
-          <h1 class="m-0 text-black font-bold text-[18px]">基地信息新增/编辑</h1>
+          <h1 class="m-0 text-black dark:text-[#ccc] font-bold text-[18px]">基地信息新增/编辑</h1>
         </div>
         <div class="space-x-[8px]">
           <el-button type="primary" :icon="TopRight" @click="submitForm">提交</el-button>
@@ -274,7 +274,7 @@ const subFormDom = ref();
           v-show="
             subFormDom && subFormDom.offsetTop - contentProps.scrollY - contentProps.contentH >= 0
           "
-          class="border border-solid border-[#e6e6e6] shadow-md custom-bounce fixed bottom-[16px] left-[50%] px-[8px] py-[6px] rounded-full bg-white z-999"
+          class="border border-solid border-[#e6e6e6] shadow-md custom-bounce fixed bottom-[16px] left-[50%] px-[8px] py-[6px] rounded-full bg-white dark:bg-[#333] z-999"
           :style="{ color: 'var(--el-color-primary)' }"
         >
           <el-icon><Bottom /></el-icon>
@@ -420,7 +420,7 @@ const subFormDom = ref();
 
 // 分隔线样式
 .split-line {
-  background-image: repeating-linear-gradient(to right, #e6e6e6 0 8px, #fff 8px 16px);
+  background-image: repeating-linear-gradient(to right, #ccc 0 8px, transparent 8px 16px);
 }
 
 // 动画

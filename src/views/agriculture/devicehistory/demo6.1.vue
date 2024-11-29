@@ -19,13 +19,13 @@ const handleClickShowSearch = () => {
 
 <template>
   <el-scrollbar
-    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    class="w-full bg-white dark:bg-[#333] rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
     :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
   >
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <!-- 一级标题名字 -->
-        <h1 class="m-0 text-[#333] font-bold text-[18px]">一级标题</h1>
+        <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">一级标题</h1>
 
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
@@ -56,7 +56,7 @@ const handleClickShowSearch = () => {
         </el-button>
 
         <button
-          class="circle-arrow-up ml-[16px]"
+          class="circle-arrow-up ml-[16px] !dark:text-[#ccc]"
           :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
           @click="handleClickShowSearch"
         >
@@ -166,11 +166,11 @@ const handleClickShowSearch = () => {
   from {
     transform: rotate(0deg);
     color: #333;
-    background-color: white;
+    background-color: transparent;
   }
   to {
     transform: rotate(180deg);
-    color: white;
+    color: #ccc;
     background-color: var(--el-color-primary);
   }
 }
@@ -184,13 +184,13 @@ const handleClickShowSearch = () => {
 @keyframes rotate180andthemeBg {
   from {
     transform: rotate(180deg);
-    color: white;
+    color: #ccc;
     background-color: var(--el-color-primary);
   }
   to {
     transform: rotate(360deg);
     color: #333;
-    background-color: white;
+    background-color: transparent;
   }
 }
 

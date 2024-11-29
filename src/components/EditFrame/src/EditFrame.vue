@@ -17,14 +17,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-[#ECEFF7] rounded-[6px] w-full main-height">
+  <div class="bg-[#ECEFF7] dark:bg-[#666] rounded-[6px] w-full main-height">
     <div class="flex justify-between w-full p-[16px] box-border">
       <slot name="header">
         <div></div>
       </slot>
     </div>
     <el-scrollbar
-      class="w-full p-[16px] box-border bg-white rounded-[6px] content-height"
+      class="w-full p-[16px] box-border bg-white dark:bg-[#333] rounded-[6px] content-height"
       @scroll="handleScroll"
       id="contentDom"
     >
