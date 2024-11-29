@@ -17,6 +17,7 @@ import { ParkInfoVO } from '@/api/agriculture/parkinfo';
 import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
 import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
 import MapPosSelector from '@/components/MapPosSelector/index.vue';
+import FenceDialog from '@/views/agriculture/parkinfo/components/fenceDialog.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -284,14 +285,67 @@ const msg = useMessage();
 const handleValidate = (prop: any, isValid: boolean, message: string) => {
   if (!isValid) msg.error(message);
 };
+
+const selectedLng = ref<string>('');
+const selectedLat = ref<string>('');
+const handleCancel = () => {
+  openPosSelector.value = false;
+  selectedLat.value = '';
+  selectedLng.value = '';
+};
+const handleConfirm = () => {
+  openPosSelector.value = false;
+  if (!selectedLat.value || !selectedLat.value) return;
+  formData.value.latitude = selectedLat.value;
+  formData.value.longitude = selectedLng.value;
+};
+
+const tiandiIns = ref();
+const handleMapClick = (item) => {
+  tiandiIns.value.clearMarkers();
+  setTimeout(() => {
+    const { lng, lat } = item;
+    selectedLng.value = lng.toString();
+    selectedLat.value = lat.toString();
+    const positionString = `${lng},${lat}`;
+    if (positionString) tiandiIns.value.handleSearchItemClick({ lonlat: positionString });
+  }, 200);
+};
+
+const handleOpenPointerPicker = () => {
+  openPosSelector.value = true;
+  const lat = formData.value.latitude;
+  const lng = formData.value.longitude;
+  if (!lat || !lng) return;
+  nextTick(() => {
+    setTimeout(() => {
+      tiandiIns.value.handleSearchItemClick({ lonlat: `${lng},${lat}` });
+    }, 1200);
+  });
+};
 </script>
 <template>
   <div>
-    <MapPosSelector
+    <!-- <MapPosSelector
       ref="mapPosSelectorRef"
       v-model="openPosSelector"
       @change="handleSelectorChange"
-    />
+    /> -->
+
+    <fence-dialog v-model="openPosSelector" title="地图选点">
+      <div class="w-full h-full">
+        <map-custom
+          ref="tiandiIns"
+          :enableEdit="false"
+          :searchLocation="true"
+          @map-click="handleMapClick"
+        />
+      </div>
+      <template #footer>
+        <el-button size="small" @click="handleCancel()">取 消</el-button>
+        <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
+      </template>
+    </fence-dialog>
     <EditFrame>
       <template #header>
         <div>
@@ -399,7 +453,7 @@ const handleValidate = (prop: any, isValid: boolean, message: string) => {
           <el-form-item label="经度" prop="longitude">
             <el-input v-model="formData.longitude" placeholder="请输入经度">
               <template #append>
-                <el-button @click="openPosSelector = true">
+                <el-button @click="handleOpenPointerPicker()">
                   <Icon icon="ep:search" />
                 </el-button>
               </template>
@@ -408,7 +462,7 @@ const handleValidate = (prop: any, isValid: boolean, message: string) => {
           <el-form-item label="纬度" prop="latitude">
             <el-input v-model="formData.latitude" placeholder="请输入纬度">
               <template #append>
-                <el-button @click="openPosSelector = true">
+                <el-button @click="handleOpenPointerPicker()">
                   <Icon icon="ep:search" />
                 </el-button>
               </template>

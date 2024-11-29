@@ -2,44 +2,44 @@
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <custom-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="68px"
-      >
-        <el-form-item label="名称" prop="name">
-          <el-input
-            v-model="queryParams.name"
-            placeholder="请输入名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+      class="-mb-15px"
+      :model="queryParams"
+      ref="queryFormRef"
+      :inline="true"
+      label-width="68px"
+    >
+      <el-form-item label="名称" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
+          <el-option
+            v-for="dict in parkCategoryOptions"
+            :key="dict.value"
+            :label="dict.categoryLabel"
+            :value="dict.id"
           />
-        </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="queryParams.type" placeholder="请选择类型" class="!w-240px">
-            <el-option
-              v-for="dict in parkCategoryOptions"
-              :key="dict.value"
-              :label="dict.categoryLabel"
-              :value="dict.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="面积" prop="area">
-          <el-input v-model="queryParams.area" placeholder="请输入面积"  class="!w-240px">
-            <template #append>亩</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="联系人" prop="contact">
-          <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
-        </el-form-item>
-        <el-form-item label="联系电话" prop="tel">
-          <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
-        </el-form-item>
-        <el-form-item class="pl-8">
-         <el-button @click="handleQuery" type="primary">
+        </el-select>
+      </el-form-item>
+      <el-form-item label="面积" prop="area">
+        <el-input v-model="queryParams.area" placeholder="请输入面积" class="!w-240px">
+          <template #append>亩</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="联系人" prop="contact">
+        <el-input v-model="queryParams.contact" placeholder="请输入联系人" class="!w-240px" />
+      </el-form-item>
+      <el-form-item label="联系电话" prop="tel">
+        <el-input v-model="queryParams.tel" placeholder="请输入联系电话" class="!w-240px" />
+      </el-form-item>
+      <el-form-item class="pl-8">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
           <span>搜索</span>
         </el-button>
@@ -48,7 +48,7 @@
           <span>重置</span>
         </el-button>
       </el-form-item>
-      </custom-form>
+    </custom-form>
   </ContentWrap>
 
   <!-- 列表 -->
@@ -109,14 +109,15 @@
                 <div class="font-bold">{{ item.name }}</div>
                 <div
                   class="bg-[#e5f4f3] text-[#009688] text-[.8rem] px-2 flex items-center rounded-1 shadow-sm"
-                  >{{ item.categoryName }}</div
                 >
+                  {{ item.categoryName }}
+                </div>
               </div>
               <div class="max-w-[40rem] p-2" :style="`display: ${item.remark ? 'block' : 'none'};`">
                 {{ item.remark }}
               </div>
               <div class="w-[100%] bg-[#66666626] h-[1px] my-3"></div>
-              <div class="grid grid-container text-[#666666] !pb-[1rem]">
+              <div class="grid grid-container text-[#666666] dark:text-[#ccc] !pb-[1rem]">
                 <div class="space-x-2">
                   <span>海拔:</span>
                   <span>{{ item.altitude }}米</span>
@@ -366,36 +367,36 @@
 </template>
 
 <script setup lang="ts">
-import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo'
-import { ParkCategoryApi } from '@/api/agriculture/parkcategory'
-import download from '@/utils/download'
-import { ElMessage } from 'element-plus'
-import { dateFormatter } from '@/utils/formatTime'
-import dayjs from 'dayjs'
+import { ParkInfoApi, ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { ParkCategoryApi } from '@/api/agriculture/parkcategory';
+import download from '@/utils/download';
+import { ElMessage } from 'element-plus';
+import { dateFormatter } from '@/utils/formatTime';
+import dayjs from 'dayjs';
 // TODO: 天地图调整leaflet
 // @ts-ignore
-import ParkDetailList from './components/ParkDetailList.vue'
-import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew'
-import * as turf from '@turf/turf'
-import FenceDialog from './components/fenceDialog.vue'
+import ParkDetailList from './components/ParkDetailList.vue';
+import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew';
+import * as turf from '@turf/turf';
+import FenceDialog from './components/fenceDialog.vue';
 
-const showType = ref<string>('card')
-const parkMapIns = ref() // 地图实例
-const showPlotList = ref<boolean>(false)
-const handleStopPropagation = (e) => e.stopPropagation()
+const showType = ref<string>('card');
+const parkMapIns = ref(); // 地图实例
+const showPlotList = ref<boolean>(false);
+const handleStopPropagation = (e) => e.stopPropagation();
 
 /** 基地基本信息 列表 */
-defineOptions({ name: 'ParkInfo' })
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const queryFormRef = ref() // 搜索的表单
+defineOptions({ name: 'ParkInfo' });
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const queryFormRef = ref(); // 搜索的表单
 
-const parkCategoryOptions = ref() //基地分类列表
+const parkCategoryOptions = ref(); //基地分类列表
 const getParkCategoryOptionsData = async () => {
-  const res = await ParkCategoryApi.getAllParkCategory()
-  if (Array.isArray(res)) parkCategoryOptions.value = res
-}
-getParkCategoryOptionsData()
+  const res = await ParkCategoryApi.getAllParkCategory();
+  if (Array.isArray(res)) parkCategoryOptions.value = res;
+};
+getParkCategoryOptionsData();
 
 // 请求参数
 const queryParams = reactive({
@@ -416,268 +417,271 @@ const queryParams = reactive({
   deptId: undefined,
   userId: undefined,
   quantity: undefined
-})
+});
 
 /** 查询列表 */
-const activeItemId = ref<string>('')
-const loading = ref<boolean>(false)
-const list = ref<ParkInfoVO[]>([]) // 列表的数据
-const total = ref<number>(0) // 列表的总页数
-const getList = async (onlyGetData:boolean = false) => {
-  loading.value = true
+const activeItemId = ref<string>('');
+const loading = ref<boolean>(false);
+const list = ref<ParkInfoVO[]>([]); // 列表的数据
+const total = ref<number>(0); // 列表的总页数
+const getList = async (onlyGetData: boolean = false) => {
+  loading.value = true;
   try {
     if (parkMapIns.value) parkMapIns.value.clearMap();
-    const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams)
-    list.value = list1
-    console.log('🚀 ~ getList ~ list1:', list1)
+    const { list: list1, total: total1 } = await ParkInfoApi.getParkInfoPage(queryParams);
+    list.value = list1;
+    console.log('🚀 ~ getList ~ list1:', list1);
     if (Array.isArray(list1) && list1.length > 0) {
       if (onlyGetData) {
-        const _item = list1.find(ele => ele.id === activeItemId.value)
-        console.log("_item", _item)
-        handleParkClick(_item, false)
-      } else handleParkClick(list1[0], false)
+        const _item = list1.find((ele) => ele.id === activeItemId.value);
+        console.log('_item', _item);
+        handleParkClick(_item, false);
+      } else handleParkClick(list1[0], false);
     }
-    total.value = total1
+    total.value = total1;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const getListLabelByID = (id: string) => {
-  if (!Array.isArray(list.value)) return
-  let res = ''
+  if (!Array.isArray(list.value)) return;
+  let res = '';
   list.value.forEach((item) => {
-    if (id === item.id) res = item.name
-  })
-  return res
-}
+    if (id === item.id) res = item.name;
+  });
+  return res;
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-  handleBack() // 清空地块信息列表
-}
+  queryParams.pageNo = 1;
+  getList();
+  handleBack(); // 清空地块信息列表
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
-const router = useRouter() // 路由
+const router = useRouter(); // 路由
 onActivated(() => {
-  const prevPath = localStorage.getItem("PREV_PATH")
+  const prevPath = localStorage.getItem('PREV_PATH');
   if (prevPath !== '/asset/base/parkInfo/create') return;
-  getList()
-  handleBack() // 清空地块信息列表
+  getList();
+  handleBack(); // 清空地块信息列表
   // handleQuery()
-})
+});
 
 /** 查看操作 */
 const openFormDetail = (id?: number) => {
-  if (id) router.push(`/asset/base/asset/base/parkinfo/detail?id=${id}`)
-}
+  if (id) router.push(`/asset/base/asset/base/parkinfo/detail?id=${id}`);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await ParkInfoApi.deleteParkInfo(id)
-    message.success(t('common.delSuccess'))
+    await ParkInfoApi.deleteParkInfo(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (id?: number) => {
-  if (id) router.push(`/asset/base/parkInfo/create?id=${id}`)
-  else router.push(`/asset/base/parkInfo/create`)
-}
+  if (id) router.push(`/asset/base/parkInfo/create?id=${id}`);
+  else router.push(`/asset/base/parkInfo/create`);
+};
 
 /** 导出按钮操作 */
-const exportLoading = ref<boolean>(false)
+const exportLoading = ref<boolean>(false);
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await ParkInfoApi.exportParkInfo(queryParams)
-    download.excel(data, '基地基本信息.xls')
+    exportLoading.value = true;
+    const data = await ParkInfoApi.exportParkInfo(queryParams);
+    download.excel(data, '基地基本信息.xls');
   } catch (err) {
-    console.error('ERR', err)
+    console.error('ERR', err);
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 // 绘制围栏
-const selectedDrawId = ref('')
-const showDrawDialog = ref<boolean>(false)
-const tiandiIns = ref()
+const selectedDrawId = ref('');
+const showDrawDialog = ref<boolean>(false);
+const tiandiIns = ref();
 const areaMatchZoom = (_pos: any[]) => {
-  const area = turf.area(turf.polygon([[..._pos, _pos[0]]]))
-  if (area < 3000) return 17
-  if (area > 3600000000) return 5
-  return Math.floor(17 - (12 * area) / 3600000000)
-}
+  const area = turf.area(turf.polygon([[..._pos, _pos[0]]]));
+  if (area < 3000) return 17;
+  if (area > 3600000000) return 5;
+  return Math.floor(17 - (12 * area) / 3600000000);
+};
 const handleDraw = (item) => {
   const { id, geofencing } = item;
   if (!id) {
-    ElMessage.error('当前数据ID不存在')
-    return
+    ElMessage.error('当前数据ID不存在');
+    return;
   }
-  selectedDrawId.value = id
-  showDrawDialog.value = true
+  selectedDrawId.value = id;
+  showDrawDialog.value = true;
   nextTick(() => {
     if (geofencing) {
-      const _arr = JSON.parse(geofencing)
+      const _arr = JSON.parse(geofencing);
       if (Array.isArray(_arr) && _arr.length === 1) {
-        const _polyArr = _arr[0].map((ele) => ([ele.lat, ele.lng]))
+        const _polyArr = _arr[0].map((ele) => [ele.lat, ele.lng]);
         setTimeout(() => {
-          tiandiIns.value.createPolygon(_polyArr)
-        }, 500)
+          tiandiIns.value.createPolygon(_polyArr);
+        }, 500);
       } else {
         // TODO： 新版
         const { corrdinates, option } = JSON.parse(geofencing);
         if (Array.isArray(corrdinates) && corrdinates.length > 0) {
           setTimeout(() => {
-            tiandiIns.value.createPolygon(corrdinates[0].map(location => ([location.lat, location.lng])), option)
-          }, 500)
-
+            tiandiIns.value.createPolygon(
+              corrdinates[0].map((location) => [location.lat, location.lng]),
+              option
+            );
+          }, 500);
         }
-
       }
     } else {
       // TODO 如果不存在围栏，把中心点设置在基地中间
       if (activeBaseCenter.value.length !== 2) return;
-      nextTick(() => { tiandiIns.value.setCenterZoom(activeBaseCenter.value, 17) })
+      nextTick(() => {
+        tiandiIns.value.setCenterZoom(activeBaseCenter.value, 17);
+      });
     }
-  })
-}
+  });
+};
 
 // 切换卡片或列表时触发
 const handleTypeChange = () => {
-  activePlotId.value = ''
+  activePlotId.value = '';
   showPlotList.value = false;
 
   if (showType.value === 'card') {
-    const item = list.value.find(ele => ele.id === activeItemId.value);
+    const item = list.value.find((ele) => ele.id === activeItemId.value);
     if (!item) return;
-    handleParkClick(item, false)
+    handleParkClick(item, false);
   }
-}
+};
 
 // 在右侧地图中绘制基地
 const handleDrawPark = (item) => {
-  const { geofencing } = item
-  if (!geofencing) return ElMessage.warning('当前基地或地块尚未绘制电子围栏！')
-  const _arr = JSON.parse(geofencing)
+  const { geofencing } = item;
+  if (!geofencing) return ElMessage.warning('当前基地或地块尚未绘制电子围栏！');
+  const _arr = JSON.parse(geofencing);
   if (Array.isArray(_arr) && _arr.length === 1) {
-    const _polyArr = _arr[0].map((ele) => ([ele.lat, ele.lng]))
-    parkMapIns.value.createPolygon(_polyArr)
+    const _polyArr = _arr[0].map((ele) => [ele.lat, ele.lng]);
+    parkMapIns.value.createPolygon(_polyArr);
   } else {
     // TODO： 新版
     const { corrdinates, option } = JSON.parse(geofencing);
     if (Array.isArray(corrdinates) && corrdinates.length > 0) {
-      parkMapIns.value.createPolygon(corrdinates, option)
+      parkMapIns.value.createPolygon(corrdinates, option);
     }
   }
-}
+};
 
 // 点击基地
 const handleBack = () => {
-  plotDataList.value = []
-  showPlotList.value = false
-}
-const activePlotId = ref<string>('')
-const plotDataList = ref<any[]>([])
+  plotDataList.value = [];
+  showPlotList.value = false;
+};
+const activePlotId = ref<string>('');
+const plotDataList = ref<any[]>([]);
 const handlePlotClick = (item) => {
-  if (!item.id) return
-  activePlotId.value = item.id
-  handleDrawPark(item)
-}
+  if (!item.id) return;
+  activePlotId.value = item.id;
+  handleDrawPark(item);
+};
 // TODO 设置活动的基地
 const activeBaseCenter = ref<number[]>([]);
 const setActiveBaseCenter = (item) => {
-  console.log("setActiveBaseCenter Item => ", item);
+  console.log('setActiveBaseCenter Item => ', item);
   const { longitude, latitude, geofencing } = item;
   if (!longitude || !latitude) return;
-  activeBaseCenter.value = [Number(latitude), Number(longitude)]
-}
+  activeBaseCenter.value = [Number(latitude), Number(longitude)];
+};
 const handleParkClick = async (item, _showPlot = true) => {
   if (!item?.id) return;
-  setActiveBaseCenter(item)
-  const list = await ParkInfoApi.getParkDetailListByParkId(item.id)
-  console.log('地块列表', list)
+  setActiveBaseCenter(item);
+  const list = await ParkInfoApi.getParkDetailListByParkId(item.id);
+  console.log('地块列表', list);
 
-  if (Array.isArray(list)) plotDataList.value = list
-  showPlotList.value = _showPlot
-  activeItemId.value = item.id
-  handleDrawPark(item)
-}
+  if (Array.isArray(list)) plotDataList.value = list;
+  showPlotList.value = _showPlot;
+  activeItemId.value = item.id;
+  handleDrawPark(item);
+};
 
 const handleConfirm = async () => {
-  const geofencing = tiandiIns.value.getCurrentSaveCoordinates()
+  const geofencing = tiandiIns.value.getCurrentSaveCoordinates();
   const { corrdinates, option } = geofencing;
-  if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!')
-  if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!')
+  if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!');
+  if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!');
   const data = await CropGrowthNewApi.saveGeofencing({
     id: selectedDrawId.value,
     geofencing: JSON.stringify(geofencing),
     infraType: showPlotList.value ? '2' : '1'
-  })
+  });
 
-  if (data) ElMessage.success('保存成功!')
-  else ElMessage.error('保存失败！')
-  showDrawDialog.value = false
-  selectedDrawId.value = ''
-  getList(true)
-}
+  if (data) ElMessage.success('保存成功!');
+  else ElMessage.error('保存失败！');
+  showDrawDialog.value = false;
+  selectedDrawId.value = '';
+  getList(true);
+};
 
 const handleCancel = () => {
-  selectedDrawId.value = ''
-  showDrawDialog.value = false
-}
+  selectedDrawId.value = '';
+  showDrawDialog.value = false;
+};
 
 // 从 localStorage 获取数据
-const localdata = ref([])
-const mapCenter = ref([0, 0])
+const localdata = ref([]);
+const mapCenter = ref([0, 0]);
 
 const fetchCoordinatesFromLocalStorage = () => {
-  const storedData = localStorage.getItem('polygonCoordinates')
+  const storedData = localStorage.getItem('polygonCoordinates');
   if (storedData) {
-    localdata.value = JSON.parse(storedData)
+    localdata.value = JSON.parse(storedData);
 
     const validPoints = localdata.value
       .flat()
-      .map((ele:any) => {
-        const lng = parseFloat(ele.lng)
-        const lat = parseFloat(ele.lat)
-        return [lng, lat]
+      .map((ele: any) => {
+        const lng = parseFloat(ele.lng);
+        const lat = parseFloat(ele.lat);
+        return [lng, lat];
       })
       .filter((item) => {
-        const [lng, lat] = item
-        return !isNaN(lng) && !isNaN(lat)
-      })
+        const [lng, lat] = item;
+        return !isNaN(lng) && !isNaN(lat);
+      });
 
     if (validPoints.length > 0) {
-      const _center = turf.centroid(turf.points(validPoints))
+      const _center = turf.centroid(turf.points(validPoints));
 
-      mapCenter.value = _center.geometry.coordinates // [lng, lat]
+      mapCenter.value = _center.geometry.coordinates; // [lng, lat]
     } else {
-      console.log('No valid coordinates found.')
+      console.log('No valid coordinates found.');
     }
   } else {
-    console.log('No coordinates found in localStorage')
+    console.log('No coordinates found in localStorage');
   }
-}
+};
 //fetchCoordinatesFromLocalStorage()
-handleQuery()
+handleQuery();
 </script>
 
 <style lang="scss" scoped>

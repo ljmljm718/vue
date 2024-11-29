@@ -2,13 +2,16 @@
   <div class="home-tangbg-wrapper shadow-xl overflow-hidden">
     <MapTangBa ref="mapTangBgRef" class="h-full z-0" />
     <div
-      class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl box-border transition-all"
-      :style="`height: ${collapsed ? '3rem' : 'calc(100% - 4.5rem)'};`"
+      class="absolute left-3 top-3 rounded-2 bg-slate-200 p-3 pr-1 shadow-xl box-border transition-all dark:bg-#141414"
+      :style="`height: ${collapsed ? '3rem' : 'calc(100% - 1.5rem)'};`"
       v-loading="menuDataLoading"
     >
       <div class="h-[1.5rem] mb-[.5rem] flex justify-between items-center">
         <div class="font-bold">设备监测列表</div>
-        <div class="text-[.7rem] text-[#0160FF] pr-[.6rem]" @click="collapsed = !collapsed">
+        <div
+          class="text-[.7rem] text-[#0160FF] pr-[.6rem] cursor-pointer"
+          @click="collapsed = !collapsed"
+        >
           <div v-if="collapsed" class="flex items-center space-x-1">
             <span>展开</span>
             <el-icon><ArrowDownBold /></el-icon>
@@ -327,7 +330,7 @@ const getIconClass = (item) => {
 </script>
 <style scoped lang="scss">
 .home-tangbg-wrapper {
-  height: calc(100vh - 125px);
+  height: calc(100vh - 105px);
   position: relative;
 }
 

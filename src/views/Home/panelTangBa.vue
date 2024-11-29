@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="`bg-white w-[600px] h-full p-3 box-border pr-1 ${props.modelValue ? 'panel-animation-in' : 'panel-animation-out'}`"
+    :class="`
+      bg-white dark:bg-#141414 w-[600px]
+      h-full p-3 box-border pr-1
+      ${props.modelValue ? 'panel-animation-in' : 'panel-animation-out'}
+    `"
     id="panelTangBaDom"
   >
     <div class="flex justify-between items-start p-2 pb-1">
@@ -25,21 +29,21 @@
       <div
         @click="handleClick('设备概要', true)"
         style="cursor: pointer"
-        :class="`${tabsVal == '设备概要' ? 'active' : 'actived'} text-center leading-30px w-[33%] h-30px rounded-l`"
+        :class="`${tabsVal == '设备概要' ? 'active' : 'actived bg-#e4eeff dark:bg-#333'} text-center leading-30px w-[33%] h-30px rounded-l`"
       >
         设备监测
       </div>
       <div
         @click="handleClick('报警', true)"
         style="cursor: pointer"
-        :class="`${tabsVal == '报警' ? 'active' : 'actived'} text-center leading-30px w-[33%] h-30px`"
+        :class="`${tabsVal == '报警' ? 'active' : 'actived bg-#e4eeff dark:bg-#333'} text-center leading-30px w-[33%] h-30px`"
       >
         报警
       </div>
       <div
         @click="handleClick('设备属性', true)"
         style="cursor: pointer"
-        :class="`${tabsVal == '设备属性' ? 'active' : 'actived'} text-center leading-30px w-[33%] h-30px rounded-r`"
+        :class="`${tabsVal == '设备属性' ? 'active' : 'actived bg-#e4eeff dark:bg-#333'} text-center leading-30px w-[33%] h-30px rounded-r`"
       >
         设备属性
       </div>
@@ -56,7 +60,7 @@
             v-show="!runTimeDataLoading && runTimeDataList.length > 0"
           >
             <div
-              class="bg-slate-200 data-bg flex flex-col w-100% h-100px justify-evenly items-center"
+              class="bg-#ecf3ff dark:bg-#333 flex flex-col w-100% h-100px justify-evenly items-center"
               v-for="item in runTimeDataList"
               :key="item.id"
             >
@@ -477,7 +481,7 @@ const getRunTimeData = async (equipmentId, deviceKind) => {
     }).join('');
     const newDom = document.createElement('div');
     newDom.id = domName;
-    newDom.className = 'tangba-chart-wrapper';
+    newDom.className = 'tangba-chart-wrapper bg-#f3f8ff dark:bg-#000';
     chartNum.value++;
     chartOutWrapper.append(newDom);
     nextTick(() => {
@@ -896,7 +900,6 @@ const clearChange = () => {
   background-color: #0c67ff;
 }
 .actived {
-  background-color: #e4eeff;
   padding: 0 !important;
 }
 .el-tab > .el-tabs__item-label div {
@@ -984,7 +987,6 @@ const clearChange = () => {
 </style>
 <style>
 .tangba-chart-wrapper {
-  background: linear-gradient(to top, #ebf3ff, #ebf3ff40);
   height: 0px;
   overflow: hidden;
   border-radius: 5px;
