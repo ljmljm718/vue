@@ -111,7 +111,10 @@ const formData = ref({
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备点位不能为空', trigger: 'blur' }],
   deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
-  deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
+  //deviceMonitorType的trigger修改为blur，当为change时，进页面触发，提示报错
+  deviceMonitorType: [
+    { required: true, message: '请在设备分类中维护监测类型，并选择相关监测类型！', trigger: 'blur' }
+  ],
   deviceStatus: [{ required: true, message: '状态不能为空', trigger: 'change' }],
   imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
 });
