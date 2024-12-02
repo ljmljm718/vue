@@ -8,6 +8,7 @@ import sensor from '@/views/bigscreen6/assets/sensor.png';
 import monitor from '@/views/bigscreen6/assets/monitor.png';
 import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index';
 import ScaleBox from 'vue3-scale-box';
+import { createGcjToWgsConverter } from '@/utils/map';
 import {
   largeScreenGetWarning,
   largeScreenGetOneWarning,
@@ -77,36 +78,46 @@ const initMap = () => {
   getEquipmentMapData();
 };
 
+// 创建转换器实例
+const { transformGCJ2WGS } = createGcjToWgsConverter();
 // 中间地图接口
 const getEquipmentMapData = async () => {
   const res = await getEquipmentMap({});
+  console.log('🚀 ~ getEquipmentMapData ~ res:', res);
 
   const latlngs = [];
   const iconMap = {
     camrea: 'icon1',
     meteorologicalStation: 'icon2'
   };
-  Object.keys(res).forEach((key: string) => {
+
+  const formattedArr = [
+    ...res.camera.map((ele) => ({ ...ele, type: 'camera' })),
+    ...res.meteorologicalStation.map((ele) => ({ ...ele, type: 'meteorologicalStation' }))
+  ];
+  formattedArr.forEach((formattedItem: any) => {
     const {
       longitude,
       latitude,
       deviceName = '',
       baseName = '',
       plotName = '',
-      location = ''
-    } = res[key];
+      location = '',
+      type = 'camera'
+    } = formattedItem;
     if (!longitude || !latitude) return;
-    latlngs.push([latitude, longitude]);
+    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
+    latlngs.push([lat, lon]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`, //marker图片地址
+      iconUrl: `/images/bigscreenED/${iconMap[type] ?? 'icon1'}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
-    L.marker([latitude, longitude], { icon })
+    L.marker([lat, lon], { icon })
       .addTo(map)
       .on('click', () => {
         L.popup()
-          .setLatLng([latitude, longitude])
+          .setLatLng([lat, lon])
           .setContent(
             `
         <div>${deviceName}</div>

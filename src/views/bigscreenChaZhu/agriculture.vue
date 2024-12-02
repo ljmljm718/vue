@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import * as L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import adapter from '@/components/MapCustom/src/adapter'
-import dayjs from 'dayjs'
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import adapter from '@/components/MapCustom/src/adapter';
+import dayjs from 'dayjs';
 import {
   getQianjiangAgriResource,
   getBreedCategory,
@@ -18,26 +18,26 @@ import {
   getEquipmentMap,
   qianjiangMonitor,
   qianjiangWarnRecordInfo
-} from './api'
-import BigscreenCalendar from './components/calendar.vue'
+} from './api';
+import BigscreenCalendar from './components/calendar.vue';
+import { coordinateTransformation } from '@/utils/map';
+import { initChartStatic, generatePieOptions } from '../../utils/bigscreenTool/index';
+import BigscreenBuilder from '@/components/BigscreenBuilder';
 
-import { initChartStatic, generatePieOptions } from '../../utils/bigscreenTool/index'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
+const { BigscreenTable } = BigscreenBuilder;
 
-const { BigscreenTable } = BigscreenBuilder
-
-adapter()
+adapter();
 // const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
-const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}'
-const CVA_TILE = '/tdCache/api/tdtmap/tile?T=cva_w&x={x}&y={y}&l={z}'
+const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}';
+const CVA_TILE = '/tdCache/api/tdtmap/tile?T=cva_w&x={x}&y={y}&l={z}';
 
-let map: L.Map | null = null
+let map: L.Map | null = null;
 const initMap = () => {
-  if (map) return
+  if (map) return;
   // const vecLayer = L.tileLayer(VEC_TILE, { attribution: 'vec' })
-  const imgLayer = L.tileLayer(IMG_TILE, { attribution: 'img' })
-  const cvaLayer = L.tileLayer(CVA_TILE, { attribution: 'cva' })
-  const img_cva_group = L.layerGroup([imgLayer, cvaLayer])
+  const imgLayer = L.tileLayer(IMG_TILE, { attribution: 'img' });
+  const cvaLayer = L.tileLayer(CVA_TILE, { attribution: 'cva' });
+  const img_cva_group = L.layerGroup([imgLayer, cvaLayer]);
 
   map = new L.Map(`bigMapContainer`, {
     minZoom: 1,
@@ -47,84 +47,84 @@ const initMap = () => {
     zoomOffset: 1,
     zoomControl: false,
     attributionControl: false
-  })
+  });
 
-  img_cva_group.addTo(map)
+  img_cva_group.addTo(map);
 
   map.on('click', ({ latlng }) => {
-    const { lat, lng } = latlng
-    navigator.clipboard.writeText(`[${lng}, ${lat}],`)
-  })
+    const { lat, lng } = latlng;
+    navigator.clipboard.writeText(`[${lng}, ${lat}],`);
+  });
 
   window.addEventListener('resize', () => {
-    map.invalidateSize(true)
-  })
+    map.invalidateSize(true);
+  });
 
   // 获取地图数据
-  getEquipmentMapData()
-}
+  getEquipmentMapData();
+};
 //农业资源
-const ResList = ref<any[]>([])
+const ResList = ref<any[]>([]);
 const getResList = async () => {
   try {
-    ResList.value = await Promise.all([getQianjiangAgriResource(), getVarietyManagement()])
+    ResList.value = await Promise.all([getQianjiangAgriResource(), getVarietyManagement()]);
   } catch (error) {
-    console.error('获取数据失败:', error)
+    console.error('获取数据失败:', error);
   }
-}
+};
 
 //种养信息
-const cropList = ref<any[]>([])
+const cropList = ref<any[]>([]);
 const getCropBase = async () => {
   const { list } = await cropBase({
     pageNo: 1,
     pageSize: 100
-  })
-  if (!Array.isArray(list)) return
-  cropList.value = list
-  console.log(cropList.value, 'cropListcropList1234')
-}
-getCropBase()
+  });
+  if (!Array.isArray(list)) return;
+  cropList.value = list;
+  console.log(cropList.value, 'cropListcropList1234');
+};
+getCropBase();
 //品牌信息
-const brandList = ref<any[]>([])
+const brandList = ref<any[]>([]);
 const getWarnRecord = async () => {
   try {
-    const data = await getProductBrand()
-    brandList.value = data.list
-    console.log('长度：', brandList.value.length)
+    const data = await getProductBrand();
+    brandList.value = data.list;
+    console.log('长度：', brandList.value.length);
   } catch (error) {
-    console.log('获取数据失败：', error)
+    console.log('获取数据失败：', error);
   }
-}
-getWarnRecord()
+};
+getWarnRecord();
 
 /****************************** 设备信息 start ******************************/
 interface DeviceData {
-  categoryName: string
-  imgId: string
-  total: number
-  online: number
-  offline: number
+  categoryName: string;
+  imgId: string;
+  total: number;
+  online: number;
+  offline: number;
 }
-const deviceList = ref<Array<DeviceData>>([])
+const deviceList = ref<Array<DeviceData>>([]);
 const getDeviceList = async () => {
-  let res = await getDeviceInfo()
+  let res = await getDeviceInfo();
   // console.log("设备信息: ", res)
 
   // 没数据直接返回
   if (!res || !res.category || res.category.length === 0) {
-    return
+    return;
   }
 
-  deviceList.value = []
-  let indexMap = new Map<string, number>()
-  let cur = 0
-  const cate = res.category
+  deviceList.value = [];
+  let indexMap = new Map<string, number>();
+  let cur = 0;
+  const cate = res.category;
 
   // 假设传过来的数据一定有categoryName和imgId
   // 遍历res.category计算显示在页面上的数据 每一类的结果汇总到deviceList
   cate.forEach((ele: any) => {
-    ele.categoryName = ele.categoryName ? ele.categoryName : '未知设备'
+    ele.categoryName = ele.categoryName ? ele.categoryName : '未知设备';
     if (!indexMap.has(ele.categoryName)) {
       let tmpData = {
         categoryName: ele.categoryName,
@@ -134,20 +134,20 @@ const getDeviceList = async () => {
         total: Number(ele.total) || 0,
         online: Number(ele.online) || 0,
         offline: Number(ele.offline) || 0
-      }
-      deviceList.value.push(tmpData)
-      indexMap.set(tmpData.categoryName, cur)
-      cur++
+      };
+      deviceList.value.push(tmpData);
+      indexMap.set(tmpData.categoryName, cur);
+      cur++;
     } else {
-      let idx = indexMap.get(ele.categoryName)
-      deviceList.value[idx!].total += Number(ele.total)
-      deviceList.value[idx!].online += Number(ele.online)
-      deviceList.value[idx!].offline += Number(ele.offline)
+      let idx = indexMap.get(ele.categoryName);
+      deviceList.value[idx!].total += Number(ele.total);
+      deviceList.value[idx!].online += Number(ele.online);
+      deviceList.value[idx!].offline += Number(ele.offline);
     }
-  })
+  });
   // console.log("设备列表: ", deviceList.value)
-}
-getDeviceList()
+};
+getDeviceList();
 /****************************** 设备信息  end  ******************************/
 
 // 中上设备信息
@@ -156,25 +156,25 @@ const topDataInfo = ref<any>({
   online: '',
   offline: '',
   warningEquipmentDevice: ''
-})
+});
 const getTopDataList = async () => {
-  const res = await qjDeviceStatistics()
-  const { total = '', online = '', offline = '', warningEquipmentDevice = '' } = res
-  topDataInfo.value = { total, online, offline, warningEquipmentDevice }
-}
-getTopDataList()
+  const res = await qjDeviceStatistics();
+  const { total = '', online = '', offline = '', warningEquipmentDevice = '' } = res;
+  topDataInfo.value = { total, online, offline, warningEquipmentDevice };
+};
+getTopDataList();
 //品种分布
 let chartIns = null;
 const initChart = async () => {
   if (chartIns) chartIns.dispose();
-  const res = await getBreedCategory()
-  console.log('🚀 ~ initChart ~ res:', res)
-  if (!Array.isArray(res)) return
+  const res = await getBreedCategory();
+  console.log('🚀 ~ initChart ~ res:', res);
+  if (!Array.isArray(res)) return;
   const seriesData = res.map((item) => ({
     name: item.cropName || '暂无数据',
     value: item.number,
     unit: item.unit
-  }))
+  }));
   chartIns = initChartStatic(
     'typePercentChart',
     generatePieOptions({
@@ -216,173 +216,183 @@ const initChart = async () => {
       ],
       tooltip: {
         formatter: (item) => {
-          return `数据详情<br />${item.marker}${item.name}<span style="padding-left: 1rem;">${item.value} ${item.data.unit}</span>`
+          return `数据详情<br />${item.marker}${item.name}<span style="padding-left: 1rem;">${item.value} ${item.data.unit}</span>`;
         },
         position: function (point) {
-          return [point[0] - 90, point[1] + 20]
+          return [point[0] - 90, point[1] + 20];
         }
       }
     })
-  )
-}
+  );
+};
 
 onMounted(async () => {
-  await initMap()
-  await getResList()
-  await initChart()
-})
+  await initMap();
+  await getResList();
+  await initChart();
+});
 
 /****************************** 农事任务 start ******************************/
-const calendarIns = ref()
-const missionList = ref<Array<any>>([])
-const remindArr = ref<Array<string>>([])
-const curBase = ref<any>({})
-const baseList = ref<Array<any>>([])
-const curPlot = ref<any>({})
-const plotList = ref<Array<any>>([])
-const showOptions = ref<boolean>(false)
-const showOptionsBase = ref<boolean>(false)
-const showingMission = ref<any>()
+const calendarIns = ref();
+const missionList = ref<Array<any>>([]);
+const remindArr = ref<Array<string>>([]);
+const curBase = ref<any>({});
+const baseList = ref<Array<any>>([]);
+const curPlot = ref<any>({});
+const plotList = ref<Array<any>>([]);
+const showOptions = ref<boolean>(false);
+const showOptionsBase = ref<boolean>(false);
+const showingMission = ref<any>();
 
 window.addEventListener('click', () => {
-  showOptions.value = false
-  showOptionsBase.value = false
-})
+  showOptions.value = false;
+  showOptionsBase.value = false;
+});
 
 const showOpt = (e: any) => {
-  e.stopPropagation()
-  showOptions.value = true
-}
+  e.stopPropagation();
+  showOptions.value = true;
+};
 
 const showOptBase = (e: any) => {
-  e.stopPropagation()
-  showOptionsBase.value = true
-}
+  e.stopPropagation();
+  showOptionsBase.value = true;
+};
 
 const changeOpt = (item: any) => {
-  curPlot.value = item
-  const _date = new Date()
-  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, item.code)
-}
+  curPlot.value = item;
+  const _date = new Date();
+  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, item.code);
+};
 
 const changeOptBase = async (item: any) => {
-  curBase.value = item
+  curBase.value = item;
   // 根据基地ID获取地块列表
-  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id })
+  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id });
   if (!pList || !Array.isArray(pList) || pList.length === 0) {
-    curPlot.value = {}
-    plotList.value = []
-    return
+    curPlot.value = {};
+    plotList.value = [];
+    return;
   }
-  plotList.value = pList
-  curPlot.value = plotList.value[0]
+  plotList.value = pList;
+  curPlot.value = plotList.value[0];
   // console.log("切换基地后 地块列表: ", pList)
-  const _date = new Date()
-  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, curPlot.value.code)
-}
+  const _date = new Date();
+  getMissionPlan(`${_date.getFullYear()}-${_date.getMonth() + 1}`, curPlot.value.code);
+};
 
 // 获取指定年月 指定地块 的农事任务列表
 const getMissionPlan = async (yearMonth: string, belongPlot: string) => {
-  const res = await getAgriMissionPlan({ yearMonth, belongPlot })
+  const res = await getAgriMissionPlan({ yearMonth, belongPlot });
   if (Array.isArray(res)) {
-    missionList.value = res
+    missionList.value = res;
     remindArr.value = res
       .filter((item) => Array.isArray(item.planList) && item.planList.length > 0)
-      .map((item) => item.monthDate)
+      .map((item) => item.monthDate);
   }
   // console.log("哪些日期有任务: ", remindArr.value)
-}
+};
 
 // 初始化农事任务
 const initMission = async () => {
   // 获取基地列表 设置第0项为当前基地
-  let bList = await getAllBase()
+  let bList = await getAllBase();
   if (!bList || !Array.isArray(bList) || bList.length === 0) {
-    return
+    return;
   }
-  baseList.value = bList
-  curBase.value = baseList.value[0]
+  baseList.value = bList;
+  curBase.value = baseList.value[0];
   // console.log("基地列表: ", bList)
 
   // 根据基地ID获取地块列表 设置第0项为当前地块
-  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id })
+  let pList = await getAllPlotByBaseID({ parkId: curBase.value.id });
   if (!pList || !Array.isArray(pList) || pList.length === 0) {
-    return
+    return;
   }
-  plotList.value = pList
-  curPlot.value = plotList.value[0]
+  plotList.value = pList;
+  curPlot.value = plotList.value[0];
   // console.log("地块列表: ", pList)
 
   // 获取农事任务列表
-  let tmp = new Date()
-  let year = tmp.getFullYear()
-  let month = tmp.getMonth() + 1
-  getMissionPlan(`${year}-${month}`, curPlot.value.code)
-}
-initMission()
+  let tmp = new Date();
+  let year = tmp.getFullYear();
+  let month = tmp.getMonth() + 1;
+  getMissionPlan(`${year}-${month}`, curPlot.value.code);
+};
+initMission();
 
 // 显示当天的事项
 const handleCalendarClick = (item: any) => {
-  const formatMonthDay = (val) => (val > 9 ? val : '0' + val)
+  const formatMonthDay = (val) => (val > 9 ? val : '0' + val);
   // console.log('处理日历点击事件: ', item)
-  showingMission.value = null
+  showingMission.value = null;
   showingMission.value = missionList.value.find((ele) => {
-    const _date_ = item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)
-    return _date_ === ele.monthDate
-  })
+    const _date_ = item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date);
+    return _date_ === ele.monthDate;
+  });
   // console.log("对应农事任务列表: ", showingMission.value)
   showingMission.value.monthDate = showingMission.value.monthDate
     ? showingMission.value.monthDate
-    : item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date)
-}
+    : item.year + '-' + formatMonthDay(item.month) + '-' + formatMonthDay(item.date);
+};
 
 // 切换月份 重新获取农事任务列表
 const handleCalendarChange = (item: Date) => {
   if (!curBase.value.id || !curPlot.value.code) {
-    return
+    return;
   }
-  getMissionPlan(`${item.getFullYear()}-${item.getMonth() + 1}`, curPlot.value.code)
-}
+  getMissionPlan(`${item.getFullYear()}-${item.getMonth() + 1}`, curPlot.value.code);
+};
 
 const missionAddPlanClass = (event: any) => {
-  event.currentTarget.className = 'mb-10px leading-[30px] mission-plan'
-}
+  event.currentTarget.className = 'mb-10px leading-[30px] mission-plan';
+};
 
 const missionremovePlanClass = (event: any) => {
-  event.currentTarget.className = 'mb-10px leading-[30px]'
-}
+  event.currentTarget.className = 'mb-10px leading-[30px]';
+};
 /****************************** 农事任务  end  ******************************/
 
 // 中间地图接口
 const getEquipmentMapData = async () => {
-  const res = await getEquipmentMap({})
+  const res = await getEquipmentMap({});
+  console.log('🚀 ~ getEquipmentMapData ~ res:', res);
 
-  const latlngs = []
+  const latlngs: any[] = [];
   const iconMap = {
     camrea: 'icon1',
-    meteorologicalStation: 'icon2'
-  }
-  Object.keys(res).forEach((key: string) => {
+    meteorologicalStation: 'icon2',
+    soilMoistureContent: 'icon3'
+  };
+
+  const formattedArr = [
+    ...res.camera.map((ele) => ({ ...ele, type: 'camera' })),
+    ...res.meteorologicalStation.map((ele) => ({ ...ele, type: 'meteorologicalStation' })),
+    ...res.soilMoistureContent.map((ele) => ({ ...ele, type: 'soilMoistureContent' }))
+  ];
+  formattedArr.forEach((formattedItem) => {
     const {
       longitude,
       latitude,
       deviceName = '',
       baseName = '',
       plotName = '',
-      location = ''
-    } = res[key]
-    if (!longitude || !latitude) return
-    latlngs.push([latitude, longitude])
+      location = '',
+      type
+    } = formattedItem;
+    if (!longitude || !latitude) return;
+    const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
+    latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`, //marker图片地址
+      iconUrl: `/images/bigscreenED/${iconMap[type] ?? 'icon1'}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
-    })
-    L.marker([latitude, longitude], { icon })
+    });
+    L.marker([lat, lng], { icon })
       .addTo(map)
       .on('click', () => {
         L.popup()
-          .setLatLng([latitude, longitude])
+          .setLatLng([lat, lng])
           .setContent(
             `
         <div>${deviceName}</div>
@@ -390,15 +400,15 @@ const getEquipmentMapData = async () => {
         <div class="mt-[.4rem]">位置:${location}</div>
       `
           )
-          .openOn(map)
-      })
-    map.fitBounds(latlngs, { padding: [5, 5] })
-  })
-}
+          .openOn(map);
+      });
+    map.fitBounds(latlngs, { padding: [5, 5] });
+  });
+};
 /****************************  气象检测 土壤墒情 ****************************/
 
-const soilList = ref<Array<any>>([])
-const montiorList = ref<Array<any>>([])
+const soilList = ref<Array<any>>([]);
+const montiorList = ref<Array<any>>([]);
 const soil = ref({
   光照: '1',
   氮: '2',
@@ -408,7 +418,7 @@ const soil = ref({
   湿度: '6',
   EC值: '7',
   温度: '8'
-})
+});
 const montior = ref({
   空气温度: '1',
   空气湿度: '2',
@@ -419,47 +429,47 @@ const montior = ref({
   风力: '5',
   风速: '5',
   风向: '6'
-})
+});
 const getQianjiangMonitor = async () => {
-  let res = await qianjiangMonitor({ type: '气象站' })
-  let res2 = await qianjiangMonitor({ type: '土壤墒情' })
-  console.log(res, '气象监测')
-  console.log(res2, ' 土壤墒情')
-  soilList.value = res2
-  montiorList.value = res
+  let res = await qianjiangMonitor({ type: '气象站' });
+  let res2 = await qianjiangMonitor({ type: '土壤墒情' });
+  console.log(res, '气象监测');
+  console.log(res2, ' 土壤墒情');
+  soilList.value = res2;
+  montiorList.value = res;
 
   soilList.value = soilList.value.map((item) => ({
     ...item,
     icon: soil.value[item.monitoringType] ?? '1'
-  }))
+  }));
   montiorList.value = montiorList.value.map((item) => ({
     ...item,
     icon: montior.value[item.monitoringType] ?? '1'
-  }))
-  console.log(montiorList.value, ' montiorList.value montiorList.value1234')
-}
-getQianjiangMonitor()
+  }));
+  console.log(montiorList.value, ' montiorList.value montiorList.value1234');
+};
+getQianjiangMonitor();
 
-const warnRecordList = ref<any[]>([])
+const warnRecordList = ref<any[]>([]);
 const tableHeaderColor = ref({
   color: '#078b52'
-})
+});
 const getQianjiangWarnRecordInfo = async () => {
-  const res = await qianjiangWarnRecordInfo({})
-  console.log('🚀 ~ getQianjiangWarnRecordInfo ~ res:', res)
+  const res = await qianjiangWarnRecordInfo({});
+  console.log('🚀 ~ getQianjiangWarnRecordInfo ~ res:', res);
   if (Array.isArray(res))
     warnRecordList.value = res.map((item) => ({
       ...item,
       warnStatus: item.warnStatus === '0' ? '未处理' : '已处理',
       warnTime: dayjs(item.warnTime).format('YYYY-MM-DD HH:mm:ss')
-    }))
-}
-getQianjiangWarnRecordInfo()
+    }));
+};
+getQianjiangWarnRecordInfo();
 
 const handleActive = () => {
-  nextTick(() => initChart())
-}
-defineExpose({ handleActive })
+  nextTick(() => initChart());
+};
+defineExpose({ handleActive });
 </script>
 <template>
   <div class="w-full h-full flex justify-between relative text-white">
@@ -473,9 +483,9 @@ defineExpose({ handleActive })
         >
           <div class="text-12px">种植地块</div>
           <div>
-            <span class="text-18px pr-5px font-bold">{{
-              Array.isArray(ResList) && ResList.length > 0 ? ResList[0].shelterAmount : 0
-            }}</span>
+            <span class="text-18px pr-5px font-bold">
+              {{ Array.isArray(ResList) && ResList.length > 0 ? ResList[0].shelterAmount : 0 }}
+            </span>
             <span class="text-12px">块</span>
           </div>
         </div>
@@ -484,9 +494,9 @@ defineExpose({ handleActive })
         >
           <div class="text-12px">种植面积</div>
           <div>
-            <span class="text-18px pr-5px font-bold">{{
-              Array.isArray(ResList) && ResList.length > 0 ? ResList[0].plantArea : 0
-            }}</span>
+            <span class="text-18px pr-5px font-bold">
+              {{ Array.isArray(ResList) && ResList.length > 0 ? ResList[0].plantArea : 0 }}
+            </span>
             <span class="text-12px">亩</span>
           </div>
         </div>
@@ -495,9 +505,9 @@ defineExpose({ handleActive })
         >
           <div class="text-12px">种养品种</div>
           <div>
-            <span class="text-18px pr-5px font-bold">{{
-              Array.isArray(ResList) && ResList.length > 0 ? ResList[1].total : 0
-            }}</span>
+            <span class="text-18px pr-5px font-bold">
+              {{ Array.isArray(ResList) && ResList.length > 0 ? ResList[1].total : 0 }}
+            </span>
             <span class="text-12px">种</span>
           </div>
         </div>
@@ -608,12 +618,12 @@ defineExpose({ handleActive })
             :remind="remindArr"
             @select="
               (item) => {
-                handleCalendarClick(item)
+                handleCalendarClick(item);
               }
             "
             @change="
               (item) => {
-                handleCalendarChange(item)
+                handleCalendarChange(item);
               }
             "
           >
@@ -662,10 +672,10 @@ defineExpose({ handleActive })
             <div :class="`meteor-icon-${item.icon} w-50px h-50px`"></div>
             <div class="!w-60%">
               <div class="flex justify-center">{{ item.monitoringType }}</div>
-              <div class="flex text-1rem mt-10px justify-center"
-                >{{ item.dataValue }}
-                <div class="text-13px mt-[2px] color-[#929593]">{{ item.unit }}</div></div
-              >
+              <div class="flex text-1rem mt-10px justify-center">
+                {{ item.dataValue }}
+                <div class="text-13px mt-[2px] color-[#929593]">{{ item.unit }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -684,10 +694,10 @@ defineExpose({ handleActive })
             <div :class="`soil-icon-${item.icon} w-50px h-50px`"></div>
             <div class="!w-60%">
               <div class="flex justify-center">{{ item.monitoringType }}</div>
-              <div class="flex text-1rem justify-center mt-10px"
-                >{{ item.dataValue }}
-                <div class="text-13px mt-[5px] color-[#929593]">{{ item.unit }}</div></div
-              >
+              <div class="flex text-1rem justify-center mt-10px">
+                {{ item.dataValue }}
+                <div class="text-13px mt-[5px] color-[#929593]">{{ item.unit }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -700,17 +710,16 @@ defineExpose({ handleActive })
         <el-table
           :data="warnRecordList"
           :header-cell-style="tableHeaderColor"
-          style="width: 460px;margin-top: 10px;border: 1px solid #66666686;"
+          style="width: 460px; margin-top: 10px; border: 1px solid #66666686"
           height="270px"
         >
           <el-table-column prop="warnInfo" label="预警信息" align="center" />
           <el-table-column prop="warnTime" label="时间" width="100" align="center" />
           <el-table-column label="处理状态" width="120" align="center">
             <template #default="scope">
-              <div
-                :class="scope.row.warnStatus === '未处理' ? 'text-[#ff893e]' : 'text-[#ffffff]'"
-                >{{ scope.row.warnStatus }}</div
-              >
+              <div :class="scope.row.warnStatus === '未处理' ? 'text-[#ff893e]' : 'text-[#ffffff]'">
+                {{ scope.row.warnStatus }}
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -725,8 +734,9 @@ defineExpose({ handleActive })
           <div
             class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #08ffff, #ffffff)"
-            >{{ topDataInfo.total }}</div
           >
+            {{ topDataInfo.total }}
+          </div>
           <div class="text-16px">设备总数</div>
         </div>
       </div>
@@ -736,8 +746,9 @@ defineExpose({ handleActive })
           <div
             class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #3cffae, #ffffff)"
-            >{{ topDataInfo.online }}</div
           >
+            {{ topDataInfo.online }}
+          </div>
           <div class="text-16px">在线设备</div>
         </div>
       </div>
@@ -747,8 +758,9 @@ defineExpose({ handleActive })
           <div
             class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #ffbd39, #ffffff)"
-            >{{ topDataInfo.offline }}</div
           >
+            {{ topDataInfo.offline }}
+          </div>
           <div class="text-16px">离线数量</div>
         </div>
       </div>
@@ -758,8 +770,9 @@ defineExpose({ handleActive })
           <div
             class="text-32px font-bold text-linear-wrapper art-font"
             style="background-image: linear-gradient(to top, #ff4242, #ffffff)"
-            >{{ topDataInfo.warningEquipmentDevice }}</div
           >
+            {{ topDataInfo.warningEquipmentDevice }}
+          </div>
           <div class="text-16px">设备预警</div>
         </div>
       </div>
@@ -978,9 +991,13 @@ defineExpose({ handleActive })
 }
 
 .linear-title-text {
-  background: linear-gradient(to top, #9AFFD5, #FFFFFF); /*设置渐变的方向从左到右 颜色从ff0000到ffff00*/
-  -webkit-background-clip: text;/*将设置的背景颜色限制在文字中*/
-  -webkit-text-fill-color: transparent;/*给文字设置成透明*/
+  background: linear-gradient(
+    to top,
+    #9affd5,
+    #ffffff
+  ); /*设置渐变的方向从左到右 颜色从ff0000到ffff00*/
+  -webkit-background-clip: text; /*将设置的背景颜色限制在文字中*/
+  -webkit-text-fill-color: transparent; /*给文字设置成透明*/
 }
 
 .agri-title-bg {

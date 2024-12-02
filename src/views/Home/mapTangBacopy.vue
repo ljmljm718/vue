@@ -21,7 +21,9 @@
 </template>
 <script setup lang="ts">
 // TODO: 天地图调整leaflet
-import { debounce } from 'lodash-es';
+import { useUserStore } from '@/store/modules/user';
+
+const userStore = useUserStore();
 // 百度坐标系转大地坐标系
 const coordinateTransformation: any = {
   BD09II2WGS84(bdLon: number, bdLat: number) {
@@ -155,6 +157,73 @@ const removeSatellite = () => {
   map.setMapType(map.TMAP_TERRAIN_MAP);
 };
 
+//封装转换坐标函数高德转天地图
+const createGcjToWgsConverter = () => {
+  const PI = 3.1415926536;
+  const a = 6378245.0;
+  const ee = 0.0066934216;
+
+  const transformLat = (x: number, y: number): number => {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0;
+    ret += ((20.0 * Math.sin(y * PI) + 40.0 * Math.sin((y / 3.0) * PI)) * 2.0) / 3.0;
+    ret += ((160.0 * Math.sin((y / 12.0) * PI) + 320 * Math.sin((y * PI) / 30.0)) * 2.0) / 3.0;
+    return ret;
+  };
+
+  const transformLon = (x: number, y: number): number => {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+    ret += ((20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0) / 3.0;
+    ret += ((20.0 * Math.sin(x * PI) + 40.0 * Math.sin((x / 3.0) * PI)) * 2.0) / 3.0;
+    ret += ((150.0 * Math.sin((x / 12.0) * PI) + 300.0 * Math.sin((x / 30.0) * PI)) * 2.0) / 3.0;
+    return ret;
+  };
+
+  const delta = (lat: number, lon: number): LatLon => {
+    let dLat = transformLat(lon - 105.0, lat - 35.0);
+    let dLon = transformLon(lon - 105.0, lat - 35.0);
+    let radLat = (lat / 180.0) * PI;
+    let magic = Math.sin(radLat);
+    magic = 1 - ee * magic * magic;
+    let sqrtMagic = Math.sqrt(magic);
+    dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * PI);
+    dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * PI);
+    return { lat: dLat, lon: dLon };
+  };
+
+  const transformGCJ2WGS = (gcjLon: number, gcjLat: number): LatLon => {
+    let d = delta(gcjLat, gcjLon);
+    return { lat: gcjLat - d.lat, lon: gcjLon - d.lon };
+  };
+
+  const gcj_wgs_encrypts = (latlons: { lat: number; lng: number }[]): LatLon[] => {
+    return latlons.map((latlon) => transformGCJ2WGS(latlon.lng, latlon.lat));
+  };
+
+  return { transformGCJ2WGS, gcj_wgs_encrypts };
+};
+
+// 创建转换器实例
+const { transformGCJ2WGS } = createGcjToWgsConverter();
+
+const deptId = computed(() => userStore.user.deptId ?? 0);
+console.log('🚀 ~ deptId:', deptId);
+
+const formattedLocationByDeptID = (longitude, latitude) => {
+  if ([152, 156].includes(deptId.value)) {
+    // 明月村用这个
+    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
+    return [lon, lat];
+  } else if ([154].includes(deptId.value)) {
+    return [longitude, latitude];
+  } else if ([168].includes(deptId.value)) {
+    return coordinateTransformation.BD09II2WGS84(longitude, latitude);
+  } else {
+    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
+    return [lon, lat];
+  }
+};
+
 const markerList: Map<string, any> = new Map();
 const addMarkerToMap = (
   longitude: number,
@@ -162,10 +231,8 @@ const addMarkerToMap = (
   title: string,
   icon = '/tangba/offlineMonitor.png'
 ) => {
-  console.log('icon =====>', title);
   if (!longitude || !latitude) return;
-  const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
-
+  const [lng, lat] = formattedLocationByDeptID(longitude, latitude);
   // @ts-ignore
   const marker = new T.Marker(new T.LngLat(lng, lat), {
     icon: new T.Icon({
@@ -187,12 +254,14 @@ const addMarkerToMap = (
 };
 
 //设置地图中心
-const setMapCenter = (longitude, latitude) => {
+const setMapCenter = async (longitude, latitude) => {
   if (!longitude || !latitude) return;
   //调用转换坐标
-  const [lon, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
+  // const [lon, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
+  // const [lon, lat] = [longitude, latitude]
+  const [lng, lat] = await formattedLocationByDeptID(longitude, latitude);
 
-  if (map) map.panTo(new T.LngLat(lon, lat));
+  if (map) map.panTo(new T.LngLat(lng, lat));
 };
 
 const setMapZoom = (zoom: number = 13) => {
