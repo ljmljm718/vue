@@ -150,6 +150,8 @@
         <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope">
             <div class="flex items-center justify-center">
+              <el-button link type="success" @click="bindDevice(scope.row)">绑定设备</el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
               <el-button
                 link
                 type="primary"

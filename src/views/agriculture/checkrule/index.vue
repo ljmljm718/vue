@@ -100,7 +100,7 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+        <el-table-column label="操作" align="center" fixed="right" min-width="220px">
           <template #default="scope">
             <div class="flex items-center justify-center">
               <el-button link type="primary" @click="getDeviceId(scope.row.handlerParam)">
