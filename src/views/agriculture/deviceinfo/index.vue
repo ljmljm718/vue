@@ -143,8 +143,11 @@
                 查看数据
               </el-button>
 
-              <el-button v-if="item.deviceStatus == 'online' && item.url != null && item.url.indexOf('mp4') > 0
-        " plain type="success" class="!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px"
+              <el-button
+                v-if="item.channelId && item.dtu && item.deviceStatus == 'online'"
+                plain
+                type="success"
+                class="!color-[#fff] !border-none !bg-[#59b756] !px-25px !py-13px"
                 @click="openExternalLink(item)">
                 查看监控
               </el-button>
