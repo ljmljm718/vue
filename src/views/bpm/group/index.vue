@@ -1,6 +1,4 @@
 <template>
-
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -41,15 +39,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['bpm:user-group:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
       </el-form-item>
     </el-form>
@@ -114,78 +119,78 @@
 </template>
 
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import * as UserGroupApi from '@/api/bpm/userGroup'
-import * as UserApi from '@/api/system/user'
-import UserGroupForm from './UserGroupForm.vue'
-import { UserVO } from '@/api/system/user'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import * as UserGroupApi from '@/api/bpm/userGroup';
+import * as UserApi from '@/api/system/user';
+import UserGroupForm from './UserGroupForm.vue';
+import { UserVO } from '@/api/system/user';
 
-defineOptions({ name: 'BpmUserGroup' })
+defineOptions({ name: 'BpmUserGroup' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: null,
   status: null,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const userList = ref<UserVO[]>([]) // 用户列表
+});
+const queryFormRef = ref(); // 搜索的表单
+const userList = ref<UserVO[]>([]); // 用户列表
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await UserGroupApi.getUserGroupPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await UserGroupApi.getUserGroupPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await UserGroupApi.deleteUserGroup(id)
-    message.success(t('common.delSuccess'))
+    await UserGroupApi.deleteUserGroup(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await getList();
   // 加载用户列表
-  userList.value = await UserApi.getSimpleUserList()
-})
+  userList.value = await UserApi.getSimpleUserList();
+});
 </script>

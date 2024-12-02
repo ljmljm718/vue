@@ -25,21 +25,21 @@
 </template>
 
 <script lang="ts" setup>
-import { MyProcessDesigner, MyProcessPenal } from '@/components/bpmnProcessDesigner/package'
+import { MyProcessDesigner, MyProcessPenal } from '@/components/bpmnProcessDesigner/package';
 // 自定义元素选中时的弹出菜单（修改 默认任务 为 用户任务）
-import CustomContentPadProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/content-pad'
+import CustomContentPadProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/content-pad';
 // 自定义左侧菜单（修改 默认任务 为 用户任务）
-import CustomPaletteProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/palette'
-import * as ModelApi from '@/api/bpm/model'
+import CustomPaletteProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/palette';
+import * as ModelApi from '@/api/bpm/model';
 
-defineOptions({ name: 'BpmModelEditor' })
+defineOptions({ name: 'BpmModelEditor' });
 
-const router = useRouter() // 路由
-const { query } = useRoute() // 路由的查询
-const message = useMessage() // 国际化
+const router = useRouter(); // 路由
+const { query } = useRoute(); // 路由的查询
+const message = useMessage(); // 国际化
 
-const xmlString = ref(undefined) // BPMN XML
-const modeler = ref(null) // BPMN Modeler
+const xmlString = ref(undefined); // BPMN XML
+const modeler = ref(null); // BPMN Modeler
 const controlForm = ref({
   simulation: true,
   labelEditing: false,
@@ -47,48 +47,48 @@ const controlForm = ref({
   prefix: 'flowable',
   headerButtonSize: 'mini',
   additionalModel: [CustomContentPadProvider, CustomPaletteProvider]
-})
-const model = ref<ModelApi.ModelVO>() // 流程模型的信息
+});
+const model = ref<ModelApi.ModelVO>(); // 流程模型的信息
 
 /** 初始化 modeler */
 const initModeler = (item) => {
   setTimeout(() => {
-    modeler.value = item
-  }, 10)
-}
+    modeler.value = item;
+  }, 10);
+};
 
 /** 添加/修改模型 */
 const save = async (bpmnXml) => {
   const data = {
     ...model.value,
     bpmnXml: bpmnXml // bpmnXml 只是初始化流程图，后续修改无法通过它获得
-  } as unknown as ModelApi.ModelVO
+  } as unknown as ModelApi.ModelVO;
   // 提交
   if (data.id) {
-    await ModelApi.updateModel(data)
-    message.success('修改成功')
+    await ModelApi.updateModel(data);
+    message.success('修改成功');
   } else {
-    await ModelApi.createModel(data)
-    message.success('新增成功')
+    await ModelApi.createModel(data);
+    message.success('新增成功');
   }
   // 跳转回去
-  close()
-}
+  close();
+};
 
 /** 关闭按钮 */
 const close = () => {
-  router.push({ path: '/bpm/manager/model' })
-}
+  router.push({ path: '/bpm/manager/model' });
+};
 
 /** 初始化 */
 onMounted(async () => {
-  const modelId = query.modelId as unknown as number
+  const modelId = query.modelId as unknown as number;
   if (!modelId) {
-    message.error('缺少模型 modelId 编号')
-    return
+    message.error('缺少模型 modelId 编号');
+    return;
   }
   // 查询模型
-  const data = await ModelApi.getModel(modelId)
+  const data = await ModelApi.getModel(modelId);
   if (!data.bpmnXml) {
     // 首次创建的 Model 模型，它是没有 bpmnXml，此时需要给它一个默认的
     data.bpmnXml = ` <?xml version="1.0" encoding="UTF-8"?>
@@ -97,14 +97,14 @@ onMounted(async () => {
   <bpmndi:BPMNDiagram id="BPMNDiagram">
     <bpmndi:BPMNPlane id="${data.key}_di" bpmnElement="${data.key}" />
   </bpmndi:BPMNDiagram>
-</definitions>`
+</definitions>`;
   }
   model.value = {
     ...data,
     bpmnXml: undefined // 清空 bpmnXml 属性
-  }
-  xmlString.value = data.bpmnXml
-})
+  };
+  xmlString.value = data.bpmnXml;
+});
 </script>
 <style lang="scss">
 .process-panel__container {

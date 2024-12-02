@@ -1,9 +1,4 @@
-// templateIndexForm模版
 <script setup lang="ts">
-import { useAppStore } from '@/store/modules/app';
-import { colorOpt } from '@/config/colorTheme/colorConfig';
-import { setCssVar } from '@/utils';
-
 /* todo原页面的js代码复制在下面 */
 
 /* 原页面的代码复制在上面 */
@@ -21,6 +16,9 @@ const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
 };
 
+const queryParams = ref({});
+const loading = ref<boolean>(false);
+const list = ref<any[]>([]);
 </script>
 
 <template>
@@ -31,17 +29,18 @@ const handleClickShowSearch = () => {
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <!-- 一级标题名字 todo替换成菜单名称-->
-        <h1 class="m-0 text-[#333] font-bold text-[18px]"> 菜单名称 </h1>
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">菜单名称</h1>
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
         <!-- 一级标题旁边的按钮 -->
         <!-- todo原新增按钮 -->
-
+        <!-- todo需要包含type="primary"&&不能有plain属性 -->
       </div>
 
       <div class="flex items-center">
         <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
         <!-- todo复制原页面【搜索、重置、导出】 -->
+        <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
         <!-- todo删除导出按钮的type和plain属性 -->
 
         <button
@@ -65,29 +64,56 @@ const handleClickShowSearch = () => {
     >
       <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
       <!-- todo复制原来的搜索列表 -->
-       
+      <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
     </el-form>
 
     <div class="w-full mt-[8px]">
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-        <!-- todo复制列表，没什么要改订单 -->
-        <!-- <el-table-column label="主键" align="center" prop="id" /> -->
-        
-       <el-table-column label="操作" align="center" fixed="right" min-width="154px">
-          <template #default="scope">
-             <!-- todo操作按钮 -->
+        <!-- todo复制列表 -->
+
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+          <template>
+            <!-- todo操作按钮 -->
             <!-- 1.  <template #default="scope"> 中，加入
                 <div class="flex items-center justify-center">
-                  其中放入编辑，删除按钮等，每一个按钮中完成后加入
+                  其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
                     <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-                  这段代码
+                  这段代码的含义是“竖杠”分隔符
                 </div>
+                2.请注意“方案一”和“方案二”只采用一种，请根据自身按钮数量选择性删除或保留
               -->
+            <!-- todo方案一 -->
             <div class="flex items-center justify-center">
-              
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-             
+            </div>
+            <!-- todo方案二&&当按钮大于3个时  -->
+            <div class="flex items-center justify-center">
+              <!-- todo按钮一 -->
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <!-- todo按钮二 -->
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-popover :width="104" trigger="hover" popper-style="min-width: 0">
+                <template #reference>
+                  <div class="flex items-center">
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                  </div>
+                </template>
+                <div class="flex flex-col items-start space-y-[8px] space-x-0">
+                  <!-- 隐藏的其他按钮 中间不需要加上方div隔断-->
+                </div>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
@@ -96,13 +122,13 @@ const handleClickShowSearch = () => {
 
     <!-- 页码组件 注意绑定的值和事件函数 -->
     <!-- 不用改 -->
-    <Pagination
+    <!-- <Pagination
       style="margin-bottom: 0; margin-top: 8px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
-    />
+    /> -->
   </el-scrollbar>
   <!-- todo页面组件复制在下面 -->
   <!-- 表单弹窗-->
@@ -184,4 +210,3 @@ const handleClickShowSearch = () => {
   animation-fill-mode: forwards;
 }
 </style>
-

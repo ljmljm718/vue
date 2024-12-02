@@ -42,81 +42,81 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { CommonStatusEnum } from '@/utils/constants'
-import * as UserGroupApi from '@/api/bpm/userGroup'
-import * as UserApi from '@/api/system/user'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { CommonStatusEnum } from '@/utils/constants';
+import * as UserGroupApi from '@/api/bpm/userGroup';
+import * as UserApi from '@/api/system/user';
 
-defineOptions({ name: 'UserGroupForm' })
+defineOptions({ name: 'UserGroupForm' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
   description: undefined,
   userIds: undefined,
   status: CommonStatusEnum.ENABLE
-})
+});
 const formRules = reactive({
   name: [{ required: true, message: '组名不能为空', trigger: 'blur' }],
   description: [{ required: true, message: '描述不能为空', trigger: 'blur' }],
   userIds: [{ required: true, message: '成员不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
-const userList = ref<any[]>([]) // 用户列表
+});
+const formRef = ref(); // 表单 Ref
+const userList = ref<any[]>([]); // 用户列表
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await UserGroupApi.getUserGroup(id)
+      formData.value = await UserGroupApi.getUserGroup(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
   // 加载用户列表
-  userList.value = await UserApi.getSimpleUserList()
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+  userList.value = await UserApi.getSimpleUserList();
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as UserGroupApi.UserGroupVO
+    const data = formData.value as unknown as UserGroupApi.UserGroupVO;
     if (formType.value === 'create') {
-      await UserGroupApi.createUserGroup(data)
-      message.success(t('common.createSuccess'))
+      await UserGroupApi.createUserGroup(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await UserGroupApi.updateUserGroup(data)
-      message.success(t('common.updateSuccess'))
+      await UserGroupApi.updateUserGroup(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -126,7 +126,7 @@ const resetForm = () => {
     description: undefined,
     userIds: undefined,
     status: CommonStatusEnum.ENABLE
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>

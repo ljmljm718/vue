@@ -313,5 +313,15 @@ export enum DICT_TYPE {
   AGRI_DEVICE_STATUS = 'agri_device_status', //设备状态
   AGRI_DISEASE_NAME = 'agri_disease_name', //设备状态
   AGRI_EARLY_WARNING_STATE = 'agri_early_warning_state', //预警状态
-  AGRI_CODE_TYPE = 'agri_code_type' //是否赋码
+  AGRI_CODE_TYPE = 'agri_code_type', //是否赋码
+
+  // ========== wfi - 水肥一体化 ===========
+  WFI_FERTILIZE_TYPE = 'wfi_fertilize_type', //施肥类型
+  WFI_STIR_TYPE = 'wfi_stir_type', //搅拌类型
+  WFI_FERTILIZE_STATUS = 'wfi_fertilize_status', //施肥状态
+  FERTILIZE_STIR_MEASURING_TANK = 'fertilize_stir_measuring_tank', //施肥搅拌/定量桶状态
+  WFI_TASK_TYPE = 'wfi_task_type', //任务类型
+  WFI_IRRIGATION_TYPE = 'wfi_irrigation_type', //灌溉类型
+  WFI_SYSTEM_STATUS = 'wfi_system_status', //系统状态
+  WS_TYPE = 'ws_type' // 水源类型
 }

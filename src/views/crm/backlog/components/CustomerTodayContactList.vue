@@ -1,6 +1,6 @@
 <template>
   <ContentWrap>
-    <div class="pb-5 text-xl"> 今日需联系客户 </div>
+    <div class="pb-5 text-xl">今日需联系客户</div>
     <!-- 搜索工作栏 -->
     <el-form
       ref="queryFormRef"
@@ -96,7 +96,7 @@
       <el-table-column align="center" label="最后跟进记录" prop="contactLastContent" width="200" />
       <el-table-column label="地址" align="center" prop="detailAddress" width="180" />
       <el-table-column align="center" label="距离进入公海天数" prop="poolDay" width="140">
-        <template #default="scope"> {{ scope.row.poolDay }} 天</template>
+        <template #default="scope">{{ scope.row.poolDay }} 天</template>
       </el-table-column>
       <el-table-column align="center" label="负责人" prop="ownerUserName" width="100px" />
       <el-table-column align="center" label="所属部门" prop="ownerUserDeptName" width="100px" />
@@ -127,54 +127,54 @@
 </template>
 
 <script lang="ts" setup>
-import * as CustomerApi from '@/api/crm/customer'
-import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import { CONTACT_STATUS, SCENE_TYPES } from './common'
+import * as CustomerApi from '@/api/crm/customer';
+import { DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import { CONTACT_STATUS, SCENE_TYPES } from './common';
 
-defineOptions({ name: 'CrmCustomerTodayContactList' })
+defineOptions({ name: 'CrmCustomerTodayContactList' });
 
-const { push } = useRouter()
+const { push } = useRouter();
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = ref({
   pageNo: 1,
   pageSize: 10,
   contactStatus: 1,
   sceneType: 1,
   pool: null // 是否公海数据
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await CustomerApi.getCustomerPage(queryParams.value)
-    list.value = data.list
-    total.value = data.total
+    const data = await CustomerApi.getCustomerPage(queryParams.value);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.value.pageNo = 1
-  getList()
-}
+  queryParams.value.pageNo = 1;
+  getList();
+};
 
 /** 打开客户详情 */
 const openDetail = (id: number) => {
-  push({ name: 'CrmCustomerDetail', params: { id } })
-}
+  push({ name: 'CrmCustomerDetail', params: { id } });
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
 
 <style lang="scss"></style>

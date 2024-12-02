@@ -18,7 +18,10 @@
         name="bpmnFile"
       >
         <Icon class="el-icon--upload" icon="ep:upload-filled" />
-        <div class="el-upload__text"> 将文件拖到此处，或 <em>点击上传</em></div>
+        <div class="el-upload__text">
+          将文件拖到此处，或
+          <em>点击上传</em>
+        </div>
         <template #tip>
           <div class="el-upload__tip" style="color: red">
             提示：仅允许导入“bpm”或“xml”格式文件！
@@ -50,92 +53,93 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { getAccessToken, getTenantId } from '@/utils/auth'
+import { getAccessToken, getTenantId } from '@/utils/auth';
 
-defineOptions({ name: 'ModelImportForm' })
+defineOptions({ name: 'ModelImportForm' });
 
-const message = useMessage() // 消息弹窗
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const formLoading = ref(false) // 表单的加载中
+const dialogVisible = ref(false); // 弹窗的是否展示
+const formLoading = ref(false); // 表单的加载中
 const formData = ref({
   key: '',
   name: '',
   description: ''
-})
+});
 const formRules = reactive({
   key: [{ required: true, message: '流程标识不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '流程名称不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
-const uploadRef = ref() // 上传 Ref
-const importUrl = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/bpm/model/import'
-const uploadHeaders = ref() // 上传 Header 头
-const fileList = ref([]) // 文件列表
+});
+const formRef = ref(); // 表单 Ref
+const uploadRef = ref(); // 上传 Ref
+const importUrl =
+  import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/bpm/model/import';
+const uploadHeaders = ref(); // 上传 Header 头
+const fileList = ref([]); // 文件列表
 
 /** 打开弹窗 */
 const open = async () => {
-  dialogVisible.value = true
-  resetForm()
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+  dialogVisible.value = true;
+  resetForm();
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
   if (fileList.value.length == 0) {
-    message.error('请上传文件')
-    return
+    message.error('请上传文件');
+    return;
   }
   // 提交请求
   uploadHeaders.value = {
     Authorization: 'Bearer ' + getAccessToken(),
     'tenant-id': getTenantId()
-  }
-  formLoading.value = true
-  uploadRef.value!.submit()
-}
+  };
+  formLoading.value = true;
+  uploadRef.value!.submit();
+};
 
 /** 文件上传成功 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitFormSuccess = async (response: any) => {
   if (response.code !== 0) {
-    message.error(response.msg)
-    formLoading.value = false
-    return
+    message.error(response.msg);
+    formLoading.value = false;
+    return;
   }
   // 提示成功
-  message.success('导入流程成功！请点击【设计流程】按钮，进行编辑保存后，才可以进行【发布流程】')
-  dialogVisible.value = false
+  message.success('导入流程成功！请点击【设计流程】按钮，进行编辑保存后，才可以进行【发布流程】');
+  dialogVisible.value = false;
   // 发送操作成功的事件
-  emit('success')
-}
+  emit('success');
+};
 
 /** 上传错误提示 */
 const submitFormError = (): void => {
-  message.error('导入流程失败，请您重新上传！')
-  formLoading.value = false
-}
+  message.error('导入流程失败，请您重新上传！');
+  formLoading.value = false;
+};
 
 /** 重置表单 */
 const resetForm = () => {
   // 重置上传状态和文件
-  formLoading.value = false
-  uploadRef.value?.clearFiles()
+  formLoading.value = false;
+  uploadRef.value?.clearFiles();
   // 重置表单
   formData.value = {
     key: '',
     name: '',
     description: ''
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 
 /** 文件数超出提示 */
 const handleExceed = (): void => {
-  message.error('最多只能上传一个文件！')
-}
+  message.error('最多只能上传一个文件！');
+};
 </script>

@@ -10,7 +10,8 @@
         plain
         @click="handleSignDelete(parentTask)"
       >
-        <Icon icon="ep:remove" /> 减签
+        <Icon icon="ep:remove" />
+        减签
       </el-button>
     </template>
     <!-- 子任务列表 -->
@@ -53,7 +54,8 @@
             size="small"
             @click="handleSignDelete(scope.row)"
           >
-            <Icon icon="ep:remove" /> 减签
+            <Icon icon="ep:remove" />
+            减签
           </el-button>
         </template>
       </el-table-column>
@@ -64,43 +66,43 @@
   </el-drawer>
 </template>
 <script lang="ts" setup>
-import { isEmpty } from '@/utils/is'
-import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import TaskSignDeleteForm from './TaskSignDeleteForm.vue'
+import { isEmpty } from '@/utils/is';
+import { DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import TaskSignDeleteForm from './TaskSignDeleteForm.vue';
 
-defineOptions({ name: 'TaskSignList' })
+defineOptions({ name: 'TaskSignList' });
 
-const message = useMessage() // 消息弹窗
-const drawerVisible = ref(false) // 抽屉的是否展示
-const parentTask = ref({} as any)
+const message = useMessage(); // 消息弹窗
+const drawerVisible = ref(false); // 抽屉的是否展示
+const parentTask = ref({} as any);
 
 /** 打开弹窗 */
 const open = async (task: any) => {
   if (isEmpty(task.children)) {
-    message.warning('该任务没有子任务')
-    return
+    message.warning('该任务没有子任务');
+    return;
   }
-  parentTask.value = task
+  parentTask.value = task;
   // 展开抽屉
-  drawerVisible.value = true
-}
-defineExpose({ open }) // 提供 openModal 方法，用于打开弹窗
+  drawerVisible.value = true;
+};
+defineExpose({ open }); // 提供 openModal 方法，用于打开弹窗
 
 /** 发起减签 */
-const taskSignDeleteFormRef = ref()
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const taskSignDeleteFormRef = ref();
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const handleSignDelete = (item: any) => {
-  taskSignDeleteFormRef.value.open(item.id)
-}
+  taskSignDeleteFormRef.value.open(item.id);
+};
 const handleSignDeleteSuccess = () => {
-  emit('success')
+  emit('success');
   // 关闭抽屉
-  drawerVisible.value = false
-}
+  drawerVisible.value = false;
+};
 
 /** 是否显示减签按钮 */
 const isSignDeleteButtonVisible = (task: any) => {
-  return task && task.children && !isEmpty(task.children)
-}
+  return task && task.children && !isEmpty(task.children);
+};
 </script>

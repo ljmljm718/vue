@@ -1,6 +1,8 @@
 <template>
   <div class="h-100vh pt-[5rem] box-border overflow-auto">
-    <div class="fixed top-0 left-0 z-100 w-full bg-white transition-all flex justify-center shadow-sm h-[5rem]">
+    <div
+      class="fixed top-0 left-0 z-100 w-full bg-white transition-all flex justify-center shadow-sm h-[5rem]"
+    >
       <div class="container flex px-5 items-center">
         <div class="logo w-3rem h-3rem"></div>
         <div class="ml-1rem text-2rem font-600 text-black">工业安全生产数字化产品平台</div>
@@ -21,11 +23,7 @@
             <div class="container h-[27rem] px-[9rem]">
               <div class="text-white text-[3rem] font-600">{{ item.title }}</div>
               <div class="flex flex-col space-y-[1rem] py-[2rem] max-w-[30rem]">
-                <div
-                  v-for="ele in item.paragraph"
-                  :key="ele"
-                  class="text-[1rem] text-white"
-                >
+                <div v-for="ele in item.paragraph" :key="ele" class="text-[1rem] text-white">
                   {{ ele }}
                 </div>
               </div>
@@ -38,7 +36,9 @@
       <div class="h-13rem bg-white"></div>
       <div class="digital-bg w-full h-27rem"></div>
       <div class="w-full flex flex-col items-center absolute left-0 top-0">
-        <div class="absolute left-0 top-4rem w-full h-full text-[#66666616] font-bold text-[4rem] text-center">
+        <div
+          class="absolute left-0 top-4rem w-full h-full text-[#66666616] font-bold text-[4rem] text-center"
+        >
           PRODUCT DIGITAL BASE
         </div>
         <div class="flex justify-center items-start space-x-4 text-black pt-5rem container">
@@ -67,9 +67,11 @@
               </div>
               <div
                 class="w-4rem py-1 px-4 rounded-1 cursor-pointer select-none hover:bg-[#08215e] transition"
-                style="border: 1px solid #999;"
+                style="border: 1px solid #999"
                 @click="handleBtnClick(item)"
-              >立即查看</div>
+              >
+                立即查看
+              </div>
             </div>
             <div v-else class="px-1">{{ item.title }}</div>
           </div>
@@ -78,11 +80,15 @@
         <div
           class="container relative z-20 linear-bg py-[.8rem] text-[#f1f1f1c0] flex justify-center items-center text-[1.3rem] hover:text-[#fff] cursor-pointer"
           @click="handleBtnClick({ url: 'http://117.73.12.97:9200' })"
-        >工业安全生产与分析研判系统</div>
+        >
+          工业安全生产与分析研判系统
+        </div>
       </div>
     </div>
     <div class="w-full h-[40rem] example-bg relative flex flex-col items-center">
-      <div class="absolute left-0 top-4rem w-full text-[#f1f1f111] font-bold text-[4rem] text-center">
+      <div
+        class="absolute left-0 top-4rem w-full text-[#f1f1f111] font-bold text-[4rem] text-center"
+      >
         SUCCESS CASES
       </div>
       <div class="flex justify-center items-start space-x-4 pt-5rem container text-white">
@@ -94,7 +100,11 @@
         <div class="title-bar-white w-1.7rem h-1.7rem"></div>
       </div>
       <div class="container flex justify-center mt-3rem space-x-[2rem] px-[6rem] box-border">
-        <div v-for="item in 4" :key="item" :class="`card-${item + 1} grow min-w-[3rem] aspect-.75 shadow-md rounded-md hover:scale-102 transition`"></div>
+        <div
+          v-for="item in 4"
+          :key="item"
+          :class="`card-${item + 1} grow min-w-[3rem] aspect-.75 shadow-md rounded-md hover:scale-102 transition`"
+        ></div>
       </div>
     </div>
     <div class="w-full h-4rem bg-white"></div>
@@ -102,9 +112,17 @@
       <div class="container mb-3rem">
         <div class="px-2 flex justify-between">
           <div class="flex space-x-1rem xl:space-x-[3rem] text-white ml-00">
-            <div v-for="item in footerMenus" :key="item.id" class="flex flex-col space-y-2 items-start">
+            <div
+              v-for="item in footerMenus"
+              :key="item.id"
+              class="flex flex-col space-y-2 items-start"
+            >
               <div class="mb-3">{{ item.title }}</div>
-              <div v-for="ele in item.children" :key="ele.id" class="text-.9rem text-[#ffffffc0] hover:text-[#fff] cursor-pointer">
+              <div
+                v-for="ele in item.children"
+                :key="ele.id"
+                class="text-.9rem text-[#ffffffc0] hover:text-[#fff] cursor-pointer"
+              >
                 {{ ele.title }}
               </div>
             </div>
@@ -114,7 +132,9 @@
               <div class="logo w-2.4rem h-2.4rem relative top-[.3rem]"></div>
               <div class="pl-1rem text-white flex flex-col items-center">
                 <div class="text-1.6rem">工业安全生产数字化产品平台</div>
-                <div class="text-.6rem text-[#ffffff80]">DIGITAL PRODUCT PLATFORM FOR INDUSTRIAL SAFETY PRODUCTION</div>
+                <div class="text-.6rem text-[#ffffff80]">
+                  DIGITAL PRODUCT PLATFORM FOR INDUSTRIAL SAFETY PRODUCTION
+                </div>
               </div>
             </div>
             <div class="py-4 pl-3.4rem space-y-1">
@@ -123,8 +143,7 @@
               <div class="text-.8rem text-[#ffffffd0]">工作日：8:30-18:00</div>
             </div>
             <div class="pl-3.4rem text-.8rem text-[#ffffffd0]">扫码关注平台公众号获取更多信息</div>
-            <div class="ml-3.4rem text-1.2rem qrcode w-7rem h-7rem">
-            </div>
+            <div class="ml-3.4rem text-1.2rem qrcode w-7rem h-7rem"></div>
           </div>
         </div>
       </div>
@@ -159,7 +178,7 @@ const carouselItemList = ref<any[]>([
       '工业园区的安全生产不仅关乎园区的经济发展和企业的持续运营，更是对员工生命安全的直接保障。通过采取有效的安全管理措施和技术手段，可以显著提升园区的安全生产水平，为园区的长期稳定发展提供坚实的安全保障‌'
     ],
     background: 'para-bg3'
-  },
+  }
   // {
   //   id: '4',
   //   title: '森林生态综合管理',
@@ -168,77 +187,70 @@ const carouselItemList = ref<any[]>([
   //   ],
   //   background: 'para-bg4'
   // },
-])
+]);
 
 // 产品数字底座
-const activeProductItem = ref<string>('1')
+const activeProductItem = ref<string>('1');
 const handleMouseEnter = (item) => {
   activeProductItem.value = item.id;
-}
+};
 const productItemList = ref<any[]>([
   {
     id: '1',
     title: '安防中心',
     url: 'http://117.73.12.97:9230',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
   {
     id: '2',
     title: '监控中心',
     url: 'http://117.73.12.97:9240',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
   {
     id: '3',
     title: '监控APP',
     url: 'http://117.73.12.97:9090',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
   {
     id: '4',
     title: '数据分析平台',
     url: 'http://117.73.12.97:9250',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
   {
     id: '5',
     title: '安全生产信息化',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
   {
     id: '6',
     title: '工业知识融合平台',
-    paragraph: [
-      '通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全'
-    ]
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
   },
-])
+  {
+    id: '7',
+    title: '安全生产应用平台',
+    url: 'http://117.73.12.23:40091/',
+    paragraph: ['通过技术手段和人员管理相结合，旨在提高安全防范能力，确保人员和财产的安全']
+  }
+]);
 const handleBtnClick = (item) => {
   if (!item.url) return;
-  window.open(item.url)
-}
+  window.open(item.url);
+};
 
-const carouselRef = ref()
+const carouselRef = ref();
 onMounted(() => {
-  const carouselContainer = document.getElementById("carouselContainer");
+  const carouselContainer = document.getElementById('carouselContainer');
   carouselContainer?.addEventListener('wheel', (e) => {
     e.stopPropagation();
     if (!carouselRef.value) return;
-    if (e.deltaY > 20) carouselRef.value.next()
-    if (e.deltaY < -20) carouselRef.value.prev()
-  })
-})
-
+    if (e.deltaY > 20) carouselRef.value.next();
+    if (e.deltaY < -20) carouselRef.value.prev();
+  });
+});
 
 // 底部菜单
 const footerMenus = ref<any[]>([
@@ -249,7 +261,7 @@ const footerMenus = ref<any[]>([
       { id: '1-1', title: '平台简介' },
       { id: '1-2', title: '资质荣誉' },
       { id: '1-3', title: '客户案例' },
-      { id: '1-3', title: '新闻中心' },
+      { id: '1-3', title: '新闻中心' }
     ]
   },
   {
@@ -263,7 +275,7 @@ const footerMenus = ref<any[]>([
       { id: '2-5', title: '工业园区' },
       { id: '2-6', title: '智慧工地' },
       { id: '2-7', title: '外包装' },
-      { id: '2-8', title: '汽车零部件检测' },
+      { id: '2-8', title: '汽车零部件检测' }
     ]
   },
   {
@@ -274,7 +286,7 @@ const footerMenus = ref<any[]>([
       { id: '3-2', title: '安全生产产品' },
       { id: '3-3', title: '森林防火产品' },
       { id: '3-4', title: '车间安防产品' },
-      { id: '3-5', title: '工业园区产品' },
+      { id: '3-5', title: '工业园区产品' }
     ]
   },
   {
@@ -287,7 +299,7 @@ const footerMenus = ref<any[]>([
       { id: '4-4', title: '车间安防公司' },
       { id: '4-5', title: '工业园区公司' },
       { id: '4-6', title: '智慧工地公司' },
-      { id: '4-7', title: '汽车零部件检测公司' },
+      { id: '4-7', title: '汽车零部件检测公司' }
     ]
   },
   {
@@ -300,7 +312,7 @@ const footerMenus = ref<any[]>([
       { id: '5-4', title: '车间安防公司' },
       { id: '5-5', title: '工业园区公司' },
       { id: '5-6', title: '智慧工地公司' },
-      { id: '5-7', title: '汽车零部件检测公司' },
+      { id: '5-7', title: '汽车零部件检测公司' }
     ]
   },
   {
@@ -308,10 +320,10 @@ const footerMenus = ref<any[]>([
     title: '联系我们',
     children: [
       { id: '6-1', title: '联系我们' },
-      { id: '6-2', title: '加入我们' },
+      { id: '6-2', title: '加入我们' }
     ]
-  },
-])
+  }
+]);
 </script>
 <style scoped lang="scss">
 .logo {
@@ -366,11 +378,10 @@ const footerMenus = ref<any[]>([
 }
 
 .linear-bg {
-  background: linear-gradient(to top, #0678E2, #004EB0);
+  background: linear-gradient(to top, #0678e2, #004eb0);
 }
 
-
-@for $i from 1 through 6 {
+@for $i from 1 through 7 {
   .mask-#{$i} {
     background-image: url(./assets/mask#{$i}.png);
     background-size: cover;
@@ -404,6 +415,6 @@ const footerMenus = ref<any[]>([
 }
 .custom-transtion {
   position: relative;
-  animation: topCause .5s ease;
+  animation: topCause 0.5s ease;
 }
 </style>

@@ -32,7 +32,8 @@
                 @click="openChildrenTask(item)"
                 size="small"
               >
-                <Icon icon="ep:memo" /> 子任务
+                <Icon icon="ep:memo" />
+                子任务
               </el-button>
               <el-button
                 class="ml-10px"
@@ -40,7 +41,8 @@
                 v-if="item.formId > 0"
                 @click="handleFormDetail(item)"
               >
-                <Icon icon="ep:document" /> 查看表单
+                <Icon icon="ep:document" />
+                查看表单
               </el-button>
             </p>
             <el-card :body-style="{ padding: '10px' }">
@@ -64,7 +66,7 @@
               <label v-if="item.durationInMillis" style="font-weight: normal; color: #8a909c">
                 {{ formatPast2(item?.durationInMillis) }}
               </label>
-              <p v-if="item.reason"> 审批建议：{{ item.reason }} </p>
+              <p v-if="item.reason">审批建议：{{ item.reason }}</p>
             </el-card>
           </el-timeline-item>
           <el-timeline-item type="success">
@@ -91,85 +93,85 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { formatDate, formatPast2 } from '@/utils/formatTime'
-import { propTypes } from '@/utils/propTypes'
-import { DICT_TYPE } from '@/utils/dict'
-import { isEmpty } from '@/utils/is'
-import TaskSignList from './dialog/TaskSignList.vue'
-import type { ApiAttrs } from '@form-create/element-ui/types/config'
-import { setConfAndFields2 } from '@/utils/formCreate'
+import { formatDate, formatPast2 } from '@/utils/formatTime';
+import { propTypes } from '@/utils/propTypes';
+import { DICT_TYPE } from '@/utils/dict';
+import { isEmpty } from '@/utils/is';
+import TaskSignList from './dialog/TaskSignList.vue';
+import type { ApiAttrs } from '@form-create/element-ui/types/config';
+import { setConfAndFields2 } from '@/utils/formCreate';
 
-defineOptions({ name: 'BpmProcessInstanceTaskList' })
+defineOptions({ name: 'BpmProcessInstanceTaskList' });
 
 defineProps({
   loading: propTypes.bool, // 是否加载中
   processInstance: propTypes.object, // 流程实例
   tasks: propTypes.arrayOf(propTypes.object) // 流程任务的数组
-})
+});
 
 /** 获得流程实例对应的颜色 */
 const getProcessInstanceTimelineItemType = (item: any) => {
   if (item.status === 2) {
-    return 'success'
+    return 'success';
   }
   if (item.status === 3) {
-    return 'danger'
+    return 'danger';
   }
   if (item.status === 4) {
-    return 'warning'
+    return 'warning';
   }
-  return ''
-}
+  return '';
+};
 
 /** 获得任务对应的颜色 */
 const getTaskTimelineItemType = (item: any) => {
   if ([0, 1, 6, 7].includes(item.status)) {
-    return 'primary'
+    return 'primary';
   }
   if (item.status === 2) {
-    return 'success'
+    return 'success';
   }
   if (item.status === 3) {
-    return 'danger'
+    return 'danger';
   }
   if (item.status === 4) {
-    return 'info'
+    return 'info';
   }
   if (item.status === 5) {
-    return 'warning'
+    return 'warning';
   }
-  return ''
-}
+  return '';
+};
 
 /** 子任务 */
-const taskSignListRef = ref()
+const taskSignListRef = ref();
 const openChildrenTask = (item: any) => {
-  taskSignListRef.value.open(item)
-}
+  taskSignListRef.value.open(item);
+};
 
 /** 查看表单 */
-const fApi = ref<ApiAttrs>() // form-create 的 API 操作类
+const fApi = ref<ApiAttrs>(); // form-create 的 API 操作类
 const taskForm = ref({
   rule: [],
   option: {},
   value: {}
-}) // 流程任务的表单详情
-const taskFormVisible = ref(false)
+}); // 流程任务的表单详情
+const taskFormVisible = ref(false);
 const handleFormDetail = async (row) => {
   // 设置表单
-  setConfAndFields2(taskForm, row.formConf, row.formFields, row.formVariables)
+  setConfAndFields2(taskForm, row.formConf, row.formFields, row.formVariables);
   // 弹窗打开
-  taskFormVisible.value = true
+  taskFormVisible.value = true;
   // 隐藏提交、重置按钮，设置禁用只读
-  await nextTick()
-  fApi.value.fapi.btn.show(false)
-  fApi.value?.fapi?.resetBtn.show(false)
-  fApi.value?.fapi?.disabled(true)
-}
+  await nextTick();
+  fApi.value.fapi.btn.show(false);
+  fApi.value?.fapi?.resetBtn.show(false);
+  fApi.value?.fapi?.disabled(true);
+};
 
 /** 刷新数据 */
-const emit = defineEmits(['refresh']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['refresh']); // 定义 success 事件，用于操作成功后的回调
 const refresh = () => {
-  emit('refresh')
-}
+  emit('refresh');
+};
 </script>

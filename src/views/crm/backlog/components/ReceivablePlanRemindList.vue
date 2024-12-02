@@ -154,67 +154,67 @@
 </template>
 
 <script setup lang="ts">
-import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import * as ReceivablePlanApi from '@/api/crm/receivable/plan'
-import { RECEIVABLE_REMIND_TYPE } from './common'
-import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils'
-import ReceivableForm from '@/views/crm/receivable/ReceivableForm.vue'
+import { DICT_TYPE } from '@/utils/dict';
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import * as ReceivablePlanApi from '@/api/crm/receivable/plan';
+import { RECEIVABLE_REMIND_TYPE } from './common';
+import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils';
+import ReceivableForm from '@/views/crm/receivable/ReceivableForm.vue';
 
-defineOptions({ name: 'ReceivablePlanRemindList' })
+defineOptions({ name: 'ReceivablePlanRemindList' });
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   remindType: 1
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ReceivablePlanApi.getReceivablePlanPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ReceivablePlanApi.getReceivablePlanPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 创建回款操作 */
-const receivableFormRef = ref()
+const receivableFormRef = ref();
 const openReceivableForm = (row: ReceivablePlanApi.ReceivablePlanVO) => {
-  receivableFormRef.value.open('create', undefined, row)
-}
+  receivableFormRef.value.open('create', undefined, row);
+};
 
 /** 打开详情 */
-const { push } = useRouter()
+const { push } = useRouter();
 const openDetail = (id: number) => {
-  push({ name: 'CrmReceivablePlanDetail', params: { id } })
-}
+  push({ name: 'CrmReceivablePlanDetail', params: { id } });
+};
 
 /** 打开客户详情 */
 const openCustomerDetail = (id: number) => {
-  push({ name: 'CrmCustomerDetail', params: { id } })
-}
+  push({ name: 'CrmCustomerDetail', params: { id } });
+};
 
 /** 激活时 */
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
-})
+  await getList();
+});
 </script>

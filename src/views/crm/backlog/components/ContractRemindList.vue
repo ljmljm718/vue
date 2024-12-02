@@ -1,7 +1,7 @@
 <!-- 即将到期的合同 -->
 <template>
   <ContentWrap>
-    <div class="pb-5 text-xl"> 即将到期的合同 </div>
+    <div class="pb-5 text-xl">即将到期的合同</div>
     <!-- 搜索工作栏 -->
     <el-form
       class="-mb-15px"
@@ -172,75 +172,75 @@
 </template>
 
 <script setup lang="ts" name="EndContract">
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import * as ContractApi from '@/api/crm/contract'
-import { fenToYuanFormat } from '@/utils/formatter'
-import { DICT_TYPE } from '@/utils/dict'
-import { CONTRACT_EXPIRY_TYPE } from './common'
-import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils'
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import * as ContractApi from '@/api/crm/contract';
+import { fenToYuanFormat } from '@/utils/formatter';
+import { DICT_TYPE } from '@/utils/dict';
+import { CONTRACT_EXPIRY_TYPE } from './common';
+import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils';
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   sceneType: '1', // 自己负责的
   expiryType: 1
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ContractApi.getContractPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ContractApi.getContractPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 查看审批 */
 const handleProcessDetail = (row: ContractApi.ContractVO) => {
-  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } })
-}
+  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } });
+};
 
 /** 打开合同详情 */
-const { push } = useRouter()
+const { push } = useRouter();
 const openDetail = (id: number) => {
-  push({ name: 'CrmContractDetail', params: { id } })
-}
+  push({ name: 'CrmContractDetail', params: { id } });
+};
 
 /** 打开客户详情 */
 const openCustomerDetail = (id: number) => {
-  push({ name: 'CrmCustomerDetail', params: { id } })
-}
+  push({ name: 'CrmCustomerDetail', params: { id } });
+};
 
 /** 打开联系人详情 */
 const openContactDetail = (id: number) => {
-  push({ name: 'CrmContactDetail', params: { id } })
-}
+  push({ name: 'CrmContactDetail', params: { id } });
+};
 
 /** 打开商机详情 */
 const openBusinessDetail = (id: number) => {
-  push({ name: 'CrmBusinessDetail', params: { id } })
-}
+  push({ name: 'CrmBusinessDetail', params: { id } });
+};
 
 /** 激活时 */
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

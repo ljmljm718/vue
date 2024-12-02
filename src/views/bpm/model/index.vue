@@ -1,9 +1,4 @@
 <template>
-
-
-
-
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -47,18 +42,26 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['bpm:model:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新建流程
+          <Icon icon="ep:plus" class="mr-5px" />
+          新建流程
         </el-button>
         <el-button type="success" plain @click="openImportForm" v-hasPermi="['bpm:model:import']">
-          <Icon icon="ep:upload" class="mr-5px" /> 导入流程
+          <Icon icon="ep:upload" class="mr-5px" />
+          导入流程
         </el-button>
       </el-form-item>
     </el-form>
@@ -233,101 +236,101 @@
 </template>
 
 <script lang="ts" setup>
-import { dateFormatter, formatDate } from '@/utils/formatTime'
-import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
-import * as ModelApi from '@/api/bpm/model'
-import * as FormApi from '@/api/bpm/form'
-import ModelForm from './ModelForm.vue'
-import ModelImportForm from '@/views/bpm/model/ModelImportForm.vue'
-import { setConfAndFields2 } from '@/utils/formCreate'
-import { CategoryApi } from '@/api/bpm/category'
+import { dateFormatter, formatDate } from '@/utils/formatTime';
+import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package';
+import * as ModelApi from '@/api/bpm/model';
+import * as FormApi from '@/api/bpm/form';
+import ModelForm from './ModelForm.vue';
+import ModelImportForm from '@/views/bpm/model/ModelImportForm.vue';
+import { setConfAndFields2 } from '@/utils/formCreate';
+import { CategoryApi } from '@/api/bpm/category';
 
-defineOptions({ name: 'BpmModel' })
+defineOptions({ name: 'BpmModel' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const { push } = useRouter() // 路由
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const { push } = useRouter(); // 路由
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   key: undefined,
   name: undefined,
   category: undefined
-})
-const queryFormRef = ref() // 搜索的表单
-const categoryList = ref([]) // 流程分类列表
+});
+const queryFormRef = ref(); // 搜索的表单
+const categoryList = ref([]); // 流程分类列表
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ModelApi.getModelPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ModelApi.getModelPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 添加/修改操作 */
-const importFormRef = ref()
+const importFormRef = ref();
 const openImportForm = () => {
-  importFormRef.value.open()
-}
+  importFormRef.value.open();
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await ModelApi.deleteModel(id)
-    message.success(t('common.delSuccess'))
+    await ModelApi.deleteModel(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 更新状态操作 */
 const handleChangeState = async (row) => {
-  const state = row.processDefinition.suspensionState
+  const state = row.processDefinition.suspensionState;
   try {
     // 修改状态的二次确认
-    const id = row.id
-    const statusState = state === 1 ? '激活' : '挂起'
-    const content = '是否确认' + statusState + '流程名字为"' + row.name + '"的数据项?'
-    await message.confirm(content)
+    const id = row.id;
+    const statusState = state === 1 ? '激活' : '挂起';
+    const content = '是否确认' + statusState + '流程名字为"' + row.name + '"的数据项?';
+    await message.confirm(content);
     // 发起修改状态
-    await ModelApi.updateModelState(id, state)
+    await ModelApi.updateModelState(id, state);
     // 刷新列表
-    await getList()
+    await getList();
   } catch {
     // 取消后，进行恢复按钮
-    row.processDefinition.suspensionState = state === 1 ? 2 : 1
+    row.processDefinition.suspensionState = state === 1 ? 2 : 1;
   }
-}
+};
 
 /** 设计流程 */
 const handleDesign = (row) => {
@@ -336,8 +339,8 @@ const handleDesign = (row) => {
     query: {
       modelId: row.id
     }
-  })
-}
+  });
+};
 
 const handleSimpleDesign = (row) => {
   push({
@@ -345,21 +348,21 @@ const handleSimpleDesign = (row) => {
     query: {
       modelId: row.id
     }
-  })
-}
+  });
+};
 
 /** 发布流程 */
 const handleDeploy = async (row) => {
   try {
     // 删除的二次确认
-    await message.confirm('是否部署该流程！！')
+    await message.confirm('是否部署该流程！！');
     // 发起部署
-    await ModelApi.deployModel(row.id)
-    message.success(t('部署成功'))
+    await ModelApi.deployModel(row.id);
+    message.success(t('部署成功'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 跳转到指定流程定义列表 */
 const handleDefinitionList = (row) => {
@@ -368,45 +371,45 @@ const handleDefinitionList = (row) => {
     query: {
       key: row.key
     }
-  })
-}
+  });
+};
 
 /** 流程表单的详情按钮操作 */
-const formDetailVisible = ref(false)
+const formDetailVisible = ref(false);
 const formDetailPreview = ref({
   rule: [],
   option: {}
-})
+});
 const handleFormDetail = async (row) => {
   if (row.formType == 10) {
     // 设置表单
-    const data = await FormApi.getForm(row.formId)
-    setConfAndFields2(formDetailPreview, data.conf, data.fields)
+    const data = await FormApi.getForm(row.formId);
+    setConfAndFields2(formDetailPreview, data.conf, data.fields);
     // 弹窗打开
-    formDetailVisible.value = true
+    formDetailVisible.value = true;
   } else {
     await push({
       path: row.formCustomCreatePath
-    })
+    });
   }
-}
+};
 
 /** 流程图的详情按钮操作 */
-const bpmnDetailVisible = ref(false)
-const bpmnXML = ref(null)
+const bpmnDetailVisible = ref(false);
+const bpmnXML = ref(null);
 const bpmnControlForm = ref({
   prefix: 'flowable'
-})
+});
 const handleBpmnDetail = async (row) => {
-  const data = await ModelApi.getModel(row.id)
-  bpmnXML.value = data.bpmnXml || ''
-  bpmnDetailVisible.value = true
-}
+  const data = await ModelApi.getModel(row.id);
+  bpmnXML.value = data.bpmnXml || '';
+  bpmnDetailVisible.value = true;
+};
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await getList();
   // 查询流程分类列表
-  categoryList.value = await CategoryApi.getCategorySimpleList()
-})
+  categoryList.value = await CategoryApi.getCategorySimpleList();
+});
 </script>

@@ -17,6 +17,7 @@ import { ParkInfoVO } from '@/api/agriculture/parkinfo';
 import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
 import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
 import MapPosSelector from '@/components/MapPosSelector/index.vue';
+import FenceDialog from '@/views/agriculture/parkinfo/components/fenceDialog.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -111,15 +112,18 @@ const formData = ref({
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备点位不能为空', trigger: 'blur' }],
   deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'change' }],
-  deviceMonitorType: [{ required: true, message: '设备监测类型不能为空', trigger: 'change' }],
+  //deviceMonitorType的trigger修改为blur，当为change时，进页面触发，提示报错
+  deviceMonitorType: [
+    { required: true, message: '请在设备分类中维护监测类型，并选择相关监测类型！', trigger: 'blur' }
+  ],
   deviceStatus: [{ required: true, message: '状态不能为空', trigger: 'change' }],
   imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
 });
 
 // 提交表单
 const submitForm = async () => {
-  // 校验表单
-  await formRef.value.validate();
+  // 校验表单 传一个回调函数才有失败提示
+  await formRef.value.validate(() => {});
   // 提交请求
   formLoading.value = true;
   try {
@@ -275,148 +279,225 @@ const handleSelectorChange = (val) => {
   formData.value.longitude = val[0];
   formData.value.latitude = val[1];
 };
+
+// demo6.2.1新增 表单校验提示
+const msg = useMessage();
+const handleValidate = (prop: any, isValid: boolean, message: string) => {
+  if (!isValid) msg.error(message);
+};
+
+const selectedLng = ref<string>('');
+const selectedLat = ref<string>('');
+const handleCancel = () => {
+  openPosSelector.value = false;
+  selectedLat.value = '';
+  selectedLng.value = '';
+};
+const handleConfirm = () => {
+  openPosSelector.value = false;
+  if (!selectedLat.value || !selectedLat.value) return;
+  formData.value.latitude = selectedLat.value;
+  formData.value.longitude = selectedLng.value;
+};
+
+const tiandiIns = ref();
+const handleMapClick = (item) => {
+  tiandiIns.value.clearMarkers();
+  setTimeout(() => {
+    const { lng, lat } = item;
+    selectedLng.value = lng.toString();
+    selectedLat.value = lat.toString();
+    const positionString = `${lng},${lat}`;
+    if (positionString) tiandiIns.value.handleSearchItemClick({ lonlat: positionString });
+  }, 200);
+};
+
+const handleOpenPointerPicker = () => {
+  openPosSelector.value = true;
+  const lat = formData.value.latitude;
+  const lng = formData.value.longitude;
+  if (!lat || !lng) return;
+  nextTick(() => {
+    setTimeout(() => {
+      tiandiIns.value.handleSearchItemClick({ lonlat: `${lng},${lat}` });
+    }, 1200);
+  });
+};
 </script>
 <template>
   <div>
-    <MapPosSelector
+    <!-- <MapPosSelector
       ref="mapPosSelectorRef"
       v-model="openPosSelector"
       @change="handleSelectorChange"
-    />
+    /> -->
+
+    <fence-dialog v-model="openPosSelector" title="地图选点">
+      <div class="w-full h-full">
+        <map-custom
+          ref="tiandiIns"
+          :enableEdit="false"
+          :searchLocation="true"
+          @map-click="handleMapClick"
+        />
+      </div>
+      <template #footer>
+        <el-button size="small" @click="handleCancel()">取 消</el-button>
+        <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
+      </template>
+    </fence-dialog>
     <EditFrame>
       <template #header>
-        <div class="flex">
-          <el-button type="success" :icon="TopRight" plain @click="submitForm">提交</el-button>
-          <el-button type="danger" :icon="Refresh" plain @click="resetForm()">清空</el-button>
-        </div>
         <div>
-          <el-button type="primary" plain @click="router.back()">返回</el-button>
+          <!-- demo6.2.1新增 一级标题 -->
+          <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">设备信息新增/编辑</h1>
+        </div>
+        <div class="space-x-[8px]">
+          <!-- demo6.2.1新增 页面用到的按钮都写在这 不要plain属性 主按钮type="primary" 次按钮不设置type -->
+          <el-button type="primary" :icon="TopRight" @click="submitForm">提交</el-button>
           <el-button
-            type="primary"
             :icon="FolderChecked"
-            plain
             @click="localSave()"
             v-if="(route.query.type as any) !== 'detail'"
           >
             暂存
           </el-button>
+          <el-button :icon="Refresh" @click="resetForm()">清空</el-button>
+          <el-button @click="router.back()">返回</el-button>
         </div>
       </template>
+
       <template #content>
-        <el-scrollbar class="croll-bar-template">
-          <el-form
-            ref="formRef"
-            :model="formData"
-            :rules="formRules"
-            label-width="100px"
-            v-loading="formLoading"
-            class="grid 2xl:grid-cols-3 gap-2 p-4"
-          >
-            <el-form-item label="设备编号" prop="deviceCode">
-              <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
-            </el-form-item>
-            <el-form-item label="设备点位" prop="deviceName">
-              <el-input v-model="formData.deviceName" placeholder="请输入设备点位">
-                <template #append>
-                  <el-button @click="ifBeingByNameButton">存在验证</el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="设备类型" prop="deviceType">
-              <el-cascader
-                style="width: 100%"
-                v-model="deviceType"
-                :options="categoryOptions"
-                @change="handleChange"
-                :props="props"
-                filterable
-              />
-            </el-form-item>
-            <el-form-item label="设备监测类型" prop="deviceMonitorType">
-              <el-select
-                v-model="formData.deviceMonitorType"
-                multiple
-                placeholder="请选择设备监测类型"
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属基地" prop="belongPark">
-              <el-input v-model="formData.parkName" placeholder="请输入所属基地" readonly>
-                <template #append>
-                  <el-button @click="openParkInfoPopup('0')">
-                    <Icon icon="ep:search" />
-                    选择
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="所属地块" prop="belongPlot">
-              <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly>
-                <template #append>
-                  <el-button @click="openParkDetailPopup(formData.belongPark)">
-                    <Icon icon="ep:search" />
-                    选择
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="状态" prop="deviceStatus">
-              <el-radio-group v-model="formData.deviceStatus">
-                <el-radio
-                  v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
-                  :key="dict.value"
-                  :label="dict.value"
+        <!-- demo6.2.1新增 内容这里直接写表单 不用el-scrollbar包裹 改一下label-width往下的属性 -->
+        <el-form
+          ref="formRef"
+          :model="formData"
+          :rules="formRules"
+          v-loading="formLoading"
+          label-width="100px"
+          class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-[8px] w-full form"
+          :show-message="false"
+          @validate="handleValidate"
+        >
+          <!-- demo6.2.1新增 表单里输入框带按钮的只保留图标不要文字 多行输入独占一行 图片放在最后一项 -->
+          <el-form-item label="设备编号" prop="deviceCode">
+            <el-input v-model="formData.deviceCode" placeholder="请输入设备编号" />
+          </el-form-item>
+          <el-form-item label="设备点位" prop="deviceName">
+            <el-input v-model="formData.deviceName" placeholder="请输入设备点位">
+              <!-- demo6.2.1新增 输入框里的按钮是文字的情况 -->
+              <template #suffix>
+                <div
+                  :style="{ color: 'var(--el-color-primary)' }"
+                  @click="ifBeingByNameButton"
+                  class="cursor-pointer px-[4px]"
                 >
-                  {{ dict.label }}
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="经度" prop="longitude">
-              <el-input v-model="formData.longitude" placeholder="请输入经度">
-                <template #append>
-                  <el-button @click="openPosSelector = true">
-                    <Icon icon="ep:search" />
-                    选择点
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="纬度" prop="latitude">
-              <el-input v-model="formData.latitude" placeholder="请输入纬度">
-                <template #append>
-                  <el-button @click="openPosSelector = true">
-                    <Icon icon="ep:search" />
-                    选择点
-                  </el-button>
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="位置" prop="location">
-              <el-input v-model="formData.location" placeholder="请输入位置" />
-            </el-form-item>
-            <el-form-item label="NVR序列号" prop="dtu">
-              <el-input v-model="formData.dtu" placeholder="请输入NVR序列号" />
-            </el-form-item>
-            <el-form-item label="通道号" prop="channelId">
-              <el-input v-model="formData.channelId" placeholder="请输入通道号" />
-            </el-form-item>
-            <el-form-item label="图片" prop="imgId">
-              <UploadImg v-model="formData.imgId" />
-            </el-form-item>
-            <el-form-item label="访问地址" prop="url">
-              <el-input v-model="formData.url" placeholder="请输入访问地址" />
-            </el-form-item>
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
-            </el-form-item>
-          </el-form>
-        </el-scrollbar>
+                  验证
+                </div>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="设备类型" prop="deviceType">
+            <el-cascader
+              style="width: 100%"
+              v-model="deviceType"
+              :options="categoryOptions"
+              @change="handleChange"
+              :props="props"
+              filterable
+            />
+          </el-form-item>
+          <el-form-item label="设备监测类型" prop="deviceMonitorType">
+            <el-select
+              v-model="formData.deviceMonitorType"
+              multiple
+              placeholder="请选择设备监测类型"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属基地" prop="belongPark">
+            <el-input v-model="formData.parkName" placeholder="请输入所属基地" readonly>
+              <template #append>
+                <el-button @click="openParkInfoPopup('0')">
+                  <Icon icon="ep:search" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="所属地块" prop="belongPlot">
+            <el-input v-model="formData.parkDetailName" placeholder="请输入所属地块" readonly>
+              <template #append>
+                <el-button @click="openParkDetailPopup(formData.belongPark)">
+                  <Icon icon="ep:search" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="状态" prop="deviceStatus">
+            <el-radio-group v-model="formData.deviceStatus">
+              <el-radio
+                v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+                :key="dict.value"
+                :label="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="经度" prop="longitude">
+            <el-input v-model="formData.longitude" placeholder="请输入经度">
+              <template #append>
+                <el-button @click="handleOpenPointerPicker()">
+                  <Icon icon="ep:search" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="纬度" prop="latitude">
+            <el-input v-model="formData.latitude" placeholder="请输入纬度">
+              <template #append>
+                <el-button @click="handleOpenPointerPicker()">
+                  <Icon icon="ep:search" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="位置" prop="location">
+            <el-input v-model="formData.location" placeholder="请输入位置" />
+          </el-form-item>
+          <el-form-item label="NVR序列号" prop="dtu">
+            <el-input v-model="formData.dtu" placeholder="请输入NVR序列号" />
+          </el-form-item>
+          <el-form-item label="通道号" prop="channelId">
+            <el-input v-model="formData.channelId" placeholder="请输入通道号" />
+          </el-form-item>
+          <el-form-item label="访问地址" prop="url">
+            <el-input v-model="formData.url" placeholder="请输入访问地址" />
+          </el-form-item>
+
+          <!-- demo6.2.1新增 注意多行输入添加class -->
+          <el-form-item label="备注" prop="remark" class="col-span-2 xl:col-span-3 2xl:col-span-4">
+            <!-- demo6.2.1新增 多行输入添加 resize="none" -->
+            <el-input
+              v-model="formData.remark"
+              type="textarea"
+              placeholder="请输入备注"
+              resize="none"
+            />
+          </el-form-item>
+          <el-form-item label="图片" prop="imgId">
+            <UploadImg v-model="formData.imgId" />
+          </el-form-item>
+        </el-form>
+
+        <!-- demo6.2.1新增 分隔线 然后在下面写下一个表单 -->
+        <!-- <div class="w-full h-[1px] bg-[#ebebeb] my-[16px]"></div> -->
       </template>
     </EditFrame>
   </div>
@@ -425,9 +506,31 @@ const handleSelectorChange = (val) => {
   <!--  选择大棚-->
   <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange" />
 </template>
-<style scoped>
+<style scoped lang="scss">
 .scroll-bar-template {
   height: calc(100vh - 250px);
   overflow: auto;
+}
+
+// demo6.2.1新增 加上下面这些css样式 需要style标签上加 lang="scss"
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+// 调整多行输入框的高度
+:deep(.form .el-textarea__inner) {
+  height: 60px !important;
 }
 </style>

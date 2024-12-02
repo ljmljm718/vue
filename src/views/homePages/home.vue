@@ -3,7 +3,7 @@
     <scale-box>
       <div class="w-full h-full overflow-hidden home-bg relative">
         <!-- 标题 -->
-        <div class="h-[8%]"> </div>
+        <div class="h-[8%]"></div>
         <img
           class="absolute right-[1rem] top-[3.5rem] w-[5rem] cursor-pointer transition-all"
           @click="loginOut"
@@ -64,80 +64,116 @@
             <!-- <div class="monitor-detect" @click="routerHandler('模型监测')"></div> -->
             <!-- 两侧菜单 -->
             <div class="rect-bg text-[#fff] text-[1.2em] relative cursor-default">
-              <div class="absolute left-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border">
+              <div
+                class="absolute left-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border"
+              >
                 <div class="left-top-wrapper flex flex-col space-y-[.7rem]">
                   <div
                     class="lt-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] text-[1.4em] relative left-[1.2rem]"
                     @click="routerHandler('GIS一张图')"
-                  >GIS一张图</div>
+                  >
+                    GIS一张图
+                  </div>
                   <div
                     class="lt-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-.2rem] text-[1.4em]"
                     @click="routerHandler('设备概览')"
-                  >设备概览</div>
+                  >
+                    设备概览
+                  </div>
                   <div
                     class="lt-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-1.1em] text-[1.4em]"
                     @click="routerHandler('数字监测')"
-                  >数字监测</div>
+                  >
+                    数字监测
+                  </div>
                   <div
                     class="lt-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-2.2rem] text-[1.4em]"
                     @click="routerHandler('智能预警')"
-                  >智能预警</div>
+                  >
+                    智能预警
+                  </div>
                 </div>
                 <div class="left-bottom-wrapper flex flex-col space-y-[.7rem]">
                   <div
                     class="lb-label-4 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-2.2rem] text-[1.4em]"
                     @click="routerHandler('农事概览')"
-                  >农事概览</div>
+                  >
+                    农事概览
+                  </div>
                   <div
                     class="lb-label-3 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-1.4rem] text-[1.4em]"
                     @click="routerHandler('农事活动')"
-                  >农事活动</div>
+                  >
+                    农事活动
+                  </div>
                   <div
                     class="lb-label-2 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[-.1rem] text-[1.4em]"
                     @click="routerHandler('种植管理')"
-                  >种植管理</div>
+                  >
+                    种植管理
+                  </div>
                   <div
                     class="lb-label-1 w-[10em] h-[2.4em] flex flex-row-reverse items-center pr-[2em] relative left-[1.5rem] text-[1.4em]"
                     @click="routerHandler('种植溯源')"
-                  >种植溯源</div>
+                  >
+                    种植溯源
+                  </div>
                 </div>
               </div>
-              <div class="absolute right-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border">
+              <div
+                class="absolute right-[-14rem] top-0 w-[17rem] h-full flex flex-col justify-between py-[2.5rem] box-border"
+              >
                 <div class="right-top-wrapper flex flex-col space-y-[.7rem]">
                   <div
                     class="rt-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[.5em] text-[1.4em]"
                     @click="routerHandler('基地总览')"
-                  >基地总览</div>
+                  >
+                    基地总览
+                  </div>
                   <div
                     class="rt-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[1.7em] text-[1.4em]"
                     @click="routerHandler('投入品管理')"
-                  >投入品管理</div>
+                  >
+                    投入品管理
+                  </div>
                   <div
                     class="rt-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[2.6em] text-[1.4em]"
                     @click="routerHandler('库存管理')"
-                  >库存管理</div>
+                  >
+                    库存管理
+                  </div>
                   <div
                     class="rt-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[3.3em] text-[1.4em]"
                     @click="routerHandler('采购管理')"
-                  >采购管理</div>
+                  >
+                    采购管理
+                  </div>
                 </div>
                 <div class="right-bottom-wrapper flex flex-col space-y-[.7rem]">
                   <div
                     class="rb-label-4 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[3.3em] text-[1.4em]"
                     @click="routerHandler('加工记录')"
-                  >加工记录</div>
+                  >
+                    加工记录
+                  </div>
                   <div
                     class="rb-label-3 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[2.6em] text-[1.4em]"
                     @click="routerHandler('产品流通')"
-                  >产品流通</div>
+                  >
+                    产品流通
+                  </div>
                   <div
                     class="rb-label-2 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[1.7em] text-[1.4em]"
                     @click="routerHandler('营销方案')"
-                  >营销方案</div>
+                  >
+                    营销方案
+                  </div>
                   <div
                     class="rb-label-1 w-[10em] h-[2.4em] flex items-center pl-[2em] relative left-[.5em] text-[1.4em]"
                     @click="routerHandler('特色产品')"
-                  >特色产品</div>
+                  >
+                    特色产品
+                  </div>
                 </div>
               </div>
               <!-- 左右圆弧上的翠绿色短弧和箭头 -->
@@ -149,11 +185,7 @@
           </div>
         </div>
         <div
-          class="
-            w-full py-3 justify-center
-            absolute bottom-[50px] space-x-[36px]
-            left-0 flex items-center
-          "
+          class="w-full py-3 justify-center absolute bottom-[50px] space-x-[36px] left-0 flex items-center"
         >
           <div class="flex items-center" @click="routerHandler('模型监测')">
             <div class="w-120px h-106px bottom-icon-1"></div>
@@ -173,120 +205,120 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
-import ScaleBox from 'vue3-scale-box'
-import { useTagsViewStore } from '@/store/modules/tagsView'
-import { useUserStore } from '@/store/modules/user'
-import exitImg from './assets/exit.png'
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { CACHE_KEY, useCache } from '@/hooks/web/useCache';
+import ScaleBox from 'vue3-scale-box';
+import { useTagsViewStore } from '@/store/modules/tagsView';
+import { useUserStore } from '@/store/modules/user';
+import exitImg from './assets/exit.png';
 
-const { wsCache } = useCache()
-const router = useRouter()
+const { wsCache } = useCache();
+const router = useRouter();
 
-const buildedRoutes = ref<string[]>([])
+const buildedRoutes = ref<string[]>([]);
 const buildRoleRoutes = (route_arr: any[]): string[] => {
-  const res: string[] = []
-  if (!Array.isArray(route_arr)) return res
+  const res: string[] = [];
+  if (!Array.isArray(route_arr)) return res;
   route_arr.forEach((item) => {
     if (item.children && Array.isArray(item.children)) {
-      const childBuildedRoutes: string[] = buildRoleRoutes(item.children)
+      const childBuildedRoutes: string[] = buildRoleRoutes(item.children);
       childBuildedRoutes.forEach((childRoute) => {
-        res.push(item.path + '/' + childRoute)
-      })
+        res.push(item.path + '/' + childRoute);
+      });
     } else {
-      res.push(item.path)
+      res.push(item.path);
     }
-  })
-  return res
-}
+  });
+  return res;
+};
 buildedRoutes.value = [
   ...buildRoleRoutes(wsCache.get(CACHE_KEY.ROLE_ROUTERS)),
   // @ts-ignore
   ...buildRoleRoutes(router.options.routes)
-]
+];
 
-const curIcon = ref(1)
-let timer: any = null
+const curIcon = ref(1);
+let timer: any = null;
 onMounted(() => {
   timer = setInterval(() => {
-    if (curIcon.value === 7) curIcon.value = 1
-    else curIcon.value++
-  }, 3500)
-})
+    if (curIcon.value === 7) curIcon.value = 1;
+    else curIcon.value++;
+  }, 3500);
+});
 onUnmounted(() => {
-  timer && clearInterval(timer)
-})
+  timer && clearInterval(timer);
+});
 
 const routerHandler = (item: string) => {
-  const userInfo = wsCache.get(CACHE_KEY.USER)
-  let isErDuUser = false
+  const userInfo = wsCache.get(CACHE_KEY.USER);
+  let isErDuUser = false;
   if (Array.isArray(userInfo.roles)) {
-    userInfo.roles.forEach(item => {
-      if (item === "erdu") isErDuUser = true
+    userInfo.roles.forEach((item) => {
+      if (item === 'erdu') isErDuUser = true;
     });
   }
   const routeMap = {
-    '可视化驾驶舱': wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
+    可视化驾驶舱: wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
 
-    'GIS一张图': '/internetMonitor/gis',
-    '设备巡检': '/internetMonitor/check/checkView',
-    '设备概览': '/internetMonitor/device/overview',
-    '智能预警': '/internetMonitor/warn/agri-warning-record',
-    '数字监测': '/internetMonitor/deviceData/equipment-data-three',
+    GIS一张图: '/internetMonitor/gis',
+    设备巡检: '/internetMonitor/check/checkView',
+    设备概览: '/internetMonitor/device/overview',
+    智能预警: '/internetMonitor/warn/agri-warning-record',
+    数字监测: '/internetMonitor/deviceData/equipment-data-three',
 
-    '农事活动': '/farm_work/farmManage/farm-record',
-    '种植管理': '/farm_work/crop-base',
-    '种植溯源': isErDuUser ? '/trace/trace-visual' : '/trace/plant-trace',
-    '监测模型': '/growth_monitor/modelMonitor',
-    '农事概览': '/farm_work/agriOverview',
+    农事活动: '/farm_work/farmManage/farm-record',
+    种植管理: '/farm_work/crop-base',
+    种植溯源: isErDuUser ? '/trace/trace-visual' : '/trace/plant-trace',
+    监测模型: '/growth_monitor/modelMonitor',
+    农事概览: '/farm_work/agriOverview',
 
-    '基地总览': '/asset/tianyin',
-    '投入品管理': '/asset/agriculturalResourcesManagement/duck-house-management',
-    '库存管理': '/asset/inventory/stock/warehouse',
-    '采购管理': '/farm_work/harvest-management',
+    基地总览: '/asset/tianyin',
+    投入品管理: '/asset/agriculturalResourcesManagement/duck-house-management',
+    库存管理: '/asset/inventory/stock/warehouse',
+    采购管理: '/farm_work/harvest-management',
 
-    '特色产品': '/pcg/production/village-product',
-    '营销方案': '/pcg/marketingCenter/marketing-program',
-    '产品流通': '/pcg/sale/sales-management',
-    '加工记录': '/pcg/product/record',
+    特色产品: '/pcg/production/village-product',
+    营销方案: '/pcg/marketingCenter/marketing-program',
+    产品流通: '/pcg/sale/village-product-circulation',
+    加工记录: '/pcg/product/record',
 
-    '智能感知': '/internetMonitor/deviceData/equipment-smart-count',
-    '农业资源': '/asset/base/parkinfo',
-    '视频监控': '/internetMonitor/deviceData/info',
-    '数字产销': '/pcg/production/village-product',
-    '智慧农事': '/farm_work/crop-base',
+    智能感知: '/internetMonitor/deviceData/equipment-smart-count',
+    农业资源: '/asset/base/parkinfo',
+    视频监控: '/internetMonitor/deviceData/info',
+    数字产销: '/pcg/production/village-product',
+    智慧农事: '/farm_work/crop-base',
     // '模型监测': '/growth_monitor/modelMonitor',
-    '模型监测': '/growthMonitoringModelDataCenter',
+    模型监测: '/growthMonitoringModelDataCenter',
 
-    '产品溯源': '/trace/trace-visual',
-    '病虫监测': '/disease_pest_surveillance/pestWarn',
-  }
+    产品溯源: '/trace/trace-visual',
+    病虫监测: '/disease_pest_surveillance/pestWarn'
+  };
 
   if (routeMap[item]) {
     if (buildedRoutes.value.indexOf(routeMap[item]) === -1) {
-      return ElMessage.warning('暂未开放该功能')
-    } else window.open(routeMap[item])
+      return ElMessage.warning('暂未开放该功能');
+    } else window.open(routeMap[item]);
   } else {
-    return ElMessage.warning('暂无此菜单权限！')
+    return ElMessage.warning('暂无此菜单权限！');
   }
-}
+};
 
-const userStore = useUserStore()
-const tagsViewStore = useTagsViewStore()
-const { t } = useI18n()
-const { replace } = useRouter()
+const userStore = useUserStore();
+const tagsViewStore = useTagsViewStore();
+const { t } = useI18n();
+const { replace } = useRouter();
 const loginOut = async () => {
   try {
     await ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
       confirmButtonText: t('common.ok'),
       cancelButtonText: t('common.cancel'),
       type: 'warning'
-    })
-    await userStore.loginOut()
-    tagsViewStore.delAllViews()
-    replace('/login?redirect=/index')
+    });
+    await userStore.loginOut();
+    tagsViewStore.delAllViews();
+    replace('/login?redirect=/index');
   } catch {}
-}
+};
 </script>
 <style lang="scss" scoped>
 .center-img {
@@ -512,12 +544,12 @@ const loginOut = async () => {
   background-image: url(./assets/homeV2/monitorDetect.png);
   background-size: 100% 100%;
   width: 12rem;
-  aspect-ratio: .73;
+  aspect-ratio: 0.73;
   position: absolute;
   left: 5.6rem;
   top: 24rem;
   z-index: 99;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 
 .monitor-detect:hover {

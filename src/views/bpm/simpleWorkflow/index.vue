@@ -12,8 +12,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import nodeWrap from '@/components/SimpleProcessDesigner/src/nodeWrap.vue'
-defineOptions({ name: 'SimpleWorkflowDesignEditor' })
+import nodeWrap from '@/components/SimpleProcessDesigner/src/nodeWrap.vue';
+defineOptions({ name: 'SimpleWorkflowDesignEditor' });
 let nodeConfig = ref({
   nodeName: '发起人',
   type: 0,
@@ -21,7 +21,7 @@ let nodeConfig = ref({
   formPerms: {},
   nodeUserList: [],
   childNode: {}
-})
+});
 </script>
 <style>
 @import url('@/components/SimpleProcessDesigner/theme/workflow.css');

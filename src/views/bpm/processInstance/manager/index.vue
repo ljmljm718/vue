@@ -1,6 +1,4 @@
 <template>
-
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -159,24 +157,24 @@
   </ContentWrap>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter, formatPast2 } from '@/utils/formatTime'
-import { ElMessageBox } from 'element-plus'
-import * as ProcessInstanceApi from '@/api/bpm/processInstance'
-import { CategoryApi } from '@/api/bpm/category'
-import * as UserApi from '@/api/system/user'
-import { cancelProcessInstanceByAdmin } from '@/api/bpm/processInstance'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter, formatPast2 } from '@/utils/formatTime';
+import { ElMessageBox } from 'element-plus';
+import * as ProcessInstanceApi from '@/api/bpm/processInstance';
+import { CategoryApi } from '@/api/bpm/category';
+import * as UserApi from '@/api/system/user';
+import { cancelProcessInstanceByAdmin } from '@/api/bpm/processInstance';
 
 // 它和【我的流程】的差异是，该菜单可以看全部的流程实例
-defineOptions({ name: 'BpmProcessInstanceManager' })
+defineOptions({ name: 'BpmProcessInstanceManager' });
 
-const router = useRouter() // 路由
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const router = useRouter(); // 路由
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -186,34 +184,34 @@ const queryParams = reactive({
   category: undefined,
   status: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const categoryList = ref([]) // 流程分类列表
-const userList = ref<any[]>([]) // 用户列表
+});
+const queryFormRef = ref(); // 搜索的表单
+const categoryList = ref([]); // 流程分类列表
+const userList = ref<any[]>([]); // 用户列表
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ProcessInstanceApi.getProcessInstanceManagerPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ProcessInstanceApi.getProcessInstanceManagerPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 查看详情 */
 const handleDetail = (row) => {
@@ -222,8 +220,8 @@ const handleDetail = (row) => {
     query: {
       id: row.id
     }
-  })
-}
+  });
+};
 
 /** 取消按钮操作 */
 const handleCancel = async (row) => {
@@ -233,23 +231,23 @@ const handleCancel = async (row) => {
     cancelButtonText: t('common.cancel'),
     inputPattern: /^[\s\S]*.*\S[\s\S]*$/, // 判断非空，且非空格
     inputErrorMessage: '取消原因不能为空'
-  })
+  });
   // 发起取消
-  await ProcessInstanceApi.cancelProcessInstanceByAdmin(row.id, value)
-  message.success('取消成功')
+  await ProcessInstanceApi.cancelProcessInstanceByAdmin(row.id, value);
+  message.success('取消成功');
   // 刷新列表
-  await getList()
-}
+  await getList();
+};
 
 /** 激活时 **/
 onActivated(() => {
-  getList()
-})
+  getList();
+});
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
-  categoryList.value = await CategoryApi.getCategorySimpleList()
-  userList.value = await UserApi.getSimpleUserList()
-})
+  await getList();
+  categoryList.value = await CategoryApi.getCategorySimpleList();
+  userList.value = await UserApi.getSimpleUserList();
+});
 </script>

@@ -27,63 +27,63 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import * as TaskApi from '@/api/bpm/task'
-import { isEmpty } from '@/utils/is'
+import * as TaskApi from '@/api/bpm/task';
+import { isEmpty } from '@/utils/is';
 
-defineOptions({ name: 'TaskSignDeleteForm' })
+defineOptions({ name: 'TaskSignDeleteForm' });
 
-const message = useMessage() // 消息弹窗
-const dialogVisible = ref(false) // 弹窗的是否展示
-const formLoading = ref(false) // 表单的加载中
+const message = useMessage(); // 消息弹窗
+const dialogVisible = ref(false); // 弹窗的是否展示
+const formLoading = ref(false); // 表单的加载中
 const formData = ref({
   id: '',
   reason: ''
-})
+});
 const formRules = ref({
   id: [{ required: true, message: '必须选择减签任务', trigger: 'change' }],
   reason: [{ required: true, message: '减签理由不能为空', trigger: 'blur' }]
-})
+});
 
-const formRef = ref() // 表单 Ref
-const childrenTaskList = ref([])
+const formRef = ref(); // 表单 Ref
+const childrenTaskList = ref([]);
 /** 打开弹窗 */
 const open = async (id: string) => {
-  childrenTaskList.value = await TaskApi.getChildrenTaskList(id)
+  childrenTaskList.value = await TaskApi.getChildrenTaskList(id);
   if (isEmpty(childrenTaskList.value)) {
-    message.warning('当前没有可减签的任务')
-    return false
+    message.warning('当前没有可减签的任务');
+    return false;
   }
-  dialogVisible.value = true
-  resetForm()
-}
-defineExpose({ open }) // 提供 openModal 方法，用于打开弹窗
+  dialogVisible.value = true;
+  resetForm();
+};
+defineExpose({ open }); // 提供 openModal 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    await TaskApi.signDeleteTask(formData.value)
-    message.success('减签成功')
-    dialogVisible.value = false
+    await TaskApi.signDeleteTask(formData.value);
+    message.success('减签成功');
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
     id: '',
     reason: ''
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>

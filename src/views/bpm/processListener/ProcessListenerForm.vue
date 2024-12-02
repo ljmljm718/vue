@@ -71,20 +71,20 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getIntDictOptions, getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { ProcessListenerApi, ProcessListenerVO } from '@/api/bpm/processListener'
-import { CommonStatusEnum } from '@/utils/constants'
+import { getIntDictOptions, getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { ProcessListenerApi, ProcessListenerVO } from '@/api/bpm/processListener';
+import { CommonStatusEnum } from '@/utils/constants';
 
 /** BPM 流程 表单 */
-defineOptions({ name: 'ProcessListenerForm' })
+defineOptions({ name: 'ProcessListenerForm' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
@@ -93,7 +93,7 @@ const formData = ref({
   event: undefined,
   valueType: undefined,
   value: undefined
-})
+});
 const formRules = reactive({
   name: [{ required: true, message: '名字不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
@@ -101,50 +101,50 @@ const formRules = reactive({
   event: [{ required: true, message: '监听事件不能为空', trigger: 'blur' }],
   valueType: [{ required: true, message: '值类型不能为空', trigger: 'change' }],
   value: [{ required: true, message: '值不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
+});
+const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await ProcessListenerApi.getProcessListener(id)
+      formData.value = await ProcessListenerApi.getProcessListener(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as ProcessListenerVO
+    const data = formData.value as unknown as ProcessListenerVO;
     if (formType.value === 'create') {
-      await ProcessListenerApi.createProcessListener(data)
-      message.success(t('common.createSuccess'))
+      await ProcessListenerApi.createProcessListener(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await ProcessListenerApi.updateProcessListener(data)
-      message.success(t('common.updateSuccess'))
+      await ProcessListenerApi.updateProcessListener(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -156,7 +156,7 @@ const resetForm = () => {
     event: undefined,
     valueType: undefined,
     value: undefined
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>

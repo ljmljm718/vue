@@ -99,55 +99,55 @@
   </ContentWrap>
 </template>
 <script setup lang="ts">
-import * as ClueApi from '@/api/crm/clue'
-import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import { FOLLOWUP_STATUS } from './common'
+import * as ClueApi from '@/api/crm/clue';
+import { DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import { FOLLOWUP_STATUS } from './common';
 
-defineOptions({ name: 'CrmClueFollowList' })
+defineOptions({ name: 'CrmClueFollowList' });
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   followUpStatus: false,
   transformStatus: false
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ClueApi.getCluePage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ClueApi.getCluePage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 打开线索详情 */
-const { push } = useRouter()
+const { push } = useRouter();
 const openDetail = (id: number) => {
-  push({ name: 'CrmClueDetail', params: { id } })
-}
+  push({ name: 'CrmClueDetail', params: { id } });
+};
 
 /** 激活时 */
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

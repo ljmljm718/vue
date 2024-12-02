@@ -18,7 +18,7 @@ const queryParams = reactive({
 const props = defineProps({
   activeMainTableId: { type: String, required: true },
   monitorType: { type: String, required: true },
-  height: { type: String, required: true }
+  height: { type: String, required: false }
 });
 const activeMainTableId = ref<string>(props.activeMainTableId);
 const monitorType = ref<string>(props.monitorType);
@@ -75,19 +75,7 @@ const handleDelete = async (id: number) => {
       v-loading="loading"
       :data="tableData"
       :show-overflow-tooltip="true"
-      :header-cell-style="{
-        backgroundColor: '#F7F7F7',
-        color: '#666666',
-        fontSize: '0.875rem',
-        lineHeight: '2.5rem',
-        height: '2.5rem'
-      }"
-      :cell-style="{
-        fontSize: '0.875rem',
-        lineHeight: '2.5rem',
-        height: '2.5rem',
-        borderBottomStyle: 'dashed'
-      }"
+      stripe
     >
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="数量" align="center" prop="quantity" />
@@ -123,6 +111,12 @@ const handleDelete = async (id: number) => {
           </a>
         </template>
       </el-table-column>
+
+      <template #empty>
+        <div class="w-full h-[255px] flex justify-center items-center">
+          <div class="table-no-data"></div>
+        </div>
+      </template>
     </el-table>
 
     <Pagination
@@ -136,4 +130,13 @@ const handleDelete = async (id: number) => {
     <IdentificationResultForm ref="formRef" @success="getList" />
   </div>
 </template>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.table-no-data {
+  width: 64px;
+  height: 62px;
+  background-image: url(./assets/table-no-data.png);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+</style>

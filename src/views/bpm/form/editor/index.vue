@@ -39,81 +39,81 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { CommonStatusEnum } from '@/utils/constants'
-import * as FormApi from '@/api/bpm/form'
-import FcDesigner from '@form-create/designer'
-import { encodeConf, encodeFields, setConfAndFields } from '@/utils/formCreate'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { CommonStatusEnum } from '@/utils/constants';
+import * as FormApi from '@/api/bpm/form';
+import FcDesigner from '@form-create/designer';
+import { encodeConf, encodeFields, setConfAndFields } from '@/utils/formCreate';
+import { useTagsViewStore } from '@/store/modules/tagsView';
 
-defineOptions({ name: 'BpmFormEditor' })
+defineOptions({ name: 'BpmFormEditor' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息
-const { push, currentRoute } = useRouter() // 路由
-const { query } = useRoute() // 路由信息
-const { delView } = useTagsViewStore() // 视图操作
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息
+const { push, currentRoute } = useRouter(); // 路由
+const { query } = useRoute(); // 路由信息
+const { delView } = useTagsViewStore(); // 视图操作
 
-const designer = ref() // 表单设计器
-const dialogVisible = ref(false) // 弹窗是否展示
-const formLoading = ref(false) // 表单的加载中：提交的按钮禁用
+const designer = ref(); // 表单设计器
+const dialogVisible = ref(false); // 弹窗是否展示
+const formLoading = ref(false); // 表单的加载中：提交的按钮禁用
 const formData = ref({
   name: '',
   status: CommonStatusEnum.ENABLE,
   remark: ''
-})
+});
 const formRules = reactive({
   name: [{ required: true, message: '表单名不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '开启状态不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
+});
+const formRef = ref(); // 表单 Ref
 
 /** 处理保存按钮 */
 const handleSave = () => {
-  dialogVisible.value = true
-}
+  dialogVisible.value = true;
+};
 
 /** 提交表单 */
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as FormApi.FormVO
-    data.conf = encodeConf(designer) // 表单配置
-    data.fields = encodeFields(designer) // 表单字段
+    const data = formData.value as FormApi.FormVO;
+    data.conf = encodeConf(designer); // 表单配置
+    data.fields = encodeFields(designer); // 表单字段
     if (!data.id) {
-      await FormApi.createForm(data)
-      message.success(t('common.createSuccess'))
+      await FormApi.createForm(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await FormApi.updateForm(data)
-      message.success(t('common.updateSuccess'))
+      await FormApi.updateForm(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
-    close()
+    dialogVisible.value = false;
+    close();
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 /** 关闭按钮 */
 const close = () => {
-  delView(unref(currentRoute))
-  push('/bpm/manager/form')
-}
+  delView(unref(currentRoute));
+  push('/bpm/manager/form');
+};
 
 /** 初始化 **/
 onMounted(async () => {
   // 场景一：新增表单
-  const id = query.id as unknown as number
+  const id = query.id as unknown as number;
   if (!id) {
-    return
+    return;
   }
   // 场景二：修改表单
-  const data = await FormApi.getForm(id)
-  formData.value = data
-  setConfAndFields(designer, data.conf, data.fields)
-})
+  const data = await FormApi.getForm(id);
+  formData.value = data;
+  setConfAndFields(designer, data.conf, data.fields);
+});
 </script>

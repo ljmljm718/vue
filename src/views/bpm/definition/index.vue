@@ -1,6 +1,4 @@
 <template>
-
-
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
       <el-table-column label="定义编号" align="center" prop="id" width="400" />
@@ -81,69 +79,69 @@
 </template>
 
 <script lang="ts" setup>
-import { dateFormatter } from '@/utils/formatTime'
-import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
-import * as DefinitionApi from '@/api/bpm/definition'
-import { setConfAndFields2 } from '@/utils/formCreate'
+import { dateFormatter } from '@/utils/formatTime';
+import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package';
+import * as DefinitionApi from '@/api/bpm/definition';
+import { setConfAndFields2 } from '@/utils/formCreate';
 
-defineOptions({ name: 'BpmProcessDefinition' })
+defineOptions({ name: 'BpmProcessDefinition' });
 
-const { push } = useRouter() // 路由
-const { query } = useRoute() // 查询参数
+const { push } = useRouter(); // 路由
+const { query } = useRoute(); // 查询参数
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   key: query.key
-})
+});
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await DefinitionApi.getProcessDefinitionPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await DefinitionApi.getProcessDefinitionPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 流程表单的详情按钮操作 */
-const formDetailVisible = ref(false)
+const formDetailVisible = ref(false);
 const formDetailPreview = ref({
   rule: [],
   option: {}
-})
+});
 const handleFormDetail = async (row) => {
   if (row.formType == 10) {
     // 设置表单
-    setConfAndFields2(formDetailPreview, row.formConf, row.formFields)
+    setConfAndFields2(formDetailPreview, row.formConf, row.formFields);
     // 弹窗打开
-    formDetailVisible.value = true
+    formDetailVisible.value = true;
   } else {
     await push({
       path: row.formCustomCreatePath
-    })
+    });
   }
-}
+};
 
 /** 流程图的详情按钮操作 */
-const bpmnDetailVisible = ref(false)
-const bpmnXml = ref(null)
+const bpmnDetailVisible = ref(false);
+const bpmnXml = ref(null);
 const bpmnControlForm = ref({
   prefix: 'flowable'
-})
+});
 const handleBpmnDetail = async (row) => {
-  bpmnXml.value = (await DefinitionApi.getProcessDefinition(row.id))?.bpmnXml
-  bpmnDetailVisible.value = true
-}
+  bpmnXml.value = (await DefinitionApi.getProcessDefinition(row.id))?.bpmnXml;
+  bpmnDetailVisible.value = true;
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

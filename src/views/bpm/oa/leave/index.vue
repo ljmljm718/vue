@@ -1,6 +1,4 @@
 <template>
-
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -153,20 +151,20 @@
   </ContentWrap>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import * as LeaveApi from '@/api/bpm/leave'
-import * as ProcessInstanceApi from '@/api/bpm/processInstance'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import * as LeaveApi from '@/api/bpm/leave';
+import * as ProcessInstanceApi from '@/api/bpm/processInstance';
 
-defineOptions({ name: 'BpmOALeave' })
+defineOptions({ name: 'BpmOALeave' });
 
-const message = useMessage() // 消息弹窗
-const router = useRouter() // 路由
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const router = useRouter(); // 路由
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -174,37 +172,37 @@ const queryParams = reactive({
   status: undefined,
   reason: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await LeaveApi.getLeavePage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await LeaveApi.getLeavePage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加操作 */
 const handleCreate = () => {
-  router.push({ name: 'OALeaveCreate' })
-}
+  router.push({ name: 'OALeaveCreate' });
+};
 
 /** 详情操作 */
 const handleDetail = (row: LeaveApi.LeaveVO) => {
@@ -213,8 +211,8 @@ const handleDetail = (row: LeaveApi.LeaveVO) => {
     query: {
       id: row.id
     }
-  })
-}
+  });
+};
 
 /** 取消请假操作 */
 const cancelLeave = async (row) => {
@@ -224,13 +222,13 @@ const cancelLeave = async (row) => {
     cancelButtonText: t('common.cancel'),
     inputPattern: /^[\s\S]*.*\S[\s\S]*$/, // 判断非空，且非空格
     inputErrorMessage: '取消原因不能为空'
-  })
+  });
   // 发起取消
-  await ProcessInstanceApi.cancelProcessInstanceByStartUser(row.id, value)
-  message.success('取消成功')
+  await ProcessInstanceApi.cancelProcessInstanceByStartUser(row.id, value);
+  message.success('取消成功');
   // 刷新列表
-  await getList()
-}
+  await getList();
+};
 
 /** 审批进度 */
 const handleProcessDetail = (row) => {
@@ -239,19 +237,19 @@ const handleProcessDetail = (row) => {
     query: {
       id: row.processInstanceId
     }
-  })
-}
+  });
+};
 
 // fix: 列表不刷新的问题。
 watch(
   () => router.currentRoute.value,
   () => {
-    getList()
+    getList();
   }
-)
+);
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

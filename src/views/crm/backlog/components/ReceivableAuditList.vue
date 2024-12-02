@@ -1,7 +1,7 @@
 <!-- 待审核回款 -->
 <template>
   <ContentWrap>
-    <div class="pb-5 text-xl"> 待审核回款 </div>
+    <div class="pb-5 text-xl">待审核回款</div>
     <!-- 搜索工作栏 -->
     <el-form
       class="-mb-15px"
@@ -132,70 +132,70 @@
 </template>
 
 <script setup lang="ts">
-import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import * as ReceivableApi from '@/api/crm/receivable'
-import { AUDIT_STATUS } from './common'
-import { erpPriceTableColumnFormatter } from '@/utils'
+import { DICT_TYPE } from '@/utils/dict';
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import * as ReceivableApi from '@/api/crm/receivable';
+import { AUDIT_STATUS } from './common';
+import { erpPriceTableColumnFormatter } from '@/utils';
 
-defineOptions({ name: 'CrmReceivableAuditList' })
+defineOptions({ name: 'CrmReceivableAuditList' });
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   auditStatus: 10
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ReceivableApi.getReceivablePage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ReceivableApi.getReceivablePage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 查看审批 */
 const handleProcessDetail = (row: ReceivableApi.ReceivableVO) => {
-  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } })
-}
+  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } });
+};
 
 /** 打开回款详情 */
-const { push } = useRouter()
+const { push } = useRouter();
 const openDetail = (id: number) => {
-  push({ name: 'CrmReceivableDetail', params: { id } })
-}
+  push({ name: 'CrmReceivableDetail', params: { id } });
+};
 
 /** 打开客户详情 */
 const openCustomerDetail = (id: number) => {
-  push({ name: 'CrmCustomerDetail', params: { id } })
-}
+  push({ name: 'CrmCustomerDetail', params: { id } });
+};
 
 /** 打开合同详情 */
 const openContractDetail = (id: number) => {
-  push({ name: 'CrmContractDetail', params: { id } })
-}
+  push({ name: 'CrmContractDetail', params: { id } });
+};
 
 /** 激活时 */
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

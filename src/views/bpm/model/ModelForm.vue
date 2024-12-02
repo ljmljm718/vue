@@ -125,21 +125,21 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { ElMessageBox } from 'element-plus'
-import * as ModelApi from '@/api/bpm/model'
-import * as FormApi from '@/api/bpm/form'
-import { CategoryApi } from '@/api/bpm/category'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { ElMessageBox } from 'element-plus';
+import * as ModelApi from '@/api/bpm/model';
+import * as FormApi from '@/api/bpm/form';
+import { CategoryApi } from '@/api/bpm/category';
 
-defineOptions({ name: 'ModelForm' })
+defineOptions({ name: 'ModelForm' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   formType: 10,
   name: '',
@@ -149,7 +149,7 @@ const formData = ref({
   formId: '',
   formCustomCreatePath: '',
   formCustomViewPath: ''
-})
+});
 const formRules = reactive({
   name: [{ required: true, message: '参数名称不能为空', trigger: 'blur' }],
   key: [{ required: true, message: '参数键名不能为空', trigger: 'blur' }],
@@ -157,46 +157,46 @@ const formRules = reactive({
   icon: [{ required: true, message: '参数图标不能为空', trigger: 'blur' }],
   value: [{ required: true, message: '参数键值不能为空', trigger: 'blur' }],
   visible: [{ required: true, message: '是否可见不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
-const formList = ref([]) // 流程表单的下拉框的数据
-const categoryList = ref([]) // 流程分类列表
+});
+const formRef = ref(); // 表单 Ref
+const formList = ref([]); // 流程表单的下拉框的数据
+const categoryList = ref([]); // 流程分类列表
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await ModelApi.getModel(id)
+      formData.value = await ModelApi.getModel(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
   // 获得流程表单的下拉框的数据
-  formList.value = await FormApi.getFormSimpleList()
+  formList.value = await FormApi.getFormSimpleList();
   // 查询流程分类列表
-  categoryList.value = await CategoryApi.getCategorySimpleList()
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+  categoryList.value = await CategoryApi.getCategorySimpleList();
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as ModelApi.ModelVO
+    const data = formData.value as unknown as ModelApi.ModelVO;
     if (formType.value === 'create') {
-      await ModelApi.createModel(data)
+      await ModelApi.createModel(data);
       // 提示，引导用户做后续的操作
       await ElMessageBox.alert(
         '<strong>新建模型成功！</strong>后续需要执行如下 3 个步骤：' +
@@ -209,18 +209,18 @@ const submitForm = async () => {
           dangerouslyUseHTMLString: true,
           type: 'success'
         }
-      )
+      );
     } else {
-      await ModelApi.updateModel(data)
-      message.success(t('common.updateSuccess'))
+      await ModelApi.updateModel(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -233,7 +233,7 @@ const resetForm = () => {
     formId: '',
     formCustomCreatePath: '',
     formCustomViewPath: ''
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>

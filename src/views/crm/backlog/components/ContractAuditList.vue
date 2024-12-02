@@ -172,76 +172,76 @@
 </template>
 
 <script setup lang="ts" name="CheckContract">
-import { dateFormatter, dateFormatter2 } from '@/utils/formatTime'
-import * as ContractApi from '@/api/crm/contract'
-import { DICT_TYPE } from '@/utils/dict'
-import { AUDIT_STATUS } from './common'
-import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils'
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
+import * as ContractApi from '@/api/crm/contract';
+import { DICT_TYPE } from '@/utils/dict';
+import { AUDIT_STATUS } from './common';
+import { erpPriceInputFormatter, erpPriceTableColumnFormatter } from '@/utils';
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   sceneType: 1, // 我负责的
   auditStatus: 10
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await ContractApi.getContractPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await ContractApi.getContractPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 查看审批 */
 const handleProcessDetail = (row: ContractApi.ContractVO) => {
-  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } })
-}
+  push({ name: 'BpmProcessInstanceDetail', query: { id: row.processInstanceId } });
+};
 
 /** 打开合同详情 */
-const { push } = useRouter()
+const { push } = useRouter();
 const openDetail = (id: number) => {
-  push({ name: 'CrmContractDetail', params: { id } })
-}
+  push({ name: 'CrmContractDetail', params: { id } });
+};
 
 /** 打开客户详情 */
 const openCustomerDetail = (id: number) => {
-  push({ name: 'CrmCustomerDetail', params: { id } })
-}
+  push({ name: 'CrmCustomerDetail', params: { id } });
+};
 
 /** 打开联系人详情 */
 const openContactDetail = (id: number) => {
-  push({ name: 'CrmContactDetail', params: { id } })
-}
+  push({ name: 'CrmContactDetail', params: { id } });
+};
 
 /** 打开商机详情 */
 const openBusinessDetail = (id: number) => {
-  push({ name: 'CrmBusinessDetail', params: { id } })
-}
+  push({ name: 'CrmBusinessDetail', params: { id } });
+};
 
 /** 激活时 */
 onActivated(async () => {
-  await getList()
-})
+  await getList();
+});
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
 
 <style scoped></style>

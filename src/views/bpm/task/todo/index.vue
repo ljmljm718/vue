@@ -1,9 +1,4 @@
 <template>
-
-
-
-
-
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -90,47 +85,47 @@
 </template>
 
 <script lang="ts" setup>
-import { dateFormatter } from '@/utils/formatTime'
-import * as TaskApi from '@/api/bpm/task'
+import { dateFormatter } from '@/utils/formatTime';
+import * as TaskApi from '@/api/bpm/task';
 
-defineOptions({ name: 'BpmTodoTask' })
+defineOptions({ name: 'BpmTodoTask' });
 
-const { push } = useRouter() // 路由
+const { push } = useRouter(); // 路由
 
-const loading = ref(true) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: '',
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
 
 /** 查询任务列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await TaskApi.getTaskTodoPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await TaskApi.getTaskTodoPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 处理审批按钮 */
 const handleAudit = (row: any) => {
@@ -139,11 +134,11 @@ const handleAudit = (row: any) => {
     query: {
       id: row.processInstance.id
     }
-  })
-}
+  });
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>

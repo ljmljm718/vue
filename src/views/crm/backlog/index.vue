@@ -1,6 +1,4 @@
 <template>
-
-
   <el-row :gutter="20">
     <el-col :span="4" class="min-w-[200px]">
       <div class="side-item-list">
@@ -30,32 +28,32 @@
 </template>
 
 <script lang="ts" setup>
-import CustomerFollowList from './components/CustomerFollowList.vue'
-import CustomerTodayContactList from './components/CustomerTodayContactList.vue'
-import CustomerPutPoolRemindList from './components/CustomerPutPoolRemindList.vue'
-import ClueFollowList from './components/ClueFollowList.vue'
-import ContractAuditList from './components/ContractAuditList.vue'
-import ContractRemindList from './components/ContractRemindList.vue'
-import ReceivablePlanRemindList from './components/ReceivablePlanRemindList.vue'
-import ReceivableAuditList from './components/ReceivableAuditList.vue'
-import * as CustomerApi from '@/api/crm/customer'
-import * as ClueApi from '@/api/crm/clue'
-import * as ContractApi from '@/api/crm/contract'
-import * as ReceivableApi from '@/api/crm/receivable'
-import * as ReceivablePlanApi from '@/api/crm/receivable/plan'
+import CustomerFollowList from './components/CustomerFollowList.vue';
+import CustomerTodayContactList from './components/CustomerTodayContactList.vue';
+import CustomerPutPoolRemindList from './components/CustomerPutPoolRemindList.vue';
+import ClueFollowList from './components/ClueFollowList.vue';
+import ContractAuditList from './components/ContractAuditList.vue';
+import ContractRemindList from './components/ContractRemindList.vue';
+import ReceivablePlanRemindList from './components/ReceivablePlanRemindList.vue';
+import ReceivableAuditList from './components/ReceivableAuditList.vue';
+import * as CustomerApi from '@/api/crm/customer';
+import * as ClueApi from '@/api/crm/clue';
+import * as ContractApi from '@/api/crm/contract';
+import * as ReceivableApi from '@/api/crm/receivable';
+import * as ReceivablePlanApi from '@/api/crm/receivable/plan';
 
-defineOptions({ name: 'CrmBacklog' })
+defineOptions({ name: 'CrmBacklog' });
 
-const leftMenu = ref('customerTodayContact')
+const leftMenu = ref('customerTodayContact');
 
-const clueFollowCount = ref(0)
-const customerFollowCount = ref(0)
-const customerPutPoolRemindCount = ref(0)
-const customerTodayContactCount = ref(0)
-const contractAuditCount = ref(0)
-const contractRemindCount = ref(0)
-const receivableAuditCount = ref(0)
-const receivablePlanRemindCount = ref(0)
+const clueFollowCount = ref(0);
+const customerFollowCount = ref(0);
+const customerPutPoolRemindCount = ref(0);
+const customerTodayContactCount = ref(0);
+const contractAuditCount = ref(0);
+const contractRemindCount = ref(0);
+const receivableAuditCount = ref(0);
+const receivablePlanRemindCount = ref(0);
 
 const leftSides = ref([
   {
@@ -98,39 +96,39 @@ const leftSides = ref([
     menu: 'contractRemind',
     count: contractRemindCount
   }
-])
+]);
 
 /** 侧边点击 */
 const sideClick = (item: any) => {
-  leftMenu.value = item.menu
-}
+  leftMenu.value = item.menu;
+};
 
 const getCount = () => {
   CustomerApi.getTodayContactCustomerCount().then(
     (count) => (customerTodayContactCount.value = count)
-  )
+  );
   CustomerApi.getPutPoolRemindCustomerCount().then(
     (count) => (customerPutPoolRemindCount.value = count)
-  )
-  CustomerApi.getFollowCustomerCount().then((count) => (customerFollowCount.value = count))
-  ClueApi.getFollowClueCount().then((count) => (clueFollowCount.value = count))
-  ContractApi.getAuditContractCount().then((count) => (contractAuditCount.value = count))
-  ContractApi.getRemindContractCount().then((count) => (contractRemindCount.value = count))
-  ReceivableApi.getAuditReceivableCount().then((count) => (receivableAuditCount.value = count))
+  );
+  CustomerApi.getFollowCustomerCount().then((count) => (customerFollowCount.value = count));
+  ClueApi.getFollowClueCount().then((count) => (clueFollowCount.value = count));
+  ContractApi.getAuditContractCount().then((count) => (contractAuditCount.value = count));
+  ContractApi.getRemindContractCount().then((count) => (contractRemindCount.value = count));
+  ReceivableApi.getAuditReceivableCount().then((count) => (receivableAuditCount.value = count));
   ReceivablePlanApi.getReceivablePlanRemindCount().then(
     (count) => (receivablePlanRemindCount.value = count)
-  )
-}
+  );
+};
 
 /** 激活时 */
 onActivated(async () => {
-  getCount()
-})
+  getCount();
+});
 
 /** 初始化 */
 onMounted(async () => {
-  getCount()
-})
+  getCount();
+});
 </script>
 
 <style lang="scss" scoped>
