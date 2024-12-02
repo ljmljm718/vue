@@ -322,5 +322,6 @@ export enum DICT_TYPE {
   FERTILIZE_STIR_MEASURING_TANK = 'fertilize_stir_measuring_tank', //施肥搅拌/定量桶状态
   WFI_TASK_TYPE = 'wfi_task_type', //任务类型
   WFI_IRRIGATION_TYPE = 'wfi_irrigation_type', //灌溉类型
+  WFI_SYSTEM_STATUS = 'wfi_system_status', //系统状态
   WS_TYPE = 'ws_type' // 水源类型
 }
