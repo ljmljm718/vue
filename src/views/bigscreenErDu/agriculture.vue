@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import adapter from '@/components/MapCustom/src/adapter';
 import dayjs from 'dayjs';
+import gcoord from 'gcoord';
 import {
   getQianjiangAgriResource,
   getBreedCategory,
@@ -371,17 +372,22 @@ const getEquipmentMapData = async () => {
       location = ''
     } = item;
     if (!longitude || !latitude) return;
-    latlngs.push([latitude, longitude]);
+    const [lng, lat] = gcoord.transform(
+      [longitude, latitude], // 经纬度坐标
+      gcoord.BD09, // 当前坐标系
+      gcoord.WGS84 // 目标坐标系
+    );
+    latlngs.push([lat, lng]);
     const icon = L.icon({
       iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
-    L.marker([latitude, longitude], { icon })
+    L.marker([lat, lng], { icon })
       .addTo(map)
       .on('click', () => {
         L.popup()
-          .setLatLng([latitude, longitude])
+          .setLatLng([lat, lng])
           .setContent(
             `
         <div>${deviceName}</div>
