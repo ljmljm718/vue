@@ -17,6 +17,16 @@
           class="!w-240px"
         />
       </el-form-item> -->
+      <el-form-item label="料桶名" prop="chargingBasketName">
+        <el-input
+          v-model="queryParams.chargingBasketName"
+          placeholder="请输入料桶名"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <!-- <el-form-item label="上水阀id" prop="upperWaterValveId">
         <el-input
           v-model="queryParams.upperWaterValveId"
@@ -114,6 +124,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <!-- <el-table-column label="所属任务id" align="center" prop="tfId" /> -->
+      <el-table-column label="料桶名" align="center" prop="chargingBasketName" />
       <!-- <el-table-column label="上水阀id" align="center" prop="upperWaterValveId" /> -->
       <el-table-column label="上水量" align="center" prop="upperWaterYield" />
       <!-- <el-table-column label="混肥器id" align="center" prop="fertilizerMixerId" /> -->
@@ -188,6 +199,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   tfId: undefined,
+  chargingBasketName: undefined,
   upperWaterValveId: undefined,
   upperWaterYield: undefined,
   fertilizerMixerId: undefined,

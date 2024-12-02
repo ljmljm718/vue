@@ -130,7 +130,7 @@
       </el-table-column>
       <el-table-column label="类型" align="center" prop="type">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.WFI_FERTILIZE_TYPE" :value="scope.row.taskType" />
+          <dict-tag :type="DICT_TYPE.WFI_FERTILIZE_TYPE" :value="scope.row.type" />
         </template>
       </el-table-column>
       <el-table-column label="时间/量（分钟/L）" align="center" prop="amountTimeNumber" />

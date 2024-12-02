@@ -4,6 +4,7 @@ import request from '@/config/axios'
 export interface TaskFertilizationDetailVO {
   id: string // 主键id
   tfId: string // 所属任务id
+  chargingBasketName: string,//料桶名
   upperWaterValveId: string // 上水阀id
   upperWaterYield: number // 上水量
   fertilizerMixerId: string // 混肥器id

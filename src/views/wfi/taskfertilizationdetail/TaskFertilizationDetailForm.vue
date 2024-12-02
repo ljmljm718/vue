@@ -10,6 +10,9 @@
       <!-- <el-form-item label="所属任务id" prop="tfId">
         <el-input v-model="formData.tfId" placeholder="请输入所属任务id" />
       </el-form-item> -->
+      <el-form-item label="料桶名" prop="chargingBasketName">
+        <el-input v-model="formData.chargingBasketName" placeholder="请输入料桶名" />
+      </el-form-item>
       <!-- <el-form-item label="上水阀id" prop="upperWaterValveId">
         <el-input v-model="formData.upperWaterValveId" placeholder="请输入上水阀id" />
       </el-form-item> -->
@@ -63,6 +66,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   tfId: undefined,
+  chargingBasketName: undefined,
   upperWaterValveId: undefined,
   upperWaterYield: undefined,
   fertilizerMixerId: undefined,
@@ -122,6 +126,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     tfId: undefined,
+    chargingBasketName: undefined,
     upperWaterValveId: undefined,
     upperWaterYield: undefined,
     fertilizerMixerId: undefined,
