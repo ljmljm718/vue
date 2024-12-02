@@ -616,7 +616,7 @@ const handleClickShowSearch = () => {
             <!-- 左侧展示图片(列表) -->
             <div class="col-span-1">
               <div class="relative p-[8px]" style="border: 1px solid #e6e6e6">
-                <div class="w-full relative" :class="`pb-[${ratio}%]`">
+                <div class="w-full relative pb-[75%]">
                   <el-image
                     v-show="list[curItem].monitorPicture"
                     :src="list[curItem].monitorPicture"
@@ -633,14 +633,11 @@ const handleClickShowSearch = () => {
                   </div>
                 </div>
 
-                <div
-                  class="mt-[9px] w-full relative"
-                  :class="`pb-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]`"
-                >
+                <div class="mt-[9px] w-full relative" :class="`pb-[calc((100%-32px)/5)]`">
                   <div class="absolute top-0 left-0 overflow-hidden w-full">
                     <div
                       class="flex relative transition-all"
-                      :class="`space-x-[${imgInterval}px]`"
+                      :class="`space-x-[8px]`"
                       ref="imgListRef"
                     >
                       <div
@@ -648,8 +645,8 @@ const handleClickShowSearch = () => {
                         :key="item.id"
                         class="flex-none relative cursor-pointer"
                         :class="`
-                          pb-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
-                          w-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
+                          pb-[calc((100%-32px)/5)]
+                          w-[calc((100%-32px)/5)]
                         `"
                         @click="handleClickImg(index)"
                       >
@@ -667,8 +664,8 @@ const handleClickShowSearch = () => {
                     <div
                       class="h-full absolute top-0 box-border"
                       :class="`
-                        w-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg})]
-                        left-[calc((100%-${(numShowImg - 1) * imgInterval}px)/${numShowImg}+${imgInterval}px)]
+                        w-[calc((100%-32px)/5)]
+                        left-[calc((100%-32px)/5+8px)]
                       `"
                       :style="{
                         border: '2px solid var(--el-color-primary)'
@@ -705,7 +702,7 @@ const handleClickShowSearch = () => {
 
               <!-- 识别虫害数量 & 虫害分类 -->
               <div class="lg:grid lg:grid-cols-2 gap-x-[16px] mb-[16px]">
-                <div class="w-full relative" :class="`pb-[${ratio}%]`">
+                <div class="w-full relative" :class="`pb-[75%]`">
                   <el-image
                     v-show="imgId"
                     :src="imgId"
