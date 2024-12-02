@@ -13,7 +13,6 @@
 
         <el-button
           type="primary"
-          plain
           @click="openForm('create')"
           v-hasPermi="['agriculture:water-source:create']"
         >
@@ -23,7 +22,7 @@
       </div>
 
       <div class="flex items-center">
-        <el-button @click="handleQuery">
+        <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
           搜索
         </el-button>
@@ -32,8 +31,6 @@
           重置
         </el-button>
         <el-button
-          type="success"
-          plain
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agriculture:water-source:export']"
