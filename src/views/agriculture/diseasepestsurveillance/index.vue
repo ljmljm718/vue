@@ -220,6 +220,7 @@ const imgListRef = ref<any>(); // 图片列表的模板引用
 const handleClickNextImg = throttle(() => {
   if (curItem.value === list.value.length - 1) return;
   imgId.value = null;
+  identified.value = false;
   curItem.value = curItem.value + 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
@@ -231,6 +232,7 @@ const handleClickNextImg = throttle(() => {
 const handleClickLastImg = throttle(() => {
   if (curItem.value === 0) return;
   imgId.value = null;
+  identified.value = false;
   curItem.value = curItem.value - 1;
   getCountDetail(list.value[curItem.value].id);
   const curLeft = Number(window.getComputedStyle(imgListRef.value).left.slice(0, -2));
@@ -242,6 +244,7 @@ const handleClickLastImg = throttle(() => {
 const handleClickImg = (index) => {
   if (curItem.value === index) return;
   imgId.value = null;
+  identified.value = false;
   curItem.value = index;
   getCountDetail(list.value[curItem.value].id);
   imgListRef.value.style.left = (imgSideLength.value + imgInterval) * (1 - index) + 'px';
@@ -276,10 +279,12 @@ const getCountDetail = async (id) => {
 const isLoading = ref(false);
 const imgId = ref(); //传入补充对话框的图片url
 const resultMap = ref(); //自动识别的虫害map
+const identified = ref(false); // 是否被识别过
 
 // 点击开始识别
 const handleClickIdentify = async (objects: any) => {
   console.log('objects.id', objects.id);
+  identified.value = false;
   isLoading.value = true;
   // 判断当前状态
   // if(objects.identifyStatus == 0){
@@ -297,6 +302,7 @@ const handleClickIdentify = async (objects: any) => {
     imgId.value = pyData.data.imgId;
     resultMap.value = pyData.data.resultMap;
     openAutoRecognizeAddForm('create', objects.id);
+    identified.value = true;
     isLoading.value = false;
     // if(Object.keys(pyData.data.resultMap).length > 0){
     //   let resultString = '当前识别结果为：\n '; // 创建一个空字符串来拼接结果
@@ -711,10 +717,21 @@ const handleClickShowSearch = () => {
                     class="!absolute top-0 left-0 w-full h-full"
                     :preview-src-list="[imgId]"
                   />
+                  <el-image
+                    v-show="!imgId && !identified"
+                    :src="list[curItem].recognizeImg"
+                    alt="上次结果"
+                    fit="cover"
+                    class="!absolute top-0 left-0 w-full h-full"
+                    :preview-src-list="[imgId]"
+                  />
                   <img
-                    v-show="!imgId"
+                    v-show="
+                      (!imgId && identified) ||
+                      (!identified && !imgId && !list[curItem].recognizeImg)
+                    "
                     :src="ImgNoIdentify"
-                    alt="加载失败"
+                    alt="识别失败"
                     class="absolute top-0 left-0 w-full h-full object-contain"
                   />
                 </div>
