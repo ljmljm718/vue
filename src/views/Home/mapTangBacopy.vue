@@ -21,7 +21,6 @@
 </template>
 <script setup lang="ts">
 // TODO: 天地图调整leaflet
-import { debounce } from 'lodash-es';
 // 百度坐标系转大地坐标系
 const coordinateTransformation: any = {
   BD09II2WGS84(bdLon: number, bdLat: number) {
