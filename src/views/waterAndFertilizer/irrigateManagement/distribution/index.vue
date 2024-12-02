@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // 灌区分布
+import CustomSelector from '@/components/CustomSelector/src/CustomSelector.vue';
 </script>
 <template>
-  <div>灌区分布</div>
+  <CustomSelector />
 </template>
 <style scoped lang="scss"></style>
