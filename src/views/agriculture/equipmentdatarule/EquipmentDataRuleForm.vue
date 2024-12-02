@@ -31,6 +31,7 @@
           v-model="formData.monitoringType"
           placeholder="请选择监测类型"
           @click="focusMonitoringType"
+          @change="changeDeviceMonitorUnit"
         >
           <el-option
             v-for="item in options"
@@ -76,6 +77,7 @@ import AgriculturalBaseList from '@/views/agriculture/deviceinfo/SelectDeviceInf
 import { EquipmentDataVO } from '@/api/agriculture/equipmentdata';
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
 import { DeviceInfoApi } from '@/api/agriculture/deviceinfo';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 
 /** 设备数据规则 表单 */
 defineOptions({ name: 'EquipmentDataRuleForm' });
@@ -112,6 +114,8 @@ const formRules = reactive({
 const formRef = ref(); // 表单 Ref
 const options = ref([]);
 const monitorData = ref([]);
+const deviceTypeId = ref(); // 设备类型id
+
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true;
@@ -199,6 +203,8 @@ const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
   //终端号默认为设备编号
   formData.value.dtuId = order[0].deviceCode;
 
+  deviceTypeId.value = order[0].deviceKind;
+
   // 赋值监测类型
   monitorData.value = order[0].deviceMonitorType.split(',');
   console.log(monitorData.value);
@@ -207,6 +213,7 @@ const SelectDeviceInfoSuccess = async (order: EquipmentDataVO) => {
     newMonitorList.push({ value: item, label: item });
   });
   options.value = newMonitorList;
+  console.log(options.value);
 };
 
 const focusMonitoringType = async () => {
@@ -216,6 +223,18 @@ const focusMonitoringType = async () => {
     if (options.value == null) {
       message.error('当前设备无监测类型');
     }
+  }
+};
+
+const changeDeviceMonitorUnit = async () => {
+  formData.value.ruleUnit = null;
+  if (deviceTypeId.value != null && formData.value.monitoringType != null) {
+    const monitorUnit = await DeviceCategoryApi.getDeviceMonitorUnit(
+      deviceTypeId.value,
+      formData.value.monitoringType
+    );
+    console.log(monitorUnit);
+    formData.value.ruleUnit = monitorUnit;
   }
 };
 </script>
