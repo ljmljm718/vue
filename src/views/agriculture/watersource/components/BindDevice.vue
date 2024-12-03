@@ -155,7 +155,7 @@
       />
     </ContentWrap>
     <template #footer>
-      <el-button type="primary" @click="submitForm()">确 定</el-button>
+      <el-button type="primary" @click="handleBindDevice">确 定</el-button>
       <el-button @click="handleBeforeClose()">取 消</el-button>
     </template>
   </Dialog>
@@ -167,9 +167,11 @@ import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
+import { createEmptyNewsItem, NewsItem } from '@/views/mp/draft/components';
 import { AgriWarningRuleApi } from '@/api/agriculture/agriwarningrule';
+import { isObject } from '@/utils/is';
 
-defineOptions({ name: 'AgriWarnRuleBindDevice' });
+defineOptions({ name: 'BindDevice' });
 
 const { t } = useI18n(); // 国际化
 const message = useMessage(); // 消息弹窗
@@ -182,18 +184,14 @@ const handleBeforeClose = () => {
 };
 
 const props = defineProps({
-  warnRuleId: {
-    type: String,
-    default: ''
-  },
   deviceId: {
     type: Array,
     default: () => []
   },
-  currCategory: {
-    type: Object,
-    default: () => ({})
-  },
+  // currCategory: {
+  //   type: Object,
+  //   default: () => ({})
+  // },
   monitorType: {
     type: String,
     default: ''
@@ -223,12 +221,11 @@ const queryParams = reactive({
 
 const multipleSelection: any = ref([]);
 let categoryOptions = ref([]); // 设备分类选项
-const deviceType = ref();
 
-const open = async (monitorType: string) => {
+const open = async () => {
   dialogVisible.value = true;
-  // console.log('id:' + id);
   queryParams.monitorType = props.monitorType;
+  console.log('queryParams.monitorType', queryParams.monitorType);
   await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
   await resetQuery();
@@ -291,19 +288,6 @@ const selectClick = (row) => {
   dialogTable.value.toggleRowSelection(row, !isRowSelected);
 };
 
-/** 提交选择 */
-const emits = defineEmits<{
-  (e: 'success', value: DeviceInfoVO[]): void;
-}>();
-const submitForm = () => {
-  try {
-    emits('success', selectionList.value);
-  } finally {
-    // 关闭弹窗
-    dialogVisible.value = false;
-  }
-};
-
 /**
  * 设备分类级联选择器
  */
@@ -319,36 +303,31 @@ onMounted(async () => {
 });
 
 /** 确认绑定设备  */
-
 // v-model=newsList
-// const emit = defineEmits(['bind']);
-// const handleBindDevice = async () => {
-//   loading.value = true;
-//   try {
-//     const temp = { warnRuleId: props.warnRuleId, deviceId: ids.value };
-//     const data = temp as any;
-//     await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data);
-//     message.success(t('common.createSuccess'));
-//     dialogVisible.value = false;
-//     emit('bind');
-//   } finally {
-//     loading.value = false;
-//   }
-// };
+const emit = defineEmits(['success']);
+const handleBindDevice = async () => {
+  loading.value = true;
+  try {
+    // const temp = { warnRuleId: props.warnRuleId, deviceId: ids.value };
+    // const data = temp as any;
+    // await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data);
+    // message.success(t('common.createSuccess'));
+    dialogVisible.value = false;
+    emit('success', ids);
+  } finally {
+    loading.value = false;
+  }
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields();
-  // deviceType.value = null;
   handleQuery();
 };
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1;
-  // if (deviceType.value != null && deviceType.value != undefined) {
-  //   queryParams.deviceType = deviceType.value.join(',');
-  // }
   getList();
 };
 </script>
