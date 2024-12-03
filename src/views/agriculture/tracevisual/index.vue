@@ -51,7 +51,7 @@ const statisticList = ref([
     name: '溯源品牌',
     num: 0,
     color: '#F2FCF2',
-    address: 'ProductBrandOne'
+    address: 'ProductBrand'
   },
   {
     id: 2,
