@@ -115,12 +115,10 @@ const formatParams = (obj: Object): string => {
 // 获取播放地址, 如果没有accessToken 尝试三次获取token
 const getPlayUrl = async (deviceSerial: string, channelNo: number = 1, tryNum = 3) => {
   const accessToken = localStorage.getItem('YS_ACCESS_TOKEN');
-  if (!accessToken || tryNum <= 0)
-    return getAccessToken().then(() => {
-      setTimeout(() => {
-        getPlayUrl(deviceSerial, channelNo, tryNum - 1);
-      }, 2000);
-    });
+  if (!accessToken || tryNum <= 0) {
+    await getAccessToken();
+    return await getPlayUrl(deviceSerial, channelNo, tryNum - 1);
+  }
 
   const formattedUrl = formatParams({
     accessToken,
