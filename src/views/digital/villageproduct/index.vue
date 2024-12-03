@@ -17,6 +17,16 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="是否赋码" prop="codeType">
+        <el-select v-model="queryParams.codeType" placeholder="请选择是否赋码" clearable>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CODE_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="所属基地" prop="park">
         <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly class="!w-240px">
           <template #append>
@@ -251,7 +261,7 @@ import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup
 import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
 import { ParkInfoVO } from '@/api/agriculture/parkinfo';
 import { ParkDetailVO } from '@/api/agriculture/parkdetail';
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 
 /** 特色产品 列表 */
 defineOptions({ name: 'VillageProduct' });
@@ -307,6 +317,9 @@ const openPlotPopup = (id: string) => {
     message.error('请选择基地');
   } else plotPopupRef.value.open(id);
 };
+const route = useRoute();
+let codeType = route.query.codeType;
+if (codeType) queryParams.codeType = codeType;
 const handlePlotPopupChange = (order: ParkDetailVO) => {
   console.log('--->>查看选择的地块信息：', order[0]);
   queryParams.parkDetailId = String(order[0].parkId);

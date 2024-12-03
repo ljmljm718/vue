@@ -365,11 +365,26 @@ const getEquipmentMapData = async () => {
     soilMoistureContent: 'icon3'
   };
 
-  const formattedArr = [
-    ...res.camera.map((ele) => ({ ...ele, type: 'camera' })),
-    ...res.meteorologicalStation.map((ele) => ({ ...ele, type: 'meteorologicalStation' })),
-    ...res.soilMoistureContent.map((ele) => ({ ...ele, type: 'soilMoistureContent' }))
-  ];
+  const revertArr = (arr): any[] => {
+    const iconInnerMap = {
+      视频监控: 'icon1',
+      气象站: 'icon2',
+      土壤墒情: 'icon3',
+      杀虫设备: 'icon4',
+      生长监控: 'icon5'
+    };
+    if (!Array.isArray(arr)) return [];
+    let resArr: any[] = [];
+    arr.forEach((item) => {
+      resArr = [
+        ...resArr,
+        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+      ];
+    });
+    return resArr;
+  };
+
+  const formattedArr = revertArr(res);
   formattedArr.forEach((formattedItem) => {
     const {
       longitude,
@@ -378,13 +393,14 @@ const getEquipmentMapData = async () => {
       baseName = '',
       plotName = '',
       location = '',
-      type
+      type,
+      icon: _icon
     } = formattedItem;
     if (!longitude || !latitude) return;
     const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
     latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${iconMap[type] ?? 'icon1'}.png`, //marker图片地址
+      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });

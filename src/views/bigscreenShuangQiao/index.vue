@@ -9,6 +9,7 @@ import monitor from '@/views/bigscreen6/assets/monitor.png';
 import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index';
 import ScaleBox from 'vue3-scale-box';
 import { createGcjToWgsConverter } from '@/utils/map';
+import { coordinateTransformation } from '@/utils/map';
 import {
   largeScreenGetWarning,
   largeScreenGetOneWarning,
@@ -85,17 +86,30 @@ const getEquipmentMapData = async () => {
   const res = await getEquipmentMap({});
   console.log('🚀 ~ getEquipmentMapData ~ res:', res);
 
-  const latlngs = [];
-  const iconMap = {
-    camrea: 'icon1',
-    meteorologicalStation: 'icon2'
+  const latlngs: any[] = [];
+  const revertArr = (arr): any[] => {
+    const iconInnerMap = {
+      视频监控: 'icon1',
+      气象站: 'icon2',
+      土壤墒情: 'icon3',
+      杀虫设备: 'icon4',
+      生长监控: 'icon5',
+      水质监测: 'icon3',
+      增氧设备: 'icon2'
+    };
+    if (!Array.isArray(arr)) return [];
+    let resArr: any[] = [];
+    arr.forEach((item) => {
+      resArr = [
+        ...resArr,
+        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+      ];
+    });
+    return resArr;
   };
+  const formattedArr = revertArr(res);
 
-  const formattedArr = [
-    ...res.camera.map((ele) => ({ ...ele, type: 'camera' })),
-    ...res.meteorologicalStation.map((ele) => ({ ...ele, type: 'meteorologicalStation' }))
-  ];
-  formattedArr.forEach((formattedItem: any) => {
+  formattedArr.forEach((formattedItem) => {
     const {
       longitude,
       latitude,
@@ -103,21 +117,22 @@ const getEquipmentMapData = async () => {
       baseName = '',
       plotName = '',
       location = '',
-      type = 'camera'
+      type,
+      icon: _icon
     } = formattedItem;
     if (!longitude || !latitude) return;
-    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
-    latlngs.push([lat, lon]);
+    const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
+    latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${iconMap[type] ?? 'icon1'}.png`, //marker图片地址
+      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
-    L.marker([lat, lon], { icon })
+    L.marker([lat, lng], { icon })
       .addTo(map)
       .on('click', () => {
         L.popup()
-          .setLatLng([lat, lon])
+          .setLatLng([lat, lng])
           .setContent(
             `
         <div>${deviceName}</div>

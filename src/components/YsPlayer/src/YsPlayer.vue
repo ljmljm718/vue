@@ -5,13 +5,14 @@ import Dplayer from 'dplayer';
 import Hls from 'hls.js';
 import { uniqueId } from 'lodash-es';
 import request from '@/config/axios';
+import { ElMessage } from 'element-plus';
 
 defineOptions({ name: 'YsPlayer' });
 
-const getAddressInfoRecordPage = async (params: any) => {
+// 新接口
+const getVideoToken = async () => {
   return await request.get({
-    url: `/agriculture/device-nvr/getToken`,
-    params
+    url: `/agriculture/device-nvr/getVideoToken`
   });
 };
 
@@ -25,15 +26,12 @@ const props = defineProps({
     default: 1
   }
 });
-console.log('🚀 ~ props:', props);
 
 watch(
   () => [props.modelValue, props.channelNo],
   (_deviceSerial, _channelNo) => {
-    console.log('🚀 ~ _deviceSerial:', _deviceSerial);
-    console.log('🚀 ~ _channelNo:', _channelNo);
     if (!_deviceSerial || !_channelNo) return;
-    initPlayer(_deviceSerial, _channelNo);
+    initPlayer(_deviceSerial as any, _channelNo as any);
   }
 );
 
@@ -41,11 +39,9 @@ onMounted(() => {
   const _deviceSerial = props.modelValue;
   const _channelNo = props.channelNo;
   if (!_deviceSerial || !_channelNo) return;
-  initPlayer(_deviceSerial, _channelNo);
+  initPlayer(_deviceSerial, _channelNo as any);
 });
 
-const APP_KEY: string = '10091090083e431d8c06690f1827089a';
-const APP_SECRET: string = '70f73dadf7f27aaa0c41d772f85b8619';
 const getAccessToken = async () => {
   const existedExpireTime = Number(localStorage.getItem('YS_EXPIRE_TIME'));
   if (isNaN(existedExpireTime)) return Promise.reject();
@@ -54,34 +50,13 @@ const getAccessToken = async () => {
   if (existedExpireTime - currentTime > 1000 * 60 * 60 * 24) {
     return localStorage.getItem('YS_ACCESS_TOKEN');
   }
-  const data = await getAddressInfoRecordPage({
-    deviceSerial: props.modelValue
-  });
+  const data = await getVideoToken();
   console.log('🚀 ~ checkAuth ~ data:', data);
   if (data && data !== 'error') {
     const myExpireTime = new Date().valueOf() + 1000 * 60 * 60 * 25;
     localStorage.setItem('YS_ACCESS_TOKEN', data);
-    localStorage.setItem('YS_EXPIRE_TIME', myExpireTime);
+    localStorage.setItem('YS_EXPIRE_TIME', myExpireTime as any);
   }
-  return;
-  const res = await axios
-    .post(
-      `https://open.ys7.com/api/lapp/token/get?appKey=${APP_KEY}&appSecret=${APP_SECRET}`,
-      {},
-      { timeout: 1000 * 4 }
-    )
-    .catch(() => {
-      console.error('获取accesstoken失败');
-    });
-  if (!res || !res?.data) return Promise.reject();
-  const { data: codeData } = res;
-  if (!codeData) return Promise.reject();
-  const { code, data: exData } = codeData;
-  if (code != 200) return Promise.reject();
-  const { accessToken, expireTime } = exData;
-  if (!accessToken || !expireTime) return Promise.reject();
-  localStorage.setItem('YS_ACCESS_TOKEN', accessToken);
-  localStorage.setItem('YS_EXPIRE_TIME', expireTime);
 };
 
 let playerIns: any = null;
@@ -118,7 +93,7 @@ onUnmounted(() => {
 });
 
 onActivated(() => {
-  initPlayer(props.modelValue, props.channelNo);
+  initPlayer(props.modelValue, props.channelNo as any);
 });
 onDeactivated(() => {
   if (playerIns) playerIns.destroy();
@@ -138,7 +113,9 @@ const getPlayUrl = async (deviceSerial: string, channelNo: number = 1, tryNum = 
   const accessToken = localStorage.getItem('YS_ACCESS_TOKEN');
   if (!accessToken || tryNum <= 0)
     return getAccessToken().then(() => {
-      getPlayUrl(deviceSerial, channelNo, tryNum--);
+      setTimeout(() => {
+        getPlayUrl(deviceSerial, channelNo, tryNum - 1);
+      }, 2000);
     });
 
   const formattedUrl = formatParams({
@@ -147,7 +124,7 @@ const getPlayUrl = async (deviceSerial: string, channelNo: number = 1, tryNum = 
     channelNo,
     protocol: 2
   });
-  const res = await axios
+  const { data } = await axios
     .post(
       `https://open.ys7.com/api/lapp/v2/live/address/get?${formattedUrl}`,
       {},
@@ -156,10 +133,13 @@ const getPlayUrl = async (deviceSerial: string, channelNo: number = 1, tryNum = 
     .catch(() => {
       console.error('获取accesstoken失败');
     });
-  console.log('获取到的播放地址', res);
-  const resUrl = res?.data?.data?.url;
-  if (!resUrl) return;
-  console.log('resUrl', resUrl);
+  const resUrl = data?.data?.url;
+  console.log('🚀 ~ getPlayUrl ~ res:', data);
+  if (!resUrl) {
+    const { msg } = data;
+    if (msg) ElMessage.warning(msg.toString());
+    return;
+  }
   return resUrl;
 };
 
