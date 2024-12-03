@@ -30,8 +30,6 @@ console.log('🚀 ~ props:', props);
 watch(
   () => [props.modelValue, props.channelNo],
   (_deviceSerial, _channelNo) => {
-    console.log('🚀 ~ _deviceSerial:', _deviceSerial);
-    console.log('🚀 ~ _channelNo:', _channelNo);
     if (!_deviceSerial || !_channelNo) return;
     initPlayer(_deviceSerial, _channelNo);
   }

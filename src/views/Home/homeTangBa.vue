@@ -130,7 +130,7 @@ const handleSelect = async (item) => {
                 ? `
               <div class="flex pt-[1.2rem] justify-center">
                 <a 
-                href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}" 
                 class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
                 style="text-decoration: none;">
               查看监控

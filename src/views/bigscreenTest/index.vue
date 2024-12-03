@@ -1,45 +1,38 @@
 <script lang="tsx">
-import {defineComponent, ref, nextTick} from 'vue'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import headerBg from './assets/v2/headerBg.png'
-import mainBg from './assets/v2/bg.png'
-import plantBg from './assets/v2/plant-bg.png'
-import riskBg from './assets/v2/risk-bg.png'
-import { formatTime } from '@/utils'
-import * as echarts from 'echarts'
+import { defineComponent, ref, nextTick } from 'vue';
+import BigscreenBuilder from '@/components/BigscreenBuilder';
+import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue';
+import headerBg from './assets/v2/headerBg.png';
+import mainBg from './assets/v2/bg.png';
+import plantBg from './assets/v2/plant-bg.png';
+import riskBg from './assets/v2/risk-bg.png';
+import { formatTime } from '@/utils';
+import * as echarts from 'echarts';
 import Dplayer from 'dplayer';
-import Hls from "hls.js";
+import Hls from 'hls.js';
 import axios from 'axios';
 import {
   initChartStatic,
   generateBaseOptions,
   generatePieOptions
-} from '../../utils/bigscreenTool/index'
-import {
-  ElScrollbar,
-  ElTable,
-  ElTableColumn
-} from 'element-plus'
+} from '../../utils/bigscreenTool/index';
+import { ElScrollbar, ElTable, ElTableColumn } from 'element-plus';
 // @ts-ignore
-import Pagination from '@/components/Pagination/index.vue'
+import Pagination from '@/components/Pagination/index.vue';
 import {
   getParkTree,
   getEquipmentPhotographAndVideo,
   monitoringEquNoticePage,
-
   getPondCountFrySum,
   getLineChar,
   selectHarvest,
   getEquipmentCountSum,
-
   getEquipmentCountSumOrderByType,
   villageProductPage,
   environmentalDataHomePageA,
   // environmentalDataHomePageB,
   environmentalDataHomePageC,
   waterQualityData,
-
   fulingWarningInfo,
   fulingWarningDistr,
   getPestLevelChart,
@@ -47,102 +40,100 @@ import {
   agriWarningRecordPage,
   farmPlanPageW,
   farmdefineList,
-
   selectCount,
   getCountRiceDuckSum
-} from './api'
-import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index'
-import MapTangBa from '../Home/mapTangBacopy.vue'
-import * as turf from '@turf/turf'
-import { getDeviceCategoryTree, getDeviceInfo } from './api'
-import { isFunction } from '@/utils/is'
-import meassageTop from './assets/tangba/meassage-top.png'
-import AgriComponent from './agri.vue'
-import PlanComponent from './plan.vue'
+} from './api';
+import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index';
+import MapTangBa from '../Home/mapTangBacopy.vue';
+import * as turf from '@turf/turf';
+import { getDeviceCategoryTree, getDeviceInfo } from './api';
+import { isFunction } from '@/utils/is';
+import meassageTop from './assets/tangba/meassage-top.png';
+import AgriComponent from './agri.vue';
+import PlanComponent from './plan.vue';
 
-const {
-  BigscreenAdapter,
-  BigscreenContainer,
-  BigscreenHeader,
-  BigscreenFooter,
-  BigscreenMain,
-} = BigscreenBuilder
+const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenFooter, BigscreenMain } =
+  BigscreenBuilder;
 
 const sleep = (delaytime = 1000) => {
-  return new Promise(resolve => setTimeout(resolve, delaytime))
-}
+  return new Promise((resolve) => setTimeout(resolve, delaytime));
+};
 
 // 设备列表项
 interface DeviceVideoListItemType {
-  deviceName: string,
-  videoSrc: string,
-  baseName: string,
-  online: boolean,
-  videoId: string
+  deviceName: string;
+  videoSrc: string;
+  baseName: string;
+  online: boolean;
+  videoId: string;
 }
 
 // 通知事件列表项
 interface NoticeItemType {
-  noticeEvent: string,
-  recordTime: number,
-  captured: string
+  noticeEvent: string;
+  recordTime: number;
+  captured: string;
 }
 
-const checkAuth = async (deviceSerial, channelNo, leftTimes = 2):Promise<string> => {
+const checkAuth = async (deviceSerial, channelNo, leftTimes = 2): Promise<string> => {
   if (leftTimes <= 0) {
-    ElMessage.error("获取视频流失败，请联系管理员!");
+    ElMessage.error('获取视频流失败，请联系管理员!');
   }
   if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
-  const liveToken = localStorage.getItem("LIVE_TOKEN"), expireTime = localStorage.getItem("LIVE_EXPIRE_TIME") ?? '0';
-  console.log("🚀 ~ checkAuth ~ liveToken:", liveToken)
-  const isExpired = ((parseInt(expireTime) ?? 0) - new Date().valueOf()) < 0
+  const liveToken = localStorage.getItem('LIVE_TOKEN'),
+    expireTime = localStorage.getItem('LIVE_EXPIRE_TIME') ?? '0';
+  console.log('🚀 ~ checkAuth ~ liveToken:', liveToken);
+  const isExpired = (parseInt(expireTime) ?? 0) - new Date().valueOf() < 0;
   if (liveToken && !isExpired) {
     // 获取视频流
     const { data: liveDataRes } = await axios.post(
-      "https://ezcloud.uniview.com/openapi/live/video/get",
+      'https://ezcloud.uniview.com/openapi/live/video/get',
       { deviceSerial, channelNo, protocol: 2, quality: 1 },
       { headers: { Authorization: liveToken } }
-    )
+    );
     const { code, data: UrlData } = liveDataRes;
     const { status = -1, url } = UrlData;
     if (code === 200) {
       if (status !== 0) {
         await await axios.post(
           'https://ezcloud.uniview.com/openapi/live/video/start',
-          { url }, { headers: { Authorization: liveToken } }
-        )
-        await sleep(3000)
+          { url },
+          { headers: { Authorization: liveToken } }
+        );
+        await sleep(3000);
       }
       return url;
-    } else return ''
+    } else return '';
   }
 
-  const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {})
-  let appId = "626194353357848583", secretKey = "ca06cd14935e031bd7a394ee7eca154d";
+  const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {});
+  let appId = '626194353357848583',
+    secretKey = 'ca06cd14935e031bd7a394ee7eca154d';
   if (Array.isArray(list) && list.length > 0) {
     const firstItem = list[0];
-    const { appId:_appId, secretKey:_secretKey } = firstItem;
+    const { appId: _appId, secretKey: _secretKey } = firstItem;
     appId = _appId;
-    secretKey = _secretKey
+    secretKey = _secretKey;
   }
-  const { data } = await axios.post("https://ezcloud.uniview.com/openapi/user/app/token/get", {
-    appId, secretKey
-  })
+  const { data } = await axios.post('https://ezcloud.uniview.com/openapi/user/app/token/get', {
+    appId,
+    secretKey
+  });
   if (data && data?.code === 200) {
     const { accessToken, expireTime } = data.data;
-    if (accessToken) localStorage.setItem("LIVE_TOKEN", accessToken)
-    if (expireTime) localStorage.setItem("LIVE_EXPIRE_TIME", expireTime + '000')
+    if (accessToken) localStorage.setItem('LIVE_TOKEN', accessToken);
+    if (expireTime) localStorage.setItem('LIVE_EXPIRE_TIME', expireTime + '000');
   }
-  return await checkAuth(deviceSerial, channelNo, leftTimes - 1)
-}
+  return await checkAuth(deviceSerial, channelNo, leftTimes - 1);
+};
 
-let destroyFunc:Function[] = []
+let destroyFunc: Function[] = [];
 const destroyHls = () => {
-  destroyFunc.forEach(item => {
+  destroyFunc.forEach((item) => {
     if (isFunction(item)) item();
-  })
-  destroyFunc = []
-}
+  });
+  destroyFunc = [];
+};
 
 const initPlayer = async (containerId, dtu, channelId) => {
   if (!containerId || !dtu || !channelId) return;
@@ -155,215 +146,230 @@ const initPlayer = async (containerId, dtu, channelId) => {
     volume: 0,
     video: {
       url: resUrl,
-      type: "customHls",
+      type: 'customHls',
       customType: {
         customHls: (video) => {
           hls.loadSource(video.src);
           hls.attachMedia(video);
-        },
-      },
+        }
+      }
     },
     mutex: false
-  })
+  });
   destroyFunc.push(() => {
     _player.destroy();
     hls.destroy();
-  })
-}
+  });
+};
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
     onActivated(() => {
-      deviceVideoList.value.forEach(item => {
+      deviceVideoList.value.forEach((item) => {
         if (item.online) {
           initPlayer(item.videoId, item.dtu, item.channelId);
         }
-      })
-    })
-    onDeactivated(() => { destroyHls() })
-    onUnmounted(() => { destroyHls() })
-    
+      });
+    });
+    onDeactivated(() => {
+      destroyHls();
+    });
+    onUnmounted(() => {
+      destroyHls();
+    });
+
     const getIconClass = (text: string) => {
       const iconMap = {
-        '温度': '1',
-        '湿度': '2',
-        'PH': '3',
-        'EC': '4',
-        '光': '5',
-        '雨': '6',
-        '二氧化碳': '7',
-        '气压': '8',
-        '虫': '9',
-        '类': '10',
-        'default': '1',
-        "磷": '11',
-        "氮": '12',
-        "钾": '13',
-        "深度": '14',
-        "种植面积": '18',
-        "农户": '17',
-        "大棚": '15',
-        "盆栽": '16',
-        "施肥": "19",
-        "虫害": "20",
-        "浇水": "21",
-        "除草": "22",
-        "打药": "23",
-        "采收": "24",
-        "风力": "25",
-        "风速": "26",
-        "亚硝酸盐氮": "27",
-        "氨氮量": "28",
-        "水位": "29",
-        "浑浊度": "30",
-        "氧": "31",
-        "盐": "32",
-        "喂养": "33",
-      }
+        温度: '1',
+        湿度: '2',
+        PH: '3',
+        EC: '4',
+        光: '5',
+        雨: '6',
+        二氧化碳: '7',
+        气压: '8',
+        虫: '9',
+        类: '10',
+        default: '1',
+        磷: '11',
+        氮: '12',
+        钾: '13',
+        深度: '14',
+        种植面积: '18',
+        农户: '17',
+        大棚: '15',
+        盆栽: '16',
+        施肥: '19',
+        虫害: '20',
+        浇水: '21',
+        除草: '22',
+        打药: '23',
+        采收: '24',
+        风力: '25',
+        风速: '26',
+        亚硝酸盐氮: '27',
+        氨氮量: '28',
+        水位: '29',
+        浑浊度: '30',
+        氧: '31',
+        盐: '32',
+        喂养: '33'
+      };
       // 有完全匹配的项直接返回
-      if (iconMap[text])
-        return iconMap[text]
+      if (iconMap[text]) return iconMap[text];
 
       const iconLabel = Object.keys(iconMap);
-      let key = 'default'
-      iconLabel.forEach(item => {
+      let key = 'default';
+      iconLabel.forEach((item) => {
         // 之前没匹配到的才需要更新key
         if ('default' === key && (text.indexOf(item) !== -1 || item.indexOf(text) !== -1)) {
-          key = item
+          key = item;
         }
-      })
-      return iconMap[key]
-    }
+      });
+      return iconMap[key];
+    };
 
     // tab修改事件
-    const TabChangeMap = new Map<string, Array<Function>>()
+    const TabChangeMap = new Map<string, Array<Function>>();
     const addTabChangeMap = (key: string, func: Function) => {
-      const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : []
-      TabChangeMap.set(key, [
-        ...existMap,
-        func
-      ])
-    }
+      const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : [];
+      TabChangeMap.set(key, [...existMap, func]);
+    };
     const handleTabChange = (key: string) => {
-      const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : []
-      existMap.forEach(func => {
-        func()
-      })
-    }
+      const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : [];
+      existMap.forEach((func) => {
+        func();
+      });
+    };
     // tab修改 v2
-    const bgImage = ref(mainBg)
+    const bgImage = ref(mainBg);
     const changeTab = (key: string) => {
-      if (activeTab.value === key)
-        return
-      
+      if (activeTab.value === key) return;
+
       switch (key) {
         case 'base':
-          activeTab.value = 'base'
-          bgImage.value = mainBg
-          break
+          activeTab.value = 'base';
+          bgImage.value = mainBg;
+          break;
         case 'plant':
-          activeTab.value = 'plant'
-          bgImage.value = plantBg
+          activeTab.value = 'plant';
+          bgImage.value = plantBg;
           nextTick(() => {
-            getGrowthLineChartData()
-            getHarvestChartData()
-            getMenuDataList()
-          })
-          break
+            getGrowthLineChartData();
+            getHarvestChartData();
+            getMenuDataList();
+          });
+          break;
         case 'risk':
-          activeTab.value = 'risk'
-          bgImage.value = riskBg
+          activeTab.value = 'risk';
+          bgImage.value = riskBg;
           nextTick(() => {
-            initChartWarnLayout()
-            initBugCountChart()
-          })
-          break
+            initChartWarnLayout();
+            initBugCountChart();
+          });
+          break;
       }
-    }
+    };
 
-    const activeBasePark = ref()
+    const activeBasePark = ref();
     const handleMenuActive = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath)
-      activeBasePark.value = key
-      if (keyPath.length === 2) getMonitorDeviceList(keyPath[0], keyPath[1])
-    }
+      console.log(key, keyPath);
+      activeBasePark.value = key;
+      if (keyPath.length === 2) getMonitorDeviceList(keyPath[0], keyPath[1]);
+    };
     const baseParkTreeList = ref<Array<any>>([]);
     const getBaseParkTreeList = async () => {
       const res = await getParkTree();
       console.log('基地导览大屏基地树', res);
-      if (!Array.isArray(res)) return
-      baseParkTreeList.value = res
-    }
-    getBaseParkTreeList()
+      if (!Array.isArray(res)) return;
+      baseParkTreeList.value = res;
+    };
+    getBaseParkTreeList();
 
     // 获取监控设备列表
-    const monitorDeviceLoading = ref<boolean>(false)
-    const deviceVideoList = ref<Array<DeviceVideoListItemType>>([])
+    const monitorDeviceLoading = ref<boolean>(false);
+    const deviceVideoList = ref<Array<DeviceVideoListItemType>>([]);
     const getMonitorDeviceList = async (baseId = '', plotId = '') => {
-      deviceVideoList.value = []
-      monitorDeviceLoading.value = true
+      deviceVideoList.value = [];
+      monitorDeviceLoading.value = true;
       const res = await getEquipmentPhotographAndVideo(
-        plotId ? {baseId, plotId} : baseId ? {baseId} : {}
+        plotId ? { baseId, plotId } : baseId ? { baseId } : {}
       ).catch(() => {
-        monitorDeviceLoading.value = false
-      })
-      console.log("获取监控设备列表", res);
-      monitorDeviceLoading.value = false
-      deviceVideoList.value = res.filter(ele => (ele.dtu && ele.channelId)).map(item => ({
-        ...item,
-        deviceName: item.deviceName,
-        videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
-        baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
-        online: item.deviceStatus === 'online',
-        videoId: `${item.dtu}_${item.channelId}`
-      })).slice(0, 12);
+        monitorDeviceLoading.value = false;
+      });
+      console.log('获取监控设备列表', res);
+      monitorDeviceLoading.value = false;
+      deviceVideoList.value = res
+        .filter((ele) => ele.dtu && ele.channelId)
+        .map((item) => ({
+          ...item,
+          deviceName: item.deviceName,
+          videoSrc: item?.monitoringEquipmentDataDO?.videoLink,
+          baseName: item?.monitoringEquipmentDataDO?.monitoringBaseName,
+          online: item.deviceStatus === 'online',
+          videoId: `${item.dtu}_${item.channelId}`
+        }))
+        .slice(0, 12);
       nextTick(() => {
-        deviceVideoList.value.forEach(item => {
+        deviceVideoList.value.forEach((item) => {
           if (item.online) initPlayer(item.videoId, item.dtu, item.channelId);
-        })
-      })
-    }
-    getMonitorDeviceList()
-    const activeTab = ref('base')
-
+        });
+      });
+    };
+    getMonitorDeviceList();
+    const activeTab = ref('base');
 
     // 监控通知事件
-    const monitorNoticeLoading = ref<boolean>(false)
+    const monitorNoticeLoading = ref<boolean>(false);
     const monitorQueryParams = ref({
       pageNo: 1,
       pageSize: 9
-    })
-    const noticeListTotal = ref<number>(0)
-    const noticeDatePickerVal = ref<Array<any>>([])
+    });
+    const noticeListTotal = ref<number>(0);
+    const noticeDatePickerVal = ref<Array<any>>([]);
     const getMonitorNoticeList = async () => {
-      monitorNoticeLoading.value = true
-      const {list = [], total = 0} = await monitoringEquNoticePage({
+      monitorNoticeLoading.value = true;
+      const { list = [], total = 0 } = await monitoringEquNoticePage({
         ...monitorQueryParams.value,
-        recordTime: noticeDatePickerVal.value ? noticeDatePickerVal.value.map(item => formatTime(item, 'yyyy-MM-dd HH:mm:ss')) : undefined
+        recordTime: noticeDatePickerVal.value
+          ? noticeDatePickerVal.value.map((item) => formatTime(item, 'yyyy-MM-dd HH:mm:ss'))
+          : undefined
       }).catch(() => {
-        monitorNoticeLoading.value = false
-      })
-      monitorNoticeLoading.value = false
-      if (!Array.isArray(list)) return
-      noticeList.value = list.map(item => ({
+        monitorNoticeLoading.value = false;
+      });
+      monitorNoticeLoading.value = false;
+      if (!Array.isArray(list)) return;
+      noticeList.value = list.map((item) => ({
         captured: item.captured,
         noticeEvent: item.noticeEvent,
         recordTime: item.recordTime
-      }))
-      noticeListTotal.value = total
-    }
-    getMonitorNoticeList()
+      }));
+      noticeListTotal.value = total;
+    };
+    getMonitorNoticeList();
 
-    const noticeList = ref<Array<NoticeItemType>>([])
+    const noticeList = ref<Array<NoticeItemType>>([]);
     const handleMenuChange = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath)
-      activeBasePark.value = ''
-      if (keyPath.length === 1) getMonitorDeviceList(keyPath[0], '')
-    }
+      console.log(key, keyPath);
+      activeBasePark.value = '';
+      if (keyPath.length === 1) getMonitorDeviceList(keyPath[0], '');
+    };
 
     // 基地列表下拉菜单图标
-    const subMenuCloseIcon = <div style="color: #11F47F;"><el-icon><CaretRight /></el-icon></div>
-    const subMenuOpenIcon = <div style="color: #11F47F;"><el-icon><CaretBottom /></el-icon></div>
+    const subMenuCloseIcon = (
+      <div style="color: #11F47F;">
+        <el-icon>
+          <CaretRight />
+        </el-icon>
+      </div>
+    );
+    const subMenuOpenIcon = (
+      <div style="color: #11F47F;">
+        <el-icon>
+          <CaretBottom />
+        </el-icon>
+      </div>
+    );
 
     // 基地导览页面部分
     const baseTabPage = () => {
@@ -382,95 +388,125 @@ export default defineComponent({
                 onOpen={handleMenuChange}
                 onClose={handleMenuChange}
               >
-                {
-                  baseParkTreeList.value.map(item => {
-                    if (item.child) return (
-                      <el-sub-menu index={item.id} v-slots={{
-                        title: () => (
-                          <span class="text-wrap leading-[20px] text-center tracking-widest">{item.name}</span>
-                        )
-                      }}
-                      expand-close-icon={ subMenuCloseIcon }
-                      expand-open-icon={ subMenuOpenIcon }
-                      >
-                        {
-                          Array.isArray(item.child) ? item.child.map(ele => (
-                            <el-menu-item index={ele.id} class="text-wrap leading-[20px] tracking-widest">
-                              {ele.name}
-                            </el-menu-item>
-                          )) : null
-                        }
-                      </el-sub-menu>
-                    )
+                {baseParkTreeList.value.map((item) => {
+                  if (item.child)
                     return (
-                      <el-menu-item index={item.id} class="text-wrap leading-[20px] tracking-widest">
-                        {item.name}
-                      </el-menu-item>
-                    )
-                  })
-                }
+                      <el-sub-menu
+                        index={item.id}
+                        v-slots={{
+                          title: () => (
+                            <span class="text-wrap leading-[20px] text-center tracking-widest">
+                              {item.name}
+                            </span>
+                          )
+                        }}
+                        expand-close-icon={subMenuCloseIcon}
+                        expand-open-icon={subMenuOpenIcon}
+                      >
+                        {Array.isArray(item.child)
+                          ? item.child.map((ele) => (
+                              <el-menu-item
+                                index={ele.id}
+                                class="text-wrap leading-[20px] tracking-widest"
+                              >
+                                {ele.name}
+                              </el-menu-item>
+                            ))
+                          : null}
+                      </el-sub-menu>
+                    );
+                  return (
+                    <el-menu-item index={item.id} class="text-wrap leading-[20px] tracking-widest">
+                      {item.name}
+                    </el-menu-item>
+                  );
+                })}
               </el-menu>
             </div>
             {/** 中间监控视频列表 */}
-            <div class="w-[1680px] ml-[15px] p-[15px] grid grid-cols-4 grid-rows-3 gap-3 monitor-bg" v-loading={monitorDeviceLoading.value}>
-              {
-                deviceVideoList.value.map((item: DeviceVideoListItemType) => (
-                  <div class="video-bg cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-data") }}>
-                    <div class="art-font h-[37px] leading-[37px] text-[18px] text-center tracking-wide">{item.deviceName}</div>
-                    <div class="w-full h-[200px] py-[5px] flex justify-center">
-                      <div class="aspect-video w-340px" id={item.videoId}></div>
-                    </div>
-                    <div class="base-name">{ item.baseName }</div>
-                    <div class={`${ item.online ? 'text-[#09DB61]' : 'text-[#DEDEDE]' } device-status-bg absolute bottom-[24px] right-[24px] flex items-center justify-center`}>
-                      <div class={ item.online ? 'device-online' : 'device-offline' }></div>
-                      <div class="pl-[5px]">{ item.online ? '在线' : '离线' }</div>
-                    </div>
+            <div
+              class="w-[1680px] ml-[15px] p-[15px] grid grid-cols-4 grid-rows-3 gap-3 monitor-bg"
+              v-loading={monitorDeviceLoading.value}
+            >
+              {deviceVideoList.value.map((item: DeviceVideoListItemType) => (
+                <div
+                  class="video-bg cursor-pointer"
+                  onClick={() => {
+                    window.open('/internetMonitor/deviceData/monitoring-equipment-data');
+                  }}
+                >
+                  <div class="art-font h-[37px] leading-[37px] text-[18px] text-center tracking-wide">
+                    {item.deviceName}
                   </div>
-                ))
-              }
+                  <div class="w-full h-[200px] py-[5px] flex justify-center">
+                    <div class="aspect-video w-340px" id={item.videoId}></div>
+                  </div>
+                  <div class="base-name">{item.baseName}</div>
+                  <div
+                    class={`${item.online ? 'text-[#09DB61]' : 'text-[#DEDEDE]'} device-status-bg absolute bottom-[24px] right-[24px] flex items-center justify-center`}
+                  >
+                    <div class={item.online ? 'device-online' : 'device-offline'}></div>
+                    <div class="pl-[5px]">{item.online ? '在线' : '离线'}</div>
+                  </div>
+                </div>
+              ))}
             </div>
             {/** 右侧通知事件 */}
             <div class="w-[370px] h-[930px] p-[15px] notice-bg !hidden">
-              <div class="art-font notice-title flex items-center cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/monitoring-equipment-notice") }}>
+              <div
+                class="art-font notice-title flex items-center cursor-pointer"
+                onClick={() => {
+                  window.open('/internetMonitor/deviceData/monitoring-equipment-notice');
+                }}
+              >
                 <div class="contain-img notice-icon"></div>
                 <div>通知事件</div>
               </div>
               {/** 日期选择 */}
-              <div class='mt-[15px] flex justify-between'>
+              <div class="mt-[15px] flex justify-between">
                 <el-date-picker
                   v-model={noticeDatePickerVal.value}
                   type="daterange"
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  size='default'
-                  onChange={ () => { getMonitorNoticeList() } }
+                  size="default"
+                  onChange={() => {
+                    getMonitorNoticeList();
+                  }}
                 />
-                <button class='w-[80px] ml-[10px] btn-date' onClick={ () => { getMonitorNoticeList() }}>查询</button>
+                <button
+                  class="w-[80px] ml-[10px] btn-date"
+                  onClick={() => {
+                    getMonitorNoticeList();
+                  }}
+                >
+                  查询
+                </button>
               </div>
               {/** 通知事件列表 */}
-              <div class="mt-[10px] h-[790px] overflow-auto hidden-scrollbar cursor-pointer" v-loading={monitorNoticeLoading.value} onClick={() => {
-                window.open("/internetMonitor/deviceData/monitoring-equipment-notice")
-              }}>
-                {
-                  noticeList.value.map((item: NoticeItemType) => (
-                    <div class="event-item flex justify-between">
-                      <div class="flex flex-col justify-center pl-[20px]">
-                        <el-tooltip
-                          effect="dark"
-                          content={item.noticeEvent}
-                          placement="bottom"
-                        >
-                          <div class="text-[18px]">{item.noticeEvent}</div>
-                        </el-tooltip>
-                        <div class="mt-[6.5px] opacity-60">{formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss')}</div>
-                      </div>
-                      <div class="py-[2px] pr-[2px]">
-                        <img src={item.captured} class="h-[86px] object-contain rounded-md"/>
+              <div
+                class="mt-[10px] h-[790px] overflow-auto hidden-scrollbar cursor-pointer"
+                v-loading={monitorNoticeLoading.value}
+                onClick={() => {
+                  window.open('/internetMonitor/deviceData/monitoring-equipment-notice');
+                }}
+              >
+                {noticeList.value.map((item: NoticeItemType) => (
+                  <div class="event-item flex justify-between">
+                    <div class="flex flex-col justify-center pl-[20px]">
+                      <el-tooltip effect="dark" content={item.noticeEvent} placement="bottom">
+                        <div class="text-[18px]">{item.noticeEvent}</div>
+                      </el-tooltip>
+                      <div class="mt-[6.5px] opacity-60">
+                        {formatTime(item.recordTime, 'yyyy-MM-dd HH:mm:ss')}
                       </div>
                     </div>
-                  ))
-                }
+                    <div class="py-[2px] pr-[2px]">
+                      <img src={item.captured} class="h-[86px] object-contain rounded-md" />
+                    </div>
+                  </div>
+                ))}
               </div>
               <Pagination
                 total={noticeListTotal.value}
@@ -482,43 +518,45 @@ export default defineComponent({
             </div>
           </div>
         </div>
-      )
-    }
+      );
+    };
 
     // const runtimeBase = ref('')
     // 智慧种植部分
     // 基础设施
-    const baseEquipmentLoading = ref<boolean>(false)
-    const baseEquipmentList = ref<Array<any>>([])
+    const baseEquipmentLoading = ref<boolean>(false);
+    const baseEquipmentList = ref<Array<any>>([]);
     const getBaseEquipmentList = async () => {
-      baseEquipmentLoading.value = true
+      baseEquipmentLoading.value = true;
       try {
-        const res = await getPondCountFrySum()
-        const res2 = await selectCount()
-        const res1 = await getCountRiceDuckSum()
-        console.log("基础设施", res);
+        const res = await getPondCountFrySum();
+        const res2 = await selectCount();
+        const res1 = await getCountRiceDuckSum();
+        console.log('基础设施', res);
         baseEquipmentList.value = [
-          {label: '池塘', value: res.pondCount + '个'},
-          {label: '鱼苗', value: res.fryCount + '条'},
+          { label: '池塘', value: res.pondCount + '个' },
+          { label: '鱼苗', value: res.fryCount + '条' },
           {
             label: '鸭舍',
             value: res1.duckCoopCount + '间',
             url: '/asset/base/parkdetail?type=DuckCoop'
           },
-          {label: '稻鸭', value: res1.riceDuckCount + '只' , url: '/asset/base/parkdetail?type=DuckCoop'},
-          {label: '示范基地', value: res2.parkSum + '亩', url: '/asset/base/parkinfo'},
-          {label: '基地数量', value: res2.parkCount + '个', url: '/asset/base/parkinfo'},
-          {label: '养殖农户', value: res2.farmerCount + '户', url: '/asset/base/farmer-info'},
-        ]
-
-
+          {
+            label: '稻鸭',
+            value: res1.riceDuckCount + '只',
+            url: '/asset/base/parkdetail?type=DuckCoop'
+          },
+          { label: '示范基地', value: res2.parkSum + '亩', url: '/asset/base/parkinfo' },
+          { label: '基地数量', value: res2.parkCount + '个', url: '/asset/base/parkinfo' },
+          { label: '养殖农户', value: res2.farmerCount + '户', url: '/asset/base/farmer-info' }
+        ];
       } catch (err) {
-        baseEquipmentLoading.value = false
+        baseEquipmentLoading.value = false;
       }
 
-      baseEquipmentLoading.value = false
-    }
-    getBaseEquipmentList()
+      baseEquipmentLoading.value = false;
+    };
+    getBaseEquipmentList();
 
     // 生长分析折线图
     const getGrowthLineChartData = async () => {
@@ -527,10 +565,10 @@ export default defineComponent({
         xValue = [],
         yValue = [],
         measureUnit = []
-      } = await getLineChar({cropCode: '1787727824907661312'})
-      console.log("xValue", xValue);
-      console.log("yValue", yValue);
-      console.log("measureUnit", measureUnit);
+      } = await getLineChar({ cropCode: '1787727824907661312' });
+      console.log('xValue', xValue);
+      console.log('yValue', yValue);
+      console.log('measureUnit', measureUnit);
       initChartStatic(
         'growthChart',
         generateBaseOptions({
@@ -548,7 +586,7 @@ export default defineComponent({
             }
           },
           legend: {
-            show: false,
+            show: false
           },
           color: ['#ffa773', '#36e1d9'],
           yAxis: {
@@ -558,7 +596,7 @@ export default defineComponent({
             },
             type: 'value',
             axisLine: {
-              show: false,
+              show: false
             },
             splitLine: {
               //网格线
@@ -588,7 +626,8 @@ export default defineComponent({
                 type: 'solid'
               }
             },
-            extraCssText: 'background: linear-gradient(270deg, #3DFF9B 0%, rgba(10, 87, 47, 0) 100%);',
+            extraCssText:
+              'background: linear-gradient(270deg, #3DFF9B 0%, rgba(10, 87, 47, 0) 100%);',
             textStyle: {
               color: '#fff'
             },
@@ -607,14 +646,14 @@ export default defineComponent({
               },
               smooth: false,
               label: {
-                show: false, 
+                show: false
               },
               areaStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                   { offset: 0, color: 'rgba(1, 255, 124, 0.3)' },
                   { offset: 1, color: 'rgba(1, 255, 124, 0)' }
                 ])
-              },
+              }
             }
           ],
           grid: {
@@ -624,46 +663,43 @@ export default defineComponent({
             bottom: '15%'
           }
         })
-      )
-    }
+      );
+    };
     // 产量分析
     const getHarvestChartData = async () => {
       return;
-      const res = await selectHarvest()
-      console.log("产量分析", res);
-      let xAxis = res.map(item => (item.time))
-      xAxis = [...new Set([...xAxis])].sort().reverse()
-      console.log("xAxis", xAxis);
-      let types = res.map(item => (item.variety))
-      types = [...new Set([...types])]
+      const res = await selectHarvest();
+      console.log('产量分析', res);
+      let xAxis = res.map((item) => item.time);
+      xAxis = [...new Set([...xAxis])].sort().reverse();
+      console.log('xAxis', xAxis);
+      let types = res.map((item) => item.variety);
+      types = [...new Set([...types])];
       const findValByTimeAndvariety = (item) => {
-        let _res = '0'
-        res.forEach(ele => {
-          if (
-            item.time === ele.time
-            &&
-            item.variety === ele.variety
-          ) _res = parseFloat(ele.harvest).toFixed(2)
-        })
-        return _res
-      }
-      const colorList = ['92, 230, 216', '1, 255, 124', '233, 216, 16']
+        let _res = '0';
+        res.forEach((ele) => {
+          if (item.time === ele.time && item.variety === ele.variety)
+            _res = parseFloat(ele.harvest).toFixed(2);
+        });
+        return _res;
+      };
+      const colorList = ['92, 230, 216', '1, 255, 124', '233, 216, 16'];
       const series = types.map((item, index) => {
         const nameMap = {
-          "duck": '稻田鸭',
-          "fish": '稻田鱼',
-          "rice": "稻谷"
-        }
+          duck: '稻田鸭',
+          fish: '稻田鱼',
+          rice: '稻谷'
+        };
         // console.log("weijialin", item)
         return {
           name: item,
-          data: xAxis.map(x => {
+          data: xAxis.map((x) => {
             return findValByTimeAndvariety({
               time: x,
               variety: item
-            })
+            });
           }),
-          type: "bar",
+          type: 'bar',
           smooth: false,
           label: {
             show: true, //开启显示
@@ -676,26 +712,26 @@ export default defineComponent({
             backgroundColor: `rgba(${colorList[index]}, 1)`,
             width: 38,
             height: 13,
-            formatter: () => "",
+            formatter: () => '',
             distance: 7
           },
           itemStyle: {
             color: `rgba(${colorList[index]}, 0.2)`,
             borderColor: `rgba(${colorList[index]}, 1)`,
             borderWidth: 3
-          },
-        }
-      })
+          }
+        };
+      });
       initChartStatic(
-        "harvestChart",
+        'harvestChart',
         generateBaseOptions({
           xAxis: {
             data: xAxis,
             axisLine: {
               show: true,
               lineStyle: {
-                color: "#ffffff80",
-              },
+                color: '#ffffff80'
+              }
             },
             // x轴刻度标签字体白色
             axisLabel: {
@@ -712,20 +748,23 @@ export default defineComponent({
               fontSize: 14
             },
             data: colorList.map((item, index) => {
-              return {name: types[index], itemStyle: {color: `rgba(${item}, 1)`, borderWidth: 0}}
+              return {
+                name: types[index],
+                itemStyle: { color: `rgba(${item}, 1)`, borderWidth: 0 }
+              };
             }),
             top: 10,
             left: 240
           },
-          color: ["#ed7d31", "#a9d18e", "#d9d9d9"],
+          color: ['#ed7d31', '#a9d18e', '#d9d9d9'],
           yAxis: [
             {
-              type: "value",
+              type: 'value',
               axisLine: {
                 show: true,
                 lineStyle: {
-                  color: "#ffffff80",
-                },
+                  color: '#ffffff80'
+                }
               },
               // y轴刻度字体白色
               axisLabel: {
@@ -736,229 +775,236 @@ export default defineComponent({
                 show: true, //是否显示
                 lineStyle: {
                   //网格线样式
-                  color: "#ffffff80", //网格线颜色
+                  color: '#ffffff80', //网格线颜色
                   width: 1, //网格线的加粗程度
-                  type: "dashed", //网格线类型
-                },
+                  type: 'dashed' //网格线类型
+                }
               },
               splitArea: {
                 //网格区域
-                show: false, //是否显示
+                show: false //是否显示
               }
-            },
+            }
           ],
           series,
           grid: {
-            left: "12%",
-            right: "8%",
-            top: "17%",
-            bottom: "15%",
-          },
+            left: '12%',
+            right: '8%',
+            top: '17%',
+            bottom: '15%'
+          }
         })
       );
-    }
+    };
     addTabChangeMap('plant', () => {
       nextTick(() => {
-        getGrowthLineChartData()
-        getHarvestChartData()
-      })
-    })
+        getGrowthLineChartData();
+        getHarvestChartData();
+      });
+    });
 
     // 设备信息
-    const deviceInfoLoading = ref<boolean>(false)
-    const deviceInfoList = ref<Array<any>>([])
-    const deviceInfoTotal = ref(0)
+    const deviceInfoLoading = ref<boolean>(false);
+    const deviceInfoList = ref<Array<any>>([]);
+    const deviceInfoTotal = ref(0);
     const getDeviceInfoList = async () => {
-      deviceInfoTotal.value = 0
-      deviceInfoLoading.value = true
+      deviceInfoTotal.value = 0;
+      deviceInfoLoading.value = true;
       const res = await getEquipmentCountSumOrderByType().catch(() => {
-        deviceInfoLoading.value = false
-      })
+        deviceInfoLoading.value = false;
+      });
       console.log('设备信息', res);
-      const buildArr: Array<any> = []
+      const buildArr: Array<any> = [];
       const kayMap = {
-        "atmosphere": "气象监测",
-        "growthMonitoring": "生长监控",
-        "soil": "土壤监控",
-        "waterQuality": "水质监测"
-      }
+        atmosphere: '气象监测',
+        growthMonitoring: '生长监控',
+        soil: '土壤监控',
+        waterQuality: '水质监测'
+      };
       for (let key in res) {
         buildArr.push({
           deviceKind: kayMap[key],
           total: res[key]['totality'],
           online: res[key]['online'],
           offline: res[key]['offline']
-        })
+        });
       }
-      deviceInfoLoading.value = false
+      deviceInfoLoading.value = false;
       const getRateByData = (_item) => {
-        return parseInt(_item.online) / parseInt(_item.total) * 100
-      }
-      deviceInfoList.value = buildArr.map(item => ({...item, rate: getRateByData(item)}))
-      buildArr.forEach(item => {
-        deviceInfoTotal.value += parseInt(item.total)
-      })
-    }
-    getDeviceInfoList()
+        return (parseInt(_item.online) / parseInt(_item.total)) * 100;
+      };
+      deviceInfoList.value = buildArr.map((item) => ({ ...item, rate: getRateByData(item) }));
+      buildArr.forEach((item) => {
+        deviceInfoTotal.value += parseInt(item.total);
+      });
+    };
+    getDeviceInfoList();
 
     // 特色产品
-    const villageProductPageLoading = ref<boolean>(false)
-    const villageProductPageList = ref<Array<any>>([])
-    const showedProductPageList = ref<Array<any>>([])
-    const villageActiveIndex = ref<number>(0)
-    let villageTimer: any = null
+    const villageProductPageLoading = ref<boolean>(false);
+    const villageProductPageList = ref<Array<any>>([]);
+    const showedProductPageList = ref<Array<any>>([]);
+    const villageActiveIndex = ref<number>(0);
+    let villageTimer: any = null;
     onMounted(() => {
       villageTimer = setInterval(() => {
-        const len = villageProductPageList.value.length
-        if (villageProductPageList.value.length <= 2) return
+        const len = villageProductPageList.value.length;
+        if (villageProductPageList.value.length <= 2) return;
         if (villageActiveIndex.value + 2 >= len) {
-          villageActiveIndex.value = 0
+          villageActiveIndex.value = 0;
         } else {
-          villageActiveIndex.value++
+          villageActiveIndex.value++;
         }
         showedProductPageList.value = villageProductPageList.value.slice(
-          villageActiveIndex.value, villageActiveIndex.value + 2
-        )
-      }, 8000)
-    })
+          villageActiveIndex.value,
+          villageActiveIndex.value + 2
+        );
+      }, 8000);
+    });
     onBeforeUnmount(() => {
-      clearInterval(villageTimer)
-    })
+      clearInterval(villageTimer);
+    });
     const getvillageProductPage = async () => {
-      villageProductPageLoading.value = true
-      const {list = []} = await villageProductPage().catch(() => {
-        villageProductPageLoading.value = false
-      })
-      villageProductPageLoading.value = false
-      console.log("特色产品", list);
-      if (!Array.isArray(list)) return
-      villageProductPageList.value = list.filter(item => {
-        if (item.photo) return true
-        return false
-      })
-      showedProductPageList.value = villageProductPageList.value.slice(0, 2)
-    }
-    getvillageProductPage()
+      villageProductPageLoading.value = true;
+      const { list = [] } = await villageProductPage().catch(() => {
+        villageProductPageLoading.value = false;
+      });
+      villageProductPageLoading.value = false;
+      console.log('特色产品', list);
+      if (!Array.isArray(list)) return;
+      villageProductPageList.value = list.filter((item) => {
+        if (item.photo) return true;
+        return false;
+      });
+      showedProductPageList.value = villageProductPageList.value.slice(0, 2);
+    };
+    getvillageProductPage();
 
     // 气象站
-    const weatherLoading = ref<boolean>(false)
-    const weatherList = ref<Array<any>>([])
+    const weatherLoading = ref<boolean>(false);
+    const weatherList = ref<Array<any>>([]);
     const getWeatherList = async () => {
-      weatherLoading.value = true
+      weatherLoading.value = true;
       const res = await environmentalDataHomePageA({}).catch(() => {
-        weatherLoading.value = false
-      })
-      weatherLoading.value = false
-      console.log("气象站", res);
-      if (!Array.isArray(res)) return
-      weatherList.value = res.map(item => ({
-        id: item.id,
-        icon: getIconClass(item.monitoringType),
-        label: item.monitoringType || '--',
-        value: item.dataValue || '--',
-        unit: item.yyUnit || ''
-      })).slice(0, 8)
-    }
-    getWeatherList()
+        weatherLoading.value = false;
+      });
+      weatherLoading.value = false;
+      console.log('气象站', res);
+      if (!Array.isArray(res)) return;
+      weatherList.value = res
+        .map((item) => ({
+          id: item.id,
+          icon: getIconClass(item.monitoringType),
+          label: item.monitoringType || '--',
+          value: item.dataValue || '--',
+          unit: item.yyUnit || ''
+        }))
+        .slice(0, 8);
+    };
+    getWeatherList();
 
     // 土壤墒情
-    const soilLoading = ref<boolean>(false)
-    const soilList = ref<Array<any>>([])
+    const soilLoading = ref<boolean>(false);
+    const soilList = ref<Array<any>>([]);
     const getsoilList = async () => {
-      soilLoading.value = true
+      soilLoading.value = true;
       const res = await environmentalDataHomePageC({}).catch(() => {
-        soilLoading.value = false
-      })
-      soilLoading.value = false
-      console.log("土壤墒情", res);
-      if (!Array.isArray(res)) return
-      soilList.value = res.map(item => ({
-        id: item.id,
-        icon: getIconClass(item.monitoringType),
-        label: item.monitoringType || '--',
-        value: item.dataValue || '--',
-        unit: item.yyUnit || ''
-      })).slice(0, 8)
-    }
-    getsoilList()
+        soilLoading.value = false;
+      });
+      soilLoading.value = false;
+      console.log('土壤墒情', res);
+      if (!Array.isArray(res)) return;
+      soilList.value = res
+        .map((item) => ({
+          id: item.id,
+          icon: getIconClass(item.monitoringType),
+          label: item.monitoringType || '--',
+          value: item.dataValue || '--',
+          unit: item.yyUnit || ''
+        }))
+        .slice(0, 8);
+    };
+    getsoilList();
 
     // 水质
-    const waterLoading = ref<boolean>(false)
-    const waterList = ref<Array<any>>([])
+    const waterLoading = ref<boolean>(false);
+    const waterList = ref<Array<any>>([]);
     const getWaterList = async () => {
-      waterLoading.value = true
+      waterLoading.value = true;
       const res = await waterQualityData({}).catch(() => {
-        waterLoading.value = false
-      })
-      waterLoading.value = false
-      console.log("水质", res);
-      if (!Array.isArray(res)) return
-      waterList.value = res.map(item => ({
-        id: item.id,
-        icon: getIconClass(item.monitoringType),
-        label: item.monitoringType || '--',
-        value: item.dataValue || '--',
-        unit: item.yyUnit || ''
-      })).slice(0, res.length)
-    }
-    getWaterList()
+        waterLoading.value = false;
+      });
+      waterLoading.value = false;
+      console.log('水质', res);
+      if (!Array.isArray(res)) return;
+      waterList.value = res
+        .map((item) => ({
+          id: item.id,
+          icon: getIconClass(item.monitoringType),
+          label: item.monitoringType || '--',
+          value: item.dataValue || '--',
+          unit: item.yyUnit || ''
+        }))
+        .slice(0, res.length);
+    };
+    getWaterList();
 
     // 中间顶部
     // 添加背景类名和图标类名
-    const plantCenterTopCardList = ref<Array<any>>([])
+    const plantCenterTopCardList = ref<Array<any>>([]);
     const getPlantCenterTopCardList = async () => {
-      const res = await getEquipmentCountSum()
-      console.log("中间顶部", res);
+      const res = await getEquipmentCountSum();
+      console.log('中间顶部', res);
       plantCenterTopCardList.value = [
         {
           label: '设备总数',
           value: res['设备总数'],
           param: '',
           bgClass: 'device-total-bg',
-          iconClass: 'device-total-icon',
+          iconClass: 'device-total-icon'
         },
         {
           label: '在线设备',
           value: res['在线设备'],
           param: 'online',
           bgClass: 'device-online-bg',
-          iconClass: 'device-online-icon',
+          iconClass: 'device-online-icon'
         },
         {
           label: '离线设备',
           value: res['离线设备'],
           param: 'offline',
           bgClass: 'device-offline-bg',
-          iconClass: 'device-offline-icon',
+          iconClass: 'device-offline-icon'
         },
         {
           label: '故障设备',
           value: res['报警设备'],
           param: 'fault',
           bgClass: 'device-error-bg',
-          iconClass: 'device-error-icon',
-        },
-      ]
-    }
-    getPlantCenterTopCardList()
+          iconClass: 'device-error-icon'
+        }
+      ];
+    };
+    getPlantCenterTopCardList();
 
-    const mapTangBgRef = ref<any>()
-    const allDeviceDataList = ref<Array<any>>([])
+    const mapTangBgRef = ref<any>();
+    const allDeviceDataList = ref<Array<any>>([]);
 
     const getAllLocationDevice = (arr: Array<any>): Array<any> => {
-      let resArr: Array<any> = []
+      let resArr: Array<any> = [];
       arr.forEach((item) => {
         if (item.children) {
-          resArr = [...resArr, ...getAllLocationDevice(item.children)]
-        } else resArr.push(item)
-      })
-      return resArr
-    }
+          resArr = [...resArr, ...getAllLocationDevice(item.children)];
+        } else resArr.push(item);
+      });
+      return resArr;
+    };
 
     const handleSelect = async (item) => {
-      const res = await getDeviceInfo({ id: item })
+      const res = await getDeviceInfo({ id: item });
       if (mapTangBgRef.value) {
-        console.log('地图设备详情', res)
+        console.log('地图设备详情', res);
         // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
         const infoString = `<div class="bg-[#e8f2fc] relative">
           <div class='relative'>
@@ -978,32 +1024,37 @@ export default defineComponent({
                 } w-[8px] h-[8px] rounded-full"></div>
                 <div>${res.deviceStatus === 'online' ? '在线' : '离线'}</div>
               </div>
-                ${res.channelId !== null && res.channelId !== '' && res.dtu !== null && res.dtu !== ''? 
-                `
+                ${
+                  res.channelId !== null &&
+                  res.channelId !== '' &&
+                  res.dtu !== null &&
+                  res.dtu !== ''
+                    ? `
                   <div class="flex pt-[1.2rem] justify-center">
                     <a 
-                    href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}&url=${res.url}" 
+                    href="/checkVideo?dtu=${res.dtu}&channelId=${res.channelId}" 
                     class="w-[60%] text-center bg-[#409eff] !text-white py-[5px] px-[10px] rounded-md font-medium hover:bg-[#66b1ff] transition-colors"
                     style="text-decoration: none;">
                   查看监控
                     </a>
                   </div>
                 `
-                : ''}
+                    : ''
+                }
             </div> 
-          </div>`
-        mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude])
-        mapTangBgRef.value.setMapCenter(res.longitude, res.latitude)
+          </div>`;
+        mapTangBgRef.value.openInfoWindow(infoString, [res.longitude, res.latitude]);
+        mapTangBgRef.value.setMapCenter(res.longitude, res.latitude);
       }
-    }
+    };
 
     const getMenuDataList = async () => {
-      const res = await getDeviceCategoryTree({})
-      console.log('getMenuDataList14123', res)
-      console.log('模板引用', mapTangBgRef.value)
+      const res = await getDeviceCategoryTree({});
+      console.log('getMenuDataList14123', res);
+      console.log('模板引用', mapTangBgRef.value);
 
-      if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res)
-      console.log('allDeviceDataList', allDeviceDataList.value)
+      if (Array.isArray(res)) allDeviceDataList.value = getAllLocationDevice(res);
+      console.log('allDeviceDataList', allDeviceDataList.value);
       const kindMap = {
         '101': 'Monitor',
         '79': 'Monitor',
@@ -1016,54 +1067,54 @@ export default defineComponent({
         '104': 'Soil',
         '107': 'Bug',
         '88': 'Bug'
-      }
+      };
 
       // 添加 Marker 到地图上
       const _center = turf.centroid(
         turf.points(
           allDeviceDataList.value
             .map((ele) => {
-              const _item = JSON.parse(JSON.stringify(ele))
-              return [parseFloat(_item.longitude), parseFloat(_item.latitude)]
+              const _item = JSON.parse(JSON.stringify(ele));
+              return [parseFloat(_item.longitude), parseFloat(_item.latitude)];
             })
             .filter((item) => {
-              const [a, b] = item
-              if (isNaN(a) || isNaN(b) || !a || !b) return false
-              return true
+              const [a, b] = item;
+              if (isNaN(a) || isNaN(b) || !a || !b) return false;
+              return true;
             })
         )
-      )
+      );
 
-      const { geometry } = _center
-      const { coordinates } = geometry
-      const [_lng, _lat] = coordinates
+      const { geometry } = _center;
+      const { coordinates } = geometry;
+      const [_lng, _lat] = coordinates;
       mapTangBgRef.value.setViewport(
         allDeviceDataList.value.map((item) => {
-          return { lng: item.longitude, lat: item.latitude }
+          return { lng: item.longitude, lat: item.latitude };
         })
-      )
-      mapTangBgRef.value.setMapCenter(_lng, _lat)
+      );
+      mapTangBgRef.value.setMapCenter(_lng, _lat);
       // mapTangBgRef.value.setMapZoom(17)
 
       allDeviceDataList.value.forEach((item) => {
-        const _item = JSON.parse(JSON.stringify(item))
+        const _item = JSON.parse(JSON.stringify(item));
         if (!_item.longitude || !_item.latitude) {
-          return
+          return;
         }
-        const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline'
-        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`)
+        const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline';
+        console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`);
 
         const marker = mapTangBgRef.value.addMarkerToMap(
           _item.longitude,
           _item.latitude,
           _item.deviceName,
           `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
-        )
+        );
         marker.on('click', () => {
-          handleSelect(item.id)
-        })
-      })
-    }
+          handleSelect(item.id);
+        });
+      });
+    };
     // getMenuDataList()
 
     const plantTabPage = () => {
@@ -1082,15 +1133,21 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content">
-                <div class="px-[20px] py-[28px] grid grid-cols-2 gap-[10px] overflow-auto hidden-scrollbar" v-loading={baseEquipmentLoading.value}>
-                  {
-                    baseEquipmentList.value.map(item => (
-                      <div class="flex justify-between box-border px-[16px] py-[12px] base-device-item cursor-pointer" onClick={() => { if (item.url) window.open(item.url) }}>
-                        <div>{item.label}</div>
-                        <div class="text-[#11F47F]">{item.value}</div>
-                      </div>
-                    ))
-                  }
+                <div
+                  class="px-[20px] py-[28px] grid grid-cols-2 gap-[10px] overflow-auto hidden-scrollbar"
+                  v-loading={baseEquipmentLoading.value}
+                >
+                  {baseEquipmentList.value.map((item) => (
+                    <div
+                      class="flex justify-between box-border px-[16px] py-[12px] base-device-item cursor-pointer"
+                      onClick={() => {
+                        if (item.url) window.open(item.url);
+                      }}
+                    >
+                      <div>{item.label}</div>
+                      <div class="text-[#11F47F]">{item.value}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1122,7 +1179,9 @@ export default defineComponent({
                 <div
                   id="harvestChart"
                   class="mt-2 cursor-pointer"
-                  onClick={() => { window.open("/farm_work/harvest-management") }}
+                  onClick={() => {
+                    window.open('/farm_work/harvest-management');
+                  }}
                 >
                   <PlanComponent />
                 </div>
@@ -1136,17 +1195,20 @@ export default defineComponent({
             {/* h(MapTangBa, {class: 'w-full h-[630px] z-0', ref: mapTangBgRef}) */}
             {/** 设备统计 */}
             <div class="w-full box-border h-[70px] px-[52.5px] pt-[10px] grid grid-cols-4 gap-[15px] absolute top-0 left-0">
-              {
-                plantCenterTopCardList.value.map(item => (
-                  <div class={`device-bg ${ item.bgClass } flex justify-between items-center cursor-pointer`} onClick={() => { window.open("/internetMonitor/device/deviceView?deviceStatus=" + item.param) }}>
-                    <div class="flex items-center">
-                      <div class={`device-icon ${ item.iconClass }`}></div>
-                      <div class="ml-[10px]">{item.label}</div>
-                    </div>
-                    <div class="text-[24px]">{item.value}</div>
+              {plantCenterTopCardList.value.map((item) => (
+                <div
+                  class={`device-bg ${item.bgClass} flex justify-between items-center cursor-pointer`}
+                  onClick={() => {
+                    window.open('/internetMonitor/device/deviceView?deviceStatus=' + item.param);
+                  }}
+                >
+                  <div class="flex items-center">
+                    <div class={`device-icon ${item.iconClass}`}></div>
+                    <div class="ml-[10px]">{item.label}</div>
                   </div>
-                ))
-              }
+                  <div class="text-[24px]">{item.value}</div>
+                </div>
+              ))}
             </div>
             {/** 打造特色产品 */}
             <div class="w-full h-[310px] !hidden">
@@ -1159,28 +1221,36 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content-wide box-border px-[17px] py-[21px]">
-                <div class="flex justify-between cursor-pointer" onClick={() => { window.open("/pcg/production/village-product") }} v-loading={baseEquipmentLoading.value}>
-                  {
-                    showedProductPageList.value.map(item => (
-                      <div class="flex justify-between product-item">
-                        <img src={item.photo} class="h-[170px] object-contain" />
-                        <div class="w-[150px] overflow-auto hidden-scrollbar">
-                          <div>
-                            <div class="text-[#B6BECE]">农场名称:</div>
-                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.park}</div>
+                <div
+                  class="flex justify-between cursor-pointer"
+                  onClick={() => {
+                    window.open('/pcg/production/village-product');
+                  }}
+                  v-loading={baseEquipmentLoading.value}
+                >
+                  {showedProductPageList.value.map((item) => (
+                    <div class="flex justify-between product-item">
+                      <img src={item.photo} class="h-[170px] object-contain" />
+                      <div class="w-[150px] overflow-auto hidden-scrollbar">
+                        <div>
+                          <div class="text-[#B6BECE]">农场名称:</div>
+                          <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.park}</div>
+                        </div>
+                        <div class="mt-[17px]">
+                          <div class="text-[#B6BECE]">农场详情:</div>
+                          <div class="text-[18px] product-item-detail-bg mt-[5px]">
+                            {item.parkDetail}
                           </div>
-                          <div class="mt-[17px]">
-                            <div class="text-[#B6BECE]">农场详情:</div>
-                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.parkDetail}</div>
-                          </div>
-                          <div class="mt-[17px]">
-                            <div class="text-[#B6BECE]">产品名称:</div>
-                            <div class="text-[18px] product-item-detail-bg mt-[5px]">{item.product}</div>
+                        </div>
+                        <div class="mt-[17px]">
+                          <div class="text-[#B6BECE]">产品名称:</div>
+                          <div class="text-[18px] product-item-detail-bg mt-[5px]">
+                            {item.product}
                           </div>
                         </div>
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1198,28 +1268,45 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="plant-card-content-small box-border px-[15px] py-[12px]">
-                <div class="cursor-pointer" onClick={() => { window.open("/internetMonitor/device/overview") }} v-loading={deviceInfoLoading.value}>
+                <div
+                  class="cursor-pointer"
+                  onClick={() => {
+                    window.open('/internetMonitor/device/overview');
+                  }}
+                  v-loading={deviceInfoLoading.value}
+                >
                   <div class="flex justify-between box-border px-[20px] py-[6px] iot-total">
                     <div>物联网设备</div>
-                    <div class="text-sm">共计: <span class="text-[18px]">{deviceInfoTotal.value}</span>台</div>
+                    <div class="text-sm">
+                      共计: <span class="text-[18px]">{deviceInfoTotal.value}</span>台
+                    </div>
                   </div>
                   <div class="overflow-auto hidden-scrollbar">
-                    {
-                      deviceInfoList.value.map(item => (
-                        <div class="iot-item">
-                          <div class="flex justify-between">
-                            <div>{item.deviceKind}</div>
-                            <div>共计: {item.total}台</div>
-                          </div>
-                          <el-progress percentage={item.rate} class="mt-[9px]" stroke-width="10px" color="#01FF7C" show-text={ false } striped striped-flow duration="30"/>
-                          <div class="mt-[7px] flex justify-end items-center">
-                            <div class="pr-[3px]">在线: {item.online}</div>
-                            <div class="w-[1px] h-[10px] box-border border border-solid border-[#82868F]"></div>
-                            <div><span class="pl-[5px]">离线: {item.offline}</span></div>
+                    {deviceInfoList.value.map((item) => (
+                      <div class="iot-item">
+                        <div class="flex justify-between">
+                          <div>{item.deviceKind}</div>
+                          <div>共计: {item.total}台</div>
+                        </div>
+                        <el-progress
+                          percentage={item.rate}
+                          class="mt-[9px]"
+                          stroke-width="10px"
+                          color="#01FF7C"
+                          show-text={false}
+                          striped
+                          striped-flow
+                          duration="30"
+                        />
+                        <div class="mt-[7px] flex justify-end items-center">
+                          <div class="pr-[3px]">在线: {item.online}</div>
+                          <div class="w-[1px] h-[10px] box-border border border-solid border-[#82868F]"></div>
+                          <div>
+                            <span class="pl-[5px]">离线: {item.offline}</span>
                           </div>
                         </div>
-                      ))
-                    }
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1236,111 +1323,167 @@ export default defineComponent({
               {/** 内容 */}
               <div class="plant-card-content-high box-border py-[10px] px-[14px] overflow-auto hidden-scrollbar">
                 {/** 气象监测 */}
-                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站") }}>
+                <div
+                  class="art-font w-fit h-[21px] leading-[21px] text-[16px] cursor-pointer"
+                  onClick={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=气象站'
+                    );
+                  }}
+                >
                   气象监测
                 </div>
-                <div class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer" v-loading={weatherLoading.value} onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=气象站") }}>
-                  {
-                    weatherList.value.map((item) => (
-                      <div class="real-time-item flex flex-col items-center">
-                        <div class={['iconv2-' + item.icon]}></div>
-                        <div>{item.label}</div>
-                        <div class="real-time-item-value">
-                          <span class="text-[16px]">{item.value}</span>
-                          <span class="">{item.unit || ''}</span>
-                        </div>
+                <div
+                  class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer"
+                  v-loading={weatherLoading.value}
+                  onClick={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=气象站'
+                    );
+                  }}
+                >
+                  {weatherList.value.map((item) => (
+                    <div class="real-time-item flex flex-col items-center">
+                      <div class={['iconv2-' + item.icon]}></div>
+                      <div>{item.label}</div>
+                      <div class="real-time-item-value">
+                        <span class="text-[16px]">{item.value}</span>
+                        <span class="">{item.unit || ''}</span>
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
                 {/** 土壤墒情 */}
-                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] hidden cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测") }}>
+                <div
+                  class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] hidden cursor-pointer"
+                  onClick={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测'
+                    );
+                  }}
+                >
                   土壤墒情
                 </div>
-                <div class="mt-[6px] grid grid-cols-4 gap-[8px] hidden cursor-pointer" v-loading={soilLoading.value}  cursor-pointer={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测") }}>
-                  {
-                    soilList.value.map((item) => (
-                      <div class="real-time-item flex flex-col items-center">
-                        <div class={['iconv2-' + item.icon]}></div>
-                        <div>{item.label}</div>
-                        <div class="real-time-item-value">
-                          <span class="text-[16px]">{item.value}</span>
-                          <span class="">{item.unit || ''}</span>
-                        </div>
+                <div
+                  class="mt-[6px] grid grid-cols-4 gap-[8px] hidden cursor-pointer"
+                  v-loading={soilLoading.value}
+                  cursor-pointer={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=土壤监测'
+                    );
+                  }}
+                >
+                  {soilList.value.map((item) => (
+                    <div class="real-time-item flex flex-col items-center">
+                      <div class={['iconv2-' + item.icon]}></div>
+                      <div>{item.label}</div>
+                      <div class="real-time-item-value">
+                        <span class="text-[16px]">{item.value}</span>
+                        <span class="">{item.unit || ''}</span>
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
                 {/** 水质监测 */}
-                <div class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测") }}>
+                <div
+                  class="art-font w-fit h-[21px] leading-[21px] text-[16px] mt-[8px] cursor-pointer"
+                  onClick={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测'
+                    );
+                  }}
+                >
                   水质监测
                 </div>
-                <div class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer" v-loading={waterLoading.value} onClick={() => { window.open("/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测") }}>
-                  {
-                    waterList.value.map((item) => (
-                      <div class="real-time-item flex flex-col items-center">
-                        <div class={['iconv2-' + item.icon]}></div>
-                        <div>{item.label}</div>
-                        <div class="real-time-item-value">
-                          <span class="text-[16px]">{item.value}</span>
-                          <span class="">{item.unit || ''}</span>
-                        </div>
+                <div
+                  class="mt-[6px] grid grid-cols-4 gap-[8px] cursor-pointer"
+                  v-loading={waterLoading.value}
+                  onClick={() => {
+                    window.open(
+                      '/internetMonitor/deviceData/equipment-data-three?collectionType=水质监测'
+                    );
+                  }}
+                >
+                  {waterList.value.map((item) => (
+                    <div class="real-time-item flex flex-col items-center">
+                      <div class={['iconv2-' + item.icon]}></div>
+                      <div>{item.label}</div>
+                      <div class="real-time-item-value">
+                        <span class="text-[16px]">{item.value}</span>
+                        <span class="">{item.unit || ''}</span>
                       </div>
-                    ))
-                  }
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      )
-    }
+      );
+    };
 
     // 预警列表
-    const preWarnLoading = ref<boolean>(false)
-    const preWarnList = ref<Array<any>>([])
+    const preWarnLoading = ref<boolean>(false);
+    const preWarnList = ref<Array<any>>([]);
     const getPreWarnList = async () => {
-      preWarnLoading.value = true
+      preWarnLoading.value = true;
       const res = await fulingWarningInfo({
         parkId: '',
         plotId: ''
       }).catch(() => {
-        preWarnLoading.value = false
-      })
-      if (!Array.isArray(res)) return
-      preWarnLoading.value = false
-      console.log("预警列表", res);
-      preWarnList.value = res.map(item => ({
+        preWarnLoading.value = false;
+      });
+      if (!Array.isArray(res)) return;
+      preWarnLoading.value = false;
+      console.log('预警列表', res);
+      preWarnList.value = res.map((item) => ({
         ...item,
         warnLocation: item.warnLocation ? item.warnLocation : '未知',
         warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss'),
         warnStatus: item.warnStatus === '0' ? '未处理' : '已处理'
-      }))
-    }
-    getPreWarnList()
+      }));
+    };
+    getPreWarnList();
 
     // 预警分布Echarts
     const initChartWarnLayout = async () => {
-      const res = await fulingWarningDistr({})
-      console.log("预警分布ECharts数据", res)
-      const colorList = ['100, 170, 234', '255, 137, 53', '181, 181, 181', '255, 211, 0', '74, 125, 215', '246, 107, 191', '55, 216, 255', '113, 246, 249', '91, 155, 213', '237, 125, 49', '165, 165, 165', '255, 192, 0', '68, 114, 196', '255, 94, 94', '17, 234, 201', '17, 244, 127']
-      if (!Array.isArray(res)) return
+      const res = await fulingWarningDistr({});
+      console.log('预警分布ECharts数据', res);
+      const colorList = [
+        '100, 170, 234',
+        '255, 137, 53',
+        '181, 181, 181',
+        '255, 211, 0',
+        '74, 125, 215',
+        '246, 107, 191',
+        '55, 216, 255',
+        '113, 246, 249',
+        '91, 155, 213',
+        '237, 125, 49',
+        '165, 165, 165',
+        '255, 192, 0',
+        '68, 114, 196',
+        '255, 94, 94',
+        '17, 234, 201',
+        '17, 244, 127'
+      ];
+      if (!Array.isArray(res)) return;
       initChartStatic(
-        "preWarnLayoutChart",
+        'preWarnLayoutChart',
         generatePieOptions({
           legend: {
             show: true,
-            top: "84%",
-            left: "center",
-            orient: 'horizontal',
+            top: '84%',
+            left: 'center',
+            orient: 'horizontal'
           },
-          color: ["#5b9bd5", "#ed7d31", "#a5a5a5", '#ffc000', '#4472c4'],
+          color: ['#5b9bd5', '#ed7d31', '#a5a5a5', '#ffc000', '#4472c4'],
           series: [
             {
-              nam: "预警分布",
-              type: "pie",
-              radius: ["40%", "50%"],
-              center: ["50%", "47%"],
+              nam: '预警分布',
+              type: 'pie',
+              radius: ['40%', '50%'],
+              center: ['50%', '47%'],
               padAngle: 5,
               data: res.map((item, index) => ({
                 name: item.warnType,
@@ -1353,24 +1496,24 @@ export default defineComponent({
                 }
               })),
               label: {
-                formatter: "{b}\n{c},{d}%",
+                formatter: '{b}\n{c},{d}%',
                 color: '#fff',
                 rich: {
                   c: {
-                    color: "#c1c1c1",
-                    fontSize: 10,
+                    color: '#c1c1c1',
+                    fontSize: 10
                   },
                   d: {
-                    color: "#c1c1c1",
-                    fontSize: 10,
-                  },
-                },
-              },
-            },
-          ],
+                    color: '#c1c1c1',
+                    fontSize: 10
+                  }
+                }
+              }
+            }
+          ]
         })
       );
-    }
+    };
 
     // 虫害数量
     const initBugCountChart = async () => {
@@ -1380,10 +1523,10 @@ export default defineComponent({
         sumList = [],
         jinList = [],
         xiList = []
-      } = await getPestLevelChart({})
-      console.log("虫害数量 总数", sumList);
-      const colorList = ['255, 98, 19', '9, 79, 58', '157, 110, 48', '53, 117, 124']
-      const types = ['总数', '金蝉子数量', '蛾对应数量', '蟋蟀数量']
+      } = await getPestLevelChart({});
+      console.log('虫害数量 总数', sumList);
+      const colorList = ['255, 98, 19', '9, 79, 58', '157, 110, 48', '53, 117, 124'];
+      const types = ['总数', '金蝉子数量', '蛾对应数量', '蟋蟀数量'];
       initChartStatic(
         'bugCountChart',
         generateBaseOptions({
@@ -1406,7 +1549,10 @@ export default defineComponent({
               fontSize: 14
             },
             data: colorList.map((item, index) => {
-              return {name: types[index], itemStyle: {color: `rgba(${item}, 1)`, borderWidth: 0}}
+              return {
+                name: types[index],
+                itemStyle: { color: `rgba(${item}, 1)`, borderWidth: 0 }
+              };
             }),
             top: 20,
             left: 180
@@ -1518,7 +1664,7 @@ export default defineComponent({
                   { offset: 1, color: 'rgba(53, 117, 124, 0.5)' }
                 ])
               }
-            },
+            }
           ],
           grid: {
             left: '12%',
@@ -1527,146 +1673,150 @@ export default defineComponent({
             bottom: '15%'
           }
         })
-      )
-    }
+      );
+    };
     addTabChangeMap('risk', () => {
       nextTick(() => {
-        initChartWarnLayout()
-        initBugCountChart()
-      })
-    })
+        initChartWarnLayout();
+        initBugCountChart();
+      });
+    });
 
     // 报警信息处理情况
-    const warnHandleInfo = ref<Array<any>>([])
+    const warnHandleInfo = ref<Array<any>>([]);
     const getWarnHandleInfoList = async () => {
-      const res = await warningNum({})
+      const res = await warningNum({});
       console.log('报警信息处理情况左侧统计', res);
-      if (!Array.isArray(res)) return
-      warnHandleInfo.value = res.map(item => ({
+      if (!Array.isArray(res)) return;
+      warnHandleInfo.value = res.map((item) => ({
         ...item,
-        label: item.warnStatus === '0'
-          ? '未处理'
-          : item.warnStatus === '1'
-            ? '已处理'
-            : '已忽略',
+        label: item.warnStatus === '0' ? '未处理' : item.warnStatus === '1' ? '已处理' : '已忽略',
         value: item.num
-      }))
-    }
-    getWarnHandleInfoList()
+      }));
+    };
+    getWarnHandleInfoList();
 
     // 报警信息处理情况列表
-    const warnInfoHandleLoading = ref<boolean>(false)
-    const warnInfoHandleList = ref<Array<any>>([])
+    const warnInfoHandleLoading = ref<boolean>(false);
+    const warnInfoHandleList = ref<Array<any>>([]);
     const getWarnInfoHandleList = async () => {
-      warnInfoHandleLoading.value = true
-      const {list = []} = await agriWarningRecordPage({warnStatus: '0'}).catch(() => {
-        warnInfoHandleLoading.value = false
-      })
-      warnInfoHandleLoading.value = false
-      if (!Array.isArray(list)) return
-      warnInfoHandleList.value = list.map(item => {
+      warnInfoHandleLoading.value = true;
+      const { list = [] } = await agriWarningRecordPage({ warnStatus: '0' }).catch(() => {
+        warnInfoHandleLoading.value = false;
+      });
+      warnInfoHandleLoading.value = false;
+      if (!Array.isArray(list)) return;
+      warnInfoHandleList.value = list.map((item) => {
         return {
           ...item,
-          warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss'),
-        }
-      })
-    }
-    getWarnInfoHandleList()
+          warnTime: formatTime(item.warnTime, 'yyyy-MM-dd HH:mm:ss')
+        };
+      });
+    };
+    getWarnInfoHandleList();
 
     // 指挥调度
-    const commandLoading = ref<boolean>(false)
-    const commandInfoList = ref<Array<any>>([])
+    const commandLoading = ref<boolean>(false);
+    const commandInfoList = ref<Array<any>>([]);
     const getCommandInfoList = async (farmDefineType: string) => {
-      commandInfoList.value = []
-      commandLoading.value = true
-      const {list = [], total = 0} = await farmPlanPageW({
-        pageNo: 1, pageSize: 7, farmDefineType
+      commandInfoList.value = [];
+      commandLoading.value = true;
+      const { list = [], total = 0 } = await farmPlanPageW({
+        pageNo: 1,
+        pageSize: 7,
+        farmDefineType
       }).catch(() => {
-        commandLoading.value = false
-      })
-      console.log("指挥调度", list);
-      commandLoading.value = false
-      commandInfoList.value = list.map(item => ({
+        commandLoading.value = false;
+      });
+      console.log('指挥调度', list);
+      commandLoading.value = false;
+      commandInfoList.value = list.map((item) => ({
         ...item,
         lastTime: formatTime(item.lastTime, 'yyyy-MM-dd'),
         startTime: formatTime(item.startTime, 'yyyy-MM-dd')
-      }))
-      console.log("total", total);
-    }
+      }));
+      console.log('total', total);
+    };
 
     // 指挥调度 上面
-    const farmTopLoading = ref<boolean>(false)
-    const farmTopList = ref<Array<any>>([])
-    const selectedFarmTopId = ref<string>()
+    const farmTopLoading = ref<boolean>(false);
+    const farmTopList = ref<Array<any>>([]);
+    const selectedFarmTopId = ref<string>();
     const getFarmTopList = async () => {
-      farmTopLoading.value = true
+      farmTopLoading.value = true;
       const res = await farmdefineList().catch(() => {
-        farmTopLoading.value = false
-      })
-      farmTopLoading.value = false
-      farmTopList.value = res.map(item => ({
+        farmTopLoading.value = false;
+      });
+      farmTopLoading.value = false;
+      farmTopList.value = res.map((item) => ({
         ...item,
         icon: 'icon-schedule-' + getIconClass(item.defineName),
         label: item.defineName
-      }))
+      }));
       if (farmTopList.value.length > 0) {
-        selectedFarmTopId.value = farmTopList.value[0].id
-        getCommandInfoList(farmTopList.value[0].id)
+        selectedFarmTopId.value = farmTopList.value[0].id;
+        getCommandInfoList(farmTopList.value[0].id);
       }
-    }
-    getFarmTopList()
+    };
+    getFarmTopList();
     //跳转农事记录添加接口，定义可传递的参数
     const generateUrlParams = (params: object) => {
-      const _keys = Object.keys(params)
-      let _url = []
-      _keys.forEach(_ele => {
-        const _text = _ele + '=' + params[_ele]
-        _url.push(_text)
-      })
-      return _url.join('&')
-    }
+      const _keys = Object.keys(params);
+      let _url = [];
+      _keys.forEach((_ele) => {
+        const _text = _ele + '=' + params[_ele];
+        _url.push(_text);
+      });
+      return _url.join('&');
+    };
 
     // 预警信息表格行 样式
-    const warnInfoRow = (data: { row: any, rowIndex: number }) => {
-      let res = {"background-color": 'transparent', color: '#fff'}
+    const warnInfoRow = (data: { row: any; rowIndex: number }) => {
+      let res = { 'background-color': 'transparent', color: '#fff' };
       if (data.rowIndex % 2) {
-        res['background'] = 'linear-gradient(90deg, rgba(255, 69, 69, 0.182) 0%, rgba(255, 69, 69, 0.05) 100%)'
+        res['background'] =
+          'linear-gradient(90deg, rgba(255, 69, 69, 0.182) 0%, rgba(255, 69, 69, 0.05) 100%)';
       }
-      return res
-    }
+      return res;
+    };
     // 预警信息表格头 样式
-    const warnInfoTitle = (data: { row: any, column: any, rowIndex: number, columnIndex: number }) => {
+    const warnInfoTitle = (data: {
+      row: any;
+      column: any;
+      rowIndex: number;
+      columnIndex: number;
+    }) => {
       let res = {
-        "background-color": "rgba(17, 234, 201, 0.1)",
-        color: "#11EAC9",
+        'background-color': 'rgba(17, 234, 201, 0.1)',
+        color: '#11EAC9',
         height: '35px',
         'line-height': '35px'
-      }
+      };
       if (!data.columnIndex) {
-        res['padding-left'] = '35px'
+        res['padding-left'] = '35px';
       }
-      return res
-    }
+      return res;
+    };
 
     // 报警信息处理情况表头 样式
     const dealTitle = () => {
       return {
-        "background-color": "rgba(17, 234, 201, 0.1)",
-        color: "#11EAC9",
+        'background-color': 'rgba(17, 234, 201, 0.1)',
+        color: '#11EAC9',
         border: 'none',
         height: '35px',
         'line-height': '35px'
-      }
-    }
+      };
+    };
     // 报警信息处理情况内容 样式
     const dealContent = () => {
       return {
         color: '#fff',
         height: '35px',
         'line-height': '35px',
-        'border-bottom': '1px dashed rgba(61, 255, 226, 0.15)',
-      }
-    }
+        'border-bottom': '1px dashed rgba(61, 255, 226, 0.15)'
+      };
+    };
 
     const riskTabPage = () => {
       return (
@@ -1684,27 +1834,38 @@ export default defineComponent({
               </div>
               {/** 内容 */}
               <div class="risk-card-content-lg">
-                <div class="w-full h-full box-border px-[15px] pt-[15px] pb-[10px] cursor-pointer" v-loading={preWarnLoading.value} onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}>
-                  <ElTable data={preWarnList.value} rowStyle={warnInfoRow} headerCellStyle={warnInfoTitle} headerRowStyle={{'background-color': 'transparent'}} height="392.5px" style="background-color: transparent">
+                <div
+                  class="w-full h-full box-border px-[15px] pt-[15px] pb-[10px] cursor-pointer"
+                  v-loading={preWarnLoading.value}
+                  onClick={() => {
+                    window.open('/internetMonitor/warn/agri-warning-record');
+                  }}
+                >
+                  <ElTable
+                    data={preWarnList.value}
+                    rowStyle={warnInfoRow}
+                    headerCellStyle={warnInfoTitle}
+                    headerRowStyle={{ 'background-color': 'transparent' }}
+                    height="392.5px"
+                    style="background-color: transparent"
+                  >
                     <ElTableColumn label="预警信息">
-                      {
-                        ({ row }) => (
-                          <div class="flex items-center">
-                            <div class="contain-img risk-warn-info-icon"></div>
-                            <div>{ row.warnInfo }</div>
-                          </div>
-                        )
-                      }
+                      {({ row }) => (
+                        <div class="flex items-center">
+                          <div class="contain-img risk-warn-info-icon"></div>
+                          <div>{row.warnInfo}</div>
+                        </div>
+                      )}
                     </ElTableColumn>
                     <ElTableColumn label="预警地点" property="warnLocation" />
                     <ElTableColumn label="预警时间" property="warnTime" />
                     <ElTableColumn label="预警类型" property="warnType" />
                     <ElTableColumn label="预警状态">
-                      {
-                        ({row}) => (
-                          <span class={'未处理' === row.warnStatus ? 'text-[#11F47F]' : ''}>{row.warnStatus}</span>
-                        )
-                      }
+                      {({ row }) => (
+                        <span class={'未处理' === row.warnStatus ? 'text-[#11F47F]' : ''}>
+                          {row.warnStatus}
+                        </span>
+                      )}
                     </ElTableColumn>
                   </ElTable>
                 </div>
@@ -1722,7 +1883,13 @@ export default defineComponent({
                 </div>
                 {/** 内容 */}
                 <div class="risk-card-content-sm relative">
-                  <div id="preWarnLayoutChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}></div>
+                  <div
+                    id="preWarnLayoutChart"
+                    class="cursor-pointer"
+                    onClick={() => {
+                      window.open('/internetMonitor/warn/agri-warning-record');
+                    }}
+                  ></div>
                   <div class="absolute top-[118.75px] left-[217.5px] distribution-label flex justify-center items-center">
                     <span class="art-font text-[24px] distribution-text">预警分布</span>
                   </div>
@@ -1739,7 +1906,15 @@ export default defineComponent({
                 </div>
                 {/** 内容 */}
                 <div class="risk-card-content-sm">
-                  <div id="bugCountChart" class="cursor-pointer" onClick={() => { window.open("/internetMonitor/deviceData/equipment-data?collectionType=虫情监测") }}></div>
+                  <div
+                    id="bugCountChart"
+                    class="cursor-pointer"
+                    onClick={() => {
+                      window.open(
+                        '/internetMonitor/deviceData/equipment-data?collectionType=虫情监测'
+                      );
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -1752,7 +1927,12 @@ export default defineComponent({
               <div class="risk-card-title-md">
                 <div class="flex items-center ml-[15px]">
                   <div class="notice-icon contain-img"></div>
-                  <div class="art-font notice-title cursor-pointer" onClick={() => { window.open("/internetMonitor/warn/agri-warning-record") }}>
+                  <div
+                    class="art-font notice-title cursor-pointer"
+                    onClick={() => {
+                      window.open('/internetMonitor/warn/agri-warning-record');
+                    }}
+                  >
                     报警信息处理情况
                   </div>
                 </div>
@@ -1762,44 +1942,59 @@ export default defineComponent({
                 <div class="w-full h-full box-border py-[13px] px-[15px]">
                   {/** 处理情况统计 */}
                   <div class="flex justify-between w-full h-[60px]">
-                    {
-                      warnHandleInfo.value.map(item => (
-                        <div class="flex justify-between items-center cursor-pointer risk-deal-num" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?warnStatus=${item.warnStatus}`) }}>
-                          <div class="flex items-center">
-                            <div class={`contain-img risk-deal-icon-${item.warnStatus}`}></div>
-                            <div class="ml-[11px]">{item.label}</div>
-                          </div>
-                          <span class="notice-title">{item.value}</span>
+                    {warnHandleInfo.value.map((item) => (
+                      <div
+                        class="flex justify-between items-center cursor-pointer risk-deal-num"
+                        onClick={() => {
+                          window.open(
+                            `/internetMonitor/warn/agri-warning-record?warnStatus=${item.warnStatus}`
+                          );
+                        }}
+                      >
+                        <div class="flex items-center">
+                          <div class={`contain-img risk-deal-icon-${item.warnStatus}`}></div>
+                          <div class="ml-[11px]">{item.label}</div>
                         </div>
-                      ))
-                    }
+                        <span class="notice-title">{item.value}</span>
+                      </div>
+                    ))}
                   </div>
                   <ElTable
                     data={warnInfoHandleList.value}
                     class="mt-[10px] cursor-default"
                     height="321.5px"
                     headerCellStyle={dealTitle}
-                    headerRowStyle={{backgroundColor: 'transparent'}}
+                    headerRowStyle={{ backgroundColor: 'transparent' }}
                     cellStyle={dealContent}
-                    rowStyle={{'background-color': 'transparent'}}
+                    rowStyle={{ 'background-color': 'transparent' }}
                     v-loading={warnInfoHandleLoading.value}
                     style="background-color: transparent"
                   >
-                    <ElTableColumn label="预警信息" property="warnInfo"/>
-                    <ElTableColumn label="预警时间" property="warnTime"/>
+                    <ElTableColumn label="预警信息" property="warnInfo" />
+                    <ElTableColumn label="预警时间" property="warnTime" />
                     <ElTableColumn label="操作">
-                      {
-                        ({row}) => (
-                          <div>
-                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?id=${row.id}&status=2`)}}>
-                              忽略
-                            </button>
-                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#5CFFEF] border border-solid border-[#5CFFEF] cursor-pointer rounded ml-[5px]" onClick={() => { window.open(`/internetMonitor/warn/agri-warning-record?id=${row.id}`)}}>
-                              去处理
-                            </button>
-                          </div>
-                        )
-                      }
+                      {({ row }) => (
+                        <div>
+                          <button
+                            class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded"
+                            onClick={() => {
+                              window.open(
+                                `/internetMonitor/warn/agri-warning-record?id=${row.id}&status=2`
+                              );
+                            }}
+                          >
+                            忽略
+                          </button>
+                          <button
+                            class="bg-transparent box-border w-[60px] h-[24px] text-[#5CFFEF] border border-solid border-[#5CFFEF] cursor-pointer rounded ml-[5px]"
+                            onClick={() => {
+                              window.open(`/internetMonitor/warn/agri-warning-record?id=${row.id}`);
+                            }}
+                          >
+                            去处理
+                          </button>
+                        </div>
+                      )}
                     </ElTableColumn>
                   </ElTable>
                 </div>
@@ -1821,41 +2016,61 @@ export default defineComponent({
                   <div class="h-[26px] mb-[10px]">
                     <ElScrollbar>
                       <div class="flex w-fit">
-                        {
-                          farmTopList.value.map(item => (
-                            <div class={`${item.id === selectedFarmTopId.value ? 'risk-schedule-item-active text-[#11F47F] mr-[10px]' : 'risk-schedule-item-normal mr-[10px]'} cursor-pointer flex items-center`} onClick={() => {
-                                selectedFarmTopId.value = item.id
-                                getCommandInfoList(selectedFarmTopId.value as any)
-                              }}
-                            >
-                              <div class={`${item.icon} ml-[20px]`}></div>
-                              <div class="ml-[8px]">{item.label}</div>
-                            </div>
-                          ))
-                        }
+                        {farmTopList.value.map((item) => (
+                          <div
+                            class={`${item.id === selectedFarmTopId.value ? 'risk-schedule-item-active text-[#11F47F] mr-[10px]' : 'risk-schedule-item-normal mr-[10px]'} cursor-pointer flex items-center`}
+                            onClick={() => {
+                              selectedFarmTopId.value = item.id;
+                              getCommandInfoList(selectedFarmTopId.value as any);
+                            }}
+                          >
+                            <div class={`${item.icon} ml-[20px]`}></div>
+                            <div class="ml-[8px]">{item.label}</div>
+                          </div>
+                        ))}
                       </div>
                     </ElScrollbar>
                   </div>
                   {/** 表格 */}
-                  <ElTable data={commandInfoList.value} v-loading={commandLoading.value} headerCellStyle={dealTitle} headerRowStyle={{backgroundColor: 'transparent'}} cellStyle={dealContent} rowStyle={{'background-color': 'transparent'}} height="351.5px" class="cursor-default" style="background-color: transparent;">
-                    <ElTableColumn label="基地" property="parkName" width='200'/>
+                  <ElTable
+                    data={commandInfoList.value}
+                    v-loading={commandLoading.value}
+                    headerCellStyle={dealTitle}
+                    headerRowStyle={{ backgroundColor: 'transparent' }}
+                    cellStyle={dealContent}
+                    rowStyle={{ 'background-color': 'transparent' }}
+                    height="351.5px"
+                    class="cursor-default"
+                    style="background-color: transparent;"
+                  >
+                    <ElTableColumn label="基地" property="parkName" width="200" />
                     <ElTableColumn label="地块" property="plotName" />
                     <ElTableColumn label="上次执行时间" property="lastTime" />
                     <ElTableColumn label="计划执行时间" property="startTime" />
                     <ElTableColumn label="计划状态">
-                      {
-                        ({row}) => (
-                          row.planState === '0' ? <span class="text-[#FF4545]">未开始</span> : row.planState === '1' ? <span class="text-[#F8CD01]">未开始</span> : '已结束'
+                      {({ row }) =>
+                        row.planState === '0' ? (
+                          <span class="text-[#FF4545]">未开始</span>
+                        ) : row.planState === '1' ? (
+                          <span class="text-[#F8CD01]">未开始</span>
+                        ) : (
+                          '已结束'
                         )
                       }
                     </ElTableColumn>
                     <ElTableColumn label="操作">
-                      {
-                        ({row}) => (
-                          row.planState === '2' ? null : 
-                            <button class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded" onClick={() => { window.open(`/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&${generateUrlParams(row)}`) }}>
-                              去处理
-                            </button>
+                      {({ row }) =>
+                        row.planState === '2' ? null : (
+                          <button
+                            class="bg-transparent box-border w-[60px] h-[24px] text-[#11F47F] border border-solid border-[#11F47F] cursor-pointer rounded"
+                            onClick={() => {
+                              window.open(
+                                `/farm_work/farmManage/farm-record/CreateOrUpdate?type=create&${generateUrlParams(row)}`
+                              );
+                            }}
+                          >
+                            去处理
+                          </button>
                         )
                       }
                     </ElTableColumn>
@@ -1865,19 +2080,19 @@ export default defineComponent({
             </div>
           </div>
         </div>
-      )
-    }
+      );
+    };
 
     // 路由
-    const router = useRouter()
+    const router = useRouter();
     // 返回上一页
     const toLastPage = () => {
-      router.go(-1)
-    }
+      router.go(-1);
+    };
     // 跳到指定页
     const handleRoute = (path: string) => {
-      router.push(path)
-    }
+      router.push(path);
+    };
     return () => (
       <div class="bg-[#112029] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
@@ -1888,8 +2103,18 @@ export default defineComponent({
               v-slots={{
                 left: () => (
                   <div class="h-[40px] mb-[20px] flex">
-                      <button onClick={() => { toLastPage() }} class="bg-transparent border-none contain-img last-icon cursor-pointer"></button>
-                      <button onClick={() => { handleRoute('/') }} class="bg-transparent border-none contain-img home-icon ml-[13px] cursor-pointer"></button>
+                    <button
+                      onClick={() => {
+                        toLastPage();
+                      }}
+                      class="bg-transparent border-none contain-img last-icon cursor-pointer"
+                    ></button>
+                    <button
+                      onClick={() => {
+                        handleRoute('/');
+                      }}
+                      class="bg-transparent border-none contain-img home-icon ml-[13px] cursor-pointer"
+                    ></button>
                     {/** 
                     <BigscreenTab
                       v-model={activeTab.value}
@@ -1922,21 +2147,40 @@ export default defineComponent({
                   <div>
                     <div class="art-font text-[40px] tracking-[6px] relative cursor-default">
                       稻鱼鸭产业可视化数字驾驶舱
-                      <div class={`${ activeTab.value === 'base' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-245px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('base') }}>基地导览</div>
-                      <div class={`${ activeTab.value === 'plant' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('plant') }}>智慧种植</div>
-                      <div class={`${ activeTab.value === 'risk' ? 'module-active-right' : 'module-normal-right'} absolute top-[-10px] right-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`} onClick={()=>{ changeTab('risk') }}>风险预警</div>
+                      <div
+                        class={`${activeTab.value === 'base' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-245px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
+                        onClick={() => {
+                          changeTab('base');
+                        }}
+                      >
+                        基地导览
+                      </div>
+                      <div
+                        class={`${activeTab.value === 'plant' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
+                        onClick={() => {
+                          changeTab('plant');
+                        }}
+                      >
+                        智慧种植
+                      </div>
+                      <div
+                        class={`${activeTab.value === 'risk' ? 'module-active-right' : 'module-normal-right'} absolute top-[-10px] right-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
+                        onClick={() => {
+                          changeTab('risk');
+                        }}
+                      >
+                        风险预警
+                      </div>
                     </div>
                     {/** 在请求监控设备列表或者监控通知事件的时候不允许点击其他Tab页 */}
-                    {
-                      monitorDeviceLoading.value || monitorNoticeLoading.value ? (
-                        <div
-                          class="absolute left-[-490px] top-[-10px] w-[1920px] h-[40px]"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                          }}
-                        ></div>
-                      ) : null
-                    }
+                    {monitorDeviceLoading.value || monitorNoticeLoading.value ? (
+                      <div
+                        class="absolute left-[-490px] top-[-10px] w-[1920px] h-[40px]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      ></div>
+                    ) : null}
                   </div>
                 )
               }}
@@ -1944,31 +2188,32 @@ export default defineComponent({
             <BigscreenMain
               v-slots={{
                 default: () => {
-                  if (activeTab.value === 'base') return baseTabPage()
-                  if (activeTab.value === 'plant') return plantTabPage()
-                  if (activeTab.value === 'risk') return riskTabPage()
+                  if (activeTab.value === 'base') return baseTabPage();
+                  if (activeTab.value === 'plant') return plantTabPage();
+                  if (activeTab.value === 'risk') return riskTabPage();
                 }
               }}
             />
-            <BigscreenFooter height="30px"/>
+            <BigscreenFooter height="30px" />
           </BigscreenContainer>
         </BigscreenAdapter>
       </div>
-    )
-  },
-})
-
+    );
+  }
+});
 </script>
 <style scoped lang="scss">
 .inner-border {
   border: 1px solid #449ce9;
 }
 
-#growthChart, #harvestChart {
+#growthChart,
+#harvestChart {
   height: 270px;
 }
 
-#preWarnLayoutChart, #bugCountChart {
+#preWarnLayoutChart,
+#bugCountChart {
   height: 400px;
 }
 
@@ -1997,7 +2242,7 @@ export default defineComponent({
     position: absolute;
     bottom: -2px;
     width: 100%;
-    height: .2rem;
+    height: 0.2rem;
     content: '';
     background-color: #00d3b6;
   }
@@ -2060,7 +2305,9 @@ export default defineComponent({
 :deep(.el-menu:not(.el-menu--collapse) .el-sub-menu__title) {
   padding-right: 20px;
 }
-:deep(.el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-sub-menu__title) {
+:deep(
+    .el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-sub-menu__title
+  ) {
   padding-left: 40px;
 }
 // 调整菜单项的左内距
@@ -2071,12 +2318,12 @@ export default defineComponent({
 :deep(.el-menu-item:hover) {
   background-image: url(./assets/v2/menuitem-active.png);
   background-size: 100% 100%;
-  color: #5AFFAA;
+  color: #5affaa;
 }
 :deep(.el-menu-item.is-active) {
   background-image: url(./assets/v2/menuitem-active.png);
   background-size: 100% 100%;
-  color: #5AFFAA;
+  color: #5affaa;
 }
 
 /** 中间监控视频 */
@@ -2094,7 +2341,7 @@ export default defineComponent({
   height: 36px;
   line-height: 36px;
   text-align: center;
-  background: linear-gradient(180deg, #FFFFFF 18%, #5CFFAB 100%);
+  background: linear-gradient(180deg, #ffffff 18%, #5cffab 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2130,7 +2377,7 @@ export default defineComponent({
 
 /** 右侧通知事件 */
 .btn-date {
-  background: linear-gradient(180deg, #11EAC9 0%, #11F47F 100%);
+  background: linear-gradient(180deg, #11eac9 0%, #11f47f 100%);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -2140,7 +2387,7 @@ export default defineComponent({
   background-size: 100% 100%;
 }
 .notice-title {
-  background: linear-gradient(180deg, #FFFFFF 18%, #5CFFAB 100%);
+  background: linear-gradient(180deg, #ffffff 18%, #5cffab 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2164,7 +2411,7 @@ export default defineComponent({
   margin-bottom: 10px;
 }
 :deep(.el-input__wrapper) {
-  background-color: #0B2729;
+  background-color: #0b2729;
 }
 :deep(.el-input__wrapper) {
   box-shadow: none;
@@ -2185,7 +2432,7 @@ export default defineComponent({
   background: linear-gradient(180deg, rgba(17, 234, 201, 0.2) 0%, rgba(17, 244, 127, 0.2) 100%);
 }
 :deep(.el-pagination.is-background .el-pager li.is-active) {
-  background: linear-gradient(180deg, #11EAC9 0%, #11F47F 100%);
+  background: linear-gradient(180deg, #11eac9 0%, #11f47f 100%);
 }
 :deep(.el-pagination.is-background .el-pager li) {
   background-color: transparent;
@@ -2362,7 +2609,7 @@ export default defineComponent({
   }
 }
 .real-time-item-value {
-  background: linear-gradient(180deg, #FFFFFF 50%, #8FFFC5 100%);
+  background: linear-gradient(180deg, #ffffff 50%, #8fffc5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2471,13 +2718,13 @@ export default defineComponent({
   height: 140px;
 }
 .distribution-text {
-  background: linear-gradient(180deg, #1DA6FF 0%, #97D6FF 60%, #FFFFFF 100%);
+  background: linear-gradient(180deg, #1da6ff 0%, #97d6ff 60%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
 }
-// 农事智慧调度 
+// 农事智慧调度
 @for $i from 19 through 33 {
   .icon-schedule-#{$i} {
     background-image: url(./assets/v2/icon-schedule-#{$i}.png);
@@ -2501,7 +2748,7 @@ export default defineComponent({
     size: 100% 100%;
   }
 }
-:deep(.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell) {
+:deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
   background-color: rgba(17, 244, 127, 0.15);
 }
 </style>

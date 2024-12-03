@@ -20,7 +20,8 @@ getSerialAndChannelNo();
 </script>
 <template>
   <div class="flex justify-center items-center w-full" style="height: calc(100vh - 125px)">
-    <ys-player v-if="[156, 161].includes(deptId)" v-model="deviceSerial" :channelNo="channelNo" />
-    <ez-player v-else v-model="deviceSerial" :channelNo="channelNo" />
+    <ez-player v-if="[152, 154].includes(deptId)" v-model="deviceSerial" :channelNo="channelNo" />
+    <!--宇视云-->
+    <ys-player v-else v-model="deviceSerial" :channelNo="channelNo" />
   </div>
 </template>
