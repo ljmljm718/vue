@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import adapter from '@/components/MapCustom/src/adapter';
 import dayjs from 'dayjs';
 import gcoord from 'gcoord';
+import { coordinateTransformation } from '@/utils/map';
 import {
   getQianjiangAgriResource,
   getBreedCategory,
@@ -357,29 +358,47 @@ const missionremovePlanClass = (event: any) => {
 const getEquipmentMapData = async () => {
   const res = await getEquipmentMap({});
 
-  const latlngs = [];
+  const latlngs: any[] = [];
   const iconMap = {
     camrea: 'icon1',
     meteorologicalStation: 'icon2'
   };
-  const addLayerMap = (item, key) => {
+  const revertArr = (arr): any[] => {
+    const iconInnerMap = {
+      视频监控: 'icon1',
+      气象站: 'icon2',
+      土壤墒情: 'icon3',
+      杀虫设备: 'icon4',
+      生长监控: 'icon5'
+    };
+    if (!Array.isArray(arr)) return [];
+    let resArr: any[] = [];
+    arr.forEach((item) => {
+      resArr = [
+        ...resArr,
+        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+      ];
+    });
+    return resArr;
+  };
+  const formattedArr = revertArr(res);
+
+  formattedArr.forEach((formattedItem) => {
     const {
       longitude,
       latitude,
       deviceName = '',
       baseName = '',
       plotName = '',
-      location = ''
-    } = item;
+      location = '',
+      type,
+      icon: _icon
+    } = formattedItem;
     if (!longitude || !latitude) return;
-    const [lng, lat] = gcoord.transform(
-      [longitude, latitude], // 经纬度坐标
-      gcoord.BD09, // 当前坐标系
-      gcoord.WGS84 // 目标坐标系
-    );
+    const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
     latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${iconMap[key] ?? 'icon1'}.png`, //marker图片地址
+      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
@@ -398,14 +417,6 @@ const getEquipmentMapData = async () => {
           .openOn(map);
       });
     map.fitBounds(latlngs, { padding: [5, 5] });
-  };
-
-  Object.keys(res).forEach((key: string) => {
-    if (Array.isArray(res[key])) {
-      res[key].forEach((ele) => addLayerMap(ele, key));
-    } else {
-      addLayerMap(res[key], key);
-    }
   });
 };
 </script>
