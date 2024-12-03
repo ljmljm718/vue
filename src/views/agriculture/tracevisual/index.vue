@@ -1,101 +1,103 @@
 <script setup lang="ts">
-import { traceStatistics, recordStatistics } from '@/api/agriculture/tracevisual/index'
-import { initChartStatic, generatePieOptions } from '../../../utils/bigscreenTool/index'
+import { traceStatistics, recordStatistics } from '@/api/agriculture/tracevisual/index';
+import { initChartStatic, generatePieOptions } from '../../../utils/bigscreenTool/index';
 
 // 设置圆环的大小
-const size = ref(300)
-const angle = ref(280) // 外层小圆点的角度
-const innerAngle = ref(135) // 内层小圆点的角度
+const size = ref(300);
+const angle = ref(280); // 外层小圆点的角度
+const innerAngle = ref(135); // 内层小圆点的角度
 
 // 圆环的半径
-const radius = 37
+const radius = 37;
 // 内层圆环的半径
-const innerRadius = 32
+const innerRadius = 32;
 // 小圆点的X坐标
 const smallCircleX = computed(() => {
-  return 50 + radius * Math.cos((angle.value * Math.PI) / 180)
-})
+  return 50 + radius * Math.cos((angle.value * Math.PI) / 180);
+});
 
 // 小圆点的Y坐标
 const smallCircleY = computed(() => {
-  return 50 + radius * Math.sin((angle.value * Math.PI) / 180)
-})
+  return 50 + radius * Math.sin((angle.value * Math.PI) / 180);
+});
 // 内层小绿圆点的X坐标
 const innerSmallCircleX = computed(() => {
-  return 50 + innerRadius * Math.cos((innerAngle.value * Math.PI) / 180)
-})
+  return 50 + innerRadius * Math.cos((innerAngle.value * Math.PI) / 180);
+});
 
 // 内层小绿圆点的Y坐标
 const innerSmallCircleY = computed(() => {
-  return 50 + innerRadius * Math.sin((innerAngle.value * Math.PI) / 180)
-})
+  return 50 + innerRadius * Math.sin((innerAngle.value * Math.PI) / 180);
+});
 
-const items = ref(['今日', '本周', '本月', '本年'])
-const selected = ref(0)
-const totalCodes = ref('')
-const codeds = ref(0)
-const unusedCodes = ref(0)
-const usedCodes = ref(0)
+const items = ref(['今日', '本周', '本月', '本年']);
+const selected = ref(3);
+const totalCodes = ref('');
+const codeds = ref(0);
+const unusedCodes = ref(0);
+const usedCodes = ref(0);
 
 const selectItem = (index) => {
-  selected.value = index
-  if (index === 0) getRecordStatistics('today')
-  if (index === 1) getRecordStatistics('week')
-  if (index === 2) getRecordStatistics('month')
-  if (index === 3) getRecordStatistics('year')
-}
+  selected.value = index;
+  if (index === 0) getRecordStatistics('today');
+  if (index === 1) getRecordStatistics('week');
+  if (index === 2) getRecordStatistics('month');
+  if (index === 3) getRecordStatistics('year');
+};
 
 const statisticList = ref([
   {
-    id : 1,
-    name : '溯源品牌',
-    num : 0,
-    color : '#F2FCF2',
-    address : '/trace/product_brand/product-brand'
+    id: 1,
+    name: '溯源品牌',
+    num: 0,
+    color: '#F2FCF2',
+    address: 'ProductBrandOne'
   },
   {
     id: 2,
     name: '溯源产品',
-    num: 0 ,
+    num: 0,
     color: '#F5FCFF',
-    address : ''
+    address: 'VillageProduct',
+    //查询已赋码的产品
+    query: '2'
   },
   {
     id: 3,
     name: '溯源模板',
     num: 0,
     color: '#FEFBF4',
-    address : '/trace/traceability/trace-template'
+    address: 'TraceTemplate'
   },
   {
     id: 4,
     name: '溯源次数',
     num: 0,
     color: '#FFF7F7',
-    address : '/trace/traceability/trace-record'
+    address: 'TraceRecord'
   }
-])
+]);
 
 const getTraceStatistics = async () => {
   const { brand, product, template, count, totalCode, coded, unusedCode, usedCode } =
-    await traceStatistics()
-  const total = totalCode ? parseFloat(totalCode) : 0
+    await traceStatistics();
+  const total = totalCode ? parseFloat(totalCode) : 0;
   if (total >= 10000) {
-    totalCodes.value = (total / 10000).toFixed(2) + '万'
+    totalCodes.value = (total / 10000).toFixed(2) + '万';
   } else {
-    totalCodes.value = totalCode ? totalCode : ''
+    totalCodes.value = totalCode ? totalCode : '';
   }
-  codeds.value = coded ? coded : 0
-  unusedCodes.value = unusedCode ? unusedCode : 0
-  usedCodes.value = usedCode ? usedCode : 0
-  statisticList.value[0].num = brand ? brand : 0
-  statisticList.value[1].num = product ? product : 0
-  statisticList.value[2].num = template ? template : 0
-  statisticList.value[3].num = count ? count : 0
+  codeds.value = coded ? coded : 0;
+  unusedCodes.value = unusedCode ? unusedCode : 0;
+  usedCodes.value = usedCode ? usedCode : 0;
+  statisticList.value[0].num = brand ? brand : 0;
+  statisticList.value[1].num = product ? product : 0;
+  statisticList.value[2].num = template ? template : 0;
+  statisticList.value[3].num = count ? count : 0;
   const data = [
     { value: usedCodes.value, name: '已使用' },
     { value: unusedCodes.value, name: '未使用' }
-  ]
+  ];
   initChartStatic(
     'codeStatistics',
     generatePieOptions({
@@ -143,31 +145,29 @@ const getTraceStatistics = async () => {
         }
       ]
     })
-  )
-  console.log('recordList.value.length',recordList.value.length)
-}
-getTraceStatistics()
+  );
+};
+getTraceStatistics();
 
-const recordList = ref<any[]>([])
+const recordList = ref<any[]>([]);
 const getRecordStatistics = async (time) => {
-  const data = await recordStatistics(time)
-  if (Array.isArray(data)) recordList.value = data
+  const data = await recordStatistics(time);
+  if (Array.isArray(data)) recordList.value = data;
   recordList.value = data.sort((a, b) => {
     if (a.count > b.count) {
-      return -1
+      return -1;
     }
     if (a.count < b.count) {
-      return 1
+      return 1;
     }
-    return 0
-  })
-
-}
-getRecordStatistics('today')
-
+    return 0;
+  });
+};
+getRecordStatistics('year');
+const router = useRouter();
 </script>
 <template>
-  <div class="grid  xl:grid-cols-3 sm:grid-cols-1 grap-5">
+  <div class="grid xl:grid-cols-3 sm:grid-cols-1 grap-5">
     <div class="col-span-2 pb-2 mr-1">
       <ContentWrap>
         <div class="flex items-start space-x-2 pb-2">
@@ -181,9 +181,17 @@ getRecordStatistics('today')
               :key="item.id"
               class="flex p-2 m-1 w-[220px] cursor-pointer"
               :style="{ backgroundColor: item.color }"
-              @click="item.address !== ''? $router.push(item.address) : null"
+              @click="
+                item.query == null
+                  ? item.address !== ''
+                    ? router.push({ name: item.address })
+                    : null
+                  : item.address !== ''
+                    ? router.push({ name: item.address, query: { codeType: item.query } })
+                    : null
+              "
             >
-              <div :class="`w-[50px] h-[60px] icon-${item.id} p-1`"> </div>
+              <div :class="`w-[50px] h-[60px] icon-${item.id} p-1`"></div>
               <div class="flex flex-col">
                 <div class="text-[18px] p-1">{{ item.name }}</div>
                 <div class="text-[30px] font-bold p-1">{{ item.num }}</div>
@@ -222,37 +230,54 @@ getRecordStatistics('today')
               <div class="flex flex-col p-2 w-full pl-2 ml-2 mt-2">
                 <div class="flex justify-between pb-4 items-center">
                   <div class="text-[16px]">{{ item.productBrand }}</div>
-                  <div class="text-[16px]"
-                    >扫码次数：<span class="text-[24px] font-bold">{{ item.count }}</span></div
-                  >
+                  <div class="text-[16px]">
+                    扫码次数：
+                    <span class="text-[24px] font-bold">{{ item.count }}</span>
+                  </div>
                 </div>
                 <div>
-                  <el-progress :text-inside="false" :stroke-width="5" :show-text="false" :percentage="item.count"/>
+                  <el-progress
+                    :text-inside="false"
+                    :stroke-width="5"
+                    :show-text="false"
+                    :percentage="item.count"
+                  />
                 </div>
               </div>
+            </div>
           </div>
-        </div>
-
         </div>
       </ContentWrap>
     </div>
-    <div class="  pl-2 ml-1">
+    <div class="pl-2 ml-1">
       <ContentWrap>
         <div class="flex items-start space-x-2 mt-2 pb-2 mb-2">
           <div class="w-5px h-20px bg-#009688 mt-1.5 ml-1"></div>
           <div class="text-[18px] mt-1 font-bold">溯源码</div>
         </div>
-        <div class="flex justify-between h-[90px] p-3 bg-#F0FAF9 cursor-pointer" @click="$router.push('/trace/code/apply')">
-          <div class="code w-50% h-90%"> </div>
+        <div
+          class="flex justify-between h-[90px] p-3 bg-#F0FAF9 cursor-pointer"
+          @click="router.push({ name: 'CodeSendingInfo' })"
+        >
+          <div class="code w-50% h-90%"></div>
           <div class="text-[18px] w-full h-full flex justify-center items-center text-center">
-            总计：<span class="text-[30px] font-bold"> {{ totalCodes }}</span>
+            总计：
+            <span class="text-[30px] font-bold">{{ totalCodes }}</span>
           </div>
         </div>
-        <div class="circle-container ">
+        <div class="circle-container">
           <!-- 外层虚线大圆环 -->
           <svg :width="size" :height="size" viewBox="0 0 100 100">
             <!-- 外层大圆环，虚线 -->
-            <circle cx="50" cy="51" r="37" stroke="#E5E5E5"  stroke-width="0.5px" stroke-dasharray="2,2" fill="none" />
+            <circle
+              cx="50"
+              cy="51"
+              r="37"
+              stroke="#E5E5E5"
+              stroke-width="0.5px"
+              stroke-dasharray="2,2"
+              fill="none"
+            />
             <!-- 外层小黄圆点 -->
             <circle :cx="smallCircleX" :cy="smallCircleY" r="1.8" fill="#59B756" />
             <!-- 内层实线大圆环 -->
@@ -270,14 +295,13 @@ getRecordStatistics('today')
         <div
           class="flex justify-between p-3 mt-1 h-[30px] items-center cursor-pointer"
           style="background: rgba(250, 200, 88, 0.1); border-radius: 4px"
-          @click="$router.push({path:'/trace/code/ComposeIndex' })"
+          @click="router.push({ name: 'ComposeIndex' })"
         >
-          <div class="flex flex-row ">
+          <div class="flex flex-row">
             <div class="w-[8px] items-center p-3">
-              <div class="h-[0.1px] w-[0.1px] bg-#FAC858 rounded-full p-1.5">
-                </div>
-              </div>
-            <div class="p-2 text-[16px]">未使用 </div>
+              <div class="h-[0.1px] w-[0.1px] bg-#FAC858 rounded-full p-1.5"></div>
+            </div>
+            <div class="p-2 text-[16px]">未使用</div>
             <div class="p-2 text-[16px] font-bold">{{ unusedCodes }}</div>
           </div>
           <div class="text-[16px] font-bold p-2" v-if="codeds != 0">
@@ -285,23 +309,21 @@ getRecordStatistics('today')
           </div>
         </div>
         <div
-          class="flex justify-between p-3 mt-3 h-[30px] items-center cursor-pointer"
+          class="flex justify-between p-3 mt-3 h-[30px] items-center"
           style="background: rgba(89, 183, 86, 0.1); border-radius: 4px"
-          @click="$router.push({path:'/trace/code/code-sending-info'})"
         >
+          <!--          @click="router.push({name:'CodeSendingInfo'})"-->
           <div class="flex flex-row">
-            <div class="w-[8px] items-center p-3"
-              ><div class="h-[0.1px] w-[0.1px] bg-#59B756 rounded-full p-1.5"></div
-            ></div>
-            <div class="p-2 text-[16px]">已使用 </div>
+            <div class="w-[8px] items-center p-3">
+              <div class="h-[0.1px] w-[0.1px] bg-#59B756 rounded-full p-1.5"></div>
+            </div>
+            <div class="p-2 text-[16px]">已使用</div>
             <div class="p-2 text-[16px] font-bold">{{ usedCodes }}</div>
           </div>
           <div class="text-[16px] font-bold p-2" v-if="codeds != 0">
             {{ ((usedCodes / codeds) * 100).toFixed(1) }}%
           </div>
         </div>
-
-
       </ContentWrap>
     </div>
   </div>
