@@ -152,6 +152,7 @@ const formData = ref({
   recoveryNum: undefined,
 })
 const formRules = reactive({
+  photo: [{ required: true, message: '请上传采收图片', trigger: 'change' }],
   years: [{ required: true, message: '请输入产品年份', trigger: 'blur' }],
   inventory: [{ required: true, message: '请输入产品数量', trigger: 'blur' }],
   specifications: [{ required: true, message: '请输入产品规格', trigger: 'blur' }],
