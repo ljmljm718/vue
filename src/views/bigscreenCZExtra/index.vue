@@ -13,6 +13,11 @@ import {
   avgPriceByYear
 } from './apis';
 
+const formattedMoney = (num) => {
+  if (!num) return 0;
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 // 农产品流通 数据
 const activeCity = ref<string>(''),
   activeBrand = ref<string>('');
@@ -285,7 +290,7 @@ const enableMap = true;
 const initChinaMap = (saleNumList = []) => {
   console.log('🚀 ~ initChinaMap ~ saleNumList:', saleNumList);
   if (!enableMap) return;
-  echarts.registerMap('china', jsonData);
+  echarts.registerMap('china', jsonData as any);
   const { features } = jsonData;
   const centerMap = {};
   if (Array.isArray(features))
@@ -294,8 +299,6 @@ const initChinaMap = (saleNumList = []) => {
       if (name) centerMap[name] = center;
     });
   const chongqingCenter = centerMap['重庆市'];
-  console.log('🚀 ~ initChinaMap ~ chongqingCenter:', chongqingCenter);
-  console.log('🚀 ~ initChinaMap ~ centerMap:', centerMap);
   const chartDom = document.getElementById('mainMap');
   const myChart = echarts.init(chartDom);
   myChart.setOption(
@@ -353,8 +356,7 @@ const initChinaMap = (saleNumList = []) => {
           }
         },
         tooltip: {
-          show: false,
-          className: 'tooltip-frame'
+          show: false
         },
         series: [
           {
@@ -485,8 +487,32 @@ const initChinaMap = (saleNumList = []) => {
               .filter((ele) => Array.isArray(centerMap[ele.province]))
               .map((ele) => ({
                 name: ele.province,
-                value: centerMap[ele.province].concat([10])
-              }))
+                value: centerMap[ele.province].concat([10, ele.price])
+              })),
+            tooltip: {
+              show: true,
+              triggerOn: 'click',
+              // item 图形触发， axis 坐标轴触发， none 不触发
+              trigger: 'item',
+              backgroundColor: '#0a6e82d0',
+              padding: [4, 8, 4, 8],
+              formatter: (params) => {
+                console.log('params', params);
+                const { name, value } = params;
+                const [_, __, ___, saleVal] = value;
+                return `
+                  <div class="text-#eee text-12px">
+                    <div class="font-bold text-[14px]">
+                      ${name}
+                    </div>
+                    <div class="flex space-x-2">
+                      <div>销售额:</div>
+                      <div>${saleVal}万元</div>
+                    </div>
+                  </div>
+                `;
+              }
+            }
           }
         ]
       }
@@ -503,12 +529,9 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
     return;
   } //判空
   let res = [];
-  console.log('DD', data);
   for (let i = 0; i < data.length; i++) {
     let dataItem = data[i];
-    console.log('🚀 ~ convertData ~ dataItem:', dataItem);
     let fromCoord = coordData[dataItem];
-    console.log('🚀 ~ convertData ~ fromCoord:', fromCoord);
     let toCoord = centerPointValue; //中心点地理坐标
     if (fromCoord && toCoord) {
       let coordArr = [
@@ -563,23 +586,33 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
             <div class="h-247px my-10px relative text-#ffffffd0">
               <div class="absolute circle-bg w-120px h-120px top-10px left-78px">
                 <div>{{ top5Data.top1.provinceName }}</div>
-                <div class="mt-2 text-16px art-font">{{ top5Data.top1.totalPrice }}</div>
+                <div class="mt-2 text-16px art-font">
+                  {{ formattedMoney(top5Data.top1.totalPrice) }}
+                </div>
               </div>
               <div class="absolute circle-bg w-110px h-110px top-36px left-231px">
                 <div>{{ top5Data.top2.provinceName }}</div>
-                <div class="mt-2 text-16px art-font">{{ top5Data.top2.totalPrice }}</div>
+                <div class="mt-2 text-16px art-font">
+                  {{ formattedMoney(top5Data.top2.totalPrice) }}
+                </div>
               </div>
               <div class="absolute sub-circle-bg w-100px h-100px top-138px left-15px">
                 <div>{{ top5Data.top3.provinceName }}</div>
-                <div class="mt-1 text-13px art-font">{{ top5Data.top3.totalPrice }}</div>
+                <div class="mt-1 text-13px art-font">
+                  {{ formattedMoney(top5Data.top3.totalPrice) }}
+                </div>
               </div>
               <div class="absolute sub-circle-bg w-90px h-90px top-144px left-165px">
                 <div>{{ top5Data.top4.provinceName }}</div>
-                <div class="mt-1 text-13px art-font">{{ top5Data.top4.totalPrice }}</div>
+                <div class="mt-1 text-13px art-font">
+                  {{ formattedMoney(top5Data.top4.totalPrice) }}
+                </div>
               </div>
               <div class="absolute sub-circle-bg w-80px h-80px top-158px left-321px">
                 <div>{{ top5Data.top5.provinceName }}</div>
-                <div class="mt-1 text-13px art-font">{{ top5Data.top5.totalPrice }}</div>
+                <div class="mt-1 text-13px art-font">
+                  {{ formattedMoney(top5Data.top5.totalPrice) }}
+                </div>
               </div>
             </div>
             <div class="bar-frame"></div>
@@ -596,9 +629,9 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
                 height="246px"
               >
                 <el-table-column prop="date" label="年份" align="center" />
+                <el-table-column prop="quantity" label="销量" align="center" />
                 <el-table-column prop="unitPrice" label="单价" align="center" />
                 <el-table-column prop="totalPrice" label="销售额" align="center" />
-                <el-table-column prop="quantity" label="销量" align="center" />
               </el-table>
             </div>
             <div class="bar-frame"></div>
@@ -624,7 +657,7 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
                       :style="`width: ${sellData.month.price / 300}%;`"
                     ></div>
                   </div>
-                  <div class="text-#04D4F5">{{ sellData.month.price }}</div>
+                  <div class="text-#04D4F5">{{ formattedMoney(sellData.month.price || 0) }}</div>
                 </div>
                 <div class="flex space-x-16px items-center">
                   <div class="text-right w-100px">订单数量</div>
@@ -634,7 +667,7 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
                       :style="`width: ${sellData.month.quantity}%;`"
                     ></div>
                   </div>
-                  <div class="text-#FEA50D">{{ sellData.month.quantity }}</div>
+                  <div class="text-#FEA50D">{{ formattedMoney(sellData.month.quantity) }}</div>
                 </div>
               </div>
             </div>
@@ -649,7 +682,7 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
                       :style="`width: ${sellData.year.price / 300}%;`"
                     ></div>
                   </div>
-                  <div class="text-#04D4F5">{{ sellData.year.price }}</div>
+                  <div class="text-#04D4F5">{{ formattedMoney(sellData.year.price) }}</div>
                 </div>
                 <div class="flex space-x-16px items-center">
                   <div class="text-right w-100px">订单数量</div>
@@ -659,7 +692,7 @@ const convertData = (data, coordData, flyDirection, centerPointValue) => {
                       :style="`width: ${sellData.year.quantity}%;`"
                     ></div>
                   </div>
-                  <div class="text-#FEA50D">{{ sellData.year.quantity }}</div>
+                  <div class="text-#FEA50D">{{ formattedMoney(sellData.year.quantity) }}</div>
                 </div>
               </div>
             </div>
