@@ -63,7 +63,6 @@
           placeholder="请输入水源编号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="水源名称" prop="wsName">
@@ -72,45 +71,26 @@
           placeholder="请输入水源名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="省市区" prop="areaLocation">
+        <el-cascader
+          :options="areaSelectData"
+          style="width: 100%"
+          @change="handleChange"
+          v-model="queryParams.district"
+          placeholder="请选择省市区"
         />
       </el-form-item>
       <el-form-item label="水源类型" prop="wsType">
-        <el-select
-          v-model="queryParams.wsType"
-          placeholder="请选择水源类型"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
+        <el-select v-model="queryParams.wsType" placeholder="请选择水源类型" clearable>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.WS_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
-      </el-form-item>
-      <el-form-item label="省" prop="province">
-        <el-input
-          v-model="queryParams.province"
-          placeholder="请输入省"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="市" prop="city">
-        <el-input
-          v-model="queryParams.city"
-          placeholder="请输入市"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="区" prop="district">
-        <el-input
-          v-model="queryParams.district"
-          placeholder="请输入区"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
       </el-form-item>
     </el-form>
 
@@ -139,16 +119,18 @@
         <el-table-column label="最低水位（米）" align="center" prop="minLevel" />
         <el-table-column label="经度" align="center" prop="longitude" />
         <el-table-column label="纬度" align="center" prop="latitude" />
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          :formatter="dateFormatter"
-          width="180px"
-        />
-        <el-table-column label="操作" align="center" fixed="right" min-width="124px">
+        <!--        <el-table-column-->
+        <!--          label="创建时间"-->
+        <!--          align="center"-->
+        <!--          prop="createTime"-->
+        <!--          :formatter="dateFormatter"-->
+        <!--          width="180px"-->
+        <!--        />-->
+        <el-table-column label="操作" align="center" fixed="right" min-width="184px">
           <template #default="scope">
             <div class="flex items-center justify-center">
+              <el-button link type="success" @click="bindDevice(scope.row)">绑定设备</el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
               <el-button
                 link
                 type="primary"
@@ -181,8 +163,83 @@
     />
   </el-scrollbar>
 
+  <!-- 页面组件复制在下面 -->
+  <ContentWrap>
+    <el-drawer
+      title="绑定设备"
+      v-model="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+      :with-header="false"
+    >
+      <span>已绑定设备</span>
+      <ContentWrap>
+        <el-table
+          v-if="listDevice.length > 0"
+          v-loading="loadingDevice"
+          :data="listDevice"
+          :show-overflow-tooltip="true"
+          :stripe="true"
+        >
+          <el-table-column label="设备名称" align="center" prop="deviceName" width="150" />
+          <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+            <template #default="scope">
+              <el-cascader
+                style="width: 100%"
+                v-model="scope.row.deviceType"
+                :options="categoryOptions"
+                :props="categoryProps"
+                disabled
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="所属基地" align="center" prop="belongPark" />
+          <el-table-column label="所属地块" align="center" prop="belongPlot" />
+          <el-table-column label="状态" align="center" prop="deviceStatus">
+            <template #default="scope">
+              <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+            </template>
+          </el-table-column>
+          <el-table-column label="图片" align="center" prop="imgId">
+            <template #default="{ row }">
+              <el-image
+                class="h-50px w-50px"
+                lazy
+                :src="row.imgId"
+                :preview-src-list="[row.imgId]"
+                preview-teleported
+                fit="cover"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="经度" align="center" prop="longitude" />
+          <el-table-column label="纬度" align="center" prop="latitude" />
+          <el-table-column label="操作" align="center" fixed="right" width="40">
+            <template #default="scope">
+              <el-button link type="danger" @click="handleRemove(scope.row.id)">解绑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>
+      </ContentWrap>
+      <el-row>
+        <el-button
+          type="primary"
+          plain
+          style="width: 100%; height: 60px"
+          @click="bindDeviceDialog()"
+        >
+          +增加绑定设备
+        </el-button>
+      </el-row>
+    </el-drawer>
+  </ContentWrap>
+
   <!-- 表单弹窗：添加/修改 -->
   <WaterSourceForm ref="formRef" @success="getList" />
+
+  <!-- 绑定设备列表 -->
+  <BindDevice ref="wsBindDeviceRef" :deviceId="deviceId" @success="handleUpdateDeviceInfo" />
 </template>
 
 <script setup lang="ts">
@@ -190,8 +247,12 @@ import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { WaterSourceApi, WaterSourceVO } from '@/api/agriculture/watersource';
 import WaterSourceForm from './WaterSourceForm.vue';
-import { codeToText } from 'element-china-area-data';
-import { DICT_TYPE } from '@/utils/dict';
+import { codeToText, regionData } from 'element-china-area-data';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
+import { ElTable } from 'element-plus';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
+import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import { WaterSourceDeviceApi } from '@/api/agriculture/watersourcedevice';
 
 /** 水源信息 列表 */
 defineOptions({ name: 'WaterSource' });
@@ -201,19 +262,33 @@ const { t } = useI18n(); // 国际化
 
 const loading = ref(true); // 列表的加载中
 const list = ref<WaterSourceVO[]>([]); // 列表的数据
+const listDevice = ref<DeviceInfoVO[]>([]); // 抽屉已绑定设备列表的数据
 const total = ref(0); // 列表的总页数
+const areaLocation = ref(); // 省市区的统一回显
+const areaSelectData = regionData; // options绑定的数据就是引入的 regionData
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   wsCode: undefined,
   wsName: undefined,
   wsType: undefined,
-  province: undefined,
-  city: undefined,
+  // province: undefined,
+  // city: undefined,
   district: undefined
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
+//绑定设备抽屉相关参数
+const drawer = ref(false);
+const direction = ref('rtl');
+let categoryOptions = ref([]); // 设备分类选项
+/**
+ * 设备分类级联选择器
+ */
+const categoryProps = {
+  value: 'id',
+  label: 'categoryName'
+};
 
 /** 查询列表 */
 const getList = async () => {
@@ -236,6 +311,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields();
+  queryParams.district = undefined;
+  areaLocation.value = undefined;
   handleQuery();
 };
 
@@ -273,9 +350,89 @@ const handleExport = async () => {
   }
 };
 
+// 编辑格式化地址
+const handleChange = (e) => {
+  const self = e;
+  // CodeToText属性是区域码，属性值是汉字 CodeToText['110000']输出北京市
+  // queryParams.province = self[0];
+  // queryParams.city = self[1];
+  queryParams.district = self[2];
+  areaLocation.value = codeToText[self[0]] + '/' + codeToText[self[1]] + '/' + codeToText[self[2]];
+};
+
+/** 绑定设备操作 */
+const loadingDevice = ref(true); // 绑定设备抽屉的加载
+const deviceId = ref([]); // 已绑定的设备id
+const wsId = ref(''); // 水源id
+// const monitorType = ref(''); //所选设备监测类型
+const wsBindDeviceRef = ref();
+// 绑定弹窗确定后回调函数
+const handleUpdateDeviceInfo = async (ids) => {
+  const temp = { wsId: wsId.value, deviceId: ids.value };
+  const params = temp as any;
+  await WaterSourceDeviceApi.WsBindDevice(params);
+  message.success(t('common.createSuccess'));
+  const data = await WaterSourceDeviceApi.selectDeviceListByWsId(wsId.value);
+  listDevice.value = data.map((item: any) => {
+    item.deviceType = item.deviceType.split(',').map(Number);
+    return item;
+  });
+};
+const bindDevice = async (row) => {
+  const { id } = row;
+  loadingDevice.value = true;
+  try {
+    drawer.value = true;
+    const data = await WaterSourceDeviceApi.selectDeviceListByWsId(id);
+    listDevice.value = data.map((item: any) => {
+      item.deviceType = item.deviceType.split(',').map(Number);
+      return item;
+    });
+    wsId.value = id;
+    loadingDevice.value = false;
+  } catch {
+    loadingDevice.value = false;
+  }
+};
+/** 移除按钮操作 */
+const handleRemove = async (id: number) => {
+  try {
+    // 移除的二次确认
+    await message.delConfirm();
+    // 发起移除
+    await WaterSourceDeviceApi.deleteBindRecordByWsIdAndDeviceId(wsId.value, id);
+    const data = await WaterSourceDeviceApi.selectDeviceListByWsId(wsId.value);
+    listDevice.value = data.map((item: any) => {
+      item.deviceType = item.deviceType.split(',').map(Number);
+      return item;
+    });
+    message.success(t('common.delSuccess'));
+  } catch {}
+};
+// 打开绑定设备弹窗
+const bindDeviceDialog = async () => {
+  try {
+    const data = await WaterSourceDeviceApi.selectBindDeviceIdByWsId(wsId.value);
+    deviceId.value = data.map((item) => item.deviceId);
+    wsBindDeviceRef.value.open();
+  } catch {}
+};
+
+/** 查询设备分类列表 */
+const getDeviceCategoryTree = async () => {
+  try {
+    categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({
+      parentId: 0,
+      status: 1
+    });
+  } finally {
+  }
+};
+
 /** 初始化 **/
 onMounted(() => {
   getList();
+  getDeviceCategoryTree();
 });
 /* 原页面的js代码复制在上面 包括import */
 
