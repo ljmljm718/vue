@@ -6,9 +6,13 @@ import Hls from 'hls.js';
 import { uniqueId } from 'lodash-es';
 import request from '@/config/axios';
 import { ElMessage } from 'element-plus';
+import { useUserStore } from '@/store/modules/user';
 
 defineOptions({ name: 'YsPlayer' });
 
+const userStore = useUserStore();
+//获取部门ID
+const deptId = computed(() => userStore.user.deptId ?? '0');
 // 新接口
 const getVideoToken = async () => {
   return await request.get({
@@ -137,7 +141,7 @@ const getPlayUrl = async (deviceSerial: string, channelNo: number = 1, tryNum = 
   console.log('🚀 ~ getPlayUrl ~ res:', data);
   if (!resUrl) {
     const { msg } = data;
-    if (msg) ElMessage.warning(msg.toString());
+    if (msg && ![152, 154].includes(deptId.value)) ElMessage.warning(msg.toString());
     return;
   }
   return resUrl;

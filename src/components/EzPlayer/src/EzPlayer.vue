@@ -10,10 +10,10 @@ import request from '@/config/axios';
 const liveToken = localStorage.getItem('LIVE_TOKEN');
 if (liveToken === 'error') localStorage.removeItem('LIVE_TOKEN');
 
-const getAddressInfoRecordPage = async (params: any) => {
+// 新接口
+const getVideoToken = async () => {
   return await request.get({
-    url: `/agriculture/device-nvr/getToken`,
-    params
+    url: `/agriculture/device-nvr/getVideoToken`
   });
 };
 
@@ -51,7 +51,7 @@ const sleep = (delaytime = 1000) => {
   return new Promise((resolve) => setTimeout(resolve, delaytime));
 };
 
-const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 4): Promise<string> => {
+const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 10): Promise<string> => {
   if (leftTimes <= 0) {
     // ElMessage.error("获取视频流失败，请联系管理员!");
   }
@@ -77,10 +77,11 @@ const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 4): Promise<st
       .catch((e) => {
         console.error(e);
       });
-    const { code, data: UrlData } = liveDataRes;
+    const { code, data: UrlData, msg } = liveDataRes;
     console.log('🚀 ~ checkAuth ~ UrlData:', UrlData);
     if (!UrlData) {
       localStorage.removeItem('LIVE_TOKEN');
+      if (msg) ElMessage.warning(msg.toString());
       return await checkAuth(deviceSerial, channelNo, leftTimes);
     }
     const { status = -1, url } = UrlData;
@@ -113,10 +114,7 @@ const checkAuth = async (deviceSerial, channelNo = 1, leftTimes = 4): Promise<st
     const { deviceSerial: __deviceSerial } = firstItem;
     _deviceSerial_ = __deviceSerial;
   }
-  const data = await getAddressInfoRecordPage({
-    deviceSerial: _deviceSerial_
-  });
-  console.log('🚀 ~ checkAuth ~ data:', data);
+  const data = await getVideoToken();
   if (data && data !== 'error') localStorage.setItem('LIVE_TOKEN', data);
   return await checkAuth(deviceSerial, channelNo, leftTimes - 1);
 };
