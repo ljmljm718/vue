@@ -387,11 +387,7 @@
             <el-button
               link
               type="primary"
-              v-if="
-                scope.row.deviceStatus == 'online' &&
-                scope.row.url != null &&
-                scope.row.url.indexOf('mp4') > 0
-              "
+              v-if="scope.row.dtu && scope.row.deviceStatus == 'online'"
               @click="openExternalLink(scope.row)"
             >
               查看监控
