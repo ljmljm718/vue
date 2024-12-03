@@ -155,7 +155,7 @@
       />
     </ContentWrap>
     <template #footer>
-      <el-button type="primary" @click="handleBindDevice">确 定</el-button>
+      <el-button type="primary" @click="submitForm()">确 定</el-button>
       <el-button @click="handleBeforeClose()">取 消</el-button>
     </template>
   </Dialog>
@@ -167,9 +167,7 @@ import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
-import { createEmptyNewsItem, NewsItem } from '@/views/mp/draft/components';
 import { AgriWarningRuleApi } from '@/api/agriculture/agriwarningrule';
-import { isObject } from '@/utils/is';
 
 defineOptions({ name: 'AgriWarnRuleBindDevice' });
 
@@ -293,6 +291,19 @@ const selectClick = (row) => {
   dialogTable.value.toggleRowSelection(row, !isRowSelected);
 };
 
+/** 提交选择 */
+const emits = defineEmits<{
+  (e: 'success', value: DeviceInfoVO[]): void;
+}>();
+const submitForm = () => {
+  try {
+    emits('success', selectionList.value);
+  } finally {
+    // 关闭弹窗
+    dialogVisible.value = false;
+  }
+};
+
 /**
  * 设备分类级联选择器
  */
@@ -307,40 +318,23 @@ onMounted(async () => {
   await getList();
 });
 
-// 监听父组件category变化
-watch(
-  () => props.currCategory,
-  () => {
-    if (props.currCategory) {
-      if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id;
-      } else {
-        queryParams.deviceType = props.currCategory.parentId + ',' + props.currCategory.id;
-      }
-    } else {
-      queryParams.deviceType = undefined;
-    }
-    handleQuery();
-  }
-);
-
 /** 确认绑定设备  */
 
 // v-model=newsList
-const emit = defineEmits(['bind']);
-const handleBindDevice = async () => {
-  loading.value = true;
-  try {
-    const temp = { warnRuleId: props.warnRuleId, deviceId: ids.value };
-    const data = temp as any;
-    await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data);
-    message.success(t('common.createSuccess'));
-    dialogVisible.value = false;
-    emit('bind');
-  } finally {
-    loading.value = false;
-  }
-};
+// const emit = defineEmits(['bind']);
+// const handleBindDevice = async () => {
+//   loading.value = true;
+//   try {
+//     const temp = { warnRuleId: props.warnRuleId, deviceId: ids.value };
+//     const data = temp as any;
+//     await AgriWarningRuleDeviceApi.AgriWarnRuleBindDevice(data);
+//     message.success(t('common.createSuccess'));
+//     dialogVisible.value = false;
+//     emit('bind');
+//   } finally {
+//     loading.value = false;
+//   }
+// };
 
 /** 重置按钮操作 */
 const resetQuery = () => {

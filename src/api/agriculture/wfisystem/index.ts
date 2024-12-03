@@ -66,6 +66,12 @@ export const WfiSystemApi = {
 
   // 获得系统-设备关联
   getWfiSystemDevice: async (id: number) => {
-    return await request.get({ url: `/agriculture/wfi-system/wfi-system-device/get?id=` + id });
+    return await request.get({
+      url: `/agriculture/wfi-system/wfi-system-device/page?systemId=` + id
+    });
+  },
+  // 修改水肥一体化系统信息
+  bindWfiSystemDevice: async (data) => {
+    return await request.post({ url: `/agriculture/wfi-system/bind`, data });
   }
 };

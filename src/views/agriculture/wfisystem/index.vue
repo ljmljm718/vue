@@ -4,12 +4,10 @@ import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { WfiSystemApi, WfiSystemVO } from '@/api/agriculture/wfisystem';
 import WfiSystemForm from './WfiSystemForm.vue';
-import WfiSystemDeviceList from './components/WfiSystemDeviceList.vue';
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
-import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
 import { ElTable } from 'element-plus';
-import AgriWarnRuleBindDevice from '@/views/agriculture/agriwarningrule/component/AgriWarnRuleBindDevice.vue';
 import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import WfiSystemBindDevice from '@/views/agriculture/wfisystem/component/WfiSystemBindDevice.vue';
 
 /** 水肥一体化系统信息 列表 */
 defineOptions({ name: 'WfiSystem' });
@@ -98,43 +96,76 @@ const handleCurrentChange = (row) => {
 
 /** 绑定设备*/
 const deviceId = ref([]); // 已绑定的设备id
-const warnRuleId = ref('');
+const systemId = ref(0);
 const monitorType = ref('');
 const loadingDevice = ref(true); // 列表的加载中
-const warnRuleBindDeviceRef = ref();
+const wfiSystemBindDeviceRef = ref();
 //绑定设备抽屉相关参数
 const drawer = ref(false);
-const direction = ref('rtl');
 let categoryOptions = ref([]); // 设备分类选项
 const listDevice = ref<DeviceInfoVO[]>([]); // 列表的数据
-
+/**
+ * 设备分类级联选择器
+ */
+const categoryProps = {
+  value: 'id',
+  label: 'categoryName'
+};
 const bindDevice = async (row) => {
   const { id } = row;
   loadingDevice.value = true;
   try {
     drawer.value = true;
-    warnRuleId.value = id;
-    const data = await WfiSystemApi.getWfiSystemDevice(String(id));
-    listDevice.value = data.list;
-    loadingDevice.value = false;
-  } catch {
+    systemId.value = id;
+    const data = await WfiSystemApi.getWfiSystemDevice(id);
+    listDevice.value = data;
+  } finally {
     loadingDevice.value = false;
   }
 };
 
-const handleUpdateDeviceInfo = (id) => {
-  setTimeout(() => {
-    bindDevice({ id });
-  }, 100);
+const handleBindDevice = async (device: any) => {
+  try {
+    loadingDevice.value = true;
+    deviceId.value = device.map((item) => item.id);
+    const res = await WfiSystemApi.bindWfiSystemDevice({
+      systemId: systemId.value,
+      deviceIds: deviceId.value
+    });
+  } finally {
+    const data = await WfiSystemApi.getWfiSystemDevice(systemId.value);
+    listDevice.value = data;
+    loadingDevice.value = false;
+  }
 };
 
 const bindDeviceA = async () => {
   try {
-    console.log('warnRuleId', warnRuleId.value);
-    // const data = await WfiSystemApi.getWfiSystemDevice(warnRuleId.value);
+    console.log('systemId', systemId.value);
+    // const data = await WfiSystemApi.getWfiSystemDevice(systemId.value);
     // // deviceId.value = data.list.map((item) => item.deviceId);
     // console.log('monitorType11111111', monitorType.value);
-    // warnRuleBindDeviceRef.value.open(monitorType.value);
+    wfiSystemBindDeviceRef.value.open(monitorType.value);
+  } catch {}
+};
+
+const handleDeleteA = async (id: number) => {
+  try {
+    // 移除的二次确认
+    await message.delConfirm();
+    console.log(id);
+    console.log(systemId.value);
+
+    // // 发起移除
+    // await AgriWarningRuleDeviceApi.deleteAgriWarningRuleDeviceByIdAndDeviceId(warnRuleId.value, id);
+    // const data = await AgriWarningRuleDeviceApi.selectDeviceListByWarnRuleId(
+    //   String(warnRuleId.value)
+    // );
+    // listDevice.value = data.map((item: any) => {
+    //   item.deviceType = item.deviceType.split(',').map(Number);
+    //   return item;
+    // });
+    message.success(t('common.delSuccess'));
   } catch {}
 };
 /** 初始化 **/
@@ -261,16 +292,6 @@ const handleClickShowSearch = () => {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-        />
-      </el-form-item>
     </el-form>
 
     <!-- 如果有 6.1.2的部分 则这里是mt-[8px] -->
@@ -307,7 +328,7 @@ const handleClickShowSearch = () => {
                 link
                 type="success"
                 @click="bindDevice(scope.row)"
-                v-hasPermi="['agriculture:device-history-status:update']"
+                v-hasPermi="['agriculture:wfi-system:update']"
               >
                 绑定设备
               </el-button>
@@ -351,13 +372,7 @@ const handleClickShowSearch = () => {
   <WfiSystemForm ref="formRef" @success="getList" />
 
   <ContentWrap>
-    <el-drawer
-      title="绑定设备"
-      v-model="drawer"
-      :direction="direction"
-      :before-close="handleClose"
-      :with-header="false"
-    >
+    <el-drawer title="绑定设备" v-model="drawer" :with-header="false">
       <span>已绑定设备</span>
       <!--      v-if="listDevice.length > 0"-->
       <ContentWrap>
@@ -402,11 +417,11 @@ const handleClickShowSearch = () => {
           </el-table-column>
           <el-table-column label="经度" align="center" prop="longitude" />
           <el-table-column label="纬度" align="center" prop="latitude" />
-          <el-table-column label="操作" align="center" fixed="right" width="40">
-            <template #default="scope">
-              <el-button link type="danger" @click="handleDeleteA(scope.row.id)">移除</el-button>
-            </template>
-          </el-table-column>
+          <!--          <el-table-column label="操作" align="center" fixed="right" width="40">-->
+          <!--            <template #default="scope">-->
+          <!--              <el-button link type="danger" @click="handleDeleteA(scope.row.id)">移除</el-button>-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
         </el-table>
         <!--        <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>-->
       </ContentWrap>
@@ -419,13 +434,12 @@ const handleClickShowSearch = () => {
   </ContentWrap>
 
   <!-- 绑定设备列表 -->
-  <!--  <AgriWarnRuleBindDevice-->
-  <!--    ref="warnRuleBindDeviceRef"-->
-  <!--    :warnRuleId="warnRuleId"-->
-  <!--    :monitorType="monitorType"-->
-  <!--    :deviceId="deviceId"-->
-  <!--    @bind="handleUpdateDeviceInfo(warnRuleId)"-->
-  <!--  />-->
+  <WfiSystemBindDevice
+    ref="wfiSystemBindDeviceRef"
+    :monitorType="monitorType"
+    :deviceId="deviceId"
+    @success="handleBindDevice"
+  />
 </template>
 
 <style lang="scss" scoped>
