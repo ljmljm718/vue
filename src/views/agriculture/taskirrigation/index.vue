@@ -186,14 +186,14 @@
           label="开始时间"
           align="center"
           prop="tiBeginTime"
-          :formatter="dateFormatter"
+          :formatter="dateFormatter2"
           width="180px"
         />
         <el-table-column
           label="结束时间"
           align="center"
           prop="tiEndTime"
-          :formatter="dateFormatter"
+          :formatter="dateFormatter2"
           width="180px"
         />
         <el-table-column label="灌溉周期" align="center" prop="tiExecCron">
@@ -273,7 +273,7 @@
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
-import { dateFormatter } from '@/utils/formatTime';
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { WfiTaskIrrigationApi, WfiTaskIrrigationVO } from '@/api/agriculture/taskirrigation';
 import WfiTaskIrrigationForm from './WfiTaskIrrigationForm.vue';
