@@ -8,6 +8,7 @@ export interface WfiTaskIrrigationVO {
   tiBeginTime: Date; // 开始时间
   tiEndTime: Date; // 结束时间
   tiExecCron: string; // 灌溉周期
+  tiExecCronDay: string; // 周期天数
   tiExecBeginTime: string; // 任务执行时间
   waterPumpStatus: string; // 水泵控制
   concurrentTaskNumber: number; // 并发任务执行数量

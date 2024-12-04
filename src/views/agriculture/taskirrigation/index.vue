@@ -105,12 +105,14 @@
         />
       </el-form-item>
       <el-form-item label="灌溉周期" prop="tiExecCron">
-        <el-input
-          v-model="queryParams.tiExecCron"
-          placeholder="请输入灌溉周期"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-select v-model="queryParams.tiExecCron" placeholder="请选择灌溉周期" clearable>
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_IRRIGATE_EXEC_CRON)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="任务执行时间" prop="tiExecBeginTime">
         <el-input
@@ -142,14 +144,14 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="执行灌区" prop="iaCodeList">
-        <el-input
-          v-model="queryParams.iaCodeList"
-          placeholder="请输入任务执行灌区"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="执行灌区" prop="iaCodeList">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.iaCodeList"-->
+      <!--          placeholder="请输入任务执行灌区"-->
+      <!--          clearable-->
+      <!--          @keyup.enter="handleQuery"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="任务状态" prop="status">
         <el-input
           v-model="queryParams.status"
@@ -194,7 +196,12 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="灌溉周期" align="center" prop="tiExecCron" />
+        <el-table-column label="灌溉周期" align="center" prop="tiExecCron">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.WFI_IRRIGATE_EXEC_CRON" :value="scope.row.tiExecCron" />
+          </template>
+        </el-table-column>
+        <el-table-column label="周期天数" align="center" prop="tiExecCronDay" />
         <el-table-column label="任务执行时间" align="center" prop="tiExecBeginTime" />
         <el-table-column label="水泵控制" align="center" prop="waterPumpStatus">
           <!--        <template #default="scope">-->

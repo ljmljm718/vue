@@ -40,7 +40,18 @@
         />
       </el-form-item>
       <el-form-item label="灌溉周期" prop="tiExecCron">
-        <el-input v-model="formData.tiExecCron" placeholder="请输入灌溉周期" />
+        <el-radio-group v-model="formData.tiExecCron">
+          <el-radio
+            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_IRRIGATE_EXEC_CRON)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="灌溉周期天数" prop="tiExecCronDay">
+        <el-input v-model="formData.tiExecCronDay" placeholder="请输入灌溉周期具体时间" />
       </el-form-item>
       <el-form-item label="灌溉日" prop="tiTaskInfo">
         <el-input
@@ -99,6 +110,7 @@ const formData = ref({
   tiBeginTime: undefined,
   tiEndTime: undefined,
   tiExecCron: undefined,
+  tiExecCronDay: undefined,
   tiExecBeginTime: undefined,
   waterPumpStatus: undefined,
   concurrentTaskNumber: undefined,
