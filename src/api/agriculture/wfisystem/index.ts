@@ -73,5 +73,11 @@ export const WfiSystemApi = {
   // 修改水肥一体化系统信息
   bindWfiSystemDevice: async (data) => {
     return await request.post({ url: `/agriculture/wfi-system/bind`, data });
+  },
+  // 删除系统-设备关联
+  deleteSystemByDeviceId: async (deviceId, systemId) => {
+    return await request.delete({
+      url: `/agriculture/wfi-system/device/delete?deviceId=` + deviceId + `&systemId=` + systemId
+    });
   }
 };

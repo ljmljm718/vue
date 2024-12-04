@@ -117,8 +117,7 @@ const bindDevice = async (row) => {
   try {
     drawer.value = true;
     systemId.value = id;
-    const data = await WfiSystemApi.getWfiSystemDevice(id);
-    listDevice.value = data;
+    getDeviceList(id);
   } finally {
     loadingDevice.value = false;
   }
@@ -132,11 +131,21 @@ const handleBindDevice = async (device: any) => {
       systemId: systemId.value,
       deviceIds: deviceId.value
     });
+    if (res) {
+      message.success('绑定成功');
+    } else {
+      message.error('绑定失败');
+    }
   } finally {
-    const data = await WfiSystemApi.getWfiSystemDevice(systemId.value);
-    listDevice.value = data;
+    getDeviceList(systemId.value);
     loadingDevice.value = false;
   }
+};
+
+const getDeviceList = async (systemId) => {
+  const data = await WfiSystemApi.getWfiSystemDevice(systemId);
+  listDevice.value = data;
+  deviceId.value = data.map((item) => item.id);
 };
 
 const bindDeviceA = async () => {
@@ -149,24 +158,18 @@ const bindDeviceA = async () => {
   } catch {}
 };
 
-const handleDeleteA = async (id: number) => {
+const handleDeleteA = async (id) => {
   try {
     // 移除的二次确认
     await message.delConfirm();
-    console.log(id);
-    console.log(systemId.value);
-
-    // // 发起移除
-    // await AgriWarningRuleDeviceApi.deleteAgriWarningRuleDeviceByIdAndDeviceId(warnRuleId.value, id);
-    // const data = await AgriWarningRuleDeviceApi.selectDeviceListByWarnRuleId(
-    //   String(warnRuleId.value)
-    // );
-    // listDevice.value = data.map((item: any) => {
-    //   item.deviceType = item.deviceType.split(',').map(Number);
-    //   return item;
-    // });
+    loadingDevice.value = true;
+    await WfiSystemApi.deleteSystemByDeviceId(id, systemId.value);
     message.success(t('common.delSuccess'));
-  } catch {}
+  } catch {
+  } finally {
+    getDeviceList(systemId.value);
+    loadingDevice.value = false;
+  }
 };
 /** 初始化 **/
 onMounted(() => {
@@ -380,6 +383,7 @@ const handleClickShowSearch = () => {
           v-loading="loadingDevice"
           :data="listDevice"
           :show-overflow-tooltip="true"
+          v-if="listDevice.length > 0"
           :stripe="true"
         >
           <!--          <el-table-column type="selection" width="30" label="选择" :reserve-selection="true"/>-->
@@ -417,13 +421,13 @@ const handleClickShowSearch = () => {
           </el-table-column>
           <el-table-column label="经度" align="center" prop="longitude" />
           <el-table-column label="纬度" align="center" prop="latitude" />
-          <!--          <el-table-column label="操作" align="center" fixed="right" width="40">-->
-          <!--            <template #default="scope">-->
-          <!--              <el-button link type="danger" @click="handleDeleteA(scope.row.id)">移除</el-button>-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
+          <el-table-column label="操作" align="center" fixed="right" width="40">
+            <template #default="scope">
+              <el-button link type="danger" @click="handleDeleteA(scope.row.id)">移除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <!--        <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>-->
+        <div v-else class="color-[#808080] mx-auto w-100px">暂无数据</div>
       </ContentWrap>
       <el-row>
         <el-button type="primary" plain style="width: 100%; height: 60px" @click="bindDeviceA()">
