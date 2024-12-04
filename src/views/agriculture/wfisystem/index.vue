@@ -8,6 +8,7 @@ import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
 import { ElTable } from 'element-plus';
 import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import WfiSystemBindDevice from '@/views/agriculture/wfisystem/component/WfiSystemBindDevice.vue';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 
 /** 水肥一体化系统信息 列表 */
 defineOptions({ name: 'WfiSystem' });
@@ -144,7 +145,10 @@ const handleBindDevice = async (device: any) => {
 
 const getDeviceList = async (systemId) => {
   const data = await WfiSystemApi.getWfiSystemDevice(systemId);
-  listDevice.value = data;
+  listDevice.value = data.map((item: any) => {
+    item.deviceType = item.deviceType.split(',').map(Number);
+    return item;
+  });
   deviceId.value = data.map((item) => item.id);
 };
 
@@ -171,8 +175,10 @@ const handleDeleteA = async (id) => {
     loadingDevice.value = false;
   }
 };
+
 /** 初始化 **/
-onMounted(() => {
+onMounted(async () => {
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({ parentId: 0, status: 1 });
   getList();
 });
 /* 原页面的js代码复制在上面 包括import */
