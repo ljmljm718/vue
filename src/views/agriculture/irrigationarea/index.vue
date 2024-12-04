@@ -98,10 +98,22 @@
             v-model="scope.row.deviceStatus"
             active-value="online"
             inactive-value="offline"
+            v-if="scope.row.deviceStatus != null"
           />
         </template>
       </el-table-column>
-      <el-table-column label="图片" align="center" prop="iaImage" />
+      <el-table-column label="图片" align="center" prop="iaImage">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            lazy
+            :src="row.iaImage"
+            :preview-src-list="[row.iaImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="负责人" align="center" prop="principal" />
@@ -115,7 +127,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="200" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -124,6 +136,14 @@
             v-if="scope.row.deviceId === null"
           >
             绑定电磁阀
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="notBindSolenoidValve(scope.row.id)"
+            v-if="scope.row.deviceId != null"
+          >
+            解绑电磁阀
           </el-button>
           <el-button
             link
@@ -155,7 +175,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <IrrigationAreaForm ref="formRef" @success="getList" />
-  <SelectValvesDeviceFrom ref="selectValvesDeviceRef" @success="getList" />
+  <SelectValvesDeviceFrom ref="selectValvesDeviceRef" @success="selectValvesDeviceSuccess" />
 </template>
 
 <script setup lang="ts">
@@ -258,9 +278,32 @@ const selectValvesDeviceRef = ref();
 const bindSolenoidValve = async (id: string) => {
   selectValvesDeviceRef.value.open(id);
 };
+/** 绑定成功*/
+const selectValvesDeviceSuccess = async (item: any) => {
+  await IrrigationAreaApi.bindValvesDevice(item[0].belongIrrigationArea, item[0].id);
+  message.success('绑定成功');
+  await getList();
+};
+/** 解绑电磁阀*/
+const notBindSolenoidValve = async (id: string) => {
+  try {
+    // 解绑的二次确认
+    await message.confirm('是否确认解绑电磁阀');
+    // 发起解绑
+    await IrrigationAreaApi.notBindValvesDevice(id);
+    message.success('解绑成功');
+    // 刷新列表
+    await getList();
+  } catch {}
+};
 
 /** 初始化 **/
 onMounted(() => {
+  getList();
+});
+
+/** 初始化 **/
+onActivated(() => {
   getList();
 });
 </script>

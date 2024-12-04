@@ -1,5 +1,11 @@
 <template>
-  <Dialog title="设备列表" v-model="dialogVisible" :appendToBody="true" :scroll="true" width="1400">
+  <Dialog
+    title="电磁阀设备列表"
+    v-model="dialogVisible"
+    :appendToBody="true"
+    :scroll="true"
+    width="1400"
+  >
     <ContentWrap>
       <!-- 搜索工作栏 -->
       <el-form
@@ -27,14 +33,6 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="设备类型" prop="deviceType">
-          <el-cascader
-            style="width: 100%"
-            v-model="deviceType"
-            :options="categoryOptions"
-            :props="categoryProps"
-          />
-        </el-form-item>
         <el-form-item label="状态" prop="deviceStatus">
           <el-select
             v-model="queryParams.deviceStatus"
@@ -50,7 +48,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="所属基地" prop="belongPark">
+        <!--        <el-form-item label="所属基地" prop="belongPark">
           <el-input
             v-model="queryParams.belongPark"
             placeholder="请输入所属基地"
@@ -67,7 +65,7 @@
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-button @click="handleQuery">
             <Icon icon="ep:search" class="mr-5px" />
@@ -108,9 +106,9 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="所属基地" align="center" prop="belongPark" width="200" />
+        <!--        <el-table-column label="所属基地" align="center" prop="belongPark" width="200" />-->
         <el-table-column label="基地名称" align="center" prop="parkName" width="200" />
-        <el-table-column label="所属地块" align="center" prop="belongPlot" width="200" />
+        <!--        <el-table-column label="所属地块" align="center" prop="belongPlot" width="200" />-->
         <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200" />
         <el-table-column label="经度" align="center" prop="longitude" />
         <el-table-column label="纬度" align="center" prop="latitude" />
@@ -197,7 +195,7 @@ const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 let categoryOptions = ref([]); // 设备分类选项
 const deviceType = ref();
-
+const irrigationAreaId = ref(); //传过来的灌区id
 //开始
 
 let suibian = ref(null);
@@ -253,6 +251,9 @@ const emits = defineEmits<{
 }>();
 const submitForm = () => {
   try {
+    selectionList.value.forEach((list) => {
+      list.belongIrrigationArea = irrigationAreaId.value;
+    });
     emits('success', selectionList.value);
   } finally {
     // 关闭弹窗
@@ -261,6 +262,7 @@ const submitForm = () => {
 };
 /** 打开弹窗 */
 const open = async (id: string) => {
+  irrigationAreaId.value = id;
   dialogVisible.value = true;
   Object.keys(queryParams).forEach((key) => {
     queryParams[key] = undefined;
@@ -286,18 +288,12 @@ const props = defineProps({
 /** 查询列表 */
 const getList = async () => {
   loading.value = true;
-  // if (props.deviceTypeA){
-  //   if (!queryParams.deviceType){
-  //     queryParams.deviceType = props.deviceTypeA
-  //   }
-  // }
   try {
-    const data = await DeviceInfoApi.getDeviceInfoPage(queryParams);
+    const data = await DeviceInfoApi.getDeviceInfoIrrigationAreaPage(queryParams);
     list.value = data.list.map((item: any) => {
       item.deviceType = item.deviceType.split(',').map(Number);
       return item;
     });
-    //console.log(list.value)
     total.value = data.total;
   } finally {
     loading.value = false;
@@ -321,40 +317,6 @@ const resetQuery = () => {
   });
   deviceType.value = null;
   handleQuery();
-};
-
-/** 添加/修改操作 */
-const formRef = ref();
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id);
-};
-
-/** 删除按钮操作 */
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm();
-    // 发起删除
-    await DeviceInfoApi.deleteDeviceInfo(id);
-    message.success(t('common.delSuccess'));
-    // 刷新列表
-    await getList();
-  } catch {}
-};
-
-/** 导出按钮操作 */
-const handleExport = async () => {
-  try {
-    // 导出的二次确认
-    await message.exportConfirm();
-    // 发起导出
-    exportLoading.value = true;
-    const data = await DeviceInfoApi.exportDeviceInfo(queryParams);
-    download.excel(data, '设备信息.xls');
-  } catch {
-  } finally {
-    exportLoading.value = false;
-  }
 };
 
 /**

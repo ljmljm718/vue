@@ -96,5 +96,10 @@ export const DeviceInfoApi = {
   // 刷新设备状态
   refreshDeviceStatus: async () => {
     return await request.put({ url: `/agriculture/device-info/refresh-status` });
+  },
+
+  // 通明村查询没有绑定灌区的设备列表
+  getDeviceInfoIrrigationAreaPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/device-info/irrigationArea-page`, params });
   }
 };

@@ -48,6 +48,20 @@ export const IrrigationAreaApi = {
     return await request.download({ url: `/agriculture/irrigation-area/export-excel`, params });
   },
 
+  // 绑定电磁阀
+  bindValvesDevice: async (id: string, deviceId: string) => {
+    return await request.put({
+      url: `/agriculture/irrigation-area/bindValvesDevice?id=` + id + `&deviceId=` + deviceId
+    });
+  },
+
+  // 解绑电磁阀
+  notBindValvesDevice: async (id: string) => {
+    return await request.put({
+      url: `/agriculture/irrigation-area/notBindValvesDevice?id=` + id
+    });
+  },
+
   // ==================== 子表（地块基本信息） ====================
 
   // 获得地块基本信息列表
