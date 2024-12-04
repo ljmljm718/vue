@@ -13,7 +13,8 @@ export interface WfiTaskIrrigationVO {
   waterPumpStatus: string; // 水泵控制
   concurrentTaskNumber: number; // 并发任务执行数量
   amountTimeNumber: number; // 施肥时长/量（分钟/L）
-  iaCodeList: string; // 任务执行灌区
+  iaCodeList: string; // 任务执行灌区ID
+  iaNameList: string; // 任务执行灌区Name
   status: string; // 状态，停用、启用、未启用
   tiTaskInfo: string; // 灌溉日
 }

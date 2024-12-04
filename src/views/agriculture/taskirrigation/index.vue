@@ -210,7 +210,7 @@
         </el-table-column>
         <el-table-column label="并发任务执行数量" align="center" prop="concurrentTaskNumber" />
         <el-table-column label="灌溉时长/量（分钟/L）" align="center" prop="amountTimeNumber" />
-        <el-table-column label="任务执行灌区" align="center" prop="iaCodeList" />
+        <el-table-column label="任务执行灌区" align="center" prop="iaNameList" />
         <el-table-column label="任务状态" align="center" prop="status" />
         <el-table-column
           label="创建时间"
