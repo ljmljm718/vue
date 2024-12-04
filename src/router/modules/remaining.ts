@@ -310,6 +310,12 @@ const remainingRouter: AppRouteRecordRaw[] = [
     meta: { hidden: true }
   },
   {
+    path: '/ai',
+    name: 'AI',
+    component: () => import('@/views/aiShow/index.vue'),
+    meta: { hidden: true }
+  },
+  {
     path: '/bigscreen',
     name: 'bigscreen',
     component: () => import('@/views/bigscreen/index.vue'),
