@@ -55,9 +55,18 @@
         <el-input v-model="formData.amountTimeNumber" placeholder="请输入施肥时长/量（分钟/L）" />
       </el-form-item>
       <el-form-item label="任务执行灌区" prop="iaCodeList">
-        <el-input v-model="formData.iaCodeList" placeholder="请输入任务执行灌区" />
+        <!-- <el-input v-model="formData.iaCodeList" placeholder="请输入任务执行灌区" /> -->
+        <el-input v-model="formData.iaCodeList" placeholder="请选择任务执行灌区" :disabled="true">
+          <template #append>
+            <el-button @click="openIrrigationareaList(formData.iaCodeList)">
+              <Icon icon="ep:search"/>
+              选择
+            </el-button>
+          </template>
+        </el-input>
+
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <!-- <el-form-item label="状态" prop="status">
         <el-select v-model="formData.status" placeholder="请选择状态">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.WFI_FERTILIZE_STATUS)"
@@ -66,17 +75,20 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+  <!-- 罐区选框 -->
+  <SelectIrrigtionareaForm ref="selectIrrigtionareaRef" @success="irrigatedAreaList" />
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { TaskFertilizationApi, TaskFertilizationVO } from '@/api/agriculture/taskfertilization'
+import SelectIrrigtionareaForm from '@/views/agriculture/irrigationarea/components/SelectIrrigtionarea.vue';
 
 /** 施肥任务 表单 */
 defineOptions({ name: 'TaskFertilizationForm' })
@@ -101,10 +113,27 @@ const formData = ref({
   status: undefined
 })
 const formRules = reactive({
-  status: [{ required: true, message: '状态不能为空', trigger: 'change' }]
+  // status: [{ required: true, message: '状态不能为空', trigger: 'change' }]
 })
 const formRef = ref() // 表单 Ref
 
+const selectIrrigtionareaRef = ref()
+const openIrrigationareaList = (ids:string) => {
+  selectIrrigtionareaRef.value.open(ids)
+}
+
+const irrigatedAreaIds = ref('');
+const irrigatedAreaList = async(reslist:any)=>{
+  for (let i = 0; i < reslist.length; i++) {
+    if( i != reslist.length-1)
+      irrigatedAreaIds.value += reslist[i].id+",";
+    else irrigatedAreaIds.value += reslist[i].id;
+  }
+  irrigatedAreaIds.value =irrigatedAreaIds.value.substring(0,irrigatedAreaIds.value.length)
+  console.log("irrigatedAreaIds",irrigatedAreaIds.value);
+  formData.value.iaCodeList = irrigatedAreaIds.value;
+  irrigatedAreaIds.value = ''
+}
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
