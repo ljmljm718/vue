@@ -6,83 +6,75 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="100px"
+      label-width="120px"
     >
-      <!-- <el-form-item label="所属任务id" prop="tfId">
+      <el-form-item label="任务id" prop="taskId">
         <el-input
-          v-model="queryParams.tfId"
-          placeholder="请输入所属任务id"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      <el-form-item label="料桶名" prop="chargingBasketName">
-        <el-input
-          v-model="queryParams.chargingBasketName"
-          placeholder="请输入料桶名"
+          v-model="queryParams.taskId"
+          placeholder="请输入任务id"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-
-      <!-- <el-form-item label="上水阀id" prop="upperWaterValveId">
-        <el-input
-          v-model="queryParams.upperWaterValveId"
-          placeholder="请输入上水阀id"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      <el-form-item label="上水量(L)" prop="upperWaterYield">
-        <el-input
-          v-model="queryParams.upperWaterYield"
-          placeholder="请输入上水量"
-          clearable
-          @keyup.enter="handleQuery"
+      <el-form-item label="执行时间" prop="execTime">
+        <el-date-picker
+          v-model="queryParams.execTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
-      <!-- <el-form-item label="混肥器id" prop="fertilizerMixerId">
-        <el-input
-          v-model="queryParams.fertilizerMixerId"
-          placeholder="请输入混肥器id"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item> -->
-      <el-form-item label="混肥器状态" prop="fertilizerMixerStatus">
+      <el-form-item label="任务类型" prop="taskType">
         <el-select
-          v-model="queryParams.fertilizerMixerStatus"
-          placeholder="请选择混肥器状态"
+          v-model="queryParams.taskType"
+          placeholder="请选择任务类型"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.FERTILIZE_STIR_MEASURING_TANK)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_TASK_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="定量桶状态" prop="measureBucketStatus">
+      <el-form-item label="类型" prop="type">
         <el-select
-          v-model="queryParams.measureBucketStatus"
-          placeholder="请选择定量桶状态"
+          v-model="queryParams.type"
+          placeholder="请选择类型"
           clearable
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.FERTILIZE_STIR_MEASURING_TANK)"
+            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_FERTILIZE_TYPE)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="时间/量（分钟/L）" prop="amountTimeNumber">
+        <el-input
+          v-model="queryParams.amountTimeNumber"
+          placeholder="请输入时间/量（分钟/L）"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="灌区" prop="iaCodeList">
+        <el-input
+          v-model="queryParams.iaCodeList"
+          placeholder="请输入灌区"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
@@ -102,7 +94,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['wfi:task-fertilization-detail:create']"
+          v-hasPermi="['agriculture:task-exec-log:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -111,7 +103,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['wfi:task-fertilization-detail:export']"
+          v-hasPermi="['agriculture:task-exec-log:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -123,21 +115,26 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <!-- <el-table-column label="所属任务id" align="center" prop="tfId" /> -->
-      <el-table-column label="料桶名" align="center" prop="chargingBasketName" />
-      <!-- <el-table-column label="上水阀id" align="center" prop="upperWaterValveId" /> -->
-      <el-table-column label="上水量" align="center" prop="upperWaterYield" />
-      <!-- <el-table-column label="混肥器id" align="center" prop="fertilizerMixerId" /> -->
-      <el-table-column label="混肥器状态" align="center" prop="fertilizerMixerStatus">
+      <el-table-column label="任务id" align="center" prop="taskId" />
+      <el-table-column
+        label="执行时间"
+        align="center"
+        prop="execTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="任务类型" align="center" prop="taskType">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.FERTILIZE_STIR_MEASURING_TANK" :value="scope.row.fertilizerMixerStatus" />
+          <dict-tag :type="DICT_TYPE.WFI_TASK_TYPE" :value="scope.row.taskType" />
         </template>
       </el-table-column>
-      <el-table-column label="定量桶状态" align="center" prop="measureBucketStatus">
+      <el-table-column label="类型" align="center" prop="type">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.FERTILIZE_STIR_MEASURING_TANK" :value="scope.row.measureBucketStatus" />
+          <dict-tag :type="DICT_TYPE.WFI_FERTILIZE_TYPE" :value="scope.row.type" />
         </template>
       </el-table-column>
+      <el-table-column label="时间/量（分钟/L）" align="center" prop="amountTimeNumber" />
+      <el-table-column label="灌区" align="center" prop="iaCodeList" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -151,7 +148,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['wfi:task-fertilization-detail:update']"
+            v-hasPermi="['agriculture:task-exec-log:update']"
           >
             编辑
           </el-button>
@@ -159,7 +156,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['wfi:task-fertilization-detail:delete']"
+            v-hasPermi="['agriculture:task-exec-log:delete']"
           >
             删除
           </el-button>
@@ -176,35 +173,34 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <TaskFertilizationDetailForm ref="formRef" @success="getList" />
+  <TaskExecLogForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { TaskFertilizationDetailApi, TaskFertilizationDetailVO } from '@/api/wfi/taskfertilizationdetail'
-import TaskFertilizationDetailForm from './TaskFertilizationDetailForm.vue'
+import { TaskExecLogApi, TaskExecLogVO } from '@/api/agriculture/taskexeclog'
+import TaskExecLogForm from './TaskExecLogForm.vue'
 
-/** 施肥任务明细 列表 */
-defineOptions({ name: 'TaskFertilizationDetail' })
+/** 任务执行记录 列表 */
+defineOptions({ name: 'TaskExecLog' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<TaskFertilizationDetailVO[]>([]) // 列表的数据
+const list = ref<TaskExecLogVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  tfId: undefined,
-  chargingBasketName: undefined,
-  upperWaterValveId: undefined,
-  upperWaterYield: undefined,
-  fertilizerMixerId: undefined,
-  fertilizerMixerStatus: undefined,
-  measureBucketStatus: undefined,
+  taskId: undefined,
+  execTime: [],
+  taskType: undefined,
+  type: undefined,
+  amountTimeNumber: undefined,
+  iaCodeList: undefined,
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
@@ -214,7 +210,7 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await TaskFertilizationDetailApi.getTaskFertilizationDetailPage(queryParams)
+    const data = await TaskExecLogApi.getTaskExecLogPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {
@@ -246,7 +242,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await TaskFertilizationDetailApi.deleteTaskFertilizationDetail(id)
+    await TaskExecLogApi.deleteTaskExecLog(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -260,8 +256,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await TaskFertilizationDetailApi.exportTaskFertilizationDetail(queryParams)
-    download.excel(data, '施肥任务明细.xls')
+    const data = await TaskExecLogApi.exportTaskExecLog(queryParams)
+    download.excel(data, '任务执行记录.xls')
   } catch {
   } finally {
     exportLoading.value = false

@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { TaskExecLogApi, TaskExecLogVO } from '@/api/wfi/taskexeclog'
+import { TaskExecLogApi, TaskExecLogVO } from '@/api/agriculture/taskexeclog'
 
 /** 任务执行记录 表单 */
 defineOptions({ name: 'TaskExecLogForm' })

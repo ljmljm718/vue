@@ -76,7 +76,7 @@
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { TaskFertilizationApi, TaskFertilizationVO } from '@/api/wfi/taskfertilization'
+import { TaskFertilizationApi, TaskFertilizationVO } from '@/api/agriculture/taskfertilization'
 
 /** 施肥任务 表单 */
 defineOptions({ name: 'TaskFertilizationForm' })

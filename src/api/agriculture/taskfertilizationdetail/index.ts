@@ -16,31 +16,31 @@ export interface TaskFertilizationDetailVO {
 export const TaskFertilizationDetailApi = {
   // 查询施肥任务明细分页
   getTaskFertilizationDetailPage: async (params: any) => {
-    return await request.get({ url: `/wfi/task-fertilization-detail/page`, params })
+    return await request.get({ url: `/agriculture/task-fertilization-detail/page`, params })
   },
 
   // 查询施肥任务明细详情
   getTaskFertilizationDetail: async (id: number) => {
-    return await request.get({ url: `/wfi/task-fertilization-detail/get?id=` + id })
+    return await request.get({ url: `/agriculture/task-fertilization-detail/get?id=` + id })
   },
 
   // 新增施肥任务明细
   createTaskFertilizationDetail: async (data: TaskFertilizationDetailVO) => {
-    return await request.post({ url: `/wfi/task-fertilization-detail/create`, data })
+    return await request.post({ url: `/agriculture/task-fertilization-detail/create`, data })
   },
 
   // 修改施肥任务明细
   updateTaskFertilizationDetail: async (data: TaskFertilizationDetailVO) => {
-    return await request.put({ url: `/wfi/task-fertilization-detail/update`, data })
+    return await request.put({ url: `/agriculture/task-fertilization-detail/update`, data })
   },
 
   // 删除施肥任务明细
   deleteTaskFertilizationDetail: async (id: number) => {
-    return await request.delete({ url: `/wfi/task-fertilization-detail/delete?id=` + id })
+    return await request.delete({ url: `/agriculture/task-fertilization-detail/delete?id=` + id })
   },
 
   // 导出施肥任务明细 Excel
   exportTaskFertilizationDetail: async (params) => {
-    return await request.download({ url: `/wfi/task-fertilization-detail/export-excel`, params })
+    return await request.download({ url: `/agriculture/task-fertilization-detail/export-excel`, params })
   }
 }

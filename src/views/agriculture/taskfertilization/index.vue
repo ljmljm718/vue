@@ -137,7 +137,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['wfi:task-fertilization:create']"
+          v-hasPermi="['agriculture:task-fertilization:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -146,7 +146,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['wfi:task-fertilization:export']"
+          v-hasPermi="['agriculture:task-fertilization:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -193,7 +193,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['wfi:task-fertilization:update']"
+            v-hasPermi="['agriculture:task-fertilization:update']"
           >
             编辑
           </el-button>
@@ -201,7 +201,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['wfi:task-fertilization:delete']"
+            v-hasPermi="['agriculture:task-fertilization:delete']"
           >
             删除
           </el-button>
@@ -225,7 +225,7 @@
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { TaskFertilizationApi, TaskFertilizationVO } from '@/api/wfi/taskfertilization'
+import { TaskFertilizationApi, TaskFertilizationVO } from '@/api/agriculture/taskfertilization'
 import TaskFertilizationForm from './TaskFertilizationForm.vue'
 
 /** 施肥任务 列表 */
