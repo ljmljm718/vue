@@ -8,36 +8,33 @@
               type="success"
               :icon="TopRight"
               @click="submitForm"
-              v-if="route.query.type as any !=='detail'"
-            >提交
+              v-if="(route.query.type as any) !== 'detail'"
+            >
+              提交
             </el-button>
             <el-button
               type="danger"
               :icon="Refresh"
               @click="resetForm()"
-              v-if="route.query.type as any !=='detail'"
-            >清空
+              v-if="(route.query.type as any) !== 'detail'"
+            >
+              清空
             </el-button>
           </div>
           <div>
-            <el-button
-              type="primary"
-              plain
-              @click="router.back()"
-            >返回</el-button>
+            <el-button type="primary" plain @click="router.back()">返回</el-button>
             <el-button
               type="primary"
               :icon="FolderChecked"
               plain
               @click="localSave()"
-              v-if="route.query.type as any !=='detail'"
+              v-if="(route.query.type as any) !== 'detail'"
             >
               暂存
             </el-button>
           </div>
         </div>
       </template>
-
 
       <template #content>
         <el-scrollbar class="croll-bar-template">
@@ -51,16 +48,15 @@
             :disabled="disabled"
           >
             <el-form-item label="编号" prop="cropCode">
-              <el-input v-model="formData.cropCode" disabled placeholder="系统自动生成...."/>
+              <el-input v-model="formData.cropCode" disabled placeholder="系统自动生成...." />
             </el-form-item>
             <el-row>
               <el-col :span="12">
-
                 <el-form-item label="种植品种" prop="cropName">
-                  <el-input v-model="formData.cropName" placeholder="请选择品种">
+                  <el-input v-model="formData.cropName" disabled placeholder="请选择品种">
                     <template #append>
                       <el-button @click="openBreedFrom()">
-                        <Icon icon="ep:search"/>
+                        <Icon icon="ep:search" />
                         选择
                       </el-button>
                     </template>
@@ -68,33 +64,38 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="品类" prop="cropTypeName" >
-                  <el-input v-model="cropTypeName" placeholder="选择品种后自动写入" readonly disabled/>
-<!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
-<!--                    <el-option-->
-<!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
-<!--                      :key="dict.value"-->
-<!--                      :label="dict.label"-->
-<!--                      :value="dict.value"-->
-<!--                    />-->
-<!--                  </el-select>-->
-<!--                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">-->
-<!--                    <el-option-->
-<!--                      v-for="item in listCategoryManagement"-->
-<!--                      :key="item.id"-->
-<!--                      :label="item.categoryName"-->
-<!--                      :value="item.id"/>-->
-<!--                  </el-select>-->
+                <el-form-item label="品类" prop="cropTypeName">
+                  <el-input
+                    v-model="cropTypeName"
+                    placeholder="选择品种后自动写入"
+                    readonly
+                    disabled
+                  />
+                  <!--                  <el-select v-model="formData.cropType" placeholder="请选择品种">-->
+                  <!--                    <el-option-->
+                  <!--                      v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_CROP_CULTIVARS)"-->
+                  <!--                      :key="dict.value"-->
+                  <!--                      :label="dict.label"-->
+                  <!--                      :value="dict.value"-->
+                  <!--                    />-->
+                  <!--                  </el-select>-->
+                  <!--                  <el-select v-model="formData.cropType" clearable placeholder="请选择品类">-->
+                  <!--                    <el-option-->
+                  <!--                      v-for="item in listCategoryManagement"-->
+                  <!--                      :key="item.id"-->
+                  <!--                      :label="item.categoryName"-->
+                  <!--                      :value="item.id"/>-->
+                  <!--                  </el-select>-->
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="所属基地" prop="belongPark">
-                  <el-input v-model="formData.belongPark" placeholder="请输入所属基地">
+                  <el-input v-model="formData.belongPark" disabled placeholder="请输入所属基地">
                     <template #append>
                       <el-button @click="openParkInfoPopup('0')">
-                        <Icon icon="ep:search"/>
+                        <Icon icon="ep:search" />
                         选择
                       </el-button>
                     </template>
@@ -104,25 +105,37 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="基地名称" prop="parkName">
-                  <el-input v-model="formData.parkName" placeholder="选择基地后自动写入" readonly disabled/>
+                  <el-input
+                    v-model="formData.parkName"
+                    placeholder="选择基地后自动写入"
+                    readonly
+                    disabled
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="12">  <el-form-item label="所属地块" prop="belongPlot">
-                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块">
-                  <template #append>
-                    <el-button @click="openParkDetailPopup(formData.belongPark)">
-                      <Icon icon="ep:search"/>
-                      选择
-                    </el-button>
-                  </template>
-                </el-input>
-                <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
-              </el-form-item></el-col>
+              <el-col :span="12">
+                <el-form-item label="所属地块" prop="belongPlot">
+                  <el-input v-model="formData.belongPlot" disabled placeholder="请输入所属地块">
+                    <template #append>
+                      <el-button @click="openParkDetailPopup(formData.belongPark)">
+                        <Icon icon="ep:search" />
+                        选择
+                      </el-button>
+                    </template>
+                  </el-input>
+                  <!--                <el-input v-model="formData.belongPlot" placeholder="请输入所属地块" />-->
+                </el-form-item>
+              </el-col>
               <el-col :span="12">
                 <el-form-item label="地块名称" prop="plotName">
-                  <el-input v-model="formData.plotName" placeholder="选择地块后自动写入" readonly disabled/>
+                  <el-input
+                    v-model="formData.plotName"
+                    placeholder="选择地块后自动写入"
+                    readonly
+                    disabled
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -154,11 +167,11 @@
               <el-col :span="12">
                 <el-form-item label="种植数量" prop="number">
                   <el-input
-                   v-model="formData.number"
-                   v-if="formData.unit=='亩'"
-                   :placeholder="`请输入数量，数量不能超过${area}亩`"
-                    style="width:100%;"
-                    />
+                    v-model="formData.number"
+                    v-if="formData.unit == '亩'"
+                    :placeholder="`请输入数量，数量不能超过${area}亩`"
+                    style="width: 100%"
+                  />
                   <el-input v-model="formData.number" v-else placeholder="请输入种植数量" />
                 </el-form-item>
               </el-col>
@@ -169,26 +182,37 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="预计产量" prop="predictedOutput">
-                  <el-input v-model="formData.predictedOutput" placeholder="请输入预计产量与单位，如：500Kg" />
+                  <el-input
+                    v-model="formData.predictedOutput"
+                    placeholder="请输入预计产量与单位，如：500Kg"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="图片" prop="imgId">
-                  <UploadImg :disabled="disabled" v-model="formData.imgId"/>
+                  <UploadImg :disabled="disabled" v-model="formData.imgId" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="描述" prop="cropDesc" style="height: 100%">
-                  <el-input v-model="formData.cropDesc" placeholder="请输入描述" type="textarea"
-                            :autosize="{ minRows: 7, maxRows: 8}"/>
+                  <el-input
+                    v-model="formData.cropDesc"
+                    placeholder="请输入描述"
+                    type="textarea"
+                    :autosize="{ minRows: 7, maxRows: 8 }"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"
-                        :autosize="{ minRows: 6, maxRows: 6}"/>
+              <el-input
+                v-model="formData.remark"
+                placeholder="请输入备注"
+                type="textarea"
+                :autosize="{ minRows: 6, maxRows: 6 }"
+              />
             </el-form-item>
           </el-form>
           <!-- 截至 -->
@@ -197,9 +221,9 @@
     </EditFrame>
   </div>
 
-  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess"/>
-  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange"/>
-  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange"/>
+  <BreedFrom ref="BreedFromRef" @success="BreedFromSuccess" />
+  <ParkInfoPopup ref="parkInfoPopupRef" @success="handleParkInfoPopupChange" />
+  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange" />
 </template>
 <script setup lang="ts">
 // 需要修改的方法
@@ -225,37 +249,37 @@ import {
   addOrUpdateFormStorage,
   getFormStorage,
   deleteFormStorage
-} from '@/components/EditFrame/index'
-import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
-import {CropBaseApi, CropBaseVO} from '@/api/agriculture/cropbase'
-import {ParkInfoVO} from "@/api/agriculture/parkinfo";
-import {ParkDetailVO} from "@/api/agriculture/parkdetail";
-import ParkDetailPopup from "@/views/agriculture/parkdetail/components/ParkDetailPopup.vue";
-import ParkInfoPopup from "@/views/agriculture/parkinfo/components/ParkInfoPopup.vue";
-import { CategoryManagementVO, allDataCacheManager} from "@/api/agriculture/categorymanagement";
+} from '@/components/EditFrame/index';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
+import { CropBaseApi, CropBaseVO } from '@/api/agriculture/cropbase';
+import { ParkInfoVO } from '@/api/agriculture/parkinfo';
+import { ParkDetailVO } from '@/api/agriculture/parkdetail';
+import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue';
+import { CategoryManagementVO, allDataCacheManager } from '@/api/agriculture/categorymanagement';
 //品种管理页面
-import BreedFrom from "@/views/agriculture/varietymanagement/SelectVarirtManagement.vue";
+import BreedFrom from '@/views/agriculture/varietymanagement/SelectVarirtManagement.vue';
 //
-import {ParkDetailApi} from "@/api/agriculture/parkdetail/index";
+import { ParkDetailApi } from '@/api/agriculture/parkdetail/index';
 /** 鲁渝协作品种管理 表单 */
-defineOptions({name: 'CreateOrUpdateCropbase'})
+defineOptions({ name: 'CreateOrUpdateCropbase' });
 // 本地保存表单
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 // 下面是抽象出的基本配置
-const ROUTE_PATH = route.path
-const FORMPAGE_NAME = '种植管理'
-const ORIGIN_PATH = '/farm_work/crop-base' // 关闭表单时跳转的路由
-const {t} = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const ROUTE_PATH = route.path;
+const FORMPAGE_NAME = '种植管理';
+const ORIGIN_PATH = '/farm_work/crop-base'; // 关闭表单时跳转的路由
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const disabled = ref<boolean>(false) //表单是否可编辑
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const listCategoryManagement = ref<CategoryManagementVO[]>([]) // 品类列表的数据
-const CategoryManagementQueryParams = reactive({})
+const disabled = ref<boolean>(false); //表单是否可编辑
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
+const listCategoryManagement = ref<CategoryManagementVO[]>([]); // 品类列表的数据
+const CategoryManagementQueryParams = reactive({});
 const formData = ref({
   id: undefined,
   cropCode: undefined,
@@ -273,10 +297,10 @@ const formData = ref({
   userId: undefined,
   receiptStartTime: undefined,
   receiptEndTime: undefined,
-  number:undefined,
-  unit:undefined,
-  predictedOutput: undefined,
-})
+  number: undefined,
+  unit: undefined,
+  predictedOutput: undefined
+});
 //保存到浏览器缓存
 const localSave = () => {
   addOrUpdateFormStorage(
@@ -284,23 +308,23 @@ const localSave = () => {
     FORMPAGE_NAME + (formData.value.id ? '编辑' : '新增'), // TODO: 前面的表单名称写成当前页面名称
     formData.value.id ? formData.value.id : 'new_form',
     formData.value
-  )
-  ElMessage.success('保存成功！')
-}
+  );
+  ElMessage.success('保存成功！');
+};
 //获取浏览器缓存
 const loadData = async (id = 'new_form') => {
-  const _form = await getFormStorage(ROUTE_PATH, id)
+  const _form = await getFormStorage(ROUTE_PATH, id);
   if (_form) {
-    formData.value = _form.formContent
+    formData.value = _form.formContent;
     // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
     const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-    area.value = parkDetailData.area
+    area.value = parkDetailData.area;
   }
-}
-if (!formData.value.id) loadData()
+};
+if (!formData.value.id) loadData();
 
 //起步函数
-const cropTypeName = ref()
+const cropTypeName = ref();
 const getFrom = async () => {
   // console.log(route.query.type  as any)
   resetForm();
@@ -308,63 +332,68 @@ const getFrom = async () => {
     // todo
     formData.value = await CropBaseApi.getCropBase(route.query.id as any);
     //获取所有品类的详情数据
-    listCategoryManagement.value = await allDataCacheManager.getData({})
-    listCategoryManagement.value.forEach(itm => {
-        if (formData.value.cropType == itm.id){
-          cropTypeName.value = itm.categoryName
-        }
-    })
+    listCategoryManagement.value = await allDataCacheManager.getData({});
+    listCategoryManagement.value.forEach((itm) => {
+      if (formData.value.cropType == itm.id) {
+        cropTypeName.value = itm.categoryName;
+      }
+    });
     // 在编辑时，默认查询当前基地，最大亩数面积，赋值给area
     const parkDetailData = await ParkDetailApi.getParkDetail(formData.value.belongPlot);
-    area.value = parkDetailData.area
+    area.value = parkDetailData.area;
     // 截至
     await loadData(route.query.id);
-
   }
-  formRef.value && formRef.value.clearValidate()
-}
+  formRef.value && formRef.value.clearValidate();
+};
 const formRules = reactive({
-  cropName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
-  cropType: [{required: true, message: '品种不能为空', trigger: 'change'}],
-  imgId: [{required: true, message: '图片不能为空', trigger: 'blur'}],
-  belongPlot: [{required: true, message: '所属基地不能为空', trigger: 'blur'}],
-  belongPark: [{required: true, message: '所属地块不能为空', trigger: 'blur'}],
-  unit: [{required: true, message: '单位不能为空', trigger: 'blur'}],
+  cropName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  cropType: [{ required: true, message: '品种不能为空', trigger: 'change' }],
+  imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
+  belongPlot: [{ required: true, message: '所属基地不能为空', trigger: 'blur' }],
+  belongPark: [{ required: true, message: '所属地块不能为空', trigger: 'blur' }],
+  unit: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
   number: [
     { required: true, message: '种植数量不能为空', trigger: 'blur' },
     {
       type: 'number',
       validator: (rule, value, callback) => {
-        if(formData.value.unit=='亩') {
-          if (parseFloat(value) <= 0) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
-          if (parseFloat(value) > area.value) return callback(new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`))
-          return callback()
+        if (formData.value.unit == '亩') {
+          if (parseFloat(value) <= 0)
+            return callback(
+              new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`)
+            );
+          if (parseFloat(value) > area.value)
+            return callback(
+              new Error(`请输入大于0小于等于${area.value}的数字,该地块面积为${area.value}亩!`)
+            );
+          return callback();
         }
-        return callback()
+        return callback();
       },
       trigger: 'change'
-    },
-  ],
-})
-const formRef = ref() // 表单 Ref
+    }
+  ]
+});
+const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await CropBaseApi.getCropBase(id)
+      formData.value = await CropBaseApi.getCropBase(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 // 详情页面判断
 if (route.query.type == 'detail') {
@@ -372,95 +401,94 @@ if (route.query.type == 'detail') {
 }
 
 //品种名称管理
-const BreedFromRef = ref()
+const BreedFromRef = ref();
 const openBreedFrom = () => {
   BreedFromRef.value.open();
-}
+};
 const BreedFromSuccess = (order: any) => {
-  console.log(order,"---------=----123");
-  formData.value.breedId = String(order[0].id)
-  formData.value.cropName = String(order[0].varietyName)
-  console.log(formData.value.cropName,'formData.value.cropName')
-  formData.value.unit=formData.value.cropName=='麻鸭'?'只':formData.value.cropName=='稻田鱼'?'条':order[0].categoryName.includes('蟹')?'只': '亩'
-  formData.value.cropType = String(order[0].categoryId)
-  cropTypeName.value = String(order[0].categoryName)
-
-}
-
-
+  console.log(order, '---------=----123');
+  formData.value.breedId = String(order[0].id);
+  formData.value.cropName = String(order[0].varietyName);
+  console.log(formData.value.cropName, 'formData.value.cropName');
+  formData.value.unit =
+    formData.value.cropName == '麻鸭'
+      ? '只'
+      : formData.value.cropName == '稻田鱼'
+        ? '条'
+        : order[0].categoryName.includes('蟹')
+          ? '只'
+          : '亩';
+  formData.value.cropType = String(order[0].categoryId);
+  cropTypeName.value = String(order[0].categoryName);
+};
 
 //基地的选择
-const parkInfoPopupRef = ref()
-const openType = ref('')
+const parkInfoPopupRef = ref();
+const openType = ref('');
 const openParkInfoPopup = (id: string) => {
   openType.value = id;
-  if (openType.value === undefined || openType.value === "") {
-    message.error("请选择基地")
-  } else parkInfoPopupRef.value.open(id)
-}
+  if (openType.value === undefined || openType.value === '') {
+    message.error('请选择基地');
+  } else parkInfoPopupRef.value.open(id);
+};
 const handleParkInfoPopupChange = (order: ParkInfoVO) => {
   if (openType.value === '0') {
-    formData.value.belongPark = String(order[0].code)
-    formData.value.parkName = String(order[0].name)
-  } else formData.value.belongPlot = String(order[0].id)
-}
+    formData.value.belongPark = String(order[0].code);
+    formData.value.parkName = String(order[0].name);
+  } else formData.value.belongPlot = String(order[0].id);
+};
 
 //地块的选择
-const parkDetailPopupRef = ref()
-const openType1 = ref('')
+const parkDetailPopupRef = ref();
+const openType1 = ref('');
 const openParkDetailPopup = (id: string) => {
   openType1.value = id;
   if (!openType1.value) {
-    message.error("请选择地块")
-  } else parkDetailPopupRef.value.open(id)
-}
-const area=ref(0)
+    message.error('请选择地块');
+  } else parkDetailPopupRef.value.open(id);
+};
+const area = ref(0);
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-  console.log(order,'orderorder')
-  formData.value.belongPark = String(order[0].parkId)
-  formData.value.belongPlot = String(order[0].id)
-  formData.value.plotName = String(order[0].name)
-  area.value=Number(order[0].area)
-}
+  console.log(order, 'orderorder');
+  formData.value.belongPark = String(order[0].parkId);
+  formData.value.belongPlot = String(order[0].id);
+  formData.value.plotName = String(order[0].name);
+  area.value = Number(order[0].area);
+};
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
+    const data = formData.value as unknown as CropBaseVO;
 
-    const data = formData.value as unknown as CropBaseVO
-
-    if(formData.value.unit=='亩'){
-      if( Number(formData.value.number) > Number(area.value)){
-        message.warning('数量超过输入的最大面积')
-        return
+    if (formData.value.unit == '亩') {
+      if (Number(formData.value.number) > Number(area.value)) {
+        message.warning('数量超过输入的最大面积');
+        return;
       }
-
     }
 
     if (!formData.value.id) {
-      await CropBaseApi.createCropBase(data)
-      message.success(t('common.createSuccess'))
+      await CropBaseApi.createCropBase(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await CropBaseApi.updateCropBase(data)
-      message.success(t('common.updateSuccess'))
+      await CropBaseApi.updateCropBase(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
-    await router.push(ORIGIN_PATH)
+    dialogVisible.value = false;
+    await router.push(ORIGIN_PATH);
     // 发送操作成功的事件
-    emit('success')
-    deleteFormStorage(
-      ROUTE_PATH,
-      formData.value.id ? formData.value.id : 'new_form'
-    )
+    emit('success');
+    deleteFormStorage(ROUTE_PATH, formData.value.id ? formData.value.id : 'new_form');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -478,19 +506,15 @@ const resetForm = () => {
     plotName: undefined,
     deptId: undefined,
     userId: undefined,
-    number:undefined,
-    unit:undefined,
-    predictedOutput: undefined,
-  }
-  formRef.value?.resetFields()
-}
-
-
-
+    number: undefined,
+    unit: undefined,
+    predictedOutput: undefined
+  };
+  formRef.value?.resetFields();
+};
 
 // 方式二 调用立即执行函数
 onMounted(async () => {
   await getFrom();
 });
-
 </script>
