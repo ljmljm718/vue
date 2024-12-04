@@ -26,6 +26,7 @@
               v-model="formData.elementName"
               placeholder="请选择要素"
               clearable
+              filterable
               style="width: 100%"
               @change="handleElementNameChange()"
             >
@@ -130,6 +131,7 @@ const maxNum = ref(100); // 权重可填写最大值
 
 const formRules = reactive({
   indicatorId: [{ required: true, message: '监测指标不能为空', trigger: 'blur' }],
+  bindDevice: [{ required: true, message: '必须绑定设备', trigger: 'blur' }],
   weight: [
     { required: true, message: '请分配权重', trigger: 'blur' },
     {

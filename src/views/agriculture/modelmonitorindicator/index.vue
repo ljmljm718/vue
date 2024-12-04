@@ -8,7 +8,8 @@
           @click="createOpenForm('create')"
           v-hasPermi="['agriculture:model-monitor-indicator:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
       </div>
       <div class="flex rounded-md">
@@ -83,20 +84,20 @@
                       <div
                         class="w-[1rem] h-[1rem] rounded-[.2rem]"
                         :style="`background-color: ${COLOR_LIST[index]};`"
-                      >
-                      </div>
+                      ></div>
                       <div class="w-[5rem] text-[.8rem]">{{ cardVo.elementName }}</div>
                     </div>
                     <div class="flex flex-col items-center space-y-1">
                       <div
                         :style="{ left: `${cardVo.offset ?? 0}rem` }"
                         class="bg-[#666666] text-white rounded-md px-5 py-1 triangle-bar relative"
-                        >{{ cardVo.text }}
+                      >
+                        {{ cardVo.text }}
                       </div>
                       <div class="flex space-x-[.5rem] items-center">
-                        <div class="w-[4.7rem] text-center"
-                          >{{ cardVo.lowVal }}{{ cardVo.unit ?? '' }}</div
-                        >
+                        <div class="w-[4.7rem] text-center">
+                          {{ cardVo.lowVal }}{{ cardVo.unit ?? '' }}
+                        </div>
                         <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
                           <div
                             v-for="(rangeItem, idx) in cardVo.modelIndicatorElementRangeDOList"
@@ -113,12 +114,11 @@
                             :class="`color-bar-${idx + 1} grow w-[${
                               100 / cardVo.modelIndicatorElementRangeDOList.length
                             }%] h-[.6rem]`"
-                          >
-                          </div>
+                          ></div>
                         </div>
-                        <div class="w-[4.7rem] text-center"
-                          >{{ cardVo.hightVal }}{{ cardVo.unit ?? '' }}</div
-                        >
+                        <div class="w-[4.7rem] text-center">
+                          {{ cardVo.hightVal }}{{ cardVo.unit ?? '' }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -245,112 +245,112 @@
 </template>
 
 <script setup lang="ts">
-import download from '@/utils/download'
+import download from '@/utils/download';
 import {
   ModelMonitorIndicatorApi,
   ModelMonitorIndicatorVO
-} from '@/api/agriculture/modelmonitorindicator'
+} from '@/api/agriculture/modelmonitorindicator';
 // @ts-ignore
-import ModelMonitorIndicatorForm from './ModelMonitorIndicatorForm.vue'
-import { DICT_TYPE } from '@/utils/dict'
-import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement'
-import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew'
+import ModelMonitorIndicatorForm from './ModelMonitorIndicatorForm.vue';
+import { DICT_TYPE } from '@/utils/dict';
+import { ModelManagementApi, ModelManagementVO } from '@/api/agriculture/modelmanagement';
+import { CropGrowthNewApi, CropGrowthNewVO } from '@/api/agri/cropgrowthnew';
 // @ts-ignore
-import ModelSelectPopup from '@/views/agriculture/modelmanagement/ModelSelectPopup.vue'
-import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index'
-import { cloneDeep } from 'lodash-es'
-import {ModelIndicatorElementApi} from "@/api/agriculture/modelindicatorelement";
+import ModelSelectPopup from '@/views/agriculture/modelmanagement/ModelSelectPopup.vue';
+import { initChartStatic, generatePieOptions } from '@/utils/bigscreenTool/index';
+import { cloneDeep } from 'lodash-es';
+import { ModelIndicatorElementApi } from '@/api/agriculture/modelindicatorelement';
 
 /** 监测指标 列表 */
-defineOptions({ name: 'ModelMonitorIndicator' })
+defineOptions({ name: 'ModelMonitorIndicator' });
 
-const showType = ref('card')
-const showElement = ref(false)
-const selectedKey = ref<string>('')
-const selectedName = ref<string>('')
-const leftDataList = ref<any[]>([])
+const showType = ref('card');
+const showElement = ref(false);
+const selectedKey = ref<string>('');
+const selectedName = ref<string>('');
+const leftDataList = ref<any[]>([]);
 // 左侧列表点击事件
 const handleLeftItemClick = (item) => {
-  showElement.value = false
-  selectedKey.value = item.id
-  selectedName.value = item.growth
-  getList()
-  const { modelId } = route.query
-  if (typeof modelId === 'string') getCardDataList(modelId, item.id)
-}
+  showElement.value = false;
+  selectedKey.value = item.id;
+  selectedName.value = item.growth;
+  getList();
+  const { modelId } = route.query;
+  if (typeof modelId === 'string') getCardDataList(modelId, item.id);
+};
 
 const handleItemHover = (cardItem, rangeItem, offset) => {
   cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${
     rangeItem.highLimit
-  }${rangeItem.unit ?? ''}`
-  cardItem.offset = offset
-}
+  }${rangeItem.unit ?? ''}`;
+  cardItem.offset = offset;
+};
 
-const cardDataList = ref<any[]>([])
+const cardDataList = ref<any[]>([]);
 
 const getCardDataList = async (modelId, growthId) => {
-  const res = await ModelMonitorIndicatorApi.getCardData({ modelId, growthId })
-  if (!Array.isArray(res)) return
+  const res = await ModelMonitorIndicatorApi.getCardData({ modelId, growthId });
+  if (!Array.isArray(res)) return;
   cardDataList.value = res.map((item) => {
-    const { modelIndicatorElementCardVOList: VoList } = item
-    let modelIndicatorElementCardVOList = cloneDeep(VoList)
+    const { modelIndicatorElementCardVOList: VoList } = item;
+    let modelIndicatorElementCardVOList = cloneDeep(VoList);
     if (Array.isArray(modelIndicatorElementCardVOList)) {
       modelIndicatorElementCardVOList = modelIndicatorElementCardVOList.map((cardItem) => {
-        const { modelIndicatorElementRangeDOList: DoList } = cardItem
+        const { modelIndicatorElementRangeDOList: DoList } = cardItem;
 
         let lowVal = Infinity,
           hightVal = -Infinity,
           unitVal = '',
-          text = ''
+          text = '';
         if (Array.isArray(DoList)) {
           DoList.forEach((doItem) => {
-            const { lowLimit, highLimit, unit, indicatorResult } = doItem
-            if (+lowLimit < lowVal) lowVal = lowLimit
-            if (+highLimit > hightVal) hightVal = highLimit
-            if (!unitVal) unitVal = unit
+            const { lowLimit, highLimit, unit, indicatorResult } = doItem;
+            if (+lowLimit < lowVal) lowVal = lowLimit;
+            if (+highLimit > hightVal) hightVal = highLimit;
+            if (!unitVal) unitVal = unit;
             if (
-              (indicatorResult.indexOf('正常') !== -1 || indicatorResult.indexOf('适宜') !== -1) &&
+              (indicatorResult?.indexOf('正常') !== -1 || indicatorResult.indexOf('适宜') !== -1) &&
               !text
             ) {
-              text = `${indicatorResult} ${lowLimit}${unit ?? ''}~${highLimit}${unit ?? ''}`
+              text = `${indicatorResult} ${lowLimit}${unit ?? ''}~${highLimit}${unit ?? ''}`;
             }
-          })
+          });
         }
-        cardItem.lowVal = lowVal
-        cardItem.hightVal = hightVal
-        cardItem.unit = unitVal
-        cardItem.text = text
-        return cardItem
-      })
+        cardItem.lowVal = lowVal;
+        cardItem.hightVal = hightVal;
+        cardItem.unit = unitVal;
+        cardItem.text = text;
+        return cardItem;
+      });
     }
 
-    return { ...item, modelIndicatorElementCardVOList }
-  })
+    return { ...item, modelIndicatorElementCardVOList };
+  });
   nextTick(() => {
-    initCharts()
-  })
-}
+    initCharts();
+  });
+};
 
-const router = useRouter()
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const route = useRoute()
+const router = useRouter();
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
+const route = useRoute();
 
-const COLOR_LIST = ['#59b756', '#73c0de', '#ee6666', '#fac858', '#009688']
+const COLOR_LIST = ['#59b756', '#73c0de', '#ee6666', '#fac858', '#009688'];
 
 const checkModelParam = async () => {
-  const { modelId, belongVarietyId } = route.query
+  const { modelId, belongVarietyId } = route.query;
   if (typeof modelId === 'string') {
-    const _item = await ModelManagementApi.getModelManagement(modelId)
-    if (_item) handleModelSelectPopupChange(_item)
+    const _item = await ModelManagementApi.getModelManagement(modelId);
+    if (_item) handleModelSelectPopupChange(_item);
   }
-  if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId)
-}
-onMounted(() => checkModelParam())
+  if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId);
+};
+onMounted(() => checkModelParam());
 
-const loading = ref(true) // 列表的加载中
-const list = ref<ModelMonitorIndicatorVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<ModelMonitorIndicatorVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive<any>({
   pageNo: 1,
   pageSize: 10,
@@ -365,47 +365,47 @@ const queryParams = reactive<any>({
   isDefault: undefined,
   implementationClass: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
-const listModelManagement = ref<ModelManagementVO[]>([]) // 模型列表的数据
-const listCropGrowthNew = ref<CropGrowthNewVO[]>([]) // 生长周期列表的数据
+const listModelManagement = ref<ModelManagementVO[]>([]); // 模型列表的数据
+const listCropGrowthNew = ref<CropGrowthNewVO[]>([]); // 生长周期列表的数据
 const getTypeData = async () => {
-  const { list: list1 } = await ModelManagementApi.getModelManagementNoPage({})
-  if (Array.isArray(list1)) listModelManagement.value = list1
-  const { list: growthNewList } = await CropGrowthNewApi.getCropGrowthNewNoPage({})
-  if (Array.isArray(growthNewList)) listCropGrowthNew.value = growthNewList
-}
+  const { list: list1 } = await ModelManagementApi.getModelManagementNoPage({});
+  if (Array.isArray(list1)) listModelManagement.value = list1;
+  const { list: growthNewList } = await CropGrowthNewApi.getCropGrowthNewNoPage({});
+  if (Array.isArray(growthNewList)) listCropGrowthNew.value = growthNewList;
+};
 
 // 获取左侧生长期列表
 const getGrowthDataList = async (varietyId: string) => {
-  if (!varietyId) return
-  const { data } = await ModelMonitorIndicatorApi.getGrowthByVarietyId({ varietyId })
-  console.log('左侧生长期列表', data)
+  if (!varietyId) return;
+  const { data } = await ModelMonitorIndicatorApi.getGrowthByVarietyId({ varietyId });
+  console.log('左侧生长期列表', data);
 
   if (Array.isArray(data)) {
-    leftDataList.value = data
-    if (data.length > 0) handleLeftItemClick(data[0])
+    leftDataList.value = data;
+    if (data.length > 0) handleLeftItemClick(data[0]);
   }
-}
+};
 
 watch(showType, (val: string) => {
   if (val === 'card') {
     nextTick(() => {
-      initCharts()
-    })
+      initCharts();
+    });
   }
-})
+});
 
 const initCharts = () => {
-  if (!Array.isArray(cardDataList.value)) return
+  if (!Array.isArray(cardDataList.value)) return;
   cardDataList.value.forEach((item) => {
-    const chartId = 'chart_' + item.id
-    const seriesData = item.modelIndicatorElementCardVOList
-    if (!Array.isArray(seriesData)) return
-    const _dom = document.getElementById(chartId)
-    if (!_dom) return
+    const chartId = 'chart_' + item.id;
+    const seriesData = item.modelIndicatorElementCardVOList;
+    if (!Array.isArray(seriesData)) return;
+    const _dom = document.getElementById(chartId);
+    if (!_dom) return;
     initChartStatic(
       chartId,
       generatePieOptions({
@@ -439,127 +439,127 @@ const initCharts = () => {
           }
         ]
       })
-    )
-  })
-}
+    );
+  });
+};
 
 // const createDisabled = ref(false) //新增按钮是否禁用
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    if (selectedKey.value) queryParams.growthPeriodId = selectedKey.value
-    const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams)
+    if (selectedKey.value) queryParams.growthPeriodId = selectedKey.value;
+    const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams);
     list.value = data.list.map((item) => {
       const element = Array.isArray(listModelManagement.value)
         ? listModelManagement.value.find((ele) => ele.id === item.modelId)
-        : null
+        : null;
       const cropItem = Array.isArray(listCropGrowthNew.value)
         ? listCropGrowthNew.value.find((ele) => ele.id === item.growthPeriodId)
-        : null
+        : null;
       return {
         ...item,
         modelName: element ? element.modelName : '',
         growth: cropItem ? cropItem.growth : ''
-      }
-    })
-    total.value = data.total
+      };
+    });
+    total.value = data.total;
     if (list.value.length > 0) {
-      console.log('list.value[0]', list.value[0])
-      tableRef.value.setCurrentRow(list.value[0])
-      currentRow.value = list.value[0]
+      console.log('list.value[0]', list.value[0]);
+      if (tableRef.value) nextTick(() => tableRef.value.setCurrentRow(list.value[0]));
+      currentRow.value = list.value[0];
       setTimeout(() => {
-        handleRowClick(list.value[0])
-      }, 300)
+        handleRowClick(list.value[0]);
+      }, 300);
     }
   } finally {
-    loading.value = false
+    loading.value = false;
     nextTick(() => {
-      initCharts()
-    })
+      initCharts();
+    });
   }
-}
+};
 
 window.addEventListener('resize', () => {
-  const _list = list.value
-  list.value = []
+  const _list = list.value;
+  list.value = [];
   nextTick(() => {
-    list.value = _list
+    list.value = _list;
     nextTick(() => {
-      initCharts()
-    })
-  })
-})
+      initCharts();
+    });
+  });
+});
 
 //--------出现下方的元素列表--------------
-const currentRow = ref()
-const tableRef = ref()
-const elementList = ref<any[]>([])
+const currentRow = ref();
+const tableRef = ref();
+const elementList = ref<any[]>([]);
 const handleRowClick = (row) => {
-  showElement.value = true
+  showElement.value = true;
   cardDataList.value.forEach((item) => {
     if (item.indicatorName === row.indicatorName) {
-      console.log('if (item.indicatorName === row.indicatorName) ')
-      const { modelIndicatorElementCardVOList: VoList } = item
-      let ElementVOList = cloneDeep(VoList)
+      console.log('if (item.indicatorName === row.indicatorName) ');
+      const { modelIndicatorElementCardVOList: VoList } = item;
+      let ElementVOList = cloneDeep(VoList);
       elementList.value = ElementVOList.map((elementItem) => {
         const {
           elementName,
           indicatorDescription,
           weight,
           modelIndicatorElementRangeDOList: RangeDOList
-        } = elementItem
+        } = elementItem;
         let rangeItems = RangeDOList.map((rangeItem) => {
-          const { lowLimit, highLimit, indicatorResult, healthRatio, unit } = rangeItem
+          const { lowLimit, highLimit, indicatorResult, healthRatio, unit } = rangeItem;
           return {
             limit: `${lowLimit}${unit ?? ''}~${highLimit}${unit ?? ''}`,
             indicatorResult,
             healthRatio
-          }
-        })
+          };
+        });
         return {
           elementName,
           indicatorDescription,
           weight,
           rangeItems
-        }
-      })
-      console.log('elementList.value', elementList.value)
+        };
+      });
+      console.log('elementList.value', elementList.value);
     }
-  })
-}
+  });
+};
 // 默认选中第一行
 watch(showType, (val: string) => {
   if (val === 'list') {
     nextTick(() => {
-      tableRef.value.setCurrentRow(list.value[0])
-      currentRow.value = list.value[0]
-      handleRowClick(list.value[0])
-    })
+      tableRef.value.setCurrentRow(list.value[0]);
+      currentRow.value = list.value[0];
+      handleRowClick(list.value[0]);
+    });
   }
-})
+});
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-  const { belongVarietyId } = route.query
-  if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId)
-}
+  queryParams.pageNo = 1;
+  getList();
+  const { belongVarietyId } = route.query;
+  if (typeof belongVarietyId === 'string') getGrowthDataList(belongVarietyId);
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  modelName.value = undefined
-  queryParams.modelId = undefined
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  modelName.value = undefined;
+  queryParams.modelId = undefined;
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, item?: any) => {
-  formRef.value.open(type, item)
-}
+  formRef.value.open(type, item);
+};
 
 /** 新增操作，自动添加模型与生长期 */
 const createOpenForm = (type: string) => {
@@ -569,64 +569,64 @@ const createOpenForm = (type: string) => {
       growth: selectedName.value,
       modelId: queryParams.modelId,
       modelName: modelName.value
-    }
-    formRef.value.createOpen(type, item)
+    };
+    formRef.value.createOpen(type, item);
   } else {
-    ElMessage.error('请选择生长期后再新增！')
+    ElMessage.error('请选择生长期后再新增！');
   }
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await ModelMonitorIndicatorApi.deleteModelMonitorIndicator(id)
-    message.success(t('common.delSuccess'))
+    await ModelMonitorIndicatorApi.deleteModelMonitorIndicator(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await ModelMonitorIndicatorApi.exportModelMonitorIndicator(queryParams)
-    download.excel(data, '监测指标.xls')
+    exportLoading.value = true;
+    const data = await ModelMonitorIndicatorApi.exportModelMonitorIndicator(queryParams);
+    download.excel(data, '监测指标.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 //模型的选择
-const modelSelectPopupRef = ref()
+const modelSelectPopupRef = ref();
 const openModelSelectPopup = (id: string) => {
-  modelSelectPopupRef.value.open(id)
-}
-const modelName = ref()
+  modelSelectPopupRef.value.open(id);
+};
+const modelName = ref();
 const handleModelSelectPopupChange = (order: ModelManagementVO[]) => {
   // if (!Array.isArray(order)) return;
-  if (order.length === 0) return
-  const _order = order
-  if (!_order.id) return
-  queryParams.modelId = _order.id.toString()
-  modelName.value = _order.modelName?.toString()
-}
+  if (order.length === 0) return;
+  const _order = order;
+  if (!_order.id) return;
+  queryParams.modelId = _order.id.toString();
+  modelName.value = _order.modelName?.toString();
+};
 
 const init = async () => {
-  await getTypeData()
-  await getList()
-}
+  await getTypeData();
+  await getList();
+};
 /** 初始化 **/
 onMounted(() => {
-  init()
-})
+  init();
+});
 </script>
 <style scoped lang="scss">
 .tab-btn,

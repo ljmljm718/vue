@@ -229,9 +229,13 @@ const getList = async () => {
   loading.value = true;
   try {
     const data = await ModelIndicatorElementApi.getModelIndicatorElementPage(queryParams);
+    console.log('data', data);
     list.value = data.list.map((item) => {
       let deviceName = '';
-      if (Array.isArray(listDeviceInfo.value))
+      if (
+        !(item.bindDevice === null || item.bindDevice === undefined) &&
+        Array.isArray(listDeviceInfo.value)
+      )
         listDeviceInfo.value.forEach((ele) => {
           if (item.bindDevice.includes(ele.id)) deviceName = deviceName + ',' + ele.deviceName;
         });

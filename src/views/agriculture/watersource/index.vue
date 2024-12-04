@@ -253,6 +253,7 @@ import { ElTable } from 'element-plus';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import { WaterSourceDeviceApi } from '@/api/agriculture/watersourcedevice';
+import BindDevice from './components/BindDevice.vue';
 
 /** 水源信息 列表 */
 defineOptions({ name: 'WaterSource' });
