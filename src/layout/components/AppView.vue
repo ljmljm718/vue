@@ -1,35 +1,36 @@
 <script lang="ts" setup>
-import { useTagsViewStore } from '@/store/modules/tagsView'
-import { useAppStore } from '@/store/modules/app'
-import { Footer } from '@/layout/components/Footer'
+import { useTagsViewStore } from '@/store/modules/tagsView';
+import { useAppStore } from '@/store/modules/app';
+import { Footer } from '@/layout/components/Footer';
+import AiButton from './AiButton.vue';
 
-defineOptions({ name: 'AppView' })
+defineOptions({ name: 'AppView' });
 
-const appStore = useAppStore()
+const appStore = useAppStore();
 
-const layout = computed(() => appStore.getLayout)
+const layout = computed(() => appStore.getLayout);
 
-const fixedHeader = computed(() => appStore.getFixedHeader)
+const fixedHeader = computed(() => appStore.getFixedHeader);
 
-const footer = computed(() => appStore.getFooter)
+const footer = computed(() => appStore.getFooter);
 
-const tagsViewStore = useTagsViewStore()
+const tagsViewStore = useTagsViewStore();
 
 const getCaches = computed((): string[] => {
-  return tagsViewStore.getCachedViews
-})
+  return tagsViewStore.getCachedViews;
+});
 
-const tagsView = computed(() => appStore.getTagsView)
+const tagsView = computed(() => appStore.getTagsView);
 
 //region 无感刷新
-const routerAlive = ref(true)
+const routerAlive = ref(true);
 // 无感刷新，防止出现页面闪烁白屏
 const reload = () => {
-  routerAlive.value = false
-  nextTick(() => (routerAlive.value = true))
-}
+  routerAlive.value = false;
+  nextTick(() => (routerAlive.value = true));
+};
 // 为组件后代提供刷新方法
-provide('reload', reload)
+provide('reload', reload);
 //endregion
 </script>
 
@@ -69,4 +70,5 @@ provide('reload', reload)
     </router-view>
   </section>
   <Footer v-if="footer" />
+  <AiButton />
 </template>
