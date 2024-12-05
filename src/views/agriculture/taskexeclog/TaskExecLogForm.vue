@@ -18,6 +18,17 @@
           placeholder="选择执行时间"
         />
       </el-form-item>
+      <el-form-item label="结束时间" prop="endTime">
+        <el-date-picker
+          v-model="formData.endTime"
+          type="datetime"
+          value-format="x"
+          placeholder="选择结束时间"
+        />
+      </el-form-item>
+      <el-form-item label="持续时长" prop="duration">
+        <el-input v-model="formData.duration" placeholder="请输入持续时长" />
+      </el-form-item>
       <el-form-item label="任务类型" prop="taskType">
         <el-select v-model="formData.taskType" placeholder="请选择任务类型">
           <el-option
@@ -69,6 +80,8 @@ const formData = ref({
   id: undefined,
   taskId: undefined,
   execTime: undefined,
+  endTime: undefined,
+  duration: undefined,
   taskType: undefined,
   type: undefined,
   amountTimeNumber: undefined,

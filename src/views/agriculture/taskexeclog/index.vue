@@ -25,6 +25,8 @@ const queryParams = reactive({
   pageSize: 10,
   taskId: undefined,
   execTime: [],
+  endTime: [],
+  duration: undefined,
   taskType: undefined,
   type: undefined,
   amountTimeNumber: undefined,
@@ -277,6 +279,14 @@ const handleClickShowSearch = () => {
           :formatter="dateFormatter"
           width="180px"
         />
+        <el-table-column
+          label="结束时间"
+          align="center"
+          prop="endTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="持续时长" align="center" prop="duration" />
         <el-table-column label="任务类型" align="center" prop="taskType">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.WFI_TASK_TYPE" :value="scope.row.taskType" />

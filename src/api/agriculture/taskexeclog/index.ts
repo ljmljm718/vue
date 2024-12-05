@@ -5,6 +5,8 @@ export interface TaskExecLogVO {
   id: string // 主键id
   taskId: string // 任务id
   execTime: Date // 执行时间
+  endTime: Date // 结束时间
+  duration: string // 持续时长
   taskType: string // 任务类型
   type: string // 任务类型
   amountTimeNumber: number // 时间/量（分钟/L）
