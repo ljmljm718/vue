@@ -98,6 +98,7 @@
             v-model="scope.row.deviceStatus"
             active-value="online"
             inactive-value="offline"
+            @change="handleStatus(scope.row)"
             v-if="scope.row.deviceStatus != null"
           />
         </template>
@@ -127,23 +128,15 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="200" fixed="right">
+      <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #default="scope">
           <el-button
             link
             type="primary"
-            @click="bindSolenoidValve(scope.row.id)"
-            v-if="scope.row.deviceId === null"
+            @click="handleDraw(scope.row)"
+            v-hasPermi="['agriculture:irrigation-area:update']"
           >
-            绑定电磁阀
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="notBindSolenoidValve(scope.row.id)"
-            v-if="scope.row.deviceId != null"
-          >
-            解绑电磁阀
+            绘制围栏
           </el-button>
           <el-button
             link
@@ -152,6 +145,22 @@
             v-hasPermi="['agriculture:irrigation-area:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="warning"
+            @click="bindSolenoidValve(scope.row.id)"
+            v-if="scope.row.deviceId === null"
+          >
+            绑定电磁阀
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="notBindSolenoidValve(scope.row.id)"
+            v-if="scope.row.deviceId != null"
+          >
+            解绑电磁阀
           </el-button>
           <el-button
             link
@@ -172,7 +181,22 @@
       @pagination="getList"
     />
   </ContentWrap>
-
+  <fence-dialog
+    v-model="showDrawDialog"
+    title="绘制围栏"
+    width="80vw"
+    draggable
+    append-to-body
+    destroy-on-close
+  >
+    <div class="w-full h-full">
+      <map-custom ref="tiandiIns" :enableEdit="true" />
+    </div>
+    <template #footer>
+      <el-button size="small" @click="handleCancel()">取 消</el-button>
+      <el-button size="small" type="primary" @click="handleConfirm()">确 定</el-button>
+    </template>
+  </fence-dialog>
   <!-- 表单弹窗：添加/修改 -->
   <IrrigationAreaForm ref="formRef" @success="getList" />
   <SelectValvesDeviceFrom ref="selectValvesDeviceRef" @success="selectValvesDeviceSuccess" />
@@ -185,6 +209,10 @@ import download from '@/utils/download';
 import { IrrigationAreaApi, IrrigationAreaVO } from '@/api/agriculture/irrigationarea';
 import IrrigationAreaForm from './IrrigationAreaForm.vue';
 import SelectValvesDeviceFrom from '@/views/agriculture/irrigationarea/components/SelectValvesDeviceFrom.vue';
+import { DeviceInfoApi } from '@/api/agriculture/deviceinfo';
+import { ElMessage } from 'element-plus';
+import FenceDialog from '@/views/agriculture/parkinfo/components/fenceDialog.vue';
+import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew';
 /** 灌区信息 列表 */
 defineOptions({ name: 'IrrigationArea' });
 
@@ -213,16 +241,21 @@ const queryParams = reactive({
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 const router = useRouter(); // 路由
+const enableSwitch = ref<boolean>(false);
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true;
+  enableSwitch.value = false;
   try {
     const data = await IrrigationAreaApi.getIrrigationAreaPage(queryParams);
     list.value = data.list;
     total.value = data.total;
   } finally {
     loading.value = false;
+    nextTick(() => {
+      enableSwitch.value = true;
+    });
   }
 };
 
@@ -295,6 +328,91 @@ const notBindSolenoidValve = async (id: string) => {
     // 刷新列表
     await getList();
   } catch {}
+};
+
+/** 开关机 */
+const handleStatus = async (item: any) => {
+  if (!enableSwitch.value) return;
+  let s = item.deviceStatus === 'online' ? '开机' : '关机';
+
+  try {
+    // 开关机的二次确认
+    await message.confirm('是否确认' + s + '?', s + '确认');
+    // 发起开关机
+    let status = item.deviceStatus === 'online' ? 'online' : 'offline';
+    await DeviceInfoApi.updateDeviceStatus(item.deviceId, status);
+    message.alertSuccess(s + '成功');
+    // 刷新列表
+    await getList();
+  } catch {
+    item.deviceStatus = item.deviceStatus === 'online' ? 'offline' : 'online';
+  }
+};
+
+// 绘制围栏
+const selectedDrawId = ref('');
+const showDrawDialog = ref<boolean>(false);
+const tiandiIns = ref();
+const handleDraw = (item) => {
+  const { id, geofencing } = item;
+  if (!id) {
+    ElMessage.error('当前数据ID不存在');
+    return;
+  }
+  selectedDrawId.value = id;
+  showDrawDialog.value = true;
+  nextTick(() => {
+    if (geofencing) {
+      const _arr = JSON.parse(geofencing);
+      if (Array.isArray(_arr) && _arr.length === 1) {
+        const _polyArr = _arr[0].map((ele) => [ele.lat, ele.lng]);
+        setTimeout(() => {
+          tiandiIns.value.createPolygon(_polyArr);
+        }, 500);
+      } else {
+        // TODO： 新版
+        const { corrdinates, option } = JSON.parse(geofencing);
+        if (Array.isArray(corrdinates) && corrdinates.length > 0) {
+          setTimeout(() => {
+            tiandiIns.value.createPolygon(
+              corrdinates[0].map((location) => [location.lat, location.lng]),
+              option
+            );
+          }, 500);
+        }
+      }
+    } else {
+      // TODO 如果不存在围栏，把中心点设置在基地中间
+      if (activeBaseCenter.value.length !== 2) return;
+      nextTick(() => {
+        tiandiIns.value.setCenterZoom(activeBaseCenter.value, 17);
+      });
+    }
+  });
+};
+// TODO 设置活动的基地
+const activeBaseCenter = ref<number[]>([]);
+const handleConfirm = async () => {
+  const geofencing = tiandiIns.value.getCurrentSaveCoordinates();
+  const { corrdinates, option } = geofencing;
+  if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!');
+  if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!');
+  const data = await CropGrowthNewApi.saveGeofencing({
+    id: selectedDrawId.value,
+    geofencing: JSON.stringify(geofencing),
+    infraType: '3' //灌区
+  });
+
+  if (data) ElMessage.success('保存成功!');
+  else ElMessage.error('保存失败！');
+  showDrawDialog.value = false;
+  selectedDrawId.value = '';
+  getList(true);
+};
+
+const handleCancel = () => {
+  selectedDrawId.value = '';
+  showDrawDialog.value = false;
 };
 
 /** 初始化 **/
