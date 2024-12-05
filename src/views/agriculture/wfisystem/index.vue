@@ -9,6 +9,7 @@ import { ElTable } from 'element-plus';
 import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import WfiSystemBindDevice from '@/views/agriculture/wfisystem/component/WfiSystemBindDevice.vue';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
+import { WaterSourceApi } from '@/api/agriculture/watersource';
 
 /** 水肥一体化系统信息 列表 */
 defineOptions({ name: 'WfiSystem' });
@@ -47,6 +48,11 @@ const getList = async () => {
 const handleQuery = () => {
   queryParams.pageNo = 1;
   getList();
+};
+
+let sourceList = ref();
+const getSourceList = async () => {
+  sourceList.value = await WaterSourceApi.getSourceList();
 };
 
 /** 重置按钮操作 */
@@ -179,6 +185,7 @@ const handleDeleteA = async (id) => {
 /** 初始化 **/
 onMounted(async () => {
   categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({ parentId: 0, status: 1 });
+  await getSourceList();
   getList();
 });
 /* 原页面的js代码复制在上面 包括import */
@@ -284,12 +291,14 @@ const handleClickShowSearch = () => {
         />
       </el-form-item>
       <el-form-item label="所属水源地" prop="belongWaterSource">
-        <el-input
-          v-model="queryParams.belongWaterSource"
-          placeholder="请输入所属水源地"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-select v-model="queryParams.belongWaterSource" placeholder="请输入所属水源地" clearable>
+          <el-option
+            v-for="item in sourceList"
+            :key="item.id"
+            :label="item.wsName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="系统状态" prop="sysStatus">
         <el-select v-model="queryParams.sysStatus" placeholder="请选择系统状态" clearable>
@@ -316,7 +325,7 @@ const handleClickShowSearch = () => {
       >
         <el-table-column label="系统标识码" align="center" prop="sysCode" />
         <el-table-column label="系统名称" align="center" prop="sysName" />
-        <el-table-column label="所属水源地" align="center" prop="belongWaterSource" />
+        <el-table-column label="所属水源地" align="center" prop="waterSourceName" />
         <el-table-column label="系统状态" align="center" prop="sysStatus">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.WFI_SYSTEM_STATUS" :value="scope.row.sysStatus" />

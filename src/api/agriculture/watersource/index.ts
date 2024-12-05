@@ -45,5 +45,8 @@ export const WaterSourceApi = {
   // 导出水源信息 Excel
   exportWaterSource: async (params) => {
     return await request.download({ url: `/agriculture/water-source/export-excel`, params });
+  },
+  getSourceList: async () => {
+    return await request.get({ url: `/agriculture/water-source/get-source-list` });
   }
 };

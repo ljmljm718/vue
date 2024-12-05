@@ -14,7 +14,14 @@
         <el-input v-model="formData.sysName" placeholder="请输入系统名称" />
       </el-form-item>
       <el-form-item label="所属水源地" prop="belongWaterSource">
-        <el-input v-model="formData.belongWaterSource" placeholder="请输入所属水源地" />
+        <el-select v-model="formData.belongWaterSource" placeholder="请输入所属水源地">
+          <el-option
+            v-for="item in sourceList"
+            :key="item.id"
+            :label="item.wsName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="系统状态" prop="sysStatus">
         <el-radio-group v-model="formData.sysStatus">
@@ -37,6 +44,7 @@
 <script setup lang="ts">
 import { WfiSystemApi, WfiSystemVO } from '@/api/agriculture/wfisystem';
 import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '@/utils/dict';
+import { WaterSourceApi } from '@/api/agriculture/watersource';
 
 /** 水肥一体化系统信息 表单 */
 defineOptions({ name: 'WfiSystemForm' });
@@ -62,12 +70,18 @@ const formRules = reactive({
 });
 const formRef = ref(); // 表单 Ref
 
+let sourceList = ref();
+const getSourceList = async () => {
+  sourceList.value = await WaterSourceApi.getSourceList();
+  console.log(sourceList);
+};
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true;
   dialogTitle.value = t('action.' + type);
   formType.value = type;
   resetForm();
+  await getSourceList();
   // 修改时，设置数据
   if (id) {
     formLoading.value = true;
