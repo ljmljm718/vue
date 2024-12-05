@@ -209,34 +209,36 @@
             </div>
           </div>
           <!-- 卡片列表区 -->
-          <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
-            <div
-              class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md pb-[10px]"
-              :class="{ 'dark-card-bg shadow-[#666]': themeIsDark }"
-              v-for="item in list"
-              :key="item.id"
-              @click="changCurrentItem(item)"
-            >
-              <div class="text-center">
-                <el-image
-                  :src="item.capturedImage"
-                  preview-teleported
-                  fit="contain"
-                  class="h-[17vh] rounded"
-                />
-              </div>
-              <div class="px-[5px] mt-[5px]">
-                <div>
-                  设备名称:
-                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
-                    {{ item.deviceName }}
-                  </span>
+          <div class="col-span-1">
+            <div class="grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
+              <div
+                class="bg-[#F5F5F5] cursor-pointer shadow-md rounded-md pb-[10px]"
+                :class="{ 'dark-card-bg shadow-[#666]': themeIsDark }"
+                v-for="item in list"
+                :key="item.id"
+                @click="changCurrentItem(item)"
+              >
+                <div class="text-center">
+                  <el-image
+                    :src="item.capturedImage"
+                    preview-teleported
+                    fit="contain"
+                    class="h-[17vh] rounded"
+                  />
                 </div>
-                <div class="mt-[5px]">
-                  拍摄时间:
-                  <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
-                    {{ timeFormat(item.reserveTwo) }}
-                  </span>
+                <div class="px-[5px] mt-[5px]">
+                  <div>
+                    设备名称:
+                    <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
+                      {{ item.deviceName }}
+                    </span>
+                  </div>
+                  <div class="mt-[5px]">
+                    拍摄时间:
+                    <span class="text-[#666666]" :class="{ 'text-[#999]': themeIsDark }">
+                      {{ timeFormat(item.reserveTwo) }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

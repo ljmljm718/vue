@@ -199,7 +199,7 @@ const handleClickShowSearch = () => {
       </el-form-item>
     </el-form>
 
-    <div class="w-full mt-[8px]">
+    <div class="w-full mt-[16px]">
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!--      <el-table-column label="主键" align="center" prop="id" />-->
