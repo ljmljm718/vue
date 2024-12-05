@@ -72,8 +72,8 @@ const exportLoading = ref(false) // 导出的加载中
 const dialogVisible = ref(false); // 弹窗的是否展示
 const open = async (fId) => {
   dialogVisible.value = true;
-  queryParams.tfid = fId
-  getList
+  queryParams.tfId = fId
+  getList()
 };
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
@@ -82,6 +82,8 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await TaskFertilizationDetailApi.getTaskFertilizationDetailPage(queryParams)
+    console.log("data",data);
+    
     list.value = data.list
     total.value = data.total
   } finally {
