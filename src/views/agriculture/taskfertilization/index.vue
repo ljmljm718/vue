@@ -1,4 +1,3 @@
-// templateIndexForm模版
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app';
 import { colorOpt } from '@/config/colorTheme/colorConfig';
@@ -318,7 +317,12 @@ const handleClickShowSearch = () => {
               <dict-tag :type="DICT_TYPE.WFI_STIR_TYPE" :value="scope.row.mixingType" />
             </template>
           </el-table-column>
-          <el-table-column label="水泵控制" align="center" prop="waterPumpStatus" />
+          <el-table-column label="水泵控制" align="center" prop="waterPumpStatus" >
+            <template #default="scope">
+              <el-tag v-if="scope.row.waterPumpStatus === '是'" type = "success">{{scope.row.waterPumpStatus}}</el-tag>
+              <el-tag v-if="scope.row.waterPumpStatus === '否'" type = "danger">{{scope.row.waterPumpStatus}}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="同时施肥罐区数量" align="center" prop="concurrentTaskNumber" />
           <el-table-column label="施肥时长/量（分钟/L）" align="center" prop="amountTimeNumber" />
           <el-table-column label="施肥灌区" align="center" prop="iaCodeList" />
