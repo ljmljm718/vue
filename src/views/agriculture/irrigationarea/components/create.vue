@@ -299,7 +299,11 @@ const subFormDom = ref();
         <!-- 子表的表单 demo6.2.2新增 子表用div包裹 -->
         <div ref="subFormDom">
           <!-- 二级标题因为要和操作按钮写在同一行所以写在组件里了 -->
-          <ParkDetailFormReadOnly ref="parkDetailFormRef" :parkDetails="formData.parkDetails" />
+          <ParkDetailFormReadOnly
+            ref="parkDetailFormRef"
+            :parkDetails="formData.parkDetails"
+            :iaId="formData.id"
+          />
         </div>
       </template>
     </EditFrame>

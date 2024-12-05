@@ -55,5 +55,10 @@ export const ParkDetailApi = {
   // 导出地块基本信息 Excel
   exportParkDetail: async (params) => {
     return await request.download({ url: `/agriculture/park-detail/export-excel`, params });
+  },
+
+  // 获得指定灌区与未分配灌区地块基本信息分页
+  getIrrigationParkDetailPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/park-detail/irrigation_page`, params });
   }
 };

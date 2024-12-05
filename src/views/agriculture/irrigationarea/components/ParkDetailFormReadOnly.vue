@@ -138,14 +138,19 @@
   </el-form>
 
   <!--  选择地块-->
-  <ParkDetailPopup ref="parkDetailPopupRef" @success="handleParkDetailPopupChange" />
+  <SelectIrrigationPlot
+    ref="parkDetailPopupRef"
+    :plotId="plotId"
+    @success="handleParkDetailPopupChange"
+  />
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
-import ParkDetailPopup from '@/views/agriculture/parkdetail/components/ParkDetailPopup.vue';
+import SelectIrrigationPlot from '@/views/agriculture/irrigationarea/components/SelectIrrigationPlot.vue';
 
 const props = defineProps<{
   parkDetails: undefined;
+  iaId: undefined;
 }>();
 const formLoading = ref(false); // 表单的加载中
 const formData = ref([]);
@@ -165,15 +170,15 @@ const formRules = reactive({
     }
   ],
   area: [{ required: true, message: '面积不能为空', trigger: 'blur' }]
-  //img: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
 });
 const formRef = ref(); // 表单 Ref
-
+const plotId = ref([]);
 /** 初始化设置入库项 */
 watch(
   () => props.parkDetails,
   async (val) => {
     formData.value = val;
+    plotId.value = val;
   },
   { immediate: true }
 );
@@ -181,35 +186,16 @@ watch(
 //地块的选择
 const parkDetailPopupRef = ref();
 const handleParkDetailPopupChange = (order: ParkDetailVO) => {
-  console.log('--->>查看选择的地块信息：', order[0]);
-  const row = {
-    id: order[0].id,
-    parkId: order[0].parkId,
-    code: order[0].code,
-    name: order[0].name,
-    type: order[0].type,
-    altitude: order[0].altitude,
-    latitude: order[0].latitude,
-    longitude: order[0].longitude,
-    address: order[0].address,
-    contact: order[0].contact,
-    tel: order[0].tel,
-    area: order[0].area,
-    remark: order[0].remark,
-    deptId: order[0].deptId,
-    userId: order[0].userId,
-    quantity: order[0].quantity,
-    adoptionType: order[0].adoptionType,
-    img: order[0].img,
-    geofencing: order[0].geofencing,
-    belongIrrigationArea: order[0].belongIrrigationArea
-  };
-  formData.value.push(row);
+  console.log('--->>查看选择的地块信息：', order);
+  formData.value.length = 0;
+  for (let orderKey in order) {
+    formData.value.push(order[orderKey]);
+  }
 };
 
 /** 新增按钮操作 */
 const handleAdd = () => {
-  parkDetailPopupRef.value.open();
+  parkDetailPopupRef.value.open(props.iaId);
 };
 
 /** 删除按钮操作 */
