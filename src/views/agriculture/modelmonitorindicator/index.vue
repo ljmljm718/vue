@@ -448,7 +448,10 @@ const initCharts = () => {
 const getList = async () => {
   loading.value = true;
   try {
-    if (selectedKey.value) queryParams.growthPeriodId = selectedKey.value;
+    if (selectedKey.value) {
+      queryParams.growthPeriodId = selectedKey.value;
+      await getCardDataList(route.query, selectedKey.value);
+    }
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams);
     list.value = data.list.map((item) => {
       const element = Array.isArray(listModelManagement.value)
@@ -468,7 +471,7 @@ const getList = async () => {
       console.log('list.value[0]', list.value[0]);
       if (tableRef.value) nextTick(() => tableRef.value.setCurrentRow(list.value[0]));
       currentRow.value = list.value[0];
-      setTimeout(() => {
+      setTimeout(async () => {
         handleRowClick(list.value[0]);
       }, 300);
     }
