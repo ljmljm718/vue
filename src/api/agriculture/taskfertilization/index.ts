@@ -10,7 +10,8 @@ export interface TaskFertilizationVO {
   waterPumpStatus: string // 水泵控制
   concurrentTaskNumber: number // 并发任务执行数量
   amountTimeNumber: number // 施肥时长/量（分钟/L）
-  iaCodeList: string // 任务执行灌区
+  iaCodeList: string // 任务执行灌区id
+  iaCodeNameList: string,// 任务执行灌区名称
   status: string // 状态
 }
 

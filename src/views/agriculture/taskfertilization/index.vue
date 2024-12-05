@@ -36,6 +36,7 @@ const queryParams = reactive({
   concurrentTaskNumber: undefined,
   amountTimeNumber: undefined,
   iaCodeList: undefined,
+  iaCodeNameList:undefined,
   status: undefined,
   createTime: []
 })
@@ -325,7 +326,8 @@ const handleClickShowSearch = () => {
           </el-table-column>
           <el-table-column label="同时施肥罐区数量" align="center" prop="concurrentTaskNumber" />
           <el-table-column label="施肥时长/量(分钟/L)" align="center" prop="amountTimeNumber" />
-          <el-table-column label="施肥灌区" align="center" prop="iaCodeList" />
+          <!-- <el-table-column label="施肥灌区" align="center" prop="iaCodeList" /> -->
+          <el-table-column label="施肥灌区" align="center" prop="iaCodeNameList" />
           <el-table-column label="状态" align="center" prop="status">
             <template #default="scope">
               <dict-tag :type="DICT_TYPE.WFI_FERTILIZE_STATUS" :value="scope.row.status" />
