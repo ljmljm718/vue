@@ -1,7 +1,7 @@
 <template>
   <!-- demo6.2.2新增 二级标题和新增按钮 -->
   <div class="flex justify-between items-center mb-[16px]">
-    <h2 class="m-0 text-black dark:text-[#ccc] font-bold text-[16px]">地块基本信息</h2>
+    <h2 class="m-0 font-bold text-[16px]">地块基本信息</h2>
     <div>
       <el-button @click="handleAdd" type="primary" icon="plus">新增</el-button>
     </div>

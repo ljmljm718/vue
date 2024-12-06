@@ -117,7 +117,7 @@ const handleClickShowSearch = () => {
 
 <template>
   <el-scrollbar
-    class="w-full bg-white dark:bg-[#333] rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    class="w-full bg-white dark:bg-[#1d1e1f] rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
     :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
   >
     <div class="w-full flex justify-between items-center">

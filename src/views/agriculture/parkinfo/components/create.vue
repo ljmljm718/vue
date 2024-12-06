@@ -109,7 +109,7 @@ watch(
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate(() => {});
+  await formRef.value.validate();
   // 校验子表单
   try {
     await parkDetailFormRef.value.validate();
@@ -257,7 +257,7 @@ const subFormDom = ref();
       <template #header>
         <!-- demo6.2.2新增 一级标题和按钮 -->
         <div>
-          <h1 class="m-0 text-black dark:text-[#ccc] font-bold text-[18px]">基地信息新增/编辑</h1>
+          <h1 class="m-0 font-bold text-[18px]">基地信息</h1>
         </div>
         <div class="space-x-[8px]">
           <el-button type="primary" :icon="TopRight" @click="submitForm">提交</el-button>

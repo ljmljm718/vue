@@ -255,7 +255,6 @@ const handleDeleteLib = async (index: number) => {
                   :alt="item.name + '-' + item.tag"
                   fit="cover"
                   class="!absolute top-0 left-0 w-full h-full"
-                  :preview-src-list="[DefaultLibImg]"
                 />
               </div>
               <div
