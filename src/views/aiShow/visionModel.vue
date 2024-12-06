@@ -4,7 +4,7 @@ const imgAspect = ref<string>('1:1');
 </script>
 
 <template>
-  <div style="width: calc(100% - 74px)">
+  <div style="width: calc(100% - 74px)" class="!hidden">
     <div
       class="h-[63px] px-[24px] flex items-center bg-[#F2F4FA] font-bold"
       style="border-bottom: 1px solid #e0e3eb"
