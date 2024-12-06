@@ -3,6 +3,8 @@ import avatar from './assets/avatar.png';
 import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { getAccessToken } from '@/utils/auth';
 
 const getCollectionSearch = async (data: any) => {
   return await request.post({ url: `/agriculture/collection/search`, data });
@@ -45,8 +47,8 @@ const knowledgeLib = ref<string>(''); // 知识库
 const knowledgeLibOptions = ref<any[]>([]);
 const modelSelected = ref<string>('Doubao-lite-32k'); // 大模型
 const modelOptions = ref<any[]>([{ label: 'Doubao-lite-32k', value: 'Doubao-lite-32k' }]);
-const enabledflowRes = ref<boolean>(false); // 开启流式返回
-const maxResLength = ref<number>(220); // 最大返回长度
+const enabledflowRes = ref<boolean>(true); // 开启流式返回
+const maxResLength = ref<number>(10); // 最大返回长度
 
 // 发送消息
 const disabledSendBtn = ref<boolean>(false);
@@ -66,7 +68,7 @@ const handleSendMsg = async (text) => {
     collectionId: knowledgeLib.value,
     query: text,
     model: modelSelected.value,
-    stream: enabledflowRes.value,
+    stream: false,
     max_new_tokens: maxResLength.value
   }).catch(() => {
     disabledSendBtn.value = false;
@@ -85,6 +87,12 @@ const handleSendMsg = async (text) => {
       const textArr = innerText.split('');
       const putText = textArr.shift();
       activeItem.text += putText;
+      if (!enabledflowRes.value) {
+        activeItem.text = innerText;
+        disabledSendBtn.value = false;
+        scollToBottom();
+        return;
+      }
       flowOutput(textArr.join(''));
       scollToBottom();
     }, 10);
