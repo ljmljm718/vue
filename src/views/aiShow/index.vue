@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TextModel from './textModel.vue';
 import KnowledgeLib from './knowledgeLib.vue';
+import VisionModel from './visionModel.vue';
 
 const showedModel = ref<string>('textModel');
 const sideMenus = ref<any[]>([
@@ -36,6 +37,7 @@ const sideMenus = ref<any[]>([
     </div>
     <TextModel v-if="showedModel === 'textModel'" />
     <KnowledgeLib v-if="showedModel === 'knowledge'" />
+    <VisionModel v-if="showedModel === 'vision'" />
   </div>
 </template>
 <style scoped lang="scss">
