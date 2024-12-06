@@ -324,5 +324,8 @@ export enum DICT_TYPE {
   WFI_IRRIGATION_TYPE = 'wfi_irrigation_type', //灌溉类型
   WFI_IRRIGATE_EXEC_CRON = 'wfi_irrigate_exec_cron', //灌溉周期类型
   WFI_SYSTEM_STATUS = 'wfi_system_status', //系统状态
-  WS_TYPE = 'ws_type' // 水源类型
+  WS_TYPE = 'ws_type', // 水源类型
+
+  // ========== agri - 视频设备 ===========
+  AGRI_DEVICE_MANUFACTURER = 'agri_device_manufacturer' //厂商类型
 }

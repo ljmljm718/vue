@@ -105,7 +105,14 @@ const formData = ref({
   parkName: undefined,
   parkDetailName: undefined,
   channelId: undefined,
-  dtu: undefined
+  dtu: undefined,
+  manufacturer: undefined,
+  deviceModel: undefined,
+  devicePurchase: undefined,
+  deviceSerial: undefined,
+  deviceSize: undefined,
+  deviceWeight: undefined,
+  deviceWarranty: undefined
 });
 
 // 表单校验规则
@@ -244,7 +251,14 @@ const resetForm = () => {
     parkName: undefined,
     parkDetailName: undefined,
     channelId: undefined,
-    dtu: undefined
+    dtu: undefined,
+    manufacturer: undefined,
+    deviceModel: undefined,
+    devicePurchase: undefined,
+    deviceSerial: undefined,
+    deviceSize: undefined,
+    deviceWeight: undefined,
+    deviceWarranty: undefined
   };
   deviceType.value = [];
 };
@@ -480,7 +494,42 @@ const handleOpenPointerPicker = () => {
           <el-form-item label="访问地址" prop="url">
             <el-input v-model="formData.url" placeholder="请输入访问地址" />
           </el-form-item>
-
+          <el-form-item label="厂商名称" prop="manufacturer">
+            <el-select v-model="formData.manufacturer" placeholder="请选择厂商" clearable>
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DEVICE_MANUFACTURER)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="设备型号" prop="deviceModel">
+            <el-input v-model="formData.deviceModel" placeholder="请输入设备型号" />
+          </el-form-item>
+          <el-form-item label="购买日期" prop="devicePurchase">
+            <el-date-picker
+              v-model="formData.devicePurchase"
+              value-format="YYYY-MM-DD"
+              type="date"
+              placeholder="请选择购买日期"
+              style="width: 100%"
+            />
+          </el-form-item>
+          <el-form-item label="设备序列号" prop="deviceSerial">
+            <el-input v-model="formData.deviceSerial" placeholder="请输入设备序列号" />
+          </el-form-item>
+          <el-form-item label="设备尺寸" prop="deviceSize">
+            <el-input v-model="formData.deviceSize" placeholder="请输入设备尺寸" />
+          </el-form-item>
+          <el-form-item label="设备重量" prop="deviceWeight">
+            <el-input v-model="formData.deviceWeight" placeholder="请输入设备重量" />
+          </el-form-item>
+          <el-form-item label="设备保修" prop="deviceWarranty">
+            <el-input v-model="formData.deviceWarranty" placeholder="请输入设备保修">
+              <template #append>天</template>
+            </el-input>
+          </el-form-item>
           <!-- demo6.2.1新增 注意多行输入添加class -->
           <el-form-item label="备注" prop="remark" class="col-span-2 xl:col-span-3 2xl:col-span-4">
             <!-- demo6.2.1新增 多行输入添加 resize="none" -->

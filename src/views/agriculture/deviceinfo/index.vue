@@ -504,7 +504,14 @@ const queryParams = reactive({
   deviceKind: undefined,
   status: undefined,
   channelId: undefined,
-  dtu: undefined
+  dtu: undefined,
+  manufacturer: undefined,
+  deviceModel: undefined,
+  devicePurchase: undefined,
+  deviceSerial: undefined,
+  deviceSize: undefined,
+  deviceWeight: undefined,
+  deviceWarranty: undefined
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中

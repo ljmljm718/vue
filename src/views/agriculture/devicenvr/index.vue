@@ -86,6 +86,11 @@
         <el-table-column label="类型" align="center" prop="remark1" />
         <el-table-column label="地址" align="center" prop="secretKey" />
         <el-table-column label="请求体" align="center" prop="appId" />
+        <el-table-column label="厂商" align="center" prop="manufacturer">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.AGRI_DEVICE_MANUFACTURER" :value="scope.row.manufacturer" />
+          </template>
+        </el-table-column>
         <el-table-column label="返回值" align="center" prop="remark2" />
         <el-table-column label="所属系统" align="center" prop="belongSys" />
         <el-table-column label="备注" align="center" prop="remark" />

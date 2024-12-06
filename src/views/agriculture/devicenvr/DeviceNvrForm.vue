@@ -19,6 +19,16 @@
       <el-form-item label="地址" prop="secretKey">
         <el-input v-model="formData.secretKey" placeholder="请输入密钥" />
       </el-form-item>
+      <el-form-item label="厂商" prop="manufacturer">
+        <el-select v-model="formData.manufacturer" placeholder="请选择厂商">
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_DEVICE_MANUFACTURER)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="所属系统" prop="belongSys">
         <el-input v-model="formData.belongSys" placeholder="请输入所属系统" />
       </el-form-item>
@@ -39,18 +49,19 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { DeviceNvrApi, DeviceNvrVO } from '@/api/agriculture/devicenvr'
+import { DeviceNvrApi, DeviceNvrVO } from '@/api/agriculture/devicenvr';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 
 /** 录像机设备信息 表单 */
-defineOptions({ name: 'DeviceNvrForm' })
+defineOptions({ name: 'DeviceNvrForm' });
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   deviceSerial: undefined,
@@ -61,57 +72,58 @@ const formData = ref({
   remark: undefined,
   remark1: undefined,
   remark2: undefined,
-})
+  manufacturer: undefined
+});
 const formRules = reactive({
   deviceName: [{ required: true, message: '设备名称不能为空', trigger: 'blur' }],
   deviceSerial: [{ required: true, message: '设备序列号不能为空', trigger: 'blur' }],
   appId: [{ required: true, message: '请求体不能为空', trigger: 'blur' }],
   secretKey: [{ required: true, message: '地址不能为空', trigger: 'blur' }],
-  belongSys: [{ required: true, message: '所属系统不能为空', trigger: 'blur' }],
-})
-const formRef = ref() // 表单 Ref
+  belongSys: [{ required: true, message: '所属系统不能为空', trigger: 'blur' }]
+});
+const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = t('action.' + type);
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await DeviceNvrApi.getDeviceNvr(id)
+      formData.value = await DeviceNvrApi.getDeviceNvr(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as DeviceNvrVO
+    const data = formData.value as unknown as DeviceNvrVO;
     if (formType.value === 'create') {
-      await DeviceNvrApi.createDeviceNvr(data)
-      message.success(t('common.createSuccess'))
+      await DeviceNvrApi.createDeviceNvr(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await DeviceNvrApi.updateDeviceNvr(data)
-      message.success(t('common.updateSuccess'))
+      await DeviceNvrApi.updateDeviceNvr(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -125,7 +137,8 @@ const resetForm = () => {
     remark: undefined,
     remark1: undefined,
     remark2: undefined,
-  }
-  formRef.value?.resetFields()
-}
+    manufacturer: undefined
+  };
+  formRef.value?.resetFields();
+};
 </script>

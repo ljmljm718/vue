@@ -25,8 +25,16 @@ export interface DeviceInfoVO {
   //新增的两个字段
   parkName: string; //基地名称
   parkDetailName: string; //地块名称
+
   belongIrrigationArea: string; // 所属灌区
   belongWfiSystem: string; // 所属系统
+  manufacturer: string; // 厂商名称
+  deviceModel: string; // 设备型号
+  devicePurchase: string; // 购买时间
+  deviceSerial: string; // 设备序列号
+  deviceSize: string; // 设备尺寸
+  deviceWeight: string; // 设备重量
+  deviceWarranty: string; // 设备保修期
 }
 
 // 设备信息 API
