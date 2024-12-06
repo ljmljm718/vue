@@ -103,13 +103,11 @@ onMounted(() => {
   // 设置初始位置为右下角
   const { innerWidth, innerHeight } = window;
   const buttonWidth = button.value?.offsetWidth || 152;
-  console.log('🚀 ~ onMounted ~ buttonWidth:', buttonWidth);
   const buttonHeight = button.value?.offsetHeight || 0;
   const bottom = px2rem('50').replace(new RegExp('rem', 'g'), '');
-  console.log('🚀 ~ onMounted ~ bottom:', bottom);
   position.value = {
     x: innerWidth - Number(buttonWidth),
-    y: innerHeight - (Number(buttonHeight) + Number(bottom) * 60)
+    y: innerHeight - (Number(buttonHeight) + Number(bottom) * 44)
   };
 });
 

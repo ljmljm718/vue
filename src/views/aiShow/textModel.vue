@@ -2,6 +2,25 @@
 import avatar from './assets/avatar.png';
 import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
+import request from '@/config/axios';
+
+const getCollectionSearch = async (data: any) => {
+  return await request.post({ url: `/agriculture/collection/search`, data });
+};
+
+const getCollectionList = async (params: any) => {
+  return await request.get({ url: `/agriculture/collection/get-collection-list`, params });
+};
+
+const getCollectionData = async () => {
+  const res = await getCollectionList({});
+  console.log('getCollectionData res', res);
+  if (!Array.isArray(res)) return;
+  knowledgeLibOptions.value = res;
+  if (res.length === 0) return;
+  knowledgeLib.value = res[0].collectionId;
+};
+getCollectionData();
 
 const uuid = (length = 8, chars?) => {
   let result = '';
@@ -24,10 +43,10 @@ const remindArr = ref<any[]>([
 // 参数配置
 const knowledgeLib = ref<string>(''); // 知识库
 const knowledgeLibOptions = ref<any[]>([]);
-const modelSelected = ref<string>(''); // 大模型
-const modelOptions = ref<any[]>([]);
-const enabledflowRes = ref<boolean>(true); // 开启流式返回
-const maxResLength = ref<number>(1000); // 最大返回长度
+const modelSelected = ref<string>('Doubao-lite-32k'); // 大模型
+const modelOptions = ref<any[]>([{ label: 'Doubao-lite-32k', value: 'Doubao-lite-32k' }]);
+const enabledflowRes = ref<boolean>(false); // 开启流式返回
+const maxResLength = ref<number>(220); // 最大返回长度
 
 // 发送消息
 const disabledSendBtn = ref<boolean>(false);
@@ -43,6 +62,17 @@ const handleSendMsg = async (text) => {
   // TODO 返回请求结果
   const chatId = uuid();
   chatList.value.push({ id: chatId, role: 'robot', text: '' });
+  const res = await getCollectionSearch({
+    collectionId: knowledgeLib.value,
+    query: text,
+    model: modelSelected.value,
+    stream: enabledflowRes.value,
+    max_new_tokens: maxResLength.value
+  }).catch(() => {
+    disabledSendBtn.value = false;
+    const activeItem = chatList.value.find((item) => item.id === chatId);
+    activeItem.text = '请求失败，请稍后重试';
+  });
   const flowOutput = (
     innerText = '### 你好，我是智慧农业AI助手\n#### 可以完成智能问答，文档编写，代码生成等多种任务\n##### 请输入你的问题'
   ) => {
@@ -59,7 +89,7 @@ const handleSendMsg = async (text) => {
       scollToBottom();
     }, 10);
   };
-  flowOutput();
+  flowOutput(res.toString());
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
@@ -94,8 +124,8 @@ onMounted(() => {
 });
 
 const fullTextArea = (forceHide = false) => {
-  const inputContainer = document.querySelector('#inputContainer');
-  const textarea = document.querySelector('textarea');
+  const inputContainer = document.querySelector('#inputContainer') as HTMLElement;
+  const textarea = document.querySelector('textarea') as HTMLElement;
   if (inputContainer.classList.contains('full-screen-text-container') || forceHide) {
     // 当前是展开状态
     inputContainer.classList.remove('full-screen-text-container');
@@ -129,9 +159,9 @@ const fullTextArea = (forceHide = false) => {
         <el-select v-model="knowledgeLib" placeholder="请选择知识库" size="large" type="primary">
           <el-option
             v-for="item in knowledgeLibOptions"
-            :label="item.label"
-            :value="item.value"
-            :key="item.value"
+            :label="item.collectionName"
+            :value="item.collectionId"
+            :key="item.collectionId"
           />
         </el-select>
       </div>
@@ -243,7 +273,7 @@ const fullTextArea = (forceHide = false) => {
           <div
             v-loading="disabledSendBtn"
             :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn ? 'disabled-send' : 'send-btn'} cursor-pointer`"
-            @click="handleSendMsg()"
+            @click="handleSendMsg(null)"
           ></div>
           <div
             v-if="questionText"
@@ -317,24 +347,5 @@ textarea::-webkit-scrollbar-track {
 .arrow-bg {
   background-image: url(./assets/arrow.png);
   background-size: 100% 100%;
-}
-
-:deep(.el-input) {
-  border: 2px solid #00c784;
-  border-radius: 6px;
-}
-
-:deep(.el-input__wrapper) {
-  box-shadow: none;
-}
-
-:deep(.el-input__inner) {
-  color: #333;
-  padding: 0 66px 0 12px;
-}
-
-:deep(.el-input__suffix) {
-  position: relative;
-  right: 63px;
 }
 </style>
