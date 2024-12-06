@@ -17,19 +17,19 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="编号" prop="code">
+        <el-form-item label="名称" prop="name">
           <el-input
-            v-model="queryParams.code"
-            placeholder="请输入编号"
+            v-model="queryParams.name"
+            placeholder="请输入名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-160px"
           />
         </el-form-item>
-        <el-form-item label="名称" prop="name">
+        <el-form-item label="联系人" prop="contact">
           <el-input
-            v-model="queryParams.name"
-            placeholder="请输入名称"
+            v-model="queryParams.contact"
+            placeholder="请输入联系人"
             clearable
             @keyup.enter="handleQuery"
             class="!w-160px"
