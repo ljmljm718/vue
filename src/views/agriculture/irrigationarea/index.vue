@@ -85,6 +85,15 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column type="expand">
+        <template #default="scope">
+          <el-tabs model-value="parkDetail">
+            <el-tab-pane label="地块列表" name="parkDetail">
+              <IrrigationParkDetailList :irrigation-id="scope.row.id" />
+            </el-tab-pane>
+          </el-tabs>
+        </template>
+      </el-table-column>
       <el-table-column label="灌区编号" align="center" prop="iaCode" />
       <el-table-column label="灌区名称" align="center" prop="iaName" />
       <el-table-column label="灌溉类型" align="center" prop="irrigationType">
@@ -128,7 +137,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="300" fixed="right">
+      <el-table-column label="操作" align="center" width="250" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -213,6 +222,7 @@ import { DeviceInfoApi } from '@/api/agriculture/deviceinfo';
 import { ElMessage } from 'element-plus';
 import FenceDialog from '@/views/agriculture/parkinfo/components/fenceDialog.vue';
 import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew';
+import IrrigationParkDetailList from '@/views/agriculture/irrigationarea/components/IrrigationParkDetailList.vue';
 /** 灌区信息 列表 */
 defineOptions({ name: 'IrrigationArea' });
 
