@@ -129,8 +129,8 @@ const formRules = reactive({
 
 // 提交表单
 const submitForm = async () => {
-  // 校验表单 传一个回调函数才有失败提示
-  await formRef.value.validate(() => {});
+  // 校验表单
+  await formRef.value.validate();
   // 提交请求
   formLoading.value = true;
   try {
@@ -364,7 +364,7 @@ const handleOpenPointerPicker = () => {
       <template #header>
         <div>
           <!-- demo6.2.1新增 一级标题 -->
-          <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">设备信息新增/编辑</h1>
+          <h1 class="m-0 font-bold text-[18px]">设备信息</h1>
         </div>
         <div class="space-x-[8px]">
           <!-- demo6.2.1新增 页面用到的按钮都写在这 不要plain属性 主按钮type="primary" 次按钮不设置type -->

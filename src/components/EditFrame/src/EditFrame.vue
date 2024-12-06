@@ -17,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-[#ECEFF7] dark:bg-[#666] rounded-[6px] w-full main-height">
+  <div class="bg-[#ECEFF7] dark:bg-[#1d1e1f] rounded-[6px] w-full main-height">
     <div class="flex justify-between w-full p-[16px] box-border">
       <slot name="header">
         <div></div>

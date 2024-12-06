@@ -106,4 +106,15 @@ $max-lines: 20; // 设定最大的行数
     text-overflow: ellipsis; /* 使用省略号截断溢出文本 */
   }
 }
+
+// el-table 表头样式
+.light
+  .el-table
+  .el-table__inner-wrapper
+  .el-table__header-wrapper
+  .el-table__header
+  thead
+  .el-table__cell {
+  background-color: #f5f6fa;
+}
 </style>
