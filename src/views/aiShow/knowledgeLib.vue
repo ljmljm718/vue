@@ -75,11 +75,16 @@ const handleClickGuideArrow = () => {
 const showImportDialog = ref(false);
 const docUrl = ref('');
 const currentLibId = ref('');
+const currentDocTypes = ref<string[]>([]);
 
 const handleClickImport = (index: number) => {
   const id = knowledgeList.value[index].collectionId;
   docUrl.value = '';
   currentLibId.value = id;
+  currentDocTypes.value =
+    knowledgeList.value[index].dataType === 'unstructured_data'
+      ? docTypesForUnstructuredData
+      : docTypesForStructuredData;
   showImportDialog.value = true;
 };
 
@@ -96,6 +101,7 @@ const handleSubmitImport = async () => {
   await getKnowledgeList();
   showImportDialog.value = false;
   currentLibId.value = '';
+  currentDocTypes.value = [];
 };
 
 // 根据知识库ID查询文档列表
@@ -130,6 +136,9 @@ const docIconClassMap = {
   doc: 'word-icon',
   docx: 'word-icon'
 };
+
+const docTypesForUnstructuredData = ['faq.xlsx', 'docx', 'pptx', 'pdf', 'markdown', 'txt'];
+const docTypesForStructuredData = ['csv', 'xlsx', 'jsonl'];
 
 // 删除文档
 const handleClickDeleteDoc = async (docId: string) => {
@@ -281,9 +290,16 @@ const handleDeleteLib = async (index: number) => {
       />
     </div>
 
-    <Dialog v-model="showImportDialog" title="导入文档" @close="currentLibId = -1">
+    <Dialog
+      v-model="showImportDialog"
+      title="导入文档"
+      @close="
+        currentLibId = '';
+        currentDocTypes = [];
+      "
+    >
       <div class="w-full h-full flex flex-col justify-center items-center">
-        <UploadFile v-model="docUrl" :limit="1" />
+        <UploadFile v-model="docUrl" :limit="1" :fileType="currentDocTypes" />
         <el-button class="self-end" type="primary" @click="handleSubmitImport">立即导入</el-button>
       </div>
     </Dialog>
@@ -293,21 +309,30 @@ const handleDeleteLib = async (index: number) => {
       title="查看文档"
       :width="600"
       top="20px"
-      @close="currentLibId = -1"
+      @close="currentLibId = ''"
     >
       <div class="w-full h-[400px]">
         <el-scrollbar v-if="docList.length > 0">
           <div v-for="item in docList" :key="item.docId">
-            <div class="flex justify-between items-center cursor-default">
-              <div class="flex items-center">
-                <div :class="docIconClassMap[item.docType]"></div>
-                <span>{{ item.docName }}</span>
+            <div class="w-full flex justify-between items-center cursor-default">
+              <div class="w-3/4 flex items-center">
+                <div class="flex-none" :class="docIconClassMap[item.docType]"></div>
+                <div class="truncate">{{ item.docName }}</div>
               </div>
-              <div class="flex items-center">
+              <div class="flex items-center space-x-[10px]">
                 <span>{{ item.size }}</span>
-                <el-icon class="mx-[10px] cursor-pointer" @click="handleClickDeleteDoc(item.docId)">
-                  <Close />
-                </el-icon>
+                <el-button link v-show="item.fileManagement">
+                  <a
+                    :href="item.fileManagement"
+                    :style="{ color: 'var(--el-color-primary)' }"
+                    class="active:opacity-50"
+                  >
+                    <el-icon><Download /></el-icon>
+                  </a>
+                </el-button>
+                <el-button link @click="handleClickDeleteDoc(item.docId)">
+                  <el-icon><Close /></el-icon>
+                </el-button>
               </div>
             </div>
             <div class="my-[16px] ml-[30px] mr-[5px] h-[1px] bg-[#F5F6FA]"></div>
