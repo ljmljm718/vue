@@ -2,7 +2,7 @@
 import { useTagsViewStore } from '@/store/modules/tagsView';
 import { useAppStore } from '@/store/modules/app';
 import { Footer } from '@/layout/components/Footer';
-import AiButton from './AiButton.vue';
+// import AiButton from './AiButton.vue';
 
 defineOptions({ name: 'AppView' });
 
@@ -70,5 +70,5 @@ provide('reload', reload);
     </router-view>
   </section>
   <Footer v-if="footer" />
-  <AiButton />
+  <!--  <AiButton />-->
 </template>
