@@ -13,8 +13,8 @@
       <el-form-item label="灌区名称" prop="iaName">
         <el-input v-model="formData.iaName" placeholder="请输入灌区名称" />
       </el-form-item>
-      <el-form-item label="灌溉类型" prop="irrigationType">
-        <el-select v-model="formData.irrigationType" placeholder="请选择灌溉类型">
+      <el-form-item label="喷灌类型" prop="irrigationType">
+        <el-select v-model="formData.irrigationType" placeholder="请选择喷灌类型">
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.WFI_IRRIGATION_TYPE)"
             :key="dict.value"
@@ -86,7 +86,7 @@ const formData = ref({
 });
 const formRules = reactive({
   iaName: [{ required: true, message: '灌区名称不能为空', trigger: 'blur' }],
-  irrigationType: [{ required: true, message: '灌溉类型不能为空', trigger: 'change' }]
+  irrigationType: [{ required: true, message: '喷灌类型不能为空', trigger: 'change' }]
 });
 const formRef = ref(); // 表单 Ref
 

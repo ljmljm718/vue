@@ -17,10 +17,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="灌溉类型" prop="irrigationType">
+      <el-form-item label="喷灌类型" prop="irrigationType">
         <el-select
           v-model="queryParams.irrigationType"
-          placeholder="请选择灌溉类型"
+          placeholder="请选择喷灌类型"
           clearable
           class="!w-240px"
         >
@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column label="灌区编号" align="center" prop="iaCode" />
       <el-table-column label="灌区名称" align="center" prop="iaName" />
-      <el-table-column label="灌溉类型" align="center" prop="irrigationType">
+      <el-table-column label="喷灌类型" align="center" prop="irrigationType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.WFI_IRRIGATION_TYPE" :value="scope.row.irrigationType" />
         </template>

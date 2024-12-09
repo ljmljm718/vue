@@ -1,67 +1,67 @@
 <template>
   <Dialog title="灌区列表" v-model="dialogVisible" :appendToBody="true" :scroll="true" width="1400">
     <ContentWrap>
-        <!-- 搜索工作栏 -->
-        <el-form
+      <!-- 搜索工作栏 -->
+      <el-form
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
         label-width="68px"
-        >
+      >
         <el-form-item label="灌区名称" prop="iaName">
-            <el-input
+          <el-input
             v-model="queryParams.iaName"
             placeholder="请输入灌区名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
-            />
+          />
         </el-form-item>
-        <el-form-item label="灌溉类型" prop="irrigationType">
-            <el-select
+        <el-form-item label="喷灌类型" prop="irrigationType">
+          <el-select
             v-model="queryParams.irrigationType"
-            placeholder="请选择灌溉类型"
+            placeholder="请选择喷灌类型"
             clearable
             class="!w-240px"
-            >
+          >
             <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.WFI_IRRIGATION_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in getStrDictOptions(DICT_TYPE.WFI_IRRIGATION_TYPE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             />
-            </el-select>
+          </el-select>
         </el-form-item>
         <el-form-item label="负责人" prop="principal">
-            <el-input
+          <el-input
             v-model="queryParams.principal"
             placeholder="请输入负责人"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
-            />
+          />
         </el-form-item>
         <el-form-item label="联系方式" prop="contactInformation">
-            <el-input
+          <el-input
             v-model="queryParams.contactInformation"
             placeholder="请输入联系方式"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
-            />
+          />
         </el-form-item>
         <el-form-item>
-            <el-button @click="handleQuery">
+          <el-button @click="handleQuery">
             <Icon icon="ep:search" class="mr-5px" />
             搜索
-            </el-button>
-            <el-button @click="resetQuery">
+          </el-button>
+          <el-button @click="resetQuery">
             <Icon icon="ep:refresh" class="mr-5px" />
             重置
-            </el-button>
+          </el-button>
         </el-form-item>
-        </el-form>
+      </el-form>
     </ContentWrap>
 
     <!-- 列表 -->
@@ -80,20 +80,20 @@
         <el-table-column fixed width="30" label="选择" type="selection" />
         <el-table-column label="灌区编号" align="center" prop="iaCode" />
         <el-table-column label="灌区名称" align="center" prop="iaName" />
-        <el-table-column label="灌溉类型" align="center" prop="irrigationType">
-            <template #default="scope">
+        <el-table-column label="喷灌类型" align="center" prop="irrigationType">
+          <template #default="scope">
             <dict-tag :type="DICT_TYPE.WFI_IRRIGATION_TYPE" :value="scope.row.irrigationType" />
-            </template>
+          </template>
         </el-table-column>
-        <el-table-column label="阀门状态" align="center" prop="deviceStatus" >
-            <template #default="scope">
+        <el-table-column label="阀门状态" align="center" prop="deviceStatus">
+          <template #default="scope">
             <el-switch
-                :disabled = false
-                v-model="scope.row.deviceStatus"
-                active-value="online"
-                inactive-value="offline"
+              :disabled="false"
+              v-model="scope.row.deviceStatus"
+              active-value="online"
+              inactive-value="offline"
             />
-            </template>
+          </template>
         </el-table-column>
         <el-table-column label="图片" align="center" prop="iaImage" />
         <el-table-column label="纬度" align="center" prop="latitude" />
@@ -103,20 +103,20 @@
         <el-table-column label="地址" align="center" prop="isAddress" />
         <el-table-column label="备注" align="center" prop="remark" />
         <el-table-column
-            label="创建时间"
-            align="center"
-            prop="createTime"
-            :formatter="dateFormatter"
-            width="180px"
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
         />
-        </el-table>
-        <!-- 分页 -->
-        <Pagination
+      </el-table>
+      <!-- 分页 -->
+      <Pagination
         :total="total"
         v-model:page="queryParams.pageNo"
         v-model:limit="queryParams.pageSize"
         @pagination="getList"
-        />
+      />
     </ContentWrap>
     <template #footer>
       <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
@@ -198,7 +198,7 @@ const handleSelectionChange = (rows) => {
 // 控制table-----多选选择
 const dialogTable = ref();
 const selectClick = (row) => {
-  console.log("执行selectClick");
+  console.log('执行selectClick');
   console.log(row.selection);
   const selectData = selectionList.value;
   // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
@@ -219,16 +219,15 @@ const submitForm = () => {
   }
 };
 /** 打开弹窗 */
-const idsArray = ref()
+const idsArray = ref();
 const open = async (queryParams) => {
   dialogVisible.value = true;
-  idsArray.value = queryParams.split(",");
+  idsArray.value = queryParams.split(',');
   await resetQuery();
   await nextTick(); // 等待，避免 queryFormRef 为空
 };
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 //结束
-
 
 /** 查询列表 */
 const getList = async () => {
@@ -297,7 +296,6 @@ const handleExport = async () => {
 };
 
 const selectValvesDeviceRef = ref();
-
 
 /** 初始化 **/
 onMounted(() => {
