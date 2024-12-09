@@ -29,7 +29,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['mapClick']);
+const emit = defineEmits(['mapClick', 'htmlMarkerClick']);
 
 const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}';
 const IMG_TILE = '/tdCache/api/tdtmap/tile?T=img_w&x={x}&y={y}&l={z}';
@@ -242,7 +242,7 @@ const clearMarkers = () => {
 };
 
 const htmlMarkerMap = new Map<string, any>();
-const addHTMLMarker = (content: string, iconSize: number[], latlng: number[]) => {
+const addHTMLMarker = (content: string, iconSize: number[], latlng: number[], option) => {
   if (!map) return;
   const markerIcon = L.divIcon({
     html: content,
@@ -253,7 +253,9 @@ const addHTMLMarker = (content: string, iconSize: number[], latlng: number[]) =>
   const iconLayer = L.marker([lat, lng], { icon: markerIcon });
   htmlMarkerMap.set(`${content}_${latlng.toString}`, iconLayer);
   iconLayer.addTo(map);
-  console.log('markerIcon', markerIcon);
+  iconLayer.on('click', (e) => {
+    emit('htmlMarkerClick', { e, ...option });
+  });
 };
 const clearHTMLMarker = () => {
   if (!map) return;
