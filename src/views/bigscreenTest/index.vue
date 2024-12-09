@@ -74,110 +74,9 @@ interface NoticeItemType {
   recordTime: number;
   captured: string;
 }
-
-const checkAuth = async (deviceSerial, channelNo, leftTimes = 2): Promise<string> => {
-  if (leftTimes <= 0) {
-    ElMessage.error('获取视频流失败，请联系管理员!');
-  }
-  if (!deviceSerial || !channelNo || leftTimes <= 0) return '';
-  const liveToken = localStorage.getItem('LIVE_TOKEN'),
-    expireTime = localStorage.getItem('LIVE_EXPIRE_TIME') ?? '0';
-  console.log('🚀 ~ checkAuth ~ liveToken:', liveToken);
-  const isExpired = (parseInt(expireTime) ?? 0) - new Date().valueOf() < 0;
-  if (liveToken && !isExpired) {
-    // 获取视频流
-    const { data: liveDataRes } = await axios.post(
-      'https://ezcloud.uniview.com/openapi/live/video/get',
-      { deviceSerial, channelNo, protocol: 2, quality: 1 },
-      { headers: { Authorization: liveToken } }
-    );
-    const { code, data: UrlData } = liveDataRes;
-    const { status = -1, url } = UrlData;
-    if (code === 200) {
-      if (status !== 0) {
-        await await axios.post(
-          'https://ezcloud.uniview.com/openapi/live/video/start',
-          { url },
-          { headers: { Authorization: liveToken } }
-        );
-        await sleep(3000);
-      }
-      return url;
-    } else return '';
-  }
-
-  const { list } = await DeviceNvrApi.getDeviceNvrPage({ pageNo: 1, pageSize: 10 }).catch(() => {});
-  let appId = '626194353357848583',
-    secretKey = 'ca06cd14935e031bd7a394ee7eca154d';
-  if (Array.isArray(list) && list.length > 0) {
-    const firstItem = list[0];
-    const { appId: _appId, secretKey: _secretKey } = firstItem;
-    appId = _appId;
-    secretKey = _secretKey;
-  }
-  const { data } = await axios.post('https://ezcloud.uniview.com/openapi/user/app/token/get', {
-    appId,
-    secretKey
-  });
-  if (data && data?.code === 200) {
-    const { accessToken, expireTime } = data.data;
-    if (accessToken) localStorage.setItem('LIVE_TOKEN', accessToken);
-    if (expireTime) localStorage.setItem('LIVE_EXPIRE_TIME', expireTime + '000');
-  }
-  return await checkAuth(deviceSerial, channelNo, leftTimes - 1);
-};
-
-let destroyFunc: Function[] = [];
-const destroyHls = () => {
-  destroyFunc.forEach((item) => {
-    if (isFunction(item)) item();
-  });
-  destroyFunc = [];
-};
-
-const initPlayer = async (containerId, dtu, channelId) => {
-  if (!containerId || !dtu || !channelId) return;
-  const resUrl = await checkAuth(dtu, channelId);
-  const hls = new Hls();
-  const _player = new Dplayer({
-    container: document.getElementById(containerId),
-    loop: false,
-    autoplay: true,
-    volume: 0,
-    video: {
-      url: resUrl,
-      type: 'customHls',
-      customType: {
-        customHls: (video) => {
-          hls.loadSource(video.src);
-          hls.attachMedia(video);
-        }
-      }
-    },
-    mutex: false
-  });
-  destroyFunc.push(() => {
-    _player.destroy();
-    hls.destroy();
-  });
-};
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
-    onActivated(() => {
-      deviceVideoList.value.forEach((item) => {
-        if (item.online) {
-          initPlayer(item.videoId, item.dtu, item.channelId);
-        }
-      });
-    });
-    onDeactivated(() => {
-      destroyHls();
-    });
-    onUnmounted(() => {
-      destroyHls();
-    });
-
     const getIconClass = (text: string) => {
       const iconMap = {
         温度: '1',
@@ -235,12 +134,6 @@ export default defineComponent({
       const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : [];
       TabChangeMap.set(key, [...existMap, func]);
     };
-    const handleTabChange = (key: string) => {
-      const existMap: any = TabChangeMap.get(key) ? TabChangeMap.get(key) : [];
-      existMap.forEach((func) => {
-        func();
-      });
-    };
     // tab修改 v2
     const bgImage = ref(mainBg);
     const changeTab = (key: string) => {
@@ -274,7 +167,6 @@ export default defineComponent({
 
     const activeBasePark = ref();
     const handleMenuActive = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath);
       activeBasePark.value = key;
       if (keyPath.length === 2) getMonitorDeviceList(keyPath[0], keyPath[1]);
     };
@@ -311,11 +203,6 @@ export default defineComponent({
           videoId: `${item.dtu}_${item.channelId}`
         }))
         .slice(0, 12);
-      nextTick(() => {
-        deviceVideoList.value.forEach((item) => {
-          if (item.online) initPlayer(item.videoId, item.dtu, item.channelId);
-        });
-      });
     };
     getMonitorDeviceList();
     const activeTab = ref('base');
@@ -440,7 +327,7 @@ export default defineComponent({
                     {item.deviceName}
                   </div>
                   <div class="w-full h-[200px] py-[5px] flex justify-center">
-                    <div class="aspect-video w-340px" id={item.videoId}></div>
+                    <ez-player vModel={item.dtu} channelNo={item.channelId} />
                   </div>
                   <div class="base-name">{item.baseName}</div>
                   <div
@@ -2116,27 +2003,6 @@ export default defineComponent({
                       }}
                       class="bg-transparent border-none contain-img home-icon ml-[13px] cursor-pointer"
                     ></button>
-                    {/** 
-                    <BigscreenTab
-                      v-model={activeTab.value}
-                      options={[
-                        {key: 'base', label: '基地导览'},
-                        {key: 'plant', label: '智慧种植'},
-                        {key: 'risk', label: '风险预警'}
-                      ]}
-                      onChange={handleTabChange}
-                    />*/}
-                    {/** 在请求监控设备列表或者监控通知事件的时候不允许点击其他Tab页 */}
-                    {/*
-                      monitorDeviceLoading.value || monitorNoticeLoading.value ? (
-                        <div
-                          class="absolute left-0 top-0 w-230px h-30px"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                          }}
-                        ></div>
-                      ) : null
-                    */}
                   </div>
                 ),
                 right: () => (
