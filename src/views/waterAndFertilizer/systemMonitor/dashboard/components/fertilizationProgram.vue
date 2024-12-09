@@ -196,7 +196,17 @@
 <script setup lang="ts">
 const width = defineModel('width', { type: Number, required: true });
 
-const data = reactive({
+interface FormData {
+  baskets: any[];
+  mixType: string | undefined;
+  waterPumpControl: boolean | undefined;
+  fertilizeType: string | undefined;
+  fertilizeAmount: number | undefined;
+  fertilizeSync: number | undefined;
+  irrigationArea: any[];
+}
+
+const data = reactive<FormData>({
   baskets: [],
   mixType: undefined,
   waterPumpControl: undefined,

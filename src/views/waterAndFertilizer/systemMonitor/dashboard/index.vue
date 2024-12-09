@@ -2,8 +2,12 @@
 import ImageFlowChart from './assets/flow-chart.png';
 import type { TabsPaneContext } from 'element-plus';
 import { dateFormatter } from '@/utils/formatTime';
+// @ts-ignore
 import TwoColResizeView from './components/twoColResizeView.vue';
+// @ts-ignore
 import FertilizationProgram from './components/fertilizationProgram.vue';
+// @ts-ignore
+import IrrigationProgram from './components/irrigationProgram.vue';
 
 // 土壤数据
 const monitorTypeList = ref<any[]>([]);
@@ -210,13 +214,309 @@ const getStatusMonitorList = async () => {
   statusMonitorList.value = Array.isArray(res) ? res : [];
 };
 getStatusMonitorList();
+
+const scaleY = ref(1);
+const scaleX = ref(1);
+onMounted(() => {
+  const controlElem = document.getElementById('control');
+  const resizeObserver = new ResizeObserver((entries) => {
+    const item = Array.isArray(entries[0].contentBoxSize)
+      ? entries[0].contentBoxSize[0]
+      : entries[0].contentBoxSize;
+    const containerH = item.blockSize;
+    const containerW = item.inlineSize;
+    scaleX.value = containerW / 1562;
+    scaleY.value = containerH / 856.56;
+  });
+  controlElem && resizeObserver.observe(controlElem);
+});
 </script>
 
 <template>
   <div class="space-y-[4px]">
     <el-card class="!border-0" body-class="!p-[16px]" shadow="never">
-      <div class="relative w-full px-[55px] box-border">
-        <img :src="ImageFlowChart" alt="流程图" class="w-full object-contian" />
+      <div
+        id="control"
+        class="relative w-full box-border"
+        :style="{
+          paddingLeft: `${scaleX * 55}px`,
+          paddingRight: `${scaleX * 55}px`
+        }"
+      >
+        <img :src="ImageFlowChart" alt="流程图" class="w-full h-full object-contain" />
+        <div
+          class="tip-dialog absolute grid grid-cols-2"
+          :style="{
+            transform: `scale(${scaleX}, ${scaleY})`,
+            top: `${scaleY * 38}px`,
+            left: `${scaleX * -10}px`,
+            transformOrigin: 'top left'
+          }"
+        >
+          <span>累计流量:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">12L</span>
+          <span>实时流速:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">0.3m³/h</span>
+        </div>
+        <div
+          class="tip-dialog absolute grid grid-cols-2"
+          :style="{
+            transform: `scale(${scaleX}, ${scaleY})`,
+            top: `${scaleY * 132}px`,
+            left: `${scaleX * -10}px`,
+            transformOrigin: 'top left'
+          }"
+        >
+          <span>实时压力:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">0hpa</span>
+          <span>实时频率:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">50Hz</span>
+        </div>
+        <div
+          class="tip-dialog absolute grid grid-cols-2"
+          :style="{
+            transform: `scale(${scaleX}, ${scaleY})`,
+            top: `${scaleY * 226}px`,
+            left: `${scaleX * -10}px`,
+            transformOrigin: 'top left'
+          }"
+        >
+          <span>EC:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">12us/cm</span>
+          <span>PH:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">7.8</span>
+        </div>
+
+        <div
+          class="w-[692px] h-[112px] absolute grid grid-rows-3 border border-solid border-[#e6e6e6] rounded-[6px] bg-white/90"
+          :style="{
+            transform: `scale(${scaleX}, ${scaleY})`,
+            top: `${scaleY * 320}px`,
+            left: `${scaleX * 420}px`,
+            transformOrigin: 'top left'
+          }"
+        >
+          <div class="flex items-center border-b border-b-solid border-[#e6e6e6]">
+            <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
+              液位
+            </span>
+            <div class="grow flex justify-between px-[30px] items-center">
+              <span class="flex justify-center items-center">10cm</span>
+              <span class="flex justify-center items-center">10cm</span>
+              <span class="flex justify-center items-center">10cm</span>
+              <span class="flex justify-center items-center">10cm</span>
+              <span class="flex justify-center items-center">10cm</span>
+            </div>
+          </div>
+          <div class="flex items-center border-b border-b-solid border-[#e6e6e6]">
+            <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
+              体积
+            </span>
+            <div class="grow flex justify-between px-[30px] items-center">
+              <span class="flex justify-center items-center">12L</span>
+              <span class="flex justify-center items-center">12L</span>
+              <span class="flex justify-center items-center">12L</span>
+              <span class="flex justify-center items-center">12L</span>
+              <span class="flex justify-center items-center">12L</span>
+            </div>
+          </div>
+          <div class="flex items-center border-b border-b-solid border-[#e6e6e6]">
+            <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
+              肥速
+            </span>
+            <div class="grow flex justify-between px-[30px] items-center">
+              <span class="flex justify-center items-center">5L/H</span>
+              <span class="flex justify-center items-center">5L/H</span>
+              <span class="flex justify-center items-center">5L/H</span>
+              <span class="flex justify-center items-center">5L/H</span>
+              <span class="flex justify-center items-center">5L/H</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="absolute top-0 h-[570px] w-[450px]"
+          :style="{
+            transform: `scale(${scaleX}, ${scaleY})`,
+            right: `${scaleX * 12}px`,
+            transformOrigin: 'top right'
+          }"
+        >
+          <el-scrollbar>
+            <h2 class="m-0 font-bold">施肥控制</h2>
+            <div class="grid grid-cols-2 gap-[8px] mt-[16px]">
+              <div class="space-y-[8px]">
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <span>水泵</span>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">上水阀1</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">上水阀2</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">上水阀3</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">上水阀4</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">上水阀5</span>
+                  </div>
+                  <el-switch />
+                </div>
+              </div>
+
+              <div class="space-y-[8px]">
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <span>施肥泵</span>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">混肥1</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">混肥2</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">混肥3</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">混肥4</span>
+                  </div>
+                  <el-switch />
+                </div>
+                <div
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  style="border: 1px solid var(--el-color-primary)"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="px-[6px] rounded-full text-white"
+                      style="background-color: var(--el-color-primary)"
+                    >
+                      1
+                    </div>
+                    <span class="ml-[8px]">混肥5</span>
+                  </div>
+                  <el-switch />
+                </div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
       </div>
     </el-card>
 
@@ -363,7 +663,7 @@ getStatusMonitorList();
                 <fertilization-program v-model:width="leftProps.width" />
               </template>
               <template #right="rightProps">
-                <div class="w-full h-[100vh] bg-blue-50">{{ rightProps.width }}</div>
+                <irrigation-program v-model:width="rightProps.width" />
               </template>
             </two-col-resize-view>
           </div>
@@ -412,5 +712,15 @@ getStatusMonitorList();
 .soil-header-cell {
   @extend .soil-table-cell;
   width: 300px;
+}
+
+.tip-dialog {
+  width: 175px;
+  height: 70px;
+  background-image: url(./assets/dialog-bg.png);
+  background-size: 100% 100%;
+  padding: 12px;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
 </style>
