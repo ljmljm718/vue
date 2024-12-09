@@ -270,6 +270,7 @@ export default defineComponent({
           break;
       }
     };
+    onMounted(() => changeTab('plant'));
 
     const activeBasePark = ref();
     const handleMenuActive = (key: string, keyPath: string[]) => {
@@ -2148,7 +2149,7 @@ export default defineComponent({
                     <div class="art-font text-[40px] tracking-[6px] relative cursor-default">
                       稻鱼鸭产业可视化数字驾驶舱
                       <div
-                        class={`${activeTab.value === 'base' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-245px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
+                        class={`${activeTab.value === 'base' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
                         onClick={() => {
                           changeTab('base');
                         }}
@@ -2156,7 +2157,7 @@ export default defineComponent({
                         基地导览
                       </div>
                       <div
-                        class={`${activeTab.value === 'plant' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-97px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
+                        class={`${activeTab.value === 'plant' ? 'module-active-left' : 'module-normal-left'} absolute top-[-10px] left-[-245px] contain-img text-[18px] tracking-normal leading-[40px] text-center cursor-pointer`}
                         onClick={() => {
                           changeTab('plant');
                         }}
