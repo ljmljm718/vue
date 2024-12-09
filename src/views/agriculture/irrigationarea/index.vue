@@ -343,7 +343,7 @@ const notBindSolenoidValve = async (id: string) => {
 /** 开关机 */
 const handleStatus = async (item: any) => {
   if (!enableSwitch.value) return;
-  let s = item.deviceStatus === 'online' ? '开机' : '关机';
+  let s = item.deviceStatus === 'online' ? '开启' : '关闭';
 
   try {
     // 开关机的二次确认
