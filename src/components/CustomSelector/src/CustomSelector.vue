@@ -32,12 +32,15 @@ const showedMenuList = computed(() => {
   if (props.menuType === 'plot') return basePlotDataList.value;
 });
 
-const emit = defineEmits(['change', 'join']);
+const emit = defineEmits(['change', 'join', 'leave']);
 const handleSelect = (e) => {
   emit('change', e);
 };
 const handleJoinArea = (id) => {
   emit('join', id);
+};
+const handleLeaveArea = (id) => {
+  emit('leave', id);
 };
 </script>
 <template>
@@ -80,8 +83,21 @@ const handleJoinArea = (id) => {
                     <div class="flex space-x-2 items-center">
                       <el-icon><DocumentCopy /></el-icon>
                       <div class="text-[14px]">{{ secondItem.name }}</div>
-                      <el-button type="primary" plain @click="handleJoinArea(secondItem.id)">
+                      <el-button
+                        type="primary"
+                        plain
+                        @click="handleJoinArea(secondItem.id)"
+                        v-if="firstItem.name === '未分配灌区'"
+                      >
                         加入灌区
+                      </el-button>
+                      <el-button
+                        type="primary"
+                        plain
+                        @click="handleLeaveArea(secondItem.id)"
+                        v-else
+                      >
+                        移出灌区
                       </el-button>
                     </div>
                   </template>

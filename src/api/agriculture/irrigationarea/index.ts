@@ -69,5 +69,21 @@ export const IrrigationAreaApi = {
     return await request.get({
       url: `/agriculture/park-info/park-detail/list-by-ia-id?iaId=` + iaId
     });
+  },
+
+  // 加入灌区
+  in_irrigation_area: async (params) => {
+    return await request.get({
+      url: `/agriculture/irrigation-area/in_irrigation_area`,
+      params
+    });
+  },
+
+  // 移除灌区地块
+  out_irrigation_area: async (params) => {
+    return await request.get({
+      url: `/agriculture/irrigation-area/out_irrigation_area`,
+      params
+    });
   }
 };
