@@ -1112,7 +1112,7 @@ onMounted(() => {
               :cell-style="{ borderBottom: 'none', fontSize: '16px', height: '40px' }"
               @row-click="toBigScreen"
             >
-              <el-table-column label="序号" type="index" align="center" />
+              <el-table-column label="序号" type="index" align="center" width="130px" />
               <el-table-column label="区县" prop="county" align="center" />
               <el-table-column label="示范村" prop="village" align="center" />
               <el-table-column label="产业类型" prop="form" align="center" />
