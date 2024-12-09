@@ -116,6 +116,20 @@
             <el-input v-model="formData.thresholdValue" placeholder="请输入阈值，例如:90" />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="是否正常区间" prop="isNormal">
+            <el-radio-group v-model="formData.isNormal">
+              <el-radio
+                v-for="dict in getBoolDictOptions(DICT_TYPE.WR_IS_NORMAL)"
+                :key="dict.value"
+                :label="dict.value"
+                :value="dict.value"
+              >
+                {{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <template #footer>
@@ -125,7 +139,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { getStrDictOptions, DICT_TYPE, getBoolDictOptions } from '@/utils/dict';
 import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwarningrule';
 
 /** 鲁渝协作预警规则 表单 */
@@ -154,7 +168,8 @@ const formData = ref({
   effectiveStatus: status,
   ruleTitle: undefined,
   warnLevel: undefined,
-  thresholdValue: undefined
+  thresholdValue: undefined,
+  isNormal: false
 });
 const formRules = reactive({
   warnLowValue: [{ required: true, message: '预警下限不能为空', trigger: 'blur' }],
@@ -234,7 +249,8 @@ const resetForm = () => {
     warnType: undefined,
     effectiveStatus: status,
     ruleTitle: undefined,
-    warnLevel: undefined
+    warnLevel: undefined,
+    isNormal: false
   };
   formRef.value?.resetFields();
 };

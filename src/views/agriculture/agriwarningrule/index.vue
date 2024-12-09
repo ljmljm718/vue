@@ -123,9 +123,14 @@
             <div>{{ scope.row['warnHighValue'] }}{{ scope.row['warnUnit'] }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="阈值" align="center" width="120">
+        <!--        <el-table-column label="阈值" align="center" width="120">-->
+        <!--          <template #default="scope">-->
+        <!--            <div>{{ scope.row['thresholdValue'] }}{{ scope.row['warnUnit'] }}</div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
+        <el-table-column label="是否正常" align="center" prop="isNormal" width="110">
           <template #default="scope">
-            <div>{{ scope.row['thresholdValue'] }}{{ scope.row['warnUnit'] }}</div>
+            <dict-tag :type="DICT_TYPE.WR_IS_NORMAL" :value="scope.row.isNormal" />
           </template>
         </el-table-column>
         <el-table-column label="预警消息" align="center" prop="lowMsg" />
@@ -304,7 +309,8 @@ const queryParams = reactive({
   warnType: undefined,
   effectiveStatus: undefined,
   ruleTitle: undefined,
-  warnLevel: undefined
+  warnLevel: undefined,
+  isNormal: undefined
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中

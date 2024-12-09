@@ -14,6 +14,7 @@ export interface AgriWarningRuleVO {
   warnType: string; // 预警类型
   effectiveStatus: string; // 生效状态（0-未生效，1-生效）
   ruleTitle: string; // 规则标题
+  isNormal: boolean; // 预警规则是否正常区间
 }
 
 // 鲁渝协作预警规则 API
