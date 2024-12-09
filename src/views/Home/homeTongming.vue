@@ -50,17 +50,17 @@
       >
         <div
           v-for="item in currentTasks"
-          :key="item.district"
+          :key="item.wfiIrrigationAreaName"
           class="flex-none w-[180px] h-[198px] border-r border-r-solid border-[#e6e6e6] box-border"
         >
           <div
             class="flex justify-center items-center w-full h-[40px] border-b border-b-solid border-[#e6e6e6] bg-[#F5F6FA] text-[#333]"
           >
-            {{ item.district }}
+            {{ item.wfiIrrigationAreaName }}
           </div>
           <el-scrollbar style="height: 157px" view-class="p-[8px] box-border space-y-[4px]">
             <div
-              v-for="ele in item.tasks"
+              v-for="ele in item.taskList"
               :key="ele"
               class="w-full flex items-center relative h-[32px] pl-[20px] box-border rounded-[4px]"
               :style="{
@@ -87,40 +87,19 @@
       <h2 class="m-0 text-[18px]">今日气象</h2>
       <div class="mt-[16px] flex w-full justify-center space-x-[8px] text-[#333]">
         <div
+          v-for="item in todayWeatherList"
+          :key="item.id"
           class="flex-none flex flex-col justify-between items-center py-[31px] box-border w-[119px] h-[200px] bg-[#F0F7F6] rounded-[6px]"
         >
-          <div>
-            <img :src="IconTemperature" alt="温度" class="w-[36px] h-[36px] object-cover" />
-            <div class="mt-[14px]">温度</div>
+          <div class="flex flex-col items-center">
+            <img
+              :src="getWeatherIcon(item.monitoringType)"
+              :alt="item.monitoringType"
+              class="w-[36px] h-[36px] object-cover"
+            />
+            <div class="mt-[14px]">{{ item.monitoringType }}</div>
           </div>
-          <div class="text-[22px]">{{ todayWeatherInfo.temperature }}℃</div>
-        </div>
-        <div
-          class="flex-none flex flex-col justify-between items-center py-[31px] box-border w-[119px] h-[200px] bg-[#F0F7F6] rounded-[6px]"
-        >
-          <div>
-            <img :src="IconRainfall" alt="降雨量" class="w-[36px] h-[36px] object-cover" />
-            <div class="mt-[14px]">降雨量</div>
-          </div>
-          <div class="text-[22px]">{{ todayWeatherInfo.rainfall }}mm/min</div>
-        </div>
-        <div
-          class="flex-none flex flex-col justify-between items-center py-[31px] box-border w-[119px] h-[200px] bg-[#F0F7F6] rounded-[6px]"
-        >
-          <div>
-            <img :src="IconHumidity" alt="湿度" class="w-[36px] h-[36px] object-cover" />
-            <div class="mt-[14px]">湿度</div>
-          </div>
-          <div class="text-[22px]">{{ todayWeatherInfo.humidity }}%RH</div>
-        </div>
-        <div
-          class="flex-none flex flex-col justify-between items-center py-[31px] box-border w-[119px] h-[200px] bg-[#F0F7F6] rounded-[6px]"
-        >
-          <div>
-            <img :src="IconWindForce" alt="风力" class="w-[36px] h-[36px] object-cover" />
-            <div class="mt-[14px]">风力</div>
-          </div>
-          <div class="text-[22px]">{{ todayWeatherInfo.windForce }}m/s</div>
+          <div class="text-[22px]">{{ item.dataValue ? item.dataValue : 0 }}{{ item.yyUnit }}</div>
         </div>
       </div>
     </el-card>
@@ -176,10 +155,7 @@
       <el-scrollbar height="386" class="h-[386px]">
         <div class="w-full flex justify-between items-center">
           <h2 class="m-0 text-[18px]">任务统计</h2>
-          <el-radio-group
-            v-model="taskStatisticsTimeRange"
-            @change="handleTaskStatisticsTimeRangeChange"
-          >
+          <el-radio-group v-model="taskStatisticsTimeRange" @change="handleChangeTimeRange">
             <el-radio-button label="month" value="month">本月</el-radio-button>
             <el-radio-button label="week" value="week">本周</el-radio-button>
           </el-radio-group>
@@ -197,7 +173,9 @@
               />
               <span class="ml-[16px]">灌溉任务(次)</span>
             </div>
-            <span class="text-[24px]">{{ taskStatisticsInfo.irrigationTaskNum }}</span>
+            <span class="text-[24px]">
+              {{ taskStatisticsInfo[taskStatisticsTimeRange].total.irrigate }}
+            </span>
           </div>
           <div
             class="h-[80px] flex justify-between items-center bg-[#FAF6ED] px-[32px] py-[15px] box-border rounded-[6px]"
@@ -210,7 +188,9 @@
               />
               <span class="ml-[16px]">施肥任务(次)</span>
             </div>
-            <span class="text-[24px]">{{ taskStatisticsInfo.fertiliztionTaskNum }}</span>
+            <span class="text-[24px]">
+              {{ taskStatisticsInfo[taskStatisticsTimeRange].total.fertilize }}
+            </span>
           </div>
           <div
             class="h-[80px] flex justify-between items-center bg-[#F0F7F5] px-[32px] py-[15px] box-border rounded-[6px]"
@@ -223,7 +203,9 @@
               />
               <span class="ml-[16px]">用水量(L)</span>
             </div>
-            <span class="text-[24px]">{{ taskStatisticsInfo.waterConsumption }}</span>
+            <span class="text-[24px]">
+              {{ taskStatisticsInfo[taskStatisticsTimeRange].total.water }}
+            </span>
           </div>
         </div>
 
@@ -249,6 +231,13 @@ import IconWaterConsumption from './assets/homeTongming/water-consumption.png';
 
 import { makeDeviceStatusOpt, makeTaskStatisticsOpt, colors, rgbColors } from './echartOption';
 import * as echart from 'echarts';
+import {
+  getBaseInfo,
+  getIrrigationAreaTask,
+  getDeviceStatus,
+  getEnvironmentalDataHomePageA,
+  getTask
+} from './apis';
 
 // 基本信息
 const baseInfo = ref({
@@ -259,29 +248,23 @@ const baseInfo = ref({
   plotArea: 0
 });
 
-const getBaseInfo = async () => {
+const getMainInfo = async () => {
   baseInfo.value.waterSourceNum = 0;
   baseInfo.value.irrigationNum = 0;
   baseInfo.value.baseNum = 0;
   baseInfo.value.plotNum = 0;
   baseInfo.value.plotArea = 0;
 
-  // await
-  const res = {
-    waterSourceNum: 12,
-    irrigationNum: 36,
-    baseNum: 2,
-    plotNum: 32,
-    plotArea: 53.27
-  };
+  const res = await getBaseInfo();
+  if (!res) return;
 
-  baseInfo.value.waterSourceNum = res.waterSourceNum ? res.waterSourceNum : 0;
+  baseInfo.value.waterSourceNum = res.waterSourceAmount ? res.waterSourceAmount : 0;
   baseInfo.value.irrigationNum = res.irrigationNum ? res.irrigationNum : 0;
-  baseInfo.value.baseNum = res.baseNum ? res.baseNum : 0;
-  baseInfo.value.plotNum = res.plotNum ? res.plotNum : 0;
-  baseInfo.value.plotArea = res.plotArea ? res.plotArea : 0;
+  baseInfo.value.baseNum = res.parkAmount ? res.parkAmount : 0;
+  baseInfo.value.plotNum = res.plotAmount ? res.plotAmount : 0;
+  baseInfo.value.plotArea = res.plotAreaAmount ? Number(res.plotAreaAmount) : 0;
 };
-getBaseInfo();
+getMainInfo();
 
 // 灌区当前任务
 const currentTasks = ref<any[]>([]);
@@ -289,35 +272,7 @@ const colorMap = reactive(new Map());
 
 const getCurrentTasks = async () => {
   currentTasks.value = [];
-
-  // await
-  const res = [
-    {
-      district: '灌区1',
-      tasks: ['任务1', '任务2', '任务3', '任务4', '任务5', '任务6']
-    },
-    {
-      district: '灌区2',
-      tasks: []
-    },
-    {
-      district: '灌区3',
-      tasks: ['任务3', '任务4', '任务5']
-    },
-    {
-      district: '灌区4',
-      tasks: ['任务3', '任务4', '任务5', '任务7', '任务8']
-    },
-    {
-      district: '灌区5',
-      tasks: ['任务5', '任务7', '任务9']
-    },
-    {
-      district: '灌区6',
-      tasks: ['任务10', '任务11', '任务12']
-    }
-  ];
-
+  const res = await getIrrigationAreaTask();
   currentTasks.value = Array.isArray(res) ? res : [];
 };
 getCurrentTasks().then(() => {
@@ -331,7 +286,7 @@ const getTaskColorMap = () => {
   // 获取去重的任务列表
   let list: string[] = [];
   currentTasks.value.forEach((ele) => {
-    list = list.concat(ele.tasks);
+    list = list.concat(ele.taskList);
   });
   list = Array.from(new Set(list));
 
@@ -359,24 +314,29 @@ const todayWeatherInfo = ref({
   windForce: 0
 });
 
+// 获取今日气象对应的图标
+const getWeatherIcon = (monitorType: string) => {
+  const list = [
+    { name: '温度', icon: IconTemperature },
+    { name: '雨', icon: IconRainfall },
+    { name: '湿度', icon: IconHumidity },
+    { name: '风', icon: IconWindForce }
+  ];
+
+  for (let i = 0; i < list.length; ++i) {
+    if (monitorType.indexOf(list[i].name) !== -1) {
+      return list[i].icon;
+    }
+  }
+  return IconWindForce;
+};
+
+// 获取今日气象列表
+const todayWeatherList = ref<any[]>([]);
 const getTodayWeatherInfo = async () => {
-  todayWeatherInfo.value.temperature = 0;
-  todayWeatherInfo.value.rainfall = 0;
-  todayWeatherInfo.value.humidity = 0;
-  todayWeatherInfo.value.windForce = 0;
-
-  // await
-  const res = {
-    temperature: 29.6,
-    rainfall: 11,
-    humidity: 32,
-    windForce: 9
-  };
-
-  todayWeatherInfo.value.temperature = res.temperature ? res.temperature : 0;
-  todayWeatherInfo.value.rainfall = res.rainfall ? res.rainfall : 0;
-  todayWeatherInfo.value.humidity = res.humidity ? res.humidity : 0;
-  todayWeatherInfo.value.windForce = res.windForce ? res.windForce : 0;
+  todayWeatherList.value = [];
+  const res = await getEnvironmentalDataHomePageA();
+  todayWeatherList.value = Array.isArray(res) ? res : [];
 };
 getTodayWeatherInfo();
 
@@ -394,18 +354,27 @@ const getDeviceStatusInfo = async () => {
     ele.value = 0;
   });
 
-  // await
-  const res = {
-    total: 28,
-    online: 14,
-    offline: 7,
-    error: 7
-  };
+  const res = await getDeviceStatus();
+  if (!Array.isArray(res)) return;
 
-  deviceTotalNum.value = res.total ? res.total : 0;
-  deviceStatusInfo.value[0].value = res.online ? res.online : 0;
-  deviceStatusInfo.value[1].value = res.offline ? res.offline : 0;
-  deviceStatusInfo.value[2].value = res.error ? res.error : 0;
+  let tmp = 0;
+  res.forEach((ele) => {
+    switch (ele.name) {
+      case '在线':
+        deviceStatusInfo.value[0].value = ele.value ? Number(ele.value) : 0;
+        tmp += Number(ele.value);
+        break;
+      case '故障':
+        deviceStatusInfo.value[1].value = ele.value ? Number(ele.value) : 0;
+        tmp += Number(ele.value);
+        break;
+      case '离线':
+        deviceStatusInfo.value[2].value = ele.value ? Number(ele.value) : 0;
+        tmp += Number(ele.value);
+        break;
+    }
+  });
+  deviceTotalNum.value = tmp;
 };
 
 let deviceStatusChart: any = null;
@@ -434,36 +403,100 @@ onMounted(async () => {
 
 // 任务统计
 const taskStatisticsTimeRange = ref('month');
-const handleTaskStatisticsTimeRangeChange = (param: any) => {
-  console.log('切换时间粒度: ', param);
+
+// 切换时间粒度
+const handleChangeTimeRange = async () => {
+  await getTaskStatisticsInfo();
+  setTaskStatisticsChartData();
+  const opt = makeTaskStatisticsOpt(taskStatisticsChartData.value);
+  taskStatisticsChart.setOption(opt);
 };
 
-// 图上面的三项数据
+// 任务统计数据
 const taskStatisticsInfo = ref({
-  irrigationTaskNum: 0,
-  fertiliztionTaskNum: 0,
-  waterConsumption: 0
+  week: {
+    total: {
+      fertilize: 0,
+      irrigate: 0,
+      water: 0
+    },
+    fertilizeList: [],
+    irrigateList: [],
+    waterList: []
+  },
+  month: {
+    total: {
+      fertilize: 0,
+      irrigate: 0,
+      water: 0
+    },
+    fertilizeList: [],
+    irrigateList: [],
+    waterList: []
+  }
 });
 
-const getTaskStatisticsInfo = async () => {
-  taskStatisticsInfo.value.irrigationTaskNum = 0;
-  taskStatisticsInfo.value.fertiliztionTaskNum = 0;
-  taskStatisticsInfo.value.waterConsumption = 0;
-
-  // await
-  const res = {
-    irrigationTaskNum: 60,
-    fertiliztionTaskNum: 46,
-    waterConsumption: 43.27
+// 初始化任务统计数据
+const initTaskStatisticsInfo = () => {
+  taskStatisticsInfo.value = {
+    week: {
+      total: {
+        fertilize: 0,
+        irrigate: 0,
+        water: 0
+      },
+      fertilizeList: [],
+      irrigateList: [],
+      waterList: []
+    },
+    month: {
+      total: {
+        fertilize: 0,
+        irrigate: 0,
+        water: 0
+      },
+      fertilizeList: [],
+      irrigateList: [],
+      waterList: []
+    }
   };
-
-  taskStatisticsInfo.value.irrigationTaskNum = res.irrigationTaskNum ? res.irrigationTaskNum : 0;
-  taskStatisticsInfo.value.fertiliztionTaskNum = res.fertiliztionTaskNum
-    ? res.fertiliztionTaskNum
-    : 0;
-  taskStatisticsInfo.value.waterConsumption = res.waterConsumption ? res.waterConsumption : 0;
 };
-getTaskStatisticsInfo();
+
+// 获取任务统计数据
+const getTaskStatisticsInfo = async () => {
+  initTaskStatisticsInfo();
+  const res = await getTask();
+
+  if (res.week) {
+    const item = res.week;
+    taskStatisticsInfo.value.week.total.fertilize = item.total.fertilize ? item.total.fertilize : 0;
+    taskStatisticsInfo.value.week.total.irrigate = item.total.irrigate ? item.total.irrigate : 0;
+    taskStatisticsInfo.value.week.total.water = item.total.water ? item.total.water : 0;
+    taskStatisticsInfo.value.week.fertilizeList = Array.isArray(item.fertilizeList)
+      ? item.fertilizeList
+      : [];
+    taskStatisticsInfo.value.week.irrigateList = Array.isArray(item.irrigateList)
+      ? item.irrigateList
+      : [];
+    taskStatisticsInfo.value.week.waterList = Array.isArray(item.waterList) ? item.waterList : [];
+  }
+
+  if (res.month) {
+    const item = res.month;
+    taskStatisticsInfo.value.month.total.fertilize = item.total.fertilize
+      ? item.total.fertilize
+      : 0;
+    taskStatisticsInfo.value.month.total.irrigate = item.total.irrigate ? item.total.irrigate : 0;
+    taskStatisticsInfo.value.month.total.water = item.total.water ? item.total.water : 0;
+    taskStatisticsInfo.value.month.fertilizeList = Array.isArray(item.fertilizeList)
+      ? item.fertilizeList
+      : [];
+    taskStatisticsInfo.value.month.irrigateList = Array.isArray(item.irrigateList)
+      ? item.irrigateList
+      : [];
+    taskStatisticsInfo.value.month.waterList = Array.isArray(item.waterList) ? item.waterList : [];
+  }
+};
 
 // 统计图数据
 const taskStatisticsChartData = ref({
@@ -473,44 +506,26 @@ const taskStatisticsChartData = ref({
   waterConsumptionData: [] as number[]
 });
 
-const getTaskStatisticsChartData = async () => {
+// 初始化折线图数据
+const setTaskStatisticsChartData = async () => {
   taskStatisticsChartData.value.xData = [];
   taskStatisticsChartData.value.irrigationData = [];
   taskStatisticsChartData.value.fertilizationData = [];
   taskStatisticsChartData.value.waterConsumptionData = [];
 
-  // await
-  const res = {
-    xData: [
-      '05-01',
-      '05-04',
-      '05-07',
-      '05-10',
-      '05-13',
-      '05-16',
-      '05-19',
-      '05-22',
-      '05-25',
-      '05-28',
-      '05-31'
-    ],
-    irrigationData: [30, 75, 70, 30, 40, 85, 80, 75, 80, 60, 85, 115],
-    fertilizationData: [15, 30, 25, 40, 55, 40, 38, 25, 30, 43, 40, 55],
-    waterConsumptionData: [45, 60, 40, 75, 45, 60, 110, 90, 60, 80, 100, 95]
-  };
+  const timeRange = taskStatisticsTimeRange.value;
+  const item = taskStatisticsInfo.value[timeRange];
 
-  taskStatisticsChartData.value.xData = Array.isArray(res.xData) ? res.xData : [];
-  taskStatisticsChartData.value.irrigationData = Array.isArray(res.irrigationData)
-    ? res.irrigationData
-    : [];
-  taskStatisticsChartData.value.fertilizationData = Array.isArray(res.fertilizationData)
-    ? res.fertilizationData
-    : [];
-  taskStatisticsChartData.value.waterConsumptionData = Array.isArray(res.waterConsumptionData)
-    ? res.waterConsumptionData
-    : [];
+  const n = item.fertilizeList.length;
+  for (let i = 0; i < n; ++i) {
+    taskStatisticsChartData.value.xData.push(item.fertilizeList[i].date);
+    taskStatisticsChartData.value.fertilizationData.push(item.fertilizeList[i].count);
+    taskStatisticsChartData.value.irrigationData.push(item.irrigateList[i].count);
+    taskStatisticsChartData.value.waterConsumptionData.push(item.waterList[i].count);
+  }
 };
 
+// 创建echarts实例
 let taskStatisticsChart: any = null;
 const setTaskStatisticsChart = () => {
   const dom = document.getElementById('taskStatisticsChart');
@@ -528,7 +543,8 @@ const setTaskStatisticsChart = () => {
  * DOM加载 -> 请求数据 -> 渲染ECharts
  */
 onMounted(async () => {
-  await getTaskStatisticsChartData();
+  await getTaskStatisticsInfo();
+  setTaskStatisticsChartData();
   setTaskStatisticsChart();
   window.addEventListener('resize', async () => {
     taskStatisticsChart && taskStatisticsChart.resize();

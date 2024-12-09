@@ -98,21 +98,36 @@ export const makeTaskStatisticsOpt = (data: any) => {
         name: '灌溉任务',
         yAxisIndex: 0,
         smooth: true,
-        data: irrigationData
+        data: irrigationData,
+        tooltip: {
+          valueFormatter: (value: number) => {
+            return value + ' 次';
+          }
+        }
       },
       {
         type: 'line',
         name: '施肥任务',
         yAxisIndex: 0,
         smooth: true,
-        data: fertilizationData
+        data: fertilizationData,
+        tooltip: {
+          valueFormatter: (value: number) => {
+            return value + ' 次';
+          }
+        }
       },
       {
         type: 'line',
         name: '用水量',
         yAxisIndex: 1,
         smooth: true,
-        data: waterConsumptionData
+        data: waterConsumptionData,
+        tooltip: {
+          valueFormatter: (value: number) => {
+            return value + ' L';
+          }
+        }
       }
     ]
   };
