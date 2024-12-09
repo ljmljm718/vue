@@ -106,7 +106,7 @@ const handleSelect = async (item) => {
     console.log('地图设备详情', res);
     // mapTangBgRef.value.addMarkerToMap(res.longitude, res.latitude, res.deviceName)
     const infoString = `<div class="bg-[#e8f2fc] relative">
-      <div class='relative'>
+      <div class='relative min-w-[120px]'>
         <img src="${meassageTop}" class='w-100% h-40px z-[-1] top-0 left-0 absolute' />
         <div class="bg-[#95bbf8] p-2 px-3 meassage-top z-999" style="font-weight:600;">${
           res.parkName
