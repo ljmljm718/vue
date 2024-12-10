@@ -5,7 +5,7 @@
   >
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
-        <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">病虫害监测</h1>
+        <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">灌区管理</h1>
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
 
         <el-button
