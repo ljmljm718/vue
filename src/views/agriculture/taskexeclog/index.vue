@@ -5,21 +5,21 @@ import { colorOpt } from '@/config/colorTheme/colorConfig';
 import { setCssVar } from '@/utils';
 
 /* todo原页面的js代码复制在下面 */
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { TaskExecLogApi, TaskExecLogVO } from '@/api/agriculture/taskexeclog'
-import TaskExecLogForm from './TaskExecLogForm.vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { TaskExecLogApi, TaskExecLogVO } from '@/api/agriculture/taskexeclog';
+import TaskExecLogForm from './TaskExecLogForm.vue';
 
 /** 任务执行记录 列表 */
-defineOptions({ name: 'TaskExecLog' })
+defineOptions({ name: 'TaskExecLog' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<TaskExecLogVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<TaskExecLogVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -32,72 +32,72 @@ const queryParams = reactive({
   amountTimeNumber: undefined,
   iaCodeList: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await TaskExecLogApi.getTaskExecLogPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await TaskExecLogApi.getTaskExecLogPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await TaskExecLogApi.deleteTaskExecLog(id)
-    message.success(t('common.delSuccess'))
+    await TaskExecLogApi.deleteTaskExecLog(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await TaskExecLogApi.exportTaskExecLog(queryParams)
-    download.excel(data, '任务执行记录.xls')
+    exportLoading.value = true;
+    const data = await TaskExecLogApi.exportTaskExecLog(queryParams);
+    download.excel(data, '任务执行记录.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 /* 原页面的代码复制在上面 */
 
 /**
@@ -112,7 +112,6 @@ const showSearch = ref(false);
 const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
 };
-
 </script>
 
 <template>
@@ -123,7 +122,7 @@ const handleClickShowSearch = () => {
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <!-- 一级标题名字 todo替换成菜单名称-->
-        <h1 class="m-0 text-[#333] font-bold text-[18px]"> 任务执行记录管理 </h1>
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">任务执行记录管理</h1>
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
         <!-- 一级标题旁边的按钮 -->
@@ -143,20 +142,23 @@ const handleClickShowSearch = () => {
         <!-- todo复制原页面【搜索、重置、导出】 -->
         <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
         <!-- todo删除导出按钮的type和plain属性 -->
-        
+
         <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px" /> 搜索
-          </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" /> 重置
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
         </el-button>
-        
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+
         <el-button
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agriculture:task-exec-log:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
         </el-button>
 
         <button
@@ -181,13 +183,12 @@ const handleClickShowSearch = () => {
       <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
       <!-- todo复制原来的搜索列表 -->
       <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
-      <el-form-item label="任务id" prop="taskId">
+      <el-form-item label="任务编码" prop="taskId">
         <el-input
           v-model="queryParams.taskId"
-          placeholder="请输入任务id"
+          placeholder="请输入任务编码"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="执行时间" prop="execTime">
@@ -198,16 +199,10 @@ const handleClickShowSearch = () => {
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          
         />
       </el-form-item>
       <el-form-item label="任务类型" prop="taskType">
-        <el-select
-          v-model="queryParams.taskType"
-          placeholder="请选择任务类型"
-          clearable
-          
-        >
+        <el-select v-model="queryParams.taskType" placeholder="请选择任务类型" clearable>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.WFI_TASK_TYPE)"
             :key="dict.value"
@@ -217,12 +212,7 @@ const handleClickShowSearch = () => {
         </el-select>
       </el-form-item>
       <el-form-item label="类型" prop="type">
-        <el-select
-          v-model="queryParams.type"
-          placeholder="请选择类型"
-          clearable
-          
-        >
+        <el-select v-model="queryParams.type" placeholder="请选择类型" clearable>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.WFI_FERTILIZE_TYPE)"
             :key="dict.value"
@@ -237,7 +227,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入时间/量"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <!-- <el-form-item label="灌区" prop="iaCodeList">
@@ -264,14 +253,20 @@ const handleClickShowSearch = () => {
 
     <div class="w-full mt-[8px]">
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
-       <el-table v-loading="loading" :data="list" :stripe="true" :row-key="(row) => row.id"
-              ref="multipleTable"
-              @selection-change="handleSelectionChange" :show-overflow-tooltip="true"
-              @row-click="clickSelect"
-              size="default">
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :row-key="(row) => row.id"
+        ref="multipleTable"
+        @selection-change="handleSelectionChange"
+        :show-overflow-tooltip="true"
+        @row-click="clickSelect"
+        size="default"
+      >
         <!-- todo复制列表 -->
-         <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-        <el-table-column label="任务id" align="center" prop="taskId" />
+        <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
+        <el-table-column label="任务编码" align="center" prop="taskId" />
         <el-table-column
           label="执行时间"
           align="center"
@@ -286,7 +281,11 @@ const handleClickShowSearch = () => {
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="持续时长" align="center" prop="duration" />
+        <el-table-column label="持续时长(秒)" align="center" prop="duration">
+          <template #default="scope">
+            <div v-if="scope.row.duration">{{ scope.row.duration }}s</div>
+          </template>
+        </el-table-column>
         <el-table-column label="任务类型" align="center" prop="taskType">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.WFI_TASK_TYPE" :value="scope.row.taskType" />
@@ -298,7 +297,7 @@ const handleClickShowSearch = () => {
           </template>
         </el-table-column>
         <el-table-column label="时间/量（分钟/L）" align="center" prop="amountTimeNumber" />
-        <el-table-column label="灌区" align="center" prop="iaCodeList" />
+        <el-table-column label="灌区" align="center" prop="iaCodeNameList" />
         <!-- <el-table-column
           label="创建时间"
           align="center"
@@ -306,9 +305,9 @@ const handleClickShowSearch = () => {
           :formatter="dateFormatter"
           width="180px"
         /> -->
-       <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope">
-             <!-- todo操作按钮 -->
+            <!-- todo操作按钮 -->
             <!-- 1.  <template #default="scope"> 中，加入
                 <div class="flex items-center justify-center">
                   其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
@@ -319,25 +318,24 @@ const handleClickShowSearch = () => {
               -->
             <!-- todo方案一 -->
             <div class="flex items-center justify-center">
-               <el-button
-                  link
-                  type="primary"
-                  @click="openForm('update', scope.row.id)"
-                  v-hasPermi="['agriculture:task-exec-log:update']"
-                >
-                  编辑
-                </el-button>
-                <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-                <el-button
-                  link
-                  type="danger"
-                  @click="handleDelete(scope.row.id)"
-                  v-hasPermi="['agriculture:task-exec-log:delete']"
-                >
-                  删除
-                </el-button>
+              <el-button
+                link
+                type="primary"
+                @click="openForm('update', scope.row.id)"
+                v-hasPermi="['agriculture:task-exec-log:update']"
+              >
+                编辑
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                link
+                type="danger"
+                @click="handleDelete(scope.row.id)"
+                v-hasPermi="['agriculture:task-exec-log:delete']"
+              >
+                删除
+              </el-button>
             </div>
-            
           </template>
         </el-table-column>
       </el-table>
@@ -434,4 +432,3 @@ const handleClickShowSearch = () => {
   animation-fill-mode: forwards;
 }
 </style>
-

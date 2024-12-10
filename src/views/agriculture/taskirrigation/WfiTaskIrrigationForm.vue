@@ -54,10 +54,7 @@
         <el-input v-model="formData.tiExecCronDay" placeholder="请输入灌溉周期具体时间" />
       </el-form-item>
       <el-form-item label="灌溉日" prop="tiTaskInfo">
-        <el-input
-          v-model="formData.tiTaskInfo"
-          placeholder="选择开始结束时间和灌溉周期后自动生成"
-        />
+        <el-input v-model="formData.tiTaskInfo" placeholder="提交确定后自动生成" />
       </el-form-item>
       <el-form-item label="任务执行时间" prop="tiExecBeginTime">
         <!--        <el-date-picker-->
@@ -76,8 +73,15 @@
         <el-input v-model="formData.concurrentTaskNumber" placeholder="请输入并发任务执行数量" />
       </el-form-item>
 
-      <el-form-item label="执行灌区" prop="iaCodeList">
-        <el-input v-model="formData.iaCodeList" placeholder="请输入任务执行灌区" />
+      <el-form-item label="执行灌区" prop="iaNameList">
+        <el-input v-model="formData.iaNameList" placeholder="请选择任务执行灌区">
+          <template #append>
+            <el-button @click="openIrrigationareaList()">
+              <Icon icon="ep:search" />
+              选择
+            </el-button>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-input v-model="formData.status" placeholder="请输入状态，停用、启用、未启用" />
@@ -88,10 +92,14 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!-- 灌区选框 -->
+  <SelectIrrigtionareaForm ref="selectIrrigtionareaRef" @success="IrrigatedAreaSuccess" />
 </template>
 <script setup lang="ts">
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
 import { WfiTaskIrrigationApi, WfiTaskIrrigationVO } from '@/api/agriculture/taskirrigation';
+import SelectIrrigtionareaForm from '@/views/agriculture/irrigationarea/components/SelectIrrigtionarea.vue';
 
 /** 灌溉任务 表单 */
 defineOptions({ name: 'WfiTaskIrrigationForm' });
@@ -116,6 +124,7 @@ const formData = ref({
   concurrentTaskNumber: undefined,
   amountTimeNumber: undefined,
   iaCodeList: undefined,
+  iaNameList: undefined,
   status: undefined,
   tiTaskInfo: undefined
 });
@@ -183,5 +192,31 @@ const resetForm = () => {
     status: undefined
   };
   formRef.value?.resetFields();
+};
+
+const irrigatedAreaIds = ref('');
+const irrigatedAreaNames = ref('');
+const IrrigatedAreaSuccess = async (order: any) => {
+  for (let i = 0; i < order.length; i++) {
+    if (i != order.length - 1) {
+      irrigatedAreaIds.value += order[i].id + ',';
+      irrigatedAreaNames.value += order[i].iaName + ',';
+    } else {
+      irrigatedAreaIds.value += order[i].id;
+      irrigatedAreaNames.value += order[i].iaName;
+    }
+  }
+  irrigatedAreaIds.value = irrigatedAreaIds.value.substring(0, irrigatedAreaIds.value.length);
+  irrigatedAreaNames.value = irrigatedAreaNames.value.substring(0, irrigatedAreaNames.value.length);
+  formData.value.iaCodeList = irrigatedAreaIds.value;
+  formData.value.iaNameList = irrigatedAreaNames.value;
+  irrigatedAreaIds.value = '';
+  irrigatedAreaNames.value = '';
+};
+
+//灌区信息管理
+const selectIrrigtionareaRef = ref();
+const openIrrigationareaList = () => {
+  selectIrrigtionareaRef.value.open();
 };
 </script>
