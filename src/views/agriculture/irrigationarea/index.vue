@@ -1,10 +1,71 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
+  <el-scrollbar
+    class="w-full bg-white dark:bg-#333 rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding + 4) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+        <h1 class="m-0 text-[#333] dark:text-[#ccc] font-bold text-[18px]">病虫害监测</h1>
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:irrigation-area:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </div>
+
+      <div class="flex items-center space-x-[8px]">
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:irrigation-area:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+
+        <el-radio-group v-model="listType" @change="handleCardChange">
+          <el-radio-button label="card" value="card">
+            <div class="flex items-center">
+              <el-icon class="mr-[5px]"><Menu /></el-icon>
+              <span>卡片</span>
+            </div>
+          </el-radio-button>
+          <el-radio-button label="list" value="list">
+            <div class="flex items-center">
+              <el-icon class="mr-[5px]"><List /></el-icon>
+              <span>列表</span>
+            </div>
+          </el-radio-button>
+        </el-radio-group>
+
+        <button
+          class="circle-arrow-up !ml-[16px] !dark:text-[#ccc]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+
     <el-form
-      class="-mb-15px"
       :model="queryParams"
       ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form overflow-hidden"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
       :inline="true"
       label-width="68px"
     >
@@ -50,146 +111,179 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px" />
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" />
-          重置
-        </el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:irrigation-area:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['agriculture:irrigation-area:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px" />
-          导出
-        </el-button>
-      </el-form-item>
     </el-form>
-  </ContentWrap>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column type="expand">
-        <template #default="scope">
-          <el-tabs model-value="parkDetail">
-            <el-tab-pane label="地块列表" name="parkDetail">
-              <IrrigationParkDetailList :irrigation-id="scope.row.id" />
-            </el-tab-pane>
-          </el-tabs>
-        </template>
-      </el-table-column>
-      <el-table-column label="灌区编号" align="center" prop="iaCode" />
-      <el-table-column label="灌区名称" align="center" prop="iaName" />
-      <el-table-column label="喷灌类型" align="center" prop="irrigationType">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.WFI_IRRIGATION_TYPE" :value="scope.row.irrigationType" />
-        </template>
-      </el-table-column>
-      <el-table-column label="阀门状态" align="center" prop="deviceStatus">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.deviceStatus"
-            active-value="online"
-            inactive-value="offline"
-            @change="handleStatus(scope.row)"
-            v-if="scope.row.deviceStatus != null"
+    <div class="w-full mt-[16px]">
+      <el-table
+        v-show="listType === 'list'"
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+      >
+        <el-table-column type="expand">
+          <template #default="scope">
+            <el-tabs model-value="parkDetail">
+              <el-tab-pane label="地块列表" name="parkDetail">
+                <IrrigationParkDetailList :irrigation-id="scope.row.id" />
+              </el-tab-pane>
+            </el-tabs>
+          </template>
+        </el-table-column>
+        <el-table-column label="灌区编号" align="center" prop="iaCode" />
+        <el-table-column label="灌区名称" align="center" prop="iaName" />
+        <el-table-column label="喷灌类型" align="center" prop="irrigationType">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.WFI_IRRIGATION_TYPE" :value="scope.row.irrigationType" />
+          </template>
+        </el-table-column>
+        <el-table-column label="阀门状态" align="center" prop="deviceStatus">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.deviceStatus"
+              active-value="online"
+              inactive-value="offline"
+              @change="handleStatus(scope.row)"
+              v-if="scope.row.deviceStatus != null"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="图片" align="center" prop="iaImage">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              lazy
+              :src="row.iaImage"
+              :preview-src-list="[row.iaImage]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="纬度" align="center" prop="latitude" />
+        <el-table-column label="经度" align="center" prop="longitude" />
+        <el-table-column label="负责人" align="center" prop="principal" />
+        <el-table-column label="联系方式" align="center" prop="contactInformation" />
+        <el-table-column label="地址" align="center" prop="isAddress" />
+        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="操作" align="center" width="250" fixed="right">
+          <template #default="scope">
+            <el-button
+              link
+              type="primary"
+              @click="handleDraw(scope.row)"
+              v-hasPermi="['agriculture:irrigation-area:update']"
+            >
+              绘制围栏
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['agriculture:irrigation-area:update']"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="warning"
+              @click="bindSolenoidValve(scope.row.id)"
+              v-if="scope.row.deviceId === null"
+            >
+              绑定电磁阀
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              @click="notBindSolenoidValve(scope.row.id)"
+              v-if="scope.row.deviceId != null"
+            >
+              解绑电磁阀
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['agriculture:irrigation-area:delete']"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div v-show="listType === 'list'">
+        <Pagination
+          :total="total"
+          v-model:page="queryParams.pageNo"
+          v-model:limit="queryParams.pageSize"
+          @pagination="getList"
+        />
+      </div>
+
+      <div
+        v-show="listType === 'card'"
+        :style="`height: calc(100vh - ${showSearch ? '220px' : '194px'});`"
+      >
+        <el-scrollbar>
+          <div class="flex justify-center items-center">
+            <div class="container gap-[8px] grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div
+                v-for="item in list"
+                :key="item.id"
+                class="shadow-md rounded-2 p-[8px] box-border flex items-start space-x-[8px]"
+                style="border: 1px solid var(--el-border-color)"
+              >
+                <img :src="item.iaImage" alt="" class="w-100px h-100px object-cover" />
+                <div class="space-y-[6px] text-12px">
+                  <div class="font-bold text-15px">{{ item.iaName }}</div>
+                  <div class="flex items-center">
+                    <div class="w-80px">类型:</div>
+                    <dict-tag :type="DICT_TYPE.WFI_IRRIGATION_TYPE" :value="item.irrigationType" />
+                  </div>
+                  <div class="flex items-center">
+                    <div class="w-80px">阀门状态:</div>
+                    <el-tag :type="`${item.deviceStatus === 'online' ? 'success' : 'danger'}`">
+                      {{ item.deviceStatus === 'online' ? '开' : '关' }}
+                    </el-tag>
+                  </div>
+                  <div class="flex">
+                    <el-button
+                      type="primary"
+                      @click="handleDraw(item)"
+                      v-hasPermi="['agriculture:irrigation-area:update']"
+                    >
+                      绘制围栏
+                    </el-button>
+                    <el-button
+                      type="primary"
+                      @click="openForm('update', item.id)"
+                      v-hasPermi="['agriculture:irrigation-area:update']"
+                    >
+                      编辑
+                    </el-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Pagination
+            :total="total"
+            v-model:page="queryParams.pageNo"
+            v-model:limit="queryParams.pageSize"
+            @pagination="getList"
           />
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" align="center" prop="iaImage">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.iaImage"
-            :preview-src-list="[row.iaImage]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="负责人" align="center" prop="principal" />
-      <el-table-column label="联系方式" align="center" prop="contactInformation" />
-      <el-table-column label="地址" align="center" prop="isAddress" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="操作" align="center" width="250" fixed="right">
-        <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="handleDraw(scope.row)"
-            v-hasPermi="['agriculture:irrigation-area:update']"
-          >
-            绘制围栏
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agriculture:irrigation-area:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="warning"
-            @click="bindSolenoidValve(scope.row.id)"
-            v-if="scope.row.deviceId === null"
-          >
-            绑定电磁阀
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="notBindSolenoidValve(scope.row.id)"
-            v-if="scope.row.deviceId != null"
-          >
-            解绑电磁阀
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agriculture:irrigation-area:delete']"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
-  </ContentWrap>
+        </el-scrollbar>
+      </div>
+    </div>
+  </el-scrollbar>
   <fence-dialog
     v-model="showDrawDialog"
     title="绘制围栏"
@@ -225,6 +319,23 @@ import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew';
 import IrrigationParkDetailList from '@/views/agriculture/irrigationarea/components/IrrigationParkDetailList.vue';
 /** 灌区信息 列表 */
 defineOptions({ name: 'IrrigationArea' });
+
+const topMenuHeight = 85;
+const contentPadding = 8;
+const listType = ref<string>('card'); // 卡片 card 列表 list
+const handleCardChange = async () => {
+  queryParams.pageNo = 1;
+  await getList();
+  // 切换回卡片时需要设置图片列表移动到第一项
+  if ('card' === listType.value) {
+    // TODO 单独处理卡片列表
+  }
+};
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 
 const message = useMessage(); // 消息弹窗
 const { t } = useI18n(); // 国际化
@@ -435,3 +546,111 @@ onActivated(() => {
   getList();
 });
 </script>
+<style lang="scss" scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明的背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 确保遮罩层在其他内容之上 */
+}
+
+.loading-content {
+  color: white;
+  /* 可以添加更多的样式来美化加载提示 */
+}
+
+.last-icon,
+.next-icon {
+  width: 37px;
+  height: 37px;
+  background: {
+    position: center;
+    repeat: no-repeat;
+    size: contain;
+  }
+  position: absolute;
+  top: 50%;
+  cursor: pointer;
+  margin: 0;
+}
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ebebeb;
+  color: #333;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: transparent;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: transparent;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
+}
+</style>
