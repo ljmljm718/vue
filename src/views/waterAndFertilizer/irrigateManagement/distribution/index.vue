@@ -168,7 +168,9 @@ const getDialogDataList = async () => {
 };
 getDialogDataList();
 
-const handleCurrentChange = () => {};
+const handleCurrentChange = (item) => {
+  select([item], item);
+};
 const handleJoinConfirm = () => {
   const { id } = selectedRow.value; // 灌区ID
   IrrigationAreaApi.in_irrigation_area({
