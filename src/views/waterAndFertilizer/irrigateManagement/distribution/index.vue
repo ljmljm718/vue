@@ -63,6 +63,7 @@ const handleMenuChange = (id) => {
 // 绘制地块
 const drawBasePlot = (arr: any[]) => {
   mapIns.value.clearHTMLMarker();
+  mapIns.value.clearMap();
   arr.forEach((baseItem) => {
     const allPlotList: any[] = [];
     const plotArr = baseItem.parkDetailDOList;
@@ -86,9 +87,10 @@ const drawBasePlot = (arr: any[]) => {
     if (allPlotList.length < 2) return;
     const featureCollection = turf.featureCollection(allPlotList.map((item) => turf.point(item)));
     const convexHull = turf.convex(featureCollection);
-    mapIns.value.createPolygon([
-      convexHull?.geometry.coordinates[0].map((item) => ({ lng: item[0], lat: item[1] }))
-    ]);
+    if (baseItem.iaName !== '未分配灌区')
+      mapIns.value.createPolygon([
+        convexHull?.geometry.coordinates[0].map((item) => ({ lng: item[0], lat: item[1] }))
+      ]);
     const HullcenterPoi = turf.centroid(turf.points(convexHull?.geometry.coordinates[0]));
     if (baseItem.iaName !== '未分配灌区')
       mapIns.value.addHTMLMarker(
@@ -115,7 +117,6 @@ const drawBasePlot = (arr: any[]) => {
 const showJoinAreaDialog = ref<boolean>(false);
 const activePlotID = ref<string>('');
 const handleJoinArea = (id) => {
-  console.log('🚀 ~ handleJoinArea ~ id:', id);
   activePlotID.value = id;
   showJoinAreaDialog.value = true;
 };
