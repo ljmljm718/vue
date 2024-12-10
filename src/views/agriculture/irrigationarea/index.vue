@@ -175,14 +175,14 @@
         />
         <el-table-column label="操作" align="center" width="250" fixed="right">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              @click="handleDraw(scope.row)"
-              v-hasPermi="['agriculture:irrigation-area:update']"
-            >
-              绘制围栏
-            </el-button>
+            <!--            <el-button-->
+            <!--              link-->
+            <!--              type="primary"-->
+            <!--              @click="handleDraw(scope.row)"-->
+            <!--              v-hasPermi="['agriculture:irrigation-area:update']"-->
+            <!--            >-->
+            <!--              绘制围栏-->
+            <!--            </el-button>-->
             <el-button
               link
               type="primary"
@@ -255,19 +255,35 @@
                     </el-tag>
                   </div>
                   <div class="flex">
-                    <el-button
-                      type="primary"
-                      @click="handleDraw(item)"
-                      v-hasPermi="['agriculture:irrigation-area:update']"
-                    >
-                      绘制围栏
-                    </el-button>
+                    <!--                    <el-button-->
+                    <!--                      type="primary"-->
+                    <!--                      @click="handleDraw(item)"-->
+                    <!--                      v-hasPermi="['agriculture:irrigation-area:update']"-->
+                    <!--                    >-->
+                    <!--                      绘制围栏-->
+                    <!--                    </el-button>-->
                     <el-button
                       type="primary"
                       @click="openForm('update', item.id)"
                       v-hasPermi="['agriculture:irrigation-area:update']"
                     >
                       编辑
+                    </el-button>
+                    <el-button
+                      type="warning"
+                      class="!ml-8px"
+                      @click="bindSolenoidValve(item.id)"
+                      v-if="item.deviceId === null"
+                    >
+                      绑定电磁阀
+                    </el-button>
+                    <el-button
+                      type="primary"
+                      class="!ml-8px"
+                      @click="notBindSolenoidValve(item.id)"
+                      v-if="item.deviceId != null"
+                    >
+                      解绑电磁阀
                     </el-button>
                   </div>
                 </div>
