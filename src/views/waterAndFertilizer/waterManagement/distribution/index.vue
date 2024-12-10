@@ -205,7 +205,7 @@ const initChart = async (wsId: string) => {
       ],
       grid: {
         left: '32',
-        right: '16',
+        right: '26',
         top: '32',
         bottom: '24'
       }
