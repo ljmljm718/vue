@@ -212,7 +212,7 @@ const subFormDom = ref();
       <template #header>
         <!-- demo6.2.2新增 一级标题和按钮 -->
         <div>
-          <h1 class="m-0 text-black dark:text-[#ccc] font-bold text-[18px]">灌区信息新增/编辑</h1>
+          <h1 class="m-0 text-black dark:text-[#ccc] font-bold text-[18px]">灌区信息</h1>
         </div>
         <div class="space-x-[8px]">
           <el-button type="primary" :icon="TopRight" @click="submitForm">提交</el-button>
