@@ -257,13 +257,13 @@
 
     <!-- 页码组件 注意绑定的值和事件函数 -->
     <!-- 不用改 -->
-    <!-- <Pagination
+    <Pagination
       style="margin-bottom: 0; margin-top: 8px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
-    /> -->
+    />
   </el-scrollbar>
   <!-- todo页面组件复制在下面 -->
   <!-- 表单弹窗-->
