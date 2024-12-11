@@ -25,6 +25,11 @@ export const postDeleteLib = async (params: any) => {
   return await request.post({ url: '/agriculture/collection/delete-collection', params });
 };
 
+// 远端collection不存在时 删除数据库中的那条数据
+export const postForceDeleteLib = async (params: any) => {
+  return await request.post({ url: '/agriculture/collection/force-delete-collection', params });
+};
+
 // 添加文档
 export const postAddDoc = async (data: any) => {
   return await request.post({ url: '/agriculture/collection/add', data });

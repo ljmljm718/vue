@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { getCollectionList, getDocList, postDeleteLib, postDeleteDoc, postAddDoc } from './api';
+import {
+  getCollectionList,
+  getDocList,
+  postDeleteLib,
+  postDeleteDoc,
+  postAddDoc,
+  postForceDeleteLib
+} from './api';
 // @ts-ignore
 import KnowledgeLibCreateOrUpdate from './kowledgeLibCreateOrUpdate.vue';
 import DefaultLibImg from './assets/knowledge-lib-default-img.png';
@@ -158,8 +165,9 @@ const handleClickDeleteDoc = async (docId: string) => {
   } catch (e) {
     if ('cancel' === e) {
       console.log('取消删除');
+    } else {
+      console.log(e);
     }
-    console.log(e);
   }
 };
 
@@ -172,15 +180,38 @@ const handleDeleteLib = async (index: number) => {
     await message.delConfirm();
 
     const id = knowledgeList.value[index].collectionId;
-    await postDeleteLib({ collectionId: id });
-    message.success(t('common.delSuccess'));
+    const code = await postDeleteLib({ collectionId: id });
+    switch (code) {
+      case '0':
+        message.success(t('common.delSuccess'));
+        break;
+      case '1000005':
+        await deleteLibWithoutCollection(id);
+        break;
+    }
 
     await getKnowledgeList();
   } catch (e) {
     if ('cancel' === e) {
       console.log('取消删除');
+    } else {
+      console.log(e);
     }
-    console.log(e);
+  }
+};
+
+// 远端collection不存在 删除在数据库中的那条数据
+const deleteLibWithoutCollection = async (collectionId: string) => {
+  try {
+    await message.delConfirm('该知识库在服务端不存在，是否强制删除？');
+    await postForceDeleteLib({ collectionId });
+    message.success(t('common.delSuccess'));
+  } catch (e) {
+    if ('cancel' === e) {
+      console.log('取消删除');
+    } else {
+      console.log(e);
+    }
   }
 };
 </script>
