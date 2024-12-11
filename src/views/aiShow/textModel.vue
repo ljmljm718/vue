@@ -3,8 +3,7 @@ import avatar from './assets/avatar.png';
 import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { getAccessToken } from '@/utils/auth';
+import { record_start, record_upload } from '@/views/aiShow/utils';
 
 const getCollectionSearch = async (data: any) => {
   return await request.post({ url: `/agriculture/collection/search`, data });
@@ -12,6 +11,14 @@ const getCollectionSearch = async (data: any) => {
 
 const getCollectionList = async (params: any) => {
   return await request.get({ url: `/agriculture/collection/get-collection-list`, params });
+};
+
+const selectEmbeddingModel = async (params: any) => {
+  return await request.get({ url: `/agriculture/collection/select-embedding-model`, params });
+};
+
+const asr = async (params: any) => {
+  return await request.get({ url: `/agriculture/asr/asr`, params });
 };
 
 const getCollectionData = async () => {
@@ -142,6 +149,26 @@ const fullTextArea = (forceHide = false) => {
     inputContainer.classList.add('full-screen-text-container');
     textarea.style.height = inputContainer.style.height + 'px';
   }
+};
+
+let recording = ref<boolean>(false);
+const enableRecord = async () => {
+  if (recording.value) {
+    const path = await record_upload();
+    const res = await selectEmbeddingModel({ modelType: '语音识别' });
+    if (Array.isArray(res) && res.length > 0) {
+      const firstItem = res[0];
+      const { authorization, embeddingModel } = firstItem;
+      const asrRes = await asr({ authorization, cluster: embeddingModel, audio_path: path });
+      console.log('asrRes', asrRes);
+      const textarea = document.querySelector('textarea');
+      textarea.value = asrRes;
+    }
+    recording.value = false;
+    return;
+  }
+  record_start();
+  recording.value = true;
 };
 </script>
 <template>
@@ -284,6 +311,13 @@ const fullTextArea = (forceHide = false) => {
             @click="handleSendMsg(null)"
           ></div>
           <div
+            v-loading="recording"
+            :class="`z-20 absolute right-68px bottom-12px h-32px ${disabledSendBtn ? 'bg-red' : 'bg-green'} cursor-pointer text-white rounded-md flex items-center px-12px`"
+            @click="enableRecord()"
+          >
+            语音
+          </div>
+          <div
             v-if="questionText"
             class="max-btn z-20 absolute right-12px top-10px w-14px h-14px cursor-pointer"
             @click="fullTextArea()"
@@ -306,7 +340,7 @@ textarea {
   height: 92%;
   margin-top: 3px;
   color: #333;
-  width: calc(100% - 95px);
+  width: calc(100% - 159px);
   resize: none;
   padding: 10px 15px;
   line-height: 22px;
