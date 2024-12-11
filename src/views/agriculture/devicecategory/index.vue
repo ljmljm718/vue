@@ -81,10 +81,11 @@
         :default-expand-all="isExpandAll"
         v-if="refreshTable"
         :row-class-name="tableRowClassName"
+        border
       >
         <!--      <el-table-column label="id主键" align="center" prop="id" />-->
         <!--      <el-table-column label="父结点" align="center" prop="parentId" />-->
-        <el-table-column label="分类名称" align="left" prop="categoryName" />
+        <el-table-column label="分类名称" align="left" prop="categoryName" min-width="130" />
         <el-table-column label="分类编码" align="left" prop="categoryCode" width="160" />
         <el-table-column label="分类标签" align="center" prop="categoryLabel" />
         <el-table-column label="是否显示" align="center" prop="showStatus" width="140">
@@ -97,7 +98,7 @@
           align="center"
           prop="createTime"
           :formatter="dateFormatter"
-          width="180px"
+          width="120px"
         />
         <el-table-column label="分类排序" align="center" prop="categorySort" width="120" />
         <el-table-column label="监测属性" align="center" prop="monitor" width="160">
