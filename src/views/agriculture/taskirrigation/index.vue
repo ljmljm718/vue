@@ -306,6 +306,7 @@ const queryParams = reactive({
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
+const router = useRouter(); // 路由
 
 /** 查询列表 */
 const getList = async () => {
@@ -335,6 +336,7 @@ const resetQuery = () => {
 const formRef = ref();
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id);
+  //  router.push(`/integrationWaterFertilizer/taskManagement/taskIrrigate/create`);
 };
 
 /** 删除按钮操作 */
