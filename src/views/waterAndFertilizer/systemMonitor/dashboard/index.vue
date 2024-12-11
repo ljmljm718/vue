@@ -538,7 +538,7 @@ onMounted(() => {
             <div class="soil-table-cell">{{ ele.lowValue }}~{{ ele.highValue }}</div>
             <div class="soil-table-cell">
               <div
-                :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.status !== '正常' ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
+                :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${ele.status === '正常' ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
               ></div>
               {{ ele.status }}
             </div>

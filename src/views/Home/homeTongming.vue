@@ -259,7 +259,7 @@ const getMainInfo = async () => {
   if (!res) return;
 
   baseInfo.value.waterSourceNum = res.waterSourceAmount ? res.waterSourceAmount : 0;
-  baseInfo.value.irrigationNum = res.irrigationNum ? res.irrigationNum : 0;
+  baseInfo.value.irrigationNum = res.irrigationAreaAmount ? res.irrigationAreaAmount : 0;
   baseInfo.value.baseNum = res.parkAmount ? res.parkAmount : 0;
   baseInfo.value.plotNum = res.plotAmount ? res.plotAmount : 0;
   baseInfo.value.plotArea = res.plotAreaAmount ? Number(res.plotAreaAmount) : 0;
@@ -364,11 +364,11 @@ const getDeviceStatusInfo = async () => {
         deviceStatusInfo.value[0].value = ele.value ? Number(ele.value) : 0;
         tmp += Number(ele.value);
         break;
-      case '故障':
+      case '离线':
         deviceStatusInfo.value[1].value = ele.value ? Number(ele.value) : 0;
         tmp += Number(ele.value);
         break;
-      case '离线':
+      case '故障':
         deviceStatusInfo.value[2].value = ele.value ? Number(ele.value) : 0;
         tmp += Number(ele.value);
         break;

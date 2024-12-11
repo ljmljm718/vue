@@ -222,9 +222,12 @@
             </el-form-item>
 
             <el-form-item label="灌溉开始时间" prop="tiExecBeginTime">
-              <el-time-picker
+              <el-time-select
                 v-model="execBeginTime"
-                placeholder="Arbitrary time"
+                placeholder="请选择时间"
+                start="00:00"
+                step="00:15"
+                end="23:59"
                 @change="handleChangeExecBeginTime"
               />
             </el-form-item>
@@ -233,13 +236,19 @@
               <el-input-number v-model="formData.concurrentTaskNumber" :min="0" />
             </el-form-item>
 
-            <div class="flex mt-[8px] col-span-2 space-x-[8px]">
-              <div
-                v-for="item in execBeginTimeList"
-                :key="item"
-                class="ml-[105px] px-[4px] bg-[#f5f6fa] rounded-[6px]"
-              >
-                {{ item }}
+            <div class="flex mt-[8px] col-span-2 space-x-[8px] pr-[5px]">
+              <div class="flex-none w-[101px] text-[12px] text-right">已选择的时间</div>
+              <div class="grow grid grid-cols-4 gap-[8px]">
+                <div
+                  v-for="(item, index) in execBeginTimeList"
+                  :key="item"
+                  class="px-[6px] flex justify-between items-center border border-solid border-[#e6e6e6] rounded-[6px] shadow-sm"
+                >
+                  <span>{{ item }}</span>
+                  <el-icon class="cursor-pointer" @click="handleClickDeleteTime(index)">
+                    <Close />
+                  </el-icon>
+                </div>
               </div>
             </div>
           </el-form>
@@ -373,6 +382,9 @@ const formData = reactive<any>({
 // 打开灌溉设置
 const dialogVisible = ref(false);
 const handleClickSetting = async () => {
+  execBeginTimeList.value = [];
+  execBeginTime.value = null;
+
   if (latestRec.value.id) {
     const data = await getWfiTaskIrrigationGet({ id: latestRec.value.id });
     formData.irrigationType = data.irrigationType;
@@ -437,21 +449,15 @@ const weekList = [
 // 灌溉开始时间
 const execBeginTimeList = ref<any[]>([]);
 const execBeginTime = ref();
-const handleChangeExecBeginTime = () => {
-  const hour =
-    execBeginTime.value.getHours() >= 10
-      ? execBeginTime.value.getHours()
-      : '0' + execBeginTime.value.getHours();
-  const minute =
-    execBeginTime.value.getMinutes() >= 10
-      ? execBeginTime.value.getMinutes()
-      : '0' + execBeginTime.value.getMinutes();
-  const second =
-    execBeginTime.value.getSeconds() >= 10
-      ? execBeginTime.value.getSeconds()
-      : '0' + execBeginTime.value.getSeconds();
-  execBeginTimeList.value.push(hour + ':' + minute + ':' + second);
+const handleChangeExecBeginTime = (val: any) => {
+  console.log(val, execBeginTime.value);
+  execBeginTimeList.value.push(val + ':00');
   execBeginTime.value = undefined;
+};
+
+// 删除index下标处的时间
+const handleClickDeleteTime = (index: number) => {
+  execBeginTimeList.value.splice(index, 1);
 };
 
 // 选择灌区
