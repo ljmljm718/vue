@@ -8,137 +8,222 @@ import TwoColResizeView from './components/twoColResizeView.vue';
 import FertilizationProgram from './components/fertilizationProgram.vue';
 // @ts-ignore
 import IrrigationProgram from './components/irrigationProgram.vue';
+import {
+  getSoilDeviceData,
+  getDeviceStatusControl,
+  getCenterBinData,
+  getConsoleFrontDeviceData,
+  getFertilizerControl,
+  putUpdateStatus,
+  getUpdateDeviceStatus,
+  getIrrigationControl
+} from './apis';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+
+const irrigateTypeDictList = getStrDictOptions(DICT_TYPE.WFI_IRRIGATION_TYPE);
+const msg = useMessage();
+
+// 从字符串中提取数字
+function extractNumbers(str: string) {
+  const pattern = /\d+/g;
+  const matches = str.match(pattern);
+  return matches ? matches.map(Number) : [];
+}
+
+// 控制台前端数据
+const leftData = ref({
+  traffic: '--',
+  speed: '--',
+  pressure: '--',
+  frequency: '--',
+  ec: '--',
+  ph: '--'
+});
+
+const resetLeftData = () => {
+  leftData.value = {
+    traffic: '--',
+    speed: '--',
+    pressure: '--',
+    frequency: '--',
+    ec: '--',
+    ph: '--'
+  };
+};
+
+const getConsoleFrontDeviceDataList = async () => {
+  resetLeftData();
+  const res = await getConsoleFrontDeviceData();
+  const keys = [
+    { name: '流量', attr: 'traffic' },
+    { name: '流速', attr: 'speed' },
+    { name: '压力', attr: 'pressure' },
+    { name: '频率', attr: 'frequency' },
+    { name: 'EC', attr: 'ec' },
+    { name: 'PH', attr: 'ph' }
+  ];
+  keys.forEach((ele) => {
+    if (Array.isArray(res[ele.name]) && res[ele.name][0]) {
+      const value = res[ele.name][0].latestData ? res[ele.name][0].latestData : '-';
+      const unit = res[ele.name][0].unit ? res[ele.name][0].unit : '-';
+      if (ele.name === 'EC' || ele.name === 'PH') {
+        leftData.value[ele.attr] = '' + value;
+      } else {
+        leftData.value[ele.attr] = '' + value + unit;
+      }
+    }
+  });
+};
+getConsoleFrontDeviceDataList();
+
+// 中间料桶的数据
+const centerBinData = ref<any>(null);
+const getCenterBinDataList = async () => {
+  centerBinData.value = null;
+  let liquidLevel: string[] = [];
+  let volume: string[] = [];
+  let fertilizationSpeed: string[] = [];
+
+  const res = await getCenterBinData();
+  if (!res) return;
+
+  // 获取key中的数字 添加到tmp对象中
+  const tmp = {};
+  const keys = Object.keys(res);
+  const numbers = keys
+    .map((ele: string) => {
+      const sortId = extractNumbers(ele)[0];
+      tmp[sortId] = [...res[ele]];
+      return sortId;
+    })
+    .sort((a: number, b: number) => a - b);
+
+  // 根据numbers中的顺序添加数据到液位 体积 肥速 三个数组中
+  numbers.forEach((ele) => {
+    const list = tmp[ele];
+    list.forEach((item: any) => {
+      const data = item.latestData ? item.latestData : '-';
+      const unit = item.unit ? item.unit : '-';
+      switch (item.deviceMonitorType) {
+        case '液位':
+          liquidLevel.push('' + data + unit);
+          break;
+        case '体积':
+          volume.push('' + data + unit);
+          break;
+        case '肥速':
+          fertilizationSpeed.push('' + data + unit);
+          break;
+      }
+    });
+  });
+
+  centerBinData.value = {};
+  centerBinData.value.liquidLevel = liquidLevel;
+  centerBinData.value.volume = volume;
+  centerBinData.value.fertilizationSpeed = fertilizationSpeed;
+};
+getCenterBinDataList();
+
+// 施肥控制
+const fertilizeControlData = ref({
+  waterThresh: [] as any[],
+  fertilize: [] as any[]
+});
+
+const getFertilizerControlData = async () => {
+  fertilizeControlData.value.waterThresh = [];
+  fertilizeControlData.value.fertilize = [];
+  const res = await getFertilizerControl();
+  if (!Array.isArray(res['上水阀']) || !Array.isArray(res['混肥'])) return;
+  fertilizeControlData.value.waterThresh = res['上水阀'].map((ele) => {
+    return { ...ele, open: ele.deviceStatus === 'online' };
+  });
+  fertilizeControlData.value.fertilize = res['混肥'].map((ele) => {
+    return { ...ele, open: ele.deviceStatus === 'online' };
+  });
+};
+getFertilizerControlData();
+
+// 修改单个设备状态
+const handleChangeDeviceStatus = async (index: number, attr: string) => {
+  const id = fertilizeControlData.value[attr][index].deviceId;
+  const deviceStatus = fertilizeControlData.value[attr][index].open ? 'online' : 'offline';
+  await putUpdateStatus({ id, deviceStatus });
+  msg.success('修改成功');
+  await getFertilizerControlData();
+};
+
+// 开启全部上水阀/施肥泵
+const waterSwitch = ref(false);
+const fertilizeSwitch = ref(false);
+
+const handleSwitchALLType = async (key: string) => {
+  let deviceName = '';
+  let status = '';
+  switch (key) {
+    case 'water':
+      deviceName = '上水阀';
+      status = waterSwitch.value ? 'online' : 'offline';
+      break;
+    case 'fertilize':
+      deviceName = '混肥';
+      status = fertilizeSwitch.value ? 'online' : 'offline';
+      break;
+  }
+  await getUpdateDeviceStatus({ deviceName, status });
+  msg.success('修改成功');
+  await getFertilizerControlData();
+};
 
 // 土壤数据
-const monitorTypeList = ref<any[]>([]);
+const soilDeviceData = ref<any[]>([]);
+const monitorTypes = ref<any[]>([]);
 
-// 也许不能单独获取 得从数据中抽取监控类型
-const getMonitorTypeList = async () => {
-  monitorTypeList.value = [];
+const getSoilDeviceDataInfo = async () => {
+  soilDeviceData.value = [];
+  monitorTypes.value = [];
 
-  // await
-  const res = ['土壤温度', '土壤湿度', 'PH', 'EC', '氮', '磷', '钾'];
+  const res = await getSoilDeviceData();
+  if (!res) return;
 
-  monitorTypeList.value = Array.isArray(res) ? res : [];
-};
-getMonitorTypeList();
+  // 遍历对象第一个元素值的列表 获取所有的监测类型 假设没有重复的类型
+  const firstValue = Object.values(res)[0];
+  if (!Array.isArray(firstValue)) return;
+  const monitorTypesTmp: string[] = [];
+  const sortMap = new Map<string, number>();
+  firstValue.forEach((ele) => {
+    monitorTypesTmp.push(ele.monitor);
+    sortMap.set(ele.monitor, monitorTypesTmp.length - 1);
+  });
 
-const soilDataList = ref<any[]>([]);
-
-const getSoilDataList = async () => {
-  soilDataList.value = [];
-
-  // await
-  const res = [
-    {
-      name: '灌区1',
-      category: '玉米',
-      irrigateType: '滴灌',
-      soilTemperatureCurrent: '28℃',
-      soilTemperatureThreshold: '30℃',
-      soilTemperatureStatus: 1,
-      soilHumidityCurrent: '32%RH',
-      soilHumidityThreshold: '50%RH',
-      soilHumidityStatus: 1,
-      phCurrent: 8,
-      phThreshold: 6,
-      phStatus: 1,
-      ecCurrent: '1.73ms/cm',
-      ecThreshold: '2ms/cm',
-      ecStatus: 1,
-      nitrogenCurrent: '7.80mg/kg',
-      nitrogenThreshold: '6mg/kg',
-      nitrogenStatus: 0,
-      phosphorusCurrent: '7.80mg/kg',
-      phosphorusThreshold: '6mg/kg',
-      phosphorusStatus: 0,
-      potassiumCurrent: '7.80mg/kg',
-      potassiumThreshold: '6mg/kg',
-      potassiumStatus: 0
-    },
-    {
-      name: '灌区2',
-      category: '草莓',
-      irrigateType: '滴灌',
-      soilTemperatureCurrent: '28℃',
-      soilTemperatureThreshold: '30℃',
-      soilTemperatureStatus: 1,
-      soilHumidityCurrent: '32%RH',
-      soilHumidityThreshold: '50%RH',
-      soilHumidityStatus: 1,
-      phCurrent: 8,
-      phThreshold: 6,
-      phStatus: 1,
-      ecCurrent: '1.73ms/cm',
-      ecThreshold: '2ms/cm',
-      ecStatus: 1,
-      nitrogenCurrent: '7.80mg/kg',
-      nitrogenThreshold: '6mg/kg',
-      nitrogenStatus: 0,
-      phosphorusCurrent: '7.80mg/kg',
-      phosphorusThreshold: '6mg/kg',
-      phosphorusStatus: 0,
-      potassiumCurrent: '7.80mg/kg',
-      potassiumThreshold: '6mg/kg',
-      potassiumStatus: 0
-    },
-    {
-      name: '灌区4',
-      category: '韭菜',
-      irrigateType: '微喷灌',
-      soilTemperatureCurrent: '28℃',
-      soilTemperatureThreshold: '30℃',
-      soilTemperatureStatus: 1,
-      soilHumidityCurrent: '32%RH',
-      soilHumidityThreshold: '50%RH',
-      soilHumidityStatus: 1,
-      phCurrent: 8,
-      phThreshold: 6,
-      phStatus: 1,
-      ecCurrent: '1.73ms/cm',
-      ecThreshold: '2ms/cm',
-      ecStatus: 1,
-      nitrogenCurrent: '7.80mg/kg',
-      nitrogenThreshold: '6mg/kg',
-      nitrogenStatus: 0,
-      phosphorusCurrent: '7.80mg/kg',
-      phosphorusThreshold: '6mg/kg',
-      phosphorusStatus: 0,
-      potassiumCurrent: '7.80mg/kg',
-      potassiumThreshold: '6mg/kg',
-      potassiumStatus: 0
-    },
-    {
-      name: '灌区5',
-      category: '小麦',
-      irrigateType: '滴灌',
-      soilTemperatureCurrent: '28℃',
-      soilTemperatureThreshold: '30℃',
-      soilTemperatureStatus: 1,
-      soilHumidityCurrent: '32%RH',
-      soilHumidityThreshold: '50%RH',
-      soilHumidityStatus: 1,
-      phCurrent: 8,
-      phThreshold: 6,
-      phStatus: 1,
-      ecCurrent: '1.73ms/cm',
-      ecThreshold: '2ms/cm',
-      ecStatus: 1,
-      nitrogenCurrent: '7.80mg/kg',
-      nitrogenThreshold: '6mg/kg',
-      nitrogenStatus: 0,
-      phosphorusCurrent: '7.80mg/kg',
-      phosphorusThreshold: '6mg/kg',
-      phosphorusStatus: 0,
-      potassiumCurrent: '7.80mg/kg',
-      potassiumThreshold: '6mg/kg',
-      potassiumStatus: 0
+  // 遍历数据的所有值 增加属性sortId用于排序 和 灌溉类型名称irrigationTypeName
+  let list = Object.values(res);
+  for (let i = 0; i < list.length; ++i) {
+    const tmpList = list[i] as any[];
+    for (let j = 0; j < tmpList.length; ++j) {
+      const sortId =
+        sortMap.get(tmpList[j].monitor) !== undefined ? sortMap.get(tmpList[j].monitor) : -1;
+      const dictItem = irrigateTypeDictList.find((ele) => {
+        return ele.value === tmpList[j].irrigationType;
+      });
+      const irrigationTypeName = dictItem?.label;
+      tmpList[j] = { ...tmpList[j], sortId, irrigationTypeName };
     }
-  ];
+  }
 
-  soilDataList.value = Array.isArray(res) ? res : [];
+  // 对list的每个值进行排序
+  for (let i = 0; i < list.length; ++i) {
+    let tmpList = list[i] as any[];
+    tmpList = tmpList.sort((a: any, b: any) => {
+      return a.sortId - b.sortId;
+    });
+  }
+
+  soilDeviceData.value = list;
+  monitorTypes.value = monitorTypesTmp;
 };
-getSoilDataList();
+getSoilDeviceDataInfo();
 
 // 最下面
 const activeTabName = ref('irrigationControl');
@@ -156,64 +241,54 @@ const irrigationSwitchList = ref<any[]>([]);
 const getIrrigationSwitchList = async () => {
   irrigationSwitchList.value = [];
 
-  // await
-  const res = [
-    { name: '灌区1', open: true },
-    { name: '灌区2', open: true },
-    { name: '灌区3', open: true },
-    { name: '灌区4', open: false },
-    { name: '灌区5', open: true },
-    { name: '灌区6', open: true },
-    { name: '灌区7', open: true },
-    { name: '灌区8', open: false },
-    { name: '灌区9', open: true },
-    { name: '灌区10', open: false },
-    { name: '灌区11', open: true },
-    { name: '灌区12', open: true },
-    { name: '灌区13', open: false },
-    { name: '灌区14', open: true },
-    { name: '灌区15', open: true },
-    { name: '灌区16', open: false },
-    { name: '灌区17', open: true },
-    { name: '灌区18', open: true },
-    { name: '灌区19', open: false },
-    { name: '灌区20', open: true }
-  ];
+  const res = await getIrrigationControl();
+  if (!Array.isArray(res)) return;
 
-  irrigationSwitchList.value = Array.isArray(res) ? res : [];
+  const tmp = res.map((ele) => {
+    return { ...ele, open: ele.deviceStatus === 'online' };
+  });
+  irrigationSwitchList.value = tmp;
 };
 getIrrigationSwitchList();
 
 // 开关阀门的事件处理函数
-const handleSwitchChange = (index: number) => {
-  console.log('改变的ID和改变后的结果: ', index, irrigationSwitchList.value[index].open);
+const handleSwitchChange = async (index: number) => {
+  const id = irrigationSwitchList.value[index].deviceId;
+  const deviceStatus = irrigationSwitchList.value[index].open ? 'online' : 'offline';
+  await putUpdateStatus({ id, deviceStatus });
+  msg.success('修改成功');
+  await getIrrigationSwitchList();
 };
-
-// 程式控制
 
 // 状态监控
 const statusMonitorList = ref<any[]>([]);
-
 const getStatusMonitorList = async () => {
   statusMonitorList.value = [];
-
-  // await
-  const res = [
-    { name: '流量计1', online: true, time: 1733215603592 },
-    { name: '流量计2', online: true, time: 1733215603592 },
-    { name: '流量计3', online: false, time: 1733215603592 },
-    { name: '流量计4', online: true, time: 1733215603592 },
-    { name: '流量计5', online: true, time: 1733215603592 },
-    { name: '流量计6', online: false, time: 1733215603592 },
-    { name: '流量计7', online: true, time: 1733215603592 },
-    { name: '流量计8', online: true, time: 1733215603592 },
-    { name: '流量计9', online: false, time: 1733215603592 },
-    { name: '流量计10', online: true, time: 1733215603592 }
-  ];
-
-  statusMonitorList.value = Array.isArray(res) ? res : [];
+  const res = await getDeviceStatusControl();
+  statusMonitorList.value = Array.isArray(res)
+    ? res.map((ele) => {
+        return {
+          ...ele,
+          name: ele.deviceName ? ele.deviceName : '-',
+          online: 'online' === ele.deviceStatus ? true : false,
+          time: getTimeStr(ele.createTime)
+        };
+      })
+    : [];
 };
 getStatusMonitorList();
+
+// 根据时间戳返回YYYY-MM-DD HH:MM:SS
+const getTimeStr = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
+  const day = date.getDate() >= 10 ? date.getDate() : '0' + date.getDate();
+  const hour = date.getHours() >= 10 ? date.getHours() : '0' + date.getHours();
+  const minute = date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
+  const second = date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds();
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+};
 
 const scaleY = ref(1);
 const scaleX = ref(1);
@@ -254,9 +329,9 @@ onMounted(() => {
           }"
         >
           <span>累计流量:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">12L</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.traffic }}</span>
           <span>实时流速:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">0.3m³/h</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.speed }}</span>
         </div>
         <div
           class="tip-dialog absolute grid grid-cols-2"
@@ -268,9 +343,9 @@ onMounted(() => {
           }"
         >
           <span>实时压力:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">0hpa</span>
-          <span>实时频率:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">50Hz</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.pressure }}</span>
+          <!-- <span>实时频率:</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.frequency }}</span> -->
         </div>
         <div
           class="tip-dialog absolute grid grid-cols-2"
@@ -282,9 +357,9 @@ onMounted(() => {
           }"
         >
           <span>EC:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">12us/cm</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.ec }}</span>
           <span>PH:</span>
-          <span :style="{ color: 'var(--el-color-primary)' }">7.8</span>
+          <span :style="{ color: 'var(--el-color-primary)' }">{{ leftData.ph }}</span>
         </div>
 
         <div
@@ -300,36 +375,51 @@ onMounted(() => {
             <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
               液位
             </span>
-            <div class="grow flex justify-between px-[30px] items-center">
-              <span class="flex justify-center items-center">10cm</span>
-              <span class="flex justify-center items-center">10cm</span>
-              <span class="flex justify-center items-center">10cm</span>
-              <span class="flex justify-center items-center">10cm</span>
-              <span class="flex justify-center items-center">10cm</span>
+            <div
+              v-if="centerBinData && centerBinData.liquidLevel"
+              class="grow flex justify-between px-[30px] items-center"
+            >
+              <span
+                v-for="item in centerBinData.liquidLevel"
+                :key="item"
+                class="flex justify-center items-center"
+              >
+                {{ item }}
+              </span>
             </div>
           </div>
           <div class="flex items-center border-b border-b-solid border-[#e6e6e6]">
             <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
               体积
             </span>
-            <div class="grow flex justify-between px-[30px] items-center">
-              <span class="flex justify-center items-center">12L</span>
-              <span class="flex justify-center items-center">12L</span>
-              <span class="flex justify-center items-center">12L</span>
-              <span class="flex justify-center items-center">12L</span>
-              <span class="flex justify-center items-center">12L</span>
+            <div
+              v-if="centerBinData && centerBinData.volume"
+              class="grow flex justify-between px-[30px] items-center"
+            >
+              <span
+                v-for="item in centerBinData.volume"
+                :key="item"
+                class="flex justify-center items-center"
+              >
+                {{ item }}
+              </span>
             </div>
           </div>
           <div class="flex items-center border-b border-b-solid border-[#e6e6e6]">
             <span class="flex-none w-[70px] text-center" style="color: var(--el-color-primary)">
               肥速
             </span>
-            <div class="grow flex justify-between px-[30px] items-center">
-              <span class="flex justify-center items-center">5L/H</span>
-              <span class="flex justify-center items-center">5L/H</span>
-              <span class="flex justify-center items-center">5L/H</span>
-              <span class="flex justify-center items-center">5L/H</span>
-              <span class="flex justify-center items-center">5L/H</span>
+            <div
+              v-if="centerBinData && centerBinData.fertilizationSpeed"
+              class="grow flex justify-between px-[30px] items-center"
+            >
+              <span
+                v-for="item in centerBinData.fertilizationSpeed"
+                :key="item"
+                class="flex justify-center items-center"
+              >
+                {{ item }}
+              </span>
             </div>
           </div>
         </div>
@@ -347,14 +437,16 @@ onMounted(() => {
             <div class="grid grid-cols-2 gap-[8px] mt-[16px]">
               <div class="space-y-[8px]">
                 <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border shadow-md"
                   style="border: 1px solid var(--el-color-primary)"
                 >
                   <span>水泵</span>
-                  <el-switch />
+                  <el-switch v-model="waterSwitch" @change="handleSwitchALLType('water')" />
                 </div>
                 <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  v-for="(item, index) in fertilizeControlData.waterThresh"
+                  :key="item.deviceId"
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border shadow-md"
                   style="border: 1px solid var(--el-color-primary)"
                 >
                   <div class="flex items-center">
@@ -362,84 +454,29 @@ onMounted(() => {
                       class="px-[6px] rounded-full text-white"
                       style="background-color: var(--el-color-primary)"
                     >
-                      1
+                      {{ index + 1 }}
                     </div>
-                    <span class="ml-[8px]">上水阀1</span>
+                    <span class="ml-[8px]">{{ item.deviceName }}</span>
                   </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">上水阀2</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">上水阀3</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">上水阀4</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">上水阀5</span>
-                  </div>
-                  <el-switch />
+                  <el-switch
+                    v-model="item.open"
+                    @change="handleChangeDeviceStatus(index, 'waterThresh')"
+                  />
                 </div>
               </div>
 
               <div class="space-y-[8px]">
                 <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border shadow-md"
                   style="border: 1px solid var(--el-color-primary)"
                 >
                   <span>施肥泵</span>
-                  <el-switch />
+                  <el-switch v-model="fertilizeSwitch" @change="handleSwitchALLType('fertilize')" />
                 </div>
                 <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
+                  v-for="(item, index) in fertilizeControlData.fertilize"
+                  :key="item.deviceId"
+                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border shadow-md"
                   style="border: 1px solid var(--el-color-primary)"
                 >
                   <div class="flex items-center">
@@ -447,71 +484,14 @@ onMounted(() => {
                       class="px-[6px] rounded-full text-white"
                       style="background-color: var(--el-color-primary)"
                     >
-                      1
+                      {{ index + 1 }}
                     </div>
-                    <span class="ml-[8px]">混肥1</span>
+                    <span class="ml-[8px]">{{ item.deviceName }}</span>
                   </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">混肥2</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">混肥3</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">混肥4</span>
-                  </div>
-                  <el-switch />
-                </div>
-                <div
-                  class="flex items-center justify-between w-full h-[80px] rounded-[6px] px-[16px] box-border"
-                  style="border: 1px solid var(--el-color-primary)"
-                >
-                  <div class="flex items-center">
-                    <div
-                      class="px-[6px] rounded-full text-white"
-                      style="background-color: var(--el-color-primary)"
-                    >
-                      1
-                    </div>
-                    <span class="ml-[8px]">混肥5</span>
-                  </div>
-                  <el-switch />
+                  <el-switch
+                    v-model="item.open"
+                    @change="handleChangeDeviceStatus(index, 'fertilize')"
+                  />
                 </div>
               </div>
             </div>
@@ -523,7 +503,7 @@ onMounted(() => {
     <el-card class="!border-0" body-class="!p-[16px]" shadow="never">
       <h2 class="m-0 text-[16px]">土壤数据</h2>
       <div
-        v-if="soilDataList.length <= 0"
+        v-if="soilDeviceData.length <= 0"
         class="w-full mt-[16px] h-[200px] flex justify-center items-center"
       >
         <img src="/images/noData.png" alt="暂无数据" class="w-[180px] h-[180px] object-contain" />
@@ -537,80 +517,30 @@ onMounted(() => {
         <div>
           <div class="soil-table-cell bg-[#F5F6FA]">监测类型</div>
           <div class="soil-table-cell"></div>
-          <div v-for="item in monitorTypeList" :key="item" class="soil-table-cell">{{ item }}</div>
+          <div v-for="item in monitorTypes" :key="item" class="soil-table-cell">
+            {{ item }}
+          </div>
         </div>
 
-        <div v-for="item in soilDataList" :key="item.name">
+        <div v-for="item in soilDeviceData" :key="item[0].irrigationId">
           <div class="soil-header-cell bg-[#F5F6FA]">
-            {{ item.name }}({{ item.category }}-{{ item.irrigateType }})
+            {{ item[0].irrigationName }}({{ item[0].irrigationTypeName }})
           </div>
           <div class="flex">
-            <div>
-              <div class="soil-table-cell">当前值</div>
-              <div class="soil-table-cell">{{ item.soilTemperatureCurrent }}</div>
-              <div class="soil-table-cell">{{ item.soilHumidityCurrent }}</div>
-              <div class="soil-table-cell">{{ item.phCurrent }}</div>
-              <div class="soil-table-cell">{{ item.ecCurrent }}</div>
-              <div class="soil-table-cell">{{ item.nitrogenCurrent }}</div>
-              <div class="soil-table-cell">{{ item.phosphorusCurrent }}</div>
-              <div class="soil-table-cell">{{ item.potassiumCurrent }}</div>
+            <div class="soil-table-cell">当前值</div>
+            <div class="soil-table-cell">阈值</div>
+            <div class="soil-table-cell">状态</div>
+          </div>
+          <div v-for="ele in item" :key="ele.monitor" class="flex">
+            <div class="soil-table-cell">
+              {{ ele.dataValue }}{{ ele.unit === '无' ? '' : ele.unit }}
             </div>
-
-            <div>
-              <div class="soil-table-cell">阈值</div>
-              <div class="soil-table-cell">{{ item.soilTemperatureThreshold }}</div>
-              <div class="soil-table-cell">{{ item.soilHumidityThreshold }}</div>
-              <div class="soil-table-cell">{{ item.phThreshold }}</div>
-              <div class="soil-table-cell">{{ item.ecThreshold }}</div>
-              <div class="soil-table-cell">{{ item.nitrogenThreshold }}</div>
-              <div class="soil-table-cell">{{ item.phosphorusThreshold }}</div>
-              <div class="soil-table-cell">{{ item.potassiumThreshold }}</div>
-            </div>
-
-            <div>
-              <div class="soil-table-cell">状态</div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.soilTemperatureStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.soilTemperatureStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.soilHumidityStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.soilHumidityStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.phStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.phStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.ecStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.ecStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.nitrogenStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.nitrogenStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.phosphorusStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.phosphorusStatus === 1 ? '正常' : '异常' }}
-              </div>
-              <div class="soil-table-cell">
-                <div
-                  :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.potassiumStatus === 1 ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
-                ></div>
-                {{ item.potassiumStatus === 1 ? '正常' : '异常' }}
-              </div>
+            <div class="soil-table-cell">{{ ele.lowValue }}~{{ ele.highValue }}</div>
+            <div class="soil-table-cell">
+              <div
+                :class="`w-[6px] h-[6px] mr-[8px] rounded-full ${item.status !== '正常' ? 'bg-[#53C31B]' : 'bg-[#FF5951]'}`"
+              ></div>
+              {{ ele.status }}
             </div>
           </div>
         </div>
@@ -634,20 +564,16 @@ onMounted(() => {
           <div v-else class="grid grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-[16px]">
             <div
               v-for="(item, index) in irrigationSwitchList"
-              :key="item.name"
-              class="h-[124px] border border-solid border-[#e6e6e6] box-border rounded-[6px]"
+              :key="item.deviceId"
+              class="h-[124px] border border-solid border-[#e6e6e6] box-border rounded-[6px] shadow-md"
             >
               <div
                 class="h-[38px] flex justify-center items-center border-b border-b-solid border-[#e6e6e6] bg-[#F5F6FA] text-[#333]"
               >
-                {{ item.name }}
+                {{ item.deviceName }}
               </div>
               <div class="h-[83px] flex flex-col justify-center items-center">
-                <el-switch
-                  v-model="item.open"
-                  :data-id="item.name"
-                  @change="handleSwitchChange(index)"
-                />
+                <el-switch v-model="item.open" @change="handleSwitchChange(index)" />
                 <div :style="item.open && { color: 'var(--el-color-primary)' }">
                   <span>阀门{{ item.open ? '已开' : '已关' }}</span>
                 </div>
@@ -699,7 +625,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .soil-table-cell {
-  width: 100px;
+  width: 150px;
   height: 40px;
   border-right: 1px solid #e6e6e6;
   border-bottom: 1px solid #e6e6e6;
@@ -711,7 +637,7 @@ onMounted(() => {
 
 .soil-header-cell {
   @extend .soil-table-cell;
-  width: 300px;
+  width: 450px;
 }
 
 .tip-dialog {

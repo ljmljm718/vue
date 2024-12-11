@@ -5,6 +5,11 @@ export const getConsoleFrontDeviceData = () => {
   return request.get({ url: `/agriculture/wfi-console/getConsoleFrontDeviceData` });
 };
 
+// 中间料桶的数据
+export const getCenterBinData = () => {
+  return request.get({ url: `/agriculture/wfi-console/getCenterBinData` });
+};
+
 // 施肥控制
 export const getFertilizerControl = () => {
   return request.get({ url: `/agriculture/wfi-console/getFertilizerControl` });
@@ -13,6 +18,16 @@ export const getFertilizerControl = () => {
 // 灌区控制
 export const getIrrigationControl = () => {
   return request.get({ url: `/agriculture/wfi-console/getIrrigationControl` });
+};
+
+// 单个设备状态的修改
+export const putUpdateStatus = (params: any) => {
+  return request.put({ url: `/agriculture/device-info/updateStatus`, params });
+};
+
+// 水泵/施肥泵总开关
+export const getUpdateDeviceStatus = (params: any) => {
+  return request.get({ url: `/agriculture/wfi-console/update-device-status`, params });
 };
 
 // 土壤数据
@@ -60,27 +75,22 @@ export const getIrrigationAreaPage = (params: any) => {
   return request.get({ url: `/agriculture/irrigation-area/page`, params });
 };
 
-// 根据开始、结束时间、间隔周期、周期天数计算灌溉日
-export const getWfiTaskIrrigationCalculateDays = (params: any) => {
-  return request.get({ url: `/agriculture/wfi-task-irrigation/calculate/days`, params });
-};
-
 // 施肥程式-获取最新数据(不传参) & 施肥设置(传ID)
 export const getTaskFertilizationLatestData = (params: any) => {
   return request.get({ url: `/agriculture/task-fertilization/latest-data`, params });
 };
 
 // 创建施肥任务以及明细情况
-export const getTaskFertilizationCreateDetailList = (data: any) => {
+export const postTaskFertilizationCreateDetailList = (data: any) => {
   return request.post({ url: `/agriculture/task-fertilization/create-detail-list`, data });
 };
 
 // 更新施肥任务以及明细情况
-export const getTaskFertilizationUpdateDetailList = (data: any) => {
+export const putTaskFertilizationUpdateDetailList = (data: any) => {
   return request.put({ url: `/agriculture/task-fertilization/update-detail-list`, data });
 };
 
 // 更新施肥状态并记录执行任务表
-export const getTaskFertilizationUpdateStatus = (data: any) => {
+export const putTaskFertilizationUpdateStatus = (data: any) => {
   return request.put({ url: `/agriculture/task-fertilization/update-status`, data });
 };

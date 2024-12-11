@@ -50,7 +50,6 @@ const leftBoxWidth = ref<number>(0);
 const rightBoxWidth = ref<number>(0);
 
 const initLeftAndRightBoxWidth = () => {
-  const resizeDom = document.getElementById('resizeBox');
   const leftDom = document.getElementById('left');
   const rightDom = document.getElementById('right');
   if (!leftDom || !rightDom) {
@@ -70,6 +69,8 @@ window.addEventListener('resize', () => {
   const rightDom = document.getElementById('right');
 
   if (!resizeDom || !leftDom || !rightDom) return;
+
+  if (leftDom.clientWidth < props.leftMinWidth) leftDom.style.width = props.leftMinWidth + 'px';
 
   if (rightDom.clientWidth < props.rightMinWidth) {
     const leftW = resizeDom.clientWidth - 33 - props.rightMinWidth;

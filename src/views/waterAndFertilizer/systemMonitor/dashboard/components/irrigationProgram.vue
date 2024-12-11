@@ -4,132 +4,255 @@
       <h2 class="m-0 text-[16px]">灌溉程式</h2>
       <div class="flex items-center space-x-[8px]">
         <el-button type="primary" @click="handleClickSetting">灌溉设置</el-button>
-        <el-button disabled>
+        <el-button
+          :disabled="!latestRec.id || '启用' === latestRec.status"
+          @click="handleClickEnable"
+        >
           <Icon icon="ep:circle-check" class="mr-[4px]" />
           启用
         </el-button>
-        <el-button>
+        <el-button
+          :disabled="!latestRec.id || '未启用' === latestRec.status || '停用' === latestRec.status"
+          @click="handleClickStop"
+        >
           <Icon icon="ep:circle-close" class="mr-[4px]" />
           停用
         </el-button>
-        <el-button>历史任务</el-button>
+        <el-button
+          @click="
+            router.push({ path: '/integrationWaterFertilizer/taskManagement/wfi-task-irrigation' })
+          "
+        >
+          历史任务
+        </el-button>
       </div>
     </div>
 
-    <el-form
-      :class="`grid ${getGridCols()} gap-y-[8px] mt-[16px] w-full form`"
-      label-width="95px"
-      :inline="true"
-    >
-      <el-form-item label="起始日期">
-        <el-date-picker
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
+    <div v-if="!latestRec.id" class="w-full h-[430px] flex flex-col justify-center items-center">
+      <div class="no-data"></div>
+      <span class="tracking-widest mt-[8px]">暂无数据</span>
+    </div>
 
-      <el-form-item label="灌溉日">
-        <el-input readonly />
-      </el-form-item>
+    <template v-else>
+      <el-form
+        :class="`grid ${getGridCols()} gap-y-[8px] mt-[16px] w-full form`"
+        label-width="95px"
+        :inline="true"
+        :model="latestRec"
+      >
+        <el-form-item label="起始日期" prop="timeRange">
+          <el-date-picker
+            v-model="latestRec.timeRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            disabled
+          />
+        </el-form-item>
 
-      <el-form-item label="灌溉时间">
-        <el-input readonly />
-      </el-form-item>
+        <el-form-item label="灌溉日" prop="execCron">
+          <el-input v-model="latestRec.execCron" disabled />
+        </el-form-item>
 
-      <el-form-item label="水泵控制">
-        <el-radio-group>
-          <el-radio>是</el-radio>
-          <el-radio>否</el-radio>
-        </el-radio-group>
-      </el-form-item>
+        <el-form-item label="灌溉时间" prop="tiExecBeginTime">
+          <el-input v-model="latestRec.tiExecBeginTime" disabled />
+        </el-form-item>
 
-      <el-form-item label="灌溉类型">
-        <el-input readonly />
-      </el-form-item>
+        <el-form-item label="水泵控制" prop="waterPumpStatus">
+          <el-radio-group v-model="latestRec.waterPumpStatus" disabled>
+            <el-radio label="是">是</el-radio>
+            <el-radio label="否">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-      <el-form-item label="灌溉时长">
-        <el-input readonly>
-          <template #append>分钟</template>
-        </el-input>
-      </el-form-item>
+        <el-form-item label="灌溉类型">
+          <el-select v-model="latestRec.irrigationType" disabled>
+            <el-option
+              v-for="item in irrigateTypeDictList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
 
-      <el-form-item label="同时灌溉数">
-        <el-input readonly />
-      </el-form-item>
+        <el-form-item
+          :label="latestRec.irrigationType === 'quantify' ? '灌溉量' : '灌溉时长'"
+          prop="amountTimeNumber"
+        >
+          <el-input
+            v-show="latestRec.irrigationType === 'quantify'"
+            v-model="latestRec.amountTimeNumber"
+            disabled
+          >
+            <template #append>L</template>
+          </el-input>
+          <el-input
+            v-show="latestRec.irrigationType === 'timing'"
+            v-model="latestRec.amountTimeNumber"
+            disabled
+          >
+            <template #append>分钟</template>
+          </el-input>
+        </el-form-item>
 
-      <el-form-item label="施肥灌区" :class="getColSpan()">
-        <el-input readonly />
-      </el-form-item>
-    </el-form>
+        <el-form-item label="同时灌溉数">
+          <el-input v-model="latestRec.concurrentTaskNumber" disabled />
+        </el-form-item>
+
+        <el-form-item label="施肥灌区" :class="getColSpan()">
+          <el-select v-model="latestRec.iaIdList" multiple disabled>
+            <el-option
+              v-for="item in irrigationList"
+              :key="item.id"
+              :label="item.iaName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </template>
 
     <Dialog v-model="dialogVisible" title="灌溉程式设置" :width="865" top="20px">
-      <div class="flex">
+      <div class="flex border-b border-b-solid border-[#e6e6e6]">
         <el-scrollbar :height="350" class="w-[500px]">
           <h2 class="m-0 text-[16px]">灌区选择</h2>
           <el-form
             class="grid grid-cols-2 gap-y-[8px] mt-[16px] w-full form"
             label-width="105px"
             :inline="true"
+            :model="formData"
           >
-            <el-form-item label="灌溉类型">
-              <el-input readonly />
+            <el-form-item prop="tiName" label="灌溉任务名称">
+              <el-input v-model="formData.tiName" />
             </el-form-item>
 
-            <el-form-item label="起始日期">
-              <el-input readonly />
+            <el-form-item label="水泵控制" prop="waterPumpStatus">
+              <el-radio-group v-model="formData.waterPumpStatus">
+                <el-radio label="是">是</el-radio>
+                <el-radio label="否">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item v-model="formData.irrigationType" label="灌溉类型">
+              <el-select v-model="formData.irrigationType">
+                <el-option
+                  v-for="item in irrigateTypeDictList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              :label="formData.irrigationType === 'quantify' ? '灌溉量' : '灌溉时长'"
+              prop="amountTimeNumber"
+            >
+              <el-input
+                v-show="formData.irrigationType === 'quantify'"
+                v-model="formData.amountTimeNumber"
+              >
+                <template #append>L</template>
+              </el-input>
+              <el-input
+                v-show="formData.irrigationType === 'timing'"
+                v-model="formData.amountTimeNumber"
+              >
+                <template #append>分钟</template>
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="起始日期" prop="timeRange" class="col-span-2">
+              <el-date-picker
+                v-model="formData.timeRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              />
             </el-form-item>
 
             <el-form-item label="灌溉日" class="col-span-2">
               <div class="w-2/3 space-y-[8px]">
                 <div class="grid grid-cols-3">
                   <el-checkbox v-model="selectInterval" label="间隔周期" />
-                  <el-input class="col-span-2" :disabled="!selectInterval">
+                  <el-input
+                    v-show="selectInterval"
+                    v-model="formData.tiExecCronDay"
+                    class="col-span-2"
+                  >
+                    <template #append>天</template>
+                  </el-input>
+                  <el-input v-show="!selectInterval" class="col-span-2" disabled>
                     <template #append>天</template>
                   </el-input>
                 </div>
                 <div class="grid grid-cols-3">
                   <el-checkbox v-model="selectEach" label="每周" />
-                  <el-select class="col-span-2" :disabled="!selectEach" />
+                  <el-select v-show="!selectEach" class="col-span-2" disabled />
+                  <el-select
+                    v-model="formData.tiExecCronDay"
+                    v-show="selectEach"
+                    class="col-span-2"
+                  >
+                    <el-option
+                      v-for="item in weekList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
                 </div>
                 <div class="grid grid-cols-3">
                   <el-checkbox v-model="selectDate" label="具体日期后" />
-                  <el-date-picker
-                    type="date"
-                    class="col-span-2 !w-[175.56px]"
-                    :disabled="!selectDate"
-                  />
+                  <template v-if="!selectDate">
+                    <el-date-picker type="date" class="col-span-2 !w-[175.56px]" disabled />
+                  </template>
+                  <template v-else>
+                    <el-date-picker
+                      v-model="formData.tiExecCronDay"
+                      type="date"
+                      class="col-span-2 !w-[175.56px]"
+                    />
+                  </template>
                 </div>
               </div>
             </el-form-item>
 
-            <el-form-item label="灌溉时长">
-              <el-input readonly />
-            </el-form-item>
-
-            <el-form-item label="灌溉开始时间">
-              <el-input readonly />
-            </el-form-item>
-
-            <el-form-item label="水泵控制 ">
-              <el-input readonly />
+            <el-form-item label="灌溉开始时间" prop="tiExecBeginTime">
+              <el-time-picker
+                v-model="execBeginTime"
+                placeholder="Arbitrary time"
+                @change="handleChangeExecBeginTime"
+              />
             </el-form-item>
 
             <el-form-item label="同时灌溉灌区数量">
-              <el-input readonly />
+              <el-input-number v-model="formData.concurrentTaskNumber" :min="0" />
             </el-form-item>
+
+            <div class="flex mt-[8px] col-span-2 space-x-[8px]">
+              <div
+                v-for="item in execBeginTimeList"
+                :key="item"
+                class="ml-[105px] px-[4px] bg-[#f5f6fa] rounded-[6px]"
+              >
+                {{ item }}
+              </div>
+            </div>
           </el-form>
         </el-scrollbar>
 
-        <div class="w-[1px] my-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
+        <div class="w-[1px] mt-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
 
         <el-scrollbar :height="350" class="w-[300px]">
           <h2 class="m-0 text-[16px]">灌区选择</h2>
           <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
             <div
-              v-for="(item, index) in irrigationAreaList"
-              :key="item.name"
+              v-for="(item, index) in irrigationList"
+              :key="item.id"
               :data-idx="index"
               :class="`
                 flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
@@ -139,21 +262,142 @@
                 backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
               }"
             >
-              {{ item.name }}
+              {{ item.iaName }}
             </div>
           </div>
         </el-scrollbar>
+      </div>
+
+      <div class="mt-[16px] w-full flex justify-center">
+        <el-button type="primary" @click="handleClickSubmit">保存</el-button>
       </div>
     </Dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import {
+  getWfiTaskIrrigationPage,
+  getIrrigationAreaPage,
+  getWfiTaskIrrigationEnable,
+  getWfiTaskIrrigationStop,
+  getWfiTaskIrrigationGet,
+  postWfiTaskIrrigationCreate
+} from '../apis';
+
 const width = defineModel('width', { required: true, type: Number });
 
-const dialogVisible = ref(false);
+const msg = useMessage();
+const router = useRouter();
 
-const handleClickSetting = () => {
+const irrigateExecCronDictList = getStrDictOptions(DICT_TYPE.WFI_IRRIGATE_EXEC_CRON);
+const irrigateTypeDictList = getStrDictOptions(DICT_TYPE.WFI_FERTILIZE_TYPE);
+
+// 获取最新记录
+const latestRec = ref<any>({});
+const getLatest = async () => {
+  latestRec.value = {};
+  const res = await getWfiTaskIrrigationPage({ pageNo: 1, pageSize: 1 });
+  if (!res || !res.list || !Array.isArray(res.list)) return;
+
+  latestRec.value = {
+    ...res.list[0],
+    timeRange: [new Date(res.list[0].tiBeginTime), new Date(res.list[0].tiEndTime)],
+    execCron: getExecCronStr(res.list[0].tiExecCron, res.list[0].tiExecCronDay),
+    iaIdList: res.list[0].iaNameList.split(',')
+  };
+};
+getLatest();
+
+// 获取灌溉日字符串 = 灌溉周期类型 + 时间
+const getExecCronStr = (type: string, day: string) => {
+  const weekMap = {
+    '1': '每周一',
+    '2': '每周二',
+    '3': '每周三',
+    '4': '每周四',
+    '5': '每周五',
+    '6': '每周六',
+    '7': '每周日'
+  };
+
+  const item = irrigateExecCronDictList.find((ele) => {
+    return ele.value === type;
+  });
+  switch (type) {
+    case 'weekly':
+      return item?.label + ': ' + weekMap[day];
+    default:
+      return item?.label + ': ' + day;
+  }
+};
+
+// 获取灌区列表
+const irrigationList = ref<any[]>([]);
+const getIrrigationList = async () => {
+  irrigationList.value = [];
+  const res = await getIrrigationAreaPage({ pageNo: 1, pageSize: 50 });
+  if (!res || !res.list || !Array.isArray(res.list)) return;
+  irrigationList.value = res.list;
+};
+getIrrigationList();
+
+// 启用
+const handleClickEnable = async () => {
+  await getWfiTaskIrrigationEnable({ id: latestRec.value.id });
+  msg.success('启用成功');
+  await getLatest();
+};
+
+// 停用
+const handleClickStop = async () => {
+  await getWfiTaskIrrigationStop({ id: latestRec.value.id });
+  msg.success('停用成功');
+  await getLatest();
+};
+
+const formData = reactive<any>({
+  tiName: undefined,
+  irrigationType: irrigateTypeDictList[0].value,
+  timeRange: [],
+  tiExecCron: irrigateExecCronDictList[0].value,
+  tiExecBeginTime: undefined,
+  waterPumpStatus: '是',
+  concurrentTaskNumber: undefined,
+  amountTimeNumber: undefined,
+  iaCodeList: undefined,
+  tiExecCronDay: undefined
+});
+
+// 打开灌溉设置
+const dialogVisible = ref(false);
+const handleClickSetting = async () => {
+  if (latestRec.value.id) {
+    const data = await getWfiTaskIrrigationGet({ id: latestRec.value.id });
+    formData.irrigationType = data.irrigationType;
+    formData.timeRange = [new Date(data.tiBeginTime), new Date(data.tiEndTime)];
+    formData.tiExecCron = data.tiExecCron;
+    formData.waterPumpStatus = data.waterPumpStatus;
+    formData.concurrentTaskNumber = data.concurrentTaskNumber;
+    formData.amountTimeNumber = data.amountTimeNumber;
+    formData.iaCodeList = data.iaCodeList;
+    formData.tiExecCronDay = data.tiExecCronDay;
+  }
+
+  // 查询灌区列表 并添加selected属性
+  await getIrrigationList();
+  const iaCodeTmpList = formData.iaCodeList ? formData.iaCodeList.split(',') : [];
+  for (let i = 0; i < irrigationList.value.length; ++i) {
+    const idx = iaCodeTmpList.findIndex((ele: any) => {
+      return ele === irrigationList.value[i].id;
+    });
+    irrigationList.value[i] = {
+      ...irrigationList.value[i],
+      selected: idx === -1 ? false : true
+    };
+  }
+
   dialogVisible.value = true;
 };
 
@@ -180,45 +424,145 @@ watch(selectDate, () => {
   selectEach.value = false;
 });
 
-// 灌区列表
-const irrigationAreaList = ref<any[]>([]);
+const weekList = [
+  { label: '周一', value: '1' },
+  { label: '周二', value: '2' },
+  { label: '周三', value: '3' },
+  { label: '周四', value: '4' },
+  { label: '周五', value: '5' },
+  { label: '周六', value: '6' },
+  { label: '周日', value: '7' }
+];
 
-const getIrrigationAreaList = async () => {
-  irrigationAreaList.value = [];
-
-  // await
-  const res = [
-    '灌区1',
-    '灌区2',
-    '灌区3',
-    '灌区4',
-    '灌区5',
-    '灌区6',
-    '灌区7',
-    '灌区8',
-    '灌区9',
-    '灌区10',
-    '灌区11',
-    '灌区12',
-    '灌区13',
-    '灌区14',
-    '灌区15',
-    '灌区16',
-    '灌区17',
-    '灌区18',
-    '灌区19',
-    '灌区20'
-  ];
-  const tmp = res.map((ele) => {
-    return { name: ele, selected: false };
-  });
-
-  irrigationAreaList.value = Array.isArray(tmp) ? tmp : [];
+// 灌溉开始时间
+const execBeginTimeList = ref<any[]>([]);
+const execBeginTime = ref();
+const handleChangeExecBeginTime = () => {
+  const hour =
+    execBeginTime.value.getHours() >= 10
+      ? execBeginTime.value.getHours()
+      : '0' + execBeginTime.value.getHours();
+  const minute =
+    execBeginTime.value.getMinutes() >= 10
+      ? execBeginTime.value.getMinutes()
+      : '0' + execBeginTime.value.getMinutes();
+  const second =
+    execBeginTime.value.getSeconds() >= 10
+      ? execBeginTime.value.getSeconds()
+      : '0' + execBeginTime.value.getSeconds();
+  execBeginTimeList.value.push(hour + ':' + minute + ':' + second);
+  execBeginTime.value = undefined;
 };
-getIrrigationAreaList();
 
 // 选择灌区
-const handleSelectIrrigation = (event: any) => {};
+const handleSelectIrrigation = (event: any) => {
+  if (!event.target.dataset.idx) return;
+  const idx = event.target.dataset.idx;
+  irrigationList.value[idx].selected = !irrigationList.value[idx].selected;
+};
+
+// 表单校验
+const checkForm = (execCron: string) => {
+  let res = true;
+  if (undefined === formData.tiName || null === formData.tiName || '' === formData.tiName) {
+    msg.error('任务名称不能为空');
+    res = false;
+  }
+  if (!Array.isArray(formData.timeRange) || formData.timeRange.length === 0) {
+    msg.error('起止时间不能为空');
+    res = false;
+  }
+  if (execBeginTimeList.value.length === 0) {
+    msg.error('灌溉开始时间不能为空');
+    res = false;
+  }
+  if (undefined === formData.concurrentTaskNumber || null === formData.concurrentTaskNumber) {
+    msg.error('同时灌溉灌区数量不能为空');
+    res = false;
+  }
+  if (
+    null === formData.amountTimeNumber ||
+    undefined === formData.amountTimeNumber ||
+    '' === formData.amountTimeNumber
+  ) {
+    msg.error('灌溉量/灌溉时长不能为空');
+    res = false;
+  }
+  if (
+    undefined === formData.iaCodeList ||
+    '' === formData.iaCodeList ||
+    null === formData.iaCodeList
+  ) {
+    msg.error('灌区选择不能为空');
+    res = false;
+  }
+  if (undefined === execCron || '' === execCron || null === execCron) {
+    msg.error('灌溉日类型不能为空');
+    res = false;
+  }
+  if (
+    undefined === formData.tiExecCronDay ||
+    '' === formData.tiExecCronDay ||
+    null === formData.tiExecCronDay
+  ) {
+    msg.error('间隔周期/每周/具体日期后不能为空');
+    res = false;
+  }
+  return res;
+};
+
+// 提交表单
+const handleClickSubmit = async () => {
+  // 获取iaCodeList
+  const list: string[] = [];
+  irrigationList.value.forEach((ele) => {
+    if (ele.selected) {
+      list.push(ele.id);
+    }
+  });
+  formData.iaCodeList = list.join(',');
+
+  let execCron: string = '';
+  if (selectDate.value) {
+    execCron = 'after_date';
+  }
+  if (selectEach.value) {
+    execCron = 'weekly';
+  }
+  if (selectInterval.value) {
+    execCron = 'interval';
+  }
+
+  if (!checkForm(execCron)) return;
+  const data = {
+    tiName: formData.tiName,
+    irrigationType: formData.irrigationType,
+    tiBeginTime: formData.timeRange[0].getTime(),
+    tiEndTime: formData.timeRange[1].getTime(),
+    tiExecBeginTime: execBeginTimeList.value.join(','),
+    waterPumpStatus: formData.waterPumpStatus,
+    concurrentTaskNumber: formData.concurrentTaskNumber,
+    amountTimeNumber: Number(formData.amountTimeNumber),
+    iaCodeList: formData.iaCodeList,
+    tiExecCronDay: selectDate.value ? getDateStr(formData.tiExecCronDay) : formData.tiExecCronDay,
+    tiExecCron: execCron,
+    status: '未启用'
+  };
+
+  await postWfiTaskIrrigationCreate(data);
+
+  await getLatest();
+  msg.success('保存成功');
+  dialogVisible.value = false;
+};
+
+// 传入Date对象 获取YYYY-MM-DD字符串
+const getDateStr = (item: any) => {
+  const year = item.getFullYear();
+  const month = item.getMonth() + 1 >= 10 ? item.getMonth() + 1 : '0' + (item.getMonth() + 1);
+  const day = item.getDate() >= 10 ? item.getDate() : '0' + item.getDate();
+  return year + '-' + month + '-' + day;
+};
 
 // 根据容器宽度改变表单分栏数
 const getGridCols = () => {
@@ -254,6 +598,16 @@ const getColSpan = () => {
 </script>
 
 <style lang="scss" scoped>
+// 无数据
+.no-data {
+  width: 180px;
+  height: 180px;
+  background-image: url(/images/noData.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 // 鼠标移在按钮上时显示主题色边框
 :deep(.el-button:hover) {
   border-color: var(--el-color-primary);

@@ -4,121 +4,186 @@
       <h2 class="m-0 text-[16px]">施肥程式</h2>
       <div class="flex items-center space-x-[8px]">
         <el-button type="primary" @click.stop="handleClickSetting">施肥设置</el-button>
-        <el-button disabled>
+        <el-button
+          :disabled="!latestRec.status || '1' === latestRec.status"
+          @click="updateLatestRecStatus('1')"
+        >
           <Icon icon="ep:circle-check" class="mr-[4px]" />
           启用
         </el-button>
-        <el-button>
+        <el-button
+          :disabled="!latestRec.status || '0' === latestRec.status"
+          @click="updateLatestRecStatus('0')"
+        >
           <Icon icon="ep:circle-close" class="mr-[4px]" />
           停用
         </el-button>
-        <el-button>历史任务</el-button>
+        <el-button
+          @click="
+            router.push({ path: '/integrationWaterFertilizer/taskManagement/task-fertilization' })
+          "
+        >
+          历史任务
+        </el-button>
       </div>
     </div>
 
-    <el-table
-      class="mt-[16px]"
-      :data="data.baskets"
-      header-cell-class-name="!bg-[#F5F6FA]"
-      stripe
-      show-overflow-tooltip
-    >
-      <el-table-column label="料桶" prop="id" align="center" />
-      <el-table-column label="上水量(L)" prop="waterVolume" align="center" />
-      <el-table-column label="是否搅拌" prop="mix" align="center">
-        <template #default="scope">
-          <div class="flex justify-center items-center space-x-[4px]">
-            <Icon
-              :icon="scope.row.mix ? 'ep:circle-check' : 'ep:circle-close'"
-              :style="scope.row.mix ? 'color: var(--el-color-primary)' : 'color: #FF5951'"
-            />
-            <span>{{ scope.row.mix ? '是' : '否' }}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="定量桶" prop="quantitative" align="center">
-        <template #default="scope">
-          <div class="flex justify-center items-center space-x-[4px]">
-            <Icon
-              :icon="scope.row.quantitative ? 'ep:circle-check' : 'ep:circle-close'"
-              :style="scope.row.quantitative ? 'color: var(--el-color-primary)' : 'color: #FF5951'"
-            />
-            <span>{{ scope.row.quantitative ? '是' : '否' }}</span>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-if="!latestRec.id" class="w-full h-[430px] flex flex-col justify-center items-center">
+      <div class="no-data"></div>
+      <span class="tracking-widest mt-[8px]">暂无数据</span>
+    </div>
 
-    <el-form
-      :model="data"
-      :class="`grid ${getGridCols()} gap-y-[8px] mt-[16px] w-full form`"
-      label-width="95px"
-      :inline="true"
-    >
-      <el-form-item label="搅拌类型" prop="mixType">
-        <el-input v-model="data.mixType" readonly />
-      </el-form-item>
-      <el-form-item label="水泵控制" prop="waterPumpControl">
-        <el-radio-group v-model="data.waterPumpControl" disabled>
-          <el-radio :label="true">是</el-radio>
-          <el-radio :label="false">否</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="施肥类型" prop="fertilizeType">
-        <el-input v-model="data.fertilizeType" readonly />
-      </el-form-item>
-      <el-form-item
-        :label="data.fertilizeType === '定量' ? '施肥量' : '施肥时长'"
-        prop="fertilizeAmount"
+    <template v-else>
+      <el-table
+        class="mt-[16px]"
+        :data="latestRec.taskFertilizationDetailRespVOList"
+        stripe
+        show-overflow-tooltip
       >
-        <el-input v-show="data.fertilizeType === '定量'" v-model="data.fertilizeAmount">
-          <template #append>L</template>
-        </el-input>
-        <el-input v-show="data.fertilizeType === '定时'" v-model="data.fertilizeAmount">
-          <template #append>分钟</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="同时施肥数" prop="fertilizeSync">
-        <el-input v-model="data.fertilizeSync" readonly />
-      </el-form-item>
-      <el-form-item label="施肥灌区" prop="irrigationArea" :class="getColSpan()">
-        <el-select v-model="data.irrigationArea" multiple disabled>
-          <el-option v-for="item in data.irrigationArea" :key="item" :label="item" :value="item" />
-        </el-select>
-      </el-form-item>
-    </el-form>
+        <el-table-column label="料桶" prop="chargingBasketName" align="center" />
+        <el-table-column label="上水量(L)" prop="upperWaterYield" align="center" />
+        <el-table-column label="是否搅拌" prop="mix" align="center">
+          <template #default="scope">
+            <div class="flex justify-center items-center space-x-[4px]">
+              <Icon
+                :icon="
+                  '1' === scope.row.fertilizerMixerStatus ? 'ep:circle-check' : 'ep:circle-close'
+                "
+                :style="
+                  '1' === scope.row.fertilizerMixerStatus
+                    ? 'color: var(--el-color-primary)'
+                    : 'color: #FF5951'
+                "
+              />
+              <span>{{ '1' === scope.row.fertilizerMixerStatus ? '是' : '否' }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="定量桶" prop="quantitative" align="center">
+          <template #default="scope">
+            <div class="flex justify-center items-center space-x-[4px]">
+              <Icon
+                :icon="
+                  '1' === scope.row.measureBucketStatus ? 'ep:circle-check' : 'ep:circle-close'
+                "
+                :style="
+                  '1' === scope.row.measureBucketStatus
+                    ? 'color: var(--el-color-primary)'
+                    : 'color: #FF5951'
+                "
+              />
+              <span>{{ '1' === scope.row.measureBucketStatus ? '是' : '否' }}</span>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-form
+        :model="latestRec"
+        :class="`grid ${getGridCols()} gap-y-[8px] mt-[16px] w-full form`"
+        label-width="95px"
+        :inline="true"
+      >
+        <el-form-item label="搅拌类型" prop="mixingType">
+          <el-select v-model="latestRec.mixingType" disabled>
+            <el-option
+              v-for="item in mixTypeDictList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="水泵控制" prop="waterPumpStatus">
+          <el-radio-group v-model="latestRec.waterPumpStatus" disabled>
+            <el-radio label="是">是</el-radio>
+            <el-radio label="否">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="施肥类型" prop="fertilizationType">
+          <el-select v-model="latestRec.fertilizationType" disabled>
+            <el-option
+              v-for="item in fertilizationTypeDictList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          :label="latestRec.fertilizationType === 'quantify' ? '施肥量' : '施肥时长'"
+          prop="amountTimeNumber"
+        >
+          <el-input
+            v-show="latestRec.fertilizationType === 'quantify'"
+            v-model="latestRec.amountTimeNumber"
+            disabled
+          >
+            <template #append>L</template>
+          </el-input>
+          <el-input
+            v-show="latestRec.fertilizationType === 'timing'"
+            v-model="latestRec.amountTimeNumber"
+            disabled
+          >
+            <template #append>分钟</template>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="同时施肥数" prop="concurrentTaskNumber">
+          <el-input v-model="latestRec.concurrentTaskNumber" disabled />
+        </el-form-item>
+
+        <el-form-item label="施肥灌区" prop="irrigationArea" :class="getColSpan()">
+          <el-select v-model="latestRec.iaCodeNameList" multiple disabled>
+            <el-option
+              v-for="item in irrigationList"
+              :key="item.id"
+              :label="item.iaName"
+              :value="item.iaName"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </template>
   </div>
 
-  <Dialog v-model="dialogVisible" title="施肥程式设置" :width="865" top="20px">
-    <div class="flex">
+  <Dialog
+    v-model="dialogVisible"
+    title="施肥程式设置"
+    :width="865"
+    top="20px"
+    @close="getLatest({})"
+  >
+    <div class="flex border-b border-b-solid border-[#e6e6e6]">
       <el-scrollbar :height="350" class="w-[500px]">
         <h2 class="m-0 text-[16px]">施肥设置</h2>
 
-        <el-table
-          class="mt-[16px]"
-          :data="data.baskets"
-          header-cell-class-name="!bg-[#F5F6FA]"
-          stripe
-        >
-          <el-table-column label="料桶" prop="id" align="center" />
-          <el-table-column label="上水量(L)" prop="waterVolume" width="136" align="center">
+        <el-table class="mt-[16px]" :data="data.taskFertilizationDetailSaveReqVOList" stripe>
+          <el-table-column label="料桶" prop="chargingBasketName" align="center" />
+          <el-table-column label="上水量(L)" prop="upperWaterYield" width="136" align="center">
             <template #default="scope">
-              <el-input-number v-model="scope.row.waterVolume" />
+              <el-input-number v-model="scope.row.upperWaterYield" :min="0" />
             </template>
           </el-table-column>
-          <el-table-column label="是否搅拌" width="140" prop="mix" align="center">
+          <el-table-column label="是否搅拌" width="140" prop="fertilizerMixerStatus" align="center">
             <template #default="scope">
-              <el-radio-group v-model="scope.row.mix">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
+              <el-radio-group v-model="scope.row.fertilizerMixerStatus">
+                <el-radio v-for="item in stirQuantDictList" :key="item.value" :label="item.value">
+                  {{ item.label }}
+                </el-radio>
               </el-radio-group>
             </template>
           </el-table-column>
-          <el-table-column label="定量桶" width="140" prop="quantitative" align="center">
+          <el-table-column label="定量桶" width="140" prop="measureBucketStatus" align="center">
             <template #default="scope">
-              <el-radio-group v-model="scope.row.quantitative">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
+              <el-radio-group v-model="scope.row.measureBucketStatus">
+                <el-radio v-for="item in stirQuantDictList" :key="item.value" :label="item.value">
+                  {{ item.label }}
+                </el-radio>
               </el-radio-group>
             </template>
           </el-table-column>
@@ -130,52 +195,60 @@
           label-width="95px"
           :inline="true"
         >
-          <el-form-item label="搅拌类型" prop="mixType">
-            <el-select v-model="data.mixType">
-              <el-option v-for="item in mixTypeList" :key="item" :label="item" :value="item" />
+          <el-form-item label="搅拌类型" prop="mixingType">
+            <el-select v-model="data.mixingType">
+              <el-option
+                v-for="item in mixTypeDictList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item label="水泵控制" prop="waterPumpControl">
-            <el-radio-group v-model="data.waterPumpControl">
-              <el-radio :label="true">是</el-radio>
-              <el-radio :label="false">否</el-radio>
+          <el-form-item label="水泵控制" prop="waterPumpStatus">
+            <el-radio-group v-model="data.waterPumpStatus">
+              <el-radio label="是">是</el-radio>
+              <el-radio label="否">否</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="施肥类型" prop="fertilizeType">
-            <el-select v-model="data.fertilizeType">
+          <el-form-item label="施肥类型" prop="fertilizationType">
+            <el-select v-model="data.fertilizationType">
               <el-option
-                v-for="item in fertilizeTypeList"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="item in fertilizationTypeDictList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
           <el-form-item
-            :label="data.fertilizeType === '定量' ? '施肥量' : '施肥时长'"
-            prop="fertilizeAmount"
+            :label="data.fertilizationType === 'quantify' ? '施肥量' : '施肥时长'"
+            prop="amountTimeNumber"
           >
-            <el-input v-show="data.fertilizeType === '定量'" v-model="data.fertilizeAmount">
+            <el-input
+              v-show="data.fertilizationType === 'quantify'"
+              v-model="data.amountTimeNumber"
+            >
               <template #append>L</template>
             </el-input>
-            <el-input v-show="data.fertilizeType === '定时'" v-model="data.fertilizeAmount">
+            <el-input v-show="data.fertilizationType === 'timing'" v-model="data.amountTimeNumber">
               <template #append>分钟</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="同时施肥数" prop="fertilizeSync">
-            <el-input v-model="data.fertilizeSync" readonly />
+          <el-form-item label="同时施肥数" prop="concurrentTaskNumber">
+            <el-input-number v-model="data.concurrentTaskNumber" :min="0" />
           </el-form-item>
         </el-form>
       </el-scrollbar>
 
-      <div class="w-[1px] my-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
+      <div class="w-[1px] mt-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
 
       <el-scrollbar :height="350" class="w-[300px]">
         <h2 class="m-0 text-[16px]">灌区选择</h2>
         <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
           <div
-            v-for="(item, index) in irrigationAreaList"
-            :key="item.name"
+            v-for="(item, index) in irrigationList"
+            :key="item.id"
             :data-idx="index"
             :class="`
               flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
@@ -185,177 +258,181 @@
               backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
             }"
           >
-            {{ item.name }}
+            {{ item.iaName }}
           </div>
         </div>
       </el-scrollbar>
+    </div>
+    <div class="mt-[16px] w-full flex justify-center">
+      <el-button type="primary" @click="handleClickSubmit">保存</el-button>
     </div>
   </Dialog>
 </template>
 
 <script setup lang="ts">
+import {
+  getTaskFertilizationLatestData,
+  putTaskFertilizationUpdateStatus,
+  getIrrigationAreaPage,
+  postTaskFertilizationCreateDetailList
+} from '../apis';
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+
+// 组件实时宽度
 const width = defineModel('width', { type: Number, required: true });
 
-interface FormData {
-  baskets: any[];
-  mixType: string | undefined;
-  waterPumpControl: boolean | undefined;
-  fertilizeType: string | undefined;
-  fertilizeAmount: number | undefined;
-  fertilizeSync: number | undefined;
-  irrigationArea: any[];
-}
+const msg = useMessage();
+const router = useRouter();
 
-const data = reactive<FormData>({
-  baskets: [],
-  mixType: undefined,
-  waterPumpControl: undefined,
-  fertilizeType: undefined,
-  fertilizeAmount: undefined,
-  fertilizeSync: undefined,
-  irrigationArea: []
-});
+const mixTypeDictList = getStrDictOptions(DICT_TYPE.WFI_STIR_TYPE); // 搅拌类型
+const fertilizationTypeDictList = getStrDictOptions(DICT_TYPE.WFI_FERTILIZE_TYPE); // 施肥类型
+const stirQuantDictList = getStrDictOptions(DICT_TYPE.FERTILIZE_STIR_MEASURING_TANK); // 是否搅拌 定量桶
 
-const resetData = () => {
-  data.baskets = [];
-  data.mixType = undefined;
-  data.waterPumpControl = undefined;
-  data.fertilizeType = undefined;
-  data.fertilizeAmount = undefined;
-  data.fertilizeSync = undefined;
-  data.irrigationArea = [];
+// 获取最新施肥记录
+const latestRec = ref<any>({});
+const getLatest = async (parmas: any) => {
+  latestRec.value = {};
+  const res = await getTaskFertilizationLatestData({ parmas });
+  if (!res) return;
+  latestRec.value = res;
 };
+getLatest({});
 
-const getData = async () => {
-  resetData();
-
-  // await
-  const res = {
-    baskets: [
-      {
-        id: 1,
-        waterVolume: 100,
-        mix: true,
-        quantitative: false
-      },
-      {
-        id: 2,
-        waterVolume: 200,
-        mix: true,
-        quantitative: true
-      },
-      {
-        id: 3,
-        waterVolume: 300,
-        mix: false,
-        quantitative: true
-      },
-      {
-        id: 4,
-        waterVolume: 400,
-        mix: true,
-        quantitative: true
-      },
-      {
-        id: 5,
-        waterVolume: 500,
-        mix: false,
-        quantitative: true
-      }
-    ],
-    mixType: '全程搅拌',
-    waterPumpControl: true,
-    fertilizeType: '定量',
-    fertilizeAmount: 20,
-    fertilizeSync: 2,
-    irrigationArea: ['灌区1', '灌区2', '灌区3', '灌区4', '灌区5', '灌区6']
+// 启用和禁用
+const updateLatestRecStatus = async (status: string) => {
+  const data = {
+    id: latestRec.value.id,
+    status,
+    fertilizationType: latestRec.value.fertilizationType,
+    amountTimeNumber: latestRec.value.amountTimeNumber,
+    iaCodeList: latestRec.value.iaCodeList
   };
-
-  data.baskets = Array.isArray(res.baskets) ? res.baskets : [];
-  data.mixType = res.mixType;
-  data.waterPumpControl = res.waterPumpControl;
-  data.fertilizeType = res.fertilizeType;
-  data.fertilizeAmount = res.fertilizeAmount;
-  data.fertilizeSync = res.fertilizeSync;
-  data.irrigationArea = Array.isArray(res.irrigationArea) ? res.irrigationArea : [];
+  const res = await putTaskFertilizationUpdateStatus(data);
+  if (res) {
+    msg.success(`${'1' === status ? '启用' : '停用'}成功`);
+  }
+  await getLatest({});
 };
-getData();
+
+// 获取灌区列表
+const irrigationList = ref<any[]>([]);
+const getIrrigationList = async () => {
+  irrigationList.value = [];
+  const res = await getIrrigationAreaPage({ pageNo: 1, pageSize: 50 });
+  if (!res || !res.list || !Array.isArray(res.list)) return;
+  irrigationList.value = res.list;
+};
+getIrrigationList();
 
 // 对话框开启或关闭
 const dialogVisible = ref(false);
+const handleClickSetting = async () => {
+  // 如果有当前记录 则查询当前记录并赋值给表单
+  if (latestRec.value.id) {
+    await getLatest({ id: latestRec.value.id });
+    data.fertilizationType = latestRec.value.fertilizationType;
+    data.mixingType = latestRec.value.mixingType;
+    data.waterPumpStatus = latestRec.value.waterPumpStatus;
+    data.concurrentTaskNumber = latestRec.value.concurrentTaskNumber;
+    data.amountTimeNumber = latestRec.value.amountTimeNumber;
+    data.iaCodeList = latestRec.value.iaCodeList;
+    data.taskFertilizationDetailSaveReqVOList =
+      latestRec.value.taskFertilizationDetailRespVOList.map((ele: any) => {
+        return { ...ele };
+      });
+  } else {
+    // 没记录初始化5个空桶
+    const tmp: any[] = [];
+    [1, 2, 3, 4, 5].forEach((ele) => {
+      tmp.push({
+        chargingBasketName: '料桶' + String(ele),
+        upperWaterYield: 0,
+        fertilizerMixerStatus: stirQuantDictList[0].value,
+        measureBucketStatus: stirQuantDictList[0].value
+      });
+    });
+    data.taskFertilizationDetailSaveReqVOList = tmp;
+  }
 
-const handleClickSetting = () => {
+  // 查询灌区列表 并添加selected属性
+  await getIrrigationList();
+  const iaCodeTmpList = data.iaCodeList ? data.iaCodeList.split(',') : [];
+  for (let i = 0; i < irrigationList.value.length; ++i) {
+    const idx = iaCodeTmpList.findIndex((ele: any) => {
+      return ele === irrigationList.value[i].id;
+    });
+    irrigationList.value[i] = {
+      ...irrigationList.value[i],
+      selected: idx === -1 ? false : true
+    };
+  }
+
   dialogVisible.value = true;
 };
 
-// 搅拌类型
-const mixTypeList = ref<any[]>([]);
-
-const getMixTypeList = () => {
-  mixTypeList.value = [];
-
-  // await
-  const res = ['全程搅拌', '搅拌类型2', '搅拌类型3', '搅拌类型4'];
-
-  mixTypeList.value = Array.isArray(res) ? res : [];
-};
-getMixTypeList();
-
-// 施肥类型
-const fertilizeTypeList = ref(['定量', '定时']);
-
-// 灌区列表
-const irrigationAreaList = ref<any[]>([]);
-
-const getIrrigationAreaList = async () => {
-  irrigationAreaList.value = [];
-
-  // await
-  const res = [
-    '灌区1',
-    '灌区2',
-    '灌区3',
-    '灌区4',
-    '灌区5',
-    '灌区6',
-    '灌区7',
-    '灌区8',
-    '灌区9',
-    '灌区10',
-    '灌区11',
-    '灌区12',
-    '灌区13',
-    '灌区14',
-    '灌区15',
-    '灌区16',
-    '灌区17',
-    '灌区18',
-    '灌区19',
-    '灌区20'
-  ];
-  const tmp = res.map((ele) => {
-    if (data.irrigationArea.findIndex((e) => ele === e) !== -1) {
-      return { name: ele, selected: true };
-    } else {
-      return { name: ele, selected: false };
-    }
-  });
-
-  irrigationAreaList.value = Array.isArray(tmp) ? tmp : [];
-};
-getIrrigationAreaList();
+// 新增表单数据
+const data = reactive<any>({
+  fertilizationType: fertilizationTypeDictList[0].value,
+  mixingType: mixTypeDictList[0].value,
+  waterPumpStatus: '是',
+  concurrentTaskNumber: undefined,
+  amountTimeNumber: undefined,
+  iaCodeList: undefined,
+  taskFertilizationDetailSaveReqVOList: []
+});
 
 // 选择灌区
 const handleSelectIrrigation = (event: any) => {
   if (!event.target.dataset.idx) return;
-
   const idx = event.target.dataset.idx;
-  irrigationAreaList.value[idx].selected = !irrigationAreaList.value[idx].selected;
-  if (irrigationAreaList.value[idx].selected) {
-    data.irrigationArea.push(irrigationAreaList.value[idx].name);
-  } else {
-    data.irrigationArea.splice(idx, 1);
+  irrigationList.value[idx].selected = !irrigationList.value[idx].selected;
+};
+
+// 表单校验
+const checkForm = () => {
+  let res = true;
+  if (undefined === data.concurrentTaskNumber || null === data.concurrentTaskNumber) {
+    msg.error('同时施肥数不能为空');
+    res = false;
   }
+  if (
+    null === data.amountTimeNumber ||
+    undefined === data.amountTimeNumber ||
+    '' === data.amountTimeNumber
+  ) {
+    msg.error('施肥量/施肥时长不能为空');
+    res = false;
+  }
+  if (undefined === data.iaCodeList || '' === data.iaCodeList || null === data.iaCodeList) {
+    msg.error('灌区选择不能为空');
+    res = false;
+  }
+  data.taskFertilizationDetailSaveReqVOList.forEach((ele: any) => {
+    if (null === ele.upperWaterYield || undefined === ele.upperWaterYield) {
+      msg.error('上水量不能为空');
+      res = false;
+    }
+  });
+  return res;
+};
+
+// 提交表单
+const handleClickSubmit = async () => {
+  // 获取iaCodeList
+  const list: string[] = [];
+  irrigationList.value.forEach((ele) => {
+    if (ele.selected) {
+      list.push(ele.id);
+    }
+  });
+  data.iaCodeList = list.join(',');
+
+  if (!checkForm()) return;
+  await postTaskFertilizationCreateDetailList(data);
+
+  await getLatest({});
+  msg.success('保存成功');
+  dialogVisible.value = false;
 };
 
 // 根据容器宽度改变表单分栏数
@@ -392,6 +469,16 @@ const getColSpan = () => {
 </script>
 
 <style scoped lang="scss">
+// 无数据
+.no-data {
+  width: 180px;
+  height: 180px;
+  background-image: url(/images/noData.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 // 鼠标移在按钮上时显示主题色边框
 :deep(.el-button:hover) {
   border-color: var(--el-color-primary);
