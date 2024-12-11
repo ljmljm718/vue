@@ -279,6 +279,7 @@ const handleClickShowSearch = () => {
   </el-scrollbar>
 
   <!-- 页面使用的组件复制在下面 -->
+  <ProductCategoryForm ref="formRef" @success="getList" />
 </template>
 
 <style lang="scss" scoped>

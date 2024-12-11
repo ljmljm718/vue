@@ -7,9 +7,9 @@
     label-width="0px"
     :inline-message="true"
   >
-    <el-table :data="formData" class="-mt-10px">
-<!--      <el-table-column label="序号" type="index" width="50" />-->
-       <el-table-column label="下限" align="center" min-width="100">
+    <el-table :data="formData">
+      <!--      <el-table-column label="序号" type="index" width="50" />-->
+      <el-table-column label="下限" align="center" min-width="100">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.lowLimit`" :rules="formRules.lowLimit" class="mb-0px!">
             <el-input v-model="row.lowLimit" placeholder="请输入下限" />
@@ -32,19 +32,28 @@
       </el-table-column>
       <el-table-column label="健康值" align="center" min-width="120">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.healthRatio`" :rules="formRules.healthRatio" class="mb-0px!">
+          <el-form-item
+            :prop="`${$index}.healthRatio`"
+            :rules="formRules.healthRatio"
+            class="mb-0px!"
+          >
             <el-input v-model="row.healthRatio" placeholder="请输入健康值" />
           </el-form-item>
         </template>
       </el-table-column>
       <el-table-column label="健康等级" align="center" min-width="120">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.healthLevel`" :rules="formRules.healthLevel" class="mb-0px!">
+          <el-form-item
+            :prop="`${$index}.healthLevel`"
+            :rules="formRules.healthLevel"
+            class="mb-0px!"
+          >
             <el-select v-model="row.healthLevel" placeholder="请选择健康等级">
-              <el-option v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
-                         :key="dict.value"
-                         :label="dict.label"
-                         :value="dict.value"
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_HEALTH_LEVEL)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
               />
             </el-select>
           </el-form-item>
@@ -52,7 +61,11 @@
       </el-table-column>
       <el-table-column label="指标结果" align="center" min-width="150">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.indicatorResult`" :rules="formRules.indicatorResult" class="mb-0px!">
+          <el-form-item
+            :prop="`${$index}.indicatorResult`"
+            :rules="formRules.indicatorResult"
+            class="mb-0px!"
+          >
             <el-input v-model="row.indicatorResult" placeholder="请输入指标结果" />
           </el-form-item>
         </template>
@@ -76,38 +89,39 @@
   </el-row>
 </template>
 <script setup lang="ts">
-import { ModelIndicatorElementApi } from '@/api/agriculture/modelindicatorelement'
-import {DICT_TYPE, getStrDictOptions} from "@/utils/dict";
+import { ModelIndicatorElementApi } from '@/api/agriculture/modelindicatorelement';
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict';
 
 const props = defineProps<{
-  indicatorElementId: undefined // 指标要素id（主表的关联字段）
-}>()
-const formLoading = ref(false) // 表单的加载中
-const formData = ref([])
+  indicatorElementId: undefined; // 指标要素id（主表的关联字段）
+}>();
+const formLoading = ref(false); // 表单的加载中
+const formData = ref([]);
 const formRules = reactive({
-  indicatorElementId: [{ required: true, message: '指标要素id不能为空', trigger: 'blur' }],
-})
-const formRef = ref() // 表单 Ref
+  indicatorElementId: [{ required: true, message: '指标要素id不能为空', trigger: 'blur' }]
+});
+const formRef = ref(); // 表单 Ref
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
   () => props.indicatorElementId,
   async (val) => {
     // 1. 重置表单
-    formData.value = []
+    formData.value = [];
     // 2. val 非空，则加载数据
     if (!val) {
       return;
     }
     try {
-      formLoading.value = true
-      formData.value = await ModelIndicatorElementApi.getModelIndicatorElementRangeListByIndicatorElementId(val)
+      formLoading.value = true;
+      formData.value =
+        await ModelIndicatorElementApi.getModelIndicatorElementRangeListByIndicatorElementId(val);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   },
   { immediate: true }
-)
+);
 
 /** 新增按钮操作 */
 const handleAdd = () => {
@@ -120,26 +134,26 @@ const handleAdd = () => {
     healthRatio: undefined,
     healthLevel: undefined,
     indicatorResult: undefined,
-    sortBy: undefined,
-  }
-  row.indicatorElementId = props.indicatorElementId
-  formData.value.push(row)
-}
+    sortBy: undefined
+  };
+  row.indicatorElementId = props.indicatorElementId;
+  formData.value.push(row);
+};
 
 /** 删除按钮操作 */
 const handleDelete = (index) => {
-  formData.value.splice(index, 1)
-}
+  formData.value.splice(index, 1);
+};
 
 /** 表单校验 */
 const validate = () => {
-  return formRef.value.validate()
-}
+  return formRef.value.validate();
+};
 
 /** 表单值 */
 const getData = () => {
-  return formData.value
-}
+  return formData.value;
+};
 
-defineExpose({ validate, getData })
+defineExpose({ validate, getData });
 </script>
