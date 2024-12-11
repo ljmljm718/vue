@@ -6,10 +6,10 @@ import { initChartStatic, generateBaseOptions } from '../../utils/bigscreenTool/
 import preWarn from '@/views/bigscreen6/assets/preWarn.png';
 import sensor from '@/views/bigscreen6/assets/sensor.png';
 import monitor from '@/views/bigscreen6/assets/monitor.png';
-import { ParkBaseInfo, ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index';
+import { ParkBaseInfo2 } from '@/api/kaizhou/bigscreen/index';
+// @ts-ignore
 import ScaleBox from 'vue3-scale-box';
 import { createGcjToWgsConverter } from '@/utils/map';
-import { coordinateTransformation } from '@/utils/map';
 import {
   largeScreenGetWarning,
   largeScreenGetOneWarning,
@@ -20,7 +20,6 @@ import {
   deviceBasePage,
   monitoringEquipment,
   viewMonitoring,
-  getDeviceDataYouEnvironment,
   waterDetectionByAddress,
   getDeviceDataYouEnvironmentLine,
   page,
@@ -33,6 +32,7 @@ import {
 } from './apis';
 import dayjs from 'dayjs';
 import adapter from '@/components/MapCustom/src/adapter';
+// @ts-ignore
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapIcon1 from './assets/mp-icon1.png';
@@ -40,6 +40,7 @@ import MapIcon2 from './assets/mp-icon2.png';
 import MapIcon3 from './assets/mp-icon3.png';
 import MapIcon4 from './assets/mp-icon4.png';
 import MapIcon5 from './assets/mp-icon5.png';
+import { formatIconPath } from '@/utils/gisIcon';
 
 adapter();
 // const VEC_TILE = '/tdCache/api/tdtmap/tile?T=vec_w&x={x}&y={y}&l={z}'
@@ -102,7 +103,11 @@ const getEquipmentMapData = async () => {
     arr.forEach((item) => {
       resArr = [
         ...resArr,
-        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+        ...item.children.map((ele) => ({
+          ...ele,
+          icon: iconInnerMap[item.name],
+          parentName: item.name
+        }))
       ];
     });
     return resArr;
@@ -118,21 +123,26 @@ const getEquipmentMapData = async () => {
       plotName = '',
       location = '',
       type,
-      icon: _icon
+      icon: _icon,
+      parentName,
+      deviceStatus
     } = formattedItem;
+    const isOnline = deviceStatus === 'online';
     if (!longitude || !latitude) return;
-    const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
-    latlngs.push([lat, lng]);
+    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
+    // const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
+    latlngs.push([lat, lon]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
+      iconUrl: formatIconPath(parentName, isOnline),
+      // iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
-    L.marker([lat, lng], { icon })
+    L.marker([lat, lon], { icon })
       .addTo(map)
       .on('click', () => {
         L.popup()
-          .setLatLng([lat, lng])
+          .setLatLng([lat, lon])
           .setContent(
             `
         <div>${deviceName}</div>
@@ -409,12 +419,6 @@ const getWaterDetectionType = async (belongPark, belongPlot) => {
 };
 
 const options1 = ref<Array<any>>([]);
-// const getOptions1 = async (parentId = '0') => {
-//   const res = await ParkBaseInfo({parentId})
-//   options1.value = res
-//   if (options1.value.length > 0) await getOptions2(options1.value[0].id)
-// }
-// getOptions1()
 
 //获取基地
 let selecteId1 = ref('');
@@ -895,62 +899,6 @@ const windowOpen = (item) => window.open(item);
                   <span>监控设备</span>
                 </div>
               </div>
-              <!-- <div id="mainMap">
-                <div
-                  class="tool-info"
-                  style="left: calc(400px - 100px);bottom: 300px;"
-                >
-                  <div class="info-rect">
-                    <div class="text-info" v-for="(item, index) in sxtObj" :key="index">
-                      <div class="text-row">编号: {{ item.deviceCode }}</div>
-                      <div class="text-row">位置: {{ item.location }}</div>
-                      <div class="text-row">设备: {{ item.deviceName }}</div>
-                      <div class="text-row">
-                        状态:
-                        <span
-                          :style="`color: ${item.deviceStatus === 'online' ? '#35bb60' : '#bc3f00'};`"
-                        >{{ item.deviceStatus === 'online' ? '在线' : '离线' }}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <img :src="monitor" alt="" />
-                </div>
-
-                <div
-                  class="tool-info"
-                  style="left: calc(600px - 100px);bottom: 100px;"
-                >
-                  <div class="info-rect">
-                    <div class="text-info">
-                      <div class="text-row">编号: {{ sjList.equipmentCode }}</div>
-                      <div class="text-row">位置: {{ sjList.parkName }}</div>
-                      <div class="text-row">设备: {{ sjList.deviceName }}</div>
-                      <div class="text-row">
-                        当前读数:
-                        {{ sjList.dataValue }}
-                        <span v-if="sjList.yyUnit">{{ sjList.yyUnit }}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <img :src="sensor" alt="" />
-                </div>
-                <div
-                  class="tool-info"
-                  style="left: calc(900px - 100px);bottom: 200px;"
-                >
-                  <div class="info-rect">
-                    <div class="text-info">
-                      <div class="text-row">编号: {{ warnList.parkCode }}</div>
-                      <div class="text-row">设备: {{ warnList.deviceCode }}</div>
-                      <div class="text-row">
-                        预警信息:
-                        <span style="color: #ff0000;">{{ warnList.warnInfo }}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <img :src="preWarn" alt="" />
-                </div>
-              </div> -->
               <div class="top-card-wrapper">
                 <div class="top-card-item">
                   <div class="label-card">设备总数</div>
@@ -1003,15 +951,27 @@ const windowOpen = (item) => window.open(item);
                 class="absolute bottom-[20px] left-0 w-full h-[54px] z-2 flex justify-center items-center"
               >
                 <div
-                  class="w-[600px] h-[54px] bg-[#000]/60 backdrop-blur-sm flex justify-evenly items-center rounded-3 cursor-default"
+                  class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3"
                 >
-                  <div v-for="item in mapIcons" :key="item.id" class="flex items-center">
-                    <img
-                      :src="item.icon"
-                      :alt="item.name"
-                      class="w-[26px] h-[30px] object-contain"
-                    />
-                    <span class="ml-[10px]">{{ item.name }}</span>
+                  <div class="flex space-x-2 items-center">
+                    <div class="w-26px h-30px gis-map-icon-2"></div>
+                    <div>摄像</div>
+                  </div>
+                  <div class="flex space-x-2 items-center">
+                    <div class="w-26px h-30px gis-map-icon-1"></div>
+                    <div>气象</div>
+                  </div>
+                  <div class="flex space-x-2 items-center">
+                    <div class="w-26px h-30px gis-map-icon-3"></div>
+                    <div>土壤</div>
+                  </div>
+                  <div class="flex space-x-2 items-center">
+                    <div class="w-26px h-30px gis-map-icon-4"></div>
+                    <div>杀虫</div>
+                  </div>
+                  <div class="flex space-x-2 items-center">
+                    <div class="w-26px h-30px gis-map-icon-6"></div>
+                    <div>生长记录</div>
                   </div>
                 </div>
               </div>

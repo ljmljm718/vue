@@ -118,3 +118,17 @@ $max-lines: 20; // 设定最大的行数
   background-color: #f5f6fa;
 }
 </style>
+
+<!-- gis一张图图标 -->
+<style lang="scss">
+@for $i from 1 through 6 {
+  .gis-map-icon-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .gis-map-icon-off-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}_off.png);
+    background-size: 100% 100%;
+  }
+}
+</style>

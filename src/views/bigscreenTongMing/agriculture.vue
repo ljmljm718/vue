@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import adapter from '@/components/MapCustom/src/adapter';
@@ -357,20 +358,20 @@ const getEquipmentMapData = async () => {
   const latlngs: any[] = [];
   const revertArr = (arr): any[] => {
     const iconInnerMap = {
-      视频监控: 'icon1',
-      气象站: 'icon2',
+      视频监控: 'icon2',
+      气象站: 'icon1',
       土壤墒情: 'icon3',
       虫情监测: 'icon4',
-      生长监控: 'icon5',
-      水质监测: 'icon3',
-      增氧设备: 'icon2'
+      生长监控: 'icon6',
+      水质监测: 'icon5',
+      增氧设备: 'icon1'
     };
     if (!Array.isArray(arr)) return [];
     let resArr: any[] = [];
     arr.forEach((item) => {
       resArr = [
         ...resArr,
-        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] ?? 'icon6' }))
       ];
     });
     return resArr;
@@ -386,13 +387,14 @@ const getEquipmentMapData = async () => {
       plotName = '',
       location = '',
       type,
+      deviceStatus,
       icon: _icon
     } = formattedItem;
     if (!longitude || !latitude) return;
     const { lon: lng, lat } = transformGCJ2WGS(longitude, latitude);
     latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
+      iconUrl: `/images/mapIcon/${_icon}${deviceStatus === 'online' ? '' : '_off'}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
@@ -790,23 +792,23 @@ defineExpose({ handleActive });
         class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3"
       >
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-1"></div>
+          <div class="w-26px h-30px map-icon-2"></div>
           <div>摄像</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-2"></div>
+          <div class="w-26px h-30px map-icon-1"></div>
           <div>气象</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-3"></div>
+          <div class="w-26px h-30px map-icon-3"></div>
           <div>土壤</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-4"></div>
+          <div class="w-26px h-30px map-icon-4"></div>
           <div>杀虫</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-5"></div>
+          <div class="w-26px h-30px map-icon-6"></div>
           <div>生长记录</div>
         </div>
       </div>
@@ -940,6 +942,17 @@ defineExpose({ handleActive });
 @for $i from 1 through 5 {
   .icon-#{$i} {
     background-image: url(./assets/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+@for $i from 1 through 6 {
+  .map-icon-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .map-icon-off-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}_off.png);
     background-size: 100% 100%;
   }
 }

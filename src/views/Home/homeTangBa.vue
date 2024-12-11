@@ -52,7 +52,33 @@
         </el-menu>
       </el-scrollbar>
     </div>
-    <PanelTangBa ref="panelTangBaRef" class="absolute right-0 top-0" v-model="showPanel" />
+    <PanelTangBa ref="panelTangBaRef" class="absolute right-0 top-0 z-2" v-model="showPanel" />
+    <div class="absolute right-10px bottom-10px flex justify-center text-white z-1">
+      <div
+        class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3"
+      >
+        <div class="flex space-x-2 items-center">
+          <div class="w-26px h-30px gis-map-icon-2"></div>
+          <div>摄像</div>
+        </div>
+        <div class="flex space-x-2 items-center">
+          <div class="w-26px h-30px gis-map-icon-1"></div>
+          <div>气象</div>
+        </div>
+        <div class="flex space-x-2 items-center">
+          <div class="w-26px h-30px gis-map-icon-3"></div>
+          <div>土壤</div>
+        </div>
+        <div class="flex space-x-2 items-center">
+          <div class="w-26px h-30px gis-map-icon-4"></div>
+          <div>杀虫</div>
+        </div>
+        <div class="flex space-x-2 items-center">
+          <div class="w-26px h-30px gis-map-icon-6"></div>
+          <div>生长记录</div>
+        </div>
+      </div>
+    </div>
     <div
       @click="mapTileLayer"
       class="absolute top-20px left-[19rem] flex items-center bg-[#fff] rounded px-[12px] py-[5px]"
@@ -88,6 +114,7 @@ import PanelTangBa from './panelTangBa.vue';
 import { getDeviceCategoryTree, getDeviceInfo, parkInfoPage } from './apis';
 import meassageTop from './assets/tangba/meassage-top.png';
 import * as turf from '@turf/turf';
+import { getIconByName, GIS_ICON_BASE_URL } from '@/utils/gisIcon';
 
 defineOptions({ name: 'HomeTangBa' });
 
@@ -156,7 +183,10 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   let resArr: Array<any> = [];
   arr.forEach((item) => {
     if (item.children) {
-      resArr = [...resArr, ...getAllLocationDevice(item.children)];
+      resArr = [
+        ...resArr,
+        ...getAllLocationDevice(item.children.map((e) => ({ ...e, parentName: item.name })))
+      ];
     } else resArr.push(item);
   });
   return resArr;
@@ -275,11 +305,14 @@ const getMenuDataList = async () => {
     }
     const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline';
 
+    const isOnline = _item.deviceStatus === 'online';
+
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
       _item.deviceName,
-      `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+      `${GIS_ICON_BASE_URL}icon${getIconByName(_item.parentName)}${isOnline ? '' : '_off'}.png`
+      // `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
     );
     marker.on('click', () => {
       handleSelect(item.id);

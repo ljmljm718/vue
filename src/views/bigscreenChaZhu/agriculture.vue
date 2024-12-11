@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import adapter from '@/components/MapCustom/src/adapter';
@@ -23,6 +24,7 @@ import BigscreenCalendar from './components/calendar.vue';
 import { coordinateTransformation } from '@/utils/map';
 import { initChartStatic, generatePieOptions } from '../../utils/bigscreenTool/index';
 import BigscreenBuilder from '@/components/BigscreenBuilder';
+import { formatIconPath } from '@/utils/gisIcon';
 
 const { BigscreenTable } = BigscreenBuilder;
 
@@ -378,7 +380,11 @@ const getEquipmentMapData = async () => {
     arr.forEach((item) => {
       resArr = [
         ...resArr,
-        ...item.children.map((ele) => ({ ...ele, icon: iconInnerMap[item.name] }))
+        ...item.children.map((ele) => ({
+          ...ele,
+          icon: iconInnerMap[item.name],
+          parentName: item.name
+        }))
       ];
     });
     return resArr;
@@ -394,13 +400,17 @@ const getEquipmentMapData = async () => {
       plotName = '',
       location = '',
       type,
-      icon: _icon
+      icon: _icon,
+      parentName,
+      deviceStatus
     } = formattedItem;
+    const isOnline = deviceStatus === 'online';
     if (!longitude || !latitude) return;
     const [lng, lat] = coordinateTransformation.BD09II2WGS84(longitude, latitude);
     latlngs.push([lat, lng]);
     const icon = L.icon({
-      iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
+      iconUrl: formatIconPath(parentName, isOnline),
+      // iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
       iconSize: [42, 46], //marker宽高
       iconAnchor: [21, -4] //marker中心点位置
     });
@@ -798,23 +808,23 @@ defineExpose({ handleActive });
         class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3"
       >
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-1"></div>
+          <div class="w-26px h-30px gis-map-icon-2"></div>
           <div>摄像</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-2"></div>
+          <div class="w-26px h-30px gis-map-icon-1"></div>
           <div>气象</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-3"></div>
+          <div class="w-26px h-30px gis-map-icon-3"></div>
           <div>土壤</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-4"></div>
+          <div class="w-26px h-30px gis-map-icon-4"></div>
           <div>杀虫</div>
         </div>
         <div class="flex space-x-2 items-center">
-          <div class="w-26px h-30px icon-5"></div>
+          <div class="w-26px h-30px gis-map-icon-6"></div>
           <div>生长记录</div>
         </div>
       </div>

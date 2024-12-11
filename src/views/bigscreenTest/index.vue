@@ -8,9 +8,6 @@ import plantBg from './assets/v2/plant-bg.png';
 import riskBg from './assets/v2/risk-bg.png';
 import { formatTime } from '@/utils';
 import * as echarts from 'echarts';
-import Dplayer from 'dplayer';
-import Hls from 'hls.js';
-import axios from 'axios';
 import {
   initChartStatic,
   generateBaseOptions,
@@ -51,6 +48,7 @@ import { isFunction } from '@/utils/is';
 import meassageTop from './assets/tangba/meassage-top.png';
 import AgriComponent from './agri.vue';
 import PlanComponent from './plan.vue';
+import { formatIconPath } from '@/utils/gisIcon';
 
 const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenFooter, BigscreenMain } =
   BigscreenBuilder;
@@ -883,7 +881,10 @@ export default defineComponent({
       let resArr: Array<any> = [];
       arr.forEach((item) => {
         if (item.children) {
-          resArr = [...resArr, ...getAllLocationDevice(item.children)];
+          resArr = [
+            ...resArr,
+            ...getAllLocationDevice(item.children.map((e) => ({ ...e, parentName: item.name })))
+          ];
         } else resArr.push(item);
       });
       return resArr;
@@ -983,7 +984,6 @@ export default defineComponent({
       );
       mapTangBgRef.value.setMapCenter(_lng, _lat);
       // mapTangBgRef.value.setMapZoom(17)
-
       allDeviceDataList.value.forEach((item) => {
         const _item = JSON.parse(JSON.stringify(item));
         if (!_item.longitude || !_item.latitude) {
@@ -992,11 +992,21 @@ export default defineComponent({
         const statusText = _item.deviceStatus === 'online' ? 'online' : 'offline';
         console.log('ImgSrc', `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`);
 
+        const iconInnerMap = {
+          视频监控: 'icon2',
+          气象站: 'icon1',
+          土壤墒情: 'icon3',
+          虫情监测: 'icon4',
+          生长监控: 'icon6',
+          水质监测: 'icon5',
+          增氧设备: 'icon1'
+        };
         const marker = mapTangBgRef.value.addMarkerToMap(
           _item.longitude,
           _item.latitude,
           _item.deviceName,
-          `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+          formatIconPath(_item.parentName, _item.deviceStatus === 'online')
+          // `/images/mapIcon/${iconInnerMap[_item.deviceMonitorType] ?? 'icon2'}${_item.deviceStatus === 'online' ? '' : '_off'}.png`,
         );
         marker.on('click', () => {
           handleSelect(item.id);
@@ -1139,6 +1149,30 @@ export default defineComponent({
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+            <div class="absolute w-full left-0 bottom-10px flex justify-center text-white z-999">
+              <div class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3">
+                <div class="flex space-x-2 items-center">
+                  <div class="w-26px h-30px map-icon-2"></div>
+                  <div>摄像</div>
+                </div>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-26px h-30px map-icon-1"></div>
+                  <div>气象</div>
+                </div>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-26px h-30px map-icon-3"></div>
+                  <div>土壤</div>
+                </div>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-26px h-30px map-icon-4"></div>
+                  <div>杀虫</div>
+                </div>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-26px h-30px map-icon-6"></div>
+                  <div>生长记录</div>
                 </div>
               </div>
             </div>
@@ -2617,5 +2651,16 @@ export default defineComponent({
 }
 :deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
   background-color: rgba(17, 244, 127, 0.15);
+}
+
+@for $i from 1 through 6 {
+  .map-icon-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}.png);
+    background-size: 100% 100%;
+  }
+  .map-icon-off-#{$i} {
+    background-image: url(/images/mapIcon/icon#{$i}_off.png);
+    background-size: 100% 100%;
+  }
 }
 </style>
