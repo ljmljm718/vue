@@ -6,7 +6,7 @@ import { WfiSystemApi, WfiSystemVO } from '@/api/agriculture/wfisystem';
 import WfiSystemForm from './WfiSystemForm.vue';
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
 import { ElTable } from 'element-plus';
-import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import WfiSystemBindDevice from '@/views/agriculture/wfisystem/component/WfiSystemBindDevice.vue';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 import { WaterSourceApi } from '@/api/agriculture/watersource';
@@ -35,12 +35,16 @@ const exportLoading = ref(false); // 导出的加载中
 /** 查询列表 */
 const getList = async () => {
   loading.value = true;
+  enableSwitch.value = false;
   try {
     const data = await WfiSystemApi.getWfiSystemPage(queryParams);
     list.value = data.list;
     total.value = data.total;
   } finally {
     loading.value = false;
+    nextTick(() => {
+      enableSwitch.value = true;
+    });
   }
 };
 
@@ -111,6 +115,8 @@ const wfiSystemBindDeviceRef = ref();
 const drawer = ref(false);
 let categoryOptions = ref([]); // 设备分类选项
 const listDevice = ref<DeviceInfoVO[]>([]); // 列表的数据
+const enableSwitch = ref<boolean>(false);
+
 /**
  * 设备分类级联选择器
  */
@@ -179,6 +185,23 @@ const handleDeleteA = async (id) => {
   } finally {
     getDeviceList(systemId.value);
     loadingDevice.value = false;
+  }
+};
+
+const handleStatus = async (item: any) => {
+  if (!enableSwitch.value) return;
+  let s = item.sysStatus === '1' ? '开启' : '关闭';
+  try {
+    // 开关机的二次确认
+    await message.confirm('系统只能有单个开启，是否确认' + s + '?', s + '确认');
+    // 发起开关机
+    let status = item.sysStatus === '1' ? '1' : '0';
+    await WfiSystemApi.updateSystemStatus(item.id, status);
+    message.alertSuccess(s + '成功');
+    // 刷新列表
+    await getList();
+  } catch {
+    item.sysStatus = item.sysStatus === '1' ? '0' : '1';
   }
 };
 
@@ -326,9 +349,19 @@ const handleClickShowSearch = () => {
         <el-table-column label="系统标识码" align="center" prop="sysCode" />
         <el-table-column label="系统名称" align="center" prop="sysName" />
         <el-table-column label="所属水源地" align="center" prop="waterSourceName" />
+        <!--        <el-table-column label="系统状态" align="center" prop="sysStatus">-->
+        <!--          <template #default="scope">-->
+        <!--            <dict-tag :type="DICT_TYPE.WFI_SYSTEM_STATUS" :value="scope.row.sysStatus" />-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column label="系统状态" align="center" prop="sysStatus">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.WFI_SYSTEM_STATUS" :value="scope.row.sysStatus" />
+            <el-switch
+              v-model="scope.row.sysStatus"
+              active-value="1"
+              inactive-value="0"
+              @change="handleStatus(scope.row)"
+            />
           </template>
         </el-table-column>
         <el-table-column

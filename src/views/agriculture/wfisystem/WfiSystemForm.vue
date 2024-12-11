@@ -23,17 +23,17 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="系统状态" prop="sysStatus">
-        <el-radio-group v-model="formData.sysStatus">
-          <el-radio
-            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_SYSTEM_STATUS)"
-            :key="dict.value"
-            :label="dict.value"
-          >
-            {{ dict.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <!--      <el-form-item label="系统状态" prop="sysStatus">-->
+      <!--        <el-radio-group v-model="formData.sysStatus">-->
+      <!--          <el-radio-->
+      <!--            v-for="dict in getStrDictOptions(DICT_TYPE.WFI_SYSTEM_STATUS)"-->
+      <!--            :key="dict.value"-->
+      <!--            :label="dict.value"-->
+      <!--          >-->
+      <!--            {{ dict.label }}-->
+      <!--          </el-radio>-->
+      <!--        </el-radio-group>-->
+      <!--      </el-form-item>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>

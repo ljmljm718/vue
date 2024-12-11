@@ -79,5 +79,10 @@ export const WfiSystemApi = {
     return await request.delete({
       url: `/agriculture/wfi-system/device/delete?deviceId=` + deviceId + `&systemId=` + systemId
     });
+  },
+  updateSystemStatus: async (id, status) => {
+    return await request.get({
+      url: `/agriculture/wfi-system/update-status?id=` + id + `&status=` + status
+    });
   }
 };
