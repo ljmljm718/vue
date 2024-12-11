@@ -4,7 +4,7 @@ const imgAspect = ref<string>('1:1');
 </script>
 
 <template>
-  <div style="width: calc(100% - 74px)" class="!hidden">
+  <div style="width: calc(100% - 74px)">
     <div
       class="h-[63px] px-[24px] flex items-center bg-[#F2F4FA] font-bold"
       style="border-bottom: 1px solid #e0e3eb"
@@ -19,7 +19,10 @@ const imgAspect = ref<string>('1:1');
             :class="[activeTab === 'text2img' ? 'active-tab' : '']"
             @click="activeTab = 'text2img'"
           >
-            <div>icon</div>
+            <div
+              class="w-14px h-16px"
+              :class="[activeTab === 'text2img' ? 't-icon-1' : 'td-icon-1']"
+            ></div>
             <div>文生图</div>
           </div>
           <div
@@ -27,7 +30,10 @@ const imgAspect = ref<string>('1:1');
             :class="[activeTab === 'imgparse' ? 'active-tab' : '']"
             @click="activeTab = 'imgparse'"
           >
-            <div>icon</div>
+            <div
+              class="w-14px h-16px"
+              :class="[activeTab === 'imgparse' ? 't-icon-2' : 'td-icon-2']"
+            ></div>
             <div>图文解析</div>
           </div>
         </div>
@@ -39,31 +45,33 @@ const imgAspect = ref<string>('1:1');
               <div class="space-y-16px">
                 <div>文生图</div>
                 <textarea class="textarea-container"></textarea>
-                <div class="flex items-center space-x-8px">
+                <div class="flex items-center space-x-8px select-none">
                   <div class="pr-8px">图片比例</div>
                   <div
-                    class="bg-#F5F6FA rounded-1 px-21px py-6px"
+                    class="bg-#F5F6FA rounded-1 px-21px py-6px cursor-pointer"
                     :class="[imgAspect === '1:1' ? 'active-aspect' : '']"
                     @click="imgAspect = '1:1'"
                   >
                     1:1
                   </div>
                   <div
-                    class="bg-#F5F6FA rounded-1 px-21px py-6px"
+                    class="bg-#F5F6FA rounded-1 px-21px py-6px cursor-pointer"
                     :class="[imgAspect === '4:3' ? 'active-aspect' : '']"
                     @click="imgAspect = '4:3'"
                   >
                     4:3
                   </div>
                   <div
-                    class="bg-#F5F6FA rounded-1 px-21px py-6px"
+                    class="bg-#F5F6FA rounded-1 px-21px py-6px cursor-pointer"
                     :class="[imgAspect === '16:9' ? 'active-aspect' : '']"
                     @click="imgAspect = '16:9'"
                   >
                     16:9
                   </div>
                 </div>
-                <div class="w-full text-center py-3 bg-green text-white">立即生成</div>
+                <div class="w-full text-center py-3 bg-green text-white cursor-pointer">
+                  立即生成
+                </div>
               </div>
             </el-scrollbar>
           </div>
@@ -91,6 +99,7 @@ const imgAspect = ref<string>('1:1');
 .active-tab {
   background-color: #e5f5f3;
   border-radius: 999px;
+  color: #009688;
 }
 
 .no-content {
@@ -101,5 +110,25 @@ const imgAspect = ref<string>('1:1');
 .active-aspect {
   border: 1px solid #29b808;
   background-color: #0fbf7a40;
+}
+
+.t-icon-1 {
+  background-image: url('./assets/ticon1.png');
+  background-size: 100% 100%;
+}
+
+.td-icon-1 {
+  background-image: url('./assets/tdicon1.png');
+  background-size: 100% 100%;
+}
+
+.t-icon-2 {
+  background-image: url('./assets/ticon2.png');
+  background-size: 100% 100%;
+}
+
+.td-icon-2 {
+  background-image: url('./assets/tdicon2.png');
+  background-size: 100% 100%;
 }
 </style>
