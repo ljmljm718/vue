@@ -159,8 +159,11 @@ const enableRecord = async () => {
     if (Array.isArray(res) && res.length > 0) {
       const firstItem = res[0];
       const { authorization, embeddingModel } = firstItem;
-      const asrRes = await asr({ authorization, cluster: embeddingModel, audio_path: path });
-      console.log('asrRes', asrRes);
+      const { data: asrRes } = await asr({
+        authorization,
+        cluster: embeddingModel,
+        audio_path: path
+      });
       const textarea = document.querySelector('textarea');
       textarea.value = asrRes;
     }
