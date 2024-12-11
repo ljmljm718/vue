@@ -9,6 +9,17 @@
           @click="loginOut"
           :src="exitImg"
         />
+        <div
+          class="absolute right-[7rem] top-[3.5rem] w-[5rem] h-[30.563px] cursor-pointer index-btn"
+          @click="handleRouteIndex"
+        >
+          <div
+            class="w-full h-full flex justify-center items-center space-x-[4px] index-btn-text text-[15px]"
+          >
+            <el-icon><HomeFilled /></el-icon>
+            <span>首页</span>
+          </div>
+        </div>
         <div class="h-[91%] flex justify-center items-center relative bottom-bg bg-transparent">
           <div class="relative top-[-10em] z-20 w-[32em] h-[32em]">
             <!-- 中心 -->
@@ -318,6 +329,10 @@ const loginOut = async () => {
     tagsViewStore.delAllViews();
     replace('/login?redirect=/index');
   } catch {}
+};
+
+const handleRouteIndex = () => {
+  window.open('/index');
 };
 </script>
 <style lang="scss" scoped>
@@ -730,5 +745,18 @@ $j: 4;
   .rb-label-#{$i}:hover {
     color: #11f47f;
   }
+}
+
+.index-btn {
+  background-image: url(./assets/btn-bg.png);
+  background-size: 100% 100%;
+}
+
+.index-btn-text {
+  // background: linear-gradient(180deg, #FFFFFF 0%, #11F47F 141%);
+  // -webkit-background-clip: text;
+  // -webkit-text-fill-color: transparent;
+  // background-clip: text;
+  color: #11f47f;
 }
 </style>
