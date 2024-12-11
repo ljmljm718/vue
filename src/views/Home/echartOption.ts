@@ -61,7 +61,7 @@ export const makeTaskStatisticsOpt = (data: any) => {
   const xData = data.xData;
   const irrigationData = data.irrigationData;
   const fertilizationData = data.fertilizationData;
-  const waterConsumptionData = data.waterConsumptionData;
+  // const waterConsumptionData = data.waterConsumptionData;
 
   return {
     grid: {
@@ -116,19 +116,19 @@ export const makeTaskStatisticsOpt = (data: any) => {
             return value + ' 次';
           }
         }
-      },
-      {
-        type: 'line',
-        name: '用水量',
-        yAxisIndex: 1,
-        smooth: true,
-        data: waterConsumptionData,
-        tooltip: {
-          valueFormatter: (value: number) => {
-            return value + ' L';
-          }
-        }
       }
+      // {
+      //   type: 'line',
+      //   name: '用水量',
+      //   yAxisIndex: 1,
+      //   smooth: true,
+      //   data: waterConsumptionData,
+      //   tooltip: {
+      //     valueFormatter: (value: number) => {
+      //       return value + ' L';
+      //     }
+      //   }
+      // }
     ]
   };
 };

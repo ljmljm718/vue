@@ -192,7 +192,7 @@
               {{ taskStatisticsInfo[taskStatisticsTimeRange].total.fertilize }}
             </span>
           </div>
-          <div
+          <!-- <div
             class="h-[80px] flex justify-between items-center bg-[#F0F7F5] px-[32px] py-[15px] box-border rounded-[6px]"
           >
             <div class="flex items-center">
@@ -206,7 +206,7 @@
             <span class="text-[24px]">
               {{ taskStatisticsInfo[taskStatisticsTimeRange].total.water }}
             </span>
-          </div>
+          </div> -->
         </div>
 
         <div id="taskStatisticsChart" class="mt-[16px] w-full h-[280px]"></div>
