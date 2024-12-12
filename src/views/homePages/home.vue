@@ -310,8 +310,8 @@ const routerHandler = (item: string) => {
   for (let routeMapKey in routeMap) {
     const dictVal = getDictValue(DICT_TYPE.HOME_INDEX_URL, routeMapKey);
     const routeMapVal = routeMap[routeMapKey];
-    if (!dictVal) return console.log(`未配置${routeMapKey}`);
-    if (dictVal !== routeMapVal) return console.log(`${routeMapKey}字典不匹配`);
+    if (!dictVal) console.log(`未配置${routeMapKey}`);
+    if (dictVal !== routeMapVal) console.log(`${routeMapKey}字典不匹配`);
   }
 
   if (isErDuUser && item === '种植溯源') return window.open(routeMap[item]);
