@@ -54,7 +54,7 @@
         <el-input v-model="formData.tiExecCronDay" placeholder="请输入灌溉周期具体时间" />
       </el-form-item>
       <el-form-item label="灌溉日" prop="tiTaskInfo">
-        <el-input v-model="formData.tiTaskInfo" placeholder="提交确定后自动生成" />
+        <el-input v-model="formData.tiTaskInfo" placeholder="提交确定后自动生成" type="textarea" />
       </el-form-item>
       <el-form-item label="任务执行时间" prop="tiExecBeginTime">
         <!--        <el-date-picker-->

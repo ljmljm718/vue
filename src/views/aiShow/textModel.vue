@@ -4,6 +4,7 @@ import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
 import { record_start, record_upload } from '@/views/aiShow/utils';
+import { getAccessToken } from '@/utils/auth';
 
 const getCollectionSearch = async (data: any) => {
   return await request.post({ url: `/agriculture/collection/search`, data });
@@ -159,7 +160,7 @@ const enableRecord = async () => {
     if (Array.isArray(res) && res.length > 0) {
       const firstItem = res[0];
       const { authorization, embeddingModel } = firstItem;
-      const { data: asrRes } = await asr({
+      const asrRes = await asr({
         authorization,
         cluster: embeddingModel,
         audio_path: path
@@ -170,8 +171,8 @@ const enableRecord = async () => {
     recording.value = false;
     return;
   }
-  record_start();
   recording.value = true;
+  record_start();
 };
 </script>
 <template>
