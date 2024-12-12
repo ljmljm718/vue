@@ -153,10 +153,8 @@ const fullTextArea = (forceHide = false) => {
 };
 
 let recording = ref<boolean>(false);
-let wsClient: any = null;
 const enableRecord = async () => {
   if (recording.value) {
-    if (wsClient) wsClient.close();
     const path = await record_upload();
     const res = await selectEmbeddingModel({ modelType: '语音识别' });
     if (Array.isArray(res) && res.length > 0) {
@@ -173,28 +171,7 @@ const enableRecord = async () => {
     recording.value = false;
     return;
   }
-  wsClient = new WebSocket(`ws://localhost:48080/infra/ws?token=${getAccessToken()}`);
-  wsClient.onopen = () => {
-    record_start((data) => {
-      if (Array.isArray(data)) {
-        data.forEach((item) => {
-          const messageContent = JSON.stringify({
-            fileContent: Array.prototype.slice.call(new Uint8Array(item.buffer))
-          });
-          wsClient.send(
-            JSON.stringify({
-              type: 'asr-message-send',
-              content: messageContent
-            })
-          );
-        });
-      }
-    });
-    recording.value = true;
-  };
-  wsClient.onerror = (e) => {
-    ElMessage.error('websocket连接失败');
-  };
+  record_start();
 };
 </script>
 <template>
