@@ -160,7 +160,7 @@ const enableRecord = async () => {
     if (Array.isArray(res) && res.length > 0) {
       const firstItem = res[0];
       const { authorization, embeddingModel } = firstItem;
-      const { data: asrRes } = await asr({
+      const asrRes = await asr({
         authorization,
         cluster: embeddingModel,
         audio_path: path
