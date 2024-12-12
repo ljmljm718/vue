@@ -51,10 +51,12 @@ const options = [
 ];
 
 /** 查询列表 */
+const enableSelection = ref<boolean>(true);
 const getList = async () => {
   loading.value = true;
   try {
     const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams);
+    enableSelection.value = false;
     list.value = data.list;
     nextTick(() => {
       list.value.forEach(async (item) => {
@@ -64,6 +66,14 @@ const getList = async () => {
           }
         });
       });
+      const tableRefData = tableRef.value.data;
+      const selectionCollectionIDs = selectionCollection.value.map((e) => e.id);
+      tableRefData.forEach((item) => {
+        if (selectionCollectionIDs.indexOf(item.id) !== -1) {
+          tableRef.value.toggleRowSelection(item, true);
+        }
+      });
+      enableSelection.value = true;
     });
     total.value = data.total;
   } finally {
@@ -135,6 +145,39 @@ const showSearch = ref(false);
 const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
 };
+
+const tableRef = ref();
+const selectionCollection = ref<any[]>([]);
+const handlePrint = () => {
+  if (selectionCollection.value.length === 0) return ElMessage.warning('请选择要打印的列表项');
+  showPrintWindow.value = true;
+};
+const confirmPrint = () => {
+  const printContentHtml = document.getElementById('print').innerHTML;
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('style', 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;');
+  document.body.appendChild(iframe);
+  iframe.contentDocument.write(printContentHtml);
+  iframe.contentDocument.close();
+  iframe.contentWindow.print();
+  document.body.removeChild(iframe);
+};
+const handleSelectionChange = (e) => {
+  if (!enableSelection.value) return;
+  const waitAddList = e.map((item) => item.id);
+  const leftList = list.value
+    .filter((item) => waitAddList.indexOf(item.id) === -1)
+    .map((item) => item.id);
+  const existedList = selectionCollection.value.map((item) => item.id);
+  e.forEach((item) => {
+    if (existedList.indexOf(item.id) === -1) selectionCollection.value.push(item);
+  });
+  selectionCollection.value = selectionCollection.value.filter(
+    (item) => leftList.indexOf(item.id) === -1
+  );
+};
+
+const showPrintWindow = ref<boolean>(false);
 </script>
 
 <template>
@@ -162,6 +205,10 @@ const handleClickShowSearch = () => {
         <el-button @click="handleQuery" type="primary">
           <Icon icon="ep:search" class="mr-5px" />
           搜索
+        </el-button>
+        <el-button @click="handlePrint" type="primary">
+          <Icon icon="ep:printer" class="mr-5px" />
+          打印({{ selectionCollection.length }})
         </el-button>
         <el-button @click="resetQuery">
           <Icon icon="ep:refresh" class="mr-5px" />
@@ -283,8 +330,16 @@ const handleClickShowSearch = () => {
 
     <div class="w-full mt-[8px]">
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
-      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table
+        v-loading="loading"
+        ref="tableRef"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+        @selection-change="handleSelectionChange"
+      >
         <!-- todo复制列表 -->
+        <el-table-column type="selection" width="30" />
         <!--      <el-table-column label="id" align="center" prop="id"/>-->
         <el-table-column label="源码" align="center" prop="codeContent" width="180px" />
         <!--      <el-table-column label="模板ID" align="center" prop="templateId"/>-->
@@ -389,6 +444,42 @@ const handleClickShowSearch = () => {
   <!-- todo页面组件复制在下面 -->
   <!-- 表单弹窗：添加/修改 -->
   <CodeSendingInfoForm ref="formRef" @success="getList" />
+  <Dialog v-model="showPrintWindow" title="打印二维码">
+    <div id="print" style="border: 1px solid #999">
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          padding: 4px;
+          border-radius: 5px;
+        "
+      >
+        <div
+          v-for="item in selectionCollection"
+          :key="item.id"
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <el-image
+            v-if="item.img != undefined && item.img != null"
+            :src="item.img"
+            style="object-fit: cover; width: calc(100% - 2px); aspect-radio: 1"
+            preview-teleported
+            :preview-src-list="[item.img]"
+          />
+          <div>{{ item.codeContent }}</div>
+        </div>
+      </div>
+    </div>
+    <template #footer>
+      <el-button @click="confirmPrint" type="primary" :disabled="formLoading">打印</el-button>
+      <el-button @click="showPrintWindow = false">取 消</el-button>
+    </template>
+  </Dialog>
 </template>
 <style lang="scss" scoped>
 // 原页面样式复制在下面

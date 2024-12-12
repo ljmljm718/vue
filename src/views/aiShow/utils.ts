@@ -1,7 +1,7 @@
 import { updateFile } from '@/api/infra/file';
 import Recorder from 'js-audio-recorder';
 
-let recorder = null;
+let recorder: any = null;
 export const record_start = () => {
   if (recorder) return ElMessage.warning('正在录音中');
   recorder = new Recorder({
