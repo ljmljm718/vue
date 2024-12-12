@@ -12,14 +12,14 @@
         <!-- 一级标题旁边的按钮 -->
         <!-- todo原新增按钮 -->
         <!-- todo需要包含type="primary"&&不能有plain属性 -->
-        <el-button
-          type="primary"
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:wfi-task-irrigation:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />
-          新增
-        </el-button>
+        <!--        <el-button-->
+        <!--          type="primary"-->
+        <!--          @click="openForm('create')"-->
+        <!--          v-hasPermi="['agriculture:wfi-task-irrigation:create']"-->
+        <!--        >-->
+        <!--          <Icon icon="ep:plus" class="mr-5px" />-->
+        <!--          新增-->
+        <!--        </el-button>-->
       </div>
 
       <div class="flex items-center">
@@ -204,9 +204,14 @@
         <el-table-column label="周期天数" align="center" prop="tiExecCronDay" />
         <el-table-column label="任务执行时间" align="center" prop="tiExecBeginTime" />
         <el-table-column label="水泵控制" align="center" prop="waterPumpStatus">
-          <!--        <template #default="scope">-->
-          <!--          <dict-tag :type="DICT_TYPE.EQU_SWITH_STATE" :value="scope.row.waterPumpStatus" />-->
-          <!--        </template>-->
+          <template #default="scope">
+            <el-tag v-if="scope.row.waterPumpStatus === '是'" type="success">
+              {{ scope.row.waterPumpStatus }}
+            </el-tag>
+            <el-tag v-if="scope.row.waterPumpStatus === '否'" type="danger">
+              {{ scope.row.waterPumpStatus }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column label="并发任务执行数量" align="center" prop="concurrentTaskNumber" />
         <el-table-column label="灌溉时长/量（分钟/L）" align="center" prop="amountTimeNumber" />
