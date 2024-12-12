@@ -100,6 +100,17 @@ export const getDictLabel = (dictType: string, value: any): string => {
   return dictLabel.value;
 };
 
+export const getDictValue = (dictType: string, label: string): string => {
+  const dictOptions: DictDataType[] = getDictOptions(dictType);
+  const dictVal = ref('');
+  dictOptions.forEach((dict: DictDataType) => {
+    if (dict.label === label + '') {
+      dictVal.value = dict.value.toString();
+    }
+  });
+  return dictVal.value;
+};
+
 export enum DICT_TYPE {
   USER_TYPE = 'user_type',
   COMMON_STATUS = 'common_status',
@@ -326,6 +337,7 @@ export enum DICT_TYPE {
   WFI_SYSTEM_STATUS = 'wfi_system_status', //系统状态
   WR_IS_NORMAL = 'wr_is_normal', //预警规则是否正常区间
   WS_TYPE = 'ws_type', // 水源类型
+  HOME_INDEX_URL = 'home_index_url',
 
   // ========== agri - 视频设备 ===========
   AGRI_DEVICE_MANUFACTURER = 'agri_device_manufacturer' //厂商类型

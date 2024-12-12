@@ -218,10 +218,12 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache';
+// @ts-ignore
 import ScaleBox from 'vue3-scale-box';
 import { useTagsViewStore } from '@/store/modules/tagsView';
 import { useUserStore } from '@/store/modules/user';
 import exitImg from './assets/exit.png';
+import { DICT_TYPE, getDictValue } from '@/utils/dict';
 
 const { wsCache } = useCache();
 const router = useRouter();
@@ -269,7 +271,7 @@ const routerHandler = (item: string) => {
     });
   }
   const routeMap = {
-    可视化驾驶舱: wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex',
+    可视化驾驶舱: wsCache.get(CACHE_KEY.BIGSCREEN_PATH) || '/homeIndex', // TODO
 
     GIS一张图: '/internetMonitor/gis',
     设备巡检: '/internetMonitor/check/checkView',
@@ -279,7 +281,7 @@ const routerHandler = (item: string) => {
 
     农事活动: '/farm_work/farmManage/farm-record',
     种植管理: '/farm_work/crop-base',
-    种植溯源: isErDuUser ? '/trace/trace-visual' : '/trace/plant-trace',
+    种植溯源: isErDuUser ? '/trace/trace-visual' : '/trace/plant-trace', // TODO
     监测模型: '/growth_monitor/modelMonitor',
     农事概览: '/farm_work/agriOverview',
 
@@ -296,8 +298,8 @@ const routerHandler = (item: string) => {
     智能感知: '/internetMonitor/deviceData/equipment-smart-count',
     农业资源: '/asset/base/parkinfo',
     视频监控: '/internetMonitor/deviceData/info',
-    数字产销: '/pcg/production/village-product',
-    智慧农事: '/farm_work/crop-base',
+    数字产销: '/pcg/production/village-product', // TODO 和特色产品重复了
+    智慧农事: '/farm_work/crop-base', // TODO 和种植管理重复了
     // '模型监测': '/growth_monitor/modelMonitor',
     模型监测: '/growthMonitoringModelDataCenter',
 
@@ -305,10 +307,20 @@ const routerHandler = (item: string) => {
     病虫监测: '/disease_pest_surveillance/pestWarn'
   };
 
-  if (routeMap[item]) {
-    if (buildedRoutes.value.indexOf(routeMap[item]) === -1) {
+  for (let routeMapKey in routeMap) {
+    const dictVal = getDictValue(DICT_TYPE.HOME_INDEX_URL, routeMapKey);
+    const routeMapVal = routeMap[routeMapKey];
+    if (!dictVal) return console.log(`未配置${routeMapKey}`);
+    if (dictVal !== routeMapVal) return console.log(`${routeMapKey}字典不匹配`);
+  }
+
+  if (isErDuUser && item === '种植溯源') return window.open(routeMap[item]);
+  const formattedPath = getDictValue(DICT_TYPE.HOME_INDEX_URL, item) || routeMap[item];
+  console.log('formattedPath', formattedPath);
+  if (formattedPath) {
+    if (buildedRoutes.value.indexOf(formattedPath) === -1) {
       return ElMessage.warning('暂未开放该功能');
-    } else window.open(routeMap[item]);
+    } else window.open(formattedPath);
   } else {
     return ElMessage.warning('暂无此菜单权限！');
   }
@@ -635,8 +647,8 @@ const handleRouteIndex = () => {
   width: 31em;
   height: 31em;
   position: relative;
-  left: 0em;
-  top: 0em;
+  left: 0;
+  top: 0;
   z-index: 6;
 }
 
