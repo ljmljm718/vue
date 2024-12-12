@@ -171,6 +171,7 @@ const enableRecord = async () => {
     recording.value = false;
     return;
   }
+  recording.value = true;
   record_start();
 };
 </script>
