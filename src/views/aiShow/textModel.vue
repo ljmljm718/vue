@@ -4,6 +4,7 @@ import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
 import { record_start, record_upload } from '@/views/aiShow/utils';
+import { getAccessToken } from '@/utils/auth';
 
 const getCollectionSearch = async (data: any) => {
   return await request.post({ url: `/agriculture/collection/search`, data });
@@ -152,8 +153,10 @@ const fullTextArea = (forceHide = false) => {
 };
 
 let recording = ref<boolean>(false);
+let wsClient: any = null;
 const enableRecord = async () => {
   if (recording.value) {
+    if (wsClient) wsClient.close();
     const path = await record_upload();
     const res = await selectEmbeddingModel({ modelType: '语音识别' });
     if (Array.isArray(res) && res.length > 0) {
@@ -170,8 +173,28 @@ const enableRecord = async () => {
     recording.value = false;
     return;
   }
-  record_start();
-  recording.value = true;
+  wsClient = new WebSocket(`ws://localhost:48080/infra/ws?token=${getAccessToken()}`);
+  wsClient.onopen = () => {
+    record_start((data) => {
+      if (Array.isArray(data)) {
+        data.forEach((item) => {
+          const messageContent = JSON.stringify({
+            fileContent: Array.prototype.slice.call(new Uint8Array(item.buffer))
+          });
+          wsClient.send(
+            JSON.stringify({
+              type: 'asr-message-send',
+              content: messageContent
+            })
+          );
+        });
+      }
+    });
+    recording.value = true;
+  };
+  wsClient.onerror = (e) => {
+    ElMessage.error('websocket连接失败');
+  };
 };
 </script>
 <template>

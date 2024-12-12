@@ -62,7 +62,7 @@
     "highlight.js": "^11.9.0",
     "hls.js": "^1.5.14",
     "husky": "^9.1.6",
-    "js-audio-recorder": "^1.0.7",
+    "js-audio-recorder": "0.5.7",
     "jsencrypt": "^3.3.2",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
