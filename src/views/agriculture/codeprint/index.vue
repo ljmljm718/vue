@@ -161,6 +161,9 @@ const confirmPrint = () => {
   iframe.contentDocument.close();
   iframe.contentWindow.print();
   document.body.removeChild(iframe);
+  tableRef.value.clearSelection();
+  selectionCollection.value = [];
+  showPrintWindow.value = false;
 };
 const handleSelectionChange = (e) => {
   if (!enableSelection.value) return;
