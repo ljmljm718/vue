@@ -1,53 +1,80 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <!-- <div class="flex"> -->
-    <!-- <el-form
+  <el-scrollbar
+    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+      <!-- 一级标题名字 -->
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">模型管理</h1>
+        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+        <!-- 一级标题旁边的按钮 -->
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agri:crop-growth-new:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </div>
+      <div class="flex items-center">
+        <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <el-button-group class="ml-4">
+          <el-button
+            :type="showType === 'list' ? 'primary' : ''"
+            :icon="List"
+            @click="showType = 'list'"
+          />
+          <el-button
+            :type="showType === 'card' ? 'primary' : ''"
+            :icon="Menu"
+            @click="showType = 'card'"
+          />
+        </el-button-group>
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+  <!-- 搜索栏 注意 :model 和 ref 的名称 -->
+  <el-form
       :model="queryParams"
       ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+      label-width="95px"
       :inline="true"
-      label-width="68px"
-      :style="{ height: '22px' }"
-      class="w-full flex"
-    > -->
-    <custom-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="88px"
-      >
-      <el-form-item label="模型名称" prop="modelName" class="flex">
+    >
+    
+      <el-form-item label="模型名称" prop="modelName">
         <el-input
           v-model="queryParams.modelName"
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
-      <!-- <el-form-item label="模型类型" prop="modelType">
-          <el-select
-            v-model="queryParams.modelType"
-            placeholder="请选择模型类型"
-            clearable
-            class="!w-240px"
-          >
-            <el-option
-                v-for="dict in getStrDictOptions(DICT_TYPE.GROWTH_MODEL_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            />
-          </el-select>
-        </el-form-item> -->
-      <el-form-item label="品种" prop="belongVarietyId" class="flex">
+
+      <el-form-item label="品种" prop="belongVarietyId" >
         <el-select
           v-model="queryParams.belongVarietyId"
           placeholder="请选择"
           clearable
           @change="handleVarietyChange"
-          class="!w-240px"
         >
           <el-option
             v-for="dict in listVarietyManagement"
@@ -57,12 +84,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="品类" prop="belongCategoryId" class="flex">
+      <el-form-item label="品类" prop="belongCategoryId">
         <el-select
           v-model="queryParams.belongCategoryId"
           placeholder="请选择"
           clearable
-          class="!w-240px"
         >
           <el-option
             v-for="dict in listCategoryManagement"
@@ -72,51 +98,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery" type="primary"> 查询 </el-button>
-        <el-button @click="resetQuery"> 重置 </el-button>
-      </el-form-item>
-    </custom-form>
-  </ContentWrap>
+  </el-form>
 
   <!-- 列表 -->
-  <ContentWrap>
-    <div class="flex justify-between items-center mb-3">
-      <div class="space-x-1">
-        <el-button
-          class="!text-white !bg-[#009688]"
-          @click="openForm('create')"
-          v-hasPermi="['agri:crop-growth-new:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" />新增
-        </el-button>
-      </div>
-      <div class="flex rounded-md cursor-pointer select-none">
-        <div
-          :class="[showType === 'card' ? 'tab-btn-selected' : 'tab-btn']"
-          style="border-radius: 5px 0px 0px 5px"
-          @click="showType = 'card'"
-        >
-          <el-icon>
-            <Menu />
-          </el-icon>
-          <div class="pl-1 text-[13px]">卡片</div>
-        </div>
-        <div
-          :class="[showType === 'list' ? 'tab-btn-selected' : 'tab-btn']"
-          style="border-radius: 0px 5px 5px 0px"
-          @click="showType = 'list'"
-        >
-          <el-icon>
-            <List />
-          </el-icon>
-          <div class="pl-1 text-[13px]">列表</div>
-        </div>
-      </div>
-    </div>
-    
 
-
+  <div>
     <div class="flex justify-center">
       <div v-if="showType === 'card'"  class="container mt-3 mb-3 grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       <div v-for="(item, index) in list" :key="index" class="p-5 bg-[#f5f5f5]">
@@ -167,6 +153,7 @@
       </div>
     </div>
   </div>
+  <div class="w-full mt-[15px]"></div>
     <el-table
       v-if="showType === 'list'"
       v-loading="loading"
@@ -251,13 +238,14 @@
     </el-table>
     <!-- 分页 -->
     <Pagination
+     style="margin-bottom: 0; margin-top: 8px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-  </ContentWrap>
-
+  </div>
+</el-scrollbar>
   <!-- 表单弹窗：添加/修改 -->
   <ModelManagementForm ref="formRef" @success="getList" />
 </template>
@@ -271,6 +259,7 @@ import { CommonStatusEnum } from '@/utils/constants'
 import { allDataCacheManager, VarietyManagementVO } from '@/api/agriculture/varietymanagement'
 import { CategoryManagementApi, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
 import ParkInfoPopup from '@/views/agriculture/parkinfo/components/ParkInfoPopup.vue'
+import { List, Menu, VideoCameraFilled } from '@element-plus/icons-vue';
 
 /** 模型管理 列表 */
 defineOptions({ name: 'ModelManagement' })
@@ -292,6 +281,8 @@ const loading = ref(true) // 列表的加载中
 const list = ref<ModelManagementVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const showType = ref('card') //布局切换类型
+const topMenuHeight = 85;
+const contentPadding = 8;
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -314,7 +305,11 @@ const handleVarietyChange = (e) => {
   const _item = listVarietyManagement.value.find((item) => item.id === e)
   if (_item) queryParams.belongCategoryId = _item.categoryId
 }
-
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -456,5 +451,67 @@ onMounted(() => {
       grid-template-columns: repeat(#{$i}, 1fr);
     }
   }
+}
+// 收起
+.circle-arrow-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ebebeb;
+  color: #333;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    border-width: 0;
+    background-color: var(--el-color-primary);
+  }
+}
+.el-form-item--small {
+    --font-size: 12px;
+    --el-form-label-font-size: var(--font-size);
+    margin-bottom: 0px;
+}
+// 向上箭头展开收起的动画
+@keyframes rotate180andwhiteBg {
+  from {
+    transform: rotate(0deg);
+    color: #333;
+    background-color: white;
+  }
+  to {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+}
+
+.rotate180andwhiteBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andwhiteBg;
+  animation-fill-mode: forwards;
+}
+
+@keyframes rotate180andthemeBg {
+  from {
+    transform: rotate(180deg);
+    color: white;
+    background-color: var(--el-color-primary);
+  }
+  to {
+    transform: rotate(360deg);
+    color: #333;
+    background-color: white;
+  }
+}
+
+.rotate180andthemeBg {
+  animation-duration: 0.5s;
+  animation-name: rotate180andthemeBg;
+  animation-fill-mode: forwards;
 }
 </style>
