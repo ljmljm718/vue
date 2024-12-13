@@ -219,8 +219,7 @@ const formattedLocationByDeptID = (longitude, latitude) => {
   } else if ([168].includes(deptId.value)) {
     return coordinateTransformation.BD09II2WGS84(longitude, latitude);
   } else {
-    const { lon, lat } = transformGCJ2WGS(longitude, latitude);
-    return [lon, lat];
+    return [longitude, latitude];
   }
 };
 

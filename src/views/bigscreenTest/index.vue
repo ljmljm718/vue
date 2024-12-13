@@ -40,11 +40,9 @@ import {
   selectCount,
   getCountRiceDuckSum
 } from './api';
-import { DeviceNvrApi } from '@/api/agriculture/devicenvr/index';
 import MapTangBa from '../Home/mapTangBacopy.vue';
 import * as turf from '@turf/turf';
 import { getDeviceCategoryTree, getDeviceInfo } from './api';
-import { isFunction } from '@/utils/is';
 import meassageTop from './assets/tangba/meassage-top.png';
 import AgriComponent from './agri.vue';
 import PlanComponent from './plan.vue';
@@ -52,10 +50,6 @@ import { formatIconPath } from '@/utils/gisIcon';
 
 const { BigscreenAdapter, BigscreenContainer, BigscreenHeader, BigscreenFooter, BigscreenMain } =
   BigscreenBuilder;
-
-const sleep = (delaytime = 1000) => {
-  return new Promise((resolve) => setTimeout(resolve, delaytime));
-};
 
 // 设备列表项
 interface DeviceVideoListItemType {
@@ -2207,8 +2201,8 @@ export default defineComponent({
   padding-right: 20px;
 }
 :deep(
-    .el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-sub-menu__title
-  ) {
+  .el-menu--vertical:not(.el-menu--collapse):not(.el-menu--popup-container) .el-sub-menu__title
+) {
   padding-left: 40px;
 }
 // 调整菜单项的左内距
