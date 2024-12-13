@@ -125,6 +125,8 @@ const showTab = computed(() => {
 });
 let chartIns: any = null;
 const initChart = async (wsId: string) => {
+  const chartContainer = document.getElementById('chartContainer');
+  if (chartContainer) chartContainer.innerHTML = '暂无数据';
   const res = await getWaterLevelMonitor({ wsId });
   console.log('initChart res', res);
   if (!Array.isArray(res)) return;
