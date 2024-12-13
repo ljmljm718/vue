@@ -7,6 +7,11 @@ const iconMap = new Map([
   ['视频', '2']
 ]);
 
+export const iconMapArr = Array.from(iconMap.keys());
+export const textMatchInIconMap = (text: string) => {
+  return iconMapArr.find((item) => text.indexOf(item) !== -1);
+};
+
 export const GIS_ICON_BASE_URL = `/images/mapIcon/`;
 
 export const getIconByName = (name: string) => {

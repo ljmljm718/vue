@@ -57,23 +57,27 @@
       <div
         class="flex justify-center space-x-40px backdrop-blur-sm p-3 px-6 bg-#00000090 rounded-3"
       >
-        <div class="flex space-x-2 items-center">
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('视频')">
           <div class="w-26px h-30px gis-map-icon-2"></div>
           <div>摄像</div>
         </div>
-        <div class="flex space-x-2 items-center">
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('气象')">
           <div class="w-26px h-30px gis-map-icon-1"></div>
           <div>气象</div>
         </div>
-        <div class="flex space-x-2 items-center">
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('土壤')">
           <div class="w-26px h-30px gis-map-icon-3"></div>
           <div>土壤</div>
         </div>
-        <div class="flex space-x-2 items-center">
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('虫')">
           <div class="w-26px h-30px gis-map-icon-4"></div>
           <div>杀虫</div>
         </div>
-        <div class="flex space-x-2 items-center">
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('水质')">
+          <div class="w-26px h-30px gis-map-icon-5"></div>
+          <div>水质</div>
+        </div>
+        <div class="flex space-x-2 items-center" v-if="activeLegends.includes('生长')">
           <div class="w-26px h-30px gis-map-icon-6"></div>
           <div>生长记录</div>
         </div>
@@ -114,7 +118,12 @@ import PanelTangBa from './panelTangBa.vue';
 import { getDeviceCategoryTree, getDeviceInfo, parkInfoPage } from './apis';
 import meassageTop from './assets/tangba/meassage-top.png';
 import * as turf from '@turf/turf';
-import { getIconByName, GIS_ICON_BASE_URL } from '@/utils/gisIcon';
+import {
+  getIconByName,
+  GIS_ICON_BASE_URL,
+  formatIconPath,
+  textMatchInIconMap
+} from '@/utils/gisIcon';
 
 defineOptions({ name: 'HomeTangBa' });
 
@@ -191,6 +200,7 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   });
   return resArr;
 };
+const activeLegends = ref<string[]>([]);
 //卫星图层切换
 const mapTileLayerType = ref(false);
 const mapTileLayer = () => {
@@ -275,10 +285,7 @@ const getMenuDataList = async () => {
     )
   );
 
-  const { list } = await parkInfoPage({ pageNo: 1, pageSize: 10 }).catch(() => {
-    {
-    }
-  });
+  const { list } = await parkInfoPage({ pageNo: 1, pageSize: 10 }).catch(() => {});
   console.log('🚀 ~ getMenuDataList ~ resPark:', list);
   // 由于用户可能配置的中心点根本不包含 Marks，所以还是直接用计算方式取中心点算了
   const _flag = false;
@@ -298,6 +305,7 @@ const getMenuDataList = async () => {
     mapTangBgRef.value.setMapCenter(_lng, _lat);
   }
 
+  activeLegends.value = [];
   allDeviceDataList.value.forEach((item) => {
     const _item = JSON.parse(JSON.stringify(item));
     if (!_item.longitude || !_item.latitude) {
@@ -307,11 +315,18 @@ const getMenuDataList = async () => {
 
     const isOnline = _item.deviceStatus === 'online';
 
+    console.log('_item.parentName', _item.parentName);
+    const matchText = textMatchInIconMap(_item.parentName);
+    if (matchText) {
+      if (activeLegends.value.indexOf(matchText) === -1) {
+        activeLegends.value.push(matchText);
+      }
+    }
     const marker = mapTangBgRef.value.addMarkerToMap(
       _item.longitude,
       _item.latitude,
       _item.deviceName,
-      `${GIS_ICON_BASE_URL}icon${getIconByName(_item.parentName)}${isOnline ? '' : '_off'}.png`
+      formatIconPath(_item.parentName, isOnline)
       // `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
     );
     marker.on('click', () => {

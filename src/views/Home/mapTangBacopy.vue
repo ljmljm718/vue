@@ -237,7 +237,7 @@ const addMarkerToMap = (
   const marker = new T.Marker(new T.LngLat(lng, lat), {
     icon: new T.Icon({
       iconUrl: icon,
-      iconSize: new T.Point(30, 32)
+      iconSize: new T.Point(50, 53)
     })
   });
   markerList.set(longitude + '_' + latitude, marker);

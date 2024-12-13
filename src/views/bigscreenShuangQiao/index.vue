@@ -135,8 +135,8 @@ const getEquipmentMapData = async () => {
     const icon = L.icon({
       iconUrl: formatIconPath(parentName, isOnline),
       // iconUrl: `/images/bigscreenED/${_icon}.png`, //marker图片地址
-      iconSize: [42, 46], //marker宽高
-      iconAnchor: [21, -4] //marker中心点位置
+      iconSize: [62, 66], //marker宽高
+      iconAnchor: [31, -4] //marker中心点位置
     });
     L.marker([lat, lon], { icon })
       .addTo(map)

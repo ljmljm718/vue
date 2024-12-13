@@ -124,11 +124,15 @@ $max-lines: 20; // 设定最大的行数
 @for $i from 1 through 6 {
   .gis-map-icon-#{$i} {
     background-image: url(/images/mapIcon/icon#{$i}.png);
-    background-size: 100% 100%;
+    background-size: 165% 150%;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
   .gis-map-icon-off-#{$i} {
     background-image: url(/images/mapIcon/icon#{$i}_off.png);
-    background-size: 100% 100%;
+    background-size: 120% 120%;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 }
 </style>

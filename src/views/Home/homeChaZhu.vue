@@ -84,7 +84,7 @@ import MapTangBa from './mapTangBacopy.vue';
 import PanelTangBa from './panelTangBa.vue';
 import { getDeviceCategoryTree, getDeviceInfo } from './apis';
 import meassageTop from './assets/tangba/meassage-top.png';
-import meassageBg from './assets/tangba/meassage-bg.png';
+import { formatIconPath } from '@/utils/gisIcon';
 import * as turf from '@turf/turf';
 
 defineOptions({ name: 'HomeTangBa' });
@@ -154,7 +154,10 @@ const getAllLocationDevice = (arr: Array<any>): Array<any> => {
   let resArr: Array<any> = [];
   arr.forEach((item) => {
     if (item.children) {
-      resArr = [...resArr, ...getAllLocationDevice(item.children)];
+      resArr = [
+        ...resArr,
+        ...getAllLocationDevice(item.children.map((e) => ({ ...e, parentName: item.name })))
+      ];
     } else resArr.push(item);
   });
   return resArr;
@@ -253,7 +256,8 @@ const getMenuDataList = async () => {
       _item.longitude,
       _item.latitude,
       _item.deviceName,
-      `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
+      formatIconPath(_item.parentName, _item.deviceStatus === 'online')
+      // `/tangba/${statusText}${kindMap[_item.deviceKind] || 'Monitor'}.png`
     );
     marker.on('click', () => {
       handleSelect(item.id);
