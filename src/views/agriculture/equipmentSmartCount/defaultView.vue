@@ -14,12 +14,19 @@ import icon4 from './assets/icon4.png'
 import icon5 from './assets/icon5.png'
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory'
 //存放基地信息
+const topMenuHeight = 85;
+const contentPadding = 8;
 const selectBase = ref([])
 const getBaseDataList = async () => {
   const selectBaseList = await ParkInfoApi.getParkInfoPage({})
   selectBase.value = selectBaseList.list
 }
 getBaseDataList()
+// 展开或收起搜索栏
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
 const soilList = ref([])
 // 获取土壤墒情信息
 const getSoilInfoList = async (belongPark?: any, belongPlot?: any) => {
@@ -571,16 +578,58 @@ watch(
 )
 </script>
 <template>
-  <div>
-    <el-card  class="mb-3 ">
-      <custom-form :model="queryParams"  :inline="true">
+   <el-scrollbar
+    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+  <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+      <!-- 一级标题名字 -->
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">智能统计</h1>
+        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+      
+        <!-- 一级标题旁边的按钮 -->
+   
+      </div>
+      <div class="flex items-center">
+        <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
+        >
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
+      </div>
+    </div>
+
+
+
+
+    <el-form
+      :model="queryParams"
+      ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      :class="showSearch ? 'opacity-100 mb-[15px]' : 'h-0 opacity-0'"
+      label-width="95px"
+      :inline="true"
+    >
+
         <el-form-item label="选择基地：">
           <el-select
             v-model="queryParams.name"
             placeholder="请选择"
             clearable
             @keyup.enter="handleQuery"
-            class="!w-240px"
           >
             <el-option v-for="item in selectBase" :key="item" :label="item.name" :value="item.id" />
           </el-select>
@@ -591,7 +640,6 @@ watch(
             v-model="queryParams.plot"
             clearable
             placeholder="请选择"
-            style="width: 240px"
             @keyup.enter="handleQuery"
           />
 
@@ -601,7 +649,6 @@ watch(
             placeholder="请选择基地名称"
             clearable
             @keyup.enter="handleQuery"
-            class="!w-240px"
           >
             <el-option
               v-for="items in listPlot"
@@ -611,21 +658,10 @@ watch(
             />
           </el-select>
         </el-form-item>
-        <el-form-item>
-    
-            <el-button @click="handleQuery" type="primary" class="btn1">
-              <!-- <Icon icon="ep:search" class="mr-5px"/> -->
-              查询
-            </el-button>
-            <el-button @click="resetQuery" class="btn2">
-              <!-- <Icon icon="ep:refresh" class="mr-5px"/> -->
-              重置
-            </el-button>
-       
-        </el-form-item>
-      </custom-form>
-    </el-card>
-    <div class="grid gap-3 2xl:grid-cols-12 xl:grid-cols-6">
+
+    </el-form>
+ 
+    <div class="grid gap-3 2xl:grid-cols-12 xl:grid-cols-6 mt-[7px]">
       <!-- 气象站 -->
       <el-card class="col-span-6">
         <div class="flex items-center border-b-0" style="margin-bottom: 16px"> 气象站 </div>
@@ -821,7 +857,7 @@ watch(
         <div id="dataCollectChart"></div>
       </el-card>
     </div>
-  </div>
+   </el-scrollbar>
 </template>
 <style scoped lang="scss">
 .choosetime {
