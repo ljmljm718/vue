@@ -243,28 +243,34 @@
 
       <div class="w-[1px] mt-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
 
-      <el-scrollbar :height="350" class="w-[300px]">
-        <h2 class="m-0 text-[16px]">灌区选择</h2>
-        <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
-          <div
-            v-for="(item, index) in irrigationList"
-            :key="item.id"
-            :data-idx="index"
-            :class="`
-              flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
-              cursor-pointer ${item.selected && 'text-[#fff]'}
-            `"
-            :style="{
-              backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
-            }"
-          >
-            {{ item.iaName }}
+      <div class="w-[300px] h-[350px]">
+        <el-scrollbar :height="298" class="!h-[298px] w-[300px]">
+          <h2 class="m-0 text-[16px]">灌区选择</h2>
+          <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
+            <div
+              v-for="(item, index) in irrigationList"
+              :key="item.id"
+              :data-idx="index"
+              :class="`
+                flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
+                cursor-pointer ${item.selected && 'text-[#fff]'}
+              `"
+              :style="{
+                backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
+              }"
+            >
+              {{ item.iaName }}
+            </div>
           </div>
+        </el-scrollbar>
+        <div class="my-[16px]">
+          <el-checkbox v-model="selectAll" label="全选" @change="selectAllIrrigation" />
         </div>
-      </el-scrollbar>
+      </div>
     </div>
     <div class="mt-[16px] w-full flex justify-center">
       <el-button type="primary" @click="handleClickSubmit">保存</el-button>
+      <el-button @click="dialogVisible = false">取消</el-button>
     </div>
   </Dialog>
 </template>
@@ -386,6 +392,15 @@ const handleSelectIrrigation = (event: any) => {
   if (!event.target.dataset.idx) return;
   const idx = event.target.dataset.idx;
   irrigationList.value[idx].selected = !irrigationList.value[idx].selected;
+};
+
+// 全选灌区列表
+const selectAll = ref(false);
+const selectAllIrrigation = () => {
+  // 遍历灌区列表 selected值设置成selectAll的值
+  irrigationList.value = irrigationList.value.map((ele) => {
+    return { ...ele, selected: selectAll.value };
+  });
 };
 
 // 表单校验

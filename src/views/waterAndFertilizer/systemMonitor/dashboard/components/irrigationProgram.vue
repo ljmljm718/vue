@@ -124,17 +124,6 @@
             :inline="true"
             :model="formData"
           >
-            <el-form-item prop="tiName" label="灌溉任务名称">
-              <el-input v-model="formData.tiName" />
-            </el-form-item>
-
-            <el-form-item label="水泵控制" prop="waterPumpStatus">
-              <el-radio-group v-model="formData.waterPumpStatus">
-                <el-radio label="是">是</el-radio>
-                <el-radio label="否">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-
             <el-form-item v-model="formData.irrigationType" label="灌溉类型">
               <el-select v-model="formData.irrigationType">
                 <el-option
@@ -162,6 +151,13 @@
               >
                 <template #append>分钟</template>
               </el-input>
+            </el-form-item>
+
+            <el-form-item label="水泵控制" prop="waterPumpStatus">
+              <el-radio-group v-model="formData.waterPumpStatus">
+                <el-radio label="是">是</el-radio>
+                <el-radio label="否">否</el-radio>
+              </el-radio-group>
             </el-form-item>
 
             <el-form-item label="起始日期" prop="timeRange" class="col-span-2">
@@ -256,29 +252,35 @@
 
         <div class="w-[1px] mt-[-15px] mx-[16px] bg-[#e6e6e6]"></div>
 
-        <el-scrollbar :height="350" class="w-[300px]">
-          <h2 class="m-0 text-[16px]">灌区选择</h2>
-          <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
-            <div
-              v-for="(item, index) in irrigationList"
-              :key="item.id"
-              :data-idx="index"
-              :class="`
-                flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
-                cursor-pointer ${item.selected && 'text-[#fff]'}
-              `"
-              :style="{
-                backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
-              }"
-            >
-              {{ item.iaName }}
+        <div class="w-[300px] h-[350px]">
+          <el-scrollbar :height="298" class="!h-[298px] w-[300px]">
+            <h2 class="m-0 text-[16px]">灌区选择</h2>
+            <div class="grid grid-cols-4 gap-[8px] mt-[16px]" @click="handleSelectIrrigation">
+              <div
+                v-for="(item, index) in irrigationList"
+                :key="item.id"
+                :data-idx="index"
+                :class="`
+                  flex justify-center items-center w-[66px] h-[32px] rounded-[6px]
+                  cursor-pointer ${item.selected && 'text-[#fff]'}
+                `"
+                :style="{
+                  backgroundColor: item.selected ? 'var(--el-color-primary)' : '#F5F5F5'
+                }"
+              >
+                {{ item.iaName }}
+              </div>
             </div>
+          </el-scrollbar>
+          <div class="my-[16px]">
+            <el-checkbox v-model="selectAll" label="全选" @change="selectAllIrrigation" />
           </div>
-        </el-scrollbar>
+        </div>
       </div>
 
       <div class="mt-[16px] w-full flex justify-center">
         <el-button type="primary" @click="handleClickSubmit">保存</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
       </div>
     </Dialog>
   </div>
@@ -450,7 +452,6 @@ const weekList = [
 const execBeginTimeList = ref<any[]>([]);
 const execBeginTime = ref();
 const handleChangeExecBeginTime = (val: any) => {
-  console.log(val, execBeginTime.value);
   execBeginTimeList.value.push(val + ':00');
   execBeginTime.value = undefined;
 };
@@ -467,13 +468,18 @@ const handleSelectIrrigation = (event: any) => {
   irrigationList.value[idx].selected = !irrigationList.value[idx].selected;
 };
 
+// 全选灌区列表
+const selectAll = ref(false);
+const selectAllIrrigation = () => {
+  // 遍历灌区列表 selected值设置成selectAll的值
+  irrigationList.value = irrigationList.value.map((ele) => {
+    return { ...ele, selected: selectAll.value };
+  });
+};
+
 // 表单校验
 const checkForm = (execCron: string) => {
   let res = true;
-  if (undefined === formData.tiName || null === formData.tiName || '' === formData.tiName) {
-    msg.error('任务名称不能为空');
-    res = false;
-  }
   if (!Array.isArray(formData.timeRange) || formData.timeRange.length === 0) {
     msg.error('起止时间不能为空');
     res = false;
@@ -528,6 +534,7 @@ const handleClickSubmit = async () => {
   });
   formData.iaCodeList = list.join(',');
 
+  // 灌溉日类型
   let execCron: string = '';
   if (selectDate.value) {
     execCron = 'after_date';
@@ -538,6 +545,10 @@ const handleClickSubmit = async () => {
   if (selectInterval.value) {
     execCron = 'interval';
   }
+
+  // 根据当前时间生成灌溉任务名称
+  const date = new Date();
+  formData.tiName = '灌溉任务 ' + getDateStr(date) + ' ' + getTimeStr(date);
 
   if (!checkForm(execCron)) return;
   const data = {
@@ -568,6 +579,14 @@ const getDateStr = (item: any) => {
   const month = item.getMonth() + 1 >= 10 ? item.getMonth() + 1 : '0' + (item.getMonth() + 1);
   const day = item.getDate() >= 10 ? item.getDate() : '0' + item.getDate();
   return year + '-' + month + '-' + day;
+};
+
+// 传入Date对象 获取HH:MM:SS字符串
+const getTimeStr = (item: any) => {
+  const hour = item.getHours() >= 10 ? item.getHours() : '0' + item.getHours();
+  const minute = item.getMinutes() >= 10 ? item.getMinutes() : '0' + item.getMinutes();
+  const sec = item.getSeconds() >= 10 ? item.getSeconds() : '0' + item.getSeconds();
+  return hour + ':' + minute + ':' + sec;
 };
 
 // 根据容器宽度改变表单分栏数
