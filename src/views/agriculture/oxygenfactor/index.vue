@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 /* todo原页面的js代码复制在下面 */
 
@@ -172,7 +171,7 @@ const handleClickShowSearch = () => {
     <el-form
       :model="queryParams"
       ref="queryFormRef"
-      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full overflow-hidden form"
       :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
       label-width="95px"
       :inline="true"

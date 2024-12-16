@@ -4,20 +4,20 @@ import { colorOpt } from '@/config/colorTheme/colorConfig';
 import { setCssVar } from '@/utils';
 
 /* todo原页面的js代码复制在下面 */
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { FeedingRuleApi, FeedingRuleVO } from '@/api/agriculture/feedingrule'
-import FeedingRuleForm from './FeedingRuleForm.vue'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { FeedingRuleApi, FeedingRuleVO } from '@/api/agriculture/feedingrule';
+import FeedingRuleForm from './FeedingRuleForm.vue';
 
 /** 投喂规则 列表 */
-defineOptions({ name: 'FeedingRule' })
+defineOptions({ name: 'FeedingRule' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<FeedingRuleVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<FeedingRuleVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -26,73 +26,73 @@ const queryParams = reactive({
   quantity: undefined,
   baseNumber: undefined,
   strategy: undefined,
-  createTime: [],
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+  createTime: []
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await FeedingRuleApi.getFeedingRulePage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await FeedingRuleApi.getFeedingRulePage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await FeedingRuleApi.deleteFeedingRule(id)
-    message.success(t('common.delSuccess'))
+    await FeedingRuleApi.deleteFeedingRule(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await FeedingRuleApi.exportFeedingRule(queryParams)
-    download.excel(data, '投喂规则.xls')
+    exportLoading.value = true;
+    const data = await FeedingRuleApi.exportFeedingRule(queryParams);
+    download.excel(data, '投喂规则.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 /* 原页面的代码复制在上面 */
 
 /**
@@ -107,7 +107,6 @@ const showSearch = ref(false);
 const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
 };
-
 </script>
 
 <template>
@@ -124,13 +123,14 @@ const handleClickShowSearch = () => {
         <!-- 一级标题旁边的按钮 -->
         <!-- todo原新增按钮 -->
         <!-- todo需要包含type="primary"&&不能有plain属性 -->
-          <el-button
-            type="primary"
-            @click="openForm('create')"
-            v-hasPermi="['agriculture:feeding-rule:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px" /> 新增
-          </el-button>
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:feeding-rule:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
       </div>
 
       <div class="flex items-center">
@@ -139,17 +139,20 @@ const handleClickShowSearch = () => {
         <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
         <!-- todo删除导出按钮的type和plain属性 -->
         <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px" /> 搜索
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
         </el-button>
         <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" /> 重置
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
         </el-button>
         <el-button
           @click="handleExport"
           :loading="exportLoading"
           v-hasPermi="['agriculture:feeding-rule:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
         </el-button>
         <button
           class="circle-arrow-up ml-[16px]"
@@ -165,7 +168,7 @@ const handleClickShowSearch = () => {
     <el-form
       :model="queryParams"
       ref="queryFormRef"
-      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full overflow-hidden form"
       :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
       label-width="95px"
       :inline="true"
@@ -179,7 +182,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入生长期"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="重量" prop="weight">
@@ -188,7 +190,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入重量"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <!-- <el-form-item label="数量" prop="quantity">
@@ -197,7 +198,7 @@ const handleClickShowSearch = () => {
           placeholder="请输入数量"
           clearable
           @keyup.enter="handleQuery"
-          
+
         />
       </el-form-item> -->
       <el-form-item label="基数" prop="baseNumber">
@@ -206,7 +207,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入基数"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -225,7 +225,7 @@ const handleClickShowSearch = () => {
       <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- todo复制列表 -->
-       <!-- <el-table-column label="id" align="center" prop="id" /> -->
+        <!-- <el-table-column label="id" align="center" prop="id" /> -->
         <el-table-column label="生长期" align="center" prop="growthPeriod" />
         <el-table-column label="重量(克)" align="center" prop="weight" />
         <!-- <el-table-column label="数量(只)" align="center" prop="quantity" /> -->
@@ -238,9 +238,9 @@ const handleClickShowSearch = () => {
           :formatter="dateFormatter"
           width="180px"
         />
-       <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope">
-             <!-- todo操作按钮 -->
+            <!-- todo操作按钮 -->
             <!-- 1.  <template #default="scope"> 中，加入
                 <div class="flex items-center justify-center">
                   其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
@@ -351,7 +351,7 @@ const handleClickShowSearch = () => {
     transform: rotate(180deg);
     color: white;
     background-color: var(--el-color-primary);
-  } 
+  }
   to {
     transform: rotate(360deg);
     color: #333;
@@ -365,4 +365,3 @@ const handleClickShowSearch = () => {
   animation-fill-mode: forwards;
 }
 </style>
-

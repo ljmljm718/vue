@@ -4,21 +4,21 @@ import { colorOpt } from '@/config/colorTheme/colorConfig';
 import { setCssVar } from '@/utils';
 
 /* todo原页面的js代码复制在下面 */
-import {dateFormatter} from '@/utils/formatTime'
-import download from '@/utils/download'
-import {CodeSendingInfoApi, CodeSendingInfoVO} from '@/api/agriculture/codesendinginfo'
-import CodeSendingInfoForm from './CodeSendingInfoForm.vue'
-import QRCode from 'qrcode'
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { CodeSendingInfoApi, CodeSendingInfoVO } from '@/api/agriculture/codesendinginfo';
+import CodeSendingInfoForm from './CodeSendingInfoForm.vue';
+import QRCode from 'qrcode';
 
 /** 发码记录 列表 */
-defineOptions({name: 'CodeSendingInfo'})
+defineOptions({ name: 'CodeSendingInfo' });
 
-const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<CodeSendingInfoVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<CodeSendingInfoVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -36,89 +36,91 @@ const queryParams = reactive({
   prepareThree: undefined,
   remark: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-const options = [{
-  value: '1',
-  label: '未赋码'
-}, {
-  value: '2',
-  label: '已赋码'
-}]
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+const options = [
+  {
+    value: '1',
+    label: '未赋码'
+  },
+  {
+    value: '2',
+    label: '已赋码'
+  }
+];
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams)
-    list.value = data.list
+    const data = await CodeSendingInfoApi.getCodeSendingInfoPage(queryParams);
+    list.value = data.list;
     nextTick(() => {
-      list.value.forEach(async item => {
-        QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then(url => {
+      list.value.forEach(async (item) => {
+        QRCode.toDataURL(`https://zhuangbeizz.cn/mobile-trace?id=${item.id}`).then((url) => {
           if (item.qrImg) {
-            item.img = url
+            item.img = url;
           }
-        })
-      })
-    })
-    total.value = data.total
+        });
+      });
+    });
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await CodeSendingInfoApi.deleteCodeSendingInfo(id)
-    message.success(t('common.delSuccess'))
+    await CodeSendingInfoApi.deleteCodeSendingInfo(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
-  } catch {
-  }
-}
+    await getList();
+  } catch {}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await CodeSendingInfoApi.exportCodeSendingInfo(queryParams)
-    download.excel(data, '发码记录.xls')
+    exportLoading.value = true;
+    const data = await CodeSendingInfoApi.exportCodeSendingInfo(queryParams);
+    download.excel(data, '发码记录.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 /* 原页面的代码复制在上面 */
 
 /**
@@ -133,7 +135,6 @@ const showSearch = ref(false);
 const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
 };
-
 </script>
 
 <template>
@@ -144,7 +145,7 @@ const handleClickShowSearch = () => {
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center">
         <!-- 一级标题名字 todo替换成菜单名称-->
-        <h1 class="m-0 text-[#333] font-bold text-[18px]"> 发码记录管理 </h1>
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">发码记录管理</h1>
         <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
         <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
         <!-- 一级标题旁边的按钮 -->
@@ -159,11 +160,11 @@ const handleClickShowSearch = () => {
         <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
         <!-- todo删除导出按钮的type和plain属性 -->
         <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px"/>
+          <Icon icon="ep:search" class="mr-5px" />
           搜索
         </el-button>
         <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
+          <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
         <el-button
@@ -171,7 +172,7 @@ const handleClickShowSearch = () => {
           :loading="exportLoading"
           v-hasPermi="['agriculture:code-sending-info:export']"
         >
-          <Icon icon="ep:download" class="mr-5px"/>
+          <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
         <button
@@ -188,7 +189,7 @@ const handleClickShowSearch = () => {
     <el-form
       :model="queryParams"
       ref="queryFormRef"
-      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full overflow-hidden form"
       :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
       label-width="95px"
       :inline="true"
@@ -202,7 +203,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入源码"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="产品名称" prop="productName">
@@ -211,7 +211,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入产品名称"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="生产商" prop="producer">
@@ -220,7 +219,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入生产商"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="原产地" prop="sourceArea">
@@ -229,7 +227,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入原产地"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="产品认证" prop="productCertification">
@@ -238,7 +235,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入产品认证"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="生产时间" prop="productionTime">
@@ -252,17 +248,13 @@ const handleClickShowSearch = () => {
         />
       </el-form-item>
       <el-form-item label="是否赋码" prop="codeType">
-        <el-select
-          v-model="queryParams.codeType"
-          placeholder="请选择是否赋码"
-          clearable
-          
-        >
+        <el-select v-model="queryParams.codeType" placeholder="请选择是否赋码" clearable>
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value"/>
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="批次号" prop="batchNum">
@@ -271,7 +263,6 @@ const handleClickShowSearch = () => {
           placeholder="请输入批次号"
           clearable
           @keyup.enter="handleQuery"
-          
         />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -291,12 +282,12 @@ const handleClickShowSearch = () => {
       <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- todo复制列表 -->
         <!--      <el-table-column label="id" align="center" prop="id"/>-->
-        <el-table-column label="源码" align="center" prop="codeContent" width="180px"/>
+        <el-table-column label="源码" align="center" prop="codeContent" width="180px" />
         <!--      <el-table-column label="模板ID" align="center" prop="templateId"/>-->
-        <el-table-column label="产品名称" align="center" prop="productName"/>
-        <el-table-column label="生产商" align="center" prop="producer"/>
-        <el-table-column label="原产地" align="center" prop="sourceArea"/>
-        <el-table-column label="产品认证" align="center" prop="productCertification"/>
+        <el-table-column label="产品名称" align="center" prop="productName" />
+        <el-table-column label="生产商" align="center" prop="producer" />
+        <el-table-column label="原产地" align="center" prop="sourceArea" />
+        <el-table-column label="产品认证" align="center" prop="productCertification" />
         <el-table-column
           label="生产时间"
           align="center"
@@ -324,7 +315,13 @@ const handleClickShowSearch = () => {
         </el-table-column>
         <el-table-column label="批次号" align="center" prop="batchNum">
           <template #default="scope">
-            <span>{{scope.row.batchNum != undefined && scope.row.batchNum != null ? scope.row.batchNum : '无'}}</span>
+            <span>
+              {{
+                scope.row.batchNum != undefined && scope.row.batchNum != null
+                  ? scope.row.batchNum
+                  : '无'
+              }}
+            </span>
           </template>
         </el-table-column>
         <!--      <el-table-column label="备用字段" align="center" prop="prepareOne" />-->
@@ -338,10 +335,10 @@ const handleClickShowSearch = () => {
           :formatter="dateFormatter"
           width="180px"
         />
-       <!-- <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+        <!-- <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope"> -->
-             <!-- todo操作按钮 -->
-            <!-- 1.  <template #default="scope"> 中，加入
+        <!-- todo操作按钮 -->
+        <!-- 1.  <template #default="scope"> 中，加入
                 <div class="flex items-center justify-center">
                   其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
                     <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
@@ -349,10 +346,10 @@ const handleClickShowSearch = () => {
                 </div>
                 2.请注意“方案一”和“方案二”只采用一种，请根据自身按钮数量选择性删除或保留
               -->
-            <!-- todo方案一 -->
-            <!-- <div class="flex items-center justify-center">
+        <!-- todo方案一 -->
+        <!-- <div class="flex items-center justify-center">
               <el-button
-                link 
+                link
                 type="primary"
                 @click="openForm('update', scope.row.id)"
                 v-hasPermi="['agriculture:code-sending-info:update']"
@@ -386,7 +383,7 @@ const handleClickShowSearch = () => {
   </el-scrollbar>
   <!-- todo页面组件复制在下面 -->
   <!-- 表单弹窗：添加/修改 -->
-  <CodeSendingInfoForm ref="formRef" @success="getList"/>
+  <CodeSendingInfoForm ref="formRef" @success="getList" />
 </template>
 <style lang="scss" scoped>
 // 原页面样式复制在下面
@@ -465,4 +462,3 @@ const handleClickShowSearch = () => {
   animation-fill-mode: forwards;
 }
 </style>
-
