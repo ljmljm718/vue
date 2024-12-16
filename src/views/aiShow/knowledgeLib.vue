@@ -217,7 +217,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 </script>
 
 <template>
-  <div style="width: calc(100% - 74px)" class="h-full knowledge-bg">
+  <div class="w-full h-full knowledge-bg">
     <div v-if="showLibPage" class="w-full h-full">
       <div
         class="h-[63px] px-[24px] flex items-center justify-between font-bold"
