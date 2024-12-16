@@ -1,16 +1,16 @@
 <script lang="tsx">
 /** 生长监测模型数据中心大屏页面 */
 /** 引入大屏组件 */
-import BigscreenBuilder from '@/components/BigscreenBuilder'
+import BigscreenBuilder from '@/components/BigscreenBuilder';
 
 /** echarts相关 */
-import * as echarts from 'echarts'
+import * as echarts from 'echarts';
 
 /** 引入其他组件 */
-import Header from './components/Header.vue'
+import Header from './components/Header.vue';
 // import Card from "./components/Card.vue"
 // import NumberShow from "./components/NumberShow.vue"
-import ModelIcon from './components/ModelIcon.vue'
+import ModelIcon from './components/ModelIcon.vue';
 
 /** 引入请求接口 */
 import {
@@ -21,15 +21,16 @@ import {
   getCycle,
   getIndicator,
   updateModelEnableStatus
-} from './api'
+} from './api';
 
 /** 引入图片 */
-import bg from './assets/bg.png'
-import bgFish from './assets/bg-fish.png'
-import bgDuck from './assets/bg-duck.png'
-import BgChaZhu from './assets/chazhu/bg.png'
+import bg from './assets/bg.png';
+import bgFish from './assets/bg-fish.png';
+import bgDuck from './assets/bg-duck.png';
+import BgChaZhu from './assets/chazhu/bg.png';
+import Dplayer from 'dplayer';
 
-const { BigscreenAdapter, BigscreenContainer } = BigscreenBuilder
+const { BigscreenAdapter, BigscreenContainer } = BigscreenBuilder;
 
 export default defineComponent({
   components: { Header },
@@ -44,34 +45,34 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { hiddenHeader, isChazhu } = toRefs(props)
-    const imgBase = '/src/views/growthMonitoringModelDataCenter/assets'
-    const message = useMessage() // 消息弹窗
+    const { hiddenHeader, isChazhu } = toRefs(props);
+    const imgBase = '/src/views/growthMonitoringModelDataCenter/assets';
+    const message = useMessage(); // 消息弹窗
 
     /** Header组件需要的属性(heardBg不应该传进去) */
-    const headerHeight = 100
-    const titleHeight = 30
-    const titleWidth = 386
-    const headerBg = `${imgBase}/header/header-bg.png`
-    const title = `${imgBase}/header/title.png`
+    const headerHeight = 100;
+    const titleHeight = 30;
+    const titleWidth = 386;
+    const headerBg = `${imgBase}/header/header-bg.png`;
+    const title = `${imgBase}/header/title.png`;
 
     /**
      * 基地列表相关
      * baseList      基地列表
      * base          当前选择的基地
      */
-    const baseList = ref<Array<any>>([])
-    const base = ref()
+    const baseList = ref<Array<any>>([]);
+    const base = ref();
 
     const getBaseList = async () => {
-      baseList.value = []
-      const res = await getBase()
-      console.log('基地列表: ', res)
+      baseList.value = [];
+      const res = await getBase();
+      console.log('基地列表: ', res);
       res.forEach((element: any) => {
-        baseList.value.push({ id: element.id, name: element.name })
-      })
-      base.value = baseList.value[0]
-    }
+        baseList.value.push({ id: element.id, name: element.name });
+      });
+      base.value = baseList.value[0];
+    };
 
     /**
      * 品种数 模型数
@@ -82,16 +83,16 @@ export default defineComponent({
      */
     // const varietyNumIcon = `${ imgBase }/variety-num.png`
     // const modelNumIcon = `${ imgBase }/model-num.png`
-    const nVariety = ref()
-    const nModel = ref()
+    const nVariety = ref();
+    const nModel = ref();
 
     const getNums = async () => {
-      const params = { parkId: '' }
-      const res = await getNum(params)
-      console.log('品种数 模型数: ', res)
-      nVariety.value = res['品种数']
-      nModel.value = res['模型数']
-    }
+      const params = { parkId: '' };
+      const res = await getNum(params);
+      console.log('品种数 模型数: ', res);
+      nVariety.value = res['品种数'];
+      nModel.value = res['模型数'];
+    };
 
     /**
      * 模型列表相关
@@ -105,61 +106,61 @@ export default defineComponent({
      *
      * 改变模型时重新查询周期信息
      */
-    const modelList = ref<Array<any>>([])
-    let curModelId = ''
-    const curVarietyName = ref('')
-    const bgImage = ref(bg)
+    const modelList = ref<Array<any>>([]);
+    let curModelId = '';
+    const curVarietyName = ref('');
+    const bgImage = ref(bg);
 
     const getModelList = async () => {
-      const params = { parkId: '' }
-      const res = await getModel(params)
-      console.log('模型列表: ', res)
-      if (!Array.isArray(res) || res.length === 0) return
+      const params = { parkId: '' };
+      const res = await getModel(params);
+      console.log('模型列表: ', res);
+      if (!Array.isArray(res) || res.length === 0) return;
       modelList.value = res.map((item) => {
         return {
           ...item,
           activated: false,
           key: item.modelId
-        }
-      })
-      modelList.value[0].activated = true
-      changeBackground(modelList.value[0])
-      curModelId = modelList.value[0].modelId
-      curVarietyName.value = modelList.value[0].varietyName
-    }
+        };
+      });
+      modelList.value[0].activated = true;
+      changeBackground(modelList.value[0]);
+      curModelId = modelList.value[0].modelId;
+      curVarietyName.value = modelList.value[0].varietyName;
+    };
 
     const changeModel = async (idx) => {
       modelList.value.forEach((element, index) => {
         if (idx === index) {
-          element.activated = true
-          curModelId = element.modelId
-          curVarietyName.value = element.varietyName
-          changeBackground(element)
+          element.activated = true;
+          curModelId = element.modelId;
+          curVarietyName.value = element.varietyName;
+          changeBackground(element);
           if (chartInstance) {
-            chartInstance.dispose()
-            chartInstance = null
-            chartDom = null
+            chartInstance.dispose();
+            chartInstance = null;
+            chartDom = null;
           }
         } else {
-          element.activated = false
+          element.activated = false;
         }
-        element.key = `${element.key}1`
-      })
-      await getCycleList()
-      await getPlotList(curModelId)
-    }
+        element.key = `${element.key}1`;
+      });
+      await getCycleList();
+      await getPlotList(curModelId);
+    };
 
     const changeBackground = (item) => {
-      let str = item.varietyName
-      if (!str) return
+      let str = item.varietyName;
+      if (!str) return;
       if (str.includes('鱼')) {
-        bgImage.value = bgFish
+        bgImage.value = bgFish;
       } else if (str.includes('鸭')) {
-        bgImage.value = bgDuck
+        bgImage.value = bgDuck;
       } else {
-        bgImage.value = bg
+        bgImage.value = bg;
       }
-    }
+    };
 
     /**
      * 地块监控相关
@@ -168,35 +169,35 @@ export default defineComponent({
      * modelName表示模型名称 暂时轮流使用所有模型名称
      * enable表示是否启用 暂时全部设置为true
      */
-    const plotList = ref<Array<any>>([])
+    const plotList = ref<Array<any>>([]);
 
     const getPlotList = async (modelId: string) => {
-      const params = { parkId: base.value.id, modelId }
-      const res = await getPlot(params)
-      console.log('地块列表: ', res)
+      const params = { parkId: base.value.id, modelId };
+      const res = await getPlot(params);
+      console.log('地块列表: ', res);
       plotList.value = res.filter((item) => {
-        return item.modelId === curModelId
-      })
-      console.log('plotList', plotList.value)
-    }
+        return item.modelId === curModelId;
+      });
+      console.log('plotList', plotList.value);
+    };
 
     /** 修改品种模型绑定状态 */
     const handleStatusChange = async (row) => {
       try {
         // 修改状态的二次确认
-        const text = row.isEnableModel ? '停绑' : '绑定'
-        await message.confirm('确认要' + text + '当前模型吗?')
+        const text = row.isEnableModel ? '停绑' : '绑定';
+        await message.confirm('确认要' + text + '当前模型吗?');
         // 发起修改状态
-        await updateModelEnableStatus(row.cropBaseId, !row.isEnableModel)
+        await updateModelEnableStatus(row.cropBaseId, !row.isEnableModel);
         // 刷新列表
-        await getPlotList(curModelId)
+        await getPlotList(curModelId);
       } catch {
         // 取消后，进行恢复按钮
         // row.isEnableModel = row.isEnableModel ? true : false
       }
-    }
+    };
 
-    const router = useRouter()
+    const router = useRouter();
     const handleRoute = (item) => {
       if (item.isEnableModel) {
         router.push({
@@ -208,11 +209,11 @@ export default defineComponent({
             modelId: item.modelId
             // batchCode:item.batchCode
           }
-        })
-      }else{
-        ElMessage.warning('当前地块已禁用，请重新选择地块')
-      } 
-    }
+        });
+      } else {
+        ElMessage.warning('当前地块已禁用，请重新选择地块');
+      }
+    };
     /**
      * 周期/物候期 相关
      * curPeriod           当前周期名称
@@ -230,46 +231,46 @@ export default defineComponent({
      * curItem记录当前点亮的周期 当点亮其他周期时 熄灭curItem 并将点亮的周期设置为curItem
      * 点亮其他周期时需要重新查询指标
      */
-    const curPeriod = ref('')
-    const cycleNameList = ref<Array<any>>([])
-    let curItem = 0
-    const curTips = ref<Array<any>>([])
-    const curCycle = ref(0)
-    const cycleMap = ref(new Map())
-    let curCropCode = ''
-    const curRealPeriod = ref('')
-    const offsetLeft = ref(0)
+    const curPeriod = ref('');
+    const cycleNameList = ref<Array<any>>([]);
+    let curItem = 0;
+    const curTips = ref<Array<any>>([]);
+    const curCycle = ref(0);
+    const cycleMap = ref(new Map());
+    let curCropCode = '';
+    const curRealPeriod = ref('');
+    const offsetLeft = ref(0);
 
     const getCycleList = async () => {
-      cycleNameList.value = []
-      curTips.value = []
-      cycleMap.value = new Map()
-      curItem = 0
-      curCycle.value = 0
-      curCropCode = ''
-      curRealPeriod.value = ''
-      offsetLeft.value = 0
+      cycleNameList.value = [];
+      curTips.value = [];
+      cycleMap.value = new Map();
+      curItem = 0;
+      curCycle.value = 0;
+      curCropCode = '';
+      curRealPeriod.value = '';
+      offsetLeft.value = 0;
 
       if (curModelId) {
-        const params = { modelId: curModelId }
-        const res = await getCycle(params)
-        console.log('周期列表: ', res)
+        const params = { modelId: curModelId };
+        const res = await getCycle(params);
+        console.log('周期列表: ', res);
         if (!Array.isArray(res) || res.length === 0) {
           // 周期没数据则指标要素重置
-          indicatorList.value = []
-          indicatorNames = []
-          curIndicatorIndex = 0
-          factorMap = new Map()
-          curFactor.value = new Map()
-          chartDom = null
-          chartInstance = null
-          curFactorData.value = []
-          return
+          indicatorList.value = [];
+          indicatorNames = [];
+          curIndicatorIndex = 0;
+          factorMap = new Map();
+          curFactor.value = new Map();
+          chartDom = null;
+          chartInstance = null;
+          curFactorData.value = [];
+          return;
         }
 
         if (res[0].curPeriod) {
-          curPeriod.value = res[0].curPeriod
-          curRealPeriod.value = res[0].curPeriod
+          curPeriod.value = res[0].curPeriod;
+          curRealPeriod.value = res[0].curPeriod;
 
           res.map((item, index) => {
             if (index) {
@@ -277,86 +278,88 @@ export default defineComponent({
                 cycle: item.cycle,
                 growthId: item.growthId,
                 tips: item.child2,
-                imgId: item.imgId
-              })
+                imgId: item.imgId,
+                videoLike: item.videoLike
+              });
 
               if (curPeriod.value === item.growth) {
-                cycleNameList.value.push({ growth: item.growth, selected: true })
-                curCropCode = item.growthId
-                curItem = index - 1
+                cycleNameList.value.push({ growth: item.growth, selected: true });
+                curCropCode = item.growthId;
+                curItem = index - 1;
               } else {
-                cycleNameList.value.push({ growth: item.growth, selected: false })
+                cycleNameList.value.push({ growth: item.growth, selected: false });
               }
             }
-          })
+          });
         } else {
           res.map((item, index) => {
             cycleMap.value.set(item.growth, {
               cycle: item.cycle,
               growthId: item.growthId,
               tips: item.child2,
-              imgId: item.imgId
-            })
+              imgId: item.imgId,
+              videoLike: item.videoLike
+            });
             if (index) {
-              cycleNameList.value.push({ growth: item.growth, selected: false })
+              cycleNameList.value.push({ growth: item.growth, selected: false });
             } else {
-              cycleNameList.value.push({ growth: item.growth, selected: true })
-              curCropCode = item.growthId
-              curItem = index
+              cycleNameList.value.push({ growth: item.growth, selected: true });
+              curCropCode = item.growthId;
+              curItem = index;
             }
-          })
+          });
         }
 
-        if (cycleNameList.value.length > 0) handleClick(0)
-        curTips.value = cycleMap.value.get(curPeriod.value).tips
-        curCycle.value = cycleMap.value.get(curPeriod.value).cycle
+        if (cycleNameList.value.length > 0) handleClick(0);
+        curTips.value = cycleMap.value.get(curPeriod.value).tips;
+        curCycle.value = cycleMap.value.get(curPeriod.value).cycle;
 
         // 初始化周期列表的位置
-        offsetLeft.value = 0
-        let tmp = curItem
-        curItem = 2
-        cycleListChange(tmp)
-        curItem = tmp
+        offsetLeft.value = 0;
+        let tmp = curItem;
+        curItem = 2;
+        cycleListChange(tmp);
+        curItem = tmp;
       }
-      await getIndicatorList()
-    }
+      await getIndicatorList();
+    };
 
     // 处理周期列表移动
     const cycleListChange = (index) => {
       if (cycleNameList.value.length > 5) {
-        offsetLeft.value += (curItem - index) * 93 * 2
+        offsetLeft.value += (curItem - index) * 93 * 2;
       }
-    }
+    };
 
     // 右箭头周期列表移动
     const rightArrowClick = () => {
       if (cycleNameList.value.length - 1 > curItem) {
-        handleClick(curItem + 1)
+        handleClick(curItem + 1);
       }
-    }
+    };
 
     // 左箭头周期列表移动
     const leftArrowClick = () => {
       if (0 < curItem) {
-        handleClick(curItem - 1)
+        handleClick(curItem - 1);
       }
-    }
+    };
 
     const handleClick = async (index) => {
-      cycleListChange(index)
+      cycleListChange(index);
 
-      cycleNameList.value[curItem].selected = false
-      cycleNameList.value[index].selected = true
-      let tmp = curItem
-      curItem = index
+      cycleNameList.value[curItem].selected = false;
+      cycleNameList.value[index].selected = true;
+      let tmp = curItem;
+      curItem = index;
 
-      curPeriod.value = cycleNameList.value[curItem].growth
-      curTips.value = cycleMap.value.get(curPeriod.value).tips
-      curCycle.value = cycleMap.value.get(curPeriod.value).cycle
-      curCropCode = cycleMap.value.get(curPeriod.value).growthId
+      curPeriod.value = cycleNameList.value[curItem].growth;
+      curTips.value = cycleMap.value.get(curPeriod.value).tips;
+      curCycle.value = cycleMap.value.get(curPeriod.value).cycle;
+      curCropCode = cycleMap.value.get(curPeriod.value).growthId;
 
-      if (tmp != curItem) await getIndicatorList()
-    }
+      if (tmp != curItem) await getIndicatorList();
+    };
 
     /**
      * 指标 模型要素 相关
@@ -370,71 +373,71 @@ export default defineComponent({
      *
      * 指标切换时 需要更新模型要素 设置option
      */
-    const indicatorList = ref<Array<any>>([])
-    let indicatorNames = []
-    let curIndicatorIndex = 0
-    let factorMap = new Map()
-    const curFactor = ref<Map<any, any>>(new Map())
-    let chartDom = null
-    let chartInstance = null
-    const curFactorData = ref<Array<any>>([])
+    const indicatorList = ref<Array<any>>([]);
+    let indicatorNames = [];
+    let curIndicatorIndex = 0;
+    let factorMap = new Map();
+    const curFactor = ref<Map<any, any>>(new Map());
+    let chartDom = null;
+    let chartInstance = null;
+    const curFactorData = ref<Array<any>>([]);
 
     const initChartStatic = (id = '', option = {}) => {
-      if (!id) return
+      if (!id) return;
 
-      const chart = document.getElementById(id)
-      const chartInstance = echarts.init(chart, 'default')
-      chartInstance.setOption(option, true, true)
+      const chart = document.getElementById(id);
+      const chartInstance = echarts.init(chart, 'default');
+      chartInstance.setOption(option, true, true);
       window.addEventListener('resize', () => {
         setTimeout(() => {
-          chartInstance && chartInstance.resize()
-        }, 10)
-      })
+          chartInstance && chartInstance.resize();
+        }, 10);
+      });
 
-      return { chartDom: chart, chartInstance: chartInstance }
-    }
+      return { chartDom: chart, chartInstance: chartInstance };
+    };
 
     const initOption = () => {
       // console.log("curFactor", curFactor.value)
       // console.log("curFactorData", curFactorData.value)
-      let baseColor = '#1DFFFF'
-      let areaColor = '#172c37'
+      let baseColor = '#1DFFFF';
+      let areaColor = '#172c37';
       let colorStops = [
         { offset: 0.25, color: 'rgba(53, 218, 210, 0.25)' },
         { offset: 0.91, color: 'rgba(29, 255, 255, 0.5)' }
-      ]
+      ];
       if (isChazhu.value) {
-        baseColor = '#01F892'
-        areaColor = 'rgba(67, 91, 99, 0.2)'
+        baseColor = '#01F892';
+        areaColor = 'rgba(67, 91, 99, 0.2)';
         colorStops = [
           { offset: 0.25, color: 'rgba(29, 255, 161, 0.25)' },
           { offset: 0.91, color: 'rgba(53, 218, 149, 0.5)' }
-        ]
+        ];
       }
 
       if (curFactor.value.size) {
-        let indicatorData = []
-        let percentages = []
-        let totalPer = 0
+        let indicatorData = [];
+        let percentages = [];
+        let totalPer = 0;
         curFactor.value.forEach((value, key) => {
-          indicatorData.push({ name: key, max: 100 })
-          let curPer = Number(value.weight.replace('%', ''))
-          percentages.push(curPer)
-          totalPer += curPer
-        })
+          indicatorData.push({ name: key, max: 100 });
+          let curPer = Number(value.weight.replace('%', ''));
+          percentages.push(curPer);
+          totalPer += curPer;
+        });
         if (100 > totalPer) {
-          indicatorData.push({ name: '其他', max: 100 })
-          percentages.push(100 - totalPer)
+          indicatorData.push({ name: '其他', max: 100 });
+          percentages.push(100 - totalPer);
         }
-        let labelPos = 'top'
+        let labelPos = 'top';
         if (indicatorData.length < 3) {
-          labelPos = 'right'
+          labelPos = 'right';
         }
         const option = {
           color: [baseColor],
           tooltip: {
             valueFormatter: (params) => {
-              return `${params}%`
+              return `${params}%`;
             },
             borderWidth: 3
           },
@@ -477,7 +480,7 @@ export default defineComponent({
                     fontSize: 18,
                     position: labelPos,
                     formatter: (params) => {
-                      return `${params.value}%`
+                      return `${params.value}%`;
                     }
                   },
                   areaStyle: {
@@ -494,126 +497,164 @@ export default defineComponent({
               ]
             }
           ]
-        }
+        };
         if (indicatorData.length === 3) {
-          option.radar = { ...option.radar, ...{ radius: '85%', center: ['50%', '60%'] } }
+          option.radar = { ...option.radar, ...{ radius: '85%', center: ['50%', '60%'] } };
         }
 
         if (chartDom && chartInstance) {
           // console.log("option", option)
-          chartInstance.setOption(option, true, true)
+          chartInstance.setOption(option, true, true);
         } else {
-          let tmp = initChartStatic('chart', option)
-          chartDom = tmp.chartDom
-          chartInstance = tmp.chartInstance
+          let tmp = initChartStatic('chart', option);
+          chartDom = tmp.chartDom;
+          chartInstance = tmp.chartInstance;
 
           // 雷达图点击名称的监听事件
           chartInstance.on('click', 'radar', (params) => {
             if ('其他' !== params.name) {
               curFactorData.value = curFactor.value.get(
                 params.name
-              ).modelIndicatorElementRangeDOList
+              ).modelIndicatorElementRangeDOList;
             } else {
-              curFactorData.value = []
+              curFactorData.value = [];
             }
-          })
-          chartInstance.setOption(option, true, true)
+          });
+          chartInstance.setOption(option, true, true);
         }
       }
-    }
+    };
 
     const getIndicatorList = async () => {
-      indicatorList.value = []
-      indicatorNames = []
+      indicatorList.value = [];
+      indicatorNames = [];
 
       if (curCropCode) {
-        const params = { modelId: curModelId, growthId: curCropCode }
+        const params = { modelId: curModelId, growthId: curCropCode };
         // console.log("getIndicator params", params)
-        const res = await getIndicator(params)
-        console.log('指标要素: ', res)
+        const res = await getIndicator(params);
+        console.log('指标要素: ', res);
 
         if (res.length) {
           res.map((item) => {
             if (!indicatorNames.includes(item.indicatorName)) {
-              indicatorList.value.push({ name: item.indicatorName, selected: false })
-              indicatorNames.push(item.indicatorName)
-              let factorInfoMap = new Map()
+              indicatorList.value.push({ name: item.indicatorName, selected: false });
+              indicatorNames.push(item.indicatorName);
+              let factorInfoMap = new Map();
               if (item.modelIndicatorElementCardVOList.length) {
                 item.modelIndicatorElementCardVOList.forEach((ele) => {
-                  factorInfoMap.set(ele.elementName, ele)
-                })
+                  factorInfoMap.set(ele.elementName, ele);
+                });
               } else {
-                curFactor.value = new Map()
-                curFactorData.value = []
+                curFactor.value = new Map();
+                curFactorData.value = [];
               }
-              factorMap.set(item.indicatorName, factorInfoMap)
+              factorMap.set(item.indicatorName, factorInfoMap);
             }
-          })
+          });
 
-          indicatorList.value[0].selected = true
-          curIndicatorIndex = 0
-          curFactor.value = factorMap.get(indicatorList.value[0].name)
-          initOption()
+          indicatorList.value[0].selected = true;
+          curIndicatorIndex = 0;
+          curFactor.value = factorMap.get(indicatorList.value[0].name);
+          initOption();
           if (curFactor.value.size) {
-            let tmpIter = curFactor.value.values()
-            curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+            let tmpIter = curFactor.value.values();
+            curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList;
           } else {
-            curFactorData.value = []
+            curFactorData.value = [];
           }
         } else {
-          curFactor.value = new Map()
-          curFactorData.value = []
+          curFactor.value = new Map();
+          curFactorData.value = [];
         }
       } else {
-        curFactor.value = new Map()
-        curFactorData.value = []
+        curFactor.value = new Map();
+        curFactorData.value = [];
       }
-    }
+    };
 
     const handleIndicatorClick = async (index) => {
       // console.log("handleIndicatorClick", index, curIndicatorIndex, indicatorList.value)
-      indicatorList.value[curIndicatorIndex].selected = false
-      indicatorList.value[index].selected = true
-      let tmp = curIndicatorIndex
-      curIndicatorIndex = index
+      indicatorList.value[curIndicatorIndex].selected = false;
+      indicatorList.value[index].selected = true;
+      let tmp = curIndicatorIndex;
+      curIndicatorIndex = index;
 
       if (!(tmp === curIndicatorIndex)) {
-        curFactor.value = factorMap.get(indicatorList.value[curIndicatorIndex].name)
+        curFactor.value = factorMap.get(indicatorList.value[curIndicatorIndex].name);
         if (curFactor.value.size) {
-          let tmpIter = curFactor.value.values()
-          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList
+          let tmpIter = curFactor.value.values();
+          curFactorData.value = tmpIter.next().value.modelIndicatorElementRangeDOList;
         } else {
-          curFactorData.value = []
+          curFactorData.value = [];
         }
-        initOption()
+        initOption();
       }
-    }
+    };
 
     const handleResize = () => {
       // 设置屏幕宽度和高度为CSS变量
       document.documentElement.style.setProperty(
         '--growth-monitoring-model-datacenter-screen-width',
         `${window.innerWidth}px`
-      )
+      );
       document.documentElement.style.setProperty(
         '--growth-monitoring-model-datacenter-screen-height',
         `${window.innerHeight}px`
-      )
-    }
+      );
+    };
 
     /**
      * 渲染页面
      */
     onMounted(async () => {
-      await getBaseList()
-      await getNums()
-      await getModelList()
-      await getPlotList('')
-      await getCycleList()
+      await getBaseList();
+      await getNums();
+      await getModelList();
+      await getPlotList('');
+      await getCycleList();
       // await getIndicatorList()
-      handleResize()
-      window.addEventListener('resize', handleResize)
-    })
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    });
+
+    let player: any = null;
+    const showVideoDialog = ref(false);
+
+    const handleClickVideo = async () => {
+      const videoLink = cycleMap.value.get(curPeriod.value).videoLike;
+      if (!videoLink) return;
+      showVideoDialog.value = true;
+
+      await nextTick();
+      player = new Dplayer({
+        container: document.getElementById('dplayer'),
+        loop: false,
+        autoplay: true,
+        volume: 0,
+        video: {
+          url: videoLink
+        },
+        mutex: false
+      });
+    };
+
+    const handleCloseVideo = () => {
+      showVideoDialog.value = false;
+      player.destroy();
+    };
+
+    onDeactivated(() => {
+      if (player) {
+        player.destroy();
+      }
+    });
+
+    onUnmounted(() => {
+      if (player) {
+        player.destroy();
+      }
+    });
 
     const MainContainer = () => {
       return (
@@ -663,7 +704,7 @@ export default defineComponent({
                         modelImg={item.modelImg}
                         key={item.key}
                         onClick={() => {
-                          changeModel(index)
+                          changeModel(index);
                         }}
                       ></ModelIcon>
                     ))}
@@ -690,7 +731,7 @@ export default defineComponent({
                   style={`background-image: url(${imgBase}/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
                   popper-class="growth-monitoring-model-datacenter-popper"
                   onChange={() => {
-                    getPlotList(curModelId)
+                    getPlotList(curModelId);
                   }}
                 >
                   {baseList.value.map((item) => (
@@ -711,7 +752,7 @@ export default defineComponent({
                           style={`background-image: url(${item.modelImg}); background-size: contain; background-position: center; background-repeat: no-repeat;`}
                           class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
                           onClick={() => {
-                            handleRoute(item)
+                            handleRoute(item);
                           }}
                         >
                           <div
@@ -730,7 +771,7 @@ export default defineComponent({
                                 round
                                 type="success"
                                 onClick={() => {
-                                  handleStatusChange(item)
+                                  handleStatusChange(item);
                                 }}
                               >
                                 <el-icon>
@@ -744,7 +785,7 @@ export default defineComponent({
                                 round
                                 type="danger"
                                 onClick={() => {
-                                  handleStatusChange(item)
+                                  handleStatusChange(item);
                                 }}
                               >
                                 <el-icon>
@@ -781,7 +822,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        leftArrowClick()
+                        leftArrowClick();
                       }}
                     >
                       <div class={0 < curItem ? 'left-arrow' : 'left-arrow-disable'}></div>
@@ -799,7 +840,7 @@ export default defineComponent({
                                   : 'cycle-item normal-cycle relative'
                             }
                             onClick={() => {
-                              handleClick(i)
+                              handleClick(i);
                             }}
                           >
                             <span>{e.growth}</span>
@@ -825,7 +866,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        rightArrowClick()
+                        rightArrowClick();
                       }}
                     >
                       <div
@@ -847,7 +888,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        leftArrowClick()
+                        leftArrowClick();
                       }}
                     >
                       <div class={0 < curItem ? 'left-arrow' : 'left-arrow-disable'}></div>
@@ -869,7 +910,7 @@ export default defineComponent({
                                     : 'cycle-item normal-cycle relative'
                               }
                               onClick={() => {
-                                handleClick(i)
+                                handleClick(i);
                               }}
                             >
                               <span>{e.growth}</span>
@@ -894,7 +935,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        rightArrowClick()
+                        rightArrowClick();
                       }}
                     >
                       <div
@@ -911,11 +952,24 @@ export default defineComponent({
             )}
             {/** 模型图片 */}
             {cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
-              <div class="center-model text-center pt-[50px] box-border">
-                <img
-                  src={cycleMap.value.get(curPeriod.value).imgId}
-                  class="object-contain h-[390px]"
-                />
+              <div class="center-model flex justify-center text-center pt-[50px] box-border">
+                <div class="w-fit h-fit relative">
+                  <img
+                    src={cycleMap.value.get(curPeriod.value).imgId}
+                    class="object-contain h-[390px]"
+                  />
+                  <div class="dc-video-border">
+                    <div class="absolute top-[11px] left-[106.53px] text-white text-[14px]">
+                      种植技术视频
+                    </div>
+                    <div
+                      class="absolute top-0 right-0 w-[205px] h-[150px] bg-transparent z-10 cursor-pointer"
+                      onClick={() => {
+                        handleClickVideo();
+                      }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             ) : null}
             {/** 周期事项 */}
@@ -980,7 +1034,7 @@ export default defineComponent({
                       <div
                         class="cursor-pointer"
                         onClick={() => {
-                          handleIndicatorClick(index)
+                          handleIndicatorClick(index);
                         }}
                         style={item.selected ? 'box-shadow: 0px 2px 10px 0px #08795D;' : ''}
                       >
@@ -1049,12 +1103,12 @@ export default defineComponent({
                         style={{ width: '380px' }}
                         row-style={(data) => {
                           let curBgColor =
-                            (Number(data.rowIndex) + 2) % 2 === 0 ? '#0F3940' : 'transparent'
+                            (Number(data.rowIndex) + 2) % 2 === 0 ? '#0F3940' : 'transparent';
                           return {
                             'background-color': curBgColor,
                             height: '45px',
                             'font-size': '16px'
-                          }
+                          };
                         }}
                         header-row-style={{
                           'background-color': 'transparent',
@@ -1064,7 +1118,7 @@ export default defineComponent({
                       >
                         <el-table-column label="范围" align="center">
                           {({ row }) => {
-                            return `${row.lowLimit}${row.unit} ~ ${row.highLimit}${row.unit}`
+                            return `${row.lowLimit}${row.unit} ~ ${row.highLimit}${row.unit}`;
                           }}
                         </el-table-column>
                         <el-table-column
@@ -1085,9 +1139,21 @@ export default defineComponent({
               </div>
             </div>
           </div>
+
+          <Dialog
+            v-model={showVideoDialog.value}
+            title="种植技术视频"
+            width={1280}
+            onClose={() => {
+              handleCloseVideo();
+            }}
+            top="80px"
+          >
+            <div id="dplayer">查看视频</div>
+          </Dialog>
         </div>
-      )
-    }
+      );
+    };
 
     const ChazhuContainer = () => {
       return (
@@ -1136,7 +1202,7 @@ export default defineComponent({
                           <div
                             class="w-185px h-176px dc-cz-active-model flex justify-center items-center relative"
                             onClick={() => {
-                              changeModel(index)
+                              changeModel(index);
                             }}
                           >
                             <div class="w-70px h-70px absolute top-[50%] left-[50%] dc-cz-model-img">
@@ -1150,7 +1216,7 @@ export default defineComponent({
                           <div
                             class="w-185px h-176px dc-cz-normal-model flex justify-center items-center relative"
                             onClick={() => {
-                              changeModel(index)
+                              changeModel(index);
                             }}
                           >
                             <div class="w-70px h-70px absolute top-[50%] left-[50%] dc-cz-model-img">
@@ -1186,7 +1252,7 @@ export default defineComponent({
                   style={`background-image: url(${imgBase}/select-bg.png); background-size: 100% 100%; width: 200px; height: 24px;`}
                   popper-class="growth-monitoring-model-datacenter-popper"
                   onChange={() => {
-                    getPlotList(curModelId)
+                    getPlotList(curModelId);
                   }}
                 >
                   {baseList.value.map((item) => (
@@ -1207,7 +1273,7 @@ export default defineComponent({
                           style={`background-image: url(${item.modelImg}); background-size: contain; background-position: center; background-repeat: no-repeat;`}
                           class="w-full h-[100px] relative cursor-pointer box-border border border-solid border-[#435B63]"
                           onClick={() => {
-                            handleRoute(item)
+                            handleRoute(item);
                           }}
                         >
                           <div
@@ -1226,7 +1292,7 @@ export default defineComponent({
                                 round
                                 type="success"
                                 onClick={() => {
-                                  handleStatusChange(item)
+                                  handleStatusChange(item);
                                 }}
                               >
                                 <el-icon>
@@ -1240,7 +1306,7 @@ export default defineComponent({
                                 round
                                 type="danger"
                                 onClick={() => {
-                                  handleStatusChange(item)
+                                  handleStatusChange(item);
                                 }}
                               >
                                 <el-icon>
@@ -1277,7 +1343,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        leftArrowClick()
+                        leftArrowClick();
                       }}
                     >
                       <div class={0 < curItem ? 'left-arrow' : 'left-arrow-disable'}></div>
@@ -1295,7 +1361,7 @@ export default defineComponent({
                                   : 'cycle-item normal-cycle relative'
                             }
                             onClick={() => {
-                              handleClick(i)
+                              handleClick(i);
                             }}
                           >
                             <span>{e.growth}</span>
@@ -1321,7 +1387,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        rightArrowClick()
+                        rightArrowClick();
                       }}
                     >
                       <div
@@ -1343,7 +1409,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        leftArrowClick()
+                        leftArrowClick();
                       }}
                     >
                       <div class={0 < curItem ? 'left-arrow' : 'left-arrow-disable'}></div>
@@ -1365,7 +1431,7 @@ export default defineComponent({
                                     : 'cycle-item normal-cycle relative'
                               }
                               onClick={() => {
-                                handleClick(i)
+                                handleClick(i);
                               }}
                             >
                               <span>{e.growth}</span>
@@ -1390,7 +1456,7 @@ export default defineComponent({
                     <div
                       class="cycle-item cursor-pointer p-[15px] box-border"
                       onClick={() => {
-                        rightArrowClick()
+                        rightArrowClick();
                       }}
                     >
                       <div
@@ -1407,11 +1473,24 @@ export default defineComponent({
             )}
             {/** 模型图片 */}
             {cycleMap.value.get(curPeriod.value) && cycleMap.value.get(curPeriod.value).tips ? (
-              <div class="center-model text-center pt-[50px] box-border z-2">
-                <img
-                  src={cycleMap.value.get(curPeriod.value).imgId}
-                  class="object-contain h-[390px]"
-                />
+              <div class="center-model flex justify-center text-center pt-[50px] box-border z-2">
+                <div class="w-fit h-fit relative">
+                  <img
+                    src={cycleMap.value.get(curPeriod.value).imgId}
+                    class="object-contain h-[390px]"
+                  />
+                  <div class="dc-video-border">
+                    <div class="absolute top-[11px] left-[106.53px] text-white text-[14px]">
+                      种植技术视频
+                    </div>
+                    <div
+                      class="absolute top-0 right-0 w-[205px] h-[150px] bg-transparent z-10 cursor-pointer"
+                      onClick={() => {
+                        handleClickVideo();
+                      }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             ) : null}
             <div class="absolute bottom-250px left-137px w-801px h-240px cz-base"></div>
@@ -1478,7 +1557,7 @@ export default defineComponent({
                       <div
                         class="cursor-pointer"
                         onClick={() => {
-                          handleIndicatorClick(index)
+                          handleIndicatorClick(index);
                         }}
                       >
                         {item.selected ? (
@@ -1549,12 +1628,12 @@ export default defineComponent({
                           let curBgColor =
                             (Number(data.rowIndex) + 2) % 2 === 0
                               ? 'rgba(1, 248, 146, 0.1)'
-                              : 'transparent'
+                              : 'transparent';
                           return {
                             'background-color': curBgColor,
                             height: '45px',
                             'font-size': '16px'
-                          }
+                          };
                         }}
                         header-row-style={{
                           'background-color': 'transparent',
@@ -1565,7 +1644,7 @@ export default defineComponent({
                       >
                         <el-table-column label="范围" align="center">
                           {({ row }) => {
-                            return `${row.lowLimit}${row.unit} ~ ${row.highLimit}${row.unit}`
+                            return `${row.lowLimit}${row.unit} ~ ${row.highLimit}${row.unit}`;
                           }}
                         </el-table-column>
                         <el-table-column
@@ -1586,13 +1665,25 @@ export default defineComponent({
               </div>
             </div>
           </div>
+
+          <Dialog
+            v-model={showVideoDialog.value}
+            title="种植技术视频"
+            width={1280}
+            onClose={() => {
+              handleCloseVideo();
+            }}
+            top="80px"
+          >
+            <div id="dplayer">查看视频</div>
+          </Dialog>
         </div>
-      )
-    }
+      );
+    };
 
     return () => {
-      if (hiddenHeader.value && !isChazhu.value) return <MainContainer />
-      if (hiddenHeader.value && isChazhu.value) return <ChazhuContainer />
+      if (hiddenHeader.value && !isChazhu.value) return <MainContainer />;
+      if (hiddenHeader.value && isChazhu.value) return <ChazhuContainer />;
       return (
         <div class="bg-[#0B2131] w-full h-full select-none">
           <BigscreenAdapter>
@@ -1614,10 +1705,10 @@ export default defineComponent({
             </BigscreenContainer>
           </BigscreenAdapter>
         </div>
-      )
-    }
+      );
+    };
   }
-})
+});
 </script>
 <style lang="scss">
 .dc-title-bg {
@@ -2050,6 +2141,17 @@ export default defineComponent({
 .cz-base {
   @extend .dc-image-contain;
   background-image: url(./assets/chazhu/base.png);
+}
+
+.dc-video-border {
+  width: 299px;
+  height: 203px;
+  background-image: url(./assets/video.png);
+  background-size: 100% 100%;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-100%);
 }
 </style>
 <style lang="scss" scoped>
