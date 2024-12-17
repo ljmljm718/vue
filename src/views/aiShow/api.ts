@@ -39,3 +39,29 @@ export const postAddDoc = async (data: any) => {
 export const postDeleteDoc = async (params: any) => {
   return await request.post({ url: '/agriculture/collection/delete-doc', params });
 };
+
+// ---- 聊天记录相关接口 -------
+// 聊天记录分页查询
+export const chatThemePage = async (params: any) => {
+  return await request.get({ url: '/agriculture/chat-theme/page', params });
+};
+
+// 聊天记录分页查询
+export const chatHistoryPage = async (params: any) => {
+  return await request.get({ url: '/agriculture/chat-history/page', params });
+};
+
+// 删除聊天主题与聊天记录
+export const chatThemeDelete = async (params: any) => {
+  return await request.delete({ url: '/agriculture/chat-theme/delete', params });
+};
+
+// 删除文档
+export const chatThemeCreate = async (data: any) => {
+  return await request.post({ url: '/agriculture/chat-theme/create', data });
+};
+
+// 语音识别
+export const asr = async (params: any) => {
+  return await request.get({ url: `/agriculture/asr/asr`, params });
+};

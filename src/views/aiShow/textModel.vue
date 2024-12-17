@@ -4,7 +4,7 @@ import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
 import { record_start, record_upload } from '@/views/aiShow/utils';
-import { getAccessToken } from '@/utils/auth';
+import { chatThemeCreate, chatThemePage, chatHistoryPage, chatThemeDelete } from './api';
 import RadioButton from './components//radioButton.vue';
 
 const getCollectionSearch = async (data: any) => {
@@ -23,9 +23,10 @@ const asr = async (params: any) => {
   return await request.get({ url: `/agriculture/asr/asr`, params });
 };
 
+// 获取知识库选择列表
 const getCollectionData = async () => {
   const res = await getCollectionList({});
-  console.log('getCollectionData res', res);
+  console.log('获取知识库选择列表 res', res);
   if (!Array.isArray(res)) return;
   knowledgeLibOptions.value = res;
   if (res.length === 0) return;
@@ -33,6 +34,7 @@ const getCollectionData = async () => {
 };
 getCollectionData();
 
+// 随机ID
 const uuid = (length = 8, chars?) => {
   let result = '';
   const charsString = chars || '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -45,8 +47,9 @@ const uuid = (length = 8, chars?) => {
 const sideBarCollapsed = ref<boolean>(false);
 const chatList = ref<any[]>([]);
 const questionText = ref<string>('');
+// 语音识别输出函数
 const handleRadioTextOutput = (text: string) => {
-  console.log('handleRadioTextOutput text =>', text);
+  console.log('语音识别结果 text =>', text);
   const textarea = document.querySelector('textarea');
   questionText.value = text;
   textarea.value = text;
@@ -61,7 +64,13 @@ const remindArr = ref<any[]>([
 const knowledgeLib = ref<string>(''); // 知识库
 const knowledgeLibOptions = ref<any[]>([]);
 const modelSelected = ref<string>('Doubao-lite-32k'); // 大模型
-const modelOptions = ref<any[]>([{ label: 'Doubao-lite-32k', value: 'Doubao-lite-32k' }]);
+const modelOptions = ref<any[]>([
+  { label: 'Doubao-pro-32k', value: 'Doubao-pro-32k' },
+  { label: 'Doubao-pro-128k', value: 'Doubao-pro-128k' },
+  { label: 'Doubao-pro-256k', value: 'Doubao-pro-256k' },
+  { label: 'Doubao-lite-32k', value: 'Doubao-lite-32k' },
+  { label: 'Doubao-lite-128k', value: 'Doubao-lite-128k' }
+]);
 const enabledflowRes = ref<boolean>(true); // 开启流式返回
 const maxResLength = ref<number>(10); // 最大返回长度
 
@@ -70,25 +79,44 @@ const disabledSendBtn = ref<boolean>(false);
 const handleSendMsg = async (text) => {
   const textarea = document.querySelector('textarea');
   if (!text) text = textarea.value;
+
+  const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
+  if (activeChatID.value === 'new_chat') {
+    // 如果 id 为 new_chat，说明没有创建主题还，请求创建主题
+    const data = await chatThemeCreate({
+      collectionId: knowledgeLib.value,
+      model: modelSelected.value,
+      theme: text,
+      type: 'text'
+    });
+    activeChatInfo.id = data;
+    activeChatInfo.theme = text;
+    activeChatID.value = data;
+  }
   fullTextArea(true);
   if (!text) return;
   if (disabledSendBtn.value) return;
   disabledSendBtn.value = true;
   chatList.value.push({ role: 'user', text: text });
+  activeChatInfo.message.push({ role: 'user', text: text });
   scollToBottom();
   // TODO 返回请求结果
   const chatId = uuid();
-  chatList.value.push({ id: chatId, role: 'robot', text: '' });
+  chatList.value.push({ id: chatId, role: 'system', text: '' });
+  activeChatInfo.message.push({ id: chatId, role: 'system', text: '' });
   const res = await getCollectionSearch({
     collectionId: knowledgeLib.value,
     query: text,
     model: modelSelected.value,
+    themeId: activeChatID.value,
     stream: false,
     max_new_tokens: maxResLength.value
   }).catch(() => {
     disabledSendBtn.value = false;
     const activeItem = chatList.value.find((item) => item.id === chatId);
+    const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
     activeItem.text = '请求失败，请稍后重试';
+    _activeItem.text = '请求失败，请稍后重试';
   });
   const flowOutput = (
     innerText = '### 你好，我是智慧农业AI助手\n#### 可以完成智能问答，文档编写，代码生成等多种任务\n##### 请输入你的问题'
@@ -99,11 +127,14 @@ const handleSendMsg = async (text) => {
     }
     setTimeout(() => {
       const activeItem = chatList.value.find((item) => item.id === chatId);
+      const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
       const textArr = innerText.split('');
       const putText = textArr.shift();
       activeItem.text += putText;
+      _activeItem.text += putText;
       if (!enabledflowRes.value) {
         activeItem.text = innerText;
+        _activeItem.text = innerText;
         disabledSendBtn.value = false;
         scollToBottom();
         return;
@@ -112,11 +143,14 @@ const handleSendMsg = async (text) => {
       scollToBottom();
     }, 10);
   };
-  flowOutput(res.toString());
+  console.log('ReS', res);
+  if (res) flowOutput(res.toString());
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
 };
+
+// 消息记录滚动到最底下
 const chatScrollIns = ref();
 const scollToBottom = () => {
   if (!chatScrollIns.value) return;
@@ -182,47 +216,87 @@ const enableRecord = async () => {
   record_start();
 };
 
-const chatInfoList = ref<any[]>([
-  { id: 1, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 2, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 3, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 4, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 5, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 6, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 7, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 8, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 9, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 10, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 11, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 12, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 13, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 14, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 15, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 16, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 17, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 18, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 19, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 20, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 21, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 22, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 23, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 24, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 25, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 26, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 27, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 28, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 29, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 30, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 31, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 32, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 33, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 34, label: '新对话', model: 'Doubao-vision-pro-32k' },
-  { id: 35, label: '新对话', model: 'Doubao-vision-pro-32k' }
-]);
+const handleRadioRecoOutput = (text: string) => {
+  const textarea = document.querySelector('textarea');
+  textarea.value = text;
+  questionText.value = text;
+};
 
-const activeChatID = ref<string>('');
+const chatInfoList = ref<any[]>([
+  { id: 'new_chat', theme: '新对话', model: 'Doubao-vision-pro-32k', message: [] }
+]);
+const chatInfoTotal = ref<number>(0);
+const getChatInfoList = async () => {
+  const { list, total } = await chatThemePage({
+    pageNo: 1,
+    pageSize: 20,
+    type: 'text'
+    // collectionId: ""
+  });
+  console.log('获取所有对话记录 =>', list);
+  if (!Array.isArray(list)) return;
+  chatInfoList.value = list.map((item) => ({ ...item, message: [] }));
+  if (list.length > 0) {
+    activeChatID.value = list[0].id;
+    handleChatInfoClick({ id: list[0].id });
+  }
+  chatInfoTotal.value = total;
+  console.log('chatThemePage', list);
+};
+getChatInfoList();
+
+const handleChatInfoClick = (item) => {
+  activeChatID.value = item.id;
+  if (activeChatID.value !== 'new_chat') getMessageByThemeID(activeChatID.value);
+};
+
+const activeChatID = ref<string>('new_chat');
+const messageList = computed(() => {
+  const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
+  if (!activeChatInfo) return [];
+  return activeChatInfo.message;
+});
+
+// 根据 themeID 获取聊天记录
+const getMessageByThemeID = async (themeId: string) => {
+  console.log(`根据 themeID: ${themeId} 获取聊天记录`);
+  if (themeId === 'new_chat') return ElMessage.warning('未找到对话ID');
+  const { list, total } = await chatHistoryPage({ themeId });
+  console.log(`获取到的聊天记录共${total}条`, list);
+  const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
+  if (!activeChatInfo) return;
+  activeChatInfo.message = list.map((item) => ({ ...item, text: item.message.text }));
+};
 
 const showRightPanel = ref<boolean>(false);
+
+// 新对话
+const handleNewChatInfo = () => {
+  const newChatExist = chatInfoList.value.find((item) => item.id === 'new_chat');
+  if (newChatExist) return (activeChatID.value = newChatExist.id);
+  chatInfoList.value.push({
+    id: 'new_chat',
+    theme: '新对话',
+    model: 'Doubao-vision-pro-32k',
+    message: []
+  });
+  activeChatID.value = 'new_chat';
+};
+
+// 删除对话
+const handleDeleteChatTheme = (id: string) => {
+  ElMessageBox.confirm('确认删除该对话吗？', '提示', {
+    confirmButtonText: '确 认',
+    cancelButtonText: '取 消'
+  })
+    .then(async () => {
+      const res = await chatThemeDelete({ id });
+      getChatInfoList();
+      if (res) return ElMessage.success('删除成功！');
+      ElMessage.error('删除失败，请稍后重试！');
+    })
+    .catch(() => console.info('操作取消'));
+};
 </script>
 <template>
   <!--侧栏宽度 74px -->
@@ -233,6 +307,7 @@ const showRightPanel = ref<boolean>(false);
     <div
       class="new-chat-btn flex justify-center items-center text-white text-14px cursor-pointer select-none"
       v-show="!sideBarCollapsed"
+      @click="handleNewChatInfo()"
     >
       <el-icon><Plus /></el-icon>
       <span class="pl-4px">新建对话</span>
@@ -246,13 +321,21 @@ const showRightPanel = ref<boolean>(false);
         <div
           v-for="item in chatInfoList"
           :key="item.id"
-          class="w-full h-60px rounded-8px px-16px flex flex-col justify-center space-y-6px box-border cursor-pointer"
+          class="w-full h-60px rounded-8px px-16px flex flex-col justify-center space-y-6px box-border cursor-pointer relative"
           :class="[activeChatID === item.id ? 'active-chat-info-item' : '']"
           style="border: 1px solid transparent"
-          @click="activeChatID = item.id"
+          @click="handleChatInfoClick(item)"
         >
-          <div class="text-14px">{{ item.label }}</div>
+          <div class="text-14px">{{ item.theme || '新对话' }}</div>
           <div class="text-[#999999] text-12px">{{ item.model }}</div>
+          <div class="absolute right-1 top-0">
+            <el-icon
+              class="p-3px text-10px hover:bg-red text-#666 hover:text-white rounded-sm transition-all scale-[.7]"
+              @click="handleDeleteChatTheme(item.id)"
+            >
+              <Close />
+            </el-icon>
+          </div>
         </div>
       </div>
     </el-scrollbar>
@@ -280,8 +363,8 @@ const showRightPanel = ref<boolean>(false);
       <div
         class="relative h-full flex flex-col pb-36px pt-8px box-border 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px]"
       >
-        <div class="mt-[12px] grow" style="max-height: calc(100% - 108px)">
-          <div v-show="chatList.length === 0" class="w-full pt-60px h-full">
+        <div class="mt-[6px] grow" style="max-height: calc(100% - 108px)">
+          <div v-show="messageList.length === 0" class="w-full pt-60px h-full">
             <el-scrollbar>
               <div class="w-full flex flex-col items-center">
                 <div class="flex items-center space-x-24px w-full xl:pt-[4vh] pt-0">
@@ -316,24 +399,33 @@ const showRightPanel = ref<boolean>(false);
               </div>
             </el-scrollbar>
           </div>
-          <div v-show="chatList.length !== 0" class="w-full pt-10px h-full">
+          <div v-show="messageList.length !== 0" class="w-full h-full">
             <el-scrollbar ref="chatScrollIns">
               <div class="space-y-[24px] pb-10px">
                 <div
-                  class="flex items-start space-x-[12px] pl-8px box-border"
-                  v-for="(item, index) in chatList"
+                  class="flex justify-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px]"
+                  v-for="(item, index) in messageList"
                   :key="index"
                 >
-                  <div class="w-32px h-32px rounded-1 bg-blue">
-                    <img
-                      :src="item.role === 'robot' ? avatar : item.role === 'user' ? userAvatar : ''"
-                    />
-                  </div>
                   <div
-                    style="width: calc(100% - 80px)"
-                    class="bg-white rounded-1 px-16px box-border text-wrap"
-                    :innerHTML="marked.parse(item.text)"
-                  ></div>
+                    :class="[
+                      'flex',
+                      'items-start',
+                      item.role === 'user' ? 'flex-row-reverse' : '',
+                      'w-full'
+                    ]"
+                  >
+                    <img
+                      :src="
+                        item.role === 'system' ? avatar : item.role === 'user' ? userAvatar : avatar
+                      "
+                    />
+                    <div
+                      class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                      :style="`background-color: ${item.role === 'system' ? 'white' : '#E0DFFF'};max-width: calc(100% - 94px);`"
+                      :innerHTML="marked.parse(item.text)"
+                    ></div>
+                  </div>
                 </div>
               </div>
             </el-scrollbar>
@@ -371,8 +463,8 @@ const showRightPanel = ref<boolean>(false);
             语音
           </div>
           <RadioButton
-            class="absolute right-68px bottom-12px z-20"
-            @output="handleRadioTextOutput"
+            class="absolute right-72px bottom-15px z-20"
+            @output="handleRadioRecoOutput"
           />
           <div
             v-if="questionText"
@@ -479,7 +571,7 @@ const showRightPanel = ref<boolean>(false);
   }
 }
 .main-container-wrapper {
-  background: linear-gradient(to top, #ffffff, #ffffff, #ffffff, #ededfd);
+  background: linear-gradient(to top, #f6f7fb, #f6f7fb, #f6f7fb, #ededfd);
   .input-out-container {
     background: #ffffff;
     box-shadow: 0px 4px 16px 0px rgba(214, 213, 222, 0.5);
@@ -499,6 +591,10 @@ const showRightPanel = ref<boolean>(false);
     height: 1px;
     border: 1px solid #f7f8fa;
   }
+}
+
+:deep(.el-scrollbar__bar) {
+  opacity: 0;
 }
 
 .params-config-btn {
@@ -527,7 +623,7 @@ textarea {
   height: 92%;
   margin-top: 3px;
   color: #333;
-  width: calc(100% - 159px);
+  width: calc(100% - 140px);
   resize: none;
   padding: 10px 15px;
   line-height: 22px;
@@ -547,6 +643,17 @@ textarea::-webkit-scrollbar-thumb {
 }
 textarea::-webkit-scrollbar-track {
   background-color: transparent;
+}
+
+:deep(.el-switch.is-checked .el-switch__core) {
+  border-color: #615ced;
+  background-color: #615ced;
+}
+:deep(.el-slider__button) {
+  border: 2px solid #615ced;
+}
+:deep(.el-slider__bar) {
+  background-color: #615ced;
 }
 
 .max-btn {
