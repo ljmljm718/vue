@@ -77,9 +77,12 @@ const maxResLength = ref<number>(10); // 最大返回长度
 // 发送消息
 const disabledSendBtn = ref<boolean>(false);
 const handleSendMsg = async (text) => {
+  if (!knowledgeLib.value) return ElMessage.warning('请先选择知识库!');
+  if (!modelSelected.value) return ElMessage.warning('请先选择模型！');
   const textarea = document.querySelector('textarea');
   if (!text) text = textarea.value;
 
+  radioRecording.value = true;
   const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
   if (activeChatID.value === 'new_chat') {
     // 如果 id 为 new_chat，说明没有创建主题还，请求创建主题
@@ -117,6 +120,7 @@ const handleSendMsg = async (text) => {
     const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
     activeItem.text = '请求失败，请稍后重试';
     _activeItem.text = '请求失败，请稍后重试';
+    radioRecording.value = false;
   });
   const flowOutput = (
     innerText = '### 你好，我是智慧农业AI助手\n#### 可以完成智能问答，文档编写，代码生成等多种任务\n##### 请输入你的问题'
@@ -148,6 +152,7 @@ const handleSendMsg = async (text) => {
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
+  radioRecording.value = false;
 };
 
 // 消息记录滚动到最底下
@@ -297,6 +302,9 @@ const handleDeleteChatTheme = (id: string) => {
     })
     .catch(() => console.info('操作取消'));
 };
+
+// 语音功能正在进行，阻止消息发送
+const radioRecording = ref<boolean>(false);
 </script>
 <template>
   <!--侧栏宽度 74px -->
@@ -326,7 +334,7 @@ const handleDeleteChatTheme = (id: string) => {
           style="border: 1px solid transparent"
           @click="handleChatInfoClick(item)"
         >
-          <div class="text-14px">{{ item.theme || '新对话' }}</div>
+          <div class="text-14px w-[180px] line-clamp-1">{{ item.theme || '新对话' }}</div>
           <div class="text-[#999999] text-12px">{{ item.model }}</div>
           <div class="absolute right-1 top-0">
             <el-icon
@@ -452,7 +460,7 @@ const handleDeleteChatTheme = (id: string) => {
           /> -->
           <div
             v-loading="disabledSendBtn"
-            :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn ? 'disabled-send' : 'send-btn'} cursor-pointer`"
+            :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
             @click="handleSendMsg(null)"
           ></div>
           <div
@@ -464,6 +472,8 @@ const handleDeleteChatTheme = (id: string) => {
           </div>
           <RadioButton
             class="absolute right-72px bottom-15px z-20"
+            v-model:disableSend="radioRecording"
+            :generateTexting="disabledSendBtn"
             @output="handleRadioRecoOutput"
           />
           <div

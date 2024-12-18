@@ -92,6 +92,7 @@
     "vue-types": "^5.1.1",
     "vue3-scale-box": "^0.1.9",
     "vuedraggable": "^4.1.0",
+    "wavesurfer.js": "^7.8.11",
     "web-storage-cache": "^1.1.1",
     "xml-js": "^1.6.11"
   },
