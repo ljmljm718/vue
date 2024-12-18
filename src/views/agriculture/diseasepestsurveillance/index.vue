@@ -723,7 +723,7 @@ const handleClickShowSearch = () => {
                     alt="上次结果"
                     fit="cover"
                     class="!absolute top-0 left-0 w-full h-full"
-                    :preview-src-list="[imgId]"
+                    :preview-src-list="[list[curItem].recognizeImg]"
                   />
                   <img
                     v-show="
