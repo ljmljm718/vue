@@ -330,7 +330,7 @@ const getSelectEmbeddingModelInfo = async () => {
   loading.value = true;
 
   try {
-    const res = await getSelectEmbeddingModel({ modelType: '知识库' });
+    const res = await getSelectEmbeddingModel({ modelType: 'collectionModel' });
     // 设 返回结果必是列表
     // indexType chunkLength embeddingDimension quant 字段必有值且用逗号分隔
     // 其他字段该有都有

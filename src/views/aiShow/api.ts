@@ -1,4 +1,5 @@
 import request from '@/config/axios';
+import axios from 'axios';
 
 // 获取知识库列表
 export const getCollectionList = async () => {
@@ -64,4 +65,66 @@ export const chatThemeCreate = async (data: any) => {
 // 语音识别
 export const asr = async (params: any) => {
   return await request.get({ url: `/agriculture/asr/asr`, params });
+};
+
+// 编辑聊天主题
+export const putUpdateChatTheme = async (data: any) => {
+  return await request.put({ url: `/agriculture/chat-theme/update`, data });
+};
+
+// 视觉模型新增消息记录
+export const postCreateChatHistory = async (data: any) => {
+  return await request.post({ url: '/agriculture/chat-history/create', data });
+};
+
+// 图文解析
+export const postImgToText = async (data: any) => {
+  const url = '/api/v3/chat/completions';
+
+  const service = axios.create({
+    baseURL: '/ark',
+    timeout: 30000
+  });
+
+  const res = await service({
+    url: url,
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer 6a9d9495-041d-459a-8cea-4688f57495ae'
+    },
+    data
+  });
+
+  return { data: res.data, code: res.status };
+};
+
+// 文生图
+export const postTextToImg = async (params: any, data: any, headers: any) => {
+  // https://visual.volcengineapi.com
+
+  // const service = axios.create({
+  //   baseURL: '/visual',
+  //   timeout: 30000,
+  // });
+
+  // const res = await service({
+  //   url: '',
+  //   method: 'POST',
+  //   params,
+  //   data,
+  //   headers,
+  // });
+
+  // return res;
+  const res = {
+    code: 10000,
+    data: {
+      image_urls: [
+        '/images/SmartNetwork.png',
+        '/images/supplyChain.png',
+        '/images/machineVision.png'
+      ]
+    }
+  };
+  return res;
 };

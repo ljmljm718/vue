@@ -41,6 +41,18 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           ws: false,
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^/public`), '/public'),
+        },
+        ['/ark']: {
+          target: "https://ark.cn-beijing.volces.com/",
+          ws: false,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(new RegExp(`^/ark`), '/'),
+        },
+        ['/visual']: {
+          target: "https://visual.volcengineapi.com",
+          ws: false,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(new RegExp(`^/visual`), '/'),
         }
       },
     },
