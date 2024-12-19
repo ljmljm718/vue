@@ -430,7 +430,7 @@ const radioRecording = ref<boolean>(false);
                     />
                     <div
                       class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
-                      :style="`background-color: ${item.role === 'system' ? 'white' : '#E0DFFF'};max-width: calc(100% - 94px);`"
+                      :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : 'var(--user-message-bg)'};max-width: calc(100% - 94px);`"
                       :innerHTML="marked.parse(item.text)"
                     ></div>
                   </div>
@@ -544,6 +544,8 @@ const radioRecording = ref<boolean>(false);
     }
   }
   .main-container-wrapper {
+    --user-message-bg: #605dee;
+    --system-message-bg: linear-gradient(to right, #2b2e52, #252b42, #1f2532);
     background: linear-gradient(to top, rgba(147, 98, 218, 0) 0%, rgba(67, 120, 255, 0.3) 100%),
       #0f121b;
     .input-out-container {
@@ -581,6 +583,8 @@ const radioRecording = ref<boolean>(false);
   }
 }
 .main-container-wrapper {
+  --user-message-bg: #e0dfff;
+  --system-message-bg: white;
   background: linear-gradient(to top, #f6f7fb, #f6f7fb, #f6f7fb, #ededfd);
   .input-out-container {
     background: #ffffff;
