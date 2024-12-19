@@ -385,10 +385,13 @@ const submitTTI = async () => {
     req_key: 'high_aes_general_v14',
     prompt: inputTextTTI.value,
     model_version: 'general_v1.4',
-    return_url: true
+    return_url: true,
+    width: sizeList.value[sizeIdx.value].width,
+    height: sizeList.value[sizeIdx.value].height
   };
 
   const res = await postTextToImg(params, data, headers);
+  console.log(res);
   // TODO: 错误处理
   const urls = res.data.image_urls;
 
@@ -620,6 +623,18 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
     }
   }
 };
+
+// 文生图的尺寸列表
+const sizeIdx = ref(0);
+const sizeList = ref([
+  { label: '1:1', iconClass: 'size-1', width: 512, height: 512 },
+  { label: '4:3', iconClass: 'size-2', width: 512, height: 384 },
+  { label: '3:4', iconClass: 'size-2-rotate', width: 384, height: 512 },
+  { label: '3:2', iconClass: 'size-2', width: 512, height: 341 },
+  { label: '2:3', iconClass: 'size-2-rotate', width: 341, height: 512 },
+  { label: '16:9', iconClass: 'size-3', width: 512, height: 288 },
+  { label: '9:16', iconClass: 'size-3-rotate', width: 288, height: 512 }
+]);
 </script>
 
 <template>
@@ -1117,6 +1132,21 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
             </span>
           </div>
           <div class="w-[48px] h-[32px] no-send-btn"></div>
+          <!-- size list -->
+          <div class="w-full h-[34px] absolute left-0 top-[-40px]">
+            <el-scrollbar view-class="flex space-x-[8px]">
+              <div
+                v-for="(item, index) in sizeList"
+                :key="item.label"
+                class="size-bg"
+                :class="index === sizeIdx && 'active-size'"
+                @click.stop="sizeIdx = index"
+              >
+                <div :class="item.iconClass"></div>
+                <span class="pl-[10px]">{{ item.label }}</span>
+              </div>
+            </el-scrollbar>
+          </div>
         </div>
 
         <!-- 输入框 -->
@@ -1140,6 +1170,21 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               class="w-[48px] h-[32px] send-btn cursor-pointer"
             ></div>
             <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer"></div>
+          </div>
+          <!-- size list -->
+          <div class="w-full h-[34px] absolute left-0 top-[-40px]">
+            <el-scrollbar view-class="flex space-x-[8px]">
+              <div
+                v-for="(item, index) in sizeList"
+                :key="item.label"
+                class="size-bg"
+                :class="index === sizeIdx && 'active-size'"
+                @click.stop="sizeIdx = index"
+              >
+                <div :class="item.iconClass"></div>
+                <span class="pl-[10px]">{{ item.label }}</span>
+              </div>
+            </el-scrollbar>
           </div>
         </div>
       </div>
@@ -1231,6 +1276,47 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
         rgba(97, 92, 237, 0) 100%
       ),
       #1f2531;
+  }
+
+  .size-bg {
+    background-color: #2c3240;
+    border: none;
+    border-radius: 6px;
+    width: 88px;
+    height: 32px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  .active-size {
+    border: none;
+    background: #615ced;
+  }
+
+  @for $i from 1 through 3 {
+    .size-#{$i} {
+      padding-left: 16px;
+      width: 16px;
+      height: 16px;
+      background-image: url(./assets/vision-img-size-#{$i}.png);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+  }
+
+  @for $i from 2 through 3 {
+    .size-#{$i}-rotate {
+      width: 16px;
+      height: 16px;
+      background-image: url(./assets/vision-img-size-#{$i}.png);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -1521,5 +1607,46 @@ textarea::-webkit-scrollbar-track {
 
 .answer-bg {
   background-color: white;
+}
+
+.size-bg {
+  padding-left: 16px;
+  background-color: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  width: 88px;
+  height: 32px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.active-size {
+  border: 1px solid #615ced;
+  background: #f2f2fa;
+}
+
+@for $i from 1 through 3 {
+  .size-#{$i} {
+    width: 16px;
+    height: 16px;
+    background-image: url(./assets/vision-img-size-#{$i}.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+@for $i from 2 through 3 {
+  .size-#{$i}-rotate {
+    width: 16px;
+    height: 16px;
+    background-image: url(./assets/vision-img-size-#{$i}.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: rotate(90deg);
+  }
 }
 </style>
