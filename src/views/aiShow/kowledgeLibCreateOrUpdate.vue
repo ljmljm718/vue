@@ -1,21 +1,15 @@
 <template>
   <div class="w-full h-full">
-    <div
-      class="h-[63px] px-[24px] flex items-center justify-between font-bold"
-      style="border-bottom: 1px solid #e0e3eb"
-    >
-      <div>创建知识库</div>
-      <div class="flex items-center cursor-pointer" @click="handleClickBack">
-        <el-icon class="mr-[3px]" :size="14"><ArrowLeft /></el-icon>
-        <span>返回</span>
-      </div>
+    <div class="pt-[24px] pl-[36px] pb-[12px] flex items-center font-bold">
+      <div class="w-[36px] h-[36px] go-back cursor-pointer" @click="handleClickBack"></div>
+      <div class="text-[24px] ml-[28px]">创建知识库</div>
     </div>
 
     <div
       v-if="embeddingModelList.length > 0"
-      class="w-full h-[calc(100%-64px)] pl-[63px] py-[16px] box-border"
+      class="w-full h-[calc(100%-64px)] pl-[99px] py-[16px] box-border"
     >
-      <el-scrollbar class="pr-[63px]">
+      <el-scrollbar class="pr-[10px]">
         <el-form
           :inline="true"
           :label-width="136"
@@ -208,9 +202,12 @@
           </el-form-item>
         </el-form>
 
-        <el-button type="primary" class="ml-[136px]" @click="handleClickCreateLib">
+        <div
+          class="create-btn text-[14px] px-[29px] py-[8px] ml-[136px] w-fit !rounded-[8px] cursor-pointer"
+          @click="handleClickCreateLib"
+        >
           创建知识库
-        </el-button>
+        </div>
       </el-scrollbar>
     </div>
   </div>
@@ -392,10 +389,15 @@ const handleClickCreateLib = async () => {
 </script>
 
 <style lang="scss" scoped>
+.go-back {
+  background-image: url(./assets/knowledge-goback.png);
+  background-size: 100% 100%;
+}
+
 .title-tag {
   width: 4px;
   height: 14px;
-  background: linear-gradient(135deg, #00c784 0%, #009688 100%);
+  background-color: #615ced;
   margin-right: 8px;
 }
 
@@ -405,6 +407,36 @@ const handleClickCreateLib = async () => {
   margin: 0;
   box-sizing: border-box;
   height: 100%;
+}
+
+.el-radio.is-bordered.is-checked {
+  border-color: #615ced;
+}
+
+.el-radio.is-checked {
+  background-color: #f7f7fe;
+}
+
+:deep(.el-radio__input.is-checked + .el-radio__label) {
+  color: #615ced;
+}
+
+:deep(.el-switch.is-checked .el-switch__core) {
+  border-color: #615ced;
+  background-color: #615ced;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px #615ced inset;
+}
+
+:deep(.el-textarea__inner:focus) {
+  outline: 0;
+  box-shadow: 0 0 0 1px #615ced inset;
+}
+
+:deep(.el-select__wrapper.is-focused) {
+  box-shadow: 0 0 0 1px #615ced inset;
 }
 
 :deep(.vector-dimension-radio .el-radio) {
@@ -433,5 +465,11 @@ const handleClickCreateLib = async () => {
   background-image: url(./assets/knowledge-beta.png);
   background-size: 100% 100%;
   margin-left: 8px;
+}
+
+.create-btn {
+  background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
+  border-radius: 20px;
+  color: white;
 }
 </style>

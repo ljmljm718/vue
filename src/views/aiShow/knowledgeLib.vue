@@ -15,10 +15,6 @@ import GuideImg from './assets/knowledge-guide.png';
 // false 则显示创建知识库页面
 const showLibPage = ref(true);
 
-const handleClickCreateLib = () => {
-  showLibPage.value = false;
-};
-
 const showCreateLibSuccessDialog = ref(false);
 const createLibSuccessDialogLibName = ref('');
 const addIndex = ref(-1);
@@ -73,10 +69,6 @@ const dataTypeMap = {
 
 // 展示教程
 const showGuide = ref(false);
-
-const handleClickGuideArrow = () => {
-  showGuide.value = !showGuide.value;
-};
 
 // 导入文档
 const showImportDialog = ref(false);
@@ -217,108 +209,167 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 </script>
 
 <template>
-  <div class="w-full h-full knowledge-bg">
-    <div v-if="showLibPage" class="w-full h-full">
-      <div
-        class="h-[63px] px-[24px] flex items-center justify-between font-bold"
-        style="border-bottom: 1px solid #e0e3eb"
-      >
-        <div>知识库</div>
-        <el-button type="primary" @click="handleClickCreateLib">
-          <el-icon class="mr-[3px]"><Plus /></el-icon>
-          创建知识库
-        </el-button>
-      </div>
-
-      <div class="p-[16px] pr-0 w-full h-[calc(100%-64px)] box-border">
-        <el-scrollbar class="pr-[16px]">
-          <div class="w-full">
-            <div
-              class="w-full flex justify-between items-center px-[27px] pb-[16px] box-border text-[14px] text-[#666]"
-            >
-              <span class="text-[12px]">
-                知识库提供知识管理的能力，将本地存储、TOS
-                中存储或指定链接的多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。
-              </span>
-              <div
-                class="flex-none flex items-center ml-[16px] cursor-pointer"
-                @click="handleClickGuideArrow"
-              >
-                <span>{{ showGuide ? '收起' : '展开' }}教程</span>
-                <div
-                  class="down-arrow transition-all"
-                  :class="showGuide ? 'rotate-180' : 'rotate-0'"
-                ></div>
-              </div>
+  <div class="w-full h-full" :class="showLibPage ? 'lib-bg' : 'create-lib-bg'">
+    <template v-if="showLibPage">
+      <!-- header -->
+      <div class="h-[57px] p-[24px] pl-[36px] flex justify-between items-start">
+        <div class="flex items-start h-full">
+          <div class="logo w-[48px] h-[48px]"></div>
+          <div class="pl-[16px] flex flex-col justify-between h-[57px]">
+            <h1 class="m-0 text-[24px]">知识库</h1>
+            <div class="text-[14px] text-[#999999]">
+              知识库提供知识管理的能力，将多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。
             </div>
-            <img
-              v-show="showGuide"
-              :src="GuideImg"
-              alt="教程"
-              class="w-full mb-[16px] object-contain"
-            />
           </div>
-
+        </div>
+        <div class="flex space-x-[16px]">
           <div
-            v-if="knowledgeList.length <= 0"
-            class="w-full h-full flex flex-col justify-center items-center mt-[72px]"
+            class="create-btn flex items-center px-[20px] py-[8px] cursor-pointer"
+            @click="showLibPage = false"
           >
-            <div class="no-lib"></div>
-            <div class="mt-[8px]">暂未创建知识库</div>
-            <div class="text-[#666] text-[14px] mt-[8px]">
-              您还没有创建知识库，点击下方按钮快速创建
-            </div>
-            <el-button type="primary" class="mt-[24px]" @click="handleClickCreateLib">
-              <el-icon class="mr-[3px]"><Plus /></el-icon>
-              创建知识库
-            </el-button>
+            <el-icon><Plus /></el-icon>
+            <span class="pl-[3px] text-[14px]">创建知识库</span>
           </div>
-
-          <div v-else class="grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
+          <div
+            class="flex items-center px-[17px] py-[8px] rounded-[20px] cursor-pointer"
+            style="border: 1px solid #ebecf2"
+            @click="showGuide = !showGuide"
+          >
             <div
-              v-for="(item, index) in knowledgeList"
-              :key="item.name"
-              class="rounded-[6px] overflow-hidden shadow-lg relative"
-            >
-              <div class="pb-[27.85%] relative w-full">
-                <el-image
-                  :src="DefaultLibImg"
-                  :alt="item.name + '-' + item.tag"
-                  fit="cover"
-                  class="!absolute top-0 left-0 w-full h-full"
-                />
-              </div>
-              <div
-                class="absolute top-[16px] left-[16px] 2xl:top-[31px] 2xl:left-[24px] cursor-default"
-              >
-                <div class="text-[24px]">{{ item.collectionName }}</div>
-                <div class="tag">{{ dataTypeMap[item.dataType] }}</div>
-              </div>
-              <div class="flex items-center justify-between p-[16px] bg-[#fff]">
-                <div class="flex items-center">
-                  <span>文档数量: {{ item.docNum ? item.docNum : 0 }}</span>
-                  <div
-                    class="right-arrow-circle cursor-pointer"
-                    @click="handleCheckDoc(index)"
-                  ></div>
+              class="collapse-arrow w-[14px] h-[14px]"
+              :style="{ transform: showGuide ? 'rotate(0deg)' : 'rotate(180deg)' }"
+            ></div>
+            <span class="text-[14px] ml-[3px]">
+              {{ showGuide ? '收起教程' : '展开教程' }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <!-- content -->
+      <div class="h-[calc(100%-105px)]">
+        <el-scrollbar>
+          <!-- guide -->
+          <div
+            v-show="showGuide"
+            class="h-[198px] ml-[100px] mr-[33px] rounded-[16px] overflow-hidden"
+            style="border: 1px solid #ebecf2"
+          >
+            <el-scrollbar>
+              <div class="flex px-[37px] pt-[17px] space-x-[85px]">
+                <div class="flex space-x-[35px]">
+                  <div class="space-y-[12px] w-[300px]">
+                    <div class="text-[14px] text-[#635E9E]">第1步</div>
+                    <div class="text-[#33315A] text-[18px]">创建知识库</div>
+                    <div class="text-[14px] text-[#252059] text-wrap">
+                      按特定场景/领域管理知识库，支持结构化和非结构化类型知识库
+                    </div>
+                  </div>
+                  <div class="guide-img-1 w-[161px] h-[171px] self-end"></div>
                 </div>
-                <div class="flex items-center space-x-[8px]">
-                  <el-button type="primary" @click="handleClickImport(index)">导入文档</el-button>
-                  <el-button @click="handleDeleteLib(index)">删除</el-button>
+                <div class="flex space-x-[35px]">
+                  <div class="space-y-[12px] w-[300px]">
+                    <div class="text-[14px] text-[#635E9E]">第2步</div>
+                    <div class="text-[#33315A] text-[18px]">上传文档</div>
+                    <div class="text-[14px] text-[#252059] text-wrap">
+                      非结构化文档支持类型：txt、doc、docx、pdf、markdown/md、faq.xlsx、pptx；结构化文档支持类型：xlsx、csv、
+                      jsonl
+                    </div>
+                  </div>
+                  <div class="guide-img-2 w-[161px] h-[171px] self-end"></div>
+                </div>
+                <div class="flex space-x-[35px]">
+                  <div class="space-y-[12px] w-[300px]">
+                    <div class="text-[14px] text-[#635E9E]">第3步</div>
+                    <div class="text-[#33315A] text-[18px]">检索问答</div>
+                    <div class="text-[14px] text-[#252059] text-wrap">
+                      基于知识库，通过切片检索及大模型问答，调试检查回答效果
+                    </div>
+                  </div>
+                  <div class="guide-img-3 w-[161px] h-[171px] self-end"></div>
+                </div>
+              </div>
+            </el-scrollbar>
+          </div>
+          <!-- no knowledge lib -->
+          <template v-if="knowledgeList.length <= 0">
+            <div class="relative">
+              <div class="absolute top-[95px] left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <div class="no-lib"></div>
+                <div class="text-[24px] text-[#33315A]">暂未创建知识库</div>
+                <div class="text-[#635E9E] text-[14px] mt-[5px]">
+                  您还没有创建知识库，点击下方按钮快速创建
+                </div>
+                <div
+                  class="create-btn mt-[24px] flex items-center px-[20px] py-[8px] cursor-pointer"
+                  @click="showLibPage = false"
+                >
+                  <el-icon><Plus /></el-icon>
+                  <span class="pl-[3px] text-[16px]">创建知识库</span>
                 </div>
               </div>
             </div>
-          </div>
+          </template>
+          <!-- knowledge lib list -->
+          <template v-else>
+            <div class="mt-[24px] grid grid-cols-2 xl:grid-cols-3 gap-[16px] pl-[39px] pr-[24px]">
+              <div
+                v-for="(item, index) in knowledgeList"
+                :key="item.name"
+                class="rounded-[12px] card-bg overflow-hidden shadow-lg"
+                style="border: 1px solid #ebecf2"
+              >
+                <div class="flex justify-between pt-[20px] pl-[25px] pb-[25px] pr-[43px]">
+                  <div class="flex flex-col justify-center">
+                    <div class="flex">
+                      <span class="text-[24px] text-[#33315A]">{{ item.collectionName }}</span>
+                      <div
+                        class="ml-[16px] flex items-center rounded-[8px] bg-[#F1F1FD] px-[13px] text-[#615CED] text-[13px]"
+                      >
+                        {{ dataTypeMap[item.dataType] }}
+                      </div>
+                    </div>
+                    <div class="pt-[4px] flex items-center">
+                      <span class="text-[#9998AC]">
+                        文档数量：{{ item.docNum ? item.docNum : 0 }}
+                      </span>
+                      <div
+                        class="right-arrow-circle cursor-pointer"
+                        @click="handleCheckDoc(index)"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="card-logo w-[66px] h-[73px]"></div>
+                </div>
+                <div class="grid grid-cols-3">
+                  <div
+                    class="flex justify-center items-center py-[13px] cursor-pointer text-[#33315A]"
+                    style="border-top: 1px solid #ebecf2; border-right: 1px solid #ebecf2"
+                    @click="handleClickImport(index)"
+                  >
+                    导入文档
+                  </div>
+                  <div style="border-top: 1px solid #ebecf2; border-right: 1px solid #ebecf2"></div>
+                  <div
+                    class="flex justify-center items-center py-[13px] cursor-pointer text-[#33315A]"
+                    style="border-top: 1px solid #ebecf2"
+                    @click="handleDeleteLib(index)"
+                  >
+                    删除
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
         </el-scrollbar>
       </div>
-    </div>
+    </template>
 
-    <div v-else class="w-full h-full">
+    <template v-else>
       <knowledge-lib-create-or-update
         @back-to-lib-page="handleShowLibPage"
         @create-success="handleCreateLibSuccess"
       />
-    </div>
+    </template>
 
     <Dialog
       v-model="showImportDialog"
@@ -402,19 +453,45 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 </template>
 
 <style scoped lang="scss">
-.knowledge-bg {
-  background-image: url(./assets/knowledge-bg.png);
+.lib-bg {
+  background: linear-gradient(to bottom, #ffffff 30%, #ededfd 100%);
+}
+
+.create-lib-bg {
+  background: linear-gradient(to top, #ffffff 70%, #ededfd 100%);
+}
+
+.create-btn {
+  background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
+  border-radius: 20px;
+  color: white;
+}
+
+.logo {
+  background-image: url(./assets/knowledge-logo.png);
   background-size: 100% 100%;
 }
 
-.down-arrow {
-  width: 11px;
-  height: 8px;
-  background-image: url(./assets/knowledge-arrow-down.png);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin-left: 8px;
+.collapse-arrow {
+  background-image: url(./assets/knowledge-collapse.png);
+  background-size: 100% 100%;
+}
+
+@for $i from 1 through 3 {
+  .guide-img-#{$i} {
+    background-image: url(./assets/knowledge-guide-#{$i}.png);
+    background-size: 100% 100%;
+  }
+}
+
+.card-bg {
+  background-image: url(./assets/knowledge-card-bg.png);
+  background-size: 100% 100%;
+}
+
+.card-logo {
+  background-image: url(./assets/knowledge-card-logo.png);
+  background-size: 100% 100%;
 }
 
 .no-lib {
