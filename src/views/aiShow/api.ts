@@ -102,29 +102,29 @@ export const postImgToText = async (data: any) => {
 export const postTextToImg = async (params: any, data: any, headers: any) => {
   // https://visual.volcengineapi.com
 
-  const service = axios.create({
-    baseURL: '/visual',
-    timeout: 30000
-  });
+  // const service = axios.create({
+  //   baseURL: '/visual',
+  //   timeout: 30000
+  // });
 
-  const res = await service({
-    url: '',
-    method: 'POST',
-    params,
-    data,
-    headers
-  });
+  // const res = await service({
+  //   url: '',
+  //   method: 'POST',
+  //   params,
+  //   data,
+  //   headers
+  // });
 
-  return res;
-  // const res = {
-  //   code: 10000,
-  //   data: {
-  //     image_urls: [
-  //       '/images/SmartNetwork.png',
-  //       '/images/supplyChain.png',
-  //       '/images/machineVision.png'
-  //     ]
-  //   }
-  // };
   // return res;
+  const res = {
+    code: 10000,
+    data: {
+      image_urls: [
+        '/images/SmartNetwork.png',
+        '/images/supplyChain.png',
+        '/images/machineVision.png'
+      ]
+    }
+  };
+  return res;
 };
