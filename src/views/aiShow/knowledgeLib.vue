@@ -9,8 +9,6 @@ import {
 } from './api';
 // @ts-ignore
 import KnowledgeLibCreateOrUpdate from './kowledgeLibCreateOrUpdate.vue';
-import DefaultLibImg from './assets/knowledge-lib-default-img.png';
-import GuideImg from './assets/knowledge-guide.png';
 
 // false 则显示创建知识库页面
 const showLibPage = ref(true);
@@ -228,7 +226,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
             @click="showLibPage = false"
           >
             <el-icon><Plus /></el-icon>
-            <span class="pl-[3px] text-[14px]">创建知识库</span>
+            <span class="pl-[6px] text-[14px]">创建知识库</span>
           </div>
           <div
             class="flex items-center px-[17px] py-[8px] rounded-[20px] cursor-pointer"
@@ -239,7 +237,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
               class="collapse-arrow w-[14px] h-[14px]"
               :style="{ transform: showGuide ? 'rotate(0deg)' : 'rotate(180deg)' }"
             ></div>
-            <span class="text-[14px] ml-[3px]">
+            <span class="text-[14px] ml-[3px] pl-[6px]">
               {{ showGuide ? '收起教程' : '展开教程' }}
             </span>
           </div>
@@ -251,16 +249,15 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <!-- guide -->
           <div
             v-show="showGuide"
-            class="h-[198px] ml-[100px] mr-[33px] rounded-[16px] overflow-hidden"
-            style="border: 1px solid #ebecf2"
+            class="guide-border h-[198px] ml-[100px] mr-[33px] rounded-[16px] overflow-hidden"
           >
             <el-scrollbar>
               <div class="flex px-[37px] pt-[17px] space-x-[85px]">
                 <div class="flex space-x-[35px]">
                   <div class="space-y-[12px] w-[300px]">
-                    <div class="text-[14px] text-[#635E9E]">第1步</div>
-                    <div class="text-[#33315A] text-[18px]">创建知识库</div>
-                    <div class="text-[14px] text-[#252059] text-wrap">
+                    <div class="text-[14px] text-[#635E9E] dark:text-white">第1步</div>
+                    <div class="text-[#33315A] text-[18px] dark:text-white">创建知识库</div>
+                    <div class="text-[14px] text-[#252059] dark:text-white">
                       按特定场景/领域管理知识库，支持结构化和非结构化类型知识库
                     </div>
                   </div>
@@ -268,9 +265,9 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 </div>
                 <div class="flex space-x-[35px]">
                   <div class="space-y-[12px] w-[300px]">
-                    <div class="text-[14px] text-[#635E9E]">第2步</div>
-                    <div class="text-[#33315A] text-[18px]">上传文档</div>
-                    <div class="text-[14px] text-[#252059] text-wrap">
+                    <div class="text-[14px] text-[#635E9E] dark:text-white">第2步</div>
+                    <div class="text-[#33315A] text-[18px] dark:text-white">上传文档</div>
+                    <div class="text-[14px] text-[#252059] dark:text-white">
                       非结构化文档支持类型：txt、doc、docx、pdf、markdown/md、faq.xlsx、pptx；结构化文档支持类型：xlsx、csv、
                       jsonl
                     </div>
@@ -279,9 +276,9 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 </div>
                 <div class="flex space-x-[35px]">
                   <div class="space-y-[12px] w-[300px]">
-                    <div class="text-[14px] text-[#635E9E]">第3步</div>
-                    <div class="text-[#33315A] text-[18px]">检索问答</div>
-                    <div class="text-[14px] text-[#252059] text-wrap">
+                    <div class="text-[14px] text-[#635E9E] dark:text-white">第3步</div>
+                    <div class="text-[#33315A] text-[18px] dark:text-white">检索问答</div>
+                    <div class="text-[14px] text-[#252059] dark:text-white">
                       基于知识库，通过切片检索及大模型问答，调试检查回答效果
                     </div>
                   </div>
@@ -295,8 +292,8 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
             <div class="relative">
               <div class="absolute top-[95px] left-1/2 -translate-x-1/2 flex flex-col items-center">
                 <div class="no-lib"></div>
-                <div class="text-[24px] text-[#33315A]">暂未创建知识库</div>
-                <div class="text-[#635E9E] text-[14px] mt-[5px]">
+                <div class="text-[24px] text-[#33315A] dark:text-white">暂未创建知识库</div>
+                <div class="text-[#635E9E] dark:text-[#D6D4E6] text-[14px] mt-[5px]">
                   您还没有创建知识库，点击下方按钮快速创建
                 </div>
                 <div
@@ -316,20 +313,21 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 v-for="(item, index) in knowledgeList"
                 :key="item.name"
                 class="rounded-[12px] card-bg overflow-hidden shadow-lg"
-                style="border: 1px solid #ebecf2"
               >
                 <div class="flex justify-between pt-[20px] pl-[25px] pb-[25px] pr-[43px]">
                   <div class="flex flex-col justify-center">
                     <div class="flex">
-                      <span class="text-[24px] text-[#33315A]">{{ item.collectionName }}</span>
-                      <div
-                        class="ml-[16px] flex items-center rounded-[8px] bg-[#F1F1FD] px-[13px] text-[#615CED] text-[13px]"
-                      >
-                        {{ dataTypeMap[item.dataType] }}
+                      <!-- <span class="text-[24px] text-[#33315A]">{{ item.collectionName }}</span> -->
+                      <span class="text-[24px] text-[#33315A] dark:text-white">
+                        {{ item.name }}
+                      </span>
+                      <div class="tag">
+                        <!-- {{ dataTypeMap[item.dataType] }} -->
+                        {{ item.tag }}
                       </div>
                     </div>
                     <div class="pt-[4px] flex items-center">
-                      <span class="text-[#9998AC]">
+                      <span class="text-[#9998AC] dark:text-[#9998AC]">
                         文档数量：{{ item.docNum ? item.docNum : 0 }}
                       </span>
                       <div
@@ -342,16 +340,14 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 </div>
                 <div class="grid grid-cols-3">
                   <div
-                    class="flex justify-center items-center py-[13px] cursor-pointer text-[#33315A]"
-                    style="border-top: 1px solid #ebecf2; border-right: 1px solid #ebecf2"
+                    class="card-btn-border-top card-btn-border-right flex justify-center items-center py-[13px] cursor-pointer text-[#33315A] dark:text-white"
                     @click="handleClickImport(index)"
                   >
                     导入文档
                   </div>
-                  <div style="border-top: 1px solid #ebecf2; border-right: 1px solid #ebecf2"></div>
+                  <div class="card-btn-border-top card-btn-border-right"></div>
                   <div
-                    class="flex justify-center items-center py-[13px] cursor-pointer text-[#33315A]"
-                    style="border-top: 1px solid #ebecf2"
+                    class="card-btn-border-top flex justify-center items-center py-[13px] cursor-pointer text-[#33315A] dark:text-white"
                     @click="handleDeleteLib(index)"
                   >
                     删除
@@ -477,6 +473,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   background-size: 100% 100%;
 }
 
+.guide-border {
+  border: 1px solid #ebecf2;
+}
+
 @for $i from 1 through 3 {
   .guide-img-#{$i} {
     background-image: url(./assets/knowledge-guide-#{$i}.png);
@@ -487,6 +487,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 .card-bg {
   background-image: url(./assets/knowledge-card-bg.png);
   background-size: 100% 100%;
+  border: 1px solid #ebecf2;
 }
 
 .card-logo {
@@ -514,17 +515,23 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 }
 
 .tag {
-  width: 104px;
-  height: 24px;
-  border: 1px solid;
-  border-image: linear-gradient(135deg, rgba(0, 199, 132, 1), rgba(0, 150, 136, 1)) 1 1;
-  background-image: linear-gradient(45deg, #00c784 0%, #009688 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  margin-top: 12px;
-  padding: 3px 13px;
-  text-align: center;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #f1f1fd;
+  padding-left: 13px;
+  padding-right: 13px;
+  color: #615ced;
+  font-size: 13px;
+}
+
+.card-btn-border-top {
+  border-top: 1px solid #ebecf2;
+}
+
+.card-btn-border-right {
+  border-right: 1px solid #ebecf2;
 }
 
 .doc-icon {
@@ -591,5 +598,74 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   height: 180px;
   background-image: url(/images/noData.png);
   background-size: 100% 100%;
+}
+
+.dark {
+  .lib-bg {
+    background: linear-gradient(180deg, rgba(147, 98, 218, 0) 0%, rgba(67, 120, 255, 0.3) 100%),
+      #0f121b;
+  }
+
+  .create-lib-bg {
+    background: radial-gradient(
+        circle at 100% -1%,
+        rgba(147, 98, 218, 0.2) 0%,
+        rgba(67, 120, 255, 0) 100%
+      ),
+      #0f121b;
+  }
+
+  .collapse-arrow {
+    background-image: url(./assets/knowledge-collapse-dark.png);
+    background-size: 100% 100%;
+  }
+
+  .guide-border {
+    border: 1px solid #2d2e62;
+    background: rgba(23, 28, 49, 0.5);
+  }
+
+  .no-lib {
+    width: 234px;
+    height: 247px;
+    background-image: url(./assets/knowledge-no-lib-dark.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  @for $i from 1 through 3 {
+    .guide-img-#{$i} {
+      background-image: url(./assets/knowledge-guide-#{$i}-dark.png);
+      background-size: 100% 100%;
+    }
+  }
+
+  .card-bg {
+    background-image: url(./assets/knowledge-card-bg-dark.png);
+    background-size: 100% 100%;
+    border: none;
+  }
+
+  .tag {
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    background-color: transparent;
+    padding-left: 13px;
+    padding-right: 13px;
+    color: #786df5;
+    font-size: 13px;
+    border: 1px solid #786df5;
+  }
+
+  .card-btn-border-top {
+    border-top: 1px solid #2d2e62;
+  }
+
+  .card-btn-border-right {
+    border-right: 1px solid #2d2e62;
+  }
 }
 </style>

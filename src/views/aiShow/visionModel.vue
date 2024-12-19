@@ -708,7 +708,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
       <div class="w-full h-[calc(100%-88px)] relative flex flex-col items-center">
         <!-- 切换模式 -->
         <div
-          class="w-[63.73%] h-[48px] relative grid grid-cols-2 bg-white rounded-[16px] px-[4px] box-border shadow-md"
+          class="tab-container w-[63.73%] h-[48px] relative grid grid-cols-2 rounded-[16px] px-[4px] box-border shadow-md"
         >
           <div
             class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
@@ -718,7 +718,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               class="w-[14px] h-[16px]"
               :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
             ></div>
-            <div :class="`${useITT && 'text-[#615CED]'}`">图文解析</div>
+            <div :class="`${useITT && 'active-tab-text'}`">图文解析</div>
           </div>
           <div
             class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
@@ -728,11 +728,11 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               class="w-[14px] h-[16px]"
               :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
             ></div>
-            <div :class="`${!useITT && 'text-[#615CED]'}`">文生图</div>
+            <div :class="`${!useITT && 'active-tab-text'}`">文生图</div>
           </div>
           <div
             :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
-            class="absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] bg-[#EFEFFE] transition-all"
+            class="active-tab-bg absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] transition-all"
           ></div>
         </div>
 
@@ -777,7 +777,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
           >
             <template v-for="(item, index) in chatListITT" :key="index">
               <div class="relative flex flex-col items-end space-y-[16px] mt-[36px]">
-                <div class="bg-[#E0DFFF] px-[25px] py-[14px] rounded-[16px]">
+                <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
                   {{ item.ask.text }}
                 </div>
                 <div class="w-full grid grid-cols-4 gap-[8px] direction-rtl">
@@ -794,7 +794,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               </div>
 
               <div class="relative flex mt-[24px]">
-                <div class="bg-white rounded-[16px] px-[22px] py-[18px]">
+                <div class="answer-bg rounded-[16px] px-[22px] py-[18px]">
                   {{ item.answer.text }}
                 </div>
                 <div
@@ -889,14 +889,14 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
     <!-- 图文解析参数设置 -->
     <div
       :class="`${settingExpandITT ? 'mr-0' : 'mr-[-257px]'}`"
-      class="right-panel-wrapper flex-none relative w-[256px] h-full border-l border-l-solid border-[#F7F8FA] transition-all"
+      class="right-panel-wrapper flex-none relative w-[256px] h-full border-l border-l-solid border-[#F7F8FA] dark:border-0 transition-all"
     >
       <!-- 展开收起 -->
       <div
         @click="settingExpandITT = !settingExpandITT"
-        class="absolute top-[24px] left-[-134px] w-[110px] h-[36px] flex justify-between items-center px-[16px] box-border rounded-full bg-white text-[14px] cursor-pointer"
+        class="absolute top-[24px] left-[-134px] w-[110px] h-[36px] flex justify-between items-center px-[16px] box-border rounded-full bg-white text-[14px] cursor-pointer setting-bg"
       >
-        <div class="w-[14px] h-[13px] setting-img"></div>
+        <el-icon><Operation /></el-icon>
         <span>参数设置</span>
       </div>
 
@@ -1012,7 +1012,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
       <div class="w-full h-[calc(100%-88px)] relative flex flex-col items-center">
         <!-- 切换模式 -->
         <div
-          class="w-[63.73%] h-[48px] relative grid grid-cols-2 bg-white rounded-[16px] px-[4px] box-border shadow-md"
+          class="tab-container w-[63.73%] h-[48px] relative grid grid-cols-2 rounded-[16px] px-[4px] box-border shadow-md"
         >
           <div
             class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
@@ -1022,7 +1022,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               class="w-[14px] h-[16px]"
               :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
             ></div>
-            <div :class="`${useITT && 'text-[#615CED]'}`">图文解析</div>
+            <div :class="`${useITT && 'active-tab-text'}`">图文解析</div>
           </div>
           <div
             class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
@@ -1032,11 +1032,11 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
               class="w-[14px] h-[16px]"
               :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
             ></div>
-            <div :class="`${!useITT && 'text-[#615CED]'}`">文生图</div>
+            <div :class="`${!useITT && 'active-tab-text'}`">文生图</div>
           </div>
           <div
             :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
-            class="absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] bg-[#EFEFFE] transition-all"
+            class="active-tab-bg absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] transition-all"
           ></div>
         </div>
 
@@ -1075,7 +1075,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
           >
             <template v-for="(item, index) in chatListTTI" :key="index">
               <div class="relative flex justify-end mt-[36px]">
-                <div class="bg-[#E0DFFF] px-[25px] py-[14px] rounded-[16px]">
+                <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
                   {{ item.ask.text }}
                 </div>
                 <div
@@ -1179,7 +1179,7 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
     }
     @for $i from 1 through 6 {
       .card-bg-#{$i} {
-        background-image: url(./assets/darkCardBg#{$i}.png);
+        background-image: url(./assets/vision-init-#{$i}-dark.png);
         background-size: 100% 100%;
       }
     }
@@ -1188,6 +1188,49 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
+  }
+
+  .setting-bg {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .tab-container {
+    background-color: transparent;
+    border: 1px solid #615ced;
+  }
+
+  .active-tab-bg {
+    background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
+  }
+
+  .active-tab-text {
+    color: white;
+  }
+
+  .text-to-img,
+  .text-to-img-active {
+    background-image: url(./assets/vision-text-to-img-dark.png);
+    background-size: 100% 100%;
+  }
+
+  .img-to-text,
+  .img-to-text-active {
+    background-image: url(./assets/vision-img-to-text-dark.png);
+    background-size: 100% 100%;
+  }
+
+  .vision-avatar {
+    background-image: url(./assets/user-avatar-dark.png);
+    background-size: 100% 100%;
+  }
+
+  .answer-bg {
+    background: radial-gradient(
+        circle at -1% 0%,
+        rgba(97, 92, 237, 0.24) 0%,
+        rgba(97, 92, 237, 0) 100%
+      ),
+      #1f2531;
   }
 }
 
@@ -1218,13 +1261,6 @@ const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
       background-image: url(./assets/vision-init-#{$i}.png);
       background-size: 100% 100%;
     }
-  }
-
-  /** 分割线 */
-  .split-line {
-    width: 255px;
-    height: 1px;
-    border: 1px solid #f7f8fa;
   }
 }
 
@@ -1305,16 +1341,6 @@ textarea::-webkit-scrollbar-track {
   background: linear-gradient(180deg, #ededfd 0%, #fff 40%, #fff 100%);
 }
 
-// .collapse-btn {
-//   background-image: url(./assets/collapseBtn.png);
-//   background-size: 100% 100%;
-// }
-
-.setting-img {
-  background-image: url(./assets/vision-setting.png);
-  background-size: 100% 100%;
-}
-
 .create-btn {
   background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
 }
@@ -1349,6 +1375,18 @@ textarea::-webkit-scrollbar-track {
 
 :deep(.el-slider__bar) {
   background-color: #615ced;
+}
+
+.tab-container {
+  background-color: white;
+}
+
+.active-tab-bg {
+  background-color: #efeffe;
+}
+
+.active-tab-text {
+  color: #615ced;
 }
 
 .text-to-img {
@@ -1479,5 +1517,9 @@ textarea::-webkit-scrollbar-track {
 .vision-avatar {
   background-image: url(./assets/userAvatar.png);
   background-size: 100% 100%;
+}
+
+.answer-bg {
+  background-color: white;
 }
 </style>

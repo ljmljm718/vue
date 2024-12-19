@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full create-knowledge-lib">
     <div class="pt-[24px] pl-[36px] pb-[12px] flex items-center font-bold">
       <div class="w-[36px] h-[36px] go-back cursor-pointer" @click="handleClickBack"></div>
       <div class="text-[24px] ml-[28px]">创建知识库</div>
@@ -45,7 +45,9 @@
                 :disabled="!item.enable"
               >
                 <div class="font-bold leading-normal">{{ item.name }}</div>
-                <div class="mt-[6px] text-[#666] text-wrap leading-normal">{{ item.content }}</div>
+                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                  {{ item.content }}
+                </div>
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -86,7 +88,9 @@
             <el-radio-group v-model="sliceType" class="!grid grid-cols-4 gap-[16px]">
               <el-radio v-for="item in sliceTypeList" :key="item.name" :label="item.name" border>
                 <div class="font-bold leading-normal">{{ item.name }}</div>
-                <div class="mt-[6px] text-[#666] text-wrap leading-normal">{{ item.content }}</div>
+                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                  {{ item.content }}
+                </div>
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -95,7 +99,13 @@
             <template #label>
               <div class="flex items-center">
                 <span>切片最大长度</span>
-                <el-popover placement="top" trigger="hover" :width="500" content="">
+                <el-popover
+                  popper-class="popover-bg"
+                  placement="top"
+                  trigger="hover"
+                  :width="500"
+                  content=""
+                >
                   <template #reference>
                     <div class="question-mark cursor-pointer"></div>
                   </template>
@@ -123,11 +133,11 @@
             />
           </el-form-item>
           <div class="ml-[136px] my-[18px] flex items-center text-[12px] space-x-[8px]">
-            <span class="text-[#666]">推荐长度</span>
+            <span class="text-[#666] dark:text-white">推荐长度</span>
             <div
               v-for="item in recommendSliceLengthList"
               :key="item"
-              class="w-[43.5px] h-[24px] flex justify-center items-center rounded-[6px] bg-[#F5F6FA] cursor-pointer"
+              class="w-[43.5px] h-[24px] flex justify-center items-center rounded-[6px] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
               @click="handleClickRecommendSliceLength(item)"
             >
               {{ item }}
@@ -143,6 +153,7 @@
                   trigger="hover"
                   content="配置是否对短文本片进行合并，且合并后的文本片会限制不超过切片最大长度"
                   :width="300"
+                  popper-class="popover-bg"
                 >
                   <template #reference>
                     <div class="question-mark cursor-pointer"></div>
@@ -162,7 +173,7 @@
             </template>
             <el-switch v-model="formData.imageOcr" />
           </el-form-item>
-          <div class="ml-[136px] mt-[12px] mb-[18px] text-[#666] text-[12px]">
+          <div class="ml-[136px] mt-[12px] mb-[18px] text-[#666] dark:text-white text-[12px]">
             <span>可识别文档中的图片并解析文字存为切片。支持 docx，pdf。</span>
           </div>
 
@@ -178,7 +189,7 @@
                 border
               >
                 <div class="font-bold leading-normal">{{ item.toUpperCase() }}</div>
-                <div class="mt-[6px] text-[#666] text-wrap leading-normal">
+                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
                   {{ indexAlgoMap[item] }}
                 </div>
               </el-radio>
@@ -194,7 +205,7 @@
                 border
               >
                 <div class="font-bold leading-normal">{{ item.toUpperCase() }}</div>
-                <div class="mt-[6px] text-[#666] text-wrap leading-normal">
+                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
                   {{ quantatitiveMethodMap[item] }}
                 </div>
               </el-radio>
@@ -471,5 +482,49 @@ const handleClickCreateLib = async () => {
   background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
   border-radius: 20px;
   color: white;
+}
+
+.dark {
+  .go-back {
+    background-image: url(./assets/knowledge-goback-dark.png);
+    background-size: 100% 100%;
+  }
+
+  .el-radio {
+    background-color: #2c3240;
+  }
+
+  .el-radio.is-checked {
+    background: #2f2b50;
+  }
+
+  .el-radio.is-bordered.is-checked {
+    border-color: #786df5;
+  }
+}
+</style>
+
+<style lang="scss">
+.dark {
+  .create-knowledge-lib {
+    .el-input__wrapper,
+    .el-textarea__inner,
+    .el-select__wrapper {
+      background-color: #2c3240;
+    }
+
+    .el-radio__input.is-checked + .el-radio__label {
+      color: white;
+    }
+  }
+
+  .popover-bg {
+    background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
+
+    .el-popper__arrow::before {
+      border: none;
+      background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
+    }
+  }
 }
 </style>
