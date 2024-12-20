@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+import { URLSearchParams } from 'url';
+import axios from 'axios';
 import {
   postImgToText,
   postTextToImg,
@@ -7,8 +10,12 @@ import {
   chatThemeDelete,
   chatThemeCreate,
   putUpdateChatTheme,
-  postCreateChatHistory
+  postCreateChatHistory,
+  collectionGetToken,
+  getauth
 } from './api';
+// import { signer } from './pre-request-script'
+import { getAuthorization } from './getAuth';
 
 const msg = useMessage();
 
@@ -282,168 +289,179 @@ const flowOutput = (text: string) => {
 };
 
 // 图文解析发送
+const sendingITT = ref(false);
 const submitITT = async () => {
-  // 构造请求参数
-  const model = 'ep-20241206121046-84924';
-  const messages = [{ role: 'user', content: [] as any[] }];
-  messages[0].content.push({ type: 'text', text: inputTextITT.value });
-  inputImgListITT.value.forEach((ele) => {
-    messages[0].content.push({ type: 'image_url', image_url: { url: ele.url } });
-  });
-  const max_tokens = maxResLenITT.value;
-  const data = { model, messages, max_tokens };
-
-  // 请求数据
-  const res = await postImgToText(data);
-  // TODO: 错误处理
-  const content = res.data.choices[0].message.content;
-  const modelName = res.data.model;
-
-  // 如果没有聊天 新建一个 重新加载列表 选中新建的对话
-  let themeId: string;
-  if (-1 === dialogIdxITT.value) {
-    themeId = await chatThemeCreate({
-      theme: inputTextITT.value,
-      model: modelName,
-      type: 'image-to-text'
+  sendingITT.value = true;
+  try {
+    // 构造请求参数
+    const model = 'ep-20241206121046-84924';
+    const messages = [{ role: 'user', content: [] as any[] }];
+    messages[0].content.push({ type: 'text', text: inputTextITT.value });
+    inputImgListITT.value.forEach((ele) => {
+      messages[0].content.push({ type: 'image_url', image_url: { url: ele.url } });
     });
-    await getDialogList();
-    dialogIdxITT.value = dialogListITT.value.findIndex((ele) => ele.id === themeId);
-  } else {
-    // 如果有聊天 加载聊天记录 更新模型名称
-    themeId = dialogListITT.value[dialogIdxITT.value].id;
-    await putUpdateChatTheme({
-      id: themeId,
-      theme: dialogListITT.value[dialogIdxITT.value].theme,
-      model: modelName,
-      type: 'image-to-text'
-    });
-  }
+    const max_tokens = maxResLenITT.value;
+    const data = { model, messages, max_tokens };
 
-  // 保存聊天记录
-  let imgStr = '';
-  let list: string[] = [];
-  inputImgListITT.value.forEach((ele, index) => {
-    if (index === inputImgListITT.value.length - 1) {
-      imgStr += ele.url;
-      list.push(ele.url);
+    // 请求数据
+    const res = await postImgToText(data);
+    // TODO: 错误处理
+    const content = res.data.choices[0].message.content;
+    const modelName = res.data.model;
+
+    // 如果没有聊天 新建一个 重新加载列表 选中新建的对话
+    let themeId: string;
+    if (-1 === dialogIdxITT.value) {
+      themeId = await chatThemeCreate({
+        theme: inputTextITT.value,
+        model: modelName,
+        type: 'image-to-text'
+      });
+      await getDialogList();
+      dialogIdxITT.value = dialogListITT.value.findIndex((ele) => ele.id === themeId);
     } else {
-      imgStr += ele.url + ',';
-      list.push(ele.url);
+      // 如果有聊天 加载聊天记录 更新模型名称
+      themeId = dialogListITT.value[dialogIdxITT.value].id;
+      await putUpdateChatTheme({
+        id: themeId,
+        theme: dialogListITT.value[dialogIdxITT.value].theme,
+        model: modelName,
+        type: 'image-to-text'
+      });
     }
-  });
-  await postCreateChatHistory({
-    themeId,
-    role: 'user',
-    message: {
-      text: inputTextITT.value,
-      image: imgStr
-    }
-  });
-  await postCreateChatHistory({
-    themeId,
-    role: 'system',
-    message: {
-      text: content,
-      image: ''
-    }
-  });
 
-  chatListITT.value.push({
-    ask: { text: inputTextITT.value, image: [...list] },
-    answer: { text: returnStreamITT.value ? '' : content, image: '' }
-  });
+    // 保存聊天记录
+    let imgStr = '';
+    let list: string[] = [];
+    inputImgListITT.value.forEach((ele, index) => {
+      if (index === inputImgListITT.value.length - 1) {
+        imgStr += ele.url;
+        list.push(ele.url);
+      } else {
+        imgStr += ele.url + ',';
+        list.push(ele.url);
+      }
+    });
+    await postCreateChatHistory({
+      themeId,
+      role: 'user',
+      message: {
+        text: inputTextITT.value,
+        image: imgStr
+      }
+    });
+    await postCreateChatHistory({
+      themeId,
+      role: 'system',
+      message: {
+        text: content,
+        image: ''
+      }
+    });
 
-  if (returnStreamITT.value) {
-    outputtingITT.value = true;
-    flowOutput(content);
+    chatListITT.value.push({
+      ask: { text: inputTextITT.value, image: [...list] },
+      answer: { text: returnStreamITT.value ? '' : content, image: '' }
+    });
+
+    if (returnStreamITT.value) {
+      outputtingITT.value = true;
+      flowOutput(content);
+    }
+
+    // 发送完清空输入文字和图片列表
+    inputTextITT.value = '';
+    inputImgListITT.value = [];
+
+    // 滚动条滚动到最底部
+    await chatScrollBottom();
+  } catch (e) {
+    console.log(e);
+  } finally {
+    sendingITT.value = false;
   }
-
-  // 发送完清空输入文字和图片列表
-  inputTextITT.value = '';
-  inputImgListITT.value = [];
-
-  // 滚动条滚动到最底部
-  await chatScrollBottom();
 };
 
 // 文生图发送
+const imageUrl = ref('');
+const sending = ref(false);
 const submitTTI = async () => {
-  const params = {
-    Action: 'CVProcess',
-    Version: '2022-08-31'
-  };
-  const headers = {
-    Action: 'CVProcess',
-    Version: '2022-08-31',
-    AccessKey: 'AKLTZTQ1NDUzYmIyMDljNDVlMmIyNGZhNmY0M2Q1MmJiNDA',
-    SecretKey: 'WldJd1pqTmlNV0U1WmpCbU5EazBNbUkxTURVNVkyVXdNelJsWlRkaU5XUQ==',
-    Service: 'CV',
-    Region: 'cn-north-1'
-  };
-  const data = {
-    req_key: 'high_aes_general_v14',
-    prompt: inputTextTTI.value,
-    model_version: 'general_v1.4',
-    return_url: true,
-    width: sizeList.value[sizeIdx.value].width,
-    height: sizeList.value[sizeIdx.value].height
-  };
+  sending.value = true;
+  try {
+    const headers = {
+      AccessKey: 'AKLTZTQ1NDUzYmIyMDljNDVlMmIyNGZhNmY0M2Q1MmJiNDA',
+      SecretKey: 'WldJd1pqTmlNV0U1WmpCbU5EazBNbUkxTURVNVkyVXdNelJsWlRkaU5XUQ=='
+    };
+    const data = {
+      req_key: 'high_aes_general_v20'
+    };
 
-  const res = await postTextToImg(params, data, headers);
-  console.log(res);
-  // TODO: 错误处理
-  const urls = res.data.image_urls;
+    const res = await getauth({
+      prompt: inputTextTTI.value,
+      access_key: headers.AccessKey,
+      secret_key: headers.SecretKey
+    });
+    console.log(res.data.data);
+    const urls = [res.data.data];
 
-  // 如果没有聊天 新建一个 重新加载列表 选中新建的对话
-  let themeId: string;
-  if (-1 === dialogIdxTTI.value) {
-    themeId = await chatThemeCreate({
-      theme: inputTextTTI.value,
-      model: data.req_key,
-      type: 'text-to-image'
+    imageUrl.value = res.data.data;
+    console.log('imageUrl', imageUrl.value);
+    //  TODO 错误处理
+
+    // 如果没有聊天 新建一个 重新加载列表 选中新建的对话
+    let themeId: string;
+    if (-1 === dialogIdxTTI.value) {
+      themeId = await chatThemeCreate({
+        theme: inputTextTTI.value,
+        model: data.req_key,
+        type: 'text-to-image'
+      });
+      await getDialogList();
+      dialogIdxTTI.value = dialogListTTI.value.findIndex((ele) => ele.id === themeId);
+    } else {
+      // 如果有聊天 加载聊天记录 更新模型名称
+      themeId = dialogListTTI.value[dialogIdxTTI.value].id;
+      await putUpdateChatTheme({
+        id: themeId,
+        theme: dialogListTTI.value[dialogIdxTTI.value].theme,
+        model: data.req_key,
+        type: 'text-to-image'
+      });
+    }
+
+    // 保存聊天记录
+    await postCreateChatHistory({
+      themeId,
+      role: 'user',
+      message: {
+        text: inputTextTTI.value,
+        image: ''
+      }
     });
-    await getDialogList();
-    dialogIdxTTI.value = dialogListTTI.value.findIndex((ele) => ele.id === themeId);
-  } else {
-    // 如果有聊天 加载聊天记录 更新模型名称
-    themeId = dialogListTTI.value[dialogIdxTTI.value].id;
-    await putUpdateChatTheme({
-      id: themeId,
-      theme: dialogListTTI.value[dialogIdxTTI.value].theme,
-      model: data.req_key,
-      type: 'text-to-image'
+    await postCreateChatHistory({
+      themeId,
+      role: 'system',
+      message: {
+        text: '',
+        image: urls.join(',')
+      }
     });
+
+    chatListTTI.value.push({
+      ask: { text: inputTextTTI.value, image: '' },
+      answer: { text: '', image: urls }
+    });
+
+    // 发送完清空输入文字
+    inputTextTTI.value = '';
+
+    // 滚动条滚动到最底部
+    await chatScrollBottom();
+  } catch (e) {
+    console.log(e);
+  } finally {
+    sending.value = false;
   }
-
-  // 保存聊天记录
-  await postCreateChatHistory({
-    themeId,
-    role: 'user',
-    message: {
-      text: inputTextTTI.value,
-      image: ''
-    }
-  });
-  await postCreateChatHistory({
-    themeId,
-    role: 'system',
-    message: {
-      text: '',
-      image: urls.join(',')
-    }
-  });
-
-  chatListTTI.value.push({
-    ask: { text: inputTextTTI.value, image: '' },
-    answer: { text: '', image: urls }
-  });
-
-  // 发送完清空输入文字
-  inputTextTTI.value = '';
-
-  // 滚动条滚动到最底部
-  await chatScrollBottom();
 };
 
 // 对话内容滚动到底部
@@ -567,8 +585,8 @@ const handleEditDialog = async () => {
     const type = 'text-to-image';
     await putUpdateChatTheme({ id, theme, model, type });
 
-    dialogEditIdxITT.value = -1;
-    dialogEditTextITT.value = '';
+    dialogEditIdxTTI.value = -1;
+    dialogEditTextTTI.value = '';
     await getDialogList();
   }
 };
@@ -893,9 +911,55 @@ const sizeList = ref([
                 inputtingITT && '' !== inputTextITT && inputImgListITT.length > 0 && !outputtingITT
               "
               @click="handleSubmit"
-              class="w-[48px] h-[32px] send-btn cursor-pointer"
-            ></div>
-            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer"></div>
+              class="w-[48px] h-[32px] send-btn cursor-pointer relative"
+            >
+              <div v-show="sendingITT" class="absolute top-[5px] left-[18px] z-10">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer relative">
+              <div v-show="sendingITT" class="absolute top-[5px] left-[18px] z-10">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1079,6 +1143,7 @@ const sizeList = ref([
               </div>
             </div>
           </el-scrollbar>
+          <!-- <img :src="imageUrl" alt="" class="!w-[500px] !h-[500px]" /> -->
         </div>
 
         <!-- 对话内容 -->
@@ -1086,7 +1151,7 @@ const sizeList = ref([
           <el-scrollbar
             ref="chatRefTTI"
             @scroll="handleChatScroll"
-            view-class="px-[52px] pb-[20px]"
+            view-class="px-[52px] pb-[60px]"
           >
             <template v-for="(item, index) in chatListTTI" :key="index">
               <div class="relative flex justify-end mt-[36px]">
@@ -1131,7 +1196,7 @@ const sizeList = ref([
               请输入问题，我可以完成智能回答、图片内容解答等多种任务
             </span>
           </div>
-          <div class="w-[48px] h-[32px] no-send-btn"></div>
+          <div class="w-[48px] h-[32px] no-send-btn relative"></div>
           <!-- size list -->
           <div class="w-full h-[34px] absolute left-0 top-[-40px]">
             <el-scrollbar view-class="flex space-x-[8px]">
@@ -1167,9 +1232,55 @@ const sizeList = ref([
             <div
               v-if="inputtingTTI && '' !== inputTextTTI"
               @click="handleSubmit"
-              class="w-[48px] h-[32px] send-btn cursor-pointer"
-            ></div>
-            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer"></div>
+              class="w-[48px] h-[32px] send-btn cursor-pointer relative"
+            >
+              <div v-show="sending" class="absolute top-[5px] left-[18px] z-10">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer relative">
+              <div v-show="sending" class="absolute top-[5px] left-[18px] z-10">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
           <!-- size list -->
           <div class="w-full h-[34px] absolute left-0 top-[-40px]">

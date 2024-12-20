@@ -102,29 +102,41 @@ export const postImgToText = async (data: any) => {
 export const postTextToImg = async (params: any, data: any, headers: any) => {
   // https://visual.volcengineapi.com
 
-  // const service = axios.create({
-  //   baseURL: '/visual',
-  //   timeout: 30000
-  // });
+  const service = axios.create({
+    baseURL: '/visual',
+    timeout: 30000
+  });
 
-  // const res = await service({
-  //   url: '',
-  //   method: 'POST',
-  //   params,
-  //   data,
-  //   headers
-  // });
-
-  // return res;
-  const res = {
-    code: 10000,
-    data: {
-      image_urls: [
-        '/images/SmartNetwork.png',
-        '/images/supplyChain.png',
-        '/images/machineVision.png'
-      ]
+  const res = await service({
+    url: '',
+    method: 'POST',
+    params,
+    data: data,
+    headers: {
+      // Authorization: 'Bearer 6a9d9495-041d-459a-8cea-4688f57495ae',
+      ...headers
     }
-  };
+  });
+
   return res;
+  // const res = {
+  //   code: 10000,
+  //   data: {
+  //     image_urls: [
+  //       '/images/SmartNetwork.png',
+  //       '/images/supplyChain.png',
+  //       '/images/machineVision.png'
+  //     ]
+  //   }
+  // };
+  // return res;
+};
+
+// 获取文生图token'
+export const collectionGetToken = async (params: any) => {
+  return await request.get({ url: '/agriculture/collection/get-token', params });
+};
+
+export const getauth = async (params: any) => {
+  return await axios.get('/tdCache/api/text2img', { params });
 };
