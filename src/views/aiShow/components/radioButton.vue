@@ -16,7 +16,10 @@
       <div
         class="w-16px h-16px absolute left-4px top-4px rounded-full overflow-hidden flex justify-center items-center"
       >
-        <div id="waveContainer" class="w-full h-100px bg-white relative left-1px"></div>
+        <div
+          id="waveContainer"
+          class="w-full h-100px bg-white dark:bg-[#0f121b] relative left-1px"
+        ></div>
       </div>
       <div class="absolute left-0 top-0 w-full h-full z-20" @click="stopRecord()"></div>
     </div>
