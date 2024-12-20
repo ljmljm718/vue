@@ -154,10 +154,6 @@ const handleClickShowSearch = () => {
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-        <el-button>
-          <Icon icon="ep:download" class="mr-5px" />
-          导出
-        </el-button>
 
         <button
           class="circle-arrow-up ml-[16px]"

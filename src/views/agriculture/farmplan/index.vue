@@ -371,8 +371,8 @@
               scope.row.taskPublisher == '0'
                 ? '农户'
                 : scope.row.taskPublisher == '1'
-                ? '认养用户'
-                : ''
+                  ? '认养用户'
+                  : ''
             }}
           </label>
         </template>
@@ -1001,7 +1001,8 @@ const selectList2 = ref([]);
 const formSelectList = ref([]);
 const getPage = async () => {
   let res = await page({ pageNo: queryParamsA.pageNo, pageSize: queryParamsA.pageSize });
-  totalA.value = res.total;
+  res.list = res.list.filter((item) => item.productCategory === '投入品');
+  totalA.value = res.list.size;
   selectList.value = res.list;
   selectList2.value = res.list;
   formSelectList.value = Array.from(new Set(res.list.map((item) => item.categoryName)));
@@ -1066,14 +1067,11 @@ watch(
 watch(
   () => dialogVisibleA.value,
   (val) => {
-
     if (!val) {
       selectionList.value = [];
       selectList.value = selectList2.value;
-    }else if(paramsA.value.length > 1){
-
-      paramsA.value = paramsA.value.slice(1) ;
-      
+    } else if (paramsA.value.length > 1) {
+      paramsA.value = paramsA.value.slice(1);
     }
   }
 );
@@ -1356,16 +1354,16 @@ const getData = () => {
     dayOfWeek.value == 0
       ? 6
       : dayOfWeek.value == 6
-      ? 5
-      : dayOfWeek.value == 5
-      ? 4
-      : dayOfWeek.value == 4
-      ? 3
-      : dayOfWeek.value == 3
-      ? 2
-      : dayOfWeek.value == 2
-      ? 1
-      : '';
+        ? 5
+        : dayOfWeek.value == 5
+          ? 4
+          : dayOfWeek.value == 4
+            ? 3
+            : dayOfWeek.value == 3
+              ? 2
+              : dayOfWeek.value == 2
+                ? 1
+                : '';
   for (let i = 1; i <= data.value; i++) {
     dataList.value.push({
       data: i,
@@ -1456,16 +1454,16 @@ const silderTab = (val: any) => {
   dataListA.value.forEach((item: any) => {
     if (item.name == val) {
       dataList.value.push(item);
-    }else if(item.name != val){
-      item.child.forEach((itm:any)=>{
-        if(itm.name == val){
-          dataList.value.push(item)
+    } else if (item.name != val) {
+      item.child.forEach((itm: any) => {
+        if (itm.name == val) {
+          dataList.value.push(item);
         }
-      })
+      });
     }
   });
-  let list = Array.from(new Set([...dataList.value]))
-  dataList.value = list
+  let list = Array.from(new Set([...dataList.value]));
+  dataList.value = list;
 };
 
 //******************************地块切换***********************
