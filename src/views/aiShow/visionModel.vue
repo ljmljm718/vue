@@ -119,7 +119,7 @@ watch(useITT, async () => {
 const getChatList = async () => {
   if (useITT.value) {
     const themeId = dialogListITT.value[dialogIdxITT.value].id;
-    chatListITT.value = [];
+    // chatListITT.value = [];
     let tmplist: any[] = [];
 
     for (let j = chatCurPageITT.value; j > 0; --j) {
@@ -163,7 +163,7 @@ const getChatList = async () => {
     chatListITT.value = tmplist;
   } else {
     const themeId = dialogListTTI.value[dialogIdxTTI.value].id;
-    chatListTTI.value = [];
+    // chatListTTI.value = [];
     let tmplist: any[] = [];
 
     for (let j = chatCurPageTTI.value; j > 0; --j) {
@@ -616,28 +616,34 @@ const handleDialogScroll = async ({ scrollLeft, scrollTop }) => {
 };
 
 // 对话内容滚动事件
+const loadingITT = ref(false);
+const loadingTTI = ref(false);
 const handleChatScroll = async ({ scrollLeft, scrollTop }) => {
   if (useITT.value) {
     const fullNum = chatCurPageITT.value * 10;
     const len = chatListITT.value.length * 2;
     if (0 === scrollTop && len === fullNum) {
+      loadingITT.value = true;
       const oldHeight = chatRefITT.value.wrapRef.scrollHeight;
       chatCurPageITT.value += 1;
       await getChatList();
       await nextTick();
       const newHeight = chatRefITT.value.wrapRef.scrollHeight;
       chatRefITT.value.setScrollTop(newHeight - oldHeight);
+      loadingITT.value = false;
     }
   } else {
     const fullNum = chatCurPageTTI.value * 10;
     const len = chatListTTI.value.length * 2;
     if (0 === scrollTop && len === fullNum) {
+      loadingTTI.value = true;
       const oldHeight = chatRefTTI.value.wrapRef.scrollHeight;
       chatCurPageTTI.value += 1;
       await getChatList();
       await nextTick();
       const newHeight = chatRefTTI.value.wrapRef.scrollHeight;
       chatRefTTI.value.setScrollTop(newHeight - oldHeight);
+      loadingTTI.value = false;
     }
   }
 };
@@ -808,6 +814,12 @@ const sizeList = ref([
             @scroll="handleChatScroll"
             view-class="px-[52px] pb-[20px]"
           >
+            <div
+              v-show="loadingITT"
+              class="flex items-center justify-center w-full h-[30px] tracking-widest"
+            >
+              <span class="text-[#999999]">加载中......</span>
+            </div>
             <template v-for="(item, index) in chatListITT" :key="index">
               <div class="relative flex flex-col items-end space-y-[16px] mt-[36px]">
                 <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
@@ -1153,6 +1165,12 @@ const sizeList = ref([
             @scroll="handleChatScroll"
             view-class="px-[52px] pb-[60px]"
           >
+            <div
+              v-show="loadingTTI"
+              class="flex items-center justify-center w-full h-[30px] tracking-widest"
+            >
+              <span class="text-[#999999]">加载中......</span>
+            </div>
             <template v-for="(item, index) in chatListTTI" :key="index">
               <div class="relative flex justify-end mt-[36px]">
                 <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
