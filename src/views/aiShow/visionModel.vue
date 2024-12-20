@@ -702,7 +702,7 @@ const sizeList = ref([
               <div class="text-[#999] text-[12px]">{{ item.model }}</div>
               <div
                 v-show="index === dialogIdxITT"
-                class="absolute top-0 right-0 w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
+                class="absolute top-0 right-[6px] w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
               >
                 <template v-if="dialogEditIdxITT === -1">
                   <el-icon
@@ -1058,7 +1058,7 @@ const sizeList = ref([
               <div class="text-[#999] text-[12px]">{{ item.model }}</div>
               <div
                 v-show="index === dialogIdxTTI"
-                class="absolute top-0 right-0 w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
+                class="absolute top-0 right-[6px] w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
               >
                 <template v-if="dialogEditIdxTTI === -1">
                   <el-icon
