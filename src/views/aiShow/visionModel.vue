@@ -891,11 +891,11 @@ const sizeList = ref([
             <div
               v-for="item in supportText"
               :key="item"
-              class="flex items-center px-[16px] py-[6px] rounded-[6px] bg-[#F5F6FA] cursor-pointer"
+              class="flex items-center px-[16px] py-[6px] rounded-[6px] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
               @click="inputTextITT += item + ' '"
             >
-              <span class="">{{ item }}</span>
-              <div class="w-[14px] h-[11px] ml-[18px] right-arrow"></div>
+              <span>{{ item }}</span>
+              <el-icon class="ml-[18px]"><Right /></el-icon>
             </div>
           </div>
           <el-input

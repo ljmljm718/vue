@@ -317,13 +317,13 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 <div class="flex justify-between pt-[20px] pl-[25px] pb-[25px] pr-[43px]">
                   <div class="flex flex-col justify-center">
                     <div class="flex">
-                      <!-- <span class="text-[24px] text-[#33315A]">{{ item.collectionName }}</span> -->
-                      <span class="text-[24px] text-[#33315A] dark:text-white">
+                      <span class="text-[24px] text-[#33315A]">{{ item.collectionName }}</span>
+                      <!-- <span class="text-[24px] text-[#33315A] dark:text-white">
                         {{ item.name }}
-                      </span>
+                      </span> -->
                       <div class="tag">
-                        <!-- {{ dataTypeMap[item.dataType] }} -->
-                        {{ item.tag }}
+                        {{ dataTypeMap[item.dataType] }}
+                        <!-- {{ item.tag }} -->
                       </div>
                     </div>
                     <div class="pt-[4px] flex items-center">
