@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import { URLSearchParams } from 'url';
-import axios from 'axios';
 import {
   postImgToText,
-  postTextToImg,
   chatThemePage,
   chatHistoryPage,
   chatThemeDelete,
   chatThemeCreate,
   putUpdateChatTheme,
   postCreateChatHistory,
-  collectionGetToken,
   getauth
 } from './api';
-// import { signer } from './pre-request-script'
-import { getAuthorization } from './getAuth';
 
 const msg = useMessage();
 
