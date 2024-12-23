@@ -4,7 +4,13 @@ import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
 import { record_start, record_upload } from '@/views/aiShow/utils';
-import { chatThemeCreate, chatThemePage, chatHistoryPage, chatThemeDelete } from './api';
+import {
+  chatThemeCreate,
+  chatThemePage,
+  chatHistoryPage,
+  chatThemeDelete,
+  putUpdateChatTheme
+} from './api';
 import RadioButton from './components//radioButton.vue';
 
 const getCollectionSearch = async (data: any) => {
@@ -77,7 +83,7 @@ const maxResLength = ref<number>(10); // 最大返回长度
 // 发送消息
 const disabledSendBtn = ref<boolean>(false);
 const handleSendMsg = async (text) => {
-  if (!knowledgeLib.value) return ElMessage.warning('请先选择知识库!');
+  // if (!knowledgeLib.value) return ElMessage.warning('请先选择知识库!');
   if (!modelSelected.value) return ElMessage.warning('请先选择模型！');
   const textarea = document.querySelector('textarea');
   if (!text) text = textarea.value;
@@ -113,7 +119,7 @@ const handleSendMsg = async (text) => {
     model: modelSelected.value,
     themeId: activeChatID.value,
     stream: false,
-    max_new_tokens: maxResLength.value
+    maxNewTokens: maxResLength.value
   }).catch(() => {
     disabledSendBtn.value = false;
     const activeItem = chatList.value.find((item) => item.id === chatId);
@@ -231,7 +237,7 @@ const chatInfoList = ref<any[]>([
   { id: 'new_chat', theme: '新对话', model: 'Doubao-vision-pro-32k', message: [] }
 ]);
 const chatInfoTotal = ref<number>(0);
-const getChatInfoList = async () => {
+const getChatInfoList = async (updateActiveChat = true) => {
   const { list, total } = await chatThemePage({
     pageNo: 1,
     pageSize: 20,
@@ -241,12 +247,11 @@ const getChatInfoList = async () => {
   console.log('获取所有对话记录 =>', list);
   if (!Array.isArray(list)) return;
   chatInfoList.value = list.map((item) => ({ ...item, message: [] }));
-  if (list.length > 0) {
+  if (list.length > 0 && updateActiveChat) {
     activeChatID.value = list[0].id;
     handleChatInfoClick({ id: list[0].id });
   }
   chatInfoTotal.value = total;
-  console.log('chatThemePage', list);
 };
 getChatInfoList();
 
@@ -267,7 +272,6 @@ const getMessageByThemeID = async (themeId: string) => {
   console.log(`根据 themeID: ${themeId} 获取聊天记录`);
   if (themeId === 'new_chat') return ElMessage.warning('未找到对话ID');
   const { list, total } = await chatHistoryPage({ themeId });
-  console.log(`获取到的聊天记录共${total}条`, list);
   const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
   if (!activeChatInfo) return;
   activeChatInfo.message = list.map((item) => ({ ...item, text: item.message.text }));
@@ -305,6 +309,39 @@ const handleDeleteChatTheme = (id: string) => {
 
 // 语音功能正在进行，阻止消息发送
 const radioRecording = ref<boolean>(false);
+
+const handleContentBlur = async (e) => {
+  const text = e.target.textContent;
+  const activeItem = chatInfoList.value.find((item) => item.id === activeChatID.value);
+  if (text === activeItem.theme) {
+    const midArr = chatInfoList.value;
+    chatInfoList.value = [];
+    nextTick(() => (chatInfoList.value = midArr));
+    return;
+  }
+  const res = await putUpdateChatTheme({
+    id: activeItem.id,
+    collectionId: activeItem.collectionId,
+    theme: text,
+    model: activeItem.model,
+    type: activeItem.type
+  });
+  if (res) {
+    ElMessage.success('修改成功!');
+    chatInfoList.value = [];
+    nextTick(() => getChatInfoList(false));
+  } else {
+    ElMessage.warning('修改失败，请稍后重试!');
+  }
+};
+
+const handleContentKeyDown = (event) => {
+  const keyCode = event.keyCode;
+  if (keyCode === 13) {
+    event.srcElement.dispatchEvent(new Event('blur'));
+    event.preventDefault();
+  }
+};
 </script>
 <template>
   <!--侧栏宽度 74px -->
@@ -334,7 +371,14 @@ const radioRecording = ref<boolean>(false);
           style="border: 1px solid transparent"
           @click="handleChatInfoClick(item)"
         >
-          <div class="text-14px w-[180px] line-clamp-1">{{ item.theme || '新对话' }}</div>
+          <div
+            class="text-14px w-[180px] line-clamp-1"
+            :contenteditable="activeChatID === item.id"
+            @blur="handleContentBlur"
+            @keydown="handleContentKeyDown"
+          >
+            {{ item.theme || '新对话' }}
+          </div>
           <div class="text-[#999999] text-12px">{{ item.model }}</div>
           <div class="absolute right-1 top-0">
             <el-icon
@@ -429,7 +473,7 @@ const radioRecording = ref<boolean>(false);
                       "
                     />
                     <div
-                      class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                      class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border shadow-sm"
                       :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : 'var(--user-message-bg)'};max-width: calc(100% - 94px);`"
                       :innerHTML="marked.parse(item.text)"
                     ></div>
@@ -440,47 +484,51 @@ const radioRecording = ref<boolean>(false);
           </div>
         </div>
         <div
-          class="relative min-h-56px mt-12px 2xl:w-[1000px] xl:w-[848px] bg-white lg:w-[600px] md:w-[400px] sm:w-[400px] input-out-container"
-          id="inputContainer"
+          class="mt-12px p-2px box-border rounded-16px 2xl:w-[1004px] xl:w-[852px] lg:w-[604px] md:w-[404px] sm:w-[404px] fix-border-color"
         >
-          <textarea
-            id="textarea"
-            cols="30"
-            rows="2"
-            placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
-            wrap="soft"
-          ></textarea>
-          <!-- <el-input
-            v-model="questionText"
-            type="primary"
-            clearable
-            class="h-full"
-            placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
-            @keyup.enter="handleSendMsg()"
-          /> -->
           <div
-            v-loading="disabledSendBtn"
-            :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
-            @click="handleSendMsg(null)"
-          ></div>
-          <div
-            v-loading="recording"
-            :class="`z-20 !hidden absolute right-68px bottom-12px h-32px ${disabledSendBtn ? 'bg-red' : 'bg-green'} cursor-pointer text-white rounded-md flex items-center px-12px`"
-            @click="enableRecord()"
+            class="relative box-border min-h-56px 2xl:w-[1000px] xl:w-[848px] bg-white lg:w-[600px] md:w-[400px] sm:w-[400px] input-out-container"
+            id="inputContainer"
           >
-            语音
+            <textarea
+              id="textarea"
+              cols="30"
+              rows="2"
+              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
+              wrap="soft"
+            ></textarea>
+            <!-- <el-input
+              v-model="questionText"
+              type="primary"
+              clearable
+              class="h-full"
+              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
+              @keyup.enter="handleSendMsg()"
+            /> -->
+            <div
+              v-loading="disabledSendBtn"
+              :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
+              @click="handleSendMsg(null)"
+            ></div>
+            <div
+              v-loading="recording"
+              :class="`z-20 !hidden absolute right-68px bottom-12px h-32px ${disabledSendBtn ? 'bg-red' : 'bg-green'} cursor-pointer text-white rounded-md flex items-center px-12px`"
+              @click="enableRecord()"
+            >
+              语音
+            </div>
+            <RadioButton
+              class="absolute right-72px bottom-15px z-20"
+              v-model:disableSend="radioRecording"
+              :generateTexting="disabledSendBtn"
+              @output="handleRadioRecoOutput"
+            />
+            <div
+              v-if="questionText"
+              class="max-btn z-20 absolute right-12px top-10px w-14px h-14px cursor-pointer"
+              @click="fullTextArea()"
+            ></div>
           </div>
-          <RadioButton
-            class="absolute right-72px bottom-15px z-20"
-            v-model:disableSend="radioRecording"
-            :generateTexting="disabledSendBtn"
-            @output="handleRadioRecoOutput"
-          />
-          <div
-            v-if="questionText"
-            class="max-btn z-20 absolute right-12px top-10px w-14px h-14px cursor-pointer"
-            @click="fullTextArea()"
-          ></div>
         </div>
       </div>
     </div>
@@ -545,14 +593,17 @@ const radioRecording = ref<boolean>(false);
   }
   .main-container-wrapper {
     --user-message-bg: #605dee;
-    --system-message-bg: linear-gradient(to right, #2b2e52, #252b42, #1f2532);
+    --system-message-bg: linear-gradient(to right, #2a2e4f, #252b42, #1f2532);
     background: linear-gradient(to top, rgba(147, 98, 218, 0) 0%, rgba(67, 120, 255, 0.3) 100%),
       #0f121b;
+    .fix-border-color {
+      background: linear-gradient(to right, #4378ff, #9362da);
+    }
     .input-out-container {
+      position: relative;
       background: #0f121b;
       border-radius: 16px;
-      border: 2px solid;
-      border-image: linear-gradient(90deg, rgba(67, 120, 255, 0.5), rgba(147, 98, 218, 0.5)) 2 2;
+      border: 1px solid #00000000;
     }
     @for $i from 1 through 3 {
       .card-bg-#{$i} {
