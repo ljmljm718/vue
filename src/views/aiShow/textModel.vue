@@ -87,7 +87,7 @@ const handleSendMsg = async (text) => {
   if (!modelSelected.value) return ElMessage.warning('请先选择模型！');
   const textarea = document.querySelector('textarea');
   if (!text) text = textarea.value;
-
+  if (!text) return;
   radioRecording.value = true;
   const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
   if (activeChatID.value === 'new_chat') {
