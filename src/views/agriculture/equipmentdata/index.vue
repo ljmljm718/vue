@@ -386,12 +386,16 @@ const openForm = (type: string, id?: number) => {
     // queryFormRef.value.resetFields();
 
     router.push('/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData');
-  } else {
+  } else if (type == 'update') {
     router.push(
       '/internetMonitor/deviceData/equipmentdata/CreateOrUpdateEquipmentData?type=' +
         type +
         '&id=' +
         id
+    );
+  } else {
+    router.push(
+      '/internetMonitor/deviceData/equipmentdata/ViewEquipmentData?type=' + type + '&id=' + id
     );
   }
   //formRef.value.open(type, id)
