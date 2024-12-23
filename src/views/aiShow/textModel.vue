@@ -200,7 +200,7 @@ const fullTextArea = (forceHide = false) => {
     textarea.style.height = '50px';
   } else {
     inputContainer.classList.add('full-screen-text-container');
-    textarea.style.height = inputContainer.style.height + 'px';
+    textarea.style.height = '100%';
   }
 };
 
@@ -485,11 +485,9 @@ const handleContentKeyDown = (event) => {
         </div>
         <div
           class="mt-12px p-2px box-border rounded-16px 2xl:w-[1004px] xl:w-[852px] lg:w-[604px] md:w-[404px] sm:w-[404px] fix-border-color"
+          id="inputContainer"
         >
-          <div
-            class="relative box-border min-h-56px 2xl:w-[1000px] xl:w-[848px] bg-white lg:w-[600px] md:w-[400px] sm:w-[400px] input-out-container"
-            id="inputContainer"
-          >
+          <div class="relative h-full box-border min-h-56px w-full bg-white input-out-container">
             <textarea
               id="textarea"
               cols="30"
