@@ -1,25 +1,25 @@
 <template>
   <div class="w-full h-full create-knowledge-lib">
-    <div class="pt-[24px] pl-[36px] pb-[12px] flex items-center font-bold">
-      <div class="w-[36px] h-[36px] go-back cursor-pointer" @click="handleClickBack"></div>
-      <div class="text-[24px] ml-[28px]">创建知识库</div>
+    <div class="pt-[2.4em] pl-[3.6em] pb-[1.2em] flex items-center font-bold">
+      <div class="w-[3.6em] h-[3.6em] go-back cursor-pointer" @click="handleClickBack"></div>
+      <div class="ml-[2.8em]"><span class="text-[2.4em]">创建知识库</span></div>
     </div>
 
     <div
       v-if="embeddingModelList.length > 0"
-      class="w-full h-[calc(100%-64px)] pl-[99px] py-[16px] box-border"
+      class="w-full h-[calc(100%-6.4em)] pl-[9.9em] py-[1.6em] box-border"
     >
-      <el-scrollbar class="pr-[10px]">
+      <el-scrollbar class="pr-[1em]">
         <el-form
           :inline="true"
-          :label-width="136"
+          label-width="11em"
           :model="formData"
           :rules="formRules"
           ref="formRef"
         >
-          <div class="flex items-center mb-[16px]">
+          <div class="flex items-center mb-[1.6em]">
             <div class="title-tag font-bold"></div>
-            <span>基础信息</span>
+            <span class="text-[1.6em]">基础信息</span>
           </div>
 
           <el-form-item class="w-full !mr-0" prop="collectionName" label="名称">
@@ -28,15 +28,22 @@
               class="!w-1/4"
               placeholder="仅支持英文和数字的组合"
               clearable
+              input-style="font-size: 1.6em"
             />
           </el-form-item>
 
           <el-form-item class="w-full !mr-0" prop="description" label="描述">
-            <el-input v-model="formData.description" type="textarea" class="!w-1/2" clearable />
+            <el-input
+              v-model="formData.description"
+              type="textarea"
+              class="!w-1/2"
+              clearable
+              input-style="font-size: 1.6em"
+            />
           </el-form-item>
 
           <el-form-item class="w-full !mr-0" prop="dataType" label="数据类型">
-            <el-radio-group v-model="formData.dataType" class="!grid grid-cols-4 gap-[16px]">
+            <el-radio-group v-model="formData.dataType" class="!grid grid-cols-4 gap-[1.6em]">
               <el-radio
                 v-for="item in dataTypeList"
                 :key="item.name"
@@ -44,17 +51,19 @@
                 border
                 :disabled="!item.enable"
               >
-                <div class="font-bold leading-normal">{{ item.name }}</div>
-                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                <div class="font-bold leading-normal text-[1.6em]">{{ item.name }}</div>
+                <div
+                  class="mt-[0.6em] text-[#666] text-[1.6em] dark:text-white text-wrap leading-normal"
+                >
                   {{ item.content }}
                 </div>
               </el-radio>
             </el-radio-group>
           </el-form-item>
 
-          <div class="flex items-center my-[16px]">
+          <div class="flex items-center my-[1.6em]">
             <div class="title-tag font-bold"></div>
-            <span>配置知识库</span>
+            <span class="text-[1.6em]">配置知识库</span>
           </div>
 
           <el-form-item class="w-full !mr-0" prop="embeddingModel" label="文本向量化模型">
@@ -71,7 +80,7 @@
           <el-form-item class="w-full !mr-0" prop="embeddingDimension" label="向量维度">
             <el-radio-group
               v-model="formData.embeddingDimension"
-              class="!grid grid-cols-4 gap-[16px] vector-dimension-radio"
+              class="!grid grid-cols-4 gap-[1.6em] vector-dimension-radio"
             >
               <el-radio
                 v-for="item in embeddingModelList[currentModel].embeddingDimension"
@@ -79,7 +88,7 @@
                 :label="item"
                 border
               >
-                <span class="leading-normal">{{ item }}</span>
+                <span class="leading-normal text-[1.6em]">{{ item }}</span>
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -87,8 +96,10 @@
           <el-form-item class="w-full !mr-0" label="切片方式">
             <el-radio-group v-model="sliceType" class="!grid grid-cols-4 gap-[16px]">
               <el-radio v-for="item in sliceTypeList" :key="item.name" :label="item.name" border>
-                <div class="font-bold leading-normal">{{ item.name }}</div>
-                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                <div class="font-bold leading-normal text-[1.6em]">{{ item.name }}</div>
+                <div
+                  class="mt-[0.6em] text-[#666] text-[1.6em] dark:text-white text-wrap leading-normal"
+                >
                   {{ item.content }}
                 </div>
               </el-radio>
@@ -109,7 +120,7 @@
                   <template #reference>
                     <div class="question-mark cursor-pointer"></div>
                   </template>
-                  <div class="flex flex-col space-y-[8px]">
+                  <div class="flex flex-col space-y-[0.8em]">
                     <span>
                       请确保切片最大长度略小于向量化模型的最大输入长度，否则文本超长的部分会被模型丢弃。
                     </span>
@@ -127,17 +138,17 @@
             </template>
             <el-input-number
               v-model="formData.chunkLength"
-              class="!w-1/4"
+              class="!w-1/4 text-[1.6em]"
               :min="embeddingModelList[currentModel].chunkLength[0]"
               :max="embeddingModelList[currentModel].chunkLength[1]"
             />
           </el-form-item>
-          <div class="ml-[136px] my-[18px] flex items-center text-[12px] space-x-[8px]">
+          <div class="ml-[13.6em] my-[1.8em] flex items-center text-[1.2em] space-x-[0.8em]">
             <span class="text-[#666] dark:text-white">推荐长度</span>
             <div
               v-for="item in recommendSliceLengthList"
               :key="item"
-              class="w-[43.5px] h-[24px] flex justify-center items-center rounded-[6px] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
+              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
               @click="handleClickRecommendSliceLength(item)"
             >
               {{ item }}
@@ -173,14 +184,14 @@
             </template>
             <el-switch v-model="formData.imageOcr" />
           </el-form-item>
-          <div class="ml-[136px] mt-[12px] mb-[18px] text-[#666] dark:text-white text-[12px]">
+          <div class="ml-[13.6em] mt-[1.2em] mb-[1.8em] text-[#666] dark:text-white text-[1.2em]">
             <span>可识别文档中的图片并解析文字存为切片。支持 docx，pdf。</span>
           </div>
 
           <el-form-item class="w-full !mr-0" prop="indexType" label="索引算法">
             <el-radio-group
               v-model="formData.indexType"
-              class="w-full !grid grid-cols-4 gap-[16px]"
+              class="w-full !grid grid-cols-4 gap-[1.6em]"
             >
               <el-radio
                 v-for="item in embeddingModelList[currentModel].indexType"
@@ -188,8 +199,10 @@
                 :label="item"
                 border
               >
-                <div class="font-bold leading-normal">{{ item.toUpperCase() }}</div>
-                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                <div class="font-bold leading-normal text-[1.6em]">{{ item.toUpperCase() }}</div>
+                <div
+                  class="mt-[0.6em] text-[#666] text-[1.6em] dark:text-white text-wrap leading-normal"
+                >
                   {{ indexAlgoMap[item] }}
                 </div>
               </el-radio>
@@ -197,15 +210,17 @@
           </el-form-item>
 
           <el-form-item class="w-full !mr-0" prop="quant" label="量化方式">
-            <el-radio-group v-model="formData.quant" class="w-full !grid grid-cols-4 gap-[16px]">
+            <el-radio-group v-model="formData.quant" class="w-full !grid grid-cols-4 gap-[1.6em]">
               <el-radio
                 v-for="item in embeddingModelList[currentModel].quant"
                 :key="item"
                 :label="item"
                 border
               >
-                <div class="font-bold leading-normal">{{ item.toUpperCase() }}</div>
-                <div class="mt-[6px] text-[#666] dark:text-white text-wrap leading-normal">
+                <div class="font-bold leading-normal text-[1.6em]">{{ item.toUpperCase() }}</div>
+                <div
+                  class="mt-[0.6em] text-[#666] text-[1.6em] dark:text-white text-wrap leading-normal"
+                >
                   {{ quantatitiveMethodMap[item] }}
                 </div>
               </el-radio>
@@ -214,7 +229,7 @@
         </el-form>
 
         <div
-          class="create-btn text-[14px] px-[29px] py-[8px] ml-[136px] w-fit !rounded-[8px] cursor-pointer"
+          class="create-btn text-[1.4em] px-[2.9em] py-[0.8em] my-[1.6em] ml-[13.6em] w-fit !rounded-[0.8em] cursor-pointer"
           @click="handleClickCreateLib"
         >
           创建知识库
@@ -406,15 +421,15 @@ const handleClickCreateLib = async () => {
 }
 
 .title-tag {
-  width: 4px;
-  height: 14px;
+  width: 0.4em;
+  height: 1.4em;
   background-color: #615ced;
-  margin-right: 8px;
+  margin-right: 0.8em;
 }
 
 :deep(.el-radio) {
   width: 100%;
-  padding: 16px !important;
+  padding: 1.6em !important;
   margin: 0;
   box-sizing: border-box;
   height: 100%;
@@ -438,20 +453,20 @@ const handleClickCreateLib = async () => {
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #615ced inset;
+  box-shadow: 0 0 0 0.1em #615ced inset;
 }
 
 :deep(.el-textarea__inner:focus) {
   outline: 0;
-  box-shadow: 0 0 0 1px #615ced inset;
+  box-shadow: 0 0 0 0.1em #615ced inset;
 }
 
 :deep(.el-select__wrapper.is-focused) {
-  box-shadow: 0 0 0 1px #615ced inset;
+  box-shadow: 0 0 0 0.1em #615ced inset;
 }
 
 :deep(.vector-dimension-radio .el-radio) {
-  padding: 2px 4px !important;
+  padding: 0.2em 0.4em !important;
 }
 
 :deep(.el-radio__label) {
@@ -463,25 +478,38 @@ const handleClickCreateLib = async () => {
 }
 
 .question-mark {
-  width: 12px;
-  height: 12px;
+  width: 1.2em;
+  height: 1.2em;
   background-image: url(./assets/knowledge-question-mark.png);
   background-size: 100% 100%;
-  margin-left: 8px;
+  margin-left: 0.8em;
 }
 
 .beta-mark {
-  width: 32px;
-  height: 18px;
+  width: 3.2em;
+  height: 1.8em;
   background-image: url(./assets/knowledge-beta.png);
   background-size: 100% 100%;
-  margin-left: 8px;
+  margin-left: 0.8em;
 }
 
 .create-btn {
   background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
-  border-radius: 20px;
+  border-radius: 2em;
   color: white;
+}
+
+:deep(.el-form-item__content),
+:deep(.el-radio-group),
+:deep(.el-radio),
+:deep(.el-radio__label),
+:deep(.el-input) {
+  font-size: 1em !important;
+}
+
+:deep(.el-select__wrapper),
+:deep(.el-form-item__label) {
+  font-size: 1.6em;
 }
 
 .dark {

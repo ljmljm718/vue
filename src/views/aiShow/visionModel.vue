@@ -655,694 +655,677 @@ const sizeList = ref([
 </script>
 
 <template>
-  <template v-if="useITT">
-    <!-- 对话历史 -->
-    <div
-      class="flex-none relative side-bar-wrapper w-[256px] h-full transition-all"
-      :style="{
-        marginLeft: dialogExpandITT ? '0px' : '-257px',
-        borderRight: '1px solid var(--default-border-color)'
-      }"
-    >
-      <!-- 收起展开 -->
+  <div
+    class="vision-model w-full flex text-[3px] md:text-[4px] lg:text-[6px] xl:text-[7px] 2xl:text-[10px]"
+  >
+    <template v-if="useITT">
+      <!-- 对话历史 -->
       <div
-        @click="dialogExpandITT = !dialogExpandITT"
-        class="w-[24px] h-[48px] absolute top-1/2 right-[-32px] -translate-y-1/2 collapse-btn cursor-pointer z-10"
-        :style="{ transform: dialogExpandITT ? 'rotate(0deg)' : 'rotate(180deg)' }"
-      ></div>
-
-      <!-- 新建按钮 -->
-      <div
-        @click="handleCreateDialog"
-        class="flex justify-center items-center new-chat-btn !mx-[16px] text-white text-14px cursor-pointer select-none shadow-md"
+        class="flex-none relative side-bar-wrapper w-[25.6em] h-full transition-all"
+        :style="{
+          marginLeft: dialogExpandITT ? '0' : '-25.7em',
+          borderRight: '0.1em solid var(--default-border-color)'
+        }"
       >
-        <el-icon><Plus /></el-icon>
-        <span class="text-white pl-[4px]">新建对话</span>
-      </div>
-
-      <!-- 对话历史列表 -->
-      <div class="h-[calc(100%-88px)]">
-        <el-scrollbar ref="dialogRefITT" @scroll="handleDialogScroll" view-class="space-y-[16px]">
-          <div
-            v-for="(item, index) in dialogListITT"
-            :key="item.id"
-            class="w-full px-[16px] box-border cursor-pointer"
-            @click="dialogIdxITT = index"
-          >
-            <div
-              class="w-full px-[16px] py-[8px] box-border space-y-[4px] relative"
-              :class="`${index === dialogIdxITT && 'active-chat-info-item'}`"
-            >
-              <div v-show="dialogEditIdxITT !== index" class="truncate text-[14px]">
-                {{ item.theme }}
-              </div>
-              <div v-show="dialogEditIdxITT === index">
-                <el-input v-model="dialogEditTextITT" />
-              </div>
-              <div class="text-[#999] text-[12px]">{{ item.model }}</div>
-              <div
-                v-show="index === dialogIdxITT"
-                class="absolute top-0 right-[6px] w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
-              >
-                <template v-if="dialogEditIdxITT === -1">
-                  <el-icon
-                    @click.stop="
-                      dialogEditIdxITT = index;
-                      dialogEditTextITT = item.theme;
-                    "
-                  >
-                    <Edit />
-                  </el-icon>
-                  <el-icon @click.stop="handleDelDialog(index)"><Delete /></el-icon>
-                </template>
-                <template v-else>
-                  <el-icon @click.stop="handleEditDialog"><Check /></el-icon>
-                  <el-icon
-                    @click.stop="
-                      dialogEditIdxITT = -1;
-                      dialogEditTextITT = '';
-                    "
-                  >
-                    <Close />
-                  </el-icon>
-                </template>
-              </div>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-    </div>
-
-    <!-- 内容 -->
-    <div class="grow h-full main-container-wrapper">
-      <h1 class="m-0 text-[18px] my-[32px] ml-[24px]">智能视觉模型库V1.2.0</h1>
-
-      <div class="w-full h-[calc(100%-88px)] relative flex flex-col items-center">
-        <!-- 切换模式 -->
+        <!-- 收起展开 -->
         <div
-          class="tab-container w-[63.73%] h-[48px] relative grid grid-cols-2 rounded-[16px] px-[4px] box-border shadow-md"
+          @click="dialogExpandITT = !dialogExpandITT"
+          class="w-[2.4em] h-[4.8em] absolute top-1/2 right-[-3.2em] -translate-y-1/2 collapse-btn cursor-pointer z-10"
+          :style="{ transform: dialogExpandITT ? 'rotate(0deg)' : 'rotate(180deg)' }"
+        ></div>
+
+        <!-- 新建按钮 -->
+        <div
+          @click="handleCreateDialog"
+          class="flex justify-center items-center new-chat-btn !mx-[1.6em] text-white cursor-pointer select-none shadow-md"
         >
-          <div
-            class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
-            @click="useITT = true"
-          >
-            <div
-              class="w-[14px] h-[16px]"
-              :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
-            ></div>
-            <div :class="`${useITT && 'active-tab-text'}`">图文解析</div>
-          </div>
-          <div
-            class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
-            @click="useITT = false"
-          >
-            <div
-              class="w-[14px] h-[16px]"
-              :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
-            ></div>
-            <div :class="`${!useITT && 'active-tab-text'}`">文生图</div>
-          </div>
-          <div
-            :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
-            class="active-tab-bg absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] transition-all"
-          ></div>
+          <el-icon class="mr-[0.4em] !text-[1.4em]"><Plus /></el-icon>
+          <span class="text-white text-[1.4em]">新建对话</span>
         </div>
 
-        <!-- 初始内容 -->
-        <div v-show="chatListITT.length <= 0" class="w-[63.37%] h-[calc(100%-48px)]">
-          <el-scrollbar>
-            <div class="mt-[60px] space-y-[48px]">
-              <div class="flex items-center space-x-[16px]">
-                <div class="flex-none w-[28px] h-[28px] logo"></div>
-                <div class="text-[24px]">欢迎使用，智慧农业图文解析模型</div>
-              </div>
-              <div class="w-full grid xl:grid-cols-2 2xl:grid-cols-3 gap-[8px]">
-                <div class="aspect-.9 card-bg-1 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">
-                    识别图像中的内容
-                  </div>
-                  <div class="text-[#999] text-14px mt-4px">识别图像中作物种类，判断生长情况</div>
-                </div>
-                <div class="aspect-.9 card-bg-2 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">
-                    总结图片中的内容
-                  </div>
-                  <div class="text-[#999] text-14px mt-4px">识别图片中病虫害并给出防治方法</div>
-                </div>
-                <div class="aspect-.9 card-bg-3 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">
-                    提取图片中的文字
-                  </div>
-                  <div class="text-[#999] text-14px mt-4px">识别图片中农资说明上的文字</div>
-                </div>
-              </div>
-            </div>
-          </el-scrollbar>
-        </div>
-
-        <!-- 对话内容 -->
-        <div v-if="chatListITT.length > 0" class="w-[calc(63.37%+104px)] h-[calc(100%-238px)]">
+        <!-- 对话历史列表 -->
+        <div class="h-[calc(100%-8.8em)]">
           <el-scrollbar
-            ref="chatRefITT"
-            @scroll="handleChatScroll"
-            view-class="px-[52px] pb-[20px]"
+            ref="dialogRefITT"
+            @scroll="handleDialogScroll"
+            view-class="space-y-[1.6em]"
           >
             <div
-              v-show="loadingITT"
-              class="flex items-center justify-center w-full h-[30px] tracking-widest"
+              v-for="(item, index) in dialogListITT"
+              :key="item.id"
+              class="w-full px-[1.6em] box-border cursor-pointer"
+              @click="dialogIdxITT = index"
             >
-              <span class="text-[#999999]">加载中......</span>
+              <div
+                class="w-full px-[1.6em] py-[0.8em] box-border space-y-[0.4em] relative"
+                :class="`${index === dialogIdxITT && 'active-chat-info-item'}`"
+              >
+                <div v-show="dialogEditIdxITT !== index" class="truncate text-[1.4em]">
+                  {{ item.theme }}
+                </div>
+                <div v-show="dialogEditIdxITT === index">
+                  <el-input v-model="dialogEditTextITT" />
+                </div>
+                <div class="text-[#999] text-[1.2em]">{{ item.model }}</div>
+                <div
+                  v-show="index === dialogIdxITT"
+                  class="absolute top-0 right-[0.6em] w-[1.6em] h-full !mt-0 flex flex-col justify-center space-y-[0.8em] text-[1.4em]"
+                >
+                  <template v-if="dialogEditIdxITT === -1">
+                    <el-icon
+                      @click.stop="
+                        dialogEditIdxITT = index;
+                        dialogEditTextITT = item.theme;
+                      "
+                    >
+                      <Edit />
+                    </el-icon>
+                    <el-icon @click.stop="handleDelDialog(index)"><Delete /></el-icon>
+                  </template>
+                  <template v-else>
+                    <el-icon @click.stop="handleEditDialog"><Check /></el-icon>
+                    <el-icon
+                      @click.stop="
+                        dialogEditIdxITT = -1;
+                        dialogEditTextITT = '';
+                      "
+                    >
+                      <Close />
+                    </el-icon>
+                  </template>
+                </div>
+              </div>
             </div>
-            <template v-for="(item, index) in chatListITT" :key="index">
-              <div class="relative flex flex-col items-end space-y-[16px] mt-[36px]">
-                <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
-                  {{ item.ask.text }}
-                </div>
-                <div class="w-full grid grid-cols-4 gap-[8px] direction-rtl">
-                  <div v-for="ele in item.ask.image" :key="ele" class="pb-[100%] relative w-full">
-                    <img
-                      :src="ele"
-                      class="absolute top-0 left-0 rounded-[6px] w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="w-[36px] h-[36px] absolute top-0 right-[-16px] vision-avatar !mt-0 translate-x-full"
-                ></div>
-              </div>
-
-              <div class="relative flex mt-[24px]">
-                <div class="answer-bg rounded-[16px] px-[22px] py-[18px]">
-                  {{ item.answer.text }}
-                </div>
-                <div
-                  class="w-[36px] h-[36px] absolute top-0 left-[-16px] -translate-x-full logo"
-                ></div>
-              </div>
-            </template>
           </el-scrollbar>
         </div>
+      </div>
 
-        <!-- 初始输入框 -->
-        <div
-          v-if="!inputtingITT"
-          class="w-[63.73%] h-[48px] flex justify-between items-center absolute left-[50%] -translate-x-1/2 bottom-[52px] input-out-container z-10 px-[20px] box-border cursor-pointer hover:!border-[#615CED]"
-          @click="inputtingITT = true"
-        >
-          <div class="flex items-center space-x-[16px]">
-            <el-button class="upload-btn" @click.stop="handleClickShowUploadImg">
-              <div class="w-[14px] h-[13px] upload-icon"></div>
-              <span class="ml-[4px]">上传图片</span>
-            </el-button>
-            <span class="text-[#999] self-baseline">
-              请输入问题，我可以完成智能回答、图片内容解答等多种任务
-            </span>
-          </div>
-          <div class="w-[48px] h-[32px] no-send-btn"></div>
-        </div>
+      <!-- 内容 -->
+      <div class="grow h-full main-container-wrapper">
+        <h1 class="m-0 mt-[3.2em] ml-[2.4em] text-[1em]">
+          <span class="text-[1.8em]">智能视觉模型库V1.2.0</span>
+        </h1>
 
-        <!-- 输入框 -->
-        <div
-          v-else
-          class="w-[63.73%] absolute left-[50%] -translate-x-1/2 bottom-[52px] input-out-container !border-[#615CED] z-10 px-[20px] py-[16px] box-border"
-        >
-          <div v-if="inputImgListITT.length > 0" class="h-[68px] flex space-x-[8px]">
-            <div class="relative" v-for="(item, index) in inputImgListITT" :key="item.url">
-              <el-image
-                :src="item.url"
-                :preview-src-list="[item.url]"
-                fit="cover"
-                class="w-[68px] h-[68px] rounded-[6px]"
-                preview-teleported
-                @mouseenter="item.showDel = true"
-                @mouseleave="item.showDel = false"
-              />
+        <div class="w-full h-[calc(100%-5em)] relative flex flex-col items-center">
+          <!-- 切换模式 -->
+          <div
+            class="flex-none tab-container w-[63.73%] h-[4.8em] relative grid grid-cols-2 rounded-[1.6em] px-[0.4em] box-border shadow-md"
+          >
+            <div
+              class="w-full h-[4em] my-[0.4em] flex justify-center items-center space-x-[1.2em] cursor-pointer rounded-[1.2em] z-10"
+              @click="useITT = true"
+            >
               <div
-                v-show="item.showDel"
-                class="absolute right-[2px] bottom-[2px] w-[14px] h-[14px] delete-img"
-                @click="handleClickDelImg(index)"
+                class="w-[1.4em] h-[1.6em]"
+                :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
               ></div>
+              <div :class="`${useITT && 'active-tab-text'}`">
+                <span class="text-[1.6em]">图文解析</span>
+              </div>
             </div>
-          </div>
-          <div
-            v-if="inputImgListITT.length > 0"
-            class="mt-[16px] h-[32px] flex items-center space-x-[8px]"
-          >
             <div
-              v-for="item in supportText"
-              :key="item"
-              class="flex items-center px-[16px] py-[6px] rounded-[6px] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
-              @click="inputTextITT += item + ' '"
+              class="w-full h-[4em] my-[0.4em] flex justify-center items-center space-x-[1.2em] cursor-pointer rounded-[1.2em] z-10"
+              @click="useITT = false"
             >
-              <span>{{ item }}</span>
-              <el-icon class="ml-[18px]"><Right /></el-icon>
-            </div>
-          </div>
-          <el-input
-            type="textarea"
-            v-model="inputTextITT"
-            class="mt-[16px] input-text"
-            resize="none"
-            :autosize="{ minRows: 1, maxRows: 6 }"
-            placeholder="请输入问题，我可以完成智能回答、图片内容解答等多种任务"
-          />
-          <div class="mt-[27px] flex justify-between items-center">
-            <el-button class="upload-btn" @click="handleClickShowUploadImg">
-              <div class="w-[14px] h-[13px] upload-icon"></div>
-              <span class="ml-[4px]">上传图片</span>
-            </el-button>
-            <div
-              v-if="
-                inputtingITT && '' !== inputTextITT && inputImgListITT.length > 0 && !outputtingITT
-              "
-              @click="handleSubmit"
-              class="w-[48px] h-[32px] send-btn cursor-pointer relative"
-            >
-              <div v-show="sendingITT" class="absolute top-[5px] left-[18px] z-10">
-                <svg
-                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer relative">
-              <div v-show="sendingITT" class="absolute top-[5px] left-[18px] z-10">
-                <svg
-                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 图文解析参数设置 -->
-    <div
-      :class="`${settingExpandITT ? 'mr-0' : 'mr-[-257px]'}`"
-      class="right-panel-wrapper flex-none relative w-[256px] h-full border-l border-l-solid border-[#F7F8FA] dark:border-0 transition-all"
-    >
-      <!-- 展开收起 -->
-      <div
-        @click="settingExpandITT = !settingExpandITT"
-        class="absolute top-[24px] left-[-134px] w-[110px] h-[36px] flex justify-between items-center px-[16px] box-border rounded-full bg-white text-[14px] cursor-pointer setting-bg"
-      >
-        <el-icon><Operation /></el-icon>
-        <span>参数设置</span>
-      </div>
-
-      <!-- 配置内容 -->
-      <div class="w-full h-full box-border space-y-[24px]">
-        <div
-          class="w-full flex items-center justify-between pb-[16px]"
-          style="border-bottom: 1px solid var(--default-border-color)"
-        >
-          <div>参数设置</div>
-          <div
-            class="close w-[16px] h-[16px] cursor-pointer"
-            @click="settingExpandITT = false"
-          ></div>
-        </div>
-        <div class="space-y-[16px]">
-          <div>是否流式返回</div>
-          <el-switch v-model="returnStreamITT" />
-        </div>
-        <div class="space-y-[16px]">
-          <div>最大返回长度</div>
-          <div class="flex space-x-[16px]">
-            <el-slider v-model="maxResLenITT" :max="4096" :min="1" />
-            <el-input v-model="maxResLenITT" style="width: 96px" @input="handleInputChange" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <template v-else>
-    <!-- 对话历史 -->
-    <div
-      class="flex-none relative side-bar-wrapper w-[256px] h-full transition-all"
-      :style="{
-        marginLeft: dialogExpandTTI ? '0px' : '-257px',
-        borderRight: '1px solid var(--default-border-color)'
-      }"
-    >
-      <!-- 收起展开 -->
-      <div
-        @click="dialogExpandTTI = !dialogExpandTTI"
-        class="w-[24px] h-[48px] absolute top-1/2 right-[-32px] -translate-y-1/2 collapse-btn cursor-pointer z-10"
-        :style="{ transform: dialogExpandTTI ? 'rotate(0deg)' : 'rotate(180deg)' }"
-      ></div>
-
-      <!-- 新建按钮 -->
-      <div
-        @click="handleCreateDialog"
-        class="flex justify-center items-center new-chat-btn !mx-[16px] text-white text-14px cursor-pointer select-none shadow-md"
-      >
-        <el-icon><Plus /></el-icon>
-        <span class="text-white pl-[4px]">新建对话</span>
-      </div>
-
-      <!-- 对话历史列表 -->
-      <div class="h-[calc(100%-88px)]">
-        <el-scrollbar ref="dialogRefTTI" @scroll="handleDialogScroll" view-class="space-y-[16px]">
-          <div
-            v-for="(item, index) in dialogListTTI"
-            :key="item.id"
-            class="w-full px-[16px] box-border cursor-pointer"
-            @click="dialogIdxTTI = index"
-          >
-            <div
-              class="w-full px-[16px] py-[8px] box-border space-y-[4px] relative"
-              :class="`${index === dialogIdxTTI && 'active-chat-info-item'}`"
-            >
-              <div v-show="dialogEditIdxTTI !== index" class="truncate text-[14px]">
-                {{ item.theme }}
-              </div>
-              <div v-show="dialogEditIdxTTI === index">
-                <el-input v-model="dialogEditTextTTI" />
-              </div>
-              <div class="text-[#999] text-[12px]">{{ item.model }}</div>
               <div
-                v-show="index === dialogIdxTTI"
-                class="absolute top-0 right-[6px] w-[16px] h-full !mt-0 flex flex-col justify-center space-y-[8px] text-[14px]"
-              >
-                <template v-if="dialogEditIdxTTI === -1">
-                  <el-icon
-                    @click.stop="
-                      dialogEditIdxTTI = index;
-                      dialogEditTextTTI = item.theme;
-                    "
-                  >
-                    <Edit />
-                  </el-icon>
-                  <el-icon @click.stop="handleDelDialog(index)"><Delete /></el-icon>
-                </template>
-                <template v-else>
-                  <el-icon @click.stop="handleEditDialog"><Check /></el-icon>
-                  <el-icon
-                    @click.stop="
-                      dialogEditIdxTTI = -1;
-                      dialogEditTextTTI = '';
-                    "
-                  >
-                    <Close />
-                  </el-icon>
-                </template>
+                class="w-[1.4em] h-[1.6em]"
+                :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
+              ></div>
+              <div :class="`${!useITT && 'active-tab-text'}`">
+                <span class="text-[1.6em]">文生图</span>
               </div>
             </div>
-          </div>
-        </el-scrollbar>
-      </div>
-    </div>
-
-    <!-- 内容 -->
-    <div class="grow h-full main-container-wrapper">
-      <h1 class="m-0 text-[18px] my-[32px] ml-[24px]">智能视觉模型库V1.2.0</h1>
-
-      <div class="w-full h-[calc(100%-88px)] relative flex flex-col items-center">
-        <!-- 切换模式 -->
-        <div
-          class="tab-container w-[63.73%] h-[48px] relative grid grid-cols-2 rounded-[16px] px-[4px] box-border shadow-md"
-        >
-          <div
-            class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
-            @click="useITT = true"
-          >
             <div
-              class="w-[14px] h-[16px]"
-              :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
+              :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
+              class="active-tab-bg absolute left-[0.4em] top-[0.4em] w-[calc((100%-0.8em)/2)] h-[4em] rounded-[1.2em] transition-all"
             ></div>
-            <div :class="`${useITT && 'active-tab-text'}`">图文解析</div>
           </div>
-          <div
-            class="w-full h-[40px] my-[4px] flex justify-center items-center space-x-[12px] cursor-pointer rounded-[12px] z-10"
-            @click="useITT = false"
-          >
-            <div
-              class="w-[14px] h-[16px]"
-              :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
-            ></div>
-            <div :class="`${!useITT && 'active-tab-text'}`">文生图</div>
-          </div>
-          <div
-            :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
-            class="active-tab-bg absolute left-[4px] top-[4px] w-[calc((100%-8px)/2)] h-[40px] rounded-[12px] transition-all"
-          ></div>
-        </div>
 
-        <!-- 初始内容 -->
-        <div v-show="chatListTTI.length <= 0" class="w-[63.37%] h-[calc(100%-48px)]">
-          <el-scrollbar>
-            <div class="mt-[60px] space-y-[48px]">
-              <div class="flex items-center space-x-[16px]">
-                <div class="flex-none w-[28px] h-[28px] logo"></div>
-                <div class="text-[24px]">欢迎使用，智慧农业文生图模型</div>
-              </div>
-              <div class="w-full grid xl:grid-cols-2 2xl:grid-cols-3 gap-[8px]">
-                <div class="aspect-.9 card-bg-4 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">生成作物图片</div>
-                  <div class="text-[#999] text-14px mt-4px">农业，葡萄，科技，阳光</div>
+          <!-- 初始内容 -->
+          <div v-show="chatListITT.length <= 0" class="w-[63.37%] grow overflow-hidden">
+            <el-scrollbar class="hide-scrollbar">
+              <div class="mt-[6em] space-y-[4.8em]">
+                <div class="flex items-center space-x-[1.6em]">
+                  <div class="flex-none w-[2.8em] h-[2.8em] logo"></div>
+                  <div class="text-[2.4em]">欢迎使用，智慧农业图文解析模型</div>
                 </div>
-                <div class="aspect-.9 card-bg-5 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">生成动物图片</div>
-                  <div class="text-[#999] text-14px mt-4px">草地，公鸡，蓝天白云</div>
-                </div>
-                <div class="aspect-.9 card-bg-6 p-22px box-border">
-                  <div class="text-[#333] dark:text-[#fff] text-18px font-bold">生成农田图片</div>
-                  <div class="text-[#999] text-14px mt-4px">乡村，农田，秧苗，房屋，远山</div>
-                </div>
-              </div>
-            </div>
-          </el-scrollbar>
-          <!-- <img :src="imageUrl" alt="" class="!w-[500px] !h-[500px]" /> -->
-        </div>
-
-        <!-- 对话内容 -->
-        <div v-if="chatListTTI.length > 0" class="w-[calc(63.37%+104px)] h-[calc(100%-238px)]">
-          <el-scrollbar
-            ref="chatRefTTI"
-            @scroll="handleChatScroll"
-            view-class="px-[52px] pb-[60px]"
-          >
-            <div
-              v-show="loadingTTI"
-              class="flex items-center justify-center w-full h-[30px] tracking-widest"
-            >
-              <span class="text-[#999999]">加载中......</span>
-            </div>
-            <template v-for="(item, index) in chatListTTI" :key="index">
-              <div class="relative flex justify-end mt-[36px]">
-                <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[25px] py-[14px] rounded-[16px]">
-                  {{ item.ask.text }}
-                </div>
-                <div
-                  class="w-[36px] h-[36px] absolute top-0 right-[-16px] vision-avatar !mt-0 translate-x-full"
-                ></div>
-              </div>
-
-              <div class="relative flex space-y-[16px] mt-[24px]">
-                <div class="w-full grid grid-cols-4 gap-[8px]">
-                  <div
-                    v-for="ele in item.answer.image"
-                    :key="ele"
-                    class="pb-[100%] relative w-full"
-                  >
-                    <img
-                      :src="ele"
-                      class="absolute top-0 left-0 rounded-[6px] w-full h-full object-cover"
-                    />
+                <div class="w-full grid grid-cols-3 gap-[0.8em]">
+                  <div class="aspect-.9 card-bg-1 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      识别图像中的内容
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">识别图像中作物种类，判断生长情况</span>
+                    </div>
+                  </div>
+                  <div class="aspect-.9 card-bg-2 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      总结图片中的内容
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">识别图片中病虫害并给出防治方法</span>
+                    </div>
+                  </div>
+                  <div class="aspect-.9 card-bg-3 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      提取图片中的文字
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">识别图片中农资说明上的文字</span>
+                    </div>
                   </div>
                 </div>
-                <div
-                  class="w-[36px] h-[36px] absolute top-0 left-[-16px] -translate-x-full logo"
-                ></div>
-              </div>
-            </template>
-          </el-scrollbar>
-        </div>
-
-        <!-- 初始输入框 -->
-        <div
-          v-if="!inputtingTTI"
-          class="w-[63.73%] h-[48px] flex justify-between items-center absolute left-[50%] -translate-x-1/2 bottom-[52px] input-out-container z-10 px-[20px] box-border cursor-pointer hover:!border-[#615CED]"
-          @click="inputtingTTI = true"
-        >
-          <div class="flex items-center space-x-[16px]">
-            <div></div>
-            <span class="text-[#999] self-baseline">
-              请输入问题，我可以完成智能回答、图片内容解答等多种任务
-            </span>
-          </div>
-          <div class="w-[48px] h-[32px] no-send-btn relative"></div>
-          <!-- size list -->
-          <div class="w-full h-[34px] absolute left-0 top-[-40px]">
-            <el-scrollbar view-class="flex space-x-[8px]">
-              <div
-                v-for="(item, index) in sizeList"
-                :key="item.label"
-                class="size-bg"
-                :class="index === sizeIdx && 'active-size'"
-                @click.stop="sizeIdx = index"
-              >
-                <div :class="item.iconClass"></div>
-                <span class="pl-[10px]">{{ item.label }}</span>
               </div>
             </el-scrollbar>
           </div>
-        </div>
 
-        <!-- 输入框 -->
-        <div
-          v-else
-          class="w-[63.73%] absolute left-[50%] -translate-x-1/2 bottom-[52px] input-out-container !border-[#615CED] z-10 px-[20px] py-[16px] box-border"
-        >
-          <el-input
-            type="textarea"
-            v-model="inputTextTTI"
-            class="mt-[16px] input-text"
-            resize="none"
-            :autosize="{ minRows: 1, maxRows: 6 }"
-            placeholder="请输入问题，我可以完成智能回答、图片内容解答等多种任务"
-          />
-          <div class="mt-[27px] flex justify-between items-center">
-            <div></div>
-            <div
-              v-if="inputtingTTI && '' !== inputTextTTI"
-              @click="handleSubmit"
-              class="w-[48px] h-[32px] send-btn cursor-pointer relative"
+          <!-- 对话内容 -->
+          <div v-if="chatListITT.length > 0" class="w-[calc(63.37%+10.4em)] grow overflow-hidden">
+            <el-scrollbar
+              class="hide-scrollbar"
+              ref="chatRefITT"
+              @scroll="handleChatScroll"
+              view-class="px-[5.2em] pb-[2em]"
             >
-              <div v-show="sending" class="absolute top-[5px] left-[18px] z-10">
-                <svg
-                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div v-else class="w-[48px] h-[32px] no-send-btn cursor-pointer relative">
-              <div v-show="sending" class="absolute top-[5px] left-[18px] z-10">
-                <svg
-                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <!-- size list -->
-          <div class="w-full h-[34px] absolute left-0 top-[-40px]">
-            <el-scrollbar view-class="flex space-x-[8px]">
               <div
-                v-for="(item, index) in sizeList"
-                :key="item.label"
-                class="size-bg"
-                :class="index === sizeIdx && 'active-size'"
-                @click.stop="sizeIdx = index"
+                v-show="loadingITT"
+                class="flex items-center justify-center w-full h-[3em] tracking-widest"
               >
-                <div :class="item.iconClass"></div>
-                <span class="pl-[10px]">{{ item.label }}</span>
+                <span class="text-[#999999]">加载中......</span>
               </div>
+              <template v-for="(item, index) in chatListITT" :key="index">
+                <div class="relative flex flex-col items-end space-y-[1.6em] mt-[3.6em]">
+                  <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[2.5em] py-[1.4em] rounded-[1.6em]">
+                    <span class="text-[1.4em]">{{ item.ask.text }}</span>
+                  </div>
+                  <div class="w-full grid grid-cols-4 gap-[0.8em] direction-rtl">
+                    <div v-for="ele in item.ask.image" :key="ele" class="pb-[100%] relative w-full">
+                      <img
+                        :src="ele"
+                        class="absolute top-0 left-0 rounded-[0.6em] w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="w-[3.6em] h-[3.6em] absolute top-0 right-[-1.6em] vision-avatar !mt-0 translate-x-full"
+                  ></div>
+                </div>
+
+                <div class="relative flex mt-[2.4em]">
+                  <div class="answer-bg rounded-[1.6em] px-[2.2em] py-[1.8em]">
+                    <span class="text-[1.4em]">{{ item.answer.text }}</span>
+                  </div>
+                  <div
+                    class="w-[3.6em] h-[3.6em] absolute top-0 left-[-1.6em] -translate-x-full logo"
+                  ></div>
+                </div>
+              </template>
             </el-scrollbar>
+          </div>
+
+          <!-- 初始输入框 -->
+          <div
+            v-if="!inputtingITT"
+            class="flex-none mt-[2.4em] w-[63.73%] h-[4.8em] flex justify-between items-center mb-[5.2em] input-out-container z-10 px-[2em] box-border cursor-pointer hover:!border-[#615CED]"
+            @click="inputtingITT = true"
+          >
+            <div class="flex items-center space-x-[1.6em]">
+              <el-button
+                class="upload-btn !text-[1em] !px-[1.1em] !py-[0.5em] !h-fit"
+                @click.stop="handleClickShowUploadImg"
+              >
+                <div class="w-[1.4em] h-[1.3em] upload-icon"></div>
+                <span class="ml-[0.4em] text-[1.2em]">上传图片</span>
+              </el-button>
+              <span class="text-[#999] self-baseline text-[1.6em]">
+                请输入问题，我可以完成智能回答、图片内容解答等多种任务
+              </span>
+            </div>
+            <div class="w-[4.8em] h-[3.2em] no-send-btn"></div>
+          </div>
+
+          <!-- 输入框 -->
+          <div
+            v-else
+            class="flex-none w-[63.73%] mb-[5.2em] mt-[2.4em] fix-border-color p-[0.2em] rounded-[1.6em]"
+          >
+            <div class="input-out-container w-full px-[2em] py-[0.8em] box-border">
+              <div v-if="inputImgListITT.length > 0" class="h-[6.8em] flex space-x-[0.8em]">
+                <div class="relative" v-for="(item, index) in inputImgListITT" :key="item.url">
+                  <el-image
+                    :src="item.url"
+                    :preview-src-list="[item.url]"
+                    fit="cover"
+                    class="w-[6.8em] h-[6.8em] rounded-[0.6em]"
+                    preview-teleported
+                    @mouseenter="item.showDel = true"
+                    @mouseleave="item.showDel = false"
+                  />
+                  <div
+                    v-show="item.showDel"
+                    class="absolute right-[0.2em] bottom-[0.2em] w-[1.4em] h-[1.4em] delete-img"
+                    @click="handleClickDelImg(index)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                v-if="inputImgListITT.length > 0"
+                class="my-[1.6em] h-[3.2em] flex items-center space-x-[0.8em]"
+              >
+                <div
+                  v-for="item in supportText"
+                  :key="item"
+                  class="flex items-center px-[1.6em] py-[0.6em] rounded-[0.6em] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
+                  @click="inputTextITT += item + ' '"
+                >
+                  <span class="text-[1.4em]">{{ item }}</span>
+                  <el-icon class="ml-[1.8em]"><Right /></el-icon>
+                </div>
+              </div>
+              <el-input
+                type="textarea"
+                v-model="inputTextITT"
+                class="input-text"
+                resize="none"
+                :autosize="{ minRows: 1, maxRows: 6 }"
+                placeholder="请输入问题，我可以完成智能回答、图片内容解答等多种任务"
+                input-style="font-size: 1.6em;"
+              />
+              <div class="mt-[1.6em] flex justify-between items-center">
+                <el-button
+                  class="upload-btn !text-[1em] !px-[1.1em] !py-[0.5em] !h-fit"
+                  @click="handleClickShowUploadImg"
+                >
+                  <div class="w-[1.4em] h-[1.3em] upload-icon"></div>
+                  <span class="ml-[0.4em] text-[1.2em]">上传图片</span>
+                </el-button>
+                <div
+                  v-loading="sendingITT"
+                  v-if="
+                    inputtingITT &&
+                    '' !== inputTextITT &&
+                    inputImgListITT.length > 0 &&
+                    !outputtingITT
+                  "
+                  @click="handleSubmit"
+                  class="w-[4.8em] h-[3.2em] send-btn cursor-pointer"
+                ></div>
+                <div v-else class="w-[4.8em] h-[3.2em] no-send-btn cursor-pointer"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </template>
 
-  <Dialog v-model="showUploadImg" title="上传图片" :width="662" @close="handleClickCloseUploadImg">
-    <div v-show="imgs.length <= 0" class="text-center mb-[16px]">点击下方按钮上传图片</div>
-    <div class="flex justify-center">
-      <UploadImgs v-model="imgs" :limit="10" aria-readonly="true" />
-    </div>
-    <div class="flex justify-center mt-[16px] space-x-[8px]">
-      <el-button type="primary" @click="handleConfirmUploadImg">保存</el-button>
-      <el-button @click="handleClickCloseUploadImg">取消</el-button>
-    </div>
-  </Dialog>
+      <!-- 图文解析参数设置 -->
+      <div
+        :class="`${settingExpandITT ? 'mr-0' : 'mr-[-25.7em]'}`"
+        class="right-panel-wrapper flex-none relative w-[25.6em] h-full border-l-[0.1em] border-l-solid border-[#F7F8FA] dark:border-0 transition-all"
+      >
+        <!-- 展开收起 -->
+        <div
+          @click="settingExpandITT = !settingExpandITT"
+          class="absolute top-[2.4em] left-[-13.4em] w-[11em] h-[3.6em] flex justify-between items-center px-[1.6em] box-border rounded-full bg-white cursor-pointer setting-bg"
+        >
+          <el-icon><Operation /></el-icon>
+          <span class="text-[1.4em]">参数设置</span>
+        </div>
+
+        <!-- 配置内容 -->
+        <div class="w-full h-full box-border space-y-[2.4em]">
+          <div
+            class="w-full flex items-center justify-between pb-[1.6em]"
+            style="border-bottom: 0.1em solid var(--default-border-color)"
+          >
+            <div class="text-[1.4em]">参数设置</div>
+            <div
+              class="close w-[1.6em] h-[1.6em] cursor-pointer"
+              @click="settingExpandITT = false"
+            ></div>
+          </div>
+          <div class="space-y-[1.6em]">
+            <div class="text-[1.4em]">是否流式返回</div>
+            <el-switch v-model="returnStreamITT" />
+          </div>
+          <div class="space-y-[1.6em]">
+            <div class="text-[1.4em]">最大返回长度</div>
+            <div class="flex space-x-[1.6em]">
+              <el-slider v-model="maxResLenITT" :max="4096" :min="1" />
+              <el-input
+                v-model="maxResLenITT"
+                style="width: 9.6em"
+                input-style="font-size: 1.4em"
+                @input="handleInputChange"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template v-else>
+      <!-- 对话历史 -->
+      <div
+        class="flex-none relative side-bar-wrapper w-[25.6em] h-full transition-all"
+        :style="{
+          marginLeft: dialogExpandTTI ? '0' : '-25.7em',
+          borderRight: '0.1em solid var(--default-border-color)'
+        }"
+      >
+        <!-- 收起展开 -->
+        <div
+          @click="dialogExpandTTI = !dialogExpandTTI"
+          class="w-[2.4em] h-[4.8em] absolute top-1/2 right-[-3.2em] -translate-y-1/2 collapse-btn cursor-pointer z-10"
+          :style="{ transform: dialogExpandTTI ? 'rotate(0deg)' : 'rotate(180deg)' }"
+        ></div>
+
+        <!-- 新建按钮 -->
+        <div
+          @click="handleCreateDialog"
+          class="flex justify-center items-center new-chat-btn !mx-[1.6em] text-white cursor-pointer select-none shadow-md"
+        >
+          <el-icon class="mr-[0.4em] !text-[1.4em]"><Plus /></el-icon>
+          <span class="text-white text-[1.4em]">新建对话</span>
+        </div>
+
+        <!-- 对话历史列表 -->
+        <div class="h-[calc(100%-8.8em)]">
+          <el-scrollbar
+            ref="dialogRefTTI"
+            @scroll="handleDialogScroll"
+            view-class="space-y-[1.6em]"
+          >
+            <div
+              v-for="(item, index) in dialogListTTI"
+              :key="item.id"
+              class="w-full px-[1.6em] box-border cursor-pointer"
+              @click="dialogIdxTTI = index"
+            >
+              <div
+                class="w-full px-[1.6em] py-[0.8em] box-border space-y-[0.4em] relative"
+                :class="`${index === dialogIdxTTI && 'active-chat-info-item'}`"
+              >
+                <div v-show="dialogEditIdxTTI !== index" class="truncate text-[1.4em]">
+                  {{ item.theme }}
+                </div>
+                <div v-show="dialogEditIdxTTI === index">
+                  <el-input v-model="dialogEditTextTTI" />
+                </div>
+                <div class="text-[#999] text-[1.2em]">{{ item.model }}</div>
+                <div
+                  v-show="index === dialogIdxTTI"
+                  class="absolute top-0 right-[0.6em] w-[1.6em] h-full !mt-0 flex flex-col justify-center space-y-[0.8em]"
+                >
+                  <template v-if="dialogEditIdxTTI === -1">
+                    <el-icon
+                      @click.stop="
+                        dialogEditIdxTTI = index;
+                        dialogEditTextTTI = item.theme;
+                      "
+                      class="text-[1.4em]"
+                    >
+                      <Edit />
+                    </el-icon>
+                    <el-icon @click.stop="handleDelDialog(index)"><Delete /></el-icon>
+                  </template>
+                  <template v-else>
+                    <el-icon @click.stop="handleEditDialog"><Check /></el-icon>
+                    <el-icon
+                      @click.stop="
+                        dialogEditIdxTTI = -1;
+                        dialogEditTextTTI = '';
+                      "
+                    >
+                      <Close />
+                    </el-icon>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
+      </div>
+
+      <!-- 内容 -->
+      <div class="grow h-full main-container-wrapper">
+        <h1 class="m-0 text-[1em] mt-[3.2em] ml-[2.4em]">
+          <span class="text-[1.8em]">智能视觉模型库V1.2.0</span>
+        </h1>
+
+        <div class="w-full h-[calc(100%-5em)] flex flex-col items-center">
+          <!-- 切换模式 -->
+          <div
+            class="flex-none tab-container w-[63.73%] h-[4.8em] relative grid grid-cols-2 rounded-[1.6em] px-[0.4em] box-border shadow-md"
+          >
+            <div
+              class="w-full h-[4em] my-[0.4em] flex justify-center items-center space-x-[1.2em] cursor-pointer rounded-[1.2em] z-10"
+              @click="useITT = true"
+            >
+              <div
+                class="w-[1.4em] h-[1.6em]"
+                :class="`${useITT ? 'img-to-text-active' : 'img-to-text'}`"
+              ></div>
+              <div :class="`${useITT && 'active-tab-text'}`">
+                <span class="text-[1.6em]">图文解析</span>
+              </div>
+            </div>
+            <div
+              class="w-full h-[4em] my-[0.4em] flex justify-center items-center space-x-[1.2em] cursor-pointer rounded-[1.2em] z-10"
+              @click="useITT = false"
+            >
+              <div
+                class="w-[1.4em] h-[1.6em]"
+                :class="`${useITT ? 'text-to-img' : 'text-to-img-active'}`"
+              ></div>
+              <div :class="`${!useITT && 'active-tab-text'}`">
+                <span class="text-[1.6em]">文生图</span>
+              </div>
+            </div>
+            <div
+              :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
+              class="active-tab-bg absolute left-[0.4em] top-[0.4em] w-[calc((100%-0.8em)/2)] h-[4em] rounded-[1.2em] transition-all"
+            ></div>
+          </div>
+
+          <!-- 初始内容 -->
+          <div v-show="chatListTTI.length <= 0" class="w-[63.37%] grow overflow-hidden">
+            <el-scrollbar class="hide-scrollbar">
+              <div class="mt-[6em] space-y-[4.8em]">
+                <div class="flex items-center space-x-[1.6em]">
+                  <div class="flex-none w-[2.8em] h-[2.8em] logo"></div>
+                  <div class="text-[2.4em]">欢迎使用，智慧农业文生图模型</div>
+                </div>
+                <div class="w-full grid grid-cols-3 gap-[0.8em]">
+                  <div class="aspect-.9 card-bg-4 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      生成作物图片
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">农业，葡萄，科技，阳光</span>
+                    </div>
+                  </div>
+                  <div class="aspect-.9 card-bg-5 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      生成动物图片
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">草地，公鸡，蓝天白云</span>
+                    </div>
+                  </div>
+                  <div class="aspect-.9 card-bg-6 p-[2.2em] box-border">
+                    <div class="text-[#333] dark:text-[#fff] text-[1.8em] font-bold">
+                      生成农田图片
+                    </div>
+                    <div class="text-[#999] mt-[0.4em]">
+                      <span class="text-[1.4em]">乡村，农田，秧苗，房屋，远山</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </el-scrollbar>
+          </div>
+
+          <!-- 对话内容 -->
+          <div v-if="chatListTTI.length > 0" class="w-[calc(63.37%+10.4em)] grow overflow-hidden">
+            <el-scrollbar
+              class="hide-scrollbar"
+              ref="chatRefTTI"
+              @scroll="handleChatScroll"
+              view-class="px-[5.2em] pb-[6em]"
+            >
+              <div
+                v-show="loadingTTI"
+                class="flex items-center justify-center w-full h-[3em] tracking-widest"
+              >
+                <span class="text-[#999999]">加载中......</span>
+              </div>
+              <template v-for="(item, index) in chatListTTI" :key="index">
+                <div class="relative flex justify-end mt-[3.6em]">
+                  <div class="bg-[#E0DFFF] dark:bg-[#615CED] px-[2.5em] py-[1.4em] rounded-[1.6em]">
+                    <span class="text-[1.4em]">{{ item.ask.text }}</span>
+                  </div>
+                  <div
+                    class="w-[3.6em] h-[3.6em] absolute top-0 right-[-1.6em] vision-avatar !mt-0 translate-x-full"
+                  ></div>
+                </div>
+
+                <div class="relative flex space-y-[1.6em] mt-[2.4em]">
+                  <div class="w-full grid grid-cols-4 gap-[0.8em]">
+                    <div
+                      v-for="ele in item.answer.image"
+                      :key="ele"
+                      class="pb-[100%] relative w-full"
+                    >
+                      <img
+                        :src="ele"
+                        class="absolute top-0 left-0 rounded-[0.6em] w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="w-[3.6em] h-[3.6em] absolute top-0 left-[-1.6em] -translate-x-full logo"
+                  ></div>
+                </div>
+              </template>
+            </el-scrollbar>
+          </div>
+
+          <!-- 初始输入框 -->
+          <div
+            v-if="!inputtingTTI"
+            class="flex-none w-[63.73%] h-[4.8em] flex justify-between items-center mb-[5.2em] mt-[2.4em] input-out-container px-[2em] box-border cursor-pointer hover:!border-[#615CED]"
+            @click="inputtingTTI = true"
+          >
+            <div class="flex items-center space-x-[1.6em]">
+              <div></div>
+              <span class="text-[#999] self-baseline text-[1.6em]">
+                请输入问题，我可以完成智能回答、图片内容解答等多种任务
+              </span>
+            </div>
+            <div class="w-[4.8em] h-[3.2em] no-send-btn relative"></div>
+            <!-- size list -->
+            <div class="w-full h-[3.4em] absolute left-0 top-[-4em]">
+              <el-scrollbar view-class="flex space-x-[0.8em]">
+                <div
+                  v-for="(item, index) in sizeList"
+                  :key="item.label"
+                  class="size-bg"
+                  :class="index === sizeIdx && 'active-size'"
+                  @click.stop="sizeIdx = index"
+                >
+                  <div :class="item.iconClass" class="mr-[1em]"></div>
+                  <span class="text-[1.4em]">{{ item.label }}</span>
+                </div>
+              </el-scrollbar>
+            </div>
+          </div>
+
+          <!-- 输入框 -->
+          <div
+            v-else
+            class="flex-none relative w-[63.73%] mb-[5.2em] mt-[5.8em] box-border fix-border-color p-[0.2em] rounded-[1.6em]"
+          >
+            <div class="input-out-container w-full px-[2em] py-[0.8em] box-border">
+              <el-input
+                type="textarea"
+                v-model="inputTextTTI"
+                class="input-text"
+                resize="none"
+                :autosize="{ minRows: 1, maxRows: 6 }"
+                placeholder="请输入问题，我可以完成智能回答、图片内容解答等多种任务"
+                input-style="font-size: 1.6em;"
+              />
+              <div class="mt-[1.6em] flex justify-between items-center">
+                <div></div>
+                <div
+                  v-loading="sending"
+                  v-if="inputtingTTI && '' !== inputTextTTI"
+                  @click="handleSubmit"
+                  class="w-[4.8em] h-[3.2em] send-btn cursor-pointer relative"
+                ></div>
+                <div v-else class="w-[4.8em] h-[3.2em] no-send-btn cursor-pointer"></div>
+              </div>
+              <!-- size list -->
+              <div class="w-full h-[3.4em] absolute left-0 top-[-0.8em] z-10 -translate-y-full">
+                <el-scrollbar view-class="flex space-x-[0.8em]">
+                  <div
+                    v-for="(item, index) in sizeList"
+                    :key="item.label"
+                    class="size-bg"
+                    :class="index === sizeIdx && 'active-size'"
+                    @click.stop="sizeIdx = index"
+                  >
+                    <div :class="item.iconClass"></div>
+                    <span class="pl-[1em]">{{ item.label }}</span>
+                  </div>
+                </el-scrollbar>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <Dialog
+      v-model="showUploadImg"
+      title="上传图片"
+      width="66.2em"
+      @close="handleClickCloseUploadImg"
+    >
+      <div v-show="imgs.length <= 0" class="text-center mb-[16px]">
+        <span class="text-[1.6em]">点击下方按钮上传图片</span>
+      </div>
+      <div class="flex justify-center">
+        <UploadImgs v-model="imgs" :limit="10" aria-readonly="true" />
+      </div>
+      <div class="flex justify-center mt-[16px] space-x-[8px]">
+        <el-button color="#615ced" @click="handleConfirmUploadImg">保存</el-button>
+        <el-button @click="handleClickCloseUploadImg">取消</el-button>
+      </div>
+    </Dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .dark {
   .side-bar-wrapper {
     .active-chat-info-item {
-      box-shadow: inset 0px 0px 16px 0px rgba(97, 92, 237, 0.5);
-      border-radius: 8px;
-      border: 1px solid #615ced;
+      box-shadow: inset 0px 0px 1.6em 0px rgba(97, 92, 237, 0.5);
+      border-radius: 0.8em;
+      border: 0.1em solid #615ced;
       background: none;
     }
   }
   .main-container-wrapper {
     background: linear-gradient(to top, rgba(147, 98, 218, 0) 0%, rgba(67, 120, 255, 0.3) 100%),
       #0f121b;
+    .fix-border-color {
+      background: linear-gradient(to right, #4378ff, #9362da);
+    }
     .input-out-container {
       background: #0f121b;
-      border-radius: 16px;
-      border: 2px solid;
-      border-image: linear-gradient(90deg, rgba(67, 120, 255, 0.5), rgba(147, 98, 218, 0.5)) 2 2;
+      border-radius: 1.6em;
+      border: 0.2em solid transparent;
     }
     @for $i from 1 through 6 {
       .card-bg-#{$i} {
@@ -1352,8 +1335,8 @@ const sizeList = ref([
     }
     .params-config-btn {
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 2em;
+      border: 0.1em solid rgba(255, 255, 255, 0.12);
     }
   }
 
@@ -1363,7 +1346,7 @@ const sizeList = ref([
 
   .tab-container {
     background-color: transparent;
-    border: 1px solid #615ced;
+    border: 0.1em solid #615ced;
   }
 
   .active-tab-bg {
@@ -1403,10 +1386,9 @@ const sizeList = ref([
   .size-bg {
     background-color: #2c3240;
     border: none;
-    border-radius: 6px;
-    width: 88px;
-    height: 32px;
-    font-size: 14px;
+    border-radius: 0.6em;
+    width: 8.8em;
+    height: 3.2em;
     display: flex;
     align-items: center;
   }
@@ -1418,9 +1400,9 @@ const sizeList = ref([
 
   @for $i from 1 through 3 {
     .size-#{$i} {
-      padding-left: 16px;
-      width: 16px;
-      height: 16px;
+      padding-left: 1.6em;
+      width: 1.6em;
+      height: 1.6em;
       background-image: url(./assets/vision-img-size-#{$i}.png);
       background-size: contain;
       background-position: center;
@@ -1431,8 +1413,8 @@ const sizeList = ref([
 
   @for $i from 2 through 3 {
     .size-#{$i}-rotate {
-      width: 16px;
-      height: 16px;
+      width: 1.6em;
+      height: 1.6em;
       background-image: url(./assets/vision-img-size-#{$i}.png);
       background-size: contain;
       background-position: center;
@@ -1440,29 +1422,37 @@ const sizeList = ref([
       transform: rotate(90deg);
     }
   }
+
+  .upload-icon {
+    background-image: url(./assets/vision-uploadImg-dark.png);
+    background-size: 100% 100%;
+  }
 }
 
 .side-bar-wrapper {
   background-color: var(--side-panel-bg-color);
   .new-chat-btn {
-    width: 224px;
-    height: 40px;
+    width: 22.4em;
+    height: 4em;
     background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
-    border-radius: 20px;
-    margin: 24px 0;
+    border-radius: 2em;
+    margin: 2.4em 0;
   }
   .active-chat-info-item {
-    border: 1px solid #615ced !important;
+    border: 0.1em solid #615ced !important;
     background-image: linear-gradient(to top, #fff, #fafafe, #f0f0fe);
   }
 }
 .main-container-wrapper {
   background: linear-gradient(to top, #ffffff, #ffffff, #ffffff, #ededfd);
+  .fix-border-color {
+    background-color: #615ced;
+  }
   .input-out-container {
     background: #ffffff;
-    box-shadow: 0px 4px 16px 0px rgba(214, 213, 222, 0.5);
-    border-radius: 16px;
-    border: 1px solid #ebecf2;
+    box-shadow: 0px 0.4em 1.6em 0px rgba(214, 213, 222, 0.5);
+    border-radius: 1.6em;
+    border: 0.2em solid transparent;
   }
   @for $i from 1 through 6 {
     .card-bg-#{$i} {
@@ -1474,8 +1464,8 @@ const sizeList = ref([
 
 .params-config-btn {
   background: rgba(255, 255, 255, 1);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2em;
+  border: 0.1em solid rgba(255, 255, 255, 0.12);
 }
 
 .extra-logo {
@@ -1488,35 +1478,23 @@ const sizeList = ref([
   top: 0px;
   left: 0;
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 5em);
 }
 .dark textarea {
   color: #fff;
 }
-textarea {
-  background-color: transparent;
-  height: 92%;
-  margin-top: 3px;
-  color: #333;
-  width: calc(100% - 159px);
-  resize: none;
-  padding: 10px 15px;
-  line-height: 22px;
-  font-size: 16px;
-  border: none !important;
-  outline: none !important;
+
+:deep(textarea::-webkit-scrollbar) {
+  width: 0.6em;
+  height: 0.6em;
 }
-textarea::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-textarea::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
+:deep(textarea::-webkit-scrollbar-thumb) {
+  border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  -webkit-border-radius: 0.3em;
   background-color: #c3c3c3;
 }
-textarea::-webkit-scrollbar-track {
+:deep(textarea::-webkit-scrollbar-track) {
   background-color: transparent;
 }
 
@@ -1554,17 +1532,17 @@ textarea::-webkit-scrollbar-track {
 }
 
 .plus {
-  width: 13px;
-  height: 13px;
+  width: 1.3em;
+  height: 1.3em;
   background-image: url(./assets/vision-plus.png);
   background-size: 100% 100%;
 }
 
 .selected-history {
   background: linear-gradient(180deg, #efeffe 0%, #ffffff 100%);
-  border-radius: 8px;
-  border: 1px solid #615ced;
-  box-shadow: 0px 4px 16px 0px rgba(214, 213, 222, 0.5);
+  border-radius: 0.8em;
+  border: 0.1em solid #615ced;
+  box-shadow: 0px 0.4em 1.6em 0px rgba(214, 213, 222, 0.5);
 }
 
 .close {
@@ -1623,62 +1601,7 @@ textarea::-webkit-scrollbar-track {
 }
 
 .input-shadow {
-  box-shadow: 0px 4px 16px 0px rgba(214, 213, 222, 0.5);
-}
-
-@media (max-width: 1279px) {
-  .init-img-text {
-    top: 22px;
-    left: 23px;
-  }
-  .init-img-text div:nth-child(2) {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .init-img-text {
-    top: 8px;
-    left: 12px;
-  }
-  .init-img-text div:nth-child(2) {
-    margin-top: 8px;
-    font-size: 12px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .init-img-text {
-    top: 8px;
-    left: 12px;
-  }
-  .init-img-text div:nth-child(2) {
-    margin-top: 4px;
-    font-size: 11px;
-  }
-}
-
-@media (min-width: 1745px) {
-  .init-img-text {
-    top: 16px;
-    left: 12px;
-  }
-  .init-img-text div:nth-child(2) {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1920px) {
-  .init-img-text {
-    top: 22px;
-    left: 23px;
-  }
-  .init-img-text div:nth-child(2) {
-    margin-top: 8px;
-    font-size: 14px;
-  }
+  box-shadow: 0px 0.4em 1.6em 0px rgba(214, 213, 222, 0.5);
 }
 
 .upload-icon {
@@ -1686,10 +1609,6 @@ textarea::-webkit-scrollbar-track {
   background-size: 100% 100%;
 }
 
-// .send-btn {
-//   background-image: url(./assets/vision-send.png);
-//   background-size: 100% 100%;
-// }
 .no-send-btn {
   background-image: url(./assets/disabledSend.png);
   background-size: 100% 100%;
@@ -1732,27 +1651,26 @@ textarea::-webkit-scrollbar-track {
 }
 
 .size-bg {
-  padding-left: 16px;
+  padding-left: 1.6em;
   background-color: white;
-  border: 1px solid #e6e6e6;
-  border-radius: 6px;
-  width: 88px;
-  height: 32px;
-  font-size: 14px;
+  border: 0.1em solid #e6e6e6;
+  border-radius: 0.6em;
+  width: 6.4em;
+  height: 3.2em;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
 .active-size {
-  border: 1px solid #615ced;
+  border: 0.1em solid #615ced;
   background: #f2f2fa;
 }
 
 @for $i from 1 through 3 {
   .size-#{$i} {
-    width: 16px;
-    height: 16px;
+    width: 1.6em;
+    height: 1.6em;
     background-image: url(./assets/vision-img-size-#{$i}.png);
     background-size: contain;
     background-position: center;
@@ -1762,13 +1680,78 @@ textarea::-webkit-scrollbar-track {
 
 @for $i from 2 through 3 {
   .size-#{$i}-rotate {
-    width: 16px;
-    height: 16px;
+    width: 1.6em;
+    height: 1.6em;
     background-image: url(./assets/vision-img-size-#{$i}.png);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     transform: rotate(90deg);
+  }
+}
+
+:deep(.hide-scrollbar .el-scrollbar__bar.is-vertical) {
+  display: none;
+}
+
+:deep(.el-textarea) {
+  font-size: 1em !important;
+}
+
+:deep(.el-textarea__inner) {
+  min-height: 0 !important;
+  height: none !important;
+}
+
+:deep(.el-dialog__body) {
+  font-size: 1em;
+}
+
+:deep(.el-dialog__header) {
+  font-size: 1.6em;
+}
+
+:deep(.upload-box .upload .el-upload--picture-card),
+:deep(.upload-box .upload .el-upload-list__item) {
+  width: 15em;
+  height: 15em;
+  font-size: 1em;
+}
+
+:deep(.upload-box .upload .el-upload-dragger:hover) {
+  border: 1px dashed #615ced;
+}
+
+:deep(.el-button:focus),
+:deep(.el-button:hover) {
+  color: #615ced;
+  border-color: #615ced;
+  background-color: transparent;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px #615ced inset;
+}
+
+:deep(.el-input) {
+  font-size: 1em;
+}
+
+.right-panel-wrapper {
+  padding: 2.5em;
+}
+</style>
+
+<style lang="scss">
+.dark {
+  .vision-model {
+    .upload-btn.el-button:hover,
+    .upload-btn.el-button:active,
+    .upload-btn.el-button:focus {
+      color: #ffffff;
+      border-color: #615ced;
+      background-color: #615ced;
+    }
   }
 }
 </style>
