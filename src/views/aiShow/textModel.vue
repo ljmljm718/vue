@@ -3,6 +3,7 @@ import avatar from './assets/avatar.png';
 import userAvatar from './assets/userAvatar.png';
 import { marked } from 'marked';
 import request from '@/config/axios';
+import { throttle } from 'lodash-es';
 import { record_start, record_upload } from '@/views/aiShow/utils';
 import {
   chatThemeCreate,
@@ -153,7 +154,6 @@ const handleSendMsg = async (text) => {
       scollToBottom();
     }, 10);
   };
-  console.log('ReS', res);
   if (res) flowOutput(res.toString());
   scollToBottom();
   questionText.value = '';
@@ -169,6 +169,14 @@ const scollToBottom = () => {
     chatScrollIns.value.wrapRef.scrollTop = chatScrollIns.value.wrapRef.scrollHeight;
   });
 };
+const handleMessageListScroll = throttle(() => {
+  const chatInfoContainer = document.getElementById('messageListContainer');
+  const chatInfoContainerHeight = chatInfoContainer.clientHeight;
+  const scrollMain = chatScrollIns.value.wrapRef;
+  const scrollMainScrollTop = scrollMain.scrollTop;
+  const scrollMainHeight = scrollMain.clientHeight;
+  if (scrollMainScrollTop <= 8) getMessageByThemeID(activeChatID.value);
+}, 500);
 
 // 处理textarea输入框
 const handleTextChange = () => {
@@ -237,19 +245,30 @@ const chatInfoList = ref<any[]>([
   { id: 'new_chat', theme: '新对话', model: 'Doubao-vision-pro-32k', message: [] }
 ]);
 const chatInfoTotal = ref<number>(0);
-const getChatInfoList = async (updateActiveChat = true) => {
+const currentNo = ref<number>(1);
+const getChatInfoList = async (updateActiveChat = true, forceUpdateList = false) => {
+  if (forceUpdateList) {
+    chatInfoTotal.value = 0;
+    currentNo.value = 1;
+  }
+  if (chatInfoTotal.value !== 0 && chatInfoTotal.value <= chatInfoList.value.length) return;
   const { list, total } = await chatThemePage({
-    pageNo: 1,
+    pageNo: currentNo.value,
     pageSize: 20,
     type: 'text'
     // collectionId: ""
   });
   console.log('获取所有对话记录 =>', list);
   if (!Array.isArray(list)) return;
-  chatInfoList.value = list.map((item) => ({ ...item, message: [] }));
-  if (list.length > 0 && updateActiveChat) {
-    activeChatID.value = list[0].id;
-    handleChatInfoClick({ id: list[0].id });
+  currentNo.value = currentNo.value + 1;
+  if (currentNo.value === 2) {
+    chatInfoList.value = list.map((item) => ({ ...item, message: [] }));
+  } else {
+    chatInfoList.value = [...chatInfoList.value, ...list.map((item) => ({ ...item, message: [] }))];
+  }
+  if (list.length > 0) {
+    if (updateActiveChat) activeChatID.value = list[0].id;
+    handleChatInfoClick({ id: activeChatID.value });
   }
   chatInfoTotal.value = total;
 };
@@ -258,6 +277,9 @@ getChatInfoList();
 const handleChatInfoClick = (item) => {
   activeChatID.value = item.id;
   if (activeChatID.value !== 'new_chat') getMessageByThemeID(activeChatID.value);
+  setTimeout(() => {
+    nextTick(() => scollToBottom());
+  }, 400);
 };
 
 const activeChatID = ref<string>('new_chat');
@@ -271,10 +293,34 @@ const messageList = computed(() => {
 const getMessageByThemeID = async (themeId: string) => {
   console.log(`根据 themeID: ${themeId} 获取聊天记录`);
   if (themeId === 'new_chat') return ElMessage.warning('未找到对话ID');
-  const { list, total } = await chatHistoryPage({ themeId });
   const activeChatInfo = chatInfoList.value.find((item) => item.id === activeChatID.value);
   if (!activeChatInfo) return;
-  activeChatInfo.message = list.map((item) => ({ ...item, text: item.message.text }));
+  const activeTotal = activeChatInfo.total || 0;
+  if (
+    Array.isArray(activeChatInfo.message) &&
+    activeChatInfo.message.length > 0 &&
+    activeChatInfo.message.length >= activeTotal
+  )
+    return;
+  const pageSize = 10;
+  const getPageNo = (): number => {
+    const index = Math.floor(activeChatInfo.message.length / pageSize);
+    return index + 1;
+  };
+  const pageNo = activeTotal === 0 ? 1 : getPageNo();
+  const { list, total } = await chatHistoryPage({
+    themeId,
+    pageNo,
+    pageSize
+  });
+  if (pageNo === 1)
+    activeChatInfo.message = list.map((item) => ({ ...item, text: item.message.text }));
+  else
+    activeChatInfo.message = [
+      ...list.map((item) => ({ ...item, text: item.message.text })),
+      ...activeChatInfo.message
+    ];
+  activeChatInfo.total = total;
 };
 
 const showRightPanel = ref<boolean>(false);
@@ -300,7 +346,7 @@ const handleDeleteChatTheme = (id: string) => {
   })
     .then(async () => {
       const res = await chatThemeDelete({ id });
-      getChatInfoList();
+      getChatInfoList(false, true);
       if (res) return ElMessage.success('删除成功！');
       ElMessage.error('删除失败，请稍后重试！');
     })
@@ -342,6 +388,18 @@ const handleContentKeyDown = (event) => {
     event.preventDefault();
   }
 };
+
+const scrollContainer = ref();
+const handleChatInfoList = () => {
+  const chatInfoContainer = document.getElementById('chatInfoContainer');
+  const chatInfoContainerHeight = chatInfoContainer.clientHeight;
+  const scrollMain = scrollContainer.value.wrapRef;
+  const scrollMainScrollTop = scrollMain.scrollTop;
+  const scrollMainHeight = scrollMain.clientHeight;
+  if (scrollMainHeight + scrollMainScrollTop + 5 > chatInfoContainerHeight) {
+    getChatInfoList(false);
+  }
+};
 </script>
 <template>
   <!--侧栏宽度 74px -->
@@ -361,8 +419,10 @@ const handleContentKeyDown = (event) => {
       height="calc(100% - 16px)"
       class="w-full mx-4px box-border"
       style="width: calc(100% - 8px)"
+      ref="scrollContainer"
+      @scroll="handleChatInfoList"
     >
-      <div class="px-12px space-y-8px">
+      <div class="px-12px space-y-8px" id="chatInfoContainer">
         <div
           v-for="item in chatInfoList"
           :key="item.id"
@@ -452,8 +512,8 @@ const handleContentKeyDown = (event) => {
             </el-scrollbar>
           </div>
           <div v-show="messageList.length !== 0" class="w-full h-full">
-            <el-scrollbar ref="chatScrollIns">
-              <div class="space-y-[24px] pb-10px">
+            <el-scrollbar ref="chatScrollIns" @scroll="handleMessageListScroll">
+              <div class="space-y-[24px] pb-10px" id="messageListContainer">
                 <div
                   class="flex justify-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px]"
                   v-for="(item, index) in messageList"
@@ -495,14 +555,6 @@ const handleContentKeyDown = (event) => {
               placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
               wrap="soft"
             ></textarea>
-            <!-- <el-input
-              v-model="questionText"
-              type="primary"
-              clearable
-              class="h-full"
-              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务"
-              @keyup.enter="handleSendMsg()"
-            /> -->
             <div
               v-loading="disabledSendBtn"
               :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
