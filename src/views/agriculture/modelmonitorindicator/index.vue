@@ -450,7 +450,7 @@ const getList = async () => {
   try {
     if (selectedKey.value) {
       queryParams.growthPeriodId = selectedKey.value;
-      await getCardDataList(route.query, selectedKey.value);
+      await getCardDataList(route.query.modelId, selectedKey.value);
     }
     const data = await ModelMonitorIndicatorApi.getModelMonitorIndicatorPage(queryParams);
     list.value = data.list.map((item) => {
