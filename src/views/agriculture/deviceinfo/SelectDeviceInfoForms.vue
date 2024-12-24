@@ -1,61 +1,65 @@
 <!-- 区别：在页面开始时，传入默认的基地和地块；使用“在线检测-监控视频”-->
 <template>
-  <Dialog     title="设备列表"
-              v-model="dialogVisible"
-              :appendToBody="true"
-              :scroll="true"
-              width="1300">
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="设备编号" prop="deviceCode">
-        <el-input
-          v-model="queryParams.deviceCode"
-          placeholder="请输入设备编号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="设备点位" prop="deviceName">
-        <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入设备点位"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
+  <!-- 2024.12.14修改 demo8.1.1 调整了dialog宽度和距离顶部高度 -->
+  <Dialog
+    title="设备列表"
+    v-model="dialogVisible"
+    :appendToBody="true"
+    :scroll="true"
+    width="70vw"
+    top="5vh"
+  >
+    <ContentWrap>
+      <!-- 搜索工作栏 -->
+      <el-form
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        :inline="true"
+        label-width="68px"
+      >
+        <el-form-item label="设备编号" prop="deviceCode">
+          <el-input
+            v-model="queryParams.deviceCode"
+            placeholder="请输入设备编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="设备点位" prop="deviceName">
+          <el-input
+            v-model="queryParams.deviceName"
+            placeholder="请输入设备点位"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="设备类型" prop="deviceType">
           <el-cascader
             style="width: 100%"
             v-model="deviceType"
             :options="categoryOptions"
             :props="categoryProps"
           />
-      </el-form-item>
-      <el-form-item label="状态" prop="deviceStatus">
-        <el-select
-          v-model="queryParams.deviceStatus"
-          placeholder="请选择状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="所属基地" prop="belongPark">
+        </el-form-item>
+        <el-form-item label="状态" prop="deviceStatus">
+          <el-select
+            v-model="queryParams.deviceStatus"
+            placeholder="请选择状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_DEVICE_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="所属基地" prop="belongPark">
         <el-input
           v-model="queryParams.belongPark"
           placeholder="请输入所属基地"
@@ -74,10 +78,16 @@
         />
       </el-form-item> -->
 
-      <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <!-- <el-button
+        <el-form-item>
+          <el-button @click="handleQuery">
+            <Icon icon="ep:search" class="mr-5px" />
+            搜索
+          </el-button>
+          <el-button @click="resetQuery">
+            <Icon icon="ep:refresh" class="mr-5px" />
+            重置
+          </el-button>
+          <!-- <el-button
           type="primary"
           plain
           @click="openForm('create')"
@@ -94,62 +104,70 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button> -->
-      </el-form-item>
-    </el-form>
-  </ContentWrap>
+        </el-form-item>
+      </el-form>
+    </ContentWrap>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" ref="multipleTableRef" :show-overflow-tooltip="true"
-              @select="select" @row-click="selectClick" @selection-change="handleSelectionChange">
-      <el-table-column width="30" label="选择" type="selection"/>
-      <el-table-column label="设备编号" align="center" prop="deviceCode" width="200"/>
-      <el-table-column label="设备点位" align="center" prop="deviceName" width="150"/>
-      <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
-        <template #default="scope">
-          <el-cascader
-            style="width: 100%"
-            v-model="scope.row.deviceType"
-            :options="categoryOptions"
-            :props="categoryProps"
-            disabled
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="状态" align="center" prop="deviceStatus">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" align="center" prop="imgId" >
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            lazy
-            :src="row.imgId"
-            :preview-src-list="[row.imgId]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
+    <!-- 列表 -->
+    <ContentWrap>
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        ref="multipleTableRef"
+        :show-overflow-tooltip="true"
+        @select="select"
+        @row-click="selectClick"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column width="30" label="选择" type="selection" />
+        <el-table-column label="设备编号" align="center" prop="deviceCode" width="200" />
+        <el-table-column label="设备点位" align="center" prop="deviceName" width="150" />
+        <el-table-column label="设备类型" align="center" prop="deviceType" width="200">
+          <template #default="scope">
+            <el-cascader
+              style="width: 100%"
+              v-model="scope.row.deviceType"
+              :options="categoryOptions"
+              :props="categoryProps"
+              disabled
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="经度" align="center" prop="longitude" />
+        <el-table-column label="纬度" align="center" prop="latitude" />
+        <el-table-column label="状态" align="center" prop="deviceStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.KAIZHOU_DEVICE_STATUS" :value="scope.row.deviceStatus" />
+          </template>
+        </el-table-column>
+        <el-table-column label="图片" align="center" prop="imgId">
+          <template #default="{ row }">
+            <el-image
+              class="h-50px w-50px"
+              lazy
+              :src="row.imgId"
+              :preview-src-list="[row.imgId]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="所属基地" align="center" prop="belongPark" width="200"/>
       <el-table-column label="所属地块" align="center" prop="belongPlot" width="200"/> -->
-      <el-table-column label="基地名称" align="center" prop="parkName" width="200" />
-      <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200" />
-      <el-table-column label="位置" align="center" prop="location" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
+        <el-table-column label="基地名称" align="center" prop="parkName" width="200" />
+        <el-table-column label="地块名称" align="center" prop="parkDetailName" width="200" />
+        <el-table-column label="位置" align="center" prop="location" />
+        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
 
-      <!-- <el-table-column label="操作" align="center" width="150" fixed="right">
+        <!-- <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -169,17 +187,16 @@
           </el-button>
         </template>
       </el-table-column> -->
-    </el-table>
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-  </ContentWrap>
-  <template #footer>
+      </el-table>
+      <!-- 分页 -->
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </ContentWrap>
+    <template #footer>
       <el-button :disabled="!selectionList.length" type="primary" @click="submitForm">
         确 定
       </el-button>
@@ -192,22 +209,22 @@
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import download from '@/utils/download'
-import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo'
-import DeviceInfoForm from './DeviceInfoForm.vue'
-import {DeviceCategoryApi} from "@/api/agriculture/devicecategory";
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import download from '@/utils/download';
+import { DeviceInfoApi, DeviceInfoVO } from '@/api/agriculture/deviceinfo';
+import DeviceInfoForm from './DeviceInfoForm.vue';
+import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
 
 /** 设备信息 列表 */
-defineOptions({ name: 'DeviceInfo' })
+defineOptions({ name: 'DeviceInfo' });
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
+const message = useMessage(); // 消息弹窗
+const { t } = useI18n(); // 国际化
 
-const loading = ref(true) // 列表的加载中
-const list = ref<DeviceInfoVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
+const loading = ref(true); // 列表的加载中
+const list = ref<DeviceInfoVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -225,140 +242,143 @@ const queryParams = reactive({
   userId: undefined,
   location: undefined,
   deviceKind: undefined
-})
-const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
-let categoryOptions = ref([])// 设备分类选项
-const deviceType = ref()
+});
+const queryFormRef = ref(); // 搜索的表单
+const exportLoading = ref(false); // 导出的加载中
+let categoryOptions = ref([]); // 设备分类选项
+const deviceType = ref();
 
 //开始
 
-const multipleTableRef=ref()
-const select=(selection,row)=>{
-  if(selection.length>1){
-    let del_row =selection.shift();
-    multipleTableRef.value.toggleRowSelection(del_row,false);
+const multipleTableRef = ref();
+const select = (selection, row) => {
+  if (selection.length > 1) {
+    let del_row = selection.shift();
+    multipleTableRef.value.toggleRowSelection(del_row, false);
   }
-}
+};
 
 /** 选中操作 */
-const dialogVisible = ref(false) // 弹窗的是否展示
-const selectionList = ref<DeviceInfoVO[]>([])
+const dialogVisible = ref(false); // 弹窗的是否展示
+const selectionList = ref<DeviceInfoVO[]>([]);
 const handleSelectionChange = (rows: DeviceInfoVO[]) => {
-  selectionList.value = rows
-}
+  selectionList.value = rows;
+};
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: DeviceInfoVO[]): void
-}>()
+  (e: 'success', value: DeviceInfoVO[]): void;
+}>();
 const submitForm = () => {
   try {
-    emits('success', selectionList.value)
+    emits('success', selectionList.value);
   } finally {
     // 关闭弹窗
-    dialogVisible.value = false
+    dialogVisible.value = false;
   }
-}
+};
 /** 打开弹窗 */
-const JkObjectId = ref()
-const open = async (item:any) => {
-  dialogVisible.value = true
+const JkObjectId = ref();
+const open = async (item: any) => {
+  dialogVisible.value = true;
   //s(item,"------");
-  if (item != null){
+  if (item != null) {
     queryParams.belongPark = item.monitoringBaseId;
     queryParams.belongPlot = item.monitoringPlotId;
   }
-  console.log(item,"============");
-  console.log(item == 'jk',"============");
-  if(item == 'jk'){
+  console.log(item, '============');
+  console.log(item == 'jk', '============');
+  if (item == 'jk') {
     // 查询 视频监控 ID
-    JkObjectId.value = await DeviceCategoryApi.getDeviceCategoryList({parentId:'0',categoryName:'视频监控'});
+    JkObjectId.value = await DeviceCategoryApi.getDeviceCategoryList({
+      parentId: '0',
+      categoryName: '视频监控'
+    });
   }
-  console.log("open")
-  await nextTick() // 等待，避免 queryFormRef 为空
+  console.log('open');
+  await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
-  await resetQuery()
-}
-defineExpose({open}) // 提供 open 方法，用于打开弹窗
+  await resetQuery();
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 //结束
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    if(JkObjectId.value ){
-      queryParams.deviceType =  JkObjectId.value[0].id
+    if (JkObjectId.value) {
+      queryParams.deviceType = JkObjectId.value[0].id;
     }
-    const data = await DeviceInfoApi.getDeviceInfoPage(queryParams)
+    const data = await DeviceInfoApi.getDeviceInfoPage(queryParams);
     /*if(data.total==0){
       message.error("暂无设备,请添加")
       dialogVisible.value = false
     }*/
     list.value = data.list.map((item: any) => {
-      item.deviceType = item.deviceType.split(',').map(Number)
+      item.deviceType = item.deviceType.split(',').map(Number);
       return item;
-    })
+    });
     //console.log(list.value)
-    total.value = data.total
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = async () => {
-  queryParams.pageNo = 1
-  if (deviceType.value != null && deviceType.value != undefined){
-   queryParams.deviceType = deviceType.value.join(",")
+  queryParams.pageNo = 1;
+  if (deviceType.value != null && deviceType.value != undefined) {
+    queryParams.deviceType = deviceType.value.join(',');
   }
-  await getList()
-}
+  await getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  deviceType.value = null
-  queryParams.deviceCode = undefined
-  queryParams.deviceName = undefined
-  queryParams.deviceType = undefined
-  queryParams.deviceStatus = undefined
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  deviceType.value = null;
+  queryParams.deviceCode = undefined;
+  queryParams.deviceName = undefined;
+  queryParams.deviceType = undefined;
+  queryParams.deviceStatus = undefined;
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await DeviceInfoApi.deleteDeviceInfo(id)
-    message.success(t('common.delSuccess'))
+    await DeviceInfoApi.deleteDeviceInfo(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await message.exportConfirm()
+    await message.exportConfirm();
     // 发起导出
-    exportLoading.value = true
-    const data = await DeviceInfoApi.exportDeviceInfo(queryParams)
-    download.excel(data, '设备信息.xls')
+    exportLoading.value = true;
+    const data = await DeviceInfoApi.exportDeviceInfo(queryParams);
+    download.excel(data, '设备信息.xls');
   } catch {
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false;
   }
-}
+};
 
 /**
  * 设备分类级联选择器
@@ -366,27 +386,27 @@ const handleExport = async () => {
 const categoryProps = {
   value: 'id',
   label: 'categoryName'
-}
+};
 
 /** 初始化 **/
 onMounted(async () => {
-  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({parentId: 0, status: 1});
-  await resetQuery()
-})
+  categoryOptions.value = await DeviceCategoryApi.getDeviceCategoryTree({ parentId: 0, status: 1 });
+  await resetQuery();
+});
 
 // 定义属性
 const props = defineProps({
   currCategory: {
     type: Object,
     default: () => ({})
-  },
-})
+  }
+});
 
 const selectClick = (row) => {
-  const selectData = selectionList.value
-  multipleTableRef.value.clearSelection()
+  const selectData = selectionList.value;
+  multipleTableRef.value.clearSelection();
   if (selectData.length == 1) {
-    selectData.forEach(item => {
+    selectData.forEach((item) => {
       // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
       if (item == row) {
         multipleTableRef.value.toggleRowSelection(row, false);
@@ -395,28 +415,30 @@ const selectClick = (row) => {
       else {
         multipleTableRef.value.toggleRowSelection(row, true);
       }
-    })
+    });
   } else {
     multipleTableRef.value.toggleRowSelection(row, true);
   }
-}
+};
 
 // 监听父组件category变化
-watch(() => props.currCategory,
+watch(
+  () => props.currCategory,
   () => {
     if (props.currCategory) {
       if (props.currCategory.parentId === 0) {
-        queryParams.deviceType = props.currCategory.id
-      }else{
-        queryParams.deviceType = props.currCategory.parentId + "," + props.currCategory.id
+        queryParams.deviceType = props.currCategory.id;
+      } else {
+        queryParams.deviceType = props.currCategory.parentId + ',' + props.currCategory.id;
       }
-    }else {
-      queryParams.deviceType = undefined
+    } else {
+      queryParams.deviceType = undefined;
     }
-    handleQuery()
-  })
+    handleQuery();
+  }
+);
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 // 隐藏全选按钮
 :deep(.el-table th.el-table__cell:nth-child(1) .cell) {
   visibility: hidden;
