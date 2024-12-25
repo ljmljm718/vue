@@ -1,4 +1,5 @@
 import { Layout } from '@/utils/routerHelper';
+import AiLayout from '@/views/aiFrame/index.vue';
 
 const { t } = useI18n();
 /**
@@ -309,11 +310,38 @@ const remainingRouter: AppRouteRecordRaw[] = [
     component: () => import('@/views/agriculture/tracetemplate/mobile.vue'),
     meta: { hidden: true }
   },
+  // {
+  //   path: '/ai',
+  //   name: 'AI',
+  //   component: () => import('@/views/aiShow/index.vue'),
+  //   meta: { hidden: true }
+  // },
   {
     path: '/ai',
     name: 'AI',
-    component: () => import('@/views/aiShow/index.vue'),
-    meta: { hidden: true }
+    component: AiLayout,
+    meta: { hidden: true },
+    redirect: '/ai/text',
+    children: [
+      {
+        path: 'text',
+        component: () => import('@/views/aiFrame/pages/textChat/index.vue'),
+        name: 'textChat',
+        meta: { hidden: true }
+      },
+      {
+        path: 'vision',
+        component: () => import('@/views/aiFrame/pages/visionModel/index.vue'),
+        name: 'visionModel',
+        meta: { hidden: true }
+      },
+      {
+        path: 'knowledge',
+        component: () => import('@/views/aiFrame/pages/knowledgeLib/index.vue'),
+        name: 'knowledgeLib',
+        meta: { hidden: true }
+      }
+    ]
   },
   {
     path: '/bigscreen',
