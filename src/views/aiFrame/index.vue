@@ -73,7 +73,7 @@ const routeKeyWord = computed(() => {
 
 defineOptions({ name: 'AiLayout' });
 const getOuterFrameClass = computed(() => {
-  return storage.getEnableDarkMode ? 'ai-dark' : 'ai-light'; // ai-light
+  return storage.getEnableDarkMode ? 'ai-dark dark' : 'ai-light'; // ai-light
 });
 
 const enableDarkModel = ref<boolean>(false);
@@ -184,6 +184,16 @@ const showedModel = ref<string>('textModel');
     border: 1px solid #615ced;
     background: none;
   }
+
+  /** 输入框外层样式 */
+  .input-outer-container {
+    background: linear-gradient(to right, #4378ff, #9362da);
+  }
+
+  /** 对话记录遮罩 */
+  .message-bottom-mask {
+    background: linear-gradient(to top, #121727, #121727, #12172700);
+  }
 }
 
 .left-side-bar-frame {
@@ -205,6 +215,38 @@ const showedModel = ref<string>('textModel');
 }
 .ai-show-main-frame {
   padding: 8px 8px 8px 0;
+}
+
+.ai-show-textarea {
+  resize: none;
+  height: 60px;
+  min-height: 60px;
+  max-height: 96px;
+  overflow-y: hidden;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  font-size: 16px;
+}
+
+textarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+textarea::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background-color: #c3c3c3;
+}
+textarea::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/** 大号logo */
+.extra-logo {
+  background-image: url(./assets/extraLogo.png);
+  background-size: 100% 100%;
 }
 </style>
 <style scoped lang="scss">

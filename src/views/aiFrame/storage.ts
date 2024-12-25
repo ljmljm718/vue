@@ -18,6 +18,13 @@ export const useAiFrameStore = defineStore('aiFrame', {
   actions: {
     setEnableDarkMode(darkMode: boolean) {
       this.enableDarkMode = darkMode;
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+      }
     }
   },
   persist: false
