@@ -28,7 +28,7 @@ setDefaultTheme();
   <ConfigGlobal :size="currentSize">
     <RouterView :class="greyMode ? `${prefixCls}-grey-mode` : ''" />
     <routerSearch />
-    <div class="fixed right-0 top-0 z-999 text-red !hidden1">
+    <div class="fixed right-0 top-0 z-999 text-red !hidden">
       <div
         class="sm:after:content-['sm'] md:after:content-['md'] lg:after:content-['lg'] xl:after:content-['xl'] 2xl:after:content-['2xl']"
       ></div>
