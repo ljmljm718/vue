@@ -50,13 +50,17 @@ const handleShowLibPage = async () => {
   showLibPage.value = true;
 };
 
+// 展示教程
+const showGuide = ref(false);
+
 // 知识库列表
 const knowledgeList = ref<any[]>([]);
 const getKnowledgeList = async () => {
   knowledgeList.value = [];
-  const res = await getCollectionList();
+  // const res = await getCollectionList();
+  const res = [];
   knowledgeList.value = Array.isArray(res) ? res : [];
-  if (0 === knowledgeList.value.length) showGuide.value = true;
+  console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
 getKnowledgeList();
 
@@ -65,9 +69,6 @@ const dataTypeMap = {
   unstructured_data: '非结构化数据',
   structured_data: '结构化数据'
 };
-
-// 展示教程
-const showGuide = ref(false);
 
 // 导入文档
 const showImportDialog = ref(false);
@@ -208,10 +209,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 </script>
 
 <template>
-  <div
-    class="w-full h-full text-[3px] md:text-[4px] lg:text-[6px] xl:text-[7px] 2xl:text-[10px]"
-    :class="showLibPage ? 'lib-bg' : 'create-lib-bg'"
-  >
+  <div class="w-full h-full text-[10px]" :class="showLibPage ? 'lib-bg' : 'create-lib-bg'">
     <template v-if="showLibPage">
       <!-- header -->
       <div class="h-[5.7em] p-[2.4em] pl-[3.6em] flex justify-between items-start">
@@ -314,7 +312,9 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           </template>
           <!-- knowledge lib list -->
           <template v-else>
-            <div class="mt-[2.4em] grid grid-cols-3 gap-[1.6em] pl-[3.9em] pr-[2.4em]">
+            <div
+              class="mt-[2.4em] grid grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[3.9em] pr-[2.4em]"
+            >
               <div
                 v-for="(item, index) in knowledgeList"
                 :key="item.name"
