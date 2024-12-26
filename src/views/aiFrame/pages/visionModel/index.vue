@@ -878,7 +878,18 @@ const sizeList = ref([
                 wrap="soft"
                 v-model="inputTextITT"
               ></textarea>
-              <div class="ml-40px">
+              <div
+                class="w-24px h-24px overflow-hidden relative left-[-8px] top-[-4px] upload-icon-svg"
+              >
+                <el-button
+                  v-show="useITT"
+                  class="upload-btn opacity-0"
+                  @click="handleClickShowUploadImg"
+                >
+                  <div class="w-[14px] h-[13px] upload-icon"></div>
+                </el-button>
+              </div>
+              <div>
                 <div
                   v-loading="sendingITT"
                   :class="`w-48px h-32px ${disabledSendBtn ? 'disabled-send' : 'send-btn'} cursor-pointer`"
@@ -887,14 +898,6 @@ const sizeList = ref([
               </div>
             </div>
           </div>
-          <el-button
-            v-show="useITT"
-            class="upload-btn !px-[11px] !py-[5px] !h-fit absolute right-2 bottom-[50px]"
-            @click="handleClickShowUploadImg"
-          >
-            <div class="w-[14px] h-[13px] upload-icon"></div>
-            <span class="ml-[4px] text-[12px]">上传图片</span>
-          </el-button>
         </div>
       </div>
     </div>
@@ -1021,6 +1024,13 @@ const sizeList = ref([
       transform: rotate(90deg);
     }
   }
+
+  .upload-icon-svg {
+    background-image: url(../../assets/vision-upload-img-dark.svg);
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
 
 .ai-light {
@@ -1100,6 +1110,13 @@ const sizeList = ref([
       background-repeat: no-repeat;
       transform: rotate(90deg);
     }
+  }
+
+  .upload-icon-svg {
+    background-image: url(../../assets/vision-upload-img.svg);
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 }
 

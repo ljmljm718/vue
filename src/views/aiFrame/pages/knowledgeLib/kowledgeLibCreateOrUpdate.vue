@@ -30,9 +30,9 @@
               clearable
               input-style="font-size: 1.6em"
             />
-            <div class="text-14px pl-10px text-[#8d9095]">
+            <!-- <div class="text-14px pl-10px text-[#8d9095]">
               注:仅支持英文和数字的组合，并以英文字母开头
-            </div>
+            </div> -->
           </el-form-item>
 
           <el-form-item class="w-full !mr-0" prop="description" label="描述">
@@ -299,9 +299,9 @@ const checkCollectionNameduplicate = async (rule: any, value: any, callback: any
 
 const formRules = reactive({
   collectionName: [
-    { required: true, message: '知识库名称不能为空', trigger: 'change' },
-    { pattern: /^[a-zA-Z0-9]+$/, message: '知识库名称必须是英文和数字的组合', trigger: 'change' },
-    { validator: checkCollectionNameduplicate, trigger: 'change' }
+    { required: true, message: '知识库名称不能为空', trigger: 'change' }
+    // { pattern: /^[a-zA-Z0-9]+$/, message: '知识库名称必须是英文和数字的组合', trigger: 'change' },
+    // { validator: checkCollectionNameduplicate, trigger: 'change' }
   ],
   dataType: [{ required: true, message: '请选择数据类型', trigger: 'blur' }],
   embeddingModel: [{ required: true, message: '请选择向量化模型', trigger: 'blur' }],
