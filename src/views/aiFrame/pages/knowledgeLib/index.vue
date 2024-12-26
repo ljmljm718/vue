@@ -217,7 +217,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <div class="flex-none logo w-[4.8em] h-[4.8em]"></div>
           <div class="grow pl-[1.6em] flex flex-col justify-between h-[5.7em]">
             <h1 class="m-0 text-[2.4em]">知识库</h1>
-            <div class="text-[1.4em] text-[#999999]">
+            <div
+              class="text-[1.4em] text-[#999999] line-clamp-1"
+              title="知识库提供知识管理的能力，将多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。"
+            >
               知识库提供知识管理的能力，将多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。
             </div>
           </div>
@@ -246,49 +249,49 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
         </div>
       </div>
       <!-- content -->
-      <div class="h-[calc(100%-10.5em)]">
-        <el-scrollbar>
-          <!-- guide -->
-          <div
-            :class="showGuide ? 'h-[19.8em] guide-border' : 'h-0'"
-            class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all"
-          >
-            <el-scrollbar>
-              <div class="flex px-[3.7em] pt-[1.7em] space-x-[8.5em]">
-                <div class="flex space-x-[3.5em]">
-                  <div class="space-y-[1.2em] w-[30em]">
-                    <div class="text-[1.4em] text-[#635E9E] fix-text-white">第1步</div>
-                    <div class="text-[#33315A] text-[1.8em] fix-text-white">创建知识库</div>
-                    <div class="text-[1.4em] text-[#252059] fix-text-white">
-                      按特定场景/领域管理知识库，支持结构化和非结构化类型知识库
-                    </div>
+      <div class="h-[calc(100%-10.5em)] relative">
+        <div
+          :class="showGuide ? 'h-[19.8em] guide-border' : 'h-0'"
+          style="width: calc(100% - 7em)"
+          class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all absolute left-0 top-0 z-20 w-full bg-white dark:bg-black"
+        >
+          <el-scrollbar>
+            <div class="flex px-[3.7em] pt-[1.7em] space-x-[8.5em]">
+              <div class="flex space-x-[3.5em]">
+                <div class="space-y-[1.2em] w-[30em]">
+                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第1步</div>
+                  <div class="text-[#33315A] text-[1.8em] fix-text-white">创建知识库</div>
+                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+                    按特定场景/领域管理知识库，支持结构化和非结构化类型知识库
                   </div>
-                  <div class="guide-img-1 w-[16.1em] h-[17.1em] self-end"></div>
                 </div>
-                <div class="flex space-x-[3.5em]">
-                  <div class="space-y-[1.2em] w-[30em]">
-                    <div class="text-[1.4em] text-[#635E9E] fix-text-white">第2步</div>
-                    <div class="text-[#33315A] text-[1.8em] fix-text-white">上传文档</div>
-                    <div class="text-[1.4em] text-[#252059] fix-text-white">
-                      非结构化文档支持类型：txt、doc、docx、pdf、markdown/md、faq.xlsx、pptx；结构化文档支持类型：xlsx、csv、
-                      jsonl
-                    </div>
-                  </div>
-                  <div class="guide-img-2 w-[16.1em] h-[17.1em] self-end"></div>
-                </div>
-                <div class="flex space-x-[3.5em]">
-                  <div class="space-y-[1.2em] w-[30em]">
-                    <div class="text-[1.4em] text-[#635E9E] fix-text-white">第3步</div>
-                    <div class="text-[#33315A] text-[1.8em] fix-text-white">检索问答</div>
-                    <div class="text-[1.4em] text-[#252059] fix-text-white">
-                      基于知识库，通过切片检索及大模型问答，调试检查回答效果
-                    </div>
-                  </div>
-                  <div class="guide-img-3 w-[16.1em] h-[17.1em] self-end"></div>
-                </div>
+                <div class="guide-img-1 w-[16.1em] h-[17.1em] self-end"></div>
               </div>
-            </el-scrollbar>
-          </div>
+              <div class="flex space-x-[3.5em]">
+                <div class="space-y-[1.2em] w-[30em]">
+                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第2步</div>
+                  <div class="text-[#33315A] text-[1.8em] fix-text-white">上传文档</div>
+                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+                    非结构化文档支持类型：txt、doc、docx、pdf、markdown/md、faq.xlsx、pptx；结构化文档支持类型：xlsx、csv、
+                    jsonl
+                  </div>
+                </div>
+                <div class="guide-img-2 w-[16.1em] h-[17.1em] self-end"></div>
+              </div>
+              <div class="flex space-x-[3.5em]">
+                <div class="space-y-[1.2em] w-[30em]">
+                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第3步</div>
+                  <div class="text-[#33315A] text-[1.8em] fix-text-white">检索问答</div>
+                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+                    基于知识库，通过切片检索及大模型问答，调试检查回答效果
+                  </div>
+                </div>
+                <div class="guide-img-3 w-[16.1em] h-[17.1em] self-end"></div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
+        <el-scrollbar @click="showGuide = false">
           <!-- no knowledge lib -->
           <template v-if="knowledgeList.length <= 0">
             <div class="relative">
@@ -467,12 +470,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 }
 
 .logo {
-  background-image: url(../../assets/knowledge-logo.png);
+  background-image: url(../../assets/knowledge-logo.svg);
   background-size: 100% 100%;
 }
 
 .collapse-arrow {
-  background-image: url(../../assets/knowledge-collapse.png);
+  background-image: url(../../assets/knowledge-collapse.svg);
   background-size: 100% 100%;
 }
 
@@ -482,7 +485,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 
 @for $i from 1 through 3 {
   .guide-img-#{$i} {
-    background-image: url(../../assets/knowledge-guide-#{$i}.png);
+    background-image: url(../../assets/knowledge-guide-#{$i}.svg);
     background-size: 100% 100%;
   }
 }

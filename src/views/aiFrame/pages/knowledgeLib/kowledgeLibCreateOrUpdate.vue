@@ -26,10 +26,13 @@
             <el-input
               v-model="formData.collectionName"
               class="!w-1/4"
-              placeholder="仅支持英文和数字的组合"
+              placeholder="请输入知识库名称"
               clearable
               input-style="font-size: 1.6em"
             />
+            <div class="text-14px pl-10px text-[#8d9095]">
+              注:仅支持英文和数字的组合，并以英文字母开头
+            </div>
           </el-form-item>
 
           <el-form-item class="w-full !mr-0" prop="description" label="描述">
@@ -179,7 +182,13 @@
             <template #label>
               <div class="flex items-center">
                 <span>图片OCR</span>
-                <div class="beta-mark"></div>
+                <div
+                  class="w-3.2em h-1.8em text-white bg-#615ced flex items-center justify-center ml-.8em"
+                  style="border-radius: 0.4em 0.4em 0.4em 0"
+                >
+                  Beta
+                </div>
+                <!-- <div class="beta-mark"></div> -->
               </div>
             </template>
             <el-switch v-model="formData.imageOcr" />
@@ -282,18 +291,17 @@ const checkCollectionNameduplicate = async (rule: any, value: any, callback: any
   const list = await getCollectionList();
   const idx = list.findIndex((ele: any) => ele.collectionName === value);
   console.log(value, idx);
-  if (-1 !== idx) {
-    callback(new Error('知识库名称重复'));
-  } else {
-    callback();
-  }
+  const firstChar = value.split('')[0];
+  if (!isNaN(Number(firstChar))) return callback(new Error('知识库名称不能以数字开头!'));
+  if (-1 !== idx) return callback(new Error('知识库名称重复'));
+  callback();
 };
 
 const formRules = reactive({
   collectionName: [
-    { required: true, message: '知识库名称不能为空', trigger: 'blur' },
-    { pattern: /^[a-zA-Z0-9]+$/, message: '知识库名称必须是英文和数字的组合', trigger: 'blur' },
-    { validator: checkCollectionNameduplicate, trigger: 'blur' }
+    { required: true, message: '知识库名称不能为空', trigger: 'change' },
+    { pattern: /^[a-zA-Z0-9]+$/, message: '知识库名称必须是英文和数字的组合', trigger: 'change' },
+    { validator: checkCollectionNameduplicate, trigger: 'change' }
   ],
   dataType: [{ required: true, message: '请选择数据类型', trigger: 'blur' }],
   embeddingModel: [{ required: true, message: '请选择向量化模型', trigger: 'blur' }],
@@ -418,7 +426,7 @@ const handleClickCreateLib = async () => {
 
 <style lang="scss" scoped>
 .go-back {
-  background-image: url(../../assets/knowledge-goback.png);
+  background-image: url(../../assets/knowledge-goback.svg);
   background-size: 100% 100%;
 }
 
@@ -482,7 +490,7 @@ const handleClickCreateLib = async () => {
 .question-mark {
   width: 1.2em;
   height: 1.2em;
-  background-image: url(../../assets/knowledge-question-mark.png);
+  background-image: url(../../assets/knowledge-question-mark.svg);
   background-size: 100% 100%;
   margin-left: 0.8em;
 }

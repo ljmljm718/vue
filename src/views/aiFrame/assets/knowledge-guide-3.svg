@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="161px" height="171px" viewBox="0 0 161 171" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>3</title>
+    <defs>
+        <path d="M8,0 L160,0 L160,0 L160,154 C160,162.836556 152.836556,170 144,170 L0,170 L0,170 L0,8 C-5.41083001e-16,3.581722 3.581722,9.4228672e-15 8,0 Z" id="path-1"></path>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="知识库-暂无知识库" transform="translate(-1718.000000, -143.000000)">
+            <g id="3" transform="translate(1719.000000, 144.000000)">
+                <g id="编组-3">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="蒙版" fill="#F7F9FC" xlink:href="#path-1"></use>
+                    <g mask="url(#mask-2)" id="矩形">
+                        <g transform="translate(16.545455, 43.000000)">
+                            <rect stroke="#DCDCFF" stroke-width="1" fill="#F2F3FF" x="24.9545455" y="0.5" width="175" height="39" rx="6"></rect>
+                            <rect stroke="none" fill="#E7E8FF" x="39" y="15.5454545" width="83" height="8"></rect>
+                            <rect stroke="none" fill="#C9C9FD" x="0" y="8.54545455" width="16" height="16" rx="7"></rect>
+                        </g>
+                    </g>
+                    <g mask="url(#mask-2)" id="矩形">
+                        <g transform="translate(16.545455, 91.000000)">
+                            <rect stroke="#DCDCFF" stroke-width="1" fill="#F2F3FF" x="24.9545455" y="0.5" width="144" height="95" rx="6"></rect>
+                            <rect stroke="none" fill="#E7E8FF" x="39" y="16.5454545" width="121.818182" height="8"></rect>
+                            <rect stroke="none" fill="#C9C9FD" x="0" y="8.54545455" width="16" height="16" rx="7"></rect>
+                            <rect stroke="none" fill="#E7E8FF" x="39" y="34.7272727" width="88" height="8"></rect>
+                            <rect stroke="none" fill="#E7E8FF" x="39" y="52.5454545" width="121.818182" height="8"></rect>
+                            <rect stroke="none" fill="#E7E8FF" x="39" y="70.7272727" width="70.9090909" height="8"></rect>
+                        </g>
+                    </g>
+                </g>
+                <path d="M0,170 L0,8 C-5.41083001e-16,3.581722 3.581722,9.4228672e-15 8,0 L160,0 L160,0" id="矩形" stroke="#E9EBFD"></path>
+                <text id="智能问答" font-family="PingFangSC-Medium, PingFang SC" font-size="14" font-weight="400" fill="#9393DD">
+                    <tspan x="16" y="27">智能问答</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

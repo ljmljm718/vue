@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 8</title>
+    <defs>
+        <radialGradient cx="87.8295898%" cy="14.2618815%" fx="87.8295898%" fy="14.2618815%" r="52.0412431%" id="radialGradient-1">
+            <stop stop-color="#5D58E7" offset="0%"></stop>
+            <stop stop-color="#5D58E7" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="10.7950846%" cy="82.0963542%" fx="10.7950846%" fy="82.0963542%" r="50.6675571%" id="radialGradient-2">
+            <stop stop-color="#DFADFE" offset="0%"></stop>
+            <stop stop-color="#DFADFE" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <circle id="path-3" cx="24" cy="24" r="24"></circle>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="知识库-已有知识库" transform="translate(-116.000000, -34.000000)">
+            <g id="编组-8" transform="translate(116.000000, 34.000000)">
+                <g id="椭圆形">
+                    <use fill="#C9B0F8" xlink:href="#path-3"></use>
+                    <use fill="url(#radialGradient-1)" xlink:href="#path-3"></use>
+                    <use fill="url(#radialGradient-2)" xlink:href="#path-3"></use>
+                </g>
+                <g id="编组" transform="translate(13.000000, 12.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <path d="M20.4,24 L4.19999999,24 C3.08609073,24 2.01780429,23.5575013 1.23015151,22.7698485 C0.442498718,21.9821957 0,20.9139093 0,19.8 L0,3.6 C0,1.6117749 1.6117749,0 3.6,0 L20.4,0 C21.0627417,0 21.6,0.537258304 21.6,1.20000001 L21.6,22.8 C21.6,23.4627417 21.0627417,24 20.4,24 L20.4,24 Z M19.2,21.6 L19.2,18 L4.19999999,18 C3.20588744,18 2.39999999,18.8058875 2.39999999,19.8 C2.39999999,20.7941125 3.20588744,21.6 4.19999999,21.6 L19.2,21.6 L19.2,21.6 Z M8.40000001,2.40000002 L8.40000001,12 L12.6,9.60000002 L16.8,12 L16.8,2.40000002 L8.40000001,2.40000002 Z" id="形状"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
