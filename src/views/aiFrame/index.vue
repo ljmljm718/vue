@@ -4,7 +4,7 @@
       <div class="w-80px flex flex-col items-center text-white">
         <div class="logo w-28px h-32px mt-32px"></div>
         <div class="text-[16px] leading-[25px] text-center mt-11px">AI助手</div>
-        <div class="flex flex-col items-center md:pt-30px xl:pt-70px space-y-[50px]">
+        <div class="flex flex-col items-center md:pt-30px xl:pt-60px space-y-[50px]">
           <div
             v-for="item in sideMenus"
             :key="item.key"

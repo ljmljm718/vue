@@ -89,6 +89,7 @@ const handleClickImport = (index: number) => {
 
 const handleSubmitImport = async () => {
   const id = currentLibId.value;
+  if (!docUrl.value) return ElMessage.warning('请先上传文件！');
   await postAddDoc({
     collectionId: id,
     fileManagement: docUrl.value
@@ -228,7 +229,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
         <div class="flex-none flex space-x-[1.6em]">
           <div
             class="create-btn flex items-center px-[2em] py-[0.8em] cursor-pointer"
-            @click="showLibPage = false"
+            @click="
+              showLibPage = false;
+              showGuide = false;
+            "
           >
             <el-icon><Plus /></el-icon>
             <span class="pl-[0.6em] text-[1.4em]">创建知识库</span>
@@ -240,7 +244,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           >
             <div
               class="collapse-arrow w-[1.4em] h-[1.4em] transition-all"
-              :style="{ transform: showGuide ? 'rotate(0deg)' : 'rotate(180deg)' }"
+              :style="{ transform: !showGuide ? 'rotate(0deg)' : 'rotate(180deg)' }"
             ></div>
             <span class="text-[1.4em] ml-[0.3em] pl-[0.6em]">
               {{ showGuide ? '收起教程' : '展开教程' }}
@@ -417,7 +421,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 </el-button>
               </div>
             </div>
-            <div class="my-[1.6em] ml-[3em] mr-[0.5em] h-[0.1em] bg-[#F5F6FA]"></div>
+            <div class="my-[1.6em] ml-[3em] mr-[0.5em] h-[0.1em] bg-[#F5F6FA] dark:bg-[#333]"></div>
           </div>
         </el-scrollbar>
         <div v-else class="w-full h-full flex flex-col justify-center items-center">

@@ -54,7 +54,7 @@ const loadingChatInfo = ref(false);
 const getChatInfoList = async (params) => {
   await nextTick();
   const type = useITT.value ? 'image-to-text' : 'text-to-image';
-  const { pageSize = 20 } = params;
+  const { pageSize = 20, forceUpdateSelectedID = true } = params;
   // 正在请求中
   if (loadingChatInfo.value) {
     return;
@@ -72,7 +72,8 @@ const getChatInfoList = async (params) => {
     return;
   }
   chatInfoList.value = list;
-  activedChatID.value = list[0] ? list[0].id : 'new_chat';
+  console.log('forceUpdateSelectedID', forceUpdateSelectedID);
+  if (forceUpdateSelectedID) activedChatID.value = list[0] ? list[0].id : 'new_chat';
   chatInfoTotal.value = total;
   loadingChatInfo.value = false;
   // 请求对应的消息列表
@@ -130,7 +131,7 @@ const handleContentBlur = async (e) => {
   if (res) {
     ElMessage.success('修改成功!');
     chatInfoList.value = [];
-    nextTick(() => getChatInfoList({ pageSize: 20 }));
+    nextTick(() => getChatInfoList({ pageSize: 20, forceUpdateSelectedID: false }));
   } else {
     ElMessage.warning('修改失败，请稍后重试!');
   }
@@ -258,9 +259,6 @@ const adjustTextareaHeight = () => {
   }
   textarea.addEventListener('input', (e) => {
     const target = e.target as any;
-    // 获取当前的 offsetHeight 和 scrollHeight
-    // const currentOffsetHeight = target.offsetHeight;
-    // const currentScrollHeight = target.scrollHeight;
     target.style.height = 'auto';
     target.style.height = Math.max(textarea.scrollHeight, 60) + 'px';
     console.log(
@@ -271,6 +269,19 @@ const adjustTextareaHeight = () => {
 };
 onMounted(() => adjustTextareaHeight());
 
+// 处理textarea输入框
+const handleTextChange = () => {
+  const textarea = document.querySelector('textarea');
+  textarea.addEventListener('keydown', (e) => {
+    const keyCode = event.keyCode;
+    const shiftKey = event.shiftKey;
+    if (!shiftKey && keyCode === 13) {
+      handleSendMsg();
+    }
+  });
+};
+onMounted(() => handleTextChange());
+
 // 发送
 const handleSendMsg = async () => {
   const textarea = document.querySelector('textarea');
@@ -278,8 +289,10 @@ const handleSendMsg = async () => {
     return;
   }
   if (useITT.value) {
+    if (!inputTextITT.value || inputImgListITT.value.length <= 0) return;
     await submitITT();
   } else {
+    if (!inputTextITT.value) return;
     await submitTTI();
   }
 };
@@ -295,6 +308,7 @@ watch(useITT, () => {
   msgPageSize.value = 10;
   chatInfoTotal.value = 0;
   msgTotal.value = 0;
+  handleWatch();
   getChatInfoList({});
 });
 
@@ -526,17 +540,23 @@ const scollToBottom = () => {
   });
 };
 
-watch([inputTextITT, inputImgListITT], () => {
+const handleWatch = () => {
   if (useITT.value) {
     if (inputTextITT.value !== '' && inputImgListITT.value.length > 0) {
       disabledSendBtn.value = false;
+    } else {
+      disabledSendBtn.value = true;
     }
   } else {
     if (inputTextITT.value !== '') {
       disabledSendBtn.value = false;
+    } else {
+      disabledSendBtn.value = true;
     }
   }
-});
+};
+watch(inputTextITT, handleWatch);
+watch(inputImgListITT, handleWatch);
 
 const handleMessageListScroll = throttle(() => {
   if (!messageList.value || messageList.value.length === 0) return;
@@ -684,9 +704,10 @@ const sizeList = ref([
       <!-- content -->
       <div
         class="2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px] mx-auto flex flex-col"
-        style="height: calc(100% - 80px)"
+        style="height: calc(100% - 64px)"
+        @click="rightPanelCollapsed = true"
       >
-        <div class="grow min-h-100px relative" style="flex: 1 1 auto">
+        <div class="grow min-h-100px relative transition" style="flex: 1 1 auto">
           <el-scrollbar
             class="hide-scrollbar"
             ref="chatScrollIns"
@@ -795,7 +816,22 @@ const sizeList = ref([
               </div>
             </div>
           </el-scrollbar>
-          <div class="w-full absolute left-0 bottom-0 h-16px message-bottom-mask z-10"></div>
+          <div class="w-full absolute left-0 bottom-0 message-bottom-mask z-10 h-[16px]"></div>
+        </div>
+        <!-- size list -->
+        <div v-show="!useITT" class="w-full h-[34px] mb-[8px]" style="flex: 0 0 auto">
+          <el-scrollbar view-class="flex space-x-[8px]">
+            <div
+              v-for="(item, index) in sizeList"
+              :key="item.label"
+              class="size-bg"
+              :class="index === sizeIdx && 'active-size'"
+              @click.stop="sizeIdx = index"
+            >
+              <div :class="item.iconClass"></div>
+              <span class="pl-[10px]">{{ item.label }}</span>
+            </div>
+          </el-scrollbar>
         </div>
         <div
           class="input-outer-container p-2px rounded-16px shadow-md relative"
@@ -828,7 +864,7 @@ const sizeList = ref([
                 v-for="item in supportText"
                 :key="item"
                 class="flex items-center px-[16px] py-[6px] rounded-[6px] bg-[#F5F6FA] dark:bg-[#2C3240] cursor-pointer"
-                @click="inputTextITT += item + ' '"
+                @click="inputTextITT = item"
               >
                 <span class="text-[14px]">{{ item }}</span>
                 <el-icon class="ml-[18px]"><Right /></el-icon>
@@ -944,6 +980,47 @@ const sizeList = ref([
     background-image: url(../../assets/vision-uploadImg-dark.svg);
     background-size: 100% 100%;
   }
+
+  .size-bg {
+    background-color: #2c3240;
+    border: none;
+    border-radius: 6px;
+    width: 88px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+
+  .active-size {
+    border: none;
+    background: #615ced;
+  }
+
+  @for $i from 1 through 3 {
+    .size-#{$i} {
+      padding-left: 16px;
+      width: 16px;
+      height: 16px;
+      background-image: url(../../assets/vision-img-size-#{$i}-dark.svg);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+  }
+
+  @for $i from 2 through 3 {
+    .size-#{$i}-rotate {
+      padding-left: 16px;
+      width: 16px;
+      height: 16px;
+      background-image: url(../../assets/vision-img-size-#{$i}-dark.svg);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+    }
+  }
 }
 
 .ai-light {
@@ -984,6 +1061,46 @@ const sizeList = ref([
     background-image: url(../../assets/vision-uploadImg.svg);
     background-size: 100% 100%;
   }
+
+  .size-bg {
+    padding-left: 16px;
+    background-color: white;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    width: 64px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .active-size {
+    border: 1px solid #615ced;
+    background: #f2f2fa;
+  }
+
+  @for $i from 1 through 3 {
+    .size-#{$i} {
+      width: 16px;
+      height: 16px;
+      background-image: url(../../assets/vision-img-size-#{$i}.svg);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
+
+  @for $i from 2 through 3 {
+    .size-#{$i}-rotate {
+      width: 16px;
+      height: 16px;
+      background-image: url(../../assets/vision-img-size-#{$i}.svg);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+    }
+  }
 }
 
 .active-tab-text {
@@ -992,11 +1109,11 @@ const sizeList = ref([
 
 // 不发送和发送按钮
 .disabled-send {
-  background-image: url(../../assets/disabledSend.png);
+  background-image: url(../../assets/disabledSend.svg);
   background-size: 100% 100%;
 }
 .send-btn {
-  background-image: url(../../assets/sendBtn.png);
+  background-image: url(../../assets/sendBtn.svg);
   background-size: 100% 100%;
 }
 
