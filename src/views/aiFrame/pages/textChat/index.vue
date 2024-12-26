@@ -241,7 +241,7 @@ onMounted(() => adjustTextareaHeight());
 // 语音功能正在进行，阻止消息发送
 const radioRecording = ref<boolean>(false);
 const disabledSendBtn = ref<boolean>(false);
-const handleRadioRecoOutput = () => {
+const handleRadioRecoOutput = (text) => {
   const textarea = document.querySelector('textarea');
   textarea.value = text;
   questionText.value = text;
