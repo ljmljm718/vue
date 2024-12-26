@@ -428,7 +428,7 @@ const handleDeleteChatTheme = (id: string) => {
         <el-icon><Operation /></el-icon>
         <div>参数设置</div>
       </div>
-      <div class="h-64px px-24px box-border flex items-center text-18px font-bold">
+      <div class="h-54px px-24px box-border flex items-center text-18px font-bold">
         {{ pageMainTitle }}
       </div>
       <div

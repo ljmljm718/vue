@@ -219,7 +219,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <div class="grow pl-[1.6em] flex flex-col justify-between h-[5.7em]">
             <h1 class="m-0 text-[2.4em]">知识库</h1>
             <div
-              class="text-[1.4em] text-[#999999] line-clamp-1"
+              class="text-[1.4em] text-[#999] dark:text-[#ddd] line-clamp-1"
               title="知识库提供知识管理的能力，将多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。"
             >
               知识库提供知识管理的能力，将多个文档导入到知识库中，并对文档执行解析、切片、向量化、构建索引等处理流程，处理完成后即可进行知识检索。
@@ -336,7 +336,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                       <div class="tag">{{ dataTypeMap[item.dataType] }}</div>
                     </div>
                     <div class="pt-[0.8em] flex items-center">
-                      <span class="text-[#9998AC] dark:text-[#9998AC] text-[1.6em]">
+                      <span class="text-[#9998AC] dark:text-[#ccc] text-[1.6em]">
                         文档数量：{{ item.docNum ? item.docNum : 0 }}
                       </span>
                       <div
@@ -654,7 +654,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 
   @for $i from 1 through 3 {
     .guide-img-#{$i} {
-      background-image: url(../../assets/knowledge-guide-#{$i}-dark.png);
+      background-image: url(../../assets/knowledge-guide-#{$i}-dark.svg);
       background-size: 100% 100%;
     }
   }

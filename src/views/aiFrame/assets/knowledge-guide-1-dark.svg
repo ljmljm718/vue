@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="161px" height="171px" viewBox="0 0 161 171" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 10</title>
+    <defs>
+        <path d="M8,0 L160,0 L160,0 L160,170 L0,170 L0,8 C-5.41083001e-16,3.581722 3.581722,9.4228672e-15 8,0 Z" id="path-1"></path>
+        <linearGradient x1="5.70934256%" y1="1.73472348e-14%" x2="94.2906574%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="深色-知识库-暂无知识库" transform="translate(-552.000000, -143.000000)">
+            <g id="编组-10" transform="translate(553.000000, 144.000000)">
+                <g id="编组-3">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="蒙版" fill="#1E213D" xlink:href="#path-1"></use>
+                    <g mask="url(#mask-2)">
+                        <g transform="translate(16.000000, 43.000000)">
+                            <rect id="矩形" stroke="#484A9A" stroke-width="1" fill-opacity="0.1" fill="#615CED" x="0.5" y="0.5" width="185" height="63" rx="6"></rect>
+                            <rect id="矩形" stroke="none" fill="#404680" x="53.5454545" y="18.5454545" width="94" height="8"></rect>
+                            <rect id="矩形" stroke="none" fill="#404680" x="53.5454545" y="33.7272727" width="72" height="8"></rect>
+                            <g id="编组-4" stroke="none" stroke-width="1" fill="none" transform="translate(17.000000, 15.727273)">
+                                <path d="M0,0 L25,0 C26.6568542,-3.04359188e-16 28,1.34314575 28,3 L28,32 L28,32 L3,32 C1.34314575,32 -1.23081457e-15,30.6568542 0,29 L0,0 L0,0 Z" id="矩形" fill="#615CED"></path>
+                                <polygon id="矩形" fill="#FFFFFF" points="16 0.413769531 22 0.413769531 22 8.41376953 19 6.41376953 16 8.41376953"></polygon>
+                                <rect id="矩形" fill="#FFFFFF" x="6" y="14" width="16" height="3" rx="1.5"></rect>
+                                <path d="M7.5,20.9569824 L14.5,20.9569824 C15.3284271,20.9569824 16,21.6285553 16,22.4569824 C16,23.2854095 15.3284271,23.9569824 14.5,23.9569824 L7.5,23.9569824 C6.67157288,23.9569824 6,23.2854095 6,22.4569824 C6,21.6285553 6.67157288,20.9569824 7.5,20.9569824 Z" id="矩形" fill="#FFFFFF"></path>
+                            </g>
+                        </g>
+                    </g>
+                    <g mask="url(#mask-2)">
+                        <g transform="translate(16.000000, 115.000000)">
+                            <rect id="矩形" stroke="#484A9A" stroke-width="1" fill-opacity="0.1" fill="#615CED" x="0.5" y="0.5" width="185" height="63" rx="6"></rect>
+                            <rect id="矩形" stroke="none" fill="#404680" x="53.5454545" y="18.5454545" width="94" height="8"></rect>
+                            <rect id="矩形" stroke="none" fill="#404680" x="53.5454545" y="33.7272727" width="72" height="8"></rect>
+                            <g id="编组-4" stroke="none" stroke-width="1" fill="none" transform="translate(17.000000, 15.727273)">
+                                <path d="M0,0 L25,0 C26.6568542,-3.04359188e-16 28,1.34314575 28,3 L28,32 L28,32 L3,32 C1.34314575,32 -1.23081457e-15,30.6568542 0,29 L0,0 L0,0 Z" id="矩形" fill="#615CED"></path>
+                                <polygon id="矩形" fill="#FFFFFF" points="16 0.413769531 22 0.413769531 22 8.41376953 19 6.41376953 16 8.41376953"></polygon>
+                                <rect id="矩形" fill="#FFFFFF" x="6" y="14" width="16" height="3" rx="1.5"></rect>
+                                <path d="M7.5,20.9569824 L14.5,20.9569824 C15.3284271,20.9569824 16,21.6285553 16,22.4569824 C16,23.2854095 15.3284271,23.9569824 14.5,23.9569824 L7.5,23.9569824 C6.67157288,23.9569824 6,23.2854095 6,22.4569824 C6,21.6285553 6.67157288,20.9569824 7.5,20.9569824 Z" id="矩形" fill="#FFFFFF"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+                <path d="M0,170 L0,8 C-5.41083001e-16,3.581722 3.581722,9.4228672e-15 8,0 L160,0 L160,0" id="矩形" stroke="url(#linearGradient-3)"></path>
+                <text id="知识库" font-family="PingFangSC-Medium, PingFang SC" font-size="14" font-weight="400" fill="#9393DD">
+                    <tspan x="16" y="27">知识库</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>
