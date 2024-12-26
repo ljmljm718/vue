@@ -147,11 +147,11 @@
             />
           </el-form-item>
           <div class="ml-[13.6em] my-[1.8em] flex items-center text-[1.2em] space-x-[0.8em]">
-            <span class="text-[#666] ai-dark:text-white">推荐长度</span>
+            <span class="text-[#666] dark:text-white">推荐长度</span>
             <div
               v-for="item in recommendSliceLengthList"
               :key="item"
-              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] ai-dark:bg-[#2C3240] cursor-pointer"
+              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-#2c3240 ai-dark:bg-[#2C3240] cursor-pointer"
               @click="handleClickRecommendSliceLength(item)"
             >
               {{ item }}

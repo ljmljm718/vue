@@ -252,8 +252,8 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
       <div class="h-[calc(100%-10.5em)] relative">
         <div
           :class="showGuide ? 'h-[19.8em] guide-border' : 'h-0'"
-          style="width: calc(100% - 7em)"
-          class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all absolute left-0 top-0 z-20 w-full bg-white dark:bg-black"
+          style="width: calc(100% - 6em)"
+          class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all absolute left-0 top-0 z-20 w-full bg-white !dark:bg-[#121725]"
         >
           <el-scrollbar>
             <div class="flex px-[3.7em] pt-[1.7em] space-x-[8.5em]">
@@ -316,7 +316,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <!-- knowledge lib list -->
           <template v-else>
             <div
-              class="mt-[2.4em] grid grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[3.9em] pr-[2.4em]"
+              class="mt-[2.4em] grid grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[3.9em] pr-[2.4em] pb-20px"
             >
               <div
                 v-for="(item, index) in knowledgeList"
@@ -326,7 +326,9 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 <div class="flex justify-between pt-[2em] pl-[2.5em] pb-[2.5em] pr-[4.3em]">
                   <div class="flex flex-col justify-center">
                     <div class="flex">
-                      <span class="text-[2.4em] text-[#33315A]">{{ item.collectionName }}</span>
+                      <span class="text-[2.4em] text-[#33315A] fix-text-white">
+                        {{ item.collectionName }}
+                      </span>
                       <div class="tag">{{ dataTypeMap[item.dataType] }}</div>
                     </div>
                     <div class="pt-[0.8em] flex items-center">
@@ -479,8 +481,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   background-size: 100% 100%;
 }
 
-.guide-border {
-  border: 0.1em solid #ebecf2;
+.ai-light {
+  .guide-border {
+    border: 0.1em solid #ebecf2;
+  }
 }
 
 @for $i from 1 through 3 {
@@ -497,8 +501,9 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 }
 
 .card-logo {
-  background-image: url(../../assets/knowledge-card-logo.png);
-  background-size: 100% 100%;
+  background-image: url(../../assets/knowledge-card-logo.svg);
+  background-size: 150% 150%;
+  background-position: center;
 }
 
 .no-lib {
@@ -513,7 +518,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 .right-arrow-circle {
   width: 1.4em;
   height: 1.4em;
-  background-image: url(../../assets/knowledge-right-arrow.png);
+  background-image: url(../../assets/knowledge-right-arrow.svg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -625,7 +630,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   }
 
   .collapse-arrow {
-    background-image: url(../../assets/knowledge-collapse-dark.png);
+    background-image: url(../../assets/knowledge-collapse-dark.svg);
     background-size: 100% 100%;
   }
 

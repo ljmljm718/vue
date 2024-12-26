@@ -6,9 +6,6 @@ import userAvatar from '../../assets/userAvatar.svg';
 // 其他依赖
 import { marked } from 'marked';
 import { throttle } from 'lodash-es';
-
-// 语音识别与接口
-import { record_start, record_upload } from './utils';
 import {
   getCollectionList,
   chatThemeCreate,
@@ -46,6 +43,8 @@ const scollToBottom = () => {
     chatScrollIns.value.wrapRef.scrollTop = chatScrollIns.value.wrapRef.scrollHeight;
   });
 };
+onActivated(() => nextTick(() => scollToBottom()));
+
 const handleMessageListScroll = throttle(() => {
   if (messageList.value.length === 0) return;
   // 滚动到最上面以后加载更多
@@ -128,9 +127,7 @@ const handleTextChange = () => {
     }
   });
 };
-onMounted(() => {
-  handleTextChange();
-});
+onMounted(() => handleTextChange());
 
 // 根据 themeID 获取聊天记录
 const getMessageByThemeID = async (themeId: string) => {

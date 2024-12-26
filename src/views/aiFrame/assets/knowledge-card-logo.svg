@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="106px" height="113px" viewBox="0 0 106 113" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>知识库</title>
+    <defs>
+        <filter x="-84.8%" y="-68.6%" width="260.9%" height="247.1%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.380392157   0 0 0 0 0.360784314   0 0 0 0 0.929411765  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#9A95F7" offset="0%"></stop>
+            <stop stop-color="#615CED" offset="100%"></stop>
+        </linearGradient>
+        <path d="M0,0 L36,0 C39.3137085,-6.08718376e-16 42,2.6862915 42,6 L42,48 L42,48 L6,48 C2.6862915,48 -2.46162913e-15,45.3137085 0,42 L0,0 L0,0 Z" id="path-3"></path>
+        <filter x="-47.6%" y="-33.3%" width="195.2%" height="183.3%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.380392157   0 0 0 0 0.360784314   0 0 0 0 0.929411765  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-7">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-8">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="深色-知识库" transform="translate(-570.000000, -114.000000)">
+            <g id="编组-3" transform="translate(120.000000, 115.000000)">
+                <g id="知识库" filter="url(#filter-1)" transform="translate(482.000000, 27.727273)">
+                    <g id="矩形">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="url(#linearGradient-2)" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <path d="M4,3 L40,3 C43.3137085,3 46,5.6862915 46,9 L46,51 L46,51 L10,51 C6.6862915,51 4,48.3137085 4,45 L4,3 L4,3 Z" id="矩形" fill="url(#linearGradient-5)"></path>
+                    <polygon id="矩形" fill="url(#linearGradient-6)" points="28 3.6206543 37 3.6206543 37 15.6206543 32.5 12.6206543 28 15.6206543"></polygon>
+                    <rect id="矩形" fill="url(#linearGradient-7)" x="13" y="24" width="24" height="4.5" rx="2"></rect>
+                    <path d="M15,34.4354736 L26,34.4354736 C27.1045695,34.4354736 28,35.3309041 28,36.4354736 L28,36.9354736 C28,38.0400431 27.1045695,38.9354736 26,38.9354736 L15,38.9354736 C13.8954305,38.9354736 13,38.0400431 13,36.9354736 L13,36.4354736 C13,35.3309041 13.8954305,34.4354736 15,34.4354736 Z" id="矩形" fill="url(#linearGradient-8)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
