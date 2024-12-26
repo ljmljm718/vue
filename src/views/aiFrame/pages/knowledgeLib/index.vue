@@ -57,8 +57,8 @@ const showGuide = ref(false);
 const knowledgeList = ref<any[]>([]);
 const getKnowledgeList = async () => {
   knowledgeList.value = [];
-  // const res = await getCollectionList();
-  const res = [];
+  const res = await getCollectionList();
+  // const res = [];
   knowledgeList.value = Array.isArray(res) ? res : [];
   console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
@@ -296,7 +296,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <template v-if="knowledgeList.length <= 0">
             <div class="relative">
               <div
-                class="absolute top-[4.8em] left-1/2 -translate-x-1/2 flex flex-col items-center"
+                class="absolute top-[6.8em] left-1/2 -translate-x-1/2 flex flex-col items-center"
               >
                 <div class="no-lib"></div>
                 <div class="text-[2.4em] text-[#33315A] fix-text-white">暂未创建知识库</div>
