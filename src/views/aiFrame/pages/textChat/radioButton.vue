@@ -28,13 +28,13 @@
       class="w-full h-full disabled-status-btn"
     ></div>
     <div
-      class="tooltip-bg w-104px h-51px absolute top-[-51px] left-[-40px]"
+      class="tooltip-bg w-104px h-51px absolute top-[-48px] left-[-40px]"
       v-show="['ready'].includes(btnStatus) && showTooltip && !props.generateTexting"
     >
       <div class="text-center text-white text-14px relative top-12px">语音输入</div>
     </div>
     <div
-      class="tooltip-long-bg w-124px h-51px absolute top-[-51px] left-[-50px]"
+      class="tooltip-long-bg w-124px h-51px absolute top-[-48px] left-[-50px]"
       v-show="['recording'].includes(btnStatus) && showTooltip && !props.generateTexting"
     >
       <div class="text-center text-white text-14px relative top-12px">
@@ -133,14 +133,16 @@ const stopRecord = async () => {
 .radio-outer-wrapper {
   width: 24px;
   height: 24px;
+  position: relative;
+  cursor: pointer;
 
   .ready-status-btn {
-    background-image: url(../../assets/activeRadioBtn.png);
+    background-image: url(../../assets/activeRadioBtn.svg);
     background-size: contain;
   }
 
   .recording-status-btn {
-    background-image: url(../../assets/waveRadioBtn.png);
+    background-image: url(../../assets/waveRadioBtn.svg);
     background-size: contain;
   }
 

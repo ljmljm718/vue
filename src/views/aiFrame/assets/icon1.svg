@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>文本</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.800000012">
+        <g id="视觉模型-图文解析-未提问" transform="translate(-28.000000, -178.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="文本" transform="translate(28.000000, 178.000000)">
+                <path d="M22.8,0 C23.4627417,0 24,0.537258304 24,1.20000001 L24,18 C24,18.6627417 23.4627417,19.2 22.8,19.2 L5.346,19.2 L0,23.4 L0,1.20000001 C0,0.537258304 0.537258304,0 1.20000001,0 L22.8,0 Z M18,4.19999999 L6.00000001,4.19999999 L6.00000001,6.60000001 L10.8,6.60000001 L10.8,15 L13.2,15 L13.2,6.60000001 L18,6.60000001 L18,4.19999999 Z" id="形状"></path>
+            </g>
+        </g>
+    </g>
+</svg>

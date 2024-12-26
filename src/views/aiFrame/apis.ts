@@ -6,6 +6,10 @@ export const getCollectionList = async () => {
   return await request.get({ url: '/agriculture/collection/get-collection-list' });
 };
 
+export const getCollectionSearch = async (data: any) => {
+  return await request.post({ url: `/agriculture/collection/search`, data });
+};
+
 // 根据知识库ID获取文档列表
 export const getDocList = async (params: any) => {
   return await request.get({ url: '/agriculture/collection/get-doc-list', params });

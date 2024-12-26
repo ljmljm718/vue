@@ -4,7 +4,7 @@
       <div class="w-80px flex flex-col items-center text-white">
         <div class="logo w-28px h-32px mt-32px"></div>
         <div class="text-[16px] leading-[25px] text-center mt-11px">AI助手</div>
-        <div class="flex flex-col items-center pt-70px space-y-[50px]">
+        <div class="flex flex-col items-center md:pt-30px xl:pt-70px space-y-[50px]">
           <div
             v-for="item in sideMenus"
             :key="item.key"
@@ -34,8 +34,8 @@
           </div>
         </div>
       </div>
-      <div class="fixed bottom-2 left-2">
-        <el-switch v-model="enableDarkModel" @change="handleDarkModeSwitchChange" />
+      <div class="fixed bottom-4 left-2">
+        <ThemeSwitch v-model="enableDarkModel" @change="handleDarkModeSwitchChange" />
       </div>
       <div class="ai-show-main-frame h-full box-border" style="width: calc(100% - 80px)">
         <div
@@ -56,6 +56,7 @@
 </template>
 <script setup lang="ts">
 import { useAiFrameStore } from './storage';
+import ThemeSwitch from './components/themeSwitch/index.vue';
 
 const storage = useAiFrameStore();
 const route = useRoute();
@@ -102,12 +103,15 @@ const showedModel = ref<string>('textModel');
 <style lang="scss">
 /* 亮色模式变量 */
 .ai-show-outer-frame.ai-light {
+  --user-message-bg: #e0dfff;
+  --system-message-bg: white;
+  --el-color-primary: #615ced;
   background-image: linear-gradient(to right, transparent, #ffffffd0, #ffffffd0, #ffffffd0),
     linear-gradient(to top, #4378ff, #8366e1, #9362da);
   color: black;
   --base-bg-color: #ffffff;
   .show-mask-wrapper {
-    background-image: url(./assets/btnMask.png);
+    background-image: url(./assets/btnMask.svg);
     background-size: 100% 100%;
   }
   .side-bar-frame {
@@ -115,7 +119,7 @@ const showedModel = ref<string>('textModel');
   }
   /** 折叠按钮 */
   .collapse-btn {
-    background-image: url(./assets/collapseBtn.png);
+    background-image: url(./assets/collapseBtn.svg);
     background-size: 100% 100%;
   }
 
@@ -135,6 +139,11 @@ const showedModel = ref<string>('textModel');
     border: 1px solid #615ced !important;
     background-image: linear-gradient(to top, #fff, #fafafe, #f0f0fe);
   }
+
+  /** 对话记录遮罩 */
+  .message-bottom-mask {
+    background: linear-gradient(to top, #f6f7fb, #f6f7fb, #f6f7fb00);
+  }
 }
 
 /** 新建对话按钮 */
@@ -148,6 +157,9 @@ const showedModel = ref<string>('textModel');
 
 /* 暗色模式变量 */
 .ai-show-outer-frame.ai-dark {
+  --user-message-bg: #605dee;
+  --system-message-bg: linear-gradient(to right, #2a2e4f, #252b42, #1f2532);
+  --el-color-primary: #615ced;
   background-image: linear-gradient(to right, transparent, #000000d0, #000000d0, #000000d0),
     linear-gradient(to top, #23304a, #282e48, #2d2d46);
   color: white;
@@ -162,7 +174,7 @@ const showedModel = ref<string>('textModel');
   }
   /** 折叠按钮 */
   .collapse-btn {
-    background-image: url(./assets/darkCollapseBtn.png);
+    background-image: url(./assets/darkCollapseBtn.svg);
     background-size: 100% 100%;
   }
   /** 主体部分样式 */
@@ -245,27 +257,27 @@ textarea::-webkit-scrollbar-track {
 
 /** 大号logo */
 .extra-logo {
-  background-image: url(./assets/extraLogo.png);
+  background-image: url(./assets/extraLogo.svg);
   background-size: 100% 100%;
 }
 </style>
 <style scoped lang="scss">
 /* 图标引入 */
 .logo {
-  background-image: url(./assets/logo.png);
+  background-image: url(./assets/logo.svg);
   background-size: 100% 100%;
 }
 
 @for $i from 1 through 4 {
   .icon-#{$i} {
-    background-image: url(./assets/icon#{$i}.png);
+    background-image: url(./assets/icon#{$i}.svg);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
   }
 
   .selected-icon-#{$i} {
-    background-image: url(./assets/selectedIcon#{$i}.png);
+    background-image: url(./assets/selectedIcon#{$i}.svg);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;

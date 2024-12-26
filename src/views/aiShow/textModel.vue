@@ -54,18 +54,6 @@ const uuid = (length = 8, chars?) => {
 const sideBarCollapsed = ref<boolean>(false);
 const chatList = ref<any[]>([]);
 const questionText = ref<string>('');
-// 语音识别输出函数
-const handleRadioTextOutput = (text: string) => {
-  console.log('语音识别结果 text =>', text);
-  const textarea = document.querySelector('textarea');
-  questionText.value = text;
-  textarea.value = text;
-};
-const remindArr = ref<any[]>([
-  { text: '智慧农业AI助手能为您做什么？' },
-  { text: '水肥一体化灌溉流程需要注意什么？' },
-  { text: '农作物病虫害知识库文档编写？' }
-]);
 
 // 参数配置
 const knowledgeLib = ref<string>(''); // 知识库
@@ -83,6 +71,7 @@ const maxResLength = ref<number>(10); // 最大返回长度
 
 // 发送消息
 const disabledSendBtn = ref<boolean>(false);
+// TODO
 const handleSendMsg = async (text) => {
   // if (!knowledgeLib.value) return ElMessage.warning('请先选择知识库!');
   if (!modelSelected.value) return ElMessage.warning('请先选择模型！');
@@ -170,11 +159,8 @@ const scollToBottom = () => {
   });
 };
 const handleMessageListScroll = throttle(() => {
-  const chatInfoContainer = document.getElementById('messageListContainer');
-  const chatInfoContainerHeight = chatInfoContainer.clientHeight;
   const scrollMain = chatScrollIns.value.wrapRef;
   const scrollMainScrollTop = scrollMain.scrollTop;
-  const scrollMainHeight = scrollMain.clientHeight;
   if (scrollMainScrollTop <= 8) getMessageByThemeID(activeChatID.value);
 }, 500);
 
@@ -210,29 +196,6 @@ const fullTextArea = (forceHide = false) => {
     inputContainer.classList.add('full-screen-text-container');
     textarea.style.height = '100%';
   }
-};
-
-let recording = ref<boolean>(false);
-const enableRecord = async () => {
-  if (recording.value) {
-    const path = await record_upload();
-    const res = await selectEmbeddingModel({ modelType: '语音识别' });
-    if (Array.isArray(res) && res.length > 0) {
-      const firstItem = res[0];
-      const { authorization, embeddingModel } = firstItem;
-      const asrRes = await asr({
-        authorization,
-        cluster: embeddingModel,
-        audio_path: path
-      });
-      const textarea = document.querySelector('textarea');
-      textarea.value = asrRes;
-    }
-    recording.value = false;
-    return;
-  }
-  recording.value = true;
-  record_start();
 };
 
 const handleRadioRecoOutput = (text: string) => {
@@ -497,23 +460,12 @@ const handleChatInfoList = () => {
                     <div class="text-[#999] text-14px mt-4px">根据描述生成代码框架及内容</div>
                   </div>
                 </div>
-                <div class="space-y-16px w-600px mt-18px py-30px !hidden">
-                  <div
-                    v-for="item in remindArr"
-                    :key="item.text"
-                    @click="handleSendMsg(item.text)"
-                    class="flex justify-between items-center bg-white px-[21px] h-[56px] cursor-pointer hover:shadow-lg transition-all"
-                  >
-                    <div>{{ item.text }}</div>
-                    <div class="arrow-bg w-[18px] h-[14px]"></div>
-                  </div>
-                </div>
               </div>
             </el-scrollbar>
           </div>
           <div v-show="messageList.length !== 0" class="w-full h-full">
             <el-scrollbar ref="chatScrollIns" @scroll="handleMessageListScroll">
-              <div class="space-y-[24px] pb-10px" id="messageListContainer">
+              <div class="space-y-[24px] pb-10px">
                 <div
                   class="flex justify-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px]"
                   v-for="(item, index) in messageList"
@@ -560,13 +512,6 @@ const handleChatInfoList = () => {
               :class="`z-20 absolute right-13px bottom-12px w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
               @click="handleSendMsg(null)"
             ></div>
-            <div
-              v-loading="recording"
-              :class="`z-20 !hidden absolute right-68px bottom-12px h-32px ${disabledSendBtn ? 'bg-red' : 'bg-green'} cursor-pointer text-white rounded-md flex items-center px-12px`"
-              @click="enableRecord()"
-            >
-              语音
-            </div>
             <RadioButton
               class="absolute right-72px bottom-15px z-20"
               v-model:disableSend="radioRecording"
