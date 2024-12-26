@@ -121,7 +121,7 @@
                   content=""
                 >
                   <template #reference>
-                    <div class="question-mark cursor-pointer"></div>
+                    <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
                   </template>
                   <div class="flex flex-col space-y-[0.8em]">
                     <span>
@@ -170,7 +170,7 @@
                   popper-class="popover-bg"
                 >
                   <template #reference>
-                    <div class="question-mark cursor-pointer"></div>
+                    <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
                   </template>
                 </el-popover>
               </div>
