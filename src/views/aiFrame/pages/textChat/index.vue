@@ -505,8 +505,9 @@ const handleDeleteChatTheme = (id: string) => {
                     "
                   />
                   <div
-                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border shadow-sm"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : 'var(--user-message-bg)'};max-width: calc(100% - 94px);`"
+                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                    :class="[item.role === 'system' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.text)"
                   ></div>
                 </div>

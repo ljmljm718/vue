@@ -144,6 +144,12 @@ const showedModel = ref<string>('textModel');
   .message-bottom-mask {
     background: linear-gradient(to top, #f6f7fb, #f6f7fb, #f6f7fb00);
   }
+
+  .input-outer-container {
+    width: calc(100% - 90px);
+    left: 44px;
+    background: white;
+  }
 }
 
 /** 新建对话按钮 */
@@ -199,6 +205,8 @@ const showedModel = ref<string>('textModel');
 
   /** 输入框外层样式 */
   .input-outer-container {
+    width: calc(100% - 90px);
+    left: 44px;
     background: linear-gradient(to right, #4378ff, #9362da);
   }
 
