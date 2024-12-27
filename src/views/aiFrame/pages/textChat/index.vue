@@ -86,6 +86,8 @@ const getChatInfoList = async (updateActiveChat = true, forceUpdateList = false)
     handleChatInfoClick({ id: activeChatID.value });
   }
   chatInfoTotal.value = total;
+  // 如果处理之后列表为空，自动新建对话
+  if (chatInfoList.value.length === 0) handleNewChatInfo();
 };
 getChatInfoList();
 
@@ -367,7 +369,7 @@ const handleDeleteChatTheme = (id: string) => {
 <template>
   <div class="relative h-full">
     <div
-      class="side-bar-frame transition-all left-side-bar-frame h-full shadow-md duration-200px z-30"
+      class="side-bar-frame transition-all ease-in-out left-side-bar-frame h-full shadow-md duration-600 z-30"
       :style="`left: ${leftPanelCollapsed ? '-256px' : '0'};`"
     >
       <div
@@ -418,7 +420,7 @@ const handleDeleteChatTheme = (id: string) => {
       </el-scrollbar>
     </div>
     <div
-      class="absolute right-0 h-full z-10 transition-all duration-200px ai-show-main-container"
+      class="absolute right-0 h-full z-10 transition-all ease-in-out duration-600 ai-show-main-container"
       :style="`width: ${leftPanelCollapsed ? '100%' : 'calc(100% - 256px)'};`"
     >
       <div
@@ -538,7 +540,7 @@ const handleDeleteChatTheme = (id: string) => {
       </div>
     </div>
     <div
-      class="side-bar-frame right-side-bar-frame z-30 h-full shadow-md transition-all duration-200px"
+      class="side-bar-frame right-side-bar-frame z-30 h-full shadow-md transition-all ease-in-out duration-600"
       :style="`right: ${rightPanelCollapsed ? '-256px' : '0'};`"
     >
       <div

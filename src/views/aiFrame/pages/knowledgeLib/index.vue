@@ -257,7 +257,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
         <div
           :class="showGuide ? 'h-[19.8em] guide-border' : 'h-0'"
           style="width: calc(100% - 6em)"
-          class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all absolute left-0 top-0 z-20 w-full bg-white !dark:bg-[#121725]"
+          class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all ease-in-out duration-400 absolute left-0 top-0 z-20 w-full bg-white !dark:bg-[#121725]"
         >
           <el-scrollbar>
             <div class="flex px-[3.7em] pt-[1.7em] space-x-[8.5em]">
