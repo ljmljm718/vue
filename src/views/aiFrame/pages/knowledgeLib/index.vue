@@ -145,11 +145,16 @@ const handleClickDeleteDoc = async (docId: string) => {
     await message.delConfirm();
 
     const id = currentLibId.value;
-    await postDeleteDoc({
+    const res = await postDeleteDoc({
       collectionId: id,
       docId
     });
-    message.success(t('common.delSuccess'));
+    if ('doc is not completed, cannot be deleted' === res) {
+      // 文档还在训练中
+      message.warning(t('文档训练未完成，暂时无法删除'));
+    } else {
+      message.success(t('common.delSuccess'));
+    }
 
     // 重新查询文档列表和知识库列表
     await getDocumentList(id);

@@ -43,7 +43,6 @@
             :class="`${cardList && 'tab-active'}`"
           >
             <Icon icon="ep:list" />
-            <span>列表</span>
           </el-button>
           <el-button
             @click="cardList = false"
@@ -51,7 +50,6 @@
             :class="`${!cardList && 'tab-active'}`"
           >
             <Icon icon="ep:menu" />
-            <span>卡片</span>
           </el-button>
         </div>
         <!-- demo8.1.2 script标签内新增 const showSearch = ref(true); -->
@@ -151,7 +149,7 @@
               :src="item.photo"
               :alt="产品图片"
               fit="cover"
-              class="!absolute top-0 left-0 w-full h-full rounded"
+              class="!absolute top-0 left-0 w-full h-full rounded-t"
               :preview-src-list="[item.photo]"
               preview-teleported
             />

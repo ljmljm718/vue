@@ -47,7 +47,6 @@
             :class="`${showType === 'list' && 'tab-active'}`"
           >
             <Icon icon="ep:list" />
-            <span>列表</span>
           </el-button>
           <el-button
             @click="showType = 'card'"
@@ -55,7 +54,6 @@
             :class="`${showType === 'card' && 'tab-active'}`"
           >
             <Icon icon="ep:menu" />
-            <span>卡片</span>
           </el-button>
         </div>
         <!-- demo8.1.3 script标签内新增 const showSearch = ref(true); -->
@@ -188,7 +186,7 @@
               :src="item.headerImg"
               :alt="溯源模板图片"
               fit="cover"
-              class="!absolute top-0 left-0 w-full h-full rounded"
+              class="!absolute top-0 left-0 w-full h-full rounded-t"
               :preview-src-list="[item.headerImg]"
               preview-teleported
             />
