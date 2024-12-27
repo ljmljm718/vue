@@ -1,20 +1,86 @@
 <template>
-  <ContentWrap>
-    <!-- 搜索工作栏 -->
-    <custom-form
-      class="-mb-15px"
+  <!-- demo8.1.2 删掉ContentWrap 页面内容用下面的el-card包裹 -->
+  <el-card body-style="padding: 16px; display: flex; flex-direction: column;" shadow="never">
+    <!-- demo8.1.2 新增标题行部分 所有操作按钮移动到这一行 -->
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-[16px]">
+        <!-- demo8.1.2 如果有新增按钮 下面的h1要加上这个 style="border-right: 1px solid #e6e6e6" -->
+        <h1 class="m-0 text-[18px] pr-[16px]">批次产品</h1>
+        <!-- demo8.1.2 新增按钮的样式 -->
+        <!-- <el-button type="primary">
+          <Icon icon="ep:plus" />
+          <span>新增</span>
+        </el-button> -->
+      </div>
+      <div class="flex items-center space-x-[8px]">
+        <!-- demo8.1.2 注意 @click 函数 -->
+        <el-button type="primary" @click="handleQuery">
+          <Icon icon="ep:search" />
+          <span>搜索</span>
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" />
+          <span>重置</span>
+        </el-button>
+        <!-- demo8.1.2 按钮要注意 v-hasPermi -->
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['digital:village-product:export']"
+        >
+          <Icon icon="ep:download" />
+          <span>导出</span>
+        </el-button>
+        <!--
+          demo8.1.2 卡片列表切换按钮 注意 @click 和 :class 的条件 替换成自己的判断逻辑
+          上面的是显示列表的逻辑 下面的是显示卡片的逻辑
+          在最下面 style 标签里复制 tab-active 类
+        -->
+        <div class="flex">
+          <el-button
+            @click="cardList = true"
+            class="!rounded-r-none"
+            :class="`${cardList && 'tab-active'}`"
+          >
+            <Icon icon="ep:list" />
+            <span>列表</span>
+          </el-button>
+          <el-button
+            @click="cardList = false"
+            class="!ml-0 !rounded-l-none"
+            :class="`${!cardList && 'tab-active'}`"
+          >
+            <Icon icon="ep:menu" />
+            <span>卡片</span>
+          </el-button>
+        </div>
+        <!-- demo8.1.2 script标签内新增 const showSearch = ref(true); -->
+        <div
+          class="w-[20px] h-[20px] !ml-[16px] text-center leading-[22px] rounded-full cursor-pointer transition-all"
+          :class="showSearch ? 'rotate-0' : 'rotate-180'"
+          style="border: 1px solid #e6e6e6"
+          @click="showSearch = !showSearch"
+        >
+          <el-icon :size="14"><ArrowUpBold /></el-icon>
+        </div>
+      </div>
+    </div>
+    <!-- demo8.1.2 搜索栏将 custom-form 改成 el-form 注意 :model 和 ref -->
+    <el-form
       :model="queryParams"
       ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-y-[8px] mt-[16px] form overflow-hidden"
+      :style="`${!showSearch && 'height: 0'}`"
+      label-width="95px"
       :inline="true"
-      label-width="68px"
     >
+      <!-- demo8.1.2 所有输入删掉 !w-220px 和 !w-240px 等定宽的class -->
       <el-form-item label="产品名称" prop="product">
         <el-input
           v-model="queryParams.product"
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="是否赋码" prop="codeType">
@@ -28,27 +94,24 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属基地" prop="park">
-        <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly class="!w-240px">
+        <el-input v-model="queryParams.park" placeholder="请选择所属基地" readonly>
           <template #append>
-            <el-button @click="openParkPopup('0')">
+            <!-- demo8.1.2 输入框内图标居中 -->
+            <el-button @click="openParkPopup('0')" class="!p-0 flex justify-center items-center">
               <Icon icon="ep:search" />
-              选择
+              <!-- demo8.1.2 删掉输入框里带图标按钮里的文字 -->
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-
       <el-form-item label="所属地块" prop="parkDetail">
-        <el-input
-          v-model="queryParams.parkDetail"
-          placeholder="请选择所属地块"
-          readonly
-          class="!w-240px"
-        >
+        <el-input v-model="queryParams.parkDetail" placeholder="请选择所属地块" readonly>
           <template #append>
-            <el-button @click="openPlotPopup(queryParams.parkId)">
+            <el-button
+              @click="openPlotPopup(queryParams.parkId)"
+              class="!p-0 flex justify-center items-center"
+            >
               <Icon icon="ep:search" />
-              选择
             </el-button>
           </template>
         </el-input>
@@ -59,104 +122,59 @@
           placeholder="请输入"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
         />
       </el-form-item>
       <!--    <el-form-item label="" size="normal">-->
       <!--      <div class="w-2px h-40px bg-[#e6e6e6]"></div>-->
       <!--    </el-form-item>-->
-
-      <el-form-item>
-        <el-button @click="handleQuery" type="primary">
-          <Icon icon="ep:search" class="mr-5px" />
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" />
-          重置
-        </el-button>
-      </el-form-item>
-    </custom-form>
-  </ContentWrap>
-
-  <!-- 列表 -->
-  <ContentWrap>
-    <div class="flex items-center justify-between mb-15px">
-      <div style="margin-top: 20px; margin-left: 30px; height: 30px">
-        <el-form-item>
-          <!-- <el-button
-            class='!bg-[#009688] !color-[#fff]'
-            plain
-            @click="openForm('create')"
-            v-hasPermi="['digital:village-product:create']"
-          >
-            <Icon icon="ep:plus" class="mr-5px"/>
-            新增
-          </el-button> -->
-          <el-button
-            plain
-            @click="handleExport"
-            :loading="exportLoading"
-            v-hasPermi="['digital:village-product:export']"
-          >
-            <Icon icon="ep:download" class="mr-5px" />
-            导出
-          </el-button>
-        </el-form-item>
-      </div>
-      <div class="flex">
-        <div
-          @click="cardList = false"
-          class="py-3px px-15px rounded-l"
-          :style="`background-color: ${cardList ? '' : '#e5f4f3'}; border:1.5px solid ${cardList ? '#e6e6e6' : '#36a99e'}; color:${cardList ? '' : '#36a99e'}`"
-        >
-          <img :src="cardList ? card2 : card" class="w-10px h-10px" alt="" />
-          卡片
-        </div>
-        <div
-          @click="cardList = true"
-          class="py-3px px-15px rounded-r"
-          :style="`border:1.5px solid ${cardList ? '#36a99e' : '#e6e6e6'};background-color: ${cardList ? '#e5f4f3' : ''}; color:${cardList ? '#36a99e' : ''}`"
-        >
-          <img :src="cardList ? listImg : listImg2" class="w-10px h-10px" alt="" />
-          列表
-        </div>
-      </div>
-    </div>
-    <div class="flex justify-center">
+    </el-form>
+    <!-- demo8.1.2 删除原功能按钮和卡片列表切换按钮的代码 移至标题行 -->
+    <!-- demo8.1.2 class 新增 mt-[16px] -->
+    <div class="flex justify-center mt-[16px]">
+      <!-- demo8.1.2 gap-[16px] -->
       <div
         v-if="!cardList"
         v-loading="loading"
-        class="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-rows-1 gap-15px container"
+        class="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-rows-1 gap-16px container"
       >
+        <!-- demo8.1.2 卡片去掉原背景色 新增 shadow-md dark:bg-[#333] dark:shadow-[#000] 如果没有overflow-hidden也要加上 -->
         <div
           v-for="(item, index) in list"
           :key="index"
-          class="rounded bg-[#f5f5f5]"
+          class="rounded shadow-md shadow-[#000]/30 dark:bg-[#333] dark:shadow-[#000]"
           style="overflow: hidden"
         >
-          <div class="w-100% h-190px relative overflow-hidden" v-if="item.photo">
-            <img
+          <!-- demo8.1.2 图片部分要改写 要求16:9 -->
+          <div class="w-full pb-[56.25%] relative">
+            <el-image
+              v-if="item.photo"
               :src="item.photo"
-              class="w-full h-100% rounded object-cover blur-lg absolute left-0 top-0 z-0"
+              :alt="产品图片"
+              fit="cover"
+              class="!absolute top-0 left-0 w-full h-full rounded"
+              :preview-src-list="[item.photo]"
+              preview-teleported
             />
-            <img
-              :src="item.photo"
-              class="w-full h-full rounded object-contain absolute left-0 top-0 z-10"
-            />
+            <div
+              v-else
+              class="absolute top-0 left-0 flex justify-center items-center w-full h-full bg-#00000010"
+            >
+              暂无数据
+            </div>
           </div>
-          <div v-else class="flex justify-center items-center w-100% h-190px bg-#00000010">
-            暂无数据
-          </div>
-          <div class="py-[15px] px-[15px] box-border w-100% bg-[#f5f5f5]">
-            <div class="text-17px" style="font-weight: 600">
+          <!-- demo8.1.2 p-[16px] -->
+          <div class="p-[16px]">
+            <!-- demo8.1.2 文字不给尺寸 -->
+            <div class="font-bold">
               {{ item.years }}{{ item.product }} {{ item.specifications }}Kg
             </div>
-            <div class="text-15px mt-10px mb-10px color-[#878787]" style="word-break: break-all">
+            <!-- demo8.1.2 my-[4px] text-[14px] -->
+            <div class="my-[4px] color-[#878787] text-[14px]" style="word-break: break-all">
               {{ item.park }}-{{ item.parkDetail }}-{{ item.batchCode }}
             </div>
             <div class="flex justify-end">
-              <div class="color-[#898989] text-sm">数量：{{ item.inventory }}</div>
+              <!-- demo8.1.2 text-[14px] -->
+              <div class="color-[#898989] text-[14px]">数量：{{ item.inventory }}</div>
             </div>
           </div>
         </div>
@@ -229,14 +247,15 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
+    <!-- demo8.1.2 页码样式调整 -->
     <Pagination
+      style="align-self: end; margin-bottom: 0; margin-top: 16px"
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-  </ContentWrap>
+  </el-card>
 
   <!-- 表单弹窗：添加/修改 -->
   <VillageProductForm ref="formRef" @success="getList" />
@@ -402,4 +421,29 @@ onActivated(() => {
 onMounted(() => {
   getList();
 });
+
+const showSearch = ref(true);
 </script>
+
+<style lang="scss" scoped>
+.tab-active {
+  color: white;
+  background-color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+}
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+</style>
