@@ -201,12 +201,7 @@ const msgLoading = ref(false);
 
 // 查询对话内容
 const getMessageList = async (id: string, pageSize: number = 10) => {
-  // 正在请求中
-  if (msgLoading.value) {
-    return;
-  }
   msgPageSize.value = pageSize;
-  msgLoading.value = true;
   const params = {
     pageNo: 1,
     pageSize,
@@ -290,9 +285,35 @@ const handleSendMsg = async () => {
   }
   if (useITT.value) {
     if (!inputTextITT.value || inputImgListITT.value.length <= 0) return;
+    let imgStr = '';
+    inputImgListITT.value.forEach((ele, index) => {
+      if (index === inputImgListITT.value.length - 1) {
+        imgStr += ele.url;
+      } else {
+        imgStr += ele.url + ',';
+      }
+    });
+    messageList.value.push({
+      role: 'user',
+      message: {
+        text: inputTextITT.value,
+        image: imgStr
+      }
+    });
+    scollToBottom();
+    await nextTick();
     await submitITT();
   } else {
     if (!inputTextITT.value) return;
+    messageList.value.push({
+      role: 'user',
+      message: {
+        text: inputTextITT.value,
+        image: ''
+      }
+    });
+    scollToBottom();
+    await nextTick();
     await submitTTI();
   }
 };
@@ -351,12 +372,18 @@ const sendingITT = ref(false);
 const submitITT = async () => {
   sendingITT.value = true;
   disabledSendBtn.value = true;
+  const inputText = inputTextITT.value;
+  inputTextITT.value = '';
+  const imgList = inputImgListITT.value.map((ele) => {
+    return { ...ele };
+  });
+  inputImgListITT.value = [];
   try {
     // 构造请求参数
     const model = 'ep-20241206121046-84924';
     const messages = [{ role: 'user', content: [] as any[] }];
-    messages[0].content.push({ type: 'text', text: inputTextITT.value });
-    inputImgListITT.value.forEach((ele) => {
+    messages[0].content.push({ type: 'text', text: inputText });
+    imgList.forEach((ele) => {
       messages[0].content.push({ type: 'image_url', image_url: { url: ele.url } });
     });
     const max_tokens = maxResLength.value;
@@ -372,7 +399,7 @@ const submitITT = async () => {
     let themeId: string;
     if (activedChatID.value === 'new_chat') {
       themeId = await chatThemeCreate({
-        theme: inputTextITT.value,
+        theme: inputText,
         model: modelName,
         type: 'image-to-text'
       });
@@ -394,8 +421,8 @@ const submitITT = async () => {
     // 保存聊天记录
     let imgStr = '';
     let list: string[] = [];
-    inputImgListITT.value.forEach((ele, index) => {
-      if (index === inputImgListITT.value.length - 1) {
+    imgList.forEach((ele, index) => {
+      if (index === imgList.length - 1) {
         imgStr += ele.url;
         list.push(ele.url);
       } else {
@@ -407,11 +434,10 @@ const submitITT = async () => {
       themeId,
       role: 'user',
       message: {
-        text: inputTextITT.value,
+        text: inputText,
         image: imgStr
       }
     });
-    await getMessageList(themeId);
     await postCreateChatHistory({
       themeId,
       role: 'system',
@@ -428,10 +454,6 @@ const submitITT = async () => {
       flowOutput(content);
     }
 
-    // 发送完清空输入文字和图片列表
-    inputTextITT.value = '';
-    inputImgListITT.value = [];
-
     // 滚动条滚动到最底部
     scollToBottom();
   } catch (e) {
@@ -443,7 +465,10 @@ const submitITT = async () => {
 };
 
 const submitTTI = async () => {
+  const inputText = inputTextITT.value;
+  inputTextITT.value = '';
   sendingITT.value = true;
+  disabledSendBtn.value = true;
   try {
     const headers = {
       AccessKey: 'AKLTZTQ1NDUzYmIyMDljNDVlMmIyNGZhNmY0M2Q1MmJiNDA',
@@ -454,7 +479,7 @@ const submitTTI = async () => {
     };
 
     const res = await getauth({
-      prompt: inputTextITT.value,
+      prompt: inputText,
       access_key: headers.AccessKey,
       secret_key: headers.SecretKey
     });
@@ -465,7 +490,7 @@ const submitTTI = async () => {
     let themeId: string;
     if (activedChatID.value === 'new_chat') {
       themeId = await chatThemeCreate({
-        theme: inputTextITT.value,
+        theme: inputText,
         model: data.req_key,
         type: 'text-to-image'
       });
@@ -489,11 +514,10 @@ const submitTTI = async () => {
       themeId,
       role: 'user',
       message: {
-        text: inputTextITT.value,
+        text: inputText,
         image: ''
       }
     });
-    await getMessageList(themeId);
     await postCreateChatHistory({
       themeId,
       role: 'system',
@@ -504,15 +528,13 @@ const submitTTI = async () => {
     });
     await getMessageList(themeId);
 
-    // 发送完清空输入文字
-    inputTextITT.value = '';
-
     // 滚动条滚动到最底部
     scollToBottom();
   } catch (e) {
     console.log(e);
   } finally {
     sendingITT.value = false;
+    disabledSendBtn.value = false;
   }
 };
 
@@ -565,7 +587,14 @@ const handleMessageListScroll = throttle(() => {
   const scrollMain = chatScrollIns.value.wrapRef;
   const scrollMainScrollTop = scrollMain.scrollTop;
   if (scrollMainScrollTop <= 8 && messageList.value.length < msgTotal.value) {
-    getMessageList(activedChatID.value, msgPageSize.value + 10);
+    // 正在请求中
+    if (msgLoading.value) {
+      return;
+    }
+    msgLoading.value = true;
+    getMessageList(activedChatID.value, msgPageSize.value + 10).then(() => {
+      msgLoading.value = false;
+    });
   }
 }, 500);
 
@@ -778,13 +807,14 @@ const sizeList = ref([
                   />
                   <div
                     v-show="!(!useITT && item.role === 'system')"
-                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border shadow-sm"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : 'var(--user-message-bg)'};max-width: calc(100% - 94px);`"
+                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                    :class="[item.role === 'system' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.message.text)"
                   ></div>
                   <div
                     v-show="!useITT && item.role === 'system'"
-                    class="w-full grid grid-cols-4 gap-[8px] ml-[8px]"
+                    class="w-full grid grid-cols-4 gap-[8px] pl-[8px] pr-[44px] box-border"
                   >
                     <div
                       v-for="ele in item.message.image.split(',')"
@@ -800,7 +830,7 @@ const sizeList = ref([
                 </div>
                 <div
                   v-show="item.role === 'user' && item.message.image"
-                  class="w-full grid grid-cols-4 gap-[8px] mt-[16px]"
+                  class="w-full px-[44px] box-border grid grid-cols-4 gap-[8px] mt-[16px]"
                   style="direction: rtl"
                 >
                   <div
@@ -820,7 +850,7 @@ const sizeList = ref([
           <div class="w-full absolute left-0 bottom-0 message-bottom-mask z-10 h-[16px]"></div>
         </div>
         <!-- size list -->
-        <div v-show="!useITT" class="w-full h-[34px] mb-[8px]" style="flex: 0 0 auto">
+        <div v-show="!useITT" class="w-full h-[34px] mb-[8px] ml-[44px]" style="flex: 0 0 auto">
           <el-scrollbar view-class="flex space-x-[8px]">
             <div
               v-for="(item, index) in sizeList"

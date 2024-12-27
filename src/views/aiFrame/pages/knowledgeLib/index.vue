@@ -145,11 +145,16 @@ const handleClickDeleteDoc = async (docId: string) => {
     await message.delConfirm();
 
     const id = currentLibId.value;
-    await postDeleteDoc({
+    const res = await postDeleteDoc({
       collectionId: id,
       docId
     });
-    message.success(t('common.delSuccess'));
+    if ('doc is not completed, cannot be deleted' === res) {
+      // 文档还在训练中
+      message.warning(t('文档训练未完成，暂时无法删除'));
+    } else {
+      message.success(t('common.delSuccess'));
+    }
 
     // 重新查询文档列表和知识库列表
     await getDocumentList(id);
@@ -348,8 +353,16 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                     ></div>
                   </div>
                   <div class="flex items-center">
-                    <el-button class="!rounded-full">删除</el-button>
-                    <el-button class="!rounded-full !ml-[8px]" color="#615ced">导入文档</el-button>
+                    <el-button class="!rounded-full" @click="handleDeleteLib(index)">
+                      删除
+                    </el-button>
+                    <el-button
+                      class="!rounded-full !ml-[8px]"
+                      color="#615ced"
+                      @click="handleClickImport(index)"
+                    >
+                      导入文档
+                    </el-button>
                   </div>
                 </div>
               </div>

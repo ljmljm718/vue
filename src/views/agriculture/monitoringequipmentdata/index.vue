@@ -42,7 +42,6 @@
             :class="`${listType === 'list' && 'tab-active'}`"
           >
             <Icon icon="ep:list" />
-            <span>列表</span>
           </el-button>
           <el-button
             @click="listType = 'card'"
@@ -50,7 +49,6 @@
             :class="`${listType === 'card' && 'tab-active'}`"
           >
             <Icon icon="ep:menu" />
-            <span>卡片</span>
           </el-button>
         </div>
         <div
