@@ -778,13 +778,14 @@ const sizeList = ref([
                   />
                   <div
                     v-show="!(!useITT && item.role === 'system')"
-                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border shadow-sm"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : 'var(--user-message-bg)'};max-width: calc(100% - 94px);`"
+                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                    :class="[item.role === 'system' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.message.text)"
                   ></div>
                   <div
                     v-show="!useITT && item.role === 'system'"
-                    class="w-full grid grid-cols-4 gap-[8px] ml-[8px]"
+                    class="w-full grid grid-cols-4 gap-[8px] pl-[8px] pr-[44px] box-border"
                   >
                     <div
                       v-for="ele in item.message.image.split(',')"
@@ -800,7 +801,7 @@ const sizeList = ref([
                 </div>
                 <div
                   v-show="item.role === 'user' && item.message.image"
-                  class="w-full grid grid-cols-4 gap-[8px] mt-[16px]"
+                  class="w-full px-[44px] box-border grid grid-cols-4 gap-[8px] mt-[16px]"
                   style="direction: rtl"
                 >
                   <div
@@ -820,7 +821,7 @@ const sizeList = ref([
           <div class="w-full absolute left-0 bottom-0 message-bottom-mask z-10 h-[16px]"></div>
         </div>
         <!-- size list -->
-        <div v-show="!useITT" class="w-full h-[34px] mb-[8px]" style="flex: 0 0 auto">
+        <div v-show="!useITT" class="w-full h-[34px] mb-[8px] ml-[44px]" style="flex: 0 0 auto">
           <el-scrollbar view-class="flex space-x-[8px]">
             <div
               v-for="(item, index) in sizeList"
