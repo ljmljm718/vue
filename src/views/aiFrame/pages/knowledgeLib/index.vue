@@ -58,7 +58,6 @@ const knowledgeList = ref<any[]>([]);
 const getKnowledgeList = async () => {
   knowledgeList.value = [];
   const res = await getCollectionList();
-  // const res = [];
   knowledgeList.value = Array.isArray(res) ? res : [];
   console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
@@ -238,7 +237,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
             <span class="pl-[0.6em] text-[1.4em]">创建知识库</span>
           </div>
           <div
-            class="collapse-button flex items-center px-[1.7em] py-[0.8em] rounded-[2em] cursor-pointer hover:!border-[#615ced] hover:text-[#615ced]"
+            class="collapse-button flex items-center px-[1.7em] py-[0.8em] rounded-[2em] cursor-pointer hover:!border-[#615ced] hover:text-[#615ced] transition-all ease-in-out duration-600"
             style="border: 0.1em solid #ebecf2"
             @click="showGuide = !showGuide"
           >
@@ -259,41 +258,45 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           style="width: calc(100% - 6em)"
           class="mx-[3.3em] rounded-[1.6em] overflow-hidden transition-all ease-in-out duration-400 absolute left-0 top-0 z-20 w-full bg-white !dark:bg-[#121725]"
         >
-          <el-scrollbar>
-            <div class="flex px-[3.7em] pt-[1.7em] space-x-[8.5em]">
-              <div class="flex space-x-[3.5em]">
-                <div class="space-y-[1.2em] w-[30em]">
-                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第1步</div>
-                  <div class="text-[#33315A] text-[1.8em] fix-text-white">创建知识库</div>
-                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+          <el-carousel :interval="4000" type="card" height="178px" class="guide-carousel p-[1em]">
+            <el-carousel-item class="rounded-[12px] shadow-md">
+              <div class="flex space-x-[35px] p-[16px] lib-bg">
+                <div class="space-y-[12px] w-[300px]">
+                  <div class="text-[14px] text-[#635E9E] fix-text-white">第1步</div>
+                  <div class="text-[18px] text-[#33315A] fix-text-white">创建知识库</div>
+                  <div class="text-[14px] text-[#252059] fix-text-white">
                     按特定场景/领域管理知识库，支持结构化和非结构化类型知识库
                   </div>
                 </div>
-                <div class="guide-img-1 w-[16.1em] h-[17.1em] self-end"></div>
+                <div class="guide-img-1 w-[161px] h-[171px]"></div>
               </div>
-              <div class="flex space-x-[3.5em]">
-                <div class="space-y-[1.2em] w-[30em]">
-                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第2步</div>
-                  <div class="text-[#33315A] text-[1.8em] fix-text-white">上传文档</div>
-                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+            </el-carousel-item>
+            <el-carousel-item class="rounded-[12px] shadow-md">
+              <div class="flex space-x-[35px] p-[16px] lib-bg">
+                <div class="space-y-[12px] w-[300px]">
+                  <div class="text-[14px] text-[#635E9E] fix-text-white">第2步</div>
+                  <div class="text-[18px] text-[#33315A] fix-text-white">上传文档</div>
+                  <div class="text-[14px] text-[#252059] fix-text-white">
                     非结构化文档支持类型：txt、doc、docx、pdf、markdown/md、faq.xlsx、pptx；结构化文档支持类型：xlsx、csv、
                     jsonl
                   </div>
                 </div>
-                <div class="guide-img-2 w-[16.1em] h-[17.1em] self-end"></div>
+                <div class="guide-img-2 w-[161px] h-[171px] self-end"></div>
               </div>
-              <div class="flex space-x-[3.5em]">
-                <div class="space-y-[1.2em] w-[30em]">
-                  <div class="text-[1.4em] text-[#635E9E] fix-text-white">第3步</div>
-                  <div class="text-[#33315A] text-[1.8em] fix-text-white">检索问答</div>
-                  <div class="text-[1.4em] text-[#252059] fix-text-white">
+            </el-carousel-item>
+            <el-carousel-item class="rounded-[12px] shadow-md">
+              <div class="flex space-x-[35px] p-[16px] lib-bg">
+                <div class="space-y-[12px] w-[300px]">
+                  <div class="text-[14px] text-[#635E9E] fix-text-white">第3步</div>
+                  <div class="text-[18px] text-[#33315A] fix-text-white">检索问答</div>
+                  <div class="text-[14px] text-[#252059] fix-text-white">
                     基于知识库，通过切片检索及大模型问答，调试检查回答效果
                   </div>
                 </div>
-                <div class="guide-img-3 w-[16.1em] h-[17.1em] self-end"></div>
+                <div class="guide-img-2 w-[161px] h-[171px] self-end"></div>
               </div>
-            </div>
-          </el-scrollbar>
+            </el-carousel-item>
+          </el-carousel>
         </div>
         <el-scrollbar @click="showGuide = false">
           <!-- no knowledge lib -->
@@ -307,59 +310,46 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 <div class="text-[#635E9E] fix-text-white text-opacity-70 text-[1.4em] mt-[0.5em]">
                   您还没有创建知识库，点击右上方按钮快速创建
                 </div>
-                <!-- <div
-                  class="create-btn mt-[2.4em] flex items-center px-[2em] py-[0.8em] cursor-pointer"
-                  @click="showLibPage = false"
-                >
-                  <el-icon><Plus /></el-icon>
-                  <span class="pl-[0.3em] text-[1.6em]">创建知识库</span>
-                </div> -->
               </div>
             </div>
           </template>
           <!-- knowledge lib list -->
           <template v-else>
             <div
-              class="mt-[2.4em] grid grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[3.9em] pr-[2.4em] pb-20px"
+              class="mt-[2.4em] grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[1.6em] pl-[4em] pr-[2.4em] pb-20px"
             >
               <div
                 v-for="(item, index) in knowledgeList"
                 :key="item.name"
-                class="rounded-[1.2em] card-bg overflow-hidden shadow-lg"
+                class="rounded-[1.2em] card-bg overflow-hidden shadow-lg pt-[25px] pl-[24px] pb-[30px] pr-[37px] transition-all ease-in-out duration-600 hover:scale-103 hover:!border hover:!border-solid hover:!border-[#615ced]"
               >
-                <div class="flex justify-between pt-[2em] pl-[2.5em] pb-[2.5em] pr-[4.3em]">
-                  <div class="flex flex-col justify-center">
-                    <div class="flex">
-                      <span class="text-[2.4em] text-[#33315A] fix-text-white">
-                        {{ item.collectionName }}
-                      </span>
-                      <div class="tag">{{ dataTypeMap[item.dataType] }}</div>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div class="text-[22px] text-[#33315A] line-clamp-1 fix-text-white">
+                      {{ item.collectionName }}
                     </div>
-                    <div class="pt-[0.8em] flex items-center">
-                      <span class="text-[#9998AC] dark:text-[#ccc] text-[1.6em]">
-                        文档数量：{{ item.docNum ? item.docNum : 0 }}
-                      </span>
-                      <div
-                        class="right-arrow-circle cursor-pointer"
-                        @click="handleCheckDoc(index)"
-                      ></div>
+                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[3px] line-clamp-1">
+                      {{ item.description }}
+                    </div>
+                    <div class="tag mt-[10px] line-clamp-1 w-fit">
+                      {{ dataTypeMap[item.dataType] }}
                     </div>
                   </div>
-                  <div class="card-logo w-[6.6em] h-[7.3em]"></div>
+                  <div class="card-logo flex-none w-[6.6em] h-[7.3em]"></div>
                 </div>
-                <div class="grid grid-cols-3">
-                  <div
-                    class="card-btn-border-top card-btn-border-right flex justify-center items-center py-[0.8em] cursor-pointer text-[1.6em] text-[#33315A] fix-text-white"
-                    @click="handleClickImport(index)"
-                  >
-                    导入文档
+                <div class="mt-[24px] flex justify-between items-end">
+                  <div class="flex items-center">
+                    <span class="text-[#666666] text-[1.6em] fix-text-white">
+                      文档数量：{{ item.docNum ? item.docNum : 0 }}
+                    </span>
+                    <div
+                      class="right-arrow-circle cursor-pointer"
+                      @click="handleCheckDoc(index)"
+                    ></div>
                   </div>
-                  <div class="card-btn-border-top card-btn-border-right"></div>
-                  <div
-                    class="card-btn-border-top flex justify-center items-center py-[0.8em] cursor-pointer text-[1.6em] text-[#33315A] fix-text-white"
-                    @click="handleDeleteLib(index)"
-                  >
-                    删除
+                  <div class="flex items-center">
+                    <el-button class="!rounded-full">删除</el-button>
+                    <el-button class="!rounded-full !ml-[8px]" color="#615ced">导入文档</el-button>
                   </div>
                 </div>
               </div>
@@ -534,13 +524,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 }
 
 .tag {
-  margin-left: 1.6em;
   display: flex;
   align-items: center;
-  border-radius: 0.8em;
+  border-bottom-left-radius: 0.8em;
+  border-top-right-radius: 0.8em;
   background-color: #f1f1fd;
-  padding-left: 1.3em;
-  padding-right: 1.3em;
+  padding: 4px 8px;
   color: #615ced;
   font-size: 1.3em;
 }
@@ -562,42 +551,42 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 
 .csv-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-csv.png);
+  background-image: url(../../assets/knowledge-csv.svg);
 }
 
 .excel-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-excel.png);
+  background-image: url(../../assets/knowledge-excel.svg);
 }
 
 .jsonl-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-jsonl.png);
+  background-image: url(../../assets/knowledge-jsonl.svg);
 }
 
 .md-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-md.png);
+  background-image: url(../../assets/knowledge-md.svg);
 }
 
 .pdf-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-pdf.png);
+  background-image: url(../../assets/knowledge-pdf.svg);
 }
 
 .ppt-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-ppt.png);
+  background-image: url(../../assets/knowledge-ppt.svg);
 }
 
 .txt-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-txt.png);
+  background-image: url(../../assets/knowledge-txt.svg);
 }
 
 .word-icon {
   @extend .doc-icon;
-  background-image: url(../../assets/knowledge-word.png);
+  background-image: url(../../assets/knowledge-word.svg);
 }
 
 :deep(.no-header .el-dialog__header) {
@@ -605,7 +594,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 }
 
 .create-lib-success-icon {
-  background-image: url(../../assets/knowledge-create-lib-success.png);
+  background-image: url(../../assets/knowledge-create-lib-success.svg);
   background-size: 100% 100%;
   width: 2.4em;
   height: 2.4em;
@@ -642,6 +631,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
     background-size: 100% 100%;
   }
 
+  .collapse-button:hover .collapse-arrow {
+    background-image: url(../../assets/knowledge-collapse-active.svg);
+  }
+
   .guide-border {
     border: 0.1em solid #2d2e62;
     background: rgba(23, 28, 49, 0.5);
@@ -670,13 +663,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   }
 
   .tag {
-    margin-left: 1.6em;
     display: flex;
     align-items: center;
-    border-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+    border-top-right-radius: 0.8em;
     background-color: transparent;
-    padding-left: 1.3em;
-    padding-right: 1.3em;
+    padding: 4px 8px;
     color: #786df5;
     font-size: 1.3em;
     border: 0.1em solid #786df5;
@@ -718,5 +710,23 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   color: #615ced;
   border-color: #615ced;
   background-color: transparent;
+}
+</style>
+
+<style lang="scss">
+.ai-light {
+  .guide-carousel {
+    .el-carousel__mask {
+      opacity: 0.6;
+    }
+  }
+}
+
+.ai-dark {
+  .lib-bg {
+    .el-dialog {
+      --el-dialog-bg-color: #1f2531;
+    }
+  }
 }
 </style>

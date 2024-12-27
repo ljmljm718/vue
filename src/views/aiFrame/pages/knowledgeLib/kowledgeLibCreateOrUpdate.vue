@@ -41,7 +41,7 @@
               type="textarea"
               class="!w-1/2"
               clearable
-              input-style="font-size: 1.6em"
+              input-style="font-size: 16px"
             />
           </el-form-item>
 
