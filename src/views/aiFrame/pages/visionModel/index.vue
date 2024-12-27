@@ -411,6 +411,7 @@ const submitITT = async () => {
         image: imgStr
       }
     });
+    await getMessageList(themeId);
     await postCreateChatHistory({
       themeId,
       role: 'system',
@@ -419,7 +420,6 @@ const submitITT = async () => {
         image: ''
       }
     });
-
     await getMessageList(themeId);
 
     if (returnStream.value) {
@@ -493,6 +493,7 @@ const submitTTI = async () => {
         image: ''
       }
     });
+    await getMessageList(themeId);
     await postCreateChatHistory({
       themeId,
       role: 'system',
@@ -501,8 +502,8 @@ const submitTTI = async () => {
         image: urls.join(',')
       }
     });
-
     await getMessageList(themeId);
+
     // 发送完清空输入文字
     inputTextITT.value = '';
 
@@ -609,7 +610,7 @@ const sizeList = ref([
   <div class="relative h-full">
     <!-- left -->
     <div
-      class="side-bar-frame transition-all left-side-bar-frame h-full shadow-md duration-200 z-30"
+      class="side-bar-frame transition-all left-side-bar-frame h-full shadow-md ease-in-out duration-600 z-30"
       :style="`left: ${leftPanelCollapsed ? '-256px' : '0'};`"
     >
       <div
@@ -662,7 +663,7 @@ const sizeList = ref([
     </div>
     <!-- main content -->
     <div
-      class="absolute right-0 h-full z-10 transition-all duration-200 ai-show-main-container"
+      class="absolute right-0 h-full z-10 transition-all ease-in-out duration-600 ai-show-main-container"
       :style="`width: ${leftPanelCollapsed ? '100%' : 'calc(100% - 256px)'};`"
     >
       <!-- title -->
@@ -697,7 +698,7 @@ const sizeList = ref([
           </div>
           <div
             :class="`${useITT ? 'translate-x-0' : 'translate-x-full'}`"
-            class="active-tab-bg absolute left-0 top-0 w-1/2 h-[36px] dark:h-[34px] rounded-full transition-all"
+            class="active-tab-bg absolute left-0 top-0 w-1/2 h-[36px] dark:h-[34px] rounded-full transition-all ease-in-out duration-600"
           ></div>
         </div>
       </div>
@@ -758,7 +759,7 @@ const sizeList = ref([
             </div>
             <div v-loading="msgLoading" class="space-y-[24px] pb-10px mt-[16px]">
               <div
-                class="flex flex-col items-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px] transition duration-500"
+                class="flex flex-col items-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px] transition-all ease-in-out duration-600"
                 v-for="(item, index) in messageList"
                 :key="index"
               >
@@ -879,7 +880,8 @@ const sizeList = ref([
                 v-model="inputTextITT"
               ></textarea>
               <div
-                class="w-24px h-24px overflow-hidden relative left-[-8px] top-[-4px] upload-icon-svg"
+                class="w-24px h-24px overflow-hidden relative left-[-8px] top-[-4px]"
+                :class="useITT && 'upload-icon-svg'"
               >
                 <el-button
                   v-show="useITT"
@@ -904,7 +906,7 @@ const sizeList = ref([
     <!-- right -->
     <div
       v-show="useITT"
-      class="side-bar-frame right-side-bar-frame z-30 h-full shadow-md transition-all duration-200"
+      class="side-bar-frame right-side-bar-frame z-30 h-full shadow-md transition-all ease-in-out duration-600"
       :style="`right: ${rightPanelCollapsed ? '-256px' : '0'};`"
     >
       <div

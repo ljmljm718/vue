@@ -238,12 +238,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
             <span class="pl-[0.6em] text-[1.4em]">创建知识库</span>
           </div>
           <div
-            class="flex items-center px-[1.7em] py-[0.8em] rounded-[2em] cursor-pointer"
+            class="collapse-button flex items-center px-[1.7em] py-[0.8em] rounded-[2em] cursor-pointer hover:!border-[#615ced] hover:text-[#615ced]"
             style="border: 0.1em solid #ebecf2"
             @click="showGuide = !showGuide"
           >
             <div
-              class="collapse-arrow w-[1.4em] h-[1.4em] transition-all"
+              class="collapse-arrow w-[1.4em] h-[1.4em] transition-all ease-in-out duration-600"
               :style="{ transform: !showGuide ? 'rotate(0deg)' : 'rotate(180deg)' }"
             ></div>
             <span class="text-[1.4em] ml-[0.3em] pl-[0.6em]">
@@ -480,14 +480,18 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   background-size: 100% 100%;
 }
 
-.collapse-arrow {
-  background-image: url(../../assets/knowledge-collapse.svg);
-  background-size: 100% 100%;
-}
-
 .ai-light {
   .guide-border {
     border: 0.1em solid #ebecf2;
+  }
+
+  .collapse-arrow {
+    background-image: url(../../assets/knowledge-collapse.svg);
+    background-size: 100% 100%;
+  }
+
+  .collapse-button:hover .collapse-arrow {
+    background-image: url(../../assets/knowledge-collapse-active.svg);
   }
 }
 
