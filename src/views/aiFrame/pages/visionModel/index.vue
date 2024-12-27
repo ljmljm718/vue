@@ -669,7 +669,7 @@ const sizeList = ref([
       <!-- title -->
       <div
         v-show="useITT"
-        class="params-config-btn flex items-center space-x-8px text-14px px-16px py-8px rounded-full cursor-pointer absolute right-5 top-3"
+        class="params-config-btn hover:!border-[#615ced] hover:text-[#615ced] transition-all ease-in-out duration-600 flex items-center space-x-8px text-14px px-16px py-8px rounded-full cursor-pointer absolute right-5 top-3"
         @click="rightPanelCollapsed = false"
       >
         <el-icon><Operation /></el-icon>

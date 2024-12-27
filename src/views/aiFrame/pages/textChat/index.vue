@@ -5,6 +5,8 @@ import userAvatar from '../../assets/userAvatar.svg';
 
 // 其他依赖
 import { marked } from 'marked';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/felipec.css';
 import { throttle } from 'lodash-es';
 import {
   getCollectionList,
@@ -17,6 +19,16 @@ import {
 } from '../../apis';
 import RadioButton from './radioButton.vue';
 
+// 实现自定义指令 高亮代码块
+const vHighlight = {
+  updated(el: any) {
+    let blocks = el.querySelectorAll('pre code');
+    blocks.forEach((block: any) => {
+      hljs.highlightBlock(block);
+    });
+  }
+};
+
 // 随机ID
 const uuid = (length = 8, chars?) => {
   let result = '';
@@ -25,6 +37,18 @@ const uuid = (length = 8, chars?) => {
     result += charsString[Math.floor(Math.random() * charsString.length)];
   }
   return result;
+};
+
+const BtnClickEvent = (e) => {
+  console.log(e.target.innerText);
+  navigator.clipboard.writeText(e.target.innerText);
+  ElMessage.success('内容已复制到剪贴板!');
+};
+const handleCopyBtnClick = () => {
+  const copyBtnList = document.querySelectorAll('pre code');
+  copyBtnList.forEach((item) => {
+    item.addEventListener('click', BtnClickEvent);
+  });
 };
 
 const chatList = ref<any[]>([]);
@@ -110,6 +134,7 @@ const handleChatInfoClick = (item) => {
   if (activeChatID.value !== 'new_chat') getMessageByThemeID(activeChatID.value);
   setTimeout(() => {
     nextTick(() => scollToBottom());
+    nextTick(() => handleCopyBtnClick());
   }, 400);
 };
 
@@ -322,6 +347,7 @@ const handleSendMsg = async (text) => {
     }, 10);
   };
   if (res) flowOutput(res.toString());
+  handleCopyBtnClick();
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
@@ -424,7 +450,7 @@ const handleDeleteChatTheme = (id: string) => {
       :style="`width: ${leftPanelCollapsed ? '100%' : 'calc(100% - 256px)'};`"
     >
       <div
-        class="params-config-btn flex items-center space-x-8px text-14px px-16px py-8px rounded-full cursor-pointer absolute right-5 top-3"
+        class="params-config-btn hover:!border-[#615ced] hover:text-[#615ced] transition-all ease-in-out duration-600 flex items-center space-x-8px text-14px px-16px py-8px rounded-full cursor-pointer absolute right-5 top-3"
         @click="rightPanelCollapsed = false"
       >
         <el-icon><Operation /></el-icon>
@@ -505,10 +531,11 @@ const handleDeleteChatTheme = (id: string) => {
                     "
                   />
                   <div
-                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                    class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
                     :class="[item.role === 'system' ? 'shadow-md' : '']"
                     :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.text)"
+                    v-highlight
                   ></div>
                 </div>
               </div>
@@ -517,10 +544,10 @@ const handleDeleteChatTheme = (id: string) => {
           <div class="w-full absolute left-0 bottom-0 h-16px message-bottom-mask z-10"></div>
         </div>
         <div
-          class="input-outer-container p-2px rounded-16px shadow-md relative"
+          class="input-outer-container p-2px rounded-8px shadow-md relative"
           style="flex: 0 0 auto"
         >
-          <div class="rounded-16px p-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
+          <div class="rounded-8px p-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
             <textarea class="ai-show-textarea grow" id="textarea" rows="2" wrap="soft"></textarea>
             <div class="mx-8px mb-4px">
               <RadioButton
@@ -667,5 +694,18 @@ const handleDeleteChatTheme = (id: string) => {
 
 :deep(.el-select__wrapper.is-focusd) {
   box-shadow: 0 0 0 1px #ffffff;
+}
+</style>
+<style>
+code {
+  border-radius: 6px;
+  position: relative;
+}
+
+pre code::after {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  content: '复制';
 }
 </style>
