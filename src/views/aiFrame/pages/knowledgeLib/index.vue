@@ -348,8 +348,16 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                     ></div>
                   </div>
                   <div class="flex items-center">
-                    <el-button class="!rounded-full">删除</el-button>
-                    <el-button class="!rounded-full !ml-[8px]" color="#615ced">导入文档</el-button>
+                    <el-button class="!rounded-full" @click="handleDeleteLib(index)">
+                      删除
+                    </el-button>
+                    <el-button
+                      class="!rounded-full !ml-[8px]"
+                      color="#615ced"
+                      @click="handleClickImport(index)"
+                    >
+                      导入文档
+                    </el-button>
                   </div>
                 </div>
               </div>
