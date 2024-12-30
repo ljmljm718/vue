@@ -449,17 +449,24 @@ const showLibId = ref('');
               </div>
               <div class="flex items-center space-x-[1em]">
                 <span>{{ item.size }}</span>
-                <el-button link v-show="item.fileManagement">
+                <el-button
+                  link
+                  @click="handleClickDeleteDoc(item.docId)"
+                  class="hover:!bg-[#F5F6FA] dark:hover:!bg-[#384052] dark:!text-white"
+                >
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+                <el-button
+                  link
+                  v-show="item.fileManagement"
+                  class="hover:!bg-[#F5F6FA] dark:hover:!bg-[#384052]"
+                >
                   <a
                     :href="item.fileManagement"
-                    :style="{ color: 'var(--el-color-primary)' }"
-                    class="active:opacity-50"
+                    class="active:opacity-50 text-[#333] hover:text-[#615ced] dark:text-white dark:hover:text-white"
                   >
                     <el-icon><Download /></el-icon>
                   </a>
-                </el-button>
-                <el-button link @click="handleClickDeleteDoc(item.docId)">
-                  <el-icon><Close /></el-icon>
                 </el-button>
               </div>
             </div>
