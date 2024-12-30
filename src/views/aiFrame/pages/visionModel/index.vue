@@ -1058,15 +1058,15 @@ const sizeList = ref([
   }
 
   .upload-icon-svg {
-    background-image: url(../../assets/vision-upload-img-dark.svg);
+    background-image: url(../../assets/vision-upload-img-active.svg);
     background-size: 80% 80%;
     background-repeat: no-repeat;
     background-position: center;
     position: relative;
 
-    &:hover {
-      background-image: url(../../assets/vision-upload-img-active.svg);
-    }
+    // &:hover {
+    //   background-image: url(../../assets/vision-upload-img-active.svg);
+    // }
 
     &:hover::before {
       content: '上传图片';
@@ -1164,14 +1164,14 @@ const sizeList = ref([
   }
 
   .upload-icon-svg {
-    background-image: url(../../assets/vision-upload-img.svg);
+    background-image: url(../../assets/vision-upload-img-active.svg);
     background-size: 80% 80%;
     background-repeat: no-repeat;
     background-position: center;
 
-    &:hover {
-      background-image: url(../../assets/vision-upload-img-active.svg);
-    }
+    // &:hover {
+    //   background-image: url(../../assets/vision-upload-img-active.svg);
+    // }
 
     &:hover::before {
       content: '上传图片';
