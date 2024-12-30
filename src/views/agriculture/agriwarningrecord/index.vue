@@ -7,38 +7,83 @@
           <span class="px-2">传感设备预警</span>
         </el-badge>
       </template>
-      <!-- 搜索栏 -->
-      <ContentWrap>
-        <custom-form
-          class="-mb-15px"
+
+      <el-card
+        class="!overflow-visible"
+        body-style="padding: 16px; display: flex; flex-direction: column;"
+        shadow="never"
+      >
+        <!-- title -->
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-[16px]">
+            <h1 class="m-0 text-[18px] pr-[16px]" style="border-right: 1px solid #e6e6e6">
+              传感设备预警
+            </h1>
+            <el-button
+              type="primary"
+              @click="openForm('create')"
+              v-hasPermi="['agriculture:agri-warning-record:create']"
+            >
+              <Icon icon="ep:plus" />
+              <span>新增</span>
+            </el-button>
+          </div>
+          <div class="flex items-center space-x-[8px]">
+            <el-button type="primary" @click="handleQuery">
+              <Icon icon="ep:search" />
+              <span>搜索</span>
+            </el-button>
+            <el-button @click="resetQuery">
+              <Icon icon="ep:refresh" />
+              <span>重置</span>
+            </el-button>
+            <el-button
+              @click="handleExport"
+              :loading="exportLoading"
+              v-hasPermi="['agriculture:agri-warning-record:export']"
+            >
+              <Icon icon="ep:download" />
+              <span>导出</span>
+            </el-button>
+            <!-- el-radio-button比el-button高 和button放在一行突兀 所以用el-button实现el-radio-button效果 单独使用时el-radio-button更佳 -->
+            <div class="flex">
+              <el-button
+                @click="listType = 'list'"
+                class="!rounded-r-none"
+                :class="`${listType === 'list' && 'tab-active'}`"
+              >
+                <Icon icon="ep:list" />
+              </el-button>
+              <el-button
+                @click="listType = 'card'"
+                class="!ml-0 !rounded-l-none"
+                :class="`${listType === 'card' && 'tab-active'}`"
+              >
+                <Icon icon="ep:menu" />
+              </el-button>
+            </div>
+            <div
+              class="w-[20px] h-[20px] !ml-[16px] text-center leading-[22px] rounded-full cursor-pointer transition-all"
+              :class="showSearch ? 'rotate-0' : 'rotate-180'"
+              style="border: 1px solid #e6e6e6"
+              @click="showSearch = !showSearch"
+            >
+              <el-icon :size="14"><ArrowUpBold /></el-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- search form -->
+        <el-form
           :model="queryParams"
           ref="queryFormRef"
-          label-width="auto"
+          class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-y-[8px] mt-[16px] form overflow-hidden"
+          :style="`${!showSearch && 'height: 0'}`"
+          label-width="95px"
           :inline="true"
         >
-          <!-- 表单内容 -->
-          <!--          <el-form-item label="预警类型" prop="warnType">-->
-          <!--            <el-select-->
-          <!--              class="!w-240px"-->
-          <!--              v-model="queryParams.warnType"-->
-          <!--              placeholder="请选择预警类型"-->
-          <!--              clearable-->
-          <!--            >-->
-          <!--              <el-option-->
-          <!--                v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_MONITOR_TYPE)"-->
-          <!--                :key="dict.value"-->
-          <!--                :label="dict.label"-->
-          <!--                :value="dict.value"-->
-          <!--              />-->
-          <!--            </el-select>-->
-          <!--          </el-form-item>-->
           <el-form-item label="预警状态" prop="warnStatus">
-            <el-select
-              class="!w-240px"
-              v-model="queryParams.warnStatus"
-              placeholder="请选择预警状态"
-              clearable
-            >
+            <el-select v-model="queryParams.warnStatus" placeholder="请选择预警状态" clearable>
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.KAIZHOU_WARN_STATUS)"
                 :key="dict.value"
@@ -48,12 +93,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="预警等级" prop="warnLevel">
-            <el-select
-              class="!w-240px"
-              v-model="queryParams.warnLevel"
-              placeholder="请选择预警等级"
-              clearable
-            >
+            <el-select v-model="queryParams.warnLevel" placeholder="请选择预警等级" clearable>
               <el-option
                 v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_WARN_LEVEL)"
                 :key="dict.value"
@@ -64,7 +104,6 @@
           </el-form-item>
           <el-form-item label="预警时间" prop="warnTime">
             <el-date-picker
-              class="!w-220px"
               v-model="queryParams.warnTime"
               value-format="YYYY-MM-DD HH:mm:ss"
               type="daterange"
@@ -73,64 +112,7 @@
               :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             />
           </el-form-item>
-          <!-- 表单按钮 -->
-          <el-form-item>
-            <el-button @click="handleQuery" type="primary">
-              <Icon icon="ep:search" />
-              搜索
-            </el-button>
-            <el-button @click="resetQuery">
-              <Icon icon="ep:refresh" />
-              重置
-            </el-button>
-          </el-form-item>
-        </custom-form>
-      </ContentWrap>
-      <!-- 数据列表 -->
-      <ContentWrap>
-        <!-- 第一行功能按钮 -->
-        <div class="flex justify-between">
-          <div class="flex flex-wrap content-center">
-            <el-button
-              type="primary"
-              plain
-              @click="openForm('create')"
-              v-hasPermi="['agriculture:agri-warning-record:create']"
-            >
-              <el-icon>
-                <Plus />
-              </el-icon>
-              新增
-            </el-button>
-            <el-button
-              plain
-              @click="handleExport"
-              :loading="exportLoading"
-              v-hasPermi="['agriculture:agri-warning-record:export']"
-            >
-              <el-icon>
-                <Download />
-              </el-icon>
-              导出
-            </el-button>
-          </div>
-          <div class="flex flex-wrap content-center">
-            <el-radio-group v-model="listType" size="small" @change="cardChange">
-              <el-radio-button label="card" value="card">
-                <el-icon>
-                  <Menu />
-                </el-icon>
-                卡片
-              </el-radio-button>
-              <el-radio-button label="list" value="list">
-                <el-icon>
-                  <List />
-                </el-icon>
-                列表
-              </el-radio-button>
-            </el-radio-group>
-          </div>
-        </div>
+        </el-form>
         <!-- 第二行列表数据 -->
         <div class="mt-[20px]">
           <!-- 卡片形式 -->
@@ -300,41 +282,50 @@
                   {{ scope.row.warnStatus === '1' ? scope.row.dealInfo : '' }}
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="操作" fixed="right" width="280px">
+              <el-table-column align="center" label="操作" fixed="right" min-width="184px">
                 <template #default="scope">
-                  <el-button
-                    type="primary"
-                    v-show="scope.row.warnStatus !== '1'"
-                    @click="handleDeal(scope.row.id)"
-                  >
-                    处理
-                  </el-button>
-                  <el-button
-                    v-show="scope.row.warnStatus !== '1'"
-                    @click="openForm('update', scope.row.id)"
-                    v-hasPermi="['agriculture:agri-warning-record:update']"
-                  >
-                    编辑
-                  </el-button>
-                  <el-button
-                    v-show="scope.row.warnStatus !== '1'"
-                    @click="handleDelete(scope.row.id)"
-                    v-hasPermi="['agriculture:agri-warning-record:delete']"
-                  >
-                    删除
-                  </el-button>
+                  <div class="flex items-center justify-center">
+                    <el-button
+                      link
+                      type="primary"
+                      v-show="scope.row.warnStatus !== '1'"
+                      @click="handleDeal(scope.row.id)"
+                    >
+                      处理
+                    </el-button>
+                    <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+                    <el-button
+                      link
+                      v-show="scope.row.warnStatus !== '1'"
+                      @click="openForm('update', scope.row.id)"
+                      v-hasPermi="['agriculture:agri-warning-record:update']"
+                    >
+                      编辑
+                    </el-button>
+                    <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+                    <el-button
+                      link
+                      v-show="scope.row.warnStatus !== '1'"
+                      @click="handleDelete(scope.row.id)"
+                      v-hasPermi="['agriculture:agri-warning-record:delete']"
+                    >
+                      删除
+                    </el-button>
+                  </div>
                 </template>
               </el-table-column>
             </el-table>
           </div>
         </div>
-        <Pagination
-          :total="total"
-          v-model:page="queryParams.pageNo"
-          v-model:limit="queryParams.pageSize"
-          @pagination="getList()"
-        />
-      </ContentWrap>
+      </el-card>
+
+      <!-- pagination -->
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList()"
+      />
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
@@ -389,18 +380,75 @@
           <span class="px-2">监控设备预警</span>
         </el-badge>
       </template>
-      <!-- 搜索栏 -->
-      <ContentWrap>
-        <custom-form
-          class="-mb-15px"
+
+      <el-card
+        class="!overflow-visible"
+        body-style="padding: 16px; display: flex; flex-direction: column;"
+        shadow="never"
+      >
+        <!-- title -->
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-[16px]">
+            <h1 class="m-0 text-[18px] pr-[16px]" style="border-right: 1px solid #e6e6e6">
+              监控设备预警
+            </h1>
+            <el-button type="primary" @click="openFormMonitor('create')">
+              <Icon icon="ep:plus" />
+              <span>新增</span>
+            </el-button>
+          </div>
+          <div class="flex items-center space-x-[8px]">
+            <el-button type="primary" @click="handleQueryMonitor">
+              <Icon icon="ep:search" />
+              <span>搜索</span>
+            </el-button>
+            <el-button @click="resetQueryMonitor">
+              <Icon icon="ep:refresh" />
+              <span>重置</span>
+            </el-button>
+            <el-button @click="handleExportMonitor" :loading="exportLoadingMonitor">
+              <Icon icon="ep:download" />
+              <span>导出</span>
+            </el-button>
+            <!-- el-radio-button比el-button高 和button放在一行突兀 所以用el-button实现el-radio-button效果 单独使用时el-radio-button更佳 -->
+            <div class="flex">
+              <el-button
+                @click="listTypeMonitor = 'list'"
+                class="!rounded-r-none"
+                :class="`${listTypeMonitor === 'list' && 'tab-active'}`"
+              >
+                <Icon icon="ep:list" />
+              </el-button>
+              <el-button
+                @click="listTypeMonitor = 'card'"
+                class="!ml-0 !rounded-l-none"
+                :class="`${listTypeMonitor === 'card' && 'tab-active'}`"
+              >
+                <Icon icon="ep:menu" />
+              </el-button>
+            </div>
+            <div
+              class="w-[20px] h-[20px] !ml-[16px] text-center leading-[22px] rounded-full cursor-pointer transition-all"
+              :class="showSearch ? 'rotate-0' : 'rotate-180'"
+              style="border: 1px solid #e6e6e6"
+              @click="showSearch = !showSearch"
+            >
+              <el-icon :size="14"><ArrowUpBold /></el-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- search form -->
+        <el-form
           :model="queryParamsMonitor"
           ref="queryFormRefMonitor"
-          label-width="auto"
+          class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-y-[8px] mt-[16px] form overflow-hidden"
+          :style="`${!showSearch && 'height: 0'}`"
+          label-width="95px"
           :inline="true"
         >
           <el-form-item label="基地名称" prop="monitoringBaseName">
             <el-input
-              class="!w-240px"
               v-model="queryParamsMonitor.monitoringBaseName"
               placeholder="请输入"
               clearable
@@ -409,7 +457,6 @@
           </el-form-item>
           <el-form-item label="地块名称" prop="monitoringPlotName">
             <el-input
-              class="!w-240px"
               v-model="queryParamsMonitor.monitoringPlotName"
               placeholder="请输入"
               clearable
@@ -418,7 +465,6 @@
           </el-form-item>
           <el-form-item label="设备名称" prop="deviceName">
             <el-input
-              class="!w-240px"
               v-model="queryParamsMonitor.deviceName"
               placeholder="请输入"
               clearable
@@ -426,281 +472,212 @@
             />
           </el-form-item>
           <el-form-item label="事件类型" prop="noticeEvent">
-            <el-select
-              class="!w-240px"
-              v-model="queryParamsMonitor.noticeEvent"
-              placeholder="请选择"
-              clearable
-            >
+            <el-select v-model="queryParamsMonitor.noticeEvent" placeholder="请选择" clearable>
               <el-option
                 v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_NOTICEEVENT_TYPE)"
                 :key="dict.label"
                 :label="dict.label"
                 :value="dict.label"
               />
-              <!--                <el-option-->
-              <!--                  v-for="dict in options"-->
-              <!--                  :key="dict.value"-->
-              <!--                  :label="dict.label"-->
-              <!--                  :value="dict.value"-->
-              <!--                />-->
             </el-select>
           </el-form-item>
           <el-form-item label="拍摄时间" prop="recordTime">
             <el-date-picker
-              class="!w-220px"
               v-model="queryParamsMonitor.recordTime"
               value-format="YYYY-MM-DD HH:mm:ss"
               type="daterange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+              clearable
             />
           </el-form-item>
-          <!--          </div>-->
-          <!-- 表单按钮 -->
-          <!--          <div class="flex flex-wrap justify-center content-center md:col-span-1">-->
-          <el-form-item>
-            <el-button @click="handleQueryMonitor" type="primary">
-              <Icon icon="ep:search" />
-              搜索
-            </el-button>
-            <el-button @click="resetQueryMonitor">
-              <Icon icon="ep:refresh" />
-              重置
-            </el-button>
-          </el-form-item>
-          <!--          </div>-->
-        </custom-form>
-      </ContentWrap>
-      <!-- 数据列表 -->
-      <ContentWrap>
-        <!-- 第一行功能按钮 -->
-        <div class="flex justify-between">
-          <div class="flex flex-wrap content-center">
-            <el-button type="primary" plain @click="openFormMonitor('create')">
-              <el-icon>
-                <Plus />
-              </el-icon>
-              新增
-            </el-button>
-            <el-button plain @click="handleExportMonitor" :loading="exportLoadingMonitor">
-              <el-icon>
-                <Download />
-              </el-icon>
-              导出
-            </el-button>
-          </div>
-          <div class="flex flex-wrap content-center">
-            <el-radio-group v-model="listTypeMonitor" size="small" @change="cardChangeMonitor">
-              <el-radio-button label="card" value="card">
-                <el-icon>
-                  <Menu />
-                </el-icon>
-                卡片
-              </el-radio-button>
-              <el-radio-button label="list" value="list">
-                <el-icon>
-                  <List />
-                </el-icon>
-                列表
-              </el-radio-button>
-            </el-radio-group>
-          </div>
-        </div>
-        <!-- 第二行列表数据 -->
-        <div class="mt-[20px]">
-          <!-- 卡片形式 -->
-          <div
-            v-if="listMonitor.length && currentItem && listTypeMonitor === 'card'"
-            :class="`
-              grid grid-cols-2 gap-3
-              ${themeIsDark ? 'text-white' : 'text-[#999999]'}
-            `"
+        </el-form>
+
+        <!-- main content -->
+        <div class="mt-[16px]">
+          <!-- list -->
+          <el-table
+            v-show="listTypeMonitor === 'list'"
+            :data="listMonitor"
+            v-loading="loading"
+            :show-overflow-tooltip="true"
           >
-            <!-- 预览区 -->
-            <div
-              :class="`
-                col-span-1 rounded-md shadow-md pb-[10px]
-                ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
-              `"
-            >
-              <div class="relative">
+            <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
+            <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
+            <el-table-column align="center" prop="deviceName" label="设备名称" />
+            <el-table-column label="事件类型" align="center" prop="noticeEvent">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE" :value="scope.row.noticeEvent" />
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="remarks" label="消息内容" />
+            <el-table-column align="center" label="拍摄时间">
+              <template #default="scope">
+                {{ timeFormat(scope.row.recordTime) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="抓拍图片" align="center" prop="captured">
+              <template #default="scope">
                 <el-image
-                  :src="currentItem.captured"
-                  :preview-src-list="[currentItem.captured]"
+                  class="h-50px w-50px"
+                  :src="scope.row.captured"
+                  :preview-src-list="[scope.row.captured]"
                   preview-teleported
                   fit="contain"
-                  class="w-full h-[50vh] rounded"
                 />
-                <div
-                  v-show="currentItem.videoLink"
-                  @click="openVideoMonitor(currentItem.videoLink)"
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] cursor-pointer"
-                >
-                  <el-icon color="#FFFFFF" size="16px">
-                    <VideoCamera />
-                  </el-icon>
-                </div>
-                <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] cursor-pointer"
-                  @click="openFormMonitor('update', currentItem.id)"
-                >
-                  <el-icon color="#FFFFFF" size="16px">
-                    <Edit />
-                  </el-icon>
-                </div>
-                <div
-                  class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] cursor-pointer"
-                  @click="handleDeleteMonitor(currentItem.id)"
-                >
-                  <el-icon color="#FFFFFF" size="16px">
-                    <Delete />
-                  </el-icon>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 2xl:grid-cols-3 gap-1 my-10px px-3">
-                <div>
-                  基地名称:
-                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                    {{ currentItem.monitoringBaseName }}
-                  </span>
-                </div>
-                <div>
-                  地块名称:
-                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                    {{ currentItem.monitoringPlotName }}
-                  </span>
-                </div>
-                <div>
-                  设备名称:
-                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                    {{ currentItem.deviceName }}
-                  </span>
-                </div>
-                <div>
-                  事件类型:
-                  <dict-tag
-                    :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
-                    :value="currentItem.noticeEvent"
-                  />
-                </div>
-                <div>
-                  消息内容:
-                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                    {{ currentItem.remarks }}
-                  </span>
-                </div>
-                <div>
-                  记录时间:
-                  <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                    {{ timeFormat(currentItem.recordTime) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <!-- 卡片列表区 -->
-            <el-scrollbar style="height: 70vh">
-              <div class="col-span-1 grid grid-cols-2 xl:grid-cols-3 gap-3 rounded">
-                <div
-                  :class="`
-                    ${themeIsDark ? 'bg-[#343A46]' : 'bg-[#F5F5F5]'}
-                    cursor-pointer shadow-md rounded-md pb-[10px]
-                  `"
-                  v-for="item in listMonitor"
-                  :key="item.id"
-                  @click="changCurrentItem(item)"
-                >
-                  <el-scrollbar>
-                    <div class="text-center">
-                      <el-image
-                        :src="item.captured"
-                        preview-teleported
-                        fit="contain"
-                        class="h-[17vh] rounded"
-                      />
-                    </div>
-                    <div class="mt-[5px] px-[5px]">
-                      <div>
-                        设备名称:
-                        <br class="lg:hidden" />
-                        <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                          {{ item.deviceName }}
-                        </span>
-                      </div>
-                      <div class="mt-[5px]">
-                        记录时间:
-                        <br class="lg:hidden" />
-                        <span :class="`${themeIsDark ? 'text-[#999]' : 'text-[#666666]'}`">
-                          {{ timeFormat(item.recordTime) }}
-                        </span>
-                      </div>
-                    </div>
-                  </el-scrollbar>
-                </div>
-              </div>
-            </el-scrollbar>
-          </div>
-          <div v-else-if="listTypeMonitor === 'card'" class="text-center tracking-widest">
-            暂无数据
-          </div>
-          <!-- 列表形式 -->
-          <div v-show="listTypeMonitor === 'list'">
-            <el-table :data="listMonitor">
-              <el-table-column align="center" prop="monitoringBaseName" label="基地名称" />
-              <el-table-column align="center" prop="monitoringPlotName" label="地块名称" />
-              <el-table-column align="center" prop="deviceName" label="设备名称" />
-              <!--              <el-table-column align="center" prop="noticeEvent" label="事件类型" />-->
-              <el-table-column label="事件类型" align="center" prop="noticeEvent">
-                <template #default="scope">
-                  <dict-tag
-                    :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
-                    :value="scope.row.noticeEvent"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="remarks" label="消息内容" />
-              <el-table-column align="center" label="拍摄时间">
-                <template #default="scope">
-                  {{ timeFormat(scope.row.recordTime) }}
-                </template>
-              </el-table-column>
-              <el-table-column label="抓拍图片" align="center" prop="captured">
-                <template #default="scope">
-                  <el-image
-                    class="h-50px w-50px"
-                    :src="scope.row.captured"
-                    :preview-src-list="[scope.row.captured]"
-                    preview-teleported
-                    fit="contain"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="操作" fixed="right" width="280px">
-                <template #default="scope">
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作" fixed="right" min-width="184px">
+              <template #default="scope">
+                <div class="flex items-center justify-center">
                   <el-button
+                    link
                     type="primary"
                     v-show="scope.row.videoLink"
                     @click="openVideoMonitor(scope.row.videoLink)"
                   >
                     查看视频
                   </el-button>
-                  <el-button @click="openFormMonitor('update', scope.row.id)">编辑</el-button>
-                  <el-button type="danger" @click="handleDeleteMonitor(scope.row.id)">
+                  <div
+                    v-show="scope.row.videoLink"
+                    class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"
+                  ></div>
+                  <el-button link @click="openFormMonitor('update', scope.row.id)">编辑</el-button>
+                  <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+                  <el-button link type="danger" @click="handleDeleteMonitor(scope.row.id)">
                     删除
                   </el-button>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <!-- card -->
+          <div
+            v-show="listTypeMonitor === 'card'"
+            v-loading="loading"
+            class="grid grid-cols-2 gap-[16px]"
+          >
+            <div>
+              <div
+                class="sticky top-0 w-full pb-[16px] rounded-b-[4px] shadow-md dark:shadow-[#000]"
+              >
+                <template v-if="currentIdx !== -1 && list[currentIdx]">
+                  <div class="w-full pb-[56.25%] relative">
+                    <el-image
+                      :src="listMonitor[currentIdx].captured"
+                      :alt="listMonitor[currentIdx].deviceName"
+                      :preview-src-list="[listMonitor[currentIdx].captured]"
+                      preview-teleported
+                      fit="cover"
+                      class="!absolute top-0 left-0 w-full h-full"
+                    />
+                    <div
+                      v-show="listMonitor[currentIdx].videoLink"
+                      @click="openVideoMonitor(listMonitor[currentIdx].videoLink)"
+                      class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+                    >
+                      <el-icon size="16px"><VideoCamera /></el-icon>
+                    </div>
+                    <div
+                      class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+                      @click="openForm('update', listMonitor[currentIdx].id)"
+                    >
+                      <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
+                    </div>
+                    <div
+                      class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+                      @click="handleDelete(listMonitor[currentIdx].id)"
+                    >
+                      <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
+                    </div>
+                  </div>
+                  <div class="text-[8px] 2xl:text-[10px]">
+                    <div class="p-[1.6em] flex justify-between">
+                      <span class="font-bold text-[1.4em]">
+                        {{ listMonitor[currentIdx].deviceName }}
+                      </span>
+                      <span class="text-[#999] text-[1.4em]">
+                        {{ timeFormat(listMonitor[currentIdx].recordTime) }}
+                      </span>
+                    </div>
+                    <div style="border-bottom: 1px dashed #e6e6e6" class="mx-[1.6em]"></div>
+                    <div class="mt-[1.6em] px-[1.6em] flex justify-between">
+                      <span class="text-[#999] text-[1.4em]">基地名称:</span>
+                      <span class="text-[#999] text-[1.4em]">
+                        {{ listMonitor[currentIdx].monitoringBaseName }}
+                      </span>
+                    </div>
+                    <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                      <span class="text-[#999] text-[1.4em]">地块名称:</span>
+                      <span class="text-[#999] text-[1.4em]">
+                        {{ listMonitor[currentIdx].monitoringPlotName }}
+                      </span>
+                    </div>
+                    <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                      <span class="text-[#999] text-[1.4em]">事件类型:</span>
+                      <span class="text-[#999] text-[1.4em]">
+                        <dict-tag
+                          :type="DICT_TYPE.AGRI_NOTICEEVENT_TYPE"
+                          :value="listMonitor[currentIdx].noticeEvent"
+                        />
+                      </span>
+                    </div>
+                    <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                      <span class="text-[#999] text-[1.4em]">消息内容:</span>
+                      <span class="text-[#999] text-[1.4em]">
+                        {{
+                          listMonitor[currentIdx].remarks ? listMonitor[currentIdx].remarks : '无'
+                        }}
+                      </span>
+                    </div>
+                  </div>
                 </template>
-              </el-table-column>
-            </el-table>
+                <template v-else>
+                  <div class="w-full pb-[56.25%] no-data"></div>
+                </template>
+              </div>
+            </div>
+            <div>
+              <div class="grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
+                <div
+                  class="cursor-pointer shadow-md rounded-[4px] overflow-hidden pb-[16px] dark:bg-[#333] dark:shadow-[#000]"
+                  v-for="(item, index) in listMonitor"
+                  :key="item.id"
+                  @click="currentIdx = index"
+                  :style="`${index === currentIdx && 'border: 1px solid var(--el-color-primary)'}`"
+                >
+                  <div class="w-full pb-[56.25%] relative">
+                    <el-image
+                      :src="item.captured"
+                      :alt="item.deviceName"
+                      fit="cover"
+                      class="!absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                  <div class="text-[8px] 2xl:text-[10px] px-[1.6em] mt-[1.6em]">
+                    <div>
+                      <span class="truncate text-[1.4em]">{{ item.deviceName }}</span>
+                    </div>
+                    <div class="mt-[0.8em]">
+                      <span class="truncate text-[1.4em]">{{ timeFormat(item.recordTime) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- pagination -->
+          <Pagination
+            :total="totalMonitor"
+            v-model:page="queryParamsMonitor.pageNo"
+            v-model:limit="queryParamsMonitor.pageSize"
+            @pagination="getListMonitor()"
+          />
         </div>
-        <Pagination
-          :total="totalMonitor"
-          v-model:page="queryParamsMonitor.pageNo"
-          v-model:limit="queryParamsMonitor.pageSize"
-          @pagination="getListMonitor()"
-        />
-      </ContentWrap>
+      </el-card>
     </el-tab-pane>
 
     <!-- 表单弹窗：添加/修改 -->
@@ -763,7 +740,7 @@ const { t } = useI18n(); // 国际化
 // --------------------------- sensorTab ---------------------------
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 9,
   warnTime: [],
   warnStatus: undefined,
   deviceType: undefined,
@@ -1031,7 +1008,7 @@ const listMonitor = ref<MonitoringEquipmentNoticeVO[]>([]); // 列表的数据
 const totalMonitor = ref(0); // 列表的总页数
 const queryParamsMonitor = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 9,
   deviceId: undefined,
   deviceName: undefined,
   monitoringBaseId: undefined,
@@ -1076,9 +1053,13 @@ const currentItem = ref({
   createTime: undefined
 });
 
+// 当前查看的数据下标
+const currentIdx = ref(-1);
+
 /** 查询列表 */
 const getListMonitor = async () => {
   loading.value = true;
+  currentIdx.value = -1;
   // // 卡片形式每页加载6项，列表形式每页加载10项
   // queryParamsMonitor.pageSize = listTypeMonitor.value === 'card' ? 6 : 10
   try {
@@ -1087,8 +1068,8 @@ const getListMonitor = async () => {
     listMonitor.value = data.list;
     totalMonitor.value = data.total;
     if ('card' === listTypeMonitor.value) {
-      currentItem.value = listMonitor.value[0];
-      console.log('aaaaaaaaaaaa', currentItem.value);
+      // currentItem.value = listMonitor.value[0];
+      currentIdx.value = listMonitor.value.length > 0 ? 0 : -1;
     }
   } finally {
     loading.value = false;
@@ -1127,7 +1108,7 @@ const openFormMonitor = (type: string, id?: number) => {
   // 新增和编辑前 保存当前编辑项的下标
   if ('card' === listTypeMonitor.value) {
     tmpIndex.value = listMonitor.value.findIndex((ele) => {
-      return ele.id === currentItem.value.id;
+      return ele.id === listMonitor.value[currentIdx.value].id;
     });
   }
 
@@ -1139,7 +1120,8 @@ const handleUpdateSuccess = async () => {
   await getListMonitor();
   if ('card' !== listTypeMonitor.value) return;
   if (-1 !== tmpIndex.value) {
-    currentItem.value = listMonitor.value[tmpIndex.value];
+    // currentItem.value = listMonitor.value[tmpIndex.value];
+    currentIdx.value = tmpIndex.value;
     tmpIndex.value = -1;
   }
 
@@ -1160,7 +1142,8 @@ const handleUpdateSuccess = async () => {
 /** 删除按钮操作 */
 const handleDeleteMonitor = async (id: number) => {
   // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = listMonitor.value.findIndex((ele) => ele.id === currentItem.value.id);
+  let idx: number = -1;
+  idx = listMonitor.value.findIndex((ele) => ele.id === listMonitor.value[currentIdx.value].id);
 
   try {
     // 删除的二次确认
@@ -1177,10 +1160,11 @@ const handleDeleteMonitor = async (id: number) => {
   // 删除后 设置curItem
   // 如果删除成功 则下标处是删除后的下一项
   // 如果删除失败 则下标处是原来的项
+  if (-1 === idx) return;
   if (idx >= listMonitor.value.length) {
-    currentItem.value = listMonitor.value[listMonitor.value.length - 1];
+    currentIdx.value = listMonitor.value.length - 1;
   } else {
-    currentItem.value = listMonitor.value[idx];
+    currentIdx.value = idx;
   }
 };
 /** 导出按钮操作 */
@@ -1208,7 +1192,7 @@ onMounted(() => {
 
 import { useAppStore } from '@/store/modules/app';
 import { watch } from 'vue';
-import { Delete } from '@element-plus/icons-vue';
+import { ArrowUpBold, Delete, Edit, VideoCamera } from '@element-plus/icons-vue';
 
 const appStore = useAppStore();
 const themeIsDark = ref(false);
@@ -1221,6 +1205,8 @@ watch(
     themeIsDark.value = newVal;
   }
 );
+
+const showSearch = ref(true);
 </script>
 
 <style scoped lang="scss">
@@ -1278,5 +1264,38 @@ watch(
   padding: 15px;
   border-radius: 5px;
   position: relative;
+}
+
+.tab-active {
+  color: white;
+  background-color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+}
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
+}
+
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
+
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
+}
+
+.no-data {
+  background-image: url(/images/noData.png);
+  background-size: 100% 100%;
+}
+</style>
+
+<style lang="scss">
+.video-dialog .el-dialog__body {
+  height: calc(100% - 54px);
+  box-sizing: border-box;
 }
 </style>
