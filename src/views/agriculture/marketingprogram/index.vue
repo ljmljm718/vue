@@ -96,17 +96,7 @@ const renderPDF = (url: string) => {
   }, 200);
 };
 //--------结束文件预览
-// 列表展示类型
-const listType = ref('card');
-const tmpIndex = ref(-1);
-// 当前查看的数据下标
-const currentIdx = ref(-1);
-// 切换列表展示类型
-const handleCardChange = async () => {
-  queryParams.pageNo = 1;
-  await getList();
-};
-watch(listType, handleCardChange);
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true;
@@ -114,9 +104,6 @@ const getList = async () => {
     const data = await MarketingProgramApi.getMarketingProgramPage(queryParams);
     list.value = data.list;
     total.value = data.total;
-    if ('card' === listType.value) {
-      currentIdx.value = list.value.length > 0 ? 0 : -1;
-    }
   } finally {
     loading.value = false;
   }
@@ -138,12 +125,6 @@ const resetQuery = () => {
 const router = useRouter(); // 路由
 const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  // 新增和编辑前 保存当前查看项的下标
-  if ('card' === listType.value) {
-    tmpIndex.value = list.value.findIndex((ele) => {
-      return ele.id === list.value[currentIdx.value].id;
-    });
-  }
   if (type == 'create') {
     router.push('/pcg/marketingCenter/marketingprogram/CreateOrUpdateMaketingPagram');
   } else {
@@ -155,15 +136,6 @@ const openForm = (type: string, id?: number) => {
     );
   }
   //formRef.value.open(type, id)
-};
-// 新增和修改成功后调用的函数
-const handleUpdateSuccess = async () => {
-  await getList();
-  if ('card' !== listType.value) return;
-  if (-1 !== tmpIndex.value) {
-    currentIdx.value = tmpIndex.value;
-    tmpIndex.value = -1;
-  }
 };
 
 /** 删除按钮操作 */
@@ -210,30 +182,6 @@ onMounted(() => {
 const topMenuHeight = 85;
 const contentPadding = 8;
 
-// 时间戳转换成 YYYY-MM-DD HH:MM:SS
-const timeFormat = (dataString: string) => {
-  //dataString是整数，否则要parseInt转换
-  var time = new Date(dataString);
-  var year = time.getFullYear();
-  var month = time.getMonth() + 1;
-  var day = time.getDate();
-  var hour = time.getHours();
-  var minute = time.getMinutes();
-  var second = time.getSeconds();
-  return (
-    year +
-    '-' +
-    (month < 10 ? '0' + month : month) +
-    '-' +
-    (day < 10 ? '0' + day : day) +
-    ' ' +
-    (hour < 10 ? '0' + hour : hour) +
-    ':' +
-    (minute < 10 ? '0' + minute : minute) +
-    ':' +
-    (second < 10 ? '0' + second : second)
-  );
-};
 // 展开或收起搜索栏
 const showSearch = ref(false);
 const handleClickShowSearch = () => {
@@ -286,31 +234,13 @@ const handleClickShowSearch = () => {
           <Icon icon="ep:download" class="mr-5px" />
           导出
         </el-button>
-        <!-- el-radio-button比el-button高 和button放在一行突兀 所以用el-button实现el-radio-button效果 单独使用时el-radio-button更佳 -->
-        <div class="flex">
-          <el-button
-            @click="listType = 'list'"
-            class="!rounded-r-none"
-            :class="`${listType === 'list' && 'tab-active'}`"
-          >
-            <Icon icon="ep:list" />
-          </el-button>
-          <el-button
-            @click="listType = 'card'"
-            class="!ml-0 !rounded-l-none"
-            :class="`${listType === 'card' && 'tab-active'}`"
-          >
-            <Icon icon="ep:menu" />
-          </el-button>
-        </div>
-        <div
-          class="w-[20px] h-[20px] !ml-[16px] text-center leading-[22px] rounded-full cursor-pointer transition-all"
-          :class="showSearch ? 'rotate-0' : 'rotate-180'"
-          style="border: 1px solid #e6e6e6"
-          @click="showSearch = !showSearch"
+        <button
+          class="circle-arrow-up ml-[16px]"
+          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
+          @click="handleClickShowSearch"
         >
-          <el-icon :size="14"><ArrowUpBold /></el-icon>
-        </div>
+          <Icon :size="14" icon="ep:arrow-up" />
+        </button>
       </div>
     </div>
 
@@ -411,8 +341,10 @@ const handleClickShowSearch = () => {
         />
       </el-form-item> -->
     </el-form>
-    <div class="mt-[16px]">
-      <el-table v-show="listType === 'list'" :data="list" :show-overflow-tooltip="true">
+
+    <div class="w-full mt-[8px]">
+      <!-- 原来的表格复制过来 操作按钮按照 el-table操作按钮.md 里的例子 -->
+      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
         <!-- todo复制列表 -->
         <!-- <el-table-column label="主键" align="center" prop="id" /> -->
         <el-table-column label="方案名称" align="center" prop="schemeName" />
@@ -504,109 +436,6 @@ const handleClickShowSearch = () => {
       </el-table>
     </div>
 
-    <div v-show="listType === 'card'" v-loading="loading" class="grid grid-cols-2 gap-[16px]">
-      <div>
-        <div class="sticky top-0 w-full pb-[16px] rounded-b-[4px] shadow-md dark:shadow-[#000]">
-          <template v-if="currentIdx !== -1 && list[currentIdx]">
-            <div class="w-full pb-[56.25%] relative">
-              <el-image
-                :src="list[currentIdx].coverImage"
-                :alt="list[currentIdx].schemeName"
-                :preview-src-list="[list[currentIdx].coverImage]"
-                preview-teleported
-                fit="cover"
-                class="!absolute top-0 left-0 w-full h-full"
-              />
-              <div
-                v-show="list[currentIdx].videoLink"
-                @click="openVideo(list[currentIdx].videoLink)"
-                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
-              >
-                <el-icon size="16px"><VideoCamera /></el-icon>
-              </div>
-              <div
-                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
-                @click="openForm('update', list[currentIdx].id)"
-              >
-                <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
-              </div>
-              <div
-                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
-                @click="handleDelete(list[currentIdx].id)"
-              >
-                <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
-              </div>
-            </div>
-            <div class="text-[8px] 2xl:text-[10px]">
-              <div class="p-[1.6em] flex justify-between">
-                <span class="font-bold text-[1.4em]">{{ list[currentIdx].schemeName }}</span>
-                <span class="text-[#999] text-[1.4em]">
-                  {{ timeFormat(list[currentIdx].marketingUploadTime) }}
-                </span>
-              </div>
-              <div style="border-bottom: 1px dashed #e6e6e6" class="mx-[1.6em]"></div>
-              <div class="mt-[1.6em] px-[1.6em] flex justify-between">
-                <span class="text-[#999] text-[1.4em]">简介:</span>
-                <span class="text-[#999] text-[1.4em]">
-                  {{ list[currentIdx].briefIntroduction }}
-                </span>
-              </div>
-              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
-                <span class="text-[#999] text-[1.4em]">创作人:</span>
-                <span class="text-[#999] text-[1.4em]">
-                  {{ list[currentIdx].marketingCreator }}
-                </span>
-              </div>
-              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
-                <span class="text-[#999] text-[1.4em]">分类:</span>
-                <span class="text-[#999] text-[1.4em]">
-                  {{ list[currentIdx].marketingCategory }}
-                </span>
-              </div>
-              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
-                <span class="text-[#999] text-[1.4em]">标签:</span>
-                <span class="text-[#999] text-[1.4em]">
-                  {{ list[currentIdx].marketingTags }}
-                </span>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="w-full pb-[56.25%] no-data"></div>
-          </template>
-        </div>
-      </div>
-      <div>
-        <div class="grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
-          <div
-            class="cursor-pointer shadow-md rounded-[4px] overflow-hidden pb-[16px] dark:bg-[#333] dark:shadow-[#000]"
-            v-for="(item, index) in list"
-            :key="item.id"
-            @click="currentIdx = index"
-            :style="`${index === currentIdx && 'border: 1px solid var(--el-color-primary)'}`"
-          >
-            <div class="w-full pb-[56.25%] relative">
-              <el-image
-                :src="item.coverImage"
-                :alt="item.schemeName"
-                fit="cover"
-                class="!absolute top-0 left-0 w-full h-full"
-              />
-            </div>
-            <div class="text-[8px] 2xl:text-[10px] px-[1.6em] mt-[1.6em]">
-              <div>
-                <span class="truncate text-[1.4em]">{{ item.schemeName }}</span>
-              </div>
-              <div class="mt-[0.8em]">
-                <span class="truncate text-[1.4em]">
-                  {{ timeFormat(item.marketingUploadTime) }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- 页码组件 注意绑定的值和事件函数 -->
     <!-- 不用改 -->
     <Pagination
