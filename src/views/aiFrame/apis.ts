@@ -133,3 +133,8 @@ export const collectionGetToken = async (params: any) => {
 export const getauth = async (params: any) => {
   return await axios.get('/tdCache/api/text2img', { params });
 };
+
+// 根据知识库ID获取详情
+export const getLibDetailById = async (params: any) => {
+  return await request.get({ url: `/agriculture/collection/get-collection`, params });
+};

@@ -9,6 +9,8 @@ import {
 } from '../../apis';
 // @ts-ignore
 import KnowledgeLibCreateOrUpdate from './kowledgeLibCreateOrUpdate.vue';
+// @ts-ignore
+import LibDetail from './libDetail.vue';
 import dayjs from 'dayjs';
 
 // false 则显示创建知识库页面
@@ -212,10 +214,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
     }
   }
 };
+
+const showLibId = ref('');
 </script>
 
 <template>
-  <div class="w-full h-full text-[10px]" :class="showLibPage ? 'lib-bg' : 'create-lib-bg'">
+  <div class="w-full h-full text-[10px] relative" :class="showLibPage ? 'lib-bg' : 'create-lib-bg'">
     <template v-if="showLibPage">
       <!-- header -->
       <div class="h-[5.7em] p-[2.4em] pl-[3.6em] flex justify-between items-start">
@@ -335,16 +339,20 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                       {{ item.collectionName }}
                     </div>
                     <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
-                      ID: {{ item.collectionId }}
+                      ID: kb{{ item.id }}
                     </div>
                     <div class="flex mt-[4px]">
                       <div class="tag dark:bg-transparent dark:grad-bg">
                         {{ dataTypeMap[item.dataType] }}
                       </div>
-                      <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">涪陵区明月村</div>
+                      <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">
+                        {{ item.deptName }}
+                      </div>
                     </div>
                     <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
-                      张三 于{{ dayjs(item.createTime).format('YYYY-MM-DD HH:MM:ss') }}创建
+                      {{ item.creator }} 于{{
+                        dayjs(item.createTime).format('YYYY-MM-DD HH:MM:ss')
+                      }}创建
                     </div>
                   </div>
                   <div class="flex-none flex flex-col items-center">
@@ -367,9 +375,8 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                 </div>
                 <div class="mt-[24px] flex justify-end items-center">
                   <el-button class="!rounded-full" @click="handleDeleteLib(index)">删除</el-button>
-                  <el-button class="!rounded-full" @click="console.log('查看详情')">
-                    查看详情
-                  </el-button>
+                  <!-- <el-button class="!rounded-full" @click="showLibId = item.collectionId"> -->
+                  <el-button class="!rounded-full">查看详情</el-button>
                   <el-button
                     class="!rounded-full !ml-[8px]"
                     color="#615ced"
@@ -391,6 +398,10 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
         @create-success="handleCreateLibSuccess"
       />
     </template>
+
+    <!-- <div v-if="showLibId !== ''" class="w-full h-full absolute top-0 left-0">
+      <lib-detail v-model:id="showLibId" />
+    </div> -->
 
     <Dialog
       v-model="showImportDialog"
