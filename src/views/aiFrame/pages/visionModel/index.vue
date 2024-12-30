@@ -910,7 +910,7 @@ const sizeList = ref([
                 v-model="inputTextITT"
               ></textarea>
               <div
-                class="w-24px h-24px overflow-hidden relative left-[-8px] top-[-4px]"
+                class="w-24px h-24px relative left-[-8px] top-[-4px]"
                 :class="useITT && 'upload-icon-svg'"
               >
                 <el-button
@@ -1062,6 +1062,25 @@ const sizeList = ref([
     background-size: 80% 80%;
     background-repeat: no-repeat;
     background-position: center;
+    position: relative;
+
+    &:hover {
+      background-image: url(../../assets/vision-upload-img-active.svg);
+    }
+
+    &:hover::before {
+      content: '上传图片';
+      color: white;
+      line-height: 45px;
+      text-align: center;
+      position: absolute;
+      width: 104px;
+      height: 51px;
+      background-image: url(../../assets/vision-upload-tip.svg);
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%);
+    }
   }
 }
 
@@ -1149,6 +1168,24 @@ const sizeList = ref([
     background-size: 80% 80%;
     background-repeat: no-repeat;
     background-position: center;
+
+    &:hover {
+      background-image: url(../../assets/vision-upload-img-active.svg);
+    }
+
+    &:hover::before {
+      content: '上传图片';
+      color: white;
+      line-height: 45px;
+      text-align: center;
+      position: absolute;
+      width: 104px;
+      height: 51px;
+      background-image: url(../../assets/vision-upload-tip.svg);
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%);
+    }
   }
 }
 

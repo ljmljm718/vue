@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>上传图片</title>
+    <defs>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#6A6DED" offset="0%"></stop>
+            <stop stop-color="#5274F8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.97324795e-15%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#6A6DED" offset="0%"></stop>
+            <stop stop-color="#5A72F5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="30.3507487%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#8D63DC" offset="0%"></stop>
+            <stop stop-color="#7869E6" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="视觉模型-图文解析-已提问" transform="translate(-1452.000000, -999.000000)">
+            <g id="上传图片" transform="translate(1452.000000, 999.000000)">
+                <path d="M22,11 C22,10.39247 21.50753,9.9 20.9,9.9 C20.29247,9.9 19.8,10.39247 19.8,11 L22,11 Z M11,2.2 C11.60753,2.2 12.1,1.7075135 12.1,1.1 C12.1,0.4924865 11.60753,0 11,0 L11,2.2 Z M19.25,19.8 L2.75,19.8 L2.75,22 L19.25,22 L19.25,19.8 Z M2.2,19.25 L2.2,2.75 L0,2.75 L0,19.25 L2.2,19.25 Z M19.8,11 L19.8,19.25 L22,19.25 L22,11 L19.8,11 Z M2.75,2.2 L11,2.2 L11,0 L2.75,0 L2.75,2.2 Z M2.75,19.8 C2.446246,19.8 2.2,19.553765 2.2,19.25 L0,19.25 C0,20.76877 1.2312135,22 2.75,22 L2.75,19.8 Z M19.25,22 C20.76877,22 22,20.76877 22,19.25 L19.8,19.25 C19.8,19.553765 19.553765,19.8 19.25,19.8 L19.25,22 Z M2.2,2.75 C2.2,2.446246 2.4462405,2.2 2.75,2.2 L2.75,0 C1.231219,0 0,1.2312135 0,2.75 L2.2,2.75 Z" id="形状" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+                <path d="M1.1,17.05 L6.981205,11.6589 C7.391395,11.282865 8.017845,11.272415 8.440355,11.63459 L15.4,17.6" id="路径" stroke="url(#linearGradient-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M13.2,14.85 L15.825425,12.224575 C16.21246,11.83754 16.82527,11.79398 17.263235,12.12244 L20.9,14.85" id="路径" stroke="url(#linearGradient-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <line x1="18.15" y1="7.7" x2="18.15" y2="1.1" id="路径" stroke="url(#linearGradient-4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="路径" stroke="#8D63DC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="15.4 3.85 18.15 1.1 20.9 3.85"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

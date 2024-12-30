@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="104px" height="51px" viewBox="0 0 104 51" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>开始提示框</title>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="-3.33066907e-14%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#9362DA" offset="0%"></stop>
+            <stop stop-color="#4378FF" offset="100%"></stop>
+        </linearGradient>
+        <path d="M1467.59712,984 L1463,989 L1458.40288,984 L1467.59712,984 Z M1501.00332,952 C1504.3152,952 1507,954.686978 1507,958.000176 L1507,977.999824 C1507,981.31363 1504.31829,984 1501.00332,984 L1424.99668,984 C1421.6848,984 1419,981.313022 1419,977.999824 L1419,958.000176 C1419,954.68637 1421.68171,952 1424.99668,952 L1501.00332,952 Z" id="path-2"></path>
+        <filter x="-14.8%" y="-29.7%" width="129.5%" height="170.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.15 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="视觉模型-图文解析-已提问" transform="translate(-1411.000000, -946.000000)">
+            <g id="开始提示框" transform="translate(1463.000000, 970.500000) scale(-1, 1) translate(-1463.000000, -970.500000) ">
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                <use fill-opacity="0.94" fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            </g>
+        </g>
+    </g>
+</svg>
