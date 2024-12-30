@@ -19,9 +19,11 @@ export const useAiFrameStore = defineStore('aiFrame', {
     setEnableDarkMode(darkMode: boolean) {
       this.enableDarkMode = darkMode;
       if (darkMode) {
+        localStorage.setItem('AI_PAGE_THEME', 'dark');
         document.documentElement.classList.add('dark');
         document.documentElement.classList.remove('light');
       } else {
+        localStorage.setItem('AI_PAGE_THEME', 'light');
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
       }

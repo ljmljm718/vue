@@ -82,7 +82,10 @@ const handleDarkModeSwitchChange = (mode) => {
   console.log('🚀 ~ handleDarkModeSwitchChange ~ mode:', mode);
   storage.setEnableDarkMode(mode);
 };
-storage.setEnableDarkMode(false);
+const themeMode = localStorage.getItem('AI_PAGE_THEME');
+console.log('🚀 ~ themeMode:', themeMode);
+if (themeMode && themeMode === 'dark') storage.setEnableDarkMode(true);
+else storage.setEnableDarkMode(false);
 
 //region 无感刷新
 const routerAlive = ref(true);
