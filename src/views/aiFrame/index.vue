@@ -82,6 +82,7 @@ const handleDarkModeSwitchChange = (mode) => {
   console.log('🚀 ~ handleDarkModeSwitchChange ~ mode:', mode);
   storage.setEnableDarkMode(mode);
 };
+storage.setEnableDarkMode(false);
 
 //region 无感刷新
 const routerAlive = ref(true);
