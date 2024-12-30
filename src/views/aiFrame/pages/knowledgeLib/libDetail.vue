@@ -65,6 +65,9 @@
           </el-form-item>
           <el-form-item prop="merge" label="合并短文本片" class="!mr-0">
             <el-switch v-model="formData.merge" />
+            <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
+              {{ formData.merge ? '已开启' : '已关闭' }}
+            </span>
           </el-form-item>
           <el-form-item prop="ocr" class="!mr-0">
             <template #label>
@@ -79,6 +82,9 @@
               </div>
             </template>
             <el-switch v-model="formData.ocr" />
+            <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
+              {{ formData.ocr ? '已开启' : '已关闭' }}
+            </span>
           </el-form-item>
           <el-form-item prop="idxType" label="索引算法" class="!mr-0">
             <el-input v-model="formData.idxType" input-style="font-size: 16px" />
