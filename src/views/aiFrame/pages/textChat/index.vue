@@ -140,7 +140,7 @@ const handleChatInfoClick = (item) => {
     nextTick(() => scollToBottom());
     nextTick(() => handleCopyBtnClick());
     highlightForce();
-  }, 100);
+  }, 300);
 };
 
 // 处理textarea输入框
@@ -252,6 +252,9 @@ const modelOptions = ref<any[]>([
   { label: 'Doubao-lite-32k', value: 'Doubao-lite-32k' },
   { label: 'Doubao-lite-128k', value: 'Doubao-lite-128k' }
 ]);
+
+// 提示词
+const prompt = ref<string>('');
 
 const enabledflowRes = ref<boolean>(true); // 开启流式返回
 const maxResLength = ref<number>(10); // 最大返回长度
@@ -622,6 +625,15 @@ const handleDeleteChatTheme = (id: string) => {
                 :key="item.value"
               />
             </el-select>
+          </div>
+          <div class="mb-[8px] mt-[16px]">系统提示词</div>
+          <div>
+            <el-input
+              v-model="prompt"
+              :rows="3"
+              type="textarea"
+              placeholder="请输入系统提示词描述文本"
+            />
           </div>
           <div class="mb-[8px] mt-[16px]">是否流式返回</div>
           <div><el-switch v-model="enabledflowRes" size="large" /></div>
