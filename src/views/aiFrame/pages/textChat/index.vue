@@ -20,12 +20,16 @@ import {
 import RadioButton from './radioButton.vue';
 
 // 实现自定义指令 高亮代码块
+const highlightForce = (el) => {
+  if (!el) el = document;
+  let blocks = el.querySelectorAll('pre code');
+  blocks.forEach((block: any) => {
+    hljs.highlightBlock(block);
+  });
+};
 const vHighlight = {
   updated(el: any) {
-    let blocks = el.querySelectorAll('pre code');
-    blocks.forEach((block: any) => {
-      hljs.highlightBlock(block);
-    });
+    highlightForce(el);
   }
 };
 
@@ -135,7 +139,8 @@ const handleChatInfoClick = (item) => {
   setTimeout(() => {
     nextTick(() => scollToBottom());
     nextTick(() => handleCopyBtnClick());
-  }, 400);
+    highlightForce();
+  }, 100);
 };
 
 // 处理textarea输入框
@@ -344,10 +349,10 @@ const handleSendMsg = async (text) => {
       }
       flowOutput(textArr.join(''));
       scollToBottom();
+      handleCopyBtnClick();
     }, 10);
   };
   if (res) flowOutput(res.toString());
-  handleCopyBtnClick();
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
