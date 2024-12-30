@@ -644,7 +644,7 @@ const handleDeleteChatTheme = (id: string) => {
 .ai-dark {
   @for $i from 1 through 3 {
     .card-bg-#{$i} {
-      background-image: url(../../assets/darkCardBg#{$i}.png);
+      background-image: url(../../assets/darkCardBg#{$i}.svg);
       background-size: 100% 100%;
     }
   }
@@ -653,7 +653,7 @@ const handleDeleteChatTheme = (id: string) => {
 .ai-light {
   @for $i from 1 through 3 {
     .card-bg-#{$i} {
-      background-image: url(../../assets/cardBg#{$i}.png);
+      background-image: url(../../assets/cardBg#{$i}.svg);
       background-size: 100% 100%;
     }
   }

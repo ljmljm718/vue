@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="272px" height="300px" viewBox="0 0 272 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 3</title>
+    <defs>
+        <radialGradient cx="100%" cy="-1.52655666e-14%" fx="100%" fy="-1.52655666e-14%" r="55.1470588%" gradientTransform="translate(1.000000,-0.000000),scale(1.000000,0.906667),rotate(90.000000),translate(-1.000000,0.000000)" id="radialGradient-1">
+            <stop stop-color="#615CED" stop-opacity="0.398628715" offset="0%"></stop>
+            <stop stop-color="#615CED" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <linearGradient x1="91.1022222%" y1="-1.52655666e-14%" x2="64.1477778%" y2="45.28125%" id="linearGradient-2">
+            <stop stop-color="#615CED" offset="0%"></stop>
+            <stop stop-color="#615CED" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-3" x="0" y="0" width="272" height="300" rx="16"></rect>
+        <linearGradient x1="-5.20417043e-15%" y1="39.0964311%" x2="100%" y2="60.9035689%" id="linearGradient-4">
+            <stop stop-color="#8D2AFB" stop-opacity="0.27772618" offset="0%"></stop>
+            <stop stop-color="#0FFDED" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <path d="M38,165 L242,165 L242,165 L242,256 C242,260.418278 238.418278,264 234,264 L38,264 C33.581722,264 30,260.418278 30,256 L30,173 C30,168.581722 33.581722,165 38,165 Z" id="path-5"></path>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="深色-文本模型-参数设置" transform="translate(-564.000000, -353.000000)">
+            <g id="编组-3" transform="translate(564.000000, 353.000000)">
+                <g id="矩形">
+                    <use fill-opacity="0.5" fill="#1F2531" xlink:href="#path-3"></use>
+                    <rect stroke="url(#linearGradient-2)" stroke-width="1" stroke-linejoin="square" fill="url(#radialGradient-1)" x="0.5" y="0.5" width="271" height="299" rx="16"></rect>
+                </g>
+                <path d="M30,99 L234,99 C238.418278,99 242,102.581722 242,107 L242,141 C242,145.418278 238.418278,149 234,149 L38,149 C33.581722,149 30,145.418278 30,141 L30,99 L30,99 Z" id="矩形" fill="#615CED"></path>
+                <rect id="矩形" fill="#FFFFFF" opacity="0.200000003" x="58" y="119" width="152" height="10" rx="2"></rect>
+                <g id="矩形">
+                    <use fill="#1F2531" xlink:href="#path-5"></use>
+                    <use fill="url(#linearGradient-4)" xlink:href="#path-5"></use>
+                </g>
+                <rect id="矩形" fill="#FFFFFF" opacity="0.100000001" x="58" y="184" width="152" height="10" rx="2"></rect>
+                <rect id="矩形" fill="#FFFFFF" opacity="0.100000001" x="58" y="204" width="152" height="10" rx="2"></rect>
+                <rect id="矩形" fill="#FFFFFF" opacity="0.100000001" x="58" y="224" width="99" height="10" rx="2"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

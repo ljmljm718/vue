@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="272px" height="300px" viewBox="0 0 272 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 5</title>
+    <defs>
+        <linearGradient x1="8.89777778%" y1="-2.71484224e-14%" x2="91.1022222%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#F8F7FF" offset="0%"></stop>
+            <stop stop-color="#F3F2FF" offset="100%"></stop>
+        </linearGradient>
+        <radialGradient cx="100%" cy="4.13731549e-14%" fx="100%" fy="4.13731549e-14%" r="66.5757123%" gradientTransform="translate(1.000000,0.000000),scale(1.000000,0.906667),rotate(90.000000),translate(-1.000000,-0.000000)" id="radialGradient-2">
+            <stop stop-color="#F4F3FE" offset="0%"></stop>
+            <stop stop-color="#CDCBFA" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <rect id="path-3" x="0" y="0" width="272" height="300" rx="16"></rect>
+        <linearGradient x1="50%" y1="-4.18068358e-14%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="文本模型-未提问" transform="translate(-693.000000, -318.000000)">
+            <g id="编组-5" transform="translate(693.000000, 318.000000)">
+                <g id="矩形">
+                    <use fill="url(#linearGradient-1)" xlink:href="#path-3"></use>
+                    <use fill="url(#radialGradient-2)" xlink:href="#path-3"></use>
+                </g>
+                <rect id="矩形" stroke="url(#linearGradient-5)" fill="url(#linearGradient-4)" x="20.5" y="88.5" width="231" height="211" rx="16"></rect>
+                <path d="M40,116 L224,116 C228.418278,116 232,119.581722 232,124 L232,150 C232,154.418278 228.418278,158 224,158 L48,158 C43.581722,158 40,154.418278 40,150 L40,116 L40,116 Z" id="矩形" fill="#E0DFFF"></path>
+                <rect id="矩形" fill="#FFFFFF" opacity="0.600000024" x="58" y="132" width="152" height="10" rx="2"></rect>
+                <path d="M48,174 L232,174 L232,174 L232,256 C232,260.418278 228.418278,264 224,264 L48,264 C43.581722,264 40,260.418278 40,256 L40,182 C40,177.581722 43.581722,174 48,174 Z" id="矩形" fill="#FFFFFF"></path>
+                <rect id="矩形" fill="#EDEDFD" opacity="0.800000012" x="58" y="193" width="152" height="10" rx="2"></rect>
+                <rect id="矩形" fill="#EDEDFD" opacity="0.800000012" x="58" y="213" width="152" height="10" rx="2"></rect>
+                <rect id="矩形" fill="#EDEDFD" opacity="0.800000012" x="58" y="233" width="99" height="10" rx="2"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="272px" height="300px" viewBox="0 0 272 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 6</title>
+    <defs>
+        <radialGradient cx="100%" cy="0.677447552%" fx="100%" fy="0.677447552%" r="54.399874%" gradientTransform="translate(1.000000,0.006774),scale(1.000000,0.906667),rotate(90.000000),translate(-1.000000,-0.006774)" id="radialGradient-1">
+            <stop stop-color="#FFAA00" stop-opacity="0.2" offset="0%"></stop>
+            <stop stop-color="#FFAA00" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <linearGradient x1="91.1022222%" y1="-1.52655666e-14%" x2="64.1477778%" y2="45.28125%" id="linearGradient-2">
+            <stop stop-color="#FFAA00" offset="0%"></stop>
+            <stop stop-color="#FFAA00" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-3" x="0" y="0" width="272" height="300" rx="16"></rect>
+        <radialGradient cx="14.0826057%" cy="94.203125%" fx="14.0826057%" fy="94.203125%" r="39.9878986%" gradientTransform="translate(0.140826,0.942031),scale(1.000000,0.906667),rotate(-39.166923),translate(-0.140826,-0.942031)" id="radialGradient-4">
+            <stop stop-color="#D1F9F2" stop-opacity="0.6" offset="0%"></stop>
+            <stop stop-color="#DDF9F4" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="100%" cy="4.31946146e-14%" fx="100%" fy="4.31946146e-14%" r="69.7869838%" gradientTransform="translate(1.000000,0.000000),scale(1.000000,0.906667),rotate(130.988159),translate(-1.000000,-0.000000)" id="radialGradient-5">
+            <stop stop-color="#F0EFFD" offset="0%"></stop>
+            <stop stop-color="#EFEEFE" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <rect id="path-6" x="0" y="0" width="272" height="300" rx="16"></rect>
+        <rect id="path-8" x="0" y="0" width="272" height="300" rx="16"></rect>
+        <linearGradient x1="2.18992062e-14%" y1="8.33799181%" x2="50%" y2="91.6620082%" id="linearGradient-9">
+            <stop stop-color="#343D52" stop-opacity="0.5" offset="0%"></stop>
+            <stop stop-color="#343D52" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="16.6596035%" x2="50%" y2="100%" id="linearGradient-10">
+            <stop stop-color="#181D28" offset="0%"></stop>
+            <stop stop-color="#181D28" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="3.72965547e-14%" y1="8.33799181%" x2="50%" y2="91.6620082%" id="linearGradient-11">
+            <stop stop-color="#615CED" offset="0%"></stop>
+            <stop stop-color="#0F121B" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-6.26168024e-14%" y1="19.3402511%" x2="40.2081288%" y2="67.5285085%" id="linearGradient-12">
+            <stop stop-color="#2C3242" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#2C3242" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="25.6787744%" y1="44.3184429%" x2="50%" y2="84.7930256%" id="linearGradient-13">
+            <stop stop-color="#181D28" stop-opacity="0.96" offset="0%"></stop>
+            <stop stop-color="#181D28" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="3.72965547e-14%" y1="15.2069744%" x2="50%" y2="84.7930256%" id="linearGradient-14">
+            <stop stop-color="#615CED" offset="0%"></stop>
+            <stop stop-color="#615CED" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <path d="M16.8787634,11.0195793 L184.715915,11.0195793 C189.134193,11.0195793 192.715915,14.6013013 192.715915,19.0195793 L192.715915,156.373322 C192.715915,160.7916 189.134193,164.373322 184.715915,164.373322 L16.8787634,164.373322 C12.4604854,164.373322 8.87876338,160.7916 8.87876338,156.373322 L8.87876338,19.0195793 C8.87876338,14.6013013 12.4604854,11.0195793 16.8787634,11.0195793 Z" id="path-15"></path>
+        <filter x="-2.4%" y="-2.9%" width="104.9%" height="105.9%" filterUnits="objectBoundingBox" id="filter-16">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.784313725   0 0 0 0 0.68627451   0 0 0 0 0.949019608  0 0 0 0.100087413 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="深色-文本模型" transform="translate(-1285.000000, -353.000000)">
+            <g id="编组-6" transform="translate(1285.000000, 353.000000)">
+                <g id="矩形">
+                    <use fill-opacity="0.5" fill="#1F2531" xlink:href="#path-3"></use>
+                    <rect stroke="url(#linearGradient-2)" stroke-width="1" stroke-linejoin="square" fill="url(#radialGradient-1)" x="0.5" y="0.5" width="271" height="299" rx="16"></rect>
+                </g>
+                <g id="矩形-+-编组-2-+-编组-2蒙版">
+                    <mask id="mask-7" fill="white">
+                        <use xlink:href="#path-6"></use>
+                    </mask>
+                    <g id="蒙版">
+                        <use fill="#1F2531" xlink:href="#path-6"></use>
+                        <use fill="url(#radialGradient-4)" xlink:href="#path-6"></use>
+                        <use fill="url(#radialGradient-5)" xlink:href="#path-6"></use>
+                    </g>
+                    <g id="矩形" mask="url(#mask-7)">
+                        <use fill-opacity="0.5" fill="#1F2531" xlink:href="#path-8"></use>
+                        <rect stroke="url(#linearGradient-2)" stroke-width="1" stroke-linejoin="square" fill="url(#radialGradient-1)" x="0.5" y="0.5" width="271" height="299" rx="16"></rect>
+                    </g>
+                    <g id="编组-2" opacity="0.600000024" mask="url(#mask-7)">
+                        <g transform="translate(13.722660, 88.949052)">
+                            <path d="M24.983204,19.1280988 L176.983204,19.1280988 C181.401482,19.1280988 184.983204,22.7098208 184.983204,27.1280988 L184.983204,164.481841 C184.983204,168.900119 181.401482,172.481841 176.983204,172.481841 L24.983204,172.481841 C20.564926,172.481841 16.983204,168.900119 16.983204,164.481841 L16.983204,27.1280988 C16.983204,22.7098208 20.564926,19.1280988 24.983204,19.1280988 Z" id="矩形" stroke="none" fill="url(#linearGradient-9)" fill-rule="evenodd" transform="translate(100.983204, 95.804970) rotate(-15.000000) translate(-100.983204, -95.804970) "></path>
+                            <path d="M184.983204,23.6280988 C187.054272,23.6280988 188.929272,24.4675648 190.286505,25.8247979 C191.643738,27.1820309 192.483204,29.0570309 192.483204,31.1280988 L192.483204,168.481841 C192.483204,170.552909 191.643738,172.427909 190.286505,173.785142 C188.929272,175.142375 187.054272,175.981841 184.983204,175.981841 L32.983204,175.981841 C30.9121362,175.981841 29.0371362,175.142375 27.6799032,173.785142 C26.3226701,172.427909 25.483204,170.552909 25.483204,168.481841 L25.483204,31.1280988 C25.483204,29.0570309 26.3226701,27.1820309 27.6799032,25.8247979 C29.0371362,24.4675648 30.9121362,23.6280988 32.983204,23.6280988 Z" id="矩形" stroke="url(#linearGradient-11)" stroke-width="1" fill="url(#linearGradient-10)" fill-rule="evenodd" transform="translate(108.983204, 99.804970) rotate(-15.000000) translate(-108.983204, -99.804970) "></path>
+                            <text id="Hello,world!" stroke="none" fill="none" transform="translate(83.376539, 75.261127) rotate(-15.000000) translate(-83.376539, -75.261127) " font-family="PingFangSC-Semibold, PingFang SC" font-size="16" font-weight="500" line-spacing="24" letter-spacing="1">
+                                <tspan x="31.876539" y="80.261127" fill="#FFFFFF">Hello,world!</tspan>
+                            </text>
+                            <path d="M16.2547468,26.1089207 L167.490994,26.1441341 C171.908544,26.1470256 175.48913,29.7284462 175.490993,34.1459968 L175.490993,48.297093 L175.490993,48.297093 L9.25474699,48.258387 L9.25474699,33.1072908 C9.25311732,29.2412976 12.3871241,26.1072908 16.2531173,26.1072908 C16.2536606,26.1072908 16.2542039,26.1072909 16.2547468,26.1089207 Z" id="矩形" stroke="none" fill="#2C3242" fill-rule="evenodd" transform="translate(92.372870, 37.202192) rotate(-15.000000) translate(-92.372870, -37.202192) "></path>
+                            <circle id="椭圆形" stroke="none" fill="#EC6A60" fill-rule="evenodd" transform="translate(22.765460, 55.873477) rotate(-15.000000) translate(-22.765460, -55.873477) " cx="22.7654602" cy="55.8734769" r="3.40786095"></circle>
+                            <circle id="椭圆形" stroke="none" fill="#F3BE50" fill-rule="evenodd" transform="translate(34.286553, 52.786409) rotate(-15.000000) translate(-34.286553, -52.786409) " cx="34.2865533" cy="52.7864093" r="3.40786095"></circle>
+                            <circle id="椭圆形" stroke="none" fill="#64C656" fill-rule="evenodd" transform="translate(45.807646, 49.699342) rotate(-15.000000) translate(-45.807646, -49.699342) " cx="45.8076465" cy="49.6993417" r="3.40786095"></circle>
+                        </g>
+                    </g>
+                    <g id="编组-2" mask="url(#mask-7)">
+                        <g transform="translate(80.429956, 82.784141)">
+                            <path d="M11.8787634,5.01957932 L191.715915,5.01957932 C196.134193,5.01957932 199.715915,8.60130132 199.715915,13.0195793 L199.715915,150.373322 C199.715915,154.7916 196.134193,158.373322 191.715915,158.373322 L11.8787634,158.373322 C7.46048538,158.373322 3.87876338,154.7916 3.87876338,150.373322 L3.87876338,13.0195793 C3.87876338,8.60130132 7.46048538,5.01957932 11.8787634,5.01957932 Z" id="矩形" fill="url(#linearGradient-12)" fill-rule="evenodd" transform="translate(101.797339, 81.696451) rotate(-357.000000) translate(-101.797339, -81.696451) "></path>
+                            <g id="矩形" fill="none" transform="translate(100.797339, 87.696451) rotate(-357.000000) translate(-100.797339, -87.696451) ">
+                                <use fill="black" fill-opacity="1" filter="url(#filter-16)" xlink:href="#path-15"></use>
+                                <path stroke="url(#linearGradient-14)" stroke-width="1" d="M184.715915,11.5195793 C186.786983,11.5195793 188.661983,12.3590454 190.019216,13.7162785 C191.376449,15.0735115 192.215915,16.9485115 192.215915,19.0195793 L192.215915,156.373322 C192.215915,158.44439 191.376449,160.31939 190.019216,161.676623 C188.661983,163.033856 186.786983,163.873322 184.715915,163.873322 L16.8787634,163.873322 C14.8076956,163.873322 12.9326956,163.033856 11.5754625,161.676623 C10.2182295,160.31939 9.37876338,158.44439 9.37876338,156.373322 L9.37876338,19.0195793 C9.37876338,16.9485115 10.2182295,15.0735115 11.5754625,13.7162785 C12.9326956,12.3590454 14.8076956,11.5195793 16.8787634,11.5195793 Z" stroke-linejoin="square" fill="url(#linearGradient-13)" fill-rule="evenodd"></path>
+                            </g>
+                            <text id="#include-&lt;stdio.h&gt;-#" fill="none" transform="translate(95.773830, 91.867536) rotate(-357.000000) translate(-95.773830, -91.867536) " font-family="Monaco" font-size="12" font-weight="normal" line-spacing="26" letter-spacing="0.514285714">
+                                <tspan x="23.7738296" y="51.8675356" fill="#CFD1DE">#</tspan>
+                                <tspan x="31.4892872" y="51.8675356" fill="#6782B7">include</tspan>
+                                <tspan x="85.4974903" y="51.8675356" fill="#0E766B"> &lt;stdio.h&gt;</tspan>
+                                <tspan x="162.652066" y="51.8675356" fill="#FFFFFF"></tspan>
+                                <tspan x="23.7738296" y="77.8675356" fill="#CDD1DE">#</tspan>
+                                <tspan x="31.4892872" y="77.8675356" fill="#E47E96">int</tspan>
+                                <tspan x="54.63566" y="77.8675356" fill="#FFFFFF"> </tspan>
+                                <tspan x="62.3511176" y="77.8675356" fill="#EB3434">main</tspan>
+                                <tspan x="93.2129479" y="77.8675356" fill="#FFFFFF"> </tspan>
+                                <tspan x="100.928406" y="77.8675356" fill="#D0D1DE">( ) {</tspan>
+                                <tspan x="139.505693" y="77.8675356" fill="#FFFFFF"></tspan>
+                                <tspan x="23.7738296" y="103.867536" fill="#FCC028">	printf </tspan>
+                                <tspan x="105.782033" y="103.867536" fill="#12766B">(“Hello,</tspan>
+                                <tspan x="23.7738296" y="129.867536" fill="#12766B">world!\n”);</tspan>
+                            </text>
+                            <path d="M20.380937,11.9702727 L187.380937,11.9702727 C191.799215,11.9702727 195.380937,15.5519947 195.380937,19.9702727 L195.380937,34.1215904 L195.380937,34.1215904 L13.380937,34.1215904 L13.380937,18.9702727 C13.380937,15.1042794 16.5149437,11.9702727 20.380937,11.9702727 Z" id="矩形" fill="#2C3242" fill-rule="evenodd" transform="translate(104.380937, 23.045932) rotate(-357.000000) translate(-104.380937, -23.045932) "></path>
+                            <circle id="椭圆形" fill="#EC6A60" fill-rule="evenodd" transform="translate(24.293658, 19.268108) rotate(-357.000000) translate(-24.293658, -19.268108) " cx="24.2936575" cy="19.2681083" r="3.40786095"></circle>
+                            <circle id="椭圆形" fill="#F3BE50" fill-rule="evenodd" transform="translate(36.204825, 19.892346) rotate(-357.000000) translate(-36.204825, -19.892346) " cx="36.2048246" cy="19.8923461" r="3.40786095"></circle>
+                            <circle id="椭圆形" fill="#64C656" fill-rule="evenodd" transform="translate(48.115992, 20.516584) rotate(-357.000000) translate(-48.115992, -20.516584) " cx="48.1159917" cy="20.5165839" r="3.40786095"></circle>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
