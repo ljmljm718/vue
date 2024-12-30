@@ -240,6 +240,7 @@
         </el-form>
 
         <div
+          v-loading="createLoading"
           class="create-btn text-[1.4em] px-[2.9em] py-[0.8em] my-[1.6em] ml-[13.6em] w-fit !rounded-[0.8em] cursor-pointer"
           @click="handleClickCreateLib"
         >
@@ -416,11 +417,19 @@ const quantatitiveMethodMap = {
 };
 
 // 创建知识库
+const createLoading = ref(false);
 const handleClickCreateLib = async () => {
   await formRef.value.validate();
-  const msg = await postCreateLib(formData.value);
-  // 创建成功的话
-  emits('createSuccess', msg);
+  try {
+    createLoading.value = true;
+    const msg = await postCreateLib(formData.value);
+    // 创建成功的话
+    emits('createSuccess', msg);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    createLoading.value = false;
+  }
 };
 </script>
 

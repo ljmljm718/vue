@@ -49,7 +49,7 @@ import { UploadFile } from 'element-plus/es/components/upload/src/upload';
 defineOptions({ name: 'UploadFile' });
 
 const message = useMessage(); // 消息弹窗
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'beforeUpload']);
 
 const props = defineProps({
   modelValue: propTypes.oneOfType<string | string[]>([String, Array<String>]).isRequired,
@@ -72,6 +72,7 @@ const { uploadUrl, httpRequest } = useUpload();
 
 // 文件上传之前判断
 const beforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) => {
+  emit('beforeUpload', file);
   if (fileList.value.length >= props.limit) {
     message.error(`上传文件数量不能超过${props.limit}个!`);
     return false;

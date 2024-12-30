@@ -216,6 +216,21 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 };
 
 const showLibId = ref('');
+
+const uploadedFileName = ref<string>('');
+const handleBeforeUpload = (file) => {
+  uploadedFileName.value = file.name;
+};
+
+// 删除已上传的文件
+const handleDeleteUploadedFile = () => {
+  docUrl.value = '';
+};
+
+function getLastPart(str) {
+  const lastIndex = str.lastIndexOf('.');
+  return lastIndex !== -1 ? str.substring(lastIndex + 1) : str;
+}
 </script>
 
 <template>
@@ -412,17 +427,33 @@ const showLibId = ref('');
         currentLibId = '';
         currentDocTypes = [];
       "
-      width="60em"
+      width="40em"
     >
       <div class="w-full h-full flex flex-col justify-center items-center">
-        <div
-          class="p-[24px] border border-dashed border-[#DFE0E6] bg-[#FAFAFC] dark:bg-transparent dark:border-[#666] relative"
-        >
+        <div v-show="docUrl" class="min-h-100px max-h-50vh w-full">
           <div
-            v-show="docUrl !== ''"
-            class="w-full h-full bg-transparent absolute top-0 left-0 z-10"
-          ></div>
-          <UploadFile class="up-btn" v-model="docUrl" :limit="1" :fileType="currentDocTypes">
+            class="flex items-center justify-between mx-[16px] p-[16px] bg-#FAFAFC dark:bg-#2C3240"
+          >
+            <div class="flex items-center">
+              <div :class="docIconClassMap[getLastPart(uploadedFileName)]"></div>
+              <div>{{ uploadedFileName }}</div>
+            </div>
+            <div class="cursor-pointer" @click="handleDeleteUploadedFile()">
+              <el-icon><Delete /></el-icon>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-[24px] border border-dashed border-[#DFE0E6] bg-[#FAFAFC] dark:bg-#2C3240 dark:border-[#666] relative mb-3"
+          v-show="!docUrl"
+        >
+          <UploadFile
+            class="up-btn"
+            v-model="docUrl"
+            :limit="1"
+            @before-upload="handleBeforeUpload"
+            :fileType="currentDocTypes"
+          >
             <div
               class="mt-[14px] text-center leading-[22px] max-w-[280px] text-wrap dark:text-white"
             >
