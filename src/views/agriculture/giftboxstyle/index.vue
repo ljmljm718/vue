@@ -1,327 +1,15 @@
-<template>
-  <div
-    class="w-full bg-[#ECEFF7] rounded-[6px] text-[#666] text-[14px]"
-    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
-  >
-    <!-- 标题 -->
-    <div class="w-full p-[16px] box-border flex justify-between items-center">
-      <h1 class="m-0 text-[#333] font-bold text-[18px]">礼盒样式</h1>
-      <div>
-        <button
-          class="primary-btn"
-          @click="openForm('create')"
-          v-hasPermi="['agriculture:marketing-program:create']"
-        >
-          新增
-        </button>
-        <button
-          class="secondary-btn ml-[8px]"
-          @click="handleExport"
-          v-hasPermi="['agriculture:marketing-program:export']"
-        >
-          导出
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="w-full bg-white rounded-[6px] px-[16px] pt-[8px] box-border flex flex-col min-h-[570px]"
-      :style="{ height: 'calc(100% - ' + (btnHeight + 2 * modulePadding) + 'px)' }"
-    >
-      <!-- 操作按钮 -->
-      <div class="flex justify-end items-center">
-        <button class="primary-btn flex items-center" @click="handleQuery">
-          <Icon :size="14" icon="ep:search" class="mr-[8px]" />
-          查询
-        </button>
-        <button class="secondary-btn ml-[8px] flex items-center" @click="resetQuery">
-          <Icon :size="14" icon="ep:refresh" class="mr-[8px]" />
-          重置
-        </button>
-
-        <el-radio-group v-model="listType" class="ml-[8px] card-list" @change="handleCardChange">
-          <el-radio-button label="list" value="list">
-            <Icon :size="14" icon="ep:list" />
-          </el-radio-button>
-          <el-radio-button label="card" value="card">
-            <Icon :size="14" icon="ep:menu" />
-          </el-radio-button>
-        </el-radio-group>
-
-        <button
-          class="circle-arrow-up ml-[16px]"
-          :class="showSearch ? 'rotate180andthemeBg' : 'rotate180andwhiteBg'"
-          @click="handleClickShowSearch"
-        >
-          <Icon :size="14" icon="ep:arrow-up" />
-        </button>
-      </div>
-
-      <!-- 搜索栏 -->
-      <el-form
-        class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[8px] mt-[8px] transition-all duration-500"
-        :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
-        :model="queryParams"
-        ref="queryFormRef"
-        label-width="88px"
-        :inline="true"
-        id="formDom"
-      >
-        <el-form-item label="产品名称" prop="schemeName" class="!m-0">
-          <el-input
-            v-model="queryParams.schemeName"
-            placeholder="请输入"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="设计人" prop="marketingCreator" class="!m-0">
-          <el-input
-            v-model="queryParams.marketingCreator"
-            placeholder="请输入"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="分类" prop="marketingCategory" class="!m-0">
-          <el-input
-            v-model="queryParams.marketingCategory"
-            placeholder="请输入"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="标签" prop="marketingTags" class="!m-0">
-          <el-input
-            v-model="queryParams.marketingTags"
-            placeholder="请输入"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="上传时间" prop="marketingUploadTime" class="!m-0">
-          <el-date-picker
-            v-model="queryParams.marketingUploadTime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          />
-        </el-form-item>
-      </el-form>
-
-      <!-- 内容 卡片形式 -->
-      <div
-        v-if="list.length > 0 && listType === 'card'"
-        v-loading="loading"
-        class="w-full mt-[16px] grid grid-cols-2 gap-[16px] transition-all duration-500"
-        :style="{ height: mainHeight }"
-      >
-        <el-scrollbar
-          style="height: 100%; border: 1px solid var(--el-color-primary)"
-          class="rounded-[6px]"
-        >
-          <div :class="`rounded-[6px] bg-white pb-[16px]`">
-            <div class="w-full pb-[56.25%] relative">
-              <img
-                :src="currentItem.coverImage"
-                :alt="currentItem.schemeName"
-                class="w-full h-full object-contain absolute top-0 left-0 rounded-t-[6px]"
-              />
-              <div
-                v-show="currentItem.fileManagement"
-                class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[210px] rounded text-center leading-[40px] cursor-pointer"
-              >
-                <a :href="currentItem.fileManagement">
-                  <el-icon color="#FFFFFF" size="16px" class="p-[10px]">
-                    <Download />
-                  </el-icon>
-                </a>
-              </div>
-              <div
-                v-show="currentItem.fileManagement"
-                @click="filePreview(currentItem.fileManagement)"
-                class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[160px] rounded text-center leading-[40px] cursor-pointer"
-              >
-                <el-icon color="#FFFFFF" size="16px"><View /></el-icon>
-              </div>
-              <div
-                class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded text-center leading-[40px] cursor-pointer"
-                @click="openDetailForm('view', currentItem.id)"
-                v-hasPermi="['agriculture:marketing-program:update']"
-              >
-                <el-icon color="#FFFFFF" size="16px"><More /></el-icon>
-              </div>
-              <div
-                class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded text-center leading-[40px] cursor-pointer"
-                @click="openForm('update', currentItem.id)"
-                v-hasPermi="['agriculture:marketing-program:update']"
-              >
-                <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
-              </div>
-              <div
-                class="absolute bg-black opacity-50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded text-center leading-[40px] cursor-pointer"
-                @click="handleDelete(currentItem.id)"
-                v-hasPermi="['agriculture:marketing-program:delete']"
-              >
-                <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
-              </div>
-            </div>
-
-            <div class="mt-[16px] px-[16px] text-[16px] font-bold">
-              {{ currentItem.schemeName }}
-            </div>
-            <div class="m-[16px] border-t border-t-dashed border-[#E6E6E6]"></div>
-            <div class="px-[16px]">{{ currentItem.briefIntroduction }}</div>
-          </div>
-        </el-scrollbar>
-
-        <el-scrollbar style="height: 100%">
-          <div class="w-full grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
-            <div
-              :class="`
-                cursor-pointer shadow-md rounded-[6px] pb-[10px] bg-white
-              `"
-              v-for="item in list"
-              :key="item.id"
-              @click="changCurrentItem(item)"
-            >
-              <div class="w-full pb-[56.25%] overflow-hidden relative">
-                <img
-                  :src="item.coverImage"
-                  :alt="item.schemeName"
-                  class="absolute top-0 left-0 w-full h-full object-cover rounded-t-[6px]"
-                />
-              </div>
-              <div class="mt-[16px] px-[16px]">
-                {{ item.schemeName }}
-              </div>
-              <div class="mt-[8px] px-[16px] truncate">
-                {{ item.briefIntroduction }}
-              </div>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <div v-else-if="listType === 'card'" class="text-center tracking-widest">暂无数据</div>
-
-      <!-- 内容 列表形式 -->
-      <div
-        v-else
-        class="w-full mt-[16px] transition-all duration-500"
-        :style="{ height: mainHeight }"
-      >
-        <el-table
-          style="height: 100%"
-          :data="list"
-          v-loading="loading"
-          :show-overflow-tooltip="true"
-        >
-          <el-table-column label="产品名称" align="center" prop="schemeName" />
-          <el-table-column label="简介" align="center" prop="briefIntroduction" />
-          <el-table-column label="设计人" align="center" prop="marketingCreator" />
-          <el-table-column
-            label="上传时间"
-            align="center"
-            prop="marketingUploadTime"
-            :formatter="dateFormatter"
-            width="180px"
-          />
-          <el-table-column label="分类" align="center" prop="marketingCategory" />
-          <el-table-column label="标签" align="center" prop="marketingTags" />
-          <el-table-column label="文件管理" align="center" prop="fileManagement">
-            <template #default="scope">
-              <el-button type="primary" round v-if="scope.row.fileManagement">
-                <a :href="scope.row.fileManagement" style="color: aliceblue; text-decoration: none">
-                  点击下载
-                </a>
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="封面图片" align="center" prop="coverImage">
-            <template #default="{ row }">
-              <el-image
-                class="h-60px w-60px"
-                :src="row.coverImage"
-                :preview-src-list="[row.coverImage]"
-                preview-teleported
-                fit="cover"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="操作" fixed="right" width="200px">
-            <template #default="scope">
-              <el-button
-                v-if="scope.row.fileManagement"
-                link
-                type="primary"
-                @click="filePreview(scope.row.fileManagement)"
-              >
-                文件预览
-              </el-button>
-              <el-button
-                link
-                type="primary"
-                @click="openDetailForm('view', scope.row.id)"
-                v-hasPermi="['agriculture:marketing-program:update']"
-              >
-                详情
-              </el-button>
-              <el-button
-                link
-                type="primary"
-                @click="openForm('update', scope.row.id)"
-                v-hasPermi="['agriculture:marketing-program:update']"
-              >
-                编辑
-              </el-button>
-              <el-button
-                link
-                type="danger"
-                @click="handleDelete(scope.row.id)"
-                v-hasPermi="['agriculture:marketing-program:delete']"
-              >
-                删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-
-      <Pagination
-        style="margin-bottom: 0; margin-top: 8px"
-        class="self-end"
-        :total="total"
-        v-model:page="queryParams.pageNo"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList()"
-      />
-    </div>
-  </div>
-
-  <!-- 表单弹窗：添加/修改 -->
-  <MarketingProgramForm ref="formRef" @success="getList" />
-
-  <!-- 文件预览 -->
-  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
-    <el-scrollbar height="65vh" class="px-2">
-      <div id="filePreview"></div>
-    </el-scrollbar>
-  </el-dialog>
-</template>
-
 <script setup lang="ts">
+import { useAppStore } from '@/store/modules/app';
+import { colorOpt } from '@/config/colorTheme/colorConfig';
+import { setCssVar } from '@/utils';
+
+/* todo原页面的js代码复制在下面 */
 import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { MarketingProgramApi, MarketingProgramVO } from '@/api/agriculture/marketingprogram';
 import MarketingProgramForm from './MarketingProgramForm.vue';
-//文件预览引入
 import { renderAsync } from 'docx-preview';
 import axios from 'axios';
-import { useAppStore } from '@/store/modules/app';
-import { watch } from 'vue';
-
 /** 营销方案 列表 */
 defineOptions({ name: 'MarketingProgram' });
 
@@ -350,7 +38,6 @@ const queryParams = reactive({
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
-
 //文件预览
 let dialogVisible = ref(false);
 let fileUrl = ref();
@@ -361,6 +48,16 @@ const filePreview = (url: any) => {
   if (url.endsWith('docx')) renderDocx(url);
   else if (url.endsWith('pdf')) renderPDF(url);
   else renderError();
+};
+onMounted(() => {
+  // 组件已挂载，添加事件监听
+  window.addEventListener('resize', handleResize);
+});
+const windowWidth = ref<any>();
+const handleResize = () => {
+  console.log(999);
+  windowWidth.value = window.innerWidth;
+  console.log(windowWidth.value, '屏幕宽度 999');
 };
 
 const renderError = () => {
@@ -399,20 +96,26 @@ const renderPDF = (url: string) => {
   }, 200);
 };
 //--------结束文件预览
-
+// 列表展示类型
+const listType = ref('card');
+const tmpIndex = ref(-1);
+// 当前查看的数据下标
+const currentIdx = ref(-1);
+// 切换列表展示类型
+const handleCardChange = async () => {
+  queryParams.pageNo = 1;
+  await getList();
+};
+watch(listType, handleCardChange);
 /** 查询列表 */
 const getList = async () => {
-  if (sessionStorage.getItem('latestListType')) {
-    listType.value = sessionStorage.getItem('latestListType');
-  }
-  sessionStorage.removeItem('latestListType');
   loading.value = true;
   try {
     const data = await MarketingProgramApi.getMarketingProgramPage(queryParams);
     list.value = data.list;
     total.value = data.total;
     if ('card' === listType.value) {
-      currentItem.value = list.value[0];
+      currentIdx.value = list.value.length > 0 ? 0 : -1;
     }
   } finally {
     loading.value = false;
@@ -431,60 +134,16 @@ const resetQuery = () => {
   handleQuery();
 };
 
-// 列表展示形式 card list
-const listType = ref('card');
-
-// 预览区展示项
-const currentItem = ref({
-  id: undefined,
-  schemeName: undefined,
-  briefIntroduction: undefined,
-  marketingCreator: undefined,
-  marketingUploadTime: undefined,
-  marketingCategory: undefined,
-  marketingTags: undefined,
-  fileManagement: undefined,
-  coverImage: undefined,
-  marketingType: undefined,
-  reserveOne: null,
-  reserveTwo: null,
-  reserveThree: null,
-  createTime: undefined
-});
-
-// 切换预览区展示项
-const changCurrentItem = (item: any) => {
-  currentItem.value = item;
-};
-
-// listType切换list或card
-const handleCardChange = () => {
-  queryParams.pageNo = 1;
-  getList();
-};
-
 /** 添加/修改操作 */
 const router = useRouter(); // 路由
 const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  sessionStorage.setItem('latestListType', listType.value);
-
-  // 执行新增、编辑、详情操作 保存搜索栏数据和页码
-  sessionStorage.removeItem('giftboxStyleQueryParams');
-  let data: any = {
-    pageNo: queryParams.pageNo,
-    schemeName: queryParams.schemeName,
-    marketingCreator: queryParams.marketingCreator,
-    marketingCategory: queryParams.marketingCategory,
-    marketingTags: queryParams.marketingTags,
-    marketingUploadTime: queryParams.marketingUploadTime
-  };
+  // 新增和编辑前 保存当前查看项的下标
   if ('card' === listType.value) {
-    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
-    data = { ...data, id: idx };
+    tmpIndex.value = list.value.findIndex((ele) => {
+      return ele.id === list.value[currentIdx.value].id;
+    });
   }
-  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data));
-
   if (type == 'create') {
     router.push('/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram');
   } else {
@@ -492,40 +151,20 @@ const openForm = (type: string, id?: number) => {
       '/pcg/marketingCenter/giftBoxStyle/CreateOrUpdateMaketingPagram?type=' + type + '&id=' + id
     );
   }
+  //formRef.value.open(type, id)
 };
-
-/**
- * 详情按钮操作
- * @param type
- * @param id
- */
-const openDetailForm = (type: string, id?: number) => {
-  sessionStorage.setItem('latestListType', listType.value);
-
-  // 执行新增、编辑、详情操作 保存搜索栏数据和页码 和 当前选择项
-  sessionStorage.removeItem('giftboxStyleQueryParams');
-  let data: any = {
-    pageNo: queryParams.pageNo,
-    schemeName: queryParams.schemeName,
-    marketingCreator: queryParams.marketingCreator,
-    marketingCategory: queryParams.marketingCategory,
-    marketingTags: queryParams.marketingTags,
-    marketingUploadTime: queryParams.marketingUploadTime
-  };
-  if ('card' === listType.value) {
-    const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
-    data = { ...data, id: idx };
+// 新增和修改成功后调用的函数
+const handleUpdateSuccess = async () => {
+  await getList();
+  if ('card' !== listType.value) return;
+  if (-1 !== tmpIndex.value) {
+    currentIdx.value = tmpIndex.value;
+    tmpIndex.value = -1;
   }
-  sessionStorage.setItem('giftboxStyleQueryParams', JSON.stringify(data));
-
-  router.push('/pcg/marketingCenter/giftBoxStyle/boxStyleDetail?type=' + type + '&id=' + id);
 };
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
-  // 删除之前 记录下currentItem的下标 列表刷新后直接显示记录下标的项
-  const idx = list.value.findIndex((ele) => ele.id === currentItem.value.id);
-
   try {
     // 删除的二次确认
     await message.delConfirm();
@@ -535,13 +174,6 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList();
   } catch {}
-
-  // 删除后 设置curItem
-  if (idx >= list.value.length) {
-    currentItem.value = list.value[list.value.length - 1];
-  } else {
-    currentItem.value = list.value[idx];
-  }
 };
 
 /** 导出按钮操作 */
@@ -552,51 +184,28 @@ const handleExport = async () => {
     // 发起导出
     exportLoading.value = true;
     const data = await MarketingProgramApi.exportMarketingProgram(queryParams);
-    download.excel(data, '礼盒样式.xls');
+    download.excel(data, '营销方案.xls');
   } catch {
   } finally {
     exportLoading.value = false;
   }
 };
 
-/** 初始化 **/
-onMounted(async () => {
-  // 如果执行新增、编辑、详情操作 会事先保存搜索栏数据和页码 读取这些数据查询List
-  const sessionParams = sessionStorage.getItem('giftboxStyleQueryParams');
-  let idx: number = -1;
-  if (sessionParams) {
-    const data = JSON.parse(sessionParams);
-    queryParams.pageNo = data.pageNo;
-    queryParams.schemeName = data.schemeName;
-    queryParams.marketingCreator = data.marketingCreator;
-    queryParams.marketingCategory = data.marketingCategory;
-    queryParams.marketingTags = data.marketingTags;
-    queryParams.marketingUploadTime = data.marketingUploadTime;
-    idx = data.id;
-  }
-  sessionStorage.removeItem('giftboxStyleQueryParams');
-
-  await getList();
-
-  if (-1 !== idx) {
-    currentItem.value = list.value[idx];
-  }
-
-  // 获取当前是否是深色主题
-  themeIsDark.value = appStore.getIsDark;
+onActivated(() => {
+  getList();
 });
+/** 初始化 **/
+onMounted(() => {
+  getList();
+});
+/* 原页面的代码复制在上面 */
 
-const appStore = useAppStore();
-const themeIsDark = ref(false);
-
-// 监听主题模式变化
-watch(
-  () => appStore.isDark,
-  (newVal, oldVal) => {
-    console.log('isDark', newVal, oldVal);
-    themeIsDark.value = newVal;
-  }
-);
+/**
+ * topMenuHeight      顶部菜单和标签页高度
+ * contentPadding     页面内容外边距
+ */
+const topMenuHeight = 85;
+const contentPadding = 8;
 
 // 时间戳转换成 YYYY-MM-DD HH:MM:SS
 const timeFormat = (dataString: string) => {
@@ -622,89 +231,423 @@ const timeFormat = (dataString: string) => {
     (second < 10 ? '0' + second : second)
   );
 };
-
-/**
- * 以下为布局需要的各类元素的高度
- * 需要修改的是 searchAreaHeight 搜索栏区域的高度
- * 以及 pagnitionHeight 页码组件的高度 这个需要包括margin
- * 运行页面用控制台查看一下
- *
- * topMenuHeight      顶部菜单和标签页高度
- * contentPadding     页面内容外边距
- * modulePadding      模块内边距
- * btnHeight          按钮高度
- * searchAreaHeight   搜索栏区域高度
- * pagnitionHeight    页码组件高度 需要包括margin
- *
- * mainHeight 是 本页 列表内容的高度 用白色区域的高度 - 操作按钮 - 搜索栏 - 页码 - 所有垂直方向上的边距
- */
-const topMenuHeight = 85;
-const contentPadding = 8;
-const modulePadding = 16;
-const btnHeight = 32;
-// const searchAreaHeight = 56;
-const pagnitionHeight = 24 + 8;
-const mainHeight = ref();
-
-// 计算列表内容的高度
-const calcMainHeight = () => {
-  let dom = document.querySelector('#formDom');
-  if (!dom) return;
-  mainHeight.value =
-    'calc(100% - ' +
-    (2 * contentPadding + modulePadding + btnHeight + dom.clientHeight + pagnitionHeight) +
-    'px)';
-  dom = null;
-};
-
-onMounted(() => {
-  calcMainHeight();
-  window.addEventListener('resize', calcMainHeight);
-});
-
 // 展开或收起搜索栏
-const showSearch = ref(true);
-const handleClickShowSearch = async () => {
+const showSearch = ref(false);
+const handleClickShowSearch = () => {
   showSearch.value = !showSearch.value;
-  await nextTick();
-  calcMainHeight();
 };
 </script>
 
-<style scoped lang="scss">
-// 主按钮
-.primary-btn {
-  padding-left: 16px;
-  padding-right: 16px;
-  height: 32px;
-  font-size: 14px;
-  color: white;
-  border-width: 0;
-  border-radius: 6px;
-  background-color: var(--el-color-primary);
+<template>
+  <el-scrollbar
+    class="w-full bg-white rounded-[6px] text-[#666] text-[14px] p-[16px] box-border"
+    :style="{ height: 'calc(100vh - ' + (topMenuHeight + 2 * contentPadding) + 'px)' }"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center">
+        <!-- 一级标题名字 todo替换成菜单名称-->
+        <h1 class="m-0 text-[#333] font-bold text-[18px]">礼盒样式</h1>
+        <Icon icon="ep:question-filled" :size="14" class="ml-[8px] cursor-pointer text-[#F08000]" />
+        <div class="w-[1px] h-[32px] mx-[16px] bg-[#ebebeb]"></div>
+        <!-- 一级标题旁边的按钮 -->
+        <!-- todo原新增按钮 -->
+        <!-- todo需要包含type="primary"&&不能有plain属性 -->
+        <el-button
+          type="primary"
+          @click="openForm('create')"
+          v-hasPermi="['agriculture:marketing-program:create']"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
+        </el-button>
+      </div>
 
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
+      <div class="flex items-center">
+        <!-- 一级标题这行右侧的按钮写在下面 修改点击事件函数 -->
+        <!-- todo复制原页面【搜索、重置、导出】 -->
+        <!-- todo【搜索】按钮需要包含type="primary"&&不能有plain属性 -->
+        <!-- todo删除导出按钮的type和plain属性 -->
+        <el-button @click="handleQuery" type="primary">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
+        <el-button
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['agriculture:marketing-program:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" />
+          导出
+        </el-button>
+        <!-- el-radio-button比el-button高 和button放在一行突兀 所以用el-button实现el-radio-button效果 单独使用时el-radio-button更佳 -->
+        <div class="flex">
+          <el-button
+            @click="listType = 'list'"
+            class="!rounded-r-none"
+            :class="`${listType === 'list' && 'tab-active'}`"
+          >
+            <Icon icon="ep:list" />
+          </el-button>
+          <el-button
+            @click="listType = 'card'"
+            class="!ml-0 !rounded-l-none"
+            :class="`${listType === 'card' && 'tab-active'}`"
+          >
+            <Icon icon="ep:menu" />
+          </el-button>
+        </div>
+        <div
+          class="w-[20px] h-[20px] !ml-[16px] text-center leading-[22px] rounded-full cursor-pointer transition-all"
+          :class="showSearch ? 'rotate-0' : 'rotate-180'"
+          style="border: 1px solid #e6e6e6"
+          @click="showSearch = !showSearch"
+        >
+          <el-icon :size="14"><ArrowUpBold /></el-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- 搜索栏 注意 :model 和 ref 的名称 -->
+    <el-form
+      :model="queryParams"
+      ref="queryFormRef"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
+      label-width="95px"
+      :inline="true"
+    >
+      <!-- 原来的表单里的内容复制过来 不要操作按钮 -->
+      <!-- todo复制原来的搜索列表 -->
+      <!-- todo 所有的都需要删除class=“!w-240” 这一类的属性 -->
+      <el-form-item label="产品名称" prop="schemeName">
+        <el-input
+          v-model="queryParams.schemeName"
+          placeholder="请输入方案名称"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="设计人" prop="marketingCreator">
+        <el-input
+          v-model="queryParams.marketingCreator"
+          placeholder="请输入创作人"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="上传时间" prop="marketingUploadTime">
+        <el-date-picker
+          v-model="queryParams.marketingUploadTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+        />
+      </el-form-item>
+      <el-form-item label="分类" prop="marketingCategory">
+        <el-input
+          v-model="queryParams.marketingCategory"
+          placeholder="请输入分类"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="标签" prop="marketingTags">
+        <el-input
+          v-model="queryParams.marketingTags"
+          placeholder="请输入标签"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <!-- <el-form-item label="营销推广类型" prop="marketingType">
+        <el-input
+          v-model="queryParams.marketingType"
+          placeholder="请输入营销推广类型"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item> -->
+      <!-- <el-form-item label="备用一" prop="reserveOne">
+        <el-input
+          v-model="queryParams.reserveOne"
+          placeholder="请输入备用一"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="备用二" prop="reserveTwo">
+        <el-input
+          v-model="queryParams.reserveTwo"
+          placeholder="请输入备用二"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="备用三" prop="reserveThree">
+        <el-input
+          v-model="queryParams.reserveThree"
+          placeholder="请输入备用三"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item> -->
+      <!-- <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+        />
+      </el-form-item> -->
+    </el-form>
+    <div class="mt-[16px]">
+      <el-table v-show="listType === 'list'" :data="list" :show-overflow-tooltip="true">
+        <!-- todo复制列表 -->
+        <!-- <el-table-column label="主键" align="center" prop="id" /> -->
+        <el-table-column label="产品名称" align="center" prop="schemeName" />
+        <el-table-column label="简介" align="center" prop="briefIntroduction" />
+        <el-table-column label="设计人" align="center" prop="marketingCreator" />
+        <el-table-column
+          label="上传时间"
+          align="center"
+          prop="marketingUploadTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
+        <el-table-column label="分类" align="center" prop="marketingCategory" />
+        <el-table-column label="标签" align="center" prop="marketingTags" />
+        <el-table-column label="文件管理" align="center" prop="fileManagement">
+          <template #default="scope">
+            <el-button type="primary" round v-if="scope.row.fileManagement">
+              <a :href="scope.row.fileManagement" style="color: aliceblue; text-decoration: none">
+                点击下载
+              </a>
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="封面图片" align="center" prop="coverImage">
+          <template #default="{ row }">
+            <el-image
+              class="h-60px w-60px"
+              lazy
+              :src="row.coverImage"
+              :preview-src-list="[row.coverImage]"
+              preview-teleported
+              fit="cover"
+            />
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="营销推广类型" align="center" prop="marketingType" />
+        <el-table-column label="备用一" align="center" prop="reserveOne" />
+        <el-table-column label="备用二" align="center" prop="reserveTwo" />
+        <el-table-column label="备用三" align="center" prop="reserveThree" /> -->
+        <!-- <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        /> -->
+        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+          <template #default="scope">
+            <!-- todo操作按钮 -->
+            <!-- 1.  <template #default="scope"> 中，加入
+                <div class="flex items-center justify-center">
+                  其中放入编辑，删除"按钮"等，每一个按钮中完成后加入
+                    <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+                  这段代码的含义是“竖杠”分隔符
+                </div>
+                2.请注意“方案一”和“方案二”只采用一种，请根据自身按钮数量选择性删除或保留
+              -->
+            <!-- todo方案一 -->
+            <div class="flex items-center justify-center">
+              <el-button
+                v-if="scope.row.fileManagement"
+                link
+                type="primary"
+                @click="filePreview(scope.row.fileManagement)"
+              >
+                文件预览
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                link
+                type="primary"
+                @click="openForm('update', scope.row.id)"
+                v-hasPermi="['agriculture:marketing-program:update']"
+              >
+                编辑
+              </el-button>
+              <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
+              <el-button
+                link
+                type="danger"
+                @click="handleDelete(scope.row.id)"
+                v-hasPermi="['agriculture:marketing-program:delete']"
+              >
+                删除
+              </el-button>
+
+              <!-- <el-button
+                link
+                type="primary"
+                @click="openDetailForm('view', scope.row.id)"
+                v-hasPermi="['agriculture:marketing-program:update']"
+              >
+                详情
+              </el-button> -->
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div v-show="listType === 'card'" v-loading="loading" class="grid grid-cols-2 gap-[16px]">
+      <div>
+        <div class="sticky top-0 w-full pb-[16px] rounded-b-[4px] shadow-md dark:shadow-[#000]">
+          <template v-if="currentIdx !== -1 && list[currentIdx]">
+            <div class="w-full pb-[56.25%] relative">
+              <el-image
+                :src="list[currentIdx].coverImage"
+                :alt="list[currentIdx].schemeName"
+                :preview-src-list="[list[currentIdx].coverImage]"
+                preview-teleported
+                fit="cover"
+                class="!absolute top-0 left-0 w-full h-full"
+              />
+              <div
+                v-show="list[currentIdx].videoLink"
+                @click="openVideo(list[currentIdx].videoLink)"
+                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[110px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+              >
+                <el-icon size="16px"><VideoCamera /></el-icon>
+              </div>
+              <div
+                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[60px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+                @click="openForm('update', list[currentIdx].id)"
+              >
+                <el-icon color="#FFFFFF" size="16px"><Edit /></el-icon>
+              </div>
+              <div
+                class="absolute bg-black/50 w-[40px] h-[40px] bottom-[11px] right-[10px] rounded-[6px] text-center text-white leading-[40px] cursor-pointer"
+                @click="handleDelete(list[currentIdx].id)"
+              >
+                <el-icon color="#FFFFFF" size="16px"><Delete /></el-icon>
+              </div>
+            </div>
+            <div class="text-[8px] 2xl:text-[10px]">
+              <div class="p-[1.6em] flex justify-between">
+                <span class="font-bold text-[1.4em]">{{ list[currentIdx].schemeName }}</span>
+                <span class="text-[#999] text-[1.4em]">
+                  {{ timeFormat(list[currentIdx].marketingUploadTime) }}
+                </span>
+              </div>
+              <div style="border-bottom: 1px dashed #e6e6e6" class="mx-[1.6em]"></div>
+              <!-- <div class="mt-[1.6em] px-[1.6em] flex justify-between">
+                <span class="text-[#999] text-[1.4em]">简介:</span>
+                <span class="text-[#999] text-[1.4em]">
+                  {{ list[currentIdx].briefIntroduction }}
+                </span>
+              </div> -->
+              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                <span class="text-[#999] text-[1.4em]">设计人:</span>
+                <span class="text-[#999] text-[1.4em]">
+                  {{ list[currentIdx].marketingCreator }}
+                </span>
+              </div>
+              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                <span class="text-[#999] text-[1.4em]">分类:</span>
+                <span class="text-[#999] text-[1.4em]">
+                  {{ list[currentIdx].marketingCategory }}
+                </span>
+              </div>
+              <div class="mt-[0.8em] px-[1.6em] flex justify-between">
+                <span class="text-[#999] text-[1.4em]">标签:</span>
+                <span class="text-[#999] text-[1.4em]">
+                  {{ list[currentIdx].marketingTags }}
+                </span>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="w-full pb-[56.25%] no-data"></div>
+          </template>
+        </div>
+      </div>
+      <div>
+        <div class="grid grid-cols-2 xl:grid-cols-3 gap-[16px]">
+          <div
+            class="cursor-pointer shadow-md rounded-[4px] overflow-hidden pb-[16px] dark:bg-[#333] dark:shadow-[#000]"
+            v-for="(item, index) in list"
+            :key="item.id"
+            @click="currentIdx = index"
+            :style="`${index === currentIdx && 'border: 1px solid var(--el-color-primary)'}`"
+          >
+            <div class="w-full pb-[56.25%] relative">
+              <el-image
+                :src="item.coverImage"
+                :alt="item.schemeName"
+                fit="cover"
+                class="!absolute top-0 left-0 w-full h-full"
+              />
+            </div>
+            <div class="text-[8px] 2xl:text-[10px] px-[1.6em] mt-[1.6em]">
+              <div>
+                <span class="truncate text-[1.4em]">{{ item.schemeName }}</span>
+              </div>
+              <div class="mt-[0.8em]">
+                <span class="truncate text-[1.4em]">
+                  {{ timeFormat(item.marketingUploadTime) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 页码组件 注意绑定的值和事件函数 -->
+    <!-- 不用改 -->
+    <Pagination
+      style="margin-bottom: 0; margin-top: 8px"
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    />
+  </el-scrollbar>
+  <!-- todo页面组件复制在下面 -->
+  <!-- 表单弹窗：添加/修改 -->
+  <MarketingProgramForm ref="formRef" @success="getList" />
+  <el-dialog v-model="dialogVisible" title="预览" width="70vw" :before-close="handleDialogClose">
+    <el-scrollbar height="65vh" class="px-2">
+      <div id="filePreview"></div>
+    </el-scrollbar>
+  </el-dialog>
+</template>
+<style lang="scss" scoped>
+// 原页面样式复制在下面
+
+// 鼠标移在按钮上时显示主题色边框
+:deep(.el-button:hover) {
+  border-color: var(--el-color-primary);
 }
 
-// 次按钮
-.secondary-btn {
-  padding-left: 16px;
-  padding-right: 16px;
-  height: 32px;
-  font-size: 14px;
-  color: #333;
-  border: 1px solid #e6e6e6;
-  border-radius: 6px;
-  background-color: white;
+// 去掉表单的边距
+:deep(.form > *) {
+  margin: 0;
+}
 
-  &:hover {
-    cursor: pointer;
-    border-color: var(--el-color-primary);
-    color: var(--el-color-primary);
-  }
+// 调整表单标签和输入框之间的距离
+:deep(.form .el-form-item__label) {
+  padding: 0 4px 0 0;
 }
 
 // 收起
@@ -712,7 +655,7 @@ const handleClickShowSearch = async () => {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid #e6e6e6;
+  border: 1px solid #ebebeb;
   color: #333;
   background-color: white;
   display: flex;
@@ -725,41 +668,6 @@ const handleClickShowSearch = async () => {
     border-width: 0;
     background-color: var(--el-color-primary);
   }
-}
-
-// el-radio-button 的内边距
-:deep(.card-list .el-radio-button__inner) {
-  padding: 8px 16px;
-  border-color: #e6e6e6;
-}
-
-// 第一个 el-radio-button 的左圆角 和 hover时样式
-:deep(.card-list .el-radio-button:first-child .el-radio-button__inner) {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-
-  &:hover {
-    border-color: var(--el-color-primary);
-  }
-}
-
-// 最后一个 el-radio-button 的左圆角 和 hover时样式
-:deep(.card-list .el-radio-button:last-child .el-radio-button__inner) {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  border-left: 1px solid #e6e6e6;
-
-  &:hover {
-    border-color: var(--el-color-primary);
-  }
-}
-
-// radio 激活时的样式
-:deep(.card-list .el-radio-button__original-radio:checked + .el-radio-button__inner) {
-  background-color: white;
-  color: var(--el-color-primary);
-  border-color: var(--el-color-primary);
-  box-shadow: none;
 }
 
 // 向上箭头展开收起的动画
