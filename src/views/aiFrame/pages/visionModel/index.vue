@@ -807,9 +807,9 @@ const sizeList = ref([
                   />
                   <div
                     v-show="!(!useITT && item.role === 'system')"
-                    class="bg-white rounded-16px px-16px box-border text-wrap mx-8px box-border"
+                    class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
                     :class="[item.role === 'system' ? 'shadow-md' : '']"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
+                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.message.text)"
                   ></div>
                   <div
@@ -865,10 +865,10 @@ const sizeList = ref([
           </el-scrollbar>
         </div>
         <div
-          class="input-outer-container p-2px rounded-16px shadow-md relative"
+          class="input-outer-container p-2px rounded-8px shadow-md relative"
           style="flex: 0 0 auto"
         >
-          <div class="rounded-16px p-8px bg-white dark:bg-#121212 overflow-hidden">
+          <div class="rounded-8px p-8px bg-white dark:bg-#121212 overflow-hidden">
             <div v-if="inputImgListITT.length > 0" class="h-[68px] flex space-x-[8px]">
               <div class="relative" v-for="(item, index) in inputImgListITT" :key="item.url">
                 <el-image
