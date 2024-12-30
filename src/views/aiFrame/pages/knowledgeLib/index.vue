@@ -9,6 +9,7 @@ import {
 } from '../../apis';
 // @ts-ignore
 import KnowledgeLibCreateOrUpdate from './kowledgeLibCreateOrUpdate.vue';
+import dayjs from 'dayjs';
 
 // false 则显示创建知识库页面
 const showLibPage = ref(true);
@@ -321,7 +322,7 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
           <!-- knowledge lib list -->
           <template v-else>
             <div
-              class="mt-[2.4em] grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[1.6em] pl-[4em] pr-[2.4em] pb-20px"
+              class="mt-[2.4em] grid md:grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[4em] pr-[2.4em] pb-20px"
             >
               <div
                 v-for="(item, index) in knowledgeList"
@@ -333,37 +334,49 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
                     <div class="text-[22px] text-[#33315A] line-clamp-1 fix-text-white">
                       {{ item.collectionName }}
                     </div>
-                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[3px] line-clamp-1">
-                      {{ item.description }}
+                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
+                      ID: {{ item.collectionId }}
                     </div>
-                    <div class="tag mt-[10px] line-clamp-1 w-fit">
-                      {{ dataTypeMap[item.dataType] }}
+                    <div class="flex mt-[4px]">
+                      <div class="tag dark:bg-transparent dark:grad-bg">
+                        {{ dataTypeMap[item.dataType] }}
+                      </div>
+                      <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">涪陵区明月村</div>
+                    </div>
+                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
+                      张三 于{{ dayjs(item.createTime).format('YYYY-MM-DD HH:MM:ss') }}创建
                     </div>
                   </div>
-                  <div class="card-logo flex-none w-[6.6em] h-[7.3em]"></div>
+                  <div class="flex-none flex flex-col items-center">
+                    <div class="card-logo flex-none w-[6.6em] h-[7.3em]"></div>
+                    <div class="flex items-center">
+                      <span class="text-[#666666] text-[1.6em] fix-text-white">
+                        文档数量：{{ item.docNum ? item.docNum : 0 }}
+                      </span>
+                      <div
+                        class="right-arrow-circle cursor-pointer"
+                        @click="handleCheckDoc(index)"
+                      ></div>
+                    </div>
+                  </div>
                 </div>
-                <div class="mt-[24px] flex justify-between items-end">
-                  <div class="flex items-center">
-                    <span class="text-[#666666] text-[1.6em] fix-text-white">
-                      文档数量：{{ item.docNum ? item.docNum : 0 }}
-                    </span>
-                    <div
-                      class="right-arrow-circle cursor-pointer"
-                      @click="handleCheckDoc(index)"
-                    ></div>
-                  </div>
-                  <div class="flex items-center">
-                    <el-button class="!rounded-full" @click="handleDeleteLib(index)">
-                      删除
-                    </el-button>
-                    <el-button
-                      class="!rounded-full !ml-[8px]"
-                      color="#615ced"
-                      @click="handleClickImport(index)"
-                    >
-                      导入文档
-                    </el-button>
-                  </div>
+                <div
+                  class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[8px] line-clamp-1 bg-[#F5F6FA] dark:bg-[#384052] rounded-[6px] p-[6px]"
+                >
+                  {{ item.description }}
+                </div>
+                <div class="mt-[24px] flex justify-end items-center">
+                  <el-button class="!rounded-full" @click="handleDeleteLib(index)">删除</el-button>
+                  <el-button class="!rounded-full" @click="console.log('查看详情')">
+                    查看详情
+                  </el-button>
+                  <el-button
+                    class="!rounded-full !ml-[8px]"
+                    color="#615ced"
+                    @click="handleClickImport(index)"
+                  >
+                    导入文档
+                  </el-button>
                 </div>
               </div>
             </div>
@@ -390,8 +403,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
     >
       <div class="w-full h-full flex flex-col justify-center items-center">
         <div
-          class="p-[24px] border border-dashed border-[#DFE0E6] bg-[#FAFAFC] dark:bg-transparent dark:border-[#666]"
+          class="p-[24px] border border-dashed border-[#DFE0E6] bg-[#FAFAFC] dark:bg-transparent dark:border-[#666] relative"
         >
+          <div
+            v-show="docUrl !== ''"
+            class="w-full h-full bg-transparent absolute top-0 left-0 z-10"
+          ></div>
           <UploadFile class="up-btn" v-model="docUrl" :limit="1" :fileType="currentDocTypes">
             <div
               class="mt-[14px] text-center leading-[22px] max-w-[280px] text-wrap dark:text-white"
@@ -505,6 +522,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   .collapse-button:hover .collapse-arrow {
     background-image: url(../../assets/knowledge-collapse-active.svg);
   }
+
+  .card-bg {
+    background-image: url(../../assets/knowledge-card-bg.png);
+    background-size: 100% 100%;
+    border: 1px solid #ebecf2;
+  }
 }
 
 @for $i from 1 through 3 {
@@ -512,12 +535,6 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
     background-image: url(../../assets/knowledge-guide-#{$i}.svg);
     background-size: 100% 100%;
   }
-}
-
-.card-bg {
-  background-image: url(../../assets/knowledge-card-bg.png);
-  background-size: 100% 100%;
-  border: 1px solid #ebecf2;
 }
 
 .card-logo {
@@ -690,10 +707,11 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
     border-bottom-left-radius: 0.8em;
     border-top-right-radius: 0.8em;
     background-color: transparent;
+    background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
     padding: 4px 8px;
-    color: #786df5;
+    color: white;
     font-size: 1.3em;
-    border: 0.1em solid #786df5;
+    border: none;
   }
 
   .card-btn-border-top {
