@@ -320,7 +320,8 @@ const handleSendMsg = async (text) => {
     model: modelSelected.value,
     themeId: activeChatID.value,
     stream: false,
-    maxNewTokens: maxResLength.value
+    maxNewTokens: maxResLength.value,
+    extraPrompt: prompt.value
   }).catch(() => {
     disabledSendBtn.value = false;
     const activeItem = chatList.value.find((item) => item.id === chatId);
