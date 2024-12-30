@@ -401,9 +401,9 @@ const showLibId = ref('');
       />
     </template>
 
-    <!-- <div v-if="showLibId !== ''" class="w-full h-full absolute top-0 left-0">
+    <div v-if="showLibId !== ''" class="w-full h-full absolute top-0 left-0">
       <lib-detail v-model:id="showLibId" />
-    </div> -->
+    </div>
 
     <Dialog
       v-model="showImportDialog"
