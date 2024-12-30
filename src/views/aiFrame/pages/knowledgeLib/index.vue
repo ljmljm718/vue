@@ -469,7 +469,13 @@ function getLastPart(str) {
       </div>
     </Dialog>
 
-    <Dialog v-model="showCheckDoc" title="查看文档" width="60em" @close="currentLibId = ''">
+    <Dialog
+      v-model="showCheckDoc"
+      title="查看文档"
+      width="60em"
+      @close="currentLibId = ''"
+      top="20px"
+    >
       <div class="w-full h-[40em]">
         <el-scrollbar v-if="docList.length > 0" view-class="pr-[1.6em]">
           <div v-for="item in docList" :key="item.docId">
