@@ -360,9 +360,9 @@ function getLastPart(str) {
                       <div class="tag dark:bg-transparent dark:grad-bg">
                         {{ dataTypeMap[item.dataType] }}
                       </div>
-                      <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">
+                      <!-- <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">
                         {{ item.deptName }}
-                      </div>
+                      </div> -->
                     </div>
                     <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
                       {{ item.creator }} 于{{
@@ -830,6 +830,13 @@ function getLastPart(str) {
     .el-dialog {
       --el-dialog-bg-color: #1f2531;
     }
+  }
+}
+
+.dark {
+  .my-msg {
+    background-color: #2c3240;
+    border: none;
   }
 }
 </style>
