@@ -369,14 +369,16 @@ const showLibId = ref('');
                   </div>
                 </div>
                 <div
+                  v-show="item.description"
                   class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[8px] line-clamp-1 bg-[#F5F6FA] dark:bg-[#384052] rounded-[6px] p-[6px]"
                 >
                   {{ item.description }}
                 </div>
                 <div class="mt-[24px] flex justify-end items-center">
                   <el-button class="!rounded-full" @click="handleDeleteLib(index)">删除</el-button>
-                  <!-- <el-button class="!rounded-full" @click="showLibId = item.collectionId"> -->
-                  <el-button class="!rounded-full">查看详情</el-button>
+                  <el-button class="!rounded-full" @click="showLibId = item.collectionId">
+                    查看详情
+                  </el-button>
                   <el-button
                     class="!rounded-full !ml-[8px]"
                     color="#615ced"
