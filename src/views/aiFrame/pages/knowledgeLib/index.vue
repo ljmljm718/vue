@@ -389,12 +389,21 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
       width="60em"
     >
       <div class="w-full h-full flex flex-col justify-center items-center">
-        <UploadFile
-          class="scale-120 up-btn"
-          v-model="docUrl"
-          :limit="1"
-          :fileType="currentDocTypes"
-        />
+        <div
+          class="p-[24px] border border-dashed border-[#DFE0E6] bg-[#FAFAFC] dark:bg-transparent dark:border-[#666]"
+        >
+          <UploadFile class="up-btn" v-model="docUrl" :limit="1" :fileType="currentDocTypes">
+            <div
+              class="mt-[14px] text-center leading-[22px] max-w-[280px] text-wrap dark:text-white"
+            >
+              请上传文件大小不超过
+              <b style="color: #f56c6c">5MB</b>
+              ，格式为
+              <b style="color: #f56c6c">{{ currentDocTypes.join('/') }}</b>
+              的文件
+            </div>
+          </UploadFile>
+        </div>
         <el-button class="self-end" color="#615ced" @click="handleSubmitImport">立即导入</el-button>
       </div>
     </Dialog>
@@ -716,6 +725,12 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 :deep(.up-btn .upload-file-uploader .el-upload .el-button:focus) {
   border-color: rgb(144, 141, 242);
   background-color: rgb(144, 141, 242);
+}
+
+:deep(.up-btn .upload-file-uploader) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 :deep(.el-button:focus),
