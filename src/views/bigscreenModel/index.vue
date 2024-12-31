@@ -1,17 +1,17 @@
 <script lang="tsx">
-import { ref, onMounted } from 'vue'
-import BigscreenBuilder from '@/components/BigscreenBuilder'
-import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue'
-import mainBg from './assets/main-bg.png'
-import duckBg from './assets/duck-bg.png'
-import fishBg from './assets/fish-bg.png'
-import headerBg from './assets/headerBg.png'
-import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue'
+import { ref, onMounted } from 'vue';
+import BigscreenBuilder from '@/components/BigscreenBuilder';
+import BigScreenTime from '@/utils/bigscreenTool/currentTime.vue';
+import mainBg from './assets/main-bg.png';
+import duckBg from './assets/duck-bg.png';
+import fishBg from './assets/fish-bg.png';
+import headerBg from './assets/headerBg.png';
+import BackOrHome from '@/utils/bigscreenTool/backOrHome.vue';
 import {
   initChartStatic,
   generateBaseOptions,
   generatePieOptions
-} from '../../utils/bigscreenTool/index'
+} from '../../utils/bigscreenTool/index';
 import {
   ModelPlanByModelId,
   modelInfo,
@@ -20,7 +20,7 @@ import {
   modelMonitor,
   ModelOverviewStatistics,
   BatchCodeByModelId
-} from './api'
+} from './api';
 const {
   BigscreenAdapter,
   BigscreenContainer,
@@ -32,38 +32,38 @@ const {
   BigscreenTab,
   // BigscreenSelector,
   BigscreenTable
-} = BigscreenBuilder
+} = BigscreenBuilder;
 export default defineComponent({
   name: 'BigscreenTest',
   setup() {
-    const route = useRoute()
-    const router = useRouter()
+    const route = useRoute();
+    const router = useRouter();
     //模型id
-    const modelId = ref('')
-    const beLongPlot = ref('')
-    const growthId = ref()
-    const growthId2 = ref(true)
-    const bigscreenName = ref('')
-    const batch = ref('')
-    const MainImg = ref('')
-    console.log(route.query, 'route.query route.query route.query123')
-    bigscreenName.value = route.query.modelName
-    modelId.value = route.query.modelId
-    beLongPlot.value = route.query.plotId
-    const setInter = ref(null)
-    const bubbles = ref<any[]>([])
-    const widht = ref()
-    const height = ref()
+    const modelId = ref('');
+    const beLongPlot = ref('');
+    const growthId = ref();
+    const growthId2 = ref(true);
+    const bigscreenName = ref('');
+    const batch = ref('');
+    const MainImg = ref('');
+    console.log(route.query, 'route.query route.query route.query123');
+    bigscreenName.value = route.query.modelName;
+    modelId.value = route.query.modelId;
+    beLongPlot.value = route.query.plotId;
+    const setInter = ref(null);
+    const bubbles = ref<any[]>([]);
+    const widht = ref();
+    const height = ref();
     //获取批次号
     const getBatchCodeByModelId = async () => {
-      let res = await BatchCodeByModelId({plotId: beLongPlot.value,modelId: modelId.value})
-      console.log(res, '获取批次号 ')
-      growthId.value = res[0].growthId
-      batch.value = res[0].batchCode
-    }
-    getBatchCodeByModelId()
+      let res = await BatchCodeByModelId({ plotId: beLongPlot.value, modelId: modelId.value });
+      console.log(res, '获取批次号 ');
+      growthId.value = res[0].growthId;
+      batch.value = res[0].batchCode;
+    };
+    getBatchCodeByModelId();
     const createBubbles = () => {
-      bubbles.value=[]
+      bubbles.value = [];
       for (let i = 0; i < mainList.value.length; i++) {
         bubbles.value.push({
           id: i,
@@ -71,30 +71,30 @@ export default defineComponent({
           y: Math.random() * 300,
           velocityX: (Math.random() - 0.5) * 10,
           velocityY: (Math.random() - 0.5) * 10
-        })
+        });
       }
-    }
+    };
     const animateBubbles = () => {
-      clearInterval(setInter.value)
+      clearInterval(setInter.value);
       setInter.value = setInterval(() => {
         bubbles.value.forEach((bubble) => {
-          bubble.x += bubble.velocityX
-          bubble.y += bubble.velocityY
+          bubble.x += bubble.velocityX;
+          bubble.y += bubble.velocityY;
 
           if (bubble.x < 0 || bubble.x > widht.value) {
-            bubble.velocityX *= -1
+            bubble.velocityX *= -1;
           }
           if (bubble.y < 0 || bubble.y > height.value) {
-            bubble.velocityY *= -1
+            bubble.velocityY *= -1;
           }
-        })
-      }, 1000 / 20)
-    }
-    const numVal = ref(1)
-    const rightNum = ref(0)
+        });
+      }, 1000 / 20);
+    };
+    const numVal = ref(1);
+    const rightNum = ref(0);
     //雷达图
     const drawRadarChart = (obj) => {
-      let list = obj.modelIndicatorElementCardVOList
+      let list = obj.modelIndicatorElementCardVOList;
       initChartStatic('radarChart', {
         title: {
           // text: '评估评分占比分析图'
@@ -105,17 +105,17 @@ export default defineComponent({
           },
           formatter: (params) => {
             //自定义绘制tooltip
-            let str = '<div>模型要素</div>'
+            let str = '<div>模型要素</div>';
             list.forEach((item) => {
               str += ` <div>
                 <div class='flex justify-between color-[${
                   item.assess.includes('正常') ? '#000' : 'red'
                 }]'><div>${item.elementName} </div>  <div class=' ml-10px mr-10px'>${
-                item.assess
-              }</div> <div>${item.score}</div> </div>
-                </div> `
-            })
-            return str //解决未在拐点悬浮undefine问题
+                  item.assess
+                }</div> <div>${item.score}</div> </div>
+                </div> `;
+            });
+            return str; //解决未在拐点悬浮undefine问题
           }
         },
         radar: [
@@ -123,7 +123,7 @@ export default defineComponent({
             indicator: list.map((item) => {
               return {
                 name: item.elementName
-              }
+              };
             }),
             name: {
               textStyle: {
@@ -150,7 +150,7 @@ export default defineComponent({
               lineStyle: {
                 color: 'rgba(241, 241, 241)'
               }
-            },
+            }
           }
         ],
         series: [
@@ -200,8 +200,8 @@ export default defineComponent({
             }
           }
         ]
-      })
-    }
+      });
+    };
     //为空调用的echart
     const drawRadarChart2 = () => {
       initChartStatic('radarChart', {
@@ -252,132 +252,131 @@ export default defineComponent({
             }
           }
         ]
-      })
-    }
+      });
+    };
     // 右侧移动
-    const rightSetNum = ref(0)
+    const rightSetNum = ref(0);
     const cycleListChange3 = (index) => {
-      if (infoList.value.length > 4 ) {
-        detailLeft.value += (rightSetNum.value - index) * 100 * 1
+      if (infoList.value.length > 4) {
+        detailLeft.value += (rightSetNum.value - index) * 100 * 1;
       }
-    }
+    };
     //模型要素切换
-    const detailLeft = ref (0)
-    const mainList = ref<any[]>([])
+    const detailLeft = ref(0);
+    const mainList = ref<any[]>([]);
     const tabFn = (obj, val) => {
-      cycleListChange3(val)
-      rightNum.value = val
-      drawRadarChart(obj)
-      mainList.value = obj.modelIndicatorElementCardVOList
-      rightSetNum.value = val
-      createBubbles()
-      
-    }
-    const mainTopNum = ref(0)
-    const infoList = ref<any[]>([])
+      cycleListChange3(val);
+      rightNum.value = val;
+      drawRadarChart(obj);
+      mainList.value = obj.modelIndicatorElementCardVOList;
+      rightSetNum.value = val;
+      createBubbles();
+    };
+    const mainTopNum = ref(0);
+    const infoList = ref<any[]>([]);
     //农事计划
-    const planByList = ref<any[]>([])
+    const planByList = ref<any[]>([]);
     const getModelPlanByModelId = async () => {
-      let res = await ModelPlanByModelId({ modelId: modelId.value,plotId: beLongPlot.value })
-      console.log(res,'农事计划')
-      planByList.value = res
-    }
+      let res = await ModelPlanByModelId({ modelId: modelId.value, plotId: beLongPlot.value });
+      console.log(res, '农事计划');
+      planByList.value = res;
+    };
     // getModelPlanByModelId()
     //中间生长周期跟左下共用
-    const leftRelatice = ref(0)
-    const setNum = ref(0)
-    const leftSetNum = ref(0)
-    const childList = ref<any[]>([])
+    const leftRelatice = ref(0);
+    const setNum = ref(0);
+    const leftSetNum = ref(0);
+    const childList = ref<any[]>([]);
     const getModelInfo = async () => {
-      let res = await modelInfo({ modelId: modelId.value })
-      console.log(res,'中间顶部')
-      infoList.value = res.splice(1)
+      let res = await modelInfo({ modelId: modelId.value });
+      console.log(res, '中间顶部');
+      infoList.value = res.splice(1);
       infoList.value.forEach((item, index) => {
         if (item.growth == res[0].curPeriod) {
-          mainTopNum.value = index
-          MainImg.value = item.imgId
-          numVal.value = index
-          childList.value = item.child2
+          mainTopNum.value = index;
+          MainImg.value = item.imgId;
+          numVal.value = index;
+          childList.value = item.child2;
         }
-      })
-      if(childList.value.length==0) childList.value =  infoList.value[numVal.value].child2
-      let num = mainTopNum.value
-      let num2 = numVal.value
-      setNum.value = 2
-      leftSetNum.value = 2
-      cycleListChange(num)
-      cycleListChange2(num)
-      setNum.value = num
-      leftSetNum.value = num2
-    }
+      });
+      if (childList.value.length == 0) childList.value = infoList.value[numVal.value].child2;
+      let num = mainTopNum.value;
+      let num2 = numVal.value;
+      setNum.value = 2;
+      leftSetNum.value = 2;
+      cycleListChange(num);
+      cycleListChange2(num);
+      setNum.value = num;
+      leftSetNum.value = num2;
+    };
     // getModelInfo()
     //模型要素
-    const DetailList = ref<any[]>([])
-    const DetailListChild = ref([])
-    const rightRelativeNum = ref(0)
+    const DetailList = ref<any[]>([]);
+    const DetailListChild = ref([]);
+    const rightRelativeNum = ref(0);
     const getMonitorIndicatorWithDetail = async () => {
       let res = await MonitorIndicatorWithDetail({
         modelId: modelId.value,
         growthId: growthId.value
-      })
-      DetailList.value = res
-      mainList.value = res.length>0? res[0].modelIndicatorElementCardVOList:[]
-      if(res.length>0){
-      drawRadarChart(res[0])
+      });
+      DetailList.value = res;
+      mainList.value = res.length > 0 ? res[0].modelIndicatorElementCardVOList : [];
+      if (res.length > 0) {
+        drawRadarChart(res[0]);
       }
-      if (growthId2.value || DetailList.value.length >0 ) {
-        let dom = document.getElementById('mainDom')
-        widht.value = dom.offsetWidth - 100
-        height.value = dom.offsetHeight - 100
-        createBubbles()
-        animateBubbles()
+      if (growthId2.value || DetailList.value.length > 0) {
+        let dom = document.getElementById('mainDom');
+        widht.value = dom.offsetWidth - 100;
+        height.value = dom.offsetHeight - 100;
+        createBubbles();
+        animateBubbles();
       }
-      if(DetailList.value.length == 0 ){
-         mainList.value=[]
-         bubbles.value=[]
-         drawRadarChart2()
-        }
-    }
+      if (DetailList.value.length == 0) {
+        mainList.value = [];
+        bubbles.value = [];
+        drawRadarChart2();
+      }
+    };
     // getMonitorIndicatorWithDetail()
 
     //地块信息
-    const cropPlotList = ref<any>({})
+    const cropPlotList = ref<any>({});
     const getCropPlotByModelId = async () => {
-      let res = await CropPlotByModelId({ modelId: modelId.value, beLongPlot: beLongPlot.value })
-      console.log(res,'dikuaixinxi')
-      cropPlotList.value = res[0]
-    }
+      let res = await CropPlotByModelId({ modelId: modelId.value, beLongPlot: beLongPlot.value });
+      console.log(res, 'dikuaixinxi');
+      cropPlotList.value = res[0];
+    };
     // getCropPlotByModelId()
 
     //模型监测
-    const monitorList = ref<any[]>([])
-    const monitorListChild = ref([])
+    const monitorList = ref<any[]>([]);
+    const monitorListChild = ref([]);
     const getModelMonitor = async () => {
-      let res = await modelMonitor({ modelId: modelId.value, batch: batch.value })
-      monitorList.value = res.splice(0, 2)
-      monitorList.value.forEach(item=>{
-        let list=Object.keys(item)
-        if(list.length==0 ){
-          item.value=''
+      let res = await modelMonitor({ modelId: modelId.value, batch: batch.value });
+      monitorList.value = res.splice(0, 2);
+      monitorList.value.forEach((item) => {
+        let list = Object.keys(item);
+        if (list.length == 0) {
+          item.value = '';
         }
-      })
-    }
+      });
+    };
     // getModelMonitor()
     //中间下方折线图
-    const footerList = ref<any[]>([])
-    const chartLineNum = ref(0)
+    const footerList = ref<any[]>([]);
+    const chartLineNum = ref(0);
     const getModelOverviewStatistics = async () => {
       let res = await ModelOverviewStatistics({
         modelId: modelId.value,
         growthId: growthId.value,
         batch: batch.value
-      })
-      footerList.value = res
+      });
+      footerList.value = res;
 
       setTimeout(() => {
-        initChartLine1(footerList.value[0])
-      }, 500)
-    }
+        initChartLine1(footerList.value[0]);
+      }, 500);
+    };
     // getModelOverviewStatistics()
     //折线图
     const initChartLine1 = (list) => {
@@ -454,93 +453,92 @@ export default defineComponent({
               bottom: '15%'
             }
           })
-        )
-      })
-    }
+        );
+      });
+    };
 
     //底部折线图加减
-    const chartNum = ref(0)
-    const chartNum2 = ref(0)
-    const chartNum3 = ref(1)
+    const chartNum = ref(0);
+    const chartNum2 = ref(0);
+    const chartNum3 = ref(1);
     const mainFooter = (str) => {
       if (str == '+') {
-        chartNum3.value = -1
+        chartNum3.value = -1;
         if (
           chartNum.value == footerList.value.length - 1 ||
           chartNum2.value == footerList.value.length - 1
         ) {
-          return true
+          return true;
         } else if (chartNum.value == 1 || chartNum.value == 0) {
-          chartNum.value = 2
-          chartNum2.value = 3
+          chartNum.value = 2;
+          chartNum2.value = 3;
         } else {
-          chartNum.value++
-          chartNum2.value++
+          chartNum.value++;
+          chartNum2.value++;
         }
       } else {
         if (chartNum.value == 0 || chartNum2.value == 1) {
-          return true
+          return true;
         } else {
-          chartNum.value--
-          chartNum2.value--
+          chartNum.value--;
+          chartNum2.value--;
         }
       }
-    }
+    };
     const goPage = () => {
-      router.go(-1)
-    }
+      router.go(-1);
+    };
     // 处理周期列表移动
-    const left = ref(0)
+    const left = ref(0);
     const cycleListChange = (index) => {
       if (infoList.value.length > 6) {
-        left.value += (setNum.value - index) * 85 * 2
+        left.value += (setNum.value - index) * 85 * 2;
       }
-    }
+    };
     const mainRight = () => {
       if (infoList.value.length - 1 > mainTopNum.value) {
-        handlerMain(infoList.value[mainTopNum.value + 1], mainTopNum.value + 1)
+        handlerMain(infoList.value[mainTopNum.value + 1], mainTopNum.value + 1);
       }
-    }
+    };
     const mainLeft = () => {
       if (mainTopNum.value > 0) {
-        handlerMain(infoList.value[mainTopNum.value - 1], mainTopNum.value - 1)
+        handlerMain(infoList.value[mainTopNum.value - 1], mainTopNum.value - 1);
       }
-    }
+    };
     //中间顶部点击
     const handlerMain = (item, index) => {
-      cycleListChange(index)
-      growthId.value = item.growthId
-      growthId2.value = false
-      MainImg.value = item.imgId
-      mainTopNum.value = index
-      setNum.value = index
-      getMonitorIndicatorWithDetail()
-      getModelOverviewStatistics()
-
-    }
+      cycleListChange(index);
+      growthId.value = item.growthId;
+      growthId2.value = false;
+      MainImg.value = item.imgId;
+      mainTopNum.value = index;
+      setNum.value = index;
+      getMonitorIndicatorWithDetail();
+      getModelOverviewStatistics();
+    };
     // 左侧移动
     const cycleListChange2 = (index) => {
       if (infoList.value.length > 4) {
-        leftRelatice.value += (leftSetNum.value - index) * 50 * 2
+        leftRelatice.value += (leftSetNum.value - index) * 50 * 2;
       }
-    }
+    };
     //模型周期切换
     const handleTab = (item, index) => {
-      cycleListChange2(index)
-      numVal.value = index
-      childList.value = item.child2
-      leftSetNum.value = index
-    }
+      cycleListChange2(index);
+      numVal.value = index;
+      childList.value = item.child2;
+      leftSetNum.value = index;
+    };
     //header头部时间问题
-    const curTime = ref({})
+    const curTime = ref({});
     const getCurTime = () => {
-      const tmpTime = new Date()
-      let year = tmpTime.getFullYear()
-      let month = tmpTime.getMonth() + 1
-      let day = tmpTime.getDate() < 10 ? '0' + tmpTime.getDate() : tmpTime.getDate()
-      let hours = tmpTime.getHours() < 10 ? '0' + tmpTime.getHours() : tmpTime.getHours()
-      let minutes = tmpTime.getMinutes() < 10 ? '0' + tmpTime.getMinutes() : tmpTime.getMinutes()
-      let seconds = tmpTime.getSeconds() < 10 ? '0' + tmpTime.getSeconds() : tmpTime.getSeconds()
+      const tmpTime = new Date();
+      let year = tmpTime.getFullYear();
+      let month = tmpTime.getMonth() + 1;
+      let day = tmpTime.getDate() < 10 ? '0' + tmpTime.getDate() : tmpTime.getDate();
+      let hours = tmpTime.getHours() < 10 ? '0' + tmpTime.getHours() : tmpTime.getHours();
+      let minutes = tmpTime.getMinutes() < 10 ? '0' + tmpTime.getMinutes() : tmpTime.getMinutes();
+      let seconds = tmpTime.getSeconds() < 10 ? '0' + tmpTime.getSeconds() : tmpTime.getSeconds();
       curTime.value = {
         year,
         month,
@@ -548,8 +546,8 @@ export default defineComponent({
         hours,
         minutes,
         seconds
-      }
-    }
+      };
+    };
     const timeDom = () => {
       return (
         <div class="absolute mt-[-25px]">
@@ -560,21 +558,21 @@ export default defineComponent({
             {curTime.value.year}年{curTime.value.month}月{curTime.value.day}日
           </div>
         </div>
-      )
-    }
-    onMounted( async () => {
-      getCurTime()
+      );
+    };
+    onMounted(async () => {
+      getCurTime();
       setInterval(() => {
-        getCurTime()
-      }, 1000)
-     await getBatchCodeByModelId()
-     await getModelPlanByModelId()
-     await getModelInfo()
-     await getMonitorIndicatorWithDetail()
-     await getCropPlotByModelId() 
-     await getModelMonitor() 
-     await getModelOverviewStatistics()
-    })
+        getCurTime();
+      }, 1000);
+      await getBatchCodeByModelId();
+      await getModelPlanByModelId();
+      await getModelInfo();
+      await getMonitorIndicatorWithDetail();
+      await getCropPlotByModelId();
+      await getModelMonitor();
+      await getModelOverviewStatistics();
+    });
     //中间内容
     const MainContent = () => {
       return (
@@ -599,12 +597,14 @@ export default defineComponent({
                           item.value == '优秀'
                             ? 'left-icon-2'
                             : item.value == '良好'
-                            ? 'left-icon-3'
-                            : item.value == '一般'
-                            ? 'left-icon-4'
-                            : item.value == '很差'
-                            ? 'left-icon-5'
-                          : item.value==''?'left-icon-3':'left-icon-1'
+                              ? 'left-icon-3'
+                              : item.value == '一般'
+                                ? 'left-icon-4'
+                                : item.value == '很差'
+                                  ? 'left-icon-5'
+                                  : item.value == ''
+                                    ? 'left-icon-3'
+                                    : 'left-icon-1'
                         } mr-15px`}
                       ></div>
                       <div class="w-45% h-100% flex flex-col justify-center">
@@ -614,7 +614,7 @@ export default defineComponent({
                           <div class="color-[#fff] text-xl">
                             {item.value}
                             <span v-if={index == 0} class="color-[#304650] ml-10px text-14px">
-                              {index==0?'分':''}
+                              {index == 0 ? '分' : ''}
                             </span>
                           </div>
                         </div>
@@ -623,17 +623,17 @@ export default defineComponent({
                             item.value == '优秀'
                               ? 'left-xian-1'
                               : item.value == '良好'
-                              ? 'left-xian-2'
-                              : item.value == '一般'
-                              ? 'left-xian-3'
-                              : item.value == '很差'
-                              ? 'left-xian-4'
-                              : 'left-xian-2'
+                                ? 'left-xian-2'
+                                : item.value == '一般'
+                                  ? 'left-xian-3'
+                                  : item.value == '很差'
+                                    ? 'left-xian-4'
+                                    : 'left-xian-2'
                           } w-100% h-20px`}
                         ></div>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -641,52 +641,48 @@ export default defineComponent({
             <div>
               <div class="box-title ">地块信息</div>
               <div class="box-item ">
-                {
-                  cropPlotList.value?(
-                    <div>
-                      <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    基地名称：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.parkName}</div>
-                </div>
-                <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    地块名称：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.plotName}</div>
-                </div>
-                <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    种植品种：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.varietyName}</div>
-                </div>
-                <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    地块面积：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.plotArea}亩</div>
-                </div>
-                <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    预计产量：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.predictedOutput}</div>
-                </div>
-                <div class="left-plot flex items-center">
-                  <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
-                    经营人：
-                  </div>
-                  <div class="color-[#fff]">{cropPlotList.value.farmerName}</div>
-                </div>
+                {cropPlotList.value ? (
+                  <div>
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        基地名称：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.parkName}</div>
                     </div>
-                  ):(
-                    <div class='dataNull w-150px mx-auto h-100px '></div>
-
-                  )
-                }
-                
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        地块名称：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.plotName}</div>
+                    </div>
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        种植品种：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.varietyName}</div>
+                    </div>
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        地块面积：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.plotArea}亩</div>
+                    </div>
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        预计产量：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.predictedOutput}</div>
+                    </div>
+                    <div class="left-plot flex items-center">
+                      <div class=" color-[#6f8890]" style="text-indent:1.5rem;">
+                        经营人：
+                      </div>
+                      <div class="color-[#fff]">{cropPlotList.value.farmerName}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div class="dataNull w-150px mx-auto h-100px "></div>
+                )}
               </div>
             </div>
             {/* 模型周期 */}
@@ -707,7 +703,7 @@ export default defineComponent({
                               {item.growth}
                             </div>
                           </div>
-                        )
+                        );
                       })}
                     </div>
                   ) : (
@@ -723,7 +719,7 @@ export default defineComponent({
                               {item.growth}
                             </div>
                           </div>
-                        )
+                        );
                       })}
                     </div>
                   )}
@@ -733,36 +729,35 @@ export default defineComponent({
                     <div class="w-3px ml-10px h-10px bg-[#33d1ca] mr-15px"></div> 周期事项
                   </div>
                   <div class="mt-15px">
-                    {
-                      childList.value.length>0?
-                        childList.value.map((item, index) => {
-                      return (
-                        <div class="flex ml-10px h-110px">
-                          <div class="color-[#33d1ca] text-xl">{index + 1}</div>
-                          <div class="mx-15px flex flex-col items-center ">
-                            <div class="left3-pie w-40px h-35px mr-[-13px]"></div>
-                            <div class="w-2px !h-500px mt-[-9px] mr-[-10px] bg-[#435b63]"></div>
-                          </div>
-                          <div class=" w-75% px-20px h-68% box-border py-10px left3-meassage  h-90px">
-                            <div class="color-[#33d1ca] text-lg ml-5px">{item.itemName}</div>
-                            <el-tooltip
-                              effect="dark"
-                              content={item.itemContent}
-                              placement="top-start"
-                              popper-class="tooltip-width"
-                              teleported={false}
-                            >
-                              <div class="color-[#9db1b7] left3-text text-sm">{item.itemContent}</div>
-                            </el-tooltip>
+                    {childList.value.length > 0 ? (
+                      childList.value.map((item, index) => {
+                        return (
+                          <div class="flex ml-10px h-110px">
+                            <div class="color-[#33d1ca] text-xl">{index + 1}</div>
+                            <div class="mx-15px flex flex-col items-center ">
+                              <div class="left3-pie w-40px h-35px mr-[-13px]"></div>
+                              <div class="w-2px !h-500px mt-[-9px] mr-[-10px] bg-[#435b63]"></div>
                             </div>
-                        </div>
-                      )
-                    })
-                      :
-                        <div class='dataNull w-150px mx-auto h-100px '></div>
-                      
-                    }
-                    
+                            <div class=" w-75% px-20px h-68% box-border py-10px left3-meassage  h-90px">
+                              <div class="color-[#33d1ca] text-lg ml-5px">{item.itemName}</div>
+                              <el-tooltip
+                                effect="dark"
+                                content={item.itemContent}
+                                placement="top-start"
+                                popper-class="tooltip-width"
+                                teleported={false}
+                              >
+                                <div class="color-[#9db1b7] left3-text text-sm">
+                                  {item.itemContent}
+                                </div>
+                              </el-tooltip>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div class="dataNull w-150px mx-auto h-100px "></div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -821,7 +816,7 @@ export default defineComponent({
                                 : 'cycle-item main-top-actived cursor-pointer'
                             }
                             onClick={() => {
-                              handlerMain(e, i)
+                              handlerMain(e, i);
                             }}
                           >
                             <span>{e.growth}</span>
@@ -852,7 +847,7 @@ export default defineComponent({
                 class="absolute w-350px h-350px top-50% left-50%"
                 style="transform: translate(-50%, -50%); object-fit:contain; background-size: 100% 100%;"
               />
-              
+
               <div class="w-100% h-100% " id="mainDom">
                 {bubbles.value.map((item, index) => {
                   return (
@@ -864,7 +859,7 @@ export default defineComponent({
                       <div class="text-10px mt-5px">{mainList.value[index]?.elementName}</div>
                       <div class="text-10px mt-5px">{mainList.value[index]?.assess}</div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -890,10 +885,10 @@ export default defineComponent({
                         <div id={`chartLine${index + 1}`} class="w-390px h-200px"></div>
                       </div>
                     </div>
-                  )
+                  );
                 })
               ) : (
-                <div class='dataNull w-150px h-100px mt-20px'></div>
+                <div class="dataNull w-150px h-100px mt-20px"></div>
               )}
 
               <div
@@ -912,11 +907,11 @@ export default defineComponent({
               <div class="box-title">
                 {bigscreenName.value.includes('连粳11号模型一') ? '农事计划' : '农事计划'}
               </div>
-              <div class=' box-item flex flex-col !h-420px'>
+              <div class=" box-item flex flex-col !h-420px">
                 {planByList.value.length > 0 ? (
                   planByList.value.map((item) => {
                     return (
-                        <div class="flex justify-around mt-[-10px]">
+                      <div class="flex justify-around mt-[-10px]">
                         <div class="flex flex-col items-center">
                           <div class="w-20px h-20px right-warpper-bg"></div>
                           <div class="w-2px h-90px mt-[-10px] bg-[#435b63]"></div>
@@ -925,7 +920,7 @@ export default defineComponent({
                           <div class="color-[#fff] flex justify-between items-center text-17px">
                             <div>{item.farmStage}</div>
                             <div class="right-xian"></div>
-                            <div>{item.plotNAme}</div>
+                            <div>{item.plotName}</div>
                           </div>
                           <div class="flex text-14px mt-10px color-[#7c97a0] items-center">
                             <div>{item.userName}</div>
@@ -936,73 +931,78 @@ export default defineComponent({
                           </div>
                         </div>
                       </div>
-                    )
+                    );
                   })
                 ) : (
-                  <div class='dataNull w-200px mx-auto mt-100px h-150px '></div>
+                  <div class="dataNull w-200px mx-auto mt-100px h-150px "></div>
                 )}
               </div>
             </div>
             <div>
               <div class="box-title">模型要素</div>
               <div class="box-item !h-400px w-100%">
-                {
-                  DetailList.value.length>0?'': <div class='dataNull mx-auto my-100px w-200px h-150px '></div>
-                }
-                {
-                  DetailList.value.length < 4 ?
-                  (
-                    <div class="flex justify-evenly">
+                {DetailList.value.length > 0 ? (
+                  ''
+                ) : (
+                  <div class="dataNull mx-auto my-100px w-200px h-150px "></div>
+                )}
+                {DetailList.value.length < 4 ? (
+                  <div class="flex justify-evenly">
+                    {DetailList.value.map((item, index) => {
+                      return (
+                        <div
+                          onClick={() => {
+                            tabFn(item, index);
+                          }}
+                          style="cursor:pointer;"
+                          class={rightNum.value == index ? 'right-active' : 'right-actived'}
+                        >
+                          {item.indicatorName}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div stlye="overflow:hidden" class="w-full">
+                    <div class="w-full flex relative" style={`left:${detailLeft.value}px`}>
                       {DetailList.value.map((item, index) => {
                         return (
-                          <div
-                            onClick={() => {
-                              tabFn(item, index)
-                            }}
-                            style="cursor:pointer;"
-                            class={rightNum.value == index ? 'right-active' : 'right-actived'}
-                          >
-                            {item.indicatorName}
+                          <div class="flex">
+                            <div
+                              onClick={() => {
+                                tabFn(item, index);
+                              }}
+                              style="cursor:pointer;"
+                              class={rightNum.value == index ? 'right-active' : 'right-actived'}
+                            >
+                              {item.indicatorName}
+                            </div>
                           </div>
-                        )
+                        );
                       })}
                     </div>
-                  ):
-                  (
-                    <div stlye='overflow:hidden' class='w-full'>
-                      <div class="w-full flex relative" style={`left:${detailLeft.value}px`}>
-                        { DetailList.value.map((item, index) => {
-                          return (
-                            <div class='flex'>
-                              <div
-                                onClick={() => {
-                                  tabFn(item, index)
-                                }}
-                                style="cursor:pointer;"
-                                class={rightNum.value == index ? 'right-active' : 'right-actived'}
-                              >
-                                {item.indicatorName}
-                              </div>
-                            </div>
-                            
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                }
-                  
-                  <div id="radarChart" class="w-100%  mt-10px" style="height:300px"></div>
+                  </div>
+                )}
+
+                <div id="radarChart" class="w-100%  mt-10px" style="height:300px"></div>
               </div>
             </div>
           </div>
         </div>
-      )
-    }
+      );
+    };
     return () => (
       <div class="bg-[#0b212c] w-[100vw] h-[100vh]">
         <BigscreenAdapter>
-          <BigscreenContainer backgroundImage={bigscreenName.value.includes('稻田鱼')? fishBg:bigscreenName.value.includes('麻鸭')?duckBg :mainBg }>
+          <BigscreenContainer
+            backgroundImage={
+              bigscreenName.value.includes('稻田鱼')
+                ? fishBg
+                : bigscreenName.value.includes('麻鸭')
+                  ? duckBg
+                  : mainBg
+            }
+          >
             <BigscreenHeader
               backgroundImage={headerBg}
               class="!bg-[#0b212c]"
@@ -1027,7 +1027,7 @@ export default defineComponent({
             <BigscreenMain
               v-slots={{
                 default: () => {
-                  return MainContent()
+                  return MainContent();
                 }
               }}
             />
@@ -1035,23 +1035,21 @@ export default defineComponent({
           </BigscreenContainer>
         </BigscreenAdapter>
       </div>
-    )
+    );
   }
-})
+});
 </script>
 
-<style lang='scss' scoped>
-
+<style lang="scss" scoped>
 ::v-deep(.el-popper),
-::v-deep(.el-popper[data-popper-placement^="top"] .el-popper__arrow::before) {
+::v-deep(.el-popper[data-popper-placement^='top'] .el-popper__arrow::before) {
   background-color: #303133 !important;
   color: #fff !important;
-  font-size:15px
+  font-size: 15px;
 }
 ::v-deep(.el-popper) {
   width: 31.875rem !important;
 }
-
 </style>
 
 <style lang="scss" scoped>
@@ -1067,10 +1065,10 @@ export default defineComponent({
   font-size: 18px;
   background-image: url(./assets/box-title.png);
 }
-.dataNull{
-    background-size: 100% 100%;
-    background-image: url(./assets/null.png);
-  }
+.dataNull {
+  background-size: 100% 100%;
+  background-image: url(./assets/null.png);
+}
 .box-item {
   margin-top: 15px;
   z-index: 9999;
@@ -1172,8 +1170,8 @@ export default defineComponent({
   background-size: 100% 100%;
   background-image: url(./assets/meassage-bg.png);
 }
-.left3-text{
- display: -webkit-box;
+.left3-text {
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
