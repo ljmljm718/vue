@@ -28,7 +28,7 @@
               class="!w-1/4"
               placeholder="请输入知识库名称"
               clearable
-              input-style="font-size: 1.6em"
+              input-style="font-size: 1.6em; margin: 0 4px;"
             />
             <!-- <div class="text-14px pl-10px text-[#8d9095]">
               注:仅支持英文和数字的组合，并以英文字母开头
@@ -91,7 +91,7 @@
                 :label="item"
                 border
               >
-                <span class="leading-normal text-[1.6em]">{{ item }}</span>
+                <span class="leading-normal text-[1.6em] p-[8px]">{{ item }}</span>
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -151,7 +151,7 @@
             <div
               v-for="item in recommendSliceLengthList"
               :key="item"
-              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-#2c3240 ai-dark:bg-[#2C3240] cursor-pointer"
+              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-#2c3240 ai-dark:bg-[#2C3240] cursor-pointer transition-all hover:bg-[#615ced] hover:text-white"
               @click="handleClickRecommendSliceLength(item)"
             >
               {{ item }}
@@ -472,16 +472,26 @@ const handleClickCreateLib = async () => {
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 0.1em #615ced inset;
+  box-shadow: 0 0 0 1px #615ced;
 }
 
 :deep(.el-textarea__inner:focus) {
   outline: 0;
-  box-shadow: 0 0 0 0.1em #615ced inset;
+  box-shadow: 0 0 0 1px #615ced inset;
+}
+
+:deep(.el-input__wrapper) {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+:deep(.el-select .el-select__selection) {
+  padding: 3px;
+  height: 22px;
 }
 
 :deep(.el-select__wrapper.is-focused) {
-  box-shadow: 0 0 0 0.1em #615ced inset;
+  box-shadow: 0 0 0 1px #615ced inset;
 }
 
 :deep(.vector-dimension-radio .el-radio) {

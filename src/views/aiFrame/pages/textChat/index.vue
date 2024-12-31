@@ -557,7 +557,13 @@ const handleDeleteChatTheme = (id: string) => {
           style="flex: 0 0 auto"
         >
           <div class="rounded-8px p-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
-            <textarea class="ai-show-textarea grow" id="textarea" rows="2" wrap="soft"></textarea>
+            <textarea
+              class="ai-show-textarea grow"
+              id="textarea"
+              rows="2"
+              wrap="soft"
+              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务…"
+            ></textarea>
             <div class="mx-8px mb-4px">
               <RadioButton
                 v-model:disableSend="radioRecording"

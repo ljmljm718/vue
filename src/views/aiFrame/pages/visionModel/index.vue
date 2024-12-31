@@ -908,6 +908,7 @@ const sizeList = ref([
                 rows="2"
                 wrap="soft"
                 v-model="inputTextITT"
+                placeholder="请输入问题，我可以完成智能回答、图片内容解答等多种任务"
               ></textarea>
               <div
                 class="w-24px h-24px relative left-[-8px] top-[-4px]"

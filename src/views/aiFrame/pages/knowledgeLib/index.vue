@@ -60,7 +60,49 @@ const showGuide = ref(false);
 const knowledgeList = ref<any[]>([]);
 const getKnowledgeList = async () => {
   knowledgeList.value = [];
-  const res = await getCollectionList();
+  // const res = await getCollectionList();
+  const res = [
+    {
+      id: '1111111111111111111111111',
+      docNum: 2,
+      collectionName: '玉米种植技术',
+      dataType: 'unstructured_data',
+      creator: '创建者',
+      description: '描述文字'
+    },
+    {
+      id: '1111111111111111111111111',
+      docNum: 2,
+      collectionName: '玉米种植技术',
+      dataType: 'unstructured_data',
+      creator: '创建者',
+      description: ''
+    },
+    {
+      id: '1111111111111111111111111',
+      docNum: 2,
+      collectionName: '玉米种植技术',
+      dataType: 'unstructured_data',
+      creator: '创建者2222222222222222222222222',
+      description: '描述文字'
+    },
+    {
+      id: '1111111111111111111111111',
+      docNum: 2,
+      collectionName: '玉米种植技术',
+      dataType: 'unstructured_data',
+      creator: '创建者',
+      description: ''
+    },
+    {
+      id: '1111111111111111111111111',
+      docNum: 2,
+      collectionName: '玉米种植技术',
+      dataType: 'unstructured_data',
+      creator: '创建者',
+      description: '描述文字'
+    }
+  ];
   knowledgeList.value = Array.isArray(res) ? res : [];
   console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
@@ -91,12 +133,13 @@ const handleClickImport = (index: number) => {
 
 const handleSubmitImport = async () => {
   const id = currentLibId.value;
-  if (!docUrl.value) return ElMessage.warning('请先上传文件！');
+  if (!docUrl.value) return ElMessage.warning({ message: '请先上传文件！', customClass: 'my-msg' });
   await postAddDoc({
     collectionId: id,
     fileManagement: docUrl.value
   });
-  message.success('导入成功');
+  // message.success('导入成功');
+  ElMessage.success({ message: '导入成功', customClass: 'my-msg' });
 
   // 上传完成后重新查询文档列表和知识库列表
   await getDocumentList(id);
@@ -154,9 +197,11 @@ const handleClickDeleteDoc = async (docId: string) => {
     });
     if ('doc is not completed, cannot be deleted' === res) {
       // 文档还在训练中
-      message.warning(t('文档训练未完成，暂时无法删除'));
+      // message.warning(t('文档训练未完成，暂时无法删除'));
+      ElMessage.warning({ message: '文档训练未完成，暂时无法删除', customClass: 'my-msg' });
     } else {
-      message.success(t('common.delSuccess'));
+      // message.success(t('common.delSuccess'));
+      ElMessage.success({ message: '删除成功', customClass: 'my-msg' });
     }
 
     // 重新查询文档列表和知识库列表
@@ -183,7 +228,8 @@ const handleDeleteLib = async (index: number) => {
     const code = await postDeleteLib({ collectionId: id });
     switch (code) {
       case '0':
-        message.success(t('common.delSuccess'));
+        // message.success(t('common.delSuccess'));
+        ElMessage.success({ message: '删除成功', customClass: 'my-msg' });
         break;
       case '1000005':
         await deleteLibWithoutCollection(id);
@@ -205,7 +251,8 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
   try {
     await message.delConfirm('该知识库在服务端不存在，是否强制删除？');
     await postForceDeleteLib({ collectionId });
-    message.success(t('common.delSuccess'));
+    // message.success(t('common.delSuccess'));
+    ElMessage.success({ message: '删除成功', customClass: 'my-msg' });
   } catch (e) {
     if ('cancel' === e) {
       console.log('取消删除');
@@ -238,7 +285,7 @@ function getLastPart(str) {
     <template v-if="showLibPage">
       <!-- header -->
       <div class="h-[5.7em] p-[2.4em] pl-[3.6em] flex justify-between items-start">
-        <div class="grow flex items-start h-full">
+        <div class="flex-auto w-[1px] flex items-start h-full mr-[48px]">
           <div class="flex-none logo w-[4.8em] h-[4.8em]"></div>
           <div class="grow pl-[1.6em] flex flex-col justify-between h-[5.7em]">
             <h1 class="m-0 text-[2.4em]">知识库</h1>
@@ -341,30 +388,30 @@ function getLastPart(str) {
           <!-- knowledge lib list -->
           <template v-else>
             <div
-              class="mt-[2.4em] grid md:grid-cols-2 2xl:grid-cols-3 gap-[1.6em] pl-[4em] pr-[2.4em] pb-20px"
+              class="mt-[2.4em] grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-[1.6em] pl-[4em] pr-[2.4em] pb-20px"
             >
               <div
                 v-for="(item, index) in knowledgeList"
                 :key="item.name"
-                class="rounded-[1.2em] card-bg overflow-hidden shadow-lg pt-[25px] pl-[24px] pb-[30px] pr-[37px] transition-all ease-in-out duration-600 hover:scale-103 hover:!border hover:!border-solid hover:!border-[#615ced]"
+                class="rounded-[12px] card-bg overflow-hidden shadow-md p-[16px] transition-all ease-in-out duration-400 hover:scale-103 hover:!border hover:!border-solid hover:!border-[#615ced] box-border"
               >
                 <div class="flex justify-between items-center">
-                  <div>
-                    <div class="text-[22px] text-[#33315A] line-clamp-1 fix-text-white">
+                  <div class="flex-auto w-[1px] mr-[16px]">
+                    <div class="text-[16px] text-[#33315A] line-clamp-1 fix-text-white">
                       {{ item.collectionName }}
                     </div>
-                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
+                    <div class="text-[12px] text-[#9998AC] dark:text-[#ccc] mt-[8px] truncate">
                       ID: kb{{ item.id }}
                     </div>
-                    <div class="flex mt-[4px]">
-                      <div class="tag dark:bg-transparent dark:grad-bg">
+                    <div class="flex mt-[8px]">
+                      <div class="tag dark:bg-transparent dark:grad-bg text-[12px]">
                         {{ dataTypeMap[item.dataType] }}
                       </div>
                       <!-- <div class="tag dark:bg-transparent dark:grad-bg ml-[8px]">
                         {{ item.deptName }}
                       </div> -->
                     </div>
-                    <div class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[4px] line-clamp-1">
+                    <div class="text-[12px] text-[#9998AC] dark:text-[#ccc] mt-[8px] truncate">
                       {{ item.creator }} 于{{
                         dayjs(item.createTime).format('YYYY-MM-DD HH:MM:ss')
                       }}创建
@@ -373,7 +420,7 @@ function getLastPart(str) {
                   <div class="flex-none flex flex-col items-center">
                     <div class="card-logo flex-none w-[6.6em] h-[7.3em]"></div>
                     <div class="flex items-center">
-                      <span class="text-[#666666] text-[1.6em] fix-text-white">
+                      <span class="text-[#666666] text-[14px] fix-text-white">
                         文档数量：{{ item.docNum ? item.docNum : 0 }}
                       </span>
                       <div
@@ -384,11 +431,12 @@ function getLastPart(str) {
                   </div>
                 </div>
                 <div
-                  v-show="item.description"
-                  class="text-[16px] text-[#9998AC] dark:text-[#ccc] mt-[8px] line-clamp-1 bg-[#F5F6FA] dark:bg-[#384052] rounded-[6px] p-[6px]"
+                  v-if="item.description"
+                  class="text-[12px] text-[#9998AC] dark:text-[#ccc] mt-[8px] line-clamp-1 bg-[#F5F6FA] dark:bg-[#384052] rounded-[6px] p-[6px]"
                 >
                   {{ item.description }}
                 </div>
+                <div v-else class="h-[27.5px] mt-[8px]"></div>
                 <div class="mt-[24px] flex justify-end items-center">
                   <el-button class="!rounded-full" @click="handleDeleteLib(index)">删除</el-button>
                   <el-button class="!rounded-full" @click="showLibId = item.collectionId">
@@ -581,9 +629,8 @@ function getLastPart(str) {
   }
 
   .card-bg {
-    background-image: url(../../assets/knowledge-card-bg.png);
+    background-image: url(../../assets/knowledge-card-bg-2.png);
     background-size: 100% 100%;
-    border: 1px solid #ebecf2;
   }
 }
 
@@ -627,7 +674,6 @@ function getLastPart(str) {
   background-color: #f1f1fd;
   padding: 4px 8px;
   color: #615ced;
-  font-size: 1.3em;
 }
 
 .card-btn-border-top {
@@ -767,7 +813,6 @@ function getLastPart(str) {
     background: linear-gradient(90deg, #9362da 0%, #4378ff 100%);
     padding: 4px 8px;
     color: white;
-    font-size: 1.3em;
     border: none;
   }
 
@@ -837,6 +882,10 @@ function getLastPart(str) {
   .my-msg {
     background-color: #2c3240;
     border: none;
+
+    .el-message__content {
+      color: white;
+    }
   }
 }
 </style>
