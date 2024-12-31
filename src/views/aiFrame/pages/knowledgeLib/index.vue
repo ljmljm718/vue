@@ -60,49 +60,7 @@ const showGuide = ref(false);
 const knowledgeList = ref<any[]>([]);
 const getKnowledgeList = async () => {
   knowledgeList.value = [];
-  // const res = await getCollectionList();
-  const res = [
-    {
-      id: '1111111111111111111111111',
-      docNum: 2,
-      collectionName: '玉米种植技术',
-      dataType: 'unstructured_data',
-      creator: '创建者',
-      description: '描述文字'
-    },
-    {
-      id: '1111111111111111111111111',
-      docNum: 2,
-      collectionName: '玉米种植技术',
-      dataType: 'unstructured_data',
-      creator: '创建者',
-      description: ''
-    },
-    {
-      id: '1111111111111111111111111',
-      docNum: 2,
-      collectionName: '玉米种植技术',
-      dataType: 'unstructured_data',
-      creator: '创建者2222222222222222222222222',
-      description: '描述文字'
-    },
-    {
-      id: '1111111111111111111111111',
-      docNum: 2,
-      collectionName: '玉米种植技术',
-      dataType: 'unstructured_data',
-      creator: '创建者',
-      description: ''
-    },
-    {
-      id: '1111111111111111111111111',
-      docNum: 2,
-      collectionName: '玉米种植技术',
-      dataType: 'unstructured_data',
-      creator: '创建者',
-      description: '描述文字'
-    }
-  ];
+  const res = await getCollectionList();
   knowledgeList.value = Array.isArray(res) ? res : [];
   console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
