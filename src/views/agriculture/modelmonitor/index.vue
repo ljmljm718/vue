@@ -5,49 +5,49 @@ import {
   getModelMonitor,
   getMonitorIndicatorWithDetail,
   parkDetailGetAll
-} from './api'
-import {generatePieOptions, initChartStatic} from '@/utils/bigscreenTool/index'
-import {ModelManagementApi} from '@/api/agriculture/modelmanagement'
+} from './api';
+import { generatePieOptions, initChartStatic } from '@/utils/bigscreenTool/index';
+import { ModelManagementApi } from '@/api/agriculture/modelmanagement';
 // 引入图标
-import execute from '@/assets/svgs/execute.svg'
+import execute from '@/assets/svgs/execute.svg';
 
 // 是否折叠
-const collapsed = ref<boolean>(false)
+const collapsed = ref<boolean>(false);
 // 左侧地块列表
-const plotListLoading = ref<boolean>(false)
-const selectedPlotId = ref<string>('')
-const plotList = ref<any[]>([])
+const plotListLoading = ref<boolean>(false);
+const selectedPlotId = ref<string>('');
+const plotList = ref<any[]>([]);
 const getPlotList = async () => {
-  plotListLoading.value = true
-  plotList.value = []
+  plotListLoading.value = true;
+  plotList.value = [];
   const res = await parkDetailGetAll({}).catch((err) => {
-    plotListLoading.value = false
-  })
-  activeGrowth.value = ''
-  defaultGrowth.value = ''
+    plotListLoading.value = false;
+  });
+  activeGrowth.value = '';
+  defaultGrowth.value = '';
   if (Array.isArray(res)) {
-    plotList.value = res
+    plotList.value = res;
     if (res.length > 0) {
-      selectedPlotId.value = res[0].id
-      getModelList(res[0].id)
+      selectedPlotId.value = res[0].id;
+      getModelList(res[0].id);
     }
   }
-  plotListLoading.value = false
-}
-getPlotList()
+  plotListLoading.value = false;
+};
+getPlotList();
 // 点击地块触发
 const handlePlotClick = (item) => {
-  activeGrowth.value = ''
-  defaultGrowth.value = ''
-  initChart([], '', '')
-  periodList.value = [] //清除右侧生长期
-  indexBtns.value = [] //清除监测指标按钮
-  tableData.value = [] //清除表格数据
-  keyPointList.value = [] //清除要点按钮
-  selectedInfo.value = '' //清除要点
-  selectedPlotId.value = item.id
-  getModelList(item.id)
-}
+  activeGrowth.value = '';
+  defaultGrowth.value = '';
+  initChart([], '', '');
+  periodList.value = []; //清除右侧生长期
+  indexBtns.value = []; //清除监测指标按钮
+  tableData.value = []; //清除表格数据
+  keyPointList.value = []; //清除要点按钮
+  selectedInfo.value = ''; //清除要点
+  selectedPlotId.value = item.id;
+  getModelList(item.id);
+};
 
 // 根据右侧高度设置左侧菜单的高度
 //获取右侧内容高度
@@ -84,7 +84,7 @@ const handleResize = () => {
 // 在组件挂载后和窗口大小改变时更新高度
 onMounted(() => {
   updateRightContentHeightWithDelay();
-  window.addEventListener("resize", handleResize);
+  window.addEventListener('resize', handleResize);
 });
 
 //清理监听
@@ -92,11 +92,11 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
 
-const handleCollapse = () =>{
+const handleCollapse = () => {
   collapsed.value = !collapsed.value;
   updateRightContentHeight();
   // isFirstToggleDone.value = true;
-}
+};
 // 检查屏幕宽度是否需要折叠
 const checkCollapsed = () => {
   if (window.innerWidth <= 1280) {
@@ -107,165 +107,167 @@ const checkCollapsed = () => {
 };
 
 // 评分列表
-const healthValLoading = ref<boolean>(false)
-const healthValList = ref<any[]>([])
+const healthValLoading = ref<boolean>(false);
+const healthValList = ref<any[]>([]);
 const getHealthValList = async (modelId, batch) => {
-  healthValLoading.value = true
-  healthValList.value = []
+  healthValLoading.value = true;
+  healthValList.value = [];
   const res = await getModelMonitor({ modelId, batch }).catch((err) => {
-    healthValLoading.value = false
-  })
+    healthValLoading.value = false;
+  });
   if (Array.isArray(res)) {
-    healthValList.value = res.map((item, index) => ({ ...item, icon: `icon-${(index % 5) + 1}` }))
+    healthValList.value = res.map((item, index) => ({ ...item, icon: `icon-${(index % 5) + 1}` }));
   }
-  healthValLoading.value = false
-}
+  healthValLoading.value = false;
+};
 
 // 模型列表
-const modelListLoading = ref<boolean>(false)
-const selectedModelId = ref<string>('')
-const modelList = ref<any[]>([])
-const defaultGrowth = ref<string>('')
+const modelListLoading = ref<boolean>(false);
+const selectedModelId = ref<string>('');
+const modelList = ref<any[]>([]);
+const defaultGrowth = ref<string>('');
 const getModelList = async (plotId) => {
-  listFirstItem.value = []
-  modelListLoading.value = true
-  modelList.value = []
+  listFirstItem.value = [];
+  modelListLoading.value = true;
+  modelList.value = [];
   const res = await getModelByParkId({ plotId }).catch((err) => {
-    modelListLoading.value = false
-  })
+    modelListLoading.value = false;
+  });
   if (Array.isArray(res)) {
-    modelList.value = res
-    healthValList.value = [] // 清空健康评分
-    tableData.value = [] // 清空表格数据
-    cycleInfoList.value = [] // 清空模型周期列表
+    modelList.value = res;
+    healthValList.value = []; // 清空健康评分
+    tableData.value = []; // 清空表格数据
+    cycleInfoList.value = []; // 清空模型周期列表
     if (res.length > 0) {
-      selectedModelId.value = res[0].modelId
-      defaultGrowth.value = res[0].growth
+      selectedModelId.value = res[0].modelId;
+      defaultGrowth.value = res[0].growth;
       // TODO: 获取健康评分 下面两个
-      getHealthValList(res[0].modelId, res[0].batchCode)
-      getTableData(res[0].modelId, res[0].growthId)
-      getCycleInfoList(res[0].modelId, res[0].growthId)
+      getHealthValList(res[0].modelId, res[0].batchCode);
+      getTableData(res[0].modelId, res[0].growthId);
+      getCycleInfoList(res[0].modelId, res[0].growthId);
     }
   }
-  modelListLoading.value = false
-}
+  modelListLoading.value = false;
+};
 const handleModelClick = (item) => {
-  activeGrowth.value = ''
-  keyPointList.value = []
-  selectedInfo.value = ''
-  activeGrowthId.value = item.growthId
-  selectedModelId.value = item.modelId
-  defaultGrowth.value = item.growth
+  activeGrowth.value = '';
+  keyPointList.value = [];
+  selectedInfo.value = '';
+  activeGrowthId.value = item.growthId;
+  selectedModelId.value = item.modelId;
+  defaultGrowth.value = item.growth;
   instance.value &&
     instance.value.setOption({
       title: { text: item.growth, subtext: item.cycle + '天' }
-    })
-  getHealthValList(item.modelId, item.batchCode)
-  getTableData(item.modelId, item.growthId)
-  getCycleInfoList(item.modelId, item.growthId)
-}
+    });
+  getHealthValList(item.modelId, item.batchCode);
+  getTableData(item.modelId, item.growthId);
+  getCycleInfoList(item.modelId, item.growthId);
+};
 
 // 监测指标按钮
-const indexBtns = ref<any[]>([])
-const selectedBtn = ref<string>('') // 当前选中按钮
+const indexBtns = ref<any[]>([]);
+const selectedBtn = ref<string>(''); // 当前选中按钮
 
 // 点击指标按钮后触发
 const handleIndexBtnClick = (item) => {
-  selectedBtn.value = item.id
-  const _selectedOriginTableItem = originTableData.value.find((ele) => ele.id === item.id)
-  tableData.value = formatTableData(_selectedOriginTableItem.modelIndicatorElementCardVOList)
-}
+  selectedBtn.value = item.id;
+  const _selectedOriginTableItem = originTableData.value.find((ele) => ele.id === item.id);
+  tableData.value = formatTableData(_selectedOriginTableItem.modelIndicatorElementCardVOList);
+};
 
 // 格式化表格内容
 const formatTableData = (voList: any[]) => {
   return voList.map((item) => {
-    const rangeItem = item.modelIndicatorElementRangeDOList
+    const rangeItem = item.modelIndicatorElementRangeDOList;
 
-    if (!Array.isArray(rangeItem)) return item
+    if (!Array.isArray(rangeItem)) return item;
     const firstItem = rangeItem[0],
-      lastItem = rangeItem[rangeItem.length - 1]
+      lastItem = rangeItem[rangeItem.length - 1];
     const minVal = firstItem.lowLimit,
       maxVal = lastItem.highLimit,
-      unitVal = lastItem.unit
-    let position = 0.55
-    let hasData = true
-    const _val = parseFloat(item.value)
+      unitVal = lastItem.unit;
+    let position = 0.55;
+    let hasData = true;
+    const _val = parseFloat(item.value);
     if (isNaN(_val)) {
-      hasData = false
+      hasData = false;
     } else {
       rangeItem.forEach((element, index) => {
         const lowVal = parseFloat(element.lowLimit),
-          hightVal = parseFloat(element.highLimit)
+          hightVal = parseFloat(element.highLimit);
         if (_val > lowVal && _val < hightVal) {
-          position = (index + index + 1) / (2 * rangeItem.length)
+          position = (index + index + 1) / (2 * rangeItem.length);
         }
-      })
+      });
     }
     const normalItem = rangeItem.find(
       (rItem) =>
         rItem.indicatorResult.indexOf('正常') !== -1 || rItem.indicatorResult.indexOf('适宜') !== -1
-    )
-    let text = ``
+    );
+    let text = ``;
     if (normalItem) {
       text = `${normalItem.indicatorResult} ${normalItem.lowLimit}${normalItem.unit ?? ''} ~ ${
         normalItem.highLimit
-      }${normalItem.unit ?? ''}`
+      }${normalItem.unit ?? ''}`;
     }
-    return { ...item, minVal, maxVal, unitVal, position, hasData, text }
-  })
-}
+    return { ...item, minVal, maxVal, unitVal, position, hasData, text };
+  });
+};
 
 // 表格数据
-const tableLoading = ref<boolean>(false)
-const tableData = ref<any[]>([])
-const originTableData = ref<any[]>([])
+const tableLoading = ref<boolean>(false);
+const tableData = ref<any[]>([]);
+const originTableData = ref<any[]>([]);
 const getTableData = async (modelId, growthId) => {
-  if (!modelId || !growthId) return
-  tableLoading.value = true
-  tableData.value = []
+  if (!modelId || !growthId) return;
+  tableLoading.value = true;
+  tableData.value = [];
   const res = await getMonitorIndicatorWithDetail({ modelId, growthId }).catch((err) => {
-    tableLoading.value = false
-  })
+    tableLoading.value = false;
+  });
   // console.log('🚀 ~ getTableData ~ modelId:', modelId)
   // console.log('🚀 ~ getTableData ~ growthId:', growthId)
   // console.log('🚀 ~ getTableData ~ res:', res)
   if (Array.isArray(res)) {
-    originTableData.value = res
+    originTableData.value = res;
     indexBtns.value = res.map((item) => ({
       id: item.id,
       label: item.indicatorName
-    }))
+    }));
     if (res.length > 0) {
-      selectedBtn.value = res[0].id
-      tableData.value = formatTableData(res[0].modelIndicatorElementCardVOList)
+      selectedBtn.value = res[0].id;
+      tableData.value = formatTableData(res[0].modelIndicatorElementCardVOList);
     }
   }
-  tableLoading.value = false
-}
+  tableLoading.value = false;
+};
 
 const handleItemHover = (cardItem, rangeItem, offset) => {
   cardItem.text = `${rangeItem.indicatorResult} ${rangeItem.lowLimit}${rangeItem.unit ?? ''}~${
     rangeItem.highLimit
-  }${rangeItem.unit ?? ''}`
-  cardItem.offset = offset
-}
+  }${rangeItem.unit ?? ''}`;
+  cardItem.offset = offset;
+};
 
 // 响应式状态，用于控制图标旋转
-const message = useMessage() // 消息弹窗
-const loading = ref(false) // 加载动画
+const message = useMessage(); // 消息弹窗
+const loading = ref(false); // 加载动画
 
 // 点击处理函数
 const handleTriggerModelCalculate = async () => {
-  await message.confirm("此操作将重新统计截止至目前为止的模型得分数据并且刷新页面，耗时可能较长，是否确认执行？")
-  loading.value = true
+  await message.confirm(
+    '此操作将重新统计截止至目前为止的模型得分数据并且刷新页面，耗时可能较长，是否确认执行？'
+  );
+  loading.value = true;
   // 调用后台触发计算要素得分;
-  const res = await ModelManagementApi.triggerModelCalculate()
+  const res = await ModelManagementApi.triggerModelCalculate();
   if (res) {
-    message.success(res)
+    message.success(res);
   }
-  await getPlotList()
-  loading.value = false
-}
+  await getPlotList();
+  loading.value = false;
+};
 
 // 构造模型周期与栽培要点的chart数据
 const buildChartData = (data: any[], growth: string = '', cycle: string = '') => {
@@ -273,75 +275,75 @@ const buildChartData = (data: any[], growth: string = '', cycle: string = '') =>
     name: item.growth,
     value: item.cycle,
     growthId: item.growthId
-  }))
-  initChart(series, growth, cycle)
-}
+  }));
+  initChart(series, growth, cycle);
+};
 // 获取周期与栽培要点右侧信息
-const cycleInfoList = ref<any[]>([])
-const periodList = ref<any[]>([])
-const listFirstItem = ref<any[]>([])
-const keypointLoading = ref<boolean>(false)
+const cycleInfoList = ref<any[]>([]);
+const periodList = ref<any[]>([]);
+const listFirstItem = ref<any[]>([]);
+const keypointLoading = ref<boolean>(false);
 const getCycleInfoList = async (modelId, growthId) => {
-  keypointLoading.value = true
+  keypointLoading.value = true;
   const res = await getModelInfo({ modelId }).catch((err) => {
-    keypointLoading.value = false
-  })
+    keypointLoading.value = false;
+  });
   if (Array.isArray(res)) {
-    cycleInfoList.value = res
-    listFirstItem.value = res.shift()
-    const curPeriodItem = res.find((_item) => _item.growth === listFirstItem.value.curPeriod)
-    periodList.value = res
-    buildChartData(res, curPeriodItem.growth, curPeriodItem.cycle)
+    cycleInfoList.value = res;
+    listFirstItem.value = res.shift();
+    const curPeriodItem = res.find((_item) => _item.growth === listFirstItem.value.curPeriod);
+    periodList.value = res;
+    buildChartData(res, curPeriodItem.growth, curPeriodItem.cycle);
     if (periodList.value.length > 0) {
-      const curGrowthItem = periodList.value.find((_period) => _period.growthId === growthId)
-      keyPointList.value = curGrowthItem.child2
-      activeGrowthId.value = curGrowthItem.growthId
+      const curGrowthItem = periodList.value.find((_period) => _period.growthId === growthId);
+      keyPointList.value = curGrowthItem.child2;
+      activeGrowthId.value = curGrowthItem.growthId;
       if (keyPointList.value.length > 0) {
-        selectedKeyPoint.value = keyPointList.value[0].id
-        selectedInfo.value = keyPointList.value[0].itemContent
+        selectedKeyPoint.value = keyPointList.value[0].id;
+        selectedInfo.value = keyPointList.value[0].itemContent;
       }
     }
   }
-  keypointLoading.value = false
-}
+  keypointLoading.value = false;
+};
 // 点击右侧时期触发
-const activeGrowthId = ref<string>('') // 当前活跃的时期id
-const activeGrowth = ref<string>('') // 当前活跃的时期
+const activeGrowthId = ref<string>(''); // 当前活跃的时期id
+const activeGrowth = ref<string>(''); // 当前活跃的时期
 const handlePeriodClick = (item) => {
-  selectedInfo.value = ''
-  activeGrowthId.value = item.growthId
-  activeGrowth.value = item.growth
-  keyPointList.value = item.child2
+  selectedInfo.value = '';
+  activeGrowthId.value = item.growthId;
+  activeGrowth.value = item.growth;
+  keyPointList.value = item.child2;
   if (keyPointList.value.length > 0) {
-    selectedKeyPoint.value = keyPointList.value[0].id
-    selectedInfo.value = keyPointList.value[0].itemContent
+    selectedKeyPoint.value = keyPointList.value[0].id;
+    selectedInfo.value = keyPointList.value[0].itemContent;
   }
   instance.value &&
     instance.value.setOption({
       title: { text: item.growth, subtext: item.cycle + '天' }
-    })
-}
+    });
+};
 
 watch([activeGrowthId, selectedModelId], (newData) => {
-  const [growthId, modelId] = newData
-  getTableData(modelId, growthId)
-})
+  const [growthId, modelId] = newData;
+  getTableData(modelId, growthId);
+});
 
 // 栽培要点
-const keyPointList = ref<any[]>([])
-const selectedKeyPoint = ref<string>('')
-const selectedInfo = ref<string>('')
+const keyPointList = ref<any[]>([]);
+const selectedKeyPoint = ref<string>('');
+const selectedInfo = ref<string>('');
 const handleKeyPointItemClick = (item) => {
-  selectedInfo.value = item.itemContent
-  selectedKeyPoint.value = item.id
-}
+  selectedInfo.value = item.itemContent;
+  selectedKeyPoint.value = item.id;
+};
 watch([selectedKeyPoint], (val) => {
-  const _item = keyPointList.value.find((item) => item.id === val[0])
-  selectedInfo.value = _item.itemContent
-})
+  const _item = keyPointList.value.find((item) => item.id === val[0]);
+  selectedInfo.value = _item.itemContent;
+});
 
 // 饼图
-const instance = ref<any>(null)
+const instance = ref<any>(null);
 const initChart = (series: any[], growth: string = '', cycle: string = '') => {
   instance.value = initChartStatic(
     `chart`,
@@ -383,32 +385,32 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         }
       ]
     })
-  )
+  );
   instance.value &&
     instance.value.on('click', (params) => {
-      const { data } = params
-      const { growthId, name, value } = data
+      const { data } = params;
+      const { growthId, name, value } = data;
       instance.value.setOption({
         title: { text: name, subtext: value + '天' }
-      })
-      const _activePeroid = periodList.value.find((_period) => _period.growthId === growthId)
-      handlePeriodClick(_activePeroid)
-    })
-}
+      });
+      const _activePeroid = periodList.value.find((_period) => _period.growthId === growthId);
+      handlePeriodClick(_activePeroid);
+    });
+};
 </script>
 <template>
   <div class="flex justify-between" v-loading="loading">
-    <el-card 
-      :class="[collapsed ? 'slide-from-right-to-left' : 'slide-from-left-to-right', 'w-[15rem]','mt-[0.5rem]']" 
+    <el-card
+      :class="[
+        collapsed ? 'slide-from-right-to-left' : 'slide-from-left-to-right',
+        'w-[15rem]',
+        'mt-[0.5rem]'
+      ]"
       :style="{ height: `${rightContentHeight.value}px` }"
     >
-      <div
-        class=" space-y-3 !py-0 mr-0"
-        v-loading="plotListLoading"
-        v-show="!collapsed"
-      >
+      <div class="space-y-3 !py-0 mr-0" v-loading="plotListLoading" v-show="!collapsed">
         <!-- <el-scrollbar height="80vh"> -->
-        <el-scrollbar :height="rightContentHeight- 65">
+        <el-scrollbar :height="rightContentHeight - 65">
           <div class="mr-2 space-y-3">
             <div
               v-for="item in plotList"
@@ -431,14 +433,14 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
     </el-card>
     <div
       class="space-y-2 relative"
-      :class="`${ collapsed ? 'content-grow' : 'content-shrink'}`"
+      :class="`${collapsed ? 'content-grow' : 'content-shrink'}`"
       :style="{
         width: `calc(100% - ${collapsed ? '0px' : '15.5rem'})`
       }"
       ref="rightContent"
     >
-    <!-- 折叠按钮 -->
-    <div 
+      <!-- 折叠按钮 -->
+      <div
         @click="handleCollapse"
         :class="`
           h-[25px] w-[25px] rounded-full shadow-md bg-white
@@ -447,12 +449,12 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
         `"
         :style="{
           color: 'var(--el-color-primary)',
-          border: '1px solid var(--el-color-primary)',
+          border: '1px solid var(--el-color-primary)'
         }"
       >
         <el-icon v-show="!collapsed"><ArrowLeftBold /></el-icon>
         <el-icon v-show="collapsed"><ArrowRightBold /></el-icon>
-    </div>
+      </div>
       <!-- <el-card v-if="collapsed">
         <div class="overflow-auto flex justify-between items-center">
           <div class="w-[calc(100%_-_5rem)]">
@@ -501,7 +503,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
             <div class="art-font text-[#009688]">{{ modelList.length }}</div>
             <div class="text-[.8rem]">模型总数</div>
           </div>
-          <div class="grow overflow-auto flex space-x-3 ">
+          <div class="grow overflow-auto flex space-x-3">
             <div
               v-for="item in modelList"
               :key="item.id"
@@ -511,9 +513,12 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
               }"
               @click="handleModelClick(item)"
             >
-              <img :src="item.modelImg"  class="w-[3rem] h-[3rem]  bg-opacity-0 object-contain flex " />
+              <img
+                :src="item.modelImg"
+                class="w-[3rem] h-[3rem] bg-opacity-0 object-contain flex"
+              />
               <div class="space-y-1">
-                <div class="text-[1.1rem]">{{ item.modelName }} </div>
+                <div class="text-[1.1rem]">{{ item.modelName }}</div>
                 <div class="flex space-x-1">
                   <div class="text-[.9rem]">{{ item.growth }} :</div>
                   <div class="text-[#009688] text-[.9rem]">{{ item.cycle }}天</div>
@@ -526,9 +531,9 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
       <el-card>
         <div class="2xl:text-[1.2rem]">{{ listFirstItem.model }}模型周期与栽培要点</div>
         <div class="flex p-3 pb-0 !pl-0" v-loading="keypointLoading">
-          <div id="chart" class="w-[15rem] h-[12rem] "></div>
+          <div id="chart" class="w-[15rem] h-[12rem]"></div>
           <div class="grow w-[calc(100%_-_15.4rem)]">
-            <div class="flex justify-evenly items-end mt-3 px-6 overflow-hidden pb-[25px] ">
+            <div class="flex justify-evenly items-end mt-3 px-6 overflow-hidden pb-[25px]">
               <div
                 v-for="(ele, idx) in periodList"
                 :key="idx"
@@ -540,7 +545,11 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                     ele.growthId === activeGrowthId ? 'progress-font-active' : ''
                   }`"
                 >
-                  <div class="sm:ml-[0.5rem] 2xl:ml-0 sm:[writing-mode:vertical-lr] sm:mb-[.1rem] 2xl:[writing-mode:horizontal-tb]">{{ ele.growth }}</div>
+                  <div
+                    class="sm:ml-[0.5rem] 2xl:ml-0 sm:[writing-mode:vertical-lr] sm:mb-[.1rem] 2xl:[writing-mode:horizontal-tb]"
+                  >
+                    {{ ele.growth }}
+                  </div>
                   <div class="flex justify-center">{{ ele.cycle }}天</div>
                 </div>
                 <div
@@ -550,8 +559,8 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                 ></div>
               </div>
             </div>
-            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center ">
-              <div class="flex justify-center w-full ">
+            <div class="flex mt-2 overflow-auto hidden-scrollbar items-center">
+              <div class="flex justify-center w-full">
                 <div
                   :class="`sm:px-0 2xl:px-4 text-nowrap grow text-[#ffffff] select-none cursor-pointer rounded-md ${
                     child.id === selectedKeyPoint ? 'bg-[#009688]' : 'bg-[#f1f1f1] text-black'
@@ -559,18 +568,19 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                   v-for="(child, flag) in keyPointList"
                   :key="flag"
                   @click="handleKeyPointItemClick(child)"
-                  >{{ child.itemName }}</div
                 >
+                  {{ child.itemName }}
+                </div>
               </div>
             </div>
-            <div class="px-[1rem] pt-3">{{ selectedInfo }} </div>
+            <div class="px-[1rem] pt-3">{{ selectedInfo }}</div>
           </div>
         </div>
       </el-card>
       <el-card>
-        <div class="2xl:text-[1.2rem]"
-          >{{ listFirstItem.model }}{{ activeGrowth || defaultGrowth }}监测指标</div
-        >
+        <div class="2xl:text-[1.2rem]">
+          {{ listFirstItem.model }}{{ activeGrowth || defaultGrowth }}监测指标
+        </div>
         <div class="w-full flex justify-center">
           <div class="overflow-hidden rounded-2 flex">
             <div
@@ -582,8 +592,9 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                 color: selectedBtn === item.id ? '#fff' : '#000'
               }"
               @click="handleIndexBtnClick(item)"
-              >{{ item.label }}</div
             >
+              {{ item.label }}
+            </div>
           </div>
         </div>
         <div class="p-2 pt-4">
@@ -604,12 +615,13 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                     <div
                       :style="{ left: `${scope.row.offset ?? 0}rem` }"
                       class="bg-[#666666] text-white rounded-md px-5 py-1 extra-triangle relative top-[-2px]"
-                      >{{ scope.row.text }}</div
                     >
+                      {{ scope.row.text }}
+                    </div>
                     <div class="flex space-x-[.5rem] items-center">
-                      <div class="w-[3rem] text-center"
-                        >{{ scope.row.minVal }}{{ scope.row.unitVal }}</div
-                      >
+                      <div class="w-[3rem] text-center">
+                        {{ scope.row.minVal }}{{ scope.row.unitVal }}
+                      </div>
                       <div class="flex space-x-[2px] rounded-full overflow-hidden w-[12rem]">
                         <div
                           v-for="(rangeItem, idx) in scope.row.modelIndicatorElementRangeDOList"
@@ -628,9 +640,9 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                           }%] h-[.6rem]`"
                         ></div>
                       </div>
-                      <div class="w-[3rem] text-center line-height-[1rem]"
-                        >{{ scope.row.maxVal }}{{ scope.row.unitVal }}</div
-                      >
+                      <div class="w-[3rem] text-center line-height-[1rem]">
+                        {{ scope.row.maxVal }}{{ scope.row.unitVal }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -641,7 +653,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                 <span v-if="scope.row.value !== null && scope.row.value !== undefined">
                   {{ scope.row.value }}
                 </span>
-                <span v-else> 暂无数据 </span>
+                <span v-else>暂无数据</span>
               </template>
             </el-table-column>
 
@@ -650,7 +662,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
                 <span v-if="scope.row.assess !== null && scope.row.assess !== undefined">
                   {{ scope.row.assess }}
                 </span>
-                <span v-else> 暂无数据 </span>
+                <span v-else>暂无数据</span>
               </template>
             </el-table-column>
           </el-table>
@@ -661,7 +673,7 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
       <!--      <el-icon :class="{ rotate: isRotating }" class="icon">-->
       <!--        <RefreshRight />-->
       <!--      </el-icon>-->
-      <img :src="execute" alt="执行同步数据"  class="w-5 h-5"/>
+      <img :src="execute" alt="执行同步数据" class="w-5 h-5" />
     </div>
   </div>
 </template>
@@ -772,7 +784,6 @@ const initChart = (series: any[], growth: string = '', cycle: string = '') => {
 .hidden-scrollbar::-webkit-scrollbar {
   width: 0px;
 }
-
 
 @keyframes slide-from-left-to-right {
   from {

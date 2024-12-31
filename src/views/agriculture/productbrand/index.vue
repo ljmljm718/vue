@@ -54,26 +54,24 @@
         </button>
       </div>
     </div>
- <!-- 搜索栏 注意 :model 和 ref 的名称 -->
- <el-form
+    <!-- 搜索栏 注意 :model 和 ref 的名称 -->
+    <el-form
       :model="queryParams"
       ref="queryFormRef"
-      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form"
+      class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-[8px] mt-[8px] w-full form overflow-hidden"
       :class="showSearch ? 'opacity-100' : 'h-0 opacity-0'"
       label-width="95px"
       :inline="true"
     >
-   
-        <el-form-item label="品牌名" prop="productBrand">
-          <el-input
-            v-model="queryParams.productBrand"
-            placeholder="请输入品牌名"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
+      <el-form-item label="品牌名" prop="productBrand">
+        <el-input
+          v-model="queryParams.productBrand"
+          placeholder="请输入品牌名"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
     </el-form>
-     
 
     <!-- 列表 -->
     <div>
@@ -218,7 +216,7 @@ import { List, Menu, VideoCameraFilled } from '@element-plus/icons-vue';
 
 /** 产品品牌 列表 */
 defineOptions({ name: 'ProductBrand' });
-const showType = ref('card') //布局切换类型
+const showType = ref('card'); //布局切换类型
 const topMenuHeight = 85;
 const contentPadding = 8;
 const message = useMessage(); // 消息弹窗
@@ -392,9 +390,9 @@ onMounted(() => {
   color: var(--el-color-primary);
 }
 .el-form-item--small {
-    --font-size: 12px;
-    --el-form-label-font-size: var(--font-size);
-    margin-bottom: 0px;
+  --font-size: 12px;
+  --el-form-label-font-size: var(--font-size);
+  margin-bottom: 0px;
 }
 // 向上箭头展开收起的动画
 @keyframes rotate180andwhiteBg {

@@ -134,46 +134,24 @@
               >
                 审批
               </el-button>
+              <el-button
+                v-if="scope.row.approvalStatus === '1'"
+                link
+                type="primary"
+                @click="openForm('detail', scope.row.id)"
+                v-hasPermi="['agriculture:producer-entry:update']"
+              >
+                查看详情
+              </el-button>
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-              <el-popover :width="104" trigger="hover" popper-style="min-width: 0">
-                <template #reference>
-                  <div class="flex items-center">
-                    <div
-                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
-                      style="background-color: var(--el-color-primary)"
-                    ></div>
-                    <div
-                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
-                      style="background-color: var(--el-color-primary)"
-                    ></div>
-                    <div
-                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
-                      style="background-color: var(--el-color-primary)"
-                    ></div>
-                  </div>
-                </template>
-
-                <div class="flex flex-col items-start space-y-[8px] space-x-0">
-                  <!-- 隐藏的其他按钮 -->
-                  <el-button
-                    v-if="scope.row.approvalStatus === '1'"
-                    link
-                    type="primary"
-                    @click="openForm('detail', scope.row.id)"
-                    v-hasPermi="['agriculture:producer-entry:update']"
-                  >
-                    查看详情
-                  </el-button>
-                  <el-button
-                    link
-                    type="danger"
-                    @click="handleDelete(scope.row.id)"
-                    v-hasPermi="['agriculture:producer-entry:delete']"
-                  >
-                    删除
-                  </el-button>
-                </div>
-              </el-popover>
+              <el-button
+                link
+                type="danger"
+                @click="handleDelete(scope.row.id)"
+                v-hasPermi="['agriculture:producer-entry:delete']"
+              >
+                删除
+              </el-button>
             </div>
           </template>
         </el-table-column>
