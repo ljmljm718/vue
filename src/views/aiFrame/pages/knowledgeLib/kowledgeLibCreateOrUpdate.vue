@@ -25,7 +25,7 @@
           <el-form-item class="w-full !mr-0" prop="collectionName" label="名称">
             <el-input
               v-model="formData.collectionName"
-              class="!w-1/4"
+              class="!w-[calc((100%-48px)/4)]"
               placeholder="请输入知识库名称"
               clearable
               input-style="font-size: 1.6em; margin: 0 4px;"
@@ -39,7 +39,7 @@
             <el-input
               v-model="formData.description"
               type="textarea"
-              class="!w-1/2"
+              class="!w-[calc(50%-8px)]"
               clearable
               input-style="font-size: 16px"
             />
@@ -70,7 +70,11 @@
           </div>
 
           <el-form-item class="w-full !mr-0" prop="embeddingModel" label="文本向量化模型">
-            <el-select v-model="formData.embeddingModel" class="!w-1/4" @change="handleChangeModel">
+            <el-select
+              v-model="formData.embeddingModel"
+              class="!w-[calc((100%-48px)/4)]"
+              @change="handleChangeModel"
+            >
               <el-option
                 v-for="(item, index) in embeddingModelList"
                 :key="item.id"
@@ -141,7 +145,7 @@
             </template>
             <el-input-number
               v-model="formData.chunkLength"
-              class="!w-1/4 text-[1.6em]"
+              class="!w-[calc((100%-48px)/4)] text-[1.6em]"
               :min="embeddingModelList[currentModel].chunkLength[0]"
               :max="embeddingModelList[currentModel].chunkLength[1]"
             />
