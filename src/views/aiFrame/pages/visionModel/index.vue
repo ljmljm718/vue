@@ -380,7 +380,7 @@ const submitITT = async () => {
   inputImgListITT.value = [];
   try {
     // 构造请求参数
-    const model = 'ep-20241206121046-84924';
+    const model = 'ep-20250104115953-kx6zm';
     const messages = [{ role: 'user', content: [] as any[] }];
     messages[0].content.push({ type: 'text', text: inputText });
     imgList.forEach((ele) => {
