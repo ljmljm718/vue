@@ -1,0 +1,51 @@
+import request from '@/config/axios';
+
+// 农药登记 VO
+export interface PesticideRegistrationVO {
+  id: number; // 序号
+  registrationNumber: string; // 登记证号
+  holder: string; // 登记证持有人
+  pesticideName: string; // 农药名称
+  formulation: string; // 剂型
+  toxicity: string; // 毒性
+  activeIngredients: string; // 有效成分及其含量
+  pesticideCategory: string; // 农药类别
+  cropOrPlace: string; // 作物/场所
+  qualityStandardNumber: string; // 产品质量标准号
+}
+
+// 农药登记 API
+export const PesticideRegistrationApi = {
+  // 查询农药登记分页
+  getPesticideRegistrationPage: async (params: any) => {
+    return await request.get({ url: `/agriculture/pesticide-registration/page`, params });
+  },
+
+  // 查询农药登记详情
+  getPesticideRegistration: async (id: number) => {
+    return await request.get({ url: `/agriculture/pesticide-registration/get?id=` + id });
+  },
+
+  // 新增农药登记
+  createPesticideRegistration: async (data: PesticideRegistrationVO) => {
+    return await request.post({ url: `/agriculture/pesticide-registration/create`, data });
+  },
+
+  // 修改农药登记
+  updatePesticideRegistration: async (data: PesticideRegistrationVO) => {
+    return await request.put({ url: `/agriculture/pesticide-registration/update`, data });
+  },
+
+  // 删除农药登记
+  deletePesticideRegistration: async (id: number) => {
+    return await request.delete({ url: `/agriculture/pesticide-registration/delete?id=` + id });
+  },
+
+  // 导出农药登记 Excel
+  exportPesticideRegistration: async (params) => {
+    return await request.download({
+      url: `/agriculture/pesticide-registration/export-excel`,
+      params
+    });
+  }
+};
