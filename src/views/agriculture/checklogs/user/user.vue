@@ -1,12 +1,5 @@
 <template>
-  <Dialog
-    title="人员列表"
-    v-model="dialogVisible"
-    :appendToBody="true"
-    :scroll="true"
-    width="1300"
-  >
-
+  <Dialog title="人员列表" v-model="dialogVisible" :appendToBody="true" :scroll="true" width="1300">
     <ContentWrap>
       <el-form
         class="-mb-15px"
@@ -34,12 +27,7 @@
           />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="用户状态"
-            clearable
-            class="!w-240px"
-          >
+          <el-select v-model="queryParams.status" placeholder="用户状态" clearable class="!w-240px">
             <el-option
               v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
               :key="dict.value"
@@ -60,21 +48,29 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
-            <Icon icon="ep:search"/>
+            <Icon icon="ep:search" />
             搜索
           </el-button>
           <el-button @click="resetQuery">
-            <Icon icon="ep:refresh"/>
+            <Icon icon="ep:refresh" />
             重置
           </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
     <ContentWrap>
-      <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" ref="multipleTableRef"
-                @selection-change="handleSelectionChange" @select="select" @row-click="selectClick">
-        <el-table-column width="30" label="选择" type="selection"/>
-        <el-table-column label="用户编号" align="center" key="id" prop="id"/>
+      <el-table
+        v-loading="loading"
+        :data="list"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+        ref="multipleTableRef"
+        @selection-change="handleSelectionChange"
+        @select="select"
+        @row-click="selectClick"
+      >
+        <el-table-column width="30" label="选择" type="selection" />
+        <el-table-column label="用户编号" align="center" key="id" prop="id" />
         <el-table-column
           label="用户名称"
           align="center"
@@ -88,13 +84,13 @@
           :show-overflow-tooltip="true"
         />
         <el-table-column
-          label="部门"
+          label="组织"
           align="center"
           key="deptName"
           prop="deptName"
           :show-overflow-tooltip="true"
         />
-        <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
+        <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
         <el-table-column
           label="创建时间"
           align="center"
@@ -115,36 +111,34 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
-
 </template>
 <script setup lang="ts">
-import {dateFormatter} from '@/utils/formatTime'
-import { getTenantId } from '@/utils/auth'
-import {DeviceBaseVO} from '@/api/kaizhou/devicebase'
-import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
-import * as UserApi from '@/api/system/user'
-import {UserVO} from "@/api/system/user";
-import {ElTable} from "element-plus";
-
+import { dateFormatter } from '@/utils/formatTime';
+import { getTenantId } from '@/utils/auth';
+import { DeviceBaseVO } from '@/api/kaizhou/devicebase';
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import * as UserApi from '@/api/system/user';
+import { UserVO } from '@/api/system/user';
+import { ElTable } from 'element-plus';
 
 /** 设备管理 表单 */
-defineOptions({name: 'User'})
+defineOptions({ name: 'User' });
 const props = defineProps({
   autoComplete: {
     type: Boolean,
     default: () => false
   }
-})
-const list = ref<DeviceBaseVO[]>([]) // 列表的数据
-const total = ref(0) // 列表的总页数
-const loading = ref(false) // 列表的加载中
-const {t} = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+});
+const list = ref<DeviceBaseVO[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
+const loading = ref(false); // 列表的加载中
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -153,32 +147,32 @@ const queryParams = reactive({
   status: undefined,
   deptId: undefined,
   createTime: []
-})
+});
 
-const parentValue = ref('')
-const queryFormRef = ref() // 搜索的表单
+const parentValue = ref('');
+const queryFormRef = ref(); // 搜索的表单
 
 /** 选中操作 */
-const selectionList = ref<UserVO[]>([])
+const selectionList = ref<UserVO[]>([]);
 const handleSelectionChange = (rows: UserVO[]) => {
-  selectionList.value = rows
-}
-const multipleTableRef = ref()
-const select = (selection, row)=> {
+  selectionList.value = rows;
+};
+const multipleTableRef = ref();
+const select = (selection, row) => {
   // 清除 所有勾选项
-  multipleTableRef.value.clearSelection()
+  multipleTableRef.value.clearSelection();
   // 当表格数据都没有被勾选的时候 就返回
   // 主要用于将当前勾选的表格状态清除
-  if(selection.length == 0) return
+  if (selection.length == 0) return;
   multipleTableRef.value.toggleRowSelection(row, true);
-}
+};
 
 // 控制单选——table选择项发生变化时
 const selectClick = (row) => {
-  const selectData = selectionList.value
-  multipleTableRef.value.clearSelection()
+  const selectData = selectionList.value;
+  multipleTableRef.value.clearSelection();
   if (selectData.length == 1) {
-    selectData.forEach(item => {
+    selectData.forEach((item) => {
       // 判断 如果当前的一行被勾选, 再次点击的时候就会取消选中
       if (item == row) {
         multipleTableRef.value.toggleRowSelection(row, false);
@@ -187,63 +181,59 @@ const selectClick = (row) => {
       else {
         multipleTableRef.value.toggleRowSelection(row, true);
       }
-    })
+    });
   } else {
     multipleTableRef.value.toggleRowSelection(row, true);
   }
-}
+};
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: UserVO[]): void
-}>()
+  (e: 'success', value: UserVO[]): void;
+}>();
 const submitForm = () => {
   try {
-    emits('success', selectionList.value)
+    emits('success', selectionList.value);
   } finally {
     // 关闭弹窗
-    dialogVisible.value = false
+    dialogVisible.value = false;
   }
-}
-
+};
 
 const open = async (id: string) => {
-  dialogVisible.value = true
-  parentValue.value = id
-  console.log("id:" + id)
-  await nextTick() // 等待，避免 queryFormRef 为空
+  dialogVisible.value = true;
+  parentValue.value = id;
+  console.log('id:' + id);
+  await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载列表
-  await resetQuery()
-}
-
-
+  await resetQuery();
+};
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await UserApi.getUserPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await UserApi.getUserPage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
     if (props.autoComplete && list.value.length > 0) {
-      emits('success', [{ ...list.value[0] }] as any)
+      emits('success', [{ ...list.value[0] }] as any);
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
-defineExpose({open, getList}) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open, getList }); // 提供 open 方法，用于打开弹窗
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value?.resetFields()
-  handleQuery()
-}
-
+  queryFormRef.value?.resetFields();
+  handleQuery();
+};
 </script>
