@@ -15,7 +15,7 @@ import {
   chatHistoryPage,
   chatThemeDelete,
   putUpdateChatTheme,
-  getCollectionSearch
+  getContextSearch
 } from '../../apis';
 import RadioButton from './radioButton.vue';
 
@@ -312,15 +312,16 @@ const handleSendMsg = async (text) => {
   scollToBottom();
   // TODO 返回请求结果
   const chatId = uuid();
-  chatList.value.push({ id: chatId, role: 'system', text: '' });
-  activeChatInfo.message.push({ id: chatId, role: 'system', text: '' });
-  const res = await getCollectionSearch({
+  chatList.value.push({ id: chatId, role: 'assistant', text: '', docs: [] });
+  activeChatInfo.message.push({ id: chatId, role: 'assistant', text: '', docs: [] });
+  // 原先是 getCollectionSearch，下面改成了上下文接口
+  const { message: res, docName } = await getContextSearch({
     collectionId: knowledgeLib.value,
     query: text,
-    model: modelSelected.value,
-    themeId: activeChatID.value,
     stream: false,
+    model: modelSelected.value,
     maxNewTokens: maxResLength.value,
+    themeId: activeChatID.value,
     extraPrompt: prompt.value
   }).catch(() => {
     disabledSendBtn.value = false;
@@ -337,9 +338,13 @@ const handleSendMsg = async (text) => {
       disabledSendBtn.value = false;
       return;
     }
+    const activeItem = chatList.value.find((item) => item.id === chatId);
+    const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
+    if (Array.isArray(docName)) {
+      activeItem.docs = docName;
+      _activeItem.docs = docName;
+    }
     setTimeout(() => {
-      const activeItem = chatList.value.find((item) => item.id === chatId);
-      const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
       const textArr = innerText.split('');
       const putText = textArr.shift();
       activeItem.text += putText;
@@ -536,16 +541,47 @@ const handleDeleteChatTheme = (id: string) => {
                 >
                   <img
                     :src="
-                      item.role === 'system' ? avatar : item.role === 'user' ? userAvatar : avatar
+                      item.role === 'assistant'
+                        ? avatar
+                        : item.role === 'user'
+                          ? userAvatar
+                          : avatar
                     "
                   />
-                  <div
+                  <template v-if="item.role === 'assistant'">
+                    <div class="flex flex-col" style="width: calc(100% - 88px)">
+                      <div
+                        class="rounded-8px px-16px box-border text-wrap mx-8px box-border shadow-md w-full"
+                        :style="`background: var(--system-message-bg);`"
+                        :innerHTML="marked.parse(item.text)"
+                        v-highlight
+                      ></div>
+                      <div class="flex p-3 space-x-3" v-if="Array.isArray(item.docs)">
+                        <div
+                          v-for="ele in item.docs"
+                          :key="ele"
+                          class="px-3 py-1 rounded-md bg-#696ded text-white"
+                        >
+                          {{ ele }}
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div
+                      class="rounded-8px px-16px box-border text-wrap mx-8px box-border"
+                      :style="`background: #00000000;max-width: calc(100% - 88px);width: auto;`"
+                      :innerHTML="marked.parse(item.text)"
+                      v-highlight
+                    ></div>
+                  </template>
+                  <!-- <div
                     class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
-                    :class="[item.role === 'system' ? 'shadow-md' : '']"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
+                    :class="[item.role === 'assistant' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'assistant' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'assistant' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.text)"
                     v-highlight
-                  ></div>
+                  ></div> -->
                 </div>
               </div>
             </div>
