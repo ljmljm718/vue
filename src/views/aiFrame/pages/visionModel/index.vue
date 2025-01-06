@@ -223,8 +223,8 @@ const getMessageList = async (id: string, pageSize: number = 10) => {
 const modifyMsgList = (list: any[]) => {
   /**
    * 视觉模块中 list 的 length 一定是2的倍数
-   * 每两项中必定一个是 user 一个是 system
-   * 调整成 user 在前 system 在后的顺序
+   * 每两项中必定一个是 user 一个是 assistant
+   * 调整成 user 在前 assistant 在后的顺序
    */
   const res: any[] = [];
   if (list.length <= 0) {
@@ -440,7 +440,7 @@ const submitITT = async () => {
     });
     await postCreateChatHistory({
       themeId,
-      role: 'system',
+      role: 'assistant',
       message: {
         text: content,
         image: ''
@@ -520,7 +520,7 @@ const submitTTI = async () => {
     });
     await postCreateChatHistory({
       themeId,
-      role: 'system',
+      role: 'assistant',
       message: {
         text: '',
         image: urls.join(',')
@@ -802,18 +802,22 @@ const sizeList = ref([
                 >
                   <img
                     :src="
-                      item.role === 'system' ? avatar : item.role === 'user' ? userAvatar : avatar
+                      item.role === 'assistant'
+                        ? avatar
+                        : item.role === 'user'
+                          ? userAvatar
+                          : avatar
                     "
                   />
                   <div
-                    v-show="!(!useITT && item.role === 'system')"
+                    v-show="!(!useITT && item.role === 'assistant')"
                     class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
-                    :class="[item.role === 'system' ? 'shadow-md' : '']"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
+                    :class="[item.role === 'assistant' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'assistant' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'assistant' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.message.text)"
                   ></div>
                   <div
-                    v-show="!useITT && item.role === 'system'"
+                    v-show="!useITT && item.role === 'assistant'"
                     class="w-full grid grid-cols-4 gap-[8px] pl-[8px] pr-[44px] box-border"
                   >
                     <div
