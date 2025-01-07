@@ -14,6 +14,10 @@ export const getContextSearch = async (data: any) => {
   return await request.post({ url: `/agriculture/context/context-search`, data });
 };
 
+export const getBotChat = async (data: any) => {
+  return await request.post({ url: `/agriculture/bot/chat`, data });
+};
+
 // 根据知识库ID获取文档列表
 export const getDocList = async (params: any) => {
   return await request.get({ url: '/agriculture/collection/get-doc-list', params });
