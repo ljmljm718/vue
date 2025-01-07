@@ -224,12 +224,14 @@ onMounted(async () => {
 const selectedDrawId = ref('');
 const showDrawDialog = ref<boolean>(false);
 const tiandiIns = ref();
-const handleDraw = (item) => {
-  const { id, geofencing } = item;
+const handleDraw = async (item) => {
+  const { id } = item;
   if (!id) {
     ElMessage.error('当前数据ID不存在');
     return;
   }
+  const data = await DeptApi.getDept(id);
+  const { geofencing } = data;
   selectedDrawId.value = id;
   showDrawDialog.value = true;
   nextTick(() => {
