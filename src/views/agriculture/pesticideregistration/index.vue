@@ -273,7 +273,7 @@ const handleClickShowSearch = () => {
       >
         <!-- todo复制列表 -->
         <!--      <el-table-column label="id" align="center" prop="id"/>-->
-        <el-table-column type="selection" width="55" :reserve-selection="true" />
+        <!-- <el-table-column type="selection" width="55" :reserve-selection="true" /> -->
         <el-table-column label="序号" align="center" prop="id" />
         <el-table-column label="登记证号" align="center" prop="registrationNumber" />
         <el-table-column label="登记证持有人" align="center" prop="holder" />
