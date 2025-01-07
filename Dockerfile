@@ -4,7 +4,7 @@ FROM nginx:1.22
 ARG PROFILE
 
 # 将dist文件中的内容复制到 `/usr/share/nginx/html/` 这个目录下面
-COPY dist-prod-digital-village/  /usr/share/nginx/html/
+COPY dist-prod-linfen/  /usr/share/nginx/html/
 
 # 用本地配置文件来替换nginx镜像里的默认配置
 COPY nginx/nginx-${PROFILE}.conf /etc/nginx/nginx.conf
