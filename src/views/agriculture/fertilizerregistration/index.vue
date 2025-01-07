@@ -266,7 +266,7 @@ const handleClickShowSearch = () => {
       >
         <!-- todo复制列表 -->
         <!--      <el-table-column label="id" align="center" prop="id"/>-->
-        <el-table-column type="selection" width="55" :reserve-selection="true" />
+        <!-- <el-table-column type="selection" width="55" :reserve-selection="true" /> -->
         <el-table-column label="序号" align="center" prop="id" />
         <el-table-column label="企业名称" align="center" prop="companyName" />
         <el-table-column label="产品通用名称" align="center" prop="genericName" />
