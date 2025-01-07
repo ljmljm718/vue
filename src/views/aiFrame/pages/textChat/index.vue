@@ -8,6 +8,7 @@ import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/felipec.css';
 import { throttle } from 'lodash-es';
+import Voice from '@/utils/voice';
 import {
   getCollectionList,
   chatThemeCreate,
@@ -15,9 +16,27 @@ import {
   chatHistoryPage,
   chatThemeDelete,
   putUpdateChatTheme,
-  getCollectionSearch
+  getContextSearch,
+  getBotChat
 } from '../../apis';
 import RadioButton from './radioButton.vue';
+
+const parseTextFromMarkDown = async (mdString) => {
+  const htmlString = marked(mdString);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString as string, 'text/html');
+  const walker = document.createTreeWalker(doc, NodeFilter.SHOW_TEXT);
+
+  const textList = [];
+  let currentNode = walker.currentNode;
+
+  while (currentNode) {
+    textList.push(currentNode.textContent);
+    currentNode = walker.nextNode();
+  }
+
+  return textList.filter((item) => item).join('');
+};
 
 // 实现自定义指令 高亮代码块
 const highlightForce = (el) => {
@@ -44,7 +63,6 @@ const uuid = (length = 8, chars?) => {
 };
 
 const BtnClickEvent = (e) => {
-  console.log(e.target.innerText);
   navigator.clipboard.writeText(e.target.innerText);
   ElMessage.success('内容已复制到剪贴板!');
 };
@@ -55,7 +73,6 @@ const handleCopyBtnClick = () => {
   });
 };
 
-const chatList = ref<any[]>([]);
 const questionText = ref<string>('');
 
 const pageMainTitle = ref<string>(''); // 智能文本模型库V1.2.0
@@ -146,12 +163,12 @@ const handleChatInfoClick = (item) => {
 // 处理textarea输入框
 const handleTextChange = () => {
   const textarea = document.querySelector('textarea');
-  textarea.addEventListener('input', (e) => {
+  if (!textarea) return;
+  textarea.addEventListener('input', (e: any) => {
     const text = e.target.value;
     questionText.value = text;
-    console.log('TEXT', text);
   });
-  textarea.addEventListener('keydown', (e) => {
+  textarea.addEventListener('keydown', (event: any) => {
     const keyCode = event.keyCode;
     const shiftKey = event.shiftKey;
     if (!shiftKey && keyCode === 13) {
@@ -258,6 +275,8 @@ const prompt = ref<string>('');
 
 const enabledflowRes = ref<boolean>(true); // 开启流式返回
 const maxResLength = ref<number>(10); // 最大返回长度
+const enabledBot = ref<boolean>(false);
+const enableRadio = ref<boolean>(true);
 
 // 自适应调整textarea高度
 const adjustTextareaHeight = () => {
@@ -305,48 +324,26 @@ const handleSendMsg = async (text) => {
   if (!text) return;
   if (disabledSendBtn.value) return;
   disabledSendBtn.value = true;
-  chatList.value.push({ role: 'user', text: text });
   textarea.value = '';
   console.log('🚀 ~ handleSendMsg ~ activeChatInfo:', activeChatInfo);
   activeChatInfo.message.push({ role: 'user', text: text });
   scollToBottom();
   // TODO 返回请求结果
   const chatId = uuid();
-  chatList.value.push({ id: chatId, role: 'system', text: '' });
-  activeChatInfo.message.push({ id: chatId, role: 'system', text: '' });
-  const res = await getCollectionSearch({
-    collectionId: knowledgeLib.value,
-    query: text,
-    model: modelSelected.value,
-    themeId: activeChatID.value,
-    stream: false,
-    maxNewTokens: maxResLength.value,
-    extraPrompt: prompt.value
-  }).catch(() => {
-    disabledSendBtn.value = false;
-    const activeItem = chatList.value.find((item) => item.id === chatId);
-    const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
-    activeItem.text = '请求失败，请稍后重试';
-    _activeItem.text = '请求失败，请稍后重试';
-    radioRecording.value = false;
-  });
+  activeChatInfo.message.push({ id: chatId, role: 'assistant', text: '', docs: [] });
+
+  // 流式输出
   const flowOutput = (
     innerText = '### 你好，我是智慧农业AI助手\n#### 可以完成智能问答，文档编写，代码生成等多种任务\n##### 请输入你的问题'
   ) => {
-    if (!innerText) {
-      disabledSendBtn.value = false;
-      return;
-    }
+    if (!innerText) return (disabledSendBtn.value = false);
+    const activeItem = activeChatInfo.message.find((item) => item.id === chatId);
     setTimeout(() => {
-      const activeItem = chatList.value.find((item) => item.id === chatId);
-      const _activeItem = activeChatInfo.message.find((item) => item.id === chatId);
       const textArr = innerText.split('');
       const putText = textArr.shift();
       activeItem.text += putText;
-      _activeItem.text += putText;
       if (!enabledflowRes.value) {
         activeItem.text = innerText;
-        _activeItem.text = innerText;
         disabledSendBtn.value = false;
         scollToBottom();
         return;
@@ -356,7 +353,56 @@ const handleSendMsg = async (text) => {
       handleCopyBtnClick();
     }, 10);
   };
-  if (res) flowOutput(res.toString());
+
+  const activeItem = activeChatInfo.message.find((item) => item.id === chatId);
+  const speaker = new Voice();
+  if (enabledBot.value) {
+    const { docRef, message, urlRef } = await getBotChat({
+      query: text,
+      botId: 'bot-20241230112159-krtgj',
+      themeId: activeChatID.value,
+      systemPrompt: prompt.value,
+      maxTokens: maxResLength.value
+    }).catch(() => {
+      disabledSendBtn.value = false;
+      activeItem.text = '请求失败，请稍后重试';
+      radioRecording.value = false;
+    });
+    if (Array.isArray(docRef)) activeItem.docs = docRef;
+    if (Array.isArray(urlRef)) activeItem.urls = urlRef;
+    console.log('🚀 ~ handleSendMsg ~ docRef 文档:', docRef);
+    console.log('🚀 ~ handleSendMsg ~ message 回答:', message);
+    console.log('🚀 ~ handleSendMsg ~ urlRef 链接:', urlRef);
+    if (message) {
+      const voiceText = await parseTextFromMarkDown(message.toString());
+      speaker.speak([voiceText]);
+      flowOutput(message.toString());
+    }
+  } else {
+    // 原先是 getCollectionSearch，下面改成了上下文接口
+    const { message: res } = await getContextSearch({
+      collectionId: knowledgeLib.value,
+      query: text,
+      stream: false,
+      model: modelSelected.value,
+      maxNewTokens: maxResLength.value,
+      themeId: activeChatID.value,
+      extraPrompt: prompt.value
+    }).catch(() => {
+      disabledSendBtn.value = false;
+      activeItem.text = '请求失败，请稍后重试';
+      radioRecording.value = false;
+    });
+    const { message, relatedQuery, docName } = res;
+    const relatedArr = relatedQuery.split('\n');
+    if (relatedArr.length > 0) activeItem.relatedQuery = relatedArr;
+    if (Array.isArray(docName)) activeItem.docs = docName;
+    if (res) {
+      const voiceText = await parseTextFromMarkDown(message.toString());
+      speaker.speak([voiceText]);
+      flowOutput(message.toString());
+    }
+  }
   scollToBottom();
   questionText.value = '';
   textarea.value = '';
@@ -399,6 +445,16 @@ const handleDeleteChatTheme = (id: string) => {
       ElMessage.error('删除失败，请稍后重试！');
     })
     .catch(() => console.info('操作取消'));
+};
+
+const getIconfromUrl = (url: string) => {
+  if (!url) return '/favicon1.ico';
+  const _fullUrl = new URL(url);
+  return _fullUrl.protocol + _fullUrl.host + '/favicon.ico';
+};
+
+const handleOpenUrl = (url) => {
+  if (url) window.open(url);
 };
 </script>
 <template>
@@ -536,16 +592,82 @@ const handleDeleteChatTheme = (id: string) => {
                 >
                   <img
                     :src="
-                      item.role === 'system' ? avatar : item.role === 'user' ? userAvatar : avatar
+                      item.role === 'assistant'
+                        ? avatar
+                        : item.role === 'user'
+                          ? userAvatar
+                          : avatar
                     "
                   />
-                  <div
+                  <template v-if="['assistant', 'system'].includes(item.role)">
+                    <div class="flex flex-col" style="width: calc(100% - 88px)">
+                      <div
+                        class="rounded-8px px-16px box-border text-wrap mx-8px box-border shadow-md w-full"
+                        :style="`background: var(--system-message-bg);`"
+                        :innerHTML="marked.parse(item.text)"
+                        v-highlight
+                      ></div>
+                      <div
+                        class="flex p-3 space-x-3"
+                        v-if="Array.isArray(item.docs) && item.docs.length > 0"
+                      >
+                        <div
+                          v-for="ele in item.docs"
+                          :key="ele"
+                          class="px-3 py-1 rounded-md bg-#696ded text-white"
+                        >
+                          {{ ele }}
+                        </div>
+                      </div>
+                      <div v-if="Array.isArray(item.urls) && item.urls.length > 0" class="w-full">
+                        <el-scrollbar style="width: 100%">
+                          <div class="space-x-2 flex py-4 px-2">
+                            <div
+                              v-for="ele in item.urls"
+                              :key="ele.url"
+                              @click="handleOpenUrl(ele.url)"
+                              class="rounded-md bg-white w-250px shadow-md p-3 text-14px cursor-pointer"
+                            >
+                              <div class="line-clamp-2">{{ ele.title }}</div>
+                              <div class="flex space-x-2 items-center mt-1">
+                                <img :src="getIconfromUrl(ele.url)" class="w-14px h-14px" />
+                                <div class="line-clamp-1 text-#767d8a w-180px">
+                                  {{ ele.siteName }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </el-scrollbar>
+                      </div>
+                      <div
+                        class="px-2 space-y-1 py-3"
+                        v-if="Array.isArray(item.relatedQuery) && item.relatedQuery.length > 0"
+                      >
+                        <div
+                          v-for="ele in item.relatedQuery"
+                          :key="ele"
+                          @click="handleSendMsg(ele)"
+                        >
+                          {{ ele }}
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div
+                      class="rounded-8px px-16px box-border text-wrap mx-8px box-border"
+                      :style="`background: #00000000;max-width: calc(100% - 88px);width: auto;`"
+                      :innerHTML="marked.parse(item.text)"
+                      v-highlight
+                    ></div>
+                  </template>
+                  <!-- <div
                     class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
-                    :class="[item.role === 'system' ? 'shadow-md' : '']"
-                    :style="`background: ${item.role === 'system' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'system' ? 'calc(100% - 88px)' : 'auto'};`"
+                    :class="[item.role === 'assistant' ? 'shadow-md' : '']"
+                    :style="`background: ${item.role === 'assistant' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'assistant' ? 'calc(100% - 88px)' : 'auto'};`"
                     :innerHTML="marked.parse(item.text)"
                     v-highlight
-                  ></div>
+                  ></div> -->
                 </div>
               </div>
             </div>
@@ -557,7 +679,13 @@ const handleDeleteChatTheme = (id: string) => {
           style="flex: 0 0 auto"
         >
           <div class="rounded-8px p-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
-            <textarea class="ai-show-textarea grow" id="textarea" rows="2" wrap="soft"></textarea>
+            <textarea
+              class="ai-show-textarea grow"
+              id="textarea"
+              rows="2"
+              wrap="soft"
+              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务…"
+            ></textarea>
             <div class="mx-8px mb-4px">
               <RadioButton
                 v-model:disableSend="radioRecording"
@@ -638,6 +766,10 @@ const handleDeleteChatTheme = (id: string) => {
           </div>
           <div class="mb-[8px] mt-[16px]">是否流式返回</div>
           <div><el-switch v-model="enabledflowRes" size="large" /></div>
+          <div class="mb-[8px] mt-[16px]">开启智能体</div>
+          <div><el-switch v-model="enabledBot" size="large" /></div>
+          <div class="mb-[8px] mt-[16px]">语音播报</div>
+          <div><el-switch v-model="enableRadio" size="large" /></div>
           <div class="mb-[8px] mt-[16px]">最大返回长度</div>
           <div class="!text-[#000] flex items-center">
             <div class="w-85px mr-10px ml-10px">

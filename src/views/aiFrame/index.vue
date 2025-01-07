@@ -152,7 +152,7 @@ const showedModel = ref<string>('textModel');
   .input-outer-container {
     width: calc(100% - 90px);
     left: 44px;
-    background: white;
+    background: linear-gradient(to right, #4378ff, #9362da);
   }
 }
 
