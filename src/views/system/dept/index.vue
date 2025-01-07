@@ -142,7 +142,7 @@ import DeptForm from './DeptForm.vue';
 import * as UserApi from '@/api/system/user';
 import { ElMessage } from 'element-plus';
 import FenceDialog from '@/views/agriculture/parkinfo/components/fenceDialog.vue';
-import { CropGrowthNewApi } from '@/api/agri/cropgrowthnew';
+import { saveGeofencing } from '@/api/system/dept';
 
 defineOptions({ name: 'SystemDept' });
 
@@ -224,12 +224,14 @@ onMounted(async () => {
 const selectedDrawId = ref('');
 const showDrawDialog = ref<boolean>(false);
 const tiandiIns = ref();
-const handleDraw = (item) => {
-  const { id, geofencing } = item;
+const handleDraw = async (item) => {
+  const { id } = item;
   if (!id) {
     ElMessage.error('当前数据ID不存在');
     return;
   }
+  const data = await DeptApi.getDept(id);
+  const { geofencing } = data;
   selectedDrawId.value = id;
   showDrawDialog.value = true;
   nextTick(() => {
@@ -252,12 +254,6 @@ const handleDraw = (item) => {
           }, 500);
         }
       }
-    } else {
-      // TODO 如果不存在围栏，把中心点设置在基地中间
-      if (activeBaseCenter.value.length !== 2) return;
-      nextTick(() => {
-        tiandiIns.value.setCenterZoom(activeBaseCenter.value, 17);
-      });
     }
   });
 };
@@ -272,10 +268,9 @@ const handleConfirm = async () => {
   const { corrdinates, option } = geofencing;
   if (!Array.isArray(corrdinates)) return ElMessage.error('您还未选择区域!');
   if (corrdinates.length < 1) return ElMessage.error('您还未选择区域!');
-  const data = await CropGrowthNewApi.saveGeofencing({
+  const data = await DeptApi.saveGeofencing({
     id: selectedDrawId.value,
-    geofencing: JSON.stringify(geofencing),
-    infraType: showPlotList.value ? '2' : '1'
+    geofencing: JSON.stringify(geofencing)
   });
 
   if (data) ElMessage.success('保存成功!');
