@@ -33,6 +33,7 @@ const queryParams = reactive({
   activeIngredients: undefined,
   pesticideCategory: undefined,
   cropOrPlace: undefined,
+  controlObject: undefined,
   qualityStandardNumber: undefined,
   createTime: []
 });
@@ -248,6 +249,15 @@ const handleClickShowSearch = () => {
           @keyup.enter="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="防治对象" prop="controlObject">
+        <el-input
+          v-model="queryParams.controlObject"
+          placeholder="请输入防治对象"
+          clearable
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+
       <el-form-item label="产品质量标准号" prop="qualityStandardNumber">
         <el-input
           v-model="queryParams.qualityStandardNumber"
@@ -283,6 +293,7 @@ const handleClickShowSearch = () => {
         <el-table-column label="有效成分及其含量" align="center" prop="activeIngredients" />
         <el-table-column label="农药类别" align="center" prop="pesticideCategory" />
         <el-table-column label="作物/场所" align="center" prop="cropOrPlace" />
+        <el-table-column label="防治对象" align="center" prop="controlObject" />
         <el-table-column label="产品质量标准号" align="center" prop="qualityStandardNumber" />
         <el-table-column label="操作" align="center" fixed="right" min-width="154px">
           <template #default="scope">

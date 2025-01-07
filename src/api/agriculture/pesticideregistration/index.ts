@@ -11,6 +11,7 @@ export interface PesticideRegistrationVO {
   activeIngredients: string; // 有效成分及其含量
   pesticideCategory: string; // 农药类别
   cropOrPlace: string; // 作物/场所
+  controlObject: string; // 防治对象
   qualityStandardNumber: string; // 产品质量标准号
 }
 
