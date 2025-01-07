@@ -1,0 +1,82 @@
+class Voice {
+  constructor() {}
+  speech(text, func, index, params) {
+    const speech = new SpeechSynthesisUtterance();
+    speech.pitch = 1; // 获取并设置话语的音调(值越大越尖锐,越低越低沉)
+    speech.rate = 1.5; // 获取并设置说话的速度(值越大语速越快,越小语速越慢)
+    speech.volume = 10; // 获取并设置说话的音量
+    speech.lang = 'zh-CN'; // 设置播放语言，测试没效果
+    // this.speech.voice = "ZhangJing"; // 获取并设置说话的声音
+    speech.text = text;
+    // 语音播报边界
+    speech.onboundary = () => {
+      // console.log("语音播报边界")
+    };
+    // 错误语音播报事件
+    speech.onerror = () => {
+      // console.log("错误语音播报事件")
+    };
+    // 标记语音播报事件
+    speech.onmark = () => {
+      // console.log("标记语音播报事件")
+    };
+    // 语音开始播报
+    speech.onstart = (a, b, c) => {
+      console.log(a, b, c, 'a,b,c');
+      // console.log("语音开始播报")
+      if (func) {
+        func(params, index);
+      }
+    };
+    // 语音暂停播报
+    speech.onpause = () => {
+      // console.log("语音暂停播报")
+    };
+    // 语音恢复播报
+    speech.onresume = () => {
+      // console.log("语音恢复播报")
+    };
+    // 语音结束播报
+    speech.onend = () => {
+      // console.log("语音播报结束")
+    };
+    return speech;
+  }
+  speak(params, index = 0) {
+    window.speechSynthesis.cancel();
+    const [text, ...residue] = params;
+    if (text) {
+      if (typeof text === 'string') {
+        window.speechSynthesis.speak(this.speech(text));
+      } else {
+        const { text: str, hook } = text;
+        window.speechSynthesis.speak(this.speech(str, hook, index, text));
+      }
+    }
+    if (residue.length > 0) {
+      if (typeof text === 'string') {
+        this.speak(residue);
+      } else {
+        this.speak(residue, index + 1);
+      }
+    }
+  }
+  // 暂停
+
+  pause() {
+    window.speechSynthesis.pause();
+  }
+
+  // 继续播放
+
+  resume() {
+    window.speechSynthesis.resume();
+  }
+
+  // 取消播放
+  cancel() {
+    window.speechSynthesis.cancel();
+  }
+}
+
+export default Voice;

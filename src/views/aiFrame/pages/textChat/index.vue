@@ -8,6 +8,7 @@ import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/felipec.css';
 import { throttle } from 'lodash-es';
+import Voice from '@/utils/voice';
 import {
   getCollectionList,
   chatThemeCreate,
@@ -19,6 +20,23 @@ import {
   getBotChat
 } from '../../apis';
 import RadioButton from './radioButton.vue';
+
+const parseTextFromMarkDown = async (mdString) => {
+  const htmlString = marked(mdString);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString as string, 'text/html');
+  const walker = document.createTreeWalker(doc, NodeFilter.SHOW_TEXT);
+
+  const textList = [];
+  let currentNode = walker.currentNode;
+
+  while (currentNode) {
+    textList.push(currentNode.textContent);
+    currentNode = walker.nextNode();
+  }
+
+  return textList.filter((item) => item).join('');
+};
 
 // 实现自定义指令 高亮代码块
 const highlightForce = (el) => {
@@ -45,7 +63,6 @@ const uuid = (length = 8, chars?) => {
 };
 
 const BtnClickEvent = (e) => {
-  console.log(e.target.innerText);
   navigator.clipboard.writeText(e.target.innerText);
   ElMessage.success('内容已复制到剪贴板!');
 };
@@ -150,7 +167,6 @@ const handleTextChange = () => {
   textarea.addEventListener('input', (e: any) => {
     const text = e.target.value;
     questionText.value = text;
-    console.log('TEXT', text);
   });
   textarea.addEventListener('keydown', (event: any) => {
     const keyCode = event.keyCode;
@@ -260,6 +276,7 @@ const prompt = ref<string>('');
 const enabledflowRes = ref<boolean>(true); // 开启流式返回
 const maxResLength = ref<number>(10); // 最大返回长度
 const enabledBot = ref<boolean>(false);
+const enableRadio = ref<boolean>(true);
 
 // 自适应调整textarea高度
 const adjustTextareaHeight = () => {
@@ -338,6 +355,7 @@ const handleSendMsg = async (text) => {
   };
 
   const activeItem = activeChatInfo.message.find((item) => item.id === chatId);
+  const speaker = new Voice();
   if (enabledBot.value) {
     const { docRef, message, urlRef } = await getBotChat({
       query: text,
@@ -355,7 +373,11 @@ const handleSendMsg = async (text) => {
     console.log('🚀 ~ handleSendMsg ~ docRef 文档:', docRef);
     console.log('🚀 ~ handleSendMsg ~ message 回答:', message);
     console.log('🚀 ~ handleSendMsg ~ urlRef 链接:', urlRef);
-    if (message) flowOutput(message.toString());
+    if (message) {
+      const voiceText = await parseTextFromMarkDown(message.toString());
+      speaker.speak([voiceText]);
+      flowOutput(message.toString());
+    }
   } else {
     // 原先是 getCollectionSearch，下面改成了上下文接口
     const { message: res } = await getContextSearch({
@@ -375,7 +397,11 @@ const handleSendMsg = async (text) => {
     const relatedArr = relatedQuery.split('\n');
     if (relatedArr.length > 0) activeItem.relatedQuery = relatedArr;
     if (Array.isArray(docName)) activeItem.docs = docName;
-    if (res) flowOutput(message.toString());
+    if (res) {
+      const voiceText = await parseTextFromMarkDown(message.toString());
+      speaker.speak([voiceText]);
+      flowOutput(message.toString());
+    }
   }
   scollToBottom();
   questionText.value = '';
@@ -742,6 +768,8 @@ const handleOpenUrl = (url) => {
           <div><el-switch v-model="enabledflowRes" size="large" /></div>
           <div class="mb-[8px] mt-[16px]">开启智能体</div>
           <div><el-switch v-model="enabledBot" size="large" /></div>
+          <div class="mb-[8px] mt-[16px]">语音播报</div>
+          <div><el-switch v-model="enableRadio" size="large" /></div>
           <div class="mb-[8px] mt-[16px]">最大返回长度</div>
           <div class="!text-[#000] flex items-center">
             <div class="w-85px mr-10px ml-10px">
