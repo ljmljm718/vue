@@ -5,7 +5,7 @@ import { colorOpt } from '@/config/colorTheme/colorConfig';
 import { setCssVar } from '@/utils';
 
 /* todo原页面的js代码复制在下面 */
-import { dateFormatter } from '@/utils/formatTime';
+import { dateFormatter2 } from '@/utils/formatTime';
 import download from '@/utils/download';
 import {
   FertilizerRegistrationApi,
@@ -275,8 +275,14 @@ const handleClickShowSearch = () => {
         <el-table-column label="登记技术指标" align="center" prop="technicalSpecifications" />
         <el-table-column label="事宜范围" align="center" prop="scopeOfMatter" />
         <el-table-column label="登记证号" align="center" prop="registrationNumber" />
-        <el-table-column label="登记有效期" align="center" prop="registrationValidity" />
-        <el-table-column label="操作" align="center" fixed="right" min-width="154px">
+        <el-table-column
+          label="登记有效期"
+          align="center"
+          prop="registrationValidity"
+          :formatter="dateFormatter2"
+          width="180px"
+        />
+        <el-table-column label="操作" align="center" fixed="right" min-width="104px">
           <template #default="scope">
             <!-- todo操作按钮 -->
             <!-- 1.  <template #default="scope"> 中，加入
