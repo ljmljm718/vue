@@ -42,3 +42,8 @@ export const updateDept = async (params: DeptVO) => {
 export const deleteDept = async (id: number) => {
   return await request.delete({ url: '/system/dept/delete?id=' + id });
 };
+
+// 保存电子围栏
+export const saveGeofencing = async (data: DeptVO) => {
+  return await request.put({ url: `/system/dept/save-geofencing`, data });
+};
