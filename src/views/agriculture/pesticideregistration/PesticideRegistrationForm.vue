@@ -31,6 +31,9 @@
       <el-form-item label="作物/场所" prop="cropOrPlace">
         <el-input v-model="formData.cropOrPlace" placeholder="请输入作物/场所" />
       </el-form-item>
+      <el-form-item label="防治对象" prop="controlObject">
+        <el-input v-model="formData.controlObject" placeholder="请输入作物/场所" />
+      </el-form-item>
       <el-form-item label="产品质量标准号" prop="qualityStandardNumber">
         <el-input v-model="formData.qualityStandardNumber" placeholder="请输入产品质量标准号" />
       </el-form-item>
@@ -67,6 +70,7 @@ const formData = ref({
   activeIngredients: undefined,
   pesticideCategory: undefined,
   cropOrPlace: undefined,
+  controlObject: undefined,
   qualityStandardNumber: undefined
 });
 const formRules = reactive({});
@@ -126,6 +130,7 @@ const resetForm = () => {
     activeIngredients: undefined,
     pesticideCategory: undefined,
     cropOrPlace: undefined,
+    controlObject: undefined,
     qualityStandardNumber: undefined
   };
   formRef.value?.resetFields();
