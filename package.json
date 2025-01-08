@@ -94,6 +94,7 @@
     "vuedraggable": "^4.1.0",
     "wavesurfer.js": "^7.8.11",
     "web-storage-cache": "^1.1.1",
+    "xlsx": "^0.18.5",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
