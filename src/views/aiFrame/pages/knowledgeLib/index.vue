@@ -12,6 +12,7 @@ import KnowledgeLibCreateOrUpdate from './kowledgeLibCreateOrUpdate.vue';
 // @ts-ignore
 import LibDetail from './libDetail.vue';
 import dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
 
 // false 则显示创建知识库页面
 const showLibPage = ref(true);
@@ -62,7 +63,6 @@ const getKnowledgeList = async () => {
   knowledgeList.value = [];
   const res = await getCollectionList();
   knowledgeList.value = Array.isArray(res) ? res : [];
-  console.log(knowledgeList.value.length, 0 === knowledgeList.value.length);
 };
 getKnowledgeList();
 
@@ -223,9 +223,19 @@ const deleteLibWithoutCollection = async (collectionId: string) => {
 const showLibId = ref('');
 
 const uploadedFileName = ref<string>('');
+const fileValid = ref(true);
 const handleBeforeUpload = (file) => {
+  // checkFile(file);
   uploadedFileName.value = file.name;
 };
+
+// 如果文件不符合规范 则阻止上传
+// watch(docUrl, () => {
+//   if (!fileValid.value) {
+//     docUrl.value = '';
+//   }
+//   fileValid.value = true;
+// });
 
 // 删除已上传的文件
 const handleDeleteUploadedFile = () => {
@@ -236,6 +246,97 @@ function getLastPart(str) {
   const lastIndex = str.lastIndexOf('.');
   return lastIndex !== -1 ? str.substring(lastIndex + 1) : str;
 }
+
+// 检查是否是空行 空行全是空串
+const checkEmptyRow = (list: any[]) => {
+  for (let i = 0; i < list.length; ++i) {
+    if (list[i] !== '') {
+      return false;
+    }
+  }
+  return true;
+};
+
+const checkXlsx = (data: any, captionIdx: number, captionIdxLen: number) => {
+  // 读取文件内容
+  const workbook = XLSX.read(data, { type: 'string' });
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0, defval: '' });
+  console.log('upload file content: ', jsonData);
+  // 表头行不能为空
+  const captionRow = jsonData[captionIdx - 1];
+  if (checkEmptyRow(captionRow)) {
+    console.log('表头行为空');
+    fileValid.value = false;
+  } else {
+    console.log('表头行不为空');
+  }
+  // 表头行个数
+  if (captionRow.length !== captionIdxLen) {
+    console.log('表头字段个数不正确');
+    fileValid.value = false;
+  } else {
+    console.log('表头字段个数正确');
+  }
+  // 表头下方不能有空行
+  let emptyRow = false;
+  for (let i = captionIdx; i < jsonData.length; ++i) {
+    if (checkEmptyRow(jsonData[i])) {
+      emptyRow = true;
+      break;
+    }
+  }
+  if (emptyRow) {
+    console.log('数据中有空行');
+    fileValid.value = false;
+  } else {
+    console.log('数据中没有空行');
+  }
+};
+
+const checkFile = (file: any) => {
+  const idx = knowledgeList.value.findIndex((ele) => ele.collectionId === currentLibId.value);
+  if (-1 === idx || 'unstructured_data' === knowledgeList.value[idx].dataType) {
+    return;
+  }
+  const item = JSON.parse(knowledgeList.value[idx].fields);
+  const fileType = file.name.split('.').pop().toLowerCase();
+  // 假设以第一行为表头 10个主键
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (!e.target) {
+      console.log('event in FileReader.onload(e) does not exist!');
+      return;
+    }
+    const data = e.target.result;
+
+    switch (fileType) {
+      case 'xlsx':
+        checkXlsx(data, 1, item.length);
+        break;
+      case 'csv':
+        checkXlsx(data, 1, item.length);
+        break;
+      case 'jsonl':
+        checkXlsx(data, 1, item.length);
+        break;
+      default:
+        ElMessage.error('上传文件格式不支持，请上传xlsx格式的文件');
+    }
+  };
+  switch (fileType) {
+    case 'xlsx':
+      reader.readAsArrayBuffer(file);
+      break;
+    case 'csv':
+      reader.readAsText(file, 'GB2312');
+      break;
+    case 'jsonl':
+      reader.readAsText(file);
+      break;
+  }
+};
 </script>
 
 <template>

@@ -10,8 +10,8 @@
       ></div>
       <div class="ml-[28px]"><span class="text-[24px]">知识库详情</span></div>
     </div>
-    <div v-if="formData" class="w-full h-[calc(100%-64px)] px-[99px] py-[16px] box-border relative">
-      <el-scrollbar class="pr-[10px]" view-class="relative">
+    <div v-if="formData" class="w-full h-[calc(100%-64px)] pl-[99px] py-[16px] box-border relative">
+      <el-scrollbar class="pr-[99px]" view-class="relative pb-[16px]">
         <div class="w-full h-full absolute top-0 left-0 bg-transparent z-30"></div>
         <div class="flex items-center mb-[16px]">
           <div class="title-tag font-bold"></div>
@@ -52,40 +52,42 @@
           class="grid grid-cols-2 2xl:grid-cols-3"
         >
           <el-form-item prop="embeddingModel" label="文本向量化模型" class="!mr-0">
-            <el-input v-model="formData.embeddingModel" input-style="font-size: 14px" />
+            <el-input v-model="formData.embeddingModel" input-style="font-size: 16px" />
           </el-form-item>
           <el-form-item prop="embeddingDimension" label="切片维度" class="!mr-0">
             <el-input v-model="formData.embeddingDimension" input-style="font-size: 16px" />
           </el-form-item>
-          <el-form-item label="切片方式" class="!mr-0">
-            <el-input v-model="embedType" input-style="font-size: 16px" />
-          </el-form-item>
-          <el-form-item prop="chunkLength" label="切片最大长度" class="!mr-0">
-            <el-input v-model="formData.chunkLength" input-style="font-size: 16px" />
-          </el-form-item>
-          <el-form-item prop="merge" label="合并短文本片" class="!mr-0">
-            <el-switch v-model="formData.merge" />
-            <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
-              {{ formData.merge ? '已开启' : '已关闭' }}
-            </span>
-          </el-form-item>
-          <el-form-item prop="ocr" class="!mr-0">
-            <template #label>
-              <div class="flex items-center">
-                <span>图片OCR</span>
-                <div
-                  class="w-[32px] h-[18px] text-white bg-#615ced flex items-center justify-center ml-[8px] text-[14px]"
-                  style="border-radius: 4px 4px 4px 0"
-                >
-                  Beta
+          <template v-if="'unstructured_data' === formData.dataType">
+            <el-form-item label="切片方式" class="!mr-0">
+              <el-input v-model="embedType" input-style="font-size: 16px" />
+            </el-form-item>
+            <el-form-item prop="chunkLength" label="切片最大长度" class="!mr-0">
+              <el-input v-model="formData.chunkLength" input-style="font-size: 16px" />
+            </el-form-item>
+            <el-form-item prop="merge" label="合并短文本片" class="!mr-0">
+              <el-switch v-model="formData.merge" />
+              <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
+                {{ formData.merge ? '已开启' : '已关闭' }}
+              </span>
+            </el-form-item>
+            <el-form-item prop="ocr" class="!mr-0">
+              <template #label>
+                <div class="flex items-center">
+                  <span>图片OCR</span>
+                  <div
+                    class="w-[32px] h-[18px] text-white bg-#615ced flex items-center justify-center ml-[8px] text-[14px]"
+                    style="border-radius: 4px 4px 4px 0"
+                  >
+                    Beta
+                  </div>
                 </div>
-              </div>
-            </template>
-            <el-switch v-model="formData.ocr" />
-            <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
-              {{ formData.ocr ? '已开启' : '已关闭' }}
-            </span>
-          </el-form-item>
+              </template>
+              <el-switch v-model="formData.ocr" />
+              <span class="ml-[8px]" style="color: var(--el-text-color-regular)">
+                {{ formData.ocr ? '已开启' : '已关闭' }}
+              </span>
+            </el-form-item>
+          </template>
           <el-form-item prop="idxType" label="索引算法" class="!mr-0">
             <el-input v-model="formData.idxType" input-style="font-size: 16px" />
           </el-form-item>
@@ -93,6 +95,63 @@
             <el-input v-model="formData.quantify" input-style="font-size: 16px" />
           </el-form-item>
         </el-form>
+
+        <template v-if="'structured_data' === formData.dataType">
+          <div class="flex items-center my-[16px]">
+            <div class="title-tag font-bold"></div>
+            <span class="text-[16px]">字段信息</span>
+          </div>
+          <!-- select table caption -->
+          <div class="flex items-center mt-[16px]">
+            <div class="w-[130px] pr-[12px] text-end box-border">
+              <span class="text-[16px]">表结构</span>
+            </div>
+            <div class="w-[calc((100%-176px-48px)/4)] grid grid-cols-2 gap-[16px]">
+              <el-select v-model="captionRow">
+                <template #prefix>结构</template>
+              </el-select>
+              <el-select v-model="captionIdx">
+                <template #prefix>表头</template>
+              </el-select>
+            </div>
+          </div>
+          <el-table
+            :data="captionList"
+            :stripe="true"
+            :show-overflow-tooltip="true"
+            :header-cell-style="{ fontSize: '16px', paddingTop: '5px', paddingBottom: '5px' }"
+            :cell-style="{ fontSize: '16px', paddingTop: '5px', paddingBottom: '5px' }"
+            style="width: calc(100% - 130px); margin-left: 130px; margin-top: 16px"
+          >
+            <el-table-column label="字段名称" align="center" prop="field_name">
+              <template #default="scope">
+                <el-input v-model="scope.row.field_name" placeholder="请输入字段名称" />
+              </template>
+            </el-table-column>
+            <el-table-column label="向量索引" :width="110" align="center" prop="if_embedding">
+              <template #default="scope">
+                <el-checkbox v-model="scope.row.if_embedding" />
+              </template>
+            </el-table-column>
+            <el-table-column label="过滤字段" :width="110" align="center" prop="if_filter">
+              <template #default="scope">
+                <el-checkbox v-model="scope.row.if_filter" />
+              </template>
+            </el-table-column>
+            <el-table-column label="字段类型" align="center" prop="field_type">
+              <template #default="scope">
+                <el-select v-model="scope.row.field_type" class="text-[10px]">
+                  <el-option v-for="item in fieldTypes" :key="item" :value="item" :label="item" />
+                </el-select>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column label="默认值" align="center" prop="default_value">
+              <template #default="scope">
+                <el-input v-model="scope.row.default_value" placeholder="请输入" />
+              </template>
+            </el-table-column> -->
+          </el-table>
+        </template>
 
         <div class="flex items-center my-[16px]">
           <div class="title-tag font-bold"></div>
@@ -125,8 +184,12 @@
 
 <script setup lang="ts">
 import { getLibDetailById, getDocList } from '../../apis';
+// @ts-ignore
+import FieldConfig from './components/fieldConfig.vue';
 
 const collectionId = defineModel('id', { required: true, type: String });
+
+const fieldTypes = ['string', 'int64', 'float32', 'bool'];
 
 // 数据类型英文到中文的映射
 const dataTypeMap = {
@@ -138,6 +201,9 @@ const embedType = ref('默认切片方式');
 
 const formData = ref<any>();
 const loading = ref(false);
+const captionList = ref<any[]>([]);
+const captionRow = ref('行');
+const captionIdx = ref(1);
 const getCollectionInfo = async () => {
   if (collectionId.value === '') return;
   loading.value = true;
@@ -154,6 +220,11 @@ const getCollectionInfo = async () => {
           quantify: res.quant ? res.quant.toUpperCase() : ''
         }
       : {};
+    if ('structured_data' === res.dataType) {
+      captionList.value = JSON.parse(res.fields);
+      captionRow.value = 'row' === res.tableType ? '行' : '列';
+      captionIdx.value = res.tablePos ? res.tablePos : 1;
+    }
   } catch (e) {
     console.log(e);
   } finally {
@@ -207,7 +278,9 @@ const docIconClassMap = {
   background-color: #615ced;
 }
 
-:deep(.el-form-item__label) {
+:deep(.el-form-item__label),
+:deep(.el-input),
+:deep(.el-select__wrapper) {
   font-size: 16px;
 }
 
