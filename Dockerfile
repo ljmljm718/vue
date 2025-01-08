@@ -9,7 +9,7 @@ COPY dist-prod-linfen/  /usr/share/nginx/html/
 # 用本地配置文件来替换nginx镜像里的默认配置
 COPY nginx/nginx-${PROFILE}.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
+EXPOSE 40087
 
 # 以前台形式持续运行
 CMD ["nginx", "-g", "daemon off;"]
