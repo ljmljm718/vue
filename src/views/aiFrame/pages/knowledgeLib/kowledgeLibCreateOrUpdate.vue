@@ -100,108 +100,110 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item class="w-full !mr-0" label="切片方式">
-            <el-radio-group v-model="sliceType" class="!grid grid-cols-4 gap-[16px]">
-              <el-radio v-for="item in sliceTypeList" :key="item.name" :label="item.name" border>
-                <div class="font-bold leading-normal text-[1.6em]">{{ item.name }}</div>
-                <div
-                  class="mt-[0.6em] text-[#666] text-[1.6em] ai-dark:text-white text-wrap leading-normal"
-                >
-                  {{ item.content }}
-                </div>
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item class="w-full !m-0" prop="chunkLength">
-            <template #label>
-              <div class="flex items-center">
-                <span>切片最大长度</span>
-                <el-popover
-                  popper-class="popover-bg"
-                  placement="top"
-                  trigger="hover"
-                  :width="500"
-                  content=""
-                >
-                  <template #reference>
-                    <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
-                  </template>
-                  <div class="flex flex-col space-y-[0.8em]">
-                    <span>
-                      请确保切片最大长度略小于向量化模型的最大输入长度，否则文本超长的部分会被模型丢弃。
-                    </span>
-                    <span>
-                      当信息密度较大，且上下文关联性较小时，切片长度往往可以设置的小一些，以独立内容的长度为基准，如
-                      200-500 左右。如政策信息、热点新闻、法律法规等。
-                    </span>
-                    <span>
-                      当信息密度较小，需要较多上下文关联信息时，切片长度往往可以适当放大，但不宜过大，如
-                      800-1000 左右。如产品说明书、小说、论文等。
-                    </span>
+          <template v-if="'unstructured_data' === formData.dataType">
+            <el-form-item class="w-full !mr-0" label="切片方式">
+              <el-radio-group v-model="sliceType" class="!grid grid-cols-4 gap-[16px]">
+                <el-radio v-for="item in sliceTypeList" :key="item.name" :label="item.name" border>
+                  <div class="font-bold leading-normal text-[1.6em]">{{ item.name }}</div>
+                  <div
+                    class="mt-[0.6em] text-[#666] text-[1.6em] ai-dark:text-white text-wrap leading-normal"
+                  >
+                    {{ item.content }}
                   </div>
-                </el-popover>
-              </div>
-            </template>
-            <el-input-number
-              v-model="formData.chunkLength"
-              class="!w-[calc((100%-48px)/4)] text-[1.6em]"
-              :min="embeddingModelList[currentModel].chunkLength[0]"
-              :max="embeddingModelList[currentModel].chunkLength[1]"
-            />
-          </el-form-item>
-          <div class="ml-[13.6em] my-[1.8em] flex items-center text-[1.2em] space-x-[0.8em]">
-            <span class="text-[#666] dark:text-white">推荐长度</span>
-            <div
-              v-for="item in recommendSliceLengthList"
-              :key="item"
-              class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-#2c3240 ai-dark:bg-[#2C3240] cursor-pointer transition-all hover:bg-[#615ced] hover:text-white"
-              @click="handleClickRecommendSliceLength(item)"
-            >
-              {{ item }}
-            </div>
-          </div>
+                </el-radio>
+              </el-radio-group>
+            </el-form-item>
 
-          <el-form-item class="w-full !mr-0" prop="mergeSmallChunks">
-            <template #label>
-              <div class="flex items-center">
-                <span>合并短文本片</span>
-                <el-popover
-                  placement="top"
-                  trigger="hover"
-                  content="配置是否对短文本片进行合并，且合并后的文本片会限制不超过切片最大长度"
-                  :width="300"
-                  popper-class="popover-bg"
-                >
-                  <template #reference>
-                    <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
-                  </template>
-                </el-popover>
-              </div>
-            </template>
-            <el-switch v-model="formData.mergeSmallChunks" />
-          </el-form-item>
-
-          <el-form-item class="w-full !m-0" prop="imageOcr">
-            <template #label>
-              <div class="flex items-center">
-                <span>图片OCR</span>
-                <div
-                  class="w-3.2em h-1.8em text-white bg-#615ced flex items-center justify-center ml-.8em"
-                  style="border-radius: 0.4em 0.4em 0.4em 0"
-                >
-                  Beta
+            <el-form-item class="w-full !m-0" prop="chunkLength">
+              <template #label>
+                <div class="flex items-center">
+                  <span>切片最大长度</span>
+                  <el-popover
+                    popper-class="popover-bg"
+                    placement="top"
+                    trigger="hover"
+                    :width="500"
+                    content=""
+                  >
+                    <template #reference>
+                      <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
+                    </template>
+                    <div class="flex flex-col space-y-[0.8em]">
+                      <span>
+                        请确保切片最大长度略小于向量化模型的最大输入长度，否则文本超长的部分会被模型丢弃。
+                      </span>
+                      <span>
+                        当信息密度较大，且上下文关联性较小时，切片长度往往可以设置的小一些，以独立内容的长度为基准，如
+                        200-500 左右。如政策信息、热点新闻、法律法规等。
+                      </span>
+                      <span>
+                        当信息密度较小，需要较多上下文关联信息时，切片长度往往可以适当放大，但不宜过大，如
+                        800-1000 左右。如产品说明书、小说、论文等。
+                      </span>
+                    </div>
+                  </el-popover>
                 </div>
-                <!-- <div class="beta-mark"></div> -->
+              </template>
+              <el-input-number
+                v-model="formData.chunkLength"
+                class="!w-[calc((100%-48px)/4)] text-[1.6em]"
+                :min="embeddingModelList[currentModel].chunkLength[0]"
+                :max="embeddingModelList[currentModel].chunkLength[1]"
+              />
+            </el-form-item>
+            <div class="ml-[13.6em] my-[1.8em] flex items-center text-[1.2em] space-x-[0.8em]">
+              <span class="text-[#666] dark:text-white">推荐长度</span>
+              <div
+                v-for="item in recommendSliceLengthList"
+                :key="item"
+                class="w-[4.35em] h-[2.4em] flex justify-center items-center rounded-[0.6em] bg-[#F5F6FA] dark:bg-#2c3240 ai-dark:bg-[#2C3240] cursor-pointer transition-all hover:bg-[#615ced] hover:text-white"
+                @click="handleClickRecommendSliceLength(item)"
+              >
+                {{ item }}
               </div>
-            </template>
-            <el-switch v-model="formData.imageOcr" />
-          </el-form-item>
-          <div
-            class="ml-[13.6em] mt-[1.2em] mb-[1.8em] text-[#666] ai-dark:text-white text-[1.2em]"
-          >
-            <span>可识别文档中的图片并解析文字存为切片。支持 docx，pdf。</span>
-          </div>
+            </div>
+
+            <el-form-item class="w-full !mr-0" prop="mergeSmallChunks">
+              <template #label>
+                <div class="flex items-center">
+                  <span>合并短文本片</span>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                    content="配置是否对短文本片进行合并，且合并后的文本片会限制不超过切片最大长度"
+                    :width="300"
+                    popper-class="popover-bg"
+                  >
+                    <template #reference>
+                      <el-icon class="ml-[4px]" color="#615ced"><QuestionFilled /></el-icon>
+                    </template>
+                  </el-popover>
+                </div>
+              </template>
+              <el-switch v-model="formData.mergeSmallChunks" />
+            </el-form-item>
+
+            <el-form-item class="w-full !m-0" prop="imageOcr">
+              <template #label>
+                <div class="flex items-center">
+                  <span>图片OCR</span>
+                  <div
+                    class="w-3.2em h-1.8em text-white bg-#615ced flex items-center justify-center ml-.8em"
+                    style="border-radius: 0.4em 0.4em 0.4em 0"
+                  >
+                    Beta
+                  </div>
+                  <!-- <div class="beta-mark"></div> -->
+                </div>
+              </template>
+              <el-switch v-model="formData.imageOcr" />
+            </el-form-item>
+            <div
+              class="ml-[13.6em] mt-[1.2em] mb-[1.8em] text-[#666] ai-dark:text-white text-[1.2em]"
+            >
+              <span>可识别文档中的图片并解析文字存为切片。支持 docx，pdf。</span>
+            </div>
+          </template>
 
           <el-form-item class="w-full !mr-0" prop="indexType" label="索引算法">
             <el-radio-group
@@ -243,6 +245,14 @@
           </el-form-item>
         </el-form>
 
+        <template v-if="'structured_data' === formData.dataType">
+          <div class="flex items-center my-[16px]">
+            <div class="title-tag font-bold"></div>
+            <span class="text-[16px]">字段配置</span>
+          </div>
+          <field-config ref="fieldConfigRef" />
+        </template>
+
         <div
           v-loading="createLoading"
           class="create-btn text-[1.4em] px-[2.9em] py-[0.8em] my-[1.6em] ml-[13.6em] w-fit !rounded-[0.8em] cursor-pointer"
@@ -257,6 +267,8 @@
 
 <script lang="ts" setup>
 import { getSelectEmbeddingModel, postCreateLib, getCollectionList } from '../../apis';
+// @ts-ignore
+import FieldConfig from './components/fieldConfig.vue';
 
 const emits = defineEmits(['backToLibPage', 'createSuccess']);
 
@@ -333,7 +345,7 @@ const dataTypeList = ref([
   },
   {
     name: '结构化数据',
-    enable: false,
+    enable: true,
     label: 'structured_data',
     content:
       '文件的主要内容为结构化文本，需具备明确的字段约束，如问答总结、政策条款、数据收集等，支持csv、xlsx、jsonl、fag.xlsx 格式'
@@ -426,7 +438,46 @@ const handleClickCreateLib = async () => {
   await formRef.value.validate();
   try {
     createLoading.value = true;
-    const msg = await postCreateLib(formData.value);
+    let msg: any;
+    if ('unstructured_data' === formData.value.dataType) {
+      msg = await postCreateLib(formData.value);
+    } else {
+      const fieldInfo = fieldConfigRef.value.getCaptionList();
+      const fieldIdx = fieldInfo.index <= 0 ? 1 : fieldInfo.index;
+      let fieldNameEmpty = false;
+      const data = {
+        collectionName: formData.value.collectionName,
+        description: formData.value.description,
+        dataType: formData.value.dataType,
+        embeddingModel: formData.value.embeddingModel,
+        embeddingDimension: formData.value.embeddingDimension,
+        indexType: formData.value.indexType,
+        quant: formData.value.quant,
+        tableType: fieldInfo.isRow ? 'row' : 'col',
+        tablePos: fieldIdx,
+        startPos: fieldIdx + 1,
+        fieldList: fieldInfo.list.map((ele: any) => {
+          if (!ele.name) {
+            fieldNameEmpty = true;
+          }
+          return {
+            field_name: String(ele.name),
+            field_type: ele.type,
+            if_embedding: ele.vectorIndex,
+            if_filter: ele.ifFilter,
+            default_value: ele.defaultValue
+          };
+        })
+      };
+      // check if one of field names is empty
+      if (fieldNameEmpty || fieldInfo.list.length <= 0) {
+        ElMessage.error({ message: '字段名称不能为空', customClass: 'my-msg' });
+        return;
+      } else {
+        console.log('submit ', data);
+        msg = await postCreateLib(data);
+      }
+    }
     // 创建成功的话
     emits('createSuccess', msg);
   } catch (e) {
@@ -435,6 +486,9 @@ const handleClickCreateLib = async () => {
     createLoading.value = false;
   }
 };
+
+// 字段配置
+const fieldConfigRef = ref();
 </script>
 
 <style lang="scss" scoped>
@@ -476,7 +530,7 @@ const handleClickCreateLib = async () => {
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #615ced;
+  box-shadow: 0 0 0 1px #615ced inset;
 }
 
 :deep(.el-textarea__inner:focus) {
