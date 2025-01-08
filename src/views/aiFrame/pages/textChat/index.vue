@@ -38,6 +38,11 @@ const parseTextFromMarkDown = async (mdString) => {
   return textList.filter((item) => item).join('');
 };
 
+const extractStrings2 = (str) => {
+  const regex = /(?<=\b\d+\.\s*)([^\n]*)/g;
+  return str.match(regex);
+};
+
 // 实现自定义指令 高亮代码块
 const highlightForce = (el) => {
   if (!el) el = document;
@@ -394,8 +399,11 @@ const handleSendMsg = async (text) => {
       radioRecording.value = false;
     });
     const { message, relatedQuery, docName } = res;
-    const relatedArr = relatedQuery.split('\n');
-    if (relatedArr.length > 0) activeItem.relatedQuery = relatedArr;
+    activeItem.relatedQuery = extractStrings2(relatedQuery);
+    console.log(
+      '🚀 ~ handleSendMsg ~ extractStrings2(relatedQuery):',
+      extractStrings2(relatedQuery)
+    );
     if (Array.isArray(docName)) activeItem.docs = docName;
     if (res) {
       const voiceText = await parseTextFromMarkDown(message.toString());
@@ -576,7 +584,7 @@ const handleOpenUrl = (url) => {
                 </div>
               </div>
             </div>
-            <div class="space-y-[24px] pb-10px" v-else>
+            <div class="space-y-[24px] pb-20px" v-else>
               <div
                 class="flex justify-center 2xl:w-[1000px] xl:w-[848px] lg:w-[600px] md:w-[400px] sm:w-[400px] transition duration-500"
                 v-for="(item, index) in messageList"
@@ -602,8 +610,75 @@ const handleOpenUrl = (url) => {
                   <template v-if="['assistant', 'system'].includes(item.role)">
                     <div class="flex flex-col" style="width: calc(100% - 88px)">
                       <div
-                        class="rounded-8px px-16px box-border text-wrap mx-8px box-border shadow-md w-full"
-                        :style="`background: var(--system-message-bg);`"
+                        class="flex flex-col rounded-8px px-16px box-border shadow-md mx-8px w-full"
+                        style="background: var(--system-message-bg)"
+                      >
+                        <div
+                          class="text-wrap box-border w-full"
+                          :style="``"
+                          :innerHTML="marked.parse(item.text)"
+                          v-highlight
+                        ></div>
+                        <div v-if="Array.isArray(item.urls) && item.urls.length > 0" class="w-full">
+                          <div
+                            class="flex items-center space-x-2 text-#79759c cursor-pointer mb-2 text-14px"
+                            @click="item.showUrl = !item.showUrl"
+                          >
+                            <div>参考来源 ({{ item.urls.length }})</div>
+                            <div class="relative top-3px">
+                              <el-icon><ArrowUpBold /></el-icon>
+                            </div>
+                          </div>
+                          <div
+                            v-show="item.showUrl"
+                            class="bg-#f6f7fb dark:bg-#151b2d mt-1 p-3 box-border rounded-md mb-4 shadow-sm space-y-2"
+                          >
+                            <div
+                              v-for="ele in item.urls"
+                              :key="ele.url"
+                              @click="handleOpenUrl(ele.url)"
+                              class="flex items-start justify-between w-full text-14px text"
+                            >
+                              <div
+                                class="line-clamp-2 text-#333333 dark:text-#eee"
+                                style="width: calc(100% - 160px)"
+                              >
+                                {{ ele.title }}
+                              </div>
+                              <div class="flex items-center space-x-2" :title="ele.siteName">
+                                <div
+                                  class="w-140px line-clamp-1 text-#828499 dark:text-#ccc text-right"
+                                >
+                                  {{ ele.siteName }}
+                                </div>
+                                <img :src="getIconfromUrl(ele.url)" class="w-14px h-14px" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="px-2 space-y-1 py-3 text-14px flex flex-col items-start"
+                        v-if="Array.isArray(item.relatedQuery) && item.relatedQuery.length > 0"
+                      >
+                        <div class="text-#828499 dark:text-#eee py-1">你可以继续问我:</div>
+                        <div
+                          v-for="ele in item.relatedQuery"
+                          :key="ele"
+                          @click="handleSendMsg(ele)"
+                          class="bg-white dark:bg-#272c46 p-2 px-3 w-auto rounded-md shadow-sm !mt-6px text-14px"
+                        >
+                          {{ ele }}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="flex flex-col rounded-8px px-16px box-border shadow-md mx-8px box-border !hidden"
+                      style="width: calc(100% - 88px); background: var(--system-message-bg)"
+                    >
+                      <div
+                        class="text-wrap box-border w-full"
+                        :style="``"
                         :innerHTML="marked.parse(item.text)"
                         v-highlight
                       ></div>
@@ -661,13 +736,6 @@ const handleOpenUrl = (url) => {
                       v-highlight
                     ></div>
                   </template>
-                  <!-- <div
-                    class="bg-white rounded-8px px-16px box-border text-wrap mx-8px box-border"
-                    :class="[item.role === 'assistant' ? 'shadow-md' : '']"
-                    :style="`background: ${item.role === 'assistant' ? 'var(--system-message-bg)' : '#00000000'};max-width: calc(100% - 88px);width: ${item.role === 'assistant' ? 'calc(100% - 88px)' : 'auto'};`"
-                    :innerHTML="marked.parse(item.text)"
-                    v-highlight
-                  ></div> -->
                 </div>
               </div>
             </div>
