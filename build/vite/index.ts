@@ -1,31 +1,37 @@
-import { resolve } from 'path'
-import Vue from '@vitejs/plugin-vue'
-import VueJsx from '@vitejs/plugin-vue-jsx'
-import progress from 'vite-plugin-progress'
-import EslintPlugin from 'vite-plugin-eslint'
-import PurgeIcons from 'vite-plugin-purge-icons'
-import { ViteEjsPlugin } from 'vite-plugin-ejs'
+import { resolve } from 'path';
+import Vue from '@vitejs/plugin-vue';
+import VueJsx from '@vitejs/plugin-vue-jsx';
+import progress from 'vite-plugin-progress';
+import EslintPlugin from 'vite-plugin-eslint';
+import PurgeIcons from 'vite-plugin-purge-icons';
+import { ViteEjsPlugin } from 'vite-plugin-ejs';
 // @ts-ignore
-import ElementPlus from 'unplugin-element-plus/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import viteCompression from 'vite-plugin-compression'
-import topLevelAwait from 'vite-plugin-top-level-await'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import UnoCSS from 'unocss/vite'
-import cesium from 'vite-plugin-cesium'
+import ElementPlus from 'unplugin-element-plus/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import viteCompression from 'vite-plugin-compression';
+import topLevelAwait from 'vite-plugin-top-level-await';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import UnoCSS from 'unocss/vite';
+import cesium from 'vite-plugin-cesium';
 
 export function createVitePlugins() {
-  const root = process.cwd()
+  const root = process.cwd();
 
   // 路径查找
   function pathResolve(dir: string) {
-    return resolve(root, '.', dir)
+    return resolve(root, '.', dir);
   }
 
   return [
+    {
+      name: 'no-attribute',
+      transformIndexHtml(html) {
+        return html.replace('crossorigin', '');
+      }
+    },
     Vue(),
     VueJsx(),
     UnoCSS(),
@@ -65,7 +71,7 @@ export function createVitePlugins() {
       dts: 'src/types/auto-components.d.ts',
       // 自定义组件的解析器
       resolvers: [ElementPlusResolver()],
-      globs: ["src/components/**/**.{vue, md}", '!src/components/DiyEditor/components/mobile/**']
+      globs: ['src/components/**/**.{vue, md}', '!src/components/DiyEditor/components/mobile/**']
     }),
     EslintPlugin({
       cache: false,
@@ -98,5 +104,5 @@ export function createVitePlugins() {
       promiseImportName: (i) => `__tla_${i}`
     }),
     cesium()
-  ]
+  ];
 }
