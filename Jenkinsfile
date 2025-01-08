@@ -56,7 +56,7 @@ pipeline{
                sh 'pwd && ls -alh'
                sh 'docker rm -f ${IMAGE_NAME} || true && docker rmi $(docker images -q -f dangling=true) || true'
                sh 'docker network list | grep "${DOCKER_NETWORK}" &&  echo "docker network ${DOCKER_NETWORK} is exist" || docker network create ${DOCKER_NETWORK}'
-               sh 'docker run -d --name ${IMAGE_NAME} -p 40087:40087 --network ${DOCKER_NETWORK} ${IMAGE_NAME}'
+               sh 'docker run -d --name ${IMAGE_NAME} -p 40087:80 --network ${DOCKER_NETWORK} ${IMAGE_NAME}'
             }
         }
     }
