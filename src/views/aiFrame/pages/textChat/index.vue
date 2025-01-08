@@ -375,7 +375,7 @@ const handleSendMsg = async (text) => {
     console.log('🚀 ~ handleSendMsg ~ urlRef 链接:', urlRef);
     if (message) {
       const voiceText = await parseTextFromMarkDown(message.toString());
-      speaker.speak([voiceText]);
+      if (enableRadio.value) speaker.speak([voiceText]);
       flowOutput(message.toString());
     }
   } else {
@@ -399,7 +399,7 @@ const handleSendMsg = async (text) => {
     if (Array.isArray(docName)) activeItem.docs = docName;
     if (res) {
       const voiceText = await parseTextFromMarkDown(message.toString());
-      speaker.speak([voiceText]);
+      if (enableRadio.value) speaker.speak([voiceText]);
       flowOutput(message.toString());
     }
   }
