@@ -39,8 +39,7 @@ const parseTextFromMarkDown = async (mdString) => {
 };
 
 const extractStrings2 = (str) => {
-  const regex = /(?<=\b\d+\.\s*)([^\n]*)/g;
-  return str.match(regex);
+  return str.split('\n');
 };
 
 // 实现自定义指令 高亮代码块
@@ -362,7 +361,7 @@ const handleSendMsg = async (text) => {
   const activeItem = activeChatInfo.message.find((item) => item.id === chatId);
   const speaker = new Voice();
   if (enabledBot.value) {
-    const { docRef, message, urlRef } = await getBotChat({
+    const { docRef, message, urlRef, relatedQuery } = await getBotChat({
       query: text,
       botId: 'bot-20241230112159-krtgj',
       themeId: activeChatID.value,
@@ -375,6 +374,7 @@ const handleSendMsg = async (text) => {
     });
     if (Array.isArray(docRef)) activeItem.docs = docRef;
     if (Array.isArray(urlRef)) activeItem.urls = urlRef;
+    if (relatedQuery) activeItem.relatedQuery = extractStrings2(relatedQuery);
     console.log('🚀 ~ handleSendMsg ~ docRef 文档:', docRef);
     console.log('🚀 ~ handleSendMsg ~ message 回答:', message);
     console.log('🚀 ~ handleSendMsg ~ urlRef 链接:', urlRef);
@@ -385,7 +385,7 @@ const handleSendMsg = async (text) => {
     }
   } else {
     // 原先是 getCollectionSearch，下面改成了上下文接口
-    const { message: res } = await getContextSearch({
+    const { message, relatedQuery, docName } = await getContextSearch({
       collectionId: knowledgeLib.value,
       query: text,
       stream: false,
@@ -398,14 +398,13 @@ const handleSendMsg = async (text) => {
       activeItem.text = '请求失败，请稍后重试';
       radioRecording.value = false;
     });
-    const { message, relatedQuery, docName } = res;
     activeItem.relatedQuery = extractStrings2(relatedQuery);
     console.log(
       '🚀 ~ handleSendMsg ~ extractStrings2(relatedQuery):',
       extractStrings2(relatedQuery)
     );
     if (Array.isArray(docName)) activeItem.docs = docName;
-    if (res) {
+    if (message) {
       const voiceText = await parseTextFromMarkDown(message.toString());
       if (enableRadio.value) speaker.speak([voiceText]);
       flowOutput(message.toString());
@@ -655,6 +654,18 @@ const handleOpenUrl = (url) => {
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="flex pt-3 px-3 space-x-3"
+                        v-if="Array.isArray(item.docs) && item.docs.length > 0"
+                      >
+                        <div
+                          v-for="ele in item.docs"
+                          :key="ele"
+                          class="px-3 py-1 rounded-md bg-#696ded text-white"
+                        >
+                          {{ ele }}
                         </div>
                       </div>
                       <div
