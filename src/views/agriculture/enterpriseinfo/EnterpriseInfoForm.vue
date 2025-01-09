@@ -35,7 +35,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="登记证号" prop="productionNumber">
-        <el-input v-model="formData.productionNumber" placeholder="请输入登记证号" />
+        <el-input v-model="formData.productionNumber" placeholder="请输入企业生产登记证号" />
       </el-form-item>
       <el-form-item label="有效期至" prop="expirationDate">
         <el-date-picker
