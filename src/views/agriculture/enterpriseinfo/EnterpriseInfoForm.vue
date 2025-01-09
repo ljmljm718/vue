@@ -34,6 +34,20 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item label="登记证号" prop="productionNumber">
+        <el-input v-model="formData.productionNumber" placeholder="请输入登记证号" />
+      </el-form-item>
+      <el-form-item label="有效期至" prop="expirationDate">
+        <el-date-picker
+          v-model="formData.expirationDate"
+          type="date"
+          value-format="x"
+          placeholder="选择有效期"
+        />
+      </el-form-item>
+      <el-form-item label="生产范围" prop="productionScope">
+        <el-input v-model="formData.productionScope" placeholder="请输入生产范围" />
+      </el-form-item>
       <el-form-item label="联系人" prop="contactPerson">
         <el-input v-model="formData.contactPerson" placeholder="请输入联系人" />
       </el-form-item>
@@ -84,12 +98,17 @@ const formData = ref({
   longitude: undefined,
   latitude: undefined,
   contactPerson: undefined,
-  contactNumber: undefined
+  contactNumber: undefined,
+  productionNumber: undefined,
+  productionScope: undefined,
+  expirationDate: null
 });
 const formRules = reactive({
   enterpriseName: [{ required: true, message: '企业名称不能为空', trigger: 'blur' }],
   address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
-  postCode: [{ required: true, message: '邮政编码不能为空', trigger: 'blur' }]
+  postCode: [{ required: true, message: '邮政编码不能为空', trigger: 'blur' }],
+  productionNumber: [{ required: true, message: '企业生产登记证号不能为空', trigger: 'blur' }],
+  expirationDate: [{ required: true, message: '有效期不能为空', trigger: 'blur' }]
 });
 const formRef = ref(); // 表单 Ref
 
@@ -145,7 +164,10 @@ const resetForm = () => {
     longitude: undefined,
     latitude: undefined,
     contactPerson: undefined,
-    contactNumber: undefined
+    contactNumber: undefined,
+    productionNumber: undefined,
+    productionScope: undefined,
+    expirationDate: null
   };
   formRef.value?.resetFields();
 };

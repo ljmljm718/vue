@@ -82,6 +82,9 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="企业名称" align="center" prop="enterpriseName" />
+      <el-table-column label="登记证号" align="center" prop="productionNumber" />
+      <el-table-column label="有效期至" align="center" prop="expirationDate" />
+      <el-table-column label="生产范围" align="center" prop="productionScope" />
       <el-table-column label="详细地址" align="center" prop="address" />
       <el-table-column label="邮政编码" align="center" prop="postCode" />
       <el-table-column label="经度" align="center" prop="longitude" />

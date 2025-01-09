@@ -10,6 +10,9 @@ export interface EnterpriseInfoVO {
   latitude: string; // 纬度
   contactPerson: string; // 联系人
   contactNumber: string; // 联系电话
+  productionNumber: string; // 企业生产登记证号
+  productionScope: string; // 生产范围
+  expirationDate: Date; // 有效期至
 }
 
 // 企业信息 API
