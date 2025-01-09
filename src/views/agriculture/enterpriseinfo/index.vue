@@ -83,7 +83,13 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="企业名称" align="center" prop="enterpriseName" />
       <el-table-column label="登记证号" align="center" prop="productionNumber" />
-      <el-table-column label="有效期至" align="center" prop="expirationDate" />
+      <el-table-column
+        label="有效期至"
+        align="center"
+        prop="expirationDate"
+        :formatter="dateFormatter2"
+        width="140px"
+      />
       <el-table-column label="生产范围" align="center" prop="productionScope" />
       <el-table-column label="详细地址" align="center" prop="address" />
       <el-table-column label="邮政编码" align="center" prop="postCode" />
@@ -91,13 +97,6 @@
       <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="联系人" align="center" prop="contactPerson" />
       <el-table-column label="联系电话" align="center" prop="contactNumber" />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -133,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime';
+import { dateFormatter, dateFormatter2 } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { EnterpriseInfoApi, EnterpriseInfoVO } from '@/api/agriculture/enterpriseinfo';
 import EnterpriseInfoForm from './EnterpriseInfoForm.vue';
