@@ -19,8 +19,8 @@
       <el-form-item label="缺素发生阶段" prop="deficiencyStage">
         <el-input v-model="formData.deficiencyStage" placeholder="请输入缺素发生阶段" />
       </el-form-item>
-      <el-form-item label="图片" prop="image">
-        <UploadImg v-model="formData.image" />
+      <el-form-item label="图片" prop="images">
+        <UploadImgs v-model="formData.images" />
       </el-form-item>
       <el-form-item label="诊断方法" prop="diagnosisMethod">
         <el-input v-model="formData.diagnosisMethod" placeholder="请输入诊断方法" />
@@ -69,7 +69,7 @@ const formData = ref({
   treatmentMeasures: undefined,
   treatmentEffect: undefined,
   recordTime: undefined,
-  image: undefined
+  images: undefined
 });
 const formRules = reactive({
   plantType: [{ required: true, message: '植物类型不能为空', trigger: 'change' }],
@@ -94,6 +94,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true;
     try {
       formData.value = await DeficiencyElementApi.getDeficiencyElement(id);
+      if (formData.value.image) formData.value.images = formData.value.image.split(',');
     } finally {
       formLoading.value = false;
     }
@@ -109,6 +110,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true;
   try {
+    if (formData.value.images) formData.value.image = formData.value.images.join(',');
     const data = formData.value as unknown as DeficiencyElementVO;
     if (formType.value === 'create') {
       await DeficiencyElementApi.createDeficiencyElement(data);
