@@ -9,52 +9,20 @@
       label-width="68px"
     >
       <el-form-item label="植物类型" prop="plantType">
-        <el-select
+        <el-input
           v-model="queryParams.plantType"
-          placeholder="请选择植物类型"
+          placeholder="请输入植物类型"
           clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="存储缺少的元素" prop="deficiencyElement">
+      <el-form-item label="缺素" prop="deficiencyElement">
         <el-input
           v-model="queryParams.deficiencyElement"
-          placeholder="请输入存储缺少的元素"
+          placeholder="请输入缺素"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="缺素发生阶段" prop="deficiencyStage">
-        <el-input
-          v-model="queryParams.deficiencyStage"
-          placeholder="请输入缺素发生阶段"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="记录时间" prop="recordTime">
-        <el-date-picker
-          v-model="queryParams.recordTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
@@ -93,7 +61,6 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="植物类型" align="center" prop="plantType" />
       <el-table-column label="存储缺少的元素" align="center" prop="deficiencyElement" />
       <el-table-column label="缺素症状的详细描述" align="center" prop="deficiencySymptoms" />
