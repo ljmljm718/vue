@@ -11,6 +11,7 @@ export interface DiseaseRegistrationVO {
   onsetConditions: string; // 发病条件
   commonPreventionMethods: string; // 常见防治方法
   preventionNotes: string; // 防治注意事项
+  diseasePicture: string; // 病害图片
 }
 
 // 病害登记 API

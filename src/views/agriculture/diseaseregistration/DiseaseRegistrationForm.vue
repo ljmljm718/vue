@@ -31,6 +31,10 @@
       <el-form-item label="防治注意事项" prop="preventionNotes">
         <el-input v-model="formData.preventionNotes" placeholder="请输入防治注意事项" />
       </el-form-item>
+      <el-form-item label="病害图片" prop="diseasePicture">
+        <!-- <el-input v-model="formData.diseasePicture" placeholder="请输入病害图片" /> -->
+        <UploadImg v-model="formData.diseasePicture" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -63,7 +67,8 @@ const formData = ref({
   mainSymptoms: undefined,
   onsetConditions: undefined,
   commonPreventionMethods: undefined,
-  preventionNotes: undefined
+  preventionNotes: undefined,
+  diseasePicture: undefined
 });
 const formRules = reactive({});
 const formRef = ref(); // 表单 Ref
@@ -121,7 +126,8 @@ const resetForm = () => {
     mainSymptoms: undefined,
     onsetConditions: undefined,
     commonPreventionMethods: undefined,
-    preventionNotes: undefined
+    preventionNotes: undefined,
+    diseasePicture: undefined
   };
   formRef.value?.resetFields();
 };

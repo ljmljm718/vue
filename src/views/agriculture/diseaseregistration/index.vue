@@ -135,6 +135,18 @@
       <el-table-column label="发病条件" align="center" prop="onsetConditions" />
       <el-table-column label="常见防治方法" align="center" prop="commonPreventionMethods" />
       <el-table-column label="防治注意事项" align="center" prop="preventionNotes" />
+      <el-table-column label="病害图片" align="center" prop="diseasePicture">
+        <template #default="scope">
+          <el-image
+            class="h-50px w-50px"
+            :src="scope.row.diseasePicture"
+            :preview-src-list="[scope.row.diseasePicture]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
+
       <!-- <el-table-column
         label="创建时间"
         align="center"
@@ -205,6 +217,7 @@ const queryParams = reactive({
   onsetConditions: undefined,
   commonPreventionMethods: undefined,
   preventionNotes: undefined,
+  diseasePicture: undefined,
   createTime: []
 });
 const queryFormRef = ref(); // 搜索的表单

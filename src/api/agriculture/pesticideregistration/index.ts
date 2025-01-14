@@ -13,6 +13,17 @@ export interface PesticideRegistrationVO {
   cropOrPlace: string; // 作物/场所
   controlObject: string; // 防治对象
   qualityStandardNumber: string; // 产品质量标准号
+  usageRate: string; //用药量(制剂量/亩)
+  applicationMethod: string; //施用方式
+  technicalRequirements: string; //使用技术要求
+  productPerformance: string; //产品性能
+  precautions: string; //注意事项
+  poisoningFirstAid: string; //中毒急救措施
+  storageAndTransport: string; //存储和运输方式
+  qualityAssurancePeriod: string; //质量保证期
+  remarks: string; //备注
+  approvalDate: Date; //核准日期
+  reapprovalDate: Date; //重新核准日期
 }
 
 // 农药登记 API
