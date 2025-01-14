@@ -469,7 +469,7 @@ const resetQuery = () => {
 const router = useRouter(); // 路由
 onActivated(() => {
   const prevPath = localStorage.getItem('PREV_PATH');
-  if (prevPath !== '/asset/base/parkInfo/create') return;
+  if (prevPath !== '/my_farm/base/parkInfo/create') return;
   getList();
   handleBack(); // 清空地块信息列表
   // handleQuery()
@@ -477,7 +477,7 @@ onActivated(() => {
 
 /** 查看操作 */
 const openFormDetail = (id?: number) => {
-  if (id) router.push(`/asset/base/asset/base/parkinfo/detail?id=${id}`);
+  if (id) router.push(`/my_farm/base/asset/base/parkinfo/detail?id=${id}`);
 };
 
 /** 删除按钮操作 */
@@ -495,8 +495,8 @@ const handleDelete = async (id: number) => {
 /** 添加/修改操作 */
 const formRef = ref();
 const openForm = (id?: number) => {
-  if (id) router.push(`/asset/base/parkInfo/create?id=${id}`);
-  else router.push(`/asset/base/parkInfo/create`);
+  if (id) router.push(`/my_farm/base/parkInfo/create?id=${id}`);
+  else router.push(`/my_farm/base/parkInfo/create`);
 };
 
 /** 导出按钮操作 */
