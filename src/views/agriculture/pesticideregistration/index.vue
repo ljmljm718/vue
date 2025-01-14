@@ -35,6 +35,17 @@ const queryParams = reactive({
   cropOrPlace: undefined,
   controlObject: undefined,
   qualityStandardNumber: undefined,
+  usageRate: undefined,
+  applicationMethod: undefined,
+  technicalRequirements: undefined,
+  productPerformance: undefined,
+  precautions: undefined,
+  poisoningFirstAid: undefined,
+  storageAndTransport: undefined,
+  qualityAssurancePeriod: undefined,
+  remarks: undefined,
+  approvalDate: undefined,
+  reapprovalDate: undefined,
   createTime: []
 });
 const queryFormRef = ref(); // 搜索的表单

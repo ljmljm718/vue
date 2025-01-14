@@ -8,7 +8,7 @@ export interface FertilizerRegistrationVO {
   brandName: string; // 产品商品名称
   productForm: string; // 产品形态
   technicalSpecifications: string; // 登记技术指标
-  scopeOfMatter: string; // 事宜范围
+  scopeOfMatter: string; // 适宜范围
   registrationNumber: string; // 登记证号
   registrationValidity: Date; // 登记有效期
 }

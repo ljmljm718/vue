@@ -71,7 +71,18 @@ const formData = ref({
   pesticideCategory: undefined,
   cropOrPlace: undefined,
   controlObject: undefined,
-  qualityStandardNumber: undefined
+  qualityStandardNumber: undefined,
+  usageRate: undefined,
+  applicationMethod: undefined,
+  technicalRequirements: undefined,
+  productPerformance: undefined,
+  precautions: undefined,
+  poisoningFirstAid: undefined,
+  storageAndTransport: undefined,
+  qualityAssurancePeriod: undefined,
+  remarks: undefined,
+  approvalDate: undefined,
+  reapprovalDate: undefined
 });
 const formRules = reactive({});
 const formRef = ref(); // 表单 Ref
@@ -131,7 +142,18 @@ const resetForm = () => {
     pesticideCategory: undefined,
     cropOrPlace: undefined,
     controlObject: undefined,
-    qualityStandardNumber: undefined
+    qualityStandardNumber: undefined,
+    usageRate: undefined,
+    applicationMethod: undefined,
+    technicalRequirements: undefined,
+    productPerformance: undefined,
+    precautions: undefined,
+    poisoningFirstAid: undefined,
+    storageAndTransport: undefined,
+    qualityAssurancePeriod: undefined,
+    remarks: undefined,
+    approvalDate: undefined,
+    reapprovalDate: undefined
   };
   formRef.value?.resetFields();
 };

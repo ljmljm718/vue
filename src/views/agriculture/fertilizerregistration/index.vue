@@ -223,10 +223,10 @@ const handleClickShowSearch = () => {
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="事宜范围" prop="scopeOfMatter">
+      <el-form-item label="适宜范围" prop="scopeOfMatter">
         <el-input
           v-model="queryParams.scopeOfMatter"
-          placeholder="请输入事宜范围"
+          placeholder="请输入适宜范围"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -273,7 +273,7 @@ const handleClickShowSearch = () => {
         <el-table-column label="产品商品名称" align="center" prop="brandName" />
         <el-table-column label="产品形态" align="center" prop="productForm" />
         <el-table-column label="登记技术指标" align="center" prop="technicalSpecifications" />
-        <el-table-column label="事宜范围" align="center" prop="scopeOfMatter" />
+        <el-table-column label="适宜范围" align="center" prop="scopeOfMatter" />
         <el-table-column label="登记证号" align="center" prop="registrationNumber" />
         <el-table-column
           label="登记有效期"

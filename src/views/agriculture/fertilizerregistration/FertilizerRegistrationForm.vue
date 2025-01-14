@@ -22,7 +22,7 @@
       <el-form-item label="登记技术指标" prop="technicalSpecifications">
         <el-input v-model="formData.technicalSpecifications" placeholder="请输入登记技术指标" />
       </el-form-item>
-      <el-form-item label="事宜范围" prop="scopeOfMatter">
+      <el-form-item label="适宜范围" prop="scopeOfMatter">
         <el-input v-model="formData.scopeOfMatter" placeholder="请输入事宜范围" />
       </el-form-item>
       <el-form-item label="登记证号" prop="registrationNumber">
