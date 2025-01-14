@@ -11,6 +11,7 @@ export interface DeficiencyElementVO {
   treatmentMeasures: string; // 补救措施
   treatmentEffect: string; // 补救效果
   recordTime: Date; // 记录时间
+  image: string; // 图片
 }
 
 // 农业缺素 API
