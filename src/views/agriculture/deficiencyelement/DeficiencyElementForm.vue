@@ -8,18 +8,19 @@
       v-loading="formLoading"
     >
       <el-form-item label="植物类型" prop="plantType">
-        <el-select v-model="formData.plantType" placeholder="请选择植物类型">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
+        <el-input v-model="formData.plantType" placeholder="请输入存植物类型" />
       </el-form-item>
-      <el-form-item label="存储缺少的元素" prop="deficiencyElement">
-        <el-input v-model="formData.deficiencyElement" placeholder="请输入存储缺少的元素" />
+      <el-form-item label="缺素" prop="deficiencyElement">
+        <el-input v-model="formData.deficiencyElement" placeholder="请输入缺素" />
       </el-form-item>
       <el-form-item label="缺素症状的详细描述" prop="deficiencySymptoms">
         <el-input v-model="formData.deficiencySymptoms" placeholder="请输入缺素症状的详细描述" />
       </el-form-item>
       <el-form-item label="缺素发生阶段" prop="deficiencyStage">
         <el-input v-model="formData.deficiencyStage" placeholder="请输入缺素发生阶段" />
+      </el-form-item>
+      <el-form-item label="图片" prop="image">
+        <UploadImg v-model="formData.image" />
       </el-form-item>
       <el-form-item label="诊断方法" prop="diagnosisMethod">
         <el-input v-model="formData.diagnosisMethod" placeholder="请输入诊断方法" />
@@ -67,17 +68,18 @@ const formData = ref({
   diagnosisMethod: undefined,
   treatmentMeasures: undefined,
   treatmentEffect: undefined,
-  recordTime: undefined
+  recordTime: undefined,
+  image: undefined
 });
 const formRules = reactive({
   plantType: [{ required: true, message: '植物类型不能为空', trigger: 'change' }],
   deficiencyElement: [{ required: true, message: '存储缺少的元素不能为空', trigger: 'blur' }],
-  deficiencySymptoms: [{ required: true, message: '缺素症状的详细描述不能为空', trigger: 'blur' }],
-  deficiencyStage: [{ required: true, message: '缺素发生阶段不能为空', trigger: 'blur' }],
-  diagnosisMethod: [{ required: true, message: '诊断方法不能为空', trigger: 'blur' }],
-  treatmentMeasures: [{ required: true, message: '补救措施不能为空', trigger: 'blur' }],
-  treatmentEffect: [{ required: true, message: '补救效果不能为空', trigger: 'blur' }],
-  recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }]
+  // deficiencySymptoms: [{ required: true, message: '缺素症状的详细描述不能为空', trigger: 'blur' }],
+  deficiencyStage: [{ required: true, message: '缺素发生阶段不能为空', trigger: 'blur' }]
+  // diagnosisMethod: [{ required: true, message: '诊断方法不能为空', trigger: 'blur' }],
+  // treatmentMeasures: [{ required: true, message: '补救措施不能为空', trigger: 'blur' }],
+  // treatmentEffect: [{ required: true, message: '补救效果不能为空', trigger: 'blur' }],
+  // recordTime: [{ required: true, message: '记录时间不能为空', trigger: 'blur' }]
 });
 const formRef = ref(); // 表单 Ref
 
