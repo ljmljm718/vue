@@ -79,9 +79,9 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="虫害名称" align="center" prop="pestName" />
-      <el-table-column label="虫害类别" align="center" prop="pestType" />
-      <el-table-column label="宿主作物" align="center" prop="hostName" />
+      <el-table-column label="虫害名称" align="center" prop="pestName" width="120" />
+      <el-table-column label="虫害类别" align="center" prop="pestType" width="100" />
+      <el-table-column label="宿主作物" align="center" prop="hostName" width="80" />
       <el-table-column label="生命周期" align="center" prop="lifeCycle" />
       <el-table-column label="危害症状" align="center" prop="damage" />
       <el-table-column label="监测方法" align="center" prop="monitorType" />
@@ -99,7 +99,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="130">
         <template #default="scope">
           <el-button
             link
