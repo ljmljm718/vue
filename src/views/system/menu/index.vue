@@ -1,7 +1,4 @@
 <template>
-
-
-
   <!-- 搜索工作栏 -->
   <ContentWrap>
     <el-form
@@ -128,92 +125,94 @@
   <MenuForm ref="formRef" @success="getList" />
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { handleTree } from '@/utils/tree'
-import * as MenuApi from '@/api/system/menu'
-import MenuForm from './MenuForm.vue'
-import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { handleTree } from '@/utils/tree';
+import * as MenuApi from '@/api/system/menu';
+import MenuForm from './MenuForm.vue';
+import { CACHE_KEY, useCache } from '@/hooks/web/useCache';
 
-defineOptions({ name: 'SystemMenu' })
+defineOptions({ name: 'SystemMenu' });
 
-const { wsCache } = useCache()
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { wsCache } = useCache();
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const loading = ref(true) // 列表的加载中
-const list = ref<any>([]) // 列表的数据
+const loading = ref(true); // 列表的加载中
+const list = ref<any>([]); // 列表的数据
 const queryParams = reactive({
   name: undefined,
   status: undefined
-})
-const queryFormRef = ref() // 搜索的表单
-const isExpandAll = ref(false) // 是否展开，默认全部折叠
-const refreshTable = ref(true) // 重新渲染表格状态
+});
+const queryFormRef = ref(); // 搜索的表单
+const isExpandAll = ref(false); // 是否展开，默认全部折叠
+const refreshTable = ref(true); // 重新渲染表格状态
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await MenuApi.getMenuList(queryParams)
-    list.value = handleTree(data)
+    const data = await MenuApi.getMenuList(queryParams);
+    list.value = handleTree(data);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  getList()
-}
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number, parentId?: number) => {
-  formRef.value.open(type, id, parentId)
-}
+  formRef.value.open(type, id, parentId);
+};
 
 /** 展开/折叠操作 */
 const toggleExpandAll = () => {
-  refreshTable.value = false
-  isExpandAll.value = !isExpandAll.value
+  refreshTable.value = false;
+  isExpandAll.value = !isExpandAll.value;
   nextTick(() => {
-    refreshTable.value = true
-  })
-}
+    refreshTable.value = true;
+  });
+};
 
 /** 刷新菜单缓存按钮操作 */
 const refreshMenu = async () => {
   try {
-    await message.confirm('即将更新缓存刷新浏览器！', '刷新菜单缓存')
+    await message.confirm('即将更新缓存刷新浏览器！', '刷新菜单缓存');
     // 清空，从而触发刷新
-    wsCache.delete(CACHE_KEY.USER)
-    wsCache.delete(CACHE_KEY.ROLE_ROUTERS)
+    wsCache.delete(CACHE_KEY.USER);
+    wsCache.delete(CACHE_KEY.ROLE_ROUTERS);
+    // 刷新es数据
+    await MenuApi.refreshESMenu();
     // 刷新浏览器
-    location.reload()
+    location.reload();
   } catch {}
-}
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await MenuApi.deleteMenu(id)
-    message.success(t('common.delSuccess'))
+    await MenuApi.deleteMenu(id);
+    message.success(t('common.delSuccess'));
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
