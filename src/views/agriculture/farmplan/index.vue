@@ -405,7 +405,7 @@
       <el-table-column label="计划描述" align="center" prop="planDesc" />
       <!--      <el-table-column label="完成面积（亩）" align="center" prop="finishArea" fixed="right" width="150"/>-->
       <!--      <el-table-column label="剩余面积（亩）" align="center" prop="area"  fixed="right" width="150" />-->
-      <el-table-column label="操作" align="center" fixed="right" width="150">
+      <el-table-column label="操作" align="center" fixed="right" min-width="200">
         <template #default="scope">
           <el-button
             v-if="scope.row.planState != '2'"
@@ -416,6 +416,7 @@
           >
             执行
           </el-button>
+          <el-button link type="success" @click="bindTemplate(scope.row)">绑定模板</el-button>
           <el-button
             link
             type="primary"
@@ -689,6 +690,9 @@
       <el-button @click="clearFormA">取 消</el-button>
     </template>
   </Dialog>
+
+  <!-- 站内信模板弹窗 -->
+  <NotifyTemplateSelectListCopy ref="templateFormRef" @template="getList" />
 </template>
 
 <script setup lang="ts">
@@ -711,8 +715,10 @@ import listImg from '../../../assets/imgs/list-active.png';
 import listImg2 from '../../../assets/imgs/list-actived.png';
 import dataImg from '../../../assets/imgs/noData.png';
 import select from '../../../assets/imgs/select.png';
+import NotifyTemplateSelectListCopy from '@/views/agriculture/farmplan/component/NotifyTemplateSelectListCopy.vue';
 
 import { watch } from 'vue';
+import NotifyTemplateSelectList from '@/views/agriculture/agriwarningrule/component/NotifyTemplateSelectList.vue';
 interface AnyObject {
   [key: string]: any;
 }
@@ -1496,6 +1502,12 @@ const tabItem = (list: any[], str, indexA) => {
     dataList.value[indexA].name = list[ItemVal.value].name;
     ItemVal.value--;
   }
+};
+
+// 绑定模板-打开模板选择弹窗
+const templateFormRef = ref();
+const bindTemplate = (row) => {
+  templateFormRef.value.open(row.id);
 };
 </script>
 <style lang="scss" scoped>
