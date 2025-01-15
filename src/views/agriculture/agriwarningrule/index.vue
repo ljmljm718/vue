@@ -157,23 +157,46 @@
             <div class="flex items-center justify-center">
               <el-button link type="success" @click="bindDevice(scope.row)">绑定设备</el-button>
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-              <el-button
-                link
-                type="primary"
-                @click="openForm('update', scope.row.id)"
-                v-hasPermi="['agriculture:agri-warning-rule:update']"
-              >
-                编辑
-              </el-button>
+              <el-button link type="success" @click="bindTemplate(scope.row)">绑定模板</el-button>
               <div class="mx-[12px] w-[1px] h-[24px] bg-[#e6e6e6]"></div>
-              <el-button
-                link
-                type="danger"
-                @click="handleDelete(scope.row.id)"
-                v-hasPermi="['agriculture:agri-warning-rule:delete']"
-              >
-                删除
-              </el-button>
+              <el-popover :width="104" trigger="hover" popper-style="min-width: 0">
+                <template #reference>
+                  <div class="flex items-center">
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                    <div
+                      class="w-[2px] h-[2px] mx-[1px] rounded-full"
+                      style="background-color: var(--el-color-primary)"
+                    ></div>
+                  </div>
+                </template>
+
+                <div class="flex flex-col items-start space-y-[8px] space-x-0">
+                  <!-- 隐藏的其他按钮 -->
+                  <el-button
+                    link
+                    type="primary"
+                    @click="openForm('update', scope.row.id)"
+                    v-hasPermi="['agriculture:agri-warning-rule:update']"
+                  >
+                    编辑
+                  </el-button>
+                  <el-button
+                    link
+                    type="danger"
+                    @click="handleDelete(scope.row.id)"
+                    v-hasPermi="['agriculture:agri-warning-rule:delete']"
+                  >
+                    删除
+                  </el-button>
+                </div>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
@@ -262,6 +285,9 @@
   <!-- 表单弹窗：添加/修改 -->
   <AgriWarningRuleForm ref="formRef" @success="getList" />
 
+  <!-- 站内信模板弹窗 -->
+  <NotifyTemplateSelectList ref="templateFormRef" @template="getList" />
+
   <!-- 绑定设备列表 -->
   <AgriWarnRuleBindDevice
     ref="warnRuleBindDeviceRef"
@@ -280,6 +306,7 @@ import { AgriWarningRuleApi, AgriWarningRuleVO } from '@/api/agriculture/agriwar
 import AgriWarningRuleForm from './AgriWarningRuleForm.vue';
 import { AgriWarningRuleDeviceApi } from '@/api/agriculture/agriwarningruledevice';
 import AgriWarnRuleBindDevice from '@/views/agriculture/agriwarningrule/component/AgriWarnRuleBindDevice.vue';
+import NotifyTemplateSelectList from '@/views/agriculture/agriwarningrule/component/NotifyTemplateSelectList.vue';
 import { ElTable } from 'element-plus';
 import { DeviceInfoVO } from '@/api/agriculture/deviceinfo';
 import { DeviceCategoryApi } from '@/api/agriculture/devicecategory';
@@ -449,6 +476,12 @@ const getDeviceCategoryTree = async () => {
     });
   } finally {
   }
+};
+
+// 绑定模板-打开模板选择弹窗
+const templateFormRef = ref();
+const bindTemplate = (row) => {
+  templateFormRef.value.open(row.id);
 };
 
 /** 初始化 **/
