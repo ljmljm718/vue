@@ -340,5 +340,7 @@ export enum DICT_TYPE {
   HOME_INDEX_URL = 'home_index_url',
 
   // ========== agri - 视频设备 ===========
-  AGRI_DEVICE_MANUFACTURER = 'agri_device_manufacturer' //厂商类型
+  AGRI_DEVICE_MANUFACTURER = 'agri_device_manufacturer', //厂商类型
+  // ========== agri - 站内信 ===========
+  ACTION_TYPE = 'action_type'
 }
