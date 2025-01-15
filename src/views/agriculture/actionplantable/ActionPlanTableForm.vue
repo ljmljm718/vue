@@ -70,15 +70,15 @@ const formRules = reactive({
   actionId: [{ required: true, message: '动作ID不能为空', trigger: 'blur' }],
   actionName: [{ required: true, message: '动作名称不能为空', trigger: 'blur' }],
   actionType: [{ required: true, message: '动作类型不能为空', trigger: 'change' }],
-  url: [
-    {
-      required:
-        formData.value.actionType == 'open_page' || formData.value.actionType == 'send_request',
-      message: 'url不能为空',
-      trigger: 'change'
-    }
-  ]
+  url: [{ required: false, message: '动作类型不能为空', trigger: 'change' }]
 });
+
+watch(
+  () => formData.value.actionType,
+  (newVal) => {
+    formRules.url[0].required = newVal === 'open_page' || newVal === 'send_request';
+  }
+);
 
 const formRef = ref(); // 表单 Ref
 
