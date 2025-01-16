@@ -342,5 +342,9 @@ export enum DICT_TYPE {
   // ========== agri - 视频设备 ===========
   AGRI_DEVICE_MANUFACTURER = 'agri_device_manufacturer', //厂商类型
   // ========== agri - 站内信 ===========
-  ACTION_TYPE = 'action_type'
+  ACTION_TYPE = 'action_type',
+  // ========== agri -  病理跟进 ===========
+  AGRI_DISEASE_CATEGORY = 'agri_disease_category',
+  AGRI_DISEASE_STATUS = 'agri_disease_status',
+  AGRI_DISEASE_EFFECT = 'agri_disease_effect'
 }
