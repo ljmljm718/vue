@@ -1,6 +1,4 @@
 <template>
-
-
   <!-- 搜索工作栏 -->
   <ContentWrap>
     <el-form
@@ -55,15 +53,22 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px" />
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px" />
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['system:notify-template:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" />新增
+          <Icon icon="ep:plus" class="mr-5px" />
+          新增
         </el-button>
       </el-form-item>
     </el-form>
@@ -112,7 +117,7 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="操作" align="center" width="210" fixed="right">
+      <el-table-column label="操作" align="center" width="220" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -138,6 +143,9 @@
           >
             删除
           </el-button>
+          <el-button link type="primary" @click="openSelectActionPlanTable(scope.row.id)">
+            绑定方案
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,21 +162,24 @@
   <NotifyTemplateForm ref="formRef" @success="getList" />
   <!-- 表单弹窗：测试发送 -->
   <NotifyTemplateSendForm ref="sendFormRef" />
+
+  <SelectActionPlanTable ref="SelectActionPlanTableRef" @success="selectActionPlanTableSuccess()" />
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
-import * as NotifyTemplateApi from '@/api/system/notify/template'
-import NotifyTemplateForm from './NotifyTemplateForm.vue'
-import NotifyTemplateSendForm from './NotifyTemplateSendForm.vue'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import { dateFormatter } from '@/utils/formatTime';
+import * as NotifyTemplateApi from '@/api/system/notify/template';
+import NotifyTemplateForm from './NotifyTemplateForm.vue';
+import NotifyTemplateSendForm from './NotifyTemplateSendForm.vue';
+import SelectActionPlanTable from '@/views/agriculture/actionplantable/SelectActionPlanTable.vue';
 
-defineOptions({ name: 'NotifySmsTemplate' })
+defineOptions({ name: 'NotifySmsTemplate' });
 
-const message = useMessage() // 消息弹窗
+const message = useMessage(); // 消息弹窗
 
-const loading = ref(false) // 列表的加载中
-const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const loading = ref(false); // 列表的加载中
+const total = ref(0); // 列表的总页数
+const list = ref([]); // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -176,60 +187,66 @@ const queryParams = reactive({
   status: undefined,
   code: undefined,
   createTime: []
-})
-const queryFormRef = ref() // 搜索的表单
+});
+const queryFormRef = ref(); // 搜索的表单
+
+//作物的品种选择
+const SelectActionPlanTableRef = ref();
+const openSelectActionPlanTable = (id: number) => {
+  SelectActionPlanTableRef.value.open(id);
+};
 
 /** 查询列表 */
 const getList = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await NotifyTemplateApi.getNotifyTemplatePage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await NotifyTemplateApi.getNotifyTemplatePage(queryParams);
+    list.value = data.list;
+    total.value = data.total;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
+  queryParams.pageNo = 1;
+  getList();
+};
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
-}
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
 
 /** 添加/修改操作 */
-const formRef = ref()
+const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
+  formRef.value.open(type, id);
+};
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
   try {
     // 删除的二次确认
-    await message.delConfirm()
+    await message.delConfirm();
     // 发起删除
-    await NotifyTemplateApi.deleteNotifyTemplate(id)
-    message.success('删除成功')
+    await NotifyTemplateApi.deleteNotifyTemplate(id);
+    message.success('删除成功');
     // 刷新列表
-    await getList()
+    await getList();
   } catch {}
-}
+};
 
 /** 发送站内信按钮 */
-const sendFormRef = ref() // 表单 Ref
+const sendFormRef = ref(); // 表单 Ref
 const openSendForm = (row: NotifyTemplateApi.NotifyTemplateVO) => {
-  sendFormRef.value.open(row.id)
-}
+  sendFormRef.value.open(row.id);
+};
 
 /** 初始化 **/
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
