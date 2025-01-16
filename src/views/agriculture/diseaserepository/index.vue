@@ -61,17 +61,6 @@ const options = ref([
     label: '高'
   }
 ]);
-//知识库类别
-const optionsType = ref([
-  {
-    value: '病害',
-    label: '病害'
-  },
-  {
-    value: '虫害',
-    label: '虫害'
-  }
-]);
 const drawer = ref(false);
 const direction = ref('rtl');
 const formData = ref({
@@ -273,10 +262,10 @@ const handleClickShowSearch = () => {
       <el-form-item label="类别" prop="reservedOne">
         <el-select v-model="queryParams.reservedOne" placeholder="请选择知识库类别" clearable>
           <el-option
-            v-for="item in optionsType"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -318,7 +307,11 @@ const handleClickShowSearch = () => {
         <!-- <el-table-column label="主键" align="center" prop="id" /> -->
         <!--      <el-table-column label="主键" align="center" prop="id"/>-->
         <el-table-column label="学名" align="center" prop="scientificName" width="100px" />
-        <el-table-column label="知识库类别" align="center" prop="reservedOne" width="100px" />
+        <el-table-column label="知识库类别" align="center" prop="reservedOne" width="100px">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.AGRI_DISEASE_CATEGORY" :value="scope.row.reservedOne" />
+          </template>
+        </el-table-column>
         <el-table-column label="诱发病虫" align="center" prop="reservedTwo" />
         <el-table-column label="图片" align="center" prop="imgId" width="100px">
           <template #default="{ row }">
@@ -334,7 +327,7 @@ const handleClickShowSearch = () => {
         </el-table-column>
         <!--      <el-table-column label="品种ID" align="center" prop="breedId"/>-->
         <!--      <el-table-column label="品种名称" align="center" prop="cropName"/>-->
-        <el-table-column label="作物品类" align="center" prop="cropType" width="100px">
+        <el-table-column label="品类" align="center" prop="cropType" width="100px">
           <template #default="{ row }">
             {{ row.cropType }}
           </template>
