@@ -470,7 +470,7 @@ const handleClickShowSearch = () => {
           v-model="formData.treatmentMethod"
           type="textarea"
           placeholder="请输入治理方法"
-          maxlength="500"
+          maxlength="1000"
           show-word-limit
           :rows="6"
         />

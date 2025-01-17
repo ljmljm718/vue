@@ -88,7 +88,7 @@
         <el-input
           v-model="formData.intro"
           type="textarea"
-          placeholder="请输入形态特征"
+          placeholder="请输入简介"
           maxlength="500"
           show-word-limit
           :rows="4"
@@ -151,7 +151,7 @@
           v-model="formData.treatmentMethod"
           type="textarea"
           placeholder="请输入治理方法"
-          maxlength="500"
+          maxlength="1000"
           show-word-limit
           :rows="4"
         />
@@ -224,10 +224,7 @@ const formData = ref({
 const formRules = reactive({
   reservedOne: [{ required: true, message: '知识库类别不能为空', trigger: 'blur' }],
   scientificName: [{ required: true, message: '学名不能为空', trigger: 'blur' }],
-  cropType: [{ required: true, message: '作物种类不能为空', trigger: 'blur' }],
-  imgId: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
   hazardRating: [{ required: true, message: '危害等级不能为空', trigger: 'blur' }],
-  reservedTwo: [{ required: true, message: '诱发病虫不能为空', trigger: 'blur' }],
   intro: [{ required: true, message: '简介不能为空', trigger: 'blur' }]
 });
 const formRef = ref(); // 表单 Ref
