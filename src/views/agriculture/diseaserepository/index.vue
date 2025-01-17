@@ -307,6 +307,7 @@ const handleClickShowSearch = () => {
         <!-- <el-table-column label="主键" align="center" prop="id" /> -->
         <!--      <el-table-column label="主键" align="center" prop="id"/>-->
         <el-table-column label="学名" align="center" prop="scientificName" width="100px" />
+        <el-table-column label="别名" align="center" prop="reservedThree" />
         <el-table-column label="知识库类别" align="center" prop="reservedOne" width="100px">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.AGRI_DISEASE_CATEGORY" :value="scope.row.reservedOne" />
