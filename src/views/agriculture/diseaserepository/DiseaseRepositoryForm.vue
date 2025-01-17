@@ -14,6 +14,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="别名" prop="reservedThree">
+            <el-input v-model="formData.reservedThree" placeholder="请输入别名" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="知识库类别" prop="reservedOne">
             <el-select v-model="formData.reservedOne" placeholder="请选择知识库类别">
               <el-option
@@ -25,13 +32,13 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="12">
           <el-form-item label="图片" prop="imgId">
             <UploadImg v-model="formData.imgId" />
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="品类" prop="cropType">
             <el-select v-model="formData.cropType" placeholder="请选择品类">
@@ -44,13 +51,13 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="12">
           <el-form-item label="易发月份" prop="proneMonth">
             <el-input v-model="formData.proneMonth" placeholder="请输入易发月份" />
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="危害等级" prop="hazardRating">
             <el-select v-model="formData.hazardRating" placeholder="请选择危害等级">
@@ -63,18 +70,20 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="诱发病虫" prop="reservedTwo">
+            <!--                <el-input v-model="formData.reservedTwo" placeholder="请输入诱发病虫"/>-->
+            <el-select v-model="formData.reservedTwo" clearable placeholder="请选择诱发病虫">
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
+                :key="dict.label"
+                :label="dict.label"
+                :value="dict.label"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
-      <el-form-item label="诱发病虫" prop="reservedTwo">
-        <!--                <el-input v-model="formData.reservedTwo" placeholder="请输入诱发病虫"/>-->
-        <el-select v-model="formData.reservedTwo" clearable placeholder="请选择诱发病虫">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.AGRI_DISEASE_NAME)"
-            :key="dict.label"
-            :label="dict.label"
-            :value="dict.label"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="简介" prop="intro">
         <el-input
           v-model="formData.intro"
