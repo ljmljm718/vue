@@ -109,7 +109,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="地块id" align="center" prop="plotId" />
+      <el-table-column label="地块" align="center" prop="plotName" />
+      <el-table-column label="作物" align="center" prop="cropName" />
       <el-table-column label="病虫害" align="center" prop="disease" />
       <el-table-column label="问题" align="center" prop="problem" />
       <el-table-column label="病虫害类型" align="center" prop="diseaseType">

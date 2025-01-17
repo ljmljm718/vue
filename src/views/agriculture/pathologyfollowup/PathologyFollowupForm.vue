@@ -10,6 +10,9 @@
       <el-form-item label="地块id" prop="plotId">
         <el-input v-model="formData.plotId" placeholder="请输入地块id" />
       </el-form-item>
+      <el-form-item label="作物id" prop="cropId">
+        <el-input v-model="formData.cropId" placeholder="请输入作物id" />
+      </el-form-item>
       <el-form-item label="病虫害" prop="disease">
         <el-input v-model="formData.disease" placeholder="请输入病虫害" />
       </el-form-item>
